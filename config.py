@@ -1,0 +1,113 @@
+"""
+Game configuration and constants for Cheese the Duck.
+"""
+from pathlib import Path
+
+# Paths
+GAME_DIR = Path(__file__).parent
+DATA_DIR = GAME_DIR / "data"
+SAVE_DIR = Path.home() / ".cheese_the_duck"
+SAVE_FILE = SAVE_DIR / "save.json"
+
+# Default duck name
+DEFAULT_DUCK_NAME = "Cheese"
+
+# Game timing
+FPS = 30
+TICK_RATE = 1.0  # Seconds between game ticks
+TIME_MULTIPLIER = 1.0  # Speed up time for testing (1.0 = real time)
+
+# Need decay rates (per real minute)
+NEED_DECAY_RATES = {
+    "hunger": 0.8,      # Gets hungry fairly quickly
+    "energy": 0.5,      # Energy drains slower
+    "fun": 1.0,         # Gets bored fastest
+    "cleanliness": 0.3, # Stays clean longest
+    "social": 0.6,      # Needs regular interaction
+}
+
+# Need thresholds
+NEED_MAX = 100
+NEED_MIN = 0
+NEED_CRITICAL = 20  # Below this, urgent warnings
+NEED_LOW = 40       # Below this, duck gets grumpy
+
+# Interaction effects
+INTERACTION_EFFECTS = {
+    "feed": {"hunger": 35, "fun": 5},
+    "play": {"fun": 30, "energy": -10, "social": 10},
+    "clean": {"cleanliness": 40, "fun": -5},
+    "pet": {"social": 25, "fun": 10},
+    "sleep": {"energy": 50, "hunger": -5},
+}
+
+# Mood thresholds (based on weighted need average)
+MOOD_THRESHOLDS = {
+    "ecstatic": 90,
+    "happy": 70,
+    "content": 50,
+    "grumpy": 30,
+    "sad": 10,
+    "miserable": 0,
+}
+
+# Mood weights for need calculation
+MOOD_WEIGHTS = {
+    "hunger": 0.25,
+    "energy": 0.25,
+    "fun": 0.20,
+    "cleanliness": 0.15,
+    "social": 0.15,
+}
+
+# Growth stages (in real hours to reach next stage)
+GROWTH_STAGES = {
+    "egg": {"duration_hours": 0.5, "next": "duckling"},
+    "duckling": {"duration_hours": 24, "next": "teen"},
+    "teen": {"duration_hours": 72, "next": "adult"},
+    "adult": {"duration_hours": 168, "next": "elder"},
+    "elder": {"duration_hours": None, "next": None},
+}
+
+# Personality trait ranges
+PERSONALITY_MIN = -100
+PERSONALITY_MAX = 100
+
+# Default personality (slightly derpy duck)
+DEFAULT_PERSONALITY = {
+    "clever_derpy": -30,   # Leaning derpy
+    "brave_timid": 0,      # Neutral
+    "active_lazy": 20,     # Slightly active
+    "social_shy": 30,      # Fairly social
+    "neat_messy": -20,     # Bit messy
+}
+
+# AI behavior settings
+AI_IDLE_INTERVAL = 5.0     # Seconds between autonomous actions
+AI_RANDOMNESS = 0.3        # Base randomness in action selection
+DERPY_RANDOMNESS_BONUS = 0.4  # Extra randomness for derpy ducks
+
+# Offline progression
+MAX_OFFLINE_HOURS = 24     # Cap offline time processing
+OFFLINE_DECAY_MULTIPLIER = 0.5  # Needs decay slower offline
+
+# UI Colors (for blessed terminal)
+COLORS = {
+    "duck_body": "yellow",
+    "duck_beak": "bright_yellow",
+    "happy": "green",
+    "sad": "blue",
+    "hungry": "red",
+    "tired": "magenta",
+    "dirty": "white",
+    "border": "cyan",
+    "text": "white",
+    "highlight": "bright_white",
+}
+
+# Duck names for random selection (Cheese is default, not in this list)
+DUCK_NAMES = [
+    "Quackers", "Waddles", "Ducky", "Puddles", "Feathers",
+    "Bubbles", "Nugget", "Pickle", "Biscuit", "Cheddar",
+    "Sprocket", "Waffles", "Noodle", "Potato", "Beans",
+]
