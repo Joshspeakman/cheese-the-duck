@@ -664,28 +664,28 @@ class Game:
         """Handle actions while playing."""
         # Handle menu inputs first (if any menu is open)
         if key:
-            key_str = str(key).lower()
-            key_name = getattr(key, 'name', '') or ''
+            key_str = str(key).lower() if not key.is_sequence else ''
+            key_name = key.name if key.name else ''
 
             # Check for open menus and handle their input
             if self._crafting_menu_open:
-                if self._handle_crafting_input(key_str, key_name):
+                if self._handle_crafting_input(key_str, key_name, key):
                     return
 
             if self._building_menu_open:
-                if self._handle_building_input(key_str, key_name):
+                if self._handle_building_input(key_str, key_name, key):
                     return
 
             if self._areas_menu_open:
-                if self._handle_areas_input(key_str, key_name):
+                if self._handle_areas_input(key_str, key_name, key):
                     return
 
             if self._use_menu_open:
-                if self._handle_use_input(key_str, key_name):
+                if self._handle_use_input(key_str, key_name, key):
                     return
 
             if self._minigames_menu_open:
-                if self._handle_minigames_menu_input(key_str, key_name):
+                if self._handle_minigames_menu_input(key_str, key_name, key):
                     return
 
             # Check if a minigame is active
@@ -2646,7 +2646,7 @@ class Game:
         self._areas_menu_open = True
         self._update_areas_menu_display()
 
-    def _handle_crafting_input(self, key_str: str, key_name: str = "") -> bool:
+    def _handle_crafting_input(self, key_str: str, key_name: str = "", key=None) -> bool:
         """Handle input while crafting menu is open. Returns True if handled."""
         if not self._crafting_menu_open:
             return False
@@ -2659,25 +2659,37 @@ class Game:
                 self.renderer.dismiss_message()
             return True
 
-        # Let menu handle navigation
-        if self._crafting_menu.handle_key(key_str, key_name):
-            if self._crafting_menu.was_confirmed():
-                # Execute crafting
+        # Handle arrow keys and enter directly
+        if key and key.is_sequence:
+            if key.code == self.terminal.KEY_UP:
+                idx = self._crafting_menu.get_selected_index()
+                if idx > 0:
+                    self._crafting_menu.set_selected_index(idx - 1)
+                    self._update_crafting_menu_display()
+                return True
+            elif key.code == self.terminal.KEY_DOWN:
+                idx = self._crafting_menu.get_selected_index()
+                items = self._crafting_menu.get_items()
+                if idx < len(items) - 1:
+                    self._crafting_menu.set_selected_index(idx + 1)
+                    self._update_crafting_menu_display()
+                return True
+            elif key.code == self.terminal.KEY_ENTER:
                 selected = self._crafting_menu.get_selected_item()
-                if selected and selected.data:
+                if selected and selected.data and selected.enabled:
                     recipe = selected.data
                     result = self.crafting.start_crafting(recipe.id, self.materials)
                     self._crafting_menu_open = False
                     self.renderer.show_message(result["message"], duration=3.0)
-            elif self._crafting_menu.was_cancelled():
-                self._crafting_menu_open = False
-                self.renderer.dismiss_message()
-            else:
-                # Just navigating, update display
-                self._update_crafting_menu_display()
+                return True
+
+        # Close on ESC or C
+        if key_name == 'KEY_ESCAPE' or key_str == 'c':
+            self._crafting_menu_open = False
+            self.renderer.dismiss_message()
             return True
 
-        return False
+        return True  # Consume all keys while menu is open
 
     def _update_crafting_menu_display(self):
         """Update the crafting menu display with current selection."""
@@ -2690,7 +2702,7 @@ class Game:
             footer="[↑↓] Navigate  [Enter] Craft  [C/ESC] Close"
         )
 
-    def _handle_building_input(self, key_str: str, key_name: str = "") -> bool:
+    def _handle_building_input(self, key_str: str, key_name: str = "", key=None) -> bool:
         """Handle input while building menu is open. Returns True if handled."""
         if not self._building_menu_open:
             return False
@@ -2703,29 +2715,40 @@ class Game:
                 self.renderer.dismiss_message()
             return True
 
-        # Let menu handle navigation
-        if self._building_menu.handle_key(key_str, key_name):
-            if self._building_menu.was_confirmed():
-                # Execute building
+        # Handle arrow keys and enter directly
+        if key and key.is_sequence:
+            if key.code == self.terminal.KEY_UP:
+                idx = self._building_menu.get_selected_index()
+                if idx > 0:
+                    self._building_menu.set_selected_index(idx - 1)
+                    self._update_building_menu_display()
+                return True
+            elif key.code == self.terminal.KEY_DOWN:
+                idx = self._building_menu.get_selected_index()
+                items = self._building_menu.get_items()
+                if idx < len(items) - 1:
+                    self._building_menu.set_selected_index(idx + 1)
+                    self._update_building_menu_display()
+                return True
+            elif key.code == self.terminal.KEY_ENTER:
                 selected = self._building_menu.get_selected_item()
-                if selected and selected.data:
+                if selected and selected.data and selected.enabled:
                     bp = selected.data
                     result = self.building.start_building(bp.id, self.materials)
                     self._building_menu_open = False
-
                     if result.get("success"):
                         self._start_building_animation(bp)
                     else:
                         self.renderer.show_message(result["message"], duration=3.0)
-            elif self._building_menu.was_cancelled():
-                self._building_menu_open = False
-                self.renderer.dismiss_message()
-            else:
-                # Just navigating, update display
-                self._update_building_menu_display()
+                return True
+
+        # Close on ESC or R
+        if key_name == 'KEY_ESCAPE' or key_str == 'r':
+            self._building_menu_open = False
+            self.renderer.dismiss_message()
             return True
 
-        return False
+        return True  # Consume all keys while menu is open
 
     def _update_building_menu_display(self):
         """Update the building menu display with current selection."""
@@ -2789,7 +2812,7 @@ class Game:
             if structure.blueprint_id in ["mud_hut", "wooden_cottage", "stone_house"]:
                 self.achievements.unlock("house_builder")
 
-    def _handle_areas_input(self, key_str: str, key_name: str = "") -> bool:
+    def _handle_areas_input(self, key_str: str, key_name: str = "", key=None) -> bool:
         """Handle input while areas menu is open. Returns True if handled."""
         if not self._areas_menu_open:
             return False
@@ -2803,25 +2826,37 @@ class Game:
                 self.renderer.dismiss_message()
             return True
 
-        # Let menu handle navigation
-        if self._areas_menu.handle_key(key_str, key_name):
-            if self._areas_menu.was_confirmed():
-                # Travel to selected area
+        # Handle arrow keys and enter directly
+        if key and key.is_sequence:
+            if key.code == self.terminal.KEY_UP:
+                idx = self._areas_menu.get_selected_index()
+                if idx > 0:
+                    self._areas_menu.set_selected_index(idx - 1)
+                    self._update_areas_menu_display()
+                return True
+            elif key.code == self.terminal.KEY_DOWN:
+                idx = self._areas_menu.get_selected_index()
+                items = self._areas_menu.get_items()
+                if idx < len(items) - 1:
+                    self._areas_menu.set_selected_index(idx + 1)
+                    self._update_areas_menu_display()
+                return True
+            elif key.code == self.terminal.KEY_ENTER:
                 selected = self._areas_menu.get_selected_item()
                 if selected and selected.data:
                     area = selected.data
                     self._areas_menu_open = False
                     self.renderer.dismiss_message()
                     self._start_travel_to_area(area)
-            elif self._areas_menu.was_cancelled():
-                self._areas_menu_open = False
-                self.renderer.dismiss_message()
-            else:
-                # Just navigating, update display
-                self._update_areas_menu_display()
+                return True
+
+        # Close on ESC or A
+        if key_name == 'KEY_ESCAPE' or key_str == 'a':
+            self._areas_menu_open = False
+            self.renderer.dismiss_message()
             return True
 
-        return False
+        return True  # Consume all keys while menu is open
 
     def _update_areas_menu_display(self):
         """Update the areas menu display with current selection."""
@@ -2992,30 +3027,42 @@ class Game:
             footer="[↑↓] Navigate  [Enter] Use  [U/ESC] Close"
         )
 
-    def _handle_use_input(self, key_str: str, key_name: str = "") -> bool:
+    def _handle_use_input(self, key_str: str, key_name: str = "", key=None) -> bool:
         """Handle input while use menu is open. Returns True if handled."""
         if not self._use_menu_open:
             return False
 
-        # Let menu handle navigation
-        if self._use_menu.handle_key(key_str, key_name):
-            if self._use_menu.was_confirmed():
-                # Use selected item
+        # Handle arrow keys and enter directly
+        if key and key.is_sequence:
+            if key.code == self.terminal.KEY_UP:
+                idx = self._use_menu.get_selected_index()
+                if idx > 0:
+                    self._use_menu.set_selected_index(idx - 1)
+                    self._update_use_menu_display()
+                return True
+            elif key.code == self.terminal.KEY_DOWN:
+                idx = self._use_menu.get_selected_index()
+                items = self._use_menu.get_items()
+                if idx < len(items) - 1:
+                    self._use_menu.set_selected_index(idx + 1)
+                    self._update_use_menu_display()
+                return True
+            elif key.code == self.terminal.KEY_ENTER:
                 selected = self._use_menu.get_selected_item()
                 if selected and selected.data:
                     item_id, item = selected.data
                     self._use_menu_open = False
                     self.renderer.dismiss_message()
                     self._execute_item_interaction(item_id)
-            elif self._use_menu.was_cancelled():
-                self._use_menu_open = False
-                self.renderer.dismiss_message()
-            else:
-                # Just navigating, update display
-                self._update_use_menu_display()
+                return True
+
+        # Close on ESC or U
+        if key_name == 'KEY_ESCAPE' or key_str == 'u':
+            self._use_menu_open = False
+            self.renderer.dismiss_message()
             return True
 
-        return False  # Let other keys pass through
+        return True  # Consume all keys while menu is open
 
     def _toggle_boombox_music(self):
         """Toggle the boombox music on/off."""
@@ -3090,24 +3137,36 @@ class Game:
             footer=footer
         )
 
-    def _handle_minigames_menu_input(self, key_str: str, key_name: str = "") -> bool:
+    def _handle_minigames_menu_input(self, key_str: str, key_name: str = "", key=None) -> bool:
         """Handle input while minigames menu is open."""
         if not self._minigames_menu_open:
             return False
 
-        # Let menu handle navigation
-        if self._minigames_menu.handle_key(key_str, key_name):
-            if self._minigames_menu.was_confirmed():
-                # Start selected game
+        # Handle arrow keys and enter directly
+        if key and key.is_sequence:
+            if key.code == self.terminal.KEY_UP:
+                idx = self._minigames_menu.get_selected_index()
+                if idx > 0:
+                    self._minigames_menu.set_selected_index(idx - 1)
+                    self._update_minigames_menu_display()
+                return True
+            elif key.code == self.terminal.KEY_DOWN:
+                idx = self._minigames_menu.get_selected_index()
+                items = self._minigames_menu.get_items()
+                if idx < len(items) - 1:
+                    self._minigames_menu.set_selected_index(idx + 1)
+                    self._update_minigames_menu_display()
+                return True
+            elif key.code == self.terminal.KEY_ENTER:
                 selected = self._minigames_menu.get_selected_item()
-                if selected and selected.data:
+                if selected and selected.data and selected.enabled:
                     self._start_minigame(selected.data["id"])
-            elif self._minigames_menu.was_cancelled():
-                self._minigames_menu_open = False
-                self.renderer.dismiss_message()
-            else:
-                # Just navigating, update display
-                self._update_minigames_menu_display()
+                return True
+
+        # Close on ESC or J
+        if key_name == 'KEY_ESCAPE' or key_str == 'j':
+            self._minigames_menu_open = False
+            self.renderer.dismiss_message()
             return True
 
         # Number keys for quick select (kept for convenience)
