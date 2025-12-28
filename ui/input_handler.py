@@ -205,7 +205,11 @@ GAME
 ----
 [H] Help   [Q] Quit   [X] Reset
 
-TIP: Type in Talk mode [T]!
+MENU NAVIGATION
+---------------
+[Arrow Keys] Navigate menus
+[Enter] Select/Confirm
+[ESC] Close menu
 """
 
 

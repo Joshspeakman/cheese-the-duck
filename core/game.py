@@ -42,6 +42,7 @@ from audio.sound import sound_engine, duck_sounds
 from ui.renderer import Renderer
 from ui.animations import animation_controller
 from ui.input_handler import InputHandler, GameAction
+from ui.menu_selector import MenuSelector, MenuItem
 
 # New feature imports - Phase 2 systems
 from world.scrapbook import Scrapbook, scrapbook
@@ -140,6 +141,16 @@ class Game:
         self._sound_enabled = True
         self._show_goals = False
         self._reset_confirmation = False  # Flag for reset game confirmation
+
+        # Arrow-key menu selectors
+        self._crafting_menu = MenuSelector("CRAFTING", close_keys=['KEY_ESCAPE', 'c'])
+        self._building_menu = MenuSelector("BUILDING", close_keys=['KEY_ESCAPE', 'r'])
+        self._areas_menu = MenuSelector("AREAS", close_keys=['KEY_ESCAPE', 'a'])
+        self._use_menu = MenuSelector("USE ITEM", close_keys=['KEY_ESCAPE', 'u'])
+        self._minigames_menu = MenuSelector("MINI-GAMES", close_keys=['KEY_ESCAPE', 'j'])
+        self._quests_menu = MenuSelector("QUESTS", close_keys=['KEY_ESCAPE', 'o'])
+
+        # Backwards compatibility flags (computed from menu state)
         self._crafting_menu_open = False  # Flag for crafting menu
         self._building_menu_open = False  # Flag for building menu
         self._areas_menu_open = False     # Flag for areas menu
@@ -2509,35 +2520,41 @@ class Game:
         available = self.crafting.get_available_recipes(self.materials)
         all_recipes = list(RECIPES.values())
 
-        # Build menu content
-        lines = ["═══ CRAFTING MENU ═══", ""]
-
         if self.crafting._current_craft:
-            # Show crafting in progress
+            # Show crafting in progress as simple message
             progress = self.crafting._current_craft
             recipe = RECIPES.get(progress.recipe_id)
             if recipe:
                 pct = int(progress.get_progress() * 100)
-                lines.append(f"🔨 Crafting: {recipe.name} ({pct}%)")
-                lines.append("")
-                lines.append("[Press ESC or C to close]")
+                self.renderer.show_message(
+                    f"🔨 Crafting: {recipe.name} ({pct}%)\n\n[Press ESC or C to close]",
+                    duration=0
+                )
             else:
-                lines.append("Crafting in progress...")
-        else:
-            lines.append("Available recipes:")
-            lines.append("")
+                self.renderer.show_message("Crafting in progress...", duration=0)
+            self._crafting_menu_open = True
+            return
 
-            for i, recipe in enumerate(all_recipes[:8], 1):  # Show first 8
-                can_craft = recipe.result_item in available
-                status = "✓" if can_craft else "✗"
-                lines.append(f"[{i}] {status} {recipe.name}")
+        # Build menu items
+        items = []
+        for recipe in all_recipes[:8]:
+            can_craft = recipe.result_item in available
+            items.append({
+                'id': recipe.id,
+                'label': f"{'✓' if can_craft else '✗'} {recipe.name}",
+                'description': f"Materials: {', '.join(f'{v} {k}' for k, v in recipe.materials.items())}",
+                'enabled': can_craft,
+                'data': recipe
+            })
 
-            lines.append("")
-            lines.append("Press 1-8 to craft")
-            lines.append("[ESC] Close menu")
-
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self._crafting_menu.set_items([
+            MenuItem(id=item['id'], label=item['label'], description=item['description'],
+                     enabled=item['enabled'], data=item.get('data'))
+            for item in items
+        ])
+        self._crafting_menu.open()
         self._crafting_menu_open = True
+        self._update_crafting_menu_display()
 
     def _show_building_menu(self):
         """Show the building menu overlay."""
@@ -2548,10 +2565,8 @@ class Game:
         buildable = self.building.get_buildable_structures(self.materials)
         all_blueprints = list(BLUEPRINTS.values())
 
-        lines = ["═══ BUILDING MENU ═══", ""]
-
         if self.building._current_build:
-            # Show building in progress
+            # Show building in progress as simple message
             build_progress = self.building._current_build
             structure = build_progress.structure
             bp = BLUEPRINTS.get(structure.blueprint_id)
@@ -2559,37 +2574,36 @@ class Game:
                 stage_names = ["Foundation", "Frame", "Walls", "Roof", "Finishing"]
                 current_stage = stage_names[min(structure.current_stage, 4)]
                 pct = int((structure.current_stage / bp.stages) * 100)
-                lines.append(f"🏗️ Building: {bp.name}")
-                lines.append(f"   Stage: {current_stage} ({pct}%)")
-                lines.append("")
-                lines.append("[Press ESC or R to close]")
+                self.renderer.show_message(
+                    f"🏗️ Building: {bp.name}\nStage: {current_stage} ({pct}%)\n\n[Press ESC or R to close]",
+                    duration=0
+                )
             else:
-                lines.append("Building in progress...")
-        else:
-            # Show existing structures
-            if self.building._structures:
-                lines.append("Your structures:")
-                for struct in self.building._structures[:3]:
-                    bp = BLUEPRINTS.get(struct.blueprint_id)
-                    if bp:
-                        health = int((struct.durability / struct.max_durability) * 100)
-                        lines.append(f"  • {bp.name} ({health}% condition)")
-                lines.append("")
+                self.renderer.show_message("Building in progress...", duration=0)
+            self._building_menu_open = True
+            return
 
-            lines.append("Available blueprints:")
-            lines.append("")
+        # Build menu items
+        items = []
+        for bp in all_blueprints[:6]:
+            can_build = bp.id in buildable
+            mat_desc = ', '.join(f'{v} {k}' for k, v in bp.required_materials.items())
+            items.append({
+                'id': bp.id,
+                'label': f"{'✓' if can_build else '✗'} {bp.name}",
+                'description': f"Needs: {mat_desc}",
+                'enabled': can_build,
+                'data': bp
+            })
 
-            for i, bp in enumerate(all_blueprints[:6], 1):  # Show first 6
-                can_build = bp.id in buildable
-                status = "✓" if can_build else "✗"
-                lines.append(f"[{i}] {status} {bp.name}")
-
-            lines.append("")
-            lines.append("Press 1-6 to build")
-            lines.append("[ESC] Close menu")
-
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self._building_menu.set_items([
+            MenuItem(id=item['id'], label=item['label'], description=item['description'],
+                     enabled=item['enabled'], data=item.get('data'))
+            for item in items
+        ])
+        self._building_menu.open()
         self._building_menu_open = True
+        self._update_building_menu_display()
 
     def _show_areas_menu(self):
         """Show discovered areas and allow travel."""
@@ -2600,81 +2614,129 @@ class Game:
         current_biome = self.exploration._current_biome
         current_name = current_biome.value.replace("_", " ").title() if current_biome else "Unknown"
 
-        lines = ["═══ DISCOVERED AREAS ═══", ""]
-        lines.append(f"Current location: {current_name}")
-        lines.append("")
+        if not available:
+            self.renderer.show_message(
+                f"═══ AREAS ═══\n\nCurrent: {current_name}\n\n"
+                "No other areas discovered yet.\nKeep exploring [E] to find new biomes!\n\n"
+                f"Gathering skill: Lv.{self.exploration.gathering_skill}\n\n[ESC or A] Close",
+                duration=0
+            )
+            self._areas_menu_open = True
+            return
 
-        if available:
-            lines.append("Travel to:")
-            for i, area in enumerate(available, 1):
-                name = area.name  # BiomeArea has .name property
-                danger = area.danger_level / 5.0  # danger_level is 0-5
-                danger_str = "🟢" if danger < 0.3 else "🟡" if danger < 0.6 else "🔴"
-                lines.append(f"  [{i}] {danger_str} {name}")
-        else:
-            lines.append("No other areas discovered yet.")
-            lines.append("Keep exploring [E] to find new biomes!")
+        # Build menu items
+        items = []
+        for area in available:
+            danger = area.danger_level / 5.0
+            danger_str = "🟢" if danger < 0.3 else "🟡" if danger < 0.6 else "🔴"
+            items.append({
+                'id': area.biome.value if hasattr(area, 'biome') else area.name,
+                'label': f"{danger_str} {area.name}",
+                'description': f"Danger: {'Low' if danger < 0.3 else 'Medium' if danger < 0.6 else 'High'}",
+                'enabled': True,
+                'data': area
+            })
 
-        lines.append("")
-        lines.append(f"Gathering skill: Lv.{self.exploration.gathering_skill}")
-        lines.append("")
-        lines.append("[ESC or A] Close menu")
-
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self._areas_menu.set_items([
+            MenuItem(id=item['id'], label=item['label'], description=item['description'],
+                     enabled=item['enabled'], data=item.get('data'))
+            for item in items
+        ])
+        self._areas_menu.open()
         self._areas_menu_open = True
+        self._update_areas_menu_display()
 
     def _handle_crafting_input(self, key_str: str, key_name: str = "") -> bool:
         """Handle input while crafting menu is open. Returns True if handled."""
-        if not hasattr(self, '_crafting_menu_open') or not self._crafting_menu_open:
+        if not self._crafting_menu_open:
             return False
 
-        # Close menu on ESC or C
-        if key_name == 'KEY_ESCAPE' or key_str == 'c':
-            self._crafting_menu_open = False
-            self.renderer.dismiss_message()
+        # If crafting in progress, just handle close
+        if self.crafting._current_craft:
+            if key_name == 'KEY_ESCAPE' or key_str == 'c':
+                self._crafting_menu_open = False
+                self._crafting_menu.close()
+                self.renderer.dismiss_message()
             return True
 
-        # Handle recipe selection (1-8)
-        if key_str.isdigit() and 1 <= int(key_str) <= 8:
-            recipe_idx = int(key_str) - 1
-            recipes = list(RECIPES.values())
-            if recipe_idx < len(recipes):
-                recipe = recipes[recipe_idx]
-                result = self.crafting.start_crafting(recipe.id, self.materials)
+        # Let menu handle navigation
+        if self._crafting_menu.handle_key(key_str, key_name):
+            if self._crafting_menu.was_confirmed():
+                # Execute crafting
+                selected = self._crafting_menu.get_selected_item()
+                if selected and selected.data:
+                    recipe = selected.data
+                    result = self.crafting.start_crafting(recipe.id, self.materials)
+                    self._crafting_menu_open = False
+                    self.renderer.show_message(result["message"], duration=3.0)
+            elif self._crafting_menu.was_cancelled():
                 self._crafting_menu_open = False
-                self.renderer.show_message(result["message"], duration=3.0)
-                return True
+                self.renderer.dismiss_message()
+            else:
+                # Just navigating, update display
+                self._update_crafting_menu_display()
+            return True
 
-        return False  # Let other keys pass through
+        return False
+
+    def _update_crafting_menu_display(self):
+        """Update the crafting menu display with current selection."""
+        items = [{'label': item.label, 'description': item.description, 'enabled': item.enabled}
+                 for item in self._crafting_menu.get_items()]
+        self.renderer.show_menu(
+            "CRAFTING",
+            items,
+            self._crafting_menu.get_selected_index(),
+            footer="[↑↓] Navigate  [Enter] Craft  [C/ESC] Close"
+        )
 
     def _handle_building_input(self, key_str: str, key_name: str = "") -> bool:
         """Handle input while building menu is open. Returns True if handled."""
-        if not hasattr(self, '_building_menu_open') or not self._building_menu_open:
+        if not self._building_menu_open:
             return False
 
-        # Close menu on ESC or R
-        if key_name == 'KEY_ESCAPE' or key_str == 'r':
-            self._building_menu_open = False
-            self.renderer.dismiss_message()
+        # If building in progress, just handle close
+        if self.building._current_build:
+            if key_name == 'KEY_ESCAPE' or key_str == 'r':
+                self._building_menu_open = False
+                self._building_menu.close()
+                self.renderer.dismiss_message()
             return True
 
-        # Handle blueprint selection (1-6)
-        if key_str.isdigit() and 1 <= int(key_str) <= 6:
-            bp_idx = int(key_str) - 1
-            blueprints = list(BLUEPRINTS.values())
-            if bp_idx < len(blueprints):
-                bp = blueprints[bp_idx]
-                result = self.building.start_building(bp.id, self.materials)
+        # Let menu handle navigation
+        if self._building_menu.handle_key(key_str, key_name):
+            if self._building_menu.was_confirmed():
+                # Execute building
+                selected = self._building_menu.get_selected_item()
+                if selected and selected.data:
+                    bp = selected.data
+                    result = self.building.start_building(bp.id, self.materials)
+                    self._building_menu_open = False
+
+                    if result.get("success"):
+                        self._start_building_animation(bp)
+                    else:
+                        self.renderer.show_message(result["message"], duration=3.0)
+            elif self._building_menu.was_cancelled():
                 self._building_menu_open = False
+                self.renderer.dismiss_message()
+            else:
+                # Just navigating, update display
+                self._update_building_menu_display()
+            return True
 
-                if result.get("success"):
-                    # Start building animation
-                    self._start_building_animation(bp)
-                else:
-                    self.renderer.show_message(result["message"], duration=3.0)
-                return True
+        return False
 
-        return False  # Let other keys pass through
+    def _update_building_menu_display(self):
+        """Update the building menu display with current selection."""
+        items = [{'label': item.label, 'description': item.description, 'enabled': item.enabled}
+                 for item in self._building_menu.get_items()]
+        self.renderer.show_menu(
+            "BUILDING",
+            items,
+            self._building_menu.get_selected_index(),
+            footer="[↑↓] Navigate  [Enter] Build  [R/ESC] Close"
+        )
 
     def _start_building_animation(self, blueprint):
         """Start the duck building animation."""
@@ -2729,29 +2791,52 @@ class Game:
 
     def _handle_areas_input(self, key_str: str, key_name: str = "") -> bool:
         """Handle input while areas menu is open. Returns True if handled."""
-        if not hasattr(self, '_areas_menu_open') or not self._areas_menu_open:
+        if not self._areas_menu_open:
             return False
 
-        # Close menu on ESC or A
-        if key_name == 'KEY_ESCAPE' or key_str == 'a':
-            self._areas_menu_open = False
-            self.renderer.dismiss_message()
+        # If no areas available, just handle close
+        available = self.exploration.get_available_areas()
+        if not available:
+            if key_name == 'KEY_ESCAPE' or key_str == 'a':
+                self._areas_menu_open = False
+                self._areas_menu.close()
+                self.renderer.dismiss_message()
             return True
 
-        # Handle area selection - triggers travel + exploration
-        available = self.exploration.get_available_areas()
-        if key_str.isdigit():
-            idx = int(key_str) - 1
-            if 0 <= idx < len(available):
-                area = available[idx]
+        # Let menu handle navigation
+        if self._areas_menu.handle_key(key_str, key_name):
+            if self._areas_menu.was_confirmed():
+                # Travel to selected area
+                selected = self._areas_menu.get_selected_item()
+                if selected and selected.data:
+                    area = selected.data
+                    self._areas_menu_open = False
+                    self.renderer.dismiss_message()
+                    self._start_travel_to_area(area)
+            elif self._areas_menu.was_cancelled():
                 self._areas_menu_open = False
                 self.renderer.dismiss_message()
+            else:
+                # Just navigating, update display
+                self._update_areas_menu_display()
+            return True
 
-                # Start traveling to the area
-                self._start_travel_to_area(area)
-                return True
+        return False
 
-        return False  # Let other keys pass through
+    def _update_areas_menu_display(self):
+        """Update the areas menu display with current selection."""
+        current_biome = self.exploration._current_biome
+        current_name = current_biome.value.replace("_", " ").title() if current_biome else "Unknown"
+
+        items = [{'label': item.label, 'description': item.description, 'enabled': item.enabled}
+                 for item in self._areas_menu.get_items()]
+        self.renderer.show_menu(
+            f"AREAS (Current: {current_name})",
+            items,
+            self._areas_menu.get_selected_index(),
+            show_numbers=False,
+            footer="[↑↓] Navigate  [Enter] Travel  [A/ESC] Close"
+        )
 
     def _start_travel_to_area(self, area):
         """Start duck traveling to a new area."""
@@ -2855,7 +2940,7 @@ class Game:
         """Show the use/interact menu for owned items."""
         if not self.duck:
             return
-        
+
         # Build list of interactable items
         self._use_menu_items = []
         for item_id in self.habitat.owned_items:
@@ -2863,7 +2948,7 @@ class Game:
                 item = get_shop_item(item_id)
                 if item:
                     self._use_menu_items.append((item_id, item))
-        
+
         if not self._use_menu_items:
             self.renderer.show_message(
                 "No interactable items owned!\n"
@@ -2871,85 +2956,63 @@ class Game:
                 duration=3.0
             )
             return
-        
-        self._use_menu_selected = 0
-        self._use_menu_open = True
-        self._update_use_menu_display()
-    
-    def _update_use_menu_display(self):
-        """Update the use menu display."""
-        lines = ["═══ USE ITEM ═══", ""]
-        lines.append("Select an item to interact with:")
-        lines.append("")
-        
-        # Show items with selection indicator
-        start_idx = max(0, self._use_menu_selected - 3)
-        end_idx = min(len(self._use_menu_items), start_idx + 8)
-        
-        for i in range(start_idx, end_idx):
-            item_id, item = self._use_menu_items[i]
+
+        # Build menu items
+        items = []
+        for item_id, item in self._use_menu_items:
             interaction = ITEM_INTERACTIONS.get(item_id, {})
             commands = interaction.get("commands", ["use"])
             cmd_hint = commands[0] if commands else "use"
-            
-            if i == self._use_menu_selected:
-                lines.append(f" >> {item.name}")
-                lines.append(f"    \"{cmd_hint}\"")
-            else:
-                lines.append(f"    {item.name}")
-        
-        # Show navigation hints
-        lines.append("")
-        if len(self._use_menu_items) > 8:
-            lines.append(f"[{self._use_menu_selected + 1}/{len(self._use_menu_items)}]")
-        lines.append("[UP/DOWN] Navigate")
-        lines.append("[ENTER] Use item")
-        lines.append("[ESC/U] Close")
-        
-        self.renderer.show_message("\n".join(lines), duration=0)
-    
+            items.append({
+                'id': item_id,
+                'label': item.name,
+                'description': f'Command: "{cmd_hint}"',
+                'enabled': True,
+                'data': (item_id, item)
+            })
+
+        self._use_menu.set_items([
+            MenuItem(id=item['id'], label=item['label'], description=item['description'],
+                     enabled=item['enabled'], data=item.get('data'))
+            for item in items
+        ])
+        self._use_menu.open()
+        self._use_menu_selected = 0
+        self._use_menu_open = True
+        self._update_use_menu_display()
+
+    def _update_use_menu_display(self):
+        """Update the use menu display."""
+        items = [{'label': item.label, 'description': item.description, 'enabled': item.enabled}
+                 for item in self._use_menu.get_items()]
+        self.renderer.show_menu(
+            "USE ITEM",
+            items,
+            self._use_menu.get_selected_index(),
+            footer="[↑↓] Navigate  [Enter] Use  [U/ESC] Close"
+        )
+
     def _handle_use_input(self, key_str: str, key_name: str = "") -> bool:
         """Handle input while use menu is open. Returns True if handled."""
         if not self._use_menu_open:
             return False
-        
-        # Close menu on ESC or U
-        if key_name == 'KEY_ESCAPE' or key_str == 'u':
-            self._use_menu_open = False
-            self.renderer.dismiss_message()
-            return True
-        
-        # Navigate up
-        if key_name == 'KEY_UP':
-            if self._use_menu_selected > 0:
-                self._use_menu_selected -= 1
-                self._update_use_menu_display()
-            return True
-        
-        # Navigate down
-        if key_name == 'KEY_DOWN':
-            if self._use_menu_selected < len(self._use_menu_items) - 1:
-                self._use_menu_selected += 1
-                self._update_use_menu_display()
-            return True
-        
-        # Select item with ENTER
-        if key_name == 'KEY_ENTER':
-            if 0 <= self._use_menu_selected < len(self._use_menu_items):
-                item_id, item = self._use_menu_items[self._use_menu_selected]
+
+        # Let menu handle navigation
+        if self._use_menu.handle_key(key_str, key_name):
+            if self._use_menu.was_confirmed():
+                # Use selected item
+                selected = self._use_menu.get_selected_item()
+                if selected and selected.data:
+                    item_id, item = selected.data
+                    self._use_menu_open = False
+                    self.renderer.dismiss_message()
+                    self._execute_item_interaction(item_id)
+            elif self._use_menu.was_cancelled():
                 self._use_menu_open = False
                 self.renderer.dismiss_message()
-                self._execute_item_interaction(item_id)
-            return True
-        
-        # Number keys for quick select
-        if key_str.isdigit() and key_str != '0':
-            idx = int(key_str) - 1
-            if 0 <= idx < len(self._use_menu_items):
-                item_id, item = self._use_menu_items[idx]
-                self._use_menu_open = False
-                self.renderer.dismiss_message()
-                self._execute_item_interaction(item_id)
+            else:
+                # Just navigating, update display
+                self._update_use_menu_display()
             return True
 
         return False  # Let other keys pass through
@@ -2981,76 +3044,73 @@ class Game:
         if self._active_minigame:
             return
 
+        games = self.minigames.get_available_games()
+
+        # Build menu items
+        items = []
+        for game in games:
+            status = "✓" if game["can_play"] else "⏱"
+            desc = game['description']
+            if game["high_score"] not in [0, 999]:
+                if game["id"] in ["memory_match", "duck_race"]:
+                    desc += f" | Best: {game['high_score']}"
+                else:
+                    desc += f" | High: {game['high_score']}"
+            if not game["can_play"]:
+                desc += f" | {game['cooldown_msg']}"
+
+            items.append({
+                'id': game['id'],
+                'label': f"{status} {game['name']}",
+                'description': desc,
+                'enabled': game['can_play'],
+                'data': game
+            })
+
+        self._minigames_menu.set_items([
+            MenuItem(id=item['id'], label=item['label'], description=item['description'],
+                     enabled=item['enabled'], data=item.get('data'))
+            for item in items
+        ])
+        self._minigames_menu.open()
         self._minigames_menu_open = True
         self._minigames_menu_selected = 0
         self._update_minigames_menu_display()
 
     def _update_minigames_menu_display(self):
         """Update the minigames menu display."""
-        games = self.minigames.get_available_games()
+        items = [{'label': item.label, 'description': item.description, 'enabled': item.enabled}
+                 for item in self._minigames_menu.get_items()]
 
-        lines = ["═══ MINI-GAMES ═══", ""]
-        lines.append("Play games to earn coins and XP!")
-        lines.append("")
-
-        for i, game in enumerate(games):
-            prefix = " >> " if i == self._minigames_menu_selected else "    "
-            status = "✓" if game["can_play"] else "⏱"
-
-            lines.append(f"{prefix}[{i+1}] {status} {game['name']}")
-            if i == self._minigames_menu_selected:
-                lines.append(f"       {game['description']}")
-                if game["high_score"] not in [0, 999]:
-                    if game["id"] in ["memory_match", "duck_race"]:
-                        lines.append(f"       Best: {game['high_score']} (lower is better)")
-                    else:
-                        lines.append(f"       High Score: {game['high_score']}")
-                if not game["can_play"]:
-                    lines.append(f"       {game['cooldown_msg']}")
-
-        lines.append("")
-        lines.append(f"Total coins earned: {self.minigames.total_coins_earned}")
-        lines.append("")
-        lines.append("[UP/DOWN] Navigate  [ENTER] Play")
-        lines.append("[ESC/J] Close")
-
-        self.renderer.show_message("\n".join(lines), duration=0)
+        footer = f"Coins: {self.minigames.total_coins_earned} | [↑↓] Navigate  [Enter] Play  [J/ESC] Close"
+        self.renderer.show_menu(
+            "MINI-GAMES",
+            items,
+            self._minigames_menu.get_selected_index(),
+            footer=footer
+        )
 
     def _handle_minigames_menu_input(self, key_str: str, key_name: str = "") -> bool:
         """Handle input while minigames menu is open."""
         if not self._minigames_menu_open:
             return False
 
-        # Close menu on ESC or J
-        if key_name == 'KEY_ESCAPE' or key_str == 'j':
-            self._minigames_menu_open = False
-            self.renderer.dismiss_message()
-            return True
-
-        # Navigate up
-        if key_name == 'KEY_UP':
-            if self._minigames_menu_selected > 0:
-                self._minigames_menu_selected -= 1
+        # Let menu handle navigation
+        if self._minigames_menu.handle_key(key_str, key_name):
+            if self._minigames_menu.was_confirmed():
+                # Start selected game
+                selected = self._minigames_menu.get_selected_item()
+                if selected and selected.data:
+                    self._start_minigame(selected.data["id"])
+            elif self._minigames_menu.was_cancelled():
+                self._minigames_menu_open = False
+                self.renderer.dismiss_message()
+            else:
+                # Just navigating, update display
                 self._update_minigames_menu_display()
             return True
 
-        # Navigate down
-        if key_name == 'KEY_DOWN':
-            games = self.minigames.get_available_games()
-            if self._minigames_menu_selected < len(games) - 1:
-                self._minigames_menu_selected += 1
-                self._update_minigames_menu_display()
-            return True
-
-        # Select game with ENTER
-        if key_name == 'KEY_ENTER':
-            games = self.minigames.get_available_games()
-            if 0 <= self._minigames_menu_selected < len(games):
-                game = games[self._minigames_menu_selected]
-                self._start_minigame(game["id"])
-            return True
-
-        # Number keys for quick select
+        # Number keys for quick select (kept for convenience)
         if key_str.isdigit() and 1 <= int(key_str) <= 4:
             games = self.minigames.get_available_games()
             idx = int(key_str) - 1

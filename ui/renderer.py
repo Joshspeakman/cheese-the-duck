@@ -1954,6 +1954,65 @@ class Renderer:
         self._message_expire = 0
         self._show_message_overlay = False
 
+    def show_menu(self, title: str, items: List[Dict], selected_index: int = 0,
+                  show_numbers: bool = True, footer: str = "[↑↓] Navigate  [Enter] Select  [ESC] Close"):
+        """
+        Show a menu with arrow-key selection highlighting.
+
+        Args:
+            title: Menu title
+            items: List of dicts with 'label', optional 'description', 'enabled'
+            selected_index: Currently selected item index
+            show_numbers: Show number prefixes
+            footer: Footer text with controls hint
+        """
+        lines = []
+        lines.append(f"{'─' * 3} {title} {'─' * 3}")
+        lines.append("")
+
+        for i, item in enumerate(items):
+            is_selected = (i == selected_index)
+            enabled = item.get('enabled', True)
+            label = item.get('label', f'Item {i+1}')
+            desc = item.get('description', '')
+
+            # Build prefix
+            if is_selected:
+                prefix = self.term.reverse + " ▶ "
+            else:
+                prefix = "   "
+
+            # Build number
+            if show_numbers:
+                num = f"[{i+1}] "
+            else:
+                num = ""
+
+            # Build label with enabled state
+            if not enabled:
+                label_text = self.term.dim(f"{num}{label} (locked)")
+            elif is_selected:
+                label_text = f"{num}{label}"
+            else:
+                label_text = f"{num}{label}"
+
+            # Full line
+            if is_selected:
+                line = f"{prefix}{label_text} {self.term.normal}"
+            else:
+                line = f"{prefix}{label_text}"
+
+            lines.append(line)
+
+            # Show description for selected item
+            if is_selected and desc and enabled:
+                lines.append(f"      {self.term.cyan(desc)}")
+
+        lines.append("")
+        lines.append(footer)
+
+        self.show_message("\n".join(lines), duration=0)
+
     def show_effect(self, effect_name: str, duration: float = 1.0):
         """Show a visual effect."""
         animation_controller.play_effect(effect_name, duration)
