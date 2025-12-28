@@ -320,6 +320,23 @@ class Game:
             self._handle_shop_input(key)
             return
 
+        # Handle menu navigation (same priority as shop)
+        if self._crafting_menu_open:
+            self._handle_crafting_input_direct(key)
+            return
+        if self._building_menu_open:
+            self._handle_building_input_direct(key)
+            return
+        if self._areas_menu_open:
+            self._handle_areas_input_direct(key)
+            return
+        if self._use_menu_open:
+            self._handle_use_input_direct(key)
+            return
+        if self._minigames_menu_open:
+            self._handle_minigames_input_direct(key)
+            return
+
         # Handle inventory item selection
         if self.renderer.is_inventory_open() and self.duck:
             key_str = str(key)
@@ -380,6 +397,162 @@ class Game:
         # Purchase item with ENTER or SPACE
         if key.name == "KEY_ENTER" or key_str == ' ':
             self._purchase_selected_item()
+            return
+
+    def _handle_crafting_input_direct(self, key):
+        """Handle crafting menu input directly (like shop)."""
+        key_str = str(key).lower() if not key.is_sequence else ''
+
+        # Navigate up
+        if key.name == "KEY_UP":
+            idx = self._crafting_menu.get_selected_index()
+            if idx > 0:
+                self._crafting_menu.set_selected_index(idx - 1)
+                self._update_crafting_menu_display()
+            return
+        # Navigate down
+        if key.name == "KEY_DOWN":
+            idx = self._crafting_menu.get_selected_index()
+            items = self._crafting_menu.get_items()
+            if idx < len(items) - 1:
+                self._crafting_menu.set_selected_index(idx + 1)
+                self._update_crafting_menu_display()
+            return
+        # Select with Enter
+        if key.name == "KEY_ENTER":
+            selected = self._crafting_menu.get_selected_item()
+            if selected and selected.data and selected.enabled:
+                recipe = selected.data
+                result = self.crafting.start_crafting(recipe.id, self.materials)
+                self._crafting_menu_open = False
+                self.renderer.show_message(result["message"], duration=3.0)
+            return
+        # Close with ESC or C
+        if key.name == "KEY_ESCAPE" or key_str == 'c':
+            self._crafting_menu_open = False
+            self.renderer.dismiss_message()
+            return
+
+    def _handle_building_input_direct(self, key):
+        """Handle building menu input directly (like shop)."""
+        key_str = str(key).lower() if not key.is_sequence else ''
+
+        if key.name == "KEY_UP":
+            idx = self._building_menu.get_selected_index()
+            if idx > 0:
+                self._building_menu.set_selected_index(idx - 1)
+                self._update_building_menu_display()
+            return
+        if key.name == "KEY_DOWN":
+            idx = self._building_menu.get_selected_index()
+            items = self._building_menu.get_items()
+            if idx < len(items) - 1:
+                self._building_menu.set_selected_index(idx + 1)
+                self._update_building_menu_display()
+            return
+        if key.name == "KEY_ENTER":
+            selected = self._building_menu.get_selected_item()
+            if selected and selected.data and selected.enabled:
+                bp = selected.data
+                result = self.building.start_building(bp.id, self.materials)
+                self._building_menu_open = False
+                if result.get("success"):
+                    self._start_building_animation(bp)
+                else:
+                    self.renderer.show_message(result["message"], duration=3.0)
+            return
+        if key.name == "KEY_ESCAPE" or key_str == 'r':
+            self._building_menu_open = False
+            self.renderer.dismiss_message()
+            return
+
+    def _handle_areas_input_direct(self, key):
+        """Handle areas menu input directly (like shop)."""
+        key_str = str(key).lower() if not key.is_sequence else ''
+
+        if key.name == "KEY_UP":
+            idx = self._areas_menu.get_selected_index()
+            if idx > 0:
+                self._areas_menu.set_selected_index(idx - 1)
+                self._update_areas_menu_display()
+            return
+        if key.name == "KEY_DOWN":
+            idx = self._areas_menu.get_selected_index()
+            items = self._areas_menu.get_items()
+            if idx < len(items) - 1:
+                self._areas_menu.set_selected_index(idx + 1)
+                self._update_areas_menu_display()
+            return
+        if key.name == "KEY_ENTER":
+            selected = self._areas_menu.get_selected_item()
+            if selected and selected.data:
+                area = selected.data
+                self._areas_menu_open = False
+                self.renderer.dismiss_message()
+                self._start_travel_to_area(area)
+            return
+        if key.name == "KEY_ESCAPE" or key_str == 'a':
+            self._areas_menu_open = False
+            self.renderer.dismiss_message()
+            return
+
+    def _handle_use_input_direct(self, key):
+        """Handle use menu input directly (like shop)."""
+        key_str = str(key).lower() if not key.is_sequence else ''
+
+        if key.name == "KEY_UP":
+            idx = self._use_menu.get_selected_index()
+            if idx > 0:
+                self._use_menu.set_selected_index(idx - 1)
+                self._update_use_menu_display()
+            return
+        if key.name == "KEY_DOWN":
+            idx = self._use_menu.get_selected_index()
+            items = self._use_menu.get_items()
+            if idx < len(items) - 1:
+                self._use_menu.set_selected_index(idx + 1)
+                self._update_use_menu_display()
+            return
+        if key.name == "KEY_ENTER":
+            selected = self._use_menu.get_selected_item()
+            if selected and selected.data:
+                item_id, item = selected.data
+                self._use_menu_open = False
+                self.renderer.dismiss_message()
+                self._execute_item_interaction(item_id)
+            return
+        if key.name == "KEY_ESCAPE" or key_str == 'u':
+            self._use_menu_open = False
+            self.renderer.dismiss_message()
+            return
+
+    def _handle_minigames_input_direct(self, key):
+        """Handle minigames menu input directly (like shop)."""
+        key_str = str(key).lower() if not key.is_sequence else ''
+
+        if key.name == "KEY_UP":
+            idx = self._minigames_menu.get_selected_index()
+            if idx > 0:
+                self._minigames_menu.set_selected_index(idx - 1)
+                self._update_minigames_menu_display()
+            return
+        if key.name == "KEY_DOWN":
+            idx = self._minigames_menu.get_selected_index()
+            items = self._minigames_menu.get_items()
+            if idx < len(items) - 1:
+                self._minigames_menu.set_selected_index(idx + 1)
+                self._update_minigames_menu_display()
+            return
+        if key.name == "KEY_ENTER":
+            selected = self._minigames_menu.get_selected_item()
+            if selected and selected.data and selected.enabled:
+                self._minigames_menu_open = False
+                self.renderer.dismiss_message()
+                self._start_minigame(selected.data["id"])
+            return
+        if key.name == "KEY_ESCAPE" or key_str == 'j':
+            self._minigames_menu_open = False
+            self.renderer.dismiss_message()
             return
 
     def _purchase_selected_item(self):
