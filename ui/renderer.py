@@ -6,7 +6,7 @@ import time
 import math
 import random
 import re
-from typing import Optional, List, Dict, Tuple, TYPE_CHECKING
+from typing import Optional, List, Dict, Tuple, Any, TYPE_CHECKING
 from blessed import Terminal
 
 
@@ -371,32 +371,35 @@ class Renderer:
 
         self._weather_frame += 1
 
-        # Weather particle settings
+        # Weather particle settings - Enhanced for more dramatic visuals
         weather_chars = {
-            "rainy": [",", "'", ".", ","],
-            "stormy": ["|", "!", "/", "\\", "*"],
-            "snowy": ["*", "·", "°", "*", "❄"],
-            "foggy": ["~", "~", " ", "~"],
-            "windy": ["~", "-", "~", ">", "~"],
-            "sunny": ["·", "'", ".", " "],
+            "rainy": ["│", "╎", "┆", "╏", "|", "'", ","],  # Rain streaks
+            "stormy": ["╬", "┼", "╪", "│", "!", "/", "\\", "⚡"],  # Storm chaos + lightning
+            "snowy": ["❄", "*", "✦", "❅", "·", "°", "✧"],  # Snowflakes
+            "foggy": ["░", "▒", "~", "≈", " ", "▓"],  # Thick fog
+            "windy": ["→", "⟹", "~", "≫", "»", "›", "~"],  # Wind direction
+            "sunny": ["✦", "·", "'", "°"],  # Sparkles
+            "rainbow": ["♦", "★", "✦", "◊", "*"],  # Sparkles for rainbow
         }
 
         particle_density = {
-            "rainy": 0.15,
-            "stormy": 0.25,
-            "snowy": 0.08,
-            "foggy": 0.05,
-            "windy": 0.06,
-            "sunny": 0.02,
+            "rainy": 0.20,      # More rain
+            "stormy": 0.35,     # Heavy storm
+            "snowy": 0.12,      # More snow
+            "foggy": 0.15,      # Thicker fog
+            "windy": 0.10,      # More wind particles
+            "sunny": 0.03,      # Light sparkles
+            "rainbow": 0.08,    # Magic sparkles
         }
 
         particle_speed = {
-            "rainy": 1.5,
-            "stormy": 2.5,
-            "snowy": 0.5,
-            "foggy": 0.2,
-            "windy": 1.0,
-            "sunny": 0.3,
+            "rainy": 2.0,       # Faster rain
+            "stormy": 3.0,      # Very fast storm
+            "snowy": 0.4,       # Slow gentle snow
+            "foggy": 0.15,      # Very slow fog drift
+            "windy": 1.5,       # Fast wind
+            "sunny": 0.2,       # Slow sparkle
+            "rainbow": 0.5,     # Gentle rainbow sparkle
         }
 
         chars = weather_chars.get(weather_type, [])
@@ -438,6 +441,77 @@ class Renderer:
                 new_particles.append((float(bolt_x + random.randint(-1, 1)), float(bolt_y), "╬"))
 
         self._weather_particles = new_particles
+
+    def _get_time_of_day_elements(self, width: int) -> Tuple[str, Optional[Any], List[Tuple[int, str]]]:
+        """
+        Get time-of-day visual elements.
+        Returns (sky_char, bg_color_func, celestial_objects)
+        celestial_objects is a list of (x_position, character) for sun/moon/stars
+        """
+        from datetime import datetime
+        hour = datetime.now().hour
+
+        # Define time periods with visual elements
+        if 5 <= hour < 7:  # Dawn
+            sky_char = "░"
+            bg_color = self.term.on_color_rgb(255, 200, 150)  # Warm orange-pink
+            celestials = [(width - 5, "🌅"), (3, "☆"), (width - 10, "✦")]
+        elif 7 <= hour < 11:  # Morning
+            sky_char = " "
+            bg_color = None  # Clear sky
+            celestials = [(width // 4, "☀"), (5, "☁"), (width - 8, "☁")]
+        elif 11 <= hour < 14:  # Midday
+            sky_char = " "
+            bg_color = None
+            celestials = [(width // 2, "☀")]
+        elif 14 <= hour < 17:  # Afternoon
+            sky_char = " "
+            bg_color = None
+            celestials = [(3 * width // 4, "☀"), (width // 4, "☁")]
+        elif 17 <= hour < 19:  # Evening
+            sky_char = "░"
+            bg_color = self.term.on_color_rgb(255, 180, 100)  # Golden hour
+            celestials = [(width - 3, "🌅"), (width // 2, "☁")]
+        elif 19 <= hour < 21:  # Dusk
+            sky_char = "▒"
+            bg_color = self.term.on_color_rgb(100, 80, 120)  # Purple dusk
+            celestials = [(width - 4, "🌆"), (5, "★"), (width // 2, "☆")]
+        elif 21 <= hour or hour < 0:  # Night
+            sky_char = " "
+            bg_color = self.term.on_color_rgb(20, 20, 40)  # Dark blue
+            celestials = [
+                (width - 5, "🌙"),
+                (3, "★"), (8, "☆"), (15, "✦"), (width - 12, "★"),
+                (width // 2 - 3, "☆"), (width // 2 + 5, "✦")
+            ]
+        else:  # Late night (0-5)
+            sky_char = " "
+            bg_color = self.term.on_color_rgb(10, 10, 25)  # Very dark
+            celestials = [
+                (width - 6, "🌑"),
+                (4, "★"), (10, "☆"), (18, "★"), (width - 15, "✦"),
+                (width // 3, "☆"), (2 * width // 3, "★")
+            ]
+
+        return sky_char, bg_color, celestials
+
+    def _get_weather_ambient_effects(self, weather_type: Optional[str], width: int) -> List[str]:
+        """Get ambient text effects for weather displayed at top of playfield."""
+        if not weather_type:
+            return []
+
+        effects = {
+            "sunny": ["~ warm sunbeams ~", "☀ bright and cheerful ☀"],
+            "cloudy": ["☁ clouds drift by ☁", "~ overcast skies ~"],
+            "rainy": ["💧 pitter patter 💧", "~ splish splash ~", "🌧 rain falls gently 🌧"],
+            "stormy": ["⚡ THUNDER RUMBLES ⚡", "💨 wind howls 💨", "🌩 lightning flashes 🌩"],
+            "snowy": ["❄ snowflakes drift ❄", "~ winter wonderland ~", "☃ frosty and cold ☃"],
+            "foggy": ["🌫 mist swirls 🌫", "~ mysterious fog ~", "👀 visibility low 👀"],
+            "windy": ["💨 whoooosh! 💨", "~ leaves swirl ~", "🍃 breezy day 🍃"],
+            "rainbow": ["🌈 magical colors! 🌈", "✨ make a wish! ✨", "🦄 rare and beautiful 🦄"],
+        }
+
+        return effects.get(weather_type, [])
 
     def clear(self):
         """Clear the terminal."""
@@ -576,8 +650,10 @@ class Renderer:
                 # End each line with terminal reset to prevent color bleeding
                 print(self.term.move(i, 0) + padded + self.term.normal, end="")
 
-    def _render_header_bar(self, duck: "Duck", width: int, currency: int = 0, weather=None) -> List[str]:
-        """Render the top header bar with weather info."""
+    def _render_header_bar(self, duck: "Duck", width: int, currency: int = 0, weather=None, time_info=None) -> List[str]:
+        """Render the top header bar with weather and time info."""
+        from datetime import datetime
+
         mood = duck.get_mood()
         age_days = duck.get_age_days()
 
@@ -597,49 +673,90 @@ class Renderer:
         }
         mood_ind = mood_indicators.get(mood.state.value, "[...]")
 
-        # Weather icons
-        weather_icons = {
-            "sunny": "☀",
-            "cloudy": "☁",
-            "rainy": "🌧",
-            "stormy": "⛈",
-            "snowy": "❄",
-            "foggy": "🌫",
-            "windy": "💨",
-            "rainbow": "🌈",
+        # Weather icons and names
+        weather_data = {
+            "sunny": ("☀", "Sunny"),
+            "cloudy": ("☁", "Cloudy"),
+            "rainy": ("🌧", "Rainy"),
+            "stormy": ("⛈", "Stormy"),
+            "snowy": ("❄", "Snowy"),
+            "foggy": ("🌫", "Foggy"),
+            "windy": ("💨", "Windy"),
+            "rainbow": ("🌈", "Rainbow"),
         }
+
+        # Time of day icons and names
+        time_data = {
+            "dawn": ("🌅", "Dawn"),
+            "morning": ("🌤", "Morning"),
+            "midday": ("☀", "Midday"),
+            "afternoon": ("🌤", "Afternoon"),
+            "evening": ("🌆", "Evening"),
+            "dusk": ("🌇", "Dusk"),
+            "night": ("🌙", "Night"),
+            "late_night": ("🌑", "Late Night"),
+        }
+
+        # Build weather string with icon and label
         weather_part = ""
         if weather:
-            weather_icon = weather_icons.get(weather.weather_type.value, "?")
-            weather_part = f" {weather_icon} "
+            w_icon, w_name = weather_data.get(weather.weather_type.value, ("?", "Unknown"))
+            weather_part = f" {w_icon} {w_name} "
 
-        # Build header
-        name_part = f" {duck.name} the {duck.get_growth_stage_display()} "
-        mood_part = f" {mood_ind} {mood.description.title()} "
-        age_part = f" Age: {age_str} "
+        # Build time string with icon, time, and period
+        now = datetime.now()
+        time_str = now.strftime("%H:%M")
+        hour = now.hour
+
+        # Determine time of day
+        if 5 <= hour < 7:
+            tod = "dawn"
+        elif 7 <= hour < 11:
+            tod = "morning"
+        elif 11 <= hour < 14:
+            tod = "midday"
+        elif 14 <= hour < 17:
+            tod = "afternoon"
+        elif 17 <= hour < 19:
+            tod = "evening"
+        elif 19 <= hour < 21:
+            tod = "dusk"
+        elif 21 <= hour or hour < 0:
+            tod = "night"
+        else:
+            tod = "late_night"
+
+        t_icon, t_name = time_data.get(tod, ("⏰", ""))
+        time_part = f" {t_icon} {time_str} {t_name} "
+
+        # Build header parts
+        name_part = f" {duck.name} "
+        mood_part = f" {mood_ind} "
+        age_part = f" {age_str} "
         coin_part = f" ${currency} "
 
-        # Create bordered header
+        # Create bordered header - two lines for more info
         inner_width = width - 2
-        # Arrange: name ... weather ... mood ... age ... coins
-        spacer_len = inner_width - len(name_part) - len(weather_part) - len(mood_part) - len(age_part) - len(coin_part)
-        spacer = " " * max(0, spacer_len)
-        header_content = f"{name_part}{weather_part}{spacer}{mood_part}{age_part}{coin_part}"
+
+        # Line 1: Name | Weather | Time
+        line1_content = f"{name_part}│{weather_part}│{time_part}"
+        line1_pad = inner_width - len(line1_content) - len(mood_part) - len(age_part) - len(coin_part)
+        line1 = f"{line1_content}{' ' * max(0, line1_pad)}{mood_part}│{age_part}│{coin_part}"
 
         lines = [
             BOX_DOUBLE["tl"] + BOX_DOUBLE["h"] * inner_width + BOX_DOUBLE["tr"],
-            BOX_DOUBLE["v"] + header_content[:inner_width].ljust(inner_width) + BOX_DOUBLE["v"],
+            BOX_DOUBLE["v"] + line1[:inner_width].ljust(inner_width) + BOX_DOUBLE["v"],
             BOX_DOUBLE["bl"] + BOX_DOUBLE["h"] * inner_width + BOX_DOUBLE["br"],
         ]
         return lines
 
-    def _render_playfield(self, duck: "Duck", width: int, height: int = None, 
+    def _render_playfield(self, duck: "Duck", width: int, height: int = None,
                           equipped_cosmetics: Dict[str, str] = None,
                           placed_items: List = None,
                           weather_info = None,
                           built_structures: List = None,
                           current_visitor = None) -> List[str]:
-        """Render the main playfield where duck moves around."""
+        """Render the main playfield where duck moves around with time/weather visuals."""
         inner_width = width - 2
         lines = []
 
@@ -647,10 +764,31 @@ class Renderer:
         weather_type = weather_info.weather_type.value if weather_info else None
         self._update_weather_particles(inner_width, height if height else self.duck_pos.field_height, weather_type)
 
-        # Title bar
+        # Get time-of-day visual elements
+        sky_char, time_bg_color, celestials = self._get_time_of_day_elements(inner_width)
+
+        # Title bar with weather/time flavor text
         title = " DUCK HABITAT "
+        weather_effects = self._get_weather_ambient_effects(weather_type, inner_width)
+        if weather_effects and self._weather_frame % 60 < 30:
+            # Show rotating weather flavor text
+            effect_text = weather_effects[(self._weather_frame // 60) % len(weather_effects)]
+            if len(effect_text) < inner_width - 4:
+                title = f" {effect_text} "
         pad = (inner_width - len(title)) // 2
         lines.append(BOX["tl"] + BOX["h"] * pad + title + BOX["h"] * (inner_width - pad - len(title)) + BOX["tr"])
+
+        # Add sky row with celestial objects (sun/moon/stars)
+        sky_row = [sky_char] * inner_width
+        for x, obj in celestials:
+            if 0 <= x < inner_width:
+                sky_row[x] = obj
+
+        # Apply time-of-day coloring to sky row
+        sky_str = "".join(sky_row)
+        if time_bg_color and weather_type not in ["stormy", "rainy", "foggy", "snowy"]:
+            sky_str = time_bg_color + sky_str + self.term.normal
+        lines.append(BOX["v"] + sky_str + BOX["v"])
 
         # Create the playfield grid - use passed height or fall back to duck_pos
         field_height = height if height is not None else self.duck_pos.field_height
@@ -833,13 +971,15 @@ class Renderer:
                             row[px] = (char, self.term.bright_yellow)
 
             # Add weather particles (rendered on top of everything except text)
+            # Enhanced colors for more dramatic weather effects
             weather_colors = {
-                "rainy": self.term.bright_cyan,
-                "stormy": self.term.bright_white,
-                "snowy": self.term.bright_white,
-                "foggy": self.term.dim,
-                "windy": self.term.bright_cyan,
-                "sunny": self.term.bright_yellow,
+                "rainy": self.term.cyan,           # Cool rain color
+                "stormy": self.term.bright_white,  # Bright storm
+                "snowy": self.term.bright_white,   # White snow
+                "foggy": self.term.white,          # Misty fog
+                "windy": self.term.bright_cyan,    # Wind streaks
+                "sunny": self.term.bright_yellow,  # Warm sunbeams
+                "rainbow": self.term.bright_magenta,  # Magic rainbow
             }
             weather_color = weather_colors.get(self._current_weather_type)
             for px, py, char in self._weather_particles:

@@ -836,33 +836,45 @@ class Game:
                 self.renderer.toggle_help()
                 return
 
+            # Check if any menu/overlay is open that uses number keys
+            # If so, don't process number keys as interaction shortcuts
+            has_number_key_menu = (
+                self._crafting_menu_open or
+                self._building_menu_open or
+                self._areas_menu_open or
+                self._use_menu_open or
+                self._minigames_menu_open or
+                self.renderer._show_message_overlay or
+                self.renderer._show_inventory
+            )
+
             # Duck interaction keys - close any overlays first and perform action
-            # Feed [F] or [1]
-            if key_str == 'f' or key_str == '1':
+            # Feed [F] - always works; [1] only when no menu open
+            if key_str == 'f' or (key_str == '1' and not has_number_key_menu):
                 self._close_all_overlays()
                 self._perform_interaction("feed")
                 return
 
-            # Play [P] or [2]
-            if key_str == 'p' or key_str == '2':
+            # Play [P] - always works; [2] only when no menu open
+            if key_str == 'p' or (key_str == '2' and not has_number_key_menu):
                 self._close_all_overlays()
                 self._perform_interaction("play")
                 return
 
-            # Clean [L] or [3]
-            if key_str == 'l' or key_str == '3':
+            # Clean [L] - always works; [3] only when no menu open
+            if key_str == 'l' or (key_str == '3' and not has_number_key_menu):
                 self._close_all_overlays()
                 self._perform_interaction("clean")
                 return
 
-            # Pet [D] or [4]
-            if key_str == 'd' or key_str == '4':
+            # Pet [D] - always works; [4] only when no menu open
+            if key_str == 'd' or (key_str == '4' and not has_number_key_menu):
                 self._close_all_overlays()
                 self._perform_interaction("pet")
                 return
 
-            # Sleep [Z] or [5]
-            if key_str == 'z' or key_str == '5':
+            # Sleep [Z] - always works; [5] only when no menu open
+            if key_str == 'z' or (key_str == '5' and not has_number_key_menu):
                 self._close_all_overlays()
                 self._perform_interaction("sleep")
                 return

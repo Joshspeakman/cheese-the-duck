@@ -175,49 +175,37 @@ def get_help_text() -> str:
     return """
 DUCK CARE
 ---------
-[F] / [1] - Feed the duck
-[P] / [2] - Play with duck
-[L] / [3] - Clean the duck
-[D] / [4] - Pet the duck
-[Z] / [5] - Let duck sleep
+[F]/[1] Feed    [P]/[2] Play
+[L]/[3] Clean   [D]/[4] Pet
+[Z]/[5] Sleep
 
-SOCIAL
-------
-[T] - Talk to duck
-[S] - View stats
-[I] - Open inventory
-[G] - View goals
+MENUS
+-----
+[S] Stats       [I] Inventory
+[G] Goals       [T] Talk
+[B] Shop        [U] Use Items
 
 WORLD
 -----
-[E] - Explore area
-[A] - Travel to areas
-[C] - Crafting menu
-[R] - Building menu
-[B] - Open shop
-[U] - Use/interact items
+[E] Explore     [A] Areas
+[C] Craft       [R] Build
+
+ACTIVITIES
+----------
+[J] Mini-games  [K] Duck Facts
+[O] Quests      [V] Trading
+[W] Weather Fun [Y] Scrapbook
+[6] Treasure    [7] Secrets
 
 AUDIO
 -----
-[M] - Toggle sound on/off
-[N] - Toggle music on/off
-[+] - Volume up
-[-] - Volume down
-
-FUN
----
-[J] - Mini-games menu
-[K] - Random duck fact
+[M] Sound  [N] Music  [+/-] Vol
 
 GAME
 ----
-[H] - Show this help
-[Q] - Save & quit
-[X] - Reset game
+[H] Help   [Q] Quit   [X] Reset
 
-TIP: You can also type
-commands like "play ball"
-in Talk mode [T]!
+TIP: Type in Talk mode [T]!
 """
 
 
