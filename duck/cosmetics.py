@@ -350,9 +350,10 @@ class CosmeticsRenderer:
         
         # Pad all lines to same width
         padded_art = [line.ljust(duck_width) for line in duck_art]
-        
+
         # Convert to a grid of (char, color_func) tuples
-        grid = [[(c, None) for c in line] for line in padded_art]
+        # Base duck characters get yellow color, spaces get None
+        grid = [[(c, self.term.yellow if c != ' ' else None) for c in line] for line in padded_art]
         
         if not equipped:
             return grid

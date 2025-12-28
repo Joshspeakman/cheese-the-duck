@@ -159,6 +159,7 @@ class Game:
         self._use_menu_selected = 0       # Currently selected item in use menu
         self._minigames_menu_open = False # Flag for minigames menu
         self._minigames_menu_selected = 0 # Currently selected minigame
+        self._quests_menu_open = False    # Flag for quests menu
 
         # Mini-games system
         self.minigames: MiniGameSystem = MiniGameSystem()
@@ -336,6 +337,9 @@ class Game:
         if self._minigames_menu_open:
             self._handle_minigames_input_direct(key)
             return
+        if self._quests_menu_open:
+            self._handle_quests_input_direct(key)
+            return
 
         # Handle inventory item selection
         if self.renderer.is_inventory_open() and self.duck:
@@ -401,7 +405,7 @@ class Game:
 
     def _handle_crafting_input_direct(self, key):
         """Handle crafting menu input directly (like shop)."""
-        key_str = str(key).lower() if not key.is_sequence else ''
+        key_str = str(key).lower() if not key.is_sequence else str(key)
 
         # Navigate up
         if key.name == "KEY_UP":
@@ -418,8 +422,8 @@ class Game:
                 self._crafting_menu.set_selected_index(idx + 1)
                 self._update_crafting_menu_display()
             return
-        # Select with Enter
-        if key.name == "KEY_ENTER":
+        # Select with Enter or Space (like shop)
+        if key.name == "KEY_ENTER" or key_str == ' ':
             selected = self._crafting_menu.get_selected_item()
             if selected and selected.data and selected.enabled:
                 recipe = selected.data
@@ -435,7 +439,7 @@ class Game:
 
     def _handle_building_input_direct(self, key):
         """Handle building menu input directly (like shop)."""
-        key_str = str(key).lower() if not key.is_sequence else ''
+        key_str = str(key).lower() if not key.is_sequence else str(key)
 
         if key.name == "KEY_UP":
             idx = self._building_menu.get_selected_index()
@@ -450,7 +454,7 @@ class Game:
                 self._building_menu.set_selected_index(idx + 1)
                 self._update_building_menu_display()
             return
-        if key.name == "KEY_ENTER":
+        if key.name == "KEY_ENTER" or key_str == ' ':
             selected = self._building_menu.get_selected_item()
             if selected and selected.data and selected.enabled:
                 bp = selected.data
@@ -468,7 +472,7 @@ class Game:
 
     def _handle_areas_input_direct(self, key):
         """Handle areas menu input directly (like shop)."""
-        key_str = str(key).lower() if not key.is_sequence else ''
+        key_str = str(key).lower() if not key.is_sequence else str(key)
 
         if key.name == "KEY_UP":
             idx = self._areas_menu.get_selected_index()
@@ -483,7 +487,7 @@ class Game:
                 self._areas_menu.set_selected_index(idx + 1)
                 self._update_areas_menu_display()
             return
-        if key.name == "KEY_ENTER":
+        if key.name == "KEY_ENTER" or key_str == ' ':
             selected = self._areas_menu.get_selected_item()
             if selected and selected.data:
                 area = selected.data
@@ -498,7 +502,7 @@ class Game:
 
     def _handle_use_input_direct(self, key):
         """Handle use menu input directly (like shop)."""
-        key_str = str(key).lower() if not key.is_sequence else ''
+        key_str = str(key).lower() if not key.is_sequence else str(key)
 
         if key.name == "KEY_UP":
             idx = self._use_menu.get_selected_index()
@@ -513,7 +517,7 @@ class Game:
                 self._use_menu.set_selected_index(idx + 1)
                 self._update_use_menu_display()
             return
-        if key.name == "KEY_ENTER":
+        if key.name == "KEY_ENTER" or key_str == ' ':
             selected = self._use_menu.get_selected_item()
             if selected and selected.data:
                 item_id, item = selected.data
@@ -528,7 +532,7 @@ class Game:
 
     def _handle_minigames_input_direct(self, key):
         """Handle minigames menu input directly (like shop)."""
-        key_str = str(key).lower() if not key.is_sequence else ''
+        key_str = str(key).lower() if not key.is_sequence else str(key)
 
         if key.name == "KEY_UP":
             idx = self._minigames_menu.get_selected_index()
@@ -543,7 +547,7 @@ class Game:
                 self._minigames_menu.set_selected_index(idx + 1)
                 self._update_minigames_menu_display()
             return
-        if key.name == "KEY_ENTER":
+        if key.name == "KEY_ENTER" or key_str == ' ':
             selected = self._minigames_menu.get_selected_item()
             if selected and selected.data and selected.enabled:
                 self._minigames_menu_open = False
@@ -552,6 +556,37 @@ class Game:
             return
         if key.name == "KEY_ESCAPE" or key_str == 'j':
             self._minigames_menu_open = False
+            self.renderer.dismiss_message()
+            return
+
+    def _handle_quests_input_direct(self, key):
+        """Handle quests menu input directly (like shop)."""
+        key_str = str(key).lower() if not key.is_sequence else str(key)
+
+        if key.name == "KEY_UP":
+            idx = self._quests_menu.get_selected_index()
+            if idx > 0:
+                self._quests_menu.set_selected_index(idx - 1)
+                self._update_quests_menu_display()
+            return
+        if key.name == "KEY_DOWN":
+            idx = self._quests_menu.get_selected_index()
+            items = self._quests_menu.get_items()
+            if idx < len(items) - 1:
+                self._quests_menu.set_selected_index(idx + 1)
+                self._update_quests_menu_display()
+            return
+        if key.name == "KEY_ENTER" or key_str == ' ':
+            selected = self._quests_menu.get_selected_item()
+            if selected and selected.data and selected.enabled:
+                quest_id = selected.data.get("quest_id")
+                if quest_id:
+                    self._quests_menu_open = False
+                    self.renderer.dismiss_message()
+                    self._start_selected_quest(quest_id)
+            return
+        if key.name == "KEY_ESCAPE" or key_str == 'o':
+            self._quests_menu_open = False
             self.renderer.dismiss_message()
             return
 
@@ -835,6 +870,19 @@ class Game:
 
     def _handle_playing_action(self, action: GameAction, key=None):
         """Handle actions while playing."""
+        # Check if any menu/overlay is open that uses number keys
+        # Define this early so it can be used for both direct key handling and fallback
+        has_number_key_menu = (
+            self._crafting_menu_open or
+            self._building_menu_open or
+            self._areas_menu_open or
+            self._use_menu_open or
+            self._minigames_menu_open or
+            self._quests_menu_open or
+            self.renderer._show_message_overlay or
+            self.renderer._show_inventory
+        )
+
         # Handle menu inputs first (if any menu is open)
         if key:
             key_str = str(key).lower() if not key.is_sequence else ''
@@ -1020,19 +1068,8 @@ class Game:
                 self.renderer.toggle_help()
                 return
 
-            # Check if any menu/overlay is open that uses number keys
-            # If so, don't process number keys as interaction shortcuts
-            has_number_key_menu = (
-                self._crafting_menu_open or
-                self._building_menu_open or
-                self._areas_menu_open or
-                self._use_menu_open or
-                self._minigames_menu_open or
-                self.renderer._show_message_overlay or
-                self.renderer._show_inventory
-            )
-
             # Duck interaction keys - close any overlays first and perform action
+            # Note: has_number_key_menu is defined at the start of this method
             # Feed [F] - always works; [1] only when no menu open
             if key_str == 'f' or (key_str == '1' and not has_number_key_menu):
                 self._close_all_overlays()
@@ -1064,17 +1101,19 @@ class Game:
                 return
 
         # Interaction actions (from GameAction enum) - fallback for any missed cases
-        interaction_map = {
-            GameAction.FEED: "feed",
-            GameAction.PLAY: "play",
-            GameAction.CLEAN: "clean",
-            GameAction.PET: "pet",
-            GameAction.SLEEP: "sleep",
-        }
+        # Only process if no menu is open (same check as above for number keys)
+        if not has_number_key_menu:
+            interaction_map = {
+                GameAction.FEED: "feed",
+                GameAction.PLAY: "play",
+                GameAction.CLEAN: "clean",
+                GameAction.PET: "pet",
+                GameAction.SLEEP: "sleep",
+            }
 
-        if action in interaction_map:
-            interaction = interaction_map[action]
-            self._perform_interaction(interaction)
+            if action in interaction_map:
+                interaction = interaction_map[action]
+                self._perform_interaction(interaction)
 
     def _show_goals_overlay(self):
         """Show the goals overlay."""
@@ -1147,7 +1186,7 @@ class Game:
         state_durations = {
             "feed": 4.0,    # Eating animation for 4 seconds
             "play": 3.0,    # Playing animation for 3 seconds
-            "sleep": 5.0,   # Sleeping animation for 5 seconds
+            "sleep": 15.0,  # Sleeping animation for 15 seconds
             "clean": 3.5,   # Cleaning animation for 3.5 seconds
             "pet": 2.5,     # Petting animation for 2.5 seconds
         }
@@ -2504,6 +2543,7 @@ class Game:
         self._areas_menu_open = False
         self._use_menu_open = False
         self._minigames_menu_open = False
+        self._quests_menu_open = False
         self._show_goals = False
 
     def _quit(self):
@@ -3722,20 +3762,80 @@ class Game:
     # ==================== QUESTS SYSTEM ====================
 
     def _show_quests_menu(self):
-        """Show the quests menu."""
+        """Show the quests menu with arrow-key navigation."""
         if not self.duck:
             return
 
-        # Get quest log display
-        lines = self.quests.render_quest_log()
-        
-        # Add available quests
+        # Get available quests
         available = self.quests.get_available_quests(self.progression.level)
-        
-        quest_text = "\n".join(lines)
-        quest_text += "\n\n[1-9] Start quest  [ESC/O] Close"
-        
-        self.renderer.show_message(quest_text, duration=0)
+        active = list(self.quests.active_quests.values())
+
+        # Build menu items
+        items = []
+
+        # Show active quests first
+        for aq in active:
+            from world.quests import QUESTS
+            quest = QUESTS.get(aq.quest_id)
+            if quest:
+                step = quest.steps[aq.current_step] if aq.current_step < len(quest.steps) else None
+                progress = f"Step {aq.current_step + 1}/{len(quest.steps)}"
+                items.append(MenuItem(
+                    id=aq.quest_id,
+                    label=f"[Active] {quest.name}",
+                    description=progress,
+                    enabled=False,  # Can't start an active quest
+                    data={"quest_id": aq.quest_id, "active": True}
+                ))
+
+        # Show available quests
+        for quest in available:
+            difficulty = quest.difficulty.value.title()
+            items.append(MenuItem(
+                id=quest.id,
+                label=quest.name,
+                description=f"{difficulty} - {quest.description[:40]}...",
+                enabled=True,
+                data={"quest_id": quest.id, "active": False}
+            ))
+
+        if not items:
+            self.renderer.show_message("No quests available!\n\nComplete more activities to unlock quests.", duration=3.0)
+            return
+
+        self._quests_menu.set_items(items)
+        self._quests_menu_open = True
+        self._update_quests_menu_display()
+
+    def _update_quests_menu_display(self):
+        """Update the quests menu display."""
+        items = self._quests_menu.get_items()
+        selected_idx = self._quests_menu.get_selected_index()
+
+        lines = ["=== QUESTS ===", ""]
+
+        for i, item in enumerate(items):
+            prefix = "> " if i == selected_idx else "  "
+            lines.append(f"{prefix}{item.label}")
+            if i == selected_idx and item.description:
+                lines.append(f"    {item.description}")
+
+        lines.append("")
+        lines.append("[Up/Down] Navigate  [Enter] Start  [ESC/O] Close")
+
+        self.renderer.show_message("\n".join(lines), duration=0)
+
+    def _start_selected_quest(self, quest_id: str):
+        """Start the selected quest."""
+        success, message, dialogue = self.quests.start_quest(quest_id)
+        if success:
+            self.renderer.show_message(f"Quest started: {message}", duration=3.0)
+            if dialogue:
+                # Show first dialogue if available
+                for line in dialogue[:3]:
+                    self.renderer.show_message(line, duration=3.0)
+        else:
+            self.renderer.show_message(message, duration=3.0)
 
     # ==================== TRADING SYSTEM ====================
 

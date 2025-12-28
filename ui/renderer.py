@@ -299,7 +299,8 @@ class Renderer:
         self._current_location: Optional[str] = None
         self._location_decorations: List[Tuple[int, int, str]] = []
         self._location_scenery: List[Tuple[int, int, List[str]]] = []
-        self._generate_ground_pattern()
+        self._first_render = True  # Force regeneration on first render
+        # Don't generate pattern here - wait for first render with correct dimensions
 
         # Weather effects
         self._weather_particles: List[Tuple[float, float, str]] = []  # (x, y, char)
@@ -560,13 +561,14 @@ class Renderer:
         if hasattr(game, 'exploration') and game.exploration and game.exploration.current_area:
             current_location = game.exploration.current_area.name
 
-        # Regenerate ground pattern if size or location changed
+        # Regenerate ground pattern if size or location changed, or on first render
         size_changed = len(self._ground_pattern) != field_height or (self._ground_pattern and len(self._ground_pattern[0]) != field_inner_width)
         location_changed = current_location != self._current_location
-        
-        if size_changed or location_changed:
+
+        if size_changed or location_changed or self._first_render:
             self._current_location = current_location
             self._generate_ground_pattern(current_location)
+            self._first_render = False
 
         # Build the frame
         output = []
@@ -580,8 +582,12 @@ class Renderer:
 
         # Get equipped cosmetics and placed items from habitat
         equipped_cosmetics = game.habitat.equipped_cosmetics if hasattr(game, 'habitat') else {}
-        placed_items = game.habitat.placed_items if hasattr(game, 'habitat') else []
-        
+        # Placed items (ball, etc.) only appear at Home Pond
+        if current_location == "Home Pond" or current_location is None:
+            placed_items = game.habitat.placed_items if hasattr(game, 'habitat') else []
+        else:
+            placed_items = []
+
         # Get built structures from building system
         built_structures = []
         if hasattr(game, 'building') and game.building:
@@ -729,23 +735,37 @@ class Renderer:
         t_icon, t_name = time_data.get(tod, ("⏰", ""))
         time_part = f" {t_icon} {time_str} {t_name} "
 
-        # Build header parts
-        name_part = f" {duck.name} "
-        mood_part = f" {mood_ind} "
-        age_part = f" {age_str} "
-        coin_part = f" ${currency} "
+        # Build header parts - use simpler format to avoid cutoff
+        name_part = duck.name
+        mood_part = mood_ind
+        age_part = age_str
+        coin_part = f"${currency}"
 
-        # Create bordered header - two lines for more info
+        # Create bordered header
         inner_width = width - 2
 
-        # Line 1: Name | Weather | Time
-        line1_content = f"{name_part}│{weather_part}│{time_part}"
-        line1_pad = inner_width - len(line1_content) - len(mood_part) - len(age_part) - len(coin_part)
-        line1 = f"{line1_content}{' ' * max(0, line1_pad)}{mood_part}│{age_part}│{coin_part}"
+        # Simplified format: Name | Weather Time | Mood Age $Money
+        left_side = f" {name_part} "
+        if weather_part:
+            left_side += f"| {weather_part.strip()}"
+        left_side += f" | {time_part.strip()}"
+
+        right_side = f"{mood_part} {age_part} {coin_part} "
+
+        # Calculate padding
+        left_len = _visible_len(left_side)
+        right_len = _visible_len(right_side)
+        pad_len = max(0, inner_width - left_len - right_len)
+
+        line1 = left_side + " " * pad_len + right_side
+
+        # Ensure line fits
+        line1 = _visible_ljust(line1, inner_width)
+        line1 = _visible_truncate(line1, inner_width)
 
         lines = [
             BOX_DOUBLE["tl"] + BOX_DOUBLE["h"] * inner_width + BOX_DOUBLE["tr"],
-            BOX_DOUBLE["v"] + line1[:inner_width].ljust(inner_width) + BOX_DOUBLE["v"],
+            BOX_DOUBLE["v"] + line1 + BOX_DOUBLE["v"],
             BOX_DOUBLE["bl"] + BOX_DOUBLE["h"] * inner_width + BOX_DOUBLE["br"],
         ]
         return lines
@@ -950,11 +970,11 @@ class Renderer:
                             if char != ' ' and 0 <= duck_x + dx < inner_width:
                                 row[duck_x + dx] = (char, color_func)
                     else:
-                        # No cosmetics, use plain duck art
+                        # No cosmetics, use plain duck art with yellow color
                         duck_line = duck_art[dy] if dy < len(duck_art) else ""
                         for dx, char in enumerate(duck_line):
                             if char != ' ' and 0 <= duck_x + dx < inner_width:
-                                row[duck_x + dx] = (char, None)
+                                row[duck_x + dx] = (char, self.term.yellow)
 
             # Add effect overlay above duck if any
             effect_overlay = animation_controller.get_effect_overlay()
@@ -1021,10 +1041,12 @@ class Renderer:
         closeup = get_emotion_closeup(mood.state, self._closeup_action if self._show_closeup else None)
 
         if closeup:
-            # Show compact close-up
+            # Show compact close-up with yellow duck color
             for closeup_line in closeup:
                 truncated = closeup_line[:inner_width].center(inner_width)
-                lines.append(BOX["v"] + truncated + BOX["v"])
+                # Apply yellow color to the duck ASCII
+                yellow_line = self.term.yellow + truncated + self.term.normal
+                lines.append(BOX["v"] + yellow_line + BOX["v"])
         else:
             # Show mood status (compact)
             mood_text = f"{mood.description}".center(inner_width)
@@ -1448,10 +1470,11 @@ class Renderer:
             "    ╠══════════════════════════════════════════════════════╣    ",
         ]
 
-        # Add the dancing duck
+        # Add the dancing duck with yellow color
         for line in duck_art:
             padded_line = line + " " * (54 - len(line)) if len(line) < 54 else line[:54]
-            title_art.append(f"    ║{padded_line}║    ")
+            yellow_duck = self.term.yellow + padded_line + self.term.normal
+            title_art.append(f"    ║{yellow_duck}║    ")
 
         # Add footer
         title_art.extend([

@@ -330,6 +330,10 @@ class ExplorationSystem:
                     self.discovered_areas[area.name] = area
                     # Initialize resources for discovered areas
                     self._populate_area_resources(area)
+
+        # Set default starting location to Home Pond
+        if "Home Pond" in self.discovered_areas and not self.current_area:
+            self.current_area = self.discovered_areas["Home Pond"]
     
     def _populate_area_resources(self, area: BiomeArea):
         """Add resources to an area based on its biome."""
