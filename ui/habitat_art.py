@@ -128,6 +128,112 @@ HABITAT_ITEM_ART: Dict[str, List[str]] = {
     "fence_section": [" ├──┤"],
     "cosmic_arch": [" ★═══★", " ║   ║", " ★═══★"],
     
+    # ============ BUILT STRUCTURES (from building system) ============
+    "basic_nest": [
+        "    ____    ",
+        "   /    \\   ",
+        "  / ~~~~ \\  ",
+        " (  ~~~~  ) ",
+        "  \\______/  ",
+    ],
+    "cozy_nest": [
+        "     ___     ",
+        "   _/   \\_   ",
+        "  / ~~~~~ \\  ",
+        " / ~~~~~~~ \\ ",
+        "(  ~~~~~~~  )",
+        " \\__     __/ ",
+        "    \\___/    ",
+    ],
+    "deluxe_nest": [
+        "    _____    ",
+        "  _/  ♥  \\_  ",
+        " / ~~~~~~~ \\ ",
+        "/ ~~~~~~~~~ \\",
+        "| ~~~~~~~~~ |",
+        "| ~~~~~~~~~ |",
+        " \\__     __/ ",
+        "    \\___/    ",
+    ],
+    "mud_hut": [
+        "    _____    ",
+        "   /     \\   ",
+        "  /  ___  \\  ",
+        " |  |   |  | ",
+        " |__|   |__| ",
+        " ████████████",
+    ],
+    "wooden_cottage": [
+        "      /\\      ",
+        "     /  \\     ",
+        "    /____\\    ",
+        "   |▓▓  ▓▓|   ",
+        "   |▓▓[]▓▓|   ",
+        "   |▓▓  ▓▓|   ",
+        "   └──────┘   ",
+    ],
+    "stone_house": [
+        "       /\\       ",
+        "      /  \\      ",
+        "     /____\\     ",
+        "   ╔════════╗   ",
+        "   ║▓▓ [] ▓▓║   ",
+        "   ║▓▓    ▓▓║   ",
+        "   ║▓▓ ▄▄ ▓▓║   ",
+        "   ╚════════╝   ",
+    ],
+    "workbench": [
+        " ┌──────────┐ ",
+        " │ 🔨 ⚙️ 🔧 │ ",
+        " ├──────────┤ ",
+        " │          │ ",
+        " └──────────┘ ",
+    ],
+    "storage_chest": [
+        " ╔════════╗ ",
+        " ║ ▓▓▓▓▓▓ ║ ",
+        " ╠════════╣ ",
+        " ║        ║ ",
+        " ╚════════╝ ",
+    ],
+    "garden_plot": [
+        " ┌────────┐ ",
+        " │ ♣ ✿ ♣  │ ",
+        " │  ♣ ♣ ✿ │ ",
+        " └────────┘ ",
+    ],
+    "bird_bath": [
+        "    ═    ",
+        "  ╔═══╗  ",
+        "  ║≈≈≈║  ",
+        "    │    ",
+        "   ███   ",
+    ],
+    "watchtower": [
+        "   ┌─┐   ",
+        "   │^│   ",
+        "  ╔═══╗  ",
+        "  ║   ║  ",
+        "  ║   ║  ",
+        "  ║   ║  ",
+        "  ╚═══╝  ",
+    ],
+    "flower_bed": [
+        " ✿ ❀ ✿ ❀ ",
+        " ░░░░░░░ ",
+    ],
+    "stone_path": [
+        " ○ ○ ○ ○ ",
+    ],
+    "pond_fountain": [
+        "    ╥    ",
+        "   ╥╥╥   ",
+        " ╔═════╗ ",
+        " ║≈≈≈≈≈║ ",
+        " ║≈≈≈≈≈║ ",
+        " ╚═════╝ ",
+    ],
+    
     # ============ DECORATIONS ============
     "garden_gnome": [" ∩", "(◕‿◕)", " △"],
     "duck_statue": [" _", "(◐>", " ╱"],
@@ -409,6 +515,42 @@ def get_item_art(item_id: str) -> List[str]:
     
     # Default placeholder
     return ["[?]"]
+
+
+def get_structure_art(structure_id: str) -> List[str]:
+    """Get ASCII art for a built structure."""
+    if structure_id in HABITAT_ITEM_ART:
+        return HABITAT_ITEM_ART[structure_id].copy()
+    
+    # Default placeholder for unknown structures
+    return ["[?]"]
+
+
+def get_structure_color(structure_id: str):
+    """Get color function for a structure."""
+    # Structure color mappings
+    STRUCTURE_COLORS = {
+        "basic_nest": "yellow",
+        "cozy_nest": "yellow",
+        "deluxe_nest": "bright_yellow",
+        "mud_hut": "red",
+        "wooden_cottage": "yellow",
+        "stone_house": "white",
+        "workbench": "cyan",
+        "storage_chest": "yellow",
+        "garden_plot": "green",
+        "bird_bath": "bright_cyan",
+        "watchtower": "yellow",
+        "flower_bed": "magenta",
+        "stone_path": "white",
+        "pond_fountain": "bright_cyan",
+    }
+    
+    color_name = STRUCTURE_COLORS.get(structure_id)
+    if color_name:
+        # This will be resolved to actual terminal color in renderer
+        return color_name
+    return None
 
 
 def get_item_size(item_id: str) -> tuple:

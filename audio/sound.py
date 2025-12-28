@@ -872,7 +872,11 @@ class DuckSounds:
 
     def level_up(self):
         """Play level up/growth sound."""
-        self.engine.play_sound(SoundType.LEVEL_UP)
+        # Try WAV file first, fall back to synthesized sound
+        if 'levelup' in self.engine._available_wavs:
+            self.engine.play_wav('levelup')
+        else:
+            self.engine.play_sound(SoundType.LEVEL_UP)
 
     def alert(self):
         """Play alert sound."""

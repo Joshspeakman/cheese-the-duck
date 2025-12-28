@@ -86,6 +86,11 @@ from ui.ascii_art import get_duck_art, get_emotion_closeup, create_box, BORDER, 
 from ui.input_handler import get_help_text
 from ui.animations import animation_controller, EFFECTS
 from ui.habitat_icons import get_habitat_icon, HABITAT_ICONS
+from ui.location_art import (
+    generate_location_ground, generate_location_decorations, 
+    generate_location_scenery, get_decoration_color, get_location_colors,
+    get_ground_color
+)
 from duck.mood import MoodState
 from duck.cosmetics import CosmeticsRenderer, COSMETIC_ART
 
@@ -208,8 +213,11 @@ class DuckPosition:
     def _pick_new_target(self):
         """Pick a random target position."""
         margin = 3
-        self.target_x = random.randint(margin, self.field_width - margin - 6)
-        self.target_y = random.randint(margin, self.field_height - margin - 3)
+        # Ensure valid ranges even for small fields
+        max_x = max(margin, self.field_width - margin - 6)
+        max_y = max(margin, self.field_height - margin - 3)
+        self.target_x = random.randint(margin, max_x)
+        self.target_y = random.randint(margin, max_y)
 
     def set_state(self, state: str, duration: float = 3.0):
         """Set duck state (idle, sleeping, eating, playing, cleaning, petting)."""
@@ -244,6 +252,7 @@ class Renderer:
         self._last_render_time = 0
         self._message_queue: List[str] = []
         self._message_expire = 0
+        self._show_message_overlay = False  # Show messages as overlay instead of bottom bar
         self._show_help = False
         self._show_inventory = False
         self._show_stats = False
@@ -287,6 +296,9 @@ class Renderer:
 
         # Ground pattern cache
         self._ground_pattern: List[str] = []
+        self._current_location: Optional[str] = None
+        self._location_decorations: List[Tuple[int, int, str]] = []
+        self._location_scenery: List[Tuple[int, int, List[str]]] = []
         self._generate_ground_pattern()
 
         # Weather effects
@@ -312,14 +324,38 @@ class Renderer:
                 y = random.randint(2, self.duck_pos.field_height - 3)
                 self._playfield_objects.append((x, y, obj_type))
 
-    def _generate_ground_pattern(self):
-        """Generate static ground pattern."""
-        self._ground_pattern = []
-        for y in range(self.duck_pos.field_height):
-            row = ""
-            for x in range(self.duck_pos.field_width):
-                row += random.choice(GROUND_CHARS)
-            self._ground_pattern.append(row)
+    def _generate_ground_pattern(self, location: Optional[str] = None):
+        """Generate static ground pattern based on current location."""
+        if location:
+            # Use location-specific ground pattern
+            self._ground_pattern = generate_location_ground(
+                location, 
+                self.duck_pos.field_width, 
+                self.duck_pos.field_height
+            )
+            # Generate location-specific decorations
+            self._location_decorations = generate_location_decorations(
+                location,
+                self.duck_pos.field_width,
+                self.duck_pos.field_height,
+                count=15  # More decorations for visual interest
+            )
+            # Generate large scenery elements
+            self._location_scenery = generate_location_scenery(
+                location,
+                self.duck_pos.field_width,
+                self.duck_pos.field_height
+            )
+        else:
+            # Default pattern
+            self._ground_pattern = []
+            for y in range(self.duck_pos.field_height):
+                row = ""
+                for x in range(self.duck_pos.field_width):
+                    row += random.choice(GROUND_CHARS)
+                self._ground_pattern.append(row)
+            self._location_decorations = []
+            self._location_scenery = []
 
     def _update_weather_particles(self, width: int, height: int, weather_type: Optional[str]):
         """Update animated weather particles."""
@@ -420,6 +456,11 @@ class Renderer:
             self._render_title_screen()
             return
 
+        # Check for active minigame - render minigame instead of normal frame
+        if hasattr(game, '_active_minigame') and game._active_minigame:
+            self._render_minigame_frame(game)
+            return
+
         # Update duck position
         delta = time.time() - self._last_render_time if self._last_render_time else 0.033
         self.duck_pos.update(delta)
@@ -440,9 +481,18 @@ class Renderer:
         self.duck_pos.field_width = field_inner_width
         self.duck_pos.field_height = field_height
 
-        # Regenerate ground pattern if size changed
-        if len(self._ground_pattern) != field_height or (self._ground_pattern and len(self._ground_pattern[0]) != field_inner_width):
-            self._generate_ground_pattern()
+        # Get current location from exploration system
+        current_location = None
+        if hasattr(game, 'exploration') and game.exploration and game.exploration.current_area:
+            current_location = game.exploration.current_area.name
+
+        # Regenerate ground pattern if size or location changed
+        size_changed = len(self._ground_pattern) != field_height or (self._ground_pattern and len(self._ground_pattern[0]) != field_inner_width)
+        location_changed = current_location != self._current_location
+        
+        if size_changed or location_changed:
+            self._current_location = current_location
+            self._generate_ground_pattern(current_location)
 
         # Build the frame
         output = []
@@ -457,9 +507,22 @@ class Renderer:
         # Get equipped cosmetics and placed items from habitat
         equipped_cosmetics = game.habitat.equipped_cosmetics if hasattr(game, 'habitat') else {}
         placed_items = game.habitat.placed_items if hasattr(game, 'habitat') else []
+        
+        # Get built structures from building system
+        built_structures = []
+        if hasattr(game, 'building') and game.building:
+            built_structures = [s for s in game.building.structures if s.status.value == "complete"]
+
+        # Get current visitor info from friends system
+        current_visitor = None
+        if hasattr(game, 'friends') and game.friends and game.friends.current_visit:
+            visitor_id = game.friends.current_visit.friend_id
+            current_visitor = game.friends.get_friend_by_id(visitor_id)
 
         # Main area: playfield on left, side panel on right
-        playfield_lines = self._render_playfield(duck, playfield_width, field_height, equipped_cosmetics, placed_items, weather_info)
+        playfield_lines = self._render_playfield(duck, playfield_width, field_height, 
+                                                   equipped_cosmetics, placed_items, weather_info,
+                                                   built_structures, current_visitor)
         sidepanel_lines = self._render_side_panel(duck, game, side_panel_width)
 
         # Combine playfield and side panel
@@ -484,9 +547,11 @@ class Renderer:
         # Check for expired celebration
         self._check_celebration_expired()
 
-        # Overlays (help, stats, inventory, celebration)
+        # Overlays (help, stats, inventory, celebration, item interaction)
         if self._show_celebration:
             output = self._overlay_celebration(output, width)
+        elif hasattr(game, '_item_interaction_active') and game._item_interaction_active:
+            output = self._overlay_item_interaction(output, game, width)
         elif self._show_help:
             output = self._overlay_help(output, width)
         elif self._show_stats:
@@ -497,6 +562,8 @@ class Renderer:
             output = self._overlay_inventory(output, game, width)
         elif self._show_shop:
             output = self._overlay_shop(output, game.habitat, width)
+        elif self._show_message_overlay:
+            output = self._overlay_message(output, width)
 
         # Print frame - fill terminal (no clear to prevent flashing)
         print(self.term.home, end="")
@@ -506,7 +573,8 @@ class Renderer:
                 # Use ANSI-aware functions for lines that may contain color codes
                 truncated = _visible_truncate(line, width)
                 padded = _visible_ljust(truncated, width)
-                print(self.term.move(i, 0) + padded, end="")
+                # End each line with terminal reset to prevent color bleeding
+                print(self.term.move(i, 0) + padded + self.term.normal, end="")
 
     def _render_header_bar(self, duck: "Duck", width: int, currency: int = 0, weather=None) -> List[str]:
         """Render the top header bar with weather info."""
@@ -568,7 +636,9 @@ class Renderer:
     def _render_playfield(self, duck: "Duck", width: int, height: int = None, 
                           equipped_cosmetics: Dict[str, str] = None,
                           placed_items: List = None,
-                          weather_info = None) -> List[str]:
+                          weather_info = None,
+                          built_structures: List = None,
+                          current_visitor = None) -> List[str]:
         """Render the main playfield where duck moves around."""
         inner_width = width - 2
         lines = []
@@ -601,9 +671,20 @@ class Renderer:
         duck_height = len(duck_art)
         duck_width = max(len(line) for line in duck_art) if duck_art else 0
 
+        # Handle visitor NPC animation
+        visitor_art = None
+        visitor_x = inner_width - 15  # Position visitor on right side of playfield
+        visitor_y = field_height // 2 - 2  # Roughly centered vertically
+        if current_visitor:
+            from world.friends import visitor_animator
+            personality = current_visitor.personality.value if hasattr(current_visitor.personality, 'value') else str(current_visitor.personality)
+            visitor_animator.set_visitor(personality)
+            visitor_animator.update(time.time())
+            visitor_art = visitor_animator.get_current_art()
+
         # Pre-calculate all item placements with multi-line art
         # Each entry: (x, y, art_lines, color_func)
-        from ui.habitat_art import get_item_art, get_item_color
+        from ui.habitat_art import get_item_art, get_item_color, get_structure_art, get_structure_color
         
         item_placements = []
         if placed_items:
@@ -614,23 +695,73 @@ class Renderer:
                 item_x = int(placed_item.x * inner_width / 20)
                 item_y = int(placed_item.y * field_height / 12)
                 item_placements.append((item_x, item_y, art, color_func))
+        
+        # Add built structures to item placements
+        if built_structures:
+            for i, structure in enumerate(built_structures):
+                art = get_structure_art(structure.blueprint_id)
+                color_name = get_structure_color(structure.blueprint_id)
+                # Convert color name to terminal color function
+                color_func = None
+                if color_name:
+                    color_map = {
+                        "yellow": self.term.yellow,
+                        "bright_yellow": self.term.bright_yellow,
+                        "red": self.term.red,
+                        "white": self.term.white,
+                        "cyan": self.term.cyan,
+                        "bright_cyan": self.term.bright_cyan,
+                        "green": self.term.green,
+                        "magenta": self.term.magenta,
+                    }
+                    color_func = color_map.get(color_name)
+                # Position structures at their grid position, or space them out if position not set
+                if hasattr(structure, 'position') and structure.position:
+                    struct_x = int(structure.position[0] * inner_width / 10)
+                    struct_y = int(structure.position[1] * field_height / 8)
+                else:
+                    # Default spacing if no position
+                    struct_x = 2 + (i * 8) % (inner_width - 10)
+                    struct_y = field_height - len(art) - 1
+                item_placements.append((struct_x, struct_y, art, color_func))
 
         # Build each row of the playfield
         # Use a grid of (char, color_func) tuples to handle colors properly
+        # Get ground color for current location
+        ground_color = get_ground_color(self._current_location) if self._current_location else None
+        
         for y in range(field_height):
-            # Initialize row with (char, None) tuples for ground pattern
-            row = [(c, None) for c in self._ground_pattern[y][:inner_width]]
+            # Initialize row with (char, ground_color) tuples for ground pattern
+            row = [(c, ground_color if c != ' ' else None) for c in self._ground_pattern[y][:inner_width]]
             # Pad to inner_width
             while len(row) < inner_width:
                 row.append((' ', None))
 
-            # Add decorations (built-in playfield objects)
-            for obj_x, obj_y, obj_type in self._playfield_objects:
-                if obj_y == y and 0 <= obj_x < inner_width:
-                    obj_chars = PLAYFIELD_OBJECTS.get(obj_type, "*")
-                    for i, char in enumerate(obj_chars):
-                        if obj_x + i < inner_width:
-                            row[obj_x + i] = (char, None)
+            # Add location-specific scenery (large multi-line elements) - render first (background)
+            for scene_x, scene_y, scene_art in self._location_scenery:
+                scene_row_index = y - scene_y
+                if 0 <= scene_row_index < len(scene_art):
+                    scene_line = scene_art[scene_row_index]
+                    for dx, char in enumerate(scene_line):
+                        px = scene_x + dx
+                        if char != ' ' and 0 <= px < inner_width:
+                            color_func = get_decoration_color(self._current_location or "", char)
+                            row[px] = (char, color_func)
+
+            # Add location-specific decorations
+            for dec_x, dec_y, dec_char in self._location_decorations:
+                if dec_y == y and 0 <= dec_x < inner_width:
+                    color_func = get_decoration_color(self._current_location or "", dec_char)
+                    row[dec_x] = (dec_char, color_func)
+
+            # Add legacy decorations (built-in playfield objects) only if no location set
+            if not self._current_location:
+                for obj_x, obj_y, obj_type in self._playfield_objects:
+                    if obj_y == y and 0 <= obj_x < inner_width:
+                        obj_chars = PLAYFIELD_OBJECTS.get(obj_type, "*")
+                        for i, char in enumerate(obj_chars):
+                            if obj_x + i < inner_width:
+                                row[obj_x + i] = (char, None)
 
             # Add placed habitat items (multi-line art)
             for item_x, item_y, art, color_func in item_placements:
@@ -642,6 +773,31 @@ class Renderer:
                         px = item_x + dx
                         if char != ' ' and 0 <= px < inner_width:
                             row[px] = (char, color_func)
+
+            # Add visitor NPC if visiting (render before duck so duck is on top)
+            if visitor_art and current_visitor:
+                # Color based on visitor personality
+                visitor_colors = {
+                    "adventurous": self.term.bright_yellow,
+                    "scholarly": self.term.bright_blue,
+                    "artistic": self.term.bright_magenta,
+                    "playful": self.term.bright_green,
+                    "mysterious": self.term.magenta,
+                    "generous": self.term.bright_red,
+                    "foodie": self.term.yellow,
+                    "athletic": self.term.cyan,
+                }
+                personality = current_visitor.personality.value if hasattr(current_visitor.personality, 'value') else str(current_visitor.personality)
+                visitor_color = visitor_colors.get(personality, self.term.bright_cyan)
+                
+                visitor_height = len(visitor_art)
+                for dy in range(visitor_height):
+                    if y == visitor_y + dy:
+                        visitor_line = visitor_art[dy] if dy < len(visitor_art) else ""
+                        for dx, char in enumerate(visitor_line):
+                            px = visitor_x + dx
+                            if char != ' ' and 0 <= px < inner_width:
+                                row[px] = (char, visitor_color)
 
             # Add duck if on this row (duck renders ON TOP of items)
             duck_y = self.duck_pos.y
@@ -697,14 +853,15 @@ class Renderer:
             row_chars = []
             for char, color_func in row:
                 if color_func:
-                    row_chars.append(color_func(char))
+                    # Apply color and reset after each colored character
+                    row_chars.append(color_func(char) + self.term.normal)
                 else:
                     row_chars.append(char)
             row_str = "".join(row_chars)
             
             # Pad to inner_width (but length() counts ANSI codes, so we track visible chars)
             visible_len = len(row)  # We know we have exactly inner_width visible chars
-            lines.append(BOX["v"] + row_str + BOX["v"])
+            lines.append(BOX["v"] + row_str + self.term.normal + BOX["v"])
 
         # Bottom of playfield
         lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
@@ -746,8 +903,9 @@ class Renderer:
         ]
 
         for name, value, indicator in needs_data:
-            bar = self._make_progress_bar(value, 10)
-            line = f"{name}{bar}{indicator}".ljust(inner_width)
+            bar = self._make_progress_bar(value, 8)
+            pct = f"{int(value):3d}"
+            line = f"{name}{bar}{pct}%".ljust(inner_width)
             lines.append(BOX["v"] + line[:inner_width] + BOX["v"])
 
         # Divider - Shortcuts Section
@@ -784,6 +942,14 @@ class Renderer:
         if len(action_msg) > inner_width - 2:
             action_msg = action_msg[:inner_width - 5] + "..."
         lines.append(BOX["v"] + action_msg.center(inner_width)[:inner_width] + BOX["v"])
+        
+        # Current location (from exploration system)
+        if hasattr(game, 'exploration') and game.exploration and game.exploration.current_area:
+            area_name = game.exploration.current_area.name
+            location = f"📍 {area_name}"
+            if len(location) > inner_width:
+                location = location[:inner_width - 3] + "..."
+            lines.append(BOX["v"] + location.center(inner_width)[:inner_width] + BOX["v"])
 
         # Bottom
         lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
@@ -803,6 +969,22 @@ class Renderer:
 
     def _get_activity_text(self, duck: "Duck") -> str:
         """Get text describing current activity."""
+        # Check for special activities first (based on duck.current_action if available)
+        if hasattr(duck, 'current_action') and duck.current_action:
+            action = duck.current_action
+            if action == "traveling":
+                return "Traveling..."
+            elif action == "exploring":
+                return "Exploring!"
+            elif action == "building":
+                return "Building..."
+            elif action == "nap_in_nest":
+                return "Napping in nest"
+            elif action == "hide_in_shelter":
+                return "Taking shelter"
+            elif action == "use_bird_bath":
+                return "Bathing"
+        
         state = self.duck_pos.get_state()
         if state == "sleeping":
             return "Sleeping Zzz"
@@ -812,6 +994,8 @@ class Renderer:
             return "Playing!"
         elif state == "walking":
             return "Wandering"
+        elif state == "hiding":
+            return "Hiding"
         else:
             return "Chilling"
 
@@ -847,37 +1031,46 @@ class Renderer:
 
         return lines
 
-    def _make_progress_bar(self, value: float, width: int) -> str:
-        """Create a fancy progress bar."""
+    def _make_progress_bar(self, value: float, width: int, use_color: bool = True) -> str:
+        """Create a fancy progress bar with optional color."""
         filled = int((value / 100) * width)
 
         # Color coding based on value
         if value >= 70:
             char = BAR_STYLES["full"]
+            color = self.term.green if use_color else None
         elif value >= 40:
             char = BAR_STYLES["high"]
+            color = self.term.yellow if use_color else None
         elif value >= 20:
             char = BAR_STYLES["med"]
+            color = self.term.bright_red if use_color else None
         else:
             char = BAR_STYLES["low"]
+            color = self.term.red if use_color else None
 
-        bar = char * filled + BAR_STYLES["empty"] * (width - filled)
-        return f"[{bar}]"
+        bar_content = char * filled + BAR_STYLES["empty"] * (width - filled)
+        if color and use_color:
+            return f"[{color(bar_content)}]"
+        return f"[{bar_content}]"
 
     def _render_messages(self, width: int) -> List[str]:
-        """Render the message area."""
+        """Render the message area (shows hints when no overlay message active)."""
         inner_width = width - 2
 
         lines = [
             BOX["tl"] + BOX["h"] * inner_width + BOX["tr"],
         ]
 
-        if self._message_queue and time.time() < self._message_expire:
-            for msg in self._message_queue[-2:]:
-                msg_line = f" {msg} ".center(inner_width)
-                lines.append(BOX["v"] + msg_line[:inner_width] + BOX["v"])
-        else:
+        # Show duck's current action/thought (not overlay messages)
+        if hasattr(self, '_duck_thought') and self._duck_thought:
+            thought_line = f" {self._duck_thought} ".center(inner_width)
+            lines.append(BOX["v"] + thought_line[:inner_width] + BOX["v"])
             lines.append(BOX["v"] + " " * inner_width + BOX["v"])
+        else:
+            # Default hint text
+            hint = " Press [H] for help "
+            lines.append(BOX["v"] + hint.center(inner_width)[:inner_width] + BOX["v"])
             lines.append(BOX["v"] + " " * inner_width + BOX["v"])
 
         lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
@@ -897,6 +1090,50 @@ class Renderer:
             BOX["bl"] + BOX["h"] * inner_width + BOX["br"],
         ]
         return lines
+
+    def _render_minigame_frame(self, game: "Game"):
+        """Render a minigame frame."""
+        width = max(self.term.width, 60)
+        height = max(self.term.height, 20)
+
+        output = []
+
+        # Get minigame render lines
+        minigame_lines = game._render_minigame()
+
+        # Calculate centering
+        game_height = len(minigame_lines)
+        top_padding = max(0, (height - game_height - 2) // 2)
+
+        # Add top padding
+        for _ in range(top_padding):
+            output.append("")
+
+        # Add minigame title bar
+        game_names = {
+            "bread_catch": "BREAD CATCH",
+            "bug_chase": "BUG CHASE",
+            "memory_match": "MEMORY MATCH",
+            "duck_race": "DUCK RACE",
+        }
+        game_name = game_names.get(game._minigame_type, "MINI-GAME")
+        title = f"═══ {game_name} ═══"
+        output.append(title.center(width))
+        output.append("")
+
+        # Add minigame content, centered
+        for line in minigame_lines:
+            centered_line = line.center(width)
+            output.append(centered_line)
+
+        # Add bottom padding/instructions
+        output.append("")
+        output.append("[Q] Quit Game".center(width))
+
+        # Print everything
+        print(self.term.home + self.term.clear, end="")
+        for line in output:
+            print(line)
 
     def _render_title_screen(self):
         """Render the title/new game screen with dancing duck animation."""
@@ -1098,25 +1335,28 @@ class Renderer:
     def _overlay_help(self, base_output: List[str], width: int) -> List[str]:
         """Overlay the help screen."""
         help_text = [
-            "CONTROLS",
-            "--------",
-            "[F] / [1] - Feed duck      [T] - Talk to duck",
-            "[P] / [2] - Play with duck [I] - Open inventory",
-            "[C] / [3] - Clean duck     [G] - View goals",
-            "[E] / [4] - Pet duck       [S] - View statistics",
-            "[Z] / [5] - Let duck sleep [B] - Open shop",
+            "═══ DUCK CARE ═══",
+            "[F]/[1] Feed    [P]/[2] Play    [L]/[3] Clean",
+            "[D]/[4] Pet     [Z]/[5] Sleep   [T] Talk",
             "",
-            "AUDIO",
-            "[M] - Toggle sound on/off",
-            "[N] - Toggle music on/off",
-            "[+] - Volume up  [-] - Volume down",
+            "═══ MENUS ═══",
+            "[I] Inventory   [G] Goals    [S] Stats",
+            "[B] Shop        [U] Use Item [O] Quests",
             "",
-            "GAME",
-            "[R] - Return to title  [Q] - Save and quit",
-            "[X] - Reset game (start over)",
+            "═══ ACTIVITIES ═══",
+            "[E] Explore     [A] Areas    [C] Craft",
+            "[R] Build       [J] Minigames",
+            "[K] Duck Fact   [W] Weather Activities",
             "",
-            "The duck will wander around on its own!",
-            "Keep its needs up to keep it happy.",
+            "═══ SPECIAL ═══",
+            "[V] Trading     [Y] Scrapbook",
+            "[6] Treasure    [7] Secrets",
+            "",
+            "═══ AUDIO ═══",
+            "[M] Sound  [N] Music  [+]/[-] Volume",
+            "",
+            "═══ SYSTEM ═══",
+            "[Q] Save & Quit  [X] Reset Game",
             "",
             "Press [H] to close",
         ]
@@ -1224,6 +1464,24 @@ class Renderer:
 
         return self._overlay_box(base_output, talk_text, "TALK", width)
 
+    def _overlay_message(self, base_output: List[str], width: int) -> List[str]:
+        """Overlay message box."""
+        # Check if message expired
+        if time.time() > self._message_expire:
+            self._show_message_overlay = False
+            self._message_queue.clear()
+            return base_output
+
+        if not self._message_queue:
+            return base_output
+
+        # Build message content
+        msg_text = []
+        for line in self._message_queue:
+            msg_text.append(line)
+
+        return self._overlay_box(base_output, msg_text, "MESSAGE", width)
+
     def _overlay_inventory(self, base_output: List[str], game: "Game", width: int) -> List[str]:
         """Overlay inventory screen."""
         inv = game.inventory
@@ -1289,6 +1547,10 @@ class Renderer:
         result = base_output.copy()
         start_row = 4
         start_col = (width - box_width - 2) // 2
+        
+        # Get blessed terminal for color reset
+        from blessed import Terminal
+        _term = Terminal()
 
         for i, line in enumerate(box_lines):
             if start_row + i < len(result):
@@ -1298,7 +1560,8 @@ class Renderer:
                 left_part = _visible_slice(row, 0, start_col)
                 left_part = _visible_ljust(left_part, start_col)  # Ensure proper width
                 right_part = _visible_slice(row, start_col + box_visible_width, width)
-                new_row = left_part + line + right_part
+                # Add terminal reset after left_part to prevent color bleeding into overlay
+                new_row = left_part + _term.normal + line + right_part
                 result[start_row + i] = _visible_truncate(new_row, width)
 
         return result
@@ -1341,6 +1604,10 @@ class Renderer:
         result = base_output.copy()
         start_row = max(2, (len(result) - box_height) // 2 - 2)
         start_col = (width - box_width) // 2
+        
+        # Get blessed terminal for color reset
+        from blessed import Terminal
+        _term = Terminal()
 
         for i, line in enumerate(box_lines):
             if start_row + i < len(result):
@@ -1350,7 +1617,8 @@ class Renderer:
                 left_part = _visible_slice(row, 0, start_col)
                 left_part = _visible_ljust(left_part, start_col)
                 right_part = _visible_slice(row, start_col + box_visible_width, width)
-                new_row = left_part + line + right_part
+                # Add terminal reset after left_part to prevent color bleeding into overlay
+                new_row = left_part + _term.normal + line + right_part
                 result[start_row + i] = _visible_truncate(new_row, width)
 
         return result
@@ -1376,6 +1644,86 @@ class Renderer:
         self._show_celebration = False
         self._celebration_type = None
         self._celebration_message = ""
+
+    def _overlay_item_interaction(self, base_output: List[str], game: "Game", width: int) -> List[str]:
+        """Overlay item interaction animation."""
+        # Get current animation frame from game
+        frame = game.get_current_interaction_frame()
+        if not frame:
+            return base_output
+        
+        # Build content box
+        content = []
+        content.append("")  # Top padding
+        content.append(_visible_center("~~ INTERACTING ~~", 40))
+        content.append("")
+        
+        # Add animation frame
+        for line in frame:
+            content.append(_visible_center(line, 40))
+        
+        content.append("")
+        
+        # Add message if available
+        if hasattr(game, '_item_interaction_message') and game._item_interaction_message:
+            msg = game._item_interaction_message
+            # Wrap long messages
+            if len(msg) > 36:
+                words = msg.split()
+                line = ""
+                for word in words:
+                    if len(line) + len(word) + 1 <= 36:
+                        line += (" " if line else "") + word
+                    else:
+                        content.append(_visible_center(line, 40))
+                        line = word
+                if line:
+                    content.append(_visible_center(line, 40))
+            else:
+                content.append(_visible_center(msg, 40))
+        
+        content.append("")
+
+        # Create box
+        box_width = min(44, width - 4)
+        box_height = len(content) + 2
+
+        box_lines = []
+        # Top border
+        box_lines.append(self.term.cyan("╔" + "═" * (box_width - 2) + "╗"))
+        
+        for line in content:
+            # Truncate and pad to box width
+            centered = _visible_center(line, box_width - 4)
+            centered = _visible_truncate(centered, box_width - 4)
+            centered = _visible_ljust(centered, box_width - 4)
+            box_lines.append(self.term.cyan("║ ") + centered + self.term.cyan(" ║"))
+        
+        # Bottom border
+        box_lines.append(self.term.cyan("╚" + "═" * (box_width - 2) + "╝"))
+
+        # Overlay on base output
+        result = base_output.copy()
+        start_row = max(2, (len(result) - box_height) // 2 - 2)
+        start_col = (width - box_width) // 2
+        
+        # Get blessed terminal for color reset
+        from blessed import Terminal
+        _term = Terminal()
+
+        for i, line in enumerate(box_lines):
+            if start_row + i < len(result):
+                row = result[start_row + i]
+                # Use ANSI-aware slicing
+                box_visible_width = _visible_len(line)
+                left_part = _visible_slice(row, 0, start_col)
+                left_part = _visible_ljust(left_part, start_col)
+                right_part = _visible_slice(row, start_col + box_visible_width, width)
+                # Add terminal reset after left_part to prevent color bleeding into overlay
+                new_row = left_part + _term.normal + line + right_part
+                result[start_row + i] = _visible_truncate(new_row, width)
+
+        return result
 
     def _overlay_shop(self, base_output: List[str], habitat, width: int) -> List[str]:
         """Overlay shop interface."""
@@ -1436,10 +1784,24 @@ class Renderer:
         return None
 
     def show_message(self, message: str, duration: float = 5.0):
-        """Show a message to the player (default 5 seconds). If duration is 0, message persists until dismissed."""
-        self._message_queue.append(message)
-        if len(self._message_queue) > 5:
-            self._message_queue.pop(0)
+        """Show a message to the player as an overlay (default 5 seconds). If duration is 0, message persists until dismissed."""
+        import textwrap
+        
+        # Box width is min(50, width - 4), so content width is about 46 chars
+        wrap_width = 44
+        
+        # Split message by newlines first, then wrap each line
+        wrapped_lines = []
+        for line in message.split('\n'):
+            if line.strip():
+                # Wrap long lines
+                wrapped = textwrap.wrap(line, width=wrap_width)
+                wrapped_lines.extend(wrapped if wrapped else [''])
+            else:
+                wrapped_lines.append('')
+        
+        self._message_queue = wrapped_lines
+        self._show_message_overlay = True
         if duration > 0:
             self._message_expire = time.time() + duration
         else:
@@ -1450,6 +1812,7 @@ class Renderer:
         if self._message_queue:
             self._message_queue.clear()
         self._message_expire = 0
+        self._show_message_overlay = False
 
     def show_effect(self, effect_name: str, duration: float = 1.0):
         """Show a visual effect."""

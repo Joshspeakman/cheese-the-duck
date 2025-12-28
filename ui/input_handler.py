@@ -195,6 +195,7 @@ WORLD
 [C] - Crafting menu
 [R] - Building menu
 [B] - Open shop
+[U] - Use/interact items
 
 AUDIO
 -----
@@ -203,11 +204,20 @@ AUDIO
 [+] - Volume up
 [-] - Volume down
 
+FUN
+---
+[J] - Mini-games menu
+[K] - Random duck fact
+
 GAME
 ----
 [H] - Show this help
 [Q] - Save & quit
 [X] - Reset game
+
+TIP: You can also type
+commands like "play ball"
+in Talk mode [T]!
 """
 
 

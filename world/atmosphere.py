@@ -140,36 +140,239 @@ class SeasonalContent:
     decorations: List[str]  # Seasonal decorations
     mood_theme: str  # General mood of the season
     xp_bonus: float  # Season-wide XP modifier
+    color_palette: List[str] = field(default_factory=list)  # Colors for the season
+    special_activities: List[str] = field(default_factory=list)  # Seasonal activities
+    ambient_effects: List[str] = field(default_factory=list)  # Visual effects
+    greeting_messages: List[str] = field(default_factory=list)  # Seasonal greetings
+
+
+@dataclass
+class SeasonalEvent:
+    """A special seasonal event."""
+    id: str
+    name: str
+    description: str
+    season: Season
+    start_day: int  # Day of month to start (0 = season start)
+    duration_days: int
+    xp_bonus: float
+    special_drops: List[str]
+    activities: List[str]
+    messages: List[str]
+
+
+SEASONAL_EVENTS = {
+    # Spring Events
+    "cherry_blossom_festival": SeasonalEvent(
+        id="cherry_blossom_festival",
+        name="Cherry Blossom Festival",
+        description="Pink petals drift through the air!",
+        season=Season.SPRING,
+        start_day=1,
+        duration_days=14,
+        xp_bonus=1.3,
+        special_drops=["cherry_blossom", "pink_petal", "blossom_crown"],
+        activities=["petal_catching", "blossom_viewing", "picnic"],
+        messages=[
+            "The cherry blossoms are in full bloom!",
+            "*catches a falling petal* So pretty!",
+            "Spring renewal fills the air with magic!",
+        ],
+    ),
+    "egg_hunt": SeasonalEvent(
+        id="egg_hunt",
+        name="Egg Hunt Festival",
+        description="Colorful eggs are hidden everywhere!",
+        season=Season.SPRING,
+        start_day=15,
+        duration_days=7,
+        xp_bonus=1.5,
+        special_drops=["golden_egg", "rainbow_egg", "lucky_egg"],
+        activities=["egg_hunting", "egg_decorating", "egg_rolling"],
+        messages=[
+            "Eggs are hidden everywhere! Time to hunt!",
+            "*finds an egg* Ooh, this one sparkles!",
+            "The Egg Hunt is on! Happy searching!",
+        ],
+    ),
+    # Summer Events
+    "beach_day": SeasonalEvent(
+        id="beach_day",
+        name="Beach Day Celebration",
+        description="Sun, sand, and splashing fun!",
+        season=Season.SUMMER,
+        start_day=1,
+        duration_days=21,
+        xp_bonus=1.2,
+        special_drops=["seashell", "sand_dollar", "starfish"],
+        activities=["swimming", "sandcastle_building", "shell_collecting"],
+        messages=[
+            "Beach Day! Time for sun and splashing!",
+            "*splashes in the waves* Summer fun!",
+            "The water is perfect today!",
+        ],
+    ),
+    "fireworks_show": SeasonalEvent(
+        id="fireworks_show",
+        name="Fireworks Festival",
+        description="The night sky lights up with colors!",
+        season=Season.SUMMER,
+        start_day=20,
+        duration_days=3,
+        xp_bonus=2.0,
+        special_drops=["sparkler", "firework_fragment", "star_piece"],
+        activities=["firework_watching", "sparkler_waving", "night_picnic"],
+        messages=[
+            "*BOOM* The fireworks are starting!",
+            "Ooooh! Aaaaah! *watches in awe*",
+            "The night sky is so colorful!",
+        ],
+    ),
+    # Fall Events
+    "harvest_festival": SeasonalEvent(
+        id="harvest_festival",
+        name="Harvest Festival",
+        description="Celebrate the autumn bounty!",
+        season=Season.FALL,
+        start_day=1,
+        duration_days=14,
+        xp_bonus=1.3,
+        special_drops=["golden_wheat", "harvest_corn", "autumn_apple"],
+        activities=["apple_picking", "pie_baking", "hayride"],
+        messages=[
+            "The Harvest Festival begins! So much good food!",
+            "*munches on apple* Autumn treats are the best!",
+            "Time to gather the harvest!",
+        ],
+    ),
+    "spooky_night": SeasonalEvent(
+        id="spooky_night",
+        name="Spooky Night",
+        description="Things go bump in the night!",
+        season=Season.FALL,
+        start_day=24,
+        duration_days=7,
+        xp_bonus=1.5,
+        special_drops=["candy_corn", "ghost_feather", "pumpkin_piece"],
+        activities=["trick_or_treating", "costume_wearing", "spooky_stories"],
+        messages=[
+            "*spooky quack* BOO! Happy Spooky Night!",
+            "Is that a ghost?! Oh wait, it's just fog...",
+            "Time for tricks and treats!",
+        ],
+    ),
+    # Winter Events
+    "first_snow": SeasonalEvent(
+        id="first_snow",
+        name="First Snow Day",
+        description="The first magical snowfall of winter!",
+        season=Season.WINTER,
+        start_day=1,
+        duration_days=7,
+        xp_bonus=1.4,
+        special_drops=["snowflake", "icicle", "snow_globe_shard"],
+        activities=["snowball_making", "snow_angel", "sledding"],
+        messages=[
+            "It's snowing! The first snow of winter!",
+            "*catches snowflake on tongue* Magical!",
+            "Everything is covered in white!",
+        ],
+    ),
+    "winter_festival": SeasonalEvent(
+        id="winter_festival",
+        name="Winter Festival",
+        description="A celebration of warmth and giving!",
+        season=Season.WINTER,
+        start_day=20,
+        duration_days=5,
+        xp_bonus=2.0,
+        special_drops=["wrapped_gift", "candy_cane", "holiday_cookie"],
+        activities=["gift_giving", "carol_singing", "cocoa_drinking"],
+        messages=[
+            "Happy Winter Festival! Time for warmth and joy!",
+            "*sips hot cocoa* So cozy!",
+            "The spirit of giving fills the air!",
+        ],
+    ),
+    "new_year_countdown": SeasonalEvent(
+        id="new_year_countdown",
+        name="New Year Countdown",
+        description="Ring in the new year!",
+        season=Season.WINTER,
+        start_day=28,
+        duration_days=4,
+        xp_bonus=1.5,
+        special_drops=["confetti", "party_hat", "lucky_charm"],
+        activities=["countdown", "resolution_making", "celebration"],
+        messages=[
+            "The new year approaches! Time to celebrate!",
+            "3... 2... 1... HAPPY NEW YEAR!",
+            "New year, new adventures!",
+        ],
+    ),
+}
 
 
 SEASONAL_CONTENT = {
     Season.SPRING: SeasonalContent(
-        items_available=["spring_flower", "easter_egg", "cherry_blossom"],
-        events=["cherry_blossom_festival", "spring_cleaning", "egg_hunt"],
-        decorations=["flower_wreath", "pastel_banner", "bunny_statue"],
+        items_available=["spring_flower", "easter_egg", "cherry_blossom", "butterfly_net", "flower_seeds"],
+        events=["cherry_blossom_festival", "egg_hunt"],
+        decorations=["flower_wreath", "pastel_banner", "bunny_statue", "blossom_tree", "butterfly_garden"],
         mood_theme="renewal",
         xp_bonus=1.1,
+        color_palette=["pink", "light_green", "yellow", "lavender"],
+        special_activities=["flower_picking", "butterfly_watching", "spring_cleaning"],
+        ambient_effects=["petals_falling", "birds_singing", "gentle_breeze"],
+        greeting_messages=[
+            "Spring has sprung! New beginnings await!",
+            "The flowers are blooming just for you!",
+            "Spring energy fills the air!",
+        ],
     ),
     Season.SUMMER: SeasonalContent(
-        items_available=["watermelon", "sunscreen", "beach_ball", "ice_cream"],
-        events=["beach_day", "fireworks_show", "summer_festival"],
-        decorations=["beach_umbrella", "sandcastle", "tiki_torch"],
+        items_available=["watermelon", "sunscreen", "beach_ball", "ice_cream", "sunglasses", "seashell"],
+        events=["beach_day", "fireworks_show"],
+        decorations=["beach_umbrella", "sandcastle", "tiki_torch", "palm_tree", "hammock"],
         mood_theme="adventure",
         xp_bonus=1.0,
+        color_palette=["bright_blue", "yellow", "orange", "coral"],
+        special_activities=["swimming", "sunbathing", "beach_exploring"],
+        ambient_effects=["sun_rays", "heat_shimmer", "waves"],
+        greeting_messages=[
+            "Summer vibes! Time for adventure!",
+            "The sun is shining just for you!",
+            "Hot summer days call for cool fun!",
+        ],
     ),
     Season.FALL: SeasonalContent(
-        items_available=["pumpkin", "autumn_leaf", "candy_corn", "apple_cider"],
-        events=["harvest_festival", "spooky_night", "thanksgiving_feast"],
-        decorations=["scarecrow", "hay_bale", "pumpkin_lantern"],
+        items_available=["pumpkin", "autumn_leaf", "candy_corn", "apple_cider", "acorn", "warm_scarf"],
+        events=["harvest_festival", "spooky_night"],
+        decorations=["scarecrow", "hay_bale", "pumpkin_lantern", "leaf_pile", "harvest_basket"],
         mood_theme="cozy",
         xp_bonus=1.15,
+        color_palette=["orange", "red", "brown", "gold"],
+        special_activities=["leaf_jumping", "apple_picking", "cozy_napping"],
+        ambient_effects=["leaves_falling", "crisp_air", "warm_glow"],
+        greeting_messages=[
+            "Cozy autumn days are here!",
+            "The leaves are changing colors!",
+            "Fall brings warmth to the heart!",
+        ],
     ),
     Season.WINTER: SeasonalContent(
-        items_available=["hot_cocoa", "snowball", "candy_cane", "wrapped_gift"],
+        items_available=["hot_cocoa", "snowball", "candy_cane", "wrapped_gift", "mittens", "warm_blanket"],
         events=["first_snow", "winter_festival", "new_year_countdown"],
-        decorations=["snow_duck", "string_lights", "wreath"],
+        decorations=["snow_duck", "string_lights", "wreath", "snowman", "ice_sculpture"],
         mood_theme="warmth",
         xp_bonus=1.2,
+        color_palette=["white", "blue", "silver", "red", "green"],
+        special_activities=["snowball_fights", "ice_skating", "cozy_cuddling"],
+        ambient_effects=["snowfall", "frost", "twinkling_lights"],
+        greeting_messages=[
+            "Winter wonderland! Stay warm and cozy!",
+            "The snow makes everything magical!",
+            "Warm hearts in cold weather!",
+        ],
     ),
 }
 
@@ -257,8 +460,55 @@ FORTUNE_TYPES = {
 
 
 # =============================================================================
-# RARE VISITORS
+# RARE VISITORS & RECURRING FRIENDS
 # =============================================================================
+
+class FriendshipLevel(Enum):
+    """Friendship levels with recurring visitors."""
+    STRANGER = "stranger"
+    ACQUAINTANCE = "acquaintance"
+    FRIEND = "friend"
+    GOOD_FRIEND = "good_friend"
+    BEST_FRIEND = "best_friend"
+
+
+FRIENDSHIP_THRESHOLDS = {
+    FriendshipLevel.STRANGER: 0,
+    FriendshipLevel.ACQUAINTANCE: 3,
+    FriendshipLevel.FRIEND: 8,
+    FriendshipLevel.GOOD_FRIEND: 15,
+    FriendshipLevel.BEST_FRIEND: 25,
+}
+
+
+@dataclass
+class VisitorFriendship:
+    """Tracks friendship with a recurring visitor."""
+    visitor_id: str
+    visit_count: int = 0
+    friendship_points: int = 0
+    last_visit: Optional[str] = None
+    gifts_received: List[str] = field(default_factory=list)
+    special_moments: List[str] = field(default_factory=list)
+
+    @property
+    def level(self) -> FriendshipLevel:
+        """Get current friendship level."""
+        for level in reversed(list(FriendshipLevel)):
+            if self.friendship_points >= FRIENDSHIP_THRESHOLDS[level]:
+                return level
+        return FriendshipLevel.STRANGER
+
+    def add_visit(self):
+        """Record a visit."""
+        self.visit_count += 1
+        self.friendship_points += 2
+        self.last_visit = datetime.now().isoformat()
+
+    def add_interaction(self, points: int = 1):
+        """Add points from interaction."""
+        self.friendship_points += points
+
 
 @dataclass
 class Visitor:
@@ -275,6 +525,17 @@ class Visitor:
     stay_duration_hours: float
     special_interaction: str  # What you can do with them
     mood_boost: int
+    # New fields for recurring visitors
+    is_recurring: bool = True
+    personality: str = "friendly"
+    favorite_weather: Optional[str] = None
+    favorite_season: Optional[str] = None
+    return_greetings: List[str] = field(default_factory=list)
+    friend_greetings: List[str] = field(default_factory=list)
+    best_friend_greetings: List[str] = field(default_factory=list)
+    special_gifts: List[str] = field(default_factory=list)  # Rare gifts at higher friendship
+    conversations: List[str] = field(default_factory=list)
+    secrets: List[str] = field(default_factory=list)  # Unlocked at best friend level
 
 
 VISITORS = {
@@ -296,6 +557,30 @@ VISITORS = {
         stay_duration_hours=2,
         special_interaction="chat",
         mood_boost=15,
+        personality="boisterous",
+        favorite_weather="sunny",
+        favorite_season="summer",
+        return_greetings=[
+            "*HONK* Gerald is back! Did you miss the honks?",
+            "*happy honk* Cheese! My favorite duck!",
+            "*HONK HONK* The pond wasn't the same without you!",
+        ],
+        friend_greetings=[
+            "*affectionate honk* Cheese, my dear friend!",
+            "*HONK* Gerald brought you something special today!",
+        ],
+        best_friend_greetings=[
+            "*gentle honk* Best friend Cheese! Gerald missed you so much!",
+            "*HONK* Gerald considers you family now!",
+        ],
+        special_gifts=["golden_feather", "goose_down_pillow", "honorary_goose_badge"],
+        conversations=[
+            "Gerald once flew across three lakes in one day! *proud honk*",
+            "Did you know geese can remember faces? Gerald remembers yours!",
+            "The secret to a good honk is confidence! HONK!",
+            "Gerald's grandmother was a legendary honker. True story!",
+        ],
+        secrets=["Gerald is actually afraid of butterflies... don't tell anyone!"],
     ),
     "wise_owl": Visitor(
         id="wise_owl",
@@ -315,6 +600,30 @@ VISITORS = {
         stay_duration_hours=1,
         special_interaction="learn",
         mood_boost=20,
+        personality="scholarly",
+        favorite_weather="foggy",
+        favorite_season="fall",
+        return_greetings=[
+            "*hoo* We meet again, studious one!",
+            "*wise nod* The Professor has returned with more knowledge!",
+            "*hoo hoo* Your quest for wisdom brings me back!",
+        ],
+        friend_greetings=[
+            "*hoo* My friend! I've discovered fascinating new facts!",
+            "*warm hoo* It gladdens me to see you again, fellow seeker!",
+        ],
+        best_friend_greetings=[
+            "*affectionate hoo* My dearest pupil! I have much to share!",
+            "*hoo* You've grown so wise! I'm proud of you!",
+        ],
+        special_gifts=["ancient_tome", "wisdom_crystal", "star_chart"],
+        conversations=[
+            "Did you know owls can rotate their heads 270 degrees?",
+            "The stars tell stories if you know how to read them...",
+            "In my 200 years, I've learned that kindness is true wisdom.",
+            "The oldest tree in this forest holds many secrets...",
+        ],
+        secrets=["I once failed a flying test. Even professors make mistakes!"],
     ),
     "lost_duckling": Visitor(
         id="lost_duckling",
@@ -333,10 +642,34 @@ VISITORS = {
         stay_duration_hours=3,
         special_interaction="comfort",
         mood_boost=25,
+        personality="shy",
+        favorite_weather="sunny",
+        favorite_season="spring",
+        return_greetings=[
+            "*excited peep* It's me, Pip! I came back to visit!",
+            "*peep peep* I found my way here on purpose this time!",
+            "*happy peep* I missed you, big duck friend!",
+        ],
+        friend_greetings=[
+            "*confident peep* Cheese! My best big friend!",
+            "*peep* I practiced flying just to see you!",
+        ],
+        best_friend_greetings=[
+            "*peep* You're like a sibling to me, Cheese!",
+            "*loving peep* I tell all my friends about you!",
+        ],
+        special_gifts=["friendship_bracelet", "tiny_flower_crown", "drawn_picture"],
+        conversations=[
+            "I'm getting better at swimming! Watch! *splash*",
+            "My mom says I'll be big like you someday!",
+            "Do you think I'll learn to fly soon?",
+            "I made you a drawing! It's... um... abstract!",
+        ],
+        secrets=["I'm not really lost anymore. I just like visiting you!"],
     ),
     "traveling_merchant": Visitor(
         id="traveling_merchant",
-        name="Marco the Merchant Duck",
+        name="Marco the Merchant",
         description="A traveling merchant duck appears with wares!",
         ascii_art=[
             "   ,__,",
@@ -352,6 +685,30 @@ VISITORS = {
         stay_duration_hours=1.5,
         special_interaction="trade",
         mood_boost=10,
+        personality="entrepreneurial",
+        favorite_weather="windy",
+        favorite_season="fall",
+        return_greetings=[
+            "*quack* Marco returns with new treasures!",
+            "*merchant quack* The trading routes led me back!",
+            "*happy quack* My favorite customer! More exotic goods!",
+        ],
+        friend_greetings=[
+            "*friendly quack* For you, friend, the best prices!",
+            "*quack* Marco saved something special just for you!",
+        ],
+        best_friend_greetings=[
+            "*warm quack* My dearest business partner and friend!",
+            "*quack* For you, priceless friendship! (Also good deals)",
+        ],
+        special_gifts=["exotic_spices", "treasure_map", "enchanted_compass"],
+        conversations=[
+            "I once traded a single crumb for a whole loaf in the south!",
+            "The markets in the Eastern Ponds are incredible!",
+            "Marco's secret: always smile while negotiating!",
+            "I've traveled to 47 different ponds! This is number 48!",
+        ],
+        secrets=["I keep the best items for my friends. Don't tell!"],
     ),
     "celebrity_duck": Visitor(
         id="celebrity_duck",
@@ -371,10 +728,34 @@ VISITORS = {
         stay_duration_hours=0.5,
         special_interaction="impress",
         mood_boost=30,
+        personality="regal",
+        favorite_weather="sunny",
+        favorite_season="spring",
+        return_greetings=[
+            "*pleased quack* One simply had to return!",
+            "*regal nod* The Queen's Court pales in comparison!",
+            "*dignified quack* One has spoken highly of you at court!",
+        ],
+        friend_greetings=[
+            "*warm royal quack* Ah, my dear friend! How delightful!",
+            "*drops formality* It's good to see you again, truly!",
+        ],
+        best_friend_greetings=[
+            "*genuine smile* You know, you can call me just Quacks!",
+            "*royal embrace* The crown means nothing next to true friendship!",
+        ],
+        special_gifts=["royal_decree", "diamond_crumb", "noble_title"],
+        conversations=[
+            "Being royalty is lonely. One appreciates genuine company.",
+            "The crown is surprisingly heavy! Both literally and figuratively.",
+            "Between us, the royal bread is actually quite stale.",
+            "My great-great-grandfather invented the formal waddle!",
+        ],
+        secrets=["I actually prefer common bread over fancy crumpets!"],
     ),
     "mysterious_crow": Visitor(
         id="mysterious_crow",
-        name="The Mysterious Crow",
+        name="Corvus the Crow",
         description="A cryptic crow appears with secrets...",
         ascii_art=[
             "   ___",
@@ -390,6 +771,116 @@ VISITORS = {
         stay_duration_hours=1,
         special_interaction="mystery",
         mood_boost=5,
+        personality="mysterious",
+        favorite_weather="foggy",
+        favorite_season="winter",
+        return_greetings=[
+            "*knowing caw* The shadows whispered of our reunion...",
+            "*cryptic caw* I foresaw this meeting in the darkness...",
+            "*mysterious caw* The threads of fate intertwine again...",
+        ],
+        friend_greetings=[
+            "*warmer caw* You... are different. I trust you.",
+            "*caw* The secrets I share with you... are real.",
+        ],
+        best_friend_greetings=[
+            "*genuine caw* You see past the mystery. I appreciate that.",
+            "*soft caw* Few earn Corvus's true friendship. You have.",
+        ],
+        special_gifts=["shadow_feather", "prophecy_scroll", "void_crystal"],
+        conversations=[
+            "The old oak tree... it remembers everything...",
+            "I collect shiny things. Not because I must... because I can.",
+            "There are 7 secret passages in this area. I've found 6.",
+            "The moon tells me stories. They're usually sad.",
+        ],
+        secrets=["I'm not actually mysterious. I just have social anxiety."],
+    ),
+    "butterfly_fairy": Visitor(
+        id="butterfly_fairy",
+        name="Flutter",
+        description="A magical butterfly with gossamer wings appears!",
+        ascii_art=[
+            "  \\  /",
+            "  (oo)",
+            "  /  \\",
+            "  ~~~~",
+        ],
+        greeting="*sparkle* Hello little duck! I'm Flutter! *twirl*",
+        farewell="*shimmer* May flowers bloom wherever you waddle!",
+        gift_chance=0.9,
+        possible_gifts=["flower_petal", "fairy_dust", "rainbow_scale"],
+        appearance_chance=0.004,
+        stay_duration_hours=1,
+        special_interaction="wish",
+        mood_boost=20,
+        personality="whimsical",
+        favorite_weather="sunny",
+        favorite_season="spring",
+        return_greetings=[
+            "*happy flutter* I followed the flowers back to you!",
+            "*twirl* The spring breeze carried me here!",
+            "*sparkle* You're like a flower I keep coming back to!",
+        ],
+        friend_greetings=[
+            "*affectionate flutter* My flower friend!",
+            "*sparkle* I dreamed of visiting you!",
+        ],
+        best_friend_greetings=[
+            "*gentle landing* You're my favorite duck in all the meadows!",
+            "*shimmer* Our friendship is like the prettiest flower!",
+        ],
+        special_gifts=["enchanted_pollen", "rainbow_wing_scale", "eternal_bloom"],
+        conversations=[
+            "I've visited 10,000 flowers! You're the only duck!",
+            "The roses told me you're very kind!",
+            "I can taste colors! Purple is the yummiest!",
+            "My wings have stories written in them!",
+        ],
+        secrets=["I'm 300 years old! Butterflies live long in the magic meadows!"],
+    ),
+    "grumpy_toad": Visitor(
+        id="grumpy_toad",
+        name="Grumble the Toad",
+        description="A grumpy toad hops by, looking annoyed!",
+        ascii_art=[
+            "  @..@",
+            " (---)",
+            " (---)",
+            "  \\_/",
+        ],
+        greeting="*ribbit* What? I'm just passing through. Don't get excited.",
+        farewell="*grumble* Fine, this was... acceptable. Don't expect me back.",
+        gift_chance=0.4,
+        possible_gifts=["pond_lily", "lucky_stone", "mud_cake"],
+        appearance_chance=0.006,
+        stay_duration_hours=0.5,
+        special_interaction="listen",
+        mood_boost=5,
+        personality="grumpy",
+        favorite_weather="rainy",
+        favorite_season="fall",
+        return_greetings=[
+            "*annoyed ribbit* Ugh, I'm here again. Don't read into it.",
+            "*grumble* My other ponds were worse. That's the only reason.",
+            "*ribbit* Stop smiling. This isn't a friendship thing.",
+        ],
+        friend_greetings=[
+            "*embarrassed ribbit* I... might have missed you. A little.",
+            "*softer grumble* You're tolerable, I suppose.",
+        ],
+        best_friend_greetings=[
+            "*quiet ribbit* You're the only one who gets me, duck.",
+            "*almost smiling* I come here because I like you. There. I said it.",
+        ],
+        special_gifts=["rare_swamp_crystal", "ancient_tadpole_fossil", "grumble_cookie"],
+        conversations=[
+            "Everyone thinks toads are grumpy. It's a defense mechanism.",
+            "I had a friend once. A dragonfly. Good times.",
+            "Rain is the only weather that makes sense.",
+            "My swamp is actually very cozy. Not that I'm inviting you.",
+        ],
+        secrets=["I write poetry. It's all about friendship. Tell no one."],
     ),
 }
 
@@ -413,6 +904,7 @@ class AtmosphereManager:
         self.last_weather_check: Optional[str] = None
         self.visitor_history: List[str] = []  # Track who has visited
         self.weather_history: List[str] = []  # Recent weather
+        self.visitor_friendships: Dict[str, VisitorFriendship] = {}  # Track friendships
 
         # Generate initial states
         self._generate_weather()
@@ -570,15 +1062,77 @@ class AtmosphereManager:
             except:
                 self.current_visitor = None
 
-        # Maybe spawn new visitor
-        if not self.current_visitor and random.random() < 0.01:  # Check every update
+        # Maybe spawn new visitor (higher chance for friends)
+        if not self.current_visitor and random.random() < 0.01:
+            # Build weighted visitor list (friends visit more often)
+            candidates = []
             for visitor_id, visitor in VISITORS.items():
-                if random.random() < visitor.appearance_chance:
-                    self.current_visitor = (visitor, datetime.now().isoformat())
-                    self.visitor_history.append(visitor_id)
-                    return visitor.greeting
+                base_chance = visitor.appearance_chance
+
+                # Increase chance for visitors with higher friendship
+                if visitor_id in self.visitor_friendships:
+                    friendship = self.visitor_friendships[visitor_id]
+                    if friendship.level == FriendshipLevel.BEST_FRIEND:
+                        base_chance *= 3.0
+                    elif friendship.level == FriendshipLevel.GOOD_FRIEND:
+                        base_chance *= 2.5
+                    elif friendship.level == FriendshipLevel.FRIEND:
+                        base_chance *= 2.0
+                    elif friendship.level == FriendshipLevel.ACQUAINTANCE:
+                        base_chance *= 1.5
+
+                # Increase chance if weather/season matches preference
+                if self.current_weather and visitor.favorite_weather:
+                    if self.current_weather.weather_type.value == visitor.favorite_weather:
+                        base_chance *= 1.5
+
+                if visitor.favorite_season and self.current_season.value == visitor.favorite_season:
+                    base_chance *= 1.3
+
+                if random.random() < base_chance:
+                    candidates.append(visitor_id)
+
+            if candidates:
+                visitor_id = random.choice(candidates)
+                visitor = VISITORS[visitor_id]
+                self.current_visitor = (visitor, datetime.now().isoformat())
+                self.visitor_history.append(visitor_id)
+
+                # Track friendship
+                if visitor_id not in self.visitor_friendships:
+                    self.visitor_friendships[visitor_id] = VisitorFriendship(visitor_id=visitor_id)
+                self.visitor_friendships[visitor_id].add_visit()
+
+                return self._get_visitor_greeting(visitor, visitor_id)
 
         return None
+
+    def _get_visitor_greeting(self, visitor: Visitor, visitor_id: str) -> str:
+        """Get appropriate greeting based on friendship level."""
+        if visitor_id not in self.visitor_friendships:
+            return visitor.greeting
+
+        friendship = self.visitor_friendships[visitor_id]
+        visit_count = friendship.visit_count
+
+        # First visit
+        if visit_count <= 1:
+            return visitor.greeting
+
+        # Get greeting based on friendship level
+        level = friendship.level
+        if level == FriendshipLevel.BEST_FRIEND and visitor.best_friend_greetings:
+            return random.choice(visitor.best_friend_greetings)
+        elif level in [FriendshipLevel.GOOD_FRIEND, FriendshipLevel.FRIEND] and visitor.friend_greetings:
+            return random.choice(visitor.friend_greetings)
+        elif visitor.return_greetings:
+            return random.choice(visitor.return_greetings)
+
+        return visitor.greeting
+
+    def get_visitor_friendship(self, visitor_id: str) -> Optional[VisitorFriendship]:
+        """Get friendship data for a visitor."""
+        return self.visitor_friendships.get(visitor_id)
 
     def get_weather_display(self) -> List[str]:
         """Get ASCII art for current weather."""
@@ -641,26 +1195,145 @@ class AtmosphereManager:
             return None
 
         visitor, _ = self.current_visitor
+        visitor_id = visitor.id
 
-        # Check for gift
+        # Add friendship points for interaction
+        if visitor_id in self.visitor_friendships:
+            self.visitor_friendships[visitor_id].add_interaction(1)
+
+        friendship = self.visitor_friendships.get(visitor_id)
+        level = friendship.level if friendship else FriendshipLevel.STRANGER
+
+        # Check for gift (better gifts at higher friendship)
         gift = None
-        if random.random() < visitor.gift_chance and visitor.possible_gifts:
-            gift = random.choice(visitor.possible_gifts)
-            message = f"{visitor.name}: *gives you something* Here, take this!"
+        gift_chance = visitor.gift_chance
+
+        # Higher friendship = better gift chance
+        if level == FriendshipLevel.BEST_FRIEND:
+            gift_chance = min(1.0, gift_chance + 0.3)
+        elif level == FriendshipLevel.GOOD_FRIEND:
+            gift_chance = min(1.0, gift_chance + 0.2)
+        elif level == FriendshipLevel.FRIEND:
+            gift_chance = min(1.0, gift_chance + 0.1)
+
+        if random.random() < gift_chance:
+            # Best friends get special gifts
+            if level == FriendshipLevel.BEST_FRIEND and visitor.special_gifts:
+                gift = random.choice(visitor.special_gifts)
+                message = f"{visitor.name}: *gives you something special* For my best friend!"
+            elif visitor.possible_gifts:
+                gift = random.choice(visitor.possible_gifts)
+                message = f"{visitor.name}: *gives you something* Here, take this!"
+            else:
+                gift = None
+                message = f"{visitor.name}: I wish I had something to give you!"
         else:
-            responses = [
-                f"{visitor.name}: *quacks happily* Nice to meet you!",
-                f"{visitor.name}: This is a lovely place you have here!",
-                f"{visitor.name}: *nods approvingly* You take good care of Cheese!",
-            ]
-            message = random.choice(responses)
+            # Get conversation based on friendship level
+            if level == FriendshipLevel.BEST_FRIEND and visitor.secrets:
+                # Chance to share a secret
+                if random.random() < 0.3:
+                    secret = random.choice(visitor.secrets)
+                    message = f"{visitor.name}: *whispers* Can I tell you a secret? {secret}"
+                elif visitor.conversations:
+                    message = f"{visitor.name}: {random.choice(visitor.conversations)}"
+                else:
+                    message = f"{visitor.name}: *happy* It's always so nice to see you!"
+            elif visitor.conversations and random.random() < 0.5:
+                message = f"{visitor.name}: {random.choice(visitor.conversations)}"
+            else:
+                responses = [
+                    f"{visitor.name}: *quacks happily* Nice to meet you!",
+                    f"{visitor.name}: This is a lovely place you have here!",
+                    f"{visitor.name}: *nods approvingly* You take good care of Cheese!",
+                ]
+                message = random.choice(responses)
+
+        # Track gift if received
+        if gift and friendship:
+            friendship.gifts_received.append(gift)
 
         return (message, gift)
+
+    def get_all_friendships(self) -> List[Tuple[Visitor, VisitorFriendship]]:
+        """Get all visitor friendships for display."""
+        result = []
+        for visitor_id, friendship in self.visitor_friendships.items():
+            if visitor_id in VISITORS:
+                result.append((VISITORS[visitor_id], friendship))
+        return sorted(result, key=lambda x: x[1].friendship_points, reverse=True)
 
     def get_seasonal_items(self) -> List[str]:
         """Get items available this season."""
         content = SEASONAL_CONTENT.get(self.current_season)
         return content.items_available if content else []
+
+    def get_active_seasonal_event(self) -> Optional[SeasonalEvent]:
+        """Check if there's an active seasonal event."""
+        now = datetime.now()
+        day_of_month = now.day
+
+        for event_id, event in SEASONAL_EVENTS.items():
+            if event.season != self.current_season:
+                continue
+
+            # Check if event is active
+            start = event.start_day
+            end = start + event.duration_days
+
+            if start <= day_of_month < end:
+                return event
+
+        return None
+
+    def get_seasonal_greeting(self) -> str:
+        """Get a seasonal greeting message."""
+        content = SEASONAL_CONTENT.get(self.current_season)
+        if content and content.greeting_messages:
+            return random.choice(content.greeting_messages)
+        return "Welcome back!"
+
+    def get_seasonal_activity_bonus(self, activity: str) -> float:
+        """Get bonus multiplier for seasonal activities."""
+        content = SEASONAL_CONTENT.get(self.current_season)
+        if content and activity in content.special_activities:
+            return 1.5  # 50% bonus for in-season activities
+
+        # Check active events
+        event = self.get_active_seasonal_event()
+        if event and activity in event.activities:
+            return event.xp_bonus
+
+        return 1.0
+
+    def get_seasonal_drop_bonus(self) -> Tuple[float, List[str]]:
+        """Get drop rate bonus and special drops for current season/event."""
+        bonus = 1.0
+        special_drops = []
+
+        # Check active event
+        event = self.get_active_seasonal_event()
+        if event:
+            bonus = event.xp_bonus
+            special_drops = event.special_drops
+
+        return bonus, special_drops
+
+    def get_seasonal_ambient_effects(self) -> List[str]:
+        """Get ambient visual effects for current season."""
+        content = SEASONAL_CONTENT.get(self.current_season)
+        return content.ambient_effects if content else []
+
+    def get_seasonal_decorations(self) -> List[str]:
+        """Get available seasonal decorations."""
+        content = SEASONAL_CONTENT.get(self.current_season)
+        return content.decorations if content else []
+
+    def get_event_message(self) -> Optional[str]:
+        """Get a message about the current event if active."""
+        event = self.get_active_seasonal_event()
+        if event and event.messages:
+            return random.choice(event.messages)
+        return None
 
     def get_status_display(self) -> Dict[str, str]:
         """Get current atmosphere status for display."""
@@ -685,6 +1358,17 @@ class AtmosphereManager:
 
     def to_dict(self) -> dict:
         """Convert to dictionary for saving."""
+        # Save visitor friendships
+        friendships_data = {}
+        for visitor_id, friendship in self.visitor_friendships.items():
+            friendships_data[visitor_id] = {
+                "visit_count": friendship.visit_count,
+                "friendship_points": friendship.friendship_points,
+                "last_visit": friendship.last_visit,
+                "gifts_received": friendship.gifts_received[-20:],  # Keep last 20
+                "special_moments": friendship.special_moments[-10:],  # Keep last 10
+            }
+
         return {
             "current_season": self.current_season.value,
             "current_weather": {
@@ -703,6 +1387,7 @@ class AtmosphereManager:
             "last_fortune_date": self.last_fortune_date,
             "visitor_history": self.visitor_history[-20:],  # Keep last 20
             "weather_history": self.weather_history,
+            "visitor_friendships": friendships_data,
         }
 
     @classmethod
@@ -746,6 +1431,18 @@ class AtmosphereManager:
         atm.last_fortune_date = data.get("last_fortune_date")
         atm.visitor_history = data.get("visitor_history", [])
         atm.weather_history = data.get("weather_history", [])
+
+        # Load visitor friendships
+        if data.get("visitor_friendships"):
+            for visitor_id, f_data in data["visitor_friendships"].items():
+                atm.visitor_friendships[visitor_id] = VisitorFriendship(
+                    visitor_id=visitor_id,
+                    visit_count=f_data.get("visit_count", 0),
+                    friendship_points=f_data.get("friendship_points", 0),
+                    last_visit=f_data.get("last_visit"),
+                    gifts_received=f_data.get("gifts_received", []),
+                    special_moments=f_data.get("special_moments", []),
+                )
 
         return atm
 

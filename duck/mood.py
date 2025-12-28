@@ -31,38 +31,38 @@ class MoodInfo:
 # Mood descriptions and effects
 MOOD_DATA = {
     MoodState.ECSTATIC: {
-        "description": "absolutely thrilled",
-        "expressions": ["!!", "^o^", "*sparkle*"],
+        "description": "suspiciously smug about life",
+        "expressions": ["!!", "^o^", "*gloat*"],
         "can_play": True,
         "can_learn": True,
     },
     MoodState.HAPPY: {
-        "description": "happy and content",
+        "description": "tolerating existence quite well",
         "expressions": ["^-^", ":)", "*waggle*"],
         "can_play": True,
         "can_learn": True,
     },
     MoodState.CONTENT: {
-        "description": "doing okay",
+        "description": "not actively plotting revenge",
         "expressions": ["-.-", "~", "*chill*"],
         "can_play": True,
         "can_learn": True,
     },
     MoodState.GRUMPY: {
-        "description": "a bit grumpy",
+        "description": "radiating 'don't test me' energy",
         "expressions": [">:(", "-_-", "*huff*"],
         "can_play": True,
         "can_learn": False,
     },
     MoodState.SAD: {
-        "description": "feeling down",
+        "description": "dramatically brooding",
         "expressions": [":(", "T-T", "*sigh*"],
         "can_play": False,
         "can_learn": False,
     },
     MoodState.MISERABLE: {
-        "description": "very unhappy",
-        "expressions": ["T_T", ";-;", "*sob*"],
+        "description": "convinced the world is against him",
+        "expressions": ["T_T", ";-;", "*gloom*"],
         "can_play": False,
         "can_learn": False,
     },

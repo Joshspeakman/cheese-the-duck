@@ -27,15 +27,22 @@ class AutonomousAction(Enum):
     FLAP_WINGS = "flap_wings"
     WIGGLE = "wiggle"
     TRIP = "trip"
+    # Structure-related actions
+    NAP_IN_NEST = "nap_in_nest"
+    HIDE_IN_SHELTER = "hide_in_shelter"
+    USE_BIRD_BATH = "use_bird_bath"
+    ADMIRE_GARDEN = "admire_garden"
+    INSPECT_WORKBENCH = "inspect_workbench"
 
 
 # Action data: base utility, need it helps with, personality affinity
 ACTION_DATA = {
     AutonomousAction.IDLE: {
         "messages": [
-            "*stands there*",
-            "*blinks*",
-            "*exists quietly*",
+            "*stands there menacingly*",
+            "*blinks judgmentally*",
+            "*exists with attitude*",
+            "*contemplates the void*",
         ],
         "base_utility": 0.1,
         "need_bonus": None,
@@ -44,10 +51,10 @@ ACTION_DATA = {
     },
     AutonomousAction.WADDLE: {
         "messages": [
-            "*waddle waddle*",
-            "*waddles around happily*",
-            "*waddles in a circle*",
-            "*waddles to nowhere in particular*",
+            "*waddle waddle* Get outta my way!",
+            "*waddles around like I own the place*",
+            "*waddles menacingly in your direction*",
+            "*waddles to nowhere. None of your business where.*",
         ],
         "base_utility": 0.3,
         "need_bonus": ("fun", 0.3),
@@ -56,11 +63,11 @@ ACTION_DATA = {
     },
     AutonomousAction.QUACK: {
         "messages": [
-            "QUACK!",
-            "Quack quack!",
-            "quack?",
-            "*enthusiastic quacking*",
-            "QUAAAACK!",
+            "QUACK! Yeah I said it!",
+            "Quack quack! (That's 'pay attention to me' in duck)",
+            "quack? ...Don't make me repeat myself.",
+            "*quacks aggressively* WHAT?!",
+            "QUAAAACK! I do what I want!",
         ],
         "base_utility": 0.25,
         "need_bonus": ("social", 0.4),
@@ -69,9 +76,9 @@ ACTION_DATA = {
     },
     AutonomousAction.PREEN: {
         "messages": [
-            "*preens feathers*",
-            "*carefully arranges feathers*",
-            "*fluffs up*",
+            "*preens feathers smugly* Perfection takes work.",
+            "*arranges feathers* Unlike SOME people, I have standards.",
+            "*fluffs up* Yes, I AM this fabulous naturally.",
         ],
         "base_utility": 0.2,
         "need_bonus": ("cleanliness", 0.5),
@@ -81,10 +88,10 @@ ACTION_DATA = {
     },
     AutonomousAction.NAP: {
         "messages": [
-            "*takes a little nap*",
-            "zzZ...",
-            "*dozes off briefly*",
-            "*sleepy duck noises*",
+            "*takes a nap* Wake me and you're dead to me.",
+            "zzZ... *mumbles about bread*",
+            "*dozes off* This is MY time. Go away.",
+            "*sleeping duck noises* ...bread... revenge... zzz...",
         ],
         "base_utility": 0.15,
         "need_bonus": ("energy", 0.6),
@@ -94,10 +101,10 @@ ACTION_DATA = {
     },
     AutonomousAction.LOOK_AROUND: {
         "messages": [
-            "*looks around curiously*",
-            "*tilts head*",
-            "*scans the area*",
-            "*notices something interesting*",
+            "*looks around suspiciously* I don't trust this place.",
+            "*tilts head* Something's off. I can feel it.",
+            "*scans for threats* Always stay vigilant.",
+            "*spots something* ...Probably nothing. Probably.",
         ],
         "base_utility": 0.2,
         "need_bonus": ("fun", 0.2),
@@ -106,10 +113,10 @@ ACTION_DATA = {
     },
     AutonomousAction.SPLASH: {
         "messages": [
-            "*splashes in puddle*",
-            "*SPLASH SPLASH*",
-            "*happy water noises*",
-            "*gets a bit wet*",
+            "*splashes EVERYWHERE* DEAL WITH IT!",
+            "*SPLASH SPLASH* Collateral damage is acceptable!",
+            "*aggressive water noises* I do what I want!",
+            "*gets everything wet* Oops. ...Not sorry though.",
         ],
         "base_utility": 0.25,
         "need_bonus": ("fun", 0.5),
@@ -119,12 +126,11 @@ ACTION_DATA = {
     },
     AutonomousAction.STARE_BLANKLY: {
         "messages": [
-            "*stares at nothing*",
-            "*vacant expression*",
-            "...",
-            "*thinking about... wait what*",
-            "*forgot what it was doing*",
-            "*stares at wall*",
+            "*stares into the abyss* ...It blinks first.",
+            "*vacant expression* I'm thinking deep thoughts. Probably.",
+            "... (I forgot what I was mad about)",
+            "*stares at wall* It knows what it did.",
+            "*forgot what it was doing* This never happened.",
         ],
         "base_utility": 0.15,
         "need_bonus": None,
@@ -133,10 +139,10 @@ ACTION_DATA = {
     },
     AutonomousAction.CHASE_BUG: {
         "messages": [
-            "*chases imaginary bug*",
-            "*THERE'S A BUG wait no*",
-            "*pounces on nothing*",
-            "*very focused on... something*",
+            "*chases bug* GET BACK HERE COWARD!",
+            "*THERE'S A BUG* IT'S PERSONAL NOW!",
+            "*pounces viciously* ...It was dust. Whatever.",
+            "*hunting mode activated* Nowhere to run!",
         ],
         "base_utility": 0.2,
         "need_bonus": ("fun", 0.4),
@@ -146,10 +152,10 @@ ACTION_DATA = {
     },
     AutonomousAction.FLAP_WINGS: {
         "messages": [
-            "*flap flap flap*",
-            "*flaps excitedly*",
-            "*attempts to fly* ...nope",
-            "*dramatic wing flapping*",
+            "*flap flap flap* Fear my wingspan!",
+            "*flaps dramatically* Behold my POWER!",
+            "*attempts to fly* One day... one day.",
+            "*assertive wing flapping* You WISH you had these.",
         ],
         "base_utility": 0.2,
         "need_bonus": ("energy", 0.3),
@@ -159,10 +165,10 @@ ACTION_DATA = {
     },
     AutonomousAction.WIGGLE: {
         "messages": [
-            "*wiggles happily*",
-            "*excited wiggling*",
-            "*tail waggle*",
-            "*whole body wiggle*",
+            "*wiggles smugly* Yeah, I'm adorable. So what?",
+            "*excited wiggling* Don't read into this!",
+            "*tail waggle* I'm not happy, I'm... stretching.",
+            "*whole body wiggle* Okay FINE, I'm in a good mood. For now.",
         ],
         "base_utility": 0.25,
         "need_bonus": ("fun", 0.3),
@@ -171,15 +177,85 @@ ACTION_DATA = {
     },
     AutonomousAction.TRIP: {
         "messages": [
-            "*trips over nothing*",
-            "*stumbles* I meant to do that!",
-            "*faceplants* ...quack",
-            "*falls over own feet*",
+            "*trips* THAT WAS INTENTIONAL. Don't laugh.",
+            "*stumbles* I meant to do that! It's called STYLE.",
+            "*faceplants* ...You saw nothing. NOTHING.",
+            "*falls over* The floor is UNEVEN. Clearly.",
         ],
         "base_utility": 0.05,
         "need_bonus": None,
         "personality_bonus": ("clever_derpy", -0.6),  # Very derpy behavior
         "duration": 2.0,
+    },
+    # Structure-related actions (these require structures to be available)
+    AutonomousAction.NAP_IN_NEST: {
+        "messages": [
+            "*claims nest* This is MY spot now.",
+            "*curls up in nest* Don't even THINK about waking me.",
+            "*nestles aggressively* Peak comfort achieved.",
+            "*tucks beak under wing* The world can wait.",
+        ],
+        "base_utility": 0.0,  # Only available when nest exists
+        "need_bonus": ("energy", 0.8),
+        "personality_bonus": ("active_lazy", -0.3),
+        "duration": 6.0,
+        "effect": {"energy": 10},
+        "requires_structure": "nest",
+    },
+    AutonomousAction.HIDE_IN_SHELTER: {
+        "messages": [
+            "*hides* I'm not scared, I'm being STRATEGIC.",
+            "*shelters inside* Only an idiot stays in that weather.",
+            "*waits out the storm* I'll be out when I FEEL like it.",
+            "*peeks out* ...Is it safe yet? Not that I care.",
+        ],
+        "base_utility": 0.0,  # Only used during bad weather
+        "need_bonus": None,
+        "personality_bonus": ("brave_timid", -0.4),
+        "duration": 5.0,
+        "effect": {"energy": 2},
+        "requires_structure": "shelter",
+    },
+    AutonomousAction.USE_BIRD_BATH: {
+        "messages": [
+            "*splashes in bird bath* MY spa. No sharing.",
+            "*bathes dramatically* This is self-care. Look it up.",
+            "*fluffs up in water* I'm not vain. I'm HYGIENIC.",
+            "*luxury bath time* I deserve this. Obviously.",
+        ],
+        "base_utility": 0.0,  # Only when bird bath exists
+        "need_bonus": ("cleanliness", 0.7),
+        "personality_bonus": ("neat_messy", -0.2),
+        "duration": 4.0,
+        "effect": {"cleanliness": 8, "fun": 3},
+        "requires_structure": "bird_bath",
+    },
+    AutonomousAction.ADMIRE_GARDEN: {
+        "messages": [
+            "*judges the flowers* Not bad. I've seen better.",
+            "*sniffs the garden* ...Acceptable.",
+            "*watches plants grow* Hurry up, I don't have all day.",
+            "*inspects garden critically* Needs more... something.",
+        ],
+        "base_utility": 0.0,  # Only when garden exists
+        "need_bonus": ("fun", 0.3),
+        "personality_bonus": None,
+        "duration": 3.0,
+        "effect": {"fun": 2},
+        "requires_structure": "garden_plot",
+    },
+    AutonomousAction.INSPECT_WORKBENCH: {
+        "messages": [
+            "*examines workbench* I could build something. If I felt like it.",
+            "*inspects tools* Amateurs. I could do better.",
+            "*thinks about projects* Too many ideas, too little appreciation.",
+            "*reorganizes smugly* There. Now it's organized MY way.",
+        ],
+        "base_utility": 0.0,  # Only when workbench exists
+        "need_bonus": None,
+        "personality_bonus": ("clever_derpy", 0.3),
+        "duration": 2.5,
+        "requires_structure": "workbench",
     },
 }
 
@@ -204,6 +280,19 @@ class BehaviorAI:
         self._action_history: List[AutonomousAction] = []
         self._current_action: Optional[ActionResult] = None
         self._action_end_time: float = 0.0
+        
+        # Context for structure-aware behavior
+        self._available_structures: set = set()  # Set of available structure types
+        self._is_bad_weather: bool = False  # Whether to seek shelter
+        self._weather_type: Optional[str] = None  # Current weather type
+
+    def set_context(self, available_structures: set = None, 
+                    is_bad_weather: bool = False, weather_type: str = None):
+        """Set context for structure-aware behavior decisions."""
+        if available_structures is not None:
+            self._available_structures = available_structures
+        self._is_bad_weather = is_bad_weather
+        self._weather_type = weather_type
 
     def should_act(self, current_time: float) -> bool:
         """Check if it's time for a new autonomous action."""
@@ -307,7 +396,39 @@ class BehaviorAI:
         scores = []
 
         for action, data in ACTION_DATA.items():
+            # Skip structure-dependent actions if structure not available
+            required_struct = data.get("requires_structure")
+            if required_struct:
+                # Map structure types to what we track
+                struct_mapping = {
+                    "nest": ["basic_nest", "cozy_nest", "deluxe_nest"],
+                    "shelter": ["basic_nest", "cozy_nest", "deluxe_nest", 
+                               "mud_hut", "wooden_cottage", "stone_house"],
+                    "bird_bath": ["bird_bath"],
+                    "garden_plot": ["garden_plot"],
+                    "workbench": ["workbench"],
+                }
+                required_ids = struct_mapping.get(required_struct, [required_struct])
+                has_structure = any(s in self._available_structures for s in required_ids)
+                
+                if not has_structure:
+                    continue  # Skip this action entirely
+            
             score = data["base_utility"]
+            
+            # Structure-based actions get bonus utility when available
+            if required_struct:
+                score = 0.25  # Base utility when structure exists
+                
+                # HIDE_IN_SHELTER gets massive bonus during bad weather
+                if action == AutonomousAction.HIDE_IN_SHELTER and self._is_bad_weather:
+                    score = 0.8  # Very high utility during storms
+                
+                # NAP_IN_NEST preferred over regular NAP
+                if action == AutonomousAction.NAP_IN_NEST:
+                    need_value = getattr(duck.needs, "energy", 50)
+                    if need_value < 40:  # Tired duck prefers nest
+                        score = 0.6
 
             # Add bonus based on relevant need (lower need = higher bonus)
             if data["need_bonus"]:
@@ -338,6 +459,14 @@ class BehaviorAI:
                 if action in [AutonomousAction.IDLE, AutonomousAction.NAP,
                               AutonomousAction.STARE_BLANKLY]:
                     score += 0.15
+            
+            # Weather influences for non-structure actions
+            if self._is_bad_weather:
+                # Reduce outdoor activity scores during bad weather
+                outdoor_actions = [AutonomousAction.WADDLE, AutonomousAction.SPLASH,
+                                   AutonomousAction.CHASE_BUG, AutonomousAction.LOOK_AROUND]
+                if action in outdoor_actions:
+                    score *= 0.5
 
             scores.append((action, max(0, score)))
 
