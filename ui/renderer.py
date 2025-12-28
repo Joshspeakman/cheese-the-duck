@@ -1967,46 +1967,41 @@ class Renderer:
             footer: Footer text with controls hint
         """
         lines = []
-        lines.append(f"{'─' * 3} {title} {'─' * 3}")
+        lines.append(f"═══ {title} ═══")
         lines.append("")
 
-        for i, item in enumerate(items):
-            is_selected = (i == selected_index)
-            enabled = item.get('enabled', True)
-            label = item.get('label', f'Item {i+1}')
-            desc = item.get('description', '')
+        if not items:
+            lines.append("  (no items)")
+        else:
+            for i, item in enumerate(items):
+                is_selected = (i == selected_index)
+                enabled = item.get('enabled', True)
+                label = item.get('label', f'Item {i+1}')
+                desc = item.get('description', '')
 
-            # Build prefix
-            if is_selected:
-                prefix = self.term.reverse + " ▶ "
-            else:
-                prefix = "   "
+                # Build prefix - use >> for selected
+                if is_selected:
+                    prefix = ">> "
+                else:
+                    prefix = "   "
 
-            # Build number
-            if show_numbers:
-                num = f"[{i+1}] "
-            else:
-                num = ""
+                # Build number
+                if show_numbers:
+                    num = f"[{i+1}] "
+                else:
+                    num = ""
 
-            # Build label with enabled state
-            if not enabled:
-                label_text = self.term.dim(f"{num}{label} (locked)")
-            elif is_selected:
-                label_text = f"{num}{label}"
-            else:
-                label_text = f"{num}{label}"
+                # Build label with enabled state
+                if not enabled:
+                    label_text = f"{num}{label} (locked)"
+                else:
+                    label_text = f"{num}{label}"
 
-            # Full line
-            if is_selected:
-                line = f"{prefix}{label_text} {self.term.normal}"
-            else:
-                line = f"{prefix}{label_text}"
+                lines.append(f"{prefix}{label_text}")
 
-            lines.append(line)
-
-            # Show description for selected item
-            if is_selected and desc and enabled:
-                lines.append(f"      {self.term.cyan(desc)}")
+                # Show description for selected item
+                if is_selected and desc:
+                    lines.append(f"       {desc}")
 
         lines.append("")
         lines.append(footer)

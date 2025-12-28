@@ -2542,7 +2542,7 @@ class Game:
             items.append({
                 'id': recipe.id,
                 'label': f"{'✓' if can_craft else '✗'} {recipe.name}",
-                'description': f"Materials: {', '.join(f'{v} {k}' for k, v in recipe.materials.items())}",
+                'description': f"Needs: {', '.join(f'{v} {k}' for k, v in recipe.ingredients.items())}",
                 'enabled': can_craft,
                 'data': recipe
             })
