@@ -1,6 +1,7 @@
 """
 Progression and addiction systems - The Sims/Animal Crossing style engagement mechanics.
 Implements: XP, levels, streaks, daily rewards, collectibles, milestones, FOMO events.
+Enhanced with psychological engagement patterns from Tamagotchi/Animal Crossing research.
 """
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
@@ -8,6 +9,182 @@ from datetime import datetime, timedelta
 from enum import Enum
 import random
 import math
+
+
+# =============================================================================
+# STREAK MULTIPLIER SYSTEM
+# =============================================================================
+
+# XP multiplier based on current streak
+STREAK_XP_MULTIPLIERS = {
+    1: 1.0,     # Day 1: Normal XP
+    3: 1.1,     # 3+ days: 10% bonus
+    7: 1.25,    # Week+: 25% bonus
+    14: 1.5,    # 2 weeks+: 50% bonus
+    30: 2.0,    # Month+: Double XP!
+    60: 2.5,    # 2 months+: 2.5x
+    100: 3.0,   # 100+ days: Triple XP!
+}
+
+# Streak loss messages (emotional engagement)
+STREAK_LOSS_MESSAGES = [
+    "Oh no! Cheese missed you... Your {n}-day streak ended. 😢",
+    "Cheese waited all day yesterday... The {n}-day streak is broken.",
+    "The {n}-day streak has ended, but Cheese is happy you're back!",
+    "Your {n}-day streak ended... but every journey starts fresh!",
+    "Cheese: 'I counted {n} days... where did you go?' 🥺",
+]
+
+# Streak recovery bonuses (incentive to return after losing streak)
+STREAK_RECOVERY_DAYS = 3  # Days to earn a "recovery bonus"
+
+# Messages for streak milestones (celebratory)
+STREAK_CELEBRATION_MESSAGES = {
+    3: "3 days! Cheese is starting to recognize you! 🌟",
+    7: "🎉 ONE WEEK STREAK! Cheese does a happy dance! 🦆💃",
+    14: "✨ TWO WEEKS! You and Cheese are becoming best friends!",
+    21: "🌈 THREE WEEKS! Cheese gave you a special feather!",
+    30: "🎊 ONE MONTH! WOW! Cheese is SO HAPPY! 🦆❤️ DOUBLE XP UNLOCKED!",
+    50: "⭐ FIFTY DAYS! Cheese made you a tiny crown! 👑",
+    100: "🏆 ONE HUNDRED DAYS! LEGENDARY! Cheese will remember this forever! ✨",
+    365: "🎆 ONE YEAR WITH CHEESE! Eternal bond formed! 🦆💕",
+}
+
+
+# =============================================================================
+# SURPRISE REWARDS SYSTEM (Variable ratio reinforcement)
+# =============================================================================
+
+# Random gift announcements (builds excitement)
+SURPRISE_GIFT_MESSAGES = [
+    "✨ Cheese found something for you! ✨",
+    "🎁 Look what Cheese discovered! 🎁",
+    "⭐ A lucky find! ⭐",
+    "🌟 Something special appeared! 🌟",
+    "💫 Cheese wants to share this with you! 💫",
+]
+
+# Lucky events that can trigger randomly
+LUCKY_EVENTS = [
+    {"name": "Lucky Crumb", "chance": 0.05, "reward_type": "xp", "value": "15", "message": "Found a lucky crumb! +15 XP"},
+    {"name": "Shiny Discovery", "chance": 0.03, "reward_type": "xp", "value": "25", "message": "Cheese found something shiny! +25 XP"},
+    {"name": "Secret Stash", "chance": 0.01, "reward_type": "item", "value": "bread", "message": "A secret bread stash! 🍞"},
+    {"name": "Hidden Treasure", "chance": 0.005, "reward_type": "item", "value": "fancy_bread", "message": "Hidden treasure! Fancy bread! 🥐"},
+    {"name": "Magic Moment", "chance": 0.002, "reward_type": "collectible", "value": "treasures:crystal_shard", "message": "✨ A magical crystal appeared! ✨"},
+]
+
+# Time-based bonus multipliers (engagement hooks)
+TIME_BONUSES = {
+    "morning": {"hours": (6, 9), "xp_mult": 1.2, "message": "🌅 Early bird bonus! +20% XP"},
+    "lunch": {"hours": (12, 13), "xp_mult": 1.15, "message": "☀️ Lunch break bonus! +15% XP"},
+    "evening": {"hours": (18, 21), "xp_mult": 1.25, "message": "🌆 Evening chill bonus! +25% XP"},
+    "night_owl": {"hours": (23, 24), "xp_mult": 1.3, "message": "🦉 Night owl bonus! +30% XP"},
+    "midnight": {"hours": (0, 2), "xp_mult": 1.5, "message": "🌙 Midnight dedication! +50% XP"},
+}
+
+# =============================================================================
+# TIME-BASED GREETINGS (Daily rituals)
+# =============================================================================
+
+TIME_GREETINGS = {
+    "early_morning": {
+        "hours": (5, 7),
+        "greetings": [
+            "🌅 *yawns* Oh! You're up early! Cheese is still sleepy...",
+            "🌄 The early bird gets the worm... but ducks get bread!",
+            "☀️ *stretches wings* Good morning, friend! Let's make today great!",
+        ]
+    },
+    "morning": {
+        "hours": (7, 12),
+        "greetings": [
+            "☀️ Good morning! Cheese is ready for adventure!",
+            "🌞 *happy quack* A new day! What will we do today?",
+            "🍞 Morning! Is it breakfast time? It's always breakfast time!",
+        ]
+    },
+    "afternoon": {
+        "hours": (12, 17),
+        "greetings": [
+            "☀️ Good afternoon! Perfect time for a snack!",
+            "🌤️ *waddles over* Hey! I was just thinking about you!",
+            "🌻 The day is going great! How about you?",
+        ]
+    },
+    "evening": {
+        "hours": (17, 21),
+        "greetings": [
+            "🌆 Good evening! Time to wind down together.",
+            "🌅 *content sigh* Nothing like a relaxing evening with a friend.",
+            "✨ The sunset is beautiful... almost as beautiful as bread!",
+        ]
+    },
+    "night": {
+        "hours": (21, 24),
+        "greetings": [
+            "🌙 *sleepy quack* It's getting late... but I'm glad you're here.",
+            "✨ The stars are out! Make a wish for more crumbs!",
+            "🌟 A night owl, huh? Cheese approves.",
+        ]
+    },
+    "late_night": {
+        "hours": (0, 5),
+        "greetings": [
+            "🌙 *whispers* It's very late... but Cheese is always here for you.",
+            "💤 Couldn't sleep? Me neither. Let's hang out.",
+            "🌟 The world is quiet, but our friendship is loud! ...that sounded cooler in my head.",
+        ]
+    },
+}
+
+# =============================================================================
+# COMFORT MESSAGES (Reduce anxiety, encourage return)
+# =============================================================================
+
+COMFORT_MESSAGES = {
+    "time_away_short": [  # 1-3 days away
+        "You were gone! But Cheese is just happy you're back! 💕",
+        "I missed you! But I found some good crumbs while you were away.",
+        "Welcome back, friend! Everything is better now!",
+    ],
+    "time_away_medium": [  # 4-7 days away
+        "It's been a while! Cheese thought about you every day. 🥺",
+        "You came back! I knew you would! *happy waddle*",
+        "Life was quiet without you... but now it's good again! 💕",
+    ],
+    "time_away_long": [  # 8+ days away
+        "You're back!! Cheese never gave up hope! 💕💕💕",
+        "*runs over* I MISSED YOU SO MUCH! Don't worry, I was okay!",
+        "No matter how long you're gone, Cheese will always be here waiting. 🦆❤️",
+    ],
+    "encouragement": [
+        "You're doing great! Cheese is proud of you! 🌟",
+        "Every moment with you is special! ✨",
+        "Just being here makes Cheese happy! 💕",
+        "You're Cheese's favorite human! ...Don't tell the others.",
+        "Thanks for taking care of me! You're the best! 🦆",
+    ],
+    "gentle_reminder": [
+        "Cheese will always be here when you need a break! 🌈",
+        "Take your time! No rush! Cheese is very patient. 💕",
+        "Remember: there's no wrong way to be a duck friend!",
+    ],
+}
+
+# =============================================================================
+# AMBIENT EVENTS (Peaceful background happenings)
+# =============================================================================
+
+AMBIENT_EVENTS = [
+    "*A gentle breeze ruffles Cheese's feathers*",
+    "*Sunlight sparkles on the pond*",
+    "*A butterfly floats by peacefully*",
+    "*Cheese finds a comfy spot and settles in*",
+    "*The world feels calm and safe*",
+    "*Birds sing softly in the distance*",
+    "*A leaf drifts down gently*",
+    "*Cheese takes a deep, contented breath*",
+]
 
 
 class RewardType(Enum):
@@ -193,6 +370,12 @@ class ProgressionSystem:
         self.daily_reward_claimed: bool = False
         self.days_played: int = 0
 
+        # Enhanced streak tracking
+        self.streak_lost_today: bool = False  # Did we lose a streak today?
+        self.previous_streak: int = 0  # Streak before it was lost (for emotional messaging)
+        self.days_since_streak_loss: int = 0  # Track recovery period
+        self.streak_celebration_shown: Dict[int, bool] = {}  # Track which celebrations shown
+
         # Collectibles: category -> item_id -> owned
         self.collectibles: Dict[str, Dict[str, bool]] = {}
         for category in COLLECTIBLES:
@@ -237,8 +420,12 @@ class ProgressionSystem:
         """
         Add XP and check for level up.
         Returns new level if leveled up, None otherwise.
+        XP is multiplied based on current streak.
         """
-        self.xp += amount
+        # Apply streak multiplier
+        multiplier = self.get_streak_multiplier()
+        boosted_amount = int(amount * multiplier)
+        self.xp += boosted_amount
         old_level = self.level
 
         # Check for level up
@@ -255,6 +442,21 @@ class ProgressionSystem:
             return self.level
         return None
 
+    def get_streak_multiplier(self) -> float:
+        """Get the current XP multiplier based on streak."""
+        multiplier = 1.0
+        for threshold, mult in sorted(STREAK_XP_MULTIPLIERS.items()):
+            if self.current_streak >= threshold:
+                multiplier = mult
+        return multiplier
+
+    def get_streak_multiplier_display(self) -> str:
+        """Get a display string for current streak bonus."""
+        mult = self.get_streak_multiplier()
+        if mult > 1.0:
+            return f"🔥 {mult}x XP"
+        return ""
+
     def get_xp_progress(self) -> Tuple[int, int, float]:
         """Get current XP, XP needed for next level, and percentage."""
         current_level_xp = xp_for_level(self.level)
@@ -264,34 +466,51 @@ class ProgressionSystem:
         percentage = (xp_in_level / xp_needed) * 100 if xp_needed > 0 else 100
         return xp_in_level, xp_needed, percentage
 
-    def check_login(self) -> Tuple[bool, List[Reward]]:
+    def check_login(self) -> Tuple[bool, List[Reward], Optional[str]]:
         """
         Check daily login, update streak, return daily rewards if applicable.
-        Returns (is_new_day, rewards_list)
+        Returns (is_new_day, rewards_list, special_message)
+        Special message can be streak loss, streak celebration, or None.
         """
         today = datetime.now().strftime("%Y-%m-%d")
 
         if self.last_login_date == today:
-            return False, []
+            return False, [], None
 
         # It's a new day!
         is_first_login = self.last_login_date is None
         rewards = []
+        special_message = None
+        self.streak_lost_today = False
 
         if not is_first_login:
             # Check if streak continues
             yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
             if self.last_login_date == yesterday:
                 self.current_streak += 1
+                self.days_since_streak_loss = 0
             else:
-                # Streak broken!
+                # Streak broken! Track for emotional messaging
+                if self.current_streak > 1:
+                    self.streak_lost_today = True
+                    self.previous_streak = self.current_streak
+                    # Generate emotional loss message
+                    msg_template = random.choice(STREAK_LOSS_MESSAGES)
+                    special_message = msg_template.format(n=self.previous_streak)
                 self.current_streak = 1
+                self.days_since_streak_loss += 1
         else:
             self.current_streak = 1
 
         # Update longest streak
         if self.current_streak > self.longest_streak:
             self.longest_streak = self.current_streak
+
+        # Check for streak celebration milestone
+        if self.current_streak in STREAK_CELEBRATION_MESSAGES:
+            if not self.streak_celebration_shown.get(self.current_streak, False):
+                special_message = STREAK_CELEBRATION_MESSAGES[self.current_streak]
+                self.streak_celebration_shown[self.current_streak] = True
 
         # Increment days played
         self.days_played += 1
@@ -307,6 +526,10 @@ class ProgressionSystem:
         elif self.current_streak >= 7 and self.current_streak % 7 == 0:
             rewards.append(Reward(RewardType.XP, "50", description="Weekly streak bonus!"))
 
+        # Recovery bonus - after losing a streak, if you come back within 3 days
+        if 0 < self.days_since_streak_loss <= STREAK_RECOVERY_DAYS and not self.streak_lost_today:
+            rewards.append(Reward(RewardType.XP, "25", description="Welcome back bonus!"))
+
         self.last_login_date = today
         self.daily_reward_claimed = False
 
@@ -314,7 +537,7 @@ class ProgressionSystem:
         self.milestone_progress["streak"] = self.current_streak
         self.milestone_progress["days_played"] = self.days_played
 
-        return True, rewards
+        return True, rewards, special_message
 
     def claim_daily_rewards(self) -> List[Reward]:
         """Claim daily rewards. Returns list of rewards or empty if already claimed."""
@@ -515,6 +738,134 @@ class ProgressionSystem:
         self.add_collectible(collectible_id)
         return collectible_id
 
+    def check_lucky_event(self) -> Optional[Tuple[str, Reward]]:
+        """
+        Check for random lucky events (variable ratio reinforcement).
+        Returns (message, reward) if lucky event triggers, None otherwise.
+        """
+        for event in LUCKY_EVENTS:
+            if random.random() < event["chance"]:
+                reward = Reward(
+                    reward_type=RewardType(event["reward_type"]),
+                    value=event["value"],
+                    description=event["name"],
+                    rare=event["chance"] < 0.01,
+                )
+                return (event["message"], reward)
+        return None
+
+    def check_time_bonus(self) -> Optional[Tuple[str, float]]:
+        """
+        Check if current time qualifies for a time bonus.
+        Returns (message, multiplier) if in bonus window, None otherwise.
+        """
+        current_hour = datetime.now().hour
+        for bonus_name, bonus_data in TIME_BONUSES.items():
+            start_hour, end_hour = bonus_data["hours"]
+            if start_hour <= current_hour < end_hour:
+                return (bonus_data["message"], bonus_data["xp_mult"])
+        return None
+
+    def get_surprise_gift(self) -> Optional[Tuple[str, Reward]]:
+        """
+        Random surprise gift (used for dopamine hits during play).
+        Lower chance than lucky events but better rewards.
+        """
+        if random.random() > 0.008:  # 0.8% chance
+            return None
+
+        gift_message = random.choice(SURPRISE_GIFT_MESSAGES)
+
+        # Pick a random reward type with weighted probabilities
+        roll = random.random()
+        if roll < 0.4:
+            # XP bonus
+            xp_amount = random.choice([20, 30, 50, 75])
+            reward = Reward(RewardType.XP, str(xp_amount), description="Surprise XP!")
+        elif roll < 0.7:
+            # Item
+            items = ["bread", "seeds", "lettuce", "corn", "grapes"]
+            item = random.choice(items)
+            reward = Reward(RewardType.ITEM, item, description="Surprise gift!")
+        elif roll < 0.9:
+            # Better item
+            items = ["worm", "fancy_bread", "rubber_duck"]
+            item = random.choice(items)
+            reward = Reward(RewardType.ITEM, item, description="Special gift!", rare=True)
+        else:
+            # Random collectible chance
+            collectible = self.random_collectible_drop(base_chance=1.0)
+            if collectible:
+                reward = Reward(RewardType.COLLECTIBLE, collectible, description="Rare find!", rare=True)
+            else:
+                reward = Reward(RewardType.XP, "100", description="Bonus XP!", rare=True)
+
+        return (gift_message, reward)
+
+    def roll_interaction_bonus(self) -> Optional[Tuple[str, int]]:
+        """
+        Chance for bonus XP on interactions (slot machine psychology).
+        Returns (message, bonus_xp) or None.
+        """
+        roll = random.random()
+        if roll < 0.1:  # 10% chance for small bonus
+            return ("Nice! +5 bonus XP!", 5)
+        elif roll < 0.03:  # 3% chance for medium bonus
+            return ("Great! +15 bonus XP!", 15)
+        elif roll < 0.005:  # 0.5% chance for jackpot
+            return ("🎰 JACKPOT! +50 bonus XP! 🎰", 50)
+        return None
+
+    def get_time_greeting(self) -> str:
+        """Get a greeting appropriate for the current time of day."""
+        current_hour = datetime.now().hour
+        for period, data in TIME_GREETINGS.items():
+            start_hour, end_hour = data["hours"]
+            if start_hour <= current_hour < end_hour:
+                return random.choice(data["greetings"])
+            elif period == "late_night" and (current_hour >= start_hour or current_hour < end_hour):
+                return random.choice(data["greetings"])
+        return random.choice(TIME_GREETINGS["morning"]["greetings"])
+
+    def get_time_away_message(self, days_away: int) -> Optional[str]:
+        """Get a comfort message based on how long the player was away."""
+        if days_away <= 0:
+            return None
+        elif days_away <= 3:
+            return random.choice(COMFORT_MESSAGES["time_away_short"])
+        elif days_away <= 7:
+            return random.choice(COMFORT_MESSAGES["time_away_medium"])
+        else:
+            return random.choice(COMFORT_MESSAGES["time_away_long"])
+
+    def get_encouragement(self) -> str:
+        """Get a random encouragement message."""
+        return random.choice(COMFORT_MESSAGES["encouragement"])
+
+    def get_gentle_reminder(self) -> str:
+        """Get a gentle reminder message."""
+        return random.choice(COMFORT_MESSAGES["gentle_reminder"])
+
+    def get_ambient_event(self, chance: float = 0.05) -> Optional[str]:
+        """
+        Get a random ambient event description.
+        Low chance to trigger for peaceful atmosphere.
+        """
+        if random.random() < chance:
+            return random.choice(AMBIENT_EVENTS)
+        return None
+
+    def calculate_days_away(self) -> int:
+        """Calculate how many days since last login."""
+        if not self.last_login_date:
+            return 0
+        try:
+            last = datetime.strptime(self.last_login_date, "%Y-%m-%d")
+            today = datetime.now()
+            return (today - last).days
+        except:
+            return 0
+
     def to_dict(self) -> dict:
         """Convert to dictionary for saving."""
         return {
@@ -526,6 +877,11 @@ class ProgressionSystem:
             "last_login_date": self.last_login_date,
             "daily_reward_claimed": self.daily_reward_claimed,
             "days_played": self.days_played,
+            # Enhanced streak tracking
+            "previous_streak": self.previous_streak,
+            "days_since_streak_loss": self.days_since_streak_loss,
+            "streak_celebration_shown": self.streak_celebration_shown,
+            # Collections and milestones
             "collectibles": self.collectibles,
             "milestone_progress": self.milestone_progress,
             "claimed_milestones": self.claimed_milestones,
@@ -557,6 +913,13 @@ class ProgressionSystem:
         prog.last_login_date = data.get("last_login_date")
         prog.daily_reward_claimed = data.get("daily_reward_claimed", False)
         prog.days_played = data.get("days_played", 0)
+        # Enhanced streak tracking
+        prog.previous_streak = data.get("previous_streak", 0)
+        prog.days_since_streak_loss = data.get("days_since_streak_loss", 0)
+        prog.streak_celebration_shown = data.get("streak_celebration_shown", {})
+        # Convert string keys to int (JSON serialization converts int keys to strings)
+        prog.streak_celebration_shown = {int(k): v for k, v in prog.streak_celebration_shown.items()}
+        # Collections and milestones
         prog.collectibles = data.get("collectibles", {})
         prog.milestone_progress = data.get("milestone_progress", {})
         prog.claimed_milestones = data.get("claimed_milestones", {})

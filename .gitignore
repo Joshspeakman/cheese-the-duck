@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+# LLM model files (large, download separately)
+models/*.gguf
+
+# Virtual environment for AI support
+.venv/
+
 # Distribution / packaging
 .Python
 build/

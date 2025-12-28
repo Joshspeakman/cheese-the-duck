@@ -1,1 +1,3 @@
 blessed>=1.20.0
+# Optional: Install llama-cpp-python for AI conversations
+# pip install llama-cpp-python

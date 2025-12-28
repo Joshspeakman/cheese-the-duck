@@ -9,6 +9,7 @@ class GameAction(Enum):
     """Actions that can be triggered by input."""
     NONE = auto()
     QUIT = auto()
+    RETURN_TO_TITLE = auto()
     FEED = auto()
     PLAY = auto()
     CLEAN = auto()
@@ -28,6 +29,10 @@ KEY_BINDINGS = {
     # Quit
     "q": GameAction.QUIT,
     "Q": GameAction.QUIT,
+    
+    # Return to title
+    "r": GameAction.RETURN_TO_TITLE,
+    "R": GameAction.RETURN_TO_TITLE,
 
     # Interactions (F, P, C, E, Z + number keys)
     "f": GameAction.FEED,
@@ -186,9 +191,24 @@ CONTROLS
 [S] - View stats
 [I] - Open inventory
 [G] - View goals
-[M] - Toggle sound
+[B] - Open shop
 [H] - Show this help
+
+AUDIO
+-----
+[M] - Toggle sound on/off
+[N] - Toggle music on/off
+[+] - Volume up
+[-] - Volume down
+
+GAME
+----
+[R] - Return to title
 [Q] - Save & quit
+
+ADVANCED
+--------
+[X] - Reset game (start over)
 
 The duck will also do things
 on its own when you're idle!

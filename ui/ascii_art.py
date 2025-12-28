@@ -475,89 +475,96 @@ DUCK_ART = {
 # =============================================================================
 
 EMOTION_CLOSEUPS = {
+    "normal": [
+        "              ",
+        "  (o      o)  ",
+        "              ",
+        "      >       ",
+        "              ",
+    ],
     "happy": [
-        "  (^)  (^)  ",
-        "   \\____/   ",
-        "    \\__/    ",
-        "     |>     ",
-        "  * HAPPY *  ",
+        "              ",
+        "  (^      ^)  ",
+        "              ",
+        "      >       ",
+        "              ",
     ],
     "ecstatic": [
-        " *(*) (*)* ",
-        "   \\____/   ",
-        "    \\O/     ",
-        "     O>  !! ",
-        " ECSTATIC!! ",
+        "           !! ",
+        "  (★      ★)  ",
+        "              ",
+        "      >       ",
+        "              ",
     ],
     "sad": [
-        "  (;)  (;)  ",
-        "   \\____/   ",
-        "    \\__/    ",
-        "     |>  '  ",
-        "  * sad *   ",
+        "            · ",
+        "  (;      ;)  ",
+        "              ",
+        "      >       ",
+        "              ",
     ],
     "miserable": [
-        "  (T)  (T)  ",
-        " ' \\____/ ' ",
-        "    \\__/    ",
-        "  '  |>  '  ",
-        " *miserable*",
+        "          · · ",
+        "  (T      T)  ",
+        "              ",
+        "      >       ",
+        "              ",
     ],
     "grumpy": [
-        " >(>)  (>)< ",
-        "   ______   ",
-        "    \\__/    ",
-        "     |> hmph",
-        "  *GRUMPY*  ",
+        "         hmph ",
+        "  (>      <)  ",
+        "              ",
+        "      >       ",
+        "              ",
     ],
     "content": [
-        "  (-)  (-)  ",
-        "   \\____/   ",
-        "    \\__/    ",
-        "     |>     ",
-        " ~ content ~",
+        "            ~ ",
+        "  (-      -)  ",
+        "              ",
+        "      >       ",
+        "              ",
     ],
     "eating": [
-        "  (o)  (o)  ",
-        "   \\____/   ",
-        " nom\\O/nom  ",
-        "   .,.,.,   ",
-        " *NOM NOM!* ",
+        "              ",
+        "  (o      o)  ",
+        "              ",
+        "    nom>      ",
+        "              ",
     ],
     "sleeping": [
-        "  (-)  (-) z",
-        "   \\____/ Z ",
-        "    \\__/  z ",
-        "     |>     ",
-        "  z z z z   ",
+        "          zzZ ",
+        "  (-      -)  ",
+        "              ",
+        "      >       ",
+        "              ",
     ],
     "excited": [
-        " !(O)  (O)! ",
-        "   \\____/   ",
-        "    \\__/    ",
-        "     O> !!! ",
-        " *EXCITED!* ",
+        "           !! ",
+        "  (O      O)  ",
+        "              ",
+        "      O       ",
+        "              ",
     ],
     "confused": [
-        "  (o)  (.)? ",
-        "   \\____/   ",
-        "    \\__/  ? ",
-        "     |> ??? ",
-        " *confused* ",
+        "          ??? ",
+        "  (o      ?)  ",
+        "              ",
+        "      >       ",
+        "              ",
     ],
     "love": [
-        " <3(^)(^)<3 ",
-        "   \\____/   ",
-        "  <3\\__/<3  ",
-        "     |> <3  ",
-        " ** LOVE ** ",
+        "           <3 ",
+        "  (♡      ♡)  ",
+        "              ",
+        "      >       ",
+        "              ",
     ],
     "derpy": [
-        "  (o)  ( .) ",
-        "   \\____/   ",
-        "    \\__/    ",
-        "     |> ... ",
-        "  *derp...*  ",
+        "          ... ",
+        "  (o      .)  ",
+        "              ",
+        "      >       ",
+        "              ",
     ],
 }
 
@@ -770,19 +777,54 @@ MINI_DUCK = {
             " '\\_)",
         ],
         "sleeping": [
-            " __ z",
+            " __z",
             "(-~)",
-            "/'\\)",
+            "~~~)",
+        ],
+        "sleeping_2": [
+            " __Z",
+            "(~-)",
+            "~~~)",
         ],
         "eating": [
+            " __°",
+            "(o>)",
+            "°'\\)",
+        ],
+        "eating_2": [
             " __ ",
-            "(o>.",
+            "(o>°",
             "/'\\)",
         ],
         "playing": [
-            "\\ __",
-            "(O>)",
+            "\\__/",
+            "(^>)",
             " '\\)",
+        ],
+        "playing_2": [
+            " __ ",
+            "(^>)!",
+            " /')",
+        ],
+        "cleaning": [
+            "~__~",
+            "(o>)",
+            "~~~)",
+        ],
+        "cleaning_2": [
+            " __~",
+            "~o>)",
+            "~'\\)",
+        ],
+        "petting": [
+            " __♥",
+            "(^>)",
+            "/'\\)",
+        ],
+        "petting_2": [
+            "♥__ ",
+            "(^>)",
+            "~'\\)",
         ],
     },
     "teen": {
@@ -824,21 +866,63 @@ MINI_DUCK = {
         ],
         "sleeping": [
             "  __ z",
-            " (-~) ",
-            "  /_|>",
-            " (_)  ",
+            " (-_) Z",
+            "  /~~>",
+            " ~~~  ",
+        ],
+        "sleeping_2": [
+            "  __  Z",
+            " (_-) z",
+            "  /~~>",
+            " ~~~  ",
         ],
         "eating": [
             "  __  ",
-            " (o_)>",
-            "  /_| ",
+            " (o_)°",
+            "  /_|>",
+            " (_)° ",
+        ],
+        "eating_2": [
+            "  __ °",
+            " (o>) ",
+            " °/_|>",
             " (_)  ",
         ],
         "playing": [
             " \\__/ ",
-            " (O_) ",
+            " (^_)!",
+            "  /_|>",
+            " ~ ~  ",
+        ],
+        "playing_2": [
+            "  __! ",
+            " (^_) ",
+            "  \\O|>",
+            "  ~ ~ ",
+        ],
+        "cleaning": [
+            " ~~~ ",
+            "~(o_)~",
+            " ~/_|>",
+            " ~~~  ",
+        ],
+        "cleaning_2": [
+            "  ~~  ",
+            " (o_)~",
+            "~~/_|>",
+            " ~~~  ",
+        ],
+        "petting": [
+            "  __♥ ",
+            " (^_) ",
             "  /_|>",
             " (_)  ",
+        ],
+        "petting_2": [
+            " ♥__  ",
+            " (^_) ",
+            "  /~|>",
+            " (~)  ",
         ],
     },
     "adult": {
@@ -886,21 +970,42 @@ MINI_DUCK = {
         ],
         "sleeping": [
             "   ___  z",
-            "  (-_~) Z",
-            " _/   \\_ ",
-            "   |_|>  ",
+            "  (-_-)  Z",
+            " _/~~~\\_ ",
+            "   ~~~   ",
+            "  (___)  ",
+        ],
+        "sleeping_2": [
+            "   ___   Z",
+            "  (-.-)  z",
+            " _/~~~\\_ ",
+            "   ~~~   ",
             "  (___)  ",
         ],
         "eating": [
             "   ___   ",
-            "  (o__) ~",
-            " _/   \\_.",
-            "   |_|>  ",
+            "  (o>_) °",
+            " _/   \\_°",
+            "  °|_|>  ",
+            "  (___)  ",
+        ],
+        "eating_2": [
+            "   ___  °",
+            "  (o__)  ",
+            " _/°  \\_°",
+            "  °|_|>  ",
             "  (___)  ",
         ],
         "playing": [
-            " \\ ___ / ",
-            "  (O__)  ",
+            " \\ ___ /!",
+            "  (^O^)  ",
+            " _/   \\_ ",
+            "   \\O/>  ",
+            "  ~ ~ ~  ",
+        ],
+        "playing_2": [
+            "  \\___ / ",
+            "  (^o^) !",
             " _/ ! \\_ ",
             "   |_|>  ",
             "  (___)  ",
@@ -925,6 +1030,34 @@ MINI_DUCK = {
             " _/   \\_ ",
             "   |_|>  ",
             "  (___) .",
+        ],
+        "cleaning": [
+            " ~~___~~ ",
+            " ~(o__)~ ",
+            "~_/   \\_~",
+            " ~~|_|>~~",
+            " ~(~~~)~ ",
+        ],
+        "cleaning_2": [
+            "  ~___~  ",
+            " ~(^__)~ ",
+            "~~/   \\~~",
+            "  ~|_|>~ ",
+            "  (~_~)  ",
+        ],
+        "petting": [
+            "  ♥___♥  ",
+            "  (^_^)  ",
+            " _/   \\_ ",
+            "   |_|>  ",
+            "  (___)  ",
+        ],
+        "petting_2": [
+            "   ___ ♥ ",
+            "  (^o^)  ",
+            " _/ ~ \\_ ",
+            "   |~|>  ",
+            "  (~_~)  ",
         ],
     },
     "elder": {
@@ -958,16 +1091,30 @@ MINI_DUCK = {
         ],
         "sleeping": [
             "  ~___~ z",
-            "  (-_~) Z",
-            " _/   \\_ ",
-            "   |_|>  ",
+            "  (-_-)  Z",
+            " _/~~~\\_ ",
+            "   ~~~   ",
+            "  (___)  ",
+        ],
+        "sleeping_2": [
+            "  ~___~  Z",
+            "  (-.-)  z",
+            " _/~~~\\_ ",
+            "   ~~~   ",
             "  (___)  ",
         ],
         "eating": [
             "  ~___~  ",
-            "  (o__) ~",
-            " _/   \\_.",
-            "   |_|>  ",
+            "  (o>_) °",
+            " _/   \\_°",
+            "  °|_|>  ",
+            "  (___)  ",
+        ],
+        "eating_2": [
+            "  ~___~ °",
+            "  (o__)  ",
+            " _/°  \\_°",
+            "  °|_|>  ",
             "  (___)  ",
         ],
         "playing": [
@@ -976,6 +1123,41 @@ MINI_DUCK = {
             " _/   \\_ ",
             "   |_|>  ",
             "  (___)  ",
+        ],
+        "playing_2": [
+            "  ~___~ !",
+            "  (^__)  ",
+            " _/ ~ \\_ ",
+            "   |_|>  ",
+            "  (~_~)  ",
+        ],
+        "cleaning": [
+            " ~~___~~ ",
+            " ~(o__)~ ",
+            "~_/   \\_~",
+            " ~~|_|>~~",
+            " ~(~~~)~ ",
+        ],
+        "cleaning_2": [
+            "  ~___~  ",
+            " ~(^__)~ ",
+            "~~/   \\~~",
+            "  ~|_|>~ ",
+            "  (~_~)  ",
+        ],
+        "petting": [
+            "  ~___~♥ ",
+            "  (^_^)  ",
+            " _/   \\_ ",
+            "   |_|>  ",
+            "  (___)  ",
+        ],
+        "petting_2": [
+            " ♥~___~  ",
+            "  (^o^)  ",
+            " _/ ~ \\_ ",
+            "   |~|>  ",
+            "  (~_~)  ",
         ],
     },
 }
@@ -992,7 +1174,7 @@ def get_mini_duck(
 
     Args:
         growth_stage: Current growth stage
-        state: Current state (idle, walking, sleeping, eating, playing)
+        state: Current state (idle, walking, sleeping, eating, playing, cleaning, petting)
         facing_right: True if facing right
         animation_frame: Animation frame number (0-3)
 
@@ -1001,13 +1183,37 @@ def get_mini_duck(
     """
     stage_sprites = MINI_DUCK.get(growth_stage, MINI_DUCK["adult"])
 
-    # Determine which sprite to use
+    # Determine which sprite to use - with animation frame alternation
     if state == "sleeping":
-        return stage_sprites.get("sleeping", stage_sprites.get("idle_right", ["?"]))
+        # Alternate between sleeping frames
+        if animation_frame % 2 == 0:
+            return stage_sprites.get("sleeping", stage_sprites.get("idle_right", ["?"]))
+        else:
+            return stage_sprites.get("sleeping_2", stage_sprites.get("sleeping", stage_sprites.get("idle_right", ["?"])))
     elif state == "eating":
-        return stage_sprites.get("eating", stage_sprites.get("idle_right", ["?"]))
+        # Alternate between eating frames
+        if animation_frame % 2 == 0:
+            return stage_sprites.get("eating", stage_sprites.get("idle_right", ["?"]))
+        else:
+            return stage_sprites.get("eating_2", stage_sprites.get("eating", stage_sprites.get("idle_right", ["?"])))
     elif state == "playing":
-        return stage_sprites.get("playing", stage_sprites.get("idle_right", ["?"]))
+        # Alternate between playing frames
+        if animation_frame % 2 == 0:
+            return stage_sprites.get("playing", stage_sprites.get("idle_right", ["?"]))
+        else:
+            return stage_sprites.get("playing_2", stage_sprites.get("playing", stage_sprites.get("idle_right", ["?"])))
+    elif state == "cleaning":
+        # Alternate between cleaning frames
+        if animation_frame % 2 == 0:
+            return stage_sprites.get("cleaning", stage_sprites.get("idle_right", ["?"]))
+        else:
+            return stage_sprites.get("cleaning_2", stage_sprites.get("cleaning", stage_sprites.get("idle_right", ["?"])))
+    elif state == "petting":
+        # Alternate between petting frames
+        if animation_frame % 2 == 0:
+            return stage_sprites.get("petting", stage_sprites.get("happy", stage_sprites.get("idle_right", ["?"])))
+        else:
+            return stage_sprites.get("petting_2", stage_sprites.get("petting", stage_sprites.get("idle_right", ["?"])))
     elif state == "walking":
         # Alternate between walk frames
         direction = "right" if facing_right else "left"
@@ -1042,3 +1248,169 @@ def create_box(content: List[str], width: int, title: str = "") -> List[str]:
     lines.append(bottom)
 
     return lines
+
+
+# =============================================================================
+# CELEBRATION ASCII ART
+# =============================================================================
+
+# Animated celebration frames (for celebrations that animate)
+CELEBRATION_FRAMES = {
+    "level_up": [
+        # Frame 1: Duck on ground
+        [
+            "    ★ ✦ ★ ✦ ★ ✦ ★ ✦ ★    ",
+            "  ╔═════════════════════╗  ",
+            "  ║    LEVEL UP!!! 🎉   ║  ",
+            "  ║                     ║  ",
+            "  ║                     ║  ",
+            "  ║       (^o^)         ║  ",
+            "  ║     <(     )>       ║  ",
+            "  ║        ~~~          ║  ",
+            "  ║                     ║  ",
+            "  ╚═════════════════════╝  ",
+            "    ★ ✦ ★ ✦ ★ ✦ ★ ✦ ★    ",
+        ],
+        # Frame 2: Duck jumping up
+        [
+            "    ✦ ★ ✦ ★ ✦ ★ ✦ ★ ✦    ",
+            "  ╔═════════════════════╗  ",
+            "  ║    LEVEL UP!!! 🎉   ║  ",
+            "  ║      \\   ★   /      ║  ",
+            "  ║       (^O^)         ║  ",
+            "  ║     \\(     )/       ║  ",
+            "  ║                     ║  ",
+            "  ║        ~~~          ║  ",
+            "  ║                     ║  ",
+            "  ╚═════════════════════╝  ",
+            "    ✦ ★ ✦ ★ ✦ ★ ✦ ★ ✦    ",
+        ],
+        # Frame 3: Duck at peak
+        [
+            "    ★ ✦ ★ ✦ ★ ✦ ★ ✦ ★    ",
+            "  ╔═════════════════════╗  ",
+            "  ║    LEVEL UP!!! 🎉   ║  ",
+            "  ║     \\  ★ ★  /       ║  ",
+            "  ║       (^O^)  !!     ║  ",
+            "  ║     \\(     )/       ║  ",
+            "  ║                     ║  ",
+            "  ║                     ║  ",
+            "  ║        ~~~          ║  ",
+            "  ╚═════════════════════╝  ",
+            "    ★ ✦ ★ ✦ ★ ✦ ★ ✦ ★    ",
+        ],
+        # Frame 4: Duck coming down
+        [
+            "    ✦ ★ ✦ ★ ✦ ★ ✦ ★ ✦    ",
+            "  ╔═════════════════════╗  ",
+            "  ║    LEVEL UP!!! 🎉   ║  ",
+            "  ║        ★ ★          ║  ",
+            "  ║       (^o^)         ║  ",
+            "  ║     <(     )>       ║  ",
+            "  ║                     ║  ",
+            "  ║        ~~~          ║  ",
+            "  ║                     ║  ",
+            "  ╚═════════════════════╝  ",
+            "    ✦ ★ ✦ ★ ✦ ★ ✦ ★ ✦    ",
+        ],
+    ],
+}
+
+# Static celebration art (non-animated, used as fallback)
+CELEBRATION_ART = {
+    "level_up": [
+        "    ★ ✦ ★ ✦ ★ ✦ ★ ✦ ★    ",
+        "  ╔═════════════════════╗  ",
+        "  ║    LEVEL UP!!! 🎉   ║  ",
+        "  ║      \\   ★   /      ║  ",
+        "  ║       (^O^)         ║  ",
+        "  ║     \\(     )/       ║  ",
+        "  ║        ~~~          ║  ",
+        "  ║                     ║  ",
+        "  ╚═════════════════════╝  ",
+        "    ★ ✦ ★ ✦ ★ ✦ ★ ✦ ★    ",
+    ],
+    "streak_milestone": [
+        "  🔥 🔥 🔥 🔥 🔥 🔥 🔥 🔥 🔥  ",
+        " ╔═══════════════════════╗ ",
+        " ║   STREAK MILESTONE!   ║ ",
+        " ║                       ║ ",
+        " ║      \\o/  🦆  \\o/     ║ ",
+        " ║       |      |        ║ ",
+        " ║      / \\    / \\       ║ ",
+        " ║                       ║ ",
+        " ╚═══════════════════════╝ ",
+        "  🔥 🔥 🔥 🔥 🔥 🔥 🔥 🔥 🔥  ",
+    ],
+    "collectible_found": [
+        "   ✨ ✨ ✨ ✨ ✨ ✨ ✨   ",
+        " ╔═════════════════════╗ ",
+        " ║  RARE FIND!  ⭐     ║ ",
+        " ║                     ║ ",
+        " ║   [  ?  ?  ?  ]     ║ ",
+        " ║                     ║ ",
+        " ╚═════════════════════╝ ",
+        "   ✨ ✨ ✨ ✨ ✨ ✨ ✨   ",
+    ],
+    "achievement": [
+        "  🏆 🏆 🏆 🏆 🏆 🏆 🏆 🏆  ",
+        " ╔═══════════════════════╗ ",
+        " ║   ACHIEVEMENT GET!    ║ ",
+        " ║                       ║ ",
+        " ║        \\(^o^)/        ║ ",
+        " ║                       ║ ",
+        " ╚═══════════════════════╝ ",
+        "  🏆 🏆 🏆 🏆 🏆 🏆 🏆 🏆  ",
+    ],
+    "surprise_gift": [
+        "   🎁 🎁 🎁 🎁 🎁 🎁 🎁   ",
+        " ╔═════════════════════╗ ",
+        " ║   SURPRISE GIFT!    ║ ",
+        " ║                     ║ ",
+        " ║      .------.       ║ ",
+        " ║     |  🎀   |       ║ ",
+        " ║     |______|        ║ ",
+        " ║                     ║ ",
+        " ╚═════════════════════╝ ",
+        "   🎁 🎁 🎁 🎁 🎁 🎁 🎁   ",
+    ],
+    "jackpot": [
+        " 💰 💰 💰 💰 💰 💰 💰 💰 💰 ",
+        "╔═══════════════════════════╗",
+        "║      🎰 JACKPOT! 🎰       ║",
+        "║                           ║",
+        "║    ╔═══╗ ╔═══╗ ╔═══╗     ║",
+        "║    ║ 7 ║ ║ 7 ║ ║ 7 ║     ║",
+        "║    ╚═══╝ ╚═══╝ ╚═══╝     ║",
+        "║                           ║",
+        "╚═══════════════════════════╝",
+        " 💰 💰 💰 💰 💰 💰 💰 💰 💰 ",
+    ],
+    "new_record": [
+        "  🌟 🌟 🌟 🌟 🌟 🌟 🌟 🌟  ",
+        " ╔═══════════════════════╗ ",
+        " ║    NEW RECORD!!!      ║ ",
+        " ║                       ║ ",
+        " ║       🏅 #1 🏅        ║ ",
+        " ║                       ║ ",
+        " ╚═══════════════════════╝ ",
+        "  🌟 🌟 🌟 🌟 🌟 🌟 🌟 🌟  ",
+    ],
+}
+
+
+def get_celebration_art(celebration_type: str, frame: int = 0) -> Optional[List[str]]:
+    """Get celebration ASCII art by type. Supports animation frames."""
+    # Check for animated celebration
+    if celebration_type in CELEBRATION_FRAMES:
+        frames = CELEBRATION_FRAMES[celebration_type]
+        return frames[frame % len(frames)]
+    # Fallback to static art
+    return CELEBRATION_ART.get(celebration_type)
+
+
+def get_celebration_frame_count(celebration_type: str) -> int:
+    """Get the number of animation frames for a celebration type."""
+    if celebration_type in CELEBRATION_FRAMES:
+        return len(CELEBRATION_FRAMES[celebration_type])
+    return 1

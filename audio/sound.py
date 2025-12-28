@@ -1,10 +1,11 @@
 """
 Sound system - chiptune music and sound effects using terminal beeps.
+Now also supports WAV file playback for realistic duck sounds!
 
 Uses multiple approaches:
-1. Terminal bell (\a) for simple beeps
-2. /dev/console for frequency control (if available)
-3. paplay/aplay for more complex sounds (if available)
+1. WAV files via pygame/aplay/paplay (preferred)
+2. Terminal bell (\a) for simple beeps
+3. /dev/console for frequency control (if available)
 4. Fallback to silent operation
 """
 import os
@@ -15,6 +16,7 @@ import subprocess
 from typing import Optional, List, Tuple
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 import random
 
 
@@ -131,15 +133,56 @@ MELODIES = {
 class SoundEngine:
     """
     Handles sound playback using various system methods.
+    Now includes WAV file playback support!
+    Uses pygame for MP3 music when available.
     """
 
     def __init__(self):
-        self.enabled = False  # Disabled by default
-        self.volume = 0.5  # 0.0 to 1.0
+        self.enabled = True  # Enabled by default
+        self.volume = 1.0  # 0.0 to 1.0 (quack volume - max, pygame caps at 1.0)
+        self.music_volume = 0.025  # Background music volume (very low so quacks stand out)
+        self.music_muted = False  # Separate mute for music
         self._sound_method = self._detect_sound_method()
         self._music_thread: Optional[threading.Thread] = None
         self._music_playing = False
+        self._music_process: Optional[subprocess.Popen] = None
         self._current_melody = None
+        self._music_channel = None  # For seamless looping with Sound object
+        self._music_sound = None  # Cached music Sound object
+
+        # Try to initialize pygame for music
+        self._pygame_available = False
+        try:
+            import pygame
+            # Smaller buffer for tighter looping
+            pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=1024)
+            self._pygame_available = True
+        except Exception:
+            pass
+        
+        # Audio file paths
+        self._audio_dir = Path(__file__).parent.parent
+        self._wav_files = {
+            'quack': self._audio_dir / 'single-quack-from-a-duck.wav',
+            'title': self._audio_dir / 'Title.wav',
+        }
+        self._music_files = {
+            'main': self._audio_dir / 'Main.mp3',
+        }
+        
+        # Check which audio files exist
+        self._available_wavs = {
+            name: path for name, path in self._wav_files.items() 
+            if path.exists()
+        }
+        self._available_music = {
+            name: path for name, path in self._music_files.items()
+            if path.exists()
+        }
+        
+        # Detect players
+        self._wav_player = self._detect_wav_player()
+        self._music_player = self._detect_music_player()
 
     def _detect_sound_method(self) -> str:
         """Detect the best available sound method."""
@@ -181,6 +224,378 @@ class SoundEngine:
 
         # Fallback to terminal bell
         return 'bell'
+
+    def _detect_wav_player(self) -> Optional[str]:
+        """Detect available WAV file player."""
+        # Check for paplay (PulseAudio) - best for most Linux
+        try:
+            result = subprocess.run(
+                ['which', 'paplay'],
+                capture_output=True,
+                timeout=1
+            )
+            if result.returncode == 0:
+                return 'paplay'
+        except:
+            pass
+        
+        # Check for aplay (ALSA)
+        try:
+            result = subprocess.run(
+                ['which', 'aplay'],
+                capture_output=True,
+                timeout=1
+            )
+            if result.returncode == 0:
+                return 'aplay'
+        except:
+            pass
+        
+        # Check for ffplay (ffmpeg)
+        try:
+            result = subprocess.run(
+                ['which', 'ffplay'],
+                capture_output=True,
+                timeout=1
+            )
+            if result.returncode == 0:
+                return 'ffplay'
+        except:
+            pass
+        
+        return None
+
+    def _detect_music_player(self) -> Optional[str]:
+        """Detect available music player for MP3 files."""
+        # Check for mpv (best for seamless looping)
+        try:
+            result = subprocess.run(
+                ['which', 'mpv'],
+                capture_output=True,
+                timeout=1
+            )
+            if result.returncode == 0:
+                return 'mpv'
+        except:
+            pass
+        
+        # Check for ffplay (ffmpeg) - good fallback
+        try:
+            result = subprocess.run(
+                ['which', 'ffplay'],
+                capture_output=True,
+                timeout=1
+            )
+            if result.returncode == 0:
+                return 'ffplay'
+        except:
+            pass
+        
+        # Check for mpg123 (lightweight mp3 player)
+        try:
+            result = subprocess.run(
+                ['which', 'mpg123'],
+                capture_output=True,
+                timeout=1
+            )
+            if result.returncode == 0:
+                return 'mpg123'
+        except:
+            pass
+        
+        return None
+
+    def play_background_music(self, music_name: str = 'main'):
+        """Play background music on loop at low volume."""
+        if not self.enabled or self.music_muted:
+            return
+
+        if music_name not in self._available_music:
+            return
+
+        # Stop any existing music first
+        self.stop_background_music()
+
+        music_path = self._available_music[music_name]
+        self._music_playing = True
+
+        # Prefer pygame for MP3 playback
+        if self._pygame_available:
+            try:
+                import pygame
+                # Use Sound object for seamless looping (loads entire file into memory)
+                # This avoids the gap that can occur with streaming music
+                self._music_sound = pygame.mixer.Sound(str(music_path))
+                self._music_sound.set_volume(self.music_volume)
+                # Play on infinite loop (-1)
+                self._music_channel = self._music_sound.play(loops=-1)
+                return
+            except Exception:
+                # Fallback to streaming music if Sound fails (e.g., large files)
+                try:
+                    pygame.mixer.music.load(str(music_path))
+                    pygame.mixer.music.set_volume(self.music_volume)
+                    pygame.mixer.music.play(-1)
+                    return
+                except Exception:
+                    pass
+        
+        # Fallback to system players if pygame fails
+        if not self._music_player:
+            return
+        
+        def play_loop():
+            while self._music_playing and not self.music_muted:
+                try:
+                    if self._music_player == 'mpv':
+                        # mpv with loop and low volume
+                        vol_percent = int(self.music_volume * 100)
+                        self._music_process = subprocess.Popen(
+                            ['mpv', '--no-video', '--loop=inf', 
+                             f'--volume={vol_percent}', '--really-quiet',
+                             str(music_path)],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL
+                        )
+                        self._music_process.wait()
+                    elif self._music_player == 'ffplay':
+                        # ffplay with loop
+                        vol_percent = int(self.music_volume * 100)
+                        self._music_process = subprocess.Popen(
+                            ['ffplay', '-nodisp', '-loop', '0',
+                             '-volume', str(vol_percent), '-loglevel', 'quiet',
+                             str(music_path)],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL
+                        )
+                        self._music_process.wait()
+                    elif self._music_player == 'mpg123':
+                        # mpg123 with loop (we'll loop in Python)
+                        self._music_process = subprocess.Popen(
+                            ['mpg123', '-q', '--scale', str(int(self.music_volume * 32768)),
+                             str(music_path)],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL
+                        )
+                        self._music_process.wait()
+                        # Continue loop
+                        continue
+                except Exception:
+                    pass
+                
+                # If we get here without looping player, wait and try again
+                if self._music_playing and not self.music_muted:
+                    time.sleep(0.1)
+                else:
+                    break
+            
+            self._music_playing = False
+        
+        self._music_thread = threading.Thread(target=play_loop)
+        self._music_thread.daemon = True
+        self._music_thread.start()
+
+    def stop_background_music(self):
+        """Stop background music."""
+        self._music_playing = False
+
+        # Stop pygame Sound object if active
+        if self._music_sound:
+            try:
+                self._music_sound.stop()
+            except Exception:
+                pass
+            self._music_sound = None
+            self._music_channel = None
+
+        # Stop pygame streaming music if active
+        if self._pygame_available:
+            try:
+                import pygame
+                pygame.mixer.music.stop()
+            except Exception:
+                pass
+
+        # Stop subprocess-based music
+        if self._music_process:
+            try:
+                self._music_process.terminate()
+                self._music_process.wait(timeout=1)
+            except:
+                try:
+                    self._music_process.kill()
+                except:
+                    pass
+            self._music_process = None
+        if self._music_thread:
+            self._music_thread.join(timeout=0.5)
+            self._music_thread = None
+
+    def toggle_music_mute(self) -> bool:
+        """Toggle music mute on/off. Returns new muted state."""
+        self.music_muted = not self.music_muted
+        if self.music_muted:
+            # Mute - pause Sound or streaming music
+            if self._music_channel:
+                try:
+                    self._music_channel.pause()
+                except Exception:
+                    pass
+            elif self._pygame_available:
+                try:
+                    import pygame
+                    pygame.mixer.music.pause()
+                except Exception:
+                    pass
+            else:
+                self.stop_background_music()
+        else:
+            # Unmute - resume Sound or streaming music
+            if self._music_channel:
+                try:
+                    self._music_channel.unpause()
+                except Exception:
+                    self.play_background_music()
+            elif self._pygame_available:
+                try:
+                    import pygame
+                    pygame.mixer.music.unpause()
+                except Exception:
+                    self.play_background_music()
+            else:
+                self.play_background_music()
+        return self.music_muted
+
+    def set_music_volume(self, volume: float):
+        """Set music volume (0.0 to 1.0). Recommended to keep low (0.1-0.2)."""
+        self.music_volume = max(0.0, min(1.0, volume))
+        # Update Sound object volume if playing
+        if self._music_sound:
+            try:
+                self._music_sound.set_volume(self.music_volume)
+            except Exception:
+                pass
+        # Update pygame streaming music volume if playing
+        if self._pygame_available:
+            try:
+                import pygame
+                pygame.mixer.music.set_volume(self.music_volume)
+            except Exception:
+                pass
+
+    def play_wav(self, wav_name: str, volume: Optional[float] = None):
+        """Play a WAV file if available."""
+        if not self.enabled:
+            return
+        
+        if wav_name not in self._available_wavs:
+            return
+        
+        wav_path = self._available_wavs[wav_name]
+        vol = volume if volume is not None else self.volume
+        
+        # Prefer pygame for proper volume control
+        if self._pygame_available:
+            def play_pygame():
+                try:
+                    import pygame
+                    sound = pygame.mixer.Sound(str(wav_path))
+                    sound.set_volume(vol)
+                    sound.play()
+                except Exception:
+                    pass
+            thread = threading.Thread(target=play_pygame)
+            thread.daemon = True
+            thread.start()
+            return
+        
+        # Fallback to system player
+        if not self._wav_player:
+            return
+        
+        def play():
+            try:
+                if self._wav_player == 'paplay':
+                    # PulseAudio volume is 0-65536
+                    pa_volume = int(vol * 65536)
+                    subprocess.run(
+                        ['paplay', '--volume', str(pa_volume), str(wav_path)],
+                        capture_output=True,
+                        timeout=10
+                    )
+                elif self._wav_player == 'aplay':
+                    subprocess.run(
+                        ['aplay', '-q', str(wav_path)],
+                        capture_output=True,
+                        timeout=10
+                    )
+                elif self._wav_player == 'ffplay':
+                    volume_arg = f"volume={vol}"
+                    subprocess.run(
+                        ['ffplay', '-nodisp', '-autoexit', '-volume', str(int(vol * 100)), 
+                         str(wav_path)],
+                        capture_output=True,
+                        stderr=subprocess.DEVNULL,
+                        timeout=10
+                    )
+            except:
+                pass  # Silently fail if playback issues
+        
+        # Play in background thread
+        thread = threading.Thread(target=play)
+        thread.daemon = True
+        thread.start()
+
+    def play_wav_music(self, wav_name: str, loop: bool = False):
+        """Play a WAV file as background music, optionally looping."""
+        if not self.enabled:
+            return
+        
+        if wav_name not in self._available_wavs:
+            return
+        
+        if not self._wav_player:
+            return
+        
+        self.stop_music()
+        self._music_playing = True
+        wav_path = self._available_wavs[wav_name]
+        
+        def play_loop():
+            while self._music_playing:
+                try:
+                    if self._wav_player == 'paplay':
+                        pa_volume = int(self.volume * 65536)
+                        subprocess.run(
+                            ['paplay', '--volume', str(pa_volume), str(wav_path)],
+                            capture_output=True,
+                            timeout=300  # 5 minute max
+                        )
+                    elif self._wav_player == 'aplay':
+                        subprocess.run(
+                            ['aplay', '-q', str(wav_path)],
+                            capture_output=True,
+                            timeout=300
+                        )
+                    elif self._wav_player == 'ffplay':
+                        subprocess.run(
+                            ['ffplay', '-nodisp', '-autoexit', '-volume', 
+                             str(int(self.volume * 100)), str(wav_path)],
+                            capture_output=True,
+                            stderr=subprocess.DEVNULL,
+                            timeout=300
+                        )
+                except:
+                    pass
+                
+                if not loop:
+                    break
+            
+            self._music_playing = False
+        
+        self._music_thread = threading.Thread(target=play_loop)
+        self._music_thread.daemon = True
+        self._music_thread.start()
 
     def play_tone(self, frequency: int, duration: float):
         """Play a single tone."""
@@ -291,6 +706,64 @@ class SoundEngine:
             self.stop_music()
         return self.enabled
 
+    def set_volume(self, volume: float):
+        """Set volume level (0.0 to 1.0)."""
+        self.volume = max(0.0, min(1.0, volume))
+
+    def get_volume(self) -> float:
+        """Get current volume level."""
+        return self.volume
+
+    def volume_up(self, step: float = 0.1) -> float:
+        """Increase volume by step. Returns new volume."""
+        self.volume = min(1.0, self.volume + step)
+        return self.volume
+
+    def volume_down(self, step: float = 0.1) -> float:
+        """Decrease volume by step. Returns new volume."""
+        self.volume = max(0.0, self.volume - step)
+        return self.volume
+
+    def get_volume_display(self) -> str:
+        """Get a visual representation of current volume."""
+        bars = int(self.volume * 10)
+        return "█" * bars + "░" * (10 - bars)
+
+
+def count_syllables(text: str) -> int:
+    """
+    Count approximate syllables in text for quacking purposes.
+    Uses a simple heuristic based on vowel groups.
+    """
+    import re
+    
+    # Clean text - remove non-alphabetic characters
+    text = text.lower()
+    words = re.findall(r'[a-z]+', text)
+    
+    total_syllables = 0
+    for word in words:
+        # Count vowel groups
+        vowels = 'aeiouy'
+        count = 0
+        prev_was_vowel = False
+        
+        for char in word:
+            is_vowel = char in vowels
+            if is_vowel and not prev_was_vowel:
+                count += 1
+            prev_was_vowel = is_vowel
+        
+        # Handle silent 'e' at end
+        if word.endswith('e') and count > 1:
+            count -= 1
+        
+        # Every word has at least 1 syllable
+        count = max(1, count)
+        total_syllables += count
+    
+    return max(1, total_syllables)  # At least 1 syllable
+
 
 class DuckSounds:
     """
@@ -299,17 +772,44 @@ class DuckSounds:
 
     def __init__(self, engine: SoundEngine):
         self.engine = engine
+        self._quack_thread = None
 
     def quack(self, mood: str = "normal"):
         """Play a quack sound based on mood."""
-        if mood in ["ecstatic", "happy"]:
-            self.engine.play_sound(SoundType.QUACK_HAPPY)
-        elif mood in ["sad", "miserable"]:
-            self.engine.play_sound(SoundType.QUACK_SAD)
-        elif mood == "excited":
-            self.engine.play_sound(SoundType.QUACK_EXCITED)
+        # Try to play the real duck WAV file first
+        if 'quack' in self.engine._available_wavs:
+            self.engine.play_wav('quack')
         else:
-            self.engine.play_sound(SoundType.QUACK)
+            # Fallback to synthesized quacks
+            if mood in ["ecstatic", "happy"]:
+                self.engine.play_sound(SoundType.QUACK_HAPPY)
+            elif mood in ["sad", "miserable"]:
+                self.engine.play_sound(SoundType.QUACK_SAD)
+            elif mood == "excited":
+                self.engine.play_sound(SoundType.QUACK_EXCITED)
+            else:
+                self.engine.play_sound(SoundType.QUACK)
+
+    def quack_for_text(self, text: str, mood: str = "normal"):
+        """
+        Play quacks for each syllable in the text.
+        Quacks are spaced out to simulate speech.
+        """
+        syllables = count_syllables(text)
+        # Cap at reasonable number to avoid spam
+        syllables = min(syllables, 15)
+        
+        def _quack_sequence():
+            for i in range(syllables):
+                self.quack(mood)
+                if i < syllables - 1:
+                    # Vary timing slightly for natural feel
+                    delay = 0.15 + random.uniform(-0.03, 0.05)
+                    time.sleep(delay)
+        
+        # Run in thread to not block game
+        self._quack_thread = threading.Thread(target=_quack_sequence, daemon=True)
+        self._quack_thread.start()
 
     def eat(self):
         """Play eating sound."""

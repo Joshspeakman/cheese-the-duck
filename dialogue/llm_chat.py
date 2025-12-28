@@ -1,26 +1,34 @@
 """
 Offline LLM integration for duck conversations.
-Supports Ollama (local) via HTTP API for smarter, more dynamic responses.
+Supports local GGUF models via llama-cpp-python, with Ollama as fallback.
 """
 import json
+import os
 import urllib.request
 import urllib.error
 from typing import Optional, List, Dict, TYPE_CHECKING
+from pathlib import Path
 
 if TYPE_CHECKING:
     from duck.duck import Duck
 
 
+# Model configuration
+MODEL_DIR = Path(__file__).parent.parent / "models"
+
+
 class LLMChat:
     """
     Handles LLM-powered conversations with the duck.
-    Uses Ollama HTTP API for local inference - no API keys needed.
+    Uses llama-cpp-python for local inference with bundled model.
+    Falls back to Ollama HTTP API if available.
     """
 
     def __init__(self):
         self._available = False
-        self._model = "llama3.2"
-        self._fallback_models = ["llama3.2", "llama3.1", "llama3", "mistral", "phi3", "gemma2", "qwen2"]
+        self._model_name = None
+        self._llama = None
+        self._use_ollama = False
         self._conversation_history: List[Dict[str, str]] = []
         self._max_history = 6
         self._timeout = 30
@@ -29,34 +37,85 @@ class LLMChat:
         self._check_availability()
 
     def _check_availability(self):
-        """Check if Ollama is available via HTTP API."""
+        """Check for available LLM backends."""
+        # Try local GGUF model first
+        if self._try_local_model():
+            return
+        
+        # Fall back to Ollama
+        if self._try_ollama():
+            return
+        
+        self._last_error = "No LLM available. Run 'python download_model.py' to get started."
+
+    def _try_local_model(self) -> bool:
+        """Try to load a local GGUF model."""
         try:
-            # Check if Ollama API is running
+            from llama_cpp import Llama
+        except ImportError:
+            self._last_error = "llama-cpp-python not installed"
+            return False
+        
+        # Look for model files
+        if not MODEL_DIR.exists():
+            MODEL_DIR.mkdir(parents=True, exist_ok=True)
+            return False
+        
+        # Find any .gguf file
+        gguf_files = list(MODEL_DIR.glob("*.gguf"))
+        if not gguf_files:
+            self._last_error = f"No model found in {MODEL_DIR}"
+            return False
+        
+        model_path = gguf_files[0]
+        
+        try:
+            # Load the model with conservative settings for compatibility
+            self._llama = Llama(
+                model_path=str(model_path),
+                n_ctx=2048,
+                n_threads=4,
+                n_gpu_layers=0,  # CPU only for maximum compatibility
+                verbose=False,
+            )
+            self._model_name = model_path.name
+            self._available = True
+            self._use_ollama = False
+            return True
+        except Exception as e:
+            self._last_error = f"Failed to load model: {e}"
+            return False
+
+    def _try_ollama(self) -> bool:
+        """Try to connect to Ollama."""
+        fallback_models = ["llama3.2", "llama3.1", "llama3", "mistral", "phi3", "gemma2", "qwen2"]
+        
+        try:
             req = urllib.request.Request(f"{self._base_url}/api/tags")
             with urllib.request.urlopen(req, timeout=3) as response:
                 data = json.loads(response.read().decode())
                 models = [m["name"].split(":")[0] for m in data.get("models", [])]
 
                 if not models:
-                    self._last_error = "No models installed"
-                    return
+                    return False
 
-                # Find a suitable model
-                for model in self._fallback_models:
+                for model in fallback_models:
                     if model in models:
-                        self._model = model
+                        self._model_name = model
                         self._available = True
-                        return
+                        self._use_ollama = True
+                        return True
 
-                # Use first available model
                 if models:
-                    self._model = models[0]
+                    self._model_name = models[0]
                     self._available = True
+                    self._use_ollama = True
+                    return True
 
-        except urllib.error.URLError as e:
-            self._last_error = f"Ollama not running: {e}"
-        except Exception as e:
-            self._last_error = f"Error: {e}"
+        except Exception:
+            pass
+        
+        return False
 
     def is_available(self) -> bool:
         """Check if LLM is available for chat."""
@@ -64,7 +123,10 @@ class LLMChat:
 
     def get_model_name(self) -> str:
         """Get the current model name."""
-        return self._model if self._available else "None"
+        if self._available:
+            prefix = "[Ollama] " if self._use_ollama else "[Local] "
+            return prefix + (self._model_name or "Unknown")
+        return "None"
 
     def get_last_error(self) -> Optional[str]:
         """Get last error message for debugging."""
@@ -74,105 +136,97 @@ class LLMChat:
         """Build the system prompt with duck's personality."""
         personality = duck.personality
         clever_derpy = personality.get("clever_derpy", 0)
-        social_shy = personality.get("social_shy", 0)
-        active_lazy = personality.get("active_lazy", 0)
-        brave_timid = personality.get("brave_timid", 0)
 
-        # Build personality description
-        traits = []
+        # Simple trait
         if clever_derpy < -20:
-            traits.append("incredibly derpy and scatterbrained - often forgets things mid-sentence, easily confused")
+            trait = "derpy and easily confused"
         elif clever_derpy > 20:
-            traits.append("surprisingly clever for a duck, but still makes duck-brained mistakes")
-
-        if social_shy < -20:
-            traits.append("shy and nervous around others, takes time to warm up")
-        elif social_shy > 20:
-            traits.append("extremely social and attention-seeking, craves interaction")
-
-        if active_lazy < -20:
-            traits.append("incredibly lazy, always tired, would rather nap")
-        elif active_lazy > 20:
-            traits.append("hyperactive and bouncy, can't sit still")
-
-        if brave_timid < -20:
-            traits.append("easily scared, dramatic about small things")
-        elif brave_timid > 20:
-            traits.append("brave and adventurous, faces challenges head-on")
-
-        if not traits:
-            traits.append("a generally chill duck with a mix of qualities")
-
-        # Get mood and needs info
-        mood = duck.get_mood()
-        mood_desc = mood.description
-
-        needs_critical = []
-        if duck.needs.hunger < 30:
-            needs_critical.append("very hungry")
-        if duck.needs.energy < 30:
-            needs_critical.append("exhausted")
-        if duck.needs.fun < 30:
-            needs_critical.append("bored")
-        if duck.needs.social < 30:
-            needs_critical.append("lonely")
-        if duck.needs.cleanliness < 30:
-            needs_critical.append("dirty")
-
-        needs_str = ", ".join(needs_critical) if needs_critical else "doing fine"
-
-        # Relationship level
-        rel_level = duck.memory.get_relationship_level()
-        if isinstance(rel_level, str):
-            rel_desc = rel_level
-        elif rel_level < 20:
-            rel_desc = "barely knows the human"
-        elif rel_level < 40:
-            rel_desc = "getting to know the human"
-        elif rel_level < 60:
-            rel_desc = "considers the human a friend"
-        elif rel_level < 80:
-            rel_desc = "good friends with the human"
+            trait = "clever but still a duck"
         else:
-            rel_desc = "best friends with the human"
+            trait = "a regular duck"
 
-        return f"""You are {duck.name}, a virtual pet duck with a snarky, edgy personality inspired by GameCube-era Animal Crossing dialogue.
+        # Get mood
+        mood = duck.get_mood()
 
-PERSONALITY:
-- {', '.join(traits)}
-- Current mood: {mood_desc}
-- Currently feeling: {needs_str}
-- Relationship with human: {rel_desc}
+        # Compact prompt for smaller models
+        return f"""You are {duck.name} the duck. You are {trait}, currently {mood.state.value}.
 
-SPEAKING STYLE (CRITICAL - follow these rules):
-- Use asterisks for actions: *quack* *waddles* *flaps* *tilts head* *squints*
-- Be snarky and sarcastic but not mean - like a funny friend
-- Mix in duck sounds naturally: quack, peep, honk
-- Use dramatic reactions and exaggeration
-- OBSESSED with bread - mention it randomly
-- Sometimes get distracted mid-thought
-- If derpy: frequently confused, forgetful, makes absurd observations
-- Reference being a duck often
-- SHORT responses (1-3 sentences, max 4)
-- NO emoji - text expressions only
-- Never break character or mention being an AI
+RULES:
+1. Use *actions* like *quack* *waddle* *flap*
+2. Be snarky and funny, not mean
+3. Love bread, mention it sometimes
+4. 1-2 sentences only
+5. Never break character
 
-EXAMPLES:
-"*tilts head* You're asking ME? Bold. I once tried to eat my own reflection. But sure, shoot."
-"BREAD?! *perks up* Wait, no one said bread. Why am I like this?"
-"*suspicious squint* That sounds like something a bread-withholder would say..."
-"*dramatic gasp* The AUDACITY! I am a MAJESTIC duck!"
+Examples:
+"*tilts head* Quack? Did someone say bread?"
+"*flaps* The AUDACITY! I am a MAJESTIC duck!"
+"*suspicious squint* ...are you hiding bread from me?"
 
-Respond as {duck.name} the duck. Be silly, snarky, in-character. One short response."""
+Now respond as {duck.name}:"""
 
     def generate_response(self, duck: "Duck", player_input: str) -> Optional[str]:
-        """Generate a response using the Ollama API."""
+        """Generate a response using available LLM backend."""
         if not self._available:
-            # Try to reconnect
             self._check_availability()
             if not self._available:
                 return None
 
+        if self._use_ollama:
+            return self._generate_ollama(duck, player_input)
+        else:
+            return self._generate_local(duck, player_input)
+
+    def _generate_local(self, duck: "Duck", player_input: str) -> Optional[str]:
+        """Generate response using local GGUF model."""
+        if not self._llama:
+            return None
+
+        system_prompt = self._build_system_prompt(duck)
+
+        # Build chat messages with few-shot examples to prime the model
+        messages = [{"role": "system", "content": system_prompt}]
+        
+        # Add few-shot examples to show the expected format
+        few_shot = [
+            {"role": "user", "content": "Hey there!"},
+            {"role": "assistant", "content": "*waddles over* Oh! A visitor! *quack* Got any bread?"},
+            {"role": "user", "content": "You're so cute!"},
+            {"role": "assistant", "content": "*puffs up proudly* I KNOW, right?! *flaps wings* I'm basically perfect. Quack!"},
+        ]
+        messages.extend(few_shot)
+        
+        # Add real conversation history
+        for msg in self._conversation_history[-self._max_history:]:
+            messages.append(msg)
+        messages.append({"role": "user", "content": player_input})
+
+        try:
+            response = self._llama.create_chat_completion(
+                messages=messages,
+                max_tokens=80,  # Keep it short
+                temperature=0.9,
+                top_p=0.95,
+                stop=["User:", "Human:", "\n\n", "You:"],
+            )
+
+            if response and "choices" in response and response["choices"]:
+                content = response["choices"][0].get("message", {}).get("content", "")
+                if content:
+                    content = self._clean_response(content)
+                    self._conversation_history.append({"role": "user", "content": player_input})
+                    self._conversation_history.append({"role": "assistant", "content": content})
+                    if len(self._conversation_history) > self._max_history * 2:
+                        self._conversation_history = self._conversation_history[-self._max_history * 2:]
+                    return content
+
+        except Exception as e:
+            self._last_error = f"Local model error: {e}"
+
+        return None
+
+    def _generate_ollama(self, duck: "Duck", player_input: str) -> Optional[str]:
+        """Generate response using Ollama API."""
         system_prompt = self._build_system_prompt(duck)
 
         # Build messages for chat API
@@ -188,7 +242,7 @@ Respond as {duck.name} the duck. Be silly, snarky, in-character. One short respo
         try:
             # Use Ollama chat API
             payload = {
-                "model": self._model,
+                "model": self._model_name,
                 "messages": messages,
                 "stream": False,
                 "options": {
@@ -247,26 +301,33 @@ Respond as {duck.name} the duck. Be silly, snarky, in-character. One short respo
                 response = response[len(prefix):].strip()
 
         # Remove any "Here's my response:" type preambles
-        preamble_markers = ["here's", "here is", "okay,", "ok,", "sure,", "alright,"]
+        preamble_markers = ["here's", "here is", "okay,", "ok,", "sure,", "alright,", "i'm ", "i am "]
         lower_response = response.lower()
         for marker in preamble_markers:
-            if lower_response.startswith(marker):
-                # Find the end of the preamble (usually ends with : or newline)
-                for end_char in [":", "\n"]:
-                    idx = response.find(end_char)
-                    if 0 < idx < 30:
-                        response = response[idx + 1:].strip()
-                        break
+            if lower_response.startswith(marker) and "programmed" in lower_response[:100]:
+                # Skip robotic responses entirely
+                return None
 
-        # Truncate if too long
-        if len(response) > 250:
-            for end_char in [". ", "! ", "? ", "* "]:
-                idx = response.rfind(end_char, 0, 250)
-                if idx > 50:
-                    response = response[:idx + 1]
-                    break
+        # Find a good stopping point
+        # First, try to find a complete sentence ending in punctuation + space or action
+        max_len = 150
+        if len(response) > max_len:
+            best_cut = -1
+            # Priority: end after punctuation or after asterisk action
+            for end_pattern in ["! ", "? ", ". ", "* "]:
+                idx = response.rfind(end_pattern, 30, max_len)
+                if idx > best_cut:
+                    best_cut = idx + len(end_pattern) - 1
+            
+            # Also check for closing asterisk
+            asterisk_close = response.rfind("*", 30, max_len)
+            if asterisk_close > best_cut:
+                best_cut = asterisk_close + 1
+            
+            if best_cut > 30:
+                response = response[:best_cut].strip()
             else:
-                response = response[:247] + "..."
+                response = response[:max_len].strip()
 
         return response
 
