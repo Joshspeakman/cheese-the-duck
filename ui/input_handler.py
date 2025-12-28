@@ -25,16 +25,13 @@ class GameAction(Enum):
 
 
 # Key mappings - Organized to avoid conflicts
+# NOTE: Many keys are now handled directly in game.py for flexibility
 KEY_BINDINGS = {
     # Quit
     "q": GameAction.QUIT,
     "Q": GameAction.QUIT,
-    
-    # Return to title
-    "r": GameAction.RETURN_TO_TITLE,
-    "R": GameAction.RETURN_TO_TITLE,
 
-    # Interactions (F, P, C, E, Z + number keys)
+    # Interactions (F, P, L, D, Z + number keys)
     "f": GameAction.FEED,
     "F": GameAction.FEED,
     "1": GameAction.FEED,
@@ -43,12 +40,12 @@ KEY_BINDINGS = {
     "P": GameAction.PLAY,
     "2": GameAction.PLAY,
 
-    "c": GameAction.CLEAN,
-    "C": GameAction.CLEAN,
+    "l": GameAction.CLEAN,  # L for cLean
+    "L": GameAction.CLEAN,
     "3": GameAction.CLEAN,
 
-    "e": GameAction.PET,  # 'e' for pet/affection
-    "E": GameAction.PET,
+    "d": GameAction.PET,    # D for pet/aDorable
+    "D": GameAction.PET,
     "4": GameAction.PET,
 
     "z": GameAction.SLEEP,
@@ -60,12 +57,9 @@ KEY_BINDINGS = {
     "H": GameAction.HELP,
     "?": GameAction.HELP,
 
-    # Debug (hidden)
-    "d": GameAction.DEBUG,
-    "D": GameAction.DEBUG,
-
     # NOTE: These keys are handled directly in game.py to avoid conflicts:
     # T = Talk, S = Stats, I = Inventory, G = Goals, M = Sound toggle
+    # E = Explore, C = Craft, R = Build, A = Areas, B = Shop
 }
 
 
@@ -179,20 +173,28 @@ class InputHandler:
 def get_help_text() -> str:
     """Get the help text for controls."""
     return """
-CONTROLS
---------
+DUCK CARE
+---------
 [F] / [1] - Feed the duck
 [P] / [2] - Play with duck
-[C] / [3] - Clean the duck
-[E] / [4] - Pet the duck
+[L] / [3] - Clean the duck
+[D] / [4] - Pet the duck
 [Z] / [5] - Let duck sleep
 
+SOCIAL
+------
 [T] - Talk to duck
 [S] - View stats
 [I] - Open inventory
 [G] - View goals
+
+WORLD
+-----
+[E] - Explore area
+[A] - Travel to areas
+[C] - Crafting menu
+[R] - Building menu
 [B] - Open shop
-[H] - Show this help
 
 AUDIO
 -----
@@ -203,15 +205,9 @@ AUDIO
 
 GAME
 ----
-[R] - Return to title
+[H] - Show this help
 [Q] - Save & quit
-
-ADVANCED
---------
-[X] - Reset game (start over)
-
-The duck will also do things
-on its own when you're idle!
+[X] - Reset game
 """
 
 

@@ -36,6 +36,12 @@ class SoundType(Enum):
     ALERT = "alert"
     MUSIC_NOTE = "music_note"
     STEP = "step"
+    # New exploration/crafting/building sounds
+    CRAFT_COMPLETE = "craft_complete"
+    BUILD_COMPLETE = "build_complete"
+    DISCOVERY = "discovery"
+    EXPLORE = "explore"
+    GATHER = "gather"
 
 
 @dataclass
@@ -100,6 +106,24 @@ SOUND_EFFECTS = {
     ],
     SoundType.STEP: [
         Note(150, 0.03),
+    ],
+    # New exploration/crafting/building sounds
+    SoundType.CRAFT_COMPLETE: [
+        Note(523, 0.08), Note(659, 0.08), Note(784, 0.08), Note(1047, 0.15),
+    ],
+    SoundType.BUILD_COMPLETE: [
+        Note(392, 0.1), Note(494, 0.1), Note(587, 0.1), Note(784, 0.1),
+        Note(587, 0.08), Note(784, 0.2),
+    ],
+    SoundType.DISCOVERY: [
+        Note(784, 0.1), Note(880, 0.1), Note(988, 0.1), Note(1047, 0.15),
+        Note(988, 0.08), Note(1047, 0.25),
+    ],
+    SoundType.EXPLORE: [
+        Note(330, 0.08), Note(392, 0.08), Note(440, 0.1),
+    ],
+    SoundType.GATHER: [
+        Note(262, 0.05), Note(294, 0.05), Note(330, 0.08),
     ],
 }
 
@@ -639,10 +663,21 @@ class SoundEngine:
         sys.stdout.write('\a')
         sys.stdout.flush()
 
-    def play_sound(self, sound_type: SoundType):
-        """Play a sound effect."""
+    def play_sound(self, sound_type):
+        """Play a sound effect. Accepts SoundType enum or string."""
         if not self.enabled:
             return
+        
+        # Handle string input by converting to SoundType
+        if isinstance(sound_type, str):
+            try:
+                sound_type = SoundType(sound_type)
+            except ValueError:
+                # Try uppercase
+                try:
+                    sound_type = SoundType[sound_type.upper()]
+                except KeyError:
+                    return  # Unknown sound type, silently ignore
 
         notes = SOUND_EFFECTS.get(sound_type, [])
         if not notes:

@@ -289,6 +289,11 @@ class Renderer:
         self._ground_pattern: List[str] = []
         self._generate_ground_pattern()
 
+        # Weather effects
+        self._weather_particles: List[Tuple[float, float, str]] = []  # (x, y, char)
+        self._weather_frame = 0
+        self._current_weather_type: Optional[str] = None
+
     def _generate_playfield_decorations(self):
         """Generate random decorations for the playfield."""
         self._playfield_objects = []
@@ -315,6 +320,88 @@ class Renderer:
             for x in range(self.duck_pos.field_width):
                 row += random.choice(GROUND_CHARS)
             self._ground_pattern.append(row)
+
+    def _update_weather_particles(self, width: int, height: int, weather_type: Optional[str]):
+        """Update animated weather particles."""
+        # Reset particles if weather changed
+        if weather_type != self._current_weather_type:
+            self._weather_particles = []
+            self._current_weather_type = weather_type
+            self._weather_frame = 0
+
+        if not weather_type:
+            self._weather_particles = []
+            return
+
+        self._weather_frame += 1
+
+        # Weather particle settings
+        weather_chars = {
+            "rainy": [",", "'", ".", ","],
+            "stormy": ["|", "!", "/", "\\", "*"],
+            "snowy": ["*", "·", "°", "*", "❄"],
+            "foggy": ["~", "~", " ", "~"],
+            "windy": ["~", "-", "~", ">", "~"],
+            "sunny": ["·", "'", ".", " "],
+        }
+
+        particle_density = {
+            "rainy": 0.15,
+            "stormy": 0.25,
+            "snowy": 0.08,
+            "foggy": 0.05,
+            "windy": 0.06,
+            "sunny": 0.02,
+        }
+
+        particle_speed = {
+            "rainy": 1.5,
+            "stormy": 2.5,
+            "snowy": 0.5,
+            "foggy": 0.2,
+            "windy": 1.0,
+            "sunny": 0.3,
+        }
+
+        chars = weather_chars.get(weather_type, [])
+        density = particle_density.get(weather_type, 0)
+        speed = particle_speed.get(weather_type, 1.0)
+
+        if not chars:
+            return
+
+        # Move existing particles
+        new_particles = []
+        for x, y, char in self._weather_particles:
+            new_y = y + speed
+
+            # Horizontal drift for different weather types
+            if weather_type == "windy":
+                new_x = x + 0.8  # Move right
+            elif weather_type == "snowy":
+                new_x = x + random.uniform(-0.3, 0.3)  # Gentle drift
+            elif weather_type == "stormy":
+                new_x = x + random.uniform(-0.5, 0.5)  # Chaotic
+            else:
+                new_x = x
+
+            if new_y < height and 0 <= new_x < width:
+                new_particles.append((new_x, new_y, char))
+
+        # Spawn new particles at top
+        for x in range(width):
+            if random.random() < density:
+                char = random.choice(chars)
+                new_particles.append((float(x), 0.0, char))
+
+        # Lightning flash for storms (rare)
+        if weather_type == "stormy" and self._weather_frame % 30 == 0 and random.random() < 0.3:
+            # Add lightning bolt
+            bolt_x = random.randint(5, width - 5)
+            for bolt_y in range(min(5, height)):
+                new_particles.append((float(bolt_x + random.randint(-1, 1)), float(bolt_y), "╬"))
+
+        self._weather_particles = new_particles
 
     def clear(self):
         """Clear the terminal."""
@@ -372,7 +459,7 @@ class Renderer:
         placed_items = game.habitat.placed_items if hasattr(game, 'habitat') else []
 
         # Main area: playfield on left, side panel on right
-        playfield_lines = self._render_playfield(duck, playfield_width, field_height, equipped_cosmetics, placed_items)
+        playfield_lines = self._render_playfield(duck, playfield_width, field_height, equipped_cosmetics, placed_items, weather_info)
         sidepanel_lines = self._render_side_panel(duck, game, side_panel_width)
 
         # Combine playfield and side panel
@@ -480,10 +567,15 @@ class Renderer:
 
     def _render_playfield(self, duck: "Duck", width: int, height: int = None, 
                           equipped_cosmetics: Dict[str, str] = None,
-                          placed_items: List = None) -> List[str]:
+                          placed_items: List = None,
+                          weather_info = None) -> List[str]:
         """Render the main playfield where duck moves around."""
         inner_width = width - 2
         lines = []
+
+        # Update weather particles
+        weather_type = weather_info.weather_type.value if weather_info else None
+        self._update_weather_particles(inner_width, height if height else self.duck_pos.field_height, weather_type)
 
         # Title bar
         title = " DUCK HABITAT "
@@ -584,6 +676,23 @@ class Renderer:
                             # Use bright yellow for effects
                             row[px] = (char, self.term.bright_yellow)
 
+            # Add weather particles (rendered on top of everything except text)
+            weather_colors = {
+                "rainy": self.term.bright_cyan,
+                "stormy": self.term.bright_white,
+                "snowy": self.term.bright_white,
+                "foggy": self.term.dim,
+                "windy": self.term.bright_cyan,
+                "sunny": self.term.bright_yellow,
+            }
+            weather_color = weather_colors.get(self._current_weather_type)
+            for px, py, char in self._weather_particles:
+                if int(py) == y and 0 <= int(px) < inner_width:
+                    # Don't overwrite duck or effect characters
+                    existing_char, existing_color = row[int(px)]
+                    if existing_char in GROUND_CHARS or existing_char == ' ':
+                        row[int(px)] = (char, weather_color)
+
             # Convert row to string, applying colors
             row_chars = []
             for char, color_func in row:
@@ -603,7 +712,7 @@ class Renderer:
         return lines
 
     def _render_side_panel(self, duck: "Duck", game: "Game", width: int) -> List[str]:
-        """Render the side panel with close-up, stats, and info."""
+        """Render the side panel with close-up, stats, shortcuts, and info."""
         inner_width = width - 2
         lines = []
 
@@ -627,7 +736,7 @@ class Renderer:
         # Divider
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
 
-        # Needs bars
+        # Needs bars (compact)
         needs_data = [
             ("HUN", duck.needs.hunger, self._get_need_indicator(duck.needs.hunger)),
             ("ENG", duck.needs.energy, self._get_need_indicator(duck.needs.energy)),
@@ -640,6 +749,28 @@ class Renderer:
             bar = self._make_progress_bar(value, 10)
             line = f"{name}{bar}{indicator}".ljust(inner_width)
             lines.append(BOX["v"] + line[:inner_width] + BOX["v"])
+
+        # Divider - Shortcuts Section
+        lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
+        lines.append(BOX["v"] + "─── SHORTCUTS ───".center(inner_width)[:inner_width] + BOX["v"])
+
+        # Actions column - organized by function
+        shortcuts = [
+            "[F] Feed    [P] Play",
+            "[L] Clean   [D] Pet",
+            "[Z] Sleep   [T] Talk",
+            "",
+            "[E] Explore [A] Areas",
+            "[C] Craft   [R] Build",
+            "",
+            "[I] Items   [B] Shop",
+            "[G] Goals   [S] Stats",
+            "[H] Help    [Q] Quit",
+        ]
+
+        for shortcut in shortcuts:
+            if shortcut:
+                lines.append(BOX["v"] + shortcut.center(inner_width)[:inner_width] + BOX["v"])
 
         # Divider
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
@@ -757,14 +888,12 @@ class Renderer:
         """Render the bottom controls bar."""
         inner_width = width - 2
 
-        # Two rows of controls for clarity
-        controls1 = " [F]eed [P]lay [C]lean p[E]t [Z]leep "
-        controls2 = " [T]alk [B]uy [S]tats [I]nv [G]oals [H]elp [Q]uit "
+        # Compact controls hint
+        controls = " [H]elp for shortcuts • [M]ute • [+/-] Volume • [Q]uit "
 
         lines = [
             BOX["tl"] + BOX["h"] * inner_width + BOX["tr"],
-            BOX["v"] + controls1.center(inner_width)[:inner_width] + BOX["v"],
-            BOX["v"] + controls2.center(inner_width)[:inner_width] + BOX["v"],
+            BOX["v"] + controls.center(inner_width)[:inner_width] + BOX["v"],
             BOX["bl"] + BOX["h"] * inner_width + BOX["br"],
         ]
         return lines
@@ -1033,6 +1162,21 @@ class Renderer:
             min(30, coll_owned * 2)
         ))
 
+        # Exploration stats
+        exploration = game.exploration
+        area_count = len(exploration.discovered_areas)
+        current_biome = exploration._current_biome
+        biome_name = current_biome.value.replace("_", " ").title() if current_biome else "Unknown"
+
+        # Materials count
+        materials = game.materials
+        mat_count = len(materials.get_all_materials())
+        mat_total = sum(materials.get_all_materials().values())
+
+        # Building count
+        building = game.building
+        struct_count = len([s for s in building._structures if s.status.value == "complete"])
+
         stats_text = [
             f"🦆 {duck.name} - {duck.get_growth_stage_display()}",
             "",
@@ -1049,13 +1193,16 @@ class Renderer:
             f"  Love Score: {'💕' * (love_score // 20)}{'💔' * (5 - love_score // 20)} {love_score}%",
             f"╚══════════════════════════════════════╝",
             "",
+            f"╔══════════════ WORLD ═════════════════╗",
+            f"  🗺️  Location: {biome_name}",
+            f"  🌲 Areas: {area_count} discovered",
+            f"  📦 Materials: {mat_count} types ({mat_total} total)",
+            f"  🏠 Structures: {struct_count} built",
+            f"╚══════════════════════════════════════╝",
+            "",
             f"╔══════════════ LIFETIME ══════════════╗",
             f"  Days Played: {prog.days_played}",
             f"  Total Care: {total_care_actions} actions",
-            f"    🍞 Fed: {total_stats.get('total_feeds', 0)}",
-            f"    🎮 Played: {total_stats.get('total_plays', 0)}",
-            f"    🧼 Cleaned: {total_stats.get('total_cleans', 0)}",
-            f"    💕 Petted: {total_stats.get('total_pets', 0)}",
             f"  Collectibles: {coll_owned}/{coll_total} 🏆",
             f"╚══════════════════════════════════════╝",
             "",
@@ -1289,11 +1436,20 @@ class Renderer:
         return None
 
     def show_message(self, message: str, duration: float = 5.0):
-        """Show a message to the player (default 5 seconds)."""
+        """Show a message to the player (default 5 seconds). If duration is 0, message persists until dismissed."""
         self._message_queue.append(message)
         if len(self._message_queue) > 5:
             self._message_queue.pop(0)
-        self._message_expire = time.time() + duration
+        if duration > 0:
+            self._message_expire = time.time() + duration
+        else:
+            self._message_expire = float('inf')  # Never expire automatically
+
+    def dismiss_message(self):
+        """Dismiss the current message overlay."""
+        if self._message_queue:
+            self._message_queue.clear()
+        self._message_expire = 0
 
     def show_effect(self, effect_name: str, duration: float = 1.0):
         """Show a visual effect."""

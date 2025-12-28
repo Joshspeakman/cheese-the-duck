@@ -21,6 +21,10 @@ from world.goals import GoalSystem, goal_system
 from world.achievements import AchievementSystem, achievement_system
 from world.home import DuckHome, duck_home
 from world.atmosphere import AtmosphereManager, atmosphere, WeatherType
+from world.exploration import ExplorationSystem, exploration, BiomeType
+from world.materials import MaterialInventory, material_inventory, MATERIALS
+from world.crafting import CraftingSystem, crafting, RECIPES
+from world.building import BuildingSystem, building, BLUEPRINTS
 from dialogue.diary import DuckDiary, duck_diary, DiaryEntryType
 from audio.sound import sound_engine, duck_sounds
 from ui.renderer import Renderer
@@ -61,6 +65,12 @@ class Game:
         self.atmosphere: AtmosphereManager = atmosphere
         self.diary: DuckDiary = duck_diary
 
+        # Exploration, crafting, and building systems
+        self.exploration: ExplorationSystem = exploration
+        self.materials: MaterialInventory = material_inventory
+        self.crafting: CraftingSystem = crafting
+        self.building: BuildingSystem = building
+
         self._running = False
         self._state = "init"  # init, title, playing, paused, daily_rewards
         self._last_tick = 0.0
@@ -68,6 +78,8 @@ class Game:
         self._last_event_check = 0.0
         self._last_progression_check = 0.0
         self._last_atmosphere_check = 0.0
+        self._last_craft_check = 0.0
+        self._last_build_check = 0.0
         self._session_start = time.time()
         self._session_feeds = 0  # Track for bread_obsessed secret
         self._ecstatic_start = None  # Track for zen_master secret
@@ -79,6 +91,9 @@ class Game:
         self._sound_enabled = True
         self._show_goals = False
         self._reset_confirmation = False  # Flag for reset game confirmation
+        self._crafting_menu_open = False  # Flag for crafting menu
+        self._building_menu_open = False  # Flag for building menu
+        self._areas_menu_open = False     # Flag for areas menu
 
         # Interaction cooldowns (in seconds)
         self._interaction_cooldowns = {
@@ -367,9 +382,23 @@ class Game:
 
     def _handle_playing_action(self, action: GameAction, key=None):
         """Handle actions while playing."""
-        # Check for direct key-based actions first (to avoid conflicts)
+        # Handle menu inputs first (if any menu is open)
         if key:
             key_str = str(key).lower()
+            key_name = getattr(key, 'name', '') or ''
+
+            # Check for open menus and handle their input
+            if self._crafting_menu_open:
+                if self._handle_crafting_input(key_str, key_name):
+                    return
+
+            if self._building_menu_open:
+                if self._handle_building_input(key_str, key_name):
+                    return
+
+            if self._areas_menu_open:
+                if self._handle_areas_input(key_str, key_name):
+                    return
 
             # Stats toggle [S]
             if key_str == 's':
@@ -429,6 +458,26 @@ class Game:
             # Reset game [X] - buried in menu, requires confirmation
             if key_str == 'x':
                 self._start_reset_confirmation()
+                return
+
+            # Explore [E] - Explore current area for resources
+            if key_str == 'e':
+                self._do_explore()
+                return
+
+            # Craft [C] - Open crafting menu
+            if key_str == 'c':
+                self._show_crafting_menu()
+                return
+
+            # Build [R] - Open building menu (R for conStRuct)
+            if key_str == 'r':
+                self._show_building_menu()
+                return
+
+            # Areas [A] - Show available areas to explore
+            if key_str == 'a':
+                self._show_areas_menu()
                 return
 
         # Interaction actions (from GameAction enum)
@@ -948,10 +997,139 @@ class Game:
         # Duck interacts with nearby habitat items (10% chance per update)
         self._check_item_interaction(current_time)
 
+        # Check crafting progress (every 2 seconds)
+        if current_time - self._last_craft_check >= 2:
+            self._update_crafting_progress()
+            self._last_craft_check = current_time
+
+        # Check building progress (every 5 seconds)
+        if current_time - self._last_build_check >= 5:
+            self._update_building_progress()
+            self._last_build_check = current_time
+
+        # Apply weather damage to structures (every 60 seconds during bad weather)
+        if current_time - self._last_build_check >= 60:
+            self._apply_weather_damage_to_structures()
+
         # Auto-save every 60 seconds
         if current_time - self._last_save >= 60:
             self._save_game()
             self._last_save = current_time
+
+    def _update_crafting_progress(self):
+        """Update crafting progress and complete if ready."""
+        if not self.crafting._current_craft:
+            return
+
+        result = self.crafting.check_crafting()
+
+        if result.get("completed"):
+            item_id = result.get("result_item")
+            quantity = result.get("quantity", 1)
+
+            # Add crafted item to materials inventory
+            if item_id in MATERIALS:
+                self.materials.add_material(item_id, quantity)
+            else:
+                # It's a tool or other item - add to tool list
+                pass
+
+            self.renderer.show_message(
+                f"✨ Crafting Complete! ✨\n\n"
+                f"Created: {item_id.replace('_', ' ').title()} x{quantity}",
+                duration=4.0
+            )
+            sound_engine.play_sound("craft_complete")
+            self.progression.add_xp(15, "crafting")
+
+            # Crafting achievements
+            self.achievements.unlock("first_craft")
+            
+            # Check for tool crafting
+            from world.crafting import RECIPES, CraftingCategory
+            recipe = RECIPES.get(item_id)
+            if recipe and recipe.category == CraftingCategory.TOOL:
+                self.achievements.unlock("craft_tool")
+            
+            # Check for crafting milestones
+            total_crafted = sum(self.crafting.crafted_count.values())
+            if total_crafted >= 10:
+                self.achievements.unlock("craft_10")
+            
+            # Check for crafting master
+            if self.crafting.crafting_skill >= 5:
+                self.achievements.unlock("crafting_master")
+
+    def _update_building_progress(self):
+        """Update building progress if actively building."""
+        if not self.building._current_build:
+            return
+
+        result = self.building.update_building(self.materials)
+
+        if result.get("completed"):
+            bp_id = result.get("blueprint_id")
+            bp = BLUEPRINTS.get(bp_id)
+            name = bp.name if bp else bp_id.replace("_", " ").title()
+
+            self.renderer.show_message(
+                f"🏠 Building Complete! 🏠\n\n"
+                f"Built: {name}\n"
+                f"Check [R] menu to see your structures!",
+                duration=5.0
+            )
+            sound_engine.play_sound("build_complete")
+            self.progression.add_xp(50, "building")
+
+            # Building achievements
+            self.achievements.unlock("first_build")
+            
+            # Check structure type
+            from world.building import StructureType
+            if bp:
+                if bp.structure_type == StructureType.NEST:
+                    self.achievements.unlock("build_nest")
+                elif bp.structure_type == StructureType.HOUSE:
+                    self.achievements.unlock("build_house")
+            
+            # Check building milestones
+            if self.building.structures_built >= 5:
+                self.achievements.unlock("build_5")
+            
+            # Check for building master
+            if self.building.building_skill >= 5:
+                self.achievements.unlock("building_master")
+
+        elif result.get("stage_completed"):
+            stage = result.get("current_stage", 0)
+            stage_names = ["Foundation", "Frame", "Walls", "Roof", "Finishing"]
+            name = stage_names[min(stage, 4)]
+            self.renderer.show_message(f"🔨 {name} complete! Continue building...", duration=2.0)
+
+    def _apply_weather_damage_to_structures(self):
+        """Apply weather damage to structures during bad weather."""
+        if not self.atmosphere.current_weather:
+            return
+
+        weather_type = self.atmosphere.current_weather.weather_type
+        damaged = self.building.apply_weather_damage(weather_type)
+
+        for structure in damaged:
+            bp = BLUEPRINTS.get(structure.blueprint_id)
+            name = bp.name if bp else "Structure"
+            health = int((structure.durability / structure.max_durability) * 100)
+
+            if structure.status.value == "damaged":
+                self.renderer.show_message(
+                    f"⚠️ {name} damaged by weather! ({health}%)\n"
+                    f"Repair with [R] menu.",
+                    duration=3.0
+                )
+            elif structure.status.value == "destroyed":
+                self.renderer.show_message(
+                    f"💔 {name} destroyed by weather!",
+                    duration=4.0
+                )
 
     def _check_item_interaction(self, current_time: float):
         """Check if duck should interact with nearby placed items."""
@@ -1355,6 +1533,30 @@ class Game:
             # Record hatching for new diary
             self.diary.record_milestone("hatched")
 
+        # Load exploration system
+        if "exploration" in data:
+            self.exploration = ExplorationSystem.from_dict(data["exploration"])
+        else:
+            self.exploration = ExplorationSystem()
+
+        # Load materials inventory
+        if "materials" in data:
+            self.materials = MaterialInventory.from_dict(data["materials"])
+        else:
+            self.materials = MaterialInventory()
+
+        # Load crafting system
+        if "crafting" in data:
+            self.crafting = CraftingSystem.from_dict(data["crafting"])
+        else:
+            self.crafting = CraftingSystem()
+
+        # Load building system
+        if "building" in data:
+            self.building = BuildingSystem.from_dict(data["building"])
+        else:
+            self.building = BuildingSystem()
+
         # Load weather history for secret goal
         self._weather_seen = set(data.get("weather_seen", []))
 
@@ -1412,6 +1614,10 @@ class Game:
             "habitat": self.habitat.to_dict(),
             "atmosphere": self.atmosphere.to_dict(),
             "diary": self.diary.to_dict(),
+            "exploration": self.exploration.to_dict(),
+            "materials": self.materials.to_dict(),
+            "crafting": self.crafting.to_dict(),
+            "building": self.building.to_dict(),
             "statistics": self._statistics,
             "weather_seen": list(self._weather_seen),
         }
@@ -1484,6 +1690,10 @@ class Game:
 
         self.atmosphere = AtmosphereManager()
         self.diary = DuckDiary()
+        self.exploration = ExplorationSystem()
+        self.materials = MaterialInventory()
+        self.crafting = CraftingSystem()
+        self.building = BuildingSystem()
 
         self._statistics = {}
         self._weather_seen = set()
@@ -1502,3 +1712,273 @@ class Game:
         """Cancel the reset confirmation."""
         self._reset_confirmation = False
         self.renderer.show_message("Reset cancelled.", duration=2.0)
+
+    # ==================== EXPLORATION SYSTEM ====================
+
+    def _do_explore(self):
+        """Explore the current area for resources."""
+        if not self.duck:
+            return
+
+        # Try to explore
+        result = self.exploration.explore(self.duck)
+
+        if not result["success"]:
+            self.renderer.show_message(result["message"], duration=3.0)
+            return
+
+        # Add found resources to inventory
+        resources_found = []
+        for material_id, quantity in result.get("resources", {}).items():
+            if material_id in MATERIALS:
+                if self.materials.add_material(material_id, quantity):
+                    mat = MATERIALS[material_id]
+                    resources_found.append(f"{mat.name} x{quantity}")
+
+        # Handle rare discoveries
+        if result.get("rare_discovery"):
+            item_id = result["rare_discovery"]
+            self.inventory.add_item(item_id)
+            sound_engine.play_sound("discovery")
+            self.renderer.show_message(
+                f"✨ RARE DISCOVERY! ✨\n\n"
+                f"You found: {item_id.replace('_', ' ').title()}!\n"
+                f"Resources: {', '.join(resources_found) if resources_found else 'None'}",
+                duration=5.0
+            )
+            # Achievement for rare finds
+            self.achievements.unlock("rare_find")
+            return
+
+        # Handle danger encounters
+        if result.get("danger"):
+            danger = result["danger"]
+            self.renderer.show_message(
+                f"⚠️ DANGER! ⚠️\n\n"
+                f"{danger['message']}\n"
+                f"You escaped but dropped some items!",
+                duration=4.0
+            )
+            return
+
+        # Normal exploration result
+        biome_name = result.get("biome", "area").replace("_", " ").title()
+        if resources_found:
+            msg = f"🌿 Explored {biome_name} 🌿\n\nFound: {', '.join(resources_found)}"
+            if result.get("skill_up"):
+                msg += f"\n\n⭐ Gathering skill improved!"
+                # Check for gathering master achievement
+                if self.exploration.gathering_skill >= 5:
+                    self.achievements.unlock("gathering_master")
+        else:
+            msg = f"🌿 Explored {biome_name} 🌿\n\nNothing found this time."
+
+        self.renderer.show_message(msg, duration=3.0)
+
+        # Award some XP for exploring
+        self.progression.add_xp(5, "exploration")
+
+        # First exploration achievement
+        self.achievements.unlock("first_explore")
+
+        # Check for area discovery achievements
+        area_count = len(self.exploration.discovered_areas)
+        if area_count >= 5:
+            self.achievements.unlock("discover_5_areas")
+        if area_count >= 10:
+            self.achievements.unlock("discover_10_areas")
+
+    def _show_crafting_menu(self):
+        """Show the crafting menu overlay."""
+        if not self.duck:
+            return
+
+        # Get available recipes
+        available = self.crafting.get_available_recipes(self.materials)
+        all_recipes = list(RECIPES.values())
+
+        # Build menu content
+        lines = ["═══ CRAFTING MENU ═══", ""]
+
+        if self.crafting._current_craft:
+            # Show crafting in progress
+            progress = self.crafting._current_craft
+            recipe = RECIPES.get(progress.recipe_id)
+            if recipe:
+                pct = int(progress.get_progress() * 100)
+                lines.append(f"🔨 Crafting: {recipe.name} ({pct}%)")
+                lines.append("")
+                lines.append("[Press ESC or C to close]")
+            else:
+                lines.append("Crafting in progress...")
+        else:
+            lines.append("Available recipes:")
+            lines.append("")
+
+            for i, recipe in enumerate(all_recipes[:8], 1):  # Show first 8
+                can_craft = recipe.result_item in available
+                status = "✓" if can_craft else "✗"
+                lines.append(f"[{i}] {status} {recipe.name}")
+
+            lines.append("")
+            lines.append("Press 1-8 to craft")
+            lines.append("[ESC] Close menu")
+
+        self.renderer.show_message("\n".join(lines), duration=0)
+        self._crafting_menu_open = True
+
+    def _show_building_menu(self):
+        """Show the building menu overlay."""
+        if not self.duck:
+            return
+
+        # Get buildable structures
+        buildable = self.building.get_buildable_structures(self.materials)
+        all_blueprints = list(BLUEPRINTS.values())
+
+        lines = ["═══ BUILDING MENU ═══", ""]
+
+        if self.building._current_build:
+            # Show building in progress
+            build_progress = self.building._current_build
+            structure = build_progress.structure
+            bp = BLUEPRINTS.get(structure.blueprint_id)
+            if bp:
+                stage_names = ["Foundation", "Frame", "Walls", "Roof", "Finishing"]
+                current_stage = stage_names[min(structure.current_stage, 4)]
+                pct = int((structure.current_stage / bp.stages) * 100)
+                lines.append(f"🏗️ Building: {bp.name}")
+                lines.append(f"   Stage: {current_stage} ({pct}%)")
+                lines.append("")
+                lines.append("[Press ESC or R to close]")
+            else:
+                lines.append("Building in progress...")
+        else:
+            # Show existing structures
+            if self.building._structures:
+                lines.append("Your structures:")
+                for struct in self.building._structures[:3]:
+                    bp = BLUEPRINTS.get(struct.blueprint_id)
+                    if bp:
+                        health = int((struct.durability / struct.max_durability) * 100)
+                        lines.append(f"  • {bp.name} ({health}% condition)")
+                lines.append("")
+
+            lines.append("Available blueprints:")
+            lines.append("")
+
+            for i, bp in enumerate(all_blueprints[:6], 1):  # Show first 6
+                can_build = bp.id in buildable
+                status = "✓" if can_build else "✗"
+                lines.append(f"[{i}] {status} {bp.name}")
+
+            lines.append("")
+            lines.append("Press 1-6 to build")
+            lines.append("[ESC] Close menu")
+
+        self.renderer.show_message("\n".join(lines), duration=0)
+        self._building_menu_open = True
+
+    def _show_areas_menu(self):
+        """Show discovered areas and allow travel."""
+        if not self.duck:
+            return
+
+        available = self.exploration.get_available_areas()
+        current_biome = self.exploration._current_biome
+        current_name = current_biome.value.replace("_", " ").title() if current_biome else "Unknown"
+
+        lines = ["═══ DISCOVERED AREAS ═══", ""]
+        lines.append(f"Current location: {current_name}")
+        lines.append("")
+
+        if available:
+            lines.append("Travel to:")
+            for i, area in enumerate(available, 1):
+                name = area.name  # BiomeArea has .name property
+                danger = area.danger_level / 5.0  # danger_level is 0-5
+                danger_str = "🟢" if danger < 0.3 else "🟡" if danger < 0.6 else "🔴"
+                lines.append(f"  [{i}] {danger_str} {name}")
+        else:
+            lines.append("No other areas discovered yet.")
+            lines.append("Keep exploring [E] to find new biomes!")
+
+        lines.append("")
+        lines.append(f"Gathering skill: Lv.{self.exploration.gathering_skill}")
+        lines.append("")
+        lines.append("[ESC or A] Close menu")
+
+        self.renderer.show_message("\n".join(lines), duration=0)
+        self._areas_menu_open = True
+
+    def _handle_crafting_input(self, key_str: str, key_name: str = "") -> bool:
+        """Handle input while crafting menu is open. Returns True if handled."""
+        if not hasattr(self, '_crafting_menu_open') or not self._crafting_menu_open:
+            return False
+
+        # Close menu on ESC or C
+        if key_name == 'KEY_ESCAPE' or key_str == 'c':
+            self._crafting_menu_open = False
+            self.renderer.dismiss_message()
+            return True
+
+        # Handle recipe selection (1-8)
+        if key_str.isdigit() and 1 <= int(key_str) <= 8:
+            recipe_idx = int(key_str) - 1
+            recipes = list(RECIPES.values())
+            if recipe_idx < len(recipes):
+                recipe = recipes[recipe_idx]
+                result = self.crafting.start_crafting(recipe.id, self.materials)
+                self._crafting_menu_open = False
+                self.renderer.show_message(result["message"], duration=3.0)
+                return True
+
+        return True  # Consume all input while menu is open
+
+    def _handle_building_input(self, key_str: str, key_name: str = "") -> bool:
+        """Handle input while building menu is open. Returns True if handled."""
+        if not hasattr(self, '_building_menu_open') or not self._building_menu_open:
+            return False
+
+        # Close menu on ESC or R
+        if key_name == 'KEY_ESCAPE' or key_str == 'r':
+            self._building_menu_open = False
+            self.renderer.dismiss_message()
+            return True
+
+        # Handle blueprint selection (1-6)
+        if key_str.isdigit() and 1 <= int(key_str) <= 6:
+            bp_idx = int(key_str) - 1
+            blueprints = list(BLUEPRINTS.values())
+            if bp_idx < len(blueprints):
+                bp = blueprints[bp_idx]
+                result = self.building.start_building(bp.id, self.materials)
+                self._building_menu_open = False
+                self.renderer.show_message(result["message"], duration=3.0)
+                return True
+
+        return True  # Consume all input while menu is open
+
+    def _handle_areas_input(self, key_str: str, key_name: str = "") -> bool:
+        """Handle input while areas menu is open. Returns True if handled."""
+        if not hasattr(self, '_areas_menu_open') or not self._areas_menu_open:
+            return False
+
+        # Close menu on ESC or A
+        if key_name == 'KEY_ESCAPE' or key_str == 'a':
+            self._areas_menu_open = False
+            self.renderer.dismiss_message()
+            return True
+
+        # Handle area selection
+        available = self.exploration.get_available_areas()
+        if key_str.isdigit():
+            idx = int(key_str) - 1
+            if 0 <= idx < len(available):
+                area = available[idx]
+                result = self.exploration.travel_to(area)
+                self._areas_menu_open = False
+                self.renderer.show_message(result["message"], duration=3.0)
+                return True
+
+        return True  # Consume all input while menu is open
