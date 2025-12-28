@@ -3,7 +3,7 @@
 A feature-rich terminal-based virtual pet game inspired by Tamagotchi. Raise and care for Cheese, a derpy but adorable duck with unique personality traits, dynamic needs, and AI-powered behavior!
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![Python](https://img.shields.io/badge/python-3.13+-blue.svg)
 
 ## ✨ Features
 
@@ -35,11 +35,13 @@ A feature-rich terminal-based virtual pet game inspired by Tamagotchi. Raise and
 - **Goal System**: Complete daily and weekly goals for bonus rewards
 - **Collectibles**: Discover and collect rare items throughout gameplay
 - **Level System**: Gain XP and level up through interactions
+- **Interaction Cooldowns**: Prevents spam-clicking with themed cooldown messages
 
-### 🏠 Home Customization
-- Unlock and customize your duck's home environment
-- Purchase decorations and furniture
-- Upgrade home features as you progress
+### 🏠 Habitat System
+- **Decoratable Playfield**: Place items around your duck's habitat
+- **Shop System**: Purchase decorations, cosmetics, and furniture with in-game currency
+- **Dynamic Atmosphere**: Weather, time of day, and seasonal effects
+- **Item Interactions**: Duck reacts to nearby placed items
 
 ### 🎪 Dynamic Events
 - Random events occur during gameplay (visitors, weather changes, special occasions)
@@ -48,9 +50,17 @@ A feature-rich terminal-based virtual pet game inspired by Tamagotchi. Raise and
 
 ### 🎨 Rich Terminal UI
 - Colorful ASCII art duck animations
+- **Animated Sprites**: Duck animates during interactions (sleeping, eating, playing, cleaning, petting)
+- **Kaomoji-style Close-ups**: Expressive emotion displays
+- **Animated Celebrations**: Level-up and achievement animations
 - Real-time status displays for all needs
 - Smooth animations and visual feedback
-- Sound effects support (optional)
+
+### 🔊 Audio System
+- **Background Music**: Looping ambient music (pygame-based)
+- **Duck Quacks**: Realistic WAV sound effects
+- **Syllable-Based Speech**: Duck quacks once per syllable when responding!
+- Volume controls for music and sound effects independently
 
 ### 💾 Save System
 - Automatic save functionality
@@ -106,10 +116,17 @@ The game will automatically detect and use Ollama if available.
 ## 🎮 How to Play
 
 ### Controls
-- **Arrow Keys**: Navigate menus
+- **Arrow Keys**: Navigate menus / Move duck in habitat
 - **Enter**: Select option
 - **ESC/Q**: Go back / Quit
 - **Number Keys**: Quick actions (1-5)
+- **S**: Open shop
+- **T**: Talk to duck
+- **I**: Open inventory
+- **G**: View goals
+- **M**: Toggle music
+- **N**: Toggle sound effects
+- **+/-**: Adjust volume
 
 ### Basic Actions
 1. **Feed**: Satisfy hunger needs with various food items
@@ -117,7 +134,7 @@ The game will automatically detect and use Ollama if available.
 3. **Clean**: Keep your duck tidy and happy
 4. **Pet**: Show affection and boost mood
 5. **Sleep**: Restore energy (takes time)
-6. **Talk**: Have conversations with your duck
+6. **Talk**: Have conversations with your duck (duck quacks for each syllable!)
 
 ### Tips
 - Monitor all needs - low needs lead to unhappy ducks
@@ -149,15 +166,20 @@ cheese_the_duck/
 │   └── personality.py  # Personality system
 ├── ui/                 # User interface
 │   ├── animations.py   # Animation controller
-│   ├── ascii_art.py    # Duck ASCII art
+│   ├── ascii_art.py    # Duck ASCII art & sprites
+│   ├── habitat_art.py  # Habitat decorations art
+│   ├── habitat_icons.py# Item icons
 │   ├── input_handler.py# Input processing
 │   └── renderer.py     # Display rendering
 ├── world/              # Game world systems
 │   ├── achievements.py # Achievement tracking
+│   ├── atmosphere.py   # Weather & time effects
 │   ├── events.py       # Random events
 │   ├── goals.py        # Daily/weekly goals
+│   ├── habitat.py      # Habitat item placement
 │   ├── home.py         # Home customization
-│   └── items.py        # Inventory system
+│   ├── items.py        # Inventory system
+│   └── shop.py         # In-game shop
 ├── config.py           # Game configuration
 ├── main.py             # Entry point
 └── requirements.txt    # Python dependencies
