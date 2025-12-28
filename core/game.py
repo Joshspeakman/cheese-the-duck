@@ -2653,38 +2653,37 @@ class Game:
 
         # If crafting in progress, just handle close
         if self.crafting._current_craft:
-            if key_name == 'KEY_ESCAPE' or key_str == 'c':
+            if key.name == 'KEY_ESCAPE' or key_str == 'c':
                 self._crafting_menu_open = False
                 self._crafting_menu.close()
                 self.renderer.dismiss_message()
             return True
 
-        # Handle arrow keys and enter directly
-        if key and key.is_sequence:
-            if key.code == self.terminal.KEY_UP:
-                idx = self._crafting_menu.get_selected_index()
-                if idx > 0:
-                    self._crafting_menu.set_selected_index(idx - 1)
-                    self._update_crafting_menu_display()
-                return True
-            elif key.code == self.terminal.KEY_DOWN:
-                idx = self._crafting_menu.get_selected_index()
-                items = self._crafting_menu.get_items()
-                if idx < len(items) - 1:
-                    self._crafting_menu.set_selected_index(idx + 1)
-                    self._update_crafting_menu_display()
-                return True
-            elif key.code == self.terminal.KEY_ENTER:
-                selected = self._crafting_menu.get_selected_item()
-                if selected and selected.data and selected.enabled:
-                    recipe = selected.data
-                    result = self.crafting.start_crafting(recipe.id, self.materials)
-                    self._crafting_menu_open = False
-                    self.renderer.show_message(result["message"], duration=3.0)
-                return True
+        # Handle arrow keys and enter directly (same as shop)
+        if key.name == "KEY_UP":
+            idx = self._crafting_menu.get_selected_index()
+            if idx > 0:
+                self._crafting_menu.set_selected_index(idx - 1)
+                self._update_crafting_menu_display()
+            return True
+        if key.name == "KEY_DOWN":
+            idx = self._crafting_menu.get_selected_index()
+            items = self._crafting_menu.get_items()
+            if idx < len(items) - 1:
+                self._crafting_menu.set_selected_index(idx + 1)
+                self._update_crafting_menu_display()
+            return True
+        if key.name == "KEY_ENTER":
+            selected = self._crafting_menu.get_selected_item()
+            if selected and selected.data and selected.enabled:
+                recipe = selected.data
+                result = self.crafting.start_crafting(recipe.id, self.materials)
+                self._crafting_menu_open = False
+                self.renderer.show_message(result["message"], duration=3.0)
+            return True
 
         # Close on ESC or C
-        if key_name == 'KEY_ESCAPE' or key_str == 'c':
+        if key.name == 'KEY_ESCAPE' or key_str == 'c':
             self._crafting_menu_open = False
             self.renderer.dismiss_message()
             return True
@@ -2709,41 +2708,40 @@ class Game:
 
         # If building in progress, just handle close
         if self.building._current_build:
-            if key_name == 'KEY_ESCAPE' or key_str == 'r':
+            if key.name == 'KEY_ESCAPE' or key_str == 'r':
                 self._building_menu_open = False
                 self._building_menu.close()
                 self.renderer.dismiss_message()
             return True
 
-        # Handle arrow keys and enter directly
-        if key and key.is_sequence:
-            if key.code == self.terminal.KEY_UP:
-                idx = self._building_menu.get_selected_index()
-                if idx > 0:
-                    self._building_menu.set_selected_index(idx - 1)
-                    self._update_building_menu_display()
-                return True
-            elif key.code == self.terminal.KEY_DOWN:
-                idx = self._building_menu.get_selected_index()
-                items = self._building_menu.get_items()
-                if idx < len(items) - 1:
-                    self._building_menu.set_selected_index(idx + 1)
-                    self._update_building_menu_display()
-                return True
-            elif key.code == self.terminal.KEY_ENTER:
-                selected = self._building_menu.get_selected_item()
-                if selected and selected.data and selected.enabled:
-                    bp = selected.data
-                    result = self.building.start_building(bp.id, self.materials)
-                    self._building_menu_open = False
-                    if result.get("success"):
-                        self._start_building_animation(bp)
-                    else:
-                        self.renderer.show_message(result["message"], duration=3.0)
-                return True
+        # Handle arrow keys and enter directly (same as shop)
+        if key.name == "KEY_UP":
+            idx = self._building_menu.get_selected_index()
+            if idx > 0:
+                self._building_menu.set_selected_index(idx - 1)
+                self._update_building_menu_display()
+            return True
+        if key.name == "KEY_DOWN":
+            idx = self._building_menu.get_selected_index()
+            items = self._building_menu.get_items()
+            if idx < len(items) - 1:
+                self._building_menu.set_selected_index(idx + 1)
+                self._update_building_menu_display()
+            return True
+        if key.name == "KEY_ENTER":
+            selected = self._building_menu.get_selected_item()
+            if selected and selected.data and selected.enabled:
+                bp = selected.data
+                result = self.building.start_building(bp.id, self.materials)
+                self._building_menu_open = False
+                if result.get("success"):
+                    self._start_building_animation(bp)
+                else:
+                    self.renderer.show_message(result["message"], duration=3.0)
+            return True
 
         # Close on ESC or R
-        if key_name == 'KEY_ESCAPE' or key_str == 'r':
+        if key.name == 'KEY_ESCAPE' or key_str == 'r':
             self._building_menu_open = False
             self.renderer.dismiss_message()
             return True
@@ -2820,38 +2818,37 @@ class Game:
         # If no areas available, just handle close
         available = self.exploration.get_available_areas()
         if not available:
-            if key_name == 'KEY_ESCAPE' or key_str == 'a':
+            if key.name == 'KEY_ESCAPE' or key_str == 'a':
                 self._areas_menu_open = False
                 self._areas_menu.close()
                 self.renderer.dismiss_message()
             return True
 
-        # Handle arrow keys and enter directly
-        if key and key.is_sequence:
-            if key.code == self.terminal.KEY_UP:
-                idx = self._areas_menu.get_selected_index()
-                if idx > 0:
-                    self._areas_menu.set_selected_index(idx - 1)
-                    self._update_areas_menu_display()
-                return True
-            elif key.code == self.terminal.KEY_DOWN:
-                idx = self._areas_menu.get_selected_index()
-                items = self._areas_menu.get_items()
-                if idx < len(items) - 1:
-                    self._areas_menu.set_selected_index(idx + 1)
-                    self._update_areas_menu_display()
-                return True
-            elif key.code == self.terminal.KEY_ENTER:
-                selected = self._areas_menu.get_selected_item()
-                if selected and selected.data:
-                    area = selected.data
-                    self._areas_menu_open = False
-                    self.renderer.dismiss_message()
-                    self._start_travel_to_area(area)
-                return True
+        # Handle arrow keys and enter directly (same as shop)
+        if key.name == "KEY_UP":
+            idx = self._areas_menu.get_selected_index()
+            if idx > 0:
+                self._areas_menu.set_selected_index(idx - 1)
+                self._update_areas_menu_display()
+            return True
+        if key.name == "KEY_DOWN":
+            idx = self._areas_menu.get_selected_index()
+            items = self._areas_menu.get_items()
+            if idx < len(items) - 1:
+                self._areas_menu.set_selected_index(idx + 1)
+                self._update_areas_menu_display()
+            return True
+        if key.name == "KEY_ENTER":
+            selected = self._areas_menu.get_selected_item()
+            if selected and selected.data:
+                area = selected.data
+                self._areas_menu_open = False
+                self.renderer.dismiss_message()
+                self._start_travel_to_area(area)
+            return True
 
         # Close on ESC or A
-        if key_name == 'KEY_ESCAPE' or key_str == 'a':
+        if key.name == 'KEY_ESCAPE' or key_str == 'a':
             self._areas_menu_open = False
             self.renderer.dismiss_message()
             return True
@@ -3032,32 +3029,31 @@ class Game:
         if not self._use_menu_open:
             return False
 
-        # Handle arrow keys and enter directly
-        if key and key.is_sequence:
-            if key.code == self.terminal.KEY_UP:
-                idx = self._use_menu.get_selected_index()
-                if idx > 0:
-                    self._use_menu.set_selected_index(idx - 1)
-                    self._update_use_menu_display()
-                return True
-            elif key.code == self.terminal.KEY_DOWN:
-                idx = self._use_menu.get_selected_index()
-                items = self._use_menu.get_items()
-                if idx < len(items) - 1:
-                    self._use_menu.set_selected_index(idx + 1)
-                    self._update_use_menu_display()
-                return True
-            elif key.code == self.terminal.KEY_ENTER:
-                selected = self._use_menu.get_selected_item()
-                if selected and selected.data:
-                    item_id, item = selected.data
-                    self._use_menu_open = False
-                    self.renderer.dismiss_message()
-                    self._execute_item_interaction(item_id)
-                return True
+        # Handle arrow keys and enter directly (same as shop)
+        if key.name == "KEY_UP":
+            idx = self._use_menu.get_selected_index()
+            if idx > 0:
+                self._use_menu.set_selected_index(idx - 1)
+                self._update_use_menu_display()
+            return True
+        if key.name == "KEY_DOWN":
+            idx = self._use_menu.get_selected_index()
+            items = self._use_menu.get_items()
+            if idx < len(items) - 1:
+                self._use_menu.set_selected_index(idx + 1)
+                self._update_use_menu_display()
+            return True
+        if key.name == "KEY_ENTER":
+            selected = self._use_menu.get_selected_item()
+            if selected and selected.data:
+                item_id, item = selected.data
+                self._use_menu_open = False
+                self.renderer.dismiss_message()
+                self._execute_item_interaction(item_id)
+            return True
 
         # Close on ESC or U
-        if key_name == 'KEY_ESCAPE' or key_str == 'u':
+        if key.name == 'KEY_ESCAPE' or key_str == 'u':
             self._use_menu_open = False
             self.renderer.dismiss_message()
             return True
@@ -3142,29 +3138,28 @@ class Game:
         if not self._minigames_menu_open:
             return False
 
-        # Handle arrow keys and enter directly
-        if key and key.is_sequence:
-            if key.code == self.terminal.KEY_UP:
-                idx = self._minigames_menu.get_selected_index()
-                if idx > 0:
-                    self._minigames_menu.set_selected_index(idx - 1)
-                    self._update_minigames_menu_display()
-                return True
-            elif key.code == self.terminal.KEY_DOWN:
-                idx = self._minigames_menu.get_selected_index()
-                items = self._minigames_menu.get_items()
-                if idx < len(items) - 1:
-                    self._minigames_menu.set_selected_index(idx + 1)
-                    self._update_minigames_menu_display()
-                return True
-            elif key.code == self.terminal.KEY_ENTER:
-                selected = self._minigames_menu.get_selected_item()
-                if selected and selected.data and selected.enabled:
-                    self._start_minigame(selected.data["id"])
-                return True
+        # Handle arrow keys and enter directly (same as shop)
+        if key.name == "KEY_UP":
+            idx = self._minigames_menu.get_selected_index()
+            if idx > 0:
+                self._minigames_menu.set_selected_index(idx - 1)
+                self._update_minigames_menu_display()
+            return True
+        if key.name == "KEY_DOWN":
+            idx = self._minigames_menu.get_selected_index()
+            items = self._minigames_menu.get_items()
+            if idx < len(items) - 1:
+                self._minigames_menu.set_selected_index(idx + 1)
+                self._update_minigames_menu_display()
+            return True
+        if key.name == "KEY_ENTER":
+            selected = self._minigames_menu.get_selected_item()
+            if selected and selected.data and selected.enabled:
+                self._start_minigame(selected.data["id"])
+            return True
 
         # Close on ESC or J
-        if key_name == 'KEY_ESCAPE' or key_str == 'j':
+        if key.name == 'KEY_ESCAPE' or key_str == 'j':
             self._minigames_menu_open = False
             self.renderer.dismiss_message()
             return True
