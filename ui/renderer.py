@@ -156,25 +156,40 @@ class DuckPosition:
         self._state_duration = 0.0  # How long to stay in this state
         self._state_start_time = 0.0  # When the state started
 
+    # All states that support animation frame cycling
+    # Only includes states that exist for all growth stages
+    ANIMATABLE_STATES = {
+        # User interaction states
+        "sleeping", "eating", "playing", "cleaning", "petting",
+        # Weather reaction states
+        "cold", "hot", "shaking", "scared", "excited", "curious",
+        # Extended animation states
+        "swimming", "diving", "stretching", "yawning", "jumping",
+        "thinking", "dancing", "singing", "pecking", "flapping",
+        "preening", "napping", "waddle_fast", "dizzy", "proud",
+        "sneaking", "splashing", "floating", "hungry", "love",
+        "angry", "bored", "waving", "tail_wag", "reminiscing", "wise"
+    }
+
     def update(self, delta_time: float):
         """Update duck position and movement."""
         self._move_timer += delta_time
         self._idle_timer += delta_time
         self._state_animation_timer += delta_time
 
-        # Cycle animation frames for non-idle states (every 0.4 seconds)
-        if self._state in ["sleeping", "eating", "playing", "cleaning", "petting"]:
+        # Cycle animation frames for all animatable states (every 0.4 seconds)
+        if self._state in self.ANIMATABLE_STATES:
             if self._state_animation_timer > 0.4:
                 self._animation_frame = (self._animation_frame + 1) % 2
                 self._state_animation_timer = 0
-            
+
             # Check if state duration has expired (return to idle)
             if self._state_duration > 0:
                 import time
                 if time.time() - self._state_start_time > self._state_duration:
                     self._state = "idle"
                     self._state_duration = 0
-            return  # Don't wander while in interaction state
+            return  # Don't wander while in special state
 
         # Randomly pick new target when idle
         if self._state == "idle" and self._idle_timer > random.uniform(3, 8):
@@ -219,16 +234,16 @@ class DuckPosition:
         self.target_y = random.randint(margin, max_y)
 
     def set_state(self, state: str, duration: float = 3.0):
-        """Set duck state (idle, sleeping, eating, playing, cleaning, petting)."""
+        """Set duck state for animation."""
         import time
         self._state = state
         self._animation_frame = 0
         self._state_animation_timer = 0
         self._state_duration = duration
         self._state_start_time = time.time()
-        
-        # Stop moving during interaction states
-        if state in ["sleeping", "eating", "playing", "cleaning", "petting"]:
+
+        # Stop moving during all animatable states
+        if state in self.ANIMATABLE_STATES:
             self.target_x = self.x
             self.target_y = self.y
             self.is_moving = False

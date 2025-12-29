@@ -154,6 +154,111 @@ MELODIES = {
 }
 
 
+# ============== DYNAMIC MUSIC SYSTEM ==============
+
+class MusicContext(Enum):
+    """Context types for dynamic music selection."""
+    DEFAULT = "default"
+    HAPPY = "happy"
+    SAD = "sad"
+    CALM = "calm"
+    ENERGETIC = "energetic"
+    STORMY = "stormy"
+    MYSTERIOUS = "mysterious"
+    CELEBRATION = "celebration"
+
+
+@dataclass
+class MusicTrack:
+    """A music track configuration."""
+    context: MusicContext
+    audio_file: Optional[str]  # WAV/MP3 file name (without path)
+    melody_name: Optional[str]  # Chiptune melody key as fallback
+    priority: int  # Higher = more important, overrides lower priority
+
+
+# Music track mappings - audio file takes precedence, melody is fallback
+# Prefer WAV files for wider player compatibility (aplay, paplay)
+MUSIC_TRACKS = {
+    MusicContext.DEFAULT: MusicTrack(MusicContext.DEFAULT, "Main.wav", "idle", 0),
+    MusicContext.CALM: MusicTrack(MusicContext.CALM, "Bell Breeze Loop.wav", "idle", 1),
+    MusicContext.HAPPY: MusicTrack(MusicContext.HAPPY, "sunny_day1.wav", "happy", 3),
+    MusicContext.ENERGETIC: MusicTrack(MusicContext.ENERGETIC, "sunny_day2.wav", "playful", 3),
+    MusicContext.SAD: MusicTrack(MusicContext.SAD, None, "sad", 3),
+    MusicContext.MYSTERIOUS: MusicTrack(MusicContext.MYSTERIOUS, None, "sleepy", 2),
+    MusicContext.STORMY: MusicTrack(MusicContext.STORMY, None, "alert", 4),
+    MusicContext.CELEBRATION: MusicTrack(MusicContext.CELEBRATION, "Title.wav", None, 5),
+}
+
+
+def get_music_context(
+    weather: str = "sunny",
+    time_of_day: str = "day",
+    duck_mood: str = "content",
+    event: Optional[str] = None
+) -> MusicContext:
+    """
+    Determine the appropriate music context based on game state.
+
+    Priority (highest to lowest):
+    1. Events (level_up, friend_arrival)
+    2. Weather extremes (stormy, rainbow)
+    3. Duck mood (ecstatic/happy, miserable/sad)
+    4. Normal weather (rainy, snowy, sunny)
+    5. Time of day (night, morning)
+    6. Default (calm/neutral)
+
+    Args:
+        weather: Current weather type
+        time_of_day: Current time of day
+        duck_mood: Duck's current mood state
+        event: Active event type (if any)
+
+    Returns:
+        MusicContext appropriate for the current game state
+    """
+    weather = weather.lower() if weather else "sunny"
+    time_of_day = time_of_day.lower() if time_of_day else "day"
+    duck_mood = duck_mood.lower() if duck_mood else "content"
+
+    # Priority 1: Events (highest priority)
+    if event:
+        event = event.lower()
+        if event in ["level_up", "achievement"]:
+            return MusicContext.CELEBRATION
+        if event in ["friend_arrival", "visitor_arrival"]:
+            return MusicContext.HAPPY
+
+    # Priority 2: Extreme weather
+    if weather == "stormy":
+        return MusicContext.STORMY
+    if weather == "rainbow":
+        return MusicContext.CELEBRATION
+
+    # Priority 3: Duck mood (strong emotions)
+    if duck_mood in ["ecstatic", "happy"]:
+        return MusicContext.HAPPY
+    if duck_mood in ["miserable", "sad"]:
+        return MusicContext.SAD
+
+    # Priority 4: Normal weather influences
+    if weather in ["snowy", "foggy"]:
+        return MusicContext.CALM
+    if weather == "rainy":
+        return MusicContext.MYSTERIOUS
+    if weather in ["sunny", "windy"]:
+        return MusicContext.ENERGETIC
+
+    # Priority 5: Time of day
+    if time_of_day in ["night", "late_night", "midnight"]:
+        return MusicContext.MYSTERIOUS
+    if time_of_day in ["morning", "dawn"]:
+        return MusicContext.ENERGETIC
+
+    # Priority 6: Default
+    return MusicContext.CALM
+
+
 class SoundEngine:
     """
     Handles sound playback using various system methods.
@@ -195,8 +300,21 @@ class SoundEngine:
         self._music_process = None  # Track music subprocess for stopping
         self._music_files = {
             'main': self._audio_dir / 'Main.mp3',
+            'Main.mp3': self._audio_dir / 'Main.mp3',
+            'Main.wav': self._audio_dir / 'Main.wav',
+            'Title.wav': self._audio_dir / 'Title.wav',
+            'Bell Breeze Loop.wav': self._audio_dir / 'Bell Breeze Loop.wav',
+            'sunny_day1.wav': self._audio_dir / 'sunny_day1.wav',
+            'sunny_day2.wav': self._audio_dir / 'sunny_day2.wav',
         }
-        
+
+        # Dynamic music system state
+        self._current_context: Optional[MusicContext] = None
+        self._crossfade_thread: Optional[threading.Thread] = None
+        self._crossfading = False
+        self._event_music_end_time: float = 0  # When event music should end
+        self._previous_context: Optional[MusicContext] = None  # For resuming after events
+
         # Check which audio files exist
         self._available_wavs = {
             name: path for name, path in self._wav_files.items() 
@@ -293,7 +411,7 @@ class SoundEngine:
         return None
 
     def _detect_music_player(self) -> Optional[str]:
-        """Detect available music player for MP3 files."""
+        """Detect available music player for MP3/WAV files."""
         # Check for mpv (best for seamless looping)
         try:
             result = subprocess.run(
@@ -305,7 +423,7 @@ class SoundEngine:
                 return 'mpv'
         except:
             pass
-        
+
         # Check for ffplay (ffmpeg) - good fallback
         try:
             result = subprocess.run(
@@ -317,7 +435,7 @@ class SoundEngine:
                 return 'ffplay'
         except:
             pass
-        
+
         # Check for mpg123 (lightweight mp3 player)
         try:
             result = subprocess.run(
@@ -329,7 +447,31 @@ class SoundEngine:
                 return 'mpg123'
         except:
             pass
-        
+
+        # Check for aplay (ALSA - WAV files only, but works as fallback)
+        try:
+            result = subprocess.run(
+                ['which', 'aplay'],
+                capture_output=True,
+                timeout=1
+            )
+            if result.returncode == 0:
+                return 'aplay'
+        except:
+            pass
+
+        # Check for paplay (PulseAudio)
+        try:
+            result = subprocess.run(
+                ['which', 'paplay'],
+                capture_output=True,
+                timeout=1
+            )
+            if result.returncode == 0:
+                return 'paplay'
+        except:
+            pass
+
         return None
 
     def play_background_music(self, music_name: str = 'main'):
@@ -406,6 +548,37 @@ class SoundEngine:
                         )
                         self._music_process.wait()
                         # Continue loop
+                        continue
+                    elif self._music_player == 'aplay':
+                        # aplay for WAV files (loop in Python with cooldown)
+                        self._music_process = subprocess.Popen(
+                            ['aplay', '-q', str(music_path)],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL
+                        )
+                        self._music_process.wait()
+                        # Wait 2-5 minutes before looping again
+                        cooldown = random.uniform(120, 300)
+                        for _ in range(int(cooldown * 10)):
+                            if not self._music_playing or self.music_muted:
+                                break
+                            time.sleep(0.1)
+                        continue
+                    elif self._music_player == 'paplay':
+                        # paplay for WAV files with volume control
+                        pa_volume = int(self.music_volume * 65536)
+                        self._music_process = subprocess.Popen(
+                            ['paplay', '--volume', str(pa_volume), str(music_path)],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL
+                        )
+                        self._music_process.wait()
+                        # Wait 2-5 minutes before looping again
+                        cooldown = random.uniform(120, 300)
+                        for _ in range(int(cooldown * 10)):
+                            if not self._music_playing or self.music_muted:
+                                break
+                            time.sleep(0.1)
                         continue
                 except Exception:
                     pass
@@ -509,6 +682,163 @@ class SoundEngine:
                 pygame.mixer.music.set_volume(self.music_volume)
             except Exception:
                 pass
+
+    # ============== DYNAMIC MUSIC METHODS ==============
+
+    def update_music(self, context: MusicContext, force: bool = False):
+        """
+        Update background music based on the current context.
+
+        Automatically handles track switching with crossfade when the context changes.
+        Does nothing if the context hasn't changed (unless force=True).
+
+        Args:
+            context: The new MusicContext to switch to
+            force: If True, restart music even if context is the same
+        """
+        if not self.enabled or self.music_muted:
+            return
+
+        # Check if we should ignore this update (event music playing)
+        current_time = time.time()
+        if current_time < self._event_music_end_time:
+            return  # Event music still playing
+
+        # No change needed
+        if not force and context == self._current_context:
+            return
+
+        # Start crossfade to new track
+        self._crossfade_to_context(context)
+
+    def play_event_music(self, context: MusicContext, duration: float = 5.0):
+        """
+        Play temporary event music that overrides normal music.
+
+        After the duration, the previous music context will resume.
+
+        Args:
+            context: The music context to play
+            duration: How long to play this music before resuming normal music
+        """
+        if not self.enabled or self.music_muted:
+            return
+
+        # Save current context to resume later
+        if self._current_context and self._current_context != context:
+            self._previous_context = self._current_context
+
+        # Set event end time
+        self._event_music_end_time = time.time() + duration
+
+        # Switch to event music
+        self._crossfade_to_context(context)
+
+    def _crossfade_to_context(self, new_context: MusicContext):
+        """
+        Crossfade from current music to new context.
+
+        Uses a 2-second crossfade for smooth transitions.
+        """
+        if self._crossfading:
+            return  # Already crossfading
+
+        track = MUSIC_TRACKS.get(new_context)
+        if not track:
+            return
+
+        # Find the audio file to play
+        audio_file = None
+        if track.audio_file and track.audio_file in self._available_music:
+            audio_file = track.audio_file
+        elif track.audio_file:
+            # Check if file exists by path
+            audio_path = self._audio_dir / track.audio_file
+            if audio_path.exists():
+                self._available_music[track.audio_file] = audio_path
+                audio_file = track.audio_file
+
+        # If no audio file, fall back to chiptune melody (just play, no crossfade)
+        if not audio_file:
+            if track.melody_name and track.melody_name in MELODIES:
+                self._current_context = new_context
+                self.play_melody(track.melody_name)
+            return
+
+        # Perform crossfade with pygame
+        if self._pygame_available:
+            self._crossfading = True
+
+            def do_crossfade():
+                try:
+                    import pygame
+                    fade_duration = 2.0  # 2 second crossfade
+                    steps = 20
+                    step_duration = fade_duration / steps
+
+                    # Fade out current music
+                    if self._music_sound and self._music_channel:
+                        start_volume = self._music_sound.get_volume()
+                        for i in range(steps):
+                            vol = start_volume * (1 - (i + 1) / steps)
+                            try:
+                                self._music_sound.set_volume(vol)
+                            except:
+                                break
+                            time.sleep(step_duration)
+                        try:
+                            self._music_sound.stop()
+                        except:
+                            pass
+
+                    # Load and start new music at low volume, fade in
+                    music_path = self._available_music.get(audio_file)
+                    if music_path and music_path.exists():
+                        try:
+                            new_sound = pygame.mixer.Sound(str(music_path))
+                            new_sound.set_volume(0)
+                            new_channel = new_sound.play(loops=-1)
+
+                            # Fade in
+                            for i in range(steps):
+                                vol = self.music_volume * ((i + 1) / steps)
+                                try:
+                                    new_sound.set_volume(vol)
+                                except:
+                                    break
+                                time.sleep(step_duration)
+
+                            # Update state
+                            self._music_sound = new_sound
+                            self._music_channel = new_channel
+                            self._music_sound.set_volume(self.music_volume)
+                        except Exception:
+                            pass
+
+                    self._current_context = new_context
+                except Exception:
+                    pass
+                finally:
+                    self._crossfading = False
+
+            self._crossfade_thread = threading.Thread(target=do_crossfade)
+            self._crossfade_thread.daemon = True
+            self._crossfade_thread.start()
+        else:
+            # No pygame, just switch directly
+            self.stop_background_music()
+            self._current_context = new_context
+            if audio_file in self._available_music:
+                # Use existing play_background_music logic
+                old_music_files = self._music_files.copy()
+                self._music_files['dynamic'] = self._available_music[audio_file]
+                self._available_music['dynamic'] = self._available_music[audio_file]
+                self.play_background_music('dynamic')
+                self._music_files = old_music_files
+
+    def get_current_context(self) -> Optional[MusicContext]:
+        """Get the current music context."""
+        return self._current_context
 
     def play_wav(self, wav_name: str, volume: Optional[float] = None):
         """Play a WAV file if available."""

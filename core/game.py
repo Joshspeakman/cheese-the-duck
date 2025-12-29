@@ -38,7 +38,7 @@ from world.item_interactions import (
     ITEM_INTERACTIONS, InteractionResult
 )
 from dialogue.diary import DuckDiary, duck_diary, DiaryEntryType
-from audio.sound import sound_engine, duck_sounds
+from audio.sound import sound_engine, duck_sounds, get_music_context, MusicContext
 from ui.renderer import Renderer
 from ui.animations import animation_controller
 from ui.input_handler import InputHandler, GameAction
@@ -84,6 +84,7 @@ from ui.event_animations import (
 )
 from ui.badges import BadgesSystem, badges_system
 from ui.mood_visuals import MoodVisualEffects, mood_visual_effects
+from ui.reactions import DuckReactionController, init_reaction_controller
 
 
 class Game:
@@ -98,6 +99,7 @@ class Game:
         self.terminal = Terminal()
         self.renderer = Renderer(self.terminal)
         self.input_handler = InputHandler(self.terminal)
+        self.reaction_controller = init_reaction_controller(self.renderer)
         self.clock = game_clock
         self.save_manager = save_manager
 
@@ -1246,6 +1248,10 @@ class Game:
         else:
             self.renderer.set_duck_state("idle", 1.0)
 
+        # Notify reaction controller that user action is in progress
+        # This prevents weather reactions from overriding user-initiated animations
+        self.reaction_controller.notify_user_action(duration, time.time())
+
         # Perform the interaction
         result = self.duck.interact(interaction)
 
@@ -1453,6 +1459,10 @@ class Game:
             f"Level {new_level}! {self.progression.title}",
             duration=4.0
         )
+        # Trigger duck reaction animation
+        self.reaction_controller.trigger_event_reaction("level_up", time.time())
+        # Play celebration music temporarily
+        sound_engine.play_event_music(MusicContext.CELEBRATION, duration=5.0)
 
         # Check for new title
         if self.progression.title:
@@ -1730,6 +1740,10 @@ class Game:
                             if greeting:
                                 self.renderer.show_message(greeting, duration=6.0)
                             duck_sounds.quack("happy")
+                            # Trigger friend arrival reaction animation
+                            self.reaction_controller.trigger_friend_reaction("arrival", current_time)
+                            # Play happy music for the visit
+                            sound_engine.play_event_music(MusicContext.HAPPY, duration=10.0)
 
             # Update ambient sounds based on current conditions
             weather_str = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "clear"
@@ -1741,7 +1755,25 @@ class Game:
             self.ambient.update_ambient(weather_str, time_of_day, season, location, duck_state)
 
             self._last_atmosphere_check = current_time
-        
+
+        # Update duck reactions and dynamic music more frequently (every frame, with internal throttling)
+        # Get current context for reactions and music
+        weather_str = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+        time_of_day_obj = self.day_night.get_time_of_day() if hasattr(self.day_night, 'get_time_of_day') else None
+        time_of_day = time_of_day_obj.value if time_of_day_obj and hasattr(time_of_day_obj, 'value') else "day"
+        duck_state = self.duck.get_mood().state.value if self.duck else "neutral"
+
+        # Update duck reactions based on weather (has internal 5-second throttle)
+        self.reaction_controller.update(current_time, weather_str)
+
+        # Update dynamic background music based on context
+        music_context = get_music_context(
+            weather=weather_str,
+            time_of_day=time_of_day,
+            duck_mood=duck_state
+        )
+        sound_engine.update_music(music_context)
+
         # Update active visitor interactions (every frame when there's a visitor)
         self._update_visitor_interactions(current_time)
 
@@ -1898,6 +1930,8 @@ class Game:
                 farewell = visitor_animator.get_farewell(self.duck.name)
                 self.renderer.show_message(farewell, duration=5.0)
                 duck_sounds.quack("happy")
+                # Trigger friend departure reaction animation
+                self.reaction_controller.trigger_friend_reaction("departure", time.time())
             
             # Check if off screen (position > 20)
             pos_x, _ = visitor_animator.get_position()
@@ -2233,6 +2267,9 @@ class Game:
         if event:
             # Apply event effects
             changes = self.events.apply_event(self.duck, event)
+
+            # Trigger duck reaction animation for this event
+            self.reaction_controller.trigger_event_reaction(event.id, time.time())
 
             # Start event animation if available
             if event.has_animation and event.id in ANIMATED_EVENTS:
