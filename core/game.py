@@ -46,7 +46,7 @@ from ui.menu_selector import MenuSelector, MenuItem
 
 # New feature imports - Phase 2 systems
 from world.scrapbook import Scrapbook, scrapbook
-from world.fishing import FishingMinigame, fishing_system
+from world.fishing import FishingMinigame, fishing_system, FishingSpot
 from world.garden import Garden, garden
 from world.treasure import TreasureHunter, treasure_hunter
 from world.challenges import ChallengeSystem, challenge_system
@@ -626,7 +626,9 @@ class Game:
         if self.habitat.purchase_item(item.id):
             self.renderer.show_message(f"Purchased {item.name}! ✓")
             # Award XP for shopping
-            self.progression.add_xp(5)
+            new_level = self.progression.add_xp(5)
+            if new_level:
+                self._on_level_up(new_level)
         else:
             if self.habitat.owns_item(item.id):
                 self.renderer.show_message("Already owned!")
@@ -944,6 +946,11 @@ class Game:
             # Check if a minigame is active
             if self._active_minigame:
                 if self._handle_minigame_input(key_str, key_name):
+                    return
+
+            # Handle fishing input when actively fishing
+            if self.fishing.is_fishing:
+                if self._handle_fishing_input(key_str, key_name):
                     return
 
             # Quit [Q] - Close menus first, then quit if nothing is open
@@ -1347,6 +1354,39 @@ class Game:
         # Check achievements
         self._check_achievements(interaction)
 
+        # Update challenge progress for this interaction type
+        challenge_updates = self.challenges.update_progress(interaction, 1)
+        for challenge_id, completed in challenge_updates:
+            if completed:
+                self.renderer.show_message(f"🏆 Challenge Complete: {challenge_id}!", duration=3.0)
+
+        # Update quest progress for this interaction type
+        quest_updates = self.quests.update_progress("interact", interaction, 1)
+        for quest_id, objective, completed in quest_updates:
+            if completed:
+                self.renderer.show_message(f"📜 Quest objective complete!", duration=2.0)
+
+        # Update personality traits based on interaction
+        personality_trait_map = {
+            "feed": ("optimism", 1, "Being fed"),
+            "pet": ("emotional_depth", 1, "Being petted"),
+            "play": ("curiosity", 1, "Playing"),
+            "clean": ("vanity", 1, "Being cleaned"),
+        }
+        if interaction in personality_trait_map:
+            trait_id, delta, reason = personality_trait_map[interaction]
+            self.extended_personality.adjust_trait(trait_id, delta, reason)
+
+        # Update hidden trait discovery progress based on consistent actions
+        hidden_trait_map = {
+            "feed": ("gentle_soul", 0.01),  # Caring actions
+            "pet": ("gentle_soul", 0.02),   # Affectionate actions
+            "play": ("adventurer", 0.01),   # Active actions
+        }
+        if interaction in hidden_trait_map:
+            trait_id, progress = hidden_trait_map[interaction]
+            self.extended_personality.update_hidden_trait_progress(trait_id, progress)
+
         # Play sound
         sound_map = {
             "feed": duck_sounds.eat,
@@ -1559,9 +1599,22 @@ class Game:
 
         # Update dream sequence
         self._update_dream()
-        
+
         # Update event animations (butterfly, bird, etc.)
         self._update_event_animations()
+
+        # Update mood visual effects (every frame for smooth animations)
+        if self.duck:
+            self.mood_visuals.update(0.016)  # ~60fps delta
+
+        # Update sound effects (cleanup expired sounds)
+        self.sound_effects.update(current_time)
+
+        # Update fishing system when actively fishing
+        if self.fishing.is_fishing:
+            fish_msg = self.fishing.update(0.016)
+            if fish_msg:
+                self.renderer.show_message(fish_msg, duration=2.0)
 
         # Check for travel completion
         if self._duck_traveling:
@@ -1609,6 +1662,15 @@ class Game:
 
             # Update goals (time-based)
             self.goals.update_time(delta_minutes)
+
+            # Update garden plants (convert minutes to hours)
+            delta_hours = delta_minutes / 60.0
+            self.garden.update_plants(delta_hours)
+
+            # Update duck aging system
+            new_stage = self.aging.update_stage()
+            if new_stage:
+                self.renderer.show_message(f"🎂 Your duck has grown to {new_stage.value}!", duration=5.0)
 
             # Check secret goals for session/mood-based achievements
             self._check_secret_achievements()
@@ -1668,6 +1730,15 @@ class Game:
                             if greeting:
                                 self.renderer.show_message(greeting, duration=6.0)
                             duck_sounds.quack("happy")
+
+            # Update ambient sounds based on current conditions
+            weather_str = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "clear"
+            time_of_day_obj = self.day_night.get_time_of_day() if hasattr(self.day_night, 'get_time_of_day') else None
+            time_of_day = time_of_day_obj.value if time_of_day_obj and hasattr(time_of_day_obj, 'value') else "day"
+            season = self.atmosphere.current_season.value if hasattr(self.atmosphere, 'current_season') and self.atmosphere.current_season else "spring"
+            location = self.exploration.current_area.name if self.exploration.current_area else "pond"
+            duck_state = self.duck.get_mood().state.value if self.duck else "neutral"
+            self.ambient.update_ambient(weather_str, time_of_day, season, location, duck_state)
 
             self._last_atmosphere_check = current_time
         
@@ -1859,7 +1930,9 @@ class Game:
                 duration=4.0
             )
             sound_engine.play_sound("craft_complete")
-            self.progression.add_xp(15, "crafting")
+            new_level = self.progression.add_xp(15, "crafting")
+            if new_level:
+                self._on_level_up(new_level)
 
             # Crafting achievements
             self.achievements.unlock("first_craft")
@@ -1878,6 +1951,10 @@ class Game:
             # Check for crafting master
             if self.crafting.crafting_skill >= 5:
                 self.achievements.unlock("crafting_master")
+
+            # Update challenge and quest progress for crafting
+            self.challenges.update_progress("craft", 1)
+            self.quests.update_progress("craft", item_id, 1)
 
     def _update_building_progress(self):
         """Update building progress if actively building."""
@@ -1898,7 +1975,9 @@ class Game:
                 duration=5.0
             )
             sound_engine.play_sound("build_complete")
-            self.progression.add_xp(50, "building")
+            new_level = self.progression.add_xp(50, "building")
+            if new_level:
+                self._on_level_up(new_level)
 
             # Building achievements
             self.achievements.unlock("first_build")
@@ -1918,6 +1997,10 @@ class Game:
             # Check for building master
             if self.building.building_skill >= 5:
                 self.achievements.unlock("building_master")
+
+            # Update challenge and quest progress for building
+            self.challenges.update_progress("build", 1)
+            self.quests.update_progress("build", bp_id, 1)
 
         elif result.get("stage_completed"):
             stage = result.get("current_stage", 0)
@@ -2079,7 +2162,9 @@ class Game:
             setattr(self.duck.needs, need, min(100, current + amount))
         
         # Small XP reward for item interaction
-        self.progression.add_xp(1, "item_interaction")
+        new_level = self.progression.add_xp(1, "item_interaction")
+        if new_level:
+            self._on_level_up(new_level)
 
     def _check_secret_achievements(self):
         """Check for session-based and mood-based secret achievements."""
@@ -2311,6 +2396,10 @@ class Game:
 
         # Play welcome sound
         duck_sounds.quack("happy")
+
+        # Start main game background music
+        if 'sunny_day' in sound_engine._available_wavs:
+            sound_engine.play_wav_music('sunny_day', loop=True)
 
         # First goal
         self.goals.add_daily_goals()
@@ -2758,6 +2847,9 @@ class Game:
         """Confirm and execute game reset."""
         self._reset_confirmation = False
 
+        # Clear Python cache to ensure fresh state
+        self._clear_pycache()
+
         # Delete save file
         if self.save_manager.save_exists():
             self.save_manager.delete_save()
@@ -2825,6 +2917,28 @@ class Game:
         self._start_title_music()
 
         self.renderer.show_message("Game reset! Starting fresh...", duration=3.0)
+
+    def _clear_pycache(self):
+        """Clear Python cache directories to ensure fresh state."""
+        import shutil
+        from pathlib import Path
+        
+        base_dir = Path(__file__).parent.parent
+        cleared = 0
+        
+        for pycache_dir in base_dir.rglob("__pycache__"):
+            try:
+                shutil.rmtree(pycache_dir)
+                cleared += 1
+            except Exception:
+                pass  # Ignore errors, some caches may be in use
+        
+        # Also clear any .pyc files in the root
+        for pyc_file in base_dir.rglob("*.pyc"):
+            try:
+                pyc_file.unlink()
+            except Exception:
+                pass
 
     def _cancel_reset(self):
         """Cancel the reset confirmation."""
@@ -2894,7 +3008,9 @@ class Game:
         self.renderer.show_message(msg, duration=3.0)
 
         # Award some XP for exploring
-        self.progression.add_xp(5, "exploration")
+        new_level = self.progression.add_xp(5, "exploration")
+        if new_level:
+            self._on_level_up(new_level)
 
         # First exploration achievement
         self.achievements.unlock("first_explore")
@@ -3330,7 +3446,9 @@ class Game:
         
         # Award XP
         if result.get("xp_gained"):
-            self.progression.add_xp(result["xp_gained"])
+            new_level = self.progression.add_xp(result["xp_gained"])
+            if new_level:
+                self._on_level_up(new_level)
         
         # Show results
         message = result.get("message", "Exploration complete!")
@@ -3345,6 +3463,14 @@ class Game:
         
         # Check achievements
         self._check_exploration_achievements()
+
+        # Update challenge and quest progress for exploration
+        self.challenges.update_progress("explore", 1)
+        self.quests.update_progress("explore", "any", 1)
+
+        # Update personality for exploration
+        self.extended_personality.adjust_trait("curiosity", 2, "Exploring")
+        self.extended_personality.update_hidden_trait_progress("adventurer", 0.02)
 
     def _check_exploration_achievements(self):
         """Check for exploration-related achievements."""
@@ -3486,6 +3612,20 @@ class Game:
 
         # Build menu items
         items = []
+
+        # Add fishing as first option
+        fishing_status = "🎣" if not self.fishing.is_fishing else "⏱"
+        fishing_desc = "Cast your line and catch fish!"
+        if self.fishing.total_catches > 0:
+            fishing_desc += f" | Caught: {self.fishing.total_catches}"
+        items.append({
+            'id': 'fishing',
+            'label': f"{fishing_status} Fishing",
+            'description': fishing_desc,
+            'enabled': not self.fishing.is_fishing,
+            'data': {'id': 'fishing', 'name': 'Fishing'}
+        })
+
         for game in games:
             status = "✓" if game["can_play"] else "⏱"
             desc = game['description']
@@ -3571,6 +3711,13 @@ class Game:
 
     def _start_minigame(self, game_id: str):
         """Start a mini-game."""
+        # Handle fishing separately
+        if game_id == "fishing":
+            self._minigames_menu_open = False
+            self.renderer.dismiss_message()
+            self._start_fishing("pond")
+            return
+
         can_play, msg = self.minigames.can_play(game_id)
         if not can_play:
             self.renderer.show_message(msg, duration=2.0)
@@ -3645,6 +3792,86 @@ class Game:
                 game.mash()
 
         return True
+
+    def _handle_fishing_input(self, key_str: str, key_name: str = "") -> bool:
+        """Handle input while fishing."""
+        if not self.fishing.is_fishing:
+            return False
+
+        # Cancel fishing with Q or Escape
+        if key_str == 'q' or key_name == 'KEY_ESCAPE':
+            self.fishing.cancel_fishing()
+            self.renderer.show_message("Stopped fishing.", duration=2.0)
+            return True
+
+        # Reel in with SPACE or ENTER when a fish is hooked
+        if key_str == ' ' or key_name == 'KEY_ENTER':
+            if self.fishing.hooked_fish:
+                success, message, caught_fish = self.fishing.reel_in()
+
+                if success and caught_fish:
+                    # Show catch message
+                    fish_name = caught_fish.fish_id.replace('_', ' ').title()
+                    catch_msg = f"🎣 Caught: {fish_name}!\n"
+                    catch_msg += f"Size: {caught_fish.size} cm"
+                    if caught_fish.is_record:
+                        catch_msg += "\n🏆 NEW RECORD!"
+
+                    self.renderer.show_message(catch_msg, duration=4.0)
+                    duck_sounds.quack("happy")
+
+                    # Award XP
+                    self.progression.add_xp(20, "fishing")
+
+                    # Update challenges and quests
+                    self.challenges.update_progress("fish", 1)
+                    self.quests.update_progress("catch", caught_fish.fish_id, 1)
+
+                    # Update personality
+                    self.extended_personality.adjust_trait("patience", 1, "Caught a fish")
+
+                    # Check achievements
+                    total_fish = self.fishing.total_catches
+                    if total_fish == 1:
+                        self.achievements.unlock("first_fish")
+                    elif total_fish >= 10:
+                        self.achievements.unlock("fish_10")
+                    elif total_fish >= 50:
+                        self.achievements.unlock("fish_master")
+                else:
+                    self.renderer.show_message(message, duration=2.0)
+                    duck_sounds.quack("sad")
+
+                return True
+            else:
+                # No fish hooked, just waiting
+                self.renderer.show_message("Wait for a bite! 🎣", duration=1.0)
+                return True
+
+        return True  # Consume all input while fishing
+
+    def _start_fishing(self, spot: str = "pond"):
+        """Start a fishing session."""
+        if self.fishing.is_fishing:
+            self.renderer.show_message("Already fishing!", duration=2.0)
+            return
+
+        # Convert string spot to FishingSpot enum
+        spot_map = {
+            "pond": FishingSpot.POND,
+            "river": FishingSpot.RIVER,
+            "lake": FishingSpot.LAKE,
+            "ocean": FishingSpot.OCEAN,
+            "secret_cove": FishingSpot.SECRET_COVE,
+        }
+        fishing_spot = spot_map.get(spot.lower(), FishingSpot.POND)
+
+        success, message = self.fishing.start_fishing(fishing_spot)
+        if success:
+            self.renderer.show_message(message + "\nPress SPACE when you see a bite!\nPress Q to stop.", duration=3.0)
+            duck_sounds.play()  # Splash sound
+        else:
+            self.renderer.show_message(message, duration=2.0)
 
     def _update_minigame(self):
         """Update the active minigame."""
@@ -4323,17 +4550,17 @@ class Game:
         """Set money amount."""
         if not self.duck:
             return
-        
+
         if action == "+100":
-            self.duck.coins += 100
+            self.habitat.currency += 100
         elif action == "+1000":
-            self.duck.coins += 1000
+            self.habitat.currency += 1000
         elif action == "+10000":
-            self.duck.coins += 10000
+            self.habitat.currency += 10000
         elif action == "=0":
-            self.duck.coins = 0
-        
-        self.renderer.show_message(f"🔧 DEBUG: Coins now ${self.duck.coins}", duration=2)
+            self.habitat.currency = 0
+
+        self.renderer.show_message(f"🔧 DEBUG: Coins now ${self.habitat.currency}", duration=2)
         self._debug_menu_open = False
         self._debug_submenu = None
     

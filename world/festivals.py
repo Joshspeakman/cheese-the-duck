@@ -531,8 +531,12 @@ class FestivalSystem:
         festival_id = self.current_festival_progress.festival_id
         if festival_id not in self.festival_history:
             self.festival_history[festival_id] = []
-        
+
         self.festival_history[festival_id].append(self.current_festival_progress)
+
+        # Keep history manageable to prevent memory leak
+        if len(self.festival_history[festival_id]) > 20:
+            self.festival_history[festival_id] = self.festival_history[festival_id][-20:]
         
         summary = {
             "festival_id": festival_id,

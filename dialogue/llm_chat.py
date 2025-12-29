@@ -180,6 +180,7 @@ Now respond as {duck.name}:"""
     def _generate_local(self, duck: "Duck", player_input: str) -> Optional[str]:
         """Generate response using local GGUF model."""
         if not self._llama:
+            self._last_error = "Model not loaded"
             return None
 
         system_prompt = self._build_system_prompt(duck)
@@ -204,21 +205,28 @@ Now respond as {duck.name}:"""
         try:
             response = self._llama.create_chat_completion(
                 messages=messages,
-                max_tokens=80,  # Keep it short
-                temperature=0.9,
-                top_p=0.95,
-                stop=["User:", "Human:", "\n\n", "You:"],
+                max_tokens=100,  # Slightly more tokens for better responses
+                temperature=0.85,  # Slightly lower for more coherent responses
+                top_p=0.92,
+                stop=["User:", "Human:", "\n\n", "You:", "###"],
             )
 
             if response and "choices" in response and response["choices"]:
                 content = response["choices"][0].get("message", {}).get("content", "")
                 if content:
-                    content = self._clean_response(content)
-                    self._conversation_history.append({"role": "user", "content": player_input})
-                    self._conversation_history.append({"role": "assistant", "content": content})
-                    if len(self._conversation_history) > self._max_history * 2:
-                        self._conversation_history = self._conversation_history[-self._max_history * 2:]
-                    return content
+                    cleaned = self._clean_response(content)
+                    if cleaned:  # Only add to history if we got a valid response
+                        self._conversation_history.append({"role": "user", "content": player_input})
+                        self._conversation_history.append({"role": "assistant", "content": cleaned})
+                        if len(self._conversation_history) > self._max_history * 2:
+                            self._conversation_history = self._conversation_history[-self._max_history * 2:]
+                        return cleaned
+                    else:
+                        self._last_error = "Response filtered by cleanup"
+                else:
+                    self._last_error = "Empty response from model"
+            else:
+                self._last_error = "Invalid response structure from model"
 
         except Exception as e:
             self._last_error = f"Local model error: {e}"
@@ -286,31 +294,34 @@ Now respond as {duck.name}:"""
 
         return None
 
-    def _clean_response(self, response: str) -> str:
+    def _clean_response(self, response: str) -> Optional[str]:
         """Clean up LLM response."""
+        if not response:
+            return None
+            
         response = response.strip()
+        
+        if not response:
+            return None
 
         # Remove quotes if the whole thing is quoted
         if response.startswith('"') and response.endswith('"'):
             response = response[1:-1]
 
-        # Remove common prefixes
-        prefixes = ["Duck:", "duck:", "Cheese:", "cheese:", "Assistant:", "Response:", "*As Cheese*", "*as the duck*"]
+        # Remove common prefixes (duck name, etc.)
+        prefixes = ["Duck:", "duck:", "Cheese:", "cheese:", "Assistant:", "Response:", 
+                    "*As Cheese*", "*as the duck*", "TestCheese:", "TestCheese here!"]
         for prefix in prefixes:
             if response.lower().startswith(prefix.lower()):
                 response = response[len(prefix):].strip()
 
-        # Remove any "Here's my response:" type preambles
-        preamble_markers = ["here's", "here is", "okay,", "ok,", "sure,", "alright,", "i'm ", "i am "]
+        # Only skip truly robotic responses (mentions being AI/programmed)
         lower_response = response.lower()
-        for marker in preamble_markers:
-            if lower_response.startswith(marker) and "programmed" in lower_response[:100]:
-                # Skip robotic responses entirely
-                return None
+        if any(phrase in lower_response for phrase in ["i'm programmed", "i am programmed", "as an ai", "as a language model"]):
+            return None
 
         # Find a good stopping point
-        # First, try to find a complete sentence ending in punctuation + space or action
-        max_len = 150
+        max_len = 180  # Slightly longer allowed
         if len(response) > max_len:
             best_cut = -1
             # Priority: end after punctuation or after asterisk action
@@ -329,6 +340,10 @@ Now respond as {duck.name}:"""
             else:
                 response = response[:max_len].strip()
 
+        # Final check - must have some content
+        if len(response) < 2:
+            return None
+            
         return response
 
     def clear_history(self):

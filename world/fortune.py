@@ -629,7 +629,11 @@ class FortuneSystem:
         
         self.fortune_cookies.append(cookie)
         self.total_cookies_opened += 1
-        
+
+        # Keep cookie list manageable to prevent memory leak
+        if len(self.fortune_cookies) > 100:
+            self.fortune_cookies = self.fortune_cookies[-100:]
+
         return cookie
         
     def add_favorite_fortune(self, cookie_id: str):

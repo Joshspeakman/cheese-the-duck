@@ -630,6 +630,10 @@ class ExtendedPersonalitySystem:
                 "reason": reason,
                 "date": datetime.now().isoformat(),
             })
+
+            # Keep history manageable to prevent memory leak
+            if len(self.trait_history) > 100:
+                self.trait_history = self.trait_history[-100:]
             
     def has_quirk(self, quirk: QuirkType) -> bool:
         """Check if duck has a quirk."""

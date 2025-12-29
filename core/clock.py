@@ -53,7 +53,10 @@ class GameClock:
             - decay_multiplier: float, how much to reduce decay
         """
         try:
-            last_played = datetime.fromisoformat(last_played_iso)
+            last_played = datetime.fromisoformat(last_played_iso.replace('Z', '+00:00'))
+            # Handle timezone mismatch - make both naive for comparison
+            if last_played.tzinfo is not None:
+                last_played = last_played.replace(tzinfo=None)
         except (ValueError, TypeError):
             return {
                 "hours": 0,
@@ -63,7 +66,12 @@ class GameClock:
                 "decay_multiplier": 1.0,
             }
 
-        delta = self.now - last_played
+        # Ensure self.now is also naive
+        now = self.now
+        if hasattr(now, 'tzinfo') and now.tzinfo is not None:
+            now = now.replace(tzinfo=None)
+
+        delta = now - last_played
         raw_hours = delta.total_seconds() / 3600
 
         # Cap offline time for fairness

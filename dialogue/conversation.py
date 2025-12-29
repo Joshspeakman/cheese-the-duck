@@ -380,8 +380,13 @@ class ConversationSystem:
                     if llm_response:
                         self.add_to_history(player_input, llm_response)
                         return llm_response
-            except Exception:
-                pass  # Fall through to template responses
+                    # LLM returned None - log for debugging
+                    import logging
+                    logging.debug(f"LLM returned None. Last error: {llm.get_last_error()}")
+            except Exception as e:
+                # Log the exception for debugging
+                import logging
+                logging.debug(f"LLM exception: {e}")
 
         # Fall back to template-based responses
         input_lower = player_input.lower().strip()

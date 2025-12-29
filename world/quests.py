@@ -652,6 +652,10 @@ class QuestSystem:
         if quest_id not in self.choices_history:
             self.choices_history[quest_id] = []
         self.choices_history[quest_id].append(choice)
+
+        # Keep history manageable to prevent memory leak
+        if len(self.choices_history[quest_id]) > 50:
+            self.choices_history[quest_id] = self.choices_history[quest_id][-50:]
         
         # Handle quest end (-1 means end/fail)
         if next_step == -1:

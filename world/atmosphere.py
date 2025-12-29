@@ -1097,6 +1097,10 @@ class AtmosphereManager:
                 self.current_visitor = (visitor, datetime.now().isoformat())
                 self.visitor_history.append(visitor_id)
 
+                # Keep history manageable to prevent memory leak
+                if len(self.visitor_history) > 50:
+                    self.visitor_history = self.visitor_history[-50:]
+
                 # Track friendship
                 if visitor_id not in self.visitor_friendships:
                     self.visitor_friendships[visitor_id] = VisitorFriendship(visitor_id=visitor_id)

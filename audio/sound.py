@@ -164,7 +164,7 @@ class SoundEngine:
     def __init__(self):
         self.enabled = True  # Enabled by default
         self.volume = 1.0  # 0.0 to 1.0 (quack volume - max, pygame caps at 1.0)
-        self.music_volume = 0.025  # Background music volume (very low so quacks stand out)
+        self.music_volume = 0.3  # Background music volume (30% - audible but not overpowering)
         self.music_muted = False  # Separate mute for music
         self._sound_method = self._detect_sound_method()
         self._music_thread: Optional[threading.Thread] = None
@@ -189,7 +189,10 @@ class SoundEngine:
         self._wav_files = {
             'quack': self._audio_dir / 'single-quack-from-a-duck.wav',
             'title': self._audio_dir / 'Title.wav',
+            'sunny_day': self._audio_dir / 'sunny_day.wav',
+            'levelup': self._audio_dir / 'levelup.wav',
         }
+        self._music_process = None  # Track music subprocess for stopping
         self._music_files = {
             'main': self._audio_dir / 'Main.mp3',
         }
@@ -584,38 +587,44 @@ class SoundEngine:
         self.stop_music()
         self._music_playing = True
         wav_path = self._available_wavs[wav_name]
+        # Use music_volume for background music (lower volume)
+        music_vol = self.music_volume
         
         def play_loop():
             while self._music_playing:
                 try:
                     if self._wav_player == 'paplay':
-                        pa_volume = int(self.volume * 65536)
-                        subprocess.run(
+                        # PulseAudio volume: 65536 = 100%, scale by music_volume
+                        pa_volume = int(music_vol * 65536)
+                        self._music_process = subprocess.Popen(
                             ['paplay', '--volume', str(pa_volume), str(wav_path)],
-                            capture_output=True,
-                            timeout=300  # 5 minute max
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL
                         )
+                        self._music_process.wait()
                     elif self._wav_player == 'aplay':
-                        subprocess.run(
+                        self._music_process = subprocess.Popen(
                             ['aplay', '-q', str(wav_path)],
-                            capture_output=True,
-                            timeout=300
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL
                         )
+                        self._music_process.wait()
                     elif self._wav_player == 'ffplay':
-                        subprocess.run(
+                        self._music_process = subprocess.Popen(
                             ['ffplay', '-nodisp', '-autoexit', '-volume', 
-                             str(int(self.volume * 100)), str(wav_path)],
-                            capture_output=True,
-                            stderr=subprocess.DEVNULL,
-                            timeout=300
+                             str(int(music_vol * 100)), str(wav_path)],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL
                         )
+                        self._music_process.wait()
                 except:
                     pass
                 
-                if not loop:
+                if not loop or not self._music_playing:
                     break
             
             self._music_playing = False
+            self._music_process = None
         
         self._music_thread = threading.Thread(target=play_loop)
         self._music_thread.daemon = True
@@ -725,6 +734,17 @@ class SoundEngine:
     def stop_music(self):
         """Stop currently playing music."""
         self._music_playing = False
+        # Terminate the subprocess if running
+        if self._music_process:
+            try:
+                self._music_process.terminate()
+                self._music_process.wait(timeout=0.5)
+            except:
+                try:
+                    self._music_process.kill()
+                except:
+                    pass
+            self._music_process = None
         if self._music_thread:
             self._music_thread.join(timeout=0.5)
 

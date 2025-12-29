@@ -1,113 +1,183 @@
-# 🦆 Cheese the Duck
+```
+                  ___
+               __(   )__
+              /    o    \
+             |           |
+             |    ____   |
+              \   \__/   /_
+               \___     _/  |>
+                   |   |---'
+                 __|   |__
+                /   \ /   \
+               (___) (___)
 
-A feature-rich terminal-based virtual pet game inspired by Tamagotchi. Raise and care for Cheese, a derpy but adorable duck with unique personality traits, dynamic needs, and AI-powered behavior!
+           CHEESE THE DUCK
+      A Terminal Virtual Pet Game
+```
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.13+-blue.svg)
+![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
 
-## ✨ Features
+---
 
-### 🐣 Dynamic Duck Care System
-- **Five Core Needs**: Monitor and fulfill hunger, energy, fun, cleanliness, and social needs
-- **Color-Coded Stats**: Visual progress bars with percentages - green (70%+), yellow (40-69%), red (below 40%)
-- **Mood System**: Duck's mood changes based on how well their needs are met (ecstatic, happy, content, grumpy, sad, miserable)
-- **Growth Stages**: Watch your duck grow from egg → duckling → teen → adult → elder
-- **Unique Personality**: Each duck has personality traits that affect their behavior:
-  - Clever ↔ Derpy
-  - Brave ↔ Timid
-  - Active ↔ Lazy
-  - Social ↔ Shy
-  - Neat ↔ Messy
+## About
 
-### 🤖 Autonomous AI Behavior
-- Ducks perform autonomous actions based on their needs and personality
-- **Structure-Aware AI**: Duck interacts with built structures (naps in nests, hides in shelters, uses bird baths)
-- Derpy ducks make more unpredictable and silly choices
-- AI adapts behavior based on current needs, mood, and environment
+**Cheese the Duck** is a feature-rich terminal-based virtual pet game where you raise and care for a duck with a personality all its own. Inspired by classic Tamagotchi pets, this game combines nostalgic pet-raising gameplay with modern features like AI-powered behavior, dynamic conversations, and a surprisingly deep world to explore.
 
-### 💬 Interactive Conversations
-- **LLM Integration**: Optional Ollama integration for dynamic, AI-powered conversations
-- **Memory System**: Duck remembers past conversations and interactions
-- **Fallback Responses**: Works without LLM with pre-written personality-based responses
-- **Duck Diary**: Automatic storytelling that creates a narrative of your duck's life
-- Supports models: llama3.2, llama3.1, mistral, phi3, gemma2, qwen2
+Your duck isn't just a collection of stats—it has moods, personality traits, and autonomous behaviors that make each playthrough unique. The world around your duck is alive with changing weather, passing time, and... other things you'll discover as you play.
 
-### 🗺️ Exploration System
-- **Multiple Biomes**: Explore Pond, Forest, Meadow, Riverside, Garden, Mountains, and Beach
-- **Resource Gathering**: Collect materials like twigs, leaves, pebbles, shells, and more
-- **Travel Animations**: Watch your duck waddle to new locations
-- **Discovery System**: Find rare resources and unlock new areas
-- **Gathering Skill**: Level up your exploration abilities
+Some features are obvious. Others reveal themselves over time. Pay attention.
 
-### ⚒️ Crafting & Building
-- **Material Collection**: Gather 40+ unique materials from different biomes
-- **Crafting Recipes**: Combine materials to create tools, decorations, and special items
-- **Building System**: Construct nests, houses, workshops, and other structures
-- **Structure Benefits**: Built structures provide bonuses and shelter
-- **Multi-Stage Construction**: Watch buildings progress through construction phases
+---
 
-### 🎮 Item Interactions
-- **45+ Interactive Items**: Play with balls, swim in pools, bounce on trampolines, and more
-- **Custom Animations**: ASCII art animations show your duck interacting with objects
-- **Edge Cases**: Different responses based on duck's state (tired, hungry, happy)
-- **Natural Commands**: Type "play with ball" or "swim in pool" in Talk mode
-- **Use Menu**: Press [U] to see all interactable items you own
+## Core Systems
 
-### 🎯 Progression & Rewards
-- **Achievement System**: 50+ achievements including secret discoveries
-- **Daily Rewards**: Login daily to earn rewards and maintain streaks
-- **Goal System**: Complete daily and weekly goals for bonus rewards
-- **Collectibles**: Discover and collect rare items throughout gameplay
-- **Level System**: Gain XP and level up through interactions
-- **Interaction Cooldowns**: Prevents spam-clicking with themed cooldown messages
+### Care & Survival
+Monitor five essential needs: **Hunger**, **Energy**, **Fun**, **Cleanliness**, and **Social**. Each need decays over time and affects your duck's mood. Neglect them too long and your duck becomes miserable. Keep them balanced and watch your companion thrive.
 
-### 🏠 Habitat System
-- **255+ Shop Items**: Decorations, toys, furniture, water features, plants, and cosmetics
-- **Decoratable Playfield**: Place items around your duck's habitat
-- **Cosmetic System**: Dress up your duck with hats, glasses, bow ties, and more
-- **Dynamic Atmosphere**: Weather effects (rain, snow, storms, fog, rainbows)
-- **Duck-Item Reactions**: Duck autonomously interacts with nearby items
+Color-coded progress bars show you at a glance what needs attention:
+- **Green** (70%+): Doing great
+- **Yellow** (40-69%): Getting low
+- **Red** (below 40%): Critical
 
-### 🎪 Dynamic Events
-- Random events occur during gameplay (visitors, weather changes, special occasions)
-- **Visitor System**: Meet other ducks and characters
-- Timed events with unique rewards
-- Event outcomes affected by duck's personality and stats
+### Growth & Personality
+Your duck grows through distinct life stages: Egg → Duckling → Teen → Adult → Elder. Each stage brings new behaviors and interactions.
 
-### 🎮 Mini-Games
-- **Bread Catch**: Catch falling bread with your duck
-- **Bug Chase**: Chase and catch bugs for rewards
-- **Memory Match**: Test your memory with card matching
-- **Duck Race**: Race against other ducks
+Every duck has unique personality traits that shape how it behaves:
+- Clever ↔ Derpy
+- Brave ↔ Timid
+- Active ↔ Lazy
+- Social ↔ Shy
+- Neat ↔ Messy
 
-### 💤 Dream System
-- Ducks dream while sleeping with unique dream sequences
-- Dreams influenced by recent activities and mood
-- Types: Adventure, Flying, Food, Friends, Memories, Silly, and more
-- Prophetic dreams may hint at future events
+These aren't just flavor text—they genuinely affect what your duck does when you're not directly commanding it.
 
-### 🎨 Rich Terminal UI
-- Colorful ASCII art duck animations
-- **Animated Sprites**: Duck animates during interactions (sleeping, eating, playing, cleaning, petting)
-- **Traveling Animations**: Duck waddles between areas
-- **Building Animations**: Watch structures being constructed
-- **Kaomoji-style Close-ups**: Expressive emotion displays
-- **Animated Celebrations**: Level-up and achievement animations
-- Real-time status displays with color-coded progress bars
+### Autonomous AI Behavior
+This isn't a passive pet that sits waiting for your input. Your duck has agency. It wanders, explores its habitat, interacts with items you've placed, and makes decisions based on its needs and personality.
 
-### 🔊 Audio System
-- **Background Music**: Looping ambient music (pygame-based)
-- **Duck Quacks**: Realistic WAV sound effects
-- **Level-Up Sounds**: Special sound effects for achievements
-- **Syllable-Based Speech**: Duck quacks once per syllable when responding!
-- Volume controls for music and sound effects independently
+Derpy ducks make questionable choices. Brave ducks take risks. Lazy ducks nap. A lot.
 
-### 💾 Save System
-- Automatic save functionality
-- Offline progression - your duck continues living while you're away
-- Data saved to `~/.cheese_the_duck/save.json`
+The AI adapts to structures you build—nests for sleeping, bird baths for cleaning, workshops for... well, you'll see.
 
-## 🚀 Installation
+### Dynamic Conversations
+Talk to your duck. It responds based on its mood, personality, and memory of past conversations.
+
+With optional **Ollama LLM integration**, conversations become truly dynamic—your duck remembers what you've talked about and develops its own quirks over time.
+
+Without LLM? The game includes hundreds of personality-driven responses that still make your duck feel alive.
+
+Supported models: llama3.2, llama3.1, mistral, phi3, gemma2, qwen2
+
+---
+
+## World Systems
+
+### Exploration & Discovery
+The world extends beyond your duck's immediate habitat. Seven distinct biomes await exploration:
+- Pond (home)
+- Forest
+- Meadow
+- Riverside
+- Garden
+- Mountains
+- Beach
+
+Each location offers unique resources and discoveries. Some are obvious. Some require the right conditions. Some require persistence.
+
+### Crafting & Building
+Gather 40+ materials from your explorations. Combine them using crafting recipes to create tools, decorations, and functional structures.
+
+Buildings progress through multiple construction phases. Watch your workshop, nest, or shelter take shape over time. Completed structures aren't just decorative—they unlock new interactions and behaviors.
+
+### Item Interactions
+Over 45 interactive items respond to natural language commands. Type "play with ball" or "swim in pool" during conversations, or browse your inventory to see what's possible.
+
+Items have contextual responses—your duck reacts differently when tired, hungry, or ecstatic. Animations show your duck actually engaging with objects in charming ASCII art.
+
+### Shop & Customization
+**255+ items** available for purchase, from decorations to cosmetics to functional toys. Dress your duck in hats, glasses, bow ties. Decorate the habitat with furniture, plants, and water features.
+
+Your choices create a unique space that reflects your style—and your duck notices and interacts with everything you place.
+
+---
+
+## Progression
+
+### Goals & Achievements
+Daily and weekly goals provide direction without being overwhelming. Some achievements are straightforward ("Feed your duck 10 times"). Others are... less obvious.
+
+Over 50 achievements exist. Most are documented. A few are secret. We won't tell you how to find them.
+
+### Daily Rewards
+Login streaks unlock progressive rewards. Miss a day and the streak resets. Consistency matters.
+
+### Leveling
+Earn XP through interactions, exploration, crafting, and other activities. Higher levels unlock new recipes, areas, and capabilities.
+
+Cooldowns prevent spam and encourage meaningful engagement rather than mindless clicking.
+
+---
+
+## Mini-Games & Activities
+
+Take a break from caretaking with built-in mini-games:
+- **Bread Catch**: Reflexes and timing
+- **Bug Chase**: Quick decision-making
+- **Memory Match**: Test your recall
+- **Duck Race**: Button mashing glory
+- **Fishing**: Patience and reaction time
+
+Each mini-game tracks high scores and awards coins for exceptional performance.
+
+---
+
+## Atmosphere & Time
+
+### Dynamic Weather
+Weather changes naturally as you play. Rain, snow, storms, fog, sunshine, and... rarer conditions. Weather affects available activities and your duck's behavior.
+
+Some ducks love storms. Others hide. Pay attention to personality.
+
+### Dream System
+When your duck sleeps, it dreams. Dream sequences are influenced by recent activities, current mood, and personality traits. Some dreams are whimsical. Some are prophetic. All are worth reading.
+
+Types include: Adventure, Flying, Food, Friends, Memories, Silly, Prophetic, and Nightmare.
+
+---
+
+## Audio & Visuals
+
+### Terminal UI
+Rich ASCII art brings your duck to life through animated sprites. The duck changes visual state during:
+- Sleeping (with Z's)
+- Eating (om nom)
+- Playing (!!!)
+- Cleaning (splash effects)
+- Petting (hearts)
+- Traveling (walking animation)
+
+Construction animations show buildings taking shape. Celebration effects mark achievements and level-ups.
+
+### Sound Design
+- **Background Music**: Ambient looping tracks (pygame-based)
+- **Duck Quacks**: Authentic duck sounds
+- **Syllable-Based Quacking**: The duck quacks once per syllable when talking—surprisingly endearing
+- **Special Effects**: Level-ups, achievements, and interactions have unique sounds
+- **Volume Control**: Adjust music and effects independently
+
+---
+
+## What Else?
+
+There's more to discover. Some features announce themselves. Others stay hidden until you stumble upon the right conditions or make the right choices.
+
+Weather patterns. Visitor schedules. Hidden recipes. Rare events. Personality quirks that only reveal themselves after days of play.
+
+We could list everything, but where's the fun in that?
+
+---
+
+## Installation
 
 ### Prerequisites
 - Python 3.8 or higher
@@ -115,30 +185,24 @@ A feature-rich terminal-based virtual pet game inspired by Tamagotchi. Raise and
 
 ### Quick Start
 
-1. **Clone the repository**:
 ```bash
+# Clone the repository
 git clone https://github.com/Joshspeakman/cheese-the-duck.git
 cd cheese-the-duck
-```
 
-2. **Create virtual environment** (recommended):
-```bash
+# Create virtual environment (recommended)
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
 # or: .venv\Scripts\activate  # Windows
-```
 
-3. **Install dependencies**:
-```bash
+# Install dependencies
 pip install -r requirements.txt
-```
 
-4. **Run the game**:
-```bash
+# Run the game
 python main.py
 ```
 
-Or use the provided shell script:
+Or use the provided script:
 ```bash
 chmod +x run_game.sh
 ./run_game.sh
@@ -146,10 +210,10 @@ chmod +x run_game.sh
 
 ### Optional: LLM Integration
 
-For enhanced conversations, install [Ollama](https://ollama.ai/) and pull a supported model:
+For enhanced AI conversations:
 
 ```bash
-# Install Ollama (see https://ollama.ai for installation instructions)
+# Install Ollama (see https://ollama.ai)
 
 # Pull a model (recommended: llama3.2)
 ollama pull llama3.2
@@ -158,128 +222,102 @@ ollama pull llama3.2
 ollama serve
 ```
 
-The game will automatically detect and use Ollama if available.
+The game auto-detects Ollama if available.
 
-## 🎮 Controls
+---
 
-### Duck Care
-| Key | Action |
-|-----|--------|
-| F / 1 | Feed the duck |
-| P / 2 | Play with duck |
-| L / 3 | Clean the duck |
-| D / 4 | Pet the duck |
-| Z / 5 | Let duck sleep |
+## Controls
 
-### Social & Info
-| Key | Action |
-|-----|--------|
-| T | Talk to duck |
-| S | View detailed stats |
-| I | Open inventory |
-| G | View goals |
+```
+┌─────────────────────────────────────┐
+│          DUCK CARE                  │
+├─────────┬───────────────────────────┤
+│  F / 1  │  Feed                     │
+│  P / 2  │  Play                     │
+│  L / 3  │  Clean                    │
+│  D / 4  │  Pet                      │
+│  Z / 5  │  Sleep                    │
+└─────────┴───────────────────────────┘
 
-### World & Building
-| Key | Action |
-|-----|--------|
-| E | Explore current area |
-| A | Travel to other areas |
-| C | Open crafting menu |
-| R | Open building menu |
-| B | Open shop |
-| U | Use/interact with items |
+┌─────────────────────────────────────┐
+│      WORLD & BUILDING               │
+├─────────┬───────────────────────────┤
+│    E    │  Explore current area     │
+│    A    │  Travel to other areas    │
+│    C    │  Crafting menu            │
+│    R    │  Building menu            │
+│    U    │  Use/interact with items  │
+└─────────┴───────────────────────────┘
 
-### Fun
-| Key | Action |
-|-----|--------|
-| J | Mini-games menu |
-| K | Random duck fact |
+┌─────────────────────────────────────┐
+│      SOCIAL & INFO                  │
+├─────────┬───────────────────────────┤
+│    T    │  Talk to duck             │
+│    S    │  View detailed stats      │
+│    I    │  Inventory                │
+│    G    │  View goals               │
+│    B    │  Shop                     │
+└─────────┴───────────────────────────┘
 
-### Audio
-| Key | Action |
-|-----|--------|
-| M | Toggle sound on/off |
-| N | Toggle music on/off |
-| + | Volume up |
-| - | Volume down |
+┌─────────────────────────────────────┐
+│          OTHER                      │
+├─────────┬───────────────────────────┤
+│    J    │  Mini-games menu          │
+│    K    │  Random duck fact         │
+│  M / N  │  Toggle sound/music       │
+│  + / -  │  Volume control           │
+│    H    │  Help                     │
+│    Q    │  Save & quit              │
+└─────────┴───────────────────────────┘
+```
 
-### Game
-| Key | Action |
-|-----|--------|
-| H | Show help |
-| Q | Save & quit |
-| X | Reset game |
+**Pro Tip**: In Talk mode [T], type natural commands like "play with ball" or "swim in pool" to interact with items.
 
-### Pro Tip
-Type commands like "play with ball", "swim in pool", or "sit on throne" in Talk mode [T]!
+---
 
-## 📁 Project Structure
+## Save System
+
+Progress auto-saves to `~/.cheese_the_duck/save.json`
+
+Your duck continues living while you're away—offline time is calculated when you return. Don't abandon your duck for too long.
+
+---
+
+## Configuration
+
+Edit `config.py` to customize:
+- Need decay rates (make it easier or harder)
+- Time multipliers (speed up for testing)
+- Personality trait defaults
+- Growth stage durations
+- AI behavior parameters
+- UI colors and appearance
+
+---
+
+## Project Structure
 
 ```
 cheese_the_duck/
-├── audio/                  # Sound effects system
-├── core/                   # Core game systems
-│   ├── clock.py           # Game timing
-│   ├── game.py            # Main game loop
-│   ├── persistence.py     # Save/load system
-│   └── progression.py     # XP and leveling
-├── dialogue/               # Conversation systems
-│   ├── conversation.py    # Dialogue management
-│   ├── diary.py           # Duck diary/journal
-│   ├── llm_chat.py        # LLM integration
-│   └── memory.py          # Duck memory system
-├── duck/                   # Duck entity logic
-│   ├── behavior_ai.py     # Autonomous behavior
-│   ├── cosmetics.py       # Cosmetic rendering
-│   ├── duck.py            # Duck entity
-│   ├── mood.py            # Mood calculations
-│   ├── needs.py           # Need tracking
-│   └── personality.py     # Personality system
-├── ui/                     # User interface
-│   ├── animations.py      # Animation controller
-│   ├── ascii_art.py       # Duck ASCII art & sprites
-│   ├── habitat_art.py     # Habitat/structure art
-│   ├── habitat_icons.py   # Item icons
-│   ├── input_handler.py   # Input processing
-│   └── renderer.py        # Display rendering
-├── world/                  # Game world systems
-│   ├── achievements.py    # Achievement tracking
-│   ├── atmosphere.py      # Weather & time effects
-│   ├── building.py        # Structure building
-│   ├── crafting.py        # Item crafting
-│   ├── dreams.py          # Dream sequences
-│   ├── events.py          # Random events
-│   ├── exploration.py     # Biome exploration
-│   ├── facts.py           # Duck facts/trivia
-│   ├── goals.py           # Daily/weekly goals
-│   ├── habitat.py         # Habitat item placement
-│   ├── home.py            # Home customization
-│   ├── item_interactions.py # Item interaction system
-│   ├── items.py           # Inventory system
-│   ├── materials.py       # Crafting materials
-│   ├── minigames.py       # Mini-game system
-│   └── shop.py            # In-game shop (255+ items)
-├── config.py              # Game configuration
-├── main.py                # Entry point
-└── requirements.txt       # Python dependencies
+├── audio/           # Sound engine and effects
+├── core/            # Game loop, progression, saves
+├── dialogue/        # Conversations, memory, diary
+├── duck/            # Entity logic, AI, personality
+├── ui/              # Rendering, animations, ASCII art
+├── world/           # Everything else—exploration, crafting,
+│                    # building, events, weather, items, and
+│                    # things we're not mentioning yet
+├── config.py        # Customizable settings
+└── main.py          # Entry point
 ```
 
-## 🔧 Configuration
+---
 
-Edit `config.py` to customize:
-- Need decay rates
-- Time multipliers (for testing)
-- Personality defaults
-- Growth stage durations
-- AI behavior parameters
-- UI colors
+## Contributing
 
-## 🤝 Contributing
+Pull requests welcome. Issues encouraged. If you find a secret, maybe don't spoil it in the issue tracker.
 
-Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
-
-### Development Setup
-
+### Development Process
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature-name`
 3. Make your changes
@@ -288,21 +326,28 @@ Contributions are welcome! Please feel free to submit pull requests or open issu
 6. Push: `git push origin feature-name`
 7. Open a Pull Request
 
-## 📜 License
+---
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## License
 
-## 🙏 Acknowledgments
+MIT License - see LICENSE file for details.
+
+---
+
+## Acknowledgments
 
 - Inspired by classic Tamagotchi virtual pets
 - Built with [blessed](https://github.com/jquast/blessed) for terminal UI
 - Audio powered by [pygame](https://www.pygame.org/)
 - Optional LLM support via [Ollama](https://ollama.ai/)
 
-## 📧 Contact
-
-For questions or suggestions, please open an issue on GitHub.
-
 ---
 
-**Have fun raising Cheese! 🦆✨**
+```
+                 __|   |__
+                /   \ /   \
+               (___) (___)
+
+         Have fun raising Cheese.
+      (And pay attention to details.)
+```

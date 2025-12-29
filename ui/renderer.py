@@ -1215,7 +1215,7 @@ class Renderer:
         # Actions column - organized by function
         shortcuts = [
             "[F] Feed    [P] Play",
-            "[L] Clean   [D] Pet",
+            "[L] Clean  [D] Pet  ",
             "[Z] Sleep   [T] Talk",
             "",
             "[E] Explore [A] Areas",
@@ -1441,157 +1441,119 @@ class Renderer:
         """Render the title/new game screen with dancing duck animation."""
         self._title_frame = (self._title_frame + 1) % 120
 
-        # Dancing duck animation frames
+        # Dancing duck animation frames - Teen duck style
         duck_frames = [
             # Frame 1 - Idle happy
             [
-                "        ★  ✦  ★                       ",
-                "           \\|/                        ",
-                "        __(^.^)__                     ",
-                "       /  (  >)  \\                    ",
-                "      |  __\\/__   |                   ",
-                "       \\ \\____/ /     ♪              ",
-                "        \\_____/|>                    ",
-                "          |   |                       ",
-                "         _|   |_                      ",
-                "        (•)   (•)                     ",
-                "       ~~~~~~~~~~~                    ",
+                "              ,~~.                     ",
+                "         ,   (  ^ )>        ★          ",
+                "         )`~~'    (                    ",
+                "        (    .__)  )                   ",
+                "         `-.____.,'                    ",
+                "             ||          ♪             ",
+                "           ~~~~~                       ",
             ],
-            # Frame 2 - Dance pose up
+            # Frame 2 - Dance left
             [
-                "           ✦  ★  ✦                    ",
-                "              \\|/                     ",
-                "           __(^ ^)__                  ",
-                "          /  (  >)  \\                 ",
-                "         |  __\\/__   |                ",
-                "        / \\ \\____/ \\   ♫             ",
-                "       <|  \\_____/                   ",
-                "             |   |                    ",
-                "            /     \\                   ",
-                "          (•)     (•)                 ",
-                "         ~~~~~~~~~~~                  ",
+                "           ,~~.                        ",
+                "      ,   (  o )>    ♫                 ",
+                "      )`~~'    (                       ",
+                "     (    .~.)  )                      ",
+                "      `-.____.,'                       ",
+                "        //  ||                         ",
+                "       ~~~~~~~                         ",
             ],
-            # Frame 3 - Look right
+            # Frame 3 - Dance right
             [
-                "              ★  ✦  ★                 ",
-                "                 \\|/                  ",
-                "              __(O O)__               ",
-                "             /  ( o )  \\              ",
-                "            |  __\\/__   |  ♪         ",
-                "             \\ \\____/ /              ",
-                "              \\_____/|>              ",
-                "                |   |                 ",
-                "               _|   |_                ",
-                "              (•)   (•)               ",
-                "             ~~~~~~~~~~~              ",
+                "                ,~~.                   ",
+                "           ,   (  o )>                 ",
+                "           )`~~'    (      ♪           ",
+                "          (    (._)  )                 ",
+                "           `-.____.,'                  ",
+                "               ||  \\\\                  ",
+                "              ~~~~~~~                  ",
             ],
-            # Frame 4 - Arms up!
+            # Frame 4 - QUACK pose!
             [
-                "         \\\\  ★ ✦ ★  //               ",
-                "          \\\\  \\|/  //                ",
-                "           __(O O)__     QUACK!       ",
-                "          /  ( ◡ )  \\                 ",
-                "       \\\\|  __\\/__   |//             ",
-                "        \\\\  \\____/  //    ♫ ♪       ",
-                "          \\_____/|>                  ",
-                "            |   |                     ",
-                "           _|   |_                    ",
-                "          (•)   (•)                   ",
-                "         ~~~~~~~~~~~                  ",
+                "     \\\\    ,~~.    //                 ",
+                "      \\\\  ( O O )> //    QUACK!       ",
+                "       )`~~'    (                      ",
+                "      (    .◡.)  )        ♫ ♪         ",
+                "       `-.____.,'                      ",
+                "          \\    /                       ",
+                "         ~~~~~~~                       ",
             ],
             # Frame 5 - Lean left
             [
-                "      ♪  ★  ✦                         ",
-                "         \\|                           ",
-                "       __(~ ~)__                      ",
-                "      /  (  >)  \\                     ",
-                "     |  __\\/__   \\                    ",
-                "      \\ \\____/  /                     ",
-                "       \\_____/|>                     ",
-                "         |   |                        ",
-                "        /     \\_                      ",
-                "      (•)    (•)                      ",
-                "     ~~~~~~~~~~~                      ",
+                "         ,~~.      ♪                   ",
+                "    ,   (  ~ )>                        ",
+                "    )`~~'    (                         ",
+                "   (    .__)  )                        ",
+                "    `-.____.,'                         ",
+                "       //   |                          ",
+                "     ~~~~~~~                           ",
             ],
             # Frame 6 - Lean right
             [
-                "                  ✦  ★  ♫             ",
-                "                   |/                 ",
-                "              __(~ ~)__               ",
-                "             /  (  >)  \\              ",
-                "            /   __\\/__  |             ",
-                "             \\  \\____/ /              ",
-                "              \\_____/|>              ",
-                "                |   |                 ",
-                "              _/     \\                ",
-                "             (•)    (•)               ",
-                "            ~~~~~~~~~~~               ",
+                "                  ,~~.                 ",
+                "             ,   (  ~ )>      ♫        ",
+                "             )`~~'    (                ",
+                "            (    .__)  )               ",
+                "             `-.____.,'                ",
+                "                 |   \\\\                ",
+                "               ~~~~~~~                 ",
             ],
             # Frame 7 - Spin!
             [
-                "           ✧ SPIN ✧                   ",
-                "              ★                       ",
-                "           __(@ @)__                  ",
-                "          /  (  >)  \\                 ",
-                "         |  __\\/__   |  ♫            ",
-                "          \\ \\____/ /                 ",
-                "           \\_____/>                  ",
-                "             \\   |                    ",
-                "              \\  |_                   ",
-                "              (•)(•)                  ",
-                "            ~~~~~~~~~~                ",
+                "           ✧ SPIN ✧                    ",
+                "              ,~~.                     ",
+                "         ,   ( @ @ )>                  ",
+                "         )`~~'    (       ♫            ",
+                "        (    .~~)  )                   ",
+                "         `-.____.,'                    ",
+                "            ~~~~~~~                    ",
             ],
             # Frame 8 - Point!
             [
-                "             ★  ✦  ★                  ",
-                "           ♫  \\|/  ♪                 ",
-                "           __(^ ^)__                  ",
-                "          /  (  ᴗ)  \\=====>>         ",
-                "         |  __\\/__   |                ",
-                "          \\ \\____/ /                 ",
-                "           \\_____/|>                 ",
-                "             |   |                    ",
-                "            _|   |_                   ",
-                "           (•)   (•)                  ",
-                "          ~~~~~~~~~~~                 ",
+                "              ,~~.                     ",
+                "         ,   (  ^ )>======>>           ",
+                "         )`~~'    (                    ",
+                "        (    .ᴗ.)  )       ♪           ",
+                "         `-.____.,'                    ",
+                "             ||                        ",
+                "           ~~~~~                       ",
             ],
             # Frame 9 - Happy blink
             [
-                "                                      ",
-                "            *  .  *                   ",
-                "               __                     ",
-                "            __(-.-)>                  ",
-                "           /  (   )                   ",
-                "          |   \\  /                    ",
-                "           \\___\\/|>                   ",
-                "             |  |                     ",
-                "            _|  |_                    ",
-                "           (•)  (•)                   ",
-                "          ~~~~~~~~~~                  ",
+                "              ,~~.                     ",
+                "         ,   ( -.- )>      *  .  *     ",
+                "         )`~~'    (                    ",
+                "        (    .__)  )                   ",
+                "         `-.____.,'                    ",
+                "             ||                        ",
+                "           ~~~~~                       ",
             ],
             # Frame 10 - Look at you!
             [
-                "                                      ",
-                "            ★  .  ★                   ",
-                "               __                     ",
-                "            __(o_o)>    Hi there!     ",
-                "           /  (   )                   ",
-                "          |   \\  /                    ",
-                "           \\___\\/|>                   ",
-                "             |  |                     ",
-                "            _|  |_                    ",
-                "           (•)  (•)                   ",
-                "          ~~~~~~~~~~                  ",
+                "              ,~~.                     ",
+                "         ,   ( o_o )>    Hi there!     ",
+                "         )`~~'    (                    ",
+                "        (    .__)  )      ★            ",
+                "         `-.____.,'                    ",
+                "             ||                        ",
+                "           ~~~~~                       ",
             ],
         ]
 
-        frame_idx = (self._title_frame // 10) % len(duck_frames)
+        # Slow down animation - change frame every 12 ticks instead of 10
+        frame_idx = (self._title_frame // 12) % len(duck_frames)
         duck_art = duck_frames[frame_idx]
 
-        # Sparkle effects that rotate
-        sparkle_chars = ["✦", "✧", "★", "☆", "◆", "◇", "●", "○"]
-        sparkle1 = sparkle_chars[self._title_frame % len(sparkle_chars)]
-        sparkle2 = sparkle_chars[(self._title_frame + 4) % len(sparkle_chars)]
+        # Sparkle effects that rotate slowly (change every 15 ticks)
+        sparkle_chars = ["✦", "★", "✧", "☆"]
+        sparkle_idx = (self._title_frame // 15) % len(sparkle_chars)
+        sparkle1 = sparkle_chars[sparkle_idx]
+        sparkle2 = sparkle_chars[(sparkle_idx + 2) % len(sparkle_chars)]
 
         # Build title screen
         title_art = [
@@ -1631,9 +1593,11 @@ class Renderer:
             "",
         ])
 
-        print(self.term.home + self.term.clear)
+        # Use home only (no clear) to prevent flicker - overwrite in place
+        print(self.term.home)
         for line in title_art:
-            print(self.term.center(line))
+            # Clear to end of line to handle any leftover characters
+            print(self.term.center(line) + self.term.clear_eol)
 
     def _overlay_help(self, base_output: List[str], width: int) -> List[str]:
         """Overlay the help screen."""

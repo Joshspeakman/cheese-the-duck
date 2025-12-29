@@ -573,7 +573,11 @@ class DecorationsSystem:
             "position": position,
             "timestamp": datetime.now().isoformat(),
         })
-        
+
+        # Keep history manageable to prevent memory leak
+        if len(self.decorating_history) > 100:
+            self.decorating_history = self.decorating_history[-100:]
+
         return True, f"🏠 Placed {decoration.name} in {room.name}!"
     
     def remove_decoration(

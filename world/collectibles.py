@@ -585,7 +585,11 @@ class CollectiblesSystem:
             "received": new_collectible.id,
             "timestamp": datetime.now().isoformat(),
         })
-        
+
+        # Keep history manageable to prevent memory leak
+        if len(self.trade_history) > 100:
+            self.trade_history = self.trade_history[-100:]
+
         return True, f"🔄 Trade successful! Got: {new_collectible.name}!", new_collectible
     
     def render_collection_album(self) -> List[str]:
