@@ -143,3 +143,13 @@ data/*.dat
 # OS
 .DS_Store
 Thumbs.db
+
+# Game logs
+logs/
+
+# C# / .NET build outputs
+StupidDuckCS/**/bin/
+StupidDuckCS/**/obj/
+StupidDuckCS/**/*.user
+StupidDuckCS/**/*.suo
+StupidDuckCS/**/.vs/
