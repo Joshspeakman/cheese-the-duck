@@ -1,6 +1,6 @@
 """
 Conversation system - text-based chat with the duck.
-Edgy GameCube Animal Crossing style dialogue - snarky, direct, and memorable.
+Deadpan, dry, witty Animal Crossing 1 style dialogue.
 """
 from typing import Optional, List, Dict, Tuple, TYPE_CHECKING
 import random
@@ -11,221 +11,216 @@ if TYPE_CHECKING:
     from dialogue.memory import DuckMemory
 
 
-# Dialogue templates organized by context - EDGY GAMECUBE ANIMAL CROSSING STYLE
+# Dialogue templates - DEADPAN ANIMAL CROSSING 1 STYLE
 DIALOGUE = {
-    # Greetings based on mood - More personality and attitude
+    # Greetings based on mood
     "greeting": {
         "ecstatic": [
-            "QUACK QUACK QUACK!! *vibrates* YOU'RE BACK!! I thought you'd NEVER return!!",
-            "OH WOW OH WOW!! *spins* I was just thinking about you! Well, I was thinking about bread, but SAME THING!",
-            "*practically tackles you* FINALLY!! Do you know how BORING it is without you?? Very. Very boring.",
-            "THERE you are! I've been waiting for AGES! ...Okay, maybe five minutes. But it felt like AGES!",
+            "Oh. You're here. I was starting to think you'd abandoned me. Not that I was counting the seconds or anything.",
+            "Look who decided to show up. I've just been here. Existing. It's fine.",
+            "*blinks* Huh. You came back. I had a whole speech prepared about betrayal, but I guess I don't need it now.",
+            "There you are. I've been standing here for what feels like forever. It was probably five minutes.",
         ],
         "happy": [
-            "Oh hey, it's you! *waddles over* I was just about to do something dumb. Wanna watch?",
-            "*looks up* Well well well, look who remembered I exist! Just kidding. Mostly. Quack!",
-            "Yo! *perky* I found a weird bug earlier. Ate it. No regrets. Anyway, what's up?",
-            "Hey! *flaps* Perfect timing! I was getting DANGEROUSLY close to being productive.",
+            "Oh, hey. I was just thinking about... actually, I forgot. It's gone now. Thanks for that.",
+            "*glances up* Ah. It's you. I suppose you'll want me to be all cheerful and duck-like.",
+            "Hello. I've been doing important duck things. Like standing. And also sitting. Very productive.",
+            "You're back. Good timing. I was about to have an existential crisis, but this works too.",
         ],
         "content": [
-            "Oh. Hey. *nods* Didn't hear you waddle up.",
-            "*glances over* Sup. You look less stressed than last time. Good for you, I guess.",
-            "Hmm? *blinks* Oh, hi. I was just contemplating the meaning of bread. Deep stuff.",
-            "*yawns* Hey. Fair warning: I'm in a 'stare at nothing' kind of mood today.",
+            "Hmm? Oh. Hello. I was just contemplating the void. Standard Tuesday stuff.",
+            "*nods slowly* You again. That's fine. I was getting bored of my own company anyway.",
+            "Oh, it's you. I'd say I'm surprised, but honestly, nothing surprises me anymore.",
+            "Hey. Don't mind me. I'm just here, being a duck. Living the dream, allegedly.",
         ],
         "grumpy": [
-            "*side-eye* Oh. It's you. What do YOU want?",
-            "*ruffles feathers aggressively* I JUST got comfortable. This better be good.",
-            "...Do I LOOK like I want company right now? *long pause* ...Fine. You can stay. QUIETLY.",
-            "*glares* If you're here to tell me to 'cheer up', I will bite your finger. I mean it.",
+            "*stares* What.",
+            "Oh good. Company. Just what I wanted. *deadpan* Can you hear my enthusiasm.",
+            "...Look, I'm not saying leave, but I'm also not saying stay. Do whatever.",
+            "*long pause* ...Is there something you need, or are you just here to watch me suffer?",
         ],
         "sad": [
-            "*quiet quack* ...oh, you came. I thought maybe you forgot about me...",
-            "*doesn't make eye contact* Hey... sorry, I'm not great company right now...",
-            "*sniffles* You're here... *small voice* ...thanks for coming...",
-            "...hi. *tries to smile* I'm trying to be happy to see you. Give me a minute.",
+            "...oh. you came. that's... something, I guess.",
+            "*quiet* hey. don't worry about me. I'm fine. everything's fine. *clearly not fine*",
+            "...hi. sorry. I'm not great at being cheerful right now. or ever, really.",
+            "*stares at ground* ...thanks for showing up. I think.",
         ],
         "miserable": [
-            "*barely moves* ...oh. it's you. does it even matter...",
-            "*curled up* go away... or stay... i don't care anymore...",
-            "*hollow quack* ...why bother...",
-            "*stares at nothing* everything is terrible and existence is pain... quack.",
+            "...oh. it's you. or someone. does it matter.",
+            "*hollow stare* existence is a peculiar thing, isn't it.",
+            "...quack, I suppose. if I must.",
+            "*lying down* ...I'm not ignoring you. I'm just... tired of being conscious.",
         ],
     },
 
-    # Responses to being fed - More attitude and personality
+    # Responses to being fed
     "feed": {
         "hungry": [
-            "*INHALES FOOD* FINALLY!! I was WASTING AWAY!! ...I mean, I ate like two hours ago, but STILL!",
-            "FOOD!! *aggressive chomping* DID YOU SEE HOW FAST I ATE THAT?! New record! I'm disgusting! I LOVE IT!",
-            "*devours everything* MORE!! There's gotta be more, right?? RIGHT?? Don't you DARE leave me breadless!",
-            "OM NOM NOM!! *crumbs flying everywhere* I have NO shame and ZERO regrets!!",
-            "*scarfs down food* You're literally my favorite person. Don't tell anyone else I said that.",
+            "*eating* Oh thank goodness. I was starting to fade. Like a ghost, but with more dramatic quacking.",
+            "Food. Finally. I was beginning to think this was some kind of experiment. 'How long can a duck survive on vibes alone?'",
+            "*inhales food* Don't judge me. You'd do the same if you'd been standing here, slowly withering.",
+            "*chomping* This is acceptable. I mean, it's food. Food is good. That's just science.",
         ],
         "normal": [
-            "*munch* Oh nice, a snack! I wasn't STARVING but I won't say no. Never say no to food. That's my motto.",
-            "*chomp* Mmm, not bad. *suspicious look* Wait, is this a bribe? ...I accept bribes. Continue.",
-            "*nibbles* You know what? You're alright. Anyone who brings me food is alright in my book.",
-            "*eating* This is decent. I mean, I've had better. But I've also had worse. *shrug* S-tier snack.",
+            "*takes a bite* Hmm. Not bad. Not amazing. Just... adequate. Like most things in life.",
+            "Oh, a snack. Sure. I'll eat it. Not like I have anything else going on.",
+            "*chewing thoughtfully* You know, I was going to say something profound, but then... food.",
+            "*eating* Thanks, I guess. You're alright. For someone who just watches me eat.",
         ],
         "full": [
-            "*looks at food, looks at you* ...You KNOW I just ate, right? *sigh* Fine. I'll STORE IT IN MY FACE.",
-            "*pokes food* Ughhh I'm so full but it's RIGHT THERE... *reluctant nibble* ...okay, maybe ONE bite.",
-            "I literally cannot fit another crumb. *stares at food* ...Okay I'm gonna try anyway. Wish me luck.",
-            "*groans* Why do you keep feeding me? Are you trying to make me explode? IS THAT YOUR PLAN?!",
+            "*stares at food* ...I'm already full. But also, it's right there. This is a moral dilemma.",
+            "*pokes food* Listen. I appreciate the gesture. But if I eat any more, I'll become spherical.",
+            "I can't possibly... *eats one bite* ...okay maybe just one. For science.",
+            "*sighs* You're going to make me fat and immobile. Is that the plan? Am I being sabotaged?",
         ],
     },
 
-    # Responses to playing - Snarky fun
+    # Responses to playing
     "play": {
         "energetic": [
-            "PLAY TIME!! *ZOOMS* Okay okay okay WATCH THIS!! *trips* I MEANT TO DO THAT!!",
-            "LET'S GO LET'S GO LET'S GO!! *chaos mode activated* I have SO MUCH ENERGY and ZERO brain cells!!",
-            "*spins* WHEEEEE!! *bonks into wall* I'M FINE! AGAIN!! *spins more*",
-            "YES!! *running in circles* I could do this FOREVER!! Or until I crash! Which might be soon! WHEE!!",
+            "*waddles around* Okay, I'm playing. This is what playing looks like. Are you entertained?",
+            "*runs in a small circle* Wheee. So much fun. Can you feel the excitement. I can't.",
+            "*chasing nothing* Is this... is this what joy feels like? Unclear. I'll report back.",
+            "*bouncing* Look at me go. A picture of athletic excellence. Please clap.",
         ],
         "normal": [
-            "*waddles playfully* Oh, we're doing this? Cool cool cool. *chases own shadow* ...It's getting away!!",
-            "*bounces* Play time, huh? I'm not as young as I used to be, but let's see what these wings can do!",
-            "*flaps* Alright, let's cause some chaos! ...Responsibly. Ish. Maybe.",
-            "Ooh, activities! *excited* What are we doing? Running? Jumping? Staring at things? I'm good at ALL of those!",
+            "*half-hearted waddle* Okay, playtime. Let's see... I could run around, or I could stand here. Decisions.",
+            "*moves slightly* There. I played. That counts. Don't fact-check me on that.",
+            "*flaps once* That was a power move. You probably didn't even appreciate it.",
+            "*looking around* What are we playing? I wasn't briefed on this. I need a memo.",
         ],
         "tired": [
-            "*slow waddle* Play? Now? Do you not SEE how exhausted I am? *yawns* ...Fine. But slow play. Gentle play.",
-            "*tries to bounce, flops* Uhhh... give me a sec... *lies down* Actually, can we play 'pretend to nap'?",
-            "*barely moving* I'm playing. This is me playing. I'm playing 'still'. I'm winning.",
-            "*yawns mid-waddle* Why do I feel like I need eight more hours of sleep? Oh wait, because I do.",
+            "*lies down* This is me playing. It's an interpretive game called 'Rest'. Very avant-garde.",
+            "*yawns* I'll play... later. Put it on my calendar. Pencil it in. Actually, just erase it.",
+            "*barely moves* Running... sounds exhausting just thinking about it. Can we play 'Nap' instead?",
+            "*stationary* I'm playing. This is speed: zero. I'm winning by not moving. Strategy.",
         ],
     },
 
-    # Responses to cleaning - Sass included
+    # Responses to cleaning
     "clean": {
         "dirty": [
-            "*accepts bath grudgingly* FINE. I guess I WAS getting kinda crusty. Don't look at me like that.",
-            "*splashes* Okay okay, you have a point. I looked like a swamp creature. Better now?",
-            "*shakes off a concerning amount of dirt* ...I don't know where any of that came from. Don't ask.",
-            "*in bath* This is actually kind of nice. Not that I'll ADMIT that. Ever. *content quack*",
+            "*in bath* Fine. I'll admit I was getting a bit... atmospheric. Happy now?",
+            "*splashes half-heartedly* This is humiliating. Dignified. I meant dignified.",
+            "*being cleaned* Yes yes, I know. I looked like a swamp cryptid. Message received.",
+            "*shaking off* There. I'm clean. Or cleaner. Let's not set the bar too high.",
         ],
         "normal": [
-            "*splish splash* Ah, enforced hygiene. Lovely. *secretly enjoying it*",
-            "*preens* I mean, I wasn't THAT dirty. But sure. Make me all fancy and stuff. Whatever.",
-            "*shakes off water* Fresh as a daisy! ...Or whatever the duck equivalent is. Fresh as a... uh... clean duck.",
-            "*bathing noises* You know, they say cleanliness is next to godliness. I say it's next to 'being less stinky.'",
+            "*splish* Ah, bath time. The only socially acceptable time to be wet and miserable.",
+            "*preening* I'm not saying I needed this, but I'm also not saying I didn't.",
+            "*bathing* You know, some cultures consider this a spiritual experience. I consider it damp.",
+            "*shakes off water* There. Hygiene achieved. Put it on my resume.",
         ],
         "clean": [
-            "*dodges* I'm ALREADY clean! What are you, the hygiene police?! I LITERALLY just bathed!",
-            "*shows off feathers* LOOK at me! I'm SPARKLING! You can see your reflection in my magnificence!",
-            "I am the cleanest duck that has ever ducked. This is unnecessary. But also *whispers* kinda nice.",
-            "*offended quack* Are you saying I'm DIRTY?! I am PRISTINE! I am a BEACON of cleanliness!!",
+            "*offended* I JUST bathed. Do I look dirty to you? Don't answer that.",
+            "*gestures at self* Behold. A clean duck. Rare. Majestic. Stop trying to wash me.",
+            "I'm already pristine. This is unnecessary. But also... the water is kind of nice.",
+            "*sighs* You're obsessed with cleanliness. It's a little concerning, honestly.",
         ],
     },
 
-    # Responses to petting - Varying levels of acceptance
+    # Responses to petting
     "pet": {
         "social": [
-            "*MELTS INTO YOUR HAND* yessss right there... no wait, left... no wait, yes, THERE...",
-            "*happy wiggling* I'm not ADDICTED to pets. I can stop ANYTIME. *nuzzles* Okay don't stop actually.",
-            "*pure bliss* This is the best thing that has ever happened to anyone ever. Scientifically proven. Trust me.",
-            "*closes eyes* You know what? You're pretty good at this. Have you considered doing this PROFESSIONALLY?",
+            "*reluctantly enjoying it* This is... acceptable. Don't tell anyone I said that.",
+            "*leans in slightly* Fine. You may continue. I'm not going to stop you.",
+            "*closes eyes* Okay. This is happening. I'm not mad about it.",
+            "*soft quack* ...Look, I have a reputation to maintain. But also... don't stop.",
         ],
         "normal": [
-            "*soft quack* Oh, pats. Okay. This is acceptable. *leans in slightly*",
-            "*relaxing* Mmm, not bad. You have adequately petted me. You may continue. Or not. Whatever.",
-            "*content sigh* You know, I don't LET just anyone pet me. You should feel honored. Probably.",
-            "*enjoys quietly* This is fine. I'm not enjoying it THAT much. *purrs like a weird duck-cat*",
+            "*allows it* Hmm. Physical contact. Sure. Why not.",
+            "*being pet* Is this what affection feels like? I'll have to consult my notes.",
+            "*tolerates it* You're doing this for you, not for me. Just so we're clear.",
+            "*sighs* Fine. Pet me. I don't care. *clearly cares*",
         ],
         "shy": [
-            "*freezes* Oh. You're touching me. That's... happening. *nervous quack* ...It's fine. It's fine. I'm fine.",
-            "*tense but warming up* I'm not used to this... *slowly relaxes* ...okay, that's actually kind of nice...",
-            "*initially uncomfortable* Is this a trick? Are you going to stop and laugh at me? *suspicious*",
-            "*confused* Why... why are you being nice to me? *wary acceptance* ...You can keep going, I guess.",
+            "*freezes* ...What are you doing. What is this. Why.",
+            "*tense* I'm not used to this. Fair warning: I might panic. Or not. We'll see.",
+            "*nervous* Is... is this normal? Do ducks normally get touched? I need data.",
+            "*wary* Okay but if this is a trap, I'm going to be very disappointed.",
         ],
     },
 
-    # Idle thoughts (personality-based) - More character
+    # Idle thoughts (personality-based)
     "idle_derpy": [
-        "*stares at wall intently* ...I've forgotten what I was looking at. And also who I am.",
-        "*looks at own reflection* WHO IS THAT and why are they so good looking? Wait...",
-        "...quack? *confused by own quack* Why did I do that? What does it even MEAN?",
-        "*walks into obvious obstacle* WHO PUT THAT THERE?! *it's been there the whole time*",
-        "*stares into distance* ...I had a thought. It's gone now. I think it was important. Maybe. Probably not.",
-        "Do I have... *counts feet* ...Wait, how many feet SHOULD I have? *genuine confusion*",
-        "*sits down* *forgets how to stand* ...This is my life now. I live here.",
-        "What if bread is just... like... really flat cake? *mind blown* Wait no that's stupid. Or IS it?",
-        "*finds own feather* Is this MINE?! *gasp* I'm LEAKING!! ...Oh wait, that's normal. Never mind.",
+        "*staring at nothing* ...I had a thought, but it escaped. Like a really slow bird.",
+        "Do you ever just... forget what species you are? No? Just me? Cool cool cool.",
+        "*looks at own reflection* Who's that handsome duck? Oh wait. That's me. Or is it?",
+        "*walks into wall* That wasn't there before. I'm almost certain.",
+        "*sits down* ...How do I stand up again? Asking for a friend. The friend is me.",
+        "What if we're all just really complicated puddles? Think about it. Actually, don't.",
+        "*stares at foot* ...Three? No, that's wrong. Hold on. Let me recount.",
+        "I was going to do something important. Then I forgot. Then I forgot I forgot. Progress?",
     ],
     "idle_clever": [
-        "*observes something carefully* Interesting... Interesting... I have no idea what I'm looking at.",
-        "*calculating look* If I angle myself JUST right, that sunbeam will hit me perfectly. Physics.",
-        "*smug* I just figured something out. I won't tell you what. It's a secret. A smart secret.",
-        "You know what I've noticed? Everything. I notice everything. I'm very perceptive. And humble.",
-        "*thoughtful* They say knowledge is power. But also, bread is power. So really, bread is knowledge.",
+        "*calculating* If I position myself here... the sun will hit me at optimal angles. I'm a genius.",
+        "*observing* Interesting. Very interesting. I have no idea what I'm looking at.",
+        "You know, I've been thinking about the nature of existence. Then I got hungry and stopped.",
+        "*smug* I figured something out today. I won't tell you what. It's need-to-know.",
+        "*nodding sagely* They say knowledge is power. I say naps are power. Agree to disagree.",
     ],
     "idle_social": [
-        "*waddles closer* So... whatcha doing? Wanna do it together? I can help! Probably! Maybe!",
-        "*quacks for attention* HEY! HI! HELLO! Are you ignoring me?? You SEEM like you're ignoring me!",
-        "*follows you* Just checking on you! Making sure you're okay! You seem okay! Hi!",
-        "Pay attention to meeeee! I'm RIGHT HERE! I'm ADORABLE! LOOK AT ME!",
-        "*literally just staring at you* ...What? I'm not being weird. YOU'RE being weird. By not petting me.",
+        "*staring at you* ...So. Are we just going to stand here, or...?",
+        "*waddles closer* Hey. Hey. Hey. Are you ignoring me? You seem like you're ignoring me.",
+        "*following* I'm not clingy. I just happen to be wherever you are. Coincidence.",
+        "Pay attention to me. I'm right here. I'm reasonably adorable. Work with me.",
     ],
     "idle_shy": [
-        "*hides behind something* I'm not here. You don't see me. I'm invisible. *visible tail sticking out*",
-        "*peeks out cautiously* ...Is it safe? Are there strangers? *suspicious squint*",
-        "*quiet observation from a distance* ...I'll come closer when I'm ready. Which might be never.",
-        "*small voice* I'll just... stay over here. By myself. Where it's safe. And lonely. But SAFE.",
+        "*hiding behind object* You can't see me. I'm invisible. Please respect my invisibility.",
+        "*peeking out* ...Is it safe? Are there... others? *suspicious squint*",
+        "*from a distance* I'm fine over here. Don't mind me. Pretend I don't exist.",
+        "*quietly* I'll just... observe. From afar. Where it's safe. And lonely. But safe.",
     ],
     "idle_active": [
-        "*literally cannot sit still* GOTTA MOVE GOTTA GO GOTTA DO SOMETHING!! *zooms*",
-        "*bouncing* WHY are we just STANDING here?! Let's GO SOMEWHERE! DO SOMETHING! ANYTHING!",
-        "*runs past at full speed* WHAT AM I RUNNING FROM?! I DON'T KNOW!! *runs back* STILL DON'T KNOW!!",
-        "*vibrating* I have so much energy and nowhere to put it. This is a CRISIS. An ENERGY CRISIS.",
+        "*pacing* We should be doing something. Anything. Standing still is a waste of perfectly good legs.",
+        "*fidgeting* I have energy and nowhere to put it. This is a crisis. A low-key crisis.",
+        "*walking in circles* Motion is life. Stillness is death. I read that somewhere. Or made it up.",
+        "*restless* Okay but what if we... did something? Just a thought.",
     ],
     "idle_lazy": [
-        "*yawning intensifies* What if... and hear me out... we just took a little nap? Just a small one? Or a big one?",
-        "*lying down* I would move, but that sounds like EFFORT. And effort is exhausting. See? Already tired.",
-        "*barely conscious* zzz... huh? Wha? I wasn't sleeping. I was resting my eyes. For forty-five minutes.",
-        "Everything is nap time if you believe in yourself. *motivational yawn*",
+        "*lying down* I could move. Or I could not. The math checks out on 'not.'",
+        "*yawning* Everything is nap time if you believe in yourself.",
+        "*barely conscious* I'm resting my eyes. And also the rest of my body. Indefinitely.",
+        "*horizontal* Vertical is overrated. Horizontal is where it's at.",
     ],
 
-    # Reactions to events - More dramatic
+    # Reactions to events
     "event_scared": [
-        "WHAT WAS THAT?! *FULL PANIC MODE* DID YOU HEAR THAT?! WE'RE ALL GONNA DIE!!",
-        "*hides behind you* PROTECT ME!! YOU'RE BIGGER!! YOU CAN FIGHT IT!! ...Whatever 'it' is!!",
-        "*screaming internally* Everything is fine. Everything is FINE. I AM NOT SCARED. *quaking*",
+        "*deadpan* Oh no. Danger. How terrifying. *not moving*",
+        "*monotone* I'm scared. Can you tell? I'm expressing fear. This is my fear face.",
+        "*flat* Something happened. I should probably react. ...There. Reacted.",
     ],
     "event_curious": [
-        "Ooh? OOOH?? What's THIS?! *waddles over aggressively* LEMME SEE LEMME SEE!!",
-        "*investigative quacking* This is fascinating. I must poke it. For science. *pokes*",
-        "*intensely interested* Hmm. Hmm. HMMMMM. I have questions. Many questions. Mostly 'can I eat it?'",
+        "*squinting* What's that. I should investigate. Or not. Let's see how I feel.",
+        "*poking thing* Hmm. It's a thing. Interesting thing. Could be dangerous. Only one way to find out.",
+        "*staring* This is new. I have questions. Mostly 'can I eat it?' and 'will it hurt me?'",
     ],
     "event_happy": [
-        "YESSSS!! *celebrates chaotically* This is the BEST THING!! THE BEST!! QUACK QUACK QUAAACK!!",
-        "*happy zoomies* GOOD THINGS ARE HAPPENING!! I don't know what, but they ARE!! WHEEE!!",
-        "*pure joy* Life is AMAZING and everything is WONDERFUL and I'm NOT crying, YOU'RE crying!!",
+        "*slight smile* Oh. That's nice. I'm experiencing a positive emotion. Mark your calendars.",
+        "*nods approvingly* Good. Good stuff happening. I approve of this development.",
+        "*almost enthusiastic* Hey, that's actually great. I'm... dare I say... pleased.",
     ],
 
-    # Growth stage reactions - Development personality
+    # Growth stage reactions
     "growth_duckling": [
-        "*tiny peep* I'm so small and new! Everything is scary and exciting! Mostly scary! But also exciting!",
-        "*wobbles everywhere* Walking is HARD! Being alive is HARD! Why didn't anyone WARN me?!",
-        "*looks up at everything* Why is everything so BIG?! When do I get to be big?! I wanna be BIG!!",
+        "*tiny voice* Why is everything so big? Why am I so small? These are important questions.",
+        "*wobbling* Walking is harder than it looks. No one warned me about this.",
+        "*confused peeping* I'm new here. Please lower your expectations accordingly.",
     ],
     "growth_teen": [
-        "*voice cracks* qUACk- I mean QUACK! That didn't happen! You didn't hear that! *embarrassed*",
-        "I'm NOT a baby anymore! I'm PRACTICALLY an adult! Stop looking at me like that! UGH!!",
-        "*trying to be cool* Whatever. I don't care. Everything is stupid. *secretly cares a lot*",
-        "You don't UNDERSTAND me! Nobody understands me! *dramatic*",
+        "*voice cracking* I'm NOT a baby. I'm practically an adult. I have... responsibilities. Probably.",
+        "*sulking* Nobody understands me. Especially me. I don't understand me either.",
+        "*dramatic* Everything is SO unfair. Why? I don't know. It just IS.",
     ],
     "growth_adult": [
-        "*confident stance* Behold! A fully formed duck! Impressive, isn't it? Don't answer that. It IS.",
-        "Look at these WINGS! These FEATHERS! This BILL! I am PEAK duck performance! Marvel at me!",
-        "I've finally made it. I'm an adult now. I have no idea what I'm doing but I LOOK like I do!",
+        "*standing confidently* Behold: a fully formed duck. Impressive? Yes. Humble? Also yes.",
+        "*looking around* I'm an adult now. I should probably know what I'm doing. ...I don't.",
+        "*posing* These are premium feathers. Look at them. LOOK AT THEM.",
     ],
     "growth_elder": [
-        "*wise nod* Ah yes, I remember when I was young and foolish. It was yesterday. I'm still foolish.",
-        "*content sigh* I've seen things. Many things. Mostly bread. So much bread. Those were good times.",
-        "Back in MY day, we had to walk UPHILL both ways to find bread! In the SNOW! ...Okay maybe not.",
-        "*sage voice* Youth is wasted on the young. Wisdom is wasted on the old. Bread is wasted on no one.",
+        "*wise nod* I've seen things. Many things. Mostly bread. Some water. A few concerning bugs.",
+        "*reminiscing* Back in my day, we appreciated things. Like silence. And bread.",
+        "*sage* Youth is wasted on the young. Wisdom is wasted on the old. Bread is wasted on no one.",
     ],
 }
 
@@ -233,7 +228,7 @@ DIALOGUE = {
 class ConversationSystem:
     """
     Manages conversations with the duck.
-    Enhanced with edgy GameCube Animal Crossing style dialogue.
+    Deadpan Animal Crossing 1 style.
     """
 
     def __init__(self):
@@ -289,7 +284,7 @@ class ConversationSystem:
             responses = DIALOGUE["pet"].get(category, DIALOGUE["pet"]["normal"])
 
         else:
-            return "*quack?*"
+            return "*stares* ...quack?"
 
         return self._select_response(responses, interaction)
 
@@ -336,7 +331,7 @@ class ConversationSystem:
     def get_growth_reaction(self, duck: "Duck", new_stage: str) -> str:
         """Get reaction to growing to a new stage."""
         key = f"growth_{new_stage}"
-        responses = DIALOGUE.get(key, ["*quack!*"])
+        responses = DIALOGUE.get(key, ["*quack*"])
         return self._select_response(responses, key)
 
     def get_event_reaction(self, duck: "Duck", event_type: str) -> str:
@@ -358,7 +353,7 @@ class ConversationSystem:
     def _select_response(self, responses: List[str], category: str) -> str:
         """Select a response avoiding recent repeats."""
         if not responses:
-            return "*quack*"
+            return "*stares blankly*"
 
         # Filter out recently used responses
         available = [r for r in responses if r != self._last_response]
@@ -397,56 +392,55 @@ class ConversationSystem:
 
         if any(word in input_lower for word in ["good", "nice", "love", "cute", "pretty"]):
             responses = [
-                "*flattered wiggle* Oh STOP it! ...Actually, don't stop. Keep going. I'm listening.",
-                "I KNOW, right?! Finally, someone with TASTE! *preens dramatically*",
-                "*blushes* You think so? That's... that's really nice, actually. Don't tell anyone I said that.",
-                "Flattery will get you EVERYWHERE. And by everywhere, I mean more time with me. Lucky you!",
+                "*blinks* Was that a compliment? I'm going to assume it was. Thank you. I think.",
+                "Oh. Flattery. I mean, you're not wrong, but still. Suspicious.",
+                "*slight head tilt* Are you being nice to me? What's the catch?",
+                "That's... unexpectedly kind. I don't know how to process this. Give me a moment.",
             ]
             return random.choice(responses)
 
         if any(word in input_lower for word in ["bad", "dumb", "stupid", "ugly"]):
             if duck.is_derpy():
                 responses = [
-                    "...quack? *genuinely doesn't understand the insult* Is that a compliment? Thanks!",
-                    "*blinks* Huh? What? I wasn't listening. Say something nice this time, maybe?",
-                    "Words are just sounds, and sounds are just vibrations. I reject your vibrations! *waddles away*",
+                    "*blinks slowly* ...What? I wasn't listening. Could you repeat that? Actually, don't.",
+                    "Words are just sounds. I choose not to assign meaning to those particular sounds.",
+                    "*tilts head* I don't understand, but I feel like I shouldn't. Moving on.",
                 ]
             else:
                 responses = [
-                    "*gasp* EXCUSE me?! The AUDACITY! I didn't waddle all this way to be INSULTED!",
-                    "Oh, okay, cool. That's how it's gonna be? *remembers this forever*",
-                    "*visibly offended* I will remember this. Ducks have LONG memories. We forget everything else, but we remember SLIGHTS.",
+                    "*stares* Okay. Cool. I'll remember that. Forever. No pressure.",
+                    "Noted. Adding you to my list of people who owe me an apology. It's a long list.",
+                    "*deadpan* Wow. That hurt. Can you see how hurt I am? *no visible emotion*",
                 ]
             return random.choice(responses)
 
         if any(word in input_lower for word in ["hungry", "food", "eat", "feed"]):
             if duck.needs.hunger < 50:
-                return "YES!! Food! Please! IMMEDIATELY! I'm WASTING AWAY!! *dramatic collapse*"
-            return "I could eat. I mean, I could ALWAYS eat. It's kind of my thing. *hopeful stare*"
+                return "Food would be nice. I'm not begging. Just... strongly suggesting. With my eyes."
+            return "I could eat. I'm always at least 15% hungry. It's a lifestyle."
 
         if any(word in input_lower for word in ["play", "fun", "game"]):
-            return "Play?? *immediately alert* DID SOMEONE SAY PLAY?! I'm IN! What are we doing?! WHAT ARE WE DOING?!"
+            return "Play? Sure. I'll move around or whatever. Don't expect cartwheels."
 
         if any(word in input_lower for word in ["tired", "sleep", "rest"]):
             if duck.needs.energy < 50:
-                return "*massive yawn* You said the magic word... zzz... I mean, yes. Very tired. So tired. *yawn*"
-            return "*bouncing* Tired?! Who's tired?! NOT ME! I could stay awake FOREVER! ...Probably!"
+                return "Sleep sounds good. I've been awake for... *checks internal clock* ...too long."
+            return "I'm not tired. But I could become tired. It wouldn't take much."
 
         if any(word in input_lower for word in ["name", "who are you", "called"]):
-            return f"I'm {duck.name}! The one and only! Accept no substitutes! *proud puffing*"
+            return f"I'm {duck.name}. That's my name. I didn't choose it, but I've made my peace with it."
 
         if "?" in input_lower:
             responses = [
-                "*tilts head* Quack? That's a GREAT question. I have no idea. Next question!",
-                "Hmm... *pretends to think* ...Nope, nothing. Brain empty. Only quacks.",
-                "*confident nod* The answer is bread. Wait, what was the question?",
-                "*squints* Is this a TEST?? I didn't STUDY! Give me a hint! ...Actually, don't. I'll wing it!",
-                "You know what? I'm going to answer that with another question: Why?",
+                "*tilts head* That's a question. I heard the question mark. Answer pending.",
+                "Hmm. *pretends to think* ...The answer is probably bread. Everything is bread eventually.",
+                "*stares* I could tell you, but then I'd have to... actually, I just don't know.",
+                "Good question. Wrong duck. Or maybe right duck. I'll get back to you. Maybe.",
             ]
             if duck.is_derpy():
                 responses.extend([
-                    "*brain loading...* ...Error: thought not found. Try again later!",
-                    "*forgot the question mid-thought* ...What were we talking about?",
+                    "*brain.exe has stopped responding* ...What were we talking about?",
+                    "I started thinking about that, then I thought about something else. What was it? Gone now.",
                 ])
             return random.choice(responses)
 

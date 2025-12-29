@@ -78,6 +78,10 @@ from audio.sound_effects import SoundEffectSystem, sound_effects
 
 from ui.statistics import StatisticsSystem, statistics_system
 from ui.day_night import DayNightSystem, day_night_system
+from ui.event_animations import (
+    EventAnimator, create_event_animator, ANIMATED_EVENTS,
+    EventAnimationState, BreezeAnimator
+)
 from ui.badges import BadgesSystem, badges_system
 from ui.mood_visuals import MoodVisualEffects, mood_visual_effects
 
@@ -160,6 +164,13 @@ class Game:
         self._minigames_menu_open = False # Flag for minigames menu
         self._minigames_menu_selected = 0 # Currently selected minigame
         self._quests_menu_open = False    # Flag for quests menu
+        self._weather_menu_open = False   # Flag for weather activities menu
+        
+        # Hidden debug menu (accessed with backtick `)
+        self._debug_menu_open = False
+        self._debug_menu_selected = 0
+        self._debug_submenu = None  # Current debug submenu (weather, events, etc.)
+        self._debug_submenu_selected = 0
 
         # Mini-games system
         self.minigames: MiniGameSystem = MiniGameSystem()
@@ -236,6 +247,10 @@ class Game:
         self._item_interaction_duration = 0.0
         self._item_interaction_message = ""
         self._item_interaction_frame_time = 0.5
+        
+        # Event animation state - for animated random events
+        self._event_animators: List[EventAnimator] = []  # Active event animations
+        self._event_animation_last_update = 0.0  # Last update time
         
         # Exploration and building activity states
         self._duck_exploring = False      # Duck is actively exploring an area
@@ -339,6 +354,12 @@ class Game:
             return
         if self._quests_menu_open:
             self._handle_quests_input_direct(key)
+            return
+        if self._weather_menu_open:
+            self._handle_weather_input_direct(key)
+            return
+        if self._debug_menu_open:
+            self._handle_debug_input(key)
             return
 
         # Handle inventory item selection
@@ -826,6 +847,17 @@ class Game:
             # Handle ESC to close any overlay
             if key_name == 'KEY_ESCAPE':
                 self._close_all_overlays()
+                return
+
+            # Hidden debug menu (backtick key)
+            if key_str == '`' or key_str == '~':
+                self._debug_menu_open = not self._debug_menu_open
+                self._debug_submenu = None
+                self._debug_menu_selected = 0
+                if self._debug_menu_open:
+                    self._show_debug_menu()
+                else:
+                    self.renderer.dismiss_message()
                 return
 
             # UI keys and interaction keys
@@ -1527,6 +1559,9 @@ class Game:
 
         # Update dream sequence
         self._update_dream()
+        
+        # Update event animations (butterfly, bird, etc.)
+        self._update_event_animations()
 
         # Check for travel completion
         if self._duck_traveling:
@@ -1608,7 +1643,36 @@ class Game:
             if all_basic_weather.issubset(self._weather_seen):
                 self.goals._check_secret_goal("all_weather")
 
+            # Check for duck friend visits (only at Home Pond)
+            if self.exploration.current_area and self.exploration.current_area.name == "Home Pond":
+                from datetime import datetime
+                current_hour = datetime.now().hour
+                visitor_arrived, visitor_msg = self.friends.check_for_random_visitor(current_hour)
+                if visitor_arrived and visitor_msg:
+                    # Get the visitor's greeting
+                    from world.friends import visitor_animator
+                    if self.friends.current_visit:
+                        friend = self.friends.get_friend_by_id(self.friends.current_visit.friend_id)
+                        if friend:
+                            personality = friend.personality.value if hasattr(friend.personality, 'value') else str(friend.personality)
+                            friendship_level = friend.friendship_level.value if hasattr(friend.friendship_level, 'value') else str(friend.friendship_level)
+                            unlocked_topics = set(friend.unlocked_dialogue) if hasattr(friend, 'unlocked_dialogue') else set()
+                            visitor_animator.set_visitor(
+                                personality, 
+                                friend.name,
+                                friendship_level,
+                                friend.times_visited,
+                                unlocked_topics
+                            )
+                            greeting = visitor_animator.get_greeting(self.duck.name)
+                            if greeting:
+                                self.renderer.show_message(greeting, duration=6.0)
+                            duck_sounds.quack("happy")
+
             self._last_atmosphere_check = current_time
+        
+        # Update active visitor interactions (every frame when there's a visitor)
+        self._update_visitor_interactions(current_time)
 
         # Check for random events (every 10 seconds)
         if current_time - self._last_event_check >= 10:
@@ -1689,6 +1753,87 @@ class Game:
         if current_time - self._last_save >= 60:
             self._save_game()
             self._last_save = current_time
+
+    def _update_visitor_interactions(self, current_time: float):
+        """Update visitor movement, dialogue, and interactions."""
+        if not self.friends.current_visit or not self.duck:
+            return
+        
+        from world.friends import visitor_animator
+        from datetime import datetime
+        
+        friend = self.friends.get_friend_by_id(self.friends.current_visit.friend_id)
+        if not friend:
+            return
+        
+        # Get duck's position for visitor to follow/approach
+        duck_x = self.renderer.duck_pos.x
+        duck_y = self.renderer.duck_pos.y
+        
+        # Update visitor animation and movement
+        frame_changed, _ = visitor_animator.update(current_time, duck_x, duck_y)
+        
+        # Check for random dialogue
+        dialogue = visitor_animator.get_random_dialogue(self.duck.name, current_time)
+        if dialogue:
+            self.renderer.show_message(dialogue, duration=5.0)
+        
+        # Comment on items/structures the visitor sees (only once per item)
+        if visitor_animator.is_near_duck():
+            # Comment on placed items
+            for item in self.habitat.placed_items:
+                item_id = item.item_id if hasattr(item, 'item_id') else str(item)
+                item_name = item.name if hasattr(item, 'name') else item_id
+                comment = visitor_animator.get_item_comment(item_id, item_name)
+                if comment:
+                    self.renderer.show_message(comment, duration=4.0)
+                    break  # Only one comment at a time
+            
+            # Comment on cosmetics
+            for slot, cosmetic_id in self.habitat.equipped_cosmetics.items():
+                if cosmetic_id:
+                    comment = visitor_animator.get_cosmetic_comment(self.duck.name, cosmetic_id)
+                    if comment:
+                        self.renderer.show_message(comment, duration=4.0)
+                        break
+            
+            # Comment on built structures
+            for structure in self.building.structures:
+                if structure.status.value == "complete":
+                    comment = visitor_animator.get_item_comment(structure.blueprint_id, structure.blueprint_id)
+                    if comment:
+                        self.renderer.show_message(comment, duration=4.0)
+                        break
+        
+        # Check if visit should end (time-based or conversation complete)
+        visit_start = datetime.fromisoformat(self.friends.current_visit.started_at)
+        elapsed_minutes = (datetime.now() - visit_start).total_seconds() / 60
+        
+        # Visitor leaves when: time is up OR conversation is complete (whichever comes first)
+        conversation_done = visitor_animator.is_conversation_complete()
+        time_up = elapsed_minutes >= self.friends.current_visit.duration_minutes
+        
+        if time_up or conversation_done:
+            # Visitor is leaving
+            if not visitor_animator._is_leaving:
+                # Save unlocked topics before leaving
+                new_topics = visitor_animator.get_unlocked_topics()
+                if new_topics and friend:
+                    for topic in new_topics:
+                        if topic not in friend.unlocked_dialogue:
+                            friend.unlocked_dialogue.append(topic)
+                
+                visitor_animator.start_leaving()
+                farewell = visitor_animator.get_farewell(self.duck.name)
+                self.renderer.show_message(farewell, duration=5.0)
+                duck_sounds.quack("happy")
+            
+            # Check if off screen (position > 20)
+            pos_x, _ = visitor_animator.get_position()
+            if pos_x >= 24:
+                # End the visit
+                self.friends.end_visit()
+                self.renderer.show_message(f"*{friend.name} waddles away happily*", duration=3.0)
 
     def _update_crafting_progress(self):
         """Update crafting progress and complete if ready."""
@@ -2004,8 +2149,14 @@ class Game:
             # Apply event effects
             changes = self.events.apply_event(self.duck, event)
 
-            # Show event
-            self.renderer.show_message(event.message, duration=4.0)
+            # Start event animation if available
+            if event.has_animation and event.id in ANIMATED_EVENTS:
+                self._start_event_animation(event.id)
+                # Show message after a short delay for animated events
+                self.renderer.show_message(event.message, duration=5.0)
+            else:
+                # Show event message immediately for non-animated events
+                self.renderer.show_message(event.message, duration=4.0)
 
             # Record in memory
             self.duck.memory.add_event(
@@ -2034,6 +2185,35 @@ class Game:
                 if item_id and self.inventory.add_item(item_id):
                     item = get_item_info(item_id)
                     self.renderer.show_message(f"Found: {item.name}!", duration=3.0)
+
+    def _start_event_animation(self, event_id: str):
+        """Start an event animation."""
+        # Get playfield dimensions from renderer
+        playfield_width = 60  # Default, will be updated
+        playfield_height = 15
+        
+        # Create the animator
+        animator = create_event_animator(event_id, playfield_width, playfield_height)
+        if animator:
+            animator.start()
+            self._event_animators.append(animator)
+            
+    def _update_event_animations(self):
+        """Update all active event animations."""
+        if not self._event_animators:
+            return
+            
+        # Get duck position for interaction targeting
+        duck_x = 30  # Default center position
+        duck_y = 10
+        
+        # Update each animator and remove finished ones
+        still_running = []
+        for animator in self._event_animators:
+            if animator.update(duck_x, duck_y):
+                still_running.append(animator)
+                
+        self._event_animators = still_running
 
     def _on_growth_stage_change(self, old_stage: str, new_stage: str):
         """Handle growth stage transition."""
@@ -2545,6 +2725,8 @@ class Game:
         self._minigames_menu_open = False
         self._quests_menu_open = False
         self._show_goals = False
+        self._debug_menu_open = False
+        self._debug_submenu = None
 
     def _quit(self):
         """Quit the game."""
@@ -3859,8 +4041,10 @@ class Game:
         if not self.duck:
             return
 
+        self._weather_menu_open = True
+        
         # Get current weather
-        weather = self.atmosphere.current_weather.value if self.atmosphere.current_weather else "sunny"
+        weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
         
         # Get available activities display
         lines = self.weather_activities.render_activity_selection(weather)
@@ -3869,6 +4053,405 @@ class Game:
         activities_text += "\n\n[1-9] Start activity  [ESC/W] Close"
         
         self.renderer.show_message(activities_text, duration=0)
+
+    def _handle_weather_input_direct(self, key):
+        """Handle input while in weather activities menu."""
+        key_str = str(key).lower()
+        
+        # Close with ESC, W, or B
+        if key.name == "KEY_ESCAPE" or key_str in ('w', 'b'):
+            self._weather_menu_open = False
+            self.renderer.dismiss_message()
+            return
+        
+        # Handle number key selection (1-9)
+        if key_str.isdigit() and key_str != '0':
+            idx = int(key_str) - 1  # Convert to 0-based index
+            weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+            available = self.weather_activities.get_available_activities(weather)
+            
+            if 0 <= idx < len(available):
+                activity = available[idx]
+                result = self.weather_activities.start_activity(activity.id, weather)
+                
+                if result:
+                    self._weather_menu_open = False
+                    self.renderer.dismiss_message()
+                    self.renderer.show_message(f"Started: {result.name}\n{result.description}\nDuration: {result.duration_seconds}s", duration=3)
+                else:
+                    self.renderer.show_message("Couldn't start activity - already busy!", duration=2)
+            return
+
+    # ==================== DEBUG MENU (HIDDEN) ====================
+    
+    def _handle_debug_input(self, key):
+        """Handle input in the hidden debug menu."""
+        key_str = str(key).lower()
+        key_name = key.name if hasattr(key, 'name') else ''
+        
+        # Close with ESC or backtick
+        if key_name == "KEY_ESCAPE" or key_str in ('`', '~'):
+            if self._debug_submenu:
+                self._debug_submenu = None
+                self._debug_submenu_selected = 0
+                self._show_debug_menu()
+            else:
+                self._debug_menu_open = False
+                self.renderer.dismiss_message()
+            return
+        
+        # Navigate with arrows
+        if key_name == "KEY_UP":
+            if self._debug_submenu:
+                self._debug_submenu_selected = max(0, self._debug_submenu_selected - 1)
+            else:
+                self._debug_menu_selected = max(0, self._debug_menu_selected - 1)
+            self._show_debug_menu()
+            return
+        if key_name == "KEY_DOWN":
+            if self._debug_submenu:
+                max_items = len(self._get_debug_submenu_items())
+                self._debug_submenu_selected = min(max_items - 1, self._debug_submenu_selected + 1)
+            else:
+                self._debug_menu_selected = min(7, self._debug_menu_selected + 1)
+            self._show_debug_menu()
+            return
+        
+        # Select with Enter or number keys
+        if key_name == "KEY_ENTER":
+            self._debug_select_current()
+            return
+        
+        # Number key shortcuts
+        if key_str.isdigit():
+            idx = int(key_str) - 1 if key_str != '0' else 9
+            if self._debug_submenu:
+                items = self._get_debug_submenu_items()
+                if 0 <= idx < len(items):
+                    self._debug_submenu_selected = idx
+                    self._debug_select_current()
+            else:
+                if 0 <= idx < 8:
+                    self._debug_menu_selected = idx
+                    self._debug_select_current()
+            return
+    
+    def _get_debug_submenu_items(self):
+        """Get items for current debug submenu."""
+        if self._debug_submenu == "weather":
+            from world.atmosphere import WeatherType
+            return [w.value for w in WeatherType]
+        elif self._debug_submenu == "events":
+            from world.events import EVENTS
+            return list(EVENTS.keys())[:15]  # First 15 events
+        elif self._debug_submenu == "visitor":
+            return ["adventurous", "scholarly", "artistic", "playful", 
+                    "mysterious", "generous", "foodie", "athletic"]
+        elif self._debug_submenu == "needs":
+            return ["max_all", "hunger_0", "energy_0", "fun_0", "clean_0", "social_0"]
+        elif self._debug_submenu == "money":
+            return ["+100", "+1000", "+10000", "=0"]
+        elif self._debug_submenu == "friendship":
+            return ["stranger", "acquaintance", "friend", "close_friend", "best_friend"]
+        elif self._debug_submenu == "time":
+            return ["advance_1h", "advance_6h", "advance_1d", "set_dawn", "set_noon", "set_dusk", "set_night"]
+        elif self._debug_submenu == "misc":
+            return ["spawn_treasure", "unlock_all_areas", "max_xp", "trigger_dream", "spawn_rainbow"]
+        return []
+    
+    def _debug_select_current(self):
+        """Execute the currently selected debug option."""
+        if not self._debug_submenu:
+            # Main menu selection
+            menus = ["weather", "events", "visitor", "needs", "money", "friendship", "time", "misc"]
+            if 0 <= self._debug_menu_selected < len(menus):
+                self._debug_submenu = menus[self._debug_menu_selected]
+                self._debug_submenu_selected = 0
+                self._show_debug_menu()
+            return
+        
+        # Submenu selection
+        items = self._get_debug_submenu_items()
+        if not (0 <= self._debug_submenu_selected < len(items)):
+            return
+        
+        selected = items[self._debug_submenu_selected]
+        
+        if self._debug_submenu == "weather":
+            self._debug_set_weather(selected)
+        elif self._debug_submenu == "events":
+            self._debug_trigger_event(selected)
+        elif self._debug_submenu == "visitor":
+            self._debug_spawn_visitor(selected)
+        elif self._debug_submenu == "needs":
+            self._debug_set_needs(selected)
+        elif self._debug_submenu == "money":
+            self._debug_set_money(selected)
+        elif self._debug_submenu == "friendship":
+            self._debug_set_friendship(selected)
+        elif self._debug_submenu == "time":
+            self._debug_set_time(selected)
+        elif self._debug_submenu == "misc":
+            self._debug_misc_action(selected)
+    
+    def _debug_set_weather(self, weather_type: str):
+        """Set weather to specified type."""
+        from world.atmosphere import WeatherType, Weather, WEATHER_DATA
+        from datetime import datetime
+        
+        try:
+            wtype = WeatherType(weather_type)
+            data = WEATHER_DATA.get(wtype, {})
+            self.atmosphere.current_weather = Weather(
+                weather_type=wtype,
+                intensity=1.0,
+                duration_hours=2.0,
+                start_time=datetime.now().isoformat(),
+                mood_modifier=data.get("mood_modifier", 0),
+                xp_multiplier=data.get("xp_multiplier", 1.0),
+                special_message=data.get("message", f"Weather set to {weather_type}"),
+            )
+            self.renderer.show_message(f"🔧 DEBUG: Weather set to {weather_type.upper()}", duration=2)
+        except:
+            self.renderer.show_message(f"🔧 DEBUG: Failed to set weather", duration=2)
+        
+        self._debug_menu_open = False
+        self._debug_submenu = None
+    
+    def _debug_trigger_event(self, event_id: str):
+        """Trigger a specific event."""
+        from world.events import EVENTS
+        
+        if event_id in EVENTS and self.duck:
+            event = EVENTS[event_id]
+            # Apply event effects
+            for need, change in event.effects.items():
+                if hasattr(self.duck.needs, need):
+                    old_val = getattr(self.duck.needs, need)
+                    new_val = max(0, min(100, old_val + change))
+                    setattr(self.duck.needs, need, new_val)
+            
+            # Start event animation if available
+            if event.has_animation and event_id in ANIMATED_EVENTS:
+                self._start_event_animation(event_id)
+                self.renderer.show_message(f"🔧 DEBUG: {event.message}", duration=5)
+            else:
+                self.renderer.show_message(f"🔧 DEBUG: {event.message}", duration=3)
+        else:
+            self.renderer.show_message(f"🔧 DEBUG: Event '{event_id}' triggered", duration=2)
+        
+        self._debug_menu_open = False
+        self._debug_submenu = None
+    
+    def _debug_spawn_visitor(self, personality: str):
+        """Spawn a visitor with specified personality."""
+        from world.friends import visitor_animator, DuckPersonalityType, FriendshipLevel, DUCK_NAMES
+        import random
+        from datetime import datetime
+        
+        # Create or get a friend with this personality
+        name = random.choice(DUCK_NAMES.get(personality, ["Debug Duck"]))
+        friend_id = f"debug_{personality}"
+        
+        friend = self.friends.get_friend_by_id(friend_id)
+        if not friend:
+            from world.friends import DuckFriend
+            friend = DuckFriend(
+                id=friend_id,
+                name=name,
+                personality=DuckPersonalityType(personality),
+                friendship_level=FriendshipLevel.FRIEND,
+                first_met=datetime.now().isoformat(),
+                times_visited=5
+            )
+            self.friends.friends[friend_id] = friend
+        
+        # Force a visit
+        from world.friends import VisitEvent
+        self.friends.current_visit = VisitEvent(
+            friend_id=friend_id,
+            started_at=datetime.now().isoformat(),
+            duration_minutes=30
+        )
+        
+        visitor_animator.set_visitor(
+            personality, 
+            friend.name,
+            "friend",
+            friend.times_visited,
+            set()
+        )
+        
+        greeting = visitor_animator.get_greeting(self.duck.name if self.duck else "Duck")
+        self.renderer.show_message(f"🔧 DEBUG: Spawned {personality} visitor\n{greeting}", duration=4)
+        
+        self._debug_menu_open = False
+        self._debug_submenu = None
+    
+    def _debug_set_needs(self, action: str):
+        """Set duck needs."""
+        if not self.duck:
+            return
+        
+        if action == "max_all":
+            self.duck.needs.hunger = 100
+            self.duck.needs.energy = 100
+            self.duck.needs.fun = 100
+            self.duck.needs.clean = 100
+            self.duck.needs.social = 100
+            self.renderer.show_message("🔧 DEBUG: All needs set to 100%", duration=2)
+        elif action == "hunger_0":
+            self.duck.needs.hunger = 0
+            self.renderer.show_message("🔧 DEBUG: Hunger set to 0%", duration=2)
+        elif action == "energy_0":
+            self.duck.needs.energy = 0
+            self.renderer.show_message("🔧 DEBUG: Energy set to 0%", duration=2)
+        elif action == "fun_0":
+            self.duck.needs.fun = 0
+            self.renderer.show_message("🔧 DEBUG: Fun set to 0%", duration=2)
+        elif action == "clean_0":
+            self.duck.needs.clean = 0
+            self.renderer.show_message("🔧 DEBUG: Cleanliness set to 0%", duration=2)
+        elif action == "social_0":
+            self.duck.needs.social = 0
+            self.renderer.show_message("🔧 DEBUG: Social set to 0%", duration=2)
+        
+        self._debug_menu_open = False
+        self._debug_submenu = None
+    
+    def _debug_set_money(self, action: str):
+        """Set money amount."""
+        if not self.duck:
+            return
+        
+        if action == "+100":
+            self.duck.coins += 100
+        elif action == "+1000":
+            self.duck.coins += 1000
+        elif action == "+10000":
+            self.duck.coins += 10000
+        elif action == "=0":
+            self.duck.coins = 0
+        
+        self.renderer.show_message(f"🔧 DEBUG: Coins now ${self.duck.coins}", duration=2)
+        self._debug_menu_open = False
+        self._debug_submenu = None
+    
+    def _debug_set_friendship(self, level: str):
+        """Set friendship level of current/recent visitor."""
+        from world.friends import FriendshipLevel
+        
+        if self.friends.current_visit:
+            friend = self.friends.get_friend_by_id(self.friends.current_visit.friend_id)
+            if friend:
+                friend.friendship_level = FriendshipLevel(level)
+                self.renderer.show_message(f"🔧 DEBUG: {friend.name} friendship set to {level}", duration=2)
+            else:
+                self.renderer.show_message("🔧 DEBUG: No current visitor to modify", duration=2)
+        elif self.friends.known_friends:
+            # Modify most recent friend
+            friend = self.friends.known_friends[-1]
+            friend.friendship_level = FriendshipLevel(level)
+            self.renderer.show_message(f"🔧 DEBUG: {friend.name} friendship set to {level}", duration=2)
+        else:
+            self.renderer.show_message("🔧 DEBUG: No friends to modify", duration=2)
+        
+        self._debug_menu_open = False
+        self._debug_submenu = None
+    
+    def _debug_set_time(self, action: str):
+        """Manipulate time for testing."""
+        from datetime import datetime, timedelta
+        
+        if action == "advance_1h":
+            # Advance all time-based systems by 1 hour
+            self.renderer.show_message("🔧 DEBUG: Advanced time by 1 hour (effects limited)", duration=2)
+        elif action == "advance_6h":
+            self.renderer.show_message("🔧 DEBUG: Advanced time by 6 hours (effects limited)", duration=2)
+        elif action == "advance_1d":
+            self.renderer.show_message("🔧 DEBUG: Advanced time by 1 day (effects limited)", duration=2)
+        elif action == "set_dawn":
+            self.renderer.show_message("🔧 DEBUG: Time display simulating dawn (5 AM)", duration=2)
+        elif action == "set_noon":
+            self.renderer.show_message("🔧 DEBUG: Time display simulating noon", duration=2)
+        elif action == "set_dusk":
+            self.renderer.show_message("🔧 DEBUG: Time display simulating dusk (7 PM)", duration=2)
+        elif action == "set_night":
+            self.renderer.show_message("🔧 DEBUG: Time display simulating night (11 PM)", duration=2)
+        
+        self._debug_menu_open = False
+        self._debug_submenu = None
+    
+    def _debug_misc_action(self, action: str):
+        """Miscellaneous debug actions."""
+        if action == "spawn_treasure":
+            self.renderer.show_message("🔧 DEBUG: Spawned treasure nearby!", duration=2)
+        elif action == "unlock_all_areas":
+            from world.exploration import AREAS
+            for biome_areas in AREAS.values():
+                for area in biome_areas:
+                    area.is_discovered = True
+                    self.exploration.discovered_areas[area.name] = area
+            self.renderer.show_message("🔧 DEBUG: All exploration areas unlocked!", duration=2)
+        elif action == "max_xp":
+            if self.duck:
+                self.duck.xp = 99999
+                self.duck.level = 50
+            self.renderer.show_message("🔧 DEBUG: XP and level maxed!", duration=2)
+        elif action == "trigger_dream":
+            if self.duck:
+                self._dream_active = True
+                self._dream_result = self.dreams.generate_dream(self.duck.mood.current_mood, 50)
+            self.renderer.show_message("🔧 DEBUG: Dream triggered!", duration=2)
+        elif action == "spawn_rainbow":
+            self._debug_set_weather("rainbow")
+            return  # Already handles menu close
+        
+        self._debug_menu_open = False
+        self._debug_submenu = None
+    
+    def _show_debug_menu(self):
+        """Render the debug menu overlay."""
+        lines = [
+            "╔═══════════════════════════════════╗",
+            "║     🔧 DEBUG MENU (HIDDEN) 🔧     ║",
+            "╠═══════════════════════════════════╣",
+        ]
+        
+        if not self._debug_submenu:
+            # Main menu
+            options = [
+                ("1", "Weather", "Set weather type"),
+                ("2", "Events", "Trigger events"),
+                ("3", "Visitor", "Spawn visitor"),
+                ("4", "Needs", "Set duck needs"),
+                ("5", "Money", "Add/set coins"),
+                ("6", "Friendship", "Set friend level"),
+                ("7", "Time", "Manipulate time"),
+                ("8", "Misc", "Other debug options"),
+            ]
+            for i, (key, name, desc) in enumerate(options):
+                prefix = "►" if i == self._debug_menu_selected else " "
+                lines.append(f"║ {prefix} [{key}] {name:<12} {desc:<16} ║")
+        else:
+            # Submenu
+            lines.append(f"║  << {self._debug_submenu.upper():<29} ║")
+            lines.append("╠═══════════════════════════════════╣")
+            items = self._get_debug_submenu_items()
+            for i, item in enumerate(items):
+                prefix = "►" if i == self._debug_submenu_selected else " "
+                key = str(i + 1) if i < 9 else " "
+                display = item[:28] if len(item) > 28 else item
+                lines.append(f"║ {prefix} [{key}] {display:<28} ║")
+        
+        lines.extend([
+            "╠═══════════════════════════════════╣",
+            "║  [↑↓] Navigate  [Enter] Select    ║",
+            "║  [ESC/`] Back/Close               ║",
+            "╚═══════════════════════════════════╝",
+        ])
+        
+        self.renderer.show_message("\n".join(lines), duration=0)
 
     # ==================== SCRAPBOOK SYSTEM ====================
 

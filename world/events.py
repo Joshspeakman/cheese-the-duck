@@ -38,6 +38,7 @@ class Event:
     sound: Optional[str] = None
     requires_stage: Optional[str] = None  # minimum growth stage
     cooldown: float = 300  # seconds before can happen again
+    has_animation: bool = False  # whether this event has a visual animation
 
 
 # Event definitions
@@ -54,6 +55,7 @@ EVENTS = {
         message="*finds a crumb* MINE. Don't even look at it.",
         duck_reaction="excited",
         sound="eat",
+        has_animation=True,
     ),
     "nice_breeze": Event(
         id="nice_breeze",
@@ -65,6 +67,7 @@ EVENTS = {
         mood_change=3,
         message="*feathers rustle* ...Okay, that's actually nice.",
         duck_reaction="content",
+        has_animation=True,
     ),
     "butterfly": Event(
         id="butterfly",
@@ -76,6 +79,7 @@ EVENTS = {
         mood_change=8,
         message="*watches butterfly* ...I could catch it. If I WANTED to.",
         duck_reaction="curious",
+        has_animation=True,
     ),
     "found_shiny": Event(
         id="found_shiny",
@@ -88,6 +92,7 @@ EVENTS = {
         message="*finds shiny thing* TREASURE! This is MINE now!",
         duck_reaction="ecstatic",
         sound="alert",
+        has_animation=True,
     ),
 
     # Random neutral events
@@ -139,6 +144,7 @@ EVENTS = {
         message="*STARTLED* WHO DID THAT?! Show yourself, COWARD!",
         duck_reaction="scared",
         sound="alert",
+        has_animation=True,
     ),
     "stubbed_toe": Event(
         id="stubbed_toe",
@@ -161,6 +167,7 @@ EVENTS = {
         mood_change=-8,
         message="*wakes up startled* ...Whatever. It wasn't scary.",
         duck_reaction="scared",
+        has_animation=True,
     ),
 
     # Weather events
@@ -203,6 +210,7 @@ EVENTS = {
         duck_reaction="ecstatic",
         sound="quack_excited",
         cooldown=600,
+        has_animation=True,
     ),
     "bird_friend": Event(
         id="bird_friend",
@@ -215,6 +223,7 @@ EVENTS = {
         message="*nods at bird* ...Sup. We're cool.",
         duck_reaction="friendly",
         cooldown=600,
+        has_animation=True,
     ),
 
     # Growth triggered events

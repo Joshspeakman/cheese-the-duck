@@ -553,8 +553,8 @@ VISITORS = {
         farewell="*HONK* Gerald must go. Keep being awesome, friend!",
         gift_chance=0.7,
         possible_gifts=["bread", "shiny_pebble", "feather"],
-        appearance_chance=0.008,
-        stay_duration_hours=2,
+        appearance_chance=0.25,
+        stay_duration_hours=0.05,  # 3 minutes
         special_interaction="chat",
         mood_boost=15,
         personality="boisterous",
@@ -596,8 +596,8 @@ VISITORS = {
         farewell="*hoo* Remember: knowledge is the greatest treasure. Farewell!",
         gift_chance=0.9,
         possible_gifts=["mysterious_crumb", "old_key", "crystal_shard"],
-        appearance_chance=0.005,
-        stay_duration_hours=1,
+        appearance_chance=0.20,
+        stay_duration_hours=0.035,  # ~2 minutes
         special_interaction="learn",
         mood_boost=20,
         personality="scholarly",
@@ -638,8 +638,8 @@ VISITORS = {
         farewell="*happy peep* Thank you for helping me! You're the best!",
         gift_chance=1.0,
         possible_gifts=["fluffy_down", "lucky_clover"],
-        appearance_chance=0.01,
-        stay_duration_hours=3,
+        appearance_chance=0.15,
+        stay_duration_hours=0.08,  # ~5 minutes
         special_interaction="comfort",
         mood_boost=25,
         personality="shy",
@@ -681,8 +681,8 @@ VISITORS = {
         farewell="*quack* Marco must continue the journey. Until next time!",
         gift_chance=0.5,
         possible_gifts=["fancy_bread", "glass_marble", "rainbow_crumb"],
-        appearance_chance=0.004,
-        stay_duration_hours=1.5,
+        appearance_chance=0.12,
+        stay_duration_hours=0.05,  # 3 minutes
         special_interaction="trade",
         mood_boost=10,
         personality="entrepreneurial",
@@ -724,8 +724,8 @@ VISITORS = {
         farewell="*noble nod* One shall speak well of this place. Farewell!",
         gift_chance=0.8,
         possible_gifts=["golden_crumb", "crown", "ancient_artifact"],
-        appearance_chance=0.002,
-        stay_duration_hours=0.5,
+        appearance_chance=0.08,
+        stay_duration_hours=0.035,  # ~2 minutes
         special_interaction="impress",
         mood_boost=30,
         personality="regal",
@@ -767,8 +767,8 @@ VISITORS = {
         farewell="*caw* We will meet again when the stars align...",
         gift_chance=0.6,
         possible_gifts=["old_key", "crystal_shard", "ancient_artifact"],
-        appearance_chance=0.003,
-        stay_duration_hours=1,
+        appearance_chance=0.10,
+        stay_duration_hours=0.035,  # ~2 minutes
         special_interaction="mystery",
         mood_boost=5,
         personality="mysterious",
@@ -810,8 +810,8 @@ VISITORS = {
         farewell="*shimmer* May flowers bloom wherever you waddle!",
         gift_chance=0.9,
         possible_gifts=["flower_petal", "fairy_dust", "rainbow_scale"],
-        appearance_chance=0.004,
-        stay_duration_hours=1,
+        appearance_chance=0.12,
+        stay_duration_hours=0.05,  # 3 minutes
         special_interaction="wish",
         mood_boost=20,
         personality="whimsical",
@@ -853,8 +853,8 @@ VISITORS = {
         farewell="*grumble* Fine, this was... acceptable. Don't expect me back.",
         gift_chance=0.4,
         possible_gifts=["pond_lily", "lucky_stone", "mud_cake"],
-        appearance_chance=0.006,
-        stay_duration_hours=0.5,
+        appearance_chance=0.15,
+        stay_duration_hours=0.035,  # ~2 minutes
         special_interaction="listen",
         mood_boost=5,
         personality="grumpy",
@@ -1023,17 +1023,15 @@ class AtmosphereManager:
             content = SEASONAL_CONTENT[new_season]
             messages.append(f"Season changed to {new_season.value}! {content.mood_theme.title()} vibes!")
 
-        # Check weather
-        current_hour = datetime.now().strftime("%Y-%m-%d %H")
-        if self.last_weather_check != current_hour:
-            if self.current_weather and not self.current_weather.is_active():
-                self._maybe_rainbow()
-                if self.current_weather.weather_type != WeatherType.RAINBOW:
-                    self._generate_weather()
-                    messages.append(f"Weather changed: {self.current_weather.special_message}")
-            elif not self.current_weather:
+        # Check weather - now checks every update cycle, not just once per hour
+        if self.current_weather and not self.current_weather.is_active():
+            self._maybe_rainbow()
+            if self.current_weather.weather_type != WeatherType.RAINBOW:
                 self._generate_weather()
-            self.last_weather_check = current_hour
+                messages.append(f"Weather changed: {self.current_weather.special_message}")
+        elif not self.current_weather:
+            self._generate_weather()
+            messages.append(f"Weather: {self.current_weather.special_message}")
 
         # Check fortune
         today = datetime.now().strftime("%Y-%m-%d")
@@ -1063,6 +1061,7 @@ class AtmosphereManager:
                 self.current_visitor = None
 
         # Maybe spawn new visitor (higher chance for friends)
+        # Base 1% chance per check (every 30 seconds) for visitors - kept rare
         if not self.current_visitor and random.random() < 0.01:
             # Build weighted visitor list (friends visit more often)
             candidates = []

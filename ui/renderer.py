@@ -375,7 +375,7 @@ class Renderer:
         # Weather particle settings - Enhanced for more dramatic visuals
         weather_chars = {
             "rainy": ["│", "╎", "┆", "╏", "|", "'", ","],  # Rain streaks
-            "stormy": ["╬", "┼", "╪", "│", "!", "/", "\\", "⚡"],  # Storm chaos + lightning
+            "stormy": ["│", "|", "'", ",", ":"],  # Heavy rain drops (cleaner look)
             "snowy": ["❄", "*", "✦", "❅", "·", "°", "✧"],  # Snowflakes
             "foggy": ["░", "▒", "~", "≈", " ", "▓"],  # Thick fog
             "windy": ["→", "⟹", "~", "≫", "»", "›", "~"],  # Wind direction
@@ -385,7 +385,7 @@ class Renderer:
 
         particle_density = {
             "rainy": 0.20,      # More rain
-            "stormy": 0.35,     # Heavy storm
+            "stormy": 0.25,     # Heavy storm rain (was 0.35)
             "snowy": 0.12,      # More snow
             "foggy": 0.15,      # Thicker fog
             "windy": 0.10,      # More wind particles
@@ -395,7 +395,7 @@ class Renderer:
 
         particle_speed = {
             "rainy": 2.0,       # Faster rain
-            "stormy": 3.0,      # Very fast storm
+            "stormy": 2.5,      # Fast storm rain (was 3.0)
             "snowy": 0.4,       # Slow gentle snow
             "foggy": 0.15,      # Very slow fog drift
             "windy": 1.5,       # Fast wind
@@ -434,12 +434,12 @@ class Renderer:
                 char = random.choice(chars)
                 new_particles.append((float(x), 0.0, char))
 
-        # Lightning flash for storms (rare)
-        if weather_type == "stormy" and self._weather_frame % 30 == 0 and random.random() < 0.3:
-            # Add lightning bolt
-            bolt_x = random.randint(5, width - 5)
-            for bolt_y in range(min(5, height)):
-                new_particles.append((float(bolt_x + random.randint(-1, 1)), float(bolt_y), "╬"))
+        # Lightning flash for storms (rare and brief)
+        if weather_type == "stormy" and self._weather_frame % 45 == 0 and random.random() < 0.25:
+            # Add single lightning bolt character
+            bolt_x = random.randint(3, width - 3)
+            bolt_y = random.randint(0, min(3, height - 1))
+            new_particles.append((float(bolt_x), float(bolt_y), "⚡"))
 
         self._weather_particles = new_particles
 
@@ -541,9 +541,15 @@ class Renderer:
         self.duck_pos.update(delta)
         self._last_render_time = time.time()
 
-        # Get terminal size - fully responsive
-        width = max(self.term.width, 60)  # Minimum 60 chars
-        height = max(self.term.height, 20)  # Minimum 20 rows
+        # Get terminal size - cap to reasonable maximum for consistent gameplay
+        MAX_WIDTH = 120   # Maximum game width
+        MAX_HEIGHT = 40   # Maximum game height
+        
+        term_width = max(self.term.width, 60)
+        term_height = max(self.term.height, 20)
+        
+        width = min(term_width, MAX_WIDTH)
+        height = min(term_height, MAX_HEIGHT)
 
         # Dynamic layout based on terminal width
         # Side panel needs at least 25 chars, playfield gets the rest
@@ -552,7 +558,7 @@ class Renderer:
 
         # Update playfield dimensions for duck movement
         field_inner_width = playfield_width - 2
-        field_height = max(8, height - 15)  # Leave room for header, messages, controls
+        field_height = max(8, height - 10)  # Reduced from 15 to 10 for taller playfield
         self.duck_pos.field_width = field_inner_width
         self.duck_pos.field_height = field_height
 
@@ -599,10 +605,13 @@ class Renderer:
             visitor_id = game.friends.current_visit.friend_id
             current_visitor = game.friends.get_friend_by_id(visitor_id)
 
+        # Get active event animators from game
+        event_animators = getattr(game, '_event_animators', [])
+
         # Main area: playfield on left, side panel on right
         playfield_lines = self._render_playfield(duck, playfield_width, field_height, 
                                                    equipped_cosmetics, placed_items, weather_info,
-                                                   built_structures, current_visitor)
+                                                   built_structures, current_visitor, event_animators)
         sidepanel_lines = self._render_side_panel(duck, game, side_panel_width)
 
         # Combine playfield and side panel
@@ -775,7 +784,8 @@ class Renderer:
                           placed_items: List = None,
                           weather_info = None,
                           built_structures: List = None,
-                          current_visitor = None) -> List[str]:
+                          current_visitor = None,
+                          event_animators: List = None) -> List[str]:
         """Render the main playfield where duck moves around with time/weather visuals."""
         inner_width = width - 2
         lines = []
@@ -798,18 +808,6 @@ class Renderer:
         pad = (inner_width - len(title)) // 2
         lines.append(BOX["tl"] + BOX["h"] * pad + title + BOX["h"] * (inner_width - pad - len(title)) + BOX["tr"])
 
-        # Add sky row with celestial objects (sun/moon/stars)
-        sky_row = [sky_char] * inner_width
-        for x, obj in celestials:
-            if 0 <= x < inner_width:
-                sky_row[x] = obj
-
-        # Apply time-of-day coloring to sky row
-        sky_str = "".join(sky_row)
-        if time_bg_color and weather_type not in ["stormy", "rainy", "foggy", "snowy"]:
-            sky_str = time_bg_color + sky_str + self.term.normal
-        lines.append(BOX["v"] + sky_str + BOX["v"])
-
         # Create the playfield grid - use passed height or fall back to duck_pos
         field_height = height if height is not None else self.duck_pos.field_height
 
@@ -831,13 +829,33 @@ class Renderer:
 
         # Handle visitor NPC animation
         visitor_art = None
-        visitor_x = inner_width - 15  # Position visitor on right side of playfield
-        visitor_y = field_height // 2 - 2  # Roughly centered vertically
+        visitor_x = 0
+        visitor_y = 0
         if current_visitor:
             from world.friends import visitor_animator
             personality = current_visitor.personality.value if hasattr(current_visitor.personality, 'value') else str(current_visitor.personality)
-            visitor_animator.set_visitor(personality)
-            visitor_animator.update(time.time())
+            # Don't re-set the visitor if already active (preserves state)
+            if visitor_animator._personality != personality.lower():
+                # Get friendship level info
+                friendship_level = current_visitor.friendship_level.value if hasattr(current_visitor.friendship_level, 'value') else str(current_visitor.friendship_level)
+                visit_number = current_visitor.times_visited if hasattr(current_visitor, 'times_visited') else 1
+                unlocked_topics = set(current_visitor.unlocked_dialogue) if hasattr(current_visitor, 'unlocked_dialogue') else set()
+                visitor_animator.set_visitor(
+                    personality, 
+                    current_visitor.name,
+                    friendship_level,
+                    visit_number,
+                    unlocked_topics
+                )
+            # Update visitor with duck's actual screen position
+            duck_screen_x = self.duck_pos.x
+            duck_screen_y = self.duck_pos.y
+            visitor_animator.update(time.time(), duck_screen_x, duck_screen_y)
+            # Get absolute position from animator
+            visitor_x, visitor_y = visitor_animator.get_position()
+            # Keep in screen bounds
+            visitor_x = max(0, min(visitor_x, inner_width - 10))
+            visitor_y = max(0, min(visitor_y, field_height - 4))
             visitor_art = visitor_animator.get_current_art()
 
         # Pre-calculate all item placements with multi-line art
@@ -932,21 +950,127 @@ class Renderer:
                         if char != ' ' and 0 <= px < inner_width:
                             row[px] = (char, color_func)
 
+            # Add event animations (butterfly, bird, etc.) - render before duck so duck is on top
+            if event_animators:
+                for animator in event_animators:
+                    from ui.event_animations import EventAnimationState, BreezeAnimator
+                    
+                    if animator.state == EventAnimationState.FINISHED:
+                        continue
+                    
+                    # Handle particle-based animations (breeze)
+                    if hasattr(animator, 'get_particles'):
+                        # Color map for event animation colors
+                        anim_color_map = {
+                            "cyan": self.term.cyan,
+                            "magenta": self.term.magenta,
+                            "yellow": self.term.yellow,
+                            "white": self.term.white,
+                            "red": self.term.red,
+                            "green": self.term.green,
+                            "blue": self.term.blue,
+                            "bright_yellow": self.term.bright_yellow,
+                            "bright_cyan": self.term.bright_cyan,
+                            "bright_magenta": self.term.bright_magenta,
+                        }
+                        particles = animator.get_particles()
+                        particle_color = anim_color_map.get(animator.get_color(), self.term.cyan)
+                        for px, py, char in particles:
+                            if py == y and 0 <= px < inner_width:
+                                existing_char, _ = row[px]
+                                if existing_char == ' ' or existing_char in GROUND_CHARS:
+                                    row[px] = (char, particle_color)
+                    else:
+                        # Sprite-based animations
+                        anim_sprite = animator.get_sprite()
+                        anim_x, anim_y = animator.get_position()
+                        
+                        # Color map for event animation colors
+                        anim_color_map = {
+                            "cyan": self.term.cyan,
+                            "magenta": self.term.magenta,
+                            "yellow": self.term.yellow,
+                            "white": self.term.white,
+                            "red": self.term.red,
+                            "green": self.term.green,
+                            "blue": self.term.blue,
+                            "bright_yellow": self.term.bright_yellow,
+                            "bright_cyan": self.term.bright_cyan,
+                            "bright_magenta": self.term.bright_magenta,
+                        }
+                        anim_color = anim_color_map.get(animator.get_color(), self.term.cyan)
+                        
+                        # Check if this row intersects with this animation
+                        anim_row_index = y - anim_y
+                        if 0 <= anim_row_index < len(anim_sprite):
+                            anim_line = anim_sprite[anim_row_index]
+                            for dx, char in enumerate(anim_line):
+                                px = anim_x + dx
+                                if char != ' ' and 0 <= px < inner_width:
+                                    row[px] = (char, anim_color)
+
             # Add visitor NPC if visiting (render before duck so duck is on top)
             if visitor_art and current_visitor:
-                # Color based on visitor personality
-                visitor_colors = {
-                    "adventurous": self.term.bright_yellow,
-                    "scholarly": self.term.bright_blue,
-                    "artistic": self.term.bright_magenta,
-                    "playful": self.term.bright_green,
-                    "mysterious": self.term.magenta,
-                    "generous": self.term.bright_red,
-                    "foodie": self.term.yellow,
-                    "athletic": self.term.cyan,
-                }
                 personality = current_visitor.personality.value if hasattr(current_visitor.personality, 'value') else str(current_visitor.personality)
-                visitor_color = visitor_colors.get(personality, self.term.bright_cyan)
+                
+                # Multi-color schemes for visitors (body, accessory, detail)
+                visitor_color_schemes = {
+                    "adventurous": {
+                        "body": self.term.bright_yellow,
+                        "accessory": self.term.green,  # Explorer hat
+                        "detail": self.term.white,  # Eyes
+                        "accent": self.term.brown if hasattr(self.term, 'brown') else self.term.yellow,
+                    },
+                    "scholarly": {
+                        "body": self.term.bright_white,
+                        "accessory": self.term.bright_blue,  # Glasses
+                        "detail": self.term.blue,
+                        "accent": self.term.cyan,
+                    },
+                    "artistic": {
+                        "body": self.term.bright_white,
+                        "accessory": self.term.bright_magenta,  # Beret
+                        "detail": self.term.magenta,
+                        "accent": self.term.bright_cyan,
+                    },
+                    "playful": {
+                        "body": self.term.bright_yellow,
+                        "accessory": self.term.bright_red,  # Propeller hat
+                        "detail": self.term.bright_green,
+                        "accent": self.term.cyan,
+                    },
+                    "mysterious": {
+                        "body": self.term.white,
+                        "accessory": self.term.magenta,  # Mask
+                        "detail": self.term.bright_magenta,
+                        "accent": self.term.blue,
+                    },
+                    "generous": {
+                        "body": self.term.bright_yellow,
+                        "accessory": self.term.bright_red,  # Bow tie
+                        "detail": self.term.white,
+                        "accent": self.term.magenta,
+                    },
+                    "foodie": {
+                        "body": self.term.yellow,
+                        "accessory": self.term.bright_white,  # Chef hat
+                        "detail": self.term.red,
+                        "accent": self.term.green,
+                    },
+                    "athletic": {
+                        "body": self.term.bright_yellow,
+                        "accessory": self.term.bright_red,  # Headband
+                        "detail": self.term.cyan,
+                        "accent": self.term.white,
+                    },
+                }
+                
+                colors = visitor_color_schemes.get(personality, {
+                    "body": self.term.bright_cyan,
+                    "accessory": self.term.white,
+                    "detail": self.term.yellow,
+                    "accent": self.term.cyan,
+                })
                 
                 visitor_height = len(visitor_art)
                 for dy in range(visitor_height):
@@ -955,7 +1079,18 @@ class Renderer:
                         for dx, char in enumerate(visitor_line):
                             px = visitor_x + dx
                             if char != ' ' and 0 <= px < inner_width:
-                                row[px] = (char, visitor_color)
+                                # Color different parts differently
+                                if char in ('o', 'O', '.', '^', '*', '0'):  # Eyes and expressions
+                                    color = colors["detail"]
+                                elif char in ('/', '\\', '^', '-', '_', '|') and dy == 0:  # Hat/accessory (first line)
+                                    color = colors["accessory"]
+                                elif char in ('#', '[', ']', '!', '?', '~', '>'):  # Special items/gifts
+                                    color = colors["accent"]
+                                elif char in (')', '(', '{', '}'):  # Body shape
+                                    color = colors["body"]
+                                else:
+                                    color = colors["body"]
+                                row[px] = (char, color)
 
             # Add duck if on this row (duck renders ON TOP of items)
             duck_y = self.duck_pos.y
@@ -1043,13 +1178,14 @@ class Renderer:
         if closeup:
             # Show compact close-up with yellow duck color
             for closeup_line in closeup:
-                truncated = closeup_line[:inner_width].center(inner_width)
+                # Center the line properly
+                centered = _visible_center(closeup_line, inner_width)
                 # Apply yellow color to the duck ASCII
-                yellow_line = self.term.yellow + truncated + self.term.normal
+                yellow_line = self.term.yellow + centered + self.term.normal
                 lines.append(BOX["v"] + yellow_line + BOX["v"])
         else:
             # Show mood status (compact)
-            mood_text = f"{mood.description}".center(inner_width)
+            mood_text = _visible_center(mood.description, inner_width)
             lines.append(BOX["v"] + mood_text + BOX["v"])
 
         # Divider
@@ -1066,13 +1202,18 @@ class Renderer:
 
         for name, value, indicator in needs_data:
             bar = self._make_progress_bar(value, 8)
-            pct = f"{int(value):3d}"
-            line = f"{name}{bar}{pct}%".ljust(inner_width)
-            lines.append(BOX["v"] + line[:inner_width] + BOX["v"])
+            pct = f"{int(value)}%"
+            # Build line: NAME[bar] ##%
+            line_content = f"{name}{bar} {pct}"
+            # Truncate and pad to exact width
+            line_content = _visible_truncate(line_content, inner_width)
+            line_content = _visible_ljust(line_content, inner_width)
+            lines.append(BOX["v"] + line_content + BOX["v"])
 
         # Divider - Shortcuts Section
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
-        lines.append(BOX["v"] + "─── SHORTCUTS ───".center(inner_width)[:inner_width] + BOX["v"])
+        shortcut_title = _visible_center("─── SHORTCUTS ───", inner_width)
+        lines.append(BOX["v"] + shortcut_title + BOX["v"])
 
         # Actions column - organized by function
         shortcuts = [
@@ -1090,28 +1231,30 @@ class Renderer:
 
         for shortcut in shortcuts:
             if shortcut:
-                lines.append(BOX["v"] + shortcut.center(inner_width)[:inner_width] + BOX["v"])
+                centered = _visible_center(shortcut, inner_width)
+                lines.append(BOX["v"] + centered + BOX["v"])
 
         # Divider
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
 
         # Activity/Status
         activity = self._get_activity_text(duck)
-        lines.append(BOX["v"] + f"{activity}".center(inner_width)[:inner_width] + BOX["v"])
+        activity_centered = _visible_center(activity, inner_width)
+        lines.append(BOX["v"] + activity_centered + BOX["v"])
 
         # Current action message (truncate if needed)
         action_msg = duck.get_action_message() or "Just vibing..."
-        if len(action_msg) > inner_width - 2:
-            action_msg = action_msg[:inner_width - 5] + "..."
-        lines.append(BOX["v"] + action_msg.center(inner_width)[:inner_width] + BOX["v"])
+        action_msg = _visible_truncate(action_msg, inner_width - 2)
+        action_centered = _visible_center(action_msg, inner_width)
+        lines.append(BOX["v"] + action_centered + BOX["v"])
         
         # Current location (from exploration system)
         if hasattr(game, 'exploration') and game.exploration and game.exploration.current_area:
             area_name = game.exploration.current_area.name
-            location = f"📍 {area_name}"
-            if len(location) > inner_width:
-                location = location[:inner_width - 3] + "..."
-            lines.append(BOX["v"] + location.center(inner_width)[:inner_width] + BOX["v"])
+            location = f"@ {area_name}"  # Use @ instead of emoji for consistent width
+            location = _visible_truncate(location, inner_width)
+            location_centered = _visible_center(location, inner_width)
+            lines.append(BOX["v"] + location_centered + BOX["v"])
 
         # Bottom
         lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
@@ -1699,10 +1842,11 @@ class Renderer:
         ]
 
         for line in content:
-            # Use ANSI-aware padding and truncation for colored content
-            padded = _visible_ljust(f" {line} ", box_width)
-            padded = _visible_truncate(padded, box_width)
-            box_lines.append(BOX_DOUBLE["v"] + padded + BOX_DOUBLE["v"])
+            # Ensure content fills exactly box_width chars with spaces (solid background)
+            # First truncate if too long, then pad with spaces to fill
+            content_area = _visible_truncate(f" {line}", box_width)
+            content_area = _visible_ljust(content_area, box_width)
+            box_lines.append(BOX_DOUBLE["v"] + content_area + BOX_DOUBLE["v"])
 
         box_lines.append(BOX_DOUBLE["bl"] + BOX_DOUBLE["h"] * box_width + BOX_DOUBLE["br"])
 
@@ -1758,9 +1902,9 @@ class Renderer:
 
         box_lines = []
         for line in content:
-            # Use ANSI-aware centering and truncation for colored art
+            # Center and ensure full width with spaces (solid background)
             centered = _visible_center(line, box_width)
-            centered = _visible_truncate(centered, box_width)
+            centered = _visible_ljust(_visible_truncate(centered, box_width), box_width)
             box_lines.append(centered)
 
         # Overlay on base output

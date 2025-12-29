@@ -44,341 +44,214 @@ DUCK_APPEARANCES = {
 }
 
 # Visitor NPC ASCII art by personality (facing left, toward Cheese)
+# Option A: Cute Round Style
 VISITOR_ASCII_ART = {
     "adventurous": {
         "idle": [
-            "    __     ",
-            "  _/  \\_   ",
-            " / o  o \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--^    ",
-            "    /|     ",
-            "   (_|     ",
+            "   /^\\  ",
+            "  (o.o) ",
+            "  /)_)\\>",
+            "   \" \"~]",
         ],
         "waddle": [
-            "    __     ",
-            "  _/  \\_   ",
-            " / o  o \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '-~-'   ",
-            "   / |     ",
-            "  (_)|     ",
+            "   /^\\  ",
+            "  (o.o) ",
+            "  /)_)\\>",
+            "  \" \" ~]",
         ],
         "happy": [
-            "   \\!/     ",
-            "    __     ",
-            "  _/  \\_   ",
-            " / ^  ^ \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--^    ",
-            "   (\\|/)   ",
+            "   /^\\! ",
+            "  (^.^) ",
+            "  /)_)\\>",
+            "   \" \"~]",
         ],
         "gift": [
-            "    __     ",
-            "  _/  \\_   ",
-            " / o  o \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--^ [#]",
-            "    /|     ",
-            "   (_|     ",
+            "   /^\\  ",
+            "  (o.o)[#]",
+            "  /)_)\\>",
+            "   \" \"~]",
         ],
     },
     "scholarly": {
         "idle": [
-            "    __     ",
-            "  _/  \\_   ",
-            " /@o  o@\\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--'    ",
-            "    /|     ",
-            "   (_|     ",
+            "  .--. ",
+            " (O.O) ",
+            "  |__|>",
+            "   ''  ",
         ],
         "waddle": [
-            "    __     ",
-            "  _/  \\_   ",
-            " /@o  o@\\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '-~-'   ",
-            "   / |     ",
-            "  (_)|     ",
+            "  .--. ",
+            " (O.O) ",
+            "  |__|>",
+            "  '' ''",
         ],
         "happy": [
-            "    !      ",
-            "    __     ",
-            "  _/  \\_   ",
-            " /@^  ^@\\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--'    ",
-            "   (\\|/)   ",
+            "  .--. !",
+            " (^.^) ",
+            "  |__|>",
+            "   ''  ",
         ],
         "reading": [
-            "    __     ",
-            "  _/  \\_   ",
-            " /@-  -@\\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--' ___",
-            "    /| |=| ",
-            "   (_| |=| ",
+            "  .--. ",
+            " (-.-)>",
+            "  |__|[=]",
+            "   ''  ",
         ],
     },
     "artistic": {
         "idle": [
-            "   ~@      ",
-            "    __     ",
-            "  _/  \\_   ",
-            " / o  o \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--'    ",
-            "    /|     ",
+            "   ~@  ",
+            "  (^.^)",
+            "  /)~)\\>",
+            "   '' ~",
         ],
         "waddle": [
-            "   ~@      ",
-            "    __     ",
-            "  _/  \\_   ",
-            " / o  o \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '-~-'   ",
-            "   / |     ",
+            "   ~@  ",
+            "  (o.o)",
+            "  /)~)\\>",
+            "  '' ''~",
         ],
         "happy": [
-            "   ~@ *    ",
-            "    __  *  ",
-            "  _/  \\_   ",
-            " / ^  ^ \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--'    ",
-            "   (\\|/)   ",
+            "   ~@ *",
+            "  (^o^)*",
+            "  /)~)\\>",
+            "   '' ~",
         ],
         "painting": [
-            "   ~@      ",
-            "    __     ",
-            "  _/  \\_   ",
-            " / -  o \\ ~",
-            " \\_    _/ ~",
-            " <|  \\_/ ~ ",
-            "   '--' /| ",
-            "    /| [=] ",
+            "   ~@  ",
+            "  (-.o)~",
+            "  /)~)\\[=]",
+            "   '' ~",
         ],
     },
     "playful": {
         "idle": [
-            "    @/     ",
-            "    __     ",
-            "  _/  \\_   ",
-            " / o  o \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--'    ",
-            "    /|     ",
+            "   @/  ",
+            "  (>.>) ",
+            "  /)_)\\>",
+            "  d'' b",
         ],
         "waddle": [
-            "    @\\     ",
-            "    __     ",
-            "  _/  \\_   ",
-            " / o  o \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '-~-'   ",
-            "  (_) |    ",
+            "   @\\  ",
+            "  (<.<) ",
+            "  /)_)\\>",
+            " d'' b ",
         ],
         "happy": [
-            "  * @/ *   ",
-            "    __ !   ",
-            "  _/  \\_   ",
-            " / ^  ^ \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--'    ",
-            "   (\\|/)   ",
+            "   @/ !",
+            "  (>w<)!",
+            "  /)_)\\>",
+            "  d'' b",
         ],
         "bounce": [
-            "    @|     ",
-            "    __     ",
-            "  _/  \\_   ",
-            " / ^  ^ \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '-^-'   ",
-            "    \\ /    ",
+            "   @|  ",
+            "  (^o^) ",
+            "  /)_)\\>",
+            "   \\~/  ",
         ],
     },
     "mysterious": {
         "idle": [
-            "    __     ",
-            "  _/##\\_   ",
-            " / ?  ? \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--'    ",
-            "    /|     ",
-            "   (_|     ",
+            "  /_\\  ",
+            " (?_?) ",
+            "  |__|>",
+            "   ~~  ",
         ],
         "waddle": [
-            "    __     ",
-            "  _/##\\_   ",
-            " / ?  ? \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '~~~'   ",
-            "   / |     ",
-            "  (_)|     ",
+            "  /_\\  ",
+            " (?_?) ",
+            "  |__|>",
+            "  ~~ ~~",
         ],
         "happy": [
-            "    ...    ",
-            "    __     ",
-            "  _/##\\_   ",
-            " / ^  ^ \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--'    ",
-            "    /|     ",
+            "  /_\\ .",
+            " (^_^)..",
+            "  |__|>",
+            "   ~~  ",
         ],
         "vanish": [
-            "    __     ",
-            "  ./##\\.   ",
-            "  / ?  ?   ",
-            "  \\_    /  ",
-            " . |  \\_.  ",
-            "   .--'.   ",
-            "   ./|.    ",
-            "   ._.     ",
+            "  ._.  ",
+            " .?_?. ",
+            "  .|.  ",
+            "   .   ",
         ],
     },
     "generous": {
         "idle": [
-            "    __     ",
-            "  _/  \\_   ",
-            " / o  o \\  ",
-            " \\_    _/  ",
-            " <| [+]_/  ",
-            "   '--'    ",
-            "    /|     ",
-            "   (_|     ",
+            "  <3   ",
+            "  (o.o)",
+            "  /)_)\\>[+]",
+            "   ''  ",
         ],
         "waddle": [
-            "    __     ",
-            "  _/  \\_   ",
-            " / o  o \\  ",
-            " \\_    _/  ",
-            " <| [+]_/  ",
-            "   '-~-'   ",
-            "   / |     ",
-            "  (_)|     ",
+            "  <3   ",
+            "  (o.o)",
+            "  /)_)\\>[+]",
+            "  '' ''",
         ],
         "happy": [
-            "   <3 <3   ",
-            "    __     ",
-            "  _/  \\_   ",
-            " / ^  ^ \\  ",
-            " \\_    _/  ",
-            " <| [+]_/  ",
-            "   '--'    ",
-            "   (\\|/)   ",
+            " <3 <3 ",
+            "  (^.^)",
+            "  /)_)\\>[+]",
+            "   ''  ",
         ],
         "giving": [
-            "    __     ",
-            "  _/  \\_   ",
-            " / ^  ^ \\  ",
-            " \\_    _/ [*]",
-            " <| [+]_/ ->",
-            "   '--'    ",
-            "    /|     ",
-            "   (_|     ",
+            "  <3   ",
+            "  (^.^)[*]->",
+            "  /)_)\\>",
+            "   ''  ",
         ],
     },
     "foodie": {
         "idle": [
-            "   _|=|_   ",
-            "    __     ",
-            "  _/  \\_   ",
-            " / o  o \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--'    ",
-            "    /|     ",
+            "  _|=|_",
+            "  (o.o)",
+            "  /)_)\\>",
+            "   ''  ",
         ],
         "waddle": [
-            "   _|=|_   ",
-            "    __     ",
-            "  _/  \\_   ",
-            " / o  o \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '-~-'   ",
-            "   / |     ",
+            "  _|=|_",
+            "  (o.o)",
+            "  /)_)\\>",
+            "  '' ''",
         ],
         "happy": [
-            "   _|=|_ ! ",
-            "    __  om ",
-            "  _/  \\_ nom",
-            " / ^  ^ \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--'    ",
-            "   (\\|/)   ",
+            "  _|=|_!",
+            "  (^o^)nom",
+            "  /)_)\\>",
+            "   ''  ",
         ],
         "eating": [
-            "   _|=|_   ",
-            "    __ nom ",
-            "  _/  \\_ @ ",
-            " / -  - \\  ",
-            " \\_   >_/  ",
-            " <|  \\_/ .,",
-            "   '--' .  ",
-            "    /|     ",
+            "  _|=|_",
+            "  (-.-)~@",
+            "  /)_)\\>",
+            "   '' .",
         ],
     },
     "athletic": {
         "idle": [
-            "    ==     ",
-            "    __     ",
-            "  _/  \\_   ",
-            " / o  o \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--'    ",
-            "    /|     ",
+            "   ==  ",
+            "  (o.o)",
+            "  /)_)\\>",
+            "   ''  ",
         ],
         "waddle": [
-            "    ==     ",
-            "    __     ",
-            "  _/  \\_   ",
-            " / o  o \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '-v-'   ",
-            "   / |\\    ",
+            "   ==  ",
+            "  (o.o)",
+            "  /)_)\\>",
+            "  /  \\ ",
         ],
         "happy": [
-            "   \\==/    ",
-            "    __  !  ",
-            "  _/  \\_   ",
-            " / ^  ^ \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "   '--'    ",
-            "   (\\|/)   ",
+            "  \\==/!",
+            "  (>.<)!",
+            "  /)_)\\>",
+            "   ''  ",
         ],
         "exercise": [
-            "    ==     ",
-            "    __ !!  ",
-            "  _/  \\_   ",
-            " / >  < \\  ",
-            " \\_    _/  ",
-            " <|  \\_/   ",
-            "  /'-^-'\\  ",
-            " / /| |\\ \\ ",
+            "   == !",
+            "  (>.>)",
+            " \\/)_)\\/",
+            "  /  \\ ",
         ],
     },
 }
@@ -396,7 +269,298 @@ VISITOR_ANIMATION_STATES = {
 }
 
 # Visitor animation timing
-VISITOR_ANIMATION_SPEED = 0.8  # Seconds per frame
+VISITOR_ANIMATION_SPEED = 0.5  # Seconds per frame (faster animation)
+VISITOR_DIALOGUE_INTERVAL = 6.0  # Seconds between random dialogue
+VISITOR_MOVE_INTERVAL = 1.2  # Seconds between position changes (faster movement)
+
+
+# Visitor dialogue by personality and situation
+VISITOR_GREETINGS = {
+    "adventurous": [
+        "*waddles in excitedly* Hey {duck}! Ready for adventure?",
+        "Ahoy, {duck}! I just got back from the most amazing trip!",
+        "*adjusts explorer hat* {duck}! Perfect timing!",
+    ],
+    "scholarly": [
+        "*adjusts glasses* Ah, {duck}! I've been meaning to discuss something!",
+        "Greetings, {duck}! Did you know that ducks have waterproof feathers?",
+        "*opens book* {duck}, you must hear about my latest research!",
+    ],
+    "artistic": [
+        "*twirls beret* {duck}! This pond is SO inspiring today!",
+        "Oh {duck}! The light here is perfect for painting!",
+        "*sketches in air* I see art everywhere when I'm with you!",
+    ],
+    "playful": [
+        "*bounces excitedly* {duck}! {duck}! Let's PLAY!",
+        "TAG, YOU'RE IT! ...wait, hi {duck}!",
+        "*spins around* Best day ever! I get to see {duck}!",
+    ],
+    "mysterious": [
+        "*appears from shadows* ...{duck}. The winds told me to come.",
+        "Greetings, {duck}. I sensed... something. Perhaps fate.",
+        "*nods mysteriously* We meet again, {duck}...",
+    ],
+    "generous": [
+        "*waves warmly* {duck}! I brought something for you!",
+        "Dearest {duck}! Sharing is caring, and I LOVE sharing!",
+        "*beams happily* {duck}! You deserve nice things!",
+    ],
+    "foodie": [
+        "*sniffs air* {duck}! Something smells DELICIOUS here!",
+        "Ooh, {duck}! Have you tried that new bread recipe?",
+        "*stomach growls* Perfect timing! Let's eat, {duck}!",
+    ],
+    "athletic": [
+        "*jogs over* {duck}! Great day for some exercise!",
+        "Race you to the pond, {duck}! Oh wait, we're already here!",
+        "*stretches* Looking fit, {duck}! Keep up the good work!",
+    ],
+}
+
+VISITOR_FAREWELLS = {
+    "adventurous": [
+        "Adventure awaits! See you next time, {duck}!",
+        "*tips explorer hat* Until our paths cross again!",
+        "The horizon is calling! Bye, {duck}!",
+    ],
+    "scholarly": [
+        "Fascinating visit! I have much to document. Farewell, {duck}!",
+        "*closes book* Until our next intellectual exchange!",
+        "Knowledge shared is knowledge doubled. Goodbye, {duck}!",
+    ],
+    "artistic": [
+        "*blows kiss* Stay beautiful, {duck}! Ciao!",
+        "This visit was pure inspiration! Au revoir!",
+        "*dramatic bow* The world awaits my art! Bye, {duck}!",
+    ],
+    "playful": [
+        "*waves frantically* BYE BYE BYE {duck}!!! Miss you already!",
+        "That was SO fun! Same time tomorrow? Pleeeease?",
+        "*bounces away* WEEEEE! Bye {duck}!",
+    ],
+    "mysterious": [
+        "*fades into shadows* We will meet again... when the stars align...",
+        "The mists call me elsewhere. Farewell, {duck}...",
+        "*cryptic smile* Until the threads of fate intertwine once more...",
+    ],
+    "generous": [
+        "*big hug* Take care, sweet {duck}! You're the best!",
+        "Remember, you're loved! Bye bye!",
+        "*leaves a small gift* A little something to remember me by!",
+    ],
+    "foodie": [
+        "*pats belly* What a feast! Thanks, {duck}! Bye!",
+        "That was delicious! We MUST do this again!",
+        "*waddles away happily* Save me some crumbs next time!",
+    ],
+    "athletic": [
+        "*high-fives* Great workout, {duck}! Stay strong!",
+        "Keep training! You're getting better every day!",
+        "*jogs away* Race you next time! Bye!",
+    ],
+}
+
+VISITOR_IDLE_CHAT = {
+    "adventurous": [
+        "*points at horizon* I wonder what's over there...",
+        "Did I tell you about the time I swam upstream for 3 miles?",
+        "*checks map* Hmm, there might be treasure nearby!",
+        "The Forest Edge has some great foraging spots!",
+        "*looks around* This pond has so many unexplored corners!",
+    ],
+    "scholarly": [
+        "*adjusts glasses* According to my research...",
+        "Fun fact: Ducks can sleep with one eye open!",
+        "*scribbles notes* Fascinating weather patterns today!",
+        "Have you ever wondered why the sky is blue?",
+        "*reads from book* 'And thus, the duck discovered...'",
+    ],
+    "artistic": [
+        "*gazes dreamily* The ripples in the water are like poetry...",
+        "I should paint this scene! It's magnificent!",
+        "*hums a tune* Everything inspires a song!",
+        "The way the light hits the lily pads... *chef's kiss*",
+        "*sketches* Hold still, you're perfect right now!",
+    ],
+    "playful": [
+        "*splashes* Hehe! Gotcha!",
+        "Wanna play hide and seek? I'll count!",
+        "*makes silly face* Quack quack quack!",
+        "I bet I can hold my breath longer than you!",
+        "*chases own tail* Almost got it!",
+    ],
+    "mysterious": [
+        "*stares into distance* The shadows whisper secrets...",
+        "Do you ever feel like we're being watched?",
+        "*traces patterns in water* The signs are everywhere...",
+        "I had a vision last night... about you.",
+        "*cryptic pause* ...nevermind. You're not ready yet.",
+    ],
+    "generous": [
+        "*offers crumb* Here, you look hungry!",
+        "Is there anything you need? I want to help!",
+        "*picks flower* This made me think of you!",
+        "Your happiness makes me happy!",
+        "*beams* I love spending time with you!",
+    ],
+    "foodie": [
+        "*sniffs* What's that delicious smell?",
+        "You know what would be perfect right now? Cake.",
+        "*daydreams* Bread... crusty, warm bread...",
+        "We should try that new spot by the garden!",
+        "*nibbles on something* Want some? It's tasty!",
+    ],
+    "athletic": [
+        "*does squats* Gotta stay in shape!",
+        "Have you been working out? You look stronger!",
+        "*stretches* Ahh, that's the good burn!",
+        "We should do laps around the pond!",
+        "*shadowboxing* Staying ready!",
+    ],
+}
+
+# Comments about items and structures
+VISITOR_ITEM_COMMENTS = {
+    "adventurous": {
+        "ball": "Ooh, a ball! Reminds me of coconuts on tropical islands!",
+        "fountain": "A fountain! Perfect for dramatic departures!",
+        "pond_fountain": "Wow, a fountain! The explorers' rest stop!",
+        "basic_nest": "A cozy nest! Good base camp, friend!",
+        "cozy_nest": "That nest looks perfect for planning expeditions!",
+        "deluxe_nest": "Now THAT'S a headquarters worthy of an adventurer!",
+        "mud_hut": "Rustic shelter! Reminds me of jungle camps!",
+        "wooden_cottage": "A proper cottage! Very expedition-ready!",
+        "stone_house": "Stone walls! This could survive any storm!",
+        "watchtower": "A watchtower! Perfect for spotting new horizons!",
+        "garden_plot": "Growing your own supplies? Smart explorer!",
+        "bird_bath": "A bird bath! Essential for any traveler!",
+        "hat": "Nice hat! Very explorer-chic!",
+        "bow_tie": "Fancy! Ready for a formal adventure?",
+        "_default": "Interesting! I've seen something like this in my travels!",
+    },
+    "scholarly": {
+        "ball": "A sphere! The most mathematically elegant shape!",
+        "fountain": "Fascinating water dynamics at play here!",
+        "pond_fountain": "The hydraulics here are remarkable!",
+        "basic_nest": "Functional architecture! Efficient design!",
+        "cozy_nest": "Improved insulation coefficient! Well done!",
+        "deluxe_nest": "Magnificent engineering! May I take notes?",
+        "workbench": "A workbench! The foundation of innovation!",
+        "storage_chest": "Organized storage! A sign of a great mind!",
+        "watchtower": "Elevated observation platform! Excellent for research!",
+        "glasses": "Excellent eyewear choice! Great for reading!",
+        "_default": "Hmm, this warrants further study...",
+    },
+    "artistic": {
+        "ball": "The curves! The shadow! So sculptural!",
+        "fountain": "The water's movement is pure performance art!",
+        "pond_fountain": "OH! *gasp* The aesthetic! It's perfect!",
+        "basic_nest": "Minimalist design! I love it!",
+        "cozy_nest": "The textures! So wonderfully rustic!",
+        "deluxe_nest": "A MASTERPIECE of architectural art!",
+        "flower_bed": "Flowers! Nature's own gallery!",
+        "garden_plot": "A living canvas! How creative!",
+        "stone_path": "The lines! The symmetry! *chef's kiss*",
+        "hat": "Ooh la la! Very fashionable!",
+        "bow_tie": "That bow tie is EVERYTHING!",
+        "_default": "Oh, how beautiful! This speaks to my soul!",
+    },
+    "playful": {
+        "ball": "A BALL! CAN WE PLAY? PLEASE PLEASE PLEASE!",
+        "fountain": "SPLASH TIME! *runs toward it*",
+        "pond_fountain": "WATER SHOW! *does a little dance*",
+        "basic_nest": "Perfect for hide and seek!",
+        "cozy_nest": "Pillow fort vibes! I LOVE IT!",
+        "deluxe_nest": "This is the BEST fort ever!",
+        "bird_bath": "SPLASH SPLASH! This is the best!",
+        "watchtower": "I bet I can jump off that!",
+        "party_hat": "PARTY HAT! Is it your birthday?!",
+        "_default": "OOOH! That looks FUN!",
+    },
+    "mysterious": {
+        "ball": "*stares* The orb holds many secrets...",
+        "fountain": "The water... it shows visions of the future...",
+        "pond_fountain": "The spirits of the water dance here...",
+        "basic_nest": "A sanctuary from the watching eyes...",
+        "cozy_nest": "The shadows here are... comfortable...",
+        "deluxe_nest": "Many secrets could be kept here...",
+        "watchtower": "From there, one can see the threads of fate...",
+        "_default": "Interesting... but what does it MEAN?",
+    },
+    "generous": {
+        "ball": "Oh, a ball! Want me to throw it for you?",
+        "fountain": "So pretty! I should get you more decorations!",
+        "pond_fountain": "Beautiful! You deserve such nice things!",
+        "basic_nest": "A home! Let me help you decorate!",
+        "cozy_nest": "So welcoming! You're wonderful, you know?",
+        "deluxe_nest": "You've worked so hard! I'm proud of you!",
+        "garden_plot": "Growing things for others to enjoy! How lovely!",
+        "_default": "How lovely! You deserve nice things!",
+    },
+    "foodie": {
+        "ball": "For a second I thought that was a giant meatball...",
+        "fountain": "Is that... drinking water? *licks lips*",
+        "pond_fountain": "Fresh water! Great for cooking!",
+        "basic_nest": "Nice! But where's the pantry?",
+        "garden_plot": "VEGETABLES! Fresh ingredients! *drools*",
+        "storage_chest": "Please tell me there's food in there!",
+        "_default": "Nice! But have you considered adding a snack bar?",
+    },
+    "athletic": {
+        "ball": "Great for agility training! *kicks it*",
+        "fountain": "Perfect for cooling down after a workout!",
+        "pond_fountain": "Hydration station! Essential!",
+        "basic_nest": "Good recovery spot after training!",
+        "watchtower": "I could do pull-ups on that!",
+        "stone_path": "Perfect running track!",
+        "bird_bath": "Post-workout cooldown! *stretches*",
+        "_default": "Nice setup! Good for training!",
+    },
+}
+
+VISITOR_COSMETIC_COMMENTS = {
+    "adventurous": [
+        "Love the look, {duck}! Very expedition-ready!",
+        "That {item} would survive any adventure!",
+        "Looking equipped for anything!",
+    ],
+    "scholarly": [
+        "Interesting fashion choice, {duck}! I should document this!",
+        "That {item} is quite distinguished!",
+        "Academic chic! I approve!",
+    ],
+    "artistic": [
+        "Oh {duck}, you're SERVING with that {item}!",
+        "The aesthetic! *chef's kiss*",
+        "You're a work of art, darling!",
+    ],
+    "playful": [
+        "CUTE CUTE CUTE! I love your {item}!",
+        "We should trade looks sometime!",
+        "You look SO fun!",
+    ],
+    "mysterious": [
+        "That {item}... it suits your aura...",
+        "The shadows favor your choice...",
+        "*knowing nod*",
+    ],
+    "generous": [
+        "You look wonderful, {duck}!",
+        "That {item} is perfect for you!",
+        "You deserve to look this good!",
+    ],
+    "foodie": [
+        "Nice {item}! But more importantly, what's for lunch?",
+        "Looking good enough to eat! Wait, that came out wrong...",
+        "Stylish! Now let's celebrate with snacks!",
+    ],
+    "athletic": [
+        "Looking fit, {duck}! Is that {item} aerodynamic?",
+        "Nice gear! Function AND fashion!",
+        "That's some champion style!",
+    ],
+}
 
 
 class VisitorAnimator:
@@ -406,15 +570,68 @@ class VisitorAnimator:
         self._current_state: str = "idle"
         self._frame_index: int = 0
         self._last_frame_time: float = 0.0
+        self._last_dialogue_time: float = 0.0
+        self._last_move_time: float = 0.0
         self._personality: str = "adventurous"
-        self._position_x: int = 0  # Offset from base position
+        self._friend_name: str = "Friend"
+        self._position_x: int = 60  # Absolute screen position
+        self._position_y: int = 4
+        self._target_x: int = 25
+        self._target_y: int = 4
         self._wobble: int = 0
+        self._near_duck: bool = False
+        self._commented_items: set = set()  # Items we've already commented on
+        self._has_greeted: bool = False
+        self._is_leaving: bool = False
+        self._following_duck: bool = False  # Whether currently following the duck
+        self._wander_timer: int = 0  # Time since last wander decision
+        
+        # New dialogue system
+        self._dialogue_manager = None
+        self._friendship_level: str = "stranger"
+        self._visit_number: int = 1
+        self._unlocked_topics: set = set()
+        self._conversation_over: bool = False
     
-    def set_visitor(self, personality: str):
+    def set_visitor(self, personality: str, friend_name: str = "Friend", 
+                     friendship_level: str = "stranger", visit_number: int = 1,
+                     unlocked_topics: set = None):
         """Set the current visitor's personality for art selection."""
         self._personality = personality.lower() if personality else "adventurous"
+        self._friend_name = friend_name
         self._frame_index = 0
         self._current_state = "arriving"
+        self._position_x = 60  # Start at right side of screen (absolute)
+        self._position_y = 4   # Start near middle height
+        self._target_x = 25    # Initial target toward center
+        self._target_y = 4
+        self._has_greeted = False
+        self._is_leaving = False
+        self._commented_items = set()
+        self._last_dialogue_time = time.time()
+        self._last_move_time = time.time()
+        self._following_duck = False  # Whether currently following the duck
+        self._wander_timer = 0  # Time since last wander decision
+        
+        # Setup new dialogue system
+        self._friendship_level = friendship_level.lower().replace(" ", "_")
+        self._visit_number = visit_number
+        self._unlocked_topics = unlocked_topics or set()
+        self._conversation_over = False
+        
+        # Initialize dialogue manager
+        try:
+            from dialogue.visitor_dialogue import VisitorDialogueManager
+            self._dialogue_manager = VisitorDialogueManager()
+            self._dialogue_manager.start_visit(
+                self._personality, 
+                self._friendship_level, 
+                self._friend_name,
+                self._visit_number,
+                self._unlocked_topics
+            )
+        except ImportError:
+            self._dialogue_manager = None
     
     def set_state(self, state: str):
         """Set the animation state (arriving, chatting, playing, etc.)."""
@@ -422,8 +639,18 @@ class VisitorAnimator:
             self._current_state = state
             self._frame_index = 0
     
-    def update(self, current_time: float) -> bool:
-        """Update animation frame. Returns True if frame changed."""
+    def start_leaving(self):
+        """Begin the leaving animation."""
+        self._is_leaving = True
+        self._current_state = "leaving"
+        self._target_x = 70  # Move off screen right (absolute position)
+    
+    def update(self, current_time: float, duck_x: int = 10, duck_y: int = 5) -> Tuple[bool, Optional[str]]:
+        """Update animation frame and movement. Returns (frame_changed, dialogue_message)."""
+        frame_changed = False
+        dialogue = None
+        
+        # Update animation frame
         if current_time - self._last_frame_time >= VISITOR_ANIMATION_SPEED:
             self._last_frame_time = current_time
             frames = VISITOR_ANIMATION_STATES.get(self._current_state, ["idle"])
@@ -435,8 +662,178 @@ class VisitorAnimator:
             else:
                 self._wobble = 0
             
-            return True
-        return False
+            frame_changed = True
+        
+        # Update position (move toward target)
+        if current_time - self._last_move_time >= VISITOR_MOVE_INTERVAL:
+            self._last_move_time = current_time
+            self._wander_timer += 1
+            
+            # Move toward target position (can move 1-2 units for more dynamic movement)
+            move_speed = 2 if self._is_leaving else 1
+            
+            if self._position_x < self._target_x:
+                self._position_x = min(self._position_x + move_speed, self._target_x)
+            elif self._position_x > self._target_x:
+                self._position_x = max(self._position_x - move_speed, self._target_x)
+            
+            if self._position_y < self._target_y:
+                self._position_y += 1
+            elif self._position_y > self._target_y:
+                self._position_y -= 1
+            
+            # Check if near duck
+            dist_to_duck = abs(self._position_x - duck_x) + abs(self._position_y - duck_y)
+            self._near_duck = dist_to_duck < 15
+            
+            # Decide behavior: follow duck, wander, or explore
+            if not self._is_leaving:
+                # Every few updates, decide what to do
+                if self._position_x == self._target_x and self._position_y == self._target_y:
+                    behavior = random.random()
+                    
+                    if behavior < 0.4:  # 40% chance: Follow the duck
+                        # Move toward where the duck is
+                        offset_x = random.randint(-8, 8)
+                        offset_y = random.randint(-2, 2)
+                        self._target_x = duck_x + offset_x
+                        self._target_y = duck_y + offset_y
+                        self._following_duck = True
+                        if random.random() < 0.3:
+                            self._current_state = "chatting"
+                    
+                    elif behavior < 0.7:  # 30% chance: Wander around exploring
+                        # Pick a random spot on the screen
+                        self._target_x = random.randint(5, 55)
+                        self._target_y = random.randint(1, 7)
+                        self._following_duck = False
+                        if random.random() < 0.3:
+                            self._current_state = "playing"
+                    
+                    else:  # 30% chance: Stay near duck
+                        # Stay close to the duck
+                        self._target_x = duck_x + random.randint(3, 10)
+                        self._target_y = duck_y + random.randint(-1, 1)
+                        self._following_duck = True
+                        if random.random() < 0.5:
+                            states = ["idle", "chatting", "happy"]
+                            self._current_state = random.choice(states)
+                    
+                    # Keep in screen bounds
+                    self._target_x = max(2, min(self._target_x, 58))
+                    self._target_y = max(0, min(self._target_y, 8))
+        
+        return frame_changed, dialogue
+    
+    def get_position(self) -> Tuple[int, int]:
+        """Get current visitor position offset."""
+        return self._position_x, self._position_y
+    
+    def is_near_duck(self) -> bool:
+        """Check if visitor is near the duck."""
+        return self._near_duck
+    
+    def get_greeting(self, duck_name: str) -> str:
+        """Get a greeting message for when the visitor arrives."""
+        if self._has_greeted:
+            return ""
+        self._has_greeted = True
+        
+        # Use new dialogue system if available
+        if self._dialogue_manager:
+            return self._dialogue_manager.get_next_dialogue(duck_name) or ""
+        
+        # Fallback to old system
+        greetings = VISITOR_GREETINGS.get(self._personality, VISITOR_GREETINGS["adventurous"])
+        greeting = random.choice(greetings).format(duck=duck_name)
+        return f"{self._friend_name}: {greeting}"
+    
+    def get_farewell(self, duck_name: str) -> str:
+        """Get a farewell message when the visitor leaves."""
+        # Use new dialogue system if available
+        if self._dialogue_manager:
+            return self._dialogue_manager.get_farewell(duck_name)
+        
+        # Fallback to old system
+        farewells = VISITOR_FAREWELLS.get(self._personality, VISITOR_FAREWELLS["adventurous"])
+        farewell = random.choice(farewells).format(duck=duck_name)
+        return f"{self._friend_name}: {farewell}"
+    
+    def get_random_dialogue(self, duck_name: str, current_time: float) -> Optional[str]:
+        """Get random idle chat if enough time has passed."""
+        if current_time - self._last_dialogue_time < VISITOR_DIALOGUE_INTERVAL:
+            return None
+        
+        self._last_dialogue_time = current_time
+        
+        # Only chat if near duck
+        if not self._near_duck:
+            return None
+        
+        # Use new dialogue system if available
+        if self._dialogue_manager:
+            dialogue = self._dialogue_manager.get_next_dialogue(duck_name)
+            if dialogue:
+                # Check if conversation is over (triggers leaving)
+                if self._dialogue_manager.is_conversation_over():
+                    self._conversation_over = True
+                return dialogue
+            else:
+                # No more dialogue - conversation over
+                self._conversation_over = True
+                return None
+        
+        # Fallback to old system
+        chat_lines = VISITOR_IDLE_CHAT.get(self._personality, VISITOR_IDLE_CHAT["adventurous"])
+        line = random.choice(chat_lines).format(duck=duck_name)
+        return f"{self._friend_name}: {line}"
+    
+    def is_conversation_complete(self) -> bool:
+        """Check if the visitor has said everything they wanted to say."""
+        return self._conversation_over
+    
+    def get_unlocked_topics(self) -> set:
+        """Get any new topics unlocked during this visit."""
+        if self._dialogue_manager:
+            return self._dialogue_manager.unlocked_topics
+        return set()
+    
+    def get_item_comment(self, item_id: str, item_name: str) -> Optional[str]:
+        """Get a comment about an item the visitor sees."""
+        if item_id in self._commented_items:
+            return None
+        
+        # Only comment sometimes
+        if random.random() > 0.5:
+            return None
+        
+        self._commented_items.add(item_id)
+        
+        item_comments = VISITOR_ITEM_COMMENTS.get(self._personality, {})
+        if item_id in item_comments:
+            comment = item_comments[item_id]
+        elif "_default" in item_comments:
+            comment = item_comments["_default"]
+        else:
+            return None
+        
+        return f"{self._friend_name}: {comment}"
+    
+    def get_cosmetic_comment(self, duck_name: str, cosmetic_type: str) -> Optional[str]:
+        """Get a comment about the duck's cosmetics."""
+        key = f"cosmetic_{cosmetic_type}"
+        if key in self._commented_items:
+            return None
+        
+        # Only comment sometimes
+        if random.random() > 0.4:
+            return None
+        
+        self._commented_items.add(key)
+        
+        comments = VISITOR_COSMETIC_COMMENTS.get(self._personality, VISITOR_COSMETIC_COMMENTS["adventurous"])
+        comment = random.choice(comments).format(duck=duck_name, item=cosmetic_type)
+        return f"{self._friend_name}: {comment}"
     
     def get_current_art(self) -> List[str]:
         """Get the current animation frame's ASCII art."""
@@ -613,16 +1010,17 @@ class FriendsSystem:
             # Generate new friend
             friend = self.generate_new_friend()
         
-        # Determine visit duration based on friendship level
+        # Determine visit duration based on friendship level (in minutes)
+        # Keep visits short so they don't overstay their welcome
         duration_map = {
-            FriendshipLevel.STRANGER: 10,
-            FriendshipLevel.ACQUAINTANCE: 15,
-            FriendshipLevel.FRIEND: 25,
-            FriendshipLevel.CLOSE_FRIEND: 35,
-            FriendshipLevel.BEST_FRIEND: 45,
+            FriendshipLevel.STRANGER: 2,
+            FriendshipLevel.ACQUAINTANCE: 3,
+            FriendshipLevel.FRIEND: 4,
+            FriendshipLevel.CLOSE_FRIEND: 5,
+            FriendshipLevel.BEST_FRIEND: 6,
         }
         
-        duration = duration_map.get(friend.friendship_level, 15)
+        duration = duration_map.get(friend.friendship_level, 3)
         
         # Determine if they brought a gift
         gift_chance = 0.2 + (friend.friendship_points / 1000)
@@ -777,14 +1175,14 @@ class FriendsSystem:
         if self.current_visit:
             return False, None
         
-        # More likely during day hours
+        # More likely during day hours - but kept rare to feel special
         if 8 <= hour <= 18:
-            chance = 0.05  # 5% chance per check during day
+            chance = 0.02  # 2% chance per check during day (was 12%)
         else:
-            chance = 0.02  # 2% chance at night
+            chance = 0.005  # 0.5% chance at night (was 5%)
         
-        # More friends = more chances
-        chance += len(self.friends) * 0.01
+        # More friends = more chances (up to +3%)
+        chance += min(len(self.friends) * 0.005, 0.03)
         
         if random.random() < chance:
             _, message, _ = self.start_visit()
