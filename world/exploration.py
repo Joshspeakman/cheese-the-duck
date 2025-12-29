@@ -18,6 +18,8 @@ class BiomeType(Enum):
     GARDEN = "garden"       # Vegetables, flowers, string, fabric scraps
     MOUNTAINS = "mountains" # Rocks, crystals, moss, pine needles (unlockable)
     BEACH = "beach"         # Sand, shells, seaweed, glass, treasures (unlockable)
+    SWAMP = "swamp"         # Murky water, fireflies, bog plants, mysterious finds
+    URBAN = "urban"         # City park, bread crumbs, lost coins, human treasures
 
 
 @dataclass
@@ -62,7 +64,6 @@ class BiomeArea:
     description: str
     resources: List[ResourceNode] = field(default_factory=list)
     discovery_chance: float = 0.1  # Chance to find rare items while exploring
-    danger_level: int = 0  # 0-5, affects encounter chances
     unlock_level: int = 1  # Player level required to access
     is_discovered: bool = False
     times_visited: int = 0
@@ -134,6 +135,24 @@ BIOME_RESOURCES = {
         ("message_bottle", "Message in Bottle", 1, 72.0, 4),
         ("treasure_chest", "Treasure Chest", 1, 168.0, 6),  # Weekly!
     ],
+    BiomeType.SWAMP: [
+        ("swamp_reed", "Swamp Reed", 8, 1.5, 0),
+        ("bog_moss", "Bog Moss", 10, 1.0, 0),
+        ("firefly_jar", "Firefly Jar", 1, 8.0, 2),
+        ("murky_pearl", "Murky Pearl", 1, 24.0, 4),
+        ("ancient_bone", "Ancient Bone", 1, 48.0, 3),
+        ("glowing_mushroom", "Glowing Mushroom", 3, 6.0, 2),
+        ("cypress_bark", "Cypress Bark", 5, 3.0, 1),
+    ],
+    BiomeType.URBAN: [
+        ("bread_crumb", "Bread Crumb", 10, 0.5, 0),
+        ("lost_coin", "Lost Coin", 3, 4.0, 0),
+        ("shiny_wrapper", "Shiny Wrapper", 6, 1.0, 0),
+        ("park_flower", "Park Flower", 4, 2.0, 0),
+        ("dropped_fry", "Dropped Fry", 2, 2.0, 0),
+        ("fancy_button", "Fancy Button", 1, 12.0, 2),
+        ("lost_earring", "Lost Earring", 1, 48.0, 4),
+    ],
 }
 
 
@@ -143,9 +162,8 @@ AREAS = {
         BiomeArea(
             biome=BiomeType.POND,
             name="Home Pond",
-            description="Your cozy home pond with reeds and lily pads.",
+            description="Your cozy home pond with grassy shores and calm waters.",
             discovery_chance=0.05,
-            danger_level=0,
             unlock_level=1,
             is_discovered=True,
         ),
@@ -154,7 +172,6 @@ AREAS = {
             name="Deep End",
             description="The mysterious deep part of the pond. What lurks below?",
             discovery_chance=0.15,
-            danger_level=1,
             unlock_level=3,
         ),
     ],
@@ -164,7 +181,6 @@ AREAS = {
             name="Forest Edge",
             description="Where the pond meets the forest. Lots of fallen twigs.",
             discovery_chance=0.10,
-            danger_level=1,
             unlock_level=1,
             is_discovered=True,
         ),
@@ -173,7 +189,6 @@ AREAS = {
             name="Ancient Oak",
             description="A massive old oak tree. Home to many creatures.",
             discovery_chance=0.20,
-            danger_level=2,
             unlock_level=5,
         ),
         BiomeArea(
@@ -181,7 +196,6 @@ AREAS = {
             name="Mushroom Grove",
             description="A damp, shady area full of interesting fungi.",
             discovery_chance=0.25,
-            danger_level=2,
             unlock_level=7,
         ),
     ],
@@ -191,7 +205,6 @@ AREAS = {
             name="Sunny Meadow",
             description="A bright, flower-filled meadow buzzing with bees.",
             discovery_chance=0.10,
-            danger_level=0,
             unlock_level=2,
         ),
         BiomeArea(
@@ -199,7 +212,6 @@ AREAS = {
             name="Butterfly Garden",
             description="Rare butterflies dance among exotic flowers.",
             discovery_chance=0.30,
-            danger_level=1,
             unlock_level=8,
         ),
     ],
@@ -209,7 +221,6 @@ AREAS = {
             name="Pebble Beach",
             description="A calm section of river with smooth stones.",
             discovery_chance=0.15,
-            danger_level=1,
             unlock_level=3,
         ),
         BiomeArea(
@@ -217,7 +228,6 @@ AREAS = {
             name="Waterfall",
             description="A beautiful waterfall! Treasures wash up here.",
             discovery_chance=0.35,
-            danger_level=3,
             unlock_level=10,
         ),
     ],
@@ -227,7 +237,6 @@ AREAS = {
             name="Vegetable Patch",
             description="A human's garden. Full of useful scraps!",
             discovery_chance=0.20,
-            danger_level=2,
             unlock_level=4,
         ),
         BiomeArea(
@@ -235,7 +244,6 @@ AREAS = {
             name="Tool Shed",
             description="The humans keep interesting things here...",
             discovery_chance=0.40,
-            danger_level=3,
             unlock_level=12,
         ),
     ],
@@ -245,7 +253,6 @@ AREAS = {
             name="Foothills",
             description="The base of the mountains. Rocky and wild.",
             discovery_chance=0.20,
-            danger_level=3,
             unlock_level=15,
         ),
         BiomeArea(
@@ -253,7 +260,6 @@ AREAS = {
             name="Crystal Cave",
             description="A hidden cave sparkling with crystals!",
             discovery_chance=0.50,
-            danger_level=4,
             unlock_level=20,
         ),
     ],
@@ -263,7 +269,6 @@ AREAS = {
             name="Sandy Shore",
             description="The ocean! So many shells and treasures.",
             discovery_chance=0.25,
-            danger_level=2,
             unlock_level=18,
         ),
         BiomeArea(
@@ -271,8 +276,53 @@ AREAS = {
             name="Shipwreck Cove",
             description="An old shipwreck! Who knows what's inside?",
             discovery_chance=0.60,
-            danger_level=5,
             unlock_level=25,
+        ),
+    ],
+    BiomeType.SWAMP: [
+        BiomeArea(
+            biome=BiomeType.SWAMP,
+            name="Misty Marsh",
+            description="Thick fog hangs over murky waters. Fireflies glow in the mist.",
+            discovery_chance=0.20,
+            unlock_level=9,
+        ),
+        BiomeArea(
+            biome=BiomeType.SWAMP,
+            name="Cypress Hollow",
+            description="Ancient twisted trees draped in moss. Secrets hide here.",
+            discovery_chance=0.35,
+            unlock_level=16,
+        ),
+        BiomeArea(
+            biome=BiomeType.SWAMP,
+            name="Sunken Ruins",
+            description="Mysterious old structures half-submerged in the bog.",
+            discovery_chance=0.55,
+            unlock_level=24,
+        ),
+    ],
+    BiomeType.URBAN: [
+        BiomeArea(
+            biome=BiomeType.URBAN,
+            name="Park Fountain",
+            description="A busy city park! Humans drop all sorts of treasures.",
+            discovery_chance=0.15,
+            unlock_level=6,
+        ),
+        BiomeArea(
+            biome=BiomeType.URBAN,
+            name="Rooftop Garden",
+            description="A hidden garden high above the city streets.",
+            discovery_chance=0.30,
+            unlock_level=14,
+        ),
+        BiomeArea(
+            biome=BiomeType.URBAN,
+            name="Storm Drain",
+            description="Underground tunnels where lost things wash up.",
+            discovery_chance=0.50,
+            unlock_level=22,
         ),
     ],
 }
@@ -317,11 +367,6 @@ class ExplorationSystem:
             return self.current_area.biome
         return BiomeType.POND
     
-    @property  
-    def _biome_danger(self):
-        """Get danger levels for discovered biomes."""
-        return {area.biome: area.danger_level / 5.0 for area in self.discovered_areas.values()}
-
     def _initialize_areas(self):
         """Set up initial discovered areas."""
         for biome, areas in AREAS.items():
@@ -444,12 +489,6 @@ class ExplorationSystem:
                 result["xp_gained"] += 50
                 messages.append(f"🗺️ Discovered new area: {new_area.name}!")
         
-        # Random encounter (danger)
-        if area.danger_level > 0 and random.random() < area.danger_level * 0.1:
-            encounter = self._generate_encounter(area)
-            result["danger"] = {"message": encounter}
-            messages.append(encounter)
-        
         # Build final message
         if not messages:
             messages.append(f"Explored {area.name} but didn't find much this time.")
@@ -505,44 +544,10 @@ class ExplorationSystem:
             BiomeType.GARDEN: ["Garden Gnome", "Lost Ring", "Magic Bean"],
             BiomeType.MOUNTAINS: ["Dragon Scale", "Star Crystal", "Thunder Stone"],
             BiomeType.BEACH: ["Pirate Map", "Mermaid Scale", "Treasure Key"],
+            BiomeType.SWAMP: ["Will-o-Wisp", "Bog Amber", "Swamp Witch Charm"],
+            BiomeType.URBAN: ["Lucky Penny", "Diamond Ring", "Love Letter"],
         }
         return rare_items.get(biome, [])
-    
-    def _generate_encounter(self, area: BiomeArea) -> str:
-        """Generate a random encounter based on area."""
-        encounters = {
-            0: [],
-            1: [
-                "A curious squirrel watches you gather.",
-                "A butterfly lands on your head briefly.",
-                "You hear rustling in the bushes... just the wind.",
-            ],
-            2: [
-                "A grumpy goose honks at you! Best move on.",
-                "A snake slithers by. You freeze until it passes.",
-                "A territorial robin dive-bombs you!",
-            ],
-            3: [
-                "A fox eyes you hungrily... but you're too fast!",
-                "A hawk circles overhead. Stay near cover!",
-                "You stumble into a wasp nest! RUN!",
-            ],
-            4: [
-                "A wild cat stalks you through the undergrowth!",
-                "You narrowly avoid a hunter's trap!",
-                "Thunder rumbles - a storm is coming!",
-            ],
-            5: [
-                "An eagle swoops down! You barely escape!",
-                "You find yourself in predator territory...",
-                "The ground shakes - what was that?!",
-            ],
-        }
-        
-        level_encounters = encounters.get(min(area.danger_level, 5), [])
-        if level_encounters:
-            return random.choice(level_encounters)
-        return ""
     
     def _check_skill_up(self):
         """Check if gathering skill should increase."""
@@ -563,7 +568,6 @@ class ExplorationSystem:
             f"📍 {area.name} ({area.biome.value.title()})",
             f"   {area.description}",
             f"   Available resources: {len(available)}/{len(area.resources)}",
-            f"   Danger: {'⚠️' * area.danger_level if area.danger_level else 'Safe'}",
             f"   Visited: {area.times_visited} times",
         ]
         return "\n".join(lines)

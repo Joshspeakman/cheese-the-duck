@@ -49,7 +49,8 @@ def _visible_slice(s: str, start: int, end: int) -> str:
     """Slice string by visible character positions, preserving ANSI codes.
     
     Returns substring from visible position start to end (exclusive).
-    Handles ANSI escape sequences correctly.
+    Handles ANSI escape sequences correctly - only includes ANSI codes
+    that appear within the sliced range to prevent color bleeding.
     """
     result = []
     visible_pos = 0
@@ -59,11 +60,9 @@ def _visible_slice(s: str, start: int, end: int) -> str:
         # Check for ANSI escape sequence
         match = _ANSI_ESCAPE.match(s, i)
         if match:
-            # Always include ANSI codes in output (they're invisible)
+            # Only include ANSI codes that appear within the sliced range
+            # Don't include codes from before the slice to prevent color bleeding
             if visible_pos >= start and visible_pos < end:
-                result.append(match.group())
-            elif visible_pos < start:
-                # Include opening codes before slice to maintain formatting
                 result.append(match.group())
             i = match.end()
         else:
@@ -373,13 +372,13 @@ class Renderer:
         self._weather_frame += 1
 
         # Weather particle settings - Enhanced for more dramatic visuals
+        # Note: sunny/clear weather has no particles (just a nice day)
         weather_chars = {
             "rainy": ["│", "╎", "┆", "╏", "|", "'", ","],  # Rain streaks
             "stormy": ["│", "|", "'", ",", ":"],  # Heavy rain drops (cleaner look)
             "snowy": ["❄", "*", "✦", "❅", "·", "°", "✧"],  # Snowflakes
             "foggy": ["░", "▒", "~", "≈", " ", "▓"],  # Thick fog
             "windy": ["→", "⟹", "~", "≫", "»", "›", "~"],  # Wind direction
-            "sunny": ["✦", "·", "'", "°"],  # Sparkles
             "rainbow": ["♦", "★", "✦", "◊", "*"],  # Sparkles for rainbow
         }
 
@@ -389,7 +388,6 @@ class Renderer:
             "snowy": 0.12,      # More snow
             "foggy": 0.15,      # Thicker fog
             "windy": 0.10,      # More wind particles
-            "sunny": 0.03,      # Light sparkles
             "rainbow": 0.08,    # Magic sparkles
         }
 
@@ -399,7 +397,6 @@ class Renderer:
             "snowy": 0.4,       # Slow gentle snow
             "foggy": 0.15,      # Very slow fog drift
             "windy": 1.5,       # Fast wind
-            "sunny": 0.2,       # Slow sparkle
             "rainbow": 0.5,     # Gentle rainbow sparkle
         }
 
@@ -1127,13 +1124,13 @@ class Renderer:
 
             # Add weather particles (rendered on top of everything except text)
             # Enhanced colors for more dramatic weather effects
+            # Note: sunny weather has no particles, just clear sky
             weather_colors = {
                 "rainy": self.term.cyan,           # Cool rain color
                 "stormy": self.term.bright_white,  # Bright storm
                 "snowy": self.term.bright_white,   # White snow
                 "foggy": self.term.white,          # Misty fog
                 "windy": self.term.bright_cyan,    # Wind streaks
-                "sunny": self.term.bright_yellow,  # Warm sunbeams
                 "rainbow": self.term.bright_magenta,  # Magic rainbow
             }
             weather_color = weather_colors.get(self._current_weather_type)
@@ -2285,27 +2282,31 @@ class Renderer:
         clock = GameClock()
         time_str = clock.format_duration(hours)
 
+        # Helper to pad content to exactly 44 chars
+        def pad_line(content: str) -> str:
+            return (content + " " * 44)[:44]
+
         lines = [
             "",
             "  " + BOX_DOUBLE["tl"] + BOX_DOUBLE["h"] * 44 + BOX_DOUBLE["tr"],
             "  " + BOX_DOUBLE["v"] + " " * 44 + BOX_DOUBLE["v"],
-            "  " + BOX_DOUBLE["v"] + f"  Welcome back!                            " + BOX_DOUBLE["v"],
-            "  " + BOX_DOUBLE["v"] + f"  {duck_name} missed you!                  "[:44] + " " + BOX_DOUBLE["v"],
+            "  " + BOX_DOUBLE["v"] + pad_line("  Welcome back!") + BOX_DOUBLE["v"],
+            "  " + BOX_DOUBLE["v"] + pad_line(f"  {duck_name} missed you!") + BOX_DOUBLE["v"],
             "  " + BOX_DOUBLE["v"] + " " * 44 + BOX_DOUBLE["v"],
-            "  " + BOX_DOUBLE["v"] + f"  You were away for {time_str}            "[:44] + " " + BOX_DOUBLE["v"],
+            "  " + BOX_DOUBLE["v"] + pad_line(f"  You were away for {time_str}") + BOX_DOUBLE["v"],
             "  " + BOX_DOUBLE["v"] + " " * 44 + BOX_DOUBLE["v"],
-            "  " + BOX_DOUBLE["v"] + "  While you were gone:                      " + BOX_DOUBLE["v"],
+            "  " + BOX_DOUBLE["v"] + pad_line("  While you were gone:") + BOX_DOUBLE["v"],
         ]
 
         for need, change in changes.items():
             if change != 0:
                 direction = "decreased" if change < 0 else "recovered"
                 line = f"   - {need}: {direction}"
-                lines.append("  " + BOX_DOUBLE["v"] + f"  {line}                        "[:44] + BOX_DOUBLE["v"])
+                lines.append("  " + BOX_DOUBLE["v"] + pad_line(f"  {line}") + BOX_DOUBLE["v"])
 
         lines.extend([
             "  " + BOX_DOUBLE["v"] + " " * 44 + BOX_DOUBLE["v"],
-            "  " + BOX_DOUBLE["v"] + "  Press any key to continue...              " + BOX_DOUBLE["v"],
+            "  " + BOX_DOUBLE["v"] + pad_line("  Press any key to continue...") + BOX_DOUBLE["v"],
             "  " + BOX_DOUBLE["v"] + " " * 44 + BOX_DOUBLE["v"],
             "  " + BOX_DOUBLE["bl"] + BOX_DOUBLE["h"] * 44 + BOX_DOUBLE["br"],
             "",

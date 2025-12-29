@@ -15,8 +15,8 @@ _term = Terminal()
 
 # Ground tiles - characters that make up the floor/base of each location
 LOCATION_GROUND_CHARS: Dict[str, List[str]] = {
-    # Home Pond - clean, cozy, simple water-themed
-    "Home Pond": [" ", " ", " ", "·", "·", "~", "'", " ", " ", " "],
+    # Home Pond - 50% grassy shore, 50% calm pond water
+    "Home Pond": [" ", " ", "'", ".", ",", " ", "~", "·", " ", " "],
     "Deep End": [" ", "~", "~", "≈", "·", " ", "~", "≈", " ", "·"],
     
     # Forest - earthy with fallen leaves and twigs
@@ -43,6 +43,16 @@ LOCATION_GROUND_CHARS: Dict[str, List[str]] = {
     # Beach - sandy with shells
     "Sandy Shore": [" ", " ", "·", ".", " ", "∘", " ", "·", " ", " "],
     "Shipwreck Cove": [" ", "·", "~", ".", " ", "~", "·", " ", "≈", " "],
+    
+    # Swamp - murky and mysterious
+    "Misty Marsh": [" ", "~", "·", "≈", " ", "~", "·", " ", "°", " "],
+    "Cypress Hollow": [" ", "·", ".", "~", " ", "·", ".", "°", " ", " "],
+    "Sunken Ruins": [" ", "·", "≈", ".", " ", "~", "·", "░", " ", "·"],
+    
+    # Urban - concrete and parks
+    "Park Fountain": [" ", " ", "·", ".", " ", "'", " ", ".", " ", " "],
+    "Rooftop Garden": [" ", "'", "·", ".", " ", "'", "·", " ", ".", " "],
+    "Storm Drain": [" ", "·", ".", " ", "░", " ", "·", ".", " ", "░"],
 }
 
 # Default ground for unknown locations
@@ -56,13 +66,15 @@ DEFAULT_GROUND_CHARS = [" ", " ", "·", " ", ".", " ", "'", " ", " ", " "]
 # Each decoration: (art_chars, weight) - weight is how common it is
 LOCATION_DECORATIONS: Dict[str, List[Tuple[str, int]]] = {
     "Home Pond": [
-        # Lily pads, reeds, and cozy elements - clean and peaceful
-        ("◎", 6),        # Lily pad (main feature)
-        ("♦", 4),        # Lily flower
-        ("·", 8),        # Gentle water sparkle
-        ("'", 5),        # Water reflection
-        ("~", 3),        # Gentle ripple
-        ("°", 3),        # Cozy glow/firefly
+        # Mix of grass, shore, and water elements
+        ("'", 8),        # Grass blades (land)
+        (".", 6),        # Short grass (land)
+        (",", 5),        # Pebbles on shore (transition)
+        ("~", 6),        # Water ripples (water)
+        ("·", 5),        # Water sparkle (water)
+        ("◎", 4),        # Lily pad (water)
+        ("♦", 2),        # Lily flower (water)
+        ("°", 2),        # Firefly/glow (land)
     ],
     "Deep End": [
         ("~", 8),        # Deep water
@@ -173,6 +185,56 @@ LOCATION_DECORATIONS: Dict[str, List[Tuple[str, int]]] = {
         ("⚓", 1),        # Anchor (rare)
         ("·", 4),        # Sand
     ],
+    # Swamp decorations
+    "Misty Marsh": [
+        ("~", 7),        # Murky water
+        ("≈", 5),        # Ripples
+        ("°", 6),        # Firefly glow
+        ("·", 4),        # Mist particle
+        ("♣", 3),        # Bog plant
+        ("∩", 2),        # Mushroom
+    ],
+    "Cypress Hollow": [
+        ("│", 7),        # Tree trunk
+        ("♣", 5),        # Moss clump
+        ("~", 4),        # Water
+        ("°", 5),        # Firefly
+        ("·", 3),        # Spore
+        ("≈", 3),        # Spanish moss
+    ],
+    "Sunken Ruins": [
+        ("░", 5),        # Stone
+        ("▓", 3),        # Dark stone
+        ("~", 6),        # Water
+        ("≈", 4),        # Murk
+        ("○", 2),        # Ancient artifact
+        ("·", 3),        # Debris
+    ],
+    # Urban decorations
+    "Park Fountain": [
+        ("·", 6),        # Pavement
+        ("~", 4),        # Fountain water
+        ("♣", 3),        # Bush
+        ("'", 5),        # Grass
+        ("○", 2),        # Coin
+        ("✿", 2),        # Flower bed
+    ],
+    "Rooftop Garden": [
+        ("♣", 6),        # Potted plant
+        ("✿", 4),        # Flower
+        ("'", 5),        # Grass
+        ("□", 3),        # Planter box
+        ("·", 4),        # Gravel
+        ("○", 2),        # Pot
+    ],
+    "Storm Drain": [
+        ("░", 6),        # Concrete
+        ("~", 4),        # Water trickle
+        ("▓", 3),        # Dark area
+        ("○", 2),        # Lost item
+        ("·", 5),        # Grit
+        ("≈", 3),        # Flow
+    ],
 }
 
 DEFAULT_DECORATIONS = [
@@ -189,18 +251,22 @@ DEFAULT_DECORATIONS = [
 # Large scenery pieces that get placed in specific spots
 LOCATION_SCENERY: Dict[str, List[List[str]]] = {
     "Home Pond": [
-        # Cozy reed cluster
-        ["  │ │ │  ", "  │ │ │  ", "  ψ ψ ψ  "],
-        # Lily pad cluster (the centerpiece)
-        ["    ◎ ◎ ◎    ", "  ◎ ♦ ◎ ♦ ◎  ", "    ◎ ◎ ◎    "],
-        # Small cozy dock
-        ["  ═══════  ", "  │     │  "],
-        # Cattail corner
+        # Shore with grass and pebbles (left/land side)
+        ["' ' ' ' ' '", ".,.,.,.,.,."],
+        # Grassy patch on shore
+        [" ' ' ' ' ", "' ' ' ' '", " ' ' ' ' "],
+        # Shore edge transition (sand/pebbles)
+        [".,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,."[:40]],
+        # Pond water with lily pads
+        ["  ~  ◎  ~  ◎  ~  ", " ~ ◎ ♦ ◎ ~ ◎ ~ ", "  ~  ◎  ~  ◎  ~  "],
+        # Reed cluster at water's edge
+        ["│ │ │", "│ │ │", "ψ ψ ψ"],
+        # Cozy dock extending into water
+        ["═══════", "│     │", "└─────┘"],
+        # Cattails on shore
         ["│ │ │ │", "│ │ │ │", "ψ ψ ψ ψ"],
-        # Calm water spot
-        ["  ~ · ~  ", " ~ · · ~ ", "  ~ · ~  "],
-        # Firefly lantern (cozy nighttime)
-        ["  ╭─╮  ", "  │°│  ", "  ╰─╯  "],
+        # Small flower patch on grassy area
+        [" ✿ · ✿ ", "' ' ' '"],
     ],
     "Forest Edge": [
         # Large tree left side
@@ -296,6 +362,66 @@ LOCATION_SCENERY: Dict[str, List[List[str]]] = {
         # Cargo
         ["  ○ ○  ", " ═══ "],
     ],
+    # Swamp scenery
+    "Misty Marsh": [
+        # Fog bank
+        ["  ░ ░ ░ ░  ", " ░ ░ ░ ░ ░ "],
+        # Firefly cluster
+        [" ° · ° ", "· ° · °"],
+        # Murky pool
+        ["  ≈≈≈≈≈  ", " ~≈≈≈≈≈~ "],
+        # Dead tree
+        ["   ╱╲   ", "  ╱  ╲  ", "    ║    "],
+    ],
+    "Cypress Hollow": [
+        # Twisted cypress tree
+        ["  ≈≈≈≈  ", " ╱║║║╲ ", "  ║║║  ", "  ║║║  "],
+        # Spanish moss
+        ["≈ ≈ ≈ ≈", " ≈ ≈ ≈ "],
+        # Hollow log
+        ["╭═════╮", "│ °°° │", "╰═════╯"],
+        # Firefly lanterns
+        ["  °   °  ", " ° ° ° ° "],
+    ],
+    "Sunken Ruins": [
+        # Broken column
+        ["  ╔═╗  ", "  ║░║  ", "  ╚═╝  ", " ░ ░ ░ "],
+        # Submerged arch
+        ["╔═════╗", "║ ~~~ ║", "╨     ╨"],
+        # Ancient stones
+        [" ░ ▓ ░ ", "▓ ░ ▓ ░"],
+    ],
+    # Urban scenery
+    "Park Fountain": [
+        # Fountain
+        ["  ╭─╮  ", " ╭┴─┴╮ ", " │~~~│ ", " ╰═══╯ "],
+        # Park bench
+        ["╭─────╮", "│     │", "╰┬───┬╯"],
+        # Flower bed border
+        ["✿ ✿ ✿ ✿", "═══════"],
+        # Lamp post
+        ["  ○  ", "  │  ", "  │  "],
+    ],
+    "Rooftop Garden": [
+        # Planter boxes
+        ["┌───┐ ┌───┐", "│♣♣♣│ │✿✿✿│", "└───┘ └───┘"],
+        # Trellis
+        ["╳ ╳ ╳ ╳", "♣ ♣ ♣ ♣"],
+        # Potted plant
+        ["  ♣♣♣  ", "  │ │  ", " ╰───╯ "],
+        # City view
+        ["▓ ▓ ▓ ▓", "░░░░░░░"],
+    ],
+    "Storm Drain": [
+        # Grate
+        ["╔═╤═╤═╗", "║ │ │ ║", "╚═╧═╧═╝"],
+        # Tunnel
+        ["╔═════╗", "║░░░░░║", "║░░░░░║"],
+        # Debris pile
+        [" ○ ▓ ○ ", "░▓ ░ ▓░"],
+        # Water flow
+        ["~~~≈≈≈~~~", " ~~~≈~~~ "],
+    ],
 }
 
 
@@ -307,11 +433,12 @@ def _get_location_colors(location: str) -> Dict[str, Callable]:
     """Get color functions for a location's elements."""
     colors = {
         "Home Pond": {
-            "ground": lambda s: _term.blue(s),
-            "water": lambda s: _term.bright_cyan(s),
-            "plant": lambda s: _term.bright_green(s),
+            "ground": lambda s: _term.green(s),      # Grassy land
+            "water": lambda s: _term.bright_cyan(s), # Pond water
+            "plant": lambda s: _term.bright_green(s),# Grass and plants
             "accent": lambda s: _term.bright_yellow(s),
-            "scenery": lambda s: _term.green(s),
+            "scenery": lambda s: _term.green(s),     # Shore elements
+            "shore": lambda s: _term.color(229)(s),  # Sandy shore edge
         },
         "Deep End": {
             "ground": lambda s: _term.color(24)(s),  # Dark blue
@@ -404,6 +531,49 @@ def _get_location_colors(location: str) -> Dict[str, Callable]:
             "wood": lambda s: _term.color(130)(s),
             "accent": lambda s: _term.color(220)(s),  # Gold
             "scenery": lambda s: _term.color(130)(s),
+        },
+        # Swamp colors - murky greens and mysterious glows
+        "Misty Marsh": {
+            "ground": lambda s: _term.color(22)(s),   # Dark green
+            "water": lambda s: _term.color(23)(s),    # Murky teal
+            "plant": lambda s: _term.color(28)(s),    # Swamp green
+            "accent": lambda s: _term.bright_yellow(s),  # Firefly glow
+            "scenery": lambda s: _term.color(22)(s),
+        },
+        "Cypress Hollow": {
+            "ground": lambda s: _term.color(58)(s),   # Brown-green
+            "water": lambda s: _term.color(23)(s),    # Dark teal
+            "plant": lambda s: _term.color(28)(s),    # Moss green
+            "accent": lambda s: _term.bright_yellow(s),  # Firefly
+            "scenery": lambda s: _term.color(65)(s),  # Muted green
+        },
+        "Sunken Ruins": {
+            "ground": lambda s: _term.color(236)(s),  # Dark stone
+            "water": lambda s: _term.color(23)(s),    # Murky
+            "stone": lambda s: _term.color(244)(s),   # Gray stone
+            "accent": lambda s: _term.cyan(s),        # Ancient glow
+            "scenery": lambda s: _term.color(244)(s),
+        },
+        # Urban colors - grays and city tones
+        "Park Fountain": {
+            "ground": lambda s: _term.color(250)(s),  # Pavement gray
+            "water": lambda s: _term.bright_cyan(s),  # Clean water
+            "plant": lambda s: _term.bright_green(s), # Maintained plants
+            "accent": lambda s: _term.bright_yellow(s),  # Coins
+            "scenery": lambda s: _term.color(250)(s),
+        },
+        "Rooftop Garden": {
+            "ground": lambda s: _term.color(240)(s),  # Concrete
+            "plant": lambda s: _term.bright_green(s), # Healthy plants
+            "flower": lambda s: _term.bright_magenta(s),
+            "accent": lambda s: _term.bright_yellow(s),
+            "scenery": lambda s: _term.green(s),
+        },
+        "Storm Drain": {
+            "ground": lambda s: _term.color(236)(s),  # Dark concrete
+            "water": lambda s: _term.color(24)(s),    # Dim water
+            "accent": lambda s: _term.bright_yellow(s),  # Lost treasures
+            "scenery": lambda s: _term.color(240)(s),
         },
     }
     return colors.get(location, {
@@ -648,16 +818,21 @@ def get_decoration_color(location: str, char: str) -> Optional[Callable]:
     if char == "°":
         return _term.bright_yellow  # Firefly/glow
     
-    # Flowers
-    if char in "✿❀✾":
-        colors = [_term.bright_yellow, _term.bright_magenta, _term.bright_red, 
-                  _term.bright_cyan, _term.bright_white]
-        return random.choice(colors)
+    # Flowers - stable colors (no flashing)
+    if char == "✿":
+        return _term.bright_magenta
+    if char == "❀":
+        return _term.bright_yellow
+    if char == "✾":
+        return _term.bright_red
     
-    # Crystals
-    if char in "✦✧◆":
-        colors = [_term.bright_cyan, _term.bright_magenta, _term.bright_white]
-        return random.choice(colors)
+    # Crystals - stable colors
+    if char == "✦":
+        return _term.bright_cyan
+    if char == "✧":
+        return _term.bright_white
+    if char == "◆":
+        return _term.bright_magenta
     
     # Rocks/pebbles
     if char in "○◎∘":
@@ -687,7 +862,7 @@ def get_decoration_color(location: str, char: str) -> Optional[Callable]:
 def get_ground_color(location: str) -> Optional[Callable]:
     """Get the ground/background color for a location."""
     ground_colors = {
-        "Home Pond": _term.color(24),       # Dark blue (water)
+        "Home Pond": _term.color(22),       # Green-blue (grassy shore with pond)
         "Deep End": _term.color(17),        # Darker blue
         "Forest Edge": _term.color(22),     # Dark green (forest floor)
         "Ancient Oak": _term.color(94),     # Brown earth
@@ -702,6 +877,14 @@ def get_ground_color(location: str) -> Optional[Callable]:
         "Crystal Cave": _term.color(234),   # Very dark
         "Sandy Shore": _term.color(229),    # Sandy yellow
         "Shipwreck Cove": _term.color(180), # Sandy
+        # Swamp locations
+        "Misty Marsh": _term.color(22),     # Dark murky green
+        "Cypress Hollow": _term.color(58),  # Brown-green swamp
+        "Sunken Ruins": _term.color(236),   # Dark stone
+        # Urban locations
+        "Park Fountain": _term.color(250),  # Light gray pavement
+        "Rooftop Garden": _term.color(240), # Concrete gray
+        "Storm Drain": _term.color(234),    # Very dark
     }
     return ground_colors.get(location)
 

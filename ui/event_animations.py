@@ -863,9 +863,9 @@ class BreezeAnimator(EventAnimator):
             duration=4.0
         )
         
-        # Breeze particles
+        # Breeze particles - ASCII-safe characters for consistent width
         self.particles: List[Tuple[float, float, str]] = []
-        self.particle_chars = ["~", "≈", "∿", "⌇", "·", "°", "🍃"]
+        self.particle_chars = ["~", "-", "=", "'", ".", "*", "+"]
         
         # Spawn initial particles
         for _ in range(15):

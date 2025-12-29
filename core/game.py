@@ -3022,12 +3022,12 @@ class Game:
         # Build menu items
         items = []
         for area in available:
-            danger = area.danger_level / 5.0
-            danger_str = "🟢" if danger < 0.3 else "🟡" if danger < 0.6 else "🔴"
+            # Show biome type as description
+            biome_name = area.biome.value.replace("_", " ").title() if hasattr(area, 'biome') else "Unknown"
             items.append({
                 'id': area.biome.value if hasattr(area, 'biome') else area.name,
-                'label': f"{danger_str} {area.name}",
-                'description': f"Danger: {'Low' if danger < 0.3 else 'Medium' if danger < 0.6 else 'High'}",
+                'label': f"  {area.name}",
+                'description': f"{biome_name}",
                 'enabled': True,
                 'data': area
             })
