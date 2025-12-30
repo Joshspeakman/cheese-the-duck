@@ -62,9 +62,15 @@ class VisitorDialogueManager:
         self.friend_name: str = "Friend"
         self.unlocked_topics: set = set()
         self.visit_number: int = 1
+        # NEW: Memory for tracking conversation history
+        self.conversation_topics: List[str] = []  # What we've discussed before
+        self.shared_experiences: List[str] = []  # What we've done together
+        self.last_conversation_summary: str = ""  # What we talked about last time
         
     def start_visit(self, personality: str, friendship_level: str, 
-                    friend_name: str, visit_number: int, unlocked_topics: set = None):
+                    friend_name: str, visit_number: int, unlocked_topics: set = None,
+                    conversation_topics: List[str] = None, shared_experiences: List[str] = None,
+                    last_conversation_summary: str = ""):
         """Initialize for a new visit."""
         self.state = ConversationState()
         self.state.phase = ConversationPhase.GREETING
@@ -73,10 +79,23 @@ class VisitorDialogueManager:
         self.friend_name = friend_name
         self.visit_number = visit_number
         self.unlocked_topics = unlocked_topics or set()
+        self.state.visit_count = visit_number
+        # Store memory
+        self.conversation_topics = conversation_topics or []
+        self.shared_experiences = shared_experiences or []
+        self.last_conversation_summary = last_conversation_summary
         
     def get_next_dialogue(self, duck_name: str = "friend") -> Optional[str]:
         """Get the next line of dialogue based on current state."""
         dialogue_tree = DIALOGUE_TREES.get(self.personality, {})
+        
+        # Special handling for greetings when we've met before
+        if self.state.phase == ConversationPhase.GREETING and self.visit_number > 1:
+            returning_greeting = self._get_returning_greeting(duck_name)
+            if returning_greeting:
+                self.state.lines_said.append(returning_greeting)
+                return returning_greeting
+        
         phase_dialogue = dialogue_tree.get(self.state.phase.value, [])
         
         # Filter to lines we can say
@@ -152,6 +171,110 @@ class VisitorDialogueManager:
     def is_conversation_over(self) -> bool:
         """Check if the conversation has ended."""
         return self.state.phase == ConversationPhase.FAREWELL and len(self.state.lines_said) > 5
+    
+    def _get_returning_greeting(self, duck_name: str) -> Optional[str]:
+        """Get a special greeting for returning visitors that references past visits."""
+        import random
+        
+        # Only use this sometimes to add variety
+        if random.random() > 0.7:
+            return None
+        
+        greetings = []
+        
+        # Reference shared experiences
+        if self.shared_experiences:
+            recent_exp = self.shared_experiences[-1] if self.shared_experiences else None
+            exp_greetings = {
+                "adventurous": [
+                    f"*arrives* {duck_name}! Remember when we {recent_exp}? Still thinking about that.",
+                    f"Back again! That {recent_exp} thing we did... I've told everyone.",
+                    f"*waves* {duck_name}! So about that {recent_exp}... any more adventures planned?",
+                ],
+                "scholarly": [
+                    f"*adjusts glasses* Ah, {duck_name}! I've been analyzing our {recent_exp} experience.",
+                    f"{duck_name}! I documented everything from when we {recent_exp}. Fascinating data.",
+                    f"*opens notebook* Our {recent_exp}... I have follow-up questions.",
+                ],
+                "artistic": [
+                    f"*twirls* {duck_name}! That {recent_exp}... it INSPIRED me!",
+                    f"There you are! I painted a mural about when we {recent_exp}.",
+                    f"*gestures dramatically* {duck_name}! Our {recent_exp} was pure art!",
+                ],
+                "playful": [
+                    f"*bounces* {duck_name}! {duck_name}! That {recent_exp} was SO FUN!",
+                    f"HI AGAIN! Remember {recent_exp}? Let's do that AGAIN!",
+                    f"*giggles* Our {recent_exp}... best day EVER! Well, second best. Today could be better!",
+                ],
+                "mysterious": [
+                    f"*appears* {duck_name}... The stars aligned again. Like when we {recent_exp}...",
+                    f"Our {recent_exp}... the spirits still speak of it.",
+                    f"*cryptic nod* Fate brought me back. Perhaps to recreate our {recent_exp}...",
+                ],
+                "generous": [
+                    f"*hugs* {duck_name}! I've thought about our {recent_exp} every day!",
+                    f"There's my favorite friend! That {recent_exp}... I brought something to celebrate!",
+                    f"*beams* Remember our {recent_exp}? Made me so happy!",
+                ],
+                "foodie": [
+                    f"*sniffs* {duck_name}! That {recent_exp}... but more importantly, what's for lunch?",
+                    f"Back for more! That {recent_exp} worked up quite an appetite.",
+                    f"*belly rumbles* {duck_name}! After that {recent_exp}, I dreamed about food here.",
+                ],
+                "athletic": [
+                    f"*jogs over* {duck_name}! Ready to top our {recent_exp}?",
+                    f"Champion! That {recent_exp}... let's go bigger!",
+                    f"*stretches* Our {recent_exp}... good training. Let's level up!",
+                ],
+            }
+            if self.personality in exp_greetings and recent_exp:
+                greetings.extend(exp_greetings[self.personality])
+        
+        # Reference visit count
+        if self.visit_number > 3:
+            count_greetings = {
+                "adventurous": [
+                    f"*arrives* Visit number {self.visit_number}. I've been counting. Don't judge me, {duck_name}.",
+                    f"{duck_name}! I keep coming back. This place is on all my maps now.",
+                ],
+                "scholarly": [
+                    f"*adjusts glasses* Visit {self.visit_number}, {duck_name}. I'm collecting data.",
+                    f"{duck_name}! My studies bring me back. You're a fascinating subject.",
+                ],
+                "artistic": [
+                    f"*dramatically* {duck_name}! My muse calls me back again!",
+                    f"Visit {self.visit_number}! Each one more inspiring than the last!",
+                ],
+                "playful": [
+                    f"*spins* {duck_name}! I missed you SO MUCH! Again!",
+                    f"HIII! I can't stay away! This is too fun!",
+                ],
+                "mysterious": [
+                    f"*appears* We meet again, {duck_name}. As foretold.",
+                    f"The threads of fate keep weaving us together...",
+                ],
+                "generous": [
+                    f"*waves excitedly* My dear {duck_name}! I couldn't stay away!",
+                    f"Back again with gifts! You deserve ALL the visits!",
+                ],
+                "foodie": [
+                    f"*sniffs air* {duck_name}! The crumbs here... I dream about them.",
+                    f"I keep coming back. Your pond has the BEST food!",
+                ],
+                "athletic": [
+                    f"*runs in* Training partner! Ready for round {self.visit_number}?",
+                    f"{duck_name}! Our workouts are the highlight of my week!",
+                ],
+            }
+            if self.personality in count_greetings:
+                greetings.extend(count_greetings[self.personality])
+        
+        # Pick one if we have any
+        if greetings:
+            text = random.choice(greetings)
+            return f"{self.friend_name}: {text}"
+        
+        return None
     
     def get_farewell(self, duck_name: str) -> str:
         """Get a farewell message."""

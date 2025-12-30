@@ -288,6 +288,10 @@ The game will prefer Ollama if available, otherwise uses the bundled model.
 
 ## Controls
 
+**[TAB]** opens the **Main Menu** - navigate with arrow keys, Enter to select, ESC to go back.
+
+Quick shortcuts still work for common actions:
+
 ```
 ┌─────────────────────────────────────┐
 │          DUCK CARE                  │
@@ -307,6 +311,7 @@ The game will prefer Ollama if available, otherwise uses the bundled model.
 │    C    │  Crafting menu            │
 │    R    │  Building menu            │
 │    V    │  Decorations/Furniture    │
+│    <    │  Trading Post             │
 │    U    │  Use/interact with items  │
 └─────────┴───────────────────────────┘
 
@@ -324,8 +329,8 @@ The game will prefer Ollama if available, otherwise uses the bundled model.
 │         ACTIVITIES                  │
 ├─────────┬───────────────────────────┤
 │    J    │  Mini-games menu          │
+│    7    │  Tricks (teach/perform)   │
 │    9    │  Garden (plant/harvest)   │
-│    X    │  Tricks (teach/perform)   │
 │    0    │  Festivals                │
 │    =    │  Enhanced Diary           │
 │    ;    │  Take Photo               │
@@ -334,10 +339,11 @@ The game will prefer Ollama if available, otherwise uses the bundled model.
 ┌─────────────────────────────────────┐
 │       COLLECTIONS & LEGACY          │
 ├─────────┬───────────────────────────┤
-│    -    │  Collectibles Album       │
+│    '    │  Collectibles Album       │
 │    8    │  Prestige/Legacy          │
 │    ~    │  Titles & Nicknames       │
 │    Y    │  Scrapbook                │
+│    \    │  Secrets Book             │
 └─────────┴───────────────────────────┘
 
 ┌─────────────────────────────────────┐
@@ -346,6 +352,7 @@ The game will prefer Ollama if available, otherwise uses the bundled model.
 │    K    │  Random duck fact         │
 │  M / N  │  Toggle sound/music       │
 │  + / -  │  Volume control           │
+│    /    │  Save Slots               │
 │    H    │  Help                     │
 │    Q    │  Save & quit              │
 └─────────┴───────────────────────────┘

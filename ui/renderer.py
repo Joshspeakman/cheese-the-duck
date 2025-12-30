@@ -155,6 +155,12 @@ class DuckPosition:
         self._state_animation_timer = 0.0  # Timer for state-specific animations
         self._state_duration = 0.0  # How long to stay in this state
         self._state_start_time = 0.0  # When the state started
+        
+        # Movement callback support for animated interactions
+        self._movement_callback = None  # Called when duck reaches target
+        self._movement_callback_data = None  # Data to pass to callback
+        self._is_directed_movement = False  # True if moving to specific target (not wandering)
+        self._original_position = None  # For returning after interaction
 
     # All states that support animation frame cycling
     # Only includes states that exist for all growth stages
@@ -191,8 +197,8 @@ class DuckPosition:
                     self._state_duration = 0
             return  # Don't wander while in special state
 
-        # Randomly pick new target when idle
-        if self._state == "idle" and self._idle_timer > random.uniform(3, 8):
+        # Randomly pick new target when idle (but not during directed movement)
+        if self._state == "idle" and not self._is_directed_movement and self._idle_timer > random.uniform(3, 8):
             if random.random() < 0.6:  # 60% chance to wander
                 self._pick_new_target()
                 self._idle_timer = 0
@@ -219,10 +225,22 @@ class DuckPosition:
                 elif self.y > self.target_y:
                     self.y -= 1
         else:
+            # Reached target
             self.is_moving = False
             if self._state == "walking":
                 self._state = "idle"
                 self._idle_timer = 0
+            
+            # Handle movement callback for directed movement
+            if self._is_directed_movement and self._movement_callback:
+                callback = self._movement_callback
+                callback_data = self._movement_callback_data
+                # Clear callback before calling to prevent re-triggering
+                self._movement_callback = None
+                self._movement_callback_data = None
+                self._is_directed_movement = False
+                # Execute callback
+                callback(callback_data)
 
     def _pick_new_target(self):
         """Pick a random target position."""
@@ -232,6 +250,61 @@ class DuckPosition:
         max_y = max(margin, self.field_height - margin - 3)
         self.target_x = random.randint(margin, max_x)
         self.target_y = random.randint(margin, max_y)
+
+    def move_to(self, target_x: int, target_y: int, callback=None, callback_data=None, save_original: bool = True):
+        """
+        Move duck to specific target position with optional callback when reached.
+        
+        Args:
+            target_x: Target x position in playfield coordinates
+            target_y: Target y position in playfield coordinates  
+            callback: Function to call when duck reaches target (receives callback_data)
+            callback_data: Data to pass to callback function
+            save_original: If True, save current position to return to later
+        """
+        # Clamp to field bounds
+        margin = 2
+        max_x = max(margin, self.field_width - margin - 6)
+        max_y = max(margin, self.field_height - margin - 3)
+        target_x = max(margin, min(target_x, max_x))
+        target_y = max(margin, min(target_y, max_y))
+        
+        # Save original position for potential return
+        if save_original and self._original_position is None:
+            self._original_position = (self.x, self.y)
+        
+        self.target_x = target_x
+        self.target_y = target_y
+        self._movement_callback = callback
+        self._movement_callback_data = callback_data
+        self._is_directed_movement = True
+        self._state = "walking"
+        self.is_moving = True
+        
+        # Face the right direction
+        self.facing_right = target_x >= self.x
+
+    def return_to_original(self, callback=None, callback_data=None):
+        """Move duck back to its original position before directed movement."""
+        if self._original_position:
+            orig_x, orig_y = self._original_position
+            self._original_position = None  # Clear so we don't save new position
+            self.move_to(orig_x, orig_y, callback, callback_data, save_original=False)
+        else:
+            # No original position, just stay put
+            if callback:
+                callback(callback_data)
+
+    def cancel_movement(self):
+        """Cancel any pending directed movement and callbacks."""
+        self._movement_callback = None
+        self._movement_callback_data = None
+        self._is_directed_movement = False
+        self._original_position = None
+        self.target_x = self.x
+        self.target_y = self.y
+        self.is_moving = False
+        self._state = "idle"
 
     def set_state(self, state: str, duration: float = 3.0):
         """Set duck state for animation."""
@@ -247,6 +320,10 @@ class DuckPosition:
             self.target_x = self.x
             self.target_y = self.y
             self.is_moving = False
+            # Clear directed movement and callbacks if we're entering a special state
+            self._is_directed_movement = False
+            self._movement_callback = None
+            self._movement_callback_data = None
 
     def get_state(self) -> str:
         return self._state
@@ -591,12 +668,14 @@ class Renderer:
         # Build the frame
         output = []
 
-        # Header spanning full width - include currency and weather if available
+        # Header spanning full width - include currency, weather, and season if available
         currency = game.habitat.currency if hasattr(game, 'habitat') else 0
         weather_info = None
+        season_info = None
         if hasattr(game, 'atmosphere') and game.atmosphere:
             weather_info = game.atmosphere.current_weather
-        output.extend(self._render_header_bar(duck, width, currency, weather_info))
+            season_info = game.atmosphere.current_season
+        output.extend(self._render_header_bar(duck, width, currency, weather_info, season_info=season_info))
 
         # Get equipped cosmetics and placed items from habitat
         equipped_cosmetics = game.habitat.equipped_cosmetics if hasattr(game, 'habitat') else {}
@@ -648,11 +727,13 @@ class Renderer:
         # Check for expired celebration
         self._check_celebration_expired()
 
-        # Overlays (help, stats, inventory, celebration, item interaction)
+        # Overlays (help, stats, inventory, celebration, item interaction, fishing)
         if self._show_celebration:
             output = self._overlay_celebration(output, width)
         elif hasattr(game, '_item_interaction_active') and game._item_interaction_active:
             output = self._overlay_item_interaction(output, game, width)
+        elif hasattr(game, 'fishing') and game.fishing.is_fishing:
+            output = self._overlay_fishing(output, game, width)
         elif self._show_help:
             output = self._overlay_help(output, width)
         elif self._show_stats:
@@ -677,8 +758,8 @@ class Renderer:
                 # End each line with terminal reset to prevent color bleeding
                 print(self.term.move(i, 0) + padded + self.term.normal, end="")
 
-    def _render_header_bar(self, duck: "Duck", width: int, currency: int = 0, weather=None, time_info=None) -> List[str]:
-        """Render the top header bar with weather and time info."""
+    def _render_header_bar(self, duck: "Duck", width: int, currency: int = 0, weather=None, time_info=None, season_info=None) -> List[str]:
+        """Render the top header bar with weather, season, and time info."""
         from datetime import datetime
 
         mood = duck.get_mood()
@@ -699,6 +780,14 @@ class Renderer:
             "miserable": "[T_T]",
         }
         mood_ind = mood_indicators.get(mood.state.value, "[...]")
+
+        # Season icons and names
+        season_data = {
+            "spring": ("~*~", "Spring"),
+            "summer": ("-*-", "Summer"),
+            "fall": ("{~}", "Fall"),
+            "winter": ("*.*", "Winter"),
+        }
 
         # Weather icons and names
         weather_data = {
@@ -724,11 +813,17 @@ class Renderer:
             "late_night": ("o", "Late Night"),
         }
 
+        # Build season string with icon and label
+        season_part = ""
+        if season_info:
+            s_icon, s_name = season_data.get(season_info.value, ("", ""))
+            season_part = f"{s_icon} {s_name}"
+
         # Build weather string with icon and label
         weather_part = ""
         if weather:
             w_icon, w_name = weather_data.get(weather.weather_type.value, ("?", "Unknown"))
-            weather_part = f" {w_icon} {w_name} "
+            weather_part = f"{w_icon} {w_name}"
 
         # Build time string with icon, time, and period
         now = datetime.now()
@@ -766,10 +861,14 @@ class Renderer:
         # Create bordered header
         inner_width = width - 2
 
-        # Simplified format: Name | Weather Time | Mood Age $Money
+        # Simplified format: Name | Season Weather | Time | Mood Age $Money
         left_side = f" {name_part} "
-        if weather_part:
-            left_side += f"| {weather_part.strip()}"
+        if season_part or weather_part:
+            left_side += "|"
+            if season_part:
+                left_side += f" {season_part}"
+            if weather_part:
+                left_side += f" {weather_part}"
         left_side += f" | {time_part.strip()}"
 
         right_side = f"{mood_part} {age_part} {coin_part} "
@@ -1389,7 +1488,7 @@ class Renderer:
             lines.append(BOX["v"] + " " * inner_width + BOX["v"])
         else:
             # Default hint text
-            hint = " Press [H] for help "
+            hint = " [TAB] Menu | [H] Help | [Q] Quit "
             lines.append(BOX["v"] + hint.center(inner_width)[:inner_width] + BOX["v"])
             lines.append(BOX["v"] + " " * inner_width + BOX["v"])
 
@@ -1402,7 +1501,7 @@ class Renderer:
         inner_width = width - 2
 
         # Compact controls hint
-        controls = " [H]elp for shortcuts | [M]ute | [+/-] Volume | [Q]uit "
+        controls = " [TAB] Menu | [H]elp | [M]ute | [+/-] Volume | [Q]uit "
 
         lines = [
             BOX["tl"] + BOX["h"] * inner_width + BOX["tr"],
@@ -1748,6 +1847,48 @@ class Renderer:
         ]
 
         return self._overlay_box(base_output, talk_text, "TALK", width)
+
+    def _overlay_fishing(self, base_output: List[str], game: "Game", width: int) -> List[str]:
+        """Overlay fishing minigame status."""
+        fishing = game.fishing
+        
+        # ASCII fishing animation
+        fishing_art = [
+            "         \\  |  /",
+            "          \\ | /",
+            "     ~~~~~~\\|/~~~~~~",
+            "    ~~~~~~~~~~~~~~~~~",
+            "   ~~~~~~~~~~~~~~~~~~~",
+        ]
+        
+        fish_text = []
+        fish_text.append("-o FISHING -o")
+        fish_text.append("")
+        
+        # Add fishing art
+        for line in fishing_art:
+            fish_text.append(line)
+        
+        fish_text.append("")
+        
+        # Status based on fishing state
+        if fishing.hooked_fish:
+            fish_text.append("  !! FISH ON THE LINE !!")
+            fish_text.append("")
+            fish_text.append("  Press [SPACE] to REEL IN!")
+        else:
+            fish_text.append("  Waiting for a bite...")
+            fish_text.append("")
+            fish_text.append("  [SPACE] Reel in when hooked")
+        
+        fish_text.append("")
+        fish_text.append("-" * 28)
+        fish_text.append(f"  Spot: {fishing.current_spot.value if fishing.current_spot else 'Unknown'}")
+        fish_text.append(f"  Fish Caught: {fishing.total_catches}")
+        fish_text.append("")
+        fish_text.append("  [Q] or [ESC] to stop fishing")
+        
+        return self._overlay_box(base_output, fish_text, "FISHING", width)
 
     def _overlay_message(self, base_output: List[str], width: int) -> List[str]:
         """Overlay message box."""

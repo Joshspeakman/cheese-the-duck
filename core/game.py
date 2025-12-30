@@ -86,6 +86,18 @@ from ui.event_animations import (
 from ui.badges import BadgesSystem, badges_system
 from ui.mood_visuals import MoodVisualEffects, mood_visual_effects
 from ui.reactions import DuckReactionController, init_reaction_controller
+from ui.menu_selector import HierarchicalMenuSelector
+from ui.menu_structure import build_main_menu_categories, MENU_ACTIONS
+
+from enum import Enum, auto
+
+
+class InteractionPhase(Enum):
+    """Phases for animated duck-to-target interactions."""
+    IDLE = auto()           # No interaction in progress
+    MOVING_TO_TARGET = auto()  # Duck is waddling to item/friend/location
+    INTERACTING = auto()    # Duck has arrived and is playing interaction animation
+    RETURNING = auto()      # Duck is returning to original position (optional)
 
 
 class Game:
@@ -157,6 +169,11 @@ class Game:
         self._minigames_menu = MenuSelector("MINI-GAMES", close_keys=['KEY_ESCAPE', 'j'])
         self._quests_menu = MenuSelector("QUESTS", close_keys=['KEY_ESCAPE', 'o'])
         self._weather_menu = MenuSelector("WEATHER ACTIVITIES", close_keys=['KEY_ESCAPE', 'w'])
+
+        # Main hierarchical menu (TAB to open)
+        self._main_menu = HierarchicalMenuSelector("Main Menu")
+        self._main_menu.set_categories(build_main_menu_categories())
+        self._main_menu_open = False
 
         # Backwards compatibility flags (computed from menu state)
         self._crafting_menu_open = False  # Flag for crafting menu
@@ -251,6 +268,13 @@ class Game:
         # Save Management
         self.save_slots: SaveSlotsSystem = save_slots_system
         # ============== END NEW FEATURE SYSTEMS ==============
+        
+        # Animated interaction state machine
+        self._interaction_phase = InteractionPhase.IDLE
+        self._interaction_target_item = None  # Item being interacted with
+        self._interaction_target_friend = None  # Friend being visited
+        self._interaction_target_pos = None  # Target position (x, y) in playfield coords
+        self._interaction_pending_result = None  # InteractionResult waiting for duck arrival
         
         # Item interaction animation state
         self._item_interaction_active = False
@@ -369,6 +393,9 @@ class Game:
             return
         if self._weather_menu_open:
             self._handle_weather_input_direct(key)
+            return
+        if self._main_menu_open:
+            self._handle_main_menu_input(key)
             return
         if self._debug_menu_open:
             self._handle_debug_input(key)
@@ -626,6 +653,108 @@ class Game:
             self.renderer.dismiss_message()
             return
 
+    def _handle_main_menu_input(self, key):
+        """Handle input while main menu is open."""
+        key_str = str(key).lower() if not key.is_sequence else str(key)
+        key_name = key.name if hasattr(key, 'name') else ""
+
+        # Let the hierarchical menu handle the key
+        handled = self._main_menu.handle_key(key_str, key_name)
+
+        if self._main_menu.was_action_selected():
+            # An action was selected - execute it
+            action_id = self._main_menu.get_selected_action()
+            self._main_menu_open = False
+            self.renderer.dismiss_message()
+            self._execute_menu_action(action_id)
+            return
+
+        if self._main_menu.was_cancelled():
+            # Menu was closed
+            self._main_menu_open = False
+            self.renderer.dismiss_message()
+            return
+
+        if handled:
+            # Navigation occurred - update display
+            self._update_main_menu_display()
+
+    def _update_main_menu_display(self):
+        """Update the main menu display."""
+        lines = self._main_menu.get_display_lines(width=50)
+        self.renderer.show_message("\n".join(lines), duration=0)
+
+    def _execute_menu_action(self, action_id: str):
+        """Execute a menu action by its ID."""
+        if action_id not in MENU_ACTIONS:
+            self.renderer.show_message(f"Unknown action: {action_id}")
+            return
+
+        method_name = MENU_ACTIONS[action_id]
+
+        # Special handling for interaction actions
+        if method_name.startswith("_perform_interaction_"):
+            interaction_type = method_name.replace("_perform_interaction_", "")
+            self._close_all_overlays()
+            self._perform_interaction(interaction_type)
+            return
+
+        # Special handling for toggle methods
+        if method_name == "_toggle_stats":
+            self._close_all_menus()
+            self.renderer.toggle_stats()
+            return
+        if method_name == "_toggle_inventory":
+            self._close_all_menus()
+            self.renderer.toggle_inventory()
+            return
+        if method_name == "_toggle_goals":
+            self._show_goals = not self._show_goals
+            self._render_game()
+            return
+        if method_name == "_toggle_shop":
+            self._close_all_menus()
+            self.renderer.toggle_shop()
+            return
+        if method_name == "_toggle_help":
+            self._close_all_menus()
+            self.renderer.toggle_help()
+            return
+        if method_name == "_toggle_sound":
+            self._toggle_sound_action()
+            return
+        if method_name == "_toggle_music":
+            self._toggle_music_action()
+            return
+        if method_name == "_start_talk_mode":
+            self._close_all_menus()
+            self.renderer.toggle_talk()
+            return
+        if method_name == "_quit_game":
+            self._quit()
+            return
+
+        # Standard method call
+        if hasattr(self, method_name):
+            method = getattr(self, method_name)
+            method()
+        else:
+            self.renderer.show_message(f"Action not implemented: {method_name}")
+
+    def _toggle_sound_action(self):
+        """Toggle sound effects."""
+        from audio.sound import sound_engine
+        sound_engine.toggle_sound()
+        status = "ON" if sound_engine.sound_enabled else "OFF"
+        self.renderer.show_message(f"Sound Effects: {status}")
+
+    def _toggle_music_action(self):
+        """Toggle music."""
+        from audio.sound import sound_engine
+        sound_engine.toggle_music()
+        status = "ON" if sound_engine.music_enabled else "OFF"
+        self.renderer.show_message(f"Music: {status}")
+
     def _purchase_selected_item(self):
         """Purchase the currently selected shop item."""
         item = self.renderer.get_selected_shop_item()
@@ -741,9 +870,29 @@ class Game:
         # Check goals
         self.goals.update_progress("talk", 1)
 
+    def _get_item_playfield_position(self, item_id: str) -> Optional[Tuple[int, int]]:
+        """Get the playfield position of a placed item."""
+        if not hasattr(self, 'habitat') or not self.habitat:
+            return None
+        
+        for placed_item in self.habitat.placed_items:
+            if placed_item.item_id == item_id:
+                # Convert habitat grid coords (0-20, 0-12) to playfield coords
+                # The playfield uses the duck_pos field dimensions
+                field_width = self.renderer.duck_pos.field_width
+                field_height = self.renderer.duck_pos.field_height
+                item_x = int(placed_item.x * field_width / 20)
+                item_y = int(placed_item.y * field_height / 12)
+                return (item_x, item_y)
+        return None
+
     def _execute_item_interaction(self, item_id: str):
-        """Execute an interaction with a placed item."""
+        """Execute an interaction with a placed item (with animated movement)."""
         if not self.duck:
+            return
+        
+        # Check if we're already in an interaction
+        if self._interaction_phase != InteractionPhase.IDLE:
             return
         
         # Build duck state for edge case detection
@@ -757,13 +906,72 @@ class Game:
             "mood": self.duck.get_mood().state.value,
         }
         
-        # Execute the interaction
+        # Execute the interaction to get the result
         result = execute_interaction(item_id, duck_state)
         
         if not result or not result.success:
             self.renderer.show_message("*confused quack* I don't know how to do that...")
             return
         
+        # Get item's playfield position
+        item_pos = self._get_item_playfield_position(item_id)
+        
+        if item_pos:
+            # Animated interaction: waddle to item first
+            self._interaction_phase = InteractionPhase.MOVING_TO_TARGET
+            self._interaction_target_item = item_id
+            self._interaction_target_pos = item_pos
+            self._interaction_pending_result = result
+            
+            # Show anticipation message
+            item = get_shop_item(item_id)
+            item_name = item.name if item else item_id
+            self.renderer.show_message(f"*waddles excitedly toward {item_name}*", duration=2.0)
+            
+            # Move duck to item with callback
+            self.renderer.duck_pos.move_to(
+                item_pos[0], item_pos[1],
+                callback=self._on_arrived_at_item,
+                callback_data={"item_id": item_id, "result": result}
+            )
+        else:
+            # No position found, play animation immediately (fallback)
+            self._complete_item_interaction(item_id, result)
+
+    def _on_arrived_at_item(self, data: dict):
+        """Callback when duck arrives at item position."""
+        item_id = data.get("item_id")
+        result = data.get("result")
+        
+        if not item_id or not result:
+            self._interaction_phase = InteractionPhase.IDLE
+            return
+        
+        # Trigger item's animation (bounce/shake)
+        self._trigger_item_animation(item_id)
+        
+        # Now play the interaction animation
+        self._interaction_phase = InteractionPhase.INTERACTING
+        self._complete_item_interaction(item_id, result)
+
+    def _trigger_item_animation(self, item_id: str):
+        """Trigger the placed item's animation when duck arrives."""
+        if not hasattr(self, 'habitat') or not self.habitat:
+            return
+        
+        for placed_item in self.habitat.placed_items:
+            if placed_item.item_id == item_id:
+                # Choose animation type based on item
+                if "ball" in item_id or "toy" in item_id:
+                    placed_item.start_animation("bounce")
+                elif "pool" in item_id or "water" in item_id:
+                    placed_item.start_animation("shake")
+                else:
+                    placed_item.start_animation("bounce")
+                break
+
+    def _complete_item_interaction(self, item_id: str, result: InteractionResult):
+        """Complete the item interaction after duck arrives."""
         # Get item info for the message
         item = get_shop_item(item_id)
         item_name = item.name if item else item_id
@@ -802,6 +1010,35 @@ class Game:
             self._unlock_achievement("playful_duck")
         if self._statistics["item_interactions"] >= 50:
             self._unlock_achievement("item_master")
+        
+        # Reset interaction phase (animation system handles the rest)
+        self._interaction_target_item = None
+        self._interaction_target_pos = None
+        self._interaction_pending_result = None
+
+    def _execute_item_interaction_immediate(self, item_id: str):
+        """Execute item interaction without movement animation (for backward compatibility)."""
+        if not self.duck:
+            return
+        
+        # Build duck state for edge case detection
+        needs = self.duck.get_needs()
+        duck_state = {
+            "energy": needs.get("energy", 100),
+            "hunger": needs.get("hunger", 100),
+            "fun": needs.get("fun", 100),
+            "cleanliness": needs.get("cleanliness", 100),
+            "social": needs.get("social", 100),
+            "mood": self.duck.get_mood().state.value,
+        }
+        
+        result = execute_interaction(item_id, duck_state)
+        
+        if not result or not result.success:
+            self.renderer.show_message("*confused quack* I don't know how to do that...")
+            return
+        
+        self._complete_item_interaction(item_id, result)
     
     def _start_item_interaction_animation(self, item_id: str, result: InteractionResult):
         """Start the animation for an item interaction."""
@@ -830,6 +1067,7 @@ class Game:
         if frame_idx >= len(self._item_interaction_frames):
             # Animation complete
             self._item_interaction_active = False
+            self._interaction_phase = InteractionPhase.IDLE
             return
         
         self._item_interaction_frame_idx = frame_idx
@@ -865,12 +1103,18 @@ class Game:
 
         # Check for direct key actions first - includes UI keys and interaction keys
         if self._state == "playing" and self.duck and key:
-            key_str = str(key).lower()
+            key_raw = str(key)  # Raw key for shift detection
+            key_str = key_raw.lower()
             key_name = getattr(key, 'name', '') or ''
 
             # Handle ESC to close any overlay
             if key_name == 'KEY_ESCAPE':
                 self._close_all_overlays()
+                return
+
+            # Reset game confirmation (Shift+X) - requires uppercase X
+            if key_raw == 'X':
+                self._start_reset_confirmation()
                 return
 
             # Hidden debug menu (backtick key)
@@ -882,6 +1126,14 @@ class Game:
                     self._show_debug_menu()
                 else:
                     self.renderer.dismiss_message()
+                return
+
+            # Main menu (TAB key)
+            if key_str == '\t' or key_name == 'KEY_TAB':
+                self._close_all_overlays()
+                self._main_menu.open()
+                self._main_menu_open = True
+                self._update_main_menu_display()
                 return
 
             # UI keys and interaction keys
@@ -1072,11 +1324,6 @@ class Game:
                 self.renderer.show_message(f"Volume: {vol_bar} {int(new_vol * 100)}%")
                 return
 
-            # Reset game [X] - buried in menu, requires confirmation
-            if key_str == 'x':
-                self._start_reset_confirmation()
-                return
-
             # Explore [E] - Explore current area for resources
             if key_str == 'e':
                 self._do_explore()
@@ -1117,8 +1364,8 @@ class Game:
                 self._show_quests_menu()
                 return
 
-            # Trading Post [V] (Visiting merchants)
-            if key_str == 'v':
+            # Trading Post [<] (Visiting merchants)
+            if key_str == '<' or key_str == ',':
                 self._show_trading_menu()
                 return
 
@@ -1137,14 +1384,19 @@ class Game:
                 self._show_treasure_hunt()
                 return
 
-            # Secrets Book [7]
-            if key_str == '7':
+            # Secrets Book [\]
+            if key_str == '\\':
                 self._show_secrets_book()
                 return
 
             # Prestige/Legacy System [8]
             if key_str == '8':
                 self._show_prestige_menu()
+                return
+
+            # Save Slots [/]
+            if key_str == '/':
+                self._show_save_slots_menu()
                 return
 
             # Garden System [9]
@@ -1157,8 +1409,8 @@ class Game:
                 self._show_festival_menu()
                 return
 
-            # Tricks Menu [X]
-            if key_str == 'x':
+            # Tricks Menu [7]
+            if key_str == '7':
                 self._show_tricks_menu()
                 return
 
@@ -1174,8 +1426,8 @@ class Game:
                 self._show_enhanced_diary()
                 return
 
-            # Collectibles Album [-]
-            if key_str == '-':
+            # Collectibles Album [']
+            if key_str == "'":
                 self._show_collectibles_album()
                 return
 
@@ -1724,7 +1976,7 @@ class Game:
             if build_result.get("completed"):
                 self._complete_building(build_result)
             elif build_result.get("stage_completed"):
-                self.renderer.show_message(build_result.get("message", "Stage complete!"), duration=2.0)
+                self._show_message_if_no_menu(build_result.get("message", "Stage complete!"), duration=2.0)
                 duck_sounds.play()  # Hammering sound
 
         # Update at tick rate
@@ -1762,7 +2014,7 @@ class Game:
             # Update duck aging system
             new_stage = self.aging.update_stage()
             if new_stage:
-                self.renderer.show_message(f"# Your duck has grown to {new_stage.value}!", duration=5.0)
+                self._show_message_if_no_menu(f"# Your duck has grown to {new_stage.value}!", duration=5.0)
 
             # Check secret goals for session/mood-based achievements
             self._check_secret_achievements()
@@ -1773,7 +2025,7 @@ class Game:
         if current_time - self._last_atmosphere_check >= 30:
             messages = self.atmosphere.update()
             for msg in messages:
-                self.renderer.show_message(msg, duration=4.0)
+                self._show_message_if_no_menu(msg, duration=4.0)
 
             # Check for active festivals
             self._check_festival_events()
@@ -1790,6 +2042,9 @@ class Game:
                         # Schedule weather comment after atmosphere message
                         self._pending_weather_comment = weather_comment
                         self._pending_weather_comment_time = current_time + 3.0
+                    
+                    # Animate duck reacting to weather change
+                    self._animate_weather_reaction(current_weather)
                 
                 self._last_known_weather = current_weather
 
@@ -1825,21 +2080,32 @@ class Game:
                             personality = friend.personality.value if hasattr(friend.personality, 'value') else str(friend.personality)
                             friendship_level = friend.friendship_level.value if hasattr(friend.friendship_level, 'value') else str(friend.friendship_level)
                             unlocked_topics = set(friend.unlocked_dialogue) if hasattr(friend, 'unlocked_dialogue') else set()
+                            # Pass memory data for context-aware greetings
+                            conversation_topics = getattr(friend, 'conversation_topics', [])
+                            shared_experiences = getattr(friend, 'shared_experiences', [])
+                            last_summary = getattr(friend, 'last_conversation_summary', "")
                             visitor_animator.set_visitor(
                                 personality, 
                                 friend.name,
                                 friendship_level,
                                 friend.times_visited,
-                                unlocked_topics
+                                unlocked_topics,
+                                conversation_topics=conversation_topics,
+                                shared_experiences=shared_experiences,
+                                last_conversation_summary=last_summary,
                             )
                             greeting = visitor_animator.get_greeting(self.duck.name)
                             if greeting:
-                                self.renderer.show_message(greeting, duration=6.0)
+                                self._show_message_if_no_menu(greeting, duration=6.0)
                             duck_sounds.quack("happy")
                             # Trigger friend arrival reaction animation
                             self.reaction_controller.trigger_friend_reaction("arrival", current_time)
                             # Play happy music for the visit
                             sound_engine.play_event_music(MusicContext.HAPPY, duration=10.0)
+                            
+                            # Duck waddles toward the visitor (animated approach)
+                            self._duck_approach_visitor()
+                            
                             # Schedule duck's reaction comment after greeting
                             duck_reaction = self._get_duck_visitor_reaction(personality)
                             if duck_reaction:
@@ -1886,7 +2152,7 @@ class Game:
             # Chance for ambient event (peaceful atmosphere)
             ambient = self.progression.get_ambient_event(chance=0.02)
             if ambient:
-                self.renderer.show_message(ambient, duration=3.0)
+                self._show_message_if_no_menu(ambient, duration=3.0)
 
             self._last_event_check = current_time
 
@@ -1900,13 +2166,13 @@ class Game:
 
         # Check for pending visitor reaction comment
         if self._pending_visitor_comment and current_time >= self._pending_visitor_comment_time:
-            self.renderer.show_message(self._pending_visitor_comment, duration=4.0)
+            self._show_message_if_no_menu(self._pending_visitor_comment, duration=4.0)
             duck_sounds.quack("content")
             self._pending_visitor_comment = None
 
         # Check for pending weather reaction comment
         if self._pending_weather_comment and current_time >= self._pending_weather_comment_time:
-            self.renderer.show_message(self._pending_weather_comment, duration=4.0)
+            self._show_message_if_no_menu(self._pending_weather_comment, duration=4.0)
             duck_sounds.quack("content")
             self._pending_weather_comment = None
 
@@ -2449,8 +2715,8 @@ class Game:
         if not self.duck:
             return
         
-        # Don't interrupt other messages (check if message overlay is showing)
-        if self.renderer._show_message_overlay:
+        # Don't interrupt open menus or overlays
+        if self._is_any_menu_open():
             return
         
         # Get current context
@@ -2487,18 +2753,118 @@ class Game:
         """Get duck's reaction to weather change."""
         return self.contextual_dialogue.get_weather_comment(weather_type)
 
+    def _animate_weather_reaction(self, weather_type: str):
+        """Animate duck reacting to weather change with movement."""
+        if self._interaction_phase != InteractionPhase.IDLE:
+            return
+        
+        field_width = self.renderer.duck_pos.field_width
+        field_height = self.renderer.duck_pos.field_height
+        
+        # Different movement patterns for different weather
+        if weather_type == "rainy":
+            # Waddle to a "puddle" (random low spot on playfield)
+            puddle_x = random.randint(5, field_width - 8)
+            puddle_y = field_height - random.randint(2, 4)  # Near bottom
+            self.renderer.duck_pos.move_to(puddle_x, puddle_y, 
+                callback=self._on_reached_puddle, callback_data=None, save_original=False)
+        elif weather_type == "snowy":
+            # Waddle around excitedly looking at snow
+            snow_x = random.randint(4, field_width - 6)
+            snow_y = random.randint(2, field_height - 3)
+            self.renderer.duck_pos.move_to(snow_x, snow_y, save_original=False)
+        elif weather_type == "sunny":
+            # Find a sunny spot to bask
+            sun_x = field_width // 2 + random.randint(-5, 5)
+            sun_y = random.randint(2, 5)  # Upper part of screen (toward sun)
+            self.renderer.duck_pos.move_to(sun_x, sun_y, save_original=False)
+        elif weather_type == "windy":
+            # Duck gets pushed by wind (move in wind direction)
+            self.renderer.duck_pos.move_to(
+                min(field_width - 6, self.renderer.duck_pos.x + 8),  # Wind pushes right
+                self.renderer.duck_pos.y,
+                save_original=False
+            )
+        elif weather_type == "rainbow":
+            # Duck looks up and moves to center to admire
+            self.renderer.duck_pos.move_to(field_width // 2, field_height // 2, save_original=False)
+
+    def _on_reached_puddle(self, data):
+        """Callback when duck reaches a puddle in the rain."""
+        # Set duck to splashing state
+        self.renderer.duck_pos.set_state("splashing", duration=3.0)
+        self.renderer.show_message("*splish splash splosh!*", duration=2.5)
+        duck_sounds.play()  # Splash sound
+
     def _get_duck_visitor_reaction(self, personality: str) -> Optional[str]:
         """Get duck's reaction to a visitor."""
         return self.contextual_dialogue.get_visitor_comment(personality)
-            
+
+    def _duck_approach_visitor(self):
+        """Make duck waddle toward the arriving visitor (with InteractionPhase tracking)."""
+        # Check if we're already in an interaction
+        if self._interaction_phase != InteractionPhase.IDLE:
+            return
+        
+        from world.friends import visitor_animator
+        
+        # Get the current friend being visited
+        if not self.friends.current_visit:
+            return
+        
+        friend = self.friends.get_friend_by_id(self.friends.current_visit.friend_id)
+        if not friend:
+            return
+        
+        # Get visitor's current position
+        visitor_x, visitor_y = visitor_animator.get_position()
+        
+        # Move duck toward visitor (but not all the way - leave some space)
+        field_width = self.renderer.duck_pos.field_width
+        field_height = self.renderer.duck_pos.field_height
+        
+        # Clamp visitor position to field bounds
+        target_x = max(4, min(visitor_x - 4, field_width - 8))  # Stop a bit before visitor
+        target_y = max(2, min(visitor_y, field_height - 4))
+        
+        # Set interaction state
+        self._interaction_phase = InteractionPhase.MOVING_TO_TARGET
+        self._interaction_target_friend = friend.id
+        self._interaction_target_pos = (target_x, target_y)
+        
+        # Start the approach with callback
+        self.renderer.duck_pos.move_to(
+            target_x, target_y,
+            callback=self._on_arrived_at_friend,
+            callback_data={"friend_id": friend.id, "friend_name": friend.name},
+            save_original=False
+        )
+
+    def _on_arrived_at_friend(self, data: dict):
+        """Callback when duck arrives at friend's position."""
+        friend_name = data.get("friend_name", "friend")
+        
+        # Set duck to excited/social state
+        self._interaction_phase = InteractionPhase.INTERACTING
+        self.renderer.duck_pos.set_state("excited", duration=2.0)
+        
+        # Show greeting reaction
+        self.renderer.show_message(f"*happy quack* Hi {friend_name}!", duration=2.5)
+        duck_sounds.quack("happy")
+        
+        # Reset interaction phase after a short delay (state duration handles this)
+        self._interaction_target_friend = None
+        self._interaction_target_pos = None
+        self._interaction_phase = InteractionPhase.IDLE
+
     def _update_event_animations(self):
         """Update all active event animations."""
         if not self._event_animators:
             return
             
         # Get duck position for interaction targeting
-        duck_x = 30  # Default center position
-        duck_y = 10
+        duck_x = self.renderer.duck_pos.x
+        duck_y = self.renderer.duck_pos.y
         
         # Update each animator and remove finished ones
         still_running = []
@@ -2506,7 +2872,45 @@ class Game:
             if animator.update(duck_x, duck_y):
                 still_running.append(animator)
                 
+                # Check if duck should approach this event (butterflies, curious events)
+                if (hasattr(animator, 'event_id') and 
+                    animator.event_id in ["butterfly", "found_shiny", "rainbow"] and
+                    self._interaction_phase == InteractionPhase.IDLE and
+                    not self.renderer.duck_pos._is_directed_movement):
+                    # Get animator's position
+                    if hasattr(animator, 'x') and hasattr(animator, 'y'):
+                        event_x = int(animator.x)
+                        event_y = int(animator.y)
+                        # Only approach if event is reasonably close
+                        distance = abs(duck_x - event_x) + abs(duck_y - event_y)
+                        if distance > 5 and distance < 20:
+                            # ~0.2% per frame (at 60fps, ~12% chance per second)
+                            if random.random() < 0.002:
+                                self._duck_approach_event(event_x, event_y, animator.event_id)
+                
         self._event_animators = still_running
+
+    def _duck_approach_event(self, event_x: int, event_y: int, event_id: str):
+        """Make duck curiously approach an environmental event."""
+        field_width = self.renderer.duck_pos.field_width
+        field_height = self.renderer.duck_pos.field_height
+        
+        # Approach to near the event (not right on top)
+        target_x = max(3, min(event_x - 2, field_width - 6))
+        target_y = max(2, min(event_y, field_height - 4))
+        
+        # Show curious message
+        event_messages = {
+            "butterfly": "*notices something fluttering* Ooh!",
+            "found_shiny": "*spots something glittering* What's that?!",
+            "rainbow": "*looks up in wonder* So pretty!",
+            "breeze": "*feels the wind* Wheee!",
+        }
+        msg = event_messages.get(event_id, "*curious quack*")
+        self.renderer.show_message(msg, duration=2.0)
+        
+        # Move toward event (no callback needed)
+        self.renderer.duck_pos.move_to(target_x, target_y, save_original=False)
 
     def _on_growth_stage_change(self, old_stage: str, new_stage: str):
         """Handle growth stage transition."""
@@ -3017,6 +3421,30 @@ class Game:
         self.renderer.show_message("Returning to title...")
         time.sleep(0.3)
 
+    def _is_any_menu_open(self) -> bool:
+        """Check if any menu or overlay is currently open."""
+        return (
+            self._crafting_menu_open or
+            self._building_menu_open or
+            self._areas_menu_open or
+            self._use_menu_open or
+            self._minigames_menu_open or
+            self._quests_menu_open or
+            self._weather_menu_open or
+            self._main_menu_open or
+            self._debug_menu_open or
+            self.renderer.is_shop_open() or
+            self.renderer.is_talking() or
+            self.renderer._show_stats or
+            self.renderer._show_inventory or
+            self.renderer._show_help
+        )
+
+    def _show_message_if_no_menu(self, message: str, duration: float = 5.0):
+        """Show a message only if no menu is currently open. Used for non-critical duck messages."""
+        if not self._is_any_menu_open():
+            self.renderer.show_message(message, duration)
+
     def _close_all_menus(self):
         """Close all open game menus (crafting, building, etc.) and dismiss message overlay."""
         self.renderer.dismiss_message()
@@ -3027,6 +3455,7 @@ class Game:
         self._minigames_menu_open = False
         self._quests_menu_open = False
         self._weather_menu_open = False
+        self._main_menu_open = False
         self._show_goals = False
         self._debug_menu_open = False
         self._debug_submenu = None
@@ -3045,6 +3474,7 @@ class Game:
         self._minigames_menu_open = False
         self._quests_menu_open = False
         self._weather_menu_open = False
+        self._main_menu_open = False
         self._show_goals = False
         self._debug_menu_open = False
         self._debug_submenu = None
@@ -3354,7 +3784,8 @@ class Game:
         if not self.duck:
             return
 
-        available = self.exploration.get_available_areas()
+        # Pass actual player level to get correct available areas
+        available = self.exploration.get_available_areas(self.progression.level)
         current_biome = self.exploration._current_biome
         current_name = current_biome.value.replace("_", " ").title() if current_biome else "Unknown"
 
@@ -3600,14 +4031,31 @@ class Game:
         return True  # Consume all keys while menu is open
 
     def _update_areas_menu_display(self):
-        """Update the areas menu display with current selection."""
-        current_biome = self.exploration._current_biome
-        current_name = current_biome.value.replace("_", " ").title() if current_biome else "Unknown"
+        """Update the areas menu display with current selection and area preview."""
+        current_area = self.exploration.current_area
+        current_name = current_area.name if current_area else "Unknown"
+
+        # Get selected area for preview
+        selected_item = self._areas_menu.get_selected_item()
+        preview_lines = []
+        if selected_item and selected_item.data:
+            from world.exploration import get_area_art
+            preview_area = selected_item.data
+            art = get_area_art(preview_area.name)
+            # Show first 5 lines of art as preview
+            preview_lines = art[:5] if art else []
 
         items = [{'label': item.label, 'description': item.description, 'enabled': item.enabled}
                  for item in self._areas_menu.get_items()]
+
+        # Build header with preview
+        header = f"AREAS (Current: {current_name})"
+        if preview_lines:
+            preview_text = "\n".join(preview_lines)
+            header = f"{header}\n\n{preview_text}"
+
         self.renderer.show_menu(
-            f"AREAS (Current: {current_name})",
+            header,
             items,
             self._areas_menu.get_selected_index(),
             show_numbers=False,
@@ -3633,17 +4081,29 @@ class Game:
         if not self._travel_destination:
             self._duck_traveling = False
             return
-        
+
         area = self._travel_destination
         result = self.exploration.travel_to(area)
-        
+
         if result.get("success"):
-            # Start exploring immediately after arriving
+            # Show area art and description
+            from world.exploration import get_area_art
+            art_lines = get_area_art(area.name)
+            art_display = "\n".join(art_lines)
+
+            arrival_msg = (
+                f"=== {area.name} ===\n\n"
+                f"{art_display}\n\n"
+                f"{area.description}\n\n"
+                f"[Press any key to explore]"
+            )
+            self.renderer.show_message(arrival_msg, duration=0)
+
+            # Start exploring after showing the art
             self._start_exploring()
-            self.renderer.show_message(f"* Arrived at {area.name}! Exploring...", duration=2.0)
         else:
             self.renderer.show_message(result.get("message", "Couldn't reach destination"), duration=3.0)
-        
+
         self._duck_traveling = False
         self._travel_destination = None
 
@@ -4102,8 +4562,8 @@ class Game:
 
         success, message = self.fishing.start_fishing(fishing_spot)
         if success:
-            self.renderer.show_message(message + "\nPress SPACE when you see a bite!\nPress Q to stop.", duration=3.0)
             duck_sounds.play()  # Splash sound
+            # The fishing overlay will show controls, just confirm we started
         else:
             self.renderer.show_message(message, duration=2.0)
 
@@ -4915,12 +5375,18 @@ class Game:
                 for area in biome_areas:
                     area.is_discovered = True
                     self.exploration.discovered_areas[area.name] = area
+            # Also max out player level so areas pass the level filter in menu
+            self.exploration._player_level = 99
             self.renderer.show_message("# DEBUG: All exploration areas unlocked!", duration=2)
         elif action == "max_xp":
-            if self.duck:
-                self.duck.xp = 99999
-                self.duck.level = 50
-            self.renderer.show_message("# DEBUG: XP and level maxed!", duration=2)
+            # Set progression system level (this is what the game actually uses)
+            # XP and level must be consistent: 99999 XP = level 99
+            self.progression.xp = 99999
+            self.progression.level = 99
+            self.progression.title = "Legendary Duck Keeper"
+            # Also update exploration system's player level for area unlocks
+            self.exploration._player_level = 99
+            self.renderer.show_message("# DEBUG: XP and level maxed! (Lv.99)", duration=2)
         elif action == "trigger_dream":
             if self.duck:
                 self._dream_active = True
@@ -5805,6 +6271,37 @@ class Game:
             self.renderer.show_message(msg, duration=2.0)
         
         return success
+
+    # ==================== SAVE SLOTS SYSTEM ====================
+
+    def _show_save_slots_menu(self):
+        """Show the save slots management menu."""
+        # Refresh slot info
+        self.save_slots.refresh_slots()
+        
+        lines = []
+        lines.append("+===============================================+")
+        lines.append("|              SAVE SLOTS                       |")
+        lines.append("+===============================================+")
+        lines.append("")
+        
+        for slot_id in range(1, SaveSlotsSystem.MAX_SLOTS + 1):
+            slot = self.save_slots.slots.get(slot_id)
+            if slot and not slot.is_empty:
+                status = f"Lv.{slot.level} | {slot.playtime_minutes}min | {slot.coins} coins"
+                if slot.prestige_level > 0:
+                    status += f" | P{slot.prestige_level}"
+                lines.append(f"  [{slot_id}] {slot.duck_name:<15} {status}")
+            else:
+                lines.append(f"  [{slot_id}] -- Empty Slot --")
+        
+        lines.append("")
+        lines.append(f"  Current: Slot {self.save_slots.current_slot}")
+        lines.append("")
+        lines.append("  [1-5] Switch Slot  [N] New Game in Slot")
+        lines.append("  [D] Delete Slot    [ESC] Close")
+        
+        self.renderer.show_message("\n".join(lines), duration=0)
 
     def _get_room_decoration_bonus(self) -> Dict[str, int]:
         """Get the total decoration bonuses affecting the duck."""

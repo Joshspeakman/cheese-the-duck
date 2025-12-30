@@ -533,7 +533,7 @@ The main UI renderer using the `blessed` terminal library.
 ```
 ┌────────────────────────────────────────────────────────┐
 │                    HEADER BAR                          │
-│  Mood | Currency | Weather | Time                      │
+│  Name | Season Weather | Time | Mood Age $Currency     │
 ├──────────────────────────────┬─────────────────────────┤
 │                              │                         │
 │        PLAYFIELD             │      SIDE PANEL         │
@@ -547,10 +547,17 @@ The main UI renderer using the `blessed` terminal library.
 └────────────────────────────────────────────────────────┘
 ```
 
+#### Season Display (Header)
+The header bar shows the current season alongside weather:
+- **Spring** (`~*~`): March, April, May
+- **Summer** (`-*-`): June, July, August  
+- **Fall** (`{~}`): September, October, November
+- **Winter** (`*.*`): December, January, February
+
 | Method | Description |
 |--------|-------------|
 | `render_frame(game)` | Main render loop - builds complete frame |
-| `_render_header_bar()` | Top header with mood, currency, weather |
+| `_render_header_bar()` | Top header with name, season, weather, time, mood |
 | `_render_playfield()` | Main duck play area with decorations |
 | `_render_side_panel()` | Stats/closeup panel on the right |
 | `_render_messages()` | Message queue area |

@@ -595,7 +595,8 @@ class VisitorAnimator:
     
     def set_visitor(self, personality: str, friend_name: str = "Friend", 
                      friendship_level: str = "stranger", visit_number: int = 1,
-                     unlocked_topics: set = None):
+                     unlocked_topics: set = None, conversation_topics: list = None,
+                     shared_experiences: list = None, last_conversation_summary: str = ""):
         """Set the current visitor's personality for art selection."""
         self._personality = personality.lower() if personality else "adventurous"
         self._friend_name = friend_name
@@ -619,7 +620,7 @@ class VisitorAnimator:
         self._unlocked_topics = unlocked_topics or set()
         self._conversation_over = False
         
-        # Initialize dialogue manager
+        # Initialize dialogue manager with memory
         try:
             from dialogue.visitor_dialogue import VisitorDialogueManager
             self._dialogue_manager = VisitorDialogueManager()
@@ -628,7 +629,10 @@ class VisitorAnimator:
                 self._friendship_level, 
                 self._friend_name,
                 self._visit_number,
-                self._unlocked_topics
+                self._unlocked_topics,
+                conversation_topics=conversation_topics or [],
+                shared_experiences=shared_experiences or [],
+                last_conversation_summary=last_conversation_summary or "",
             )
         except ImportError:
             self._dialogue_manager = None
@@ -898,6 +902,11 @@ class DuckFriend:
     last_visit: str = ""
     special_memories: List[str] = field(default_factory=list)
     unlocked_dialogue: List[str] = field(default_factory=list)
+    # NEW: Conversation memory to prevent repetitive introductions
+    conversation_topics: List[str] = field(default_factory=list)  # Topics we've discussed
+    shared_experiences: List[str] = field(default_factory=list)  # Activities done together
+    gifts_exchanged_history: List[str] = field(default_factory=list)  # What gifts we've exchanged
+    last_conversation_summary: str = ""  # Brief summary of last talk
 
 
 @dataclass
@@ -1067,6 +1076,13 @@ class FriendsSystem:
         # Record activity
         self.current_visit.activities_done.append(activity)
         
+        # Add to shared experiences memory (for returning visitor context)
+        if activity not in friend.shared_experiences:
+            friend.shared_experiences.append(activity)
+        # Keep only last 10 experiences
+        if len(friend.shared_experiences) > 10:
+            friend.shared_experiences = friend.shared_experiences[-10:]
+        
         # Add friendship points
         friend.friendship_points += base_points
         
@@ -1111,6 +1127,13 @@ class FriendsSystem:
         friend.gifts_received += 1
         self.total_gifts_exchanged += 1
         
+        # Record gift in memory for context-aware conversations
+        gift_memory = f"received {item} as gift"
+        if gift_memory not in friend.gifts_exchanged_history:
+            friend.gifts_exchanged_history.append(gift_memory)
+        if len(friend.gifts_exchanged_history) > 10:
+            friend.gifts_exchanged_history = friend.gifts_exchanged_history[-10:]
+        
         return True, f"{reaction} +{points} friendship points!", points
     
     def receive_gift(self) -> Tuple[bool, str, Optional[str]]:
@@ -1124,6 +1147,12 @@ class FriendsSystem:
         friend = self.friends.get(self.current_visit.friend_id)
         if friend:
             friend.gifts_given += 1
+            # Record gift in memory
+            gift_memory = f"gave {gift}"
+            if gift_memory not in friend.gifts_exchanged_history:
+                friend.gifts_exchanged_history.append(gift_memory)
+            if len(friend.gifts_exchanged_history) > 10:
+                friend.gifts_exchanged_history = friend.gifts_exchanged_history[-10:]
         
         self.total_gifts_exchanged += 1
         
@@ -1320,6 +1349,10 @@ class FriendsSystem:
                     "last_visit": f.last_visit,
                     "special_memories": f.special_memories,
                     "unlocked_dialogue": f.unlocked_dialogue,
+                    "conversation_topics": f.conversation_topics,
+                    "shared_experiences": f.shared_experiences,
+                    "gifts_exchanged_history": f.gifts_exchanged_history,
+                    "last_conversation_summary": f.last_conversation_summary,
                 }
                 for fid, f in self.friends.items()
             },
@@ -1360,6 +1393,10 @@ class FriendsSystem:
                 last_visit=fdata.get("last_visit", ""),
                 special_memories=fdata.get("special_memories", []),
                 unlocked_dialogue=fdata.get("unlocked_dialogue", []),
+                conversation_topics=fdata.get("conversation_topics", []),
+                shared_experiences=fdata.get("shared_experiences", []),
+                gifts_exchanged_history=fdata.get("gifts_exchanged_history", []),
+                last_conversation_summary=fdata.get("last_conversation_summary", ""),
             )
         
         visit_data = data.get("current_visit")

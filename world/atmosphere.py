@@ -56,7 +56,7 @@ WEATHER_DATA = {
         "mood_modifier": 5,
         "xp_multiplier": 1.1,
         "ascii": ["  \\  |  /", "   \\ | /", " -- \u2299 --", "   / | \\", "  /  |  \\"],
-        "spring_prob": 0.35, "summer_prob": 0.50, "fall_prob": 0.25, "winter_prob": 0.15,
+        "spring_prob": 0.45, "summer_prob": 0.60, "fall_prob": 0.35, "winter_prob": 0.30,
     },
     WeatherType.CLOUDY: {
         "name": "Cloudy",
@@ -64,7 +64,7 @@ WEATHER_DATA = {
         "mood_modifier": 0,
         "xp_multiplier": 1.0,
         "ascii": ["   .-~~~-.", " .-~       ~-.", "{    CLOUD   }", " `-._______.-'"],
-        "spring_prob": 0.25, "summer_prob": 0.15, "fall_prob": 0.30, "winter_prob": 0.30,
+        "spring_prob": 0.30, "summer_prob": 0.22, "fall_prob": 0.30, "winter_prob": 0.40,
     },
     WeatherType.RAINY: {
         "name": "Rainy",
@@ -72,7 +72,7 @@ WEATHER_DATA = {
         "mood_modifier": -2,
         "xp_multiplier": 1.15,  # Bonus for playing in rain
         "ascii": [" , , , , ,", ", , , , , ,", " , , , , ,", "  ~ puddles ~"],
-        "spring_prob": 0.25, "summer_prob": 0.15, "fall_prob": 0.25, "winter_prob": 0.10,
+        "spring_prob": 0.12, "summer_prob": 0.08, "fall_prob": 0.15, "winter_prob": 0.05,
         "triggers_rainbow": True,
     },
     WeatherType.STORMY: {
@@ -81,7 +81,7 @@ WEATHER_DATA = {
         "mood_modifier": -5,
         "xp_multiplier": 1.25,  # Big bonus for braving the storm
         "ascii": [" \\\\\\|///", "  STORM!!", " ///|\\\\\\", "  * zap *"],
-        "spring_prob": 0.05, "summer_prob": 0.10, "fall_prob": 0.10, "winter_prob": 0.05,
+        "spring_prob": 0.03, "summer_prob": 0.05, "fall_prob": 0.05, "winter_prob": 0.02,
     },
     WeatherType.FOGGY: {
         "name": "Foggy",
@@ -89,7 +89,7 @@ WEATHER_DATA = {
         "mood_modifier": 0,
         "xp_multiplier": 1.2,  # Mystery bonus
         "ascii": ["~ ~ ~ ~ ~ ~", " ~ ~ ~ ~ ~", "~ ~ ~ ~ ~ ~", " ~ fog ~ ~"],
-        "spring_prob": 0.05, "summer_prob": 0.02, "fall_prob": 0.08, "winter_prob": 0.15,
+        "spring_prob": 0.03, "summer_prob": 0.01, "fall_prob": 0.05, "winter_prob": 0.08,
         "rare_drops_bonus": 0.5,  # 50% more rare drops
     },
     WeatherType.SNOWY: {
@@ -98,7 +98,7 @@ WEATHER_DATA = {
         "mood_modifier": 3,
         "xp_multiplier": 1.2,
         "ascii": ["  *  *  *  ", " *  *  *  *", "  *  *  *  ", "~~~~~~~~~~~~"],
-        "spring_prob": 0.02, "summer_prob": 0.0, "fall_prob": 0.05, "winter_prob": 0.30,
+        "spring_prob": 0.01, "summer_prob": 0.0, "fall_prob": 0.02, "winter_prob": 0.10,
     },
     WeatherType.WINDY: {
         "name": "Windy",
@@ -106,7 +106,7 @@ WEATHER_DATA = {
         "mood_modifier": 2,
         "xp_multiplier": 1.0,
         "ascii": ["  ~~ >>> ~~", " ~~ >>> ~~", "~~ >>> ~~", "  whoooosh"],
-        "spring_prob": 0.08, "summer_prob": 0.05, "fall_prob": 0.12, "winter_prob": 0.10,
+        "spring_prob": 0.06, "summer_prob": 0.04, "fall_prob": 0.08, "winter_prob": 0.05,
     },
     WeatherType.RAINBOW: {
         "name": "Rainbow",
@@ -932,15 +932,21 @@ class AtmosphereManager:
         for weather_type, data in WEATHER_DATA.items():
             if data.get("special"):
                 continue  # Skip special weather like rainbow
-            prob = data.get(season_key, 0.1)
-            weight = int(prob * 100)
-            weather_options.extend([weather_type] * max(1, weight))
+            prob = data.get(season_key, 0.0)
+            # Only add weather types that have a non-zero probability
+            if prob > 0:
+                weight = int(prob * 100)
+                weather_options.extend([weather_type] * max(1, weight))
+
+        # Fallback to sunny if no options (shouldn't happen)
+        if not weather_options:
+            weather_options = [WeatherType.SUNNY]
 
         chosen_type = random.choice(weather_options)
         data = WEATHER_DATA[chosen_type]
 
-        # Determine duration (1-6 hours)
-        duration = random.uniform(1, 6)
+        # Determine duration (3-12 hours) - weather changes less frequently
+        duration = random.uniform(3, 12)
 
         self.current_weather = Weather(
             weather_type=chosen_type,

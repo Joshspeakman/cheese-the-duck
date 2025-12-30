@@ -68,6 +68,577 @@ class BiomeArea:
     is_discovered: bool = False
     times_visited: int = 0
     special_events: List[str] = field(default_factory=list)
+    art: List[str] = field(default_factory=list)  # ASCII art for this area
+
+
+# Unique ASCII art for each area
+AREA_ART = {
+    "Home Pond": [
+        "    .  *  .    *       .   *",
+        "  *    ~~~~~~~~~~~    .     ",
+        "    . ~~~~~~~~~~~~~ *   .   ",
+        " .   ~~~~~~~~~~~~~~~     *  ",
+        "    ~~~~~~~~~~~~~~~~   .    ",
+        "  *  ~~~~~~~~~~~~~~~  *     ",
+        "   . ~~~~~~~~~~~~~~~ .      ",
+        r" ,,  \water water/  ,,   . ",
+        r",,,\\  ~~~~~~~~~~~  //,,,  ",
+        r",,,,,\  ~~~~~~~~~  /,,,,,  ",
+    ],
+    "Deep End": [
+        "    *  .     .   *    .   * ",
+        "  .   ~~~~~~~~~~~    *      ",
+        "    ~~~~~~~~~~~~~~~    .    ",
+        "   ~~~~~~~~~~~~~~~~  *   .  ",
+        "  ~~~~~~~~~~~~~~~~~~        ",
+        " ~~~~~~~~~~~~~~~~~~~~  .    ",
+        "~~~~~~~~~~~~~~~~~~~~~~      ",
+        "~~~~~~~~(   )~~~~~~~~~      ",
+        "~~~~~~~( o o )~~~~~~~~   *  ",
+        "~~~~~~~~(---)~~~~~~~~~      ",
+    ],
+    "Forest Edge": [
+        "     |    |  |     |   |    ",
+        "    /|\\  /|\\/|\\   /|\\ /|\\  ",
+        "   //|\\\\//|\\|\\\\  //|\\//|\\\\ ",
+        "  ///|\\\\\\//|\\\\|\\ ///|\\\\//|\\",
+        "    |||  ||| |||   ||| |||  ",
+        " ,,,|||,,|||,|||,,,|||,|||,,",
+        ",,,,|||,,|||,|||,,,|||,|||,,",
+        "  .  . ~~~~~.~~~~~  .  .    ",
+        "    . ~~~~~~~~~~~~~ .   .   ",
+        "   .  ~~~~~~~~~~~~~   .     ",
+    ],
+    "Ancient Oak": [
+        "        @@@@@@@@@@          ",
+        "      @@@@@@@@@@@@@@        ",
+        "    @@@@@@@@@@@@@@@@@@      ",
+        "   @@@@@@@@@@@@@@@@@@@@@    ",
+        "  @@@@@@@@@@@@@@@@@@@@@@@   ",
+        "   @@@@@@@@@@@@@@@@@@@@@    ",
+        "      @@@@@||@@@@@@@        ",
+        "          ||||              ",
+        "          ||||    o         ",
+        "  ,,,,,,,,||||,,,,,,,,,,,   ",
+    ],
+    "Mushroom Grove": [
+        "    .  *  .  . *  .   *  .  ",
+        "   ,@,   .  ,@@,   ,@,    . ",
+        "  ,@@@,   ,@@@@,  ,@@@,  *  ",
+        "   |#|  *  |##|    |#|     .",
+        "  ,@@,   ,@@@,  . ,@@,   .  ",
+        " ,@@@@, ,@@@@@,  ,@@@@,   * ",
+        "  |##|   |###|    |##|     .",
+        " . ~~~ . ~~~~~ . . ~~~  .   ",
+        "  ~~~~~~~~~~~~~~~~~    *    ",
+        " ~~~~~~~~~~~~~~~~~~  .      ",
+    ],
+    "Sunny Meadow": [
+        "  *  .  *  . *  . *  .  *   ",
+        " . @  *  @  .  @ . @ .  @  .",
+        "  @@@  @@@ . @@@  @@@  @@@ *",
+        "   |  . |    |  .  |    | . ",
+        " *  @    @  .  @    @ .   @ ",
+        "   @@@  @@@   @@@  @@@  @@@ ",
+        "  . |    | .   |    |   |   ",
+        " ,,,,,,,,,,,,,,,,,,,,,,,,,,  ",
+        ",,,,,,,,,,,,,,,,,,,,,,,,,,, .",
+        "  . *  .  * .  * .  *  . *  ",
+    ],
+    "Butterfly Garden": [
+        "  * .  * .  *  . *  . *  .  ",
+        "  .  ~~  .  ~~  .  ~~  . *  ",
+        " * \\  / * \\  / * \\  /  .   ",
+        "   /  \\   /  \\   /  \\    * ",
+        "  @@@  @@@ @@@  @@@ @@@  @@@",
+        " @@@@@@@@@@@@@@@@@@@@@@@@@@@ ",
+        "  |  | . |  | *  |  |  |  | ",
+        " ,,,,,,,,,,,,,,,,,,,,,,,,,,, ",
+        "  * .  *  . * .  * . *  . * ",
+        " ~  * ~~  *  ~~  *  ~~ *  ~ ",
+    ],
+    "Pebble Beach": [
+        "                      .   * ",
+        "  .   *   .      *         .",
+        "    ~~~~~~~~~~~~~~~~~~~~    ",
+        "   ~~~~~~~~~~~~~~~~~~~~~~   ",
+        "  ~~~~~~~~~~~~~~~~~~~~~~~~  ",
+        " ~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+        "  oOo oOo oOo oOo oOo oOo   ",
+        " o Oo OoO oO OoO oOo OoO o  ",
+        "oOo oOo oOo oOo oOo oOo oOo ",
+        " o  o  o  o  o  o  o  o  o  ",
+    ],
+    "Waterfall": [
+        "    |  ||||||||||||  |      ",
+        "   ||| |||||||||||| |||     ",
+        "  |||||||||||||||||||||||   ",
+        "   ||||||||||||||||||||     ",
+        "    ||||||||||||||||||      ",
+        "      ||||||||||||         .",
+        "  *    ||||||||||     *     ",
+        "   . ~~~~~~~~~~~~~~~~  .    ",
+        "    ~~~~~~~~~~~~~~~~~~      ",
+        "   ~~~~~~~~~~~~~~~~~~~~   * ",
+    ],
+    "Vegetable Patch": [
+        "  +----+----+----+----+     ",
+        "  | @@ | @@ | @@ | @@ |   . ",
+        "  |/|\\|/|\\|/|\\|/|\\|  *  ",
+        "  +----+----+----+----+     ",
+        " .| @  | @  | @  | @  |     ",
+        "  |/|  |/|  |/|  |/|  |  .  ",
+        "  +----+----+----+----+   * ",
+        " ,,,,,,,,,,,,,,,,,,,,,,,    ",
+        "  .  *  .  *  .  *  .  *    ",
+        "    .     .     .     .     ",
+    ],
+    "Tool Shed": [
+        "    _______________    *    ",
+        "   /               \\       .",
+        "  /                 \\       ",
+        " |   ___      ___   |  .    ",
+        " |  |   |    |   |  |       ",
+        " |  | X |    | X |  |    *  ",
+        " |  |___|    |___|  |       ",
+        " |      [====]      |  .    ",
+        " |_______[  ]_______|       ",
+        "  ,,,,,,,,,,,,,,,,,,,   *   ",
+    ],
+    "Foothills": [
+        "         /\\                 ",
+        "        /  \\    /\\      .  ",
+        "   /\\  /    \\  /  \\        ",
+        "  /  \\/      \\/    \\  *    ",
+        " /    \\      /\\     \\      ",
+        "/      \\    /  \\     \\   . ",
+        "        \\  /    \\          ",
+        "  . * .  \\/   .  \\  *  .   ",
+        " ,,,,,,,,,,,,,,,,,,,,,,,,,  ",
+        "  . * . * . * . * . * . *   ",
+    ],
+    "Crystal Cave": [
+        "    _____/      \\______     ",
+        "   /  *    *  *    *   \\    ",
+        "  /  /\\  *  /\\  *  /\\  \\   ",
+        " |  /  \\   /  \\   /  \\  |  ",
+        " | /    \\ /    \\ /    \\ |  ",
+        " |/ *  * V  *   V   *  \\|  ",
+        " |   /\\     /\\     /\\   |  ",
+        " |  *  *   *  *   *  *  |  ",
+        " |  /\\  * /\\  * /\\  *  |  ",
+        "  \\_____________________/   ",
+    ],
+    "Sandy Shore": [
+        "  .  *  . *  .  * .  *  .   ",
+        "    ~~~~~~~~~~~~~~~~~~~~~   ",
+        "   ~~~~~~~~~~~~~~~~~~~~~~~  ",
+        "  ~~~~~~~~~~~~~~~~~~~~~~~~~ ",
+        " ~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+        "   ~~~~~~~~~~~~~~~~~~~~~~~~ ",
+        " :.:.:.:.:.:.:.:.:.:.:.:.:.:",
+        ":.:.:.:(@):.:.:.:(@):.:.:.: ",
+        " :.:.:.:.:.:.:.:.:.:.:.:.:. ",
+        "  . * . * . * . * . * . * . ",
+    ],
+    "Shipwreck Cove": [
+        "    .  *  .    *   .   *    ",
+        "  ~~~~~~~~~~~~~~~~~~~~~~~ . ",
+        " ~~~~~~~~~~~~~~~~~~~~~~~~~  ",
+        "  ~~~~~~~~____~~~~~~~~~~~~~.",
+        " ~~~~~~~~/    \\~~~~~~~~~~~~ ",
+        "~~~~~~~~|  XX  |~~~~~~~~~~~ ",
+        " ~~~~~~~|______|~~~~~~~~~~~.",
+        "  ~~~~~~/|    |\\~~~~~~~~~~  ",
+        " ~~~~~~/_|____|_\\~~~~~~~~~  ",
+        "  ~~~~~~~~~~~~~~~~~~~~~~~   ",
+    ],
+    "Misty Marsh": [
+        "  .  o  .  o  .  o  .  o  . ",
+        "   o   o   o   o   o   o    ",
+        " ~~~~~~~~~~~~~~~~~~~~~~~~.  ",
+        "~~~~~~~~~~~~~~~~~~~~~~~~~~~ ",
+        "  ~~~~~~~~~~~~~~~~~~~~~~~   ",
+        " ~~~~~~~~~~~~~~~~~~~~~~~~   ",
+        "~~|~~|~~~~|~~|~~~~|~~|~~~~~.",
+        " ~||~||~~~||~||~~~||~||~~~  ",
+        "~~||~||~~~||~||~~~||~||~~~~ ",
+        "  . o . o . o . o . o . o . ",
+    ],
+    "Cypress Hollow": [
+        "   \\|/   \\|/   \\|/   \\|/   ",
+        "   /|\\   /|\\   /|\\   /|\\   ",
+        "  //|\\\\  //|\\\\  //|\\\\  //|\\\\ ",
+        " ///|\\\\\\///|\\\\\\///|\\\\\\///|\\\\\\",
+        "   |||    |||    |||    ||| ",
+        " ~~|||~~~~|||~~~~|||~~~~|||~",
+        "~~~|||~~~~|||~~~~|||~~~~|||~",
+        "  ~~~~~~~~~~~~~~~~~~~~~~~~~.",
+        " ~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+        "  . * . * . * . * . * . *   ",
+    ],
+    "Sunken Ruins": [
+        "  .  *  .    *   .   *   .  ",
+        "  ~~~~~~~~~~~~~~~~~~~~~~~~~ ",
+        " ~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+        "~~~~[]~~~~[]~~~~[]~~~~[]~~~~",
+        " ~~~||~~~~||~~~~||~~~~||~~~ ",
+        "~~~_||____||____||____||_~~ ",
+        " ~|                      |~ ",
+        "~~|   []     []     []  |~~.",
+        " ~|________________________|",
+        "  ~~~~~~~~~~~~~~~~~~~~~~~~~.",
+    ],
+    "Park Fountain": [
+        "     .  *  .  *  .  *  .    ",
+        "         __|__              ",
+        "        /     \\    .       ",
+        "   .   |   |   |      *     ",
+        "       |   |   |            ",
+        "    ___|___|___|___    .    ",
+        "   /               \\        ",
+        "  |  ~~~~~~~~~~~    |   *   ",
+        "  |_________________|       ",
+        "  . * . * . * . * . * . *   ",
+    ],
+    "Rooftop Garden": [
+        "    .  *  .  *  .  *  .     ",
+        "  ________________________  ",
+        " |  @  @  @  @  @  @  @  | .",
+        " | @@@ @@@ @@@ @@@ @@@ @@@|  ",
+        " |  |   |   |   |   |   | | ",
+        " |________________________| ",
+        " |  [  ]    [  ]    [  ] |  ",
+        " |                       |* ",
+        " |_______________________|  ",
+        "   |   |   |   |   |   |    ",
+    ],
+    "Storm Drain": [
+        "  ________________________  ",
+        " |  ||  ||  ||  ||  ||  || .",
+        " |__||__||__||__||__||__||| ",
+        "    ||  ||  ||  ||  ||  ||  ",
+        "   _||__||__||__||__||__||_ ",
+        "  |                        |",
+        "  | ~~~~~~~~~~~~~~~~~~~~~~ |",
+        "  |~~~~~~~~~~~~~~~~~~~~~~~~|",
+        "  |~~~~~~~~(@)~~~~~~~~~~~~~|",
+        "  |________________________|",
+    ],
+}
+
+
+# ============================================================================
+# LOCATION-SPECIFIC EVENTS AND DISCOVERIES
+# ============================================================================
+
+# Each location has unique events that can only happen there
+LOCATION_EVENTS = {
+    "Home Pond": {
+        "events": [
+            {"name": "Familiar Ripple", "message": "*sees ripple* That's MY ripple spot. Marked it myself.", "chance": 0.08},
+            {"name": "Cozy Spot Found", "message": "*settles into favorite spot* ...This is acceptable.", "chance": 0.05},
+            {"name": "Reed Serenade", "message": "*listens to wind through reeds* ...It's singing to ME. Obviously.", "chance": 0.04},
+        ],
+        "discoveries": ["perfect_lily_pad", "home_feather", "lucky_pebble"],
+    },
+    "Deep End": {
+        "events": [
+            {"name": "Shadow Below", "message": "*peers into depths* Something's down there... It BETTER not be judging me.", "chance": 0.10},
+            {"name": "Mysterious Bubble", "message": "*watches bubble rise* ...That wasn't me. WHO WAS THAT?!", "chance": 0.08},
+            {"name": "Deep Glow", "message": "*notices faint glow below* Treasure? Or a trap? ...Still going.", "chance": 0.05},
+            {"name": "Sunken Treasure", "message": "*finds old object* This was down here the WHOLE TIME?!", "chance": 0.03},
+        ],
+        "discoveries": ["ancient_coin", "sunken_toy", "mysterious_pearl", "deep_crystal"],
+    },
+    "Forest Edge": {
+        "events": [
+            {"name": "Rustling Leaves", "message": "*hears rustle* Show yourself! I'm not scared. I'm DANGEROUS.", "chance": 0.08},
+            {"name": "Acorn Drop", "message": "*acorn bonks head* OW! ...I'll allow it. This time.", "chance": 0.06},
+            {"name": "River Song", "message": "*listens to river* It's telling me where the fish are. I speak river.", "chance": 0.04},
+        ],
+        "discoveries": ["perfect_twig", "forest_gem", "ancient_acorn"],
+    },
+    "Ancient Oak": {
+        "events": [
+            {"name": "Owl Stare", "message": "*meets owl's gaze* ...I'm the scarier one here. I am.", "chance": 0.10},
+            {"name": "Squirrel Chatter", "message": "*squirrel scolds* Yeah? YEAH?! Come down here and say that!", "chance": 0.08},
+            {"name": "Old Wisdom", "message": "*touches ancient bark* This tree knows things. I can TELL.", "chance": 0.04},
+            {"name": "Nest Discovery", "message": "*finds abandoned nest* FREE REAL ESTATE. ...Too small though.", "chance": 0.05},
+        ],
+        "discoveries": ["owl_feather", "acorn_collection", "ancient_bark", "tree_sap_amber"],
+    },
+    "Mushroom Grove": {
+        "events": [
+            {"name": "Spore Cloud", "message": "*walks through spores* ACHOO! ...That never happened.", "chance": 0.10},
+            {"name": "Glow Pulse", "message": "*mushrooms pulse* They're COMMUNICATING. About me. Definitely about me.", "chance": 0.06},
+            {"name": "Fairy Ring", "message": "*finds perfect circle* ...I'm not dancing in it. You can't make me.", "chance": 0.03},
+        ],
+        "discoveries": ["glowing_cap", "spore_dust", "fairy_truffle", "luminescent_moss"],
+    },
+    "Sunny Meadow": {
+        "events": [
+            {"name": "Bee Inspection", "message": "*bee hovers close* I'm not a flower! ...Unless you have honey.", "chance": 0.08},
+            {"name": "Sunbeam Nap", "message": "*finds perfect sunbeam* This spot... is mine now. Forever.", "chance": 0.05},
+            {"name": "Flower Crown", "message": "*flower falls on head* I AM ROYALTY NOW. It was always true.", "chance": 0.04},
+            {"name": "Lucky Clover", "message": "*finds four-leaf clover* DESTINY. I was MEANT to find this.", "chance": 0.02},
+        ],
+        "discoveries": ["honeycomb_piece", "four_leaf_clover", "bee_amber", "sunflower_seed"],
+    },
+    "Butterfly Garden": {
+        "events": [
+            {"name": "Butterfly Landing", "message": "*butterfly lands on beak* I am CHOSEN. Bow before me.", "chance": 0.08},
+            {"name": "Wing Shimmer", "message": "*watches shimmer* ...I could have wings if I WANTED.", "chance": 0.06},
+            {"name": "Chrysalis Found", "message": "*finds chrysalis* A waiting butterfly. I understand waiting.", "chance": 0.04},
+        ],
+        "discoveries": ["butterfly_wing", "chrysalis_shell", "nectar_drop", "iridescent_scale"],
+    },
+    "Pebble Beach": {
+        "events": [
+            {"name": "Perfect Skip", "message": "*skips stone 12 times* WORLD RECORD. You saw it. You're my witness.", "chance": 0.06},
+            {"name": "Wave Splash", "message": "*wave splashes* HEY! I wasn't READY! Best of three!", "chance": 0.08},
+            {"name": "Smooth Find", "message": "*finds incredibly smooth stone* ...This one is special. Don't touch it.", "chance": 0.04},
+        ],
+        "discoveries": ["perfect_skipper", "wave_glass", "river_opal", "ancient_fossil"],
+    },
+    "Waterfall": {
+        "events": [
+            {"name": "Rainbow Sighting", "message": "*sees rainbow in mist* At the end is treasure. I WILL find it.", "chance": 0.06},
+            {"name": "Mist Baptism", "message": "*walks through mist* I am REFRESHED. And slightly damp.", "chance": 0.08},
+            {"name": "Hidden Cave Glimpse", "message": "*glimpses cave behind falls* There's something IN there...", "chance": 0.04},
+            {"name": "Treasure Washes Up", "message": "*finds washed-up treasure* The waterfall PROVIDES.", "chance": 0.03},
+        ],
+        "discoveries": ["waterfall_crystal", "mist_pearl", "rainbow_scale", "cave_gem"],
+    },
+    "Vegetable Patch": {
+        "events": [
+            {"name": "Worm Friend", "message": "*worm appears* Hello, long pink duck. ...Wait.", "chance": 0.08},
+            {"name": "Ripe Discovery", "message": "*finds fallen vegetable* The humans DON'T NEED THIS. It's mine now.", "chance": 0.06},
+            {"name": "Scarecrow Staredown", "message": "*stares at scarecrow* ...I blinked first. BUT I'LL WIN NEXT TIME.", "chance": 0.05},
+        ],
+        "discoveries": ["perfect_seed", "garden_snail_shell", "lucky_worm", "heirloom_seed"],
+    },
+    "Tool Shed": {
+        "events": [
+            {"name": "Dusty Sneeze", "message": "*inhales dust* ACHOO! ...There's HISTORY in here.", "chance": 0.10},
+            {"name": "Shiny Tool Spot", "message": "*sees gleaming tool* TREASURE CAVE. Everything is treasure.", "chance": 0.06},
+            {"name": "Cobweb Encounter", "message": "*walks into web* AAAAH! ...I meant to do that.", "chance": 0.08},
+        ],
+        "discoveries": ["shiny_nail", "brass_button", "twine_ball", "old_key"],
+    },
+    "Foothills": {
+        "events": [
+            {"name": "Echo Call", "message": "*QUACKS at mountain* ...It quacked BACK. We're friends now.", "chance": 0.08},
+            {"name": "Eagle Shadow", "message": "*sees shadow pass* ...I'm the apex predator here. I AM.", "chance": 0.06},
+            {"name": "Alpine Wind", "message": "*strong gust* ...The mountain is TESTING me. I pass.", "chance": 0.05},
+        ],
+        "discoveries": ["eagle_feather", "mountain_crystal", "alpine_flower", "fossil_fragment"],
+    },
+    "Crystal Cave": {
+        "events": [
+            {"name": "Light Refraction", "message": "*sees light dance* I'm covered in RAINBOW. This is my destiny.", "chance": 0.08},
+            {"name": "Crystal Hum", "message": "*crystals hum* They're SINGING to me. I'm honored.", "chance": 0.06},
+            {"name": "Echo Wonder", "message": "*quacks softly* ...It echoes forever. I am ETERNAL.", "chance": 0.04},
+        ],
+        "discoveries": ["amethyst_shard", "crystal_cluster", "geode_piece", "cave_pearl"],
+    },
+    "Sandy Shore": {
+        "events": [
+            {"name": "Wave Dance", "message": "*dodges waves* Too slow! I'm TOO FAST FOR YOU, OCEAN!", "chance": 0.08},
+            {"name": "Shell Discovery", "message": "*holds shell to ear* ...It's whispering secrets. Duck secrets.", "chance": 0.06},
+            {"name": "Crab Challenge", "message": "*crab waves claw* BRING IT! I have a BEAK!", "chance": 0.05},
+            {"name": "Coconut Roll", "message": "*coconut rolls past* ...I'll deal with you LATER.", "chance": 0.04},
+        ],
+        "discoveries": ["conch_shell", "sea_glass", "starfish", "palm_pearl"],
+    },
+    "Shipwreck Cove": {
+        "events": [
+            {"name": "Pirate Fancy", "message": "*imagines being pirate* Captain Duck! Terror of the seas! QUARK!", "chance": 0.08},
+            {"name": "Treasure Glint", "message": "*sees something shine* GOLD?! ...or a button. STILL MINE.", "chance": 0.06},
+            {"name": "Ship Creak", "message": "*ship creaks* ...It's just settling. I'm not scared. YOU'RE scared.", "chance": 0.05},
+        ],
+        "discoveries": ["doubloon", "treasure_map_piece", "captain_button", "ancient_compass"],
+    },
+    "Park Fountain": {
+        "events": [
+            {"name": "Coin Wish", "message": "*human throws coin* ...That WISH was for ME. I'm keeping it.", "chance": 0.08},
+            {"name": "Pigeon Standoff", "message": "*pigeon approaches* This is MY fountain. Find your own.", "chance": 0.06},
+            {"name": "Water Dance", "message": "*fountain jets change* It's performing FOR ME. Obviously.", "chance": 0.05},
+        ],
+        "discoveries": ["wishing_coin", "fountain_penny", "lost_ring", "city_gem"],
+    },
+    "Rooftop Garden": {
+        "events": [
+            {"name": "City View", "message": "*surveys city below* All of this... could be MINE someday.", "chance": 0.06},
+            {"name": "Urban Bee Friend", "message": "*bee visits* Even city bees know greatness. That's me.", "chance": 0.05},
+            {"name": "Wind Garden", "message": "*wind chimes ring* They're announcing my ARRIVAL.", "chance": 0.04},
+        ],
+        "discoveries": ["rooftop_herb", "city_honey", "wind_chime_piece", "urban_flower"],
+    },
+    "Storm Drain": {
+        "events": [
+            {"name": "Echo Explorer", "message": "*quack echoes endlessly* I have CONQUERED the underground!", "chance": 0.08},
+            {"name": "Treasure Current", "message": "*sees something float by* The drain PROVIDES tribute.", "chance": 0.06},
+            {"name": "Grate Light", "message": "*light streams through grate* A spotlight! For ME!", "chance": 0.05},
+            {"name": "Underground Discovery", "message": "*finds hidden corner* Secret BASE. This is my secret BASE now.", "chance": 0.04},
+        ],
+        "discoveries": ["lost_marble", "subway_token", "drain_treasure", "mystery_key"],
+    },
+    "Misty Marsh": {
+        "events": [
+            {"name": "Firefly Welcome", "message": "*fireflies surround* They RECOGNIZE royalty. As they should.", "chance": 0.08},
+            {"name": "Mist Whisper", "message": "*mist swirls* ...The marsh is SPEAKING. I listen.", "chance": 0.05},
+            {"name": "Mystery Sound", "message": "*strange noise* ...I'm investigating. I'm BRAVE.", "chance": 0.06},
+        ],
+        "discoveries": ["firefly_lantern", "marsh_pearl", "bog_amber", "mist_crystal"],
+    },
+    "Cypress Hollow": {
+        "events": [
+            {"name": "Moss Drape", "message": "*moss brushes face* The trees are PETTING me. Acceptable.", "chance": 0.06},
+            {"name": "Ancient Feeling", "message": "*senses age of trees* ...I belong here. The hollow KNOWS.", "chance": 0.04},
+            {"name": "Hidden Path", "message": "*finds hidden way* Secret passage! For DUCKS ONLY.", "chance": 0.03},
+        ],
+        "discoveries": ["cypress_cone", "moss_bundle", "hollow_gem", "ancient_bark"],
+    },
+    "Sunken Ruins": {
+        "events": [
+            {"name": "Ancient Echo", "message": "*explores ruins* Someone IMPORTANT lived here. Like me.", "chance": 0.06},
+            {"name": "Relic Gleam", "message": "*sees underwater glint* History and TREASURE! My favorites!", "chance": 0.05},
+            {"name": "Pillar Perch", "message": "*sits on pillar* I am KING of these ruins now.", "chance": 0.04},
+        ],
+        "discoveries": ["ancient_tile", "ruin_gem", "forgotten_coin", "mystery_artifact"],
+    },
+}
+
+# Location-specific duck dialogue when entering or exploring
+LOCATION_DIALOGUE = {
+    "Home Pond": [
+        "Home sweet pond. MINE.",
+        "Ah, familiar waters. The BEST waters.",
+        "*happy paddle* Nobody makes ripples like me.",
+        "Every lily pad knows my name here.",
+    ],
+    "Deep End": [
+        "Into the DEPTHS. The brave go here. That's me.",
+        "*peers down* What secrets are you hiding, pond?",
+        "The deep end respects me. I can tell.",
+        "Somewhere down there... MYSTERIES.",
+    ],
+    "Forest Edge": [
+        "Where water meets wood. BOTH are mine.",
+        "*listens to river* Yes, I understand. Secrets.",
+        "The forest doesn't scare me. I scare IT.",
+        "Twigs. Leaves. Acorns. TREASURE everywhere.",
+    ],
+    "Ancient Oak": [
+        "This tree has seen THINGS. Like me. We're alike.",
+        "*looks up* You and me, Oak. Legends.",
+        "The squirrels fear my name here.",
+        "Ancient wisdom flows from this bark. I absorb it.",
+    ],
+    "Mushroom Grove": [
+        "*sniffs* Smells like MAGIC in here.",
+        "The mushrooms GLOW for me. It's an honor.",
+        "Spores know duck greatness when they see it.",
+        "This place understands the weird and wonderful.",
+    ],
+    "Sunny Meadow": [
+        "*stretches in sun* Yes. This is PERFECT.",
+        "Bees recognize royalty. That's why they bow.",
+        "Every flower here blooms for ME.",
+        "The meadow and I have an understanding.",
+    ],
+    "Butterfly Garden": [
+        "Flutter all you want. I'm still PRETTIER.",
+        "*watches butterflies* We're both magnificent.",
+        "A garden of wings. And ONE duck. The best one.",
+        "The butterflies whisper my legend.",
+    ],
+    "Pebble Beach": [
+        "Time to show these stones who's BOSS.",
+        "*examines pebbles* These will skip PERFECTLY.",
+        "The beach surrenders its smoothest stones to me.",
+        "Champion skipper. That's what they'll call me.",
+    ],
+    "Waterfall": [
+        "*stands in mist* MAJESTIC. Like me.",
+        "The waterfall ROARS my arrival!",
+        "Somewhere behind that water... TREASURE.",
+        "Rainbows exist because of ducks like me.",
+    ],
+    "Vegetable Patch": [
+        "The BOUNTY. All of it could be mine.",
+        "*inspects vegetables* The scarecrow knows to fear me.",
+        "Human gardens grow tribute for ducks.",
+        "So many seeds... so many POSSIBILITIES.",
+    ],
+    "Tool Shed": [
+        "Dusty mysteries await! I LOVE dusty mysteries.",
+        "*sneeze* There's HISTORY here. I can taste it.",
+        "Every cobweb hides a secret. Every corner, a treasure.",
+        "The shed whispers its secrets only to ducks.",
+    ],
+    "Foothills": [
+        "*looks up at peaks* I WILL conquer you, mountains.",
+        "The wind up here knows my name.",
+        "Eagles? Pfft. DUCKS rule these heights.",
+        "The mountains bow before duck determination.",
+    ],
+    "Crystal Cave": [
+        "*eyes sparkle* MORE shine than even I expected!",
+        "The crystals SING. For me. Obviously.",
+        "Underground rainbows! I have found PARADISE.",
+        "These gems recognize duck magnificence.",
+    ],
+    "Sandy Shore": [
+        "*wiggles toes in sand* Ocean duck MODE ACTIVATED.",
+        "The waves retreat from my power!",
+        "Shells, sand, treasure! The shore PROVIDES.",
+        "I could rule this beach. I WILL rule this beach.",
+    ],
+    "Shipwreck Cove": [
+        "ARR! ...I mean QUARK! Captain Duck arrives!",
+        "*explores wreck* This is MY ship now.",
+        "Pirates WISHED they were as fierce as me.",
+        "Doubloons... treasure... MINE, all mine!",
+    ],
+    "Park Fountain": [
+        "Urban territory! The fountain is MINE now.",
+        "*splash splash* City ducks bow to country legends!",
+        "So many coins... so many WISHES for me.",
+        "The fountain dances for its new ruler.",
+    ],
+    "Rooftop Garden": [
+        "*surveys city* All of this could be MINE.",
+        "High above the peasants. Where I BELONG.",
+        "Even city bees recognize duck greatness.",
+        "The rooftop garden: MY sky kingdom.",
+    ],
+    "Storm Drain": [
+        "Into the UNDERGROUND. Only the brave explore here.",
+        "*echo QUACK* Magnificent acoustics for my calls.",
+        "The drain hides TREASURES. I will find them ALL.",
+        "This is my secret lair now. VILLAIN DUCK!",
+    ],
+    "Misty Marsh": [
+        "*peers through mist* What secrets do you hide?",
+        "Fireflies light my path. As they SHOULD.",
+        "The marsh knows ancient duck wisdom.",
+        "Murky waters can't hide treasure from ME.",
+    ],
+    "Cypress Hollow": [
+        "The old trees remember duck legends. They remember ME.",
+        "*brushes moss aside* I walk where few dare.",
+        "Spanish moss = tree beard = WISE. Like me.",
+        "This hollow was waiting for a duck. Here I AM.",
+    ],
+    "Sunken Ruins": [
+        "Ancient duck civilizations once RULED here!",
+        "*explores carefully* History respects the curious.",
+        "Every stone has a story. I will KNOW them all.",
+        "Ruins = treasure = MINE. Simple math.",
+    ],
+}
 
 
 # Resource definitions by biome
@@ -334,6 +905,15 @@ AREAS = {
 }
 
 
+def get_area_art(area_name: str) -> List[str]:
+    """Get ASCII art for a specific area."""
+    return AREA_ART.get(area_name, [
+        "  .  *  .  *  .  *  .  *  . ",
+        "    Unknown Location        ",
+        "  .  *  .  *  .  *  .  *  . ",
+    ])
+
+
 @dataclass
 class ExplorationResult:
     """Result of an exploration action."""
@@ -561,6 +1141,43 @@ class ExplorationSystem:
         for level, threshold in enumerate(xp_thresholds):
             if self.exploration_xp >= threshold:
                 self.gathering_skill = max(self.gathering_skill, level + 1)
+    
+    def get_location_dialogue(self, location: str = None) -> Optional[str]:
+        """Get a random location-specific duck dialogue line."""
+        area_name = location or (self.current_area.name if self.current_area else None)
+        if area_name and area_name in LOCATION_DIALOGUE:
+            return random.choice(LOCATION_DIALOGUE[area_name])
+        return None
+    
+    def check_location_event(self, location: str = None) -> Optional[Dict]:
+        """Check if a location-specific event occurs. Returns event data or None."""
+        area_name = location or (self.current_area.name if self.current_area else None)
+        if not area_name or area_name not in LOCATION_EVENTS:
+            return None
+        
+        location_data = LOCATION_EVENTS[area_name]
+        events = location_data.get("events", [])
+        
+        # Check each event's chance
+        for event in events:
+            if random.random() < event.get("chance", 0.05):
+                return {
+                    "name": event.get("name", "Unknown Event"),
+                    "message": event.get("message", "Something happened!"),
+                    "location": area_name,
+                }
+        return None
+    
+    def get_location_discovery(self, location: str = None) -> Optional[str]:
+        """Get a random possible discovery item for this location."""
+        area_name = location or (self.current_area.name if self.current_area else None)
+        if not area_name or area_name not in LOCATION_EVENTS:
+            return None
+        
+        discoveries = LOCATION_EVENTS[area_name].get("discoveries", [])
+        if discoveries:
+            return random.choice(discoveries)
+        return None
     
     def get_current_area_info(self) -> str:
         """Get info about current area."""
