@@ -19,7 +19,13 @@ public enum ItemCategory
     Cosmetic,
     Furniture,
     Material,
-    Special
+    Special,
+    Water,
+    Plant,
+    Structure,
+    Decoration,
+    Flooring,
+    Lighting
 }
 
 public enum ItemRarity
