@@ -167,7 +167,50 @@ We could list everything, but where's the fun in that?
 
 ## Installation
 
-### Prerequisites
+### 🚀 Easy Install (Recommended)
+
+Download and run the installer for your platform - no git or Python knowledge required!
+
+#### Linux
+```bash
+# Download the repository
+git clone https://github.com/Joshspeakman/cheese-the-duck.git
+cd cheese-the-duck
+
+# Run the installer
+chmod +x install_linux.sh
+./install_linux.sh
+```
+
+The installer will:
+- ✅ Check Python version
+- ✅ Create a virtual environment
+- ✅ Install all dependencies
+- ✅ Optionally download the AI model
+- ✅ Create desktop shortcuts and menu entries
+- ✅ Add `cheese-the-duck` command to your terminal
+
+After installation, just run: `cheese-the-duck`
+
+#### Windows
+1. Download the repository (or [download ZIP](https://github.com/Joshspeakman/cheese-the-duck/archive/refs/heads/main.zip))
+2. Extract the files
+3. Double-click `install_windows.bat`
+
+The installer will:
+- ✅ Check Python installation
+- ✅ Set up virtual environment
+- ✅ Install all dependencies  
+- ✅ Optionally download the AI model
+- ✅ Create Desktop and Start Menu shortcuts
+
+After installation, just double-click "Cheese the Duck" on your Desktop!
+
+---
+
+### 🔧 Manual Installation
+
+#### Prerequisites
 - Python 3.8 or higher
 - Terminal with color support
 - Audio libraries (Linux): PulseAudio or ALSA
