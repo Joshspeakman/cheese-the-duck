@@ -90,7 +90,10 @@ stupid_duck/
 │   ├── habitat_icons.py   # Small item icons
 │   ├── input_handler.py   # Keyboard input processing
 │   ├── location_art.py    # Location backgrounds
+│   ├── menu_selector.py   # Reusable menu selection system
 │   ├── mood_visuals.py    # Mood-based visual effects
+│   ├── reactions.py       # Visual reaction effects
+│   ├── event_animations.py # Event-specific animations
 │   └── statistics.py      # Stats tracking & display
 │
 ├── world/                  # Game world systems
@@ -659,6 +662,42 @@ All possible input actions mapped from keyboard.
 | `start_text_mode()` | Switches to text mode |
 | `get_text()` | Returns current text input |
 | `is_text_mode()` | Checks if in text entry mode |
+
+---
+
+### `ui/menu_selector.py` - Reusable Menu System
+
+**Dataclass: `MenuItem`**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | str | Unique identifier for the item |
+| `label` | str | Display text for the item |
+| `description` | str | Optional description text |
+| `enabled` | bool | Whether the item is selectable (default: True) |
+| `data` | Any | Optional attached data object |
+
+**Class: `MenuSelector`**
+
+| Method | Description |
+|--------|-------------|
+| `add_item(item: MenuItem)` | Adds a MenuItem to the menu |
+| `clear_items()` | Removes all items from the menu |
+| `select_next()` | Moves selection down |
+| `select_previous()` | Moves selection up |
+| `get_selected()` | Returns currently selected MenuItem |
+| `get_items()` | Returns list of all MenuItems |
+| `set_selected_index(index)` | Sets selection by index |
+
+**Usage Pattern:**
+```python
+from ui.menu_selector import MenuSelector, MenuItem
+
+menu = MenuSelector()
+menu.add_item(MenuItem(id="1", label="Option A", description="First option"))
+menu.add_item(MenuItem(id="2", label="Option B", enabled=False, data=some_object))
+selected = menu.get_selected()
+```
 
 ---
 
@@ -1541,5 +1580,5 @@ MODELS_DIR = "models/"
 
 ---
 
-*Last updated: December 2024*
+*Last updated: January 2025*
 *Document generated for AI assistant reference*
