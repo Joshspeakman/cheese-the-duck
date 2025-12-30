@@ -4969,7 +4969,7 @@ class Game:
         activities = self.weather_activities.get_available_activities(weather)
         
         # Build menu items
-        self._weather_menu.clear()
+        self._weather_menu.clear_items()
         for activity in activities:
             desc = f"{activity.description[:35]}... ({activity.duration_seconds}s)"
             self._weather_menu.add_item(activity.name, desc, enabled=True, data=activity)
