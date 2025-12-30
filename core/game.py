@@ -709,8 +709,8 @@ class Game:
             self.renderer.toggle_inventory()
             return
         if method_name == "_toggle_goals":
+            self._close_all_menus()
             self._show_goals = not self._show_goals
-            self._render_game()
             return
         if method_name == "_toggle_shop":
             self._close_all_menus()

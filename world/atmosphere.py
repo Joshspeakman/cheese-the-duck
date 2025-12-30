@@ -15,14 +15,68 @@ from enum import Enum
 
 class WeatherType(Enum):
     """Types of weather that affect gameplay."""
+    # === COMMON (all seasons) ===
     SUNNY = "sunny"
+    PARTLY_CLOUDY = "partly_cloudy"
     CLOUDY = "cloudy"
-    RAINY = "rainy"
-    STORMY = "stormy"
-    FOGGY = "foggy"
-    SNOWY = "snowy"
+    OVERCAST = "overcast"
     WINDY = "windy"
-    RAINBOW = "rainbow"  # Rare, after rain
+    FOGGY = "foggy"
+    MISTY = "misty"
+    
+    # === RAIN VARIATIONS ===
+    DRIZZLE = "drizzle"
+    RAINY = "rainy"
+    HEAVY_RAIN = "heavy_rain"
+    STORMY = "stormy"
+    THUNDERSTORM = "thunderstorm"
+    
+    # === SNOW/ICE VARIATIONS ===
+    LIGHT_SNOW = "light_snow"
+    SNOWY = "snowy"
+    HEAVY_SNOW = "heavy_snow"
+    BLIZZARD = "blizzard"
+    SLEET = "sleet"
+    HAIL = "hail"
+    FROST = "frost"
+    ICE_STORM = "ice_storm"
+    
+    # === SPRING SPECIFIC ===
+    SPRING_SHOWERS = "spring_showers"
+    RAINBOW = "rainbow"
+    POLLEN_DRIFT = "pollen_drift"
+    WARM_BREEZE = "warm_breeze"
+    DEWY_MORNING = "dewy_morning"
+    
+    # === SUMMER SPECIFIC ===
+    SCORCHING = "scorching"
+    HUMID = "humid"
+    HEAT_WAVE = "heat_wave"
+    SUMMER_STORM = "summer_storm"
+    BALMY_EVENING = "balmy_evening"
+    GOLDEN_HOUR = "golden_hour"
+    MUGGY = "muggy"
+    
+    # === FALL SPECIFIC ===
+    CRISP = "crisp"
+    BREEZY = "breezy"
+    LEAF_STORM = "leaf_storm"
+    HARVEST_MOON = "harvest_moon"
+    FIRST_FROST = "first_frost"
+    AUTUMNAL = "autumnal"
+    
+    # === WINTER SPECIFIC ===
+    BITTER_COLD = "bitter_cold"
+    FREEZING = "freezing"
+    CLEAR_COLD = "clear_cold"
+    SNOW_FLURRIES = "snow_flurries"
+    WINTER_SUN = "winter_sun"
+    
+    # === RARE/SPECIAL ===
+    AURORA = "aurora"
+    METEOR_SHOWER = "meteor_shower"
+    DOUBLE_RAINBOW = "double_rainbow"
+    PERFECT_DAY = "perfect_day"
 
 
 @dataclass
@@ -49,73 +103,473 @@ class Weather:
 
 
 # Weather definitions with probabilities by season
+# Each weather type has: name, message, mood_modifier, xp_multiplier, and season probabilities
+# Probabilities for each season should sum to approximately 1.0
+
 WEATHER_DATA = {
+    # ==========================================================================
+    # COMMON WEATHER (appears in multiple seasons)
+    # ==========================================================================
     WeatherType.SUNNY: {
         "name": "Sunny",
         "message": "The sun is shining! Perfect day!",
         "mood_modifier": 5,
         "xp_multiplier": 1.1,
-        "ascii": ["  \\  |  /", "   \\ | /", " -- \u2299 --", "   / | \\", "  /  |  \\"],
-        "spring_prob": 0.45, "summer_prob": 0.60, "fall_prob": 0.35, "winter_prob": 0.30,
+        "particle_type": None,  # No particles
+        "env_effects": ["sun_sparkles"],
+        "spring_prob": 0.15, "summer_prob": 0.20, "fall_prob": 0.12, "winter_prob": 0.08,
+    },
+    WeatherType.PARTLY_CLOUDY: {
+        "name": "Partly Cloudy",
+        "message": "Fluffy clouds drift across a blue sky.",
+        "mood_modifier": 3,
+        "xp_multiplier": 1.05,
+        "particle_type": None,
+        "env_effects": ["cloud_shadows"],
+        "spring_prob": 0.12, "summer_prob": 0.15, "fall_prob": 0.10, "winter_prob": 0.08,
     },
     WeatherType.CLOUDY: {
         "name": "Cloudy",
-        "message": "Clouds drift overhead...",
+        "message": "Grey clouds blanket the sky...",
         "mood_modifier": 0,
         "xp_multiplier": 1.0,
-        "ascii": ["   .-~~~-.", " .-~       ~-.", "{    CLOUD   }", " `-._______.-'"],
-        "spring_prob": 0.30, "summer_prob": 0.22, "fall_prob": 0.30, "winter_prob": 0.40,
+        "particle_type": None,
+        "env_effects": [],
+        "spring_prob": 0.10, "summer_prob": 0.08, "fall_prob": 0.12, "winter_prob": 0.12,
     },
-    WeatherType.RAINY: {
-        "name": "Rainy",
-        "message": "*pitter patter* Cheese loves splashing in puddles!",
-        "mood_modifier": -2,
-        "xp_multiplier": 1.15,  # Bonus for playing in rain
-        "ascii": [" , , , , ,", ", , , , , ,", " , , , , ,", "  ~ puddles ~"],
-        "spring_prob": 0.12, "summer_prob": 0.08, "fall_prob": 0.15, "winter_prob": 0.05,
-        "triggers_rainbow": True,
-    },
-    WeatherType.STORMY: {
-        "name": "Stormy",
-        "message": "*BOOM* Thunder! Cheese hides under a wing...",
-        "mood_modifier": -5,
-        "xp_multiplier": 1.25,  # Big bonus for braving the storm
-        "ascii": [" \\\\\\|///", "  STORM!!", " ///|\\\\\\", "  * zap *"],
-        "spring_prob": 0.03, "summer_prob": 0.05, "fall_prob": 0.05, "winter_prob": 0.02,
-    },
-    WeatherType.FOGGY: {
-        "name": "Foggy",
-        "message": "Mysterious fog rolls in... spooky!",
-        "mood_modifier": 0,
-        "xp_multiplier": 1.2,  # Mystery bonus
-        "ascii": ["~ ~ ~ ~ ~ ~", " ~ ~ ~ ~ ~", "~ ~ ~ ~ ~ ~", " ~ fog ~ ~"],
-        "spring_prob": 0.03, "summer_prob": 0.01, "fall_prob": 0.05, "winter_prob": 0.08,
-        "rare_drops_bonus": 0.5,  # 50% more rare drops
-    },
-    WeatherType.SNOWY: {
-        "name": "Snowy",
-        "message": "*catches snowflake* So pretty! So cold!",
-        "mood_modifier": 3,
-        "xp_multiplier": 1.2,
-        "ascii": ["  *  *  *  ", " *  *  *  *", "  *  *  *  ", "~~~~~~~~~~~~"],
-        "spring_prob": 0.01, "summer_prob": 0.0, "fall_prob": 0.02, "winter_prob": 0.10,
+    WeatherType.OVERCAST: {
+        "name": "Overcast",
+        "message": "A thick layer of clouds covers everything.",
+        "mood_modifier": -1,
+        "xp_multiplier": 1.0,
+        "particle_type": None,
+        "env_effects": ["dim_lighting"],
+        "spring_prob": 0.06, "summer_prob": 0.04, "fall_prob": 0.08, "winter_prob": 0.10,
     },
     WeatherType.WINDY: {
         "name": "Windy",
         "message": "*feathers ruffled* Woooosh!",
         "mood_modifier": 2,
         "xp_multiplier": 1.0,
-        "ascii": ["  ~~ >>> ~~", " ~~ >>> ~~", "~~ >>> ~~", "  whoooosh"],
-        "spring_prob": 0.06, "summer_prob": 0.04, "fall_prob": 0.08, "winter_prob": 0.05,
+        "particle_type": "wind",
+        "env_effects": ["swaying_reeds", "blowing_leaves"],
+        "spring_prob": 0.06, "summer_prob": 0.04, "fall_prob": 0.06, "winter_prob": 0.05,
+    },
+    WeatherType.FOGGY: {
+        "name": "Foggy",
+        "message": "Mysterious fog rolls in... spooky!",
+        "mood_modifier": 0,
+        "xp_multiplier": 1.2,
+        "particle_type": "fog",
+        "env_effects": ["thick_fog", "hidden_shapes"],
+        "rare_drops_bonus": 0.5,
+        "spring_prob": 0.03, "summer_prob": 0.01, "fall_prob": 0.04, "winter_prob": 0.05,
+    },
+    WeatherType.MISTY: {
+        "name": "Misty",
+        "message": "A light mist hangs in the air...",
+        "mood_modifier": 1,
+        "xp_multiplier": 1.1,
+        "particle_type": "mist",
+        "env_effects": ["dew_drops", "soft_haze"],
+        "spring_prob": 0.04, "summer_prob": 0.02, "fall_prob": 0.05, "winter_prob": 0.04,
+    },
+    
+    # ==========================================================================
+    # RAIN VARIATIONS
+    # ==========================================================================
+    WeatherType.DRIZZLE: {
+        "name": "Drizzle",
+        "message": "*light pitter-patter* A gentle drizzle falls.",
+        "mood_modifier": 0,
+        "xp_multiplier": 1.05,
+        "particle_type": "drizzle",
+        "env_effects": ["small_puddles", "damp_ground"],
+        "spring_prob": 0.06, "summer_prob": 0.03, "fall_prob": 0.06, "winter_prob": 0.02,
+    },
+    WeatherType.RAINY: {
+        "name": "Rainy",
+        "message": "*pitter patter* Perfect puddle splashing weather!",
+        "mood_modifier": -2,
+        "xp_multiplier": 1.15,
+        "particle_type": "rain",
+        "env_effects": ["puddles", "rippling_water", "wet_vegetation"],
+        "triggers_rainbow": True,
+        "spring_prob": 0.08, "summer_prob": 0.05, "fall_prob": 0.08, "winter_prob": 0.03,
+    },
+    WeatherType.HEAVY_RAIN: {
+        "name": "Heavy Rain",
+        "message": "*SPLASH SPLASH* It's POURING! Quick, find shelter!",
+        "mood_modifier": -4,
+        "xp_multiplier": 1.2,
+        "particle_type": "heavy_rain",
+        "env_effects": ["large_puddles", "splashing", "overflowing_pond"],
+        "triggers_rainbow": True,
+        "spring_prob": 0.04, "summer_prob": 0.03, "fall_prob": 0.05, "winter_prob": 0.01,
+    },
+    WeatherType.STORMY: {
+        "name": "Stormy",
+        "message": "*rumble* Storm clouds gather ominously...",
+        "mood_modifier": -5,
+        "xp_multiplier": 1.25,
+        "particle_type": "storm",
+        "env_effects": ["large_puddles", "dark_sky", "bending_trees"],
+        "spring_prob": 0.02, "summer_prob": 0.03, "fall_prob": 0.03, "winter_prob": 0.01,
+    },
+    WeatherType.THUNDERSTORM: {
+        "name": "Thunderstorm",
+        "message": "*CRACK-BOOM* Lightning flashes across the sky!",
+        "mood_modifier": -8,
+        "xp_multiplier": 1.35,
+        "particle_type": "thunderstorm",
+        "env_effects": ["lightning_flashes", "large_puddles", "dark_sky", "frightened_animals"],
+        "spring_prob": 0.02, "summer_prob": 0.04, "fall_prob": 0.02, "winter_prob": 0.01,
+    },
+    
+    # ==========================================================================
+    # SNOW/ICE VARIATIONS
+    # ==========================================================================
+    WeatherType.FROST: {
+        "name": "Frost",
+        "message": "*shivers* Everything's covered in delicate frost crystals!",
+        "mood_modifier": 1,
+        "xp_multiplier": 1.1,
+        "particle_type": None,
+        "env_effects": ["frost_crystals", "frozen_edges", "icy_sparkles"],
+        "spring_prob": 0.01, "summer_prob": 0.0, "fall_prob": 0.03, "winter_prob": 0.08,
+    },
+    WeatherType.LIGHT_SNOW: {
+        "name": "Light Snow",
+        "message": "*catches snowflake* How pretty!",
+        "mood_modifier": 3,
+        "xp_multiplier": 1.15,
+        "particle_type": "light_snow",
+        "env_effects": ["light_snow_cover", "snowflakes"],
+        "spring_prob": 0.01, "summer_prob": 0.0, "fall_prob": 0.01, "winter_prob": 0.10,
+    },
+    WeatherType.SNOWY: {
+        "name": "Snowy",
+        "message": "*waddles through snow* So fluffy!",
+        "mood_modifier": 4,
+        "xp_multiplier": 1.2,
+        "particle_type": "snow",
+        "env_effects": ["snow_cover", "snow_piles", "icicles"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.01, "winter_prob": 0.08,
+    },
+    WeatherType.HEAVY_SNOW: {
+        "name": "Heavy Snow",
+        "message": "*BRRR* It's a winter wonderland out here!",
+        "mood_modifier": 2,
+        "xp_multiplier": 1.25,
+        "particle_type": "heavy_snow",
+        "env_effects": ["deep_snow", "snow_drifts", "covered_vegetation"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.05,
+    },
+    WeatherType.BLIZZARD: {
+        "name": "Blizzard",
+        "message": "*WHOOSH* Can barely see through the blowing snow!",
+        "mood_modifier": -6,
+        "xp_multiplier": 1.4,
+        "particle_type": "blizzard",
+        "env_effects": ["deep_snow", "blowing_snow", "zero_visibility", "snow_drifts"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.02,
+    },
+    WeatherType.SLEET: {
+        "name": "Sleet",
+        "message": "*tap tap tap* Icy rain bounces off everything!",
+        "mood_modifier": -4,
+        "xp_multiplier": 1.15,
+        "particle_type": "sleet",
+        "env_effects": ["icy_puddles", "frozen_ground"],
+        "spring_prob": 0.01, "summer_prob": 0.0, "fall_prob": 0.02, "winter_prob": 0.04,
+    },
+    WeatherType.HAIL: {
+        "name": "Hail",
+        "message": "*BONK* OW! Ice balls falling from the sky!",
+        "mood_modifier": -7,
+        "xp_multiplier": 1.3,
+        "particle_type": "hail",
+        "env_effects": ["hail_stones", "dented_ground"],
+        "spring_prob": 0.01, "summer_prob": 0.02, "fall_prob": 0.01, "winter_prob": 0.02,
+    },
+    WeatherType.ICE_STORM: {
+        "name": "Ice Storm",
+        "message": "*crackle* Everything's coated in ice!",
+        "mood_modifier": -8,
+        "xp_multiplier": 1.35,
+        "particle_type": "ice_storm",
+        "env_effects": ["ice_coating", "frozen_everything", "icicles", "cracking_branches"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.02,
+    },
+    
+    # ==========================================================================
+    # SPRING SPECIFIC
+    # ==========================================================================
+    WeatherType.SPRING_SHOWERS: {
+        "name": "Spring Showers",
+        "message": "April showers bring May flowers! 🌷",
+        "mood_modifier": 2,
+        "xp_multiplier": 1.15,
+        "particle_type": "spring_rain",
+        "env_effects": ["puddles", "blooming_flowers", "fresh_growth"],
+        "triggers_rainbow": True,
+        "spring_prob": 0.10, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.0,
     },
     WeatherType.RAINBOW: {
         "name": "Rainbow",
-        "message": "A RAINBOW! Make a wish! This is MAGICAL!",
+        "message": "A RAINBOW! Make a wish! ✨",
         "mood_modifier": 15,
-        "xp_multiplier": 2.0,  # Double XP during rainbows!
-        "ascii": ["   .--.", " .'    `.", "/  RAINBOW\\", "  colors! "],
-        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.0,
+        "xp_multiplier": 2.0,
+        "particle_type": "rainbow",
+        "env_effects": ["rainbow_arc", "sparkles", "puddles"],
         "special": True,
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.0,
+    },
+    WeatherType.POLLEN_DRIFT: {
+        "name": "Pollen Drift",
+        "message": "*ACHOO* The air is full of golden pollen!",
+        "mood_modifier": -1,
+        "xp_multiplier": 1.05,
+        "particle_type": "pollen",
+        "env_effects": ["pollen_clouds", "blooming_trees", "yellow_dust"],
+        "spring_prob": 0.06, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.0,
+    },
+    WeatherType.WARM_BREEZE: {
+        "name": "Warm Breeze",
+        "message": "*aaahh* A gentle warm breeze ruffles your feathers.",
+        "mood_modifier": 6,
+        "xp_multiplier": 1.15,
+        "particle_type": "gentle_wind",
+        "env_effects": ["swaying_flowers", "dancing_petals"],
+        "spring_prob": 0.08, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.0,
+    },
+    WeatherType.DEWY_MORNING: {
+        "name": "Dewy Morning",
+        "message": "*sparkle sparkle* Morning dew glistens everywhere!",
+        "mood_modifier": 4,
+        "xp_multiplier": 1.1,
+        "particle_type": None,
+        "env_effects": ["dew_drops", "glistening_grass", "spider_webs"],
+        "spring_prob": 0.05, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.0,
+    },
+    
+    # ==========================================================================
+    # SUMMER SPECIFIC
+    # ==========================================================================
+    WeatherType.SCORCHING: {
+        "name": "Scorching",
+        "message": "*pants* It's SO hot! Need water!",
+        "mood_modifier": -3,
+        "xp_multiplier": 1.1,
+        "particle_type": "heat_shimmer",
+        "env_effects": ["heat_waves", "wilting_plants", "cracked_ground"],
+        "spring_prob": 0.0, "summer_prob": 0.08, "fall_prob": 0.0, "winter_prob": 0.0,
+    },
+    WeatherType.HUMID: {
+        "name": "Humid",
+        "message": "*sticky feathers* The air is thick and muggy.",
+        "mood_modifier": -2,
+        "xp_multiplier": 1.0,
+        "particle_type": None,
+        "env_effects": ["moist_air", "sweating_plants"],
+        "spring_prob": 0.0, "summer_prob": 0.10, "fall_prob": 0.0, "winter_prob": 0.0,
+    },
+    WeatherType.HEAT_WAVE: {
+        "name": "Heat Wave",
+        "message": "*gasp* It's a HEAT WAVE! Find shade!",
+        "mood_modifier": -6,
+        "xp_multiplier": 1.2,
+        "particle_type": "heat_shimmer",
+        "env_effects": ["extreme_heat_waves", "wilting_plants", "dry_ground"],
+        "spring_prob": 0.0, "summer_prob": 0.05, "fall_prob": 0.0, "winter_prob": 0.0,
+    },
+    WeatherType.SUMMER_STORM: {
+        "name": "Summer Storm",
+        "message": "*CRACK-BOOM* A dramatic summer storm!",
+        "mood_modifier": -4,
+        "xp_multiplier": 1.3,
+        "particle_type": "summer_storm",
+        "env_effects": ["lightning_flashes", "large_puddles", "dramatic_sky"],
+        "triggers_rainbow": True,
+        "spring_prob": 0.0, "summer_prob": 0.06, "fall_prob": 0.0, "winter_prob": 0.0,
+    },
+    WeatherType.BALMY_EVENING: {
+        "name": "Balmy Evening",
+        "message": "*content sigh* What a perfect warm evening.",
+        "mood_modifier": 7,
+        "xp_multiplier": 1.2,
+        "particle_type": None,
+        "env_effects": ["fireflies", "warm_glow", "gentle_breeze"],
+        "spring_prob": 0.0, "summer_prob": 0.06, "fall_prob": 0.0, "winter_prob": 0.0,
+    },
+    WeatherType.GOLDEN_HOUR: {
+        "name": "Golden Hour",
+        "message": "*basks* Everything is bathed in golden light!",
+        "mood_modifier": 10,
+        "xp_multiplier": 1.5,
+        "particle_type": "golden_sparkles",
+        "env_effects": ["golden_light", "long_shadows", "warm_glow"],
+        "spring_prob": 0.0, "summer_prob": 0.04, "fall_prob": 0.0, "winter_prob": 0.0,
+    },
+    WeatherType.MUGGY: {
+        "name": "Muggy",
+        "message": "*fans self with wing* So hot and sticky!",
+        "mood_modifier": -3,
+        "xp_multiplier": 1.05,
+        "particle_type": None,
+        "env_effects": ["humid_haze", "drooping_plants"],
+        "spring_prob": 0.0, "summer_prob": 0.08, "fall_prob": 0.0, "winter_prob": 0.0,
+    },
+    
+    # ==========================================================================
+    # FALL SPECIFIC
+    # ==========================================================================
+    WeatherType.CRISP: {
+        "name": "Crisp",
+        "message": "*deep breath* The air is cool and refreshing!",
+        "mood_modifier": 5,
+        "xp_multiplier": 1.15,
+        "particle_type": None,
+        "env_effects": ["colorful_leaves", "clear_air"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.12, "winter_prob": 0.0,
+    },
+    WeatherType.BREEZY: {
+        "name": "Breezy",
+        "message": "*feathers flutter* A playful autumn breeze!",
+        "mood_modifier": 4,
+        "xp_multiplier": 1.1,
+        "particle_type": "autumn_wind",
+        "env_effects": ["falling_leaves", "swaying_trees"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.10, "winter_prob": 0.0,
+    },
+    WeatherType.LEAF_STORM: {
+        "name": "Leaf Storm",
+        "message": "*wheee* Leaves swirling EVERYWHERE!",
+        "mood_modifier": 6,
+        "xp_multiplier": 1.2,
+        "particle_type": "leaf_storm",
+        "env_effects": ["leaf_piles", "swirling_leaves", "bare_trees"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.08, "winter_prob": 0.0,
+    },
+    WeatherType.HARVEST_MOON: {
+        "name": "Harvest Moon",
+        "message": "*gazes up* The huge orange moon is beautiful!",
+        "mood_modifier": 8,
+        "xp_multiplier": 1.25,
+        "particle_type": "moonlight",
+        "env_effects": ["orange_moon", "long_shadows", "mystical_glow"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.04, "winter_prob": 0.0,
+    },
+    WeatherType.FIRST_FROST: {
+        "name": "First Frost",
+        "message": "*shivers* Winter is coming... first frost!",
+        "mood_modifier": 2,
+        "xp_multiplier": 1.15,
+        "particle_type": None,
+        "env_effects": ["frost_crystals", "frozen_puddles", "cold_breath"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.05, "winter_prob": 0.0,
+    },
+    WeatherType.AUTUMNAL: {
+        "name": "Autumnal",
+        "message": "A perfect autumn day with colorful leaves!",
+        "mood_modifier": 6,
+        "xp_multiplier": 1.2,
+        "particle_type": "falling_leaves",
+        "env_effects": ["colorful_leaves", "leaf_piles", "warm_colors"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.10, "winter_prob": 0.0,
+    },
+    
+    # ==========================================================================
+    # WINTER SPECIFIC
+    # ==========================================================================
+    WeatherType.BITTER_COLD: {
+        "name": "Bitter Cold",
+        "message": "*BRRRRR* It's FREEZING out here!",
+        "mood_modifier": -5,
+        "xp_multiplier": 1.2,
+        "particle_type": None,
+        "env_effects": ["frost_everywhere", "frozen_pond", "cold_breath"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.06,
+    },
+    WeatherType.FREEZING: {
+        "name": "Freezing",
+        "message": "*teeth chattering* Everything's frozen solid!",
+        "mood_modifier": -4,
+        "xp_multiplier": 1.15,
+        "particle_type": None,
+        "env_effects": ["ice_coating", "frozen_water", "frost_crystals"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.08,
+    },
+    WeatherType.CLEAR_COLD: {
+        "name": "Clear Cold",
+        "message": "*crisp!* Cold but sunny - beautiful winter day!",
+        "mood_modifier": 4,
+        "xp_multiplier": 1.15,
+        "particle_type": None,
+        "env_effects": ["frost_sparkles", "blue_sky", "sharp_shadows"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.10,
+    },
+    WeatherType.SNOW_FLURRIES: {
+        "name": "Snow Flurries",
+        "message": "*catches flakes* Little snowflakes dancing in the air!",
+        "mood_modifier": 5,
+        "xp_multiplier": 1.15,
+        "particle_type": "flurries",
+        "env_effects": ["light_snow_cover", "dancing_flakes"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.08,
+    },
+    WeatherType.WINTER_SUN: {
+        "name": "Winter Sun",
+        "message": "*soaks up rays* Bright winter sunshine!",
+        "mood_modifier": 6,
+        "xp_multiplier": 1.2,
+        "particle_type": None,
+        "env_effects": ["bright_glare", "snow_sparkles", "warm_patches"],
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.06,
+    },
+    
+    # ==========================================================================
+    # RARE/SPECIAL WEATHER
+    # ==========================================================================
+    WeatherType.AURORA: {
+        "name": "Aurora Borealis",
+        "message": "*mesmerized* The northern lights dance across the sky!",
+        "mood_modifier": 20,
+        "xp_multiplier": 2.5,
+        "particle_type": "aurora",
+        "env_effects": ["aurora_glow", "mystical_light", "color_waves"],
+        "special": True,
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.005, "winter_prob": 0.01,
+    },
+    WeatherType.METEOR_SHOWER: {
+        "name": "Meteor Shower",
+        "message": "*gasp* Shooting stars! Make a wish!",
+        "mood_modifier": 18,
+        "xp_multiplier": 2.0,
+        "particle_type": "meteors",
+        "env_effects": ["streaking_lights", "night_magic"],
+        "special": True,
+        "spring_prob": 0.005, "summer_prob": 0.01, "fall_prob": 0.005, "winter_prob": 0.005,
+    },
+    WeatherType.DOUBLE_RAINBOW: {
+        "name": "Double Rainbow",
+        "message": "*GASP* DOUBLE RAINBOW! What does it MEAN?!",
+        "mood_modifier": 25,
+        "xp_multiplier": 3.0,
+        "particle_type": "rainbow",
+        "env_effects": ["double_rainbow_arc", "sparkles", "magical_glow"],
+        "special": True,
+        "spring_prob": 0.0, "summer_prob": 0.0, "fall_prob": 0.0, "winter_prob": 0.0,
+    },
+    WeatherType.PERFECT_DAY: {
+        "name": "Perfect Day",
+        "message": "Everything is PERFECT. Temperature, sky, breeze... magical!",
+        "mood_modifier": 15,
+        "xp_multiplier": 2.0,
+        "particle_type": "sparkles",
+        "env_effects": ["perfect_lighting", "happy_animals", "blooming_nature"],
+        "special": True,
+        "spring_prob": 0.01, "summer_prob": 0.01, "fall_prob": 0.01, "winter_prob": 0.005,
     },
 }
 
@@ -969,21 +1423,36 @@ class AtmosphereManager:
         if not self.current_weather:
             return
 
-        # Rainbow can appear after rain (20% chance)
-        if (self.current_weather.weather_type == WeatherType.RAINY and
-            not self.current_weather.is_active() and
-            random.random() < 0.2):
+        # Check if this weather type can trigger a rainbow
+        weather_data = WEATHER_DATA.get(self.current_weather.weather_type, {})
+        if not weather_data.get("triggers_rainbow", False):
+            return
 
-            data = WEATHER_DATA[WeatherType.RAINBOW]
-            self.current_weather = Weather(
-                weather_type=WeatherType.RAINBOW,
-                intensity=1.0,
-                duration_hours=0.5,  # Short but magical
-                start_time=datetime.now().isoformat(),
-                mood_modifier=data.get("mood_modifier", 0),
-                xp_multiplier=data.get("xp_multiplier", 1.0),
-                special_message=data.get("message", ""),
-            )
+        # Rainbow can appear after rain ends (20% chance, 5% for double rainbow!)
+        if not self.current_weather.is_active():
+            if random.random() < 0.05:
+                # Ultra rare double rainbow!
+                data = WEATHER_DATA[WeatherType.DOUBLE_RAINBOW]
+                self.current_weather = Weather(
+                    weather_type=WeatherType.DOUBLE_RAINBOW,
+                    intensity=1.0,
+                    duration_hours=0.3,  # Very short but AMAZING
+                    start_time=datetime.now().isoformat(),
+                    mood_modifier=data.get("mood_modifier", 0),
+                    xp_multiplier=data.get("xp_multiplier", 1.0),
+                    special_message=data.get("message", ""),
+                )
+            elif random.random() < 0.2:
+                data = WEATHER_DATA[WeatherType.RAINBOW]
+                self.current_weather = Weather(
+                    weather_type=WeatherType.RAINBOW,
+                    intensity=1.0,
+                    duration_hours=0.5,  # Short but magical
+                    start_time=datetime.now().isoformat(),
+                    mood_modifier=data.get("mood_modifier", 0),
+                    xp_multiplier=data.get("xp_multiplier", 1.0),
+                    special_message=data.get("message", ""),
+                )
 
     def _generate_fortune(self):
         """Generate fortune for the day."""

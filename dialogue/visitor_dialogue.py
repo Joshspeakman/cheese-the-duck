@@ -8,6 +8,270 @@ from enum import Enum
 import random
 
 
+# =============================================================================
+# VISITOR WEATHER COMMENTS - Weather-specific comments by personality
+# =============================================================================
+
+VISITOR_WEATHER_COMMENTS: Dict[str, Dict[str, List[str]]] = {
+    "adventurous": {
+        "sunny": [
+            "Perfect weather for an adventure! The sun is calling!",
+            "*checks compass* Excellent conditions for exploration!",
+            "Sunny skies mean new trails to discover!",
+        ],
+        "rainy": [
+            "Rain never stopped a TRUE adventurer! Let's go!",
+            "I once crossed a monsoon. This is nothing!",
+            "*excited* PUDDLES! Nature's obstacle course!",
+        ],
+        "stormy": [
+            "*eyes wide* Now THIS is weather! EXCITING!",
+            "Storms make everything more dramatic!",
+            "*watches lightning* The universe is putting on a SHOW!",
+        ],
+        "snowy": [
+            "Snow means winter expeditions! I'm SO ready!",
+            "I've trekked through worse blizzards. This is cozy!",
+            "*catching snowflakes* Perfect for tracking!",
+        ],
+        "windy": [
+            "The wind guides my adventures! Which way, wind?",
+            "*feathers blown back* FREEDOM feels like this!",
+            "Wind at our backs! Let's GO!",
+        ],
+        "foggy": [
+            "Mysterious! Could be ANYTHING out there!",
+            "Fog makes everything feel like a quest!",
+            "*squinting* Adventure awaits beyond the mist!",
+        ],
+    },
+    "scholarly": {
+        "sunny": [
+            "Optimal photosynthetic conditions. Fascinating.",
+            "The sun provides excellent reading light!",
+            "*adjusts glasses* Clear skies. Perfect for observations.",
+        ],
+        "rainy": [
+            "Rain increases ambient humidity by... *calculates*",
+            "Did you know rain forms around dust particles?",
+            "*taking notes* Precipitation patterns are remarkable!",
+        ],
+        "stormy": [
+            "The electrical potential in those clouds is IMMENSE!",
+            "Storm systems are nature's most complex phenomena!",
+            "*fascinated* Each lightning bolt is 30,000 kelvin!",
+        ],
+        "snowy": [
+            "Each snowflake IS unique. I've verified this.",
+            "Snow crystals form in fascinating hexagonal patterns!",
+            "*examining snowflake* Six-fold symmetry! Beautiful!",
+        ],
+        "windy": [
+            "Wind is simply differential air pressure. Elegantly simple.",
+            "The Coriolis effect influences this breeze!",
+            "*hair blown* Aerodynamics in action!",
+        ],
+        "foggy": [
+            "Fog is merely ground-level stratus clouds. Technically.",
+            "Visibility reduced to approximately... *squints* ...limited.",
+            "Water vapor condensation. Quite poetic, actually.",
+        ],
+    },
+    "artistic": {
+        "sunny": [
+            "*gestures dramatically* The LIGHT! The SHADOWS! Art!",
+            "Golden rays inspire golden creativity!",
+            "The sun paints everything in warm tones!",
+        ],
+        "rainy": [
+            "Rain creates the most MELANCHOLIC aesthetic!",
+            "*spreading wings* The drama! The romance!",
+            "Everything glistens! Nature's rhinestones!",
+        ],
+        "stormy": [
+            "DRAMATIC! INTENSE! INSPIRED!",
+            "*poses in wind* The perfect backdrop for art!",
+            "Such POWERFUL energy! I must create!",
+        ],
+        "snowy": [
+            "A blank canvas! The world is ART waiting to happen!",
+            "*twirling* Pure white beauty! Pristine!",
+            "Snow muffles sound... so peaceful... so inspiring...",
+        ],
+        "windy": [
+            "*feathers flowing* I am become SCULPTURE!",
+            "The wind creates such dynamic MOVEMENT!",
+            "DRAMATIC! The wind is an artist too!",
+        ],
+        "foggy": [
+            "The atmosphere is MOODY! I love it!",
+            "*mysterious pose* Ethereal. Haunting. Perfect.",
+            "Fog turns everything into impressionism!",
+        ],
+    },
+    "playful": {
+        "sunny": [
+            "YAY! Sunny! Let's play EVERYTHING!",
+            "*bouncing* The sun wants us to have FUN!",
+            "Perfect day for shenanigans!",
+        ],
+        "rainy": [
+            "PUDDLES! PUDDLES EVERYWHERE! *splashing*",
+            "Rain is just nature's sprinkler system!",
+            "*spinning* SPLASHY SPLASH SPLASH!",
+        ],
+        "stormy": [
+            "*hides* The sky is being LOUD. Make it stop?",
+            "Thunder is just sky farts. Right? RIGHT?",
+            "*nervous but excited* SCARY but also COOL!",
+        ],
+        "snowy": [
+            "SNOWBALL FIGHT! I mean... SNOWBALL CUDDLE!",
+            "*diving into snow* I'm a snow duck now!",
+            "Let's make snow angels! Or snow DUCKS!",
+        ],
+        "windy": [
+            "*spreads wings* I can ALMOST fly! Almost!",
+            "WHEEEEE! The wind is playing with me!",
+            "*spinning* I'm a feathery windmill!",
+        ],
+        "foggy": [
+            "Spooky! Let's play hide and seek!",
+            "*disappears into fog* Can you find me??",
+            "The fog is trying to play! It's hiding everything!",
+        ],
+    },
+    "mysterious": {
+        "sunny": [
+            "The sun reveals what darkness conceals...",
+            "*squints* Too bright. I prefer shadows.",
+            "Even light casts darkness somewhere...",
+        ],
+        "rainy": [
+            "The sky weeps. I understand.",
+            "Rain washes away secrets... or hides them.",
+            "*gazes at puddles* Reflections of other worlds...",
+        ],
+        "stormy": [
+            "The storm and I have an... understanding.",
+            "*unfazed by thunder* We've met before.",
+            "Such weather reveals true nature...",
+        ],
+        "snowy": [
+            "Snow covers all tracks... how convenient.",
+            "*watching snowfall* Each flake carries a secret.",
+            "The silence of snow... it speaks volumes.",
+        ],
+        "windy": [
+            "The wind whispers things... dark things...",
+            "*listening* Do you hear it too?",
+            "Ancient messages on the breeze...",
+        ],
+        "foggy": [
+            "*emerges from fog* My element.",
+            "Fog hides many mysteries. Including me.",
+            "The veil between worlds is thin today...",
+        ],
+    },
+    "generous": {
+        "sunny": [
+            "Sunny days deserve extra gifts!",
+            "*handing out treats* The sun smiles, so should we!",
+            "Perfect weather for sharing joy!",
+        ],
+        "rainy": [
+            "I brought extra! In case you got wet!",
+            "*offers umbrella* Rain can't dampen generosity!",
+            "Here! Something to warm you up!",
+        ],
+        "stormy": [
+            "Stay safe! Here's something to help!",
+            "*worried* Do you need anything? I have extras!",
+            "Storms mean we stick together!",
+        ],
+        "snowy": [
+            "*bundled up* I brought you something warm!",
+            "Snow days mean hot cocoa gifts!",
+            "Here! To keep you cozy!",
+        ],
+        "windy": [
+            "*holding onto things* Don't let the gifts blow away!",
+            "Windy days need extra cheer!",
+            "I brought something stable. Unlike the weather!",
+        ],
+        "foggy": [
+            "Hard to see, but I found you anyway! With gifts!",
+            "*emerges from fog* Surprise! It's gift time!",
+            "Fog can't hide my generosity!",
+        ],
+    },
+    "foodie": {
+        "sunny": [
+            "Perfect weather for a picnic! Did you bring snacks?",
+            "The sun makes everything taste better!",
+            "*sniffing* I smell... POSSIBILITIES.",
+        ],
+        "rainy": [
+            "Rain means comfort food time!",
+            "Wet weather, warm snacks. Perfect combo!",
+            "*excited* Raindrops make everything taste fresh!",
+        ],
+        "stormy": [
+            "Storm baking! The BEST kind of baking!",
+            "*cozy* Perfect weather for hot soup!",
+            "Thunder? That's the universe's tummy rumbling!",
+        ],
+        "snowy": [
+            "Cold weather means hot food! PERFECT!",
+            "*making snow cones* Nature provides!",
+            "Winter is soup season. All soup. Always.",
+        ],
+        "windy": [
+            "Wind-blown snacks are still snacks!",
+            "*chasing leaves* Wait, those aren't food!",
+            "The wind brings new smells! New FLAVORS!",
+        ],
+        "foggy": [
+            "Can't see but I can SMELL everything!",
+            "Misty mornings, perfect breakfast vibes!",
+            "*sniffing* My nose sees through fog!",
+        ],
+    },
+    "athletic": {
+        "sunny": [
+            "PERFECT training weather! Let's GO!",
+            "*stretching* The sun energizes my workout!",
+            "Peak conditions for peak performance!",
+        ],
+        "rainy": [
+            "Rain is just nature's sweat! Keep pushing!",
+            "*running in rain* REFRESHING!",
+            "Wet feathers mean harder workout! GAINS!",
+        ],
+        "stormy": [
+            "*pumped* EXTREME weather! EXTREME training!",
+            "Storm drills! Nature's intensity training!",
+            "Lightning reflexes! Get it? LIGHTNING?",
+        ],
+        "snowy": [
+            "Cold weather burns MORE calories!",
+            "*running in snow* RESISTANCE training!",
+            "Snow sports time! Race you to that drift!",
+        ],
+        "windy": [
+            "*running into wind* CARDIO INTENSIFIES!",
+            "Wind resistance! Free gym membership!",
+            "The wind is my sparring partner today!",
+        ],
+        "foggy": [
+            "Training in limited visibility! SKILL BUILDER!",
+            "*jogging* Can't see? Run ANYWAY!",
+            "Fog is just the world making training harder!",
+        ],
+    },
+}
+
+
 class ConversationPhase(Enum):
     """Phases of a visit conversation."""
     GREETING = "greeting"
@@ -273,6 +537,69 @@ class VisitorDialogueManager:
         if greetings:
             text = random.choice(greetings)
             return f"{self.friend_name}: {text}"
+        
+        return None
+    
+    def get_weather_comment(self, weather_type: str) -> Optional[str]:
+        """Get a weather-specific comment based on personality and current weather."""
+        if not weather_type:
+            return None
+        
+        # Normalize weather type to match our comment keys
+        weather_key = weather_type.lower()
+        
+        # Map specific weather types to broader categories for comments
+        weather_mapping = {
+            # Rain variants
+            "drizzle": "rainy",
+            "heavy_rain": "rainy", 
+            "spring_showers": "rainy",
+            "thunderstorm": "stormy",
+            "summer_storm": "stormy",
+            "storm": "stormy",
+            # Snow variants
+            "light_snow": "snowy",
+            "heavy_snow": "snowy",
+            "blizzard": "snowy",
+            "snow_flurries": "snowy",
+            "frost": "snowy",
+            "sleet": "snowy",
+            "hail": "stormy",
+            "ice_storm": "stormy",
+            # Other variants
+            "partly_cloudy": "sunny",
+            "cloudy": "foggy",
+            "overcast": "foggy",
+            "misty": "foggy",
+            "breezy": "windy",
+            "leaf_storm": "windy",
+            "warm_breeze": "sunny",
+            "crisp": "sunny",
+            "golden_hour": "sunny",
+            "perfect_day": "sunny",
+            "balmy_evening": "sunny",
+            "scorching": "sunny",
+            "heat_wave": "sunny",
+            "humid": "sunny",
+            "muggy": "sunny",
+            "dewy_morning": "foggy",
+            "pollen_drift": "windy",
+            "aurora": "snowy",
+            "meteor_shower": "sunny",
+            "double_rainbow": "rainy",
+            "rainbow": "rainy",
+        }
+        
+        # Get the mapped key or use the original
+        mapped_key = weather_mapping.get(weather_key, weather_key)
+        
+        # Get personality comments
+        personality_comments = VISITOR_WEATHER_COMMENTS.get(self.personality, {})
+        weather_comments = personality_comments.get(mapped_key, [])
+        
+        if weather_comments:
+            comment = random.choice(weather_comments)
+            return f"{self.friend_name}: {comment}"
         
         return None
     

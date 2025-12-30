@@ -397,6 +397,104 @@ class Renderer:
         self._weather_particles: List[Tuple[float, float, str]] = []  # (x, y, char)
         self._weather_frame = 0
         self._current_weather_type: Optional[str] = None
+        
+        # Environmental weather decorations (puddles, snow piles, leaves, etc.)
+        self._weather_decorations: List[Tuple[int, int, str, Any]] = []  # (x, y, char, color_func)
+        self._weather_decoration_weather: Optional[str] = None  # Weather when decorations were generated
+
+    def _generate_weather_decorations(self, weather_type: Optional[str], env_effects: List[str], width: int, height: int):
+        """Generate environmental decorations based on current weather."""
+        if weather_type == self._weather_decoration_weather:
+            return  # Already generated for this weather
+        
+        self._weather_decoration_weather = weather_type
+        self._weather_decorations = []
+        
+        if not env_effects or not weather_type:
+            return
+        
+        # Define decoration patterns for each environmental effect
+        effect_decorations = {
+            # Puddles and water effects
+            "small_puddles": [("~", self.term.bright_cyan), (".", self.term.cyan)],
+            "puddles": [("~", self.term.cyan), ("~", self.term.bright_cyan), ("o", self.term.blue)],
+            "large_puddles": [("~~~", self.term.blue), ("~o~", self.term.cyan), ("~~", self.term.bright_blue)],
+            "rippling_water": [("~", self.term.cyan), ("o", self.term.bright_cyan)],
+            "icy_puddles": [("#", self.term.bright_white), ("~", self.term.bright_cyan)],
+            
+            # Snow and ice effects
+            "light_snow_cover": [(".", self.term.white), (",", self.term.bright_white)],
+            "snow_cover": [("*", self.term.bright_white), (".", self.term.white)],
+            "snow_piles": [("***", self.term.bright_white), ("**", self.term.white), ("*#*", self.term.bright_white)],
+            "snow_drifts": [("~~~~", self.term.bright_white), ("***", self.term.white)],
+            "deep_snow": [("###", self.term.bright_white), ("***", self.term.white)],
+            "frost_crystals": [("*", self.term.bright_cyan), ("+", self.term.cyan)],
+            "icicles": [("|", self.term.bright_cyan), ("'", self.term.cyan)],
+            "ice_coating": [("#", self.term.bright_white), ("=", self.term.bright_cyan)],
+            "frost_sparkles": [("*", self.term.bright_white), ("+", self.term.cyan)],
+            
+            # Leaf effects
+            "falling_leaves": [("{", self.term.yellow), ("}", self.term.bright_red), ("(", self.term.bright_yellow)],
+            "leaf_piles": [("{}", self.term.yellow), ("()", self.term.bright_red), ("{{}}", self.term.bright_yellow)],
+            "swirling_leaves": [("{", self.term.yellow), ("}", self.term.red)],
+            "colorful_leaves": [("{", self.term.bright_yellow), ("}", self.term.red), ("(", self.term.yellow)],
+            
+            # Nature effects  
+            "swaying_reeds": [("|", self.term.green), ("/", self.term.green), ("\\", self.term.green)],
+            "blowing_leaves": [("~", self.term.green), ("{", self.term.yellow)],
+            "swaying_flowers": [("*", self.term.magenta), ("@", self.term.bright_magenta)],
+            "dancing_petals": [(".", self.term.magenta), ("*", self.term.bright_red)],
+            "blooming_flowers": [("*", self.term.magenta), ("@", self.term.bright_yellow), ("o", self.term.red)],
+            "blooming_trees": [("Y", self.term.green), ("*", self.term.magenta)],
+            "bending_trees": [("/", self.term.green), ("\\", self.term.green)],
+            
+            # Atmospheric effects
+            "dew_drops": [(".", self.term.bright_cyan), ("o", self.term.cyan)],
+            "thick_fog": [(".", self.term.white), ("~", self.term.white)],
+            "soft_haze": [(".", self.term.white)],
+            "cloud_shadows": [(".", self.term.white)],
+            "dim_lighting": [],
+            
+            # Heat effects
+            "heat_waves": [("~", self.term.yellow), ("^", self.term.bright_yellow)],
+            "extreme_heat_waves": [("~", self.term.bright_red), ("^", self.term.yellow)],
+            "wilting_plants": [(",", self.term.yellow), (".", self.term.green)],
+            "cracked_ground": [("#", self.term.yellow), ("=", self.term.bright_yellow)],
+            
+            # Special effects
+            "fireflies": [("*", self.term.bright_yellow), (".", self.term.yellow)],
+            "sparkles": [("*", self.term.bright_white), ("+", self.term.bright_cyan)],
+            "sun_sparkles": [("*", self.term.bright_yellow)],
+            "golden_light": [("*", self.term.bright_yellow), (".", self.term.yellow)],
+            "warm_glow": [(".", self.term.yellow)],
+            "mystical_glow": [("*", self.term.bright_magenta), (".", self.term.magenta)],
+            "rainbow_arc": [("=", self.term.bright_red), ("=", self.term.bright_yellow), ("=", self.term.bright_green), ("=", self.term.bright_cyan)],
+            "aurora_glow": [("|", self.term.green), ("/", self.term.cyan), ("\\", self.term.magenta)],
+            "color_waves": [("~", self.term.green), ("~", self.term.cyan), ("~", self.term.magenta)],
+            "lightning_flashes": [("!", self.term.bright_yellow)],
+            "streaking_lights": [("\\", self.term.bright_white), ("/", self.term.white)],
+        }
+        
+        # Generate decorations based on active effects
+        for effect in env_effects:
+            decorations = effect_decorations.get(effect, [])
+            if not decorations:
+                continue
+            
+            # Determine density based on effect type
+            density = 3  # Default number of decorations per effect
+            if "pile" in effect or "cover" in effect:
+                density = 5
+            elif "heavy" in effect or "deep" in effect:
+                density = 6
+            elif "light" in effect or "small" in effect:
+                density = 2
+            
+            for _ in range(density):
+                char, color = random.choice(decorations)
+                x = random.randint(1, width - len(char) - 1)
+                y = random.randint(height // 2, height - 2)  # Bottom half of screen
+                self._weather_decorations.append((x, y, char, color))
 
     def _generate_playfield_decorations(self):
         """Generate random decorations for the playfield."""
@@ -463,33 +561,162 @@ class Renderer:
 
         self._weather_frame += 1
 
-        # Weather particle settings - Enhanced for more dramatic visuals
+        # Weather particle settings - Enhanced for many weather types
         # Note: sunny/clear weather has no particles (just a nice day)
         weather_chars = {
+            # Rain variants
+            "drizzle": ["'", ",", "'", "."],  # Light rain
             "rainy": ["|", "|", "'", ",", ":", "'"],  # Rain streaks
-            "stormy": ["|", "|", "'", ",", ":"],  # Heavy rain drops (cleaner look)
-            "snowy": ["*", "*", "*", "*", ".", "o", "*"],  # Snowflakes
-            "foggy": [".", "~", "~", "~", " ", "#"],  # Thick fog
-            "windy": [">", ">", "~", ">", "~", "-", "~"],  # Wind direction (single chars only)
-            "rainbow": ["*", "*", "*", "*", "*"],  # Sparkles for rainbow
+            "heavy_rain": ["|", "|", "|", "'", ",", "|", ":"],  # Heavy rain
+            "spring_rain": ["|", "'", ",", "~"],  # Gentle spring rain
+            "storm": ["|", "|", "'", ",", ":"],  # Storm rain
+            "stormy": ["|", "|", "'", ",", ":"],  # Storm rain (alias)
+            "thunderstorm": ["|", "|", "!", "|", ",", "!", ":"],  # Thunder + rain
+            "summer_storm": ["|", "|", "|", "'", "!", "|"],  # Heavy summer storm
+            
+            # Snow variants  
+            "light_snow": ["*", ".", "*", "."],  # Light snowflakes
+            "snow": ["*", "*", "*", "*", ".", "o", "*"],  # Normal snow
+            "snowy": ["*", "*", "*", "*", ".", "o", "*"],  # Normal snow (alias)
+            "heavy_snow": ["*", "*", "o", "*", "*", "O", "*"],  # Heavy snowfall
+            "flurries": ["*", ".", "*", ".", "*"],  # Dancing flurries
+            "blizzard": ["*", "*", "*", "/", "\\", "*", "O"],  # Blowing blizzard
+            
+            # Ice variants
+            "sleet": ["'", "|", "'", ",", "|", "."],  # Mixed ice/rain
+            "hail": ["o", "o", "O", "o", "."],  # Ice balls
+            "ice_storm": ["|", "'", "o", "|", "'"],  # Freezing rain
+            
+            # Fog/mist
+            "fog": [".", "~", "~", "~", " ", "#"],  # Thick fog
+            "foggy": [".", "~", "~", "~", " ", "#"],  # Thick fog (alias)
+            "mist": [".", "~", " ", "~", "."],  # Light mist
+            
+            # Wind variants
+            "wind": [">", ">", "~", ">", "~", "-", "~"],  # Standard wind
+            "windy": [">", ">", "~", ">", "~", "-", "~"],  # Standard wind (alias)
+            "gentle_wind": ["~", "-", "~", " ", "~"],  # Gentle breeze
+            "autumn_wind": [">", "}", "{", ">", "~"],  # Fall wind with leaves
+            
+            # Leaf particles
+            "falling_leaves": ["{", "}", "(", ")", "~"],  # Drifting leaves
+            "leaf_storm": ["{", "}", "{", ">", "}", ">", "{"],  # Swirling leaves
+            
+            # Special effects
+            "pollen": [".", "°", ".", "°", "."],  # Floating pollen
+            "heat_shimmer": ["~", "~", "^", "~"],  # Heat waves rising
+            "moonlight": ["*", ".", "*", "."],  # Moonlit sparkles
+            "golden_sparkles": ["*", "+", "*", "."],  # Golden hour magic
+            "sparkles": ["*", "+", "*", ".", "+"],  # Generic sparkles
+            
+            # Rare/magical
+            "rainbow": ["*", "*", "*", "*", "*"],  # Rainbow sparkles
+            "aurora": ["|", "/", "\\", "|", "~"],  # Northern lights
+            "meteors": ["\\", "/", "*", "."],  # Shooting stars
         }
 
         particle_density = {
-            "rainy": 0.20,      # More rain
-            "stormy": 0.25,     # Heavy storm rain (was 0.35)
-            "snowy": 0.12,      # More snow
-            "foggy": 0.15,      # Thicker fog
-            "windy": 0.10,      # More wind particles
-            "rainbow": 0.08,    # Magic sparkles
+            # Rain variants
+            "drizzle": 0.08,
+            "rainy": 0.20,
+            "heavy_rain": 0.30,
+            "spring_rain": 0.15,
+            "storm": 0.25,
+            "stormy": 0.25,
+            "thunderstorm": 0.28,
+            "summer_storm": 0.30,
+            
+            # Snow variants
+            "light_snow": 0.06,
+            "snow": 0.12,
+            "snowy": 0.12,
+            "heavy_snow": 0.20,
+            "flurries": 0.08,
+            "blizzard": 0.35,
+            
+            # Ice variants
+            "sleet": 0.18,
+            "hail": 0.15,
+            "ice_storm": 0.22,
+            
+            # Fog/mist
+            "fog": 0.15,
+            "foggy": 0.15,
+            "mist": 0.08,
+            
+            # Wind variants
+            "wind": 0.10,
+            "windy": 0.10,
+            "gentle_wind": 0.05,
+            "autumn_wind": 0.12,
+            
+            # Leaf particles
+            "falling_leaves": 0.08,
+            "leaf_storm": 0.18,
+            
+            # Special effects
+            "pollen": 0.06,
+            "heat_shimmer": 0.04,
+            "moonlight": 0.03,
+            "golden_sparkles": 0.05,
+            "sparkles": 0.06,
+            
+            # Rare/magical
+            "rainbow": 0.08,
+            "aurora": 0.10,
+            "meteors": 0.02,
         }
 
         particle_speed = {
-            "rainy": 2.0,       # Faster rain
-            "stormy": 2.5,      # Fast storm rain (was 3.0)
-            "snowy": 0.4,       # Slow gentle snow
-            "foggy": 0.15,      # Very slow fog drift
-            "windy": 1.5,       # Fast wind
-            "rainbow": 0.5,     # Gentle rainbow sparkle
+            # Rain variants (fast, downward)
+            "drizzle": 1.2,
+            "rainy": 2.0,
+            "heavy_rain": 2.5,
+            "spring_rain": 1.5,
+            "storm": 2.5,
+            "stormy": 2.5,
+            "thunderstorm": 2.8,
+            "summer_storm": 3.0,
+            
+            # Snow variants (slow, gentle)
+            "light_snow": 0.3,
+            "snow": 0.4,
+            "snowy": 0.4,
+            "heavy_snow": 0.5,
+            "flurries": 0.35,
+            "blizzard": 0.8,
+            
+            # Ice variants
+            "sleet": 1.8,
+            "hail": 2.2,
+            "ice_storm": 2.0,
+            
+            # Fog/mist (very slow drift)
+            "fog": 0.15,
+            "foggy": 0.15,
+            "mist": 0.1,
+            
+            # Wind variants (fast horizontal)
+            "wind": 1.5,
+            "windy": 1.5,
+            "gentle_wind": 0.8,
+            "autumn_wind": 1.2,
+            
+            # Leaf particles (medium, drifting)
+            "falling_leaves": 0.6,
+            "leaf_storm": 1.0,
+            
+            # Special effects
+            "pollen": 0.2,
+            "heat_shimmer": -0.3,  # Rises up
+            "moonlight": 0.4,
+            "golden_sparkles": 0.3,
+            "sparkles": 0.4,
+            
+            # Rare/magical
+            "rainbow": 0.5,
+            "aurora": 0.2,
+            "meteors": 3.5,
         }
 
         chars = weather_chars.get(weather_type, [])
@@ -505,30 +732,67 @@ class Renderer:
             new_y = y + speed
 
             # Horizontal drift for different weather types
-            if weather_type == "windy":
-                new_x = x + 0.8  # Move right
-            elif weather_type == "snowy":
-                new_x = x + random.uniform(-0.3, 0.3)  # Gentle drift
-            elif weather_type == "stormy":
-                new_x = x + random.uniform(-0.5, 0.5)  # Chaotic
+            # Wind types - strong rightward movement
+            if weather_type in ("windy", "wind", "blizzard", "leaf_storm"):
+                new_x = x + 0.8
+            # Autumn/gentle wind - moderate rightward
+            elif weather_type in ("autumn_wind", "gentle_wind", "breezy"):
+                new_x = x + 0.5
+            # Snow types - gentle random drift
+            elif weather_type in ("snowy", "snow", "light_snow", "heavy_snow", "flurries"):
+                new_x = x + random.uniform(-0.3, 0.3)
+            # Leaves - swaying drift
+            elif weather_type == "falling_leaves":
+                new_x = x + random.uniform(-0.4, 0.4)
+            # Storm types - chaotic
+            elif weather_type in ("stormy", "storm", "thunderstorm", "summer_storm"):
+                new_x = x + random.uniform(-0.5, 0.5)
+            # Aurora - gentle wave motion
+            elif weather_type == "aurora":
+                import math
+                new_x = x + math.sin(self._weather_frame * 0.1 + y) * 0.3
+            # Meteors - diagonal streak
+            elif weather_type == "meteors":
+                new_x = x + 1.5  # Fast diagonal
+            # Pollen - floating drift
+            elif weather_type == "pollen":
+                new_x = x + random.uniform(-0.2, 0.4)
+            # Heat shimmer - slight wave
+            elif weather_type == "heat_shimmer":
+                import math
+                new_x = x + math.sin(self._weather_frame * 0.2 + x) * 0.2
             else:
                 new_x = x
 
             if new_y < height and 0 <= new_x < width:
                 new_particles.append((new_x, new_y, char))
 
-        # Spawn new particles at top
+        # Spawn new particles at top (or bottom for heat shimmer)
+        spawn_y = height - 1 if weather_type == "heat_shimmer" else 0.0
         for x in range(width):
             if random.random() < density:
                 char = random.choice(chars)
-                new_particles.append((float(x), 0.0, char))
+                new_particles.append((float(x), spawn_y, char))
 
         # Lightning flash for storms (rare and brief)
-        if weather_type == "stormy" and self._weather_frame % 45 == 0 and random.random() < 0.25:
-            # Add single lightning bolt character
-            bolt_x = random.randint(3, width - 3)
-            bolt_y = random.randint(0, min(3, height - 1))
-            new_particles.append((float(bolt_x), float(bolt_y), "!"))
+        if weather_type in ("stormy", "storm", "thunderstorm", "summer_storm", "ice_storm"):
+            if self._weather_frame % 45 == 0 and random.random() < 0.25:
+                bolt_x = random.randint(3, width - 3)
+                bolt_y = random.randint(0, min(3, height - 1))
+                new_particles.append((float(bolt_x), float(bolt_y), "!"))
+                # Double flash for thunderstorms
+                if weather_type == "thunderstorm" and random.random() < 0.5:
+                    bolt_x2 = random.randint(3, width - 3)
+                    new_particles.append((float(bolt_x2), float(bolt_y + 1), "!"))
+
+        # Aurora color waves effect
+        if weather_type == "aurora":
+            # Add horizontal lines that drift
+            if self._weather_frame % 10 == 0:
+                wave_y = random.randint(0, min(5, height - 1))
+                for wx in range(0, width, random.randint(3, 6)):
+                    char = random.choice(["|", "~", "/", "\\"])
+                    new_particles.append((float(wx), float(wave_y), char))
 
         self._weather_particles = new_particles
 
@@ -591,14 +855,69 @@ class Renderer:
             return []
 
         effects = {
+            # Common weather
             "sunny": ["~ warm sunbeams ~", "* bright and cheerful *"],
-            "cloudy": ["(*) clouds drift by (*)", "~ overcast skies ~"],
-            "rainy": ["' pitter patter '", "~ splish splash ~", "',' rain falls gently ','"],
-            "stormy": ["! THUNDER RUMBLES !", "~~ wind howls ~~", "!! lightning flashes !!"],
-            "snowy": ["* snowflakes drift *", "~ winter wonderland ~", "o frosty and cold o"],
+            "partly_cloudy": ["(*) clouds drift by (*)", "~ bits of blue sky ~"],
+            "cloudy": ["(*) clouds gather (*)", "~ overcast skies ~"],
+            "overcast": ["... grey blanket above ...", "~ dim and cozy ~"],
+            "windy": ["~~ whoooosh! ~~", "~ leaves swirl ~", ">> breezy day >>"],
             "foggy": ["... mist swirls ...", "~ mysterious fog ~", "o.o visibility low o.o"],
-            "windy": ["~~ whoooosh! ~~", "~ leaves swirl ~", "~ breezy day ~"],
-            "rainbow": ["(=) magical colors! (=)", "* make a wish! *", "~ rare and beautiful ~"],
+            "misty": ["~ soft haze ~", "... gentle mist ..."],
+            
+            # Rain variants
+            "drizzle": ["' light drops '", "~ gentle drizzle ~"],
+            "rainy": ["' pitter patter '", "~ splish splash ~", "',' rain falls ','"],
+            "heavy_rain": ["''' POURING '''", "~~ splashing puddles ~~"],
+            "spring_rain": ["'~' April showers '~'", "~ flowers love this ~"],
+            "stormy": ["! THUNDER RUMBLES !", "~~ wind howls ~~"],
+            "thunderstorm": ["!! CRACK BOOM !!", "~~ lightning flashes ~~"],
+            "summer_storm": ["!! dramatic storm !!", "~~ rolling thunder ~~"],
+            
+            # Snow/ice variants
+            "frost": ["*.: frost crystals :.*", "~ delicate ice ~"],
+            "light_snow": ["* gentle flakes *", "~ peaceful snow ~"],
+            "snowy": ["* snowflakes drift *", "~ winter wonderland ~"],
+            "heavy_snow": ["** HEAVY SNOW **", "~~ blanketed white ~~"],
+            "blizzard": ["*** BLIZZARD ***", "~~ can't see! ~~"],
+            "sleet": ["'o icy rain o'", "~ frozen drops ~"],
+            "hail": ["O HAIL O", "~~ duck and cover! ~~"],
+            "ice_storm": ["**. ICE STORM .**", "~~ everything frozen ~~"],
+            
+            # Spring specific
+            "spring_showers": ["'~' refreshing rain '~'", "~ growth coming ~"],
+            "rainbow": ["(=) magical colors! (=)", "* make a wish! *"],
+            "pollen_drift": [".o pollen floats o.", "~ *ACHOO!* ~"],
+            "warm_breeze": ["~ gentle warmth ~", "~ perfect day ~"],
+            "dewy_morning": ["o.o morning dew o.o", "~ sparkly grass ~"],
+            
+            # Summer specific  
+            "scorching": ["^^ SO HOT ^^", "~~ need shade! ~~"],
+            "humid": ["... sticky air ...", "~ muggy weather ~"],
+            "heat_wave": ["^^^ HEAT WAVE ^^^", "~~ drink water! ~~"],
+            "balmy_evening": ["~ warm and lovely ~", "* fireflies appear *"],
+            "golden_hour": ["*+* golden light *+*", "~ magical hour ~"],
+            "muggy": ["... thick air ...", "~ so humid ~"],
+            
+            # Fall specific
+            "crisp": ["~ cool and fresh ~", "* autumn air *"],
+            "breezy": ["~> autumn breeze <~", "~ leaves dancing ~"],
+            "leaf_storm": ["{}{ LEAVES SWIRL }{}}", "~ colorful chaos ~"],
+            "harvest_moon": ["O big orange moon O", "~ mystical night ~"],
+            "first_frost": ["*.: first frost :.*", "~ winter approaches ~"],
+            "autumnal": ["{} colorful leaves {}", "~ perfect fall day ~"],
+            
+            # Winter specific
+            "bitter_cold": ["!!! FREEZING !!!", "~~ brrrrr! ~~"],
+            "freezing": ["** everything frozen **", "~ ice crystals ~"],
+            "clear_cold": ["* cold but bright *", "~ crisp winter day ~"],
+            "snow_flurries": ["* dancing flakes *", "~ playful snow ~"],
+            "winter_sun": ["*o bright but cold o*", "~ sparkly snow ~"],
+            
+            # Rare/special
+            "aurora": ["|/| NORTHERN LIGHTS |\\|", "~ magical sky ~"],
+            "meteor_shower": ["\\*/ SHOOTING STARS \\*/", "~ make wishes! ~"],
+            "double_rainbow": ["=== DOUBLE RAINBOW ===", "** WHAT DOES IT MEAN **"],
+            "perfect_day": ["*** PERFECT DAY ***", "~ everything is magical ~"],
         }
 
         return effects.get(weather_type, [])
@@ -902,9 +1221,28 @@ class Renderer:
         inner_width = width - 2
         lines = []
 
-        # Update weather particles
+        # Get particle type from weather data for more specific particle rendering
+        field_height = height if height else self.duck_pos.field_height
         weather_type = weather_info.weather_type.value if weather_info else None
-        self._update_weather_particles(inner_width, height if height else self.duck_pos.field_height, weather_type)
+        particle_type = None
+        env_effects = []
+        
+        if weather_info and hasattr(weather_info, 'weather_type'):
+            from world.atmosphere import WEATHER_DATA
+            weather_data = WEATHER_DATA.get(weather_info.weather_type, {})
+            env_effects = weather_data.get("env_effects", [])
+            particle_type = weather_data.get("particle_type")
+        
+        # Update weather particles (use particle_type for specific effects, fallback to weather_type)
+        self._update_weather_particles(inner_width, field_height, particle_type or weather_type)
+        
+        # Generate environmental weather decorations (puddles, snow piles, etc.)
+        self._generate_weather_decorations(
+            weather_type,  # Use weather_type for decoration context
+            env_effects, 
+            inner_width, 
+            field_height
+        )
 
         # Get time-of-day visual elements
         sky_char, time_bg_color, celestials = self._get_time_of_day_elements(inner_width)
@@ -1050,6 +1388,17 @@ class Renderer:
                         for i, char in enumerate(obj_chars):
                             if obj_x + i < inner_width:
                                 row[obj_x + i] = (char, None)
+
+            # Add weather-based environmental decorations (puddles, snow piles, leaves, etc.)
+            for wx, wy, wchar, wcolor in self._weather_decorations:
+                if wy == y:
+                    for i, char in enumerate(wchar):
+                        px = wx + i
+                        if 0 <= px < inner_width:
+                            existing_char, _ = row[px]
+                            # Only place on empty ground, not over other objects
+                            if existing_char == ' ' or existing_char in GROUND_CHARS:
+                                row[px] = (char, wcolor)
 
             # Add placed habitat items (multi-line art)
             for item_x, item_y, art, color_func in item_placements:

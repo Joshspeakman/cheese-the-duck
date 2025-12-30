@@ -189,25 +189,30 @@ WORLD
 -----
 [E] Explore     [A] Areas
 [C] Craft       [R] Build
+[V] Decorate    [<] Trading
 
 ACTIVITIES
 ----------
-[J] Mini-games  [K] Duck Facts
-[O] Quests      [V] Trading
-[W] Weather Fun [Y] Scrapbook
-[6] Treasure    [7] Secrets
+[J] Mini-games  [7] Tricks
+[9] Garden      [0] Festivals
+[=] Diary       [;] Photo
 
-AUDIO
+COLLECTIONS
+-----------
+['] Collectibles [8] Prestige
+[~] Titles       [Y] Scrapbook
+[\\] Secrets
+
+OTHER
 -----
+[K] Duck Fact  [/] Save Slots
 [M] Sound  [N] Music  [+/-] Vol
-
-GAME
-----
-[H] Help   [Q] Quit   [X] Reset
+[H] Help   [Q] Quit
 
 MENU NAVIGATION
 ---------------
-[Arrow Keys] Navigate menus
+[TAB] Main Menu
+[Arrow Keys] Navigate menus"""
 [Enter] Select/Confirm
 [ESC] Close menu
 """

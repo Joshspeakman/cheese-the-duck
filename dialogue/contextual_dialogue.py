@@ -116,6 +116,258 @@ WEATHER_COMMENTS: Dict[str, List[ContextComment]] = {
         ContextComment("*chasing rainbow* I WILL FIND THE GOLD. ...eventually.", 2),
         ContextComment("The sky is gay. Good for it, honestly.", 3),
     ],
+    
+    # Additional rain variants
+    "drizzle": [
+        ContextComment("*light raindrops* A gentle shower. How polite."),
+        ContextComment("Drizzle. The sky is being passive-aggressive."),
+        ContextComment("*mildly wet* Not quite rain. Not quite dry. Very indecisive."),
+        ContextComment("A light mist. Very mysterious. Very damp."),
+    ],
+    "heavy_rain": [
+        ContextComment("*DRENCHED* THE SKY HAS CHOSEN VIOLENCE."),
+        ContextComment("This is not rain. This is an ATTACK."),
+        ContextComment("*swimming standing up* I'm basically a submarine now."),
+        ContextComment("*triumphant* I AM ONE WITH THE WATER. FEAR ME.", 2),
+    ],
+    "spring_showers": [
+        ContextComment("April showers! May flowers incoming, allegedly."),
+        ContextComment("*happy splashing* The BEST kind of rain!"),
+        ContextComment("Spring rain smells like hope. And wet dirt."),
+        ContextComment("*content* This is the rain that makes flowers happen.", 2),
+    ],
+    "thunderstorm": [
+        ContextComment("*HIDING* OKAY THAT ONE WAS LOUD."),
+        ContextComment("*feathers standing up* The sky is ANGRY."),
+        ContextComment("Lightning AND thunder?? The universe has beef today."),
+        ContextComment("*counting* One... two... WHERE IS SHELTER?!", 2),
+        ContextComment("*under something* I'm not scared. I'm just... cozy here.", 2),
+    ],
+    "summer_storm": [
+        ContextComment("Summer storm! The dramatic kind!"),
+        ContextComment("*watching clouds* This is going to be EPIC."),
+        ContextComment("The heat was getting to everyone. Even the sky."),
+        ContextComment("*awe* Nature's fireworks display!", 2),
+    ],
+    
+    # Snow/ice variants
+    "light_snow": [
+        ContextComment("*catches snowflake* One... two... they're all mine."),
+        ContextComment("Light snow. Winter is being gentle for once."),
+        ContextComment("*happy* Just enough snow to be magical. Not enough to suffer."),
+        ContextComment("Snow kiss from the sky. Acceptable.", 2),
+    ],
+    "heavy_snow": [
+        ContextComment("*disappearing into snow* HELP. DUCK DOWN."),
+        ContextComment("The sky is emptying its pockets. Aggressively."),
+        ContextComment("*wading* I'm becoming a snow duck. Not by choice."),
+        ContextComment("Winter has committed to this. Fully. Absolutely.", 2),
+    ],
+    "blizzard": [
+        ContextComment("*can't see anything* WHERE AM I. WHO AM I."),
+        ContextComment("*SCREAMING INTO WIND* WHAT IS HAPPENING."),
+        ContextComment("Winter has lost its mind. I'm along for the ride."),
+        ContextComment("*clinging to something* THIS IS FINE.", 2),
+        ContextComment("The snow is moving SIDEWAYS. Sideways snow. WHY.", 3),
+    ],
+    "frost": [
+        ContextComment("*crunchy footsteps* Everything is... crispy."),
+        ContextComment("Frost everywhere. The world got a glitter makeover."),
+        ContextComment("*sparkly breath* I'm making my own clouds now."),
+        ContextComment("Cold enough to be pretty. That's something.", 2),
+    ],
+    "sleet": [
+        ContextComment("Is this rain? Snow? BOTH?? Make up your mind, sky!"),
+        ContextComment("*icy and annoyed* The worst of both worlds."),
+        ContextComment("Sleet. Nature's way of being indecisive AND aggressive."),
+        ContextComment("*slipping* Who ordered the frozen rain. Not me.", 2),
+    ],
+    "hail": [
+        ContextComment("*OW* THE SKY IS THROWING ICE BALLS AT ME."),
+        ContextComment("HAIL?! I DID NOT CONSENT TO THIS."),
+        ContextComment("*dodging* Nature's dodgeball. I'm losing."),
+        ContextComment("*hiding* Ice rocks from space. Classic weather bullying.", 2),
+    ],
+    "ice_storm": [
+        ContextComment("Everything. Is. Ice. I can't move. This is my life now."),
+        ContextComment("*sliding* The world is a skating rink. I'm bad at skating."),
+        ContextComment("Ice on EVERYTHING. Even the ice has ice."),
+        ContextComment("*frozen feathers* I'm a popsicle. A duck popsicle.", 2),
+    ],
+    "snow_flurries": [
+        ContextComment("*watching flakes* They're dancing! The snowflakes are DANCING."),
+        ContextComment("Snow confetti! The sky is celebrating something."),
+        ContextComment("*catching flakes* This is the best kind of snow."),
+        ContextComment("Flurries! Not commitment snow. Just fun snow.", 2),
+    ],
+    
+    # Spring specific
+    "pollen_drift": [
+        ContextComment("*ACHOO* ...excuse me. *ACHOO* ...okay this is a problem."),
+        ContextComment("Yellow dust EVERYWHERE. Spring has allergies too, apparently."),
+        ContextComment("*sneezing* The trees are attacking. With their... tree stuff."),
+        ContextComment("Pollen season. Everyone's crying. It's the vibes.", 2),
+    ],
+    "warm_breeze": [
+        ContextComment("*content sigh* Perfect. Just... perfect."),
+        ContextComment("The air is giving hugs today. Acceptable."),
+        ContextComment("A warm breeze. This is the good life."),
+        ContextComment("*zen* If peace was weather, this would be it.", 2),
+    ],
+    "dewy_morning": [
+        ContextComment("*sparkly grass* Everything is wearing tiny diamonds!"),
+        ContextComment("Morning dew. The world got bedazzled overnight."),
+        ContextComment("*wet feet* Worth it for the aesthetics."),
+        ContextComment("Fresh morning vibes. Very wholesome. Very damp.", 2),
+    ],
+    
+    # Summer specific
+    "scorching": [
+        ContextComment("*panting* I'm MELTING. Ducks can melt, right??"),
+        ContextComment("TOO HOT. This is TOO MUCH hot."),
+        ContextComment("*seeking shade* The sun has betrayed me."),
+        ContextComment("I am become toast. Overcooked duck toast.", 2),
+    ],
+    "humid": [
+        ContextComment("*soggy* I'm wet but it's not raining. EXPLAIN."),
+        ContextComment("The air is THICK. Like soup. Warm soup."),
+        ContextComment("*sticky* My feathers are... moist. I hate that word."),
+        ContextComment("Humidity is just aggressive air moisture. Rude.", 2),
+    ],
+    "heat_wave": [
+        ContextComment("*melting* THIS IS AN EMERGENCY. WHERE IS WATER."),
+        ContextComment("Heat wave = I am now a puddle of duck."),
+        ContextComment("*collapsed in shade* I live here now."),
+        ContextComment("The sun chose violence today. And WON.", 2),
+    ],
+    "balmy_evening": [
+        ContextComment("*content* Warm evenings are the best kind of evenings."),
+        ContextComment("Perfect temperature. Perfect time. Perfect duck. Obviously."),
+        ContextComment("*relaxed* This is what summer dreams are made of."),
+        ContextComment("Balmy vibes. No notes. Chef's kiss.", 2),
+    ],
+    "golden_hour": [
+        ContextComment("*glowing* I'm RADIANT right now. Take a picture."),
+        ContextComment("Golden hour! Everyone looks good. Even me. ESPECIALLY me."),
+        ContextComment("*posing* The lighting is perfect. Quick, admire me."),
+        ContextComment("Magic hour. I'm at peak aesthetic right now.", 2),
+    ],
+    "muggy": [
+        ContextComment("*sweating through feathers* Is that possible? It's happening."),
+        ContextComment("Muggy. Like being inside a mouth. A warm, wet mouth."),
+        ContextComment("*uncomfortable* Nature's sauna. Didn't ask for this."),
+        ContextComment("The air is hugging me. Make it stop.", 2),
+    ],
+    
+    # Fall specific
+    "crisp": [
+        ContextComment("*deep breath* CRISP. The air is CRISP."),
+        ContextComment("Perfect fall weather. Sweater weather. Feather weather."),
+        ContextComment("*energized* This is peak autumn energy!"),
+        ContextComment("Crisp air and crunchy leaves. Peak existence.", 2),
+    ],
+    "breezy": [
+        ContextComment("*feathers rustling* Dramatic hair flip moment. But feathers."),
+        ContextComment("The breeze understands me. It's also just passing through."),
+        ContextComment("*wind in feathers* I'm in a movie montage right now."),
+        ContextComment("Autumn breeze. Very nostalgic. Very windy.", 2),
+    ],
+    "leaf_storm": [
+        ContextComment("*COVERED IN LEAVES* WHEEEEE!"),
+        ContextComment("LEAF TORNADO! This is the BEST day!"),
+        ContextComment("*spinning with leaves* I AM ONE WITH AUTUMN!"),
+        ContextComment("*buried* Worth it. Leaves are friend.", 2),
+    ],
+    "harvest_moon": [
+        ContextComment("*staring at moon* It's... ORANGE. The moon is ORANGE."),
+        ContextComment("Harvest moon! Very dramatic. Very round."),
+        ContextComment("*mystified* The moon is showing off tonight."),
+        ContextComment("Big orange moon energy. Spooky and beautiful.", 2),
+    ],
+    "first_frost": [
+        ContextComment("*crunchy ground* Winter sent a warning shot."),
+        ContextComment("First frost! Summer is officially dead."),
+        ContextComment("*sparkly cold* Pretty, but also COLD."),
+        ContextComment("Winter is warming up. By which I mean, getting colder.", 2),
+    ],
+    "autumnal": [
+        ContextComment("Peak autumn! Colors everywhere! This is ART."),
+        ContextComment("*surrounded by colors* I'm in a painting."),
+        ContextComment("The trees are having their best fashion week."),
+        ContextComment("Autumn aesthetic: achieved.", 2),
+    ],
+    
+    # Winter specific
+    "bitter_cold": [
+        ContextComment("*teeth chattering* C-C-COLD. SO C-COLD."),
+        ContextComment("The air HURTS. It's attacking my face."),
+        ContextComment("*maximum fluff* All feathers engaged. Still cold."),
+        ContextComment("Winter chose maximum difficulty today.", 2),
+    ],
+    "freezing": [
+        ContextComment("*frozen in place* I think I'm stuck."),
+        ContextComment("Everything is ice. I am ice. We are ice."),
+        ContextComment("*stiff* My joints have joined the frozen club."),
+        ContextComment("Freezing: when cold gets personal.", 2),
+    ],
+    "clear_cold": [
+        ContextComment("Cold but BRIGHT! The sun is trying but failing."),
+        ContextComment("*squinting* Blue sky, frozen ground. Mixed signals."),
+        ContextComment("Beautiful and painful. Classic winter combo."),
+        ContextComment("The sun showed up but forgot the warmth.", 2),
+    ],
+    "winter_sun": [
+        ContextComment("*basking* Winter sun! It's trying so hard."),
+        ContextComment("Sunshine in winter. Rare and precious."),
+        ContextComment("*soaking up rays* Every photon counts."),
+        ContextComment("The sun remembered we exist. Barely.", 2),
+    ],
+    
+    # Rare/special weather
+    "aurora": [
+        ContextComment("*AMAZED* THE SKY IS DOING THE THING. THE COLORFUL THING."),
+        ContextComment("Northern lights?? HERE?? Is this real??"),
+        ContextComment("*speechless* ...I have no sarcasm for this. It's too beautiful."),
+        ContextComment("The sky is dancing. I'm crying. Don't look at me.", 2),
+        ContextComment("Aurora borealis?! In this location?? BLESSED.", 3),
+    ],
+    "meteor_shower": [
+        ContextComment("*making wishes* One... two... TWELVE wishes!"),
+        ContextComment("SHOOTING STARS! The sky is being generous tonight!"),
+        ContextComment("*awed* Space rocks. Making wishes. Living my best life."),
+        ContextComment("Meteor shower! Quick, wish for crumbs!", 2),
+    ],
+    "double_rainbow": [
+        ContextComment("*SCREAMING* DOUBLE RAINBOW. WHAT DOES IT MEAN???"),
+        ContextComment("TWO RAINBOWS. The universe is showing OFF."),
+        ContextComment("*emotional* It's so beautiful... DOUBLE beautiful!"),
+        ContextComment("Double the rainbow, double the magic. Math checks out.", 2),
+        ContextComment("ALL THE WAY ACROSS THE SKY. WHAT DOES IT MEAN?!", 3),
+    ],
+    "perfect_day": [
+        ContextComment("*content sigh* Today is... perfect. Suspiciously perfect."),
+        ContextComment("Perfect weather. Perfect temperature. What's the catch?"),
+        ContextComment("*paranoid* It's too nice. Something's coming."),
+        ContextComment("Perfection achieved. The universe owes me nothing today.", 2),
+        ContextComment("I don't trust this weather. It's too good. TOO GOOD.", 3),
+    ],
+    
+    # More general weather mappings
+    "partly_cloudy": [
+        ContextComment("Sun AND clouds. The sky is multitasking."),
+        ContextComment("Can't decide if it's good weather or not. Very me."),
+        ContextComment("*watching clouds pass sun* Now you see me, now you don't."),
+    ],
+    "overcast": [
+        ContextComment("The sky has a blanket. A big grey blanket."),
+        ContextComment("Overcast. The world is in grayscale mode."),
+        ContextComment("*cozy vibes* Grey skies, grey mood. Matching."),
+    ],
+    "misty": [
+        ContextComment("Mist. Very ethereal. Very damp."),
+        ContextComment("*appearing from mist* I'm mysterious now."),
+        ContextComment("The air is drinking water. Weird but okay."),
+    ],
 }
 
 

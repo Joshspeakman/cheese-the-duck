@@ -749,24 +749,64 @@ ECSTATIC, JOYFUL, HAPPY, CONTENT, NEUTRAL, PENSIVE, SAD, DEPRESSED, ANXIOUS, EXC
 
 ### `world/atmosphere.py` - Weather & Seasons
 
-**Enum: `WeatherType`**
+**Enum: `WeatherType`** (47 types organized by category)
 ```
-SUNNY, CLOUDY, RAINY, STORMY, SNOWY, FOGGY, WINDY, HOT, COLD, RAINBOW
+# Common (all seasons)
+SUNNY, PARTLY_CLOUDY, CLOUDY, OVERCAST, WINDY, FOGGY, MISTY
+
+# Rain variants
+DRIZZLE, RAINY, HEAVY_RAIN, STORMY, THUNDERSTORM
+
+# Snow/ice variants
+FROST, LIGHT_SNOW, SNOWY, HEAVY_SNOW, BLIZZARD, SLEET, HAIL, ICE_STORM
+
+# Spring specific
+SPRING_SHOWERS, RAINBOW, POLLEN_DRIFT, WARM_BREEZE, DEWY_MORNING
+
+# Summer specific
+SCORCHING, HUMID, HEAT_WAVE, SUMMER_STORM, BALMY_EVENING, GOLDEN_HOUR, MUGGY
+
+# Fall specific
+CRISP, BREEZY, LEAF_STORM, HARVEST_MOON, FIRST_FROST, AUTUMNAL
+
+# Winter specific
+BITTER_COLD, FREEZING, CLEAR_COLD, SNOW_FLURRIES, WINTER_SUN
+
+# Rare/special
+AURORA, METEOR_SHOWER, DOUBLE_RAINBOW, PERFECT_DAY
 ```
+
+**WEATHER_DATA dictionary fields:**
+| Field | Description |
+|-------|-------------|
+| `name` | Display name |
+| `message` | Duck announcement message |
+| `mood_modifier` | Effect on duck mood (-8 to +25) |
+| `xp_multiplier` | XP bonus (1.0 to 3.0) |
+| `particle_type` | Renderer particle key (e.g., "rain", "snow", "aurora") |
+| `env_effects` | List of environmental effects (puddles, snow_piles, etc.) |
+| `spring/summer/fall/winter_prob` | Per-season probability |
+| `triggers_rainbow` | Can trigger rainbow after ending |
+| `special` | Is rare/special weather |
+
+**Environmental Effects:**
+- Puddles, snow piles, leaf piles rendered on playfield
+- Frost crystals, icicles, dew drops for atmosphere
+- Swaying vegetation for wind effects
 
 **Enum: `Season`**
 ```
-SPRING, SUMMER, AUTUMN, WINTER
+SPRING, SUMMER, FALL, WINTER
 ```
 
-**Class: `AtmosphereSystem`**
+**Class: `AtmosphereManager`**
 
 | Method | Description |
 |--------|-------------|
-| `update(delta)` | Updates weather state |
-| `get_current_weather()` | Returns current WeatherInfo |
-| `get_current_season()` | Returns current Season |
-| `get_daily_fortune()` | Returns daily fortune modifiers |
+| `update()` | Updates weather/season, returns change messages |
+| `_generate_weather()` | Selects weather based on season probabilities |
+| `_maybe_rainbow()` | 20% chance of rainbow after rain, 5% double rainbow |
+| `_calculate_season()` | Month-based season determination |
 | `get_mood_modifier()` | Weather effect on mood |
 | `get_xp_modifier()` | Weather effect on XP gain |
 
