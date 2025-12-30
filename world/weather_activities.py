@@ -64,9 +64,9 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         xp_reward=(10, 20),
         mood_bonus=20,
         ascii_animation=[
-            "  ☀️☀️☀️  ",
+            "  * * *   ",
             "   \\|/   ",
-            "  --🦆--  ",
+            "  --d--   ",
             "   ~~~~   ",
             "  Ahhh... ",
         ],
@@ -91,9 +91,9 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         drop_chance=0.3,
         mood_bonus=15,
         ascii_animation=[
-            "  🦋  🦋  ",
-            "    🦆    ",
-            "   💨→    ",
+            "  ~.  .~  ",
+            "    d     ",
+            "   ~~>    ",
             " *waddle* ",
         ],
         success_messages=[
@@ -116,8 +116,8 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         xp_reward=(10, 20),
         mood_bonus=25,
         ascii_animation=[
-            "   🌧️🌧️   ",
-            "   💦🦆💦  ",
+            "   ','    ",
+            "   ~d~    ",
             "  *SPLASH* ",
             "   ~~~~    ",
         ],
@@ -142,9 +142,9 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         drop_chance=0.5,
         mood_bonus=10,
         ascii_animation=[
-            "  🌧️      ",
-            "  🦆 ?    ",
-            " ~🪱~~~   ",
+            "  ','     ",
+            "  d  ?    ",
+            " ~~S~~    ",
             "  Found!  ",
         ],
         success_messages=[
@@ -168,9 +168,9 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         drop_chance=0.2,
         mood_bonus=30,
         ascii_animation=[
-            "       🌈        ",
-            "  ☁️       ☁️   ",
-            "      🦆        ",
+            "      (=)        ",
+            "  (*)     (*)   ",
+            "      d         ",
             "   *amazed*     ",
         ],
         success_messages=[
@@ -193,10 +193,10 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         xp_reward=(15, 30),
         mood_bonus=20,
         ascii_animation=[
-            "  ❄️ ❄️ ❄️  ",
-            "    ⚪🦆   ",
+            "  * * *   ",
+            "    o d   ",
             "   *roll*  ",
-            "  ❄️ ❄️ ❄️  ",
+            "  * * *   ",
         ],
         success_messages=[
             "Cheese made a snowball!",
@@ -217,8 +217,8 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         xp_reward=(20, 35),
         mood_bonus=25,
         ascii_animation=[
-            "  ❄️     ❄️  ",
-            "    \\🦆/   ",
+            "  *     *  ",
+            "    \\d/   ",
             "    /  \\   ",
             "  *flap*   ",
         ],
@@ -242,9 +242,9 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         special_drops=["crystal_icicle", "frozen_dewdrop"],
         drop_chance=0.35,
         ascii_animation=[
-            "   🧊🧊🧊   ",
+            "   |||    ",
             "     |     ",
-            "    🦆     ",
+            "    d      ",
             "  *clink*  ",
         ],
         success_messages=[
@@ -267,10 +267,10 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         xp_reward=(25, 45),
         mood_bonus=10,
         ascii_animation=[
-            "  ⚡ ☁️ ⚡   ",
-            "   🌧️🌧️    ",
-            "  [🦆]     ",
-            " *window*  ",
+            "  ! (*) !   ",
+            "   ','      ",
+            "  [d]       ",
+            " *window*   ",
         ],
         success_messages=[
             "The storm is intense!",
@@ -292,10 +292,10 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         special_drops=["static_feather"],
         drop_chance=0.15,
         ascii_animation=[
-            "   ⚡     ",
+            "   !      ",
             "  1...2...3",
             "   BOOM!  ",
-            "   🦆!    ",
+            "   d !    ",
         ],
         success_messages=[
             "That was close! Only 3 seconds!",
@@ -317,10 +317,10 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         xp_reward=(20, 35),
         mood_bonus=20,
         ascii_animation=[
-            "      🪁   ",
+            "      <>   ",
             "     /     ",
             "    /      ",
-            "   🦆      ",
+            "   d       ",
         ],
         success_messages=[
             "The kite soars high!",
@@ -342,10 +342,10 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         special_drops=["golden_leaf", "red_maple_leaf"],
         drop_chance=0.4,
         ascii_animation=[
-            "  🍂 🍁 🍂  ",
-            "    💨    ",
-            "    🦆    ",
-            "  *catch* ",
+            "  ~ ~ ~    ",
+            "    ~~     ",
+            "    d      ",
+            "  *catch*  ",
         ],
         success_messages=[
             "Caught 5 colorful leaves!",
@@ -369,9 +369,9 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         drop_chance=0.25,
         mood_bonus=5,
         ascii_animation=[
-            "  ░░░░░░  ",
-            "  ░🦆░░░  ",
-            "  ░░░?░░  ",
+            "  ......  ",
+            "  .d....  ",
+            "  ...?..  ",
             " *spooky* ",
         ],
         success_messages=[
@@ -394,9 +394,9 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         xp_reward=(10, 25),
         mood_bonus=15,
         ascii_animation=[
-            "  ☁️ ☁️ ☁️  ",
+            "  (*)(*)  ",
             "   (o o)  ",
-            "    🦆    ",
+            "    d     ",
             "  *dream* ",
         ],
         success_messages=[
@@ -419,9 +419,9 @@ WEATHER_ACTIVITIES: Dict[str, WeatherActivity] = {
         xp_reward=(15, 30),
         mood_bonus=25,
         ascii_animation=[
-            "   ☀️☀️    ",
-            "   🦆~    ",
-            "  ~~~~   ",
+            "   * *    ",
+            "   d~     ",
+            "  ~~~~    ",
             " *splash* ",
         ],
         success_messages=[
@@ -561,29 +561,29 @@ class WeatherActivitiesSystem:
     def render_activity_selection(self, weather: str) -> List[str]:
         """Render available activities for selection."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            f"║      🌤️ WEATHER ACTIVITIES ({weather.upper()})        ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            f"|      *️ WEATHER ACTIVITIES ({weather.upper()})        |",
+            "+===============================================+",
         ]
         
         activities = self.get_available_activities(weather)
         
         if not activities:
-            lines.append("║  No activities available right now!           ║")
-            lines.append("║  Check back when the weather changes,         ║")
-            lines.append("║  or wait for cooldowns to reset.              ║")
+            lines.append("|  No activities available right now!           |")
+            lines.append("|  Check back when the weather changes,         |")
+            lines.append("|  or wait for cooldowns to reset.              |")
         else:
             for i, activity in enumerate(activities, 1):
-                lines.append(f"║  [{i}] {activity.name:<35}  ║")
+                lines.append(f"|  [{i}] {activity.name:<35}  |")
                 desc = activity.description[:40]
-                lines.append(f"║      {desc:<40}  ║")
-                lines.append(f"║      ⏱️ {activity.duration_seconds}s  💰 {activity.coins_reward[0]}-{activity.coins_reward[1]}  ✨ {activity.xp_reward[0]}-{activity.xp_reward[1]} XP ║")
-                lines.append("║                                               ║")
+                lines.append(f"|      {desc:<40}  |")
+                lines.append(f"|      (t) {activity.duration_seconds}s  $ {activity.coins_reward[0]}-{activity.coins_reward[1]}  * {activity.xp_reward[0]}-{activity.xp_reward[1]} XP |")
+                lines.append("|                                               |")
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            "║  Select an activity number or [B] to go back  ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            "|  Select an activity number or [B] to go back  |",
+            "+===============================================+",
         ])
         
         return lines
@@ -599,24 +599,24 @@ class WeatherActivitiesSystem:
         # Progress bar
         bar_width = 30
         filled = int(progress * bar_width)
-        bar = "█" * filled + "░" * (bar_width - filled)
+        bar = "#" * filled + "." * (bar_width - filled)
         
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            f"║      🎯 {activity.name.upper():<30}  ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            f"|      (o) {activity.name.upper():<30}  |",
+            "+===============================================+",
         ]
         
         # Add animation
         if activity.ascii_animation:
             for anim_line in activity.ascii_animation:
-                lines.append(f"║  {anim_line:^43}  ║")
+                lines.append(f"|  {anim_line:^43}  |")
         
         lines.extend([
-            "║                                               ║",
-            f"║  [{bar}]  ║",
-            f"║  {int(progress * 100):>42}%  ║",
-            "╚═══════════════════════════════════════════════╝",
+            "|                                               |",
+            f"|  [{bar}]  |",
+            f"|  {int(progress * 100):>42}%  |",
+            "+===============================================+",
         ])
         
         return lines

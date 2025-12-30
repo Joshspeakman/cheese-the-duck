@@ -84,8 +84,8 @@ SPRING_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.COMMON,
         ascii_art=[
-            "  🌸🌼🌸  ",
-            " 🌷    🌷 ",
+            "  ***  ",
+            " T    T ",
         ],
         weather_bonus={"sunny": 0.1, "rainy": 0.05},
         mood_effect=5,
@@ -117,7 +117,7 @@ SPRING_ITEMS = {
         rarity=SeasonalRarity.UNCOMMON,
         ascii_art=[
             " /------\\ ",
-            "/   🦆   \\",
+            "/   d   \\",
             "\\________/",
         ],
         weather_bonus={"rainy": 0.25, "stormy": 0.15},
@@ -133,7 +133,7 @@ SPRING_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.UNCOMMON,
         ascii_art=[
-            " 🦋~∞~🦋 ",
+            " B~∞~B ",
         ],
         weather_bonus={"sunny": 0.1},
         mood_effect=6,
@@ -150,7 +150,7 @@ SPRING_ITEMS = {
         ascii_art=[
             "  _____  ",
             " /     \\ ",
-            "(  🌱   )",
+            "(  i   )",
         ],
         weather_bonus={"sunny": 0.15},
         mood_effect=5,
@@ -169,7 +169,7 @@ SUMMER_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.COMMON,
         ascii_art=[
-            " ⊙─⊙ ",
+            " ⊙-⊙ ",
         ],
         weather_bonus={"sunny": 0.2, "hot": 0.15},
         mood_effect=5,
@@ -184,7 +184,7 @@ SUMMER_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.COMMON,
         ascii_art=[
-            " ╭━━━━━━╮",
+            " +━━━━━━+",
             "  \\____/ ",
         ],
         weather_bonus={"sunny": 0.25, "hot": 0.2},
@@ -200,9 +200,9 @@ SUMMER_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.UNCOMMON,
         ascii_art=[
-            " ╭╭────╮╮",
-            " ││🦆 ││",
-            " ╰╰────╯╯",
+            " ++----++",
+            " ||d ||",
+            " ++----++",
         ],
         weather_bonus={"sunny": 0.1},
         mood_effect=8,
@@ -217,9 +217,9 @@ SUMMER_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.UNCOMMON,
         ascii_art=[
-            " ┌🌺🌴🌺┐",
-            " │     │",
-            " └─────┘",
+            " +*T*+",
+            " |     |",
+            " +-----+",
         ],
         weather_bonus={"hot": 0.1},
         mood_effect=7,
@@ -235,7 +235,7 @@ SUMMER_ITEMS = {
         rarity=SeasonalRarity.COMMON,
         ascii_art=[
             " Y   Y ",
-            " │ ∩ │ ",
+            " | ∩ | ",
         ],
         weather_bonus={"sunny": 0.05},
         mood_effect=3,
@@ -250,7 +250,7 @@ SUMMER_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.RARE,
         ascii_art=[
-            "   🍦   ",
+            "   Y   ",
             "  \\  /  ",
             "   \\/   ",
         ],
@@ -271,7 +271,7 @@ AUTUMN_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.COMMON,
         ascii_art=[
-            " 🍂🍁🍂 ",
+            " fff ",
             "  \\ | / ",
         ],
         weather_bonus={"cool": 0.1, "windy": 0.1},
@@ -287,10 +287,10 @@ AUTUMN_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.UNCOMMON,
         ascii_art=[
-            " ╭─────╮",
-            " │~~~~~│",
-            " │~~~~~│",
-            " ╰─────╯",
+            " +-----+",
+            " |~~~~~|",
+            " |~~~~~|",
+            " +-----+",
         ],
         weather_bonus={"cool": 0.2, "cold": 0.1},
         mood_effect=6,
@@ -305,7 +305,7 @@ AUTUMN_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.COMMON,
         ascii_art=[
-            " ░█░█░ ",
+            " .█.█. ",
             "  ~~~  ",
         ],
         weather_bonus={"cool": 0.15, "windy": 0.1},
@@ -321,8 +321,8 @@ AUTUMN_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.COMMON,
         ascii_art=[
-            " ┌──┐┌──┐",
-            " │  ││  │",
+            " +--++--+",
+            " |  ||  |",
         ],
         weather_bonus={"cool": 0.1, "rainy": 0.1},
         mood_effect=3,
@@ -338,7 +338,7 @@ AUTUMN_ITEMS = {
         rarity=SeasonalRarity.RARE,
         ascii_art=[
             "   ∩   ",
-            "  (🌰)  ",
+            "  (o)  ",
         ],
         weather_bonus={},
         mood_effect=5,
@@ -357,7 +357,7 @@ WINTER_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.COMMON,
         ascii_art=[
-            " (◯)─(◯)",
+            " (◯)-(◯)",
         ],
         weather_bonus={"cold": 0.15, "snowy": 0.1},
         mood_effect=4,
@@ -372,10 +372,10 @@ WINTER_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.UNCOMMON,
         ascii_art=[
-            " ╭═════╮",
-            " ║░░░░░║",
-            " ║░░░░░║",
-            " ╰═════╯",
+            " +=====+",
+            " |.....|",
+            " |.....|",
+            " +=====+",
         ],
         weather_bonus={"cold": 0.3, "snowy": 0.25, "freezing": 0.2},
         mood_effect=6,
@@ -390,9 +390,9 @@ WINTER_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.COMMON,
         ascii_art=[
-            " ╔══╗╔══╗",
-            " ║⚪║║⚪║",
-            " ╚══╝╚══╝",
+            " +==++==+",
+            " |o||o|",
+            " +==++==+",
         ],
         weather_bonus={"snowy": 0.2, "cold": 0.15},
         mood_effect=4,
@@ -423,9 +423,9 @@ WINTER_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.UNCOMMON,
         ascii_art=[
-            " ╭─╮ ╭─╮",
-            " │♥│ │♥│",
-            " ╰─╯ ╰─╯",
+            " +-+ +-+",
+            " |<3| |<3|",
+            " +-+ +-+",
         ],
         weather_bonus={"cold": 0.15, "snowy": 0.1},
         mood_effect=6,
@@ -440,7 +440,7 @@ WINTER_ITEMS = {
         holiday=None,
         rarity=SeasonalRarity.RARE,
         ascii_art=[
-            " ❄️✨❄️ ",
+            " *** ",
             "  \\|/  ",
         ],
         weather_bonus={"snowy": 0.3},
@@ -461,7 +461,7 @@ HOLIDAY_ITEMS = {
         holiday=HolidayType.VALENTINES,
         rarity=SeasonalRarity.EVENT,
         ascii_art=[
-            " ♥️ ♥️ ♥️ ",
+            " <3️ <3️ <3️ ",
         ],
         weather_bonus={},
         mood_effect=10,
@@ -476,7 +476,7 @@ HOLIDAY_ITEMS = {
         holiday=HolidayType.VALENTINES,
         rarity=SeasonalRarity.EVENT,
         ascii_art=[
-            " ⟨💕⟩ ",
+            " <<3> ",
             "  \\^/ ",
         ],
         weather_bonus={},
@@ -510,7 +510,7 @@ HOLIDAY_ITEMS = {
         holiday=HolidayType.EASTER,
         rarity=SeasonalRarity.EVENT,
         ascii_art=[
-            " ╭─🥚🥚─╮",
+            " +-oo-+",
             "  \\____/ ",
         ],
         weather_bonus={},
@@ -545,9 +545,9 @@ HOLIDAY_ITEMS = {
         holiday=HolidayType.HALLOWEEN,
         rarity=SeasonalRarity.EVENT,
         ascii_art=[
-            " ╭─────╮",
-            " │ 🎃  │",
-            " ╰─────╯",
+            " +-----+",
+            " | O  |",
+            " +-----+",
         ],
         weather_bonus={},
         mood_effect=10,
@@ -562,9 +562,9 @@ HOLIDAY_ITEMS = {
         holiday=HolidayType.HALLOWEEN,
         rarity=SeasonalRarity.EVENT,
         ascii_art=[
-            " ╭─────╮",
-            " │ ◉ ◉ │",
-            " ╰~~~~~╯",
+            " +-----+",
+            " | ◉ ◉ |",
+            " +~~~~~+",
         ],
         weather_bonus={"foggy": 0.25},
         mood_effect=8,
@@ -617,9 +617,9 @@ HOLIDAY_ITEMS = {
         holiday=HolidayType.WINTER_HOLIDAY,
         rarity=SeasonalRarity.EVENT,
         ascii_art=[
-            " ╭─🎄─╮",
-            " │    │",
-            " ╰────╯",
+            " +-A-+",
+            " |    |",
+            " +----+",
         ],
         weather_bonus={"snowy": 0.15},
         mood_effect=10,
@@ -635,7 +635,7 @@ HOLIDAY_ITEMS = {
         rarity=SeasonalRarity.EVENT,
         ascii_art=[
             "  ∿  ∿  ",
-            "  │  │  ",
+            "  |  |  ",
         ],
         weather_bonus={"snowy": 0.1},
         mood_effect=8,
@@ -652,8 +652,8 @@ HOLIDAY_ITEMS = {
         holiday=HolidayType.NEW_YEAR,
         rarity=SeasonalRarity.EVENT,
         ascii_art=[
-            "   ★   ",
-            "  /🎊\\  ",
+            "   *   ",
+            "  /*\\  ",
             " /    \\ ",
         ],
         weather_bonus={},
@@ -686,7 +686,7 @@ HOLIDAY_ITEMS = {
         holiday=HolidayType.BIRTHDAY,
         rarity=SeasonalRarity.EVENT,
         ascii_art=[
-            " ★ ♔ ★ ",
+            " * ^ * ",
         ],
         weather_bonus={},
         mood_effect=20,
@@ -701,7 +701,7 @@ HOLIDAY_ITEMS = {
         holiday=HolidayType.BIRTHDAY,
         rarity=SeasonalRarity.EVENT,
         ascii_art=[
-            " ╲🎂╱ ",
+            " \\#/ ",
         ],
         weather_bonus={},
         mood_effect=15,
@@ -735,11 +735,11 @@ def get_current_season() -> Season:
 def get_season_emoji(season: Season) -> str:
     """Get emoji for a season."""
     return {
-        Season.SPRING: "🌸",
-        Season.SUMMER: "☀️",
-        Season.AUTUMN: "🍂",
-        Season.WINTER: "❄️",
-    }.get(season, "🌍")
+        Season.SPRING: "*",
+        Season.SUMMER: "*",
+        Season.AUTUMN: "f",
+        Season.WINTER: "*",
+    }.get(season, "O")
 
 
 class SeasonalClothingSystem:
@@ -898,48 +898,48 @@ class SeasonalClothingSystem:
         current = get_current_season()
         emoji = get_season_emoji(current)
         
-        lines.append("╔" + "═" * (width - 2) + "╗")
-        lines.append("║" + f" {emoji} Seasonal Wardrobe {emoji} ".center(width - 2) + "║")
-        lines.append("║" + f" Current Season: {current.value.title()} ".center(width - 2) + "║")
-        lines.append("╠" + "═" * (width - 2) + "╣")
+        lines.append("+" + "=" * (width - 2) + "+")
+        lines.append("|" + f" {emoji} Seasonal Wardrobe {emoji} ".center(width - 2) + "|")
+        lines.append("|" + f" Current Season: {current.value.title()} ".center(width - 2) + "|")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         # Currently equipped
-        lines.append("║" + " Currently Wearing: ".ljust(width - 2) + "║")
+        lines.append("|" + " Currently Wearing: ".ljust(width - 2) + "|")
         
         for slot in ClothingSlot:
             equipped = self.get_equipped(slot)
             if equipped:
-                lines.append("║" + f"  {slot.value.title()}: {equipped.name}"[:width-3].ljust(width - 2) + "║")
+                lines.append("|" + f"  {slot.value.title()}: {equipped.name}"[:width-3].ljust(width - 2) + "|")
             else:
-                lines.append("║" + f"  {slot.value.title()}: (empty)"[:width-3].ljust(width - 2) + "║")
+                lines.append("|" + f"  {slot.value.title()}: (empty)"[:width-3].ljust(width - 2) + "|")
                 
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         # Stats
         mood_bonus = self.get_mood_bonus()
-        lines.append("║" + f" Outfit Mood Bonus: +{mood_bonus} ".ljust(width - 2) + "║")
+        lines.append("|" + f" Outfit Mood Bonus: +{mood_bonus} ".ljust(width - 2) + "|")
         
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         # Collection summary
         total_items = len(ALL_SEASONAL_ITEMS)
         owned = len(self.wardrobe.owned_items)
         
-        lines.append("║" + f" Collection: {owned}/{total_items} items ".ljust(width - 2) + "║")
+        lines.append("|" + f" Collection: {owned}/{total_items} items ".ljust(width - 2) + "|")
         
         # Season breakdown
         for season in Season:
             s_emoji = get_season_emoji(season)
             season_items = [i for i in ALL_SEASONAL_ITEMS.values() if i.season == season]
             owned_season = [i for i in season_items if i.item_id in self.wardrobe.owned_items]
-            lines.append("║" + f"  {s_emoji} {season.value.title()}: {len(owned_season)}/{len(season_items)}"[:width-3].ljust(width - 2) + "║")
+            lines.append("|" + f"  {s_emoji} {season.value.title()}: {len(owned_season)}/{len(season_items)}"[:width-3].ljust(width - 2) + "|")
             
         # Holiday items
         holiday_items = [i for i in ALL_SEASONAL_ITEMS.values() if i.holiday is not None]
         owned_holiday = [i for i in holiday_items if i.item_id in self.wardrobe.owned_items]
-        lines.append("║" + f"  🎉 Holiday: {len(owned_holiday)}/{len(holiday_items)}"[:width-3].ljust(width - 2) + "║")
+        lines.append("|" + f"  * Holiday: {len(owned_holiday)}/{len(holiday_items)}"[:width-3].ljust(width - 2) + "|")
         
-        lines.append("╚" + "═" * (width - 2) + "╝")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         return lines
         
@@ -947,36 +947,36 @@ class SeasonalClothingSystem:
         """Render a single item card."""
         lines = []
         
-        owned = "✓ Owned" if item.item_id in self.wardrobe.owned_items else "✗ Not Owned"
-        equipped = "★ Equipped" if item.item_id in self.wardrobe.equipped.values() else ""
+        owned = "x Owned" if item.item_id in self.wardrobe.owned_items else "  Not Owned"
+        equipped = "* Equipped" if item.item_id in self.wardrobe.equipped.values() else ""
         
-        lines.append("┌" + "─" * (width - 2) + "┐")
-        lines.append("│" + f" {item.name} ".center(width - 2) + "│")
-        lines.append("│" + f" [{item.rarity.value.upper()}] ".center(width - 2) + "│")
-        lines.append("├" + "─" * (width - 2) + "┤")
+        lines.append("+" + "-" * (width - 2) + "+")
+        lines.append("|" + f" {item.name} ".center(width - 2) + "|")
+        lines.append("|" + f" [{item.rarity.value.upper()}] ".center(width - 2) + "|")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         # ASCII art
         for art_line in item.ascii_art:
-            lines.append("│" + art_line.center(width - 2) + "│")
+            lines.append("|" + art_line.center(width - 2) + "|")
             
-        lines.append("├" + "─" * (width - 2) + "┤")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         # Description
-        lines.append("│" + item.description[:width-4].center(width - 2) + "│")
+        lines.append("|" + item.description[:width-4].center(width - 2) + "|")
         
-        lines.append("├" + "─" * (width - 2) + "┤")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         # Stats
-        lines.append("│" + f" Slot: {item.slot.value.title()} ".ljust(width - 2) + "│")
-        lines.append("│" + f" Mood: +{item.mood_effect} ".ljust(width - 2) + "│")
+        lines.append("|" + f" Slot: {item.slot.value.title()} ".ljust(width - 2) + "|")
+        lines.append("|" + f" Mood: +{item.mood_effect} ".ljust(width - 2) + "|")
         
         if item.weather_bonus:
             bonuses = ", ".join([f"{k}: +{int(v*100)}%" for k, v in item.weather_bonus.items()])
-            lines.append("│" + f" Weather: {bonuses}"[:width-3].ljust(width - 2) + "│")
+            lines.append("|" + f" Weather: {bonuses}"[:width-3].ljust(width - 2) + "|")
             
-        lines.append("├" + "─" * (width - 2) + "┤")
-        lines.append("│" + f" {owned} {equipped} ".center(width - 2) + "│")
-        lines.append("└" + "─" * (width - 2) + "┘")
+        lines.append("+" + "-" * (width - 2) + "+")
+        lines.append("|" + f" {owned} {equipped} ".center(width - 2) + "|")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         return lines
         

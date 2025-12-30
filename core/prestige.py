@@ -64,7 +64,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=1,
         bonus_type="xp_mult",
         bonus_value=1.05,
-        icon="📈",
+        icon="^",
     ),
     "starting_coins": LegacyBonus(
         id="starting_coins",
@@ -74,7 +74,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=1,
         bonus_type="starting_bonus",
         bonus_value=100,
-        icon="💰",
+        icon="$",
     ),
     
     # Familiar tier (2-4 prestige)
@@ -86,7 +86,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=2,
         bonus_type="xp_mult",
         bonus_value=1.10,
-        icon="📈",
+        icon="^",
     ),
     "coin_bonus_1": LegacyBonus(
         id="coin_bonus_1",
@@ -96,7 +96,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=3,
         bonus_type="coin_mult",
         bonus_value=1.05,
-        icon="🪙",
+        icon="c",
     ),
     "unlock_legacy_hat": LegacyBonus(
         id="unlock_legacy_hat",
@@ -106,7 +106,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=4,
         bonus_type="cosmetic",
         bonus_value=0,
-        icon="👑",
+        icon="^",
     ),
     
     # Established tier (5-9 prestige)
@@ -118,7 +118,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=5,
         bonus_type="xp_mult",
         bonus_value=1.15,
-        icon="📈",
+        icon="^",
     ),
     "faster_growth": LegacyBonus(
         id="faster_growth",
@@ -128,7 +128,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=6,
         bonus_type="growth_mult",
         bonus_value=1.10,
-        icon="🌱",
+        icon="i",
     ),
     "bonus_daily_rewards": LegacyBonus(
         id="bonus_daily_rewards",
@@ -138,7 +138,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=7,
         bonus_type="daily_bonus",
         bonus_value=1,
-        icon="🎁",
+        icon="[+]",
     ),
     
     # Honored tier (10-14 prestige)
@@ -150,7 +150,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=10,
         bonus_type="xp_mult",
         bonus_value=1.25,
-        icon="📈",
+        icon="^",
     ),
     "coin_bonus_2": LegacyBonus(
         id="coin_bonus_2",
@@ -160,7 +160,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=11,
         bonus_type="coin_mult",
         bonus_value=1.15,
-        icon="🪙",
+        icon="c",
     ),
     "unlock_golden_aura": LegacyBonus(
         id="unlock_golden_aura",
@@ -170,7 +170,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=12,
         bonus_type="cosmetic",
         bonus_value=0,
-        icon="✨",
+        icon="*",
     ),
     
     # Legendary tier (15-24 prestige)
@@ -182,7 +182,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=15,
         bonus_type="xp_mult",
         bonus_value=1.50,
-        icon="📈",
+        icon="^",
     ),
     "lucky_drops": LegacyBonus(
         id="lucky_drops",
@@ -192,7 +192,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=18,
         bonus_type="luck_mult",
         bonus_value=1.10,
-        icon="🍀",
+        icon="+",
     ),
     "unlock_legend_wings": LegacyBonus(
         id="unlock_legend_wings",
@@ -202,7 +202,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=20,
         bonus_type="cosmetic",
         bonus_value=0,
-        icon="🪽",
+        icon="w",
     ),
     
     # Mythical tier (25-49 prestige)
@@ -214,7 +214,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=25,
         bonus_type="daily_mult",
         bonus_value=2.0,
-        icon="🎁",
+        icon="[+]",
     ),
     "xp_bonus_6": LegacyBonus(
         id="xp_bonus_6",
@@ -224,7 +224,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=30,
         bonus_type="xp_mult",
         bonus_value=2.0,
-        icon="📈",
+        icon="^",
     ),
     
     # Eternal tier (50+ prestige)
@@ -236,7 +236,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=50,
         bonus_type="global_mult",
         bonus_value=1.25,
-        icon="🌟",
+        icon="*",
     ),
     "unlock_eternal_crown": LegacyBonus(
         id="unlock_eternal_crown",
@@ -246,7 +246,7 @@ LEGACY_BONUSES: Dict[str, LegacyBonus] = {
         prestige_requirement=50,
         bonus_type="cosmetic",
         bonus_value=0,
-        icon="💫",
+        icon="*",
     ),
 }
 
@@ -351,7 +351,7 @@ class PrestigeSystem:
         # Calculate starting bonuses for new duck
         starting_bonuses = self._calculate_starting_bonuses()
         
-        return True, f"✨ PRESTIGE {self.prestige_level}! ✨\nEarned {points_earned} Legacy Points!", {
+        return True, f"* PRESTIGE {self.prestige_level}! *\nEarned {points_earned} Legacy Points!", {
             "prestige_level": self.prestige_level,
             "points_earned": points_earned,
             "new_unlocks": new_unlocks,
@@ -443,29 +443,29 @@ class PrestigeSystem:
         bonuses = self._calculate_starting_bonuses()
         
         lines = [
-            "╔══════════════════════════════════════════════╗",
-            "║            ✨ LEGACY SYSTEM ✨               ║",
-            f"║  Prestige Level: {self.prestige_level:3}                        ║",
-            f"║  Tier: {tier.value.capitalize():15}                   ║",
-            f"║  Legacy Points: {self.legacy_points:5}                      ║",
-            f"║  Title: {self.current_title:20}              ║",
-            "╠══════════════════════════════════════════════╣",
-            "║  Active Bonuses:                             ║",
-            f"║    XP: x{bonuses['xp_multiplier']:.2f}  Coins: x{bonuses['coin_multiplier']:.2f}           ║",
-            f"║    Growth: x{bonuses['growth_multiplier']:.2f}  Luck: x{bonuses['luck_multiplier']:.2f}         ║",
-            "╠══════════════════════════════════════════════╣",
-            "║  Legacy History:                             ║",
+            "+==============================================+",
+            "|            * LEGACY SYSTEM *               |",
+            f"|  Prestige Level: {self.prestige_level:3}                        |",
+            f"|  Tier: {tier.value.capitalize():15}                   |",
+            f"|  Legacy Points: {self.legacy_points:5}                      |",
+            f"|  Title: {self.current_title:20}              |",
+            "+==============================================+",
+            "|  Active Bonuses:                             |",
+            f"|    XP: x{bonuses['xp_multiplier']:.2f}  Coins: x{bonuses['coin_multiplier']:.2f}           |",
+            f"|    Growth: x{bonuses['growth_multiplier']:.2f}  Luck: x{bonuses['luck_multiplier']:.2f}         |",
+            "+==============================================+",
+            "|  Legacy History:                             |",
         ]
         
         for legacy in self.legacy_history[-3:]:  # Show last 3
-            lines.append(f"║    🦆 {legacy.duck_name[:12]:12} - {legacy.days_lived}d, Lv{legacy.max_level}       ║")
+            lines.append(f"|    d {legacy.duck_name[:12]:12} - {legacy.days_lived}d, Lv{legacy.max_level}       |")
         
         if not self.legacy_history:
-            lines.append("║    No previous ducks yet!                    ║")
+            lines.append("|    No previous ducks yet!                    |")
         
-        lines.append("╠══════════════════════════════════════════════╣")
-        lines.append(f"║  Ducks Raised: {self.total_ducks_raised:3}  Total Days: {self.total_days_played:5}      ║")
-        lines.append("╚══════════════════════════════════════════════╝")
+        lines.append("+==============================================+")
+        lines.append(f"|  Ducks Raised: {self.total_ducks_raised:3}  Total Days: {self.total_days_played:5}      |")
+        lines.append("+==============================================+")
         
         return lines
     

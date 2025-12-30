@@ -219,10 +219,15 @@ class Duck:
         """Get display name for current growth stage."""
         stage_names = {
             "egg": "Egg",
+            "hatchling": "Hatchling",
             "duckling": "Duckling",
+            "juvenile": "Juvenile",
             "teen": "Teen Duck",
+            "young_adult": "Young Adult",
             "adult": "Adult Duck",
+            "mature": "Mature Duck",
             "elder": "Elder Duck",
+            "legendary": "Legendary Duck",
         }
         return stage_names.get(self.growth_stage, self.growth_stage.title())
 

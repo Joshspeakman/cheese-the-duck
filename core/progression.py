@@ -28,11 +28,11 @@ STREAK_XP_MULTIPLIERS = {
 
 # Streak loss messages (emotional engagement)
 STREAK_LOSS_MESSAGES = [
-    "Oh no! Cheese missed you... Your {n}-day streak ended. 😢",
+    "Oh no! Cheese missed you... Your {n}-day streak ended. :(",
     "Cheese waited all day yesterday... The {n}-day streak is broken.",
     "The {n}-day streak has ended, but Cheese is happy you're back!",
     "Your {n}-day streak ended... but every journey starts fresh!",
-    "Cheese: 'I counted {n} days... where did you go?' 🥺",
+    "Cheese: 'I counted {n} days... where did you go?' :(",
 ]
 
 # Streak recovery bonuses (incentive to return after losing streak)
@@ -40,14 +40,14 @@ STREAK_RECOVERY_DAYS = 3  # Days to earn a "recovery bonus"
 
 # Messages for streak milestones (celebratory)
 STREAK_CELEBRATION_MESSAGES = {
-    3: "3 days! Cheese is starting to recognize you! 🌟",
-    7: "🎉 ONE WEEK STREAK! Cheese does a happy dance! 🦆💃",
-    14: "✨ TWO WEEKS! You and Cheese are becoming best friends!",
-    21: "🌈 THREE WEEKS! Cheese gave you a special feather!",
-    30: "🎊 ONE MONTH! WOW! Cheese is SO HAPPY! 🦆❤️ DOUBLE XP UNLOCKED!",
-    50: "⭐ FIFTY DAYS! Cheese made you a tiny crown! 👑",
-    100: "🏆 ONE HUNDRED DAYS! LEGENDARY! Cheese will remember this forever! ✨",
-    365: "🎆 ONE YEAR WITH CHEESE! Eternal bond formed! 🦆💕",
+    3: "3 days! Cheese is starting to recognize you! *",
+    7: "* ONE WEEK STREAK! Cheese does a happy dance! d*",
+    14: "* TWO WEEKS! You and Cheese are becoming best friends!",
+    21: "~ THREE WEEKS! Cheese gave you a special feather!",
+    30: "* ONE MONTH! WOW! Cheese is SO HAPPY! d<3 DOUBLE XP UNLOCKED!",
+    50: "* FIFTY DAYS! Cheese made you a tiny crown! ^",
+    100: "[#] ONE HUNDRED DAYS! LEGENDARY! Cheese will remember this forever! *",
+    365: "* ONE YEAR WITH CHEESE! Eternal bond formed! d<3",
 }
 
 
@@ -57,29 +57,29 @@ STREAK_CELEBRATION_MESSAGES = {
 
 # Random gift announcements (builds excitement)
 SURPRISE_GIFT_MESSAGES = [
-    "✨ Cheese found something for you! ✨",
-    "🎁 Look what Cheese discovered! 🎁",
-    "⭐ A lucky find! ⭐",
-    "🌟 Something special appeared! 🌟",
-    "💫 Cheese wants to share this with you! 💫",
+    "* Cheese found something for you! *",
+    "[+] Look what Cheese discovered! [+]",
+    "* A lucky find! *",
+    "* Something special appeared! *",
+    "* Cheese wants to share this with you! *",
 ]
 
 # Lucky events that can trigger randomly
 LUCKY_EVENTS = [
     {"name": "Lucky Crumb", "chance": 0.05, "reward_type": "xp", "value": "15", "message": "Found a lucky crumb! +15 XP"},
     {"name": "Shiny Discovery", "chance": 0.03, "reward_type": "xp", "value": "25", "message": "Cheese found something shiny! +25 XP"},
-    {"name": "Secret Stash", "chance": 0.01, "reward_type": "item", "value": "bread", "message": "A secret bread stash! 🍞"},
-    {"name": "Hidden Treasure", "chance": 0.005, "reward_type": "item", "value": "fancy_bread", "message": "Hidden treasure! Fancy bread! 🥐"},
-    {"name": "Magic Moment", "chance": 0.002, "reward_type": "collectible", "value": "treasures:crystal_shard", "message": "✨ A magical crystal appeared! ✨"},
+    {"name": "Secret Stash", "chance": 0.01, "reward_type": "item", "value": "bread", "message": "A secret bread stash! B"},
+    {"name": "Hidden Treasure", "chance": 0.005, "reward_type": "item", "value": "fancy_bread", "message": "Hidden treasure! Fancy bread! o"},
+    {"name": "Magic Moment", "chance": 0.002, "reward_type": "collectible", "value": "treasures:crystal_shard", "message": "* A magical crystal appeared! *"},
 ]
 
 # Time-based bonus multipliers (engagement hooks)
 TIME_BONUSES = {
-    "morning": {"hours": (6, 9), "xp_mult": 1.2, "message": "🌅 Early bird bonus! +20% XP"},
-    "lunch": {"hours": (12, 13), "xp_mult": 1.15, "message": "☀️ Lunch break bonus! +15% XP"},
-    "evening": {"hours": (18, 21), "xp_mult": 1.25, "message": "🌆 Evening chill bonus! +25% XP"},
-    "night_owl": {"hours": (23, 24), "xp_mult": 1.3, "message": "🦉 Night owl bonus! +30% XP"},
-    "midnight": {"hours": (0, 2), "xp_mult": 1.5, "message": "🌙 Midnight dedication! +50% XP"},
+    "morning": {"hours": (6, 9), "xp_mult": 1.2, "message": "-*- Early bird bonus! +20% XP"},
+    "lunch": {"hours": (12, 13), "xp_mult": 1.15, "message": "* Lunch break bonus! +15% XP"},
+    "evening": {"hours": (18, 21), "xp_mult": 1.25, "message": "-*- Evening chill bonus! +25% XP"},
+    "night_owl": {"hours": (23, 24), "xp_mult": 1.3, "message": "O Night owl bonus! +30% XP"},
+    "midnight": {"hours": (0, 2), "xp_mult": 1.5, "message": ") Midnight dedication! +50% XP"},
 }
 
 # =============================================================================
@@ -90,49 +90,49 @@ TIME_GREETINGS = {
     "early_morning": {
         "hours": (5, 7),
         "greetings": [
-            "🌅 *yawns* Oh! You're up early! Cheese is still sleepy...",
-            "🌄 The early bird gets the worm... but ducks get bread!",
-            "☀️ *stretches wings* Good morning, friend! Let's make today great!",
+            "-*- *yawns* Oh! You're up early! Cheese is still sleepy...",
+            "* The early bird gets the worm... but ducks get bread!",
+            "* *stretches wings* Good morning, friend! Let's make today great!",
         ]
     },
     "morning": {
         "hours": (7, 12),
         "greetings": [
-            "☀️ Good morning! Cheese is ready for adventure!",
-            "🌞 *happy quack* A new day! What will we do today?",
-            "🍞 Morning! Is it breakfast time? It's always breakfast time!",
+            "* Good morning! Cheese is ready for adventure!",
+            "* *happy quack* A new day! What will we do today?",
+            "B Morning! Is it breakfast time? It's always breakfast time!",
         ]
     },
     "afternoon": {
         "hours": (12, 17),
         "greetings": [
-            "☀️ Good afternoon! Perfect time for a snack!",
-            "🌤️ *waddles over* Hey! I was just thinking about you!",
-            "🌻 The day is going great! How about you?",
+            "* Good afternoon! Perfect time for a snack!",
+            "*️ *waddles over* Hey! I was just thinking about you!",
+            "o The day is going great! How about you?",
         ]
     },
     "evening": {
         "hours": (17, 21),
         "greetings": [
-            "🌆 Good evening! Time to wind down together.",
-            "🌅 *content sigh* Nothing like a relaxing evening with a friend.",
-            "✨ The sunset is beautiful... almost as beautiful as bread!",
+            "-*- Good evening! Time to wind down together.",
+            "-*- *content sigh* Nothing like a relaxing evening with a friend.",
+            "* The sunset is beautiful... almost as beautiful as bread!",
         ]
     },
     "night": {
         "hours": (21, 24),
         "greetings": [
-            "🌙 *sleepy quack* It's getting late... but I'm glad you're here.",
-            "✨ The stars are out! Make a wish for more crumbs!",
-            "🌟 A night owl, huh? Cheese approves.",
+            ") *sleepy quack* It's getting late... but I'm glad you're here.",
+            "* The stars are out! Make a wish for more crumbs!",
+            "* A night owl, huh? Cheese approves.",
         ]
     },
     "late_night": {
         "hours": (0, 5),
         "greetings": [
-            "🌙 *whispers* It's very late... but Cheese is always here for you.",
-            "💤 Couldn't sleep? Me neither. Let's hang out.",
-            "🌟 The world is quiet, but our friendship is loud! ...that sounded cooler in my head.",
+            ") *whispers* It's very late... but Cheese is always here for you.",
+            "z Couldn't sleep? Me neither. Let's hang out.",
+            "* The world is quiet, but our friendship is loud! ...that sounded cooler in my head.",
         ]
     },
 }
@@ -143,30 +143,30 @@ TIME_GREETINGS = {
 
 COMFORT_MESSAGES = {
     "time_away_short": [  # 1-3 days away
-        "You were gone! But Cheese is just happy you're back! 💕",
+        "You were gone! But Cheese is just happy you're back! <3",
         "I missed you! But I found some good crumbs while you were away.",
         "Welcome back, friend! Everything is better now!",
     ],
     "time_away_medium": [  # 4-7 days away
-        "It's been a while! Cheese thought about you every day. 🥺",
+        "It's been a while! Cheese thought about you every day. :(",
         "You came back! I knew you would! *happy waddle*",
-        "Life was quiet without you... but now it's good again! 💕",
+        "Life was quiet without you... but now it's good again! <3",
     ],
     "time_away_long": [  # 8+ days away
-        "You're back!! Cheese never gave up hope! 💕💕💕",
+        "You're back!! Cheese never gave up hope! <3<3<3",
         "*runs over* I MISSED YOU SO MUCH! Don't worry, I was okay!",
-        "No matter how long you're gone, Cheese will always be here waiting. 🦆❤️",
+        "No matter how long you're gone, Cheese will always be here waiting. d<3",
     ],
     "encouragement": [
-        "You're doing great! Cheese is proud of you! 🌟",
-        "Every moment with you is special! ✨",
-        "Just being here makes Cheese happy! 💕",
+        "You're doing great! Cheese is proud of you! *",
+        "Every moment with you is special! *",
+        "Just being here makes Cheese happy! <3",
         "You're Cheese's favorite human! ...Don't tell the others.",
-        "Thanks for taking care of me! You're the best! 🦆",
+        "Thanks for taking care of me! You're the best! d",
     ],
     "gentle_reminder": [
-        "Cheese will always be here when you need a break! 🌈",
-        "Take your time! No rush! Cheese is very patient. 💕",
+        "Cheese will always be here when you need a break! ~",
+        "Take your time! No rush! Cheese is very patient. <3",
         "Remember: there's no wrong way to be a duck friend!",
     ],
 }
@@ -454,7 +454,7 @@ class ProgressionSystem:
         """Get a display string for current streak bonus."""
         mult = self.get_streak_multiplier()
         if mult > 1.0:
-            return f"🔥 {mult}x XP"
+            return f"^ {mult}x XP"
         return ""
 
     def get_xp_progress(self) -> Tuple[int, int, float]:
@@ -813,7 +813,7 @@ class ProgressionSystem:
         elif roll < 0.03:  # 3% chance for medium bonus
             return ("Great! +15 bonus XP!", 15)
         elif roll < 0.005:  # 0.5% chance for jackpot
-            return ("🎰 JACKPOT! +50 bonus XP! 🎰", 50)
+            return ("[#] JACKPOT! +50 bonus XP! [#]", 50)
         return None
 
     def get_time_greeting(self) -> str:

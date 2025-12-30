@@ -59,7 +59,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=200,
         unlock_level=5,
         seasons=[Season.WINTER, Season.HOLIDAY],
-        ascii_art={"symbol": "🎅", "offset": (-1, 0)},
+        ascii_art={"symbol": "S", "offset": (-1, 0)},
         color_code="red",
         mood_bonus=10,
     ),
@@ -72,7 +72,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=150,
         unlock_level=4,
         seasons=[Season.FALL, Season.HOLIDAY],
-        ascii_art={"symbol": "🧙", "offset": (-1, 0)},
+        ascii_art={"symbol": "W", "offset": (-1, 0)},
         color_code="purple",
         mood_bonus=5,
     ),
@@ -85,7 +85,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=120,
         unlock_level=3,
         seasons=[Season.SPRING, Season.HOLIDAY],
-        ascii_art={"symbol": "🐰", "offset": (-1, 0)},
+        ascii_art={"symbol": "b", "offset": (-1, 0)},
         color_code="pink",
         mood_bonus=5,
     ),
@@ -98,7 +98,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=80,
         unlock_level=2,
         seasons=[Season.SUMMER],
-        ascii_art={"symbol": "👒", "offset": (-1, 0)},
+        ascii_art={"symbol": "^", "offset": (-1, 0)},
         color_code="yellow",
         mood_bonus=3,
     ),
@@ -107,13 +107,13 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
     "sunglasses_cool": OutfitItem(
         id="sunglasses_cool",
         name="Cool Sunglasses",
-        description="Deal with it. 😎",
+        description="Deal with it. B)",
         slot=OutfitSlot.FACE,
         rarity="common",
         cost=100,
         unlock_level=2,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "🕶️", "offset": (0, 0)},
+        ascii_art={"symbol": "o", "offset": (0, 0)},
         color_code="black",
         mood_bonus=5,
     ),
@@ -126,7 +126,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=200,
         unlock_level=4,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "🧐", "offset": (0, 0)},
+        ascii_art={"symbol": "o", "offset": (0, 0)},
         color_code="gold",
         mood_bonus=5,
     ),
@@ -139,7 +139,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=150,
         unlock_level=3,
         seasons=[Season.ANY, Season.HOLIDAY],
-        ascii_art={"symbol": "💕", "offset": (0, 0)},
+        ascii_art={"symbol": "<3", "offset": (0, 0)},
         color_code="pink",
         mood_bonus=8,
     ),
@@ -152,7 +152,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=300,
         unlock_level=6,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "🎭", "offset": (0, 0)},
+        ascii_art={"symbol": "*", "offset": (0, 0)},
         color_code="purple",
         mood_bonus=10,
     ),
@@ -167,7 +167,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=80,
         unlock_level=2,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "🎀", "offset": (1, 0)},
+        ascii_art={"symbol": "*", "offset": (1, 0)},
         color_code="red",
         mood_bonus=3,
     ),
@@ -180,7 +180,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=90,
         unlock_level=2,
         seasons=[Season.WINTER, Season.FALL],
-        ascii_art={"symbol": "🧣", "offset": (1, 0)},
+        ascii_art={"symbol": "S", "offset": (1, 0)},
         color_code="blue",
         mood_bonus=5,
     ),
@@ -193,7 +193,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=400,
         unlock_level=7,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "📿", "offset": (1, 0)},
+        ascii_art={"symbol": "o", "offset": (1, 0)},
         color_code="white",
         mood_bonus=10,
     ),
@@ -206,7 +206,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=120,
         unlock_level=3,
         seasons=[Season.SUMMER],
-        ascii_art={"symbol": "🌺", "offset": (1, 0)},
+        ascii_art={"symbol": "*", "offset": (1, 0)},
         color_code="pink",
         mood_bonus=8,
     ),
@@ -219,7 +219,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=150,
         unlock_level=4,
         seasons=[Season.WINTER, Season.HOLIDAY],
-        ascii_art={"symbol": "🔔", "offset": (1, 0)},
+        ascii_art={"symbol": "o", "offset": (1, 0)},
         color_code="gold",
         mood_bonus=7,
         special_effect="jingle",
@@ -235,7 +235,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=500,
         unlock_level=6,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "🦸", "offset": (0, 1)},
+        ascii_art={"symbol": "S", "offset": (0, 1)},
         color_code="red",
         mood_bonus=15,
         animation="flutter",
@@ -249,7 +249,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=100,
         unlock_level=2,
         seasons=[Season.WINTER, Season.FALL],
-        ascii_art={"symbol": "🧥", "offset": (0, 0)},
+        ascii_art={"symbol": "C", "offset": (0, 0)},
         color_code="blue",
         mood_bonus=5,
     ),
@@ -262,7 +262,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=150,
         unlock_level=3,
         seasons=[Season.SUMMER],
-        ascii_art={"symbol": "🌴", "offset": (0, 0)},
+        ascii_art={"symbol": "T", "offset": (0, 0)},
         color_code="cyan",
         mood_bonus=8,
     ),
@@ -275,7 +275,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=800,
         unlock_level=8,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "🤵", "offset": (0, 0)},
+        ascii_art={"symbol": "T", "offset": (0, 0)},
         color_code="black",
         mood_bonus=15,
     ),
@@ -288,7 +288,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=400,
         unlock_level=6,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "🧙", "offset": (0, 0)},
+        ascii_art={"symbol": "W", "offset": (0, 0)},
         color_code="purple",
         mood_bonus=12,
         special_effect="sparkle",
@@ -302,7 +302,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=600,
         unlock_level=7,
         seasons=[Season.WINTER, Season.HOLIDAY],
-        ascii_art={"symbol": "🎅", "offset": (0, 0)},
+        ascii_art={"symbol": "S", "offset": (0, 0)},
         color_code="red",
         mood_bonus=20,
     ),
@@ -315,7 +315,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=80,
         unlock_level=2,
         seasons=[Season.SPRING, Season.FALL],
-        ascii_art={"symbol": "🧥", "offset": (0, 0)},
+        ascii_art={"symbol": "C", "offset": (0, 0)},
         color_code="yellow",
         mood_bonus=5,
     ),
@@ -330,7 +330,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=700,
         unlock_level=8,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "🧚", "offset": (0, 0)},
+        ascii_art={"symbol": "f", "offset": (0, 0)},
         color_code="pink",
         mood_bonus=15,
         animation="shimmer",
@@ -345,7 +345,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=1500,
         unlock_level=12,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "😇", "offset": (0, 0)},
+        ascii_art={"symbol": ":)", "offset": (0, 0)},
         color_code="white",
         mood_bonus=25,
         animation="glow",
@@ -360,7 +360,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=350,
         unlock_level=5,
         seasons=[Season.FALL, Season.HOLIDAY],
-        ascii_art={"symbol": "🦇", "offset": (0, 0)},
+        ascii_art={"symbol": "V", "offset": (0, 0)},
         color_code="black",
         mood_bonus=10,
     ),
@@ -375,7 +375,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=60,
         unlock_level=1,
         seasons=[Season.SPRING, Season.ANY],
-        ascii_art={"symbol": "👢", "offset": (2, 0)},
+        ascii_art={"symbol": "b", "offset": (2, 0)},
         color_code="yellow",
         mood_bonus=5,
     ),
@@ -388,7 +388,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=120,
         unlock_level=3,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "🐰", "offset": (2, 0)},
+        ascii_art={"symbol": "b", "offset": (2, 0)},
         color_code="pink",
         mood_bonus=8,
     ),
@@ -401,7 +401,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=150,
         unlock_level=4,
         seasons=[Season.WINTER],
-        ascii_art={"symbol": "⛸️", "offset": (2, 0)},
+        ascii_art={"symbol": "x", "offset": (2, 0)},
         color_code="silver",
         mood_bonus=10,
     ),
@@ -416,7 +416,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=70,
         unlock_level=2,
         seasons=[Season.SPRING, Season.FALL],
-        ascii_art={"symbol": "☂️", "offset": (0, 1)},
+        ascii_art={"symbol": "Y", "offset": (0, 1)},
         color_code="red",
         mood_bonus=3,
     ),
@@ -429,7 +429,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=300,
         unlock_level=5,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "✨", "offset": (0, 1)},
+        ascii_art={"symbol": "*", "offset": (0, 1)},
         color_code="gold",
         mood_bonus=12,
         animation="sparkle",
@@ -443,7 +443,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=80,
         unlock_level=3,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "🎣", "offset": (0, 1)},
+        ascii_art={"symbol": "-o", "offset": (0, 1)},
         color_code="brown",
         mood_bonus=5,
     ),
@@ -456,7 +456,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=100,
         unlock_level=2,
         seasons=[Season.SPRING, Season.SUMMER],
-        ascii_art={"symbol": "💐", "offset": (0, 1)},
+        ascii_art={"symbol": "*", "offset": (0, 1)},
         color_code="pink",
         mood_bonus=10,
     ),
@@ -471,7 +471,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=1000,
         unlock_level=10,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "✨", "offset": (0, 0)},
+        ascii_art={"symbol": "*", "offset": (0, 0)},
         color_code="gold",
         mood_bonus=20,
         animation="sparkle",
@@ -486,7 +486,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=2000,
         unlock_level=15,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "🌈", "offset": (0, 0)},
+        ascii_art={"symbol": "~", "offset": (0, 0)},
         color_code="rainbow",
         mood_bonus=30,
         animation="trail",
@@ -501,7 +501,7 @@ OUTFIT_ITEMS: Dict[str, OutfitItem] = {
         cost=500,
         unlock_level=7,
         seasons=[Season.ANY],
-        ascii_art={"symbol": "💕", "offset": (0, 0)},
+        ascii_art={"symbol": "<3", "offset": (0, 0)},
         color_code="pink",
         mood_bonus=15,
         animation="float",
@@ -559,7 +559,7 @@ class OutfitManager:
             return False, f"Need {item.cost - currency} more coins!", 0
         
         self.owned_items.append(item_id)
-        return True, f"Purchased {item.name}! 🎉", item.cost
+        return True, f"Purchased {item.name}! *", item.cost
     
     def equip_item(self, item_id: str) -> Tuple[bool, str]:
         """Equip an item."""
@@ -688,10 +688,10 @@ class OutfitManager:
     def render_wardrobe(self) -> List[str]:
         """Render the wardrobe display."""
         lines = [
-            "╔═══════════════════════════════════════════╗",
-            "║           👔 YOUR WARDROBE 👗             ║",
-            "╠═══════════════════════════════════════════╣",
-            "║ Currently Wearing:                        ║",
+            "+===========================================+",
+            "|           * YOUR WARDROBE *             |",
+            "+===========================================+",
+            "| Currently Wearing:                        |",
         ]
         
         slot_names = ["Hat", "Face", "Neck", "Body", "Wings", "Feet", "Held", "Special"]
@@ -702,16 +702,16 @@ class OutfitManager:
             if item_id:
                 item = OUTFIT_ITEMS.get(item_id)
                 if item:
-                    lines.append(f"║  {name:8}: {item.name[:20]:20}    ║")
+                    lines.append(f"|  {name:8}: {item.name[:20]:20}    |")
                 else:
-                    lines.append(f"║  {name:8}: (Unknown)                  ║")
+                    lines.append(f"|  {name:8}: (Unknown)                  |")
             else:
-                lines.append(f"║  {name:8}: [Empty]                    ║")
+                lines.append(f"|  {name:8}: [Empty]                    |")
         
-        lines.append("╠═══════════════════════════════════════════╣")
-        lines.append(f"║ Mood Bonus: +{self.get_total_mood_bonus():2}                          ║")
-        lines.append(f"║ Owned Items: {len(self.owned_items):3}                           ║")
-        lines.append("╚═══════════════════════════════════════════╝")
+        lines.append("+===========================================+")
+        lines.append(f"| Mood Bonus: +{self.get_total_mood_bonus():2}                          |")
+        lines.append(f"| Owned Items: {len(self.owned_items):3}                           |")
+        lines.append("+===========================================+")
         
         return lines
     

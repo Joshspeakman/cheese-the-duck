@@ -76,7 +76,7 @@ TREASURES: Dict[str, Treasure] = {
         locations=[TreasureLocation.BEACH, TreasureLocation.GARDEN],
         xp_value=10,
         coin_value=5,
-        ascii_art="[◎]",
+        ascii_art="[(o)]",
         lore="This coin bears the image of a duck king from centuries past.",
     ),
     "pretty_shell": Treasure(
@@ -87,7 +87,7 @@ TREASURES: Dict[str, Treasure] = {
         locations=[TreasureLocation.BEACH, TreasureLocation.POND],
         xp_value=8,
         coin_value=3,
-        ascii_art="🐚",
+        ascii_art="@",
         lore="Hold it to your ear - you can hear the ocean!",
     ),
     "smooth_stone": Treasure(
@@ -111,7 +111,7 @@ TREASURES: Dict[str, Treasure] = {
         locations=[TreasureLocation.CAVE, TreasureLocation.FOREST],
         xp_value=25,
         coin_value=20,
-        ascii_art="🪶",
+        ascii_art="f",
         lore="Legend says this belonged to the First Duck.",
     ),
     "glass_bottle": Treasure(
@@ -122,7 +122,7 @@ TREASURES: Dict[str, Treasure] = {
         locations=[TreasureLocation.BEACH, TreasureLocation.POND],
         xp_value=30,
         coin_value=25,
-        ascii_art="🍾",
+        ascii_art="Y",
         lore="The message reads: 'Bread is the answer to everything.'",
     ),
     "fossil": Treasure(
@@ -133,7 +133,7 @@ TREASURES: Dict[str, Treasure] = {
         locations=[TreasureLocation.MOUNTAIN, TreasureLocation.CAVE],
         xp_value=35,
         coin_value=30,
-        ascii_art="🦶",
+        ascii_art="f",
         lore="Evidence that ducks have been awesome for millions of years.",
     ),
     
@@ -146,7 +146,7 @@ TREASURES: Dict[str, Treasure] = {
         locations=[TreasureLocation.CAVE, TreasureLocation.MOUNTAIN],
         xp_value=75,
         coin_value=100,
-        ascii_art="💎",
+        ascii_art="[D]",
         lore="Some say this gem was formed from crystallized duck joy.",
     ),
     "golden_acorn": Treasure(
@@ -157,7 +157,7 @@ TREASURES: Dict[str, Treasure] = {
         locations=[TreasureLocation.FOREST],
         xp_value=60,
         coin_value=75,
-        ascii_art="🌰",
+        ascii_art="o",
         lore="Grown from the legendary Golden Oak Tree.",
     ),
     "pirate_compass": Treasure(
@@ -168,7 +168,7 @@ TREASURES: Dict[str, Treasure] = {
         locations=[TreasureLocation.BEACH, TreasureLocation.CAVE],
         xp_value=80,
         coin_value=90,
-        ascii_art="🧭",
+        ascii_art="(+)",
         lore="Once belonged to Captain Quackbeard himself.",
     ),
     
@@ -181,7 +181,7 @@ TREASURES: Dict[str, Treasure] = {
         locations=[TreasureLocation.CAVE, TreasureLocation.SECRET],
         xp_value=200,
         coin_value=300,
-        ascii_art="👑",
+        ascii_art="^",
         lore="This crown has been passed down through 100 duck generations.",
     ),
     "mystic_egg": Treasure(
@@ -192,7 +192,7 @@ TREASURES: Dict[str, Treasure] = {
         locations=[TreasureLocation.SECRET, TreasureLocation.MOUNTAIN],
         xp_value=250,
         coin_value=350,
-        ascii_art="🥚✨",
+        ascii_art="o*",
         lore="What could hatch from this egg? Nobody knows...",
     ),
     
@@ -205,7 +205,7 @@ TREASURES: Dict[str, Treasure] = {
         locations=[TreasureLocation.SECRET, TreasureLocation.MOUNTAIN],
         xp_value=500,
         coin_value=750,
-        ascii_art="⭐",
+        ascii_art="*",
         lore="Whispered wishes to this fragment are said to come true.",
     ),
     "ancient_tome": Treasure(
@@ -216,7 +216,7 @@ TREASURES: Dict[str, Treasure] = {
         locations=[TreasureLocation.CAVE, TreasureLocation.SECRET],
         xp_value=600,
         coin_value=800,
-        ascii_art="📖",
+        ascii_art="[=]",
         lore="Contains the sacred knowledge of the Duck Elders.",
     ),
     
@@ -229,7 +229,7 @@ TREASURES: Dict[str, Treasure] = {
         locations=[TreasureLocation.SECRET],
         xp_value=2000,
         coin_value=2500,
-        ascii_art="💙✨",
+        ascii_art="<3*",
         lore="Only the most dedicated treasure hunter will ever find this.",
     ),
 }
@@ -311,7 +311,7 @@ class TreasureHunter:
         
         self.current_hunt_location = location
         self.hunt_progress = 0
-        return True, f"Started searching at {location.value}... 🔍"
+        return True, f"Started searching at {location.value}... (o)"
     
     def dig(self) -> Tuple[bool, str, Optional[FoundTreasure]]:
         """Attempt to dig for treasure."""
@@ -338,14 +338,14 @@ class TreasureHunter:
         # Progression messages
         if self.hunt_progress >= 100:
             self.hunt_progress = 0
-            return False, "Nothing here... Try a different spot? 🤔", None
+            return False, "Nothing here... Try a different spot? :?", None
         
         messages = [
-            "Digging... Nothing yet. 🕳️",
-            "Keep searching... 🔍",
-            "You found a rock! ...Just a rock. 🪨",
-            "Something rustles nearby... 🌿",
-            "The duck instincts say you're getting closer! 🦆",
+            "Digging... Nothing yet. [_]",
+            "Keep searching... (o)",
+            "You found a rock! ...Just a rock. o",
+            "Something rustles nearby... ~",
+            "The duck instincts say you're getting closer! d",
         ]
         return False, random.choice(messages), None
     
@@ -411,17 +411,17 @@ class TreasureHunter:
         self.hunt_progress = 0
         
         rarity_emoji = {
-            TreasureRarity.COMMON: "✓",
-            TreasureRarity.UNCOMMON: "✦",
-            TreasureRarity.RARE: "★",
-            TreasureRarity.EPIC: "✮",
-            TreasureRarity.LEGENDARY: "⭐",
-            TreasureRarity.MYTHICAL: "🌟",
+            TreasureRarity.COMMON: "o",
+            TreasureRarity.UNCOMMON: "+",
+            TreasureRarity.RARE: "*",
+            TreasureRarity.EPIC: "#",
+            TreasureRarity.LEGENDARY: "*",
+            TreasureRarity.MYTHICAL: "!",
         }
         
-        emoji = rarity_emoji.get(treasure.rarity, "✓")
+        emoji = rarity_emoji.get(treasure.rarity, "o")
         first_find = len(self.found_treasures[treasure_id]) == 1
-        new_badge = " 🆕 First Find!" if first_find else ""
+        new_badge = " [NEW] First Find!" if first_find else ""
         
         return True, f"{emoji} TREASURE FOUND! {emoji}\n{treasure.name} {treasure.ascii_art}{new_badge}", found
     
@@ -465,7 +465,7 @@ class TreasureHunter:
             return False, "Location already unlocked!"
         
         self.unlocked_locations.append(location)
-        return True, f"Unlocked {location.value} for treasure hunting! 🗺️"
+        return True, f"Unlocked {location.value} for treasure hunting! [?]"
     
     def get_collection_stats(self) -> Dict:
         """Get treasure collection statistics."""
@@ -495,21 +495,21 @@ class TreasureHunter:
         stats = self.get_collection_stats()
         
         lines = [
-            "╔════════════════════════════════════════╗",
-            "║       💎 TREASURE COLLECTION 💎        ║",
-            f"║ Found: {stats['found_types']}/{stats['total_types']} ({stats['completion']}%)            ║",
-            f"║ Total Value: {stats['total_value']:,} coins            ║",
-            "╠════════════════════════════════════════╣",
+            "+========================================+",
+            "|       [D] TREASURE COLLECTION [D]        |",
+            f"| Found: {stats['found_types']}/{stats['total_types']} ({stats['completion']}%)            |",
+            f"| Total Value: {stats['total_value']:,} coins            |",
+            "+========================================+",
         ]
         
         for tid, treasure in TREASURES.items():
             if tid in self.found_treasures:
                 count = len(self.found_treasures[tid])
-                lines.append(f"║ {treasure.ascii_art} {treasure.name:20} x{count} ║")
+                lines.append(f"| {treasure.ascii_art} {treasure.name:20} x{count} |")
             else:
-                lines.append(f"║ ??? {'Unknown Treasure':20}    ║")
+                lines.append(f"| ??? {'Unknown Treasure':20}    |")
         
-        lines.append("╚════════════════════════════════════════╝")
+        lines.append("+========================================+")
         return lines
     
     def to_dict(self) -> dict:

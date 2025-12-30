@@ -118,7 +118,7 @@ class SaveSlotsSystem:
         # Mood faces
         mood_faces = {
             "happy": "^◡^",
-            "excited": "✧◡✧",
+            "excited": "*◡*",
             "content": "◡‿◡",
             "sad": "╥﹏╥",
             "hungry": "ò﹏ó",
@@ -131,22 +131,22 @@ class SaveSlotsSystem:
         if prestige > 0:
             # Prestige duck with crown/aura
             return [
-                f"  ✨👑✨   ",
+                f"  *^*   ",
                 f"   ({face})  ",
-                f"  >🦆<    ",
+                f"  >d<    ",
                 f"  P{prestige} Lv{level} ",
             ]
         elif level >= 50:
             return [
-                f"    ⭐     ",
+                f"    *     ",
                 f"   ({face})  ",
-                f"   🦆      ",
+                f"   d      ",
                 f"   Lv{level}   ",
             ]
         else:
             return [
                 f"   ({face})  ",
-                f"   🦆      ",
+                f"   d      ",
                 f"   Lv{level}   ",
             ]
     
@@ -279,33 +279,33 @@ class SaveSlotsSystem:
     def render_slot_selection(self, show_details: bool = True) -> List[str]:
         """Render the save slot selection screen."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║           💾 SAVE SLOTS 💾                    ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            "|           [=] SAVE SLOTS [=]                    |",
+            "+===============================================+",
         ]
         
         for slot_id in range(1, self.MAX_SLOTS + 1):
             slot = self.slots.get(slot_id)
             
             if slot is None or slot.is_empty:
-                lines.append(f"║  [{slot_id}] ─── EMPTY SLOT ───                   ║")
-                lines.append("║      Start a new adventure!                   ║")
-                lines.append("║                                               ║")
+                lines.append(f"|  [{slot_id}] --- EMPTY SLOT ---                   |")
+                lines.append("|      Start a new adventure!                   |")
+                lines.append("|                                               |")
             else:
                 # Active indicator
-                active = " ◀" if slot_id == self.current_slot else "  "
+                active = " <" if slot_id == self.current_slot else "  "
                 
-                lines.append(f"║  [{slot_id}] {slot.duck_name:<25} {active}      ║")
+                lines.append(f"|  [{slot_id}] {slot.duck_name:<25} {active}      |")
                 
                 if show_details:
                     # Show preview ASCII
                     for preview_line in slot.preview_ascii:
-                        lines.append(f"║      {preview_line:<39}  ║")
+                        lines.append(f"|      {preview_line:<39}  |")
                     
                     # Stats
                     playtime = self.format_playtime(slot.playtime_minutes)
-                    lines.append(f"║      💰 {slot.coins:<8}  ⏱️ {playtime:<15}  ║")
-                    lines.append(f"║      🏆 {slot.achievements_count} achievements                    ║")
+                    lines.append(f"|      $ {slot.coins:<8}  ⏱️ {playtime:<15}  |")
+                    lines.append(f"|      [#] {slot.achievements_count} achievements                    |")
                     
                     # Last played
                     if slot.last_played and slot.last_played != "Unknown":
@@ -314,15 +314,15 @@ class SaveSlotsSystem:
                             last_str = dt.strftime("%Y-%m-%d %H:%M")
                         except ValueError:
                             last_str = slot.last_played[:16]
-                        lines.append(f"║      Last: {last_str:<30}  ║")
+                        lines.append(f"|      Last: {last_str:<30}  |")
                 
-                lines.append("║                                               ║")
+                lines.append("|                                               |")
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            "║  [1-5] Select  [D] Delete  [C] Copy           ║",
-            "║  [E] Export    [I] Import  [B] Back           ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            "|  [1-5] Select  [D] Delete  [C] Copy           |",
+            "|  [E] Export    [I] Import  [B] Back           |",
+            "+===============================================+",
         ])
         
         return lines
@@ -332,36 +332,36 @@ class SaveSlotsSystem:
         slot = self.slots.get(slot_id)
         
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            f"║           💾 SLOT {slot_id} DETAILS                   ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            f"|           [=] SLOT {slot_id} DETAILS                   |",
+            "+===============================================+",
         ]
         
         if slot is None or slot.is_empty:
-            lines.append("║                                               ║")
-            lines.append("║              Empty Save Slot                  ║")
-            lines.append("║                                               ║")
-            lines.append("║         Start a new adventure?                ║")
-            lines.append("║                                               ║")
+            lines.append("|                                               |")
+            lines.append("|              Empty Save Slot                  |")
+            lines.append("|                                               |")
+            lines.append("|         Start a new adventure?                |")
+            lines.append("|                                               |")
         else:
             # Duck preview centered
-            lines.append("║                                               ║")
+            lines.append("|                                               |")
             for preview_line in slot.preview_ascii:
-                lines.append(f"║  {preview_line:^43}  ║")
+                lines.append(f"|  {preview_line:^43}  |")
             
-            lines.append("║                                               ║")
-            lines.append(f"║  Duck Name: {slot.duck_name:<32}  ║")
-            lines.append(f"║  Level: {slot.level:<36}  ║")
+            lines.append("|                                               |")
+            lines.append(f"|  Duck Name: {slot.duck_name:<32}  |")
+            lines.append(f"|  Level: {slot.level:<36}  |")
             
             if slot.prestige_level > 0:
-                lines.append(f"║  Prestige: {slot.prestige_level:<33}  ║")
+                lines.append(f"|  Prestige: {slot.prestige_level:<33}  |")
             
-            lines.append(f"║  Coins: {slot.coins:<36}  ║")
-            lines.append(f"║  Playtime: {self.format_playtime(slot.playtime_minutes):<33}  ║")
-            lines.append(f"║  Achievements: {slot.achievements_count:<28}  ║")
-            lines.append(f"║  Current Mood: {slot.mood:<28}  ║")
+            lines.append(f"|  Coins: {slot.coins:<36}  |")
+            lines.append(f"|  Playtime: {self.format_playtime(slot.playtime_minutes):<33}  |")
+            lines.append(f"|  Achievements: {slot.achievements_count:<28}  |")
+            lines.append(f"|  Current Mood: {slot.mood:<28}  |")
             
-            lines.append("║                                               ║")
+            lines.append("|                                               |")
             
             if slot.created_at and slot.created_at != "Unknown":
                 try:
@@ -369,7 +369,7 @@ class SaveSlotsSystem:
                     created = dt.strftime("%Y-%m-%d")
                 except ValueError:
                     created = slot.created_at[:10]
-                lines.append(f"║  Created: {created:<34}  ║")
+                lines.append(f"|  Created: {created:<34}  |")
             
             if slot.last_played and slot.last_played != "Unknown":
                 try:
@@ -377,17 +377,17 @@ class SaveSlotsSystem:
                     last = dt.strftime("%Y-%m-%d %H:%M")
                 except ValueError:
                     last = slot.last_played[:16]
-                lines.append(f"║  Last Played: {last:<30}  ║")
+                lines.append(f"|  Last Played: {last:<30}  |")
             
             has_backup = self.has_backup(slot_id)
             backup_str = "Yes" if has_backup else "No"
-            lines.append(f"║  Backup Available: {backup_str:<25}  ║")
+            lines.append(f"|  Backup Available: {backup_str:<25}  |")
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            "║  [L] Load  [D] Delete  [R] Restore Backup     ║",
-            "║  [E] Export  [B] Back                         ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            "|  [L] Load  [D] Delete  [R] Restore Backup     |",
+            "|  [E] Export  [B] Back                         |",
+            "+===============================================+",
         ])
         
         return lines

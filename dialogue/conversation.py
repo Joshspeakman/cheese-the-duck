@@ -365,10 +365,16 @@ class ConversationSystem:
 
         return selected
 
-    def process_player_input(self, duck: "Duck", player_input: str, use_llm: bool = True) -> str:
+    def process_player_input(self, duck: "Duck", player_input: str, use_llm: bool = True, memory_context: str = "") -> str:
         """
         Process player text input and generate a response.
         Uses LLM if available, otherwise falls back to templates.
+        
+        Args:
+            duck: The Duck instance
+            player_input: What the player said
+            use_llm: Whether to try using LLM
+            memory_context: Optional context from duck's memory for richer responses
         """
         # Try LLM first if enabled
         if use_llm:
@@ -376,7 +382,8 @@ class ConversationSystem:
                 from dialogue.llm_chat import get_llm_chat
                 llm = get_llm_chat()
                 if llm.is_available():
-                    llm_response = llm.generate_response(duck, player_input)
+                    # Pass memory context to LLM for richer responses
+                    llm_response = llm.generate_response(duck, player_input, memory_context=memory_context)
                     if llm_response:
                         self.add_to_history(player_input, llm_response)
                         return llm_response

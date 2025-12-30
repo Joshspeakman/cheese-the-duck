@@ -1043,7 +1043,7 @@ class FriendsSystem:
         self.last_visitor_time = datetime.now().isoformat()
         
         gift_msg = f" They brought you a {gift}!" if gift else ""
-        return True, f"🦆 {friend.name} is visiting!{gift_msg}", self.current_visit
+        return True, f"d {friend.name} is visiting!{gift_msg}", self.current_visit
     
     def interact_with_visitor(self, activity: str) -> Tuple[bool, str, int]:
         """Do an activity with the visiting friend."""
@@ -1076,7 +1076,7 @@ class FriendsSystem:
         
         if new_level != old_level:
             friend.friendship_level = new_level
-            message += f"\n🎉 Friendship level up! {friend.name} is now your {new_level.value.replace('_', ' ')}!"
+            message += f"\n(!) Friendship level up! {friend.name} is now your {new_level.value.replace('_', ' ')}!"
             
             # Add special memory
             friend.special_memories.append(
@@ -1099,13 +1099,13 @@ class FriendsSystem:
         
         if item in preferred:
             points = 30
-            reaction = f"😍 {friend.name} LOVES this gift!"
+            reaction = f":D {friend.name} LOVES this gift!"
         elif item == friend.favorite_food:
             points = 25
-            reaction = f"🥰 {friend.name}'s favorite food! They're so happy!"
+            reaction = f":) {friend.name}'s favorite food! They're so happy!"
         else:
             points = 15
-            reaction = f"😊 {friend.name} appreciates the gift!"
+            reaction = f":) {friend.name} appreciates the gift!"
         
         friend.friendship_points += points
         friend.gifts_received += 1
@@ -1127,7 +1127,7 @@ class FriendsSystem:
         
         self.total_gifts_exchanged += 1
         
-        return True, f"🎁 You received: {gift}!", gift
+        return True, f"[+] You received: {gift}!", gift
     
     def end_visit(self) -> Tuple[bool, str, Dict]:
         """End the current visit."""
@@ -1148,9 +1148,9 @@ class FriendsSystem:
         }
         
         farewell_messages = [
-            f"👋 {friend.name} waves goodbye! Come back soon!",
-            f"🦆 {friend.name} quacks a cheerful farewell!",
-            f"💫 {friend.name} waddles away happily!",
+            f"* {friend.name} waves goodbye! Come back soon!",
+            f"d {friend.name} quacks a cheerful farewell!",
+            f"! {friend.name} waddles away happily!",
         ]
         
         self.current_visit = None
@@ -1217,11 +1217,11 @@ class FriendsSystem:
         appearance = DUCK_APPEARANCES.get(friend.personality.value, {})
         
         level_stars = {
-            FriendshipLevel.STRANGER: "☆☆☆☆☆",
-            FriendshipLevel.ACQUAINTANCE: "★☆☆☆☆",
-            FriendshipLevel.FRIEND: "★★☆☆☆",
-            FriendshipLevel.CLOSE_FRIEND: "★★★★☆",
-            FriendshipLevel.BEST_FRIEND: "★★★★★",
+            FriendshipLevel.STRANGER: "*****",
+            FriendshipLevel.ACQUAINTANCE: "*****",
+            FriendshipLevel.FRIEND: "*****",
+            FriendshipLevel.CLOSE_FRIEND: "*****",
+            FriendshipLevel.BEST_FRIEND: "*****",
         }
         
         next_level_points = 0
@@ -1235,28 +1235,28 @@ class FriendsSystem:
         if next_level_points > 0:
             progress_pct = friend.friendship_points / next_level_points
             filled = int(progress_pct * 10)
-            progress = f"[{'█' * filled}{'░' * (10 - filled)}] {friend.friendship_points}/{next_level_points}"
+            progress = f"[{'#' * filled}{'.' * (10 - filled)}] {friend.friendship_points}/{next_level_points}"
         
         lines = [
-            "╔════════════════════════════════════╗",
-            f"║  🦆 {friend.name:^28} ║",
-            f"║  {appearance.get('color', 'yellow'):^32} ║",
-            "╠════════════════════════════════════╣",
-            f"║  Personality: {friend.personality.value:^17} ║",
-            f"║  {level_stars.get(friend.friendship_level, '☆☆☆☆☆'):^32} ║",
-            f"║  {friend.friendship_level.value.replace('_', ' ').title():^32} ║",
-            "╠════════════════════════════════════╣",
-            f"║  Visits: {friend.times_visited:^23} ║",
-            f"║  Gifts Given: {friend.gifts_given:^18} ║",
-            f"║  Gifts Received: {friend.gifts_received:^15} ║",
-            "╠════════════════════════════════════╣",
-            f"║  Likes: {friend.favorite_food}, {friend.favorite_activity:^15} ║",
+            "+====================================+",
+            f"|  d {friend.name:^28} |",
+            f"|  {appearance.get('color', 'yellow'):^32} |",
+            "+====================================+",
+            f"|  Personality: {friend.personality.value:^17} |",
+            f"|  {level_stars.get(friend.friendship_level, '*****'):^32} |",
+            f"|  {friend.friendship_level.value.replace('_', ' ').title():^32} |",
+            "+====================================+",
+            f"|  Visits: {friend.times_visited:^23} |",
+            f"|  Gifts Given: {friend.gifts_given:^18} |",
+            f"|  Gifts Received: {friend.gifts_received:^15} |",
+            "+====================================+",
+            f"|  Likes: {friend.favorite_food}, {friend.favorite_activity:^15} |",
         ]
         
         if progress:
-            lines.append(f"║  {progress:^32} ║")
+            lines.append(f"|  {progress:^32} |")
         
-        lines.append("╚════════════════════════════════════╝")
+        lines.append("+====================================+")
         
         return lines
     
@@ -1270,33 +1270,33 @@ class FriendsSystem:
             return ["Visitor not found!"]
         
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            f"║  🦆 VISITOR: {friend.name:^28}  ║",
-            f"║  {friend.personality.value.title():^41}  ║",
-            "╠═══════════════════════════════════════════════╣",
-            f"║  Friendship: {friend.friendship_level.value.replace('_', ' ').title():^28}  ║",
-            "║                                               ║",
-            "║       .--.                                    ║",
-            "║      (_ ^ _)                                  ║",
-            "║      /`    '\\                                 ║",
-            "║     (__)(____)                                ║",
-            "║                                               ║",
-            "╠═══════════════════════════════════════════════╣",
-            "║  Activities:                                  ║",
+            "+===============================================+",
+            f"|  d VISITOR: {friend.name:^28}  |",
+            f"|  {friend.personality.value.title():^41}  |",
+            "+===============================================+",
+            f"|  Friendship: {friend.friendship_level.value.replace('_', ' ').title():^28}  |",
+            "|                                               |",
+            "|       .--.                                    |",
+            "|      (_ ^ _)                                  |",
+            "|      /`    '\\                                 |",
+            "|     (__)(____)                                |",
+            "|                                               |",
+            "+===============================================+",
+            "|  Activities:                                  |",
         ]
         
         activities = self.current_visit.activities_done or ["None yet"]
         for activity in activities[-4:]:  # Show last 4 activities
-            lines.append(f"║    • {activity:^37}  ║")
+            lines.append(f"|    - {activity:^37}  |")
         
         if self.current_visit.gift_brought:
-            lines.append("╠═══════════════════════════════════════════════╣")
-            lines.append(f"║  🎁 Gift: {self.current_visit.gift_brought:^31}  ║")
+            lines.append("+===============================================+")
+            lines.append(f"|  [+] Gift: {self.current_visit.gift_brought:^31}  |")
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            "║  [C]hat  [P]lay  [G]ive Gift  [B]ye          ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            "|  [C]hat  [P]lay  [G]ive Gift  [B]ye          |",
+            "+===============================================+",
         ])
         
         return lines

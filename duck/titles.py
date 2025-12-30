@@ -228,7 +228,7 @@ TITLES: Dict[str, Title] = {
         description="50 perfect trick performances",
         category=TitleCategory.SKILL,
         rarity=TitleRarity.EPIC,
-        prefix="⭐",
+        prefix="*",
         suffix="the Star",
         unlock_condition="50 perfect performances",
         xp_bonus=15,
@@ -241,7 +241,7 @@ TITLES: Dict[str, Title] = {
         description="Celebrated the Spring Festival",
         category=TitleCategory.SEASONAL,
         rarity=TitleRarity.RARE,
-        prefix="🌸",
+        prefix="*",
         suffix="of Spring",
         unlock_condition="Complete Spring Festival",
         xp_bonus=5,
@@ -252,7 +252,7 @@ TITLES: Dict[str, Title] = {
         description="Celebrated the Summer Festival",
         category=TitleCategory.SEASONAL,
         rarity=TitleRarity.RARE,
-        prefix="☀️",
+        prefix="*",
         suffix="of Summer",
         unlock_condition="Complete Summer Festival",
         xp_bonus=5,
@@ -263,7 +263,7 @@ TITLES: Dict[str, Title] = {
         description="Celebrated the Autumn Festival",
         category=TitleCategory.SEASONAL,
         rarity=TitleRarity.RARE,
-        prefix="🍂",
+        prefix="f",
         suffix="of Autumn",
         unlock_condition="Complete Autumn Festival",
         xp_bonus=5,
@@ -274,7 +274,7 @@ TITLES: Dict[str, Title] = {
         description="Celebrated the Winter Festival",
         category=TitleCategory.SEASONAL,
         rarity=TitleRarity.RARE,
-        prefix="❄️",
+        prefix="*",
         suffix="of Winter",
         unlock_condition="Complete Winter Festival",
         xp_bonus=5,
@@ -285,7 +285,7 @@ TITLES: Dict[str, Title] = {
         description="Completed all seasonal festivals",
         category=TitleCategory.SEASONAL,
         rarity=TitleRarity.LEGENDARY,
-        prefix="🌍",
+        prefix="O",
         suffix="Master of Seasons",
         unlock_condition="Complete all 4 seasonal festivals",
         xp_bonus=25,
@@ -299,7 +299,7 @@ TITLES: Dict[str, Title] = {
         description="Won Duck Day competition",
         category=TitleCategory.SPECIAL,
         rarity=TitleRarity.LEGENDARY,
-        prefix="🦆 Champion",
+        prefix="d Champion",
         unlock_condition="Win Duck Day",
         xp_bonus=30,
     ),
@@ -319,8 +319,8 @@ TITLES: Dict[str, Title] = {
         description="Unlocked all achievements",
         category=TitleCategory.SPECIAL,
         rarity=TitleRarity.MYTHIC,
-        prefix="✨",
-        suffix="the Completionist ✨",
+        prefix="*",
+        suffix="the Completionist *",
         unlock_condition="Unlock all achievements",
         xp_bonus=50,
         special_effect="sparkle_name",
@@ -333,7 +333,7 @@ TITLES: Dict[str, Title] = {
         description="Play between midnight and 5 AM",
         category=TitleCategory.HIDDEN,
         rarity=TitleRarity.RARE,
-        suffix="🦉",
+        suffix="O",
         unlock_condition="Play at night 10 times",
         xp_bonus=5,
     ),
@@ -343,7 +343,7 @@ TITLES: Dict[str, Title] = {
         description="Play between 5 AM and 7 AM",
         category=TitleCategory.HIDDEN,
         rarity=TitleRarity.RARE,
-        prefix="🌅",
+        prefix="-*-",
         unlock_condition="Play early morning 10 times",
         xp_bonus=5,
     ),
@@ -353,7 +353,7 @@ TITLES: Dict[str, Title] = {
         description="Found a hidden secret",
         category=TitleCategory.HIDDEN,
         rarity=TitleRarity.EPIC,
-        suffix="🔍",
+        suffix="o",
         unlock_condition="Discover a hidden secret",
         xp_bonus=15,
     ),
@@ -408,15 +408,15 @@ class TitlesSystem:
         
         rarity_emoji = {
             TitleRarity.COMMON: "",
-            TitleRarity.UNCOMMON: "✦",
-            TitleRarity.RARE: "★",
-            TitleRarity.EPIC: "★★",
-            TitleRarity.LEGENDARY: "★★★",
-            TitleRarity.MYTHIC: "✨★★★✨",
+            TitleRarity.UNCOMMON: "*",
+            TitleRarity.RARE: "*",
+            TitleRarity.EPIC: "**",
+            TitleRarity.LEGENDARY: "***",
+            TitleRarity.MYTHIC: "*****",
         }
         
         emoji = rarity_emoji.get(title.rarity, "")
-        return True, f"🎖️ New Title Earned: {emoji} {title.name}!"
+        return True, f"[#] New Title Earned: {emoji} {title.name}!"
     
     def equip_title(self, title_id: str) -> Tuple[bool, str]:
         """Equip a title."""
@@ -429,7 +429,7 @@ class TitlesSystem:
         title = TITLES.get(title_id)
         name = title.name if title else title_id
         
-        return True, f"🏷️ Equipped title: {name}"
+        return True, f"[=] Equipped title: {name}"
     
     def unequip_title(self) -> Tuple[bool, str]:
         """Remove current title."""
@@ -437,7 +437,7 @@ class TitlesSystem:
             return False, "No title equipped!"
         
         self.current_title = None
-        return True, "🏷️ Title removed"
+        return True, "[=] Title removed"
     
     def get_display_name(self, base_name: Optional[str] = None) -> str:
         """Get the full display name with title."""
@@ -479,10 +479,10 @@ class TitlesSystem:
         
         if is_duck:
             self.duck_nickname = nickname
-            return True, f"🦆 Duck is now called: {nickname}"
+            return True, f"d Duck is now called: {nickname}"
         else:
             self.owner_nickname = nickname
-            return True, f"👤 You are now known as: {nickname}"
+            return True, f"* You are now known as: {nickname}"
     
     def toggle_favorite(self, title_id: str) -> Tuple[bool, str]:
         """Toggle a title as favorite."""
@@ -495,7 +495,7 @@ class TitlesSystem:
         if earned.is_favorite:
             if title_id not in self.favorite_titles:
                 self.favorite_titles.append(title_id)
-            return True, "⭐ Added to favorites!"
+            return True, "* Added to favorites!"
         else:
             if title_id in self.favorite_titles:
                 self.favorite_titles.remove(title_id)
@@ -545,39 +545,39 @@ class TitlesSystem:
     def render_titles_screen(self) -> List[str]:
         """Render the titles management screen."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║            🏷️ TITLES & NICKNAMES 🏷️          ║",
-            "╠═══════════════════════════════════════════════╣",
-            f"║  Duck: {self.duck_nickname:^35}  ║",
-            f"║  You: {self.owner_nickname:^36}  ║",
+            "+===============================================+",
+            "|            [=] TITLES & NICKNAMES [=]          |",
+            "+===============================================+",
+            f"|  Duck: {self.duck_nickname:^35}  |",
+            f"|  You: {self.owner_nickname:^36}  |",
         ]
         
         display_name = self.get_display_name()
-        lines.append(f"║  Display: {display_name:^31}  ║")
+        lines.append(f"|  Display: {display_name:^31}  |")
         
         current = TITLES.get(self.current_title) if self.current_title else None
         if current:
-            lines.append(f"║  Current Title: {current.name:^25}  ║")
+            lines.append(f"|  Current Title: {current.name:^25}  |")
             if current.xp_bonus > 0:
-                lines.append(f"║  XP Bonus: +{current.xp_bonus}%                             ║")
+                lines.append(f"|  XP Bonus: +{current.xp_bonus}%                             |")
         
-        lines.append("╠═══════════════════════════════════════════════╣")
-        lines.append(f"║  Titles Earned: {self.total_titles_earned:3}/{len(TITLES):<3}                       ║")
-        lines.append("╠═══════════════════════════════════════════════╣")
-        lines.append("║  YOUR TITLES:                                 ║")
+        lines.append("+===============================================+")
+        lines.append(f"|  Titles Earned: {self.total_titles_earned:3}/{len(TITLES):<3}                       |")
+        lines.append("+===============================================+")
+        lines.append("|  YOUR TITLES:                                 |")
         
         for tid, earned in list(self.earned_titles.items())[:5]:
             title = TITLES.get(tid)
             if title:
                 equipped = "●" if tid == self.current_title else "○"
-                fav = "★" if earned.is_favorite else " "
-                rarity_icon = {"common": "⚪", "uncommon": "🟢", "rare": "🔵", "epic": "🟣", "legendary": "🟡", "mythic": "🔴"}.get(title.rarity.value, "⚪")
-                lines.append(f"║  {equipped}{fav} {rarity_icon} {title.name[:30]:30}   ║")
+                fav = "*" if earned.is_favorite else " "
+                rarity_icon = {"common": "o", "uncommon": "O", "rare": "O", "epic": "O", "legendary": "O", "mythic": "O"}.get(title.rarity.value, "o")
+                lines.append(f"|  {equipped}{fav} {rarity_icon} {title.name[:30]:30}   |")
         
         if not self.earned_titles:
-            lines.append("║   No titles earned yet!                       ║")
+            lines.append("|   No titles earned yet!                       |")
         
-        lines.append("╚═══════════════════════════════════════════════╝")
+        lines.append("+===============================================+")
         
         return lines
     
@@ -591,46 +591,46 @@ class TitlesSystem:
         earned = self.earned_titles.get(title_id)
         
         rarity_colors = {
-            TitleRarity.COMMON: "⚪ Common",
-            TitleRarity.UNCOMMON: "🟢 Uncommon",
-            TitleRarity.RARE: "🔵 Rare",
-            TitleRarity.EPIC: "🟣 Epic",
-            TitleRarity.LEGENDARY: "🟡 Legendary",
-            TitleRarity.MYTHIC: "🔴 Mythic",
+            TitleRarity.COMMON: "o Common",
+            TitleRarity.UNCOMMON: "O Uncommon",
+            TitleRarity.RARE: "O Rare",
+            TitleRarity.EPIC: "O Epic",
+            TitleRarity.LEGENDARY: "O Legendary",
+            TitleRarity.MYTHIC: "O Mythic",
         }
         
         lines = [
-            "╔════════════════════════════════════╗",
-            f"║  {title.name:^32}  ║",
-            f"║  {rarity_colors.get(title.rarity, 'Unknown'):^32}  ║",
-            "╠════════════════════════════════════╣",
+            "+====================================+",
+            f"|  {title.name:^32}  |",
+            f"|  {rarity_colors.get(title.rarity, 'Unknown'):^32}  |",
+            "+====================================+",
         ]
         
         # Description
         desc = title.description
         while desc:
-            lines.append(f"║  {desc[:32]:32}  ║")
+            lines.append(f"|  {desc[:32]:32}  |")
             desc = desc[32:]
         
-        lines.append("╠════════════════════════════════════╣")
+        lines.append("+====================================+")
         
         if title.prefix:
-            lines.append(f"║  Prefix: {title.prefix:^23}  ║")
+            lines.append(f"|  Prefix: {title.prefix:^23}  |")
         if title.suffix:
-            lines.append(f"║  Suffix: {title.suffix:^23}  ║")
+            lines.append(f"|  Suffix: {title.suffix:^23}  |")
         if title.xp_bonus > 0:
-            lines.append(f"║  XP Bonus: +{title.xp_bonus}%                     ║")
+            lines.append(f"|  XP Bonus: +{title.xp_bonus}%                     |")
         
-        lines.append("╠════════════════════════════════════╣")
+        lines.append("+====================================+")
         
         if owned and earned:
-            lines.append("║  ✓ OWNED                           ║")
-            lines.append(f"║  Equipped {earned.times_equipped} times                 ║")
+            lines.append("|  x OWNED                           |")
+            lines.append(f"|  Equipped {earned.times_equipped} times                 |")
         else:
-            lines.append("║  ✗ NOT OWNED                       ║")
-            lines.append(f"║  Unlock: {title.unlock_condition[:23]:23}  ║")
+            lines.append("|    NOT OWNED                       |")
+            lines.append(f"|  Unlock: {title.unlock_condition[:23]:23}  |")
         
-        lines.append("╚════════════════════════════════════╝")
+        lines.append("+====================================+")
         
         return lines
     

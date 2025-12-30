@@ -87,10 +87,10 @@ DUCK_VOICE_SOUNDS = {
         name="Happy Quack",
         category=SoundCategory.DUCK_VOICE,
         text_representation=[
-            "QUACK QUACK! ♪",
-            "Quaaack~! 💕",
-            "QUA~ACK! ✨",
-            "Quack quack quack! 🎵",
+            "QUACK QUACK! #",
+            "Quaaack~! <3",
+            "QUA~ACK! *",
+            "Quack quack quack! #",
         ],
         priority=SoundPriority.MEDIUM,
         duration_ms=700,
@@ -105,7 +105,7 @@ DUCK_VOICE_SOUNDS = {
             "...quack...",
             "qua...ck...",
             "*sad quack*",
-            "quack... 😢",
+            "quack... :(",
         ],
         priority=SoundPriority.MEDIUM,
         duration_ms=800,
@@ -119,7 +119,7 @@ DUCK_VOICE_SOUNDS = {
         text_representation=[
             "QUACK QUACK QUACK!!!",
             "QuAcK qUaCk!!!",
-            "QUAAAAAACK! 🎉",
+            "QUAAAAAACK! *",
             "!!QUACK QUACK!!",
         ],
         priority=SoundPriority.HIGH,
@@ -132,10 +132,10 @@ DUCK_VOICE_SOUNDS = {
         name="Sleepy Quack",
         category=SoundCategory.DUCK_VOICE,
         text_representation=[
-            "...quaaaack... 💤",
+            "...quaaaack... z",
             "qua...zzzz...",
             "*yawn* quack...",
-            "mmm...quack... 😴",
+            "mmm...quack... z",
         ],
         priority=SoundPriority.LOW,
         duration_ms=1000,
@@ -147,10 +147,10 @@ DUCK_VOICE_SOUNDS = {
         name="Angry Quack",
         category=SoundCategory.DUCK_VOICE,
         text_representation=[
-            "QUACK! 😠",
+            "QUACK! >:(",
             "QUACK QUACK!! >:[",
             "*aggressive quack*",
-            "QUAAACK!!! 💢",
+            "QUAAACK!!! !",
         ],
         priority=SoundPriority.HIGH,
         duration_ms=500,
@@ -165,7 +165,7 @@ DUCK_VOICE_SOUNDS = {
             "Quack?",
             "Quack...?",
             "*confused quack*",
-            "Qua...ck? 🤔",
+            "Qua...ck? :?",
         ],
         priority=SoundPriority.MEDIUM,
         duration_ms=600,
@@ -210,7 +210,7 @@ DUCK_VOICE_SOUNDS = {
             "Peep!",
             "Cheep cheep!",
             "*tiny peep*",
-            "Pip pip! 🐣",
+            "Pip pip! o",
         ],
         priority=SoundPriority.MEDIUM,
         duration_ms=300,
@@ -222,10 +222,10 @@ DUCK_VOICE_SOUNDS = {
         name="Duck Singing",
         category=SoundCategory.DUCK_VOICE,
         text_representation=[
-            "♪ Quack quack quack ♪",
-            "🎵 La la quack~ 🎵",
-            "♫ Quaaack~ ♫",
-            "🎶 Qua~ck qua~ck 🎶",
+            "# Quack quack quack #",
+            "# La la quack~ #",
+            "# Quaaack~ #",
+            "# Qua~ck qua~ck #",
         ],
         priority=SoundPriority.MEDIUM,
         duration_ms=1500,
@@ -259,7 +259,7 @@ DUCK_MOVEMENT_SOUNDS = {
             "*SPLASH!*",
             "*splish splash*",
             "*sploosh!*",
-            "💦 SPLASH! 💦",
+            "~ SPLASH! ~",
         ],
         priority=SoundPriority.MEDIUM,
         duration_ms=600,
@@ -319,7 +319,7 @@ DUCK_MOVEMENT_SOUNDS = {
             "*plop*",
             "*flump*",
             "*sits down*",
-            "*plop!* 🦆",
+            "*plop!* d",
         ],
         priority=SoundPriority.LOW,
         duration_ms=300,
@@ -334,7 +334,7 @@ DUCK_MOVEMENT_SOUNDS = {
             "*tap tap tap tap*",
             "*tippy tap tippy tap*",
             "*excited feet noises*",
-            "*rapid tapping* 🦶",
+            "*rapid tapping* f",
         ],
         priority=SoundPriority.LOW,
         duration_ms=700,
@@ -411,7 +411,7 @@ DUCK_ACTION_SOUNDS = {
         category=SoundCategory.DUCK_ACTION,
         text_representation=[
             "*shake shake shake*",
-            "*fluff!* 💦",
+            "*fluff!* ~",
             "*vigorous shaking*",
             "*water everywhere!*",
         ],
@@ -426,7 +426,7 @@ DUCK_ACTION_SOUNDS = {
         category=SoundCategory.DUCK_ACTION,
         text_representation=[
             "*yaaawn*",
-            "*settles down* 💤",
+            "*settles down* z",
             "*getting cozy*",
             "*sleepy eyes*",
         ],
@@ -441,7 +441,7 @@ DUCK_ACTION_SOUNDS = {
         category=SoundCategory.DUCK_ACTION,
         text_representation=[
             "zzz... zzz...",
-            "*tiny snores* 💤",
+            "*tiny snores* z",
             "ZZzzZZzz...",
             "*peaceful sleeping*",
         ],
@@ -471,10 +471,10 @@ DUCK_ACTION_SOUNDS = {
         name="Found Something",
         category=SoundCategory.DUCK_ACTION,
         text_representation=[
-            "*gasp!* ✨",
+            "*gasp!* *",
             "Ooh! What's this?",
             "*discovery sounds*",
-            "*excited find!* 🎁",
+            "*excited find!* [+]",
         ],
         priority=SoundPriority.HIGH,
         duration_ms=600,
@@ -489,7 +489,7 @@ DUCK_ACTION_SOUNDS = {
             "*tink tink*",
             "*busy crafting*",
             "*making something*",
-            "*creative noises* 🔨",
+            "*creative noises* #",
         ],
         priority=SoundPriority.MEDIUM,
         duration_ms=1000,
@@ -504,7 +504,7 @@ DUCK_ACTION_SOUNDS = {
             "*dig dig dig*",
             "*scrape scrape*",
             "*digging sounds*",
-            "*excavating* 🕳️",
+            "*excavating* o",
         ],
         priority=SoundPriority.LOW,
         duration_ms=700,
@@ -520,9 +520,9 @@ ENVIRONMENT_SOUNDS = {
         name="Rain",
         category=SoundCategory.ENVIRONMENT,
         text_representation=[
-            "☔ *pitter patter*",
+            "Y *pitter patter*",
             "*rain falling*",
-            "🌧️ *gentle rain*",
+            ", *gentle rain*",
             "*raindrops*",
         ],
         priority=SoundPriority.LOW,
@@ -536,9 +536,9 @@ ENVIRONMENT_SOUNDS = {
         name="Thunder",
         category=SoundCategory.ENVIRONMENT,
         text_representation=[
-            "⚡ RUMBLE! ⚡",
+            "! RUMBLE! !",
             "*BOOM!*",
-            "⛈️ *thunder crashes*",
+            "! *thunder crashes*",
             "*loud thunder!*",
         ],
         priority=SoundPriority.HIGH,
@@ -553,7 +553,7 @@ ENVIRONMENT_SOUNDS = {
         category=SoundCategory.ENVIRONMENT,
         text_representation=[
             "*whoooosh*",
-            "💨 *wind blowing*",
+            "~ *wind blowing*",
             "*rustling leaves*",
             "*breezy sounds*",
         ],
@@ -568,7 +568,7 @@ ENVIRONMENT_SOUNDS = {
         name="Birds Chirping",
         category=SoundCategory.ENVIRONMENT,
         text_representation=[
-            "🐦 *tweet tweet*",
+            "b *tweet tweet*",
             "*birdsong*",
             "*chirp chirp*",
             "*morning birds*",
@@ -584,7 +584,7 @@ ENVIRONMENT_SOUNDS = {
         category=SoundCategory.ENVIRONMENT,
         text_representation=[
             "*chirp chirp*",
-            "🦗 *cricket sounds*",
+            "c *cricket sounds*",
             "*night insects*",
             "*evening crickets*",
         ],
@@ -600,7 +600,7 @@ ENVIRONMENT_SOUNDS = {
         category=SoundCategory.ENVIRONMENT,
         text_representation=[
             "*gentle stream*",
-            "💧 *water flowing*",
+            "~ *water flowing*",
             "*babbling brook*",
             "*peaceful water*",
         ],
@@ -664,7 +664,7 @@ UI_SOUNDS = {
         name="Confirm",
         category=SoundCategory.UI,
         text_representation=[
-            "*ding!* ✓",
+            "*ding!* x",
             "*confirmed*",
             "[OK!]",
             "*success*",
@@ -679,7 +679,7 @@ UI_SOUNDS = {
         name="Error",
         category=SoundCategory.UI,
         text_representation=[
-            "*buzz* ✗",
+            "*buzz*  ",
             "*error*",
             "[NOPE]",
             "*denied*",
@@ -694,7 +694,7 @@ UI_SOUNDS = {
         name="Coins",
         category=SoundCategory.UI,
         text_representation=[
-            "*clink clink* 💰",
+            "*clink clink* $",
             "*cha-ching!*",
             "[COINS!]",
             "*money sounds*",
@@ -710,9 +710,9 @@ UI_SOUNDS = {
         category=SoundCategory.UI,
         text_representation=[
             "⬆️ LEVEL UP! ⬆️",
-            "✨ *fanfare* ✨",
+            "* *fanfare* *",
             "[LEVEL UP!]",
-            "🎉 *celebration* 🎉",
+            "* *celebration* *",
         ],
         priority=SoundPriority.HIGH,
         duration_ms=1500,
@@ -724,10 +724,10 @@ UI_SOUNDS = {
         name="Achievement",
         category=SoundCategory.UI,
         text_representation=[
-            "🏆 ACHIEVEMENT! 🏆",
-            "✨ *unlock sound* ✨",
+            "[#] ACHIEVEMENT! [#]",
+            "* *unlock sound* *",
             "[UNLOCKED!]",
-            "🌟 *special sound* 🌟",
+            "* *special sound* *",
         ],
         priority=SoundPriority.HIGH,
         duration_ms=1200,
@@ -743,10 +743,10 @@ NOTIFICATION_SOUNDS = {
         name="Alert",
         category=SoundCategory.NOTIFICATION,
         text_representation=[
-            "❗ *ding!*",
+            "! *ding!*",
             "*alert sound*",
             "[ALERT!]",
-            "⚠️ *notification*",
+            "! *notification*",
         ],
         priority=SoundPriority.HIGH,
         duration_ms=400,
@@ -758,10 +758,10 @@ NOTIFICATION_SOUNDS = {
         name="Visitor Arrived",
         category=SoundCategory.NOTIFICATION,
         text_representation=[
-            "🚪 *knock knock*",
+            "[=] *knock knock*",
             "*doorbell*",
             "[VISITOR!]",
-            "👋 *someone's here!*",
+            "* *someone's here!*",
         ],
         priority=SoundPriority.HIGH,
         duration_ms=800,
@@ -773,10 +773,10 @@ NOTIFICATION_SOUNDS = {
         name="New Day",
         category=SoundCategory.NOTIFICATION,
         text_representation=[
-            "🌅 *rooster crow*",
+            "-*- *rooster crow*",
             "*new day dawns*",
             "[NEW DAY!]",
-            "☀️ *morning chime*",
+            "* *morning chime*",
         ],
         priority=SoundPriority.MEDIUM,
         duration_ms=1000,
@@ -788,10 +788,10 @@ NOTIFICATION_SOUNDS = {
         name="Received Gift",
         category=SoundCategory.NOTIFICATION,
         text_representation=[
-            "🎁 *sparkle*",
+            "[+] *sparkle*",
             "*gift received!*",
             "[GIFT!]",
-            "✨ *present sounds*",
+            "* *present sounds*",
         ],
         priority=SoundPriority.HIGH,
         duration_ms=700,
@@ -807,10 +807,10 @@ SPECIAL_SOUNDS = {
         name="Rare Discovery",
         category=SoundCategory.SPECIAL,
         text_representation=[
-            "⭐ *AMAZING FIND!* ⭐",
-            "🌟 *legendary sound* 🌟",
+            "* *AMAZING FIND!* *",
+            "* *legendary sound* *",
             "[INCREDIBLE!]",
-            "✨ *magical chime* ✨",
+            "* *magical chime* *",
         ],
         priority=SoundPriority.CRITICAL,
         duration_ms=1500,
@@ -822,10 +822,10 @@ SPECIAL_SOUNDS = {
         name="Birthday",
         category=SoundCategory.SPECIAL,
         text_representation=[
-            "🎂 *Happy Birthday!* 🎂",
-            "🎉 *party sounds* 🎉",
+            "# *Happy Birthday!* #",
+            "* *party sounds* *",
             "[BIRTHDAY!]",
-            "🎈 *celebration* 🎈",
+            "o *celebration* o",
         ],
         priority=SoundPriority.CRITICAL,
         duration_ms=2000,
@@ -837,10 +837,10 @@ SPECIAL_SOUNDS = {
         name="Secret Found",
         category=SoundCategory.SPECIAL,
         text_representation=[
-            "🔮 *SECRET!* 🔮",
+            "o *SECRET!* o",
             "*mysterious sound*",
             "[SECRET UNLOCKED!]",
-            "🗝️ *hidden discovery* 🗝️",
+            "k *hidden discovery* k",
         ],
         priority=SoundPriority.CRITICAL,
         duration_ms=1200,
@@ -852,10 +852,10 @@ SPECIAL_SOUNDS = {
         name="Magic",
         category=SoundCategory.SPECIAL,
         text_representation=[
-            "✨ *sparkle sparkle* ✨",
+            "* *sparkle sparkle* *",
             "*magical sounds*",
             "[MAGIC!]",
-            "💫 *enchanting* 💫",
+            "* *enchanting* *",
         ],
         priority=SoundPriority.HIGH,
         duration_ms=1000,
@@ -867,9 +867,9 @@ SPECIAL_SOUNDS = {
         name="Heartbeat",
         category=SoundCategory.SPECIAL,
         text_representation=[
-            "💓 *thump thump*",
+            "<3 *thump thump*",
             "*heartbeat*",
-            "❤️ *ba-dum*",
+            "<3 *ba-dum*",
             "*beating heart*",
         ],
         priority=SoundPriority.LOW,
@@ -983,7 +983,7 @@ class SoundEffectSystem:
     def _apply_mood_modifier(self, text: str, mood: str, modifier: MoodModifier) -> str:
         """Apply mood-based modifications to sound text."""
         if modifier == MoodModifier.PITCH_UP and mood == "happy":
-            text = text.replace("!", "! ♪")
+            text = text.replace("!", "! #")
         elif modifier == MoodModifier.PITCH_DOWN and mood == "sad":
             text = text.replace("!", "...")
         elif modifier == MoodModifier.LOUDER:
@@ -1059,40 +1059,40 @@ class SoundEffectSystem:
         """Render a sound mixer display."""
         lines = []
         
-        lines.append("╔" + "═" * (width - 2) + "╗")
-        lines.append("║" + " 🔊 Sound Mixer 🔊 ".center(width - 2) + "║")
-        lines.append("╠" + "═" * (width - 2) + "╣")
+        lines.append("+" + "=" * (width - 2) + "+")
+        lines.append("|" + " [=] Sound Mixer [=] ".center(width - 2) + "|")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         # Master volume
-        mute_str = " 🔇 MUTED" if self.muted else ""
+        mute_str = " [x] MUTED" if self.muted else ""
         bar_width = 20
         bar_filled = int(self.volume_master * bar_width)
-        bar = "█" * bar_filled + "░" * (bar_width - bar_filled)
+        bar = "█" * bar_filled + "." * (bar_width - bar_filled)
         
-        lines.append("║" + f" Master: [{bar}] {int(self.volume_master * 100)}%{mute_str}"[:width-3].ljust(width - 2) + "║")
+        lines.append("|" + f" Master: [{bar}] {int(self.volume_master * 100)}%{mute_str}"[:width-3].ljust(width - 2) + "|")
         
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         # Category volumes
         for cat in SoundCategory:
             vol = self.volume_categories.get(cat, 1.0)
             bar_filled = int(vol * 15)
-            bar = "▓" * bar_filled + "░" * (15 - bar_filled)
+            bar = "#" * bar_filled + "." * (15 - bar_filled)
             cat_name = cat.value.replace("_", " ").title()
-            lines.append("║" + f" {cat_name}: [{bar}]"[:width-3].ljust(width - 2) + "║")
+            lines.append("|" + f" {cat_name}: [{bar}]"[:width-3].ljust(width - 2) + "|")
             
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         # Currently playing
-        lines.append("║" + " Now Playing: ".ljust(width - 2) + "║")
+        lines.append("|" + " Now Playing: ".ljust(width - 2) + "|")
         
         if self.active_sounds:
             for sound in self.active_sounds[:3]:
-                lines.append("║" + f"  • {sound.display_text}"[:width-3].ljust(width - 2) + "║")
+                lines.append("|" + f"  • {sound.display_text}"[:width-3].ljust(width - 2) + "|")
         else:
-            lines.append("║" + "  (silence)".ljust(width - 2) + "║")
+            lines.append("|" + "  (silence)".ljust(width - 2) + "|")
             
-        lines.append("╚" + "═" * (width - 2) + "╝")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         return lines
         

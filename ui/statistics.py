@@ -316,75 +316,75 @@ class StatisticsSystem:
     def render_stats_screen(self, page: int = 1) -> List[str]:
         """Render the statistics screen."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║             📊 STATISTICS 📊                  ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            "|             [=] STATISTICS [=]                  |",
+            "+===============================================+",
         ]
         
         if page == 1:  # Overview
-            lines.append("║  📋 OVERVIEW                                  ║")
-            lines.append(f"║  Total Playtime: {self.format_playtime(self.total_playtime_minutes):^24}  ║")
-            lines.append(f"║  Sessions: {self.session_count:^30}  ║")
-            lines.append(f"║  Current Streak: {self.current_login_streak:^24} days ║")
-            lines.append(f"║  Best Streak: {self.best_login_streak:^27} days ║")
-            lines.append("╠═══════════════════════════════════════════════╣")
-            lines.append("║  🎮 LEVEL & XP                                ║")
-            lines.append(f"║  Level: {self.current_level:^33}  ║")
-            lines.append(f"║  Total XP: {self.xp_earned.all_time_total:^30}  ║")
-            lines.append(f"║  Levels Gained: {self.levels_gained:^25}  ║")
+            lines.append("|  [#] OVERVIEW                                  |")
+            lines.append(f"|  Total Playtime: {self.format_playtime(self.total_playtime_minutes):^24}  |")
+            lines.append(f"|  Sessions: {self.session_count:^30}  |")
+            lines.append(f"|  Current Streak: {self.current_login_streak:^24} days |")
+            lines.append(f"|  Best Streak: {self.best_login_streak:^27} days |")
+            lines.append("+===============================================+")
+            lines.append("|  [>] LEVEL & XP                                |")
+            lines.append(f"|  Level: {self.current_level:^33}  |")
+            lines.append(f"|  Total XP: {self.xp_earned.all_time_total:^30}  |")
+            lines.append(f"|  Levels Gained: {self.levels_gained:^25}  |")
         
         elif page == 2:  # Care stats
-            lines.append("║  💕 CARE ACTIONS                              ║")
-            lines.append(f"║  Times Fed: {self.times_fed.all_time_total:^29}  ║")
-            lines.append(f"║  Times Played: {self.times_played.all_time_total:^26}  ║")
-            lines.append(f"║  Times Petted: {self.times_petted.all_time_total:^26}  ║")
-            lines.append(f"║  Times Talked: {self.times_talked.all_time_total:^26}  ║")
-            lines.append(f"║  Times Cleaned: {self.times_cleaned.all_time_total:^25}  ║")
-            lines.append("╠═══════════════════════════════════════════════╣")
-            lines.append("║  TODAY:                                       ║")
+            lines.append("|  <3 CARE ACTIONS                              |")
+            lines.append(f"|  Times Fed: {self.times_fed.all_time_total:^29}  |")
+            lines.append(f"|  Times Played: {self.times_played.all_time_total:^26}  |")
+            lines.append(f"|  Times Petted: {self.times_petted.all_time_total:^26}  |")
+            lines.append(f"|  Times Talked: {self.times_talked.all_time_total:^26}  |")
+            lines.append(f"|  Times Cleaned: {self.times_cleaned.all_time_total:^25}  |")
+            lines.append("+===============================================+")
+            lines.append("|  TODAY:                                       |")
             today = date.today().isoformat()
-            lines.append(f"║  Fed: {self.times_fed.daily_values.get(today, 0)}  Played: {self.times_played.daily_values.get(today, 0)}  Pet: {self.times_petted.daily_values.get(today, 0):^16}  ║")
+            lines.append(f"|  Fed: {self.times_fed.daily_values.get(today, 0)}  Played: {self.times_played.daily_values.get(today, 0)}  Pet: {self.times_petted.daily_values.get(today, 0):^16}  |")
         
         elif page == 3:  # Activities
-            lines.append("║  🎯 ACTIVITIES                                ║")
-            lines.append(f"║  Minigames Played: {self.minigames_played.all_time_total:^22}  ║")
-            lines.append(f"║  Minigames Won: {self.minigames_won.all_time_total:^25}  ║")
-            lines.append(f"║  Fish Caught: {self.fish_caught.all_time_total:^27}  ║")
-            lines.append(f"║  Rare Fish: {self.rare_fish_caught:^29}  ║")
-            lines.append(f"║  Legendary Fish: {self.legendary_fish_caught:^24}  ║")
-            lines.append(f"║  Plants Grown: {self.plants_grown.all_time_total:^26}  ║")
-            lines.append(f"║  Treasures Found: {self.treasures_found.all_time_total:^23}  ║")
-            lines.append(f"║  Tricks Performed: {self.tricks_performed.all_time_total:^22}  ║")
+            lines.append("|  (o) ACTIVITIES                                |")
+            lines.append(f"|  Minigames Played: {self.minigames_played.all_time_total:^22}  |")
+            lines.append(f"|  Minigames Won: {self.minigames_won.all_time_total:^25}  |")
+            lines.append(f"|  Fish Caught: {self.fish_caught.all_time_total:^27}  |")
+            lines.append(f"|  Rare Fish: {self.rare_fish_caught:^29}  |")
+            lines.append(f"|  Legendary Fish: {self.legendary_fish_caught:^24}  |")
+            lines.append(f"|  Plants Grown: {self.plants_grown.all_time_total:^26}  |")
+            lines.append(f"|  Treasures Found: {self.treasures_found.all_time_total:^23}  |")
+            lines.append(f"|  Tricks Performed: {self.tricks_performed.all_time_total:^22}  |")
         
         elif page == 4:  # Economy
-            lines.append("║  💰 ECONOMY                                   ║")
-            lines.append(f"║  Total Coins Earned: {self.coins_earned.all_time_total:^20}  ║")
-            lines.append(f"║  Total Coins Spent: {self.coins_spent.all_time_total:^21}  ║")
-            lines.append(f"║  Most Coins Held: {self.most_coins_held:^23}  ║")
-            lines.append(f"║  Items Bought: {self.items_bought:^26}  ║")
-            lines.append(f"║  Items Sold: {self.items_sold:^28}  ║")
-            lines.append("╠═══════════════════════════════════════════════╣")
+            lines.append("|  $ ECONOMY                                   |")
+            lines.append(f"|  Total Coins Earned: {self.coins_earned.all_time_total:^20}  |")
+            lines.append(f"|  Total Coins Spent: {self.coins_spent.all_time_total:^21}  |")
+            lines.append(f"|  Most Coins Held: {self.most_coins_held:^23}  |")
+            lines.append(f"|  Items Bought: {self.items_bought:^26}  |")
+            lines.append(f"|  Items Sold: {self.items_sold:^28}  |")
+            lines.append("+===============================================+")
             today = date.today().isoformat()
             earned_today = self.coins_earned.daily_values.get(today, 0)
             spent_today = self.coins_spent.daily_values.get(today, 0)
-            lines.append(f"║  Today: +{earned_today} / -{spent_today:^26}  ║")
+            lines.append(f"|  Today: +{earned_today} / -{spent_today:^26}  |")
         
         elif page == 5:  # Social & Quests
-            lines.append("║  👥 SOCIAL                                    ║")
-            lines.append(f"║  Friends Made: {self.friends_made:^26}  ║")
-            lines.append(f"║  Gifts Given: {self.gifts_given:^27}  ║")
-            lines.append(f"║  Gifts Received: {self.gifts_received:^24}  ║")
-            lines.append(f"║  Visitors Hosted: {self.visitors_hosted:^23}  ║")
-            lines.append("╠═══════════════════════════════════════════════╣")
-            lines.append("║  📜 QUESTS                                    ║")
-            lines.append(f"║  Quests Completed: {self.quests_completed:^22}  ║")
-            lines.append(f"║  Daily Challenges: {self.daily_challenges_completed:^22}  ║")
-            lines.append(f"║  Weekly Challenges: {self.weekly_challenges_completed:^21}  ║")
+            lines.append("|  [+] SOCIAL                                    |")
+            lines.append(f"|  Friends Made: {self.friends_made:^26}  |")
+            lines.append(f"|  Gifts Given: {self.gifts_given:^27}  |")
+            lines.append(f"|  Gifts Received: {self.gifts_received:^24}  |")
+            lines.append(f"|  Visitors Hosted: {self.visitors_hosted:^23}  |")
+            lines.append("+===============================================+")
+            lines.append("|  [=] QUESTS                                    |")
+            lines.append(f"|  Quests Completed: {self.quests_completed:^22}  |")
+            lines.append(f"|  Daily Challenges: {self.daily_challenges_completed:^22}  |")
+            lines.append(f"|  Weekly Challenges: {self.weekly_challenges_completed:^21}  |")
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            f"║  Page {page}/5  [←/→ to navigate]                  ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            f"|  Page {page}/5  [<-/-> to navigate]                  |",
+            "+===============================================+",
         ])
         
         return lines

@@ -81,10 +81,10 @@ PLANTS: Dict[str, PlantDefinition] = {
         ascii_stages={
             GrowthStage.SEED: ["."],
             GrowthStage.SPROUT: ["v"],
-            GrowthStage.GROWING: ["│", "v"],
-            GrowthStage.MATURE: ["│", "Y"],
-            GrowthStage.FLOWERING: ["│", "🌻"],
-            GrowthStage.HARVESTABLE: ["│", "🌻✨"],
+            GrowthStage.GROWING: ["|", "v"],
+            GrowthStage.MATURE: ["|", "Y"],
+            GrowthStage.FLOWERING: ["|", "o"],
+            GrowthStage.HARVESTABLE: ["|", "o*"],
         },
         fun_fact="Sunflowers can grow up to 12 feet tall!",
     ),
@@ -103,11 +103,11 @@ PLANTS: Dict[str, PlantDefinition] = {
         rarity="common",
         ascii_stages={
             GrowthStage.SEED: ["."],
-            GrowthStage.SPROUT: ["│"],
-            GrowthStage.GROWING: ["│", "│"],
-            GrowthStage.MATURE: ["│", "Y"],
-            GrowthStage.FLOWERING: ["│", "🌷"],
-            GrowthStage.HARVESTABLE: ["│", "🌷✨"],
+            GrowthStage.SPROUT: ["|"],
+            GrowthStage.GROWING: ["|", "|"],
+            GrowthStage.MATURE: ["|", "Y"],
+            GrowthStage.FLOWERING: ["|", "T"],
+            GrowthStage.HARVESTABLE: ["|", "T*"],
         },
         fun_fact="Tulip bulbs were once more valuable than gold!",
     ),
@@ -126,11 +126,11 @@ PLANTS: Dict[str, PlantDefinition] = {
         rarity="uncommon",
         ascii_stages={
             GrowthStage.SEED: ["."],
-            GrowthStage.SPROUT: ["┌"],
-            GrowthStage.GROWING: ["│", "┌"],
-            GrowthStage.MATURE: ["│", "Y"],
-            GrowthStage.FLOWERING: ["│", "🌹"],
-            GrowthStage.HARVESTABLE: ["│", "🌹✨"],
+            GrowthStage.SPROUT: ["+"],
+            GrowthStage.GROWING: ["|", "+"],
+            GrowthStage.MATURE: ["|", "Y"],
+            GrowthStage.FLOWERING: ["|", "@"],
+            GrowthStage.HARVESTABLE: ["|", "@*"],
         },
         fun_fact="Roses are related to apples, cherries, and almonds!",
     ),
@@ -154,7 +154,7 @@ PLANTS: Dict[str, PlantDefinition] = {
             GrowthStage.SPROUT: ["~"],
             GrowthStage.GROWING: ["~", "~~"],
             GrowthStage.MATURE: ["~~~"],
-            GrowthStage.HARVESTABLE: ["🥕~~"],
+            GrowthStage.HARVESTABLE: ["|~~"],
         },
         fun_fact="Carrots were originally purple, not orange!",
     ),
@@ -174,10 +174,10 @@ PLANTS: Dict[str, PlantDefinition] = {
         ascii_stages={
             GrowthStage.SEED: ["."],
             GrowthStage.SPROUT: ["v"],
-            GrowthStage.GROWING: ["│", "v"],
-            GrowthStage.MATURE: ["│", "Y"],
-            GrowthStage.FLOWERING: ["│", "⚘"],
-            GrowthStage.HARVESTABLE: ["│", "🍅"],
+            GrowthStage.GROWING: ["|", "v"],
+            GrowthStage.MATURE: ["|", "Y"],
+            GrowthStage.FLOWERING: ["|", "*"],
+            GrowthStage.HARVESTABLE: ["|", "o"],
         },
         fun_fact="Tomatoes were once thought to be poisonous!",
     ),
@@ -199,7 +199,7 @@ PLANTS: Dict[str, PlantDefinition] = {
             GrowthStage.SPROUT: ["v"],
             GrowthStage.GROWING: ["~~"],
             GrowthStage.MATURE: ["~~o"],
-            GrowthStage.HARVESTABLE: ["~🎃"],
+            GrowthStage.HARVESTABLE: ["~O"],
         },
         fun_fact="The largest pumpkin ever weighed over 2,700 pounds!",
     ),
@@ -222,8 +222,8 @@ PLANTS: Dict[str, PlantDefinition] = {
             GrowthStage.SEED: ["."],
             GrowthStage.SPROUT: ["v"],
             GrowthStage.GROWING: ["vv"],
-            GrowthStage.FLOWERING: ["⚘"],
-            GrowthStage.HARVESTABLE: ["🍓🍓"],
+            GrowthStage.FLOWERING: ["*"],
+            GrowthStage.HARVESTABLE: ["oo"],
         },
         fun_fact="Strawberries are the only fruit with seeds on the outside!",
     ),
@@ -245,7 +245,7 @@ PLANTS: Dict[str, PlantDefinition] = {
             GrowthStage.SPROUT: ["v"],
             GrowthStage.GROWING: ["~~"],
             GrowthStage.MATURE: ["~~O"],
-            GrowthStage.HARVESTABLE: ["~🍉"],
+            GrowthStage.HARVESTABLE: ["~O"],
         },
         fun_fact="Watermelon is 92% water!",
     ),
@@ -268,7 +268,7 @@ PLANTS: Dict[str, PlantDefinition] = {
             GrowthStage.SEED: ["."],
             GrowthStage.SPROUT: ["v"],
             GrowthStage.GROWING: ["vv"],
-            GrowthStage.HARVESTABLE: ["🌿🌿"],
+            GrowthStage.HARVESTABLE: ["~~"],
         },
         fun_fact="Mint can help soothe an upset stomach!",
     ),
@@ -288,12 +288,12 @@ PLANTS: Dict[str, PlantDefinition] = {
         coin_value=100,
         rarity="legendary",
         ascii_stages={
-            GrowthStage.SEED: ["✧"],
-            GrowthStage.SPROUT: ["│", "✧"],
-            GrowthStage.GROWING: ["│", "❀"],
-            GrowthStage.MATURE: ["│", "❁"],
-            GrowthStage.FLOWERING: ["│", "✿"],
-            GrowthStage.HARVESTABLE: ["│", "🌟"],
+            GrowthStage.SEED: ["*"],
+            GrowthStage.SPROUT: ["|", "*"],
+            GrowthStage.GROWING: ["|", "*"],
+            GrowthStage.MATURE: ["|", "*"],
+            GrowthStage.FLOWERING: ["|", "*"],
+            GrowthStage.HARVESTABLE: ["|", "*"],
         },
         fun_fact="Legend says this flower only blooms once every century!",
     ),
@@ -315,7 +315,7 @@ PLANTS: Dict[str, PlantDefinition] = {
             GrowthStage.SPROUT: ["◇", "◇"],
             GrowthStage.GROWING: ["◇", "◆"],
             GrowthStage.MATURE: ["◆", "◆"],
-            GrowthStage.HARVESTABLE: ["💎", "✨"],
+            GrowthStage.HARVESTABLE: ["[D]", "*"],
         },
         fun_fact="Crystal plants only grow in the coldest conditions!",
     ),
@@ -423,7 +423,7 @@ class Garden:
             growth_stage=GrowthStage.SEED,
         )
         
-        return True, f"Planted {plant_def.name}! 🌱"
+        return True, f"Planted {plant_def.name}! i"
     
     def water_plant(self, plot_id: int) -> Tuple[bool, str]:
         """Water a plant."""
@@ -436,13 +436,13 @@ class Garden:
         
         plant = plot.plant
         if plant.is_withered:
-            return False, "This plant has withered... 😢"
+            return False, "This plant has withered... :("
         
         plant.water_level = min(100, plant.water_level + 50)
         plant.last_watered = datetime.now().isoformat()
         plant.times_watered += 1
         
-        return True, "Watered the plant! 💧"
+        return True, "Watered the plant! ~"
     
     def update_plants(self, delta_hours: float):
         """Update all plants based on time passed."""
@@ -519,7 +519,7 @@ class Garden:
         # Clear the plot
         plot.plant = None
         
-        return True, f"Harvested {amount} {plant_def.name}! 🌾", {
+        return True, f"Harvested {amount} {plant_def.name}! W", {
             "item": harvest_item,
             "amount": amount,
             "xp": plant_def.xp_value,
@@ -549,7 +549,7 @@ class Garden:
         
         plot.is_unlocked = True
         self.unlocked_plots += 1
-        return True, "Unlocked new garden plot! 🌱"
+        return True, "Unlocked new garden plot! i"
     
     def add_seeds(self, seed_id: str, amount: int):
         """Add seeds to inventory."""
@@ -558,32 +558,32 @@ class Garden:
     def render_garden(self) -> List[str]:
         """Render the garden display."""
         lines = [
-            "╔═══════════════════════════════════════╗",
-            "║         🌻 YOUR GARDEN 🌻              ║",
-            f"║  Season: {self.get_current_season().capitalize():12}              ║",
-            "╠═══════════════════════════════════════╣",
+            "+=======================================+",
+            "|         o YOUR GARDEN o              |",
+            f"|  Season: {self.get_current_season().capitalize():12}              |",
+            "+=======================================+",
         ]
         
         for plot_id, plot in self.plots.items():
             if not plot.is_unlocked:
-                lines.append(f"║ Plot {plot_id + 1}: [LOCKED] 🔒              ║")
+                lines.append(f"| Plot {plot_id + 1}: [LOCKED] X              |")
                 continue
             
             if plot.plant is None:
-                lines.append(f"║ Plot {plot_id + 1}: [Empty] - Ready to plant  ║")
+                lines.append(f"| Plot {plot_id + 1}: [Empty] - Ready to plant  |")
             else:
                 plant = plot.plant
                 plant_def = PLANTS.get(plant.plant_id)
                 if plant_def:
                     stage = plant.growth_stage.value
-                    water = "💧" * (plant.water_level // 25) if plant.water_level > 0 else "🏜️"
+                    water = "~" * (plant.water_level // 25) if plant.water_level > 0 else "X"
                     art = plant_def.ascii_stages.get(plant.growth_stage, ["?"])[-1]
-                    lines.append(f"║ Plot {plot_id + 1}: {art} {plant_def.name[:10]:10} {water:4} ║")
-                    lines.append(f"║         Stage: {stage:15}       ║")
+                    lines.append(f"| Plot {plot_id + 1}: {art} {plant_def.name[:10]:10} {water:4} |")
+                    lines.append(f"|         Stage: {stage:15}       |")
         
-        lines.append("╠═══════════════════════════════════════╣")
-        lines.append("║ [P]lant [W]ater [H]arvest [R]emove    ║")
-        lines.append("╚═══════════════════════════════════════╝")
+        lines.append("+=======================================+")
+        lines.append("| [P]lant [W]ater [H]arvest [R]emove    |")
+        lines.append("+=======================================+")
         
         return lines
     

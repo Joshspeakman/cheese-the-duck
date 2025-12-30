@@ -107,7 +107,7 @@ ZODIAC_INFO = {
     DuckZodiacSign.MALLARD: ZodiacInfo(
         sign=DuckZodiacSign.MALLARD,
         name="The Mallard",
-        symbol="🦆",
+        symbol="d",
         element="Air",
         traits=["Free-spirited", "Social", "Adaptable", "Innovative"],
         compatible_signs=[DuckZodiacSign.CAYUGA, DuckZodiacSign.CALL, DuckZodiacSign.BUFF],
@@ -119,7 +119,7 @@ ZODIAC_INFO = {
     DuckZodiacSign.PEKIN: ZodiacInfo(
         sign=DuckZodiacSign.PEKIN,
         name="The Pekin",
-        symbol="🐤",
+        symbol="o",
         element="Water",
         traits=["Dreamy", "Gentle", "Intuitive", "Artistic"],
         compatible_signs=[DuckZodiacSign.ROUEN, DuckZodiacSign.CAYUGA, DuckZodiacSign.SWEDISH],
@@ -131,7 +131,7 @@ ZODIAC_INFO = {
     DuckZodiacSign.MUSCOVY: ZodiacInfo(
         sign=DuckZodiacSign.MUSCOVY,
         name="The Muscovy",
-        symbol="💪",
+        symbol="o",
         element="Fire",
         traits=["Bold", "Independent", "Courageous", "Pioneering"],
         compatible_signs=[DuckZodiacSign.KHAKI_CAMPBELL, DuckZodiacSign.CALL, DuckZodiacSign.RUNNER],
@@ -143,7 +143,7 @@ ZODIAC_INFO = {
     DuckZodiacSign.RUNNER: ZodiacInfo(
         sign=DuckZodiacSign.RUNNER,
         name="The Runner",
-        symbol="🏃",
+        symbol="o",
         element="Earth",
         traits=["Determined", "Patient", "Reliable", "Luxurious"],
         compatible_signs=[DuckZodiacSign.SWEDISH, DuckZodiacSign.WELSH_HARLEQUIN, DuckZodiacSign.PEKIN],
@@ -155,7 +155,7 @@ ZODIAC_INFO = {
     DuckZodiacSign.CAYUGA: ZodiacInfo(
         sign=DuckZodiacSign.CAYUGA,
         name="The Cayuga",
-        symbol="🌟",
+        symbol="*",
         element="Air",
         traits=["Curious", "Witty", "Versatile", "Communicative"],
         compatible_signs=[DuckZodiacSign.MALLARD, DuckZodiacSign.BUFF, DuckZodiacSign.CALL],
@@ -167,7 +167,7 @@ ZODIAC_INFO = {
     DuckZodiacSign.ROUEN: ZodiacInfo(
         sign=DuckZodiacSign.ROUEN,
         name="The Rouen",
-        symbol="🏠",
+        symbol="[=]",
         element="Water",
         traits=["Nurturing", "Protective", "Emotional", "Home-loving"],
         compatible_signs=[DuckZodiacSign.PEKIN, DuckZodiacSign.MAGPIE, DuckZodiacSign.SWEDISH],
@@ -179,7 +179,7 @@ ZODIAC_INFO = {
     DuckZodiacSign.KHAKI_CAMPBELL: ZodiacInfo(
         sign=DuckZodiacSign.KHAKI_CAMPBELL,
         name="The Khaki Campbell",
-        symbol="👑",
+        symbol="^",
         element="Fire",
         traits=["Confident", "Generous", "Dramatic", "Warm-hearted"],
         compatible_signs=[DuckZodiacSign.MUSCOVY, DuckZodiacSign.CALL, DuckZodiacSign.BUFF],
@@ -191,7 +191,7 @@ ZODIAC_INFO = {
     DuckZodiacSign.SWEDISH: ZodiacInfo(
         sign=DuckZodiacSign.SWEDISH,
         name="The Swedish",
-        symbol="📋",
+        symbol="[=]",
         element="Earth",
         traits=["Analytical", "Practical", "Helpful", "Detail-oriented"],
         compatible_signs=[DuckZodiacSign.RUNNER, DuckZodiacSign.ROUEN, DuckZodiacSign.WELSH_HARLEQUIN],
@@ -203,7 +203,7 @@ ZODIAC_INFO = {
     DuckZodiacSign.BUFF: ZodiacInfo(
         sign=DuckZodiacSign.BUFF,
         name="The Buff",
-        symbol="⚖️",
+        symbol="=",
         element="Air",
         traits=["Diplomatic", "Charming", "Fair", "Artistic"],
         compatible_signs=[DuckZodiacSign.CAYUGA, DuckZodiacSign.MALLARD, DuckZodiacSign.KHAKI_CAMPBELL],
@@ -215,7 +215,7 @@ ZODIAC_INFO = {
     DuckZodiacSign.MAGPIE: ZodiacInfo(
         sign=DuckZodiacSign.MAGPIE,
         name="The Magpie",
-        symbol="🔮",
+        symbol="o",
         element="Water",
         traits=["Mysterious", "Intense", "Passionate", "Perceptive"],
         compatible_signs=[DuckZodiacSign.ROUEN, DuckZodiacSign.PEKIN, DuckZodiacSign.WELSH_HARLEQUIN],
@@ -227,7 +227,7 @@ ZODIAC_INFO = {
     DuckZodiacSign.CALL: ZodiacInfo(
         sign=DuckZodiacSign.CALL,
         name="The Call",
-        symbol="🏹",
+        symbol="-->",
         element="Fire",
         traits=["Adventurous", "Optimistic", "Philosophical", "Honest"],
         compatible_signs=[DuckZodiacSign.MALLARD, DuckZodiacSign.MUSCOVY, DuckZodiacSign.CAYUGA],
@@ -239,7 +239,7 @@ ZODIAC_INFO = {
     DuckZodiacSign.WELSH_HARLEQUIN: ZodiacInfo(
         sign=DuckZodiacSign.WELSH_HARLEQUIN,
         name="The Welsh Harlequin",
-        symbol="🏔️",
+        symbol="/\\",
         element="Earth",
         traits=["Ambitious", "Disciplined", "Patient", "Responsible"],
         compatible_signs=[DuckZodiacSign.RUNNER, DuckZodiacSign.SWEDISH, DuckZodiacSign.MAGPIE],
@@ -562,12 +562,12 @@ class FortuneSystem:
         day_of_year = target_date.timetuple().tm_yday
         
         if target_date.month == self.duck_birthday.month and target_date.day == self.duck_birthday.day:
-            special_message = "🎂 HAPPY BIRTHDAY! The stars shower you with extra blessings today! 🎂"
+            special_message = "# HAPPY BIRTHDAY! The stars shower you with extra blessings today! #"
             fortune_level = 5  # Birthday is always max fortune!
         elif day_of_year % 7 == 0:
-            special_message = "✨ Weekly fortune boost! Something special may happen! ✨"
+            special_message = "* Weekly fortune boost! Something special may happen! *"
         elif fortune_level == 5:
-            special_message = "🌟 A truly LEGENDARY day! Make it count! 🌟"
+            special_message = "* A truly LEGENDARY day! Make it count! *"
             
         horoscope = DailyHoroscope(
             date=target_date.isoformat(),
@@ -654,12 +654,12 @@ class FortuneSystem:
         my_info = ZODIAC_INFO[self.zodiac_sign]
         
         if other_sign in my_info.compatible_signs:
-            return (100, "Perfect Match! 💕")
+            return (100, "Perfect Match! <3")
         
         # Check if signs share element
         other_info = ZODIAC_INFO[other_sign]
         if my_info.element == other_info.element:
-            return (75, "Great compatibility! 🌟")
+            return (75, "Great compatibility! *")
             
         # Check element compatibility
         compatible_elements = {
@@ -670,9 +670,9 @@ class FortuneSystem:
         }
         
         if other_info.element in compatible_elements.get(my_info.element, []):
-            return (60, "Good potential! ✨")
+            return (60, "Good potential! *")
             
-        return (40, "Challenging but possible 🤔")
+        return (40, "Challenging but possible :?")
         
     def get_daily_bonus(self) -> Dict[str, float]:
         """Get today's horoscope-based bonuses."""
@@ -705,52 +705,52 @@ class FortuneSystem:
         lines = []
         
         if not self.zodiac_sign:
-            lines.append("╔" + "═" * (width - 2) + "╗")
-            lines.append("║" + " No birthday set! ".center(width - 2) + "║")
-            lines.append("╚" + "═" * (width - 2) + "╝")
+            lines.append("+" + "=" * (width - 2) + "+")
+            lines.append("|" + " No birthday set! ".center(width - 2) + "|")
+            lines.append("+" + "=" * (width - 2) + "+")
             return lines
             
         info = ZODIAC_INFO[self.zodiac_sign]
         
-        lines.append("╔" + "═" * (width - 2) + "╗")
-        lines.append("║" + f" {info.symbol} {info.name} {info.symbol} ".center(width - 2) + "║")
-        lines.append("║" + f" Element: {info.element} ".center(width - 2) + "║")
-        lines.append("╠" + "═" * (width - 2) + "╣")
+        lines.append("+" + "=" * (width - 2) + "+")
+        lines.append("|" + f" {info.symbol} {info.name} {info.symbol} ".center(width - 2) + "|")
+        lines.append("|" + f" Element: {info.element} ".center(width - 2) + "|")
+        lines.append("+" + "=" * (width - 2) + "+")
         
-        lines.append("║" + " Traits: ".ljust(width - 2) + "║")
+        lines.append("|" + " Traits: ".ljust(width - 2) + "|")
         traits_str = ", ".join(info.traits)
-        lines.append("║" + f"  {traits_str}"[:width-3].ljust(width - 2) + "║")
+        lines.append("|" + f"  {traits_str}"[:width-3].ljust(width - 2) + "|")
         
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
-        lines.append("║" + " Lucky Items: ".ljust(width - 2) + "║")
+        lines.append("|" + " Lucky Items: ".ljust(width - 2) + "|")
         for item in info.lucky_items:
-            lines.append("║" + f"  • {item}"[:width-3].ljust(width - 2) + "║")
+            lines.append("|" + f"  • {item}"[:width-3].ljust(width - 2) + "|")
             
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         colors_str = ", ".join(info.lucky_colors)
-        lines.append("║" + f" Lucky Colors: {colors_str}"[:width-3].ljust(width - 2) + "║")
+        lines.append("|" + f" Lucky Colors: {colors_str}"[:width-3].ljust(width - 2) + "|")
         
         numbers_str = ", ".join(str(n) for n in info.lucky_numbers)
-        lines.append("║" + f" Lucky Numbers: {numbers_str}"[:width-3].ljust(width - 2) + "║")
+        lines.append("|" + f" Lucky Numbers: {numbers_str}"[:width-3].ljust(width - 2) + "|")
         
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
-        lines.append("║" + " Compatible Signs: ".ljust(width - 2) + "║")
+        lines.append("|" + " Compatible Signs: ".ljust(width - 2) + "|")
         for sign in info.compatible_signs:
             compat_info = ZODIAC_INFO[sign]
-            lines.append("║" + f"  {compat_info.symbol} {compat_info.name}"[:width-3].ljust(width - 2) + "║")
+            lines.append("|" + f"  {compat_info.symbol} {compat_info.name}"[:width-3].ljust(width - 2) + "|")
             
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         # Wrap description
         desc = info.description
         while desc:
-            lines.append("║ " + desc[:width-4].ljust(width - 3) + "║")
+            lines.append("| " + desc[:width-4].ljust(width - 3) + "|")
             desc = desc[width-4:]
             
-        lines.append("╚" + "═" * (width - 2) + "╝")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         return lines
         
@@ -759,39 +759,39 @@ class FortuneSystem:
         lines = []
         
         info = ZODIAC_INFO[horoscope.sign]
-        stars = "⭐" * horoscope.fortune_level + "☆" * (5 - horoscope.fortune_level)
+        stars = "*" * horoscope.fortune_level + "*" * (5 - horoscope.fortune_level)
         
-        lines.append("╔" + "═" * (width - 2) + "╗")
-        lines.append("║" + f" {info.symbol} Daily Horoscope {info.symbol} ".center(width - 2) + "║")
-        lines.append("║" + f" {horoscope.date} ".center(width - 2) + "║")
-        lines.append("╠" + "═" * (width - 2) + "╣")
+        lines.append("+" + "=" * (width - 2) + "+")
+        lines.append("|" + f" {info.symbol} Daily Horoscope {info.symbol} ".center(width - 2) + "|")
+        lines.append("|" + f" {horoscope.date} ".center(width - 2) + "|")
+        lines.append("+" + "=" * (width - 2) + "+")
         
-        lines.append("║" + f" Fortune: {stars} ".center(width - 2) + "║")
+        lines.append("|" + f" Fortune: {stars} ".center(width - 2) + "|")
         
         if horoscope.special_message:
-            lines.append("╠" + "─" * (width - 2) + "╣")
-            lines.append("║" + horoscope.special_message[:width-4].center(width - 2) + "║")
+            lines.append("+" + "-" * (width - 2) + "+")
+            lines.append("|" + horoscope.special_message[:width-4].center(width - 2) + "|")
             
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         # Wrap general fortune
         fortune = horoscope.general_fortune
         while fortune:
-            lines.append("║ " + fortune[:width-4].ljust(width - 3) + "║")
+            lines.append("| " + fortune[:width-4].ljust(width - 3) + "|")
             fortune = fortune[width-4:]
             
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
-        lines.append("║" + f" 🎨 Lucky Color: {horoscope.lucky_color}"[:width-3].ljust(width - 2) + "║")
-        lines.append("║" + f" 🎁 Lucky Item: {horoscope.lucky_item}"[:width-3].ljust(width - 2) + "║")
-        lines.append("║" + f" 🔢 Lucky Number: {horoscope.lucky_number}"[:width-3].ljust(width - 2) + "║")
+        lines.append("|" + f" * Lucky Color: {horoscope.lucky_color}"[:width-3].ljust(width - 2) + "|")
+        lines.append("|" + f" [+] Lucky Item: {horoscope.lucky_item}"[:width-3].ljust(width - 2) + "|")
+        lines.append("|" + f" # Lucky Number: {horoscope.lucky_number}"[:width-3].ljust(width - 2) + "|")
         
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
-        lines.append("║" + f" Mood: {horoscope.mood_prediction}"[:width-3].ljust(width - 2) + "║")
-        lines.append("║" + f" Suggestion: {horoscope.activity_suggestion}"[:width-3].ljust(width - 2) + "║")
+        lines.append("|" + f" Mood: {horoscope.mood_prediction}"[:width-3].ljust(width - 2) + "|")
+        lines.append("|" + f" Suggestion: {horoscope.activity_suggestion}"[:width-3].ljust(width - 2) + "|")
         
-        lines.append("╚" + "═" * (width - 2) + "╝")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         return lines
         
@@ -800,31 +800,31 @@ class FortuneSystem:
         lines = []
         
         rarity_symbols = {
-            FortuneRarity.COMMON: "🥠",
-            FortuneRarity.UNCOMMON: "🥠✨",
-            FortuneRarity.RARE: "🥠🌟",
-            FortuneRarity.LEGENDARY: "🥠👑",
+            FortuneRarity.COMMON: "C",
+            FortuneRarity.UNCOMMON: "C*",
+            FortuneRarity.RARE: "C*",
+            FortuneRarity.LEGENDARY: "C^",
         }
         
-        rarity_str = rarity_symbols.get(cookie.rarity, "🥠")
+        rarity_str = rarity_symbols.get(cookie.rarity, "C")
         
-        lines.append("╔" + "═" * (width - 2) + "╗")
-        lines.append("║" + f" {rarity_str} Fortune Cookie {rarity_str} ".center(width - 2) + "║")
-        lines.append("║" + f" [{cookie.rarity.value.upper()}] ".center(width - 2) + "║")
-        lines.append("╠" + "═" * (width - 2) + "╣")
+        lines.append("+" + "=" * (width - 2) + "+")
+        lines.append("|" + f" {rarity_str} Fortune Cookie {rarity_str} ".center(width - 2) + "|")
+        lines.append("|" + f" [{cookie.rarity.value.upper()}] ".center(width - 2) + "|")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         # Wrap message
         message = cookie.message
         while message:
-            lines.append("║ " + message[:width-4].ljust(width - 3) + "║")
+            lines.append("| " + message[:width-4].ljust(width - 3) + "|")
             message = message[width-4:]
             
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         numbers_str = " - ".join(str(n) for n in cookie.lucky_numbers)
-        lines.append("║" + f" Lucky Numbers: {numbers_str} ".center(width - 2) + "║")
+        lines.append("|" + f" Lucky Numbers: {numbers_str} ".center(width - 2) + "|")
         
-        lines.append("╚" + "═" * (width - 2) + "╝")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         return lines
         

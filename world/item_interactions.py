@@ -342,13 +342,13 @@ INTERACTION_ANIMATIONS = {
             [
                 " [|||||]   ",
                 "  *(o_)*   ",
-                " ♪ ♫ ♪     ",
+                " # # #     ",
             ],
             [
                 " CONCERT!  ",
                 " [|||||]   ",
                 "  (^o)     ",
-                " ♪ ♫ ♪ ♫   ",
+                " # # # #   ",
             ],
         ],
     },
@@ -380,7 +380,7 @@ INTERACTION_ANIMATIONS = {
                 " *jazz*  ",
                 "  ===|   ",
                 "   (^o)> ",
-                "  ♪ ♫    ",
+                "  # #    ",
             ],
         ],
     },
@@ -526,12 +526,12 @@ INTERACTION_ANIMATIONS = {
                 "  (o_)   ",
             ],
             [
-                " ♪ ♫ ♪   ",
+                " # # #   ",
                 " [|O|O|] ",
                 "  (^o)   ",
             ],
             [
-                " ♫ ♪ ♫   ",
+                " # # #   ",
                 " [|O|O|] ",
                 "  \\(^o)/ ",
                 "  dance! ",
@@ -879,7 +879,7 @@ ITEM_INTERACTIONS: Dict[str, Dict] = {
         "commands": ["play piano", "make music", "compose"],
         "type": InteractionType.MUSIC,
         "messages": [
-            "*pecks keys* ♪♫ Masterpiece!",
+            "*pecks keys* ## Masterpiece!",
             "*composes* This is called 'Bread in D Minor'",
             "*plays dramatic chord* DUN DUN DUNNN",
             "*gentle melody* So soothing...",
@@ -969,7 +969,7 @@ ITEM_INTERACTIONS: Dict[str, Dict] = {
         "commands": ["play boombox", "turn on music", "dance"],
         "type": InteractionType.MUSIC,
         "messages": [
-            "*turns on boombox* ♪♫ MUSIC TIME! ♫♪",
+            "*turns on boombox* ## MUSIC TIME! ##",
             "*dances to the beat* This is my JAM!",
             "*breakdances* ...sort of. Duck-style!",
             "*vibes* This beat is FIRE!",

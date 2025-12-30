@@ -194,7 +194,7 @@ GROWTH_STAGES: Dict[GrowthStage, StageInfo] = {
         },
         unlocks=["elder_wisdom", "legacy_items"],
         ascii_art=[
-            "    👴     ",
+            "    o     ",
             "   __(◕ )> ",
             "  \\_____/  ",
             "  *elder*  ",
@@ -216,8 +216,8 @@ GROWTH_STAGES: Dict[GrowthStage, StageInfo] = {
         },
         unlocks=["legendary_status", "all_abilities"],
         ascii_art=[
-            "    ✨👑    ",
-            "   __(★ )> ",
+            "    *^    ",
+            "   __(* )> ",
             "  \\_____/  ",
             " *LEGEND*  ",
         ],
@@ -387,22 +387,22 @@ class AgingSystem:
         age_str = self.get_age_string()
         
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║            🦆 DUCK GROWTH 🦆                  ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            "|            d DUCK GROWTH d                  |",
+            "+===============================================+",
         ]
         
         # ASCII art
         for art_line in stage_info.ascii_art:
-            lines.append(f"║  {art_line:^43}  ║")
+            lines.append(f"|  {art_line:^43}  |")
         
-        lines.append("║                                               ║")
-        lines.append(f"║  Stage: {stage_info.name:<35}  ║")
-        lines.append(f"║  Age: {age_str:<37}  ║")
-        lines.append(f"║  {stage_info.description[:43]:<43}  ║")
+        lines.append("|                                               |")
+        lines.append(f"|  Stage: {stage_info.name:<35}  |")
+        lines.append(f"|  Age: {age_str:<37}  |")
+        lines.append(f"|  {stage_info.description[:43]:<43}  |")
         
         # Progress to next stage
-        lines.append("╠═══════════════════════════════════════════════╣")
+        lines.append("+===============================================+")
         
         days = self.get_age_days()
         stage_order = list(GrowthStage)
@@ -414,42 +414,42 @@ class AgingSystem:
             days_until = next_info.min_days - days
             
             if days_until > 0:
-                lines.append(f"║  Next: {next_info.name} in {days_until} days           ║")
+                lines.append(f"|  Next: {next_info.name} in {days_until} days           |")
             else:
-                lines.append(f"║  Ready to grow to: {next_info.name}!             ║")
+                lines.append(f"|  Ready to grow to: {next_info.name}!             |")
         else:
-            lines.append("║  Maximum growth achieved! 🌟                  ║")
+            lines.append("|  Maximum growth achieved! *                  |")
         
         # Special abilities
         if stage_info.special_abilities:
-            lines.append("╠═══════════════════════════════════════════════╣")
-            lines.append("║  Special Abilities:                           ║")
+            lines.append("+===============================================+")
+            lines.append("|  Special Abilities:                           |")
             for ability in stage_info.special_abilities:
-                lines.append(f"║  • {ability:<41}  ║")
+                lines.append(f"|  • {ability:<41}  |")
         
         # Stat modifiers
         if stage_info.stat_modifiers:
-            lines.append("╠═══════════════════════════════════════════════╣")
-            lines.append("║  Stage Bonuses:                               ║")
+            lines.append("+===============================================+")
+            lines.append("|  Stage Bonuses:                               |")
             for stat, modifier in stage_info.stat_modifiers.items():
                 mod_str = f"+{int((modifier - 1) * 100)}%" if modifier > 1 else f"{int((modifier - 1) * 100)}%"
                 stat_name = stat.replace("_", " ").title()
-                lines.append(f"║  • {stat_name}: {mod_str:<30}  ║")
+                lines.append(f"|  • {stat_name}: {mod_str:<30}  |")
         
-        lines.append("╚═══════════════════════════════════════════════╝")
+        lines.append("+===============================================+")
         
         return lines
     
     def render_life_timeline(self, page: int = 1) -> List[str]:
         """Render the duck's life timeline."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║           📖 LIFE TIMELINE 📖                 ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            "|           [=] LIFE TIMELINE [=]                 |",
+            "+===============================================+",
         ]
         
         if not self.life_events:
-            lines.append("║  No events recorded yet!                      ║")
+            lines.append("|  No events recorded yet!                      |")
         else:
             # Reverse chronological
             events = list(reversed(self.life_events))
@@ -460,20 +460,20 @@ class AgingSystem:
             
             for event in page_events:
                 icon = {
-                    "birth": "🥚",
-                    "growth": "📈",
-                    "birthday": "🎂",
-                    "achievement": "🏆",
-                    "milestone": "⭐",
-                }.get(event.event_type, "📝")
+                    "birth": "o",
+                    "growth": "^",
+                    "birthday": "#",
+                    "achievement": "[#]",
+                    "milestone": "*",
+                }.get(event.event_type, "[=]")
                 
-                lines.append(f"║  {icon} Day {event.age_days}: {event.description[:30]:<30}  ║")
+                lines.append(f"|  {icon} Day {event.age_days}: {event.description[:30]:<30}  |")
             
             total_pages = (len(events) + per_page - 1) // per_page
-            lines.append("╠═══════════════════════════════════════════════╣")
-            lines.append(f"║  Page {page}/{total_pages}  [←/→ to navigate]                ║")
+            lines.append("+===============================================+")
+            lines.append(f"|  Page {page}/{total_pages}  [<-/-> to navigate]                |")
         
-        lines.append("╚═══════════════════════════════════════════════╝")
+        lines.append("+===============================================+")
         
         return lines
     

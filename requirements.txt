@@ -1,5 +1,5 @@
 blessed>=1.20.0
 pygame>=2.5.0  # For background music and sound effects
 
-# Optional: Install llama-cpp-python for AI conversations
-# pip install llama-cpp-python
+# AI conversations using bundled local model
+llama-cpp-python>=0.2.0

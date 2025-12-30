@@ -157,7 +157,7 @@ register_item(ShopItem(
 ))
 
 register_item(ShopItem(
-    id="glasses_cool", name="Sunglasses", description="Deal with it. 😎 (but in text form)",
+    id="glasses_cool", name="Sunglasses", description="Deal with it. B) (but in text form)",
     category=ItemCategory.COSMETIC, rarity=ItemRarity.COMMON,
     cost=150, unlock_level=2, unlock_xp=50, size="small",
     interaction_text=["*cool quack*", "Can't see anything but I LOOK GOOD."]
@@ -241,7 +241,7 @@ register_item(ShopItem(
     id="toy_piano", name="Toy Piano", description="A small piano for musical ducks.",
     category=ItemCategory.TOY, rarity=ItemRarity.UNCOMMON,
     cost=400, unlock_level=4, unlock_xp=300, size="medium",
-    interaction_text=["*pecks keys* ♪♫", "*composes masterpiece* This is called 'Bread in D Minor'"]
+    interaction_text=["*pecks keys* ##", "*composes masterpiece* This is called 'Bread in D Minor'"]
 ))
 
 register_item(ShopItem(
@@ -283,7 +283,7 @@ register_item(ShopItem(
     id="toy_boombox", name="Boombox", description="A retro boombox! Turn it on for some tunes!",
     category=ItemCategory.TOY, rarity=ItemRarity.RARE,
     cost=350, unlock_level=3, unlock_xp=150, size="medium", animated=True,
-    interaction_text=["*turns on boombox* ♪♫ MUSIC TIME! ♫♪", "*dances to the beat* This is my JAM!"]
+    interaction_text=["*turns on boombox* ## MUSIC TIME! ##", "*dances to the beat* This is my JAM!"]
 ))
 
 # ========================================

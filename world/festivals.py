@@ -3,7 +3,7 @@ Seasonal Festivals System - Special holiday events and celebrations.
 Features unique activities, decorations, and limited-time rewards.
 """
 from dataclasses import dataclass, field
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from typing import Dict, List, Optional, Tuple
 from enum import Enum
 import random
@@ -78,7 +78,7 @@ class FestivalProgress:
 FESTIVALS: Dict[str, Festival] = {
     "spring_bloom": Festival(
         id="spring_bloom",
-        name="🌸 Spring Bloom Festival",
+        name="* Spring Bloom Festival",
         description="Celebrate the return of spring with flowers, butterflies, and new beginnings!",
         festival_type=FestivalType.SPRING_BLOOM,
         start_month=3,
@@ -131,7 +131,7 @@ FESTIVALS: Dict[str, Festival] = {
     
     "summer_splash": Festival(
         id="summer_splash",
-        name="🏖️ Summer Splash Festival",
+        name="- Summer Splash Festival",
         description="Dive into summer fun with beach activities and water games!",
         festival_type=FestivalType.SUMMER_SPLASH,
         start_month=6,
@@ -184,7 +184,7 @@ FESTIVALS: Dict[str, Festival] = {
     
     "autumn_harvest": Festival(
         id="autumn_harvest",
-        name="🍂 Autumn Harvest Festival",
+        name="f Autumn Harvest Festival",
         description="Gather the bounty of fall with harvesting, cooking, and cozy activities!",
         festival_type=FestivalType.AUTUMN_HARVEST,
         start_month=9,
@@ -248,7 +248,7 @@ FESTIVALS: Dict[str, Festival] = {
     
     "winter_wonder": Festival(
         id="winter_wonder",
-        name="❄️ Winter Wonderland Festival",
+        name="* Winter Wonderland Festival",
         description="Experience the magic of winter with snow, gifts, and warm gatherings!",
         festival_type=FestivalType.WINTER_WONDER,
         start_month=12,
@@ -312,7 +312,7 @@ FESTIVALS: Dict[str, Festival] = {
     
     "duck_day": Festival(
         id="duck_day",
-        name="🦆 International Duck Day",
+        name="[d] International Duck Day",
         description="Celebrate all things duck! The most special day of the year for Cheese!",
         festival_type=FestivalType.DUCK_DAY,
         start_month=1,
@@ -354,7 +354,7 @@ FESTIVALS: Dict[str, Festival] = {
     
     "love_festival": Festival(
         id="love_festival",
-        name="💕 Festival of Love",
+        name="<3 Festival of Love",
         description="Celebrate friendship, love, and the bonds we share!",
         festival_type=FestivalType.LOVE_FESTIVAL,
         start_month=2,
@@ -414,18 +414,14 @@ class FestivalSystem:
         
         for festival in FESTIVALS.values():
             start = date(today.year, festival.start_month, festival.start_day)
-            end_date = start.replace(day=start.day + festival.duration_days)
-            
-            # Handle year wraparound
-            if end_date.month < start.month:
-                end_date = end_date.replace(year=end_date.year + 1)
+            end_date = start + timedelta(days=festival.duration_days)
             
             if start <= today <= end_date:
                 return festival
             
             # Check previous year for festivals that span year boundary
-            start_prev = start.replace(year=today.year - 1)
-            end_prev = start_prev.replace(day=start_prev.day + festival.duration_days)
+            start_prev = date(today.year - 1, festival.start_month, festival.start_day)
+            end_prev = start_prev + timedelta(days=festival.duration_days)
             if start_prev <= today <= end_prev:
                 return festival
         
@@ -449,7 +445,7 @@ class FestivalSystem:
         
         self.total_festivals_participated += 1
         
-        return True, f"🎉 Welcome to the {festival.name}!"
+        return True, f"(!) Welcome to the {festival.name}!"
     
     def do_festival_activity(self, activity_id: str) -> Tuple[bool, str, Optional[FestivalReward]]:
         """Perform a festival activity."""
@@ -489,9 +485,9 @@ class FestivalSystem:
         
         if reward:
             self.festival_rewards_collected.append(reward.name)
-            return True, f"🎊 {activity.name} complete! +{activity.participation_points} points! Got: {reward.name}", reward
+            return True, f"(!) {activity.name} complete! +{activity.participation_points} points! Got: {reward.name}", reward
         
-        return True, f"🎊 {activity.name} complete! +{activity.participation_points} points!", None
+        return True, f"(!) {activity.name} complete! +{activity.participation_points} points!", None
     
     def claim_festival_reward(self, reward_index: int) -> Tuple[bool, str, Optional[FestivalReward]]:
         """Claim an exclusive festival reward based on participation points."""
@@ -520,7 +516,7 @@ class FestivalSystem:
         self.current_festival_progress.rewards_claimed.append(reward.name)
         self.festival_rewards_collected.append(reward.name)
         
-        return True, f"🏆 Claimed: {reward.name}!", reward
+        return True, f"[#] Claimed: {reward.name}!", reward
     
     def end_festival(self) -> Tuple[bool, str, Dict]:
         """End participation in the current festival."""
@@ -547,7 +543,7 @@ class FestivalSystem:
         
         self.current_festival_progress = None
         
-        return True, "🎉 Festival participation ended! See you next year!", summary
+        return True, "(!) Festival participation ended! See you next year!", summary
     
     def get_festival_status(self) -> Optional[Dict]:
         """Get current festival participation status."""
@@ -579,54 +575,54 @@ class FestivalSystem:
         
         if not active:
             return [
-                "╔═══════════════════════════════════════════════╗",
-                "║            🎪 FESTIVALS 🎪                    ║",
-                "╠═══════════════════════════════════════════════╣",
-                "║                                               ║",
-                "║       No festival is currently active.        ║",
-                "║                                               ║",
-                "║    Check back during seasonal celebrations!   ║",
-                "║                                               ║",
-                f"║    Festivals participated: {self.total_festivals_participated:3}               ║",
-                "║                                               ║",
-                "╚═══════════════════════════════════════════════╝",
+                "+===============================================+",
+                "|            [#] FESTIVALS [#]                    |",
+                "+===============================================+",
+                "|                                               |",
+                "|       No festival is currently active.        |",
+                "|                                               |",
+                "|    Check back during seasonal celebrations!   |",
+                "|                                               |",
+                f"|    Festivals participated: {self.total_festivals_participated:3}               |",
+                "|                                               |",
+                "+===============================================+",
             ]
         
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            f"║  {active.name:^41}  ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            f"|  {active.name:^41}  |",
+            "+===============================================+",
         ]
         
         # Description
         desc = active.description[:40]
-        lines.append(f"║  {desc:^41}  ║")
-        lines.append("║                                               ║")
+        lines.append(f"|  {desc:^41}  |")
+        lines.append("|                                               |")
         
         if self.current_festival_progress:
             points = self.current_festival_progress.participation_points
-            lines.append(f"║  🌟 Participation Points: {points:5}              ║")
-            lines.append("╠═══════════════════════════════════════════════╣")
-            lines.append("║  ACTIVITIES:                                  ║")
+            lines.append(f"|  * Participation Points: {points:5}              |")
+            lines.append("+===============================================+")
+            lines.append("|  ACTIVITIES:                                  |")
             
             for activity in active.activities[:4]:
                 done = self.current_festival_progress.activities_completed.get(activity.id, 0)
                 daily = self.current_festival_progress.daily_activities.get(activity.id, 0)
-                lines.append(f"║   • {activity.name[:25]:25} [{daily}/{activity.max_daily}]   ║")
+                lines.append(f"|   - {activity.name[:25]:25} [{daily}/{activity.max_daily}]   |")
             
-            lines.append("╠═══════════════════════════════════════════════╣")
-            lines.append("║  REWARDS:                                     ║")
+            lines.append("+===============================================+")
+            lines.append("|  REWARDS:                                     |")
             
             for i, reward in enumerate(active.exclusive_rewards[:3]):
                 req = (i + 1) * 100
-                claimed = "✓" if reward.name in self.current_festival_progress.rewards_claimed else "○"
-                lines.append(f"║   {claimed} {reward.name[:25]:25} ({req}pts)  ║")
+                claimed = "[x]" if reward.name in self.current_festival_progress.rewards_claimed else "[ ]"
+                lines.append(f"|   {claimed} {reward.name[:25]:25} ({req}pts)  |")
         else:
-            lines.append("║                                               ║")
-            lines.append("║     Press [J]oin to participate!              ║")
-            lines.append("║                                               ║")
+            lines.append("|                                               |")
+            lines.append("|     Press [J]oin to participate!              |")
+            lines.append("|                                               |")
         
-        lines.append("╚═══════════════════════════════════════════════╝")
+        lines.append("+===============================================+")
         
         return lines
     

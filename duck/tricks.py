@@ -104,7 +104,7 @@ TRICKS: Dict[str, Trick] = {
         animation=[
             "       ",
             "  (.)  ",
-            "  ↑↑↑  ",
+            "  ^^^  ",
             "  (.)  ",
         ],
         mood_bonus=5,
@@ -122,7 +122,7 @@ TRICKS: Dict[str, Trick] = {
         coin_reward=15,
         animation=[
             "   (.)  ",
-            "    ↑   ",
+            "    ^   ",
             "   (')  ",
             "  (.°)  ",
             "   (.)  ",
@@ -140,10 +140,10 @@ TRICKS: Dict[str, Trick] = {
         xp_reward=30,
         coin_reward=12,
         animation=[
-            "(.)    →",
-            " (.)   →",
-            "  (.)  →",
-            "   (.) →",
+            "(.)    ->",
+            " (.)   ->",
+            "  (.)  ->",
+            "   (.) ->",
         ],
         prerequisite_tricks=["waddle_dance"],
         mood_bonus=8,
@@ -161,7 +161,7 @@ TRICKS: Dict[str, Trick] = {
         coin_reward=40,
         animation=[
             "   (.) ",
-            "   ↑↑  ",
+            "   ^^  ",
             "  (°.) ",
             " (.°)  ",
             "   (.) ",
@@ -182,9 +182,9 @@ TRICKS: Dict[str, Trick] = {
         xp_reward=12,
         coin_reward=5,
         animation=[
-            " (.) ♪ ",
-            " (.) ♫ ",
-            " (.) ♪♪",
+            " (.) # ",
+            " (.) # ",
+            " (.) ##",
         ],
         mood_bonus=8,
     ),
@@ -198,7 +198,7 @@ TRICKS: Dict[str, Trick] = {
         xp_reward=30,
         coin_reward=15,
         animation=[
-            " (.) 🎵 ",
+            " (.) # ",
             " (•)BOO",
             " (.)TSS",
             " (•)BAP",
@@ -319,7 +319,7 @@ TRICKS: Dict[str, Trick] = {
         animation=[
             "  (.) ",
             " *(.)* ",
-            "  ✨   ",
+            "  *   ",
             " POOF! ",
         ],
         prerequisite_tricks=["bow", "wave"],
@@ -340,7 +340,7 @@ TRICKS: Dict[str, Trick] = {
         animation=[
             "  (.) ",
             " <(.)>",
-            "  ↑↑  ",
+            "  ^^  ",
             " .(.) ",
             "  (°) ",
         ],
@@ -358,10 +358,10 @@ TRICKS: Dict[str, Trick] = {
         xp_reward=500,
         coin_reward=300,
         animation=[
-            "   ★   ",
-            " ★(.)★ ",
-            "  ✨✨  ",
-            " 👏👏👏 ",
+            "   *   ",
+            " *(.)* ",
+            "  **  ",
+            " *** ",
         ],
         prerequisite_tricks=["dance_routine", "magic_trick", "double_flip"],
         mood_bonus=50,
@@ -425,7 +425,7 @@ class TricksSystem:
         
         self.current_training = trick_id
         
-        return True, f"🎓 Started training: {trick.name}!"
+        return True, f"^ Started training: {trick.name}!"
     
     def do_training_session(self) -> Tuple[bool, str, Optional[Trick]]:
         """Complete a training session."""
@@ -469,12 +469,12 @@ class TricksSystem:
             learned_trick = trick
             self.current_training = None
             
-            return True, f"🎉 Learned new trick: {learned_trick.name}!", learned_trick
+            return True, f"* Learned new trick: {learned_trick.name}!", learned_trick
         
         progress = self.training_progress[self.current_training]
         remaining = trick.training_required - progress
         
-        return True, f"📚 Training session complete! {remaining} sessions left until learned.", None
+        return True, f"[=] Training session complete! {remaining} sessions left until learned.", None
     
     def perform_trick(self, trick_id: str) -> Tuple[bool, str, Dict]:
         """Perform a learned trick."""
@@ -525,11 +525,11 @@ class TricksSystem:
         
         # Performance rating
         if quality >= 95:
-            rating = "⭐⭐⭐ PERFECT!"
+            rating = "*** PERFECT!"
         elif quality >= 85:
-            rating = "⭐⭐ Excellent!"
+            rating = "** Excellent!"
         elif quality >= 70:
-            rating = "⭐ Good!"
+            rating = "* Good!"
         else:
             rating = "Nice try!"
         
@@ -545,7 +545,7 @@ class TricksSystem:
             "animation": trick.animation,
         }
         
-        return True, f"🎭 {trick.name} - {rating}", results
+        return True, f"* {trick.name} - {rating}", results
     
     def perform_combo(self, trick_ids: List[str]) -> Tuple[bool, str, Dict]:
         """Perform multiple tricks in a combo."""
@@ -579,7 +579,7 @@ class TricksSystem:
         if self.combo_streak > self.highest_combo:
             self.highest_combo = self.combo_streak
         
-        return True, f"🔥 {len(trick_ids)}-Hit Combo! ({combo_multiplier:.0%} bonus)", {
+        return True, f"^ {len(trick_ids)}-Hit Combo! ({combo_multiplier:.0%} bonus)", {
             "total_xp": total_xp,
             "total_coins": total_coins,
             "total_mood": total_mood,
@@ -610,41 +610,41 @@ class TricksSystem:
     def render_trick_list(self) -> List[str]:
         """Render the list of tricks."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║            🎭 DUCK TRICKS 🎭                  ║",
-            "╠═══════════════════════════════════════════════╣",
-            f"║  Learned: {len(self.learned_tricks):2}  |  Performances: {self.total_performances:5}       ║",
-            f"║  Perfect: {self.total_perfect_performances:3}  |  Highest Combo: {self.highest_combo:2}          ║",
-            "╠═══════════════════════════════════════════════╣",
-            "║  LEARNED TRICKS:                              ║",
+            "+===============================================+",
+            "|            * DUCK TRICKS *                  |",
+            "+===============================================+",
+            f"|  Learned: {len(self.learned_tricks):2}  |  Performances: {self.total_performances:5}       |",
+            f"|  Perfect: {self.total_perfect_performances:3}  |  Highest Combo: {self.highest_combo:2}          |",
+            "+===============================================+",
+            "|  LEARNED TRICKS:                              |",
         ]
         
         for tid, learned in list(self.learned_tricks.items())[:5]:
             trick = TRICKS.get(tid)
             if trick:
-                stars = "★" * learned.mastery_level + "☆" * (5 - learned.mastery_level)
-                lines.append(f"║   {trick.name[:20]:20} {stars}         ║")
+                stars = "*" * learned.mastery_level + "*" * (5 - learned.mastery_level)
+                lines.append(f"|   {trick.name[:20]:20} {stars}         |")
         
         if not self.learned_tricks:
-            lines.append("║   No tricks learned yet!                      ║")
+            lines.append("|   No tricks learned yet!                      |")
         
         # Training status
         status = self.get_training_status()
         if status["training"]:
-            lines.append("╠═══════════════════════════════════════════════╣")
-            lines.append(f"║  Training: {status['trick_name'][:28]:28}   ║")
-            lines.append(f"║  Progress: {status['progress']}/{status['required']} ({status['percent']:.0f}%)                      ║")
+            lines.append("+===============================================+")
+            lines.append(f"|  Training: {status['trick_name'][:28]:28}   |")
+            lines.append(f"|  Progress: {status['progress']}/{status['required']} ({status['percent']:.0f}%)                      |")
         
         # Available to learn
         available = self.get_available_tricks()
         if available:
-            lines.append("╠═══════════════════════════════════════════════╣")
-            lines.append("║  AVAILABLE TO LEARN:                          ║")
+            lines.append("+===============================================+")
+            lines.append("|  AVAILABLE TO LEARN:                          |")
             for trick in available[:3]:
-                diff_icon = {"easy": "🟢", "medium": "🟡", "hard": "🟠", "master": "🔴", "legendary": "💎"}.get(trick.difficulty.value, "⚪")
-                lines.append(f"║   {diff_icon} {trick.name[:33]:33}   ║")
+                diff_icon = {"easy": "O", "medium": "O", "hard": "O", "master": "O", "legendary": "*"}.get(trick.difficulty.value, "o")
+                lines.append(f"|   {diff_icon} {trick.name[:33]:33}   |")
         
-        lines.append("╚═══════════════════════════════════════════════╝")
+        lines.append("+===============================================+")
         
         return lines
     
@@ -655,15 +655,15 @@ class TricksSystem:
             return ["Trick not found!"]
         
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            f"║        🎭 {trick.name:^28} 🎭        ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            f"|        * {trick.name:^28} *        |",
+            "+===============================================+",
         ]
         
         for frame in trick.animation:
-            lines.append(f"║           {frame:^30}          ║")
+            lines.append(f"|           {frame:^30}          |")
         
-        lines.append("╚═══════════════════════════════════════════════╝")
+        lines.append("+===============================================+")
         
         return lines
     

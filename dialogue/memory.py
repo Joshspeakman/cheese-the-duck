@@ -177,6 +177,14 @@ class DuckMemory:
         memory = random.choices(all_memories, weights=weights)[0]
         return memory.content
 
+    def recall_memory(self) -> Optional[str]:
+        """Alias for recall_random_memory for API compatibility."""
+        return self.recall_random_memory()
+
+    def get_mood_trend(self) -> str:
+        """Get the overall mood trend description."""
+        return self.get_recent_mood_trend()
+
     def to_dict(self) -> dict:
         """Convert to dictionary for saving."""
         return {

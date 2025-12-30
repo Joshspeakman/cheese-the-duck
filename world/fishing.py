@@ -160,7 +160,7 @@ FISH_DATABASE: Dict[str, Fish] = {
         preferred_bait=[BaitType.WORMS, BaitType.SPECIAL],
         time_of_day=["morning"],
         season=["spring", "summer"],
-        ascii_art=["🌈><º>"],
+        ascii_art=["~><º>"],
         xp_value=30, coin_value=25,
         fun_fact="Rainbow trout can leap 3 feet out of water!",
     ),
@@ -177,7 +177,7 @@ FISH_DATABASE: Dict[str, Fish] = {
         preferred_bait=[BaitType.SPECIAL],
         time_of_day=["morning", "evening"],
         season=["spring", "summer"],
-        ascii_art=["🎏><º)))><"],
+        ascii_art=["><>><º)))><"],
         xp_value=50, coin_value=50,
         fun_fact="Koi can live for over 200 years!",
     ),
@@ -256,7 +256,7 @@ FISH_DATABASE: Dict[str, Fish] = {
         preferred_bait=[BaitType.GOLDEN],
         time_of_day=["morning"],
         season=["spring"],
-        ascii_art=["✨><(((°>✨"],
+        ascii_art=["*><(((°>*"],
         xp_value=500, coin_value=500,
         fun_fact="Legend says seeing a golden koi brings 100 years of luck!",
     ),
@@ -271,7 +271,7 @@ FISH_DATABASE: Dict[str, Fish] = {
         preferred_bait=[BaitType.GOLDEN],
         time_of_day=["night"],
         season=["winter"],
-        ascii_art=["👻><°>👻"],
+        ascii_art=["o><°>o"],
         xp_value=600, coin_value=600,
         fun_fact="Ghost fish can only be seen under moonlight!",
     ),
@@ -288,7 +288,7 @@ FISH_DATABASE: Dict[str, Fish] = {
         preferred_bait=[BaitType.GOLDEN],
         time_of_day=["night"],
         season=["any"],
-        ascii_art=["🐉><(((((º>🐉"],
+        ascii_art=["D><(((((º>D"],
         xp_value=2000, coin_value=2000,
         fun_fact="Only the most patient and skilled fishers ever see this fish!",
     ),
@@ -352,11 +352,11 @@ FISHING_SPOTS = {
         "unlock_level": 12,
         "difficulty": 5,
         "ascii": [
-            "  ✨~~~~~✨  ",
+            "  *~~~~~*  ",
             " ~~~~~~~~~~~ ",
             "~~~~~~~~~~~~~",
             " ~~~~~~~~~~~ ",
-            "  ✨~~~~~✨  ",
+            "  *~~~~~*  ",
         ],
     },
 }
@@ -411,7 +411,7 @@ class FishingMinigame:
         # Use bait
         self.bait_inventory[self.current_bait] -= 1
         
-        return True, f"Casting line at {FISHING_SPOTS[spot]['name']}... 🎣"
+        return True, f"Casting line at {FISHING_SPOTS[spot]['name']}... -o"
     
     def update(self, delta_time: float) -> Optional[str]:
         """Update fishing state. Returns message if something happens."""
@@ -430,7 +430,7 @@ class FishingMinigame:
                     self.hooked_fish = fish.id
                     self.waiting_for_bite = False
                     self.reaction_window = 2.0  # 2 seconds to react
-                    return f"❗ BITE! Press SPACE to reel in! ❗"
+                    return f"! BITE! Press SPACE to reel in! !"
                 else:
                     # No fish, try again
                     self.bite_timer = random.uniform(3.0, 8.0)
@@ -441,7 +441,7 @@ class FishingMinigame:
                 # Missed!
                 self.hooked_fish = None
                 self.is_fishing = False
-                return "The fish got away! 😢"
+                return "The fish got away! :("
         
         return None
     
@@ -495,12 +495,12 @@ class FishingMinigame:
             self.is_fishing = False
             self.hooked_fish = None
             
-            record_text = " 🏆 NEW RECORD!" if is_record else ""
+            record_text = " [#] NEW RECORD!" if is_record else ""
             return True, f"Caught a {fish.name}! {size}cm!{record_text} {fish.ascii_art[0]}", caught
         else:
             self.is_fishing = False
             self.hooked_fish = None
-            return False, f"The {fish.name} got away... 😢", None
+            return False, f"The {fish.name} got away... :(", None
     
     def _select_fish(self) -> Optional[Fish]:
         """Select which fish bit based on conditions."""
@@ -561,30 +561,30 @@ class FishingMinigame:
         """Get current fishing animation frame."""
         frames = [
             [
-                "     🎣",
-                "    ╱",
-                "   ╱",
+                "     -o",
+                "    /",
+                "   /",
                 "  ○",
                 "~~~~~",
             ],
             [
-                "    🎣",
-                "    │",
-                "    │",
+                "    -o",
+                "    |",
+                "    |",
                 "    ○",
                 "~~~~~",
             ],
             [
-                "   🎣",
-                "    ╲",
-                "     ╲",
+                "   -o",
+                "    \\",
+                "     \\",
                 "      ○",
                 "  ~~~~~",
             ],
             [
-                "    🎣",
-                "    │",
-                "    │",
+                "    -o",
+                "    |",
+                "    |",
                 "    ○",
                 " ~~~~~",
             ],
@@ -593,10 +593,10 @@ class FishingMinigame:
         if self.hooked_fish:
             # Excited animation when fish is hooked
             return [
-                "    🎣❗",
-                "    │",
+                "    -o!",
+                "    |",
                 "   ~~~",
-                "  🐟!!!",
+                "  ><>!!!",
                 "~~~~~~",
             ]
         
@@ -637,22 +637,22 @@ class FishingMinigame:
         stats = self.get_fish_collection_stats()
         
         lines = [
-            "╔══════════════════════════════════════════╗",
-            "║          🐟 FISH COLLECTION 🐟           ║",
-            f"║  Caught: {stats['caught_species']}/{stats['total_species']} ({stats['completion_percent']}%)              ║",
-            "╠══════════════════════════════════════════╣",
+            "+==========================================+",
+            "|          ><> FISH COLLECTION ><>           |",
+            f"|  Caught: {stats['caught_species']}/{stats['total_species']} ({stats['completion_percent']}%)              |",
+            "+==========================================+",
         ]
         
         for fish_id, fish in FISH_DATABASE.items():
             if fish_id in self.fish_caught:
                 catches = self.fish_caught[fish_id]
                 record = self.fish_records.get(fish_id, 0)
-                symbol = "✓"
-                lines.append(f"║ {symbol} {fish.name:20} Best: {record}cm  ║")
+                symbol = "x"
+                lines.append(f"| {symbol} {fish.name:20} Best: {record}cm  |")
             else:
-                lines.append(f"║ ? {'???':20}              ║")
+                lines.append(f"| ? {'???':20}              |")
         
-        lines.append("╚══════════════════════════════════════════╝")
+        lines.append("+==========================================+")
         return lines
     
     def to_dict(self) -> dict:

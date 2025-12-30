@@ -58,7 +58,7 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
             " '  .  '  .  '   ",
             "  .  '  .  '  .  ",
         ],
-        text_representation="♪ pitter... patter... pitter... ♪"
+        text_representation="# pitter... patter... pitter... #"
     ),
     
     "heavy_rain": AmbientSound(
@@ -73,7 +73,7 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
             "  |||  |||  |||  ",
             " |||  |||  |||   ",
         ],
-        text_representation="♪ SHHHHHHH... DRUMMMM... ♪"
+        text_representation="# SHHHHHHH... DRUMMMM... #"
     ),
     
     "thunder": AmbientSound(
@@ -85,10 +85,10 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         triggers=["thunderstorm", "storm"],
         loop=False,
         ascii_visualization=[
-            "    ⚡  BOOM  ⚡   ",
+            "    !  BOOM  !   ",
             "  ~~~RUMBLE~~~   ",
         ],
-        text_representation="♪ ...BOOM... rumble rumble... ♪"
+        text_representation="# ...BOOM... rumble rumble... #"
     ),
     
     "wind": AmbientSound(
@@ -102,7 +102,7 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
             "  ~~~  ~~~  ~~~  ",
             "    ~~~  ~~~     ",
         ],
-        text_representation="♪ whoooosh... shhhhh... ♪"
+        text_representation="# whoooosh... shhhhh... #"
     ),
     
     "snow_falling": AmbientSound(
@@ -113,11 +113,11 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         mood=SoundMood.PEACEFUL,
         triggers=["snow", "snowy", "blizzard"],
         ascii_visualization=[
-            "  ❄   ❄   ❄     ",
-            "    ❄   ❄   ❄   ",
-            "  ❄   ❄   ❄     ",
+            "  *   *   *     ",
+            "    *   *   *   ",
+            "  *   *   *     ",
         ],
-        text_representation="♪ ... ... (peaceful silence) ... ♪"
+        text_representation="# ... ... (peaceful silence) ... #"
     ),
     
     # Time of day sounds
@@ -129,10 +129,10 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         mood=SoundMood.ENERGETIC,
         triggers=["dawn", "morning"],
         ascii_visualization=[
-            "  🐦 tweet tweet  ",
+            "  b tweet tweet  ",
             "    chirp chirp   ",
         ],
-        text_representation="♪ tweet-tweet! chirp-chirp! ♪"
+        text_representation="# tweet-tweet! chirp-chirp! #"
     ),
     
     "afternoon_buzz": AmbientSound(
@@ -143,10 +143,10 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         mood=SoundMood.PEACEFUL,
         triggers=["afternoon", "midday"],
         ascii_visualization=[
-            "  🐝 bzzzz 🐝    ",
+            "  b bzzzz b    ",
             "    flutter...    ",
         ],
-        text_representation="♪ bzzzzz... flutter flutter... ♪"
+        text_representation="# bzzzzz... flutter flutter... #"
     ),
     
     "evening_crickets": AmbientSound(
@@ -157,10 +157,10 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         mood=SoundMood.CALM,
         triggers=["evening", "dusk"],
         ascii_visualization=[
-            "  🦗 chirp chirp  ",
+            "  c chirp chirp  ",
             "    ...chirp...   ",
         ],
-        text_representation="♪ chirp... chirp... chirp... ♪"
+        text_representation="# chirp... chirp... chirp... #"
     ),
     
     "night_silence": AmbientSound(
@@ -171,10 +171,10 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         mood=SoundMood.PEACEFUL,
         triggers=["night", "late_night"],
         ascii_visualization=[
-            "  ⭐ ... 🌙 ...   ",
+            "  * ... ) ...   ",
             "    (silence)     ",
         ],
-        text_representation="♪ ... (peaceful night) ... ♪"
+        text_representation="# ... (peaceful night) ... #"
     ),
     
     "owl_hoot": AmbientSound(
@@ -186,9 +186,9 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         triggers=["night", "late_night"],
         loop=False,
         ascii_visualization=[
-            "    🦉 hoo-hoo    ",
+            "    O hoo-hoo    ",
         ],
-        text_representation="♪ hoo... hoo-hoo... ♪"
+        text_representation="# hoo... hoo-hoo... #"
     ),
     
     # Location sounds
@@ -203,7 +203,7 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
             "  ~~~~ ~~~~ ~~~   ",
             "    plop... plop  ",
         ],
-        text_representation="♪ lap... lap... splash... ♪"
+        text_representation="# lap... lap... splash... #"
     ),
     
     "forest_rustle": AmbientSound(
@@ -214,10 +214,10 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         mood=SoundMood.PEACEFUL,
         triggers=["forest", "woods", "garden"],
         ascii_visualization=[
-            "  🌿 rustle 🌿    ",
+            "  ~ rustle ~    ",
             "    shh... shh... ",
         ],
-        text_representation="♪ rustle... shh... rustle... ♪"
+        text_representation="# rustle... shh... rustle... #"
     ),
     
     "home_cozy": AmbientSound(
@@ -228,10 +228,10 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         mood=SoundMood.COZY,
         triggers=["home", "nest", "indoor"],
         ascii_visualization=[
-            "  🏠 crackle...   ",
+            "  [=] crackle...   ",
             "    (cozy warm)   ",
         ],
-        text_representation="♪ crackle... pop... warm... ♪"
+        text_representation="# crackle... pop... warm... #"
     ),
     
     # Seasonal sounds
@@ -243,10 +243,10 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         mood=SoundMood.ENERGETIC,
         triggers=["spring"],
         ascii_visualization=[
-            "  🌸 bloom 🌸     ",
+            "  * bloom *     ",
             "    nature sings  ",
         ],
-        text_representation="♪ chirp! buzz! bloom! ♪"
+        text_representation="# chirp! buzz! bloom! #"
     ),
     
     "summer_heat": AmbientSound(
@@ -257,10 +257,10 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         mood=SoundMood.PEACEFUL,
         triggers=["summer"],
         ascii_visualization=[
-            "  ☀️ sizzle...    ",
+            "  * sizzle...    ",
             "    heat waves... ",
         ],
-        text_representation="♪ bzzz... shimmer... hot... ♪"
+        text_representation="# bzzz... shimmer... hot... #"
     ),
     
     "autumn_leaves": AmbientSound(
@@ -271,10 +271,10 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         mood=SoundMood.CALM,
         triggers=["autumn", "fall"],
         ascii_visualization=[
-            "  🍂 crunch 🍂    ",
+            "  f crunch f    ",
             "    scatter...    ",
         ],
-        text_representation="♪ crunch... rustle... fall... ♪"
+        text_representation="# crunch... rustle... fall... #"
     ),
     
     "winter_chill": AmbientSound(
@@ -285,10 +285,10 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         mood=SoundMood.PEACEFUL,
         triggers=["winter"],
         ascii_visualization=[
-            "  ❄️ crisp...     ",
+            "  * crisp...     ",
             "    chill air...  ",
         ],
-        text_representation="♪ crunch... silence... cold... ♪"
+        text_representation="# crunch... silence... cold... #"
     ),
     
     # Special sounds
@@ -300,10 +300,10 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         mood=SoundMood.ENERGETIC,
         triggers=["festival", "celebration"],
         ascii_visualization=[
-            "  🎵 🎶 🎵 🎶    ",
+            "  # # # #    ",
             "    party time!   ",
         ],
-        text_representation="♪ la la la! celebrate! ♪"
+        text_representation="# la la la! celebrate! #"
     ),
     
     "sleeping_duck": AmbientSound(
@@ -314,10 +314,10 @@ AMBIENT_SOUNDS: Dict[str, AmbientSound] = {
         mood=SoundMood.COZY,
         triggers=["sleeping", "napping"],
         ascii_visualization=[
-            "  💤 zzz... 💤    ",
+            "  z zzz... z    ",
             "    (soft snore)  ",
         ],
-        text_representation="♪ zzz... quack... zzz... ♪"
+        text_representation="# zzz... quack... zzz... #"
     ),
 }
 
@@ -438,42 +438,42 @@ class AmbientSoundSystem:
     def render_sound_settings(self) -> List[str]:
         """Render the ambient sound settings screen."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║          🔊 AMBIENT SOUNDS 🔊                 ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            "|          [=] AMBIENT SOUNDS [=]                 |",
+            "+===============================================+",
         ]
         
         # Master settings
         enabled_str = "ON" if self.enabled else "OFF"
-        volume_bar = "█" * int(self.master_volume * 10) + "░" * (10 - int(self.master_volume * 10))
+        volume_bar = "█" * int(self.master_volume * 10) + "." * (10 - int(self.master_volume * 10))
         
-        lines.append(f"║  Ambient Sounds: {enabled_str:<26}  ║")
-        lines.append(f"║  Master Volume: [{volume_bar}] {int(self.master_volume * 100):>3}%  ║")
-        lines.append("╠═══════════════════════════════════════════════╣")
+        lines.append(f"|  Ambient Sounds: {enabled_str:<26}  |")
+        lines.append(f"|  Master Volume: [{volume_bar}] {int(self.master_volume * 100):>3}%  |")
+        lines.append("+===============================================+")
         
         # Current sounds
-        lines.append("║  Currently Playing:                           ║")
+        lines.append("|  Currently Playing:                           |")
         if self.currently_playing:
             for sound_id in self.currently_playing:
                 sound = AMBIENT_SOUNDS.get(sound_id)
                 if sound:
-                    lines.append(f"║  • {sound.name:<40}  ║")
+                    lines.append(f"|  • {sound.name:<40}  |")
         else:
-            lines.append("║  (none)                                       ║")
+            lines.append("|  (none)                                       |")
         
-        lines.append("╠═══════════════════════════════════════════════╣")
+        lines.append("+===============================================+")
         
         # Sound categories
-        lines.append("║  Sound Categories:                            ║")
+        lines.append("|  Sound Categories:                            |")
         for category in AmbientCategory:
             sounds_in_cat = [s for s in AMBIENT_SOUNDS.values() if s.category == category]
             enabled_count = sum(1 for s in sounds_in_cat if self.sound_preferences.get(s.id, True))
-            lines.append(f"║  {category.value.upper()}: {enabled_count}/{len(sounds_in_cat)} enabled         ║")
+            lines.append(f"|  {category.value.upper()}: {enabled_count}/{len(sounds_in_cat)} enabled         |")
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            "║  [T] Toggle  [+/-] Volume  [B] Back           ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            "|  [T] Toggle  [+/-] Volume  [B] Back           |",
+            "+===============================================+",
         ])
         
         return lines
@@ -481,9 +481,9 @@ class AmbientSoundSystem:
     def render_sound_list(self, category: Optional[AmbientCategory] = None) -> List[str]:
         """Render list of all sounds for configuration."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║          🎵 SOUND LIST 🎵                     ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            "|          # SOUND LIST #                     |",
+            "+===============================================+",
         ]
         
         sounds = list(AMBIENT_SOUNDS.values())
@@ -492,17 +492,17 @@ class AmbientSoundSystem:
         
         for sound in sounds:
             enabled = self.sound_preferences.get(sound.id, True)
-            status = "✓" if enabled else "✗"
+            status = "x" if enabled else " "
             volume = self.sound_volumes.get(sound.id, sound.volume_default)
             vol_str = f"{int(volume * 100)}%"
             
-            lines.append(f"║  [{status}] {sound.name:<25} {vol_str:>5}  ║")
-            lines.append(f"║      {sound.description[:38]:<38}  ║")
+            lines.append(f"|  [{status}] {sound.name:<25} {vol_str:>5}  |")
+            lines.append(f"|      {sound.description[:38]:<38}  |")
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            "║  [#] Toggle  [B] Back                         ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            "|  [#] Toggle  [B] Back                         |",
+            "+===============================================+",
         ])
         
         return lines

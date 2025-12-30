@@ -60,8 +60,8 @@ MOOD_THEMES: Dict[VisualMood, MoodVisualTheme] = {
         primary_color="bright_yellow",
         secondary_color="bright_magenta",
         accent_color="bright_cyan",
-        background_chars=["✨", "⭐", "🌟", "💫", "✧"],
-        floating_particles=["🎉", "🎊", "💖", "✨", "🌈"],
+        background_chars=["*", "*", "*", "!", "*"],
+        floating_particles=["(!)", "(*)", "<3", "*", "(=)"],
         border_style="double_rainbow",
         animation_speed=1.5,
         brightness=1.4,
@@ -75,8 +75,8 @@ MOOD_THEMES: Dict[VisualMood, MoodVisualTheme] = {
         primary_color="yellow",
         secondary_color="green",
         accent_color="cyan",
-        background_chars=["~", "·", "✿", "♪"],
-        floating_particles=["💕", "🌸", "♫", "☀️"],
+        background_chars=["~", ".", "*", "#"],
+        floating_particles=["<3", "~", "#", "*"],
         border_style="curved",
         animation_speed=1.2,
         brightness=1.2,
@@ -90,8 +90,8 @@ MOOD_THEMES: Dict[VisualMood, MoodVisualTheme] = {
         primary_color="green",
         secondary_color="cyan",
         accent_color="white",
-        background_chars=["·", ".", "~"],
-        floating_particles=["☁️", "🌿", "💚"],
+        background_chars=[".", ".", "~"],
+        floating_particles=["(*)", "~", "<3"],
         border_style="simple",
         animation_speed=0.8,
         brightness=1.0,
@@ -120,8 +120,8 @@ MOOD_THEMES: Dict[VisualMood, MoodVisualTheme] = {
         primary_color="blue",
         secondary_color="dark_blue",
         accent_color="gray",
-        background_chars=[".", ":", "·", "'"],
-        floating_particles=["💧", "🥀", "💔"],
+        background_chars=[".", ":", ".", "'"],
+        floating_particles=["'", "~", "</3"],
         border_style="droopy",
         animation_speed=0.6,
         brightness=0.7,
@@ -135,8 +135,8 @@ MOOD_THEMES: Dict[VisualMood, MoodVisualTheme] = {
         primary_color="magenta",
         secondary_color="red",
         accent_color="yellow",
-        background_chars=["~", "!", "?", "·"],
-        floating_particles=["❓", "❗", "💦"],
+        background_chars=["~", "!", "?", "."],
+        floating_particles=["?", "!", "~"],
         border_style="wavy",
         animation_speed=1.3,
         brightness=0.9,
@@ -150,8 +150,8 @@ MOOD_THEMES: Dict[VisualMood, MoodVisualTheme] = {
         primary_color="dark_blue",
         secondary_color="black",
         accent_color="white",
-        background_chars=["·", ".", "z"],
-        floating_particles=["💤", "🌙", "☁️"],
+        background_chars=[".", ".", "z"],
+        floating_particles=["zzZ", ")", "(*)"],
         border_style="simple",
         animation_speed=0.4,
         brightness=0.6,
@@ -165,8 +165,8 @@ MOOD_THEMES: Dict[VisualMood, MoodVisualTheme] = {
         primary_color="green",
         secondary_color="dark_green",
         accent_color="yellow",
-        background_chars=["~", "·"],
-        floating_particles=["🤒", "💊", "🌡️"],
+        background_chars=["~", "."],
+        floating_particles=["x_x", "+", "|"],
         border_style="wobbly",
         animation_speed=0.5,
         brightness=0.7,
@@ -180,8 +180,8 @@ MOOD_THEMES: Dict[VisualMood, MoodVisualTheme] = {
         primary_color="yellow",
         secondary_color="orange",
         accent_color="red",
-        background_chars=["!", "*", "✦", "·"],
-        floating_particles=["⚡", "🔥", "💥", "✨"],
+        background_chars=["!", "*", "*", "."],
+        floating_particles=["!", "*", "!", "*"],
         border_style="zigzag",
         animation_speed=1.8,
         brightness=1.3,
@@ -196,7 +196,7 @@ MOOD_THEMES: Dict[VisualMood, MoodVisualTheme] = {
         secondary_color="dark_red",
         accent_color="orange",
         background_chars=["#", "!", "@", "*"],
-        floating_particles=["💢", "😤", "🔥"],
+        floating_particles=["#!", ">.<", "*"],
         border_style="sharp",
         animation_speed=1.4,
         brightness=1.1,
@@ -210,8 +210,8 @@ MOOD_THEMES: Dict[VisualMood, MoodVisualTheme] = {
         primary_color="dark_blue",
         secondary_color="black",
         accent_color="white",
-        background_chars=["·", ".", " ", "?"],
-        floating_particles=["😰", "💦", "👻"],
+        background_chars=[".", ".", " ", "?"],
+        floating_particles=["o.o", "~", "???"],
         border_style="shaky",
         animation_speed=1.2,
         brightness=0.5,
@@ -225,8 +225,8 @@ MOOD_THEMES: Dict[VisualMood, MoodVisualTheme] = {
         primary_color="cyan",
         secondary_color="magenta",
         accent_color="yellow",
-        background_chars=["~", "♪", "♫", "*"],
-        floating_particles=["🎮", "🎪", "🎈", "🌀"],
+        background_chars=["~", "#", "#", "*"],
+        floating_particles=["[>]", "(!)", "o", "@"],
         border_style="bouncy",
         animation_speed=1.5,
         brightness=1.2,
@@ -321,16 +321,16 @@ class MoodVisualEffects:
         
         borders = {
             "simple": {
-                "tl": "┌", "tr": "┐", "bl": "└", "br": "┘",
-                "h": "─", "v": "│"
+                "tl": "+", "tr": "+", "bl": "+", "br": "+",
+                "h": "-", "v": "|"
             },
             "curved": {
-                "tl": "╭", "tr": "╮", "bl": "╰", "br": "╯",
-                "h": "─", "v": "│"
+                "tl": "+", "tr": "+", "bl": "+", "br": "+",
+                "h": "-", "v": "|"
             },
             "double_rainbow": {
-                "tl": "╔", "tr": "╗", "bl": "╚", "br": "╝",
-                "h": "═", "v": "║"
+                "tl": "+", "tr": "+", "bl": "+", "br": "+",
+                "h": "=", "v": "|"
             },
             "wavy": {
                 "tl": "~", "tr": "~", "bl": "~", "br": "~",
@@ -345,16 +345,16 @@ class MoodVisualEffects:
                 "h": "▬", "v": "▐"
             },
             "droopy": {
-                "tl": "╭", "tr": "╮", "bl": "⌣", "br": "⌣",
-                "h": "─", "v": "│"
+                "tl": "+", "tr": "+", "bl": "⌣", "br": "⌣",
+                "h": "-", "v": "|"
             },
             "shaky": {
-                "tl": "┌", "tr": "┐", "bl": "└", "br": "┘",
+                "tl": "+", "tr": "+", "bl": "+", "br": "+",
                 "h": "~", "v": "¦"
             },
             "bouncy": {
-                "tl": "●", "tr": "●", "bl": "●", "br": "●",
-                "h": "○", "v": "○"
+                "tl": "*", "tr": "*", "bl": "*", "br": "*",
+                "h": "o", "v": "o"
             },
             "wobbly": {
                 "tl": "~", "tr": "~", "bl": "~", "br": "~",
@@ -402,21 +402,21 @@ class MoodVisualEffects:
         
         # Mood face based on mood
         faces = {
-            VisualMood.ECSTATIC: ["✧◡✧", "🤩"],
-            VisualMood.HAPPY: ["^◡^", "😊"],
-            VisualMood.CONTENT: ["◡‿◡", "😌"],
-            VisualMood.NEUTRAL: ["•_•", "😐"],
-            VisualMood.SAD: ["╥﹏╥", "😢"],
-            VisualMood.ANXIOUS: ["◉_◉", "😰"],
-            VisualMood.TIRED: ["-_-", "😴"],
-            VisualMood.SICK: ["×_×", "🤒"],
-            VisualMood.EXCITED: ["◕‿◕", "🤩"],
-            VisualMood.ANGRY: ["ಠ_ಠ", "😠"],
-            VisualMood.SCARED: ["ఠ_ఠ", "😨"],
-            VisualMood.PLAYFUL: ["◕ᴗ◕", "😜"],
+            VisualMood.ECSTATIC: ["*o*", ":D"],
+            VisualMood.HAPPY: ["^o^", ":)"],
+            VisualMood.CONTENT: ["^-^", "=)"],
+            VisualMood.NEUTRAL: ["-_-", ":-|"],
+            VisualMood.SAD: ["T_T", ":("],
+            VisualMood.ANXIOUS: ["o_o", ":S"],
+            VisualMood.TIRED: ["-_-", "zzZ"],
+            VisualMood.SICK: ["x_x", "X("],
+            VisualMood.EXCITED: ["^o^", ":D"],
+            VisualMood.ANGRY: [">_<", ">:("],
+            VisualMood.SCARED: ["o.o", "D:"],
+            VisualMood.PLAYFUL: ["^_^", ";)"],
         }
         
-        face_data = faces.get(self.current_mood, ["•_•", "🦆"])
+        face_data = faces.get(self.current_mood, ["-_-", "d"])
         
         import random
         particles = theme.floating_particles[:2] if theme.floating_particles else []
@@ -432,21 +432,21 @@ class MoodVisualEffects:
     def get_duck_expression(self) -> str:
         """Get ASCII expression for duck based on mood."""
         expressions = {
-            VisualMood.ECSTATIC: "✧◡✧",
-            VisualMood.HAPPY: "^◡^",
-            VisualMood.CONTENT: "◡‿◡",
-            VisualMood.NEUTRAL: "•_•",
-            VisualMood.SAD: "╥﹏╥",
-            VisualMood.ANXIOUS: "◉_◉",
+            VisualMood.ECSTATIC: "*o*",
+            VisualMood.HAPPY: "^o^",
+            VisualMood.CONTENT: "^-^",
+            VisualMood.NEUTRAL: "-_-",
+            VisualMood.SAD: "T_T",
+            VisualMood.ANXIOUS: "o_o",
             VisualMood.TIRED: "-_-",
-            VisualMood.SICK: "×_×",
-            VisualMood.EXCITED: "◕‿◕!",
-            VisualMood.ANGRY: "ಠ益ಠ",
-            VisualMood.SCARED: "°△°",
-            VisualMood.PLAYFUL: "◕ᴗ◕",
+            VisualMood.SICK: "x_x",
+            VisualMood.EXCITED: "^o^!",
+            VisualMood.ANGRY: ">_<",
+            VisualMood.SCARED: "o.o",
+            VisualMood.PLAYFUL: "^_^",
         }
         
-        return expressions.get(self.current_mood, "•_•")
+        return expressions.get(self.current_mood, "-_-")
     
     def to_dict(self) -> dict:
         """Convert to dictionary for saving."""

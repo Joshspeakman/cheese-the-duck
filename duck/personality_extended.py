@@ -263,7 +263,7 @@ QUIRK_DEFINITIONS = {
         trigger_conditions=["quacking", "happy"],
         animation="musical_quack",
         sound="melodic_quack",
-        dialogue=["*quack quack quaaa~ck*", "♪ Quack quack ♪"],
+        dialogue=["*quack quack quaaa~ck*", "# Quack quack #"],
     ),
     QuirkType.WHISPER_QUACK: QuirkInfo(
         quirk_type=QuirkType.WHISPER_QUACK,
@@ -763,12 +763,12 @@ class ExtendedPersonalitySystem:
         """Render a personality card display."""
         lines = []
         
-        lines.append("╔" + "═" * (width - 2) + "╗")
-        lines.append("║" + " 🦆 Personality Profile 🦆 ".center(width - 2) + "║")
-        lines.append("╠" + "═" * (width - 2) + "╣")
+        lines.append("+" + "=" * (width - 2) + "+")
+        lines.append("|" + " d Personality Profile d ".center(width - 2) + "|")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         # Extended traits
-        lines.append("║" + " Core Traits: ".ljust(width - 2) + "║")
+        lines.append("|" + " Core Traits: ".ljust(width - 2) + "|")
         
         for trait_id, value in self.extended_traits.items():
             if trait_id not in EXTENDED_TRAITS:
@@ -777,49 +777,49 @@ class ExtendedPersonalitySystem:
             info = EXTENDED_TRAITS[trait_id]
             bar_width = 20
             bar_pos = int((value + 100) / 200 * bar_width)
-            bar = "─" * bar_pos + "●" + "─" * (bar_width - bar_pos - 1)
+            bar = "-" * bar_pos + "●" + "-" * (bar_width - bar_pos - 1)
             
             trait_line = f"  {info.name}: [{bar}]"
-            lines.append("║" + trait_line[:width-3].ljust(width - 2) + "║")
+            lines.append("|" + trait_line[:width-3].ljust(width - 2) + "|")
             
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         # Quirks
-        lines.append("║" + " Quirks: ".ljust(width - 2) + "║")
+        lines.append("|" + " Quirks: ".ljust(width - 2) + "|")
         for quirk in self.quirks[:4]:  # Show up to 4
             info = QUIRK_DEFINITIONS.get(quirk)
             if info:
-                lines.append("║" + f"  • {info.name}: {info.description}"[:width-3].ljust(width - 2) + "║")
+                lines.append("|" + f"  • {info.name}: {info.description}"[:width-3].ljust(width - 2) + "|")
                 
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         # Discovered preferences
         discovered = self.get_discovered_preferences()
         if discovered:
-            lines.append("║" + " Known Preferences: ".ljust(width - 2) + "║")
+            lines.append("|" + " Known Preferences: ".ljust(width - 2) + "|")
             for pref in discovered[:4]:
                 pref_name = pref.preference_type.value.replace("_", " ").title()
-                lines.append("║" + f"  • {pref_name}: {pref.value}"[:width-3].ljust(width - 2) + "║")
+                lines.append("|" + f"  • {pref_name}: {pref.value}"[:width-3].ljust(width - 2) + "|")
         else:
-            lines.append("║" + " Preferences: (Not yet discovered) ".ljust(width - 2) + "║")
+            lines.append("|" + " Preferences: (Not yet discovered) ".ljust(width - 2) + "|")
             
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         # Hidden traits
         discovered_hidden = self.get_discovered_hidden_traits()
         in_progress = [t for t in self.hidden_traits.values() 
                        if not t.is_discovered and t.discovery_progress > 0]
         
-        lines.append("║" + " Hidden Traits: ".ljust(width - 2) + "║")
+        lines.append("|" + " Hidden Traits: ".ljust(width - 2) + "|")
         if discovered_hidden:
             for trait in discovered_hidden:
-                lines.append("║" + f"  ✨ {trait.name}"[:width-3].ljust(width - 2) + "║")
+                lines.append("|" + f"  * {trait.name}"[:width-3].ljust(width - 2) + "|")
         if in_progress:
-            lines.append("║" + f"  (+ {len(in_progress)} being discovered...)"[:width-3].ljust(width - 2) + "║")
+            lines.append("|" + f"  (+ {len(in_progress)} being discovered...)"[:width-3].ljust(width - 2) + "|")
         if not discovered_hidden and not in_progress:
-            lines.append("║" + "  (Discover through gameplay)"[:width-3].ljust(width - 2) + "║")
+            lines.append("|" + "  (Discover through gameplay)"[:width-3].ljust(width - 2) + "|")
             
-        lines.append("╚" + "═" * (width - 2) + "╝")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         return lines
         

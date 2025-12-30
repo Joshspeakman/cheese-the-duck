@@ -61,16 +61,16 @@ SECRETS: Dict[str, Secret] = {
         id="konami_code",
         name="Konami Code",
         description="The classic cheat code works here!",
-        hint="↑↑↓↓←→←→BA",
+        hint="^^vv<--><-->BA",
         secret_type=SecretType.EASTER_EGG,
         rarity=SecretRarity.UNCOMMON,
         coins_reward=500,
         xp_reward=100,
         unlock_message="30 extra coins! Wait... lives? We don't do that here.",
         ascii_art=[
-            "  ↑↑↓↓←→←→BA  ",
+            "  ^^vv<><>BA  ",
             "    START!     ",
-            "  🎮 CLASSIC 🎮  ",
+            "  [>] CLASSIC [>]  ",
         ]
     ),
     
@@ -85,9 +85,9 @@ SECRETS: Dict[str, Secret] = {
         xp_reward=50,
         unlock_message="A duck walked up to a lemonade stand...",
         ascii_art=[
-            "  🍇 🍇 🍇 🍇  ",
+            "  @ @ @ @    ",
             " Got any grapes? ",
-            "  🍋 Nope! 🍋    ",
+            "  () Nope! ()    ",
         ]
     ),
     
@@ -101,7 +101,7 @@ SECRETS: Dict[str, Secret] = {
         coins_reward=250,
         xp_reward=150,
         special_reward="midnight_hat",
-        unlock_message="🌙 The Midnight Duck rises! 🌙"
+        unlock_message=") The Midnight Duck rises! )"
     ),
     
     "triple_seven": Secret(
@@ -113,7 +113,7 @@ SECRETS: Dict[str, Secret] = {
         rarity=SecretRarity.UNCOMMON,
         coins_reward=777,
         xp_reward=77,
-        unlock_message="JACKPOT! 🎰🎰🎰"
+        unlock_message="JACKPOT! [#][#][#]"
     ),
     
     "golden_duck": Secret(
@@ -128,9 +128,9 @@ SECRETS: Dict[str, Secret] = {
         special_reward="golden_aura",
         unlock_message="Your duck glows with golden light!",
         ascii_art=[
-            "     ✨✨✨     ",
-            "   ⭐🦆⭐    ",
-            "     ✨✨✨     ",
+            "     * * *     ",
+            "    * d *     ",
+            "     * * *     ",
             "  LEGENDARY!   ",
         ]
     ),
@@ -144,7 +144,7 @@ SECRETS: Dict[str, Secret] = {
         rarity=SecretRarity.COMMON,
         coins_reward=50,
         xp_reward=25,
-        unlock_message="🛁 SQUEAK! You're the one! 🛁"
+        unlock_message="U SQUEAK! You're the one! U"
     ),
     
     "secret_pond": Secret(
@@ -173,7 +173,7 @@ SECRETS: Dict[str, Secret] = {
         ascii_art=[
             "  +----------+  ",
             "  | DEV ROOM |  ",
-            "  |  🖥️ 🦆   |  ",
+            "  |  [=] d   |  ",
             "  | v1.0.0   |  ",
             "  +----------+  ",
         ]
@@ -189,7 +189,7 @@ SECRETS: Dict[str, Secret] = {
         coins_reward=200,
         xp_reward=100,
         special_reward="birthday_hat",
-        unlock_message="🎂 Happy Birthday! 🎂"
+        unlock_message="# Happy Birthday! #"
     ),
     
     "palindrome": Secret(
@@ -213,7 +213,7 @@ SECRETS: Dict[str, Secret] = {
         rarity=SecretRarity.UNCOMMON,
         coins_reward=200,
         xp_reward=100,
-        unlock_message="You really love petting! 🫳🦆"
+        unlock_message="You really love petting! d"
     ),
     
     "ancient_quack": Secret(
@@ -227,10 +227,10 @@ SECRETS: Dict[str, Secret] = {
         xp_reward=250,
         unlock_message="QUACKUS MAXIMUS!",
         ascii_art=[
-            "   📜📜📜📜   ",
+            "   ====   ",
             "  QUACKUS    ",
             "   MAXIMUS   ",
-            "   📜📜📜📜   ",
+            "   ====   ",
         ]
     ),
     
@@ -243,7 +243,7 @@ SECRETS: Dict[str, Secret] = {
         rarity=SecretRarity.UNCOMMON,
         coins_reward=150,
         xp_reward=75,
-        unlock_message="🦉 Why are you awake? 🦆"
+        unlock_message="(o,o) Why are you awake? d"
     ),
     
     "rainbow_duck": Secret(
@@ -256,7 +256,7 @@ SECRETS: Dict[str, Secret] = {
         coins_reward=700,
         xp_reward=350,
         special_reward="rainbow_trail",
-        unlock_message="🌈 Somewhere over the rainbow! 🌈"
+        unlock_message="(=) Somewhere over the rainbow! (=)"
     ),
     
     "year_one": Secret(
@@ -269,12 +269,12 @@ SECRETS: Dict[str, Secret] = {
         coins_reward=10000,
         xp_reward=5000,
         special_reward="eternal_bond_title",
-        unlock_message="A bond that transcends time! 🎊",
+        unlock_message="A bond that transcends time! (!)",
         ascii_art=[
-            "   ★ YEAR ONE ★  ",
+            "   * YEAR ONE *  ",
             "    365 DAYS     ",
-            "   🦆💕 CHEESE   ",
-            "   FOREVER! 💕🦆  ",
+            "   d<3 CHEESE    ",
+            "   FOREVER! <3d  ",
         ]
     ),
 }
@@ -457,14 +457,14 @@ class SecretsSystem:
     def render_secrets_book(self, page: int = 1) -> List[str]:
         """Render the secrets discovery book."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║            🔮 BOOK OF SECRETS 🔮              ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            "|            [?] BOOK OF SECRETS [?]           |",
+            "+===============================================+",
         ]
         
         discovered, total = self.get_discovered_count()
-        lines.append(f"║  Secrets Found: {discovered}/{total}                         ║")
-        lines.append("╠═══════════════════════════════════════════════╣")
+        lines.append(f"|  Secrets Found: {discovered}/{total}                         |")
+        lines.append("+===============================================+")
         
         # Show discovered secrets
         discovered_list = list(self.discovered_secrets.keys())
@@ -477,39 +477,39 @@ class SecretsSystem:
             for secret_id in page_secrets:
                 secret = SECRETS[secret_id]
                 rarity_icon = {
-                    SecretRarity.COMMON: "⚪",
-                    SecretRarity.UNCOMMON: "🟢",
-                    SecretRarity.RARE: "🔵",
-                    SecretRarity.LEGENDARY: "🟡",
-                    SecretRarity.MYTHICAL: "🔴",
-                }.get(secret.rarity, "⚪")
+                    SecretRarity.COMMON: "o",
+                    SecretRarity.UNCOMMON: "+",
+                    SecretRarity.RARE: "*",
+                    SecretRarity.LEGENDARY: "#",
+                    SecretRarity.MYTHICAL: "!",
+                }.get(secret.rarity, "o")
                 
                 name = secret.name[:30]
-                lines.append(f"║  {rarity_icon} {name:<38}  ║")
-                lines.append(f"║     {secret.description[:38]:<38}  ║")
+                lines.append(f"|  {rarity_icon} {name:<38}  |")
+                lines.append(f"|     {secret.description[:38]:<38}  |")
         else:
-            lines.append("║  No secrets discovered yet!                   ║")
-            lines.append("║  Keep exploring and experimenting...          ║")
+            lines.append("|  No secrets discovered yet!                   |")
+            lines.append("|  Keep exploring and experimenting...          |")
         
-        lines.append("╠═══════════════════════════════════════════════╣")
+        lines.append("+===============================================+")
         
         # Show hints for undiscovered
-        lines.append("║  💡 HINTS:                                    ║")
+        lines.append("|  ! HINTS:                                    |")
         hints = self.get_undiscovered_hints()[:2]  # Show 2 hints
         for hint in hints:
             hint_text = hint[:40]
-            lines.append(f"║  • {hint_text:<40}  ║")
+            lines.append(f"|  - {hint_text:<40}  |")
         
         if not hints:
-            lines.append("║  You've found all the secrets! 🎉            ║")
+            lines.append("|  You've found all the secrets! (!)           |")
         
         total_pages = (len(discovered_list) + per_page - 1) // per_page
         total_pages = max(1, total_pages)
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            f"║  Page {page}/{total_pages}  [←/→ to navigate]                ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            f"|  Page {page}/{total_pages}  [<-/-> to navigate]                |",
+            "+===============================================+",
         ])
         
         return lines

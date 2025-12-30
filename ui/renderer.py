@@ -389,12 +389,12 @@ class Renderer:
         # Weather particle settings - Enhanced for more dramatic visuals
         # Note: sunny/clear weather has no particles (just a nice day)
         weather_chars = {
-            "rainy": ["│", "╎", "┆", "╏", "|", "'", ","],  # Rain streaks
-            "stormy": ["│", "|", "'", ",", ":"],  # Heavy rain drops (cleaner look)
-            "snowy": ["❄", "*", "✦", "❅", "·", "°", "✧"],  # Snowflakes
-            "foggy": ["░", "▒", "~", "≈", " ", "▓"],  # Thick fog
-            "windy": ["→", "⟹", "~", "≫", "»", "›", "~"],  # Wind direction
-            "rainbow": ["♦", "★", "✦", "◊", "*"],  # Sparkles for rainbow
+            "rainy": ["|", "|", "'", ",", ":", "'"],  # Rain streaks
+            "stormy": ["|", "|", "'", ",", ":"],  # Heavy rain drops (cleaner look)
+            "snowy": ["*", "*", "*", "*", ".", "o", "*"],  # Snowflakes
+            "foggy": [".", "~", "~", "~", " ", "#"],  # Thick fog
+            "windy": [">", ">", "~", ">", "~", "-", "~"],  # Wind direction (single chars only)
+            "rainbow": ["*", "*", "*", "*", "*"],  # Sparkles for rainbow
         }
 
         particle_density = {
@@ -451,7 +451,7 @@ class Renderer:
             # Add single lightning bolt character
             bolt_x = random.randint(3, width - 3)
             bolt_y = random.randint(0, min(3, height - 1))
-            new_particles.append((float(bolt_x), float(bolt_y), "⚡"))
+            new_particles.append((float(bolt_x), float(bolt_y), "!"))
 
         self._weather_particles = new_particles
 
@@ -466,44 +466,44 @@ class Renderer:
 
         # Define time periods with visual elements
         if 5 <= hour < 7:  # Dawn
-            sky_char = "░"
+            sky_char = "."
             bg_color = self.term.on_color_rgb(255, 200, 150)  # Warm orange-pink
-            celestials = [(width - 5, "🌅"), (3, "☆"), (width - 10, "✦")]
+            celestials = [(width - 5, "-*-"), (3, "*"), (width - 10, "*")]
         elif 7 <= hour < 11:  # Morning
             sky_char = " "
             bg_color = None  # Clear sky
-            celestials = [(width // 4, "☀"), (5, "☁"), (width - 8, "☁")]
+            celestials = [(width // 4, "*"), (5, "*"), (width - 8, "*")]
         elif 11 <= hour < 14:  # Midday
             sky_char = " "
             bg_color = None
-            celestials = [(width // 2, "☀")]
+            celestials = [(width // 2, "*")]
         elif 14 <= hour < 17:  # Afternoon
             sky_char = " "
             bg_color = None
-            celestials = [(3 * width // 4, "☀"), (width // 4, "☁")]
+            celestials = [(3 * width // 4, "*"), (width // 4, "*")]
         elif 17 <= hour < 19:  # Evening
-            sky_char = "░"
+            sky_char = "."
             bg_color = self.term.on_color_rgb(255, 180, 100)  # Golden hour
-            celestials = [(width - 3, "🌅"), (width // 2, "☁")]
+            celestials = [(width - 3, "-*-"), (width // 2, "*")]
         elif 19 <= hour < 21:  # Dusk
             sky_char = "▒"
             bg_color = self.term.on_color_rgb(100, 80, 120)  # Purple dusk
-            celestials = [(width - 4, "🌆"), (5, "★"), (width // 2, "☆")]
+            celestials = [(width - 4, "-*-"), (5, "*"), (width // 2, "*")]
         elif 21 <= hour or hour < 0:  # Night
             sky_char = " "
             bg_color = self.term.on_color_rgb(20, 20, 40)  # Dark blue
             celestials = [
-                (width - 5, "🌙"),
-                (3, "★"), (8, "☆"), (15, "✦"), (width - 12, "★"),
-                (width // 2 - 3, "☆"), (width // 2 + 5, "✦")
+                (width - 5, ")"),
+                (3, "*"), (8, "*"), (15, "*"), (width - 12, "*"),
+                (width // 2 - 3, "*"), (width // 2 + 5, "*")
             ]
         else:  # Late night (0-5)
             sky_char = " "
             bg_color = self.term.on_color_rgb(10, 10, 25)  # Very dark
             celestials = [
-                (width - 6, "🌑"),
-                (4, "★"), (10, "☆"), (18, "★"), (width - 15, "✦"),
-                (width // 3, "☆"), (2 * width // 3, "★")
+                (width - 6, "o"),
+                (4, "*"), (10, "*"), (18, "*"), (width - 15, "*"),
+                (width // 3, "*"), (2 * width // 3, "*")
             ]
 
         return sky_char, bg_color, celestials
@@ -514,14 +514,14 @@ class Renderer:
             return []
 
         effects = {
-            "sunny": ["~ warm sunbeams ~", "☀ bright and cheerful ☀"],
-            "cloudy": ["☁ clouds drift by ☁", "~ overcast skies ~"],
-            "rainy": ["💧 pitter patter 💧", "~ splish splash ~", "🌧 rain falls gently 🌧"],
-            "stormy": ["⚡ THUNDER RUMBLES ⚡", "💨 wind howls 💨", "🌩 lightning flashes 🌩"],
-            "snowy": ["❄ snowflakes drift ❄", "~ winter wonderland ~", "☃ frosty and cold ☃"],
-            "foggy": ["🌫 mist swirls 🌫", "~ mysterious fog ~", "👀 visibility low 👀"],
-            "windy": ["💨 whoooosh! 💨", "~ leaves swirl ~", "🍃 breezy day 🍃"],
-            "rainbow": ["🌈 magical colors! 🌈", "✨ make a wish! ✨", "🦄 rare and beautiful 🦄"],
+            "sunny": ["~ warm sunbeams ~", "* bright and cheerful *"],
+            "cloudy": ["(*) clouds drift by (*)", "~ overcast skies ~"],
+            "rainy": ["' pitter patter '", "~ splish splash ~", "',' rain falls gently ','"],
+            "stormy": ["! THUNDER RUMBLES !", "~~ wind howls ~~", "!! lightning flashes !!"],
+            "snowy": ["* snowflakes drift *", "~ winter wonderland ~", "o frosty and cold o"],
+            "foggy": ["... mist swirls ...", "~ mysterious fog ~", "o.o visibility low o.o"],
+            "windy": ["~~ whoooosh! ~~", "~ leaves swirl ~", "~ breezy day ~"],
+            "rainbow": ["(=) magical colors! (=)", "* make a wish! *", "~ rare and beautiful ~"],
         }
 
         return effects.get(weather_type, [])
@@ -554,8 +554,8 @@ class Renderer:
         self._last_render_time = time.time()
 
         # Get terminal size - cap to reasonable maximum for consistent gameplay
-        MAX_WIDTH = 120   # Maximum game width
-        MAX_HEIGHT = 40   # Maximum game height
+        MAX_WIDTH = 116   # Maximum game width
+        MAX_HEIGHT = 35   # Maximum game height
         
         term_width = max(self.term.width, 60)
         term_height = max(self.term.height, 20)
@@ -606,9 +606,9 @@ class Renderer:
         else:
             placed_items = []
 
-        # Get built structures from building system
+        # Get built structures from building system (only show at Home Pond)
         built_structures = []
-        if hasattr(game, 'building') and game.building:
+        if (current_location == "Home Pond" or current_location is None) and hasattr(game, 'building') and game.building:
             built_structures = [s for s in game.building.structures if s.status.value == "complete"]
 
         # Get current visitor info from friends system
@@ -702,26 +702,26 @@ class Renderer:
 
         # Weather icons and names
         weather_data = {
-            "sunny": ("☀", "Sunny"),
-            "cloudy": ("☁", "Cloudy"),
-            "rainy": ("🌧", "Rainy"),
-            "stormy": ("⛈", "Stormy"),
-            "snowy": ("❄", "Snowy"),
-            "foggy": ("🌫", "Foggy"),
-            "windy": ("💨", "Windy"),
-            "rainbow": ("🌈", "Rainbow"),
+            "sunny": ("*", "Sunny"),
+            "cloudy": ("(*)", "Cloudy"),
+            "rainy": ("','", "Rainy"),
+            "stormy": ("!!!", "Stormy"),
+            "snowy": ("*", "Snowy"),
+            "foggy": ("...", "Foggy"),
+            "windy": ("~~", "Windy"),
+            "rainbow": ("(=)", "Rainbow"),
         }
 
         # Time of day icons and names
         time_data = {
-            "dawn": ("🌅", "Dawn"),
-            "morning": ("🌤", "Morning"),
-            "midday": ("☀", "Midday"),
-            "afternoon": ("🌤", "Afternoon"),
-            "evening": ("🌆", "Evening"),
-            "dusk": ("🌇", "Dusk"),
-            "night": ("🌙", "Night"),
-            "late_night": ("🌑", "Late Night"),
+            "dawn": ("-*-", "Dawn"),
+            "morning": ("*", "Morning"),
+            "midday": ("*", "Midday"),
+            "afternoon": ("*", "Afternoon"),
+            "evening": ("-*-", "Evening"),
+            "dusk": ("-*-", "Dusk"),
+            "night": (")", "Night"),
+            "late_night": ("o", "Late Night"),
         }
 
         # Build weather string with icon and label
@@ -1155,7 +1155,9 @@ class Renderer:
                     # Don't overwrite duck or effect characters
                     existing_char, existing_color = row[int(px)]
                     if existing_char in GROUND_CHARS or existing_char == ' ':
-                        row[int(px)] = (char, weather_color)
+                        # Only use first character if multi-char to prevent overflow
+                        display_char = char[0] if len(char) > 1 else char
+                        row[int(px)] = (display_char, weather_color)
 
             # Convert row to string, applying colors
             row_chars = []
@@ -1225,7 +1227,7 @@ class Renderer:
 
         # Divider - Shortcuts Section
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
-        shortcut_title = _visible_center("─── SHORTCUTS ───", inner_width)
+        shortcut_title = _visible_center("--- SHORTCUTS ---", inner_width)
         lines.append(BOX["v"] + shortcut_title + BOX["v"])
 
         # Actions column - organized by function
@@ -1400,7 +1402,7 @@ class Renderer:
         inner_width = width - 2
 
         # Compact controls hint
-        controls = " [H]elp for shortcuts • [M]ute • [+/-] Volume • [Q]uit "
+        controls = " [H]elp for shortcuts | [M]ute | [+/-] Volume | [Q]uit "
 
         lines = [
             BOX["tl"] + BOX["h"] * inner_width + BOX["tr"],
@@ -1435,7 +1437,7 @@ class Renderer:
             "duck_race": "DUCK RACE",
         }
         game_name = game_names.get(game._minigame_type, "MINI-GAME")
-        title = f"═══ {game_name} ═══"
+        title = f"=== {game_name} ==="
         output.append(title.center(width))
         output.append("")
 
@@ -1462,17 +1464,17 @@ class Renderer:
             # Frame 1 - Idle happy
             [
                 "              ,~~.                     ",
-                "         ,   (  ^ )>        ★          ",
+                "         ,   (  ^ )>        *          ",
                 "         )`~~'    (                    ",
                 "        (    .__)  )                   ",
                 "         `-.____.,'                    ",
-                "             ||          ♪             ",
+                "             ||          #             ",
                 "           ~~~~~                       ",
             ],
             # Frame 2 - Dance left
             [
                 "           ,~~.                        ",
-                "      ,   (  o )>    ♫                 ",
+                "      ,   (  o )>    #                 ",
                 "      )`~~'    (                       ",
                 "     (    .~.)  )                      ",
                 "      `-.____.,'                       ",
@@ -1483,7 +1485,7 @@ class Renderer:
             [
                 "                ,~~.                   ",
                 "           ,   (  o )>                 ",
-                "           )`~~'    (      ♪           ",
+                "           )`~~'    (      #           ",
                 "          (    (._)  )                 ",
                 "           `-.____.,'                  ",
                 "               ||  \\\\                  ",
@@ -1494,14 +1496,14 @@ class Renderer:
                 "     \\\\    ,~~.    //                 ",
                 "      \\\\  ( O O )> //    QUACK!       ",
                 "       )`~~'    (                      ",
-                "      (    .◡.)  )        ♫ ♪         ",
+                "      (    .◡.)  )        # #         ",
                 "       `-.____.,'                      ",
                 "          \\    /                       ",
                 "         ~~~~~~~                       ",
             ],
             # Frame 5 - Lean left
             [
-                "         ,~~.      ♪                   ",
+                "         ,~~.      #                   ",
                 "    ,   (  ~ )>                        ",
                 "    )`~~'    (                         ",
                 "   (    .__)  )                        ",
@@ -1512,7 +1514,7 @@ class Renderer:
             # Frame 6 - Lean right
             [
                 "                  ,~~.                 ",
-                "             ,   (  ~ )>      ♫        ",
+                "             ,   (  ~ )>      #        ",
                 "             )`~~'    (                ",
                 "            (    .__)  )               ",
                 "             `-.____.,'                ",
@@ -1521,10 +1523,10 @@ class Renderer:
             ],
             # Frame 7 - Spin!
             [
-                "           ✧ SPIN ✧                    ",
+                "           * SPIN *                    ",
                 "              ,~~.                     ",
                 "         ,   ( @ @ )>                  ",
-                "         )`~~'    (       ♫            ",
+                "         )`~~'    (       #            ",
                 "        (    .~~)  )                   ",
                 "         `-.____.,'                    ",
                 "            ~~~~~~~                    ",
@@ -1534,7 +1536,7 @@ class Renderer:
                 "              ,~~.                     ",
                 "         ,   (  ^ )>======>>           ",
                 "         )`~~'    (                    ",
-                "        (    .ᴗ.)  )       ♪           ",
+                "        (    .ᴗ.)  )       #           ",
                 "         `-.____.,'                    ",
                 "             ||                        ",
                 "           ~~~~~                       ",
@@ -1554,7 +1556,7 @@ class Renderer:
                 "              ,~~.                     ",
                 "         ,   ( o_o )>    Hi there!     ",
                 "         )`~~'    (                    ",
-                "        (    .__)  )      ★            ",
+                "        (    .__)  )      *            ",
                 "         `-.____.,'                    ",
                 "             ||                        ",
                 "           ~~~~~                       ",
@@ -1566,7 +1568,7 @@ class Renderer:
         duck_art = duck_frames[frame_idx]
 
         # Sparkle effects that rotate slowly (change every 15 ticks)
-        sparkle_chars = ["✦", "★", "✧", "☆"]
+        sparkle_chars = ["*", "*", "*", "*"]
         sparkle_idx = (self._title_frame // 15) % len(sparkle_chars)
         sparkle1 = sparkle_chars[sparkle_idx]
         sparkle2 = sparkle_chars[(sparkle_idx + 2) % len(sparkle_chars)]
@@ -1574,38 +1576,38 @@ class Renderer:
         # Build title screen
         title_art = [
             f"    {sparkle1}                                                    {sparkle2}",
-            "    ╔══════════════════════════════════════════════════════╗    ",
-            "    ║                                                      ║    ",
-            "    ║      ██████╗██╗  ██╗███████╗███████╗███████╗███████╗ ║    ",
-            "    ║     ██╔════╝██║  ██║██╔════╝██╔════╝██╔════╝██╔════╝ ║    ",
-            "    ║     ██║     ███████║█████╗  █████╗  ███████╗█████╗   ║    ",
-            "    ║     ██║     ██╔══██║██╔══╝  ██╔══╝  ╚════██║██╔══╝   ║    ",
-            "    ║     ╚██████╗██║  ██║███████╗███████╗███████║███████╗ ║    ",
-            "    ║      ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝╚══════╝ ║    ",
-            "    ║                                                      ║    ",
-            "    ║            ═══ THE DUCK ═══                          ║    ",
-            "    ║                                                      ║    ",
-            "    ╠══════════════════════════════════════════════════════╣    ",
+            "    +======================================================+    ",
+            "    |                                                      |    ",
+            "    |      ██████+██+  ██+███████+███████+███████+███████+ |    ",
+            "    |     ██+====+██|  ██|██+====+██+====+██+====+██+====+ |    ",
+            "    |     ██|     ███████|█████+  █████+  ███████+█████+   |    ",
+            "    |     ██|     ██+==██|██+==+  ██+==+  +====██|██+==+   |    ",
+            "    |     +██████+██|  ██|███████+███████+███████|███████+ |    ",
+            "    |      +=====++=+  +=++======++======++======++======+ |    ",
+            "    |                                                      |    ",
+            "    |            === THE DUCK ===                          |    ",
+            "    |                                                      |    ",
+            "    +======================================================+    ",
         ]
 
         # Add the dancing duck with yellow color
         for line in duck_art:
             padded_line = line + " " * (54 - len(line)) if len(line) < 54 else line[:54]
             yellow_duck = self.term.yellow + padded_line + self.term.normal
-            title_art.append(f"    ║{yellow_duck}║    ")
+            title_art.append(f"    |{yellow_duck}|    ")
 
         # Add footer
         title_art.extend([
-            "    ╠══════════════════════════════════════════════════════╣    ",
-            "    ║                                                      ║    ",
-            "    ║         Your virtual pet duck awaits!                ║    ",
-            "    ║                                                      ║    ",
-            "    ╠══════════════════════════════════════════════════════╣    ",
-            "    ║                                                      ║    ",
-            "    ║            Press [ENTER] to start                    ║    ",
-            "    ║            Press [Q] to quit                         ║    ",
-            "    ║                                                      ║    ",
-            "    ╚══════════════════════════════════════════════════════╝    ",
+            "    +======================================================+    ",
+            "    |                                                      |    ",
+            "    |         Your virtual pet duck awaits!                |    ",
+            "    |                                                      |    ",
+            "    +======================================================+    ",
+            "    |                                                      |    ",
+            "    |            Press [ENTER] to start                    |    ",
+            "    |            Press [Q] to quit                         |    ",
+            "    |                                                      |    ",
+            "    +======================================================+    ",
             "",
         ])
 
@@ -1618,27 +1620,27 @@ class Renderer:
     def _overlay_help(self, base_output: List[str], width: int) -> List[str]:
         """Overlay the help screen."""
         help_text = [
-            "═══ DUCK CARE ═══",
+            "=== DUCK CARE ===",
             "[F]/[1] Feed    [P]/[2] Play    [L]/[3] Clean",
             "[D]/[4] Pet     [Z]/[5] Sleep   [T] Talk",
             "",
-            "═══ MENUS ═══",
+            "=== MENUS ===",
             "[I] Inventory   [G] Goals    [S] Stats",
             "[B] Shop        [U] Use Item [O] Quests",
             "",
-            "═══ ACTIVITIES ═══",
+            "=== ACTIVITIES ===",
             "[E] Explore     [A] Areas    [C] Craft",
             "[R] Build       [J] Minigames",
             "[K] Duck Fact   [W] Weather Activities",
             "",
-            "═══ SPECIAL ═══",
+            "=== SPECIAL ===",
             "[V] Trading     [Y] Scrapbook",
             "[6] Treasure    [7] Secrets",
             "",
-            "═══ AUDIO ═══",
+            "=== AUDIO ===",
             "[M] Sound  [N] Music  [+]/[-] Volume",
             "",
-            "═══ SYSTEM ═══",
+            "=== SYSTEM ===",
             "[Q] Save & Quit  [X] Reset Game",
             "",
             "Press [H] to close",
@@ -1701,38 +1703,38 @@ class Renderer:
         struct_count = len([s for s in building._structures if s.status.value == "complete"])
 
         stats_text = [
-            f"🦆 {duck.name} - {duck.get_growth_stage_display()}",
+            f"[d] {duck.name} - {duck.get_growth_stage_display()}",
             "",
-            f"╔══════════════ PROGRESS ══════════════╗",
+            f"+============== PROGRESS ==============+",
             f"  Level {prog.level}: {prog.title}",
             f"  XP: {xp_bar} {int(xp_pct)}%",
             f"  {streak_line}",
             f"  Best Streak: {prog.longest_streak} days",
-            f"╚══════════════════════════════════════╝",
+            f"+======================================+",
             "",
-            f"╔══════════════ BONDING ═══════════════╗",
+            f"+============== BONDING ===============+",
             f"  Relationship: {memory.get_relationship_description()}",
             f"  Mood Trend: {memory.get_recent_mood_trend()}",
-            f"  Love Score: {'💕' * (love_score // 20)}{'💔' * (5 - love_score // 20)} {love_score}%",
-            f"╚══════════════════════════════════════╝",
+            f"  Love Score: {'<3' * (love_score // 20)}{'</3' * (5 - love_score // 20)} {love_score}%",
+            f"+======================================+",
             "",
-            f"╔══════════════ WORLD ═════════════════╗",
-            f"  🗺️  Location: {biome_name}",
-            f"  🌲 Areas: {area_count} discovered",
-            f"  📦 Materials: {mat_count} types ({mat_total} total)",
-            f"  🏠 Structures: {struct_count} built",
-            f"╚══════════════════════════════════════╝",
+            f"+============== WORLD =================+",
+            f"  [?]  Location: {biome_name}",
+            f"  A Areas: {area_count} discovered",
+            f"  [=] Materials: {mat_count} types ({mat_total} total)",
+            f"  [=] Structures: {struct_count} built",
+            f"+======================================+",
             "",
-            f"╔══════════════ LIFETIME ══════════════╗",
+            f"+============== LIFETIME ==============+",
             f"  Days Played: {prog.days_played}",
             f"  Total Care: {total_care_actions} actions",
-            f"  Collectibles: {coll_owned}/{coll_total} 🏆",
-            f"╚══════════════════════════════════════╝",
+            f"  Collectibles: {coll_owned}/{coll_total} [#]",
+            f"+======================================+",
             "",
             "       Press [S] to close",
         ]
 
-        return self._overlay_box(base_output, stats_text, "📊 STATISTICS", width)
+        return self._overlay_box(base_output, stats_text, "[=] STATISTICS", width)
 
     def _overlay_talk(self, base_output: List[str], width: int) -> List[str]:
         """Overlay talk/chat interface."""
@@ -1974,17 +1976,17 @@ class Renderer:
 
         box_lines = []
         # Top border
-        box_lines.append(self.term.cyan("╔" + "═" * (box_width - 2) + "╗"))
+        box_lines.append(self.term.cyan("+" + "=" * (box_width - 2) + "+"))
         
         for line in content:
             # Truncate and pad to box width
             centered = _visible_center(line, box_width - 4)
             centered = _visible_truncate(centered, box_width - 4)
             centered = _visible_ljust(centered, box_width - 4)
-            box_lines.append(self.term.cyan("║ ") + centered + self.term.cyan(" ║"))
+            box_lines.append(self.term.cyan("| ") + centered + self.term.cyan(" |"))
         
         # Bottom border
-        box_lines.append(self.term.cyan("╚" + "═" * (box_width - 2) + "╝"))
+        box_lines.append(self.term.cyan("+" + "=" * (box_width - 2) + "+"))
 
         # Overlay on base output
         result = base_output.copy()
@@ -2020,7 +2022,7 @@ class Renderer:
         
         # Build shop display
         content = []
-        content.append(f"💰 Currency: ${habitat.currency}")
+        content.append(f"$ Currency: ${habitat.currency}")
         content.append("")
         content.append("Categories: " + " ".join(
             f"[{cat}]" if i == self._shop_category_index else cat 
@@ -2030,9 +2032,9 @@ class Renderer:
         
         # Show items (max 10)
         for i, item in enumerate(items[:10]):
-            prefix = "→ " if i == self._shop_item_index else "  "
-            owned = "✓" if habitat.owns_item(item.id) else " "
-            affordable = "💰" if habitat.can_afford(item.cost) else "🔒"
+            prefix = "-> " if i == self._shop_item_index else "  "
+            owned = "[x]" if habitat.owns_item(item.id) else "[ ]"
+            affordable = "$" if habitat.can_afford(item.cost) else "X"
             content.append(f"{prefix}{owned} {item.name} ${item.cost} {affordable} (Lv{item.unlock_level})")
         
         if self._shop_item_index < len(items):
@@ -2041,9 +2043,9 @@ class Renderer:
             content.append(item.description)
         
         content.append("")
-        content.append("← → : Change category | ↑ ↓ : Select item | [B]uy | [ESC]: Close")
+        content.append("<- -> : Change category | ^ v : Select item | [B]uy | [ESC]: Close")
         
-        return self._overlay_box(base_output, content, "🏪 SHOP", width)
+        return self._overlay_box(base_output, content, "[SHOP]", width)
 
     def shop_navigate_category(self, delta: int):
         """Navigate shop categories."""
@@ -2099,7 +2101,7 @@ class Renderer:
         self._show_message_overlay = False
 
     def show_menu(self, title: str, items: List[Dict], selected_index: int = 0,
-                  show_numbers: bool = True, footer: str = "[↑↓] Navigate  [Enter] Select  [ESC] Close"):
+                  show_numbers: bool = True, footer: str = "[^v] Navigate  [Enter] Select  [ESC] Close"):
         """
         Show a menu with arrow-key selection highlighting.
 
@@ -2111,7 +2113,7 @@ class Renderer:
             footer: Footer text with controls hint
         """
         lines = []
-        lines.append(f"═══ {title} ═══")
+        lines.append(f"=== {title} ===")
         lines.append("")
 
         if not items:
@@ -2178,6 +2180,7 @@ class Renderer:
         self._show_stats = False
         self._show_talk = False
         self._show_inventory = False
+        self.dismiss_message()  # Close any menu overlays
 
     def toggle_stats(self):
         """Toggle the stats overlay."""
@@ -2185,14 +2188,20 @@ class Renderer:
         self._show_help = False
         self._show_talk = False
         self._show_inventory = False
+        self.dismiss_message()  # Close any menu overlays
 
     def toggle_talk(self):
         """Toggle the talk overlay."""
+        was_talking = self._show_talk
         self._show_talk = not self._show_talk
         self._show_help = False
         self._show_stats = False
         self._show_inventory = False
         self._talk_buffer = ""
+        # Only dismiss messages when OPENING talk mode, not when closing
+        # (closing talk mode should preserve the response message)
+        if not was_talking:
+            self.dismiss_message()  # Close any menu overlays when opening talk
 
     def toggle_inventory(self):
         """Toggle the inventory overlay."""
@@ -2201,6 +2210,7 @@ class Renderer:
         self._show_stats = False
         self._show_talk = False
         self._show_shop = False
+        self.dismiss_message()  # Close any menu overlays
 
     def toggle_shop(self):
         """Toggle the shop overlay."""
@@ -2209,6 +2219,7 @@ class Renderer:
         self._show_stats = False
         self._show_talk = False
         self._show_inventory = False
+        self.dismiss_message()  # Close any menu overlays
 
     def hide_overlays(self):
         """Hide all overlays."""
@@ -2217,6 +2228,7 @@ class Renderer:
         self._show_talk = False
         self._show_inventory = False
         self._show_shop = False
+        self.dismiss_message()  # Close any menu overlays
 
     def is_talking(self) -> bool:
         """Check if talk mode is active."""

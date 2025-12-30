@@ -388,7 +388,7 @@ class ChallengeSystem:
             "item": definition.bonus_item,
         }
         
-        return True, f"🎉 Challenge Complete! +{rewards['xp']} XP, +{rewards['coins']} coins!", rewards
+        return True, f"* Challenge Complete! +{rewards['xp']} XP, +{rewards['coins']} coins!", rewards
     
     def _find_challenge(self, challenge_id: str) -> Optional[ActiveChallenge]:
         """Find an active challenge by ID."""
@@ -468,42 +468,42 @@ class ChallengeSystem:
     def render_challenges(self) -> List[str]:
         """Render the challenges display."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║          📋 CHALLENGES 📋                     ║",
-            f"║  Streak: {self.challenge_streak} days 🔥                          ║",
-            "╠═══════════════════════════════════════════════╣",
-            "║  📅 DAILY CHALLENGES:                         ║",
+            "+===============================================+",
+            "|          [=] CHALLENGES [=]                     |",
+            f"|  Streak: {self.challenge_streak} days ^                          |",
+            "+===============================================+",
+            "|  [=] DAILY CHALLENGES:                         |",
         ]
         
         for challenge in self.active_daily:
             definition = self._get_definition(challenge.challenge_id)
             if definition:
-                status = "✅" if challenge.completed else f"{challenge.current_progress}/{challenge.goal_amount}"
-                claimed = " 🎁" if challenge.claimed else ""
-                lines.append(f"║   {status} {definition.name[:20]:20}{claimed}    ║")
+                status = "[x]" if challenge.completed else f"{challenge.current_progress}/{challenge.goal_amount}"
+                claimed = " [+]" if challenge.claimed else ""
+                lines.append(f"|   {status} {definition.name[:20]:20}{claimed}    |")
         
-        lines.append("╠═══════════════════════════════════════════════╣")
-        lines.append("║  📆 WEEKLY CHALLENGES:                        ║")
+        lines.append("+===============================================+")
+        lines.append("|  [=] WEEKLY CHALLENGES:                        |")
         
         for challenge in self.active_weekly:
             definition = self._get_definition(challenge.challenge_id)
             if definition:
-                status = "✅" if challenge.completed else f"{challenge.current_progress}/{challenge.goal_amount}"
-                claimed = " 🎁" if challenge.claimed else ""
-                lines.append(f"║   {status} {definition.name[:20]:20}{claimed}    ║")
+                status = "[x]" if challenge.completed else f"{challenge.current_progress}/{challenge.goal_amount}"
+                claimed = " [+]" if challenge.claimed else ""
+                lines.append(f"|   {status} {definition.name[:20]:20}{claimed}    |")
         
         if self.active_special:
-            lines.append("╠═══════════════════════════════════════════════╣")
-            lines.append("║  ⭐ SPECIAL CHALLENGES:                       ║")
+            lines.append("+===============================================+")
+            lines.append("|  * SPECIAL CHALLENGES:                       |")
             for challenge in self.active_special:
                 definition = self._get_definition(challenge.challenge_id)
                 if definition:
-                    status = "✅" if challenge.completed else f"{challenge.current_progress}/{challenge.goal_amount}"
-                    lines.append(f"║   {status} {definition.name[:20]:20}        ║")
+                    status = "[x]" if challenge.completed else f"{challenge.current_progress}/{challenge.goal_amount}"
+                    lines.append(f"|   {status} {definition.name[:20]:20}        |")
         
-        lines.append("╠═══════════════════════════════════════════════╣")
-        lines.append(f"║  Total Completed: {self.total_challenges_completed:5}                      ║")
-        lines.append("╚═══════════════════════════════════════════════╝")
+        lines.append("+===============================================+")
+        lines.append(f"|  Total Completed: {self.total_challenges_completed:5}                      |")
+        lines.append("+===============================================+")
         
         return lines
     

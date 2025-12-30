@@ -143,11 +143,11 @@ COLLECTIBLES: Dict[str, Collectible] = {
         set_position=1,
         description="An elegant portrait of Cheese the Duck",
         image_art=[
-            "╔══════════╗",
-            "║  .--.    ║",
-            "║ (_ ^ _)  ║",
-            "║  (__)    ║",
-            "╚══════════╝",
+            "+==========+",
+            "|  .--.    |",
+            "| (_ ^ _)  |",
+            "|  (__)    |",
+            "+==========+",
         ],
         flavor_text="The one and only!",
     ),
@@ -160,11 +160,11 @@ COLLECTIBLES: Dict[str, Collectible] = {
         set_position=2,
         description="The legendary Emperor Duck",
         image_art=[
-            "╔══════════╗",
-            "║  👑      ║",
-            "║ (_ ^ _)  ║",
-            "║  (__)    ║",
-            "╚══════════╝",
+            "+==========+",
+            "|  ^      |",
+            "| (_ ^ _)  |",
+            "|  (__)    |",
+            "+==========+",
         ],
         flavor_text="Ruler of the Great Pond",
     ),
@@ -177,11 +177,11 @@ COLLECTIBLES: Dict[str, Collectible] = {
         set_position=3,
         description="A wise scholar duck with glasses",
         image_art=[
-            "╔══════════╗",
-            "║  .--.    ║",
-            "║ (o o)    ║",
-            "║  (__)    ║",
-            "╚══════════╝",
+            "+==========+",
+            "|  .--.    |",
+            "| (o o)    |",
+            "|  (__)    |",
+            "+==========+",
         ],
         flavor_text="Knowledge is power!",
     ),
@@ -194,11 +194,11 @@ COLLECTIBLES: Dict[str, Collectible] = {
         set_position=4,
         description="A creative artist duck",
         image_art=[
-            "╔══════════╗",
-            "║  🎨      ║",
-            "║ (_ ^ _)  ║",
-            "║  (__)    ║",
-            "╚══════════╝",
+            "+==========+",
+            "|  *      |",
+            "| (_ ^ _)  |",
+            "|  (__)    |",
+            "+==========+",
         ],
         flavor_text="Every quack is a masterpiece",
     ),
@@ -211,11 +211,11 @@ COLLECTIBLES: Dict[str, Collectible] = {
         set_position=5,
         description="An adventurous explorer",
         image_art=[
-            "╔══════════╗",
-            "║  ⛏️      ║",
-            "║ (_ ^ _)  ║",
-            "║  (__)    ║",
-            "╚══════════╝",
+            "+==========+",
+            "|  T      |",
+            "| (_ ^ _)  |",
+            "|  (__)    |",
+            "+==========+",
         ],
         flavor_text="Adventure awaits!",
     ),
@@ -292,7 +292,7 @@ COLLECTIBLES: Dict[str, Collectible] = {
         description="A bright sunny day",
         image_art=[
             " \\|/  ",
-            "-- ☀ --",
+            "-- * --",
             " /|\\  ",
         ],
         flavor_text="Perfect weather!",
@@ -306,7 +306,7 @@ COLLECTIBLES: Dict[str, Collectible] = {
         set_position=2,
         description="A cozy rainy day",
         image_art=[
-            "  ☁️   ",
+            "  (*)   ",
             " , , , ",
             "' ' ' '",
         ],
@@ -321,7 +321,7 @@ COLLECTIBLES: Dict[str, Collectible] = {
         set_position=3,
         description="A magical rainbow",
         image_art=[
-            "  🌈   ",
+            "  ~   ",
         ],
         flavor_text="Double rainbow!",
     ),
@@ -334,8 +334,8 @@ COLLECTIBLES: Dict[str, Collectible] = {
         set_position=4,
         description="A beautiful snowy day",
         image_art=[
-            " ❄️ ❄️ ❄️ ",
-            "  ❄️ ❄️  ",
+            " * * * ",
+            "  * *  ",
         ],
         flavor_text="Let it snow!",
     ),
@@ -350,9 +350,9 @@ COLLECTIBLES: Dict[str, Collectible] = {
         set_position=1,
         description="The immortal Phoenix Duck",
         image_art=[
-            "  🔥🔥🔥  ",
+            "  ^^^  ",
             " (_ ^ _) ",
-            "  🔥🔥   ",
+            "  ^^   ",
         ],
         flavor_text="Rises from the ashes",
         special_effect="Grants rebirth protection once",
@@ -366,7 +366,7 @@ COLLECTIBLES: Dict[str, Collectible] = {
         set_position=2,
         description="The mighty Dragon Duck",
         image_art=[
-            "  🐉     ",
+            "  D     ",
             " (_ ^ _) ",
             "  ~~~~   ",
         ],
@@ -442,7 +442,7 @@ class CollectiblesSystem:
         self.packs_opened += 1
         
         names = ", ".join(c.name for c in results)
-        return True, f"🎴 Pack opened! Got: {names}", results
+        return True, f"[=] Pack opened! Got: {names}", results
     
     def _add_collectible(self, collectible: Collectible):
         """Add a collectible to the collection."""
@@ -590,39 +590,39 @@ class CollectiblesSystem:
         if len(self.trade_history) > 100:
             self.trade_history = self.trade_history[-100:]
 
-        return True, f"🔄 Trade successful! Got: {new_collectible.name}!", new_collectible
+        return True, f"~ Trade successful! Got: {new_collectible.name}!", new_collectible
     
     def render_collection_album(self) -> List[str]:
         """Render the collection album view."""
         stats = self.get_collection_stats()
         
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║           🎴 COLLECTION ALBUM 🎴              ║",
-            "╠═══════════════════════════════════════════════╣",
-            f"║  Collected: {stats['unique_owned']:3}/{stats['total_possible']:<3} ({stats['completion_percent']:.1f}%)               ║",
-            f"║  Shiny: {stats['shiny_count']:3}  |  Sets: {stats['sets_completed']}/{stats['total_sets']}                ║",
-            "╠═══════════════════════════════════════════════╣",
-            "║  SETS:                                        ║",
+            "+===============================================+",
+            "|           [=] COLLECTION ALBUM [=]              |",
+            "+===============================================+",
+            f"|  Collected: {stats['unique_owned']:3}/{stats['total_possible']:<3} ({stats['completion_percent']:.1f}%)               |",
+            f"|  Shiny: {stats['shiny_count']:3}  |  Sets: {stats['sets_completed']}/{stats['total_sets']}                |",
+            "+===============================================+",
+            "|  SETS:                                        |",
         ]
         
         for set_id, set_def in list(SETS.items())[:5]:
             owned, total, _ = self.get_set_progress(set_id)
-            completed = "✓" if set_id in self.completed_sets else " "
+            completed = "x" if set_id in self.completed_sets else " "
             progress = f"{owned}/{total}"
-            lines.append(f"║  [{completed}] {set_def.name[:25]:25} {progress:5}   ║")
+            lines.append(f"|  [{completed}] {set_def.name[:25]:25} {progress:5}   |")
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            "║  RARITY:                                      ║",
+            "+===============================================+",
+            "|  RARITY:                                      |",
         ])
         
         for rarity in CollectibleRarity:
             count = stats['by_rarity'].get(rarity.value, 0)
-            icon = {"common": "⚪", "uncommon": "🟢", "rare": "🔵", "epic": "🟣", "legendary": "🟡", "mythic": "🔴"}.get(rarity.value, "⚪")
-            lines.append(f"║    {icon} {rarity.value.title():12}: {count:3}                    ║")
+            icon = {"common": "o", "uncommon": "O", "rare": "O", "epic": "O", "legendary": "O", "mythic": "O"}.get(rarity.value, "o")
+            lines.append(f"|    {icon} {rarity.value.title():12}: {count:3}                    |")
         
-        lines.append("╚═══════════════════════════════════════════════╝")
+        lines.append("+===============================================+")
         
         return lines
     
@@ -635,46 +635,46 @@ class CollectiblesSystem:
         owned = self.owned.get(collectible_id)
         
         rarity_colors = {
-            CollectibleRarity.COMMON: "⚪",
-            CollectibleRarity.UNCOMMON: "🟢",
-            CollectibleRarity.RARE: "🔵",
-            CollectibleRarity.EPIC: "🟣",
-            CollectibleRarity.LEGENDARY: "🟡",
-            CollectibleRarity.MYTHIC: "🔴",
+            CollectibleRarity.COMMON: "o",
+            CollectibleRarity.UNCOMMON: "O",
+            CollectibleRarity.RARE: "O",
+            CollectibleRarity.EPIC: "O",
+            CollectibleRarity.LEGENDARY: "O",
+            CollectibleRarity.MYTHIC: "O",
         }
         
-        rarity_icon = rarity_colors.get(collectible.rarity, "⚪")
-        shiny = "✨" if owned and owned.is_shiny else ""
+        rarity_icon = rarity_colors.get(collectible.rarity, "o")
+        shiny = "*" if owned and owned.is_shiny else ""
         
         lines = [
-            "╔════════════════════════════════════╗",
-            f"║ {shiny}{collectible.name:^32}{shiny} ║",
-            f"║  {rarity_icon} {collectible.rarity.value.title():^29}  ║",
-            "╠════════════════════════════════════╣",
+            "+====================================+",
+            f"| {shiny}{collectible.name:^32}{shiny} |",
+            f"|  {rarity_icon} {collectible.rarity.value.title():^29}  |",
+            "+====================================+",
         ]
         
         # Add art
         for art_line in collectible.image_art:
-            lines.append(f"║  {art_line:^32}  ║")
+            lines.append(f"|  {art_line:^32}  |")
         
-        lines.append("╠════════════════════════════════════╣")
+        lines.append("+====================================+")
         
         # Description (word wrap)
         desc = collectible.description
         while desc:
-            lines.append(f"║  {desc[:32]:32}  ║")
+            lines.append(f"|  {desc[:32]:32}  |")
             desc = desc[32:]
         
         if collectible.flavor_text:
-            lines.append(f"║  \"{collectible.flavor_text[:28]:28}\"  ║")
+            lines.append(f"|  \"{collectible.flavor_text[:28]:28}\"  |")
         
         if owned:
             dupe = f"+{owned.duplicate_count}" if owned.duplicate_count > 0 else ""
-            lines.append(f"║  Owned {dupe:^27}  ║")
+            lines.append(f"|  Owned {dupe:^27}  |")
         else:
-            lines.append("║  ??? Not Owned ???                 ║")
+            lines.append("|  ??? Not Owned ???                 |")
         
-        lines.append("╚════════════════════════════════════╝")
+        lines.append("+====================================+")
         
         return lines
     

@@ -43,12 +43,12 @@ MINI_COSMETIC_ART = {
     # ============ HATS (displayed above head) ============
     "hat_red": {
         "position": "above",
-        "lines": [("▲", C.RED)],
+        "lines": [("^", C.RED)],
         "y_offset": -1, "x_offset": 0
     },
     "hat_blue": {
         "position": "above",
-        "lines": [("▲", C.BLUE)],
+        "lines": [("^", C.BLUE)],
         "y_offset": -1, "x_offset": 0
     },
     "hat_party": {
@@ -58,17 +58,17 @@ MINI_COSMETIC_ART = {
     },
     "hat_chef": {
         "position": "above",
-        "lines": [("▓", C.BRIGHT_WHITE)],
+        "lines": [("#", C.BRIGHT_WHITE)],
         "y_offset": -1, "x_offset": 0
     },
     "hat_wizard": {
         "position": "above",
-        "lines": [("★", C.BRIGHT_YELLOW), ("◢", C.PURPLE)],
+        "lines": [("*", C.BRIGHT_YELLOW), ("◢", C.PURPLE)],
         "y_offset": -2, "x_offset": 0
     },
     "hat_crown": {
         "position": "above",
-        "lines": [("♔", C.GOLD)],
+        "lines": [("^", C.GOLD)],
         "y_offset": -1, "x_offset": 0
     },
     "hat_viking": {
@@ -78,7 +78,7 @@ MINI_COSMETIC_ART = {
     },
     "hat_pirate": {
         "position": "above",
-        "lines": [("☠", C.WHITE)],
+        "lines": [("X", C.WHITE)],
         "y_offset": -1, "x_offset": 0
     },
     "hat_cowboy": {
@@ -108,7 +108,7 @@ MINI_COSMETIC_ART = {
     },
     "party_hat": {
         "position": "above",
-        "lines": [("✦", C.BRIGHT_CYAN), ("▲", C.BRIGHT_MAGENTA)],
+        "lines": [("*", C.BRIGHT_CYAN), ("^", C.BRIGHT_MAGENTA)],
         "y_offset": -2, "x_offset": 0
     },
     "cap_sports": {
@@ -123,7 +123,7 @@ MINI_COSMETIC_ART = {
     },
     "crown_golden": {
         "position": "above",
-        "lines": [("♛", C.GOLD)],
+        "lines": [("^", C.GOLD)],
         "y_offset": -1, "x_offset": 0
     },
     "viking_helmet": {
@@ -133,17 +133,17 @@ MINI_COSMETIC_ART = {
     },
     "wizard_hat": {
         "position": "above",
-        "lines": [("☆", C.BRIGHT_YELLOW), ("▲", C.PURPLE)],
+        "lines": [("*", C.BRIGHT_YELLOW), ("^", C.PURPLE)],
         "y_offset": -2, "x_offset": 0
     },
     "pirate_hat": {
         "position": "above",
-        "lines": [("⚓", C.WHITE)],
+        "lines": [("#", C.WHITE)],
         "y_offset": -1, "x_offset": 0
     },
     "flower_crown": {
         "position": "above",
-        "lines": [("❀", C.PINK)],
+        "lines": [("*", C.PINK)],
         "y_offset": -1, "x_offset": 0
     },
     "space_helmet": {
@@ -153,7 +153,7 @@ MINI_COSMETIC_ART = {
     },
     "hat_jester": {
         "position": "above",
-        "lines": [("♦♦", C.BRIGHT_MAGENTA)],
+        "lines": [("**", C.BRIGHT_MAGENTA)],
         "y_offset": -1, "x_offset": -1
     },
     "propeller_hat": {
@@ -168,7 +168,7 @@ MINI_COSMETIC_ART = {
     },
     "tiara": {
         "position": "above",
-        "lines": [("♢", C.PINK)],
+        "lines": [("*", C.PINK)],
         "y_offset": -1, "x_offset": 0
     },
     "antenna": {
@@ -183,7 +183,7 @@ MINI_COSMETIC_ART = {
     },
     "pilot_cap": {
         "position": "above",
-        "lines": [("✈", C.BRIGHT_BLUE)],
+        "lines": [(">", C.BRIGHT_BLUE)],
         "y_offset": -1, "x_offset": 0
     },
     "detective_hat": {
@@ -237,7 +237,7 @@ MINI_COSMETIC_ART = {
     },
     "bowtie_red": {
         "position": "neck",
-        "lines": [("♦", C.BRIGHT_RED)],
+        "lines": [("*", C.BRIGHT_RED)],
         "y_offset": 1, "x_offset": 0
     },
     "bowtie_fancy": {
@@ -247,12 +247,12 @@ MINI_COSMETIC_ART = {
     },
     "bow_tie_blue": {
         "position": "neck",
-        "lines": [("♦", C.BRIGHT_BLUE)],
+        "lines": [("*", C.BRIGHT_BLUE)],
         "y_offset": 1, "x_offset": 0
     },
     "bow_tie_pink": {
         "position": "neck",
-        "lines": [("♥", C.PINK)],
+        "lines": [("<3", C.PINK)],
         "y_offset": 1, "x_offset": 0
     },
     "scarf_red": {
@@ -274,12 +274,12 @@ MINI_COSMETIC_ART = {
     # ============ BACK/CAPE ACCESSORIES ============
     "cape": {
         "position": "back",
-        "lines": [("╲", C.RED)],
+        "lines": [("\\", C.RED)],
         "y_offset": 1, "x_offset": 2
     },
     "cape_superhero": {
         "position": "back",
-        "lines": [("╲╲", C.BRIGHT_RED)],
+        "lines": [("\\", C.BRIGHT_RED)],
         "y_offset": 1, "x_offset": 2
     },
     "wings_fairy": {
@@ -289,14 +289,14 @@ MINI_COSMETIC_ART = {
     },
     "backpack_tiny": {
         "position": "back",
-        "lines": [("▓", C.BROWN)],
+        "lines": [("#", C.BROWN)],
         "y_offset": 1, "x_offset": 2
     },
     
     # ============ FLOATING ABOVE ============
     "halo_angel": {
         "position": "floating",
-        "lines": [("☼", C.BRIGHT_YELLOW)],
+        "lines": [("o", C.BRIGHT_YELLOW)],
         "y_offset": -2, "x_offset": 0
     },
     "devil_horns": {
@@ -306,7 +306,7 @@ MINI_COSMETIC_ART = {
     },
     "headphones": {
         "position": "above",
-        "lines": [("♪", C.BRIGHT_CYAN)],
+        "lines": [("#", C.BRIGHT_CYAN)],
         "y_offset": -1, "x_offset": 0
     },
 }

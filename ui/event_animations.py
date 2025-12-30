@@ -434,13 +434,13 @@ class BirdAnimator(EventAnimator):
             " L\\",
         ],
         "chirp_1": [
-            " .♪",
+            " .#",
             "<O)",
             "/L ",
         ],
         "chirp_2": [
-            "♪. ",
-            "<O)♪",
+            "#. ",
+            "<O)#",
             " L\\",
         ],
         "peck_1": [
@@ -571,85 +571,21 @@ class DuckVisitorAnimator(EventAnimator):
     More elaborate animation than regular visitors.
     """
     
+    # New adult-style 3-line sprites
     SPRITES = {
-        "waddle_right_1": [
-            "  __  ",
-            " (o_) ",
-            "<|  |>",
-            " (__) ",
-        ],
-        "waddle_right_2": [
-            "  __  ",
-            " (o_) ",
-            "<|  |>",
-            "(__) )",
-        ],
-        "waddle_right_3": [
-            "  __  ",
-            " (o_) ",
-            "<|  |>",
-            "( (__)",
-        ],
-        "idle_1": [
-            "  __  ",
-            " (o_) ",
-            "<|  |>",
-            " (__) ",
-        ],
-        "idle_2": [
-            "  __  ",
-            " (-_) ",
-            "<|  |>",
-            " (__) ",
-        ],
-        "quack_1": [
-            "  __  !!",
-            " (O_)  ",
-            "<|  |> ",
-            " (__) ",
-        ],
-        "quack_2": [
-            " !! __ ",
-            "  (O>) ",
-            " <|  |>",
-            "  (__) ",
-        ],
-        "happy_1": [
-            "  __  ♥",
-            " (^_) ",
-            "<|  |>",
-            " (__) ",
-        ],
-        "happy_2": [
-            " ♥__  ",
-            " (^_) ",
-            "<|  |>",
-            "~(__)~",
-        ],
-        "gift_1": [
-            "  __  ",
-            " (^_) ",
-            "<| ♦|>",
-            " (__) ",
-        ],
-        "gift_2": [
-            "  __  ",
-            " (^_)♦",
-            "<|  |>",
-            " (__) ",
-        ],
-        "wave_1": [
-            "  __/ ",
-            " (^_) ",
-            "<|  |>",
-            " (__) ",
-        ],
-        "wave_2": [
-            " \\__  ",
-            " (^_) ",
-            "<|  |>",
-            " (__) ",
-        ],
+        "waddle_right_1": [" ___ ", "(o__)>", "/'__\\"],
+        "waddle_right_2": [" ___ ", "(o__)>", " '__\\"],
+        "waddle_right_3": [" ___ ", "(o__)>", "/'__ "],
+        "idle_1": [" ___ ", "(o__)>", "/'__\\"],
+        "idle_2": [" ___ ", "(-_-)>", "/'__\\"],
+        "quack_1": [" ___!!", "(O__)>", "/'__\\"],
+        "quack_2": ["!! __ ", "(O__)>", "/'__\\"],
+        "happy_1": [" ___ +", "(^__)>", "/'__\\"],
+        "happy_2": ["+ ___ ", "(^__)>", "/'__\\"],
+        "gift_1": [" ___ ", "(^__)>", "/'*_\\"],
+        "gift_2": [" ___ *", "(^__)>", "/'__\\"],
+        "wave_1": [" ___/ ", "(^__)>", "/'__\\"],
+        "wave_2": ["\\ ___ ", "(^__)>", "/'__\\"],
     }
     
     def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
@@ -662,7 +598,7 @@ class DuckVisitorAnimator(EventAnimator):
         
         # Ducks waddle in from sides
         self.coming_from_right = random.random() < 0.5
-        ground_y = playfield_height - 5
+        ground_y = playfield_height - 4  # 3-line sprite
         
         if self.coming_from_right:
             self.x = float(playfield_width + 8)
@@ -677,7 +613,7 @@ class DuckVisitorAnimator(EventAnimator):
         
     def _setup_arrival_path(self):
         """Waddle in to meet player duck."""
-        ground_y = self.playfield_height - 5
+        ground_y = self.playfield_height - 4  # 3-line sprite
         # Stop a bit away from center to face player's duck
         if self.coming_from_right:
             target_x = self.playfield_width * 0.6
@@ -761,27 +697,27 @@ class ShinyObjectAnimator(EventAnimator):
             "*",
         ],
         "shine_1": [
-            " ✦ ",
-            "✦*✦",
-            " ✦ ",
+            " * ",
+            "***",
+            " * ",
         ],
         "shine_2": [
             "  *  ",
-            " *✦* ",
+            " *** ",
             "  *  ",
         ],
         "shine_3": [
-            " ✧✦✧ ",
-            "✦ * ✦",
-            " ✧✦✧ ",
+            " *** ",
+            "* * *",
+            " *** ",
         ],
         "pickup_1": [
-            " ↑ ",
-            " ✦ ",
+            " ^ ",
+            " * ",
         ],
         "pickup_2": [
-            "↑",
-            "✦",
+            "^",
+            "*",
         ],
     }
     
@@ -853,8 +789,8 @@ class ShinyObjectAnimator(EventAnimator):
 
 
 class BreezeAnimator(EventAnimator):
-    """Animation for nice breeze - leaves and particles floating by."""
-    
+    """Animation for nice breeze - leaves and particles floating across entire habitat."""
+
     def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
         super().__init__(
             event_id="nice_breeze",
@@ -862,59 +798,78 @@ class BreezeAnimator(EventAnimator):
             playfield_height=playfield_height,
             duration=4.0
         )
-        
+
         # Breeze particles - ASCII-safe characters for consistent width
         self.particles: List[Tuple[float, float, str]] = []
         self.particle_chars = ["~", "-", "=", "'", ".", "*", "+"]
-        
-        # Spawn initial particles
-        for _ in range(15):
+
+        # Spawn initial particles across ENTIRE habitat area (not just waiting off-screen)
+        # Distribute evenly across height with multiple columns
+        for col in range(8):  # 8 columns of particles
+            x_offset = col * (playfield_width // 6)
+            for row in range(playfield_height - 1):  # Cover full height
+                if random.random() < 0.4:  # 40% chance per cell
+                    self.particles.append((
+                        float(x_offset + random.uniform(-3, 3)),
+                        float(row + random.uniform(0, 1)),
+                        random.choice(self.particle_chars)
+                    ))
+
+        # Also add particles coming from off-screen
+        for _ in range(10):
             self.particles.append((
                 random.uniform(playfield_width + 1, playfield_width + 20),
-                random.uniform(0, playfield_height),
+                random.uniform(0, playfield_height - 1),
                 random.choice(self.particle_chars)
             ))
-            
+
         self.frame_duration = 0.1
-        
+
     def start(self):
         """Begin breeze animation."""
         self.state = EventAnimationState.INTERACTING
         self.start_time = time.time()
         self.state_start_time = time.time()
-        
+
     def update(self, duck_x: int = 30, duck_y: int = 8) -> bool:
         """Update breeze particles."""
         if self.state == EventAnimationState.FINISHED:
             return False
-            
+
         elapsed = time.time() - self.start_time
-        
+
         # Move particles
         new_particles = []
         for x, y, char in self.particles:
-            # Move left with slight wave
-            new_x = x - 1.2 - random.uniform(0, 0.5)
-            new_y = y + math.sin(x * 0.3) * 0.3
-            
+            # Move left with slight wave - gentler movement
+            new_x = x - 1.0 - random.uniform(0, 0.3)
+            new_y = y + math.sin(x * 0.2) * 0.15  # Gentler vertical wave
+
+            # Keep Y within bounds
+            new_y = max(0, min(self.playfield_height - 1, new_y))
+
             if new_x > -5:
                 new_particles.append((new_x, new_y, char))
-                
-        # Spawn new particles from right
-        if len(new_particles) < 20 and random.random() < 0.4:
-            new_particles.append((
-                self.playfield_width + random.uniform(1, 5),
-                random.uniform(0, self.playfield_height),
-                random.choice(self.particle_chars)
-            ))
-            
+
+        # Only spawn new particles if we're still within duration
+        if elapsed < self.total_duration:
+            if len(new_particles) < 50 and random.random() < 0.6:
+                # Spawn at different heights, favoring even distribution
+                spawn_y = random.uniform(0, self.playfield_height - 1)
+                new_particles.append((
+                    self.playfield_width + random.uniform(1, 5),
+                    spawn_y,
+                    random.choice(self.particle_chars)
+                ))
+
         self.particles = new_particles
-        
-        # End when time is up and particles are gone
-        if elapsed >= self.total_duration and len(self.particles) < 3:
+
+        # End when time is up OR all particles have left the screen
+        if elapsed >= self.total_duration + 2.0 or len(self.particles) == 0:
             self.state = EventAnimationState.FINISHED
+            self.particles = []  # Clear any remaining particles
             return False
-            
+
         return True
         
     def get_sprite(self) -> List[str]:

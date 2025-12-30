@@ -120,7 +120,7 @@ QUESTS: Dict[str, Quest] = {
                 step_id=1,
                 title="First Steps",
                 dialogue=[
-                    "🦆 *quack quack!*",
+                    "d *quack quack!*",
                     "Your little duckling looks up at you with big curious eyes.",
                     "It seems hungry... maybe you should feed it!",
                 ],
@@ -284,7 +284,7 @@ QUESTS: Dict[str, Quest] = {
                 title="Fishy Beginnings",
                 dialogue=[
                     "An old duck fisherman waddles by...",
-                    "🦆 'Heard you're new to fishing, eh?'",
+                    "d 'Heard you're new to fishing, eh?'",
                     "'Back in my day, we caught fish as big as logs!'",
                     "'Prove yourself by catching some fish!'",
                 ],
@@ -304,7 +304,7 @@ QUESTS: Dict[str, Quest] = {
                 step_id=2,
                 title="The Hunt for Ol' Whiskers",
                 dialogue=[
-                    "🦆 'Not bad, not bad!'",
+                    "d 'Not bad, not bad!'",
                     "'But have you heard of Ol' Whiskers?'",
                     "'The legendary catfish that lurks in the deep!'",
                     "'Many have tried to catch it... none have succeeded.'",
@@ -404,7 +404,7 @@ QUESTS: Dict[str, Quest] = {
                 title="An Unusual Visitor",
                 dialogue=[
                     "A cloaked duck appears from the shadows...",
-                    "🦆 '...I've been watching you...'",
+                    "d '...I've been watching you...'",
                     "'You have shown kindness. That is rare.'",
                     "'I have a task... if you're brave enough.'",
                 ],
@@ -571,7 +571,7 @@ class QuestSystem:
         first_step = next((s for s in quest.steps if s.step_id == 1), None)
         dialogue = first_step.dialogue if first_step else []
         
-        return True, f"📜 Quest Started: {quest.name}", dialogue
+        return True, f"[=] Quest Started: {quest.name}", dialogue
     
     def update_progress(self, objective_type: str, target: str, amount: int = 1) -> List[Tuple[str, str, bool]]:
         """Update progress on quest objectives."""
@@ -780,37 +780,37 @@ class QuestSystem:
     def render_quest_log(self) -> List[str]:
         """Render the quest log display."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║            📜 QUEST LOG 📜                    ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            "|            [=] QUEST LOG [=]                    |",
+            "+===============================================+",
         ]
         
         if self.active_quests:
-            lines.append("║  ACTIVE QUESTS:                               ║")
+            lines.append("|  ACTIVE QUESTS:                               |")
             for quest_id, active in self.active_quests.items():
                 quest = QUESTS.get(quest_id)
                 if quest:
-                    lines.append(f"║  ► {quest.name[:35]:35}      ║")
+                    lines.append(f"|  > {quest.name[:35]:35}      |")
                     status = self.get_active_quest_status(quest_id)
                     if status:
                         for obj in status["objectives"][:2]:
-                            mark = "✓" if obj["completed"] else "○"
-                            lines.append(f"║    {mark} {obj['description'][:33]:33}  ║")
-            lines.append("╠═══════════════════════════════════════════════╣")
+                            mark = "x" if obj["completed"] else "o"
+                            lines.append(f"|    {mark} {obj['description'][:33]:33}  |")
+            lines.append("+===============================================+")
         
         # Available quests
         available = self.get_available_quests()
         if available:
-            lines.append("║  AVAILABLE QUESTS:                            ║")
+            lines.append("|  AVAILABLE QUESTS:                            |")
             for quest in available[:3]:
-                diff_icon = {"easy": "⭐", "medium": "⭐⭐", "hard": "⭐⭐⭐", "legendary": "💎"}
-                icon = diff_icon.get(quest.difficulty.value, "⭐")
-                lines.append(f"║  {icon} {quest.name[:33]:33}    ║")
+                diff_icon = {"easy": "*", "medium": "**", "hard": "***", "legendary": "[D]"}
+                icon = diff_icon.get(quest.difficulty.value, "*")
+                lines.append(f"|  {icon} {quest.name[:33]:33}    |")
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            f"║  Completed: {self.total_quests_completed:3}  |  Titles: {len(self.earned_titles):3}          ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            f"|  Completed: {self.total_quests_completed:3}  |  Titles: {len(self.earned_titles):3}          |",
+            "+===============================================+",
         ])
         
         return lines
@@ -823,44 +823,44 @@ class QuestSystem:
         
         active = self.active_quests.get(quest_id)
         
-        diff_colors = {"easy": "🟢", "medium": "🟡", "hard": "🟠", "legendary": "🔴"}
-        diff = diff_colors.get(quest.difficulty.value, "⚪")
+        diff_colors = {"easy": "+", "medium": "#", "hard": "O", "legendary": "!"}
+        diff = diff_colors.get(quest.difficulty.value, "o")
         
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            f"║  {quest.name:^41}  ║",
-            f"║  {diff} {quest.difficulty.value.title():^37}  ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            f"|  {quest.name:^41}  |",
+            f"|  {diff} {quest.difficulty.value.title():^37}  |",
+            "+===============================================+",
         ]
         
         # Description
         desc_lines = [quest.description[i:i+40] for i in range(0, len(quest.description), 40)]
         for line in desc_lines:
-            lines.append(f"║  {line:40}     ║")
+            lines.append(f"|  {line:40}     |")
         
-        lines.append("╠═══════════════════════════════════════════════╣")
+        lines.append("+===============================================+")
         
         if active:
             status = self.get_active_quest_status(quest_id)
             if status:
-                lines.append(f"║  Step: {status['step_title'][:34]:34}    ║")
-                lines.append("║  Objectives:                                  ║")
+                lines.append(f"|  Step: {status['step_title'][:34]:34}    |")
+                lines.append("|  Objectives:                                  |")
                 for obj in status["objectives"]:
-                    mark = "✓" if obj["completed"] else "○"
+                    mark = "x" if obj["completed"] else "o"
                     prog = f"{obj['progress']}/{obj['required']}"
-                    lines.append(f"║   {mark} {obj['description'][:28]:28} {prog:6} ║")
+                    lines.append(f"|   {mark} {obj['description'][:28]:28} {prog:6} |")
         else:
-            lines.append("║  Status: Not Started                          ║")
+            lines.append("|  Status: Not Started                          |")
         
-        lines.append("╠═══════════════════════════════════════════════╣")
-        lines.append("║  Rewards:                                      ║")
+        lines.append("+===============================================+")
+        lines.append("|  Rewards:                                      |")
         
         reward = quest.final_reward
-        lines.append(f"║    XP: {reward.xp}  Coins: {reward.coins:^25}    ║")
+        lines.append(f"|    XP: {reward.xp}  Coins: {reward.coins:^25}    |")
         if reward.title:
-            lines.append(f"║    Title: {reward.title:^31}    ║")
+            lines.append(f"|    Title: {reward.title:^31}    |")
         
-        lines.append("╚═══════════════════════════════════════════════╝")
+        lines.append("+===============================================+")
         
         return lines
     

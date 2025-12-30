@@ -173,6 +173,7 @@ AREAS = {
             description="The mysterious deep part of the pond. What lurks below?",
             discovery_chance=0.15,
             unlock_level=3,
+            is_discovered=True,
         ),
     ],
     BiomeType.FOREST: [
@@ -190,6 +191,7 @@ AREAS = {
             description="A massive old oak tree. Home to many creatures.",
             discovery_chance=0.20,
             unlock_level=5,
+            is_discovered=True,
         ),
         BiomeArea(
             biome=BiomeType.FOREST,
@@ -206,6 +208,7 @@ AREAS = {
             description="A bright, flower-filled meadow buzzing with bees.",
             discovery_chance=0.10,
             unlock_level=2,
+            is_discovered=True,
         ),
         BiomeArea(
             biome=BiomeType.MEADOW,
@@ -222,6 +225,7 @@ AREAS = {
             description="A calm section of river with smooth stones.",
             discovery_chance=0.15,
             unlock_level=3,
+            is_discovered=True,
         ),
         BiomeArea(
             biome=BiomeType.RIVERSIDE,
@@ -238,6 +242,7 @@ AREAS = {
             description="A human's garden. Full of useful scraps!",
             discovery_chance=0.20,
             unlock_level=4,
+            is_discovered=True,
         ),
         BiomeArea(
             biome=BiomeType.GARDEN,
@@ -309,6 +314,7 @@ AREAS = {
             description="A busy city park! Humans drop all sorts of treasures.",
             discovery_chance=0.15,
             unlock_level=6,
+            is_discovered=True,
         ),
         BiomeArea(
             biome=BiomeType.URBAN,
@@ -477,7 +483,7 @@ class ExplorationSystem:
                 result["rare_discovery"] = rare_item
                 self.rare_items_found.append(rare_item)
                 result["xp_gained"] += 20
-                messages.append(f"✨ RARE FIND: {rare_item}!")
+                messages.append(f"* RARE FIND: {rare_item}!")
         
         # Check for new area discovery
         if random.random() < 0.1:  # 10% chance per exploration
@@ -487,7 +493,7 @@ class ExplorationSystem:
                 self._discover_area(new_area)
                 result["new_area_discovered"] = new_area.name
                 result["xp_gained"] += 50
-                messages.append(f"🗺️ Discovered new area: {new_area.name}!")
+                messages.append(f"[?] Discovered new area: {new_area.name}!")
         
         # Build final message
         if not messages:
@@ -565,7 +571,7 @@ class ExplorationSystem:
         available = [r for r in area.resources if r.is_available()]
         
         lines = [
-            f"📍 {area.name} ({area.biome.value.title()})",
+            f"* {area.name} ({area.biome.value.title()})",
             f"   {area.description}",
             f"   Available resources: {len(available)}/{len(area.resources)}",
             f"   Visited: {area.times_visited} times",

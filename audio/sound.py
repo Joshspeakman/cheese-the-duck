@@ -814,11 +814,9 @@ class SoundEngine:
                 self._available_music[track.audio_file] = audio_path
                 audio_file = track.audio_file
 
-        # If no audio file, fall back to chiptune melody (just play, no crossfade)
+        # If no audio file, skip this context (don't use beeping fallback)
         if not audio_file:
-            if track.melody_name and track.melody_name in MELODIES:
-                self._current_context = new_context
-                self.play_melody(track.melody_name)
+            # Just silently skip - no beeping fallback as it's annoying
             return
 
         # Perform crossfade with pygame
@@ -1097,37 +1095,15 @@ class SoundEngine:
 
     def _play_notes(self, notes: List[Note]):
         """Play a sequence of notes."""
-        for note in notes:
-            self.play_tone(note.frequency, note.duration)
-            time.sleep(note.duration * 0.8)  # Slight overlap
+        # Disabled - terminal beeps are annoying
+        # Use WAV files for sound effects instead
+        pass
 
     def play_melody(self, melody_name: str, loop: bool = False):
-        """Play a melody."""
-        if not self.enabled:
-            return
-
-        melody = MELODIES.get(melody_name)
-        if not melody:
-            return
-
-        self._current_melody = melody_name
-        self._music_playing = True
-
-        def play_loop():
-            while self._music_playing:
-                for note_name, duration in melody:
-                    if not self._music_playing:
-                        break
-                    freq = NOTES.get(note_name, 440)
-                    self.play_tone(freq, duration)
-                    time.sleep(duration)
-                if not loop:
-                    break
-            self._music_playing = False
-
-        self._music_thread = threading.Thread(target=play_loop)
-        self._music_thread.daemon = True
-        self._music_thread.start()
+        """Play a melody. Disabled to avoid terminal beeping."""
+        # Disabled - terminal beeps are annoying and disruptive
+        # The game now relies on WAV/MP3 files for music
+        pass
 
     def stop_music(self):
         """Stop currently playing music."""
@@ -1180,7 +1156,7 @@ class SoundEngine:
     def get_volume_display(self) -> str:
         """Get a visual representation of current volume."""
         bars = int(self.volume * 10)
-        return "█" * bars + "░" * (10 - bars)
+        return "█" * bars + "." * (10 - bars)
 
 
 def count_syllables(text: str) -> int:

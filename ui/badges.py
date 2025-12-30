@@ -63,8 +63,8 @@ BADGES: Dict[str, Badge] = {
         description="Feed your duck for the first time",
         category=BadgeCategory.CARE,
         rarity=BadgeRarity.BRONZE,
-        icon="🍞",
-        ascii_art=["[🍞]"],
+        icon="B",
+        ascii_art=["[B]"],
         requirement="Feed once",
         points=5
     ),
@@ -74,8 +74,8 @@ BADGES: Dict[str, Badge] = {
         description="Feed your duck 100 times",
         category=BadgeCategory.CARE,
         rarity=BadgeRarity.SILVER,
-        icon="🍽️",
-        ascii_art=["[🍽️]"],
+        icon="X",
+        ascii_art=["[X]"],
         requirement="Feed 100 times",
         points=25
     ),
@@ -85,8 +85,8 @@ BADGES: Dict[str, Badge] = {
         description="Feed your duck 1000 times",
         category=BadgeCategory.CARE,
         rarity=BadgeRarity.GOLD,
-        icon="👨‍🍳",
-        ascii_art=["[👨‍🍳]"],
+        icon="[C]",
+        ascii_art=["[[C]]"],
         requirement="Feed 1000 times",
         points=100
     ),
@@ -96,8 +96,8 @@ BADGES: Dict[str, Badge] = {
         description="Pet your duck 500 times",
         category=BadgeCategory.CARE,
         rarity=BadgeRarity.SILVER,
-        icon="🤚",
-        ascii_art=["[🤚]"],
+        icon="*",
+        ascii_art=["[*]"],
         requirement="Pet 500 times",
         points=30
     ),
@@ -107,8 +107,8 @@ BADGES: Dict[str, Badge] = {
         description="Maintain maximum happiness for 7 days",
         category=BadgeCategory.CARE,
         rarity=BadgeRarity.GOLD,
-        icon="💕",
-        ascii_art=["[💕]"],
+        icon="<3",
+        ascii_art=["[<3]"],
         requirement="Max happiness 7 days",
         points=75
     ),
@@ -120,8 +120,8 @@ BADGES: Dict[str, Badge] = {
         description="Play your first minigame",
         category=BadgeCategory.ACTIVITIES,
         rarity=BadgeRarity.BRONZE,
-        icon="🎮",
-        ascii_art=["[🎮]"],
+        icon="[>]",
+        ascii_art=["[[>]]"],
         requirement="Play 1 minigame",
         points=5
     ),
@@ -131,8 +131,8 @@ BADGES: Dict[str, Badge] = {
         description="Win 100 minigames",
         category=BadgeCategory.ACTIVITIES,
         rarity=BadgeRarity.GOLD,
-        icon="🏆",
-        ascii_art=["[🏆]"],
+        icon="[#]",
+        ascii_art=["[[#]]"],
         requirement="Win 100 minigames",
         points=100
     ),
@@ -142,8 +142,8 @@ BADGES: Dict[str, Badge] = {
         description="Catch 50 fish",
         category=BadgeCategory.ACTIVITIES,
         rarity=BadgeRarity.SILVER,
-        icon="🎣",
-        ascii_art=["[🎣]"],
+        icon="><>",
+        ascii_art=["[><>]"],
         requirement="Catch 50 fish",
         points=35
     ),
@@ -153,8 +153,8 @@ BADGES: Dict[str, Badge] = {
         description="Catch a legendary fish",
         category=BadgeCategory.ACTIVITIES,
         rarity=BadgeRarity.PLATINUM,
-        icon="🐟",
-        ascii_art=["[🐟✨]"],
+        icon="><>",
+        ascii_art=["[><>*]"],
         requirement="Catch legendary fish",
         points=150
     ),
@@ -164,8 +164,8 @@ BADGES: Dict[str, Badge] = {
         description="Grow 25 plants",
         category=BadgeCategory.ACTIVITIES,
         rarity=BadgeRarity.SILVER,
-        icon="🌱",
-        ascii_art=["[🌱]"],
+        icon="i",
+        ascii_art=["[i]"],
         requirement="Grow 25 plants",
         points=30
     ),
@@ -175,8 +175,8 @@ BADGES: Dict[str, Badge] = {
         description="Learn all basic tricks",
         category=BadgeCategory.ACTIVITIES,
         rarity=BadgeRarity.GOLD,
-        icon="🎪",
-        ascii_art=["[🎪]"],
+        icon="(!)",
+        ascii_art=["[(!)]"],
         requirement="Learn all basic tricks",
         points=80
     ),
@@ -188,8 +188,8 @@ BADGES: Dict[str, Badge] = {
         description="Discover 5 new areas",
         category=BadgeCategory.EXPLORATION,
         rarity=BadgeRarity.BRONZE,
-        icon="🗺️",
-        ascii_art=["[🗺️]"],
+        icon="[?]",
+        ascii_art=["[[?]]"],
         requirement="Discover 5 areas",
         points=20
     ),
@@ -199,8 +199,8 @@ BADGES: Dict[str, Badge] = {
         description="Find 10 treasures",
         category=BadgeCategory.EXPLORATION,
         rarity=BadgeRarity.SILVER,
-        icon="💎",
-        ascii_art=["[💎]"],
+        icon="[D]",
+        ascii_art=["[[D]]"],
         requirement="Find 10 treasures",
         points=40
     ),
@@ -210,8 +210,8 @@ BADGES: Dict[str, Badge] = {
         description="Visit every location",
         category=BadgeCategory.EXPLORATION,
         rarity=BadgeRarity.PLATINUM,
-        icon="🌍",
-        ascii_art=["[🌍]"],
+        icon="O",
+        ascii_art=["[O]"],
         requirement="Visit all locations",
         points=200
     ),
@@ -223,8 +223,8 @@ BADGES: Dict[str, Badge] = {
         description="Make your first duck friend",
         category=BadgeCategory.SOCIAL,
         rarity=BadgeRarity.BRONZE,
-        icon="🤝",
-        ascii_art=["[🤝]"],
+        icon="*",
+        ascii_art=["[*]"],
         requirement="Make 1 friend",
         points=15
     ),
@@ -234,8 +234,8 @@ BADGES: Dict[str, Badge] = {
         description="Have 10 duck friends",
         category=BadgeCategory.SOCIAL,
         rarity=BadgeRarity.GOLD,
-        icon="👥",
-        ascii_art=["[👥]"],
+        icon="[+]",
+        ascii_art=["[[+]]"],
         requirement="Have 10 friends",
         points=75
     ),
@@ -245,8 +245,8 @@ BADGES: Dict[str, Badge] = {
         description="Give 50 gifts",
         category=BadgeCategory.SOCIAL,
         rarity=BadgeRarity.SILVER,
-        icon="🎁",
-        ascii_art=["[🎁]"],
+        icon="[+]",
+        ascii_art=["[[+]]"],
         requirement="Give 50 gifts",
         points=35
     ),
@@ -256,8 +256,8 @@ BADGES: Dict[str, Badge] = {
         description="Complete 10 quests",
         category=BadgeCategory.SOCIAL,
         rarity=BadgeRarity.GOLD,
-        icon="📜",
-        ascii_art=["[📜]"],
+        icon="[=]",
+        ascii_art=["[[=]]"],
         requirement="Complete 10 quests",
         points=80
     ),
@@ -269,8 +269,8 @@ BADGES: Dict[str, Badge] = {
         description="Collect 25 unique items",
         category=BadgeCategory.COLLECTION,
         rarity=BadgeRarity.SILVER,
-        icon="📦",
-        ascii_art=["[📦]"],
+        icon="[#]",
+        ascii_art=["[[#]]"],
         requirement="Collect 25 items",
         points=30
     ),
@@ -280,8 +280,8 @@ BADGES: Dict[str, Badge] = {
         description="Own 20 outfits",
         category=BadgeCategory.COLLECTION,
         rarity=BadgeRarity.GOLD,
-        icon="👗",
-        ascii_art=["[👗]"],
+        icon="*",
+        ascii_art=["[*]"],
         requirement="Own 20 outfits",
         points=60
     ),
@@ -291,8 +291,8 @@ BADGES: Dict[str, Badge] = {
         description="Complete a collectible set",
         category=BadgeCategory.COLLECTION,
         rarity=BadgeRarity.PLATINUM,
-        icon="🏅",
-        ascii_art=["[🏅]"],
+        icon="[#]",
+        ascii_art=["[[#]]"],
         requirement="Complete 1 set",
         points=100
     ),
@@ -304,8 +304,8 @@ BADGES: Dict[str, Badge] = {
         description="Reach level 10",
         category=BadgeCategory.MASTERY,
         rarity=BadgeRarity.BRONZE,
-        icon="⭐",
-        ascii_art=["[⭐]"],
+        icon="*",
+        ascii_art=["[*]"],
         requirement="Reach level 10",
         points=20
     ),
@@ -315,8 +315,8 @@ BADGES: Dict[str, Badge] = {
         description="Reach level 25",
         category=BadgeCategory.MASTERY,
         rarity=BadgeRarity.SILVER,
-        icon="🌟",
-        ascii_art=["[🌟]"],
+        icon="*",
+        ascii_art=["[*]"],
         requirement="Reach level 25",
         points=50
     ),
@@ -326,8 +326,8 @@ BADGES: Dict[str, Badge] = {
         description="Reach level 50",
         category=BadgeCategory.MASTERY,
         rarity=BadgeRarity.GOLD,
-        icon="✨",
-        ascii_art=["[✨]"],
+        icon="*",
+        ascii_art=["[*]"],
         requirement="Reach level 50",
         points=100
     ),
@@ -337,8 +337,8 @@ BADGES: Dict[str, Badge] = {
         description="Reach level 100",
         category=BadgeCategory.MASTERY,
         rarity=BadgeRarity.DIAMOND,
-        icon="💫",
-        ascii_art=["[💫]"],
+        icon="!",
+        ascii_art=["[!]"],
         requirement="Reach level 100",
         points=500
     ),
@@ -348,8 +348,8 @@ BADGES: Dict[str, Badge] = {
         description="Prestige for the first time",
         category=BadgeCategory.MASTERY,
         rarity=BadgeRarity.PLATINUM,
-        icon="👑",
-        ascii_art=["[👑]"],
+        icon="^",
+        ascii_art=["[^]"],
         requirement="Prestige once",
         points=250
     ),
@@ -361,8 +361,8 @@ BADGES: Dict[str, Badge] = {
         description="Find a hidden secret",
         category=BadgeCategory.SECRET,
         rarity=BadgeRarity.GOLD,
-        icon="🥚",
-        ascii_art=["[🥚]"],
+        icon="o",
+        ascii_art=["[o]"],
         requirement="???",
         points=50,
         secret=True
@@ -373,8 +373,8 @@ BADGES: Dict[str, Badge] = {
         description="Play at midnight",
         category=BadgeCategory.SECRET,
         rarity=BadgeRarity.SILVER,
-        icon="🌙",
-        ascii_art=["[🌙]"],
+        icon=")",
+        ascii_art=["[)]"],
         requirement="???",
         points=30,
         secret=True
@@ -385,8 +385,8 @@ BADGES: Dict[str, Badge] = {
         description="Play for a full year",
         category=BadgeCategory.SECRET,
         rarity=BadgeRarity.LEGENDARY,
-        icon="🎖️",
-        ascii_art=["[🎖️]"],
+        icon="[*]",
+        ascii_art=["[[*]]"],
         requirement="???",
         points=1000,
         secret=True
@@ -399,8 +399,8 @@ BADGES: Dict[str, Badge] = {
         description="Participate in Spring Festival",
         category=BadgeCategory.SEASONAL,
         rarity=BadgeRarity.SILVER,
-        icon="🌸",
-        ascii_art=["[🌸]"],
+        icon="~",
+        ascii_art=["[~]"],
         requirement="Spring Festival",
         points=40
     ),
@@ -410,8 +410,8 @@ BADGES: Dict[str, Badge] = {
         description="Participate in Summer Festival",
         category=BadgeCategory.SEASONAL,
         rarity=BadgeRarity.SILVER,
-        icon="☀️",
-        ascii_art=["[☀️]"],
+        icon="*",
+        ascii_art=["[*]"],
         requirement="Summer Festival",
         points=40
     ),
@@ -421,8 +421,8 @@ BADGES: Dict[str, Badge] = {
         description="Participate in Harvest Festival",
         category=BadgeCategory.SEASONAL,
         rarity=BadgeRarity.SILVER,
-        icon="🍂",
-        ascii_art=["[🍂]"],
+        icon="~",
+        ascii_art=["[~]"],
         requirement="Harvest Festival",
         points=40
     ),
@@ -432,8 +432,8 @@ BADGES: Dict[str, Badge] = {
         description="Participate in Winter Festival",
         category=BadgeCategory.SEASONAL,
         rarity=BadgeRarity.SILVER,
-        icon="❄️",
-        ascii_art=["[❄️]"],
+        icon="*️",
+        ascii_art=["[*️]"],
         requirement="Winter Festival",
         points=40
     ),
@@ -539,43 +539,43 @@ class BadgesSystem:
     def render_showcase(self) -> List[str]:
         """Render the badge showcase."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║            🎖️ BADGE SHOWCASE 🎖️               ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            "|            [*] BADGE SHOWCASE [*]               |",
+            "+===============================================+",
         ]
         
         if not self.showcase:
-            lines.append("║  Your showcase is empty!                      ║")
-            lines.append("║  Add badges to show off your achievements!    ║")
+            lines.append("|  Your showcase is empty!                      |")
+            lines.append("|  Add badges to show off your achievements!    |")
         else:
             # Display showcase badges in a grid
-            row = "║  "
+            row = "|  "
             for i, badge_id in enumerate(self.showcase):
                 badge = BADGES.get(badge_id)
                 if badge:
                     row += f" {badge.icon} "
                 if (i + 1) % 3 == 0:
-                    row += "                       ║"
+                    row += "                       |"
                     lines.append(row)
-                    row = "║  "
+                    row = "|  "
             
             if len(self.showcase) % 3 != 0:
                 row += " " * (3 - (len(self.showcase) % 3)) * 4
-                row += "                       ║"
+                row += "                       |"
                 lines.append(row)
             
             # Badge names
-            lines.append("║                                               ║")
+            lines.append("|                                               |")
             for badge_id in self.showcase:
                 badge = BADGES.get(badge_id)
                 if badge:
-                    lines.append(f"║  • {badge.name:<40}  ║")
+                    lines.append(f"|  - {badge.name:<40}  |")
         
         earned, total = self.get_earned_count()
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            f"║  Badges: {earned}/{total}  Points: {self.total_points:^20}  ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            f"|  Badges: {earned}/{total}  Points: {self.total_points:^20}  |",
+            "+===============================================+",
         ])
         
         return lines
@@ -583,20 +583,20 @@ class BadgesSystem:
     def render_badge_collection(self, category: Optional[BadgeCategory] = None, page: int = 1) -> List[str]:
         """Render the full badge collection."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║          🏆 BADGE COLLECTION 🏆               ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            "|          [#] BADGE COLLECTION [#]               |",
+            "+===============================================+",
         ]
         
         # Filter badges
         if category:
             badges = self.get_badges_by_category(category)
             cat_name = category.value.upper()
-            lines.append(f"║  Category: {cat_name:<32}  ║")
+            lines.append(f"|  Category: {cat_name:<32}  |")
         else:
             badges = [(b, b.id in self.earned_badges) for b in BADGES.values() if not b.secret or b.id in self.earned_badges]
         
-        lines.append("╠═══════════════════════════════════════════════╣")
+        lines.append("+===============================================+")
         
         # Paginate
         per_page = 6
@@ -605,35 +605,35 @@ class BadgesSystem:
         page_badges = badges[start:end]
         
         rarity_colors = {
-            BadgeRarity.BRONZE: "🟤",
-            BadgeRarity.SILVER: "⚪",
-            BadgeRarity.GOLD: "🟡",
-            BadgeRarity.PLATINUM: "⚫",
-            BadgeRarity.DIAMOND: "💎",
-            BadgeRarity.LEGENDARY: "🔮",
+            BadgeRarity.BRONZE: "[B]",
+            BadgeRarity.SILVER: "[S]",
+            BadgeRarity.GOLD: "[G]",
+            BadgeRarity.PLATINUM: "[P]",
+            BadgeRarity.DIAMOND: "[D]",
+            BadgeRarity.LEGENDARY: "[L]",
         }
         
         for badge, earned in page_badges:
-            status = "✅" if earned else "❌"
-            rarity_icon = rarity_colors.get(badge.rarity, "⚪")
+            status = "[x]" if earned else "[ ]"
+            rarity_icon = rarity_colors.get(badge.rarity, "[S]")
             
-            lines.append(f"║  {status} {badge.icon} {badge.name:<28} {rarity_icon}  ║")
+            lines.append(f"|  {status} {badge.icon} {badge.name:<28} {rarity_icon}  |")
             
             if earned:
-                lines.append(f"║      {badge.description[:38]:<38}  ║")
+                lines.append(f"|      {badge.description[:38]:<38}  |")
             else:
-                lines.append(f"║      Requirement: {badge.requirement:<24}  ║")
+                lines.append(f"|      Requirement: {badge.requirement:<24}  |")
             
-            lines.append(f"║      Points: {badge.points:<30}  ║")
-            lines.append("║                                               ║")
+            lines.append(f"|      Points: {badge.points:<30}  |")
+            lines.append("|                                               |")
         
         total_pages = (len(badges) + per_page - 1) // per_page
         total_pages = max(1, total_pages)
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            f"║  Page {page}/{total_pages}  [←/→] Navigate  [S] Showcase    ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            f"|  Page {page}/{total_pages}  [<-/->] Navigate  [S] Showcase    |",
+            "+===============================================+",
         ])
         
         return lines
@@ -641,7 +641,7 @@ class BadgesSystem:
     def render_mini_showcase(self) -> str:
         """Render a compact showcase for the HUD."""
         if not self.showcase:
-            return "🎖️ [ - - - ]"
+            return "[*] [ - - - ]"
         
         icons = ""
         for badge_id in self.showcase[:3]:  # Show first 3
@@ -649,7 +649,7 @@ class BadgesSystem:
             if badge:
                 icons += badge.icon
         
-        return f"🎖️ [{icons}]"
+        return f"[*] [{icons}]"
     
     def to_dict(self) -> dict:
         """Convert to dictionary for saving."""

@@ -103,79 +103,79 @@ class DreamLog:
 PHOTO_TEMPLATES = {
     PhotoType.SELFIE: [
         [
-            "  ┌─────────┐  ",
-            "  │  📸     │  ",
-            "  │   🦆    │  ",
-            "  │  *pose* │  ",
-            "  └─────────┘  ",
+            "  +---------+  ",
+            "  |  [#]     |  ",
+            "  |   d    |  ",
+            "  |  *pose* |  ",
+            "  +---------+  ",
         ],
         [
-            "  ╔═════════╗  ",
-            "  ║ SELFIE! ║  ",
-            "  ║   ✨🦆✨  ║  ",
-            "  ║  smile! ║  ",
-            "  ╚═════════╝  ",
+            "  +=========+  ",
+            "  | SELFIE! |  ",
+            "  |   *d*  |  ",
+            "  |  smile! |  ",
+            "  +=========+  ",
         ],
     ],
     PhotoType.SCENERY: [
         [
-            "  ┌─────────┐  ",
-            "  │ ☁️  ☀️  │  ",
-            "  │  🏔️🌲  │  ",
-            "  │🦆 ~~~   │  ",
-            "  └─────────┘  ",
+            "  +---------+  ",
+            "  | (*)  *  |  ",
+            "  |  /\\A  |  ",
+            "  |d ~~~   |  ",
+            "  +---------+  ",
         ],
         [
-            "  ╔═════════╗  ",
-            "  ║  🌅     ║  ",
-            "  ║  🌊🌊🌊  ║  ",
-            "  ║    🦆   ║  ",
-            "  ╚═════════╝  ",
+            "  +=========+  ",
+            "  |  -*-     |  ",
+            "  |  ~~~  |  ",
+            "  |    d   |  ",
+            "  +=========+  ",
         ],
     ],
     PhotoType.FRIEND: [
         [
-            "  ┌─────────┐  ",
-            "  │ FRIENDS │  ",
-            "  │ 🦆  🦆  │  ",
-            "  │  ♥ BFF ♥ │  ",
-            "  └─────────┘  ",
+            "  +---------+  ",
+            "  | FRIENDS |  ",
+            "  | d  d  |  ",
+            "  |  <3 BFF <3 |  ",
+            "  +---------+  ",
         ],
     ],
     PhotoType.FOOD: [
         [
-            "  ┌─────────┐  ",
-            "  │  YUM!   │  ",
-            "  │  🍞🌾   │  ",
-            "  │ 🦆 *nom* │  ",
-            "  └─────────┘  ",
+            "  +---------+  ",
+            "  |  YUM!   |  ",
+            "  |  BW   |  ",
+            "  | d *nom* |  ",
+            "  +---------+  ",
         ],
     ],
     PhotoType.ADVENTURE: [
         [
-            "  ┌─────────┐  ",
-            "  │ADVENTURE│  ",
-            "  │ 🗺️  🧭  │  ",
-            "  │  🦆→→   │  ",
-            "  └─────────┘  ",
+            "  +---------+  ",
+            "  |ADVENTURE|  ",
+            "  | [?]  (+)  |  ",
+            "  |  d->->   |  ",
+            "  +---------+  ",
         ],
     ],
     PhotoType.COZY: [
         [
-            "  ┌─────────┐  ",
-            "  │  COZY   │  ",
-            "  │ ☕ 🧣   │  ",
-            "  │   🦆💤  │  ",
-            "  └─────────┘  ",
+            "  +---------+  ",
+            "  |  COZY   |  ",
+            "  | c S   |  ",
+            "  |   dz  |  ",
+            "  +---------+  ",
         ],
     ],
     PhotoType.SILLY: [
         [
-            "  ┌─────────┐  ",
-            "  │ DERP!   │  ",
-            "  │   @_@   │  ",
-            "  │   🦆    │  ",
-            "  └─────────┘  ",
+            "  +---------+  ",
+            "  | DERP!   |  ",
+            "  |   @_@   |  ",
+            "  |   d    |  ",
+            "  +---------+  ",
         ],
     ],
 }
@@ -505,19 +505,19 @@ class EnhancedDiarySystem:
         
         analysis = self.get_emotion_analysis(7)
         
-        lines.append("╔" + "═" * (width - 2) + "╗")
-        lines.append("║" + " 💭 Emotion Wheel 💭 ".center(width - 2) + "║")
-        lines.append("╠" + "═" * (width - 2) + "╣")
+        lines.append("+" + "=" * (width - 2) + "+")
+        lines.append("|" + " * Emotion Wheel * ".center(width - 2) + "|")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         emotion_emojis = {
-            "joy": "😊",
-            "sadness": "😢",
-            "excitement": "🤩",
-            "calm": "😌",
-            "anxiety": "😰",
-            "love": "🥰",
-            "curiosity": "🧐",
-            "contentment": "☺️",
+            "joy": ":)",
+            "sadness": ":(",
+            "excitement": ":D",
+            "calm": ":)",
+            "anxiety": ":o",
+            "love": ":)",
+            "curiosity": "o",
+            "contentment": ":)️",
         }
         
         breakdown = analysis.get("breakdown", {})
@@ -527,18 +527,18 @@ class EnhancedDiarySystem:
             count = breakdown.get(emotion.value, 0)
             percentage = (count / total * 100) if total > 0 else 0
             bar_width = int(percentage / 5)  # Max 20 chars
-            bar = "█" * bar_width + "░" * (20 - bar_width)
-            emoji = emotion_emojis.get(emotion.value, "❓")
+            bar = "█" * bar_width + "." * (20 - bar_width)
+            emoji = emotion_emojis.get(emotion.value, "?")
             
             line = f" {emoji} {emotion.value[:8]:8} [{bar}] {percentage:.0f}%"
-            lines.append("║" + line[:width-3].ljust(width - 2) + "║")
+            lines.append("|" + line[:width-3].ljust(width - 2) + "|")
             
-        lines.append("╠" + "─" * (width - 2) + "╣")
+        lines.append("+" + "-" * (width - 2) + "+")
         
         dominant = analysis.get("dominant", "unknown")
-        lines.append("║" + f" Dominant mood: {dominant} ".center(width - 2) + "║")
+        lines.append("|" + f" Dominant mood: {dominant} ".center(width - 2) + "|")
         
-        lines.append("╚" + "═" * (width - 2) + "╝")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         return lines
         
@@ -549,24 +549,24 @@ class EnhancedDiarySystem:
         start_idx = page * photos_per_page
         page_photos = self.photos[start_idx:start_idx + photos_per_page]
         
-        lines.append("╔════════════════════════════════════════╗")
-        lines.append("║        📷 Photo Album Page {:02d} 📷        ║".format(page + 1))
-        lines.append("╠════════════════════════════════════════╣")
+        lines.append("+========================================+")
+        lines.append("|        [#] Photo Album Page {:02d} [#]        |".format(page + 1))
+        lines.append("+========================================+")
         
         if not page_photos:
-            lines.append("║         No photos yet!                 ║")
-            lines.append("║      Take some photos to fill         ║")
-            lines.append("║          this album! 📸               ║")
+            lines.append("|         No photos yet!                 |")
+            lines.append("|      Take some photos to fill         |")
+            lines.append("|          this album! [#]               |")
         else:
             for photo in page_photos:
-                lines.append("║                                        ║")
+                lines.append("|                                        |")
                 for art_line in photo.ascii_art:
-                    lines.append("║" + art_line.center(40) + "║")
-                lines.append("║" + f'"{photo.caption}"'.center(40) + "║")
-                lines.append("║" + f"- {photo.date_taken[:10]} -".center(40) + "║")
-                lines.append("║                                        ║")
+                    lines.append("|" + art_line.center(40) + "|")
+                lines.append("|" + f'"{photo.caption}"'.center(40) + "|")
+                lines.append("|" + f"- {photo.date_taken[:10]} -".center(40) + "|")
+                lines.append("|                                        |")
                 
-        lines.append("╚════════════════════════════════════════╝")
+        lines.append("+========================================+")
         
         return lines
         
@@ -574,27 +574,27 @@ class EnhancedDiarySystem:
         """Render the dream journal."""
         lines = []
         
-        lines.append("╔" + "═" * (width - 2) + "╗")
-        lines.append("║" + " 🌙 Dream Journal 🌙 ".center(width - 2) + "║")
-        lines.append("╠" + "═" * (width - 2) + "╣")
+        lines.append("+" + "=" * (width - 2) + "+")
+        lines.append("|" + " ) Dream Journal ) ".center(width - 2) + "|")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         if not self.dream_logs:
-            lines.append("║" + " No dreams recorded yet... ".center(width - 2) + "║")
-            lines.append("║" + " Sweet dreams await! 💤 ".center(width - 2) + "║")
+            lines.append("|" + " No dreams recorded yet... ".center(width - 2) + "|")
+            lines.append("|" + " Sweet dreams await! z ".center(width - 2) + "|")
         else:
             for dream in self.dream_logs[-3:]:  # Show last 3
-                lines.append("║" + f" ✨ {dream.title} ✨ "[:width-3].center(width - 2) + "║")
-                lines.append("║" + f"   {dream.date[:10]}"[:width-3].ljust(width - 2) + "║")
+                lines.append("|" + f" * {dream.title} * "[:width-3].center(width - 2) + "|")
+                lines.append("|" + f"   {dream.date[:10]}"[:width-3].ljust(width - 2) + "|")
                 
                 desc_preview = dream.description[:width-6] + "..." if len(dream.description) > width-6 else dream.description
-                lines.append("║" + f"   {desc_preview}"[:width-3].ljust(width - 2) + "║")
+                lines.append("|" + f"   {desc_preview}"[:width-3].ljust(width - 2) + "|")
                 
                 if dream.interpretation:
-                    lines.append("║" + f"   → {dream.interpretation}"[:width-3].ljust(width - 2) + "║")
+                    lines.append("|" + f"   -> {dream.interpretation}"[:width-3].ljust(width - 2) + "|")
                     
-                lines.append("║" + "─" * (width - 2) + "║")
+                lines.append("|" + "-" * (width - 2) + "|")
                 
-        lines.append("╚" + "═" * (width - 2) + "╝")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         return lines
         
@@ -602,26 +602,26 @@ class EnhancedDiarySystem:
         """Render the life story timeline."""
         lines = []
         
-        lines.append("╔" + "═" * (width - 2) + "╗")
-        lines.append("║" + " 📖 Life Story 📖 ".center(width - 2) + "║")
-        lines.append("╠" + "═" * (width - 2) + "╣")
+        lines.append("+" + "=" * (width - 2) + "+")
+        lines.append("|" + " [=] Life Story [=] ".center(width - 2) + "|")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         if not self.life_chapters:
-            lines.append("║" + " Your story is just beginning... ".center(width - 2) + "║")
+            lines.append("|" + " Your story is just beginning... ".center(width - 2) + "|")
         else:
             for i, chapter in enumerate(self.life_chapters):
-                status = "📍 Current" if chapter.chapter_id == self.current_chapter else "✓ Complete"
-                lines.append("║" + f" Chapter {i+1}: {chapter.title} "[:width-3].ljust(width - 2) + "║")
-                lines.append("║" + f"   {status}"[:width-3].ljust(width - 2) + "║")
-                lines.append("║" + f"   {chapter.summary}"[:width-3].ljust(width - 2) + "║")
+                status = "* Current" if chapter.chapter_id == self.current_chapter else "x Complete"
+                lines.append("|" + f" Chapter {i+1}: {chapter.title} "[:width-3].ljust(width - 2) + "|")
+                lines.append("|" + f"   {status}"[:width-3].ljust(width - 2) + "|")
+                lines.append("|" + f"   {chapter.summary}"[:width-3].ljust(width - 2) + "|")
                 
                 if chapter.key_events:
                     events_preview = ", ".join(chapter.key_events[:2])
-                    lines.append("║" + f"   Events: {events_preview}"[:width-3].ljust(width - 2) + "║")
+                    lines.append("|" + f"   Events: {events_preview}"[:width-3].ljust(width - 2) + "|")
                     
-                lines.append("║" + "│".center(width - 2) + "║")
+                lines.append("|" + "|".center(width - 2) + "|")
                 
-        lines.append("╚" + "═" * (width - 2) + "╝")
+        lines.append("+" + "=" * (width - 2) + "+")
         
         return lines
         

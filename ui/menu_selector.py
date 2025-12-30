@@ -223,6 +223,6 @@ class MenuSelector:
                 lines.append(line)
 
         lines.append("")
-        lines.append("[↑↓] Navigate  [Enter] Select  [ESC] Close")
+        lines.append("[^v] Navigate  [Enter] Select  [ESC] Close")
 
         return lines

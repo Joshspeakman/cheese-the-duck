@@ -141,63 +141,63 @@ TIME_PHASES: Dict[TimeOfDay, TimePhase] = {
 
 # Moon phase icons and bonuses
 MOON_ICONS: Dict[MoonPhase, str] = {
-    MoonPhase.NEW_MOON: "🌑",
-    MoonPhase.WAXING_CRESCENT: "🌒",
-    MoonPhase.FIRST_QUARTER: "🌓",
-    MoonPhase.WAXING_GIBBOUS: "🌔",
-    MoonPhase.FULL_MOON: "🌕",
-    MoonPhase.WANING_GIBBOUS: "🌖",
-    MoonPhase.LAST_QUARTER: "🌗",
-    MoonPhase.WANING_CRESCENT: "🌘",
+    MoonPhase.NEW_MOON: "( )",
+    MoonPhase.WAXING_CRESCENT: "()",
+    MoonPhase.FIRST_QUARTER: "D",
+    MoonPhase.WAXING_GIBBOUS: "O",
+    MoonPhase.FULL_MOON: "O",
+    MoonPhase.WANING_GIBBOUS: "O",
+    MoonPhase.LAST_QUARTER: "C",
+    MoonPhase.WANING_CRESCENT: "()",
 }
 
 # Time-based duck visuals
 DUCK_VISUALS: Dict[TimeOfDay, List[str]] = {
     TimeOfDay.DAWN: [
         "    *yawn*    ",
-        "      🦆      ",
+        "      d       ",
         "    z..z..    ",
         "   (waking)   ",
     ],
     TimeOfDay.MORNING: [
-        "      ☀️      ",
-        "    \\🦆/     ",
+        "      *       ",
+        "    \\d/      ",
         "   stretch!   ",
         "   *quack!*   ",
     ],
     TimeOfDay.MIDDAY: [
-        "   ☀️☀️☀️    ",
-        "     🦆      ",
+        "   * * *     ",
+        "     d       ",
         "    ~~~~     ",
         "   relaxing   ",
     ],
     TimeOfDay.AFTERNOON: [
-        "     ☀️       ",
-        "    🦆→→     ",
+        "     *        ",
+        "    d>>      ",
         "   *waddle*   ",
         "   playful!   ",
     ],
     TimeOfDay.EVENING: [
-        "    🌅🌅     ",
-        "     🦆      ",
+        "    ~~       ",
+        "     d       ",
         "    yum~     ",
         "   dinner    ",
     ],
     TimeOfDay.DUSK: [
-        "   🌆         ",
-        "    🦆 ✨    ",
+        "   ~~         ",
+        "    d  *     ",
         "   *yawn*    ",
         "   sleepy..   ",
     ],
     TimeOfDay.NIGHT: [
-        "   ⭐ 🌙 ⭐  ",
-        "    zzZ🦆    ",
+        "   *  )  *   ",
+        "    zzZd     ",
         "   sleeping   ",
         "    ...      ",
     ],
     TimeOfDay.LATE_NIGHT: [
-        "     🌙      ",
-        "   💤🦆💤   ",
+        "     )       ",
+        "   zzZdzzZ   ",
         "   *snore*   ",
         "   deep zzz   ",
     ],
@@ -291,44 +291,44 @@ class DayNightSystem:
         
         if tod == TimeOfDay.DAWN:
             return [
-                "░░░▒▒▒▓▓▓████████▓▓▓▒▒▒░░░",
-                "  ☀️ rising from the east  ",
+                "...,,,###########,,,..:",
+                "  * rising from the east  ",
             ]
         elif tod == TimeOfDay.MORNING:
             return [
-                "            ☀️              ",
-                "  ☁️    clear skies    ☁️   ",
+                "            *               ",
+                "  (*)   clear skies   (*)   ",
             ]
         elif tod == TimeOfDay.MIDDAY:
             return [
-                "          ☀️                ",
+                "          *                ",
                 "      bright and warm       ",
             ]
         elif tod == TimeOfDay.AFTERNOON:
             return [
-                "              ☀️            ",
-                "    ☁️   pleasant   ☁️      ",
+                "              *             ",
+                "    (*)  pleasant  (*)      ",
             ]
         elif tod == TimeOfDay.EVENING:
             return [
-                "                  🌅       ",
+                "                  ~~       ",
                 "     golden hour glow      ",
             ]
         elif tod == TimeOfDay.DUSK:
             return [
-                "████▓▓▓▒▒▒░░░░░░▒▒▒▓▓▓████",
-                "          🌆               ",
+                "###,,,:::......:::,,,###",
+                "          ~~               ",
             ]
         elif tod == TimeOfDay.NIGHT:
             moon = MOON_ICONS[self.get_moon_phase()]
             return [
-                f"   ⭐    {moon}    ⭐   ⭐   ",
+                f"   *    {moon}    *   *   ",
                 "         dark sky          ",
             ]
         else:  # Late night
             moon = MOON_ICONS[self.get_moon_phase()]
             return [
-                f"  ⭐  ⭐   {moon}     ⭐    ",
+                f"  *  *   {moon}     *    ",
                 "      deep night           ",
             ]
     
@@ -347,14 +347,14 @@ class DayNightSystem:
             if bonus_id not in self.time_bonuses_claimed:
                 self.time_bonuses_claimed[bonus_id] = today
                 self.sunrises_watched += 1
-                return ("🌅 Early Bird Bonus! You caught the sunrise!", 50, 25)
+                return ("~~ Early Bird Bonus! You caught the sunrise!", 50, 25)
         
         # Night owl bonus (late night)
         if tod == TimeOfDay.LATE_NIGHT:
             bonus_id = f"night_owl_{today}"
             if bonus_id not in self.time_bonuses_claimed:
                 self.time_bonuses_claimed[bonus_id] = today
-                return ("🦉 Night Owl Bonus! Still awake?", 40, 20)
+                return ("(o,o) Night Owl Bonus! Still awake?", 40, 20)
         
         # Golden hour bonus (dusk)
         if tod == TimeOfDay.DUSK:
@@ -362,7 +362,7 @@ class DayNightSystem:
             if bonus_id not in self.time_bonuses_claimed:
                 self.time_bonuses_claimed[bonus_id] = today
                 self.sunsets_watched += 1
-                return ("🌆 Golden Hour Bonus! Beautiful sunset!", 45, 22)
+                return ("~~ Golden Hour Bonus! Beautiful sunset!", 45, 22)
         
         # Full moon bonus
         if self.get_moon_phase() == MoonPhase.FULL_MOON and tod in [TimeOfDay.NIGHT, TimeOfDay.LATE_NIGHT]:
@@ -370,7 +370,7 @@ class DayNightSystem:
             if bonus_id not in self.time_bonuses_claimed:
                 self.time_bonuses_claimed[bonus_id] = today
                 self.full_moons_experienced += 1
-                return ("🌕 Full Moon Bonus! Mystical energy!", 75, 35)
+                return ("O Full Moon Bonus! Mystical energy!", 75, 35)
         
         return None
     
@@ -417,30 +417,30 @@ class DayNightSystem:
         
         # Time icon based on day/night
         if phase.ambient_level > 0.5:
-            time_icon = "☀️"
+            time_icon = "*"
         else:
             time_icon = moon
         
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            f"║    {time_icon} {time_str} - {phase.name:<25}     ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            f"|    {time_icon} {time_str} - {phase.name:<25}     |",
+            "+===============================================+",
         ]
         
         # Sky gradient
         for sky_line in self.get_sky_gradient():
-            lines.append(f"║  {sky_line:^43}  ║")
+            lines.append(f"|  {sky_line:^43}  |")
         
-        lines.append("║                                               ║")
-        lines.append(f"║  {phase.description:<43}  ║")
-        lines.append(f"║  Cheese is {phase.duck_activity:<33}  ║")
+        lines.append("|                                               |")
+        lines.append(f"|  {phase.description:<43}  |")
+        lines.append(f"|  Cheese is {phase.duck_activity:<33}  |")
         
         # Duck visual
         duck_visual = DUCK_VISUALS.get(phase.time_of_day, [])
         for dv_line in duck_visual:
-            lines.append(f"║  {dv_line:^43}  ║")
+            lines.append(f"|  {dv_line:^43}  |")
         
-        lines.append("╚═══════════════════════════════════════════════╝")
+        lines.append("+===============================================+")
         
         return lines
     
@@ -450,11 +450,11 @@ class DayNightSystem:
         time_str = self.get_time_string()
         
         if phase.ambient_level > 0.5:
-            icon = "☀️"
+            icon = "*"
         elif phase.ambient_level > 0.2:
-            icon = "🌙"
+            icon = ")"
         else:
-            icon = "🌑"
+            icon = "o"
         
         return f"{icon} {time_str}"
     

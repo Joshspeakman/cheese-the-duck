@@ -75,8 +75,8 @@ TRADERS: Dict[str, Trader] = {
         greeting="Quack quack! Welcome to my traveling shop!",
         farewell="Safe travels, friend! Come back soon!",
         ascii_art=[
-            "    🎩     ",
-            "   🦆📦    ",
+            "    [^]    ",
+            "   d [#]   ",
             "  /|  |\\   ",
             " *TRADE*   ",
         ],
@@ -92,9 +92,9 @@ TRADERS: Dict[str, Trader] = {
         greeting="Oh my! Do you have any rare items for my collection?",
         farewell="Thank you for the trade! My collection grows!",
         ascii_art=[
-            "   🔍       ",
-            "  👒🦆      ",
-            "  📚📚      ",
+            "   (o)      ",
+            "  [^]d      ",
+            "  ##        ",
             " *examine* ",
         ],
         personality="Meticulous and excited about rarities",
@@ -109,9 +109,9 @@ TRADERS: Dict[str, Trader] = {
         greeting="...You seek something special?",
         farewell="...We shall meet again...",
         ascii_art=[
-            "    ❓      ",
-            "   🦆      ",
-            "  ░░░░     ",
+            "    ?       ",
+            "   d        ",
+            "  ....      ",
             " *mystery* ",
         ],
         personality="Enigmatic and cryptic",
@@ -123,11 +123,11 @@ TRADERS: Dict[str, Trader] = {
         id="chef_quackers",
         name="Chef Quackers",
         trader_type=TraderType.FOOD_VENDOR,
-        greeting="Bon appétit! Looking for gourmet ingredients?",
+        greeting="Bon appetit! Looking for gourmet ingredients?",
         farewell="May your meals be delicious!",
         ascii_art=[
-            "    👨‍🍳     ",
-            "   🦆🍳    ",
+            "    [C]     ",
+            "   d (o)   ",
             "   ~~~~    ",
             " *sizzle* ",
         ],
@@ -143,8 +143,8 @@ TRADERS: Dict[str, Trader] = {
         greeting="The season brings special treasures!",
         farewell="Until the seasons change!",
         ascii_art=[
-            "   ✨🍃    ",
-            "    🦆     ",
+            "   *~      ",
+            "    d      ",
             "   ~*~     ",
             " *magical* ",
         ],
@@ -438,40 +438,40 @@ class TradingSystem:
     def render_trader_selection(self) -> List[str]:
         """Render the trader selection screen."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║            🛒 TRADING POST 🛒                 ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            "|            [=] TRADING POST [=]              |",
+            "+===============================================+",
         ]
         
         traders = self.refresh_traders()
         
         if not traders:
-            lines.append("║  No traders visiting today!                   ║")
-            lines.append("║  Check back tomorrow.                         ║")
-            lines.append("║                                               ║")
-            lines.append("║  Traders visit on different days:             ║")
+            lines.append("|  No traders visiting today!                   |")
+            lines.append("|  Check back tomorrow.                         |")
+            lines.append("|                                               |")
+            lines.append("|  Traders visit on different days:             |")
             for trader in TRADERS.values():
                 days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
                 visit_days = [days[d] for d in trader.visit_days]
-                lines.append(f"║  • {trader.name}: {', '.join(visit_days):^20}  ║")
+                lines.append(f"|  - {trader.name}: {', '.join(visit_days):^20}  |")
         else:
-            lines.append("║  Today's Visitors:                            ║")
-            lines.append("║                                               ║")
+            lines.append("|  Today's Visitors:                            |")
+            lines.append("|                                               |")
             
             for i, trader in enumerate(traders, 1):
                 friendship = self.get_trader_friendship(trader.id)
-                heart = "❤️" if friendship > 50 else "🤍"
+                heart = "<3" if friendship > 50 else "<"
                 offers = len(self.get_offers_for_trader(trader.id))
                 
-                lines.append(f"║  [{i}] {trader.name:<30} {heart}  ║")
-                lines.append(f"║      {trader.personality[:35]:<35}  ║")
-                lines.append(f"║      Offers: {offers}  Friendship: {friendship}/100        ║")
-                lines.append("║                                               ║")
+                lines.append(f"|  [{i}] {trader.name:<30} {heart}  |")
+                lines.append(f"|      {trader.personality[:35]:<35}  |")
+                lines.append(f"|      Offers: {offers}  Friendship: {friendship}/100        |")
+                lines.append("|                                               |")
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            f"║  Total Trades: {self.completed_trades}  Lucky: {self.lucky_trades:^17}  ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            f"|  Total Trades: {self.completed_trades}  Lucky: {self.lucky_trades:^17}  |",
+            "+===============================================+",
         ])
         
         return lines
@@ -486,45 +486,45 @@ class TradingSystem:
         friendship = self.get_trader_friendship(trader_id)
         
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            f"║  🛒 {trader.name:^38} 🛒 ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            f"|  [=] {trader.name:^38} [=] |",
+            "+===============================================+",
         ]
         
         # Trader art and greeting
         for art_line in trader.ascii_art:
-            lines.append(f"║  {art_line:^43}  ║")
+            lines.append(f"|  {art_line:^43}  |")
         
-        lines.append(f"║  \"{trader.greeting[:40]}\"  ║")
-        lines.append(f"║  Friendship: {friendship}/100                          ║")
-        lines.append("╠═══════════════════════════════════════════════╣")
+        lines.append(f"|  \"{trader.greeting[:40]}\"  |")
+        lines.append(f"|  Friendship: {friendship}/100                          |")
+        lines.append("+===============================================+")
         
         if not offers:
-            lines.append("║  No offers available right now!               ║")
+            lines.append("|  No offers available right now!               |")
         else:
             for i, offer in enumerate(offers, 1):
                 rarity_icons = {
-                    TradeRarity.COMMON: "⚪",
-                    TradeRarity.UNCOMMON: "🟢",
-                    TradeRarity.RARE: "🔵",
-                    TradeRarity.LEGENDARY: "🟡",
+                    TradeRarity.COMMON: "o",
+                    TradeRarity.UNCOMMON: "+",
+                    TradeRarity.RARE: "*",
+                    TradeRarity.LEGENDARY: "#",
                 }
-                icon = rarity_icons.get(offer.rarity, "⚪")
+                icon = rarity_icons.get(offer.rarity, "o")
                 
-                lines.append(f"║  [{i}] {icon} {offer.rarity.value.upper():<12}           x{offer.times_available} ║")
-                lines.append(f"║      {offer.description[:40]:<40}  ║")
+                lines.append(f"|  [{i}] {icon} {offer.rarity.value.upper():<12}           x{offer.times_available} |")
+                lines.append(f"|      {offer.description[:40]:<40}  |")
                 
                 give_str = ", ".join(f"{item.item_name}x{item.quantity}" for item in offer.you_give)[:35]
                 get_str = ", ".join(f"{item.item_name}x{item.quantity}" for item in offer.you_get)[:35]
                 
-                lines.append(f"║      Give: {give_str:<35}  ║")
-                lines.append(f"║      Get:  {get_str:<35}  ║")
-                lines.append("║                                               ║")
+                lines.append(f"|      Give: {give_str:<35}  |")
+                lines.append(f"|      Get:  {get_str:<35}  |")
+                lines.append("|                                               |")
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            "║  [#] Select trade  [B] Back                   ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            "|  [#] Select trade  [B] Back                   |",
+            "+===============================================+",
         ])
         
         return lines

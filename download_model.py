@@ -16,17 +16,29 @@ MODEL_DIR = GAME_DIR / "models"
 VENV_DIR = GAME_DIR / ".venv"
 
 MODELS = {
-    "tiny": {
-        "name": "TinyLlama 1.1B (Recommended - ~700MB)",
-        "url": "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf",
-        "filename": "tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf",
-        "size_mb": 700,
+    "llama": {
+        "name": "Llama 3.2 3B (Recommended - ~2GB)",
+        "url": "https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF/resolve/main/Llama-3.2-3B-Instruct-Q4_K_M.gguf",
+        "filename": "Llama-3.2-3B-Instruct-Q4_K_M.gguf",
+        "size_mb": 2000,
     },
-    "small": {
-        "name": "Phi-3 Mini 3.8B (Better quality - ~2.3GB)",
+    "phi": {
+        "name": "Phi-3 Mini 3.8B (~2.3GB)",
         "url": "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf",
         "filename": "Phi-3-mini-4k-instruct-q4.gguf",
         "size_mb": 2300,
+    },
+    "qwen": {
+        "name": "Qwen2.5 3B (~2GB)",
+        "url": "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/resolve/main/qwen2.5-3b-instruct-q4_k_m.gguf",
+        "filename": "qwen2.5-3b-instruct-q4_k_m.gguf",
+        "size_mb": 2000,
+    },
+    "tiny": {
+        "name": "TinyLlama 1.1B (Lightweight - ~700MB)",
+        "url": "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf",
+        "filename": "tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf",
+        "size_mb": 700,
     },
 }
 
@@ -180,9 +192,12 @@ def main():
     print()
     
     # Get user choice
-    choice = input("🎯 Which model? [tiny/small] (default: tiny): ").strip().lower()
+    print("   Recommended: llama (best roleplay quality)")
+    print("   Lightweight: tiny (faster, but less capable)")
+    print()
+    choice = input("🎯 Which model? [llama/phi/qwen/tiny] (default: llama): ").strip().lower()
     if choice not in MODELS:
-        choice = "tiny"
+        choice = "llama"
     
     model = MODELS[choice]
     filepath = MODEL_DIR / model["filename"]

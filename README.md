@@ -41,14 +41,14 @@ Color-coded progress bars show you at a glance what needs attention:
 - **Red** (below 40%): Critical
 
 ### Growth & Personality
-Your duck grows through distinct life stages: Egg → Duckling → Teen → Adult → Elder. Each stage brings new behaviors and interactions.
+Your duck grows through distinct life stages: Egg -> Duckling -> Teen -> Adult -> Elder. Each stage brings new behaviors and interactions.
 
 Every duck has unique personality traits that shape how it behaves:
-- Clever ↔ Derpy
-- Brave ↔ Timid
-- Active ↔ Lazy
-- Social ↔ Shy
-- Neat ↔ Messy
+- Clever <-> Derpy
+- Brave <-> Timid
+- Active <-> Lazy
+- Social <-> Shy
+- Neat <-> Messy
 
 These aren't just flavor text—they genuinely affect what your duck does when you're not directly commanding it.
 
@@ -262,9 +262,15 @@ pip install -r requirements.txt
 python3 main.py
 ```
 
-### Optional: LLM Integration
+### AI Conversations
 
-For enhanced AI conversations:
+The game includes a bundled TinyLlama AI model for dynamic duck conversations. After installing dependencies with `pip install -r requirements.txt`, the AI should work automatically.
+
+**Note:** The `llama-cpp-python` package may take several minutes to install as it compiles from source. On some systems you may need a C++ compiler installed.
+
+### Optional: External LLM (Ollama)
+
+For larger/better AI models, you can optionally use Ollama:
 
 ```bash
 # Install Ollama (see https://ollama.ai)
@@ -276,7 +282,7 @@ ollama pull llama3.2
 ollama serve
 ```
 
-The game auto-detects Ollama if available.
+The game will prefer Ollama if available, otherwise uses the bundled model.
 
 ---
 
@@ -300,6 +306,7 @@ The game auto-detects Ollama if available.
 │    A    │  Travel to other areas    │
 │    C    │  Crafting menu            │
 │    R    │  Building menu            │
+│    V    │  Decorations/Furniture    │
 │    U    │  Use/interact with items  │
 └─────────┴───────────────────────────┘
 
@@ -314,9 +321,28 @@ The game auto-detects Ollama if available.
 └─────────┴───────────────────────────┘
 
 ┌─────────────────────────────────────┐
-│          OTHER                      │
+│         ACTIVITIES                  │
 ├─────────┬───────────────────────────┤
 │    J    │  Mini-games menu          │
+│    9    │  Garden (plant/harvest)   │
+│    X    │  Tricks (teach/perform)   │
+│    0    │  Festivals                │
+│    =    │  Enhanced Diary           │
+│    ;    │  Take Photo               │
+└─────────┴───────────────────────────┘
+
+┌─────────────────────────────────────┐
+│       COLLECTIONS & LEGACY          │
+├─────────┬───────────────────────────┤
+│    -    │  Collectibles Album       │
+│    8    │  Prestige/Legacy          │
+│    ~    │  Titles & Nicknames       │
+│    Y    │  Scrapbook                │
+└─────────┴───────────────────────────┘
+
+┌─────────────────────────────────────┐
+│          OTHER                      │
+├─────────┬───────────────────────────┤
 │    K    │  Random duck fact         │
 │  M / N  │  Toggle sound/music       │
 │  + / -  │  Volume control           │

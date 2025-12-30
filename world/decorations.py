@@ -94,9 +94,9 @@ DECORATIONS: Dict[str, Decoration] = {
         price=50,
         size=(2, 2),
         ascii_art=[
-            "╔════╗",
-            "║~~~~║",
-            "╚════╝",
+            "+====+",
+            "|~~~~|",
+            "+====+",
         ],
         comfort_bonus=15,
         mood_bonus=5,
@@ -111,9 +111,9 @@ DECORATIONS: Dict[str, Decoration] = {
         price=200,
         size=(2, 2),
         ascii_art=[
-            " ╭──╮ ",
-            "╭┤~~├╮",
-            "╰────╯",
+            " +--+ ",
+            "++~~++",
+            "+----+",
         ],
         comfort_bonus=30,
         mood_bonus=15,
@@ -129,8 +129,8 @@ DECORATIONS: Dict[str, Decoration] = {
         price=30,
         size=(1, 1),
         ascii_art=[
-            "┌─┐",
-            "│ │",
+            "+-+",
+            "| |",
         ],
         allowed_rooms=[RoomType.LIVING, RoomType.KITCHEN],
     ),
@@ -143,8 +143,8 @@ DECORATIONS: Dict[str, Decoration] = {
         price=25,
         size=(1, 1),
         ascii_art=[
-            "╭──╮",
-            "╰──╯",
+            "+--+",
+            "+--+",
         ],
         comfort_bonus=10,
         allowed_rooms=[RoomType.BEDROOM, RoomType.LIVING],
@@ -158,10 +158,10 @@ DECORATIONS: Dict[str, Decoration] = {
         price=75,
         size=(2, 3),
         ascii_art=[
-            "╔════╗",
-            "║||||║",
-            "║||||║",
-            "╚════╝",
+            "+====+",
+            "||||||",
+            "||||||",
+            "+====+",
         ],
         beauty_bonus=10,
         allowed_rooms=[RoomType.LIVING, RoomType.BEDROOM],
@@ -177,9 +177,9 @@ DECORATIONS: Dict[str, Decoration] = {
         price=20,
         size=(1, 1),
         ascii_art=[
-            "┌──┐",
-            "│🖼️│",
-            "└──┘",
+            "+--+",
+            "|[#]|",
+            "+--+",
         ],
         beauty_bonus=5,
         mood_bonus=3,
@@ -194,9 +194,9 @@ DECORATIONS: Dict[str, Decoration] = {
         price=40,
         size=(1, 1),
         ascii_art=[
-            "╭─╮",
-            "│○│",
-            "╰─╯",
+            "+-+",
+            "|○|",
+            "+-+",
         ],
         allowed_rooms=[RoomType.LIVING, RoomType.KITCHEN],
     ),
@@ -209,10 +209,10 @@ DECORATIONS: Dict[str, Decoration] = {
         price=60,
         size=(1, 2),
         ascii_art=[
-            "╭──╮",
-            "│◇◇│",
-            "│◇◇│",
-            "╰──╯",
+            "+--+",
+            "|◇◇|",
+            "|◇◇|",
+            "+--+",
         ],
         beauty_bonus=15,
         mood_bonus=5,
@@ -229,8 +229,8 @@ DECORATIONS: Dict[str, Decoration] = {
         price=25,
         size=(1, 1),
         ascii_art=[
-            " 🌱 ",
-            "╰┴╯",
+            " i ",
+            "+++",
         ],
         mood_bonus=5,
         beauty_bonus=5,
@@ -244,8 +244,8 @@ DECORATIONS: Dict[str, Decoration] = {
         price=30,
         size=(1, 1),
         ascii_art=[
-            " 🌸 ",
-            "╰┴╯",
+            " * ",
+            "+++",
         ],
         mood_bonus=10,
         beauty_bonus=10,
@@ -259,9 +259,9 @@ DECORATIONS: Dict[str, Decoration] = {
         price=150,
         size=(1, 2),
         ascii_art=[
-            " 🌳 ",
-            " │  ",
-            "╰┴╯",
+            " T ",
+            " |  ",
+            "+++",
         ],
         mood_bonus=15,
         beauty_bonus=20,
@@ -278,8 +278,8 @@ DECORATIONS: Dict[str, Decoration] = {
         price=35,
         size=(1, 1),
         ascii_art=[
-            "╱─╲",
-            " │ ",
+            "/-\\",
+            " | ",
         ],
         comfort_bonus=10,
         mood_bonus=5,
@@ -293,7 +293,7 @@ DECORATIONS: Dict[str, Decoration] = {
         price=100,
         size=(3, 1),
         ascii_art=[
-            "✨~✨~✨~✨",
+            "*~*~*~*",
         ],
         mood_bonus=20,
         beauty_bonus=15,
@@ -308,9 +308,9 @@ DECORATIONS: Dict[str, Decoration] = {
         price=45,
         size=(1, 1),
         ascii_art=[
-            "╭─╮",
-            "│●│",
-            "╰─╯",
+            "+-+",
+            "|●|",
+            "+-+",
         ],
         mood_bonus=10,
         beauty_bonus=10,
@@ -326,7 +326,7 @@ DECORATIONS: Dict[str, Decoration] = {
         price=15,
         size=(1, 1),
         ascii_art=[
-            "🦆",
+            "d",
         ],
         mood_bonus=10,
         allowed_rooms=[RoomType.PLAY, RoomType.POND],
@@ -340,7 +340,7 @@ DECORATIONS: Dict[str, Decoration] = {
         price=10,
         size=(1, 1),
         ascii_art=[
-            "⚽",
+            "o",
         ],
         mood_bonus=8,
         allowed_rooms=[RoomType.PLAY],
@@ -354,7 +354,7 @@ DECORATIONS: Dict[str, Decoration] = {
         price=40,
         size=(1, 1),
         ascii_art=[
-            "🧸",
+            "o",
         ],
         mood_bonus=15,
         comfort_bonus=10,
@@ -371,9 +371,9 @@ DECORATIONS: Dict[str, Decoration] = {
         price=45,
         size=(2, 2),
         ascii_art=[
-            "╔════╗",
-            "║░░░░║",
-            "╚════╝",
+            "+====+",
+            "|....|",
+            "+====+",
         ],
         comfort_bonus=15,
     ),
@@ -387,7 +387,7 @@ DECORATIONS: Dict[str, Decoration] = {
         size=(2, 2),
         ascii_art=[
             "~~~~~~~~",
-            "~🐟~~🐟~",
+            "~><>~~><>~",
             "~~~~~~~~",
         ],
         mood_bonus=10,
@@ -404,7 +404,7 @@ DECORATIONS: Dict[str, Decoration] = {
         price=80,
         size=(1, 1),
         ascii_art=[
-            "🌸🌷🌸",
+            "*T*",
         ],
         mood_bonus=15,
         beauty_bonus=20,
@@ -419,9 +419,9 @@ DECORATIONS: Dict[str, Decoration] = {
         price=90,
         size=(1, 1),
         ascii_art=[
-            "╭──╮",
-            "│❄️│",
-            "╰──╯",
+            "+--+",
+            "|*|",
+            "+--+",
         ],
         mood_bonus=20,
         beauty_bonus=15,
@@ -439,9 +439,9 @@ DECORATIONS: Dict[str, Decoration] = {
         price=500,
         size=(3, 3),
         ascii_art=[
-            "  🦆  ",
-            " ╭┴╮ ",
-            "╭┴──┴╮",
+            "  d  ",
+            " +++ ",
+            "++--++",
             "~~~~~~",
         ],
         mood_bonus=30,
@@ -459,9 +459,9 @@ DECORATIONS: Dict[str, Decoration] = {
         price=1000,
         size=(2, 2),
         ascii_art=[
-            " ✨✨ ",
-            "╭┤★★├╮",
-            "╰────╯",
+            " ** ",
+            "++**++",
+            "+----+",
         ],
         comfort_bonus=50,
         mood_bonus=40,
@@ -503,7 +503,7 @@ class DecorationsSystem:
         self.owned_decorations[decoration_id] = self.owned_decorations.get(decoration_id, 0) + 1
         new_coins = coins - decoration.price
         
-        return True, f"🛒 Purchased {decoration.name}!", new_coins
+        return True, f"[=] Purchased {decoration.name}!", new_coins
     
     def place_decoration(
         self,
@@ -578,7 +578,7 @@ class DecorationsSystem:
         if len(self.decorating_history) > 100:
             self.decorating_history = self.decorating_history[-100:]
 
-        return True, f"🏠 Placed {decoration.name} in {room.name}!"
+        return True, f"[=] Placed {decoration.name} in {room.name}!"
     
     def remove_decoration(
         self,
@@ -608,7 +608,7 @@ class DecorationsSystem:
                     self.total_comfort -= decoration.comfort_bonus
                 
                 name = decoration.name if decoration else "decoration"
-                return True, f"📦 Removed {name} from {room.name}!"
+                return True, f"[=] Removed {name} from {room.name}!"
         
         return False, "No decoration at that position!"
     
@@ -658,9 +658,9 @@ class DecorationsSystem:
             return ["Room not found!"]
         
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            f"║  🏠 {room.name:^37} 🏠  ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            f"|  [=] {room.name:^37} [=]  |",
+            "+===============================================+",
         ]
         
         # Create room grid
@@ -668,48 +668,48 @@ class DecorationsSystem:
         grid_height = min(room.size[1], 8)
         
         # Simple room floor
-        floor = "░" * grid_width
+        floor = "." * grid_width
         for _ in range(grid_height):
-            lines.append(f"║  {floor:40}   ║")
+            lines.append(f"|  {floor:40}   |")
         
-        lines.append("╠═══════════════════════════════════════════════╣")
-        lines.append(f"║  Decorations: {len(room.decorations):3}  |  Mood: +{room.mood_modifier:3}       ║")
-        lines.append(f"║  Comfort: +{room.comfort_level:3}                               ║")
+        lines.append("+===============================================+")
+        lines.append(f"|  Decorations: {len(room.decorations):3}  |  Mood: +{room.mood_modifier:3}       |")
+        lines.append(f"|  Comfort: +{room.comfort_level:3}                               |")
         
         # List placed decorations
         if room.decorations:
-            lines.append("╠═══════════════════════════════════════════════╣")
+            lines.append("+===============================================+")
             for placed in room.decorations[:3]:
                 decoration = DECORATIONS.get(placed.decoration_id)
                 if decoration:
-                    lines.append(f"║   • {decoration.name:^35}   ║")
+                    lines.append(f"|   • {decoration.name:^35}   |")
         
-        lines.append("╚═══════════════════════════════════════════════╝")
+        lines.append("+===============================================+")
         
         return lines
     
     def render_decoration_shop(self) -> List[str]:
         """Render the decoration shop."""
         lines = [
-            "╔═══════════════════════════════════════════════╗",
-            "║         🛋️ DECORATION SHOP 🛋️                ║",
-            "╠═══════════════════════════════════════════════╣",
+            "+===============================================+",
+            "|         [=] DECORATION SHOP [=]                |",
+            "+===============================================+",
         ]
         
         categories = list(DecorationCategory)
         for cat in categories[:4]:
             items = [d for d in DECORATIONS.values() if d.category == cat]
-            lines.append(f"║  {cat.value.upper():^41}  ║")
+            lines.append(f"|  {cat.value.upper():^41}  |")
             for item in items[:2]:
                 owned = self.owned_decorations.get(item.id, 0)
                 owned_str = f"[{owned}]" if owned > 0 else ""
-                lines.append(f"║    {item.name[:20]:20} {item.price:5}🪙 {owned_str:4} ║")
-            lines.append("║                                               ║")
+                lines.append(f"|    {item.name[:20]:20} {item.price:5}c {owned_str:4} |")
+            lines.append("|                                               |")
         
         lines.extend([
-            "╠═══════════════════════════════════════════════╣",
-            f"║  Total Beauty: {self.total_beauty:4}  |  Comfort: {self.total_comfort:4}     ║",
-            "╚═══════════════════════════════════════════════╝",
+            "+===============================================+",
+            f"|  Total Beauty: {self.total_beauty:4}  |  Comfort: {self.total_comfort:4}     |",
+            "+===============================================+",
         ])
         
         return lines
