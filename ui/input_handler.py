@@ -212,7 +212,7 @@ OTHER
 MENU NAVIGATION
 ---------------
 [TAB] Main Menu
-[Arrow Keys] Navigate menus"""
+[Arrow Keys] Navigate menus
 [Enter] Select/Confirm
 [ESC] Close menu
 """
