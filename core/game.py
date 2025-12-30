@@ -4969,13 +4969,25 @@ class Game:
         activities = self.weather_activities.get_available_activities(weather)
         
         # Build menu items
+        from ui.menu_selector import MenuItem
         self._weather_menu.clear_items()
-        for activity in activities:
+        for i, activity in enumerate(activities):
             desc = f"{activity.description[:35]}... ({activity.duration_seconds}s)"
-            self._weather_menu.add_item(activity.name, desc, enabled=True, data=activity)
+            self._weather_menu.add_item(MenuItem(
+                id=str(i),
+                label=activity.name,
+                description=desc,
+                enabled=True,
+                data=activity
+            ))
         
         if not activities:
-            self._weather_menu.add_item("No activities available", "Check back when weather changes!", enabled=False)
+            self._weather_menu.add_item(MenuItem(
+                id="none",
+                label="No activities available",
+                description="Check back when weather changes!",
+                enabled=False
+            ))
         
         # Show menu
         self._weather_menu_open = True
