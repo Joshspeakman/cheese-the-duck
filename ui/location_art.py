@@ -15,8 +15,8 @@ _term = Terminal()
 
 # Ground tiles - characters that make up the floor/base of each location
 LOCATION_GROUND_CHARS: Dict[str, List[str]] = {
-    # Home Pond - 50% grassy shore, 50% calm pond water
-    "Home Pond": [" ", " ", "'", ".", ",", " ", "~", "·", " ", " "],
+    # Home Pond - 70% grassy shore, 30% calm pond water with reeds
+    "Home Pond": [" ", "'", ".", ",", " ", "~", "~", "~", " ", "|"],
     "Deep End": [" ", "~", "~", "≈", "·", " ", "~", "≈", " ", "·"],
     
     # Forest - earthy with fallen leaves and twigs
@@ -70,11 +70,10 @@ LOCATION_DECORATIONS: Dict[str, List[Tuple[str, int]]] = {
         ("'", 8),        # Grass blades (land)
         (".", 6),        # Short grass (land)
         (",", 5),        # Pebbles on shore (transition)
-        ("~", 6),        # Water ripples (water)
-        ("·", 5),        # Water sparkle (water)
-        ("◎", 4),        # Lily pad (water)
-        ("♦", 2),        # Lily flower (water)
-        ("°", 2),        # Firefly/glow (land)
+        ("~", 8),        # Water ripples (water)
+        ("O", 4),        # Lily pad (water)
+        ("*", 2),        # Lily flower (water)
+        ("|", 3),        # Reed stems
     ],
     "Deep End": [
         ("~", 8),        # Deep water
@@ -251,22 +250,40 @@ DEFAULT_DECORATIONS = [
 # Large scenery pieces that get placed in specific spots
 LOCATION_SCENERY: Dict[str, List[List[str]]] = {
     "Home Pond": [
-        # Shore with grass and pebbles (left/land side)
-        ["' ' ' ' ' '", ".,.,.,.,.,."],
-        # Grassy patch on shore
-        [" ' ' ' ' ", "' ' ' ' '", " ' ' ' ' "],
-        # Shore edge transition (sand/pebbles)
-        [".,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,."[:40]],
-        # Pond water with lily pads
-        ["  ~  ◎  ~  ◎  ~  ", " ~ ◎ ♦ ◎ ~ ◎ ~ ", "  ~  ◎  ~  ◎  ~  "],
-        # Reed cluster at water's edge
-        ["│ │ │", "│ │ │", "ψ ψ ψ"],
+        # Large pond water area (central feature)
+        ["~~~~~~~~~~~", "~~~~~~~~~~~", "~~~~~~~~~~~"],
+        # Lily pad clusters floating on pond
+        ["  ~  O  ~  O  ~  ", " ~ O ~ O ~ O ~ ", "  ~  O  ~  O  ~  "],
+        # More lily pads with flowers
+        [" O ~ O ~ O ", "~ O * O ~ ", " O ~ O ~ O "],
+        # Reed cluster at water's edge (tall)
+        ["| | | | |", "| | | | |", "| | | | |", "Y Y Y Y Y"],
+        # Another reed cluster
+        ["| | |", "| | |", "Y Y Y"],
+        # Cattails along shore
+        ["| | | | | |", "| | | | | |", "Y Y Y Y Y Y"],
+        # Water edge with ripples
+        ["~=~=~=~=~=~", " ~~~~~~~~~ "],
+        # Small grassy shore patch
+        ["' ' ' ' '", ".,.,.,.,.'"],
         # Cozy dock extending into water
-        ["═══════", "│     │", "└─────┘"],
-        # Cattails on shore
-        ["│ │ │ │", "│ │ │ │", "ψ ψ ψ ψ"],
-        # Small flower patch on grassy area
-        [" ✿ · ✿ ", "' ' ' '"],
+        ["=======", "|     |", "+-----+"],
+        # Pebble shore edge
+        [". . . . . .", " . . . . . "],
+    ],
+    "Deep End": [
+        # Murky deep water
+        ["~~~~~~~", "~~~~~~~", "~~~~~~~"],
+        # Mysterious bubbles rising
+        ["  o   o  ", " o  o  o ", "o   o   o"],
+        # Underwater plants
+        [" Y Y Y ", "| | | |", "| | | |"],
+        # Sunken log
+        ["=======", " %%% "],
+        # Deep water current
+        ["~~~===~~~", " ~~~=~~ "],
+        # Hidden treasure glint
+        ["  * . *  ", " . * . "],
     ],
     "Forest Edge": [
         # Large tree left side
@@ -744,49 +761,62 @@ def _generate_forest_edge_scenery(scenery_pieces: List[List[str]],
     return placements
 
 
-def _generate_home_pond_scenery(scenery_pieces: List[List[str]], 
+def _generate_home_pond_scenery(scenery_pieces: List[List[str]],
                                  width: int, height: int) -> List[Tuple[int, int, List[str]]]:
-    """Generate Home Pond with cozy, clean arrangement."""
+    """Generate Home Pond with cozy pond-focused arrangement."""
     placements = []
-    
-    # Find different types of scenery
-    lily_pieces = [p for p in scenery_pieces if any('◎' in line or '♦' in line for line in p)]
-    reed_pieces = [p for p in scenery_pieces if any('ψ' in line or '│' in line for line in p) and not any('◎' in line for line in p)]
-    dock_pieces = [p for p in scenery_pieces if any('═' in line for line in p)]
-    cozy_pieces = [p for p in scenery_pieces if any('°' in line or '·' in line for line in p)]
-    
-    # Center lily pads (the cozy heart of the pond)
+
+    # Categorize scenery pieces by content (using ASCII chars)
+    water_pieces = [p for p in scenery_pieces if any('~' in line and len(line) > 8 for line in p)]
+    lily_pieces = [p for p in scenery_pieces if any('O' in line and '~' in line for line in p)]
+    reed_pieces = [p for p in scenery_pieces if any('|' in line or 'Y' in line for line in p) and not any('O' in line for line in p) and not any('+' in line for line in p)]
+    # Dock: has = on one line and + on another
+    dock_pieces = [p for p in scenery_pieces if any('=' in line for line in p) and any('+' in line for line in p)]
+    shore_pieces = [p for p in scenery_pieces if any("'" in line or ('.' in line and ' ' in line) for line in p) and not any('~' in line for line in p)]
+
+    # Always place main water area in center (this is the pond!)
+    if water_pieces:
+        water = water_pieces[0]  # Use the big water block
+        water_width = max(len(line) for line in water)
+        water_x = (width - water_width) // 2
+        water_y = (height - len(water)) // 2
+        placements.append((water_x, water_y, water))
+
+    # Place lily pads on the water
     if lily_pieces:
-        lily = max(lily_pieces, key=lambda p: sum(line.count('◎') for line in p))
+        lily = lily_pieces[0]
         lily_width = max(len(line) for line in lily)
-        lily_x = (width - lily_width) // 2  # Centered
-        lily_y = (height - len(lily)) // 2  # Centered
+        lily_x = (width - lily_width) // 2
+        lily_y = (height - len(lily)) // 2 - 1  # Slightly above center
         placements.append((lily_x, lily_y, lily))
-    
-    # Reeds on the left side
+
+    # Reeds on the left edge
     if reed_pieces:
-        reed = random.choice(reed_pieces)
+        reed = reed_pieces[0]
         placements.append((1, height - len(reed) - 1, reed))
-    
-    # Maybe reeds on right side too
-    if reed_pieces and random.random() > 0.3:
-        reed = random.choice(reed_pieces)
+
+    # Reeds on the right edge too
+    if len(reed_pieces) > 1:
+        reed = reed_pieces[1]
         reed_width = max(len(line) for line in reed)
         placements.append((width - reed_width - 2, height - len(reed) - 1, reed))
-    
-    # Small dock in a corner
-    if dock_pieces and random.random() > 0.4:
-        dock = random.choice(dock_pieces)
-        dock_x = width - max(len(line) for line in dock) - 2
-        placements.append((dock_x, 0, dock))
-    
-    # Maybe a cozy element
-    if cozy_pieces and random.random() > 0.5:
-        cozy = random.choice(cozy_pieces)
-        cozy_width = max(len(line) for line in cozy)
-        placements.append((random.randint(2, width - cozy_width - 2), 
-                          random.randint(1, max(1, height - len(cozy) - 2)), cozy))
-    
+    elif reed_pieces:
+        reed = reed_pieces[0]
+        reed_width = max(len(line) for line in reed)
+        placements.append((width - reed_width - 2, height - len(reed), reed))
+
+    # Dock in corner
+    if dock_pieces:
+        dock = dock_pieces[0]
+        dock_width = max(len(line) for line in dock)
+        placements.append((width - dock_width - 1, 0, dock))
+
+    # Shore/pebbles at bottom
+    if shore_pieces:
+        shore = shore_pieces[0]
+        shore_width = max(len(line) for line in shore)
+        placements.append(((width - shore_width) // 2, height - len(shore), shore))
+
     return placements
 
 
@@ -799,21 +829,39 @@ def get_decoration_color(location: str, char: str) -> Optional[Callable]:
     # Water characters
     if char in "~≈≋∫":
         return _term.bright_cyan
-    
+
+    # Lily pads (O) - bright green
+    if char == "O":
+        return _term.bright_green
+
+    # Lily flowers (*) - bright magenta when near water
+    if char == "*" and location in ("Home Pond", "Deep End"):
+        return _term.bright_magenta
+
+    # Reeds and cattails (| and Y)
+    if char == "|":
+        return _term.green
+    if char == "Y":
+        return _term.color(130)  # Brown cattail tops
+
+    # Dock elements (= and +)
+    if char in "=+-":
+        return _term.color(130)  # Brown wood
+
     # Plants/trees
     if char in "♠♣¥ψ":
         return _term.green
-    
+
     # Tree trunks
     if char in "│║":
         return _term.color(130)  # Brown
-    
-    # Lily pads and lily flowers
+
+    # Lily pads and lily flowers (Unicode fallback)
     if char == "◎":
         return _term.bright_green  # Lily pad
     if char == "♦":
         return _term.bright_magenta  # Lily flower
-    
+
     # Cozy elements
     if char == "°":
         return _term.bright_yellow  # Firefly/glow

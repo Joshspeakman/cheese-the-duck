@@ -758,7 +758,8 @@ class Renderer:
 
         # Build header parts - use simpler format to avoid cutoff
         name_part = duck.name
-        mood_part = mood_ind
+        mood_desc = mood.description  # "tolerating existence quite well", etc.
+        mood_part = f"{mood_desc} {mood_ind}"
         age_part = age_str
         coin_part = f"${currency}"
 

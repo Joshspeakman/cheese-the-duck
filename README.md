@@ -182,6 +182,27 @@ We could list everything, but where's the fun in that?
 ### Prerequisites
 - Python 3.8 or higher
 - Terminal with color support
+- Audio libraries (Linux): PulseAudio or ALSA
+
+### Linux Dependencies
+
+Before installing, ensure you have the required system packages:
+
+```bash
+# Ubuntu/Debian
+sudo apt update
+sudo apt install python3 python3-pip python3-venv
+sudo apt install libasound2-dev libpulse-dev  # For audio
+sudo apt install portaudio19-dev              # For pygame audio
+
+# Fedora
+sudo dnf install python3 python3-pip
+sudo dnf install alsa-lib-devel pulseaudio-libs-devel portaudio-devel
+
+# Arch Linux
+sudo pacman -S python python-pip
+sudo pacman -S alsa-lib pulseaudio portaudio
+```
 
 ### Quick Start
 
@@ -191,9 +212,33 @@ git clone https://github.com/Joshspeakman/cheese-the-duck.git
 cd cheese-the-duck
 
 # Create virtual environment (recommended)
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate  # Linux/Mac
 # or: .venv\Scripts\activate  # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the game
+python3 main.py
+```
+
+Or use the provided script:
+```bash
+chmod +x run_game.sh
+./run_game.sh
+```
+
+### Windows
+
+```powershell
+# Clone the repository
+git clone https://github.com/Joshspeakman/cheese-the-duck.git
+cd cheese-the-duck
+
+# Create virtual environment
+python -m venv .venv
+.venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -202,10 +247,19 @@ pip install -r requirements.txt
 python main.py
 ```
 
-Or use the provided script:
+### macOS
+
 ```bash
-chmod +x run_game.sh
-./run_game.sh
+# Install Python via Homebrew (if needed)
+brew install python
+
+# Clone and setup
+git clone https://github.com/Joshspeakman/cheese-the-duck.git
+cd cheese-the-duck
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python3 main.py
 ```
 
 ### Optional: LLM Integration

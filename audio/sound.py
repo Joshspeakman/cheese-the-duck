@@ -314,6 +314,7 @@ class SoundEngine:
         self._crossfading = False
         self._event_music_end_time: float = 0  # When event music should end
         self._previous_context: Optional[MusicContext] = None  # For resuming after events
+        self._music_cooldown_until: float = 0  # Cooldown period before next play
 
         # Check which audio files exist
         self._available_wavs = {
@@ -488,26 +489,59 @@ class SoundEngine:
         music_path = self._available_music[music_name]
         self._music_playing = True
 
-        # Prefer pygame for MP3 playback
+        # Prefer pygame for MP3 playback - with cooldown between loops
         if self._pygame_available:
             try:
                 import pygame
-                # Use Sound object for seamless looping (loads entire file into memory)
-                # This avoids the gap that can occur with streaming music
-                self._music_sound = pygame.mixer.Sound(str(music_path))
-                self._music_sound.set_volume(self.music_volume)
-                # Play on infinite loop (-1)
-                self._music_channel = self._music_sound.play(loops=-1)
+
+                def pygame_loop():
+                    try:
+                        sound = pygame.mixer.Sound(str(music_path))
+                        sound.set_volume(self.music_volume)
+                        self._music_sound = sound
+                    except Exception:
+                        # Fallback to streaming for large files
+                        sound = None
+
+                    while self._music_playing and not self.music_muted:
+                        try:
+                            if sound:
+                                # Play once (loops=0)
+                                self._music_channel = sound.play(loops=0)
+                                # Wait for it to finish
+                                while self._music_channel and self._music_channel.get_busy():
+                                    if not self._music_playing or self.music_muted:
+                                        sound.stop()
+                                        return
+                                    time.sleep(0.1)
+                            else:
+                                # Use streaming music
+                                pygame.mixer.music.load(str(music_path))
+                                pygame.mixer.music.set_volume(self.music_volume)
+                                pygame.mixer.music.play(0)
+                                while pygame.mixer.music.get_busy():
+                                    if not self._music_playing or self.music_muted:
+                                        pygame.mixer.music.stop()
+                                        return
+                                    time.sleep(0.1)
+
+                            # Cooldown: wait 2-5 minutes before playing again
+                            cooldown = random.uniform(120, 300)
+                            for _ in range(int(cooldown * 10)):
+                                if not self._music_playing or self.music_muted:
+                                    return
+                                time.sleep(0.1)
+                        except Exception:
+                            break
+
+                    self._music_playing = False
+
+                self._music_thread = threading.Thread(target=pygame_loop)
+                self._music_thread.daemon = True
+                self._music_thread.start()
                 return
             except Exception:
-                # Fallback to streaming music if Sound fails (e.g., large files)
-                try:
-                    pygame.mixer.music.load(str(music_path))
-                    pygame.mixer.music.set_volume(self.music_volume)
-                    pygame.mixer.music.play(-1)
-                    return
-                except Exception:
-                    pass
+                pass
         
         # Fallback to system players if pygame fails
         if not self._music_player:
@@ -691,24 +725,46 @@ class SoundEngine:
 
         Automatically handles track switching with crossfade when the context changes.
         Does nothing if the context hasn't changed (unless force=True).
+        Respects cooldown period between plays.
 
         Args:
             context: The new MusicContext to switch to
-            force: If True, restart music even if context is the same
+            force: If True, bypass cooldown and start music immediately
         """
         if not self.enabled or self.music_muted:
             return
 
-        # Check if we should ignore this update (event music playing)
-        current_time = time.time()
-        if current_time < self._event_music_end_time:
-            return  # Event music still playing
-
-        # No change needed
-        if not force and context == self._current_context:
+        # Don't interrupt ongoing crossfade (unless forcing)
+        if self._crossfading and not force:
             return
 
-        # Start crossfade to new track
+        current_time = time.time()
+
+        # Force mode: clear cooldown and stop any playing music
+        if force:
+            self._music_cooldown_until = 0
+            self._event_music_end_time = 0
+            if self._music_sound:
+                try:
+                    self._music_sound.stop()
+                except:
+                    pass
+            self._music_channel = None
+            self._current_context = None
+        else:
+            # Check if we should ignore this update (event music playing)
+            if current_time < self._event_music_end_time:
+                return  # Event music still playing
+
+            # Check if we're in cooldown (don't restart music)
+            if current_time < self._music_cooldown_until:
+                return  # Still in cooldown
+
+            # Check if music is still playing
+            if self._music_channel and self._music_channel.get_busy():
+                return  # Music still playing, wait for it to finish
+
+        # Start crossfade to new track (or restart same track after cooldown)
         self._crossfade_to_context(context)
 
     def play_event_music(self, context: MusicContext, duration: float = 5.0):
@@ -792,12 +848,13 @@ class SoundEngine:
                             pass
 
                     # Load and start new music at low volume, fade in
+                    # Play ONCE (loops=0), not infinite
                     music_path = self._available_music.get(audio_file)
                     if music_path and music_path.exists():
                         try:
                             new_sound = pygame.mixer.Sound(str(music_path))
                             new_sound.set_volume(0)
-                            new_channel = new_sound.play(loops=-1)
+                            new_channel = new_sound.play(loops=0)  # Play once only
 
                             # Fade in
                             for i in range(steps):
@@ -812,6 +869,17 @@ class SoundEngine:
                             self._music_sound = new_sound
                             self._music_channel = new_channel
                             self._music_sound.set_volume(self.music_volume)
+
+                            # Wait for track to finish, then set cooldown
+                            while new_channel and new_channel.get_busy():
+                                if self.music_muted:
+                                    new_sound.stop()
+                                    break
+                                time.sleep(0.5)
+
+                            # Set cooldown: 2-5 minutes before playing again
+                            self._music_cooldown_until = time.time() + random.uniform(120, 300)
+
                         except Exception:
                             pass
 

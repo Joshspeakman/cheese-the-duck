@@ -899,6 +899,13 @@ class Game:
         if self._state == "offline_summary":
             self._state = "playing"
             self._pending_offline_summary = None
+            # Start game music after dismissing offline summary
+            sound_engine.stop_music()
+            sound_engine.stop_background_music()
+            weather_str = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+            duck_mood = self.duck.get_mood().state.value if self.duck else "content"
+            music_context = get_music_context(weather=weather_str, duck_mood=duck_mood)
+            sound_engine.update_music(music_context, force=True)
             return
 
         if self._state == "playing" and self.duck:
@@ -952,7 +959,7 @@ class Game:
 
             # Handle fishing input when actively fishing
             if self.fishing.is_fishing:
-                if self._handle_fishing_input(key_str, key_name):
+                if self._handle_fishing_input(key_str, key_name, key):
                     return
 
             # Quit [Q] - Close menus first, then quit if nothing is open
@@ -2434,9 +2441,9 @@ class Game:
         # Play welcome sound
         duck_sounds.quack("happy")
 
-        # Start main game background music
-        if 'sunny_day' in sound_engine._available_wavs:
-            sound_engine.play_wav_music('sunny_day', loop=True)
+        # Start main game background music using dynamic system
+        music_context = get_music_context(weather="sunny", duck_mood="content")
+        sound_engine.update_music(music_context, force=True)
 
         # First goal
         self.goals.add_daily_goals()
@@ -2757,6 +2764,14 @@ class Game:
             self._state = "offline_summary"
         else:
             self._state = "playing"
+
+        # Stop title music and start game music
+        sound_engine.stop_music()
+        sound_engine.stop_background_music()
+        weather_str = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+        duck_mood = self.duck.get_mood().state.value if self.duck else "content"
+        music_context = get_music_context(weather=weather_str, duck_mood=duck_mood)
+        sound_engine.update_music(music_context, force=True)
 
         self._last_tick = time.time()
         self._last_save = time.time()
@@ -3830,7 +3845,7 @@ class Game:
 
         return True
 
-    def _handle_fishing_input(self, key_str: str, key_name: str = "") -> bool:
+    def _handle_fishing_input(self, key_str: str, key_name: str = "", key=None) -> bool:
         """Handle input while fishing."""
         if not self.fishing.is_fishing:
             return False
@@ -3842,7 +3857,8 @@ class Game:
             return True
 
         # Reel in with SPACE or ENTER when a fish is hooked
-        if key_str == ' ' or key_name == 'KEY_ENTER':
+        is_space = key_str == ' ' or key_name == 'KEY_SPACE' or (key and str(key) == ' ')
+        if is_space or key_name == 'KEY_ENTER':
             if self.fishing.hooked_fish:
                 success, message, caught_fish = self.fishing.reel_in()
 
@@ -4665,7 +4681,9 @@ class Game:
         elif action == "trigger_dream":
             if self.duck:
                 self._dream_active = True
-                self._dream_result = self.dreams.generate_dream(self.duck.mood.current_mood, 50)
+                mood = self.duck.get_mood()
+                mood_score = int(mood.happiness) if hasattr(mood, 'happiness') else 50
+                self._dream_result = self.dreams.generate_dream(mood_score, 50)
             self.renderer.show_message("🔧 DEBUG: Dream triggered!", duration=2)
         elif action == "spawn_rainbow":
             self._debug_set_weather("rainbow")
