@@ -1,19 +1,7 @@
-```
-                  ___
-               __(   )__
-              /    o    \
-             |           |
-             |    ____   |
-              \   \__/   /_
-               \___     _/  |>
-                   |   |---'
-                 __|   |__
-                /   \ /   \
-               (___) (___)
+# Cheese the Duck
+### A Terminal Virtual Pet Game
 
-           CHEESE THE DUCK
-      A Terminal Virtual Pet Game
-```
+![Cheese the Duck Gameplay](assets/gameplay.png)
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
