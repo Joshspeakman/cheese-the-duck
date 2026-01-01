@@ -99,7 +99,7 @@ ACTION_DATA = {
         "need_bonus": ("cleanliness", 0.5),
         "personality_bonus": ("neat_messy", -0.3),  # Neat ducks preen more
         "duration": 4.0,
-        "effect": {"cleanliness": 3},
+        "effect": {"cleanliness": 0.3},  # Small boost, doesn't prevent decay
     },
     AutonomousAction.NAP: {
         "messages": [
@@ -112,7 +112,7 @@ ACTION_DATA = {
         "need_bonus": ("energy", 0.6),
         "personality_bonus": ("active_lazy", -0.4),  # Lazy ducks nap more
         "duration": 5.0,
-        "effect": {"energy": 5},
+        "effect": {"energy": 0.5},  # Small boost, doesn't prevent decay
     },
     AutonomousAction.LOOK_AROUND: {
         "messages": [
@@ -137,7 +137,7 @@ ACTION_DATA = {
         "need_bonus": ("fun", 0.5),
         "personality_bonus": ("active_lazy", 0.3),
         "duration": 3.0,
-        "effect": {"fun": 5, "cleanliness": -2},
+        "effect": {"fun": 0.4, "cleanliness": -0.2},  # Small effects
     },
     AutonomousAction.STARE_BLANKLY: {
         "messages": [
@@ -163,7 +163,7 @@ ACTION_DATA = {
         "need_bonus": ("fun", 0.4),
         "personality_bonus": ("clever_derpy", -0.3),
         "duration": 3.5,
-        "effect": {"fun": 3, "energy": -2},
+        "effect": {"fun": 0.3, "energy": -0.2},  # Small effects
     },
     AutonomousAction.FLAP_WINGS: {
         "messages": [
@@ -176,7 +176,7 @@ ACTION_DATA = {
         "need_bonus": ("energy", 0.3),
         "personality_bonus": ("active_lazy", 0.3),
         "duration": 2.0,
-        "effect": {"energy": -1},
+        "effect": {"energy": -0.1},  # Small energy cost
     },
     AutonomousAction.WIGGLE: {
         "messages": [
@@ -214,7 +214,7 @@ ACTION_DATA = {
         "need_bonus": ("energy", 0.8),
         "personality_bonus": ("active_lazy", -0.3),
         "duration": 6.0,
-        "effect": {"energy": 10},
+        "effect": {"energy": 1.0},  # Better than regular nap but still small
         "requires_structure": "nest",
     },
     AutonomousAction.HIDE_IN_SHELTER: {
@@ -228,7 +228,7 @@ ACTION_DATA = {
         "need_bonus": None,
         "personality_bonus": ("brave_timid", -0.4),
         "duration": 5.0,
-        "effect": {"energy": 2},
+        "effect": {"energy": 0.2},  # Small energy conservation
         "requires_structure": "shelter",
     },
     AutonomousAction.USE_BIRD_BATH: {
@@ -242,7 +242,7 @@ ACTION_DATA = {
         "need_bonus": ("cleanliness", 0.7),
         "personality_bonus": ("neat_messy", -0.2),
         "duration": 4.0,
-        "effect": {"cleanliness": 8, "fun": 3},
+        "effect": {"cleanliness": 0.8, "fun": 0.3},  # Better than preening but still small
         "requires_structure": "bird_bath",
     },
     AutonomousAction.ADMIRE_GARDEN: {
@@ -256,7 +256,7 @@ ACTION_DATA = {
         "need_bonus": ("fun", 0.3),
         "personality_bonus": None,
         "duration": 3.0,
-        "effect": {"fun": 2},
+        "effect": {"fun": 0.2},  # Small entertainment
         "requires_structure": "garden_plot",
     },
     AutonomousAction.INSPECT_WORKBENCH: {
