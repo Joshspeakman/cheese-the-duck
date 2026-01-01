@@ -132,9 +132,11 @@ stupid_duck/
 │   ├── conversation.py    # Main chat system
 │   ├── diary.py           # Life journal
 │   ├── diary_enhanced.py  # Extended diary features
-│   ├── llm_chat.py        # Local LLM integration
+│   ├── llm_chat.py        # Local LLM integration (GGUF models)
+│   ├── llm_behavior.py    # LLM-powered dynamic behavior (NEW)
 │   ├── memory.py          # Duck memory system
-│   └── mood_dialogue.py   # Context-aware dialogue
+│   ├── mood_dialogue.py   # Context-aware dialogue
+│   └── visitor_dialogue.py # Visitor conversation manager
 │
 ├── audio/                  # Sound systems
 │   ├── sound.py           # Core audio engine
@@ -431,21 +433,43 @@ CHASE_BUG, FLAP_WINGS, WIGGLE, TRIP, NAP_IN_NEST, HIDE_IN_SHELTER, etc.
 
 **Class: `BehaviorAI`**
 
-Utility-based AI for autonomous duck behaviors.
+Utility-based AI for autonomous duck behaviors. Integrates with LLM for
+dynamic commentary when available.
 
 | Method | Description |
 |--------|-------------|
 | `set_context(structures, weather, location)` | Sets context for decisions |
 | `should_act()` | Check if it's time for new action |
-| `choose_action(needs, personality, mood)` | Utility scoring to pick best action |
-| `execute_action(action)` | Execute action, apply effects |
-| `score_actions()` | Score all actions based on needs, personality, mood, weather |
+| `select_action(duck)` | Utility scoring to pick best action |
+| `perform_action(duck, time)` | Execute action, apply effects, request LLM |
+| `_calculate_utilities(duck)` | Score all actions based on needs/personality |
 
 **Action Properties:**
 - Base utility score
 - Need bonuses (e.g., NAP gets bonus when energy low)
 - Personality bonuses (e.g., derpy ducks more likely to TRIP)
 - Duration and effects
+
+**Action Effects (Balanced):**
+
+Effects are intentionally small to ensure needs decay over time:
+
+| Action | Effect |
+|--------|--------|
+| PREEN | cleanliness +0.3 |
+| NAP | energy +0.5 |
+| SPLASH | fun +0.4, cleanliness -0.2 |
+| CHASE_BUG | fun +0.3, energy -0.2 |
+| NAP_IN_NEST | energy +1.0 |
+| USE_BIRD_BATH | cleanliness +0.8, fun +0.3 |
+
+*Note: Player-initiated interactions (toys, feeding) give larger bonuses (10-25)
+as rewards for engagement.*
+
+**LLM Integration:**
+- Calls `LLMBehaviorController.request_action_commentary()` for dynamic messages
+- Registers callback to update duck message when LLM response ready
+- Falls back to template messages if LLM unavailable or slow
 
 ---
 
@@ -1055,11 +1079,29 @@ ADVENTUROUS, SCHOLARLY, ARTISTIC, PLAYFUL, MYSTERIOUS, GENEROUS, FOODIE, ATHLETI
 
 | Method | Description |
 |--------|-------------|
-| `check_visitor()` | Check for random visitor |
-| `interact_with_friend(friend_id)` | Social interaction |
-| `give_gift(friend_id, item)` | Gift giving |
-| `get_friendship_level(friend_id)` | Current friendship |
-| `get_visitor_art(personality)` | ASCII art for visitor |
+| `check_for_random_visitor(hour)` | Check for random visitor |
+| `get_friend_by_id(friend_id)` | Get friend data |
+| `end_visit()` | End current visit, record memory |
+| `get_all_friends()` | List all known friends |
+
+**Class: `VisitorAnimator`**
+
+Handles visitor NPC animations and LLM-powered dialogue.
+
+| Method | Description |
+|--------|-------------|
+| `set_visitor(personality, name, ...)` | Initialize visitor with LLM context |
+| `update(time, duck_x, duck_y)` | Update position and animations |
+| `get_greeting(duck_name)` | Get arrival greeting |
+| `get_farewell(duck_name)` | Get departure message |
+| `get_random_dialogue(duck_name, time)` | Get idle chat (uses LLM) |
+| `start_leaving()` | Begin departure animation |
+| `is_conversation_complete()` | Check if visitor is done talking |
+
+**LLM Integration:**
+- Stores `_duck_ref` and `_shared_memories` for LLM context
+- Calls `LLMBehaviorController.request_visitor_dialogue()` for dynamic lines
+- Falls back to personality-specific template dialogue
 
 ---
 
@@ -1143,20 +1185,87 @@ EASTER_EGG, HIDDEN_ITEM, SECRET_AREA, SPECIAL_EVENT, HIDDEN_COMMAND, SECRET_COMB
 
 **Class: `LLMChat`**
 
-Local LLM integration using GGUF models.
+Local-only LLM integration using GGUF models with GPU auto-detection.
 
 | Method | Description |
 |--------|-------------|
-| `is_available()` | Check if LLM backend available |
-| `get_model_name()` | Current model with [Local]/[Ollama] prefix |
-| `generate_response(prompt, personality)` | Generate LLM response |
+| `is_available()` | Check if LLM model is loaded |
+| `get_model_name()` | Current model name |
+| `get_gpu_layers()` | Number of GPU layers used |
+| `generate_response(prompt, personality)` | Generate LLM response for chat |
+| `generate_action_commentary(action, context)` | Generate dynamic action messages |
+| `generate_visitor_dialogue(visitor, context)` | Generate visitor dialogue |
 | `build_system_prompt(personality)` | Build personality-aware prompt |
+| `_detect_gpu_layers()` | Auto-detect GPU and optimal layers |
 | `_generate_local()` | Generate via local GGUF model |
-| `_generate_ollama()` | Generate via Ollama HTTP API |
 
-**Supported Models:**
-- Local: TinyLlama GGUF (bundled)
-- Ollama: llama3.2, llama3.1, mistral, phi3, gemma2, qwen2
+**GPU Auto-Detection:**
+- NVIDIA: Uses nvidia-smi to detect VRAM, scales layers by memory
+- AMD: Uses rocm-smi for ROCm detection
+- CPU: Falls back to CPU-only inference (still fast with TinyLlama)
+
+---
+
+### `dialogue/llm_behavior.py` - LLM Behavior Controller (NEW)
+
+**Class: `LLMBehaviorController`**
+
+Coordinates all LLM usage for dynamic duck behavior and visitor dialogue.
+Uses background threading for non-blocking generation with caching.
+
+| Method | Description |
+|--------|-------------|
+| `set_duck(duck)` | Set current duck for context |
+| `is_available()` | Check if LLM behavior is enabled |
+| `request_action_commentary(duck, action, ...)` | Get dynamic action message |
+| `request_visitor_dialogue(duck, visitor, ...)` | Get visitor dialogue |
+| `request_special_event(event_type, ...)` | Get special event narrative |
+| `register_fallback_templates(action, templates)` | Register fallback messages |
+| `get_stats()` | Get LLM usage statistics |
+
+**Class: `LLMWorker`**
+
+Background thread that processes LLM requests without blocking UI.
+
+| Method | Description |
+|--------|-------------|
+| `start_worker()` | Start background processing thread |
+| `stop_worker()` | Stop the worker thread |
+| `queue_request(request)` | Add request to priority queue |
+| `_process_request(request)` | Generate response for request |
+
+**Class: `ResponseCache`**
+
+LRU cache with TTL for LLM responses.
+
+| Method | Description |
+|--------|-------------|
+| `get(context)` | Get cached response if valid |
+| `put(context, response)` | Store response in cache |
+| `clear_expired()` | Remove expired entries |
+
+**Class: `ContextBuilder`**
+
+Builds compact context strings for LLM prompts.
+
+| Method | Description |
+|--------|-------------|
+| `build_action_context(duck, action, ...)` | Build action context dict |
+| `build_visitor_context(duck, visitor, ...)` | Build visitor context dict |
+| `build_event_context(duck, event, ...)` | Build event context dict |
+
+**Configuration (config.py):**
+```python
+LLM_ENABLED = True              # Master switch
+LLM_LOCAL_ONLY = True           # No external APIs
+LLM_GPU_LAYERS = -1             # Auto-detect (-1) or manual
+LLM_BEHAVIOR_ENABLED = True     # Enable for actions
+LLM_VISITOR_ENABLED = True      # Enable for visitors
+LLM_ACTION_CHANCE = 0.7         # 70% of actions use LLM
+LLM_VISITOR_CHANCE = 0.8        # 80% of visitor lines
+LLM_CACHE_SIZE = 100            # Max cached responses
+LLM_CACHE_TTL = 60              # Cache lifetime (seconds)
+```
 
 ---
 
