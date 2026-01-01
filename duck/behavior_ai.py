@@ -394,13 +394,19 @@ class BehaviorAI:
                 data.get("messages", [result.message])
             )
             
-            # Request LLM commentary with template fallback
+            # Create callback to update duck message when LLM response is ready
+            def on_llm_response(response: Optional[str]):
+                if response and duck:
+                    duck.set_action_message(response)
+            
+            # Request LLM commentary with template fallback and callback
             llm_message = controller.request_action_commentary(
                 duck=duck,
                 action=result.action.value,
                 weather=self._weather_type or "clear",
                 time_of_day="day",  # Could be enhanced with actual time
-                fallback=result.message
+                fallback=result.message,
+                callback=on_llm_response
             )
             
             if llm_message:

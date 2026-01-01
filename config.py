@@ -130,8 +130,8 @@ LLM_TEMPERATURE = 0.8           # Response creativity (0.0-1.0)
 # LLM Behavior Integration  
 LLM_BEHAVIOR_ENABLED = True     # Use LLM for duck action commentary
 LLM_VISITOR_ENABLED = True      # Use LLM for visitor dialogue
-LLM_ACTION_CHANCE = 0.3         # 30% of actions use LLM (rest use templates)
-LLM_VISITOR_CHANCE = 0.5        # 50% of visitor lines use LLM
+LLM_ACTION_CHANCE = 0.7         # 70% of actions use LLM (rest use templates)
+LLM_VISITOR_CHANCE = 0.8        # 80% of visitor lines use LLM
 LLM_SPECIAL_EVENT_CHANCE = 1.0  # Always use LLM for special moments
 
 # Caching & Performance

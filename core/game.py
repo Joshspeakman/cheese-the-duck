@@ -2327,9 +2327,9 @@ class Game:
                 # Trigger friend departure reaction animation
                 self.reaction_controller.trigger_friend_reaction("departure", time.time())
             
-            # Check if off screen (position > 20)
+            # Check if off screen (visitor moves right toward x=70)
             pos_x, _ = visitor_animator.get_position()
-            if pos_x >= 24:
+            if pos_x >= 65:
                 # End the visit
                 self.friends.end_visit()
                 self.renderer.show_message(f"*{friend.name} waddles away happily*", duration=3.0)

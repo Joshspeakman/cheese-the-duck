@@ -15,24 +15,13 @@ from collections import OrderedDict
 if TYPE_CHECKING:
     from duck.duck import Duck
 
-# Import config
-try:
-    from config import (
-        LLM_ENABLED, LLM_BEHAVIOR_ENABLED, LLM_VISITOR_ENABLED,
-        LLM_ACTION_CHANCE, LLM_VISITOR_CHANCE, LLM_SPECIAL_EVENT_CHANCE,
-        LLM_CACHE_SIZE, LLM_CACHE_TTL, LLM_MAX_QUEUE_DEPTH, LLM_WORKER_TIMEOUT
-    )
-except ImportError:
-    LLM_ENABLED = True
-    LLM_BEHAVIOR_ENABLED = True
-    LLM_VISITOR_ENABLED = True
-    LLM_ACTION_CHANCE = 0.3
-    LLM_VISITOR_CHANCE = 0.5
-    LLM_SPECIAL_EVENT_CHANCE = 1.0
-    LLM_CACHE_SIZE = 100
-    LLM_CACHE_TTL = 60
-    LLM_MAX_QUEUE_DEPTH = 3
-    LLM_WORKER_TIMEOUT = 10.0
+# Import config module for dynamic access to settings
+import config as llm_config
+
+# Get config values with fallbacks
+def _get_config(name: str, default):
+    """Get config value with fallback."""
+    return getattr(llm_config, name, default)
 
 
 class RequestType(Enum):
@@ -75,7 +64,11 @@ class CacheEntry:
 class ResponseCache:
     """LRU cache with TTL for LLM responses."""
     
-    def __init__(self, max_size: int = LLM_CACHE_SIZE, ttl: float = LLM_CACHE_TTL):
+    def __init__(self, max_size: int = None, ttl: float = None):
+        if max_size is None:
+            max_size = _get_config('LLM_CACHE_SIZE', 100)
+        if ttl is None:
+            ttl = _get_config('LLM_CACHE_TTL', 60)
         self._cache: OrderedDict[str, CacheEntry] = OrderedDict()
         self._max_size = max_size
         self._ttl = ttl
@@ -218,7 +211,8 @@ class LLMWorker(threading.Thread):
     
     def queue_request(self, request: LLMRequest) -> bool:
         """Add a request to the queue. Returns False if queue is full."""
-        if self._request_queue.qsize() >= LLM_MAX_QUEUE_DEPTH:
+        max_queue = _get_config('LLM_MAX_QUEUE_DEPTH', 3)
+        if self._request_queue.qsize() >= max_queue:
             return False
         
         # Priority queue uses tuples: (priority_value, request)
@@ -341,7 +335,7 @@ class LLMBehaviorController:
         self._fallback_templates: Dict[str, List[str]] = {}
         
         # Start worker thread
-        if LLM_ENABLED and LLM_BEHAVIOR_ENABLED:
+        if _get_config('LLM_ENABLED', True) and _get_config('LLM_BEHAVIOR_ENABLED', True):
             self._worker.start_worker()
     
     def set_duck(self, duck: "Duck"):
@@ -352,7 +346,7 @@ class LLMBehaviorController:
     def is_available(self) -> bool:
         """Check if LLM behavior is available."""
         from dialogue.llm_chat import get_llm_chat
-        return LLM_ENABLED and LLM_BEHAVIOR_ENABLED and get_llm_chat().is_available()
+        return _get_config('LLM_ENABLED', True) and _get_config('LLM_BEHAVIOR_ENABLED', True) and get_llm_chat().is_available()
     
     def register_fallback_templates(self, action: str, templates: List[str]):
         """Register fallback templates for an action type."""
@@ -372,7 +366,10 @@ class LLMBehaviorController:
         import random
         
         # Check if LLM should be used (probability gating)
-        use_llm = LLM_ENABLED and LLM_BEHAVIOR_ENABLED and random.random() < LLM_ACTION_CHANCE
+        llm_enabled = _get_config('LLM_ENABLED', True)
+        behavior_enabled = _get_config('LLM_BEHAVIOR_ENABLED', True)
+        action_chance = _get_config('LLM_ACTION_CHANCE', 0.7)
+        use_llm = llm_enabled and behavior_enabled and random.random() < action_chance
         
         if not use_llm:
             return fallback or self._get_fallback(action)
@@ -415,7 +412,10 @@ class LLMBehaviorController:
         import random
         
         # Check if LLM should be used
-        use_llm = LLM_ENABLED and LLM_VISITOR_ENABLED and random.random() < LLM_VISITOR_CHANCE
+        llm_enabled = _get_config('LLM_ENABLED', True)
+        visitor_enabled = _get_config('LLM_VISITOR_ENABLED', True)
+        visitor_chance = _get_config('LLM_VISITOR_CHANCE', 0.8)
+        use_llm = llm_enabled and visitor_enabled and random.random() < visitor_chance
         
         if not use_llm:
             return fallback or f"*{visitor_name} looks around thoughtfully*"
@@ -453,7 +453,9 @@ class LLMBehaviorController:
         """
         import random
         
-        use_llm = LLM_ENABLED and random.random() < LLM_SPECIAL_EVENT_CHANCE
+        llm_enabled = _get_config('LLM_ENABLED', True)
+        event_chance = _get_config('LLM_SPECIAL_EVENT_CHANCE', 1.0)
+        use_llm = llm_enabled and random.random() < event_chance
         
         if not use_llm:
             return fallback or f"*Something special happens!*"
@@ -504,7 +506,7 @@ class LLMBehaviorController:
         llm = get_llm_chat()
         
         return {
-            "enabled": LLM_ENABLED and LLM_BEHAVIOR_ENABLED,
+            "enabled": _get_config('LLM_ENABLED', True) and _get_config('LLM_BEHAVIOR_ENABLED', True),
             "llm_available": llm.is_available() if llm else False,
             "model_name": llm.get_model_name() if llm else "None",
             "gpu_layers": llm.get_gpu_layers() if llm else 0,
