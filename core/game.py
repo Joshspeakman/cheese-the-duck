@@ -2084,6 +2084,10 @@ class Game:
                             conversation_topics = getattr(friend, 'conversation_topics', [])
                             shared_experiences = getattr(friend, 'shared_experiences', [])
                             last_summary = getattr(friend, 'last_conversation_summary', "")
+                            # Build shared memories list for LLM context
+                            shared_memories = list(shared_experiences)[:5] if shared_experiences else []
+                            if last_summary:
+                                shared_memories.append(f"Last time: {last_summary}")
                             visitor_animator.set_visitor(
                                 personality, 
                                 friend.name,
@@ -2093,6 +2097,8 @@ class Game:
                                 conversation_topics=conversation_topics,
                                 shared_experiences=shared_experiences,
                                 last_conversation_summary=last_summary,
+                                duck_ref=self.duck,
+                                shared_memories=shared_memories,
                             )
                             greeting = visitor_animator.get_greeting(self.duck.name)
                             if greeting:
@@ -5284,7 +5290,9 @@ class Game:
             friend.name,
             "friend",
             friend.times_visited,
-            set()
+            set(),
+            duck_ref=self.duck,
+            shared_memories=[]
         )
         
         greeting = visitor_animator.get_greeting(self.duck.name if self.duck else "Duck")

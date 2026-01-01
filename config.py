@@ -111,3 +111,34 @@ DUCK_NAMES = [
     "Bubbles", "Nugget", "Pickle", "Biscuit", "Cheddar",
     "Sprocket", "Waffles", "Noodle", "Potato", "Beans",
 ]
+
+# ===== LLM SETTINGS =====
+# Core LLM Configuration
+LLM_ENABLED = True              # Master switch for all LLM features
+LLM_LOCAL_ONLY = True           # ONLY use local GGUF model (no Ollama/external)
+LLM_MODEL_DIR = GAME_DIR / "models"  # Directory containing .gguf files
+
+# GPU Acceleration (auto-detect if -1, or specify layer count)
+LLM_GPU_LAYERS = -1             # -1 = auto-detect, 0 = CPU only, >0 = specific layers
+
+# Model Parameters
+LLM_CONTEXT_SIZE = 2048         # Context window size
+LLM_MAX_TOKENS = 100            # Max tokens for behavior commentary
+LLM_MAX_TOKENS_CHAT = 150       # Max tokens for player chat
+LLM_TEMPERATURE = 0.8           # Response creativity (0.0-1.0)
+
+# LLM Behavior Integration  
+LLM_BEHAVIOR_ENABLED = True     # Use LLM for duck action commentary
+LLM_VISITOR_ENABLED = True      # Use LLM for visitor dialogue
+LLM_ACTION_CHANCE = 0.3         # 30% of actions use LLM (rest use templates)
+LLM_VISITOR_CHANCE = 0.5        # 50% of visitor lines use LLM
+LLM_SPECIAL_EVENT_CHANCE = 1.0  # Always use LLM for special moments
+
+# Caching & Performance
+LLM_CACHE_SIZE = 100            # Max cached responses
+LLM_CACHE_TTL = 60              # Seconds before cache entry expires
+LLM_MAX_QUEUE_DEPTH = 3         # Max pending LLM requests before fallback
+LLM_WORKER_TIMEOUT = 10.0       # Max seconds to wait for LLM response
+
+# Conversation Memory
+LLM_MAX_HISTORY = 6             # Messages to keep in conversation history

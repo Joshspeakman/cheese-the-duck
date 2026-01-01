@@ -1290,12 +1290,17 @@ class Renderer:
                 friendship_level = current_visitor.friendship_level.value if hasattr(current_visitor.friendship_level, 'value') else str(current_visitor.friendship_level)
                 visit_number = current_visitor.times_visited if hasattr(current_visitor, 'times_visited') else 1
                 unlocked_topics = set(current_visitor.unlocked_dialogue) if hasattr(current_visitor, 'unlocked_dialogue') else set()
+                # Get shared experiences for LLM context
+                shared_experiences = getattr(current_visitor, 'shared_experiences', [])
+                shared_memories = list(shared_experiences)[:5] if shared_experiences else []
                 visitor_animator.set_visitor(
                     personality, 
                     current_visitor.name,
                     friendship_level,
                     visit_number,
-                    unlocked_topics
+                    unlocked_topics,
+                    duck_ref=duck,
+                    shared_memories=shared_memories
                 )
             # Update visitor with duck's actual screen position
             duck_screen_x = self.duck_pos.x

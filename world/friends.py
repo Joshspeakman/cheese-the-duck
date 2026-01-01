@@ -562,6 +562,20 @@ VISITOR_COSMETIC_COMMENTS = {
     ],
 }
 
+# Lazy import for LLM behavior controller
+_llm_controller = None
+
+def _get_llm_controller():
+    """Lazy load LLM controller to avoid circular imports."""
+    global _llm_controller
+    if _llm_controller is None:
+        try:
+            from dialogue.llm_behavior import get_behavior_controller
+            _llm_controller = get_behavior_controller()
+        except ImportError:
+            pass
+    return _llm_controller
+
 
 class VisitorAnimator:
     """Handles visitor NPC animations during visits."""
@@ -592,11 +606,16 @@ class VisitorAnimator:
         self._visit_number: int = 1
         self._unlocked_topics: set = set()
         self._conversation_over: bool = False
+        
+        # LLM integration
+        self._shared_memories: List[str] = []  # Memories from Friend dataclass
+        self._duck_ref = None  # Reference to player's duck for LLM context
     
     def set_visitor(self, personality: str, friend_name: str = "Friend", 
                      friendship_level: str = "stranger", visit_number: int = 1,
                      unlocked_topics: set = None, conversation_topics: list = None,
-                     shared_experiences: list = None, last_conversation_summary: str = ""):
+                     shared_experiences: list = None, last_conversation_summary: str = "",
+                     duck_ref = None, shared_memories: list = None):
         """Set the current visitor's personality for art selection."""
         self._personality = personality.lower() if personality else "adventurous"
         self._friend_name = friend_name
@@ -613,6 +632,10 @@ class VisitorAnimator:
         self._last_move_time = time.time()
         self._following_duck = False  # Whether currently following the duck
         self._wander_timer = 0  # Time since last wander decision
+        
+        # LLM integration references
+        self._duck_ref = duck_ref
+        self._shared_memories = shared_memories or []
         
         # Setup new dialogue system
         self._friendship_level = friendship_level.lower().replace(" ", "_")
@@ -773,6 +796,37 @@ class VisitorAnimator:
         # Only chat if near duck
         if not self._near_duck:
             return None
+        
+        # Try LLM-powered dialogue first (seamlessly falls back to template)
+        controller = _get_llm_controller()
+        if controller and self._duck_ref:
+            controller.set_duck(self._duck_ref)
+            
+            # Get fallback from dialogue manager or old system
+            fallback_line = None
+            if self._dialogue_manager:
+                fallback_line = self._dialogue_manager.get_next_dialogue(duck_name)
+            if not fallback_line:
+                chat_lines = VISITOR_IDLE_CHAT.get(self._personality, VISITOR_IDLE_CHAT.get("adventurous", [""]))
+                if chat_lines:
+                    fallback_line = f"{self._friend_name}: " + random.choice(chat_lines).format(duck=duck_name)
+            
+            # Request LLM dialogue with fallback
+            llm_dialogue = controller.request_visitor_dialogue(
+                duck=self._duck_ref,
+                visitor_name=self._friend_name,
+                visitor_personality=self._personality,
+                friendship_level=self._friendship_level,
+                shared_memories=self._shared_memories,
+                conversation_phase="main",
+                fallback=fallback_line
+            )
+            
+            if llm_dialogue:
+                # Format with visitor name if not already included
+                if not llm_dialogue.startswith(self._friend_name):
+                    llm_dialogue = f"{self._friend_name}: {llm_dialogue}"
+                return llm_dialogue
         
         # Use new dialogue system if available
         if self._dialogue_manager:

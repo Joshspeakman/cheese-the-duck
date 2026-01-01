@@ -1,5 +1,6 @@
 """
 Utility-based behavior AI for autonomous duck actions.
+Integrates with LLM for dynamic commentary when available.
 """
 import random
 import time
@@ -11,6 +12,20 @@ from config import AI_IDLE_INTERVAL, AI_RANDOMNESS, DERPY_RANDOMNESS_BONUS
 
 if TYPE_CHECKING:
     from duck.duck import Duck
+
+# Lazy import for LLM behavior controller
+_llm_controller = None
+
+def _get_llm_controller():
+    """Lazy load LLM controller to avoid circular imports."""
+    global _llm_controller
+    if _llm_controller is None:
+        try:
+            from dialogue.llm_behavior import get_behavior_controller
+            _llm_controller = get_behavior_controller()
+        except ImportError:
+            pass
+    return _llm_controller
 
 
 class AutonomousAction(Enum):
@@ -353,6 +368,7 @@ class BehaviorAI:
     def perform_action(self, duck: "Duck", current_time: float) -> Optional[ActionResult]:
         """
         Perform an autonomous action if appropriate.
+        Uses LLM for dynamic commentary when available.
 
         Args:
             duck: The duck entity
@@ -365,6 +381,35 @@ class BehaviorAI:
             return None
 
         result = self.select_action(duck)
+
+        # Try to get LLM-generated commentary (seamlessly falls back to template)
+        controller = _get_llm_controller()
+        if controller:
+            controller.set_duck(duck)
+            
+            # Register fallback templates for this action
+            data = ACTION_DATA.get(result.action, {})
+            controller.register_fallback_templates(
+                result.action.value, 
+                data.get("messages", [result.message])
+            )
+            
+            # Request LLM commentary with template fallback
+            llm_message = controller.request_action_commentary(
+                duck=duck,
+                action=result.action.value,
+                weather=self._weather_type or "clear",
+                time_of_day="day",  # Could be enhanced with actual time
+                fallback=result.message
+            )
+            
+            if llm_message:
+                result = ActionResult(
+                    action=result.action,
+                    message=llm_message,
+                    duration=result.duration,
+                    effects=result.effects
+                )
 
         # Apply effects
         for need, change in result.effects.items():
