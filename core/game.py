@@ -5100,12 +5100,18 @@ class Game:
                 max_items = len(self._get_debug_submenu_items())
                 self._debug_submenu_selected = min(max_items - 1, self._debug_submenu_selected + 1)
             else:
-                self._debug_menu_selected = min(9, self._debug_menu_selected + 1)
+                self._debug_menu_selected = min(10, self._debug_menu_selected + 1)  # 11 items (0-10)
             self._show_debug_menu()
             return
         
         # Select with Enter or number keys
         if key_name == "KEY_ENTER":
+            self._debug_select_current()
+            return
+        
+        # T key for autotest
+        if key_str in ('t', 'T') and not self._debug_submenu:
+            self._debug_menu_selected = 10  # AutoTest is index 10
             self._debug_select_current()
             return
         
@@ -5148,13 +5154,15 @@ class Game:
             return ["egg", "hatchling", "duckling", "juvenile", "young_adult", "adult", "mature", "elder", "legendary", "+1_day", "+7_days", "+30_days"]
         elif self._debug_submenu == "building":
             return ["give_all_materials", "complete_build", "unlock_blueprints", "clear_structures"]
+        elif self._debug_submenu == "autotest":
+            return ["run_full_test", "run_quick_test", "view_last_report"]
         return []
     
     def _debug_select_current(self):
         """Execute the currently selected debug option."""
         if not self._debug_submenu:
             # Main menu selection
-            menus = ["weather", "events", "visitor", "needs", "money", "friendship", "time", "misc", "age", "building"]
+            menus = ["weather", "events", "visitor", "needs", "money", "friendship", "time", "misc", "age", "building", "autotest"]
             if 0 <= self._debug_menu_selected < len(menus):
                 self._debug_submenu = menus[self._debug_menu_selected]
                 self._debug_submenu_selected = 0
@@ -5188,6 +5196,8 @@ class Game:
             self._debug_set_age(selected)
         elif self._debug_submenu == "building":
             self._debug_building_action(selected)
+        elif self._debug_submenu == "autotest":
+            self._debug_run_autotest(selected)
     
     def _debug_set_weather(self, weather_type: str):
         """Set weather to specified type."""
@@ -5508,6 +5518,104 @@ class Game:
         self._debug_menu_open = False
         self._debug_submenu = None
 
+    def _debug_run_autotest(self, action: str):
+        """Run automated game tests."""
+        from core.automated_test import AutomatedGameTester
+        import os
+        
+        self._debug_menu_open = False
+        self._debug_submenu = None
+        
+        if action == "run_full_test":
+            self.renderer.show_message("# RUNNING FULL AUTOMATED TEST...\nThis may take a minute. Please wait.", duration=0)
+            
+            # Create tester and run
+            tester = AutomatedGameTester(self)
+            
+            # Progress callback to update display
+            def progress_cb(msg, current, total):
+                pct = int((current / total) * 100)
+                self.renderer.show_message(f"# TESTING ({pct}%)\n{msg}\n\n[{current}/{total}] categories tested", duration=0)
+            
+            tester.set_progress_callback(progress_cb)
+            
+            # Run all tests
+            report = tester.run_all_tests()
+            
+            # Save report
+            report_path = tester.save_report()
+            
+            # Show summary
+            summary = f"""
+# AUTOMATED TEST COMPLETE
+
+Total Tests:  {report.total_tests}
+  ✓ Passed:   {report.passed}
+  ✗ Failed:   {report.failed}
+  ⚠ Warnings: {report.warnings}
+  ○ Skipped:  {report.skipped}
+
+Pass Rate: {report.passed / max(1, report.total_tests) * 100:.1f}%
+
+Report saved to:
+{os.path.basename(report_path)}
+
+[Press any key to continue]
+"""
+            self.renderer.show_message(summary, duration=0)
+            
+        elif action == "run_quick_test":
+            self.renderer.show_message("# RUNNING QUICK TEST...", duration=0)
+            
+            # Quick test - just check core systems exist
+            tester = AutomatedGameTester(self)
+            
+            # Only run critical tests
+            tester._test_duck_state()
+            tester._test_needs_system()
+            tester._test_core_actions()
+            tester._test_save_load_system()
+            
+            tester.report.ended_at = __import__('datetime').datetime.now().isoformat()
+            report = tester.report
+            
+            summary = f"""
+# QUICK TEST COMPLETE
+
+Core Systems Tested: {report.total_tests}
+  ✓ Passed:   {report.passed}
+  ✗ Failed:   {report.failed}
+
+{"✓ Core systems OK!" if report.failed == 0 else "✗ Issues found - run full test for details"}
+
+[Press any key to continue]
+"""
+            self.renderer.show_message(summary, duration=0)
+            
+        elif action == "view_last_report":
+            # Find and display most recent report
+            import glob
+            
+            game_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            logs_dir = os.path.join(game_dir, "logs")
+            reports = sorted(glob.glob(os.path.join(logs_dir, "test_report_*.txt")), reverse=True)
+            
+            if reports:
+                # Read last report
+                with open(reports[0], 'r') as f:
+                    content = f.read()
+                
+                # Show first ~40 lines
+                lines = content.split('\n')[:40]
+                preview = '\n'.join(lines)
+                if len(content.split('\n')) > 40:
+                    preview += f"\n\n... ({len(content.split(chr(10))) - 40} more lines)"
+                    preview += f"\n\nFull report: {os.path.basename(reports[0])}"
+                
+                self.renderer.show_message(preview, duration=0)
+            else:
+                self.renderer.show_message("# No test reports found.\n\nRun a test first!", duration=3)
+
     def _show_debug_menu(self):
         """Render the debug menu overlay."""
         lines = [
@@ -5529,6 +5637,7 @@ class Game:
                 ("8", "Misc", "Other debug options"),
                 ("9", "Age", "Set duck age/stage"),
                 ("0", "Building", "Building debug"),
+                ("T", "AutoTest", "Run auto tests"),
             ]
             for i, (key, name, desc) in enumerate(options):
                 prefix = ">" if i == self._debug_menu_selected else " "
