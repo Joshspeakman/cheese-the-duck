@@ -199,6 +199,17 @@ class Game:
         self._treasure_digging = False    # Currently digging for treasure
         self._treasure_dig_progress = 0   # Dig animation progress
         
+        # Title screen menu state
+        self._title_menu_index = 0        # Currently selected title menu option
+        self._title_update_status = ""    # Update status message for title screen
+        self._title_checking_updates = False  # Currently checking for updates
+        self._title_confirm_new_game = False  # Confirming new game over existing save
+        
+        # Game updater
+        from core.updater import game_updater, GAME_VERSION
+        self._game_updater = game_updater
+        self._game_version = GAME_VERSION
+        
         # Festival activities menu
         self._festival_menu_open = False   # Flag for festival menu
         self._festival_menu_selected = 0   # Currently selected activity
@@ -1204,6 +1215,12 @@ class Game:
                 self._handle_playing_action(action, key)
                 return
 
+        # Handle title screen input BEFORE checking for NONE action
+        # This allows arrow keys to work on title screen
+        if self._state == "title":
+            self._handle_title_input(action, key)
+            return
+
         if action == GameAction.NONE:
             return
 
@@ -1228,11 +1245,6 @@ class Game:
             return
 
         # State-specific actions
-        if self._state == "title":
-            if action == GameAction.CONFIRM or (key and key.name == "KEY_ENTER"):
-                self._start_new_game()
-            return
-
         if self._state == "offline_summary":
             self._state = "playing"
             self._pending_offline_summary = None
@@ -3064,7 +3076,13 @@ class Game:
     def _render(self):
         """Render the current state."""
         if self._state == "title":
-            self.renderer._render_title_screen()
+            has_save = self.save_manager.save_exists()
+            self.renderer._render_title_screen(
+                menu_index=self._title_menu_index,
+                has_save=has_save,
+                update_status=self._title_update_status,
+                version=self._game_version
+            )
         elif self._state == "offline_summary" and self._pending_offline_summary:
             summary = self._pending_offline_summary
             self.renderer.render_offline_summary(
@@ -3074,6 +3092,85 @@ class Game:
             )
         elif self._state == "playing":
             self.renderer.render_frame(self)
+
+    def _handle_title_input(self, action: GameAction, key=None):
+        """Handle input on the title screen menu."""
+        has_save = self.save_manager.save_exists()
+        
+        # Handle new game confirmation dialog
+        if self._title_confirm_new_game:
+            if key:
+                key_str = str(key).lower()
+                if key_str == 'y':
+                    # Confirmed - delete save and start new game
+                    self.save_manager.delete_save()
+                    self._title_confirm_new_game = False
+                    self._title_update_status = ""
+                    self._start_new_game()
+                elif key_str == 'n' or (key.name and key.name == 'KEY_ESCAPE'):
+                    # Cancelled
+                    self._title_confirm_new_game = False
+                    self._title_update_status = ""
+            return
+        
+        # Calculate max menu index based on whether save exists
+        # Menu: Continue (if save), New Game, Check for Updates, Quit
+        max_index = 3 if has_save else 2
+        
+        # Handle navigation
+        if key and key.name == "KEY_UP":
+            self._title_menu_index = max(0, self._title_menu_index - 1)
+            sound_engine.play_sound("menu_move")
+            return
+            
+        if key and key.name == "KEY_DOWN":
+            self._title_menu_index = min(max_index, self._title_menu_index + 1)
+            sound_engine.play_sound("menu_move")
+            return
+        
+        # Handle selection
+        if action == GameAction.CONFIRM or (key and key.name == "KEY_ENTER"):
+            sound_engine.play_sound("menu_select")
+            
+            if has_save:
+                # Menu: Continue, New Game, Check for Updates, Quit
+                if self._title_menu_index == 0:
+                    # Continue - load existing save
+                    self._load_game()
+                elif self._title_menu_index == 1:
+                    # New Game - warn about overwriting save
+                    self._title_confirm_new_game = True
+                    self._title_update_status = "Start new game? This will ERASE your save! [Y/N]"
+                elif self._title_menu_index == 2:
+                    # Check for Updates
+                    self._check_for_updates_async()
+                elif self._title_menu_index == 3:
+                    # Quit
+                    self._running = False
+            else:
+                # Menu: New Game, Check for Updates, Quit
+                if self._title_menu_index == 0:
+                    # New Game
+                    self._start_new_game()
+                elif self._title_menu_index == 1:
+                    # Check for Updates
+                    self._check_for_updates_async()
+                elif self._title_menu_index == 2:
+                    # Quit
+                    self._running = False
+            return
+    
+    def _check_for_updates_async(self):
+        """Check for updates in background and update status message."""
+        self._title_update_status = "Checking for updates..."
+        try:
+            update_info = self._game_updater.check_for_updates()
+            self._title_update_status = self._game_updater.get_status_message(update_info.status)
+            if update_info.status.value == "update_available":
+                self._title_update_status = f"Update available: v{update_info.latest_version}"
+        except Exception:
+            self._title_update_status = "Could not check for updates"
+        self._title_checking_updates = False
 
     def _start_new_game(self):
         """Start a new game with a new duck."""

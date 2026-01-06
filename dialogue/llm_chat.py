@@ -348,7 +348,7 @@ Example responses:
         return None
 
     def generate_action_commentary(self, duck: "Duck", action: str, context: Dict) -> Optional[str]:
-        """Generate short commentary for an autonomous action.
+        """Generate short action description for an autonomous action.
         
         Args:
             duck: The Duck instance
@@ -356,49 +356,49 @@ Example responses:
             context: Dict with keys like 'weather', 'time_of_day', 'mood', 'recent_events'
         
         Returns:
-            Short action commentary or None if generation fails
+            Short action description or None if generation fails
         """
         if not self._available or not self._llama:
             return None
 
-        mood = context.get('mood', duck.get_mood().state.value)
-        weather = context.get('weather', 'clear')
-        time_of_day = context.get('time_of_day', 'day')
-        
         # Clean action name for display (remove underscores)
         clean_action = action.replace("_", " ")
         
-        prompt = f"""You are {duck.name}, a derpy deadpan duck. Generate a SHORT (5-15 words) first-person thought or observation.
-Current activity: {clean_action}
-Mood: {mood}
-Weather: {weather}
-Time: {time_of_day}
-
-Style: Express your thoughts directly. Be deadpan, confused, slightly philosophical. Do NOT use asterisks or describe actions.
+        prompt = f"""Generate a 1-4 word action description for a duck. Action: {clean_action}
+Use asterisks. No dialogue. Just the physical action.
 
 Examples:
-"Why do I walk like this. Weird."
-"Water is wet. Fascinating discovery."
-"What was I thinking about? Oh right. Nothing."
-"This is my whole thing. Just existing."
-"Cozy. This is fine. Everything is fine."
+*waddles*
+*splashes about*
+*quack quack*
+*preens feathers*
+*naps*
+*flaps wings*
+*looks around*
 
-{duck.name}:"""
+Action:"""
 
         try:
             response = self._llama(
                 prompt,
-                max_tokens=40,
-                temperature=0.9,
+                max_tokens=15,
+                temperature=0.7,
                 top_p=0.9,
-                stop=["\n\n", "Human:", "User:", f"\n{duck.name}:"],
+                stop=["\n", ".", "!", "?"],
             )
 
             if response and "choices" in response and response["choices"]:
-                content = response["choices"][0].get("text", "")
+                content = response["choices"][0].get("text", "").strip()
                 if content:
-                    cleaned = self._clean_response(content, duck.name)
-                    return cleaned
+                    # Ensure it's wrapped in asterisks
+                    content = content.strip().strip('"').strip("'")
+                    if not content.startswith("*"):
+                        content = "*" + content
+                    if not content.endswith("*"):
+                        content = content + "*"
+                    # Limit length
+                    if len(content) <= 25:
+                        return content
 
         except Exception as e:
             self._last_error = f"Action commentary error: {e}"

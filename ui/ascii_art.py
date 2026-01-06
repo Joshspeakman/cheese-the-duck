@@ -612,20 +612,35 @@ MOOD_TO_CLOSEUP = {
 
 # Action to close-up mapping
 ACTION_TO_CLOSEUP = {
+    # Player actions
     "feed": "eating",
     "eat": "eating",
     "sleep": "sleeping",
     "nap": "sleeping",
     "pet": "love",
     "play": "excited",
+    "clean": "content",
+    
+    # Autonomous actions
+    "idle": "content",
+    "waddle": "happy",
+    "quack": "happy",
+    "preen": "content",
+    "look_around": "content",
+    "splash": "happy",
     "stare_blankly": "derpy",
+    "chase_bug": "excited",
+    "flap_wings": "excited",
+    "wiggle": "ecstatic",
     "trip": "confused",
     "forgot_something": "confused",
-    "quack": "happy",
-    "wiggle": "ecstatic",
-    "flap_wings": "excited",
-    "clean": "content",
-    "splash": "happy",
+    
+    # Structure actions
+    "nap_in_nest": "sleeping",
+    "hide_in_shelter": "grumpy",
+    "use_bird_bath": "happy",
+    "admire_garden": "content",
+    "inspect_workbench": "content",
 }
 
 

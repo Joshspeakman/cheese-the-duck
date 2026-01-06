@@ -21,11 +21,11 @@ class Needs:
     Each need is a value from 0-100.
     """
 
-    hunger: float = 80.0
-    energy: float = 100.0
-    fun: float = 70.0
-    cleanliness: float = 100.0
-    social: float = 60.0
+    hunger: float = 50.0
+    energy: float = 50.0
+    fun: float = 50.0
+    cleanliness: float = 50.0
+    social: float = 50.0
 
     def __post_init__(self):
         """Clamp all values to valid range."""
