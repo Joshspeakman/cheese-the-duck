@@ -467,8 +467,10 @@ class BuildingSystem:
         
         # Set playfield position for duck to walk to
         # Match the rendering calculation: struct_x = int(pos[0] * 44 / 10), struct_y = int(pos[1] * 14 / 8)
-        # With position=(2,2): x = 8, y = 3. Add offset for nest height so duck sits inside
-        self.structure_positions["basic_nest"] = (8, 5)  # Playfield coords (under the nest art)
+        # With position=(2,2): struct_x = 8, struct_y = 3
+        # Nest art is 12 chars wide, 5 lines tall. Interior is around center
+        # Duck should be positioned at center of nest interior: x = 20, y = 6
+        self.structure_positions["basic_nest"] = (20, 6)  # Playfield coords (centered in nest interior)
     
     def get_structure_position(self, structure_type: str) -> Optional[Tuple[int, int]]:
         """Get the playfield position for a structure type (for duck movement)."""
@@ -477,11 +479,12 @@ class BuildingSystem:
             return self.structure_positions[structure_type]
         
         # Default positions based on structure type (calculated from render positions)
+        # These are centered in the interior of each structure type
         default_positions = {
-            "nest": (8, 5),
-            "basic_nest": (8, 5),
-            "cozy_nest": (8, 5),
-            "shelter": (8, 6),
+            "nest": (20, 6),
+            "basic_nest": (20, 6),
+            "cozy_nest": (20, 7),
+            "shelter": (20, 6),
             "bird_bath": (35, 8),
             "garden_plot": (30, 10),
             "workbench": (38, 6),

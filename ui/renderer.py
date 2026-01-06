@@ -1011,6 +1011,9 @@ class Renderer:
         # Regenerate ground pattern if size or location changed, or on first render
         size_changed = len(self._ground_pattern) != field_height or (self._ground_pattern and len(self._ground_pattern[0]) != field_inner_width)
         location_changed = current_location != self._current_location
+        
+        # Track if this is first render for screen clear later
+        is_first_render = self._first_render
 
         if size_changed or location_changed or self._first_render:
             self._current_location = current_location
@@ -1096,8 +1099,12 @@ class Renderer:
         elif self._show_message_overlay:
             output = self._overlay_message(output, width)
 
-        # Print frame - fill terminal (no clear to prevent flashing)
-        print(self.term.home, end="")
+        # Print frame - clear on first render to remove title screen remnants
+        if is_first_render:
+            print(self.term.home + self.term.clear, end="")
+        else:
+            print(self.term.home, end="")
+            
         for i, line in enumerate(output):
             if i < height - 1:  # Leave one line at bottom
                 # Use move to ensure proper positioning and overwrite
@@ -1718,7 +1725,17 @@ class Renderer:
 
         # Close-up face section (compact)
         mood = duck.get_mood()
-        closeup = get_emotion_closeup(mood.state, self._closeup_action if self._show_closeup else None)
+        
+        # Determine which action to show for closeup
+        # Priority: 1) Temporary closeup action, 2) Duck's current action, 3) Mood-based
+        if self._show_closeup and self._closeup_action:
+            closeup_action = self._closeup_action
+        elif duck.current_action:
+            closeup_action = duck.current_action
+        else:
+            closeup_action = None
+        
+        closeup = get_emotion_closeup(mood.state, closeup_action)
 
         if closeup:
             # Show compact close-up with yellow duck color
@@ -1998,8 +2015,16 @@ class Renderer:
         for line in output:
             print(line)
 
-    def _render_title_screen(self):
-        """Render the title/new game screen with dancing duck animation."""
+    def _render_title_screen(self, menu_index: int = 0, has_save: bool = False, 
+                                update_status: str = "", version: str = "1.0.0"):
+        """Render the title/new game screen with dancing duck animation and menu.
+        
+        Args:
+            menu_index: Currently selected menu option (0-3)
+            has_save: Whether a save file exists (enables Continue option)
+            update_status: Status message for updates (e.g., "Update available!")
+            version: Current game version to display
+        """
         self._title_frame = (self._title_frame + 1) % 120
 
         # Dancing duck animation frames - Teen duck style
@@ -2139,17 +2164,75 @@ class Renderer:
             yellow_duck = self.term.yellow + padded_line + self.term.normal
             title_art.append(f"    |{yellow_duck}|    ")
 
-        # Add footer
+        # Build menu options
+        menu_options = []
+        if has_save:
+            menu_options.append(("Continue", 0))
+        menu_options.append(("New Game", 1 if has_save else 0))
+        menu_options.append(("Check for Updates", 2 if has_save else 1))
+        menu_options.append(("Quit", 3 if has_save else 2))
+        
+        # Build menu lines with selection indicator
+        def format_menu_item(text: str, idx: int, selected: bool) -> str:
+            if selected:
+                return self.term.bold + self.term.cyan + f"  > {text} <  " + self.term.normal
+            else:
+                return f"    {text}    "
+        
+        # Calculate menu display with proper spacing
+        menu_lines = []
+        for label, idx in menu_options:
+            is_selected = (idx == menu_index) if has_save else (idx == menu_index)
+            # Adjust index check based on whether save exists
+            actual_idx = menu_options.index((label, idx))
+            is_selected = (actual_idx == menu_index)
+            formatted = format_menu_item(label, idx, is_selected)
+            # Pad to fit the box width (54 chars inside)
+            visible_len = len(label) + (10 if is_selected else 8)
+            padding = (54 - visible_len) // 2
+            line_content = " " * padding + formatted + " " * padding
+            # Trim or pad to exactly 54 chars
+            if _visible_len(line_content) < 54:
+                line_content = line_content + " " * (54 - _visible_len(line_content))
+            elif _visible_len(line_content) > 54:
+                line_content = _visible_slice(line_content, 0, 54)
+            menu_lines.append(f"    |{line_content}|    ")
+
+        # Add footer with menu
         title_art.extend([
             "    +======================================================+    ",
             "    |                                                      |    ",
             "    |         Your virtual pet duck awaits!                |    ",
             "    |                                                      |    ",
-            "    +======================================================+    ",
-            "    |                                                      |    ",
-            "    |            Press [ENTER] to start                    |    ",
-            "    |            Press [Q] to quit                         |    ",
-            "    |                                                      |    ",
+            "    +------------------------------------------------------+    ",
+        ])
+        
+        # Add menu items
+        title_art.extend(menu_lines)
+        
+        # Add navigation hint and update status
+        title_art.extend([
+            "    +------------------------------------------------------+    ",
+            "    |         Use UP/DOWN to select, ENTER to confirm      |    ",
+        ])
+        
+        # Add update status if available
+        if update_status:
+            # Color the update status based on content
+            if "available" in update_status.lower():
+                status_colored = self.term.green + update_status + self.term.normal
+            elif "failed" in update_status.lower() or "error" in update_status.lower():
+                status_colored = self.term.red + update_status + self.term.normal
+            else:
+                status_colored = update_status
+            status_line = _visible_center(status_colored, 54)
+            title_art.append(f"    |{status_line}|    ")
+        
+        # Add version footer
+        version_str = f"v{version}"
+        version_line = _visible_center(version_str, 54)
+        title_art.extend([
+            f"    |{version_line}|    ",
             "    +======================================================+    ",
             "",
         ])

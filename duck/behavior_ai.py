@@ -54,10 +54,10 @@ class AutonomousAction(Enum):
 ACTION_DATA = {
     AutonomousAction.IDLE: {
         "messages": [
-            "*stands there menacingly*",
+            "*stands still*",
             "*blinks*",
             "*exists*",
-            "*contemplates the void*",
+            "*stares*",
         ],
         "base_utility": 0.1,
         "need_bonus": None,
@@ -66,10 +66,10 @@ ACTION_DATA = {
     },
     AutonomousAction.WADDLE: {
         "messages": [
+            "*waddles*",
             "*waddle waddle*",
             "*waddles around*",
-            "*waddles menacingly*",
-            "*waddles to nowhere*",
+            "*waddles about*",
         ],
         "base_utility": 0.3,
         "need_bonus": ("fun", 0.3),
@@ -81,7 +81,7 @@ ACTION_DATA = {
             "*QUACK!*",
             "*quack quack*",
             "*quack?*",
-            "*quacks aggressively*",
+            "*quacks*",
             "*QUAAAACK!*",
         ],
         "base_utility": 0.25,
@@ -91,8 +91,8 @@ ACTION_DATA = {
     },
     AutonomousAction.PREEN: {
         "messages": [
+            "*preens*",
             "*preens feathers*",
-            "*arranges feathers*",
             "*fluffs up*",
         ],
         "base_utility": 0.2,
@@ -103,10 +103,10 @@ ACTION_DATA = {
     },
     AutonomousAction.NAP: {
         "messages": [
-            "*takes a nap*",
+            "*naps*",
             "*zzZ...*",
             "*dozes off*",
-            "*sleeping duck noises*",
+            "*snoozes*",
         ],
         "base_utility": 0.15,
         "need_bonus": ("energy", 0.6),
@@ -116,10 +116,10 @@ ACTION_DATA = {
     },
     AutonomousAction.LOOK_AROUND: {
         "messages": [
-            "*looks around suspiciously*",
+            "*looks around*",
             "*tilts head*",
-            "*scans for threats*",
-            "*spots something*",
+            "*scans around*",
+            "*peeks*",
         ],
         "base_utility": 0.2,
         "need_bonus": ("fun", 0.2),
@@ -128,10 +128,10 @@ ACTION_DATA = {
     },
     AutonomousAction.SPLASH: {
         "messages": [
-            "*splashes EVERYWHERE*",
+            "*splashes*",
             "*SPLASH SPLASH*",
-            "*aggressive water noises*",
-            "*gets everything wet*",
+            "*splashes about*",
+            "*splish splash*",
         ],
         "base_utility": 0.25,
         "need_bonus": ("fun", 0.5),
@@ -141,11 +141,10 @@ ACTION_DATA = {
     },
     AutonomousAction.STARE_BLANKLY: {
         "messages": [
-            "*stares into the abyss*",
-            "*vacant expression*",
+            "*stares blankly*",
+            "*zones out*",
             "*...*",
-            "*stares at wall*",
-            "*forgot what it was doing*",
+            "*stares*",
         ],
         "base_utility": 0.15,
         "need_bonus": None,
@@ -157,7 +156,7 @@ ACTION_DATA = {
             "*chases bug*",
             "*spots a bug!*",
             "*pounces*",
-            "*hunting mode activated*",
+            "*chases*",
         ],
         "base_utility": 0.2,
         "need_bonus": ("fun", 0.4),
@@ -167,10 +166,10 @@ ACTION_DATA = {
     },
     AutonomousAction.FLAP_WINGS: {
         "messages": [
+            "*flaps wings*",
             "*flap flap flap*",
-            "*flaps dramatically*",
-            "*attempts to fly*",
-            "*assertive wing flapping*",
+            "*flaps*",
+            "*flapping*",
         ],
         "base_utility": 0.2,
         "need_bonus": ("energy", 0.3),
@@ -181,9 +180,9 @@ ACTION_DATA = {
     AutonomousAction.WIGGLE: {
         "messages": [
             "*wiggles*",
-            "*excited wiggling*",
+            "*wiggle wiggle*",
             "*tail waggle*",
-            "*whole body wiggle*",
+            "*wiggles about*",
         ],
         "base_utility": 0.25,
         "need_bonus": ("fun", 0.3),
@@ -205,10 +204,10 @@ ACTION_DATA = {
     # Structure-related actions (these require structures to be available)
     AutonomousAction.NAP_IN_NEST: {
         "messages": [
-            "*claims nest*",
             "*curls up in nest*",
             "*nestles in*",
-            "*tucks beak under wing*",
+            "*snuggles in nest*",
+            "*settles into nest*",
         ],
         "base_utility": 0.0,  # Only available when nest exists
         "need_bonus": ("energy", 0.8),
@@ -221,7 +220,7 @@ ACTION_DATA = {
         "messages": [
             "*hides*",
             "*shelters inside*",
-            "*waits out the storm*",
+            "*takes cover*",
             "*peeks out*",
         ],
         "base_utility": 0.0,  # Only used during bad weather
@@ -233,10 +232,10 @@ ACTION_DATA = {
     },
     AutonomousAction.USE_BIRD_BATH: {
         "messages": [
-            "*splashes in bird bath*",
+            "*splashes in bath*",
             "*bathes*",
-            "*fluffs up in water*",
-            "*luxury bath time*",
+            "*soaks in bath*",
+            "*bath time*",
         ],
         "base_utility": 0.0,  # Only when bird bath exists
         "need_bonus": ("cleanliness", 0.7),
@@ -247,10 +246,10 @@ ACTION_DATA = {
     },
     AutonomousAction.ADMIRE_GARDEN: {
         "messages": [
-            "*admires the flowers*",
-            "*sniffs the garden*",
-            "*watches plants grow*",
+            "*sniffs flowers*",
             "*inspects garden*",
+            "*admires plants*",
+            "*watches garden*",
         ],
         "base_utility": 0.0,  # Only when garden exists
         "need_bonus": ("fun", 0.3),
@@ -261,9 +260,9 @@ ACTION_DATA = {
     },
     AutonomousAction.INSPECT_WORKBENCH: {
         "messages": [
-            "*examines workbench*",
-            "*inspects tools*",
-            "*thinks about projects*",
+            "*inspects workbench*",
+            "*examines tools*",
+            "*pokes around*",
             "*reorganizes*",
         ],
         "base_utility": 0.0,  # Only when workbench exists
@@ -321,9 +320,25 @@ class BehaviorAI:
 
     def get_structure_position(self, structure_type: str) -> Optional[Tuple[int, int]]:
         """Get playfield position for a structure the duck should walk to."""
-        # Check if we have a specific position
+        # Map abstract structure types to actual structure IDs
+        struct_mapping = {
+            "nest": ["basic_nest", "cozy_nest", "deluxe_nest"],
+            "shelter": ["basic_nest", "cozy_nest", "deluxe_nest", 
+                       "mud_hut", "wooden_cottage", "stone_house"],
+            "bird_bath": ["bird_bath"],
+            "garden_plot": ["garden_plot"],
+            "workbench": ["workbench"],
+        }
+        
+        # Check if we have a specific position for this type
         if structure_type in self._structure_positions:
             return self._structure_positions[structure_type]
+        
+        # Check if this is an abstract type that maps to actual structures
+        if structure_type in struct_mapping:
+            for actual_struct in struct_mapping[structure_type]:
+                if actual_struct in self._structure_positions:
+                    return self._structure_positions[actual_struct]
         
         # Check variations (e.g., "nest" matches "basic_nest")
         for struct_id, pos in self._structure_positions.items():
