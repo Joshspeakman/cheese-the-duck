@@ -2,7 +2,7 @@
 Artistic Duck Dialogue - Creative personality with passion for beauty and expression.
 Progresses from shy artist to sharing vulnerable creative struggles and dreams.
 """
-from dialogue.visitor_dialogue import DialogueLine, ConversationPhase, DIALOGUE_TREES
+from dialogue.dialogue_base import DialogueLine, ConversationPhase, DIALOGUE_TREES
 
 D = DialogueLine
 

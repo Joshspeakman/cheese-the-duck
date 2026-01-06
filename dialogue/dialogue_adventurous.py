@@ -2,7 +2,7 @@
 Adventurous Duck Dialogue - Explorer personality with deadpan delivery.
 Tales of travel delivered with dry wit and matter-of-fact observations.
 """
-from dialogue.visitor_dialogue import DialogueLine, ConversationPhase, DIALOGUE_TREES
+from dialogue.dialogue_base import DialogueLine, ConversationPhase, DIALOGUE_TREES
 
 # D = DialogueLine shorthand
 D = DialogueLine

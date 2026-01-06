@@ -18,12 +18,14 @@ TICK_RATE = 1.0  # Seconds between game ticks
 TIME_MULTIPLIER = 1.0  # Speed up time for testing (1.0 = real time)
 
 # Need decay rates (per real minute)
+# Designed so needs last ~8-12 hours from full
+# 100% / rate = minutes to empty
 NEED_DECAY_RATES = {
-    "hunger": 0.8,      # Gets hungry fairly quickly
-    "energy": 0.5,      # Energy drains slower
-    "fun": 1.0,         # Gets bored fastest
-    "cleanliness": 0.3, # Stays clean longest
-    "social": 0.6,      # Needs regular interaction
+    "hunger": 0.15,     # ~11 hours to empty from full
+    "energy": 0.12,     # ~14 hours to empty from full  
+    "fun": 0.18,        # ~9 hours to empty (boredom is faster)
+    "cleanliness": 0.08, # ~21 hours to empty (stays clean longest)
+    "social": 0.10,     # ~17 hours to empty
 }
 
 # Need thresholds
@@ -83,7 +85,7 @@ DEFAULT_PERSONALITY = {
 }
 
 # AI behavior settings
-AI_IDLE_INTERVAL = 5.0     # Seconds between autonomous actions
+AI_IDLE_INTERVAL = 15.0    # Seconds between autonomous actions (feels more natural)
 AI_RANDOMNESS = 0.3        # Base randomness in action selection
 DERPY_RANDOMNESS_BONUS = 0.4  # Extra randomness for derpy ducks
 

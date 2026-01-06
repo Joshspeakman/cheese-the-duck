@@ -2,7 +2,7 @@
 Generous Duck Dialogue - Giving, nurturing personality who loves making others happy.
 Progresses from polite gift-giver to deeply caring friend who shares vulnerabilities.
 """
-from dialogue.visitor_dialogue import DialogueLine, ConversationPhase, DIALOGUE_TREES
+from dialogue.dialogue_base import DialogueLine, ConversationPhase, DIALOGUE_TREES
 
 D = DialogueLine
 

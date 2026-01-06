@@ -2,7 +2,7 @@
 Mysterious Duck Dialogue - Enigmatic personality with cryptic insights and secrets.
 Progresses from aloof stranger to sharing deep mystical knowledge and trust.
 """
-from dialogue.visitor_dialogue import DialogueLine, ConversationPhase, DIALOGUE_TREES
+from dialogue.dialogue_base import DialogueLine, ConversationPhase, DIALOGUE_TREES
 
 D = DialogueLine
 

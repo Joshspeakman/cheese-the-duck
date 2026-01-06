@@ -435,6 +435,58 @@ class BuildingSystem:
         self.grid_width = 20
         self.grid_height = 15
         self.occupied_cells: set = set()
+        
+        # Structure positions in playfield coordinates (for duck movement)
+        self.structure_positions: Dict[str, Tuple[int, int]] = {}
+    
+    def add_starter_nest(self):
+        """Add a pre-built starter nest at the Home Pond."""
+        # Check if already has a nest
+        for s in self.structures:
+            if s.blueprint_id == "starter_nest" or (s.blueprint and s.blueprint.structure_type == StructureType.NEST):
+                return  # Already has a nest
+        
+        # Create a simple starter nest (already complete, no materials needed)
+        structure = Structure(
+            blueprint_id="basic_nest",
+            position=(2, 2),  # Corner of building grid
+            status=StructureStatus.COMPLETE,
+            current_stage=2,  # Fully built
+            stage_progress=1.0,
+            durability=50,
+        )
+        self.structures.append(structure)
+        
+        # Mark cells as occupied
+        bp = structure.blueprint
+        if bp:
+            x, y = structure.position
+            for dx in range(bp.size[0]):
+                for dy in range(bp.size[1]):
+                    self.occupied_cells.add((x + dx, y + dy))
+        
+        # Set playfield position for duck to walk to
+        # Match the rendering calculation: struct_x = int(pos[0] * 44 / 10), struct_y = int(pos[1] * 14 / 8)
+        # With position=(2,2): x = 8, y = 3. Add offset for nest height so duck sits inside
+        self.structure_positions["basic_nest"] = (8, 5)  # Playfield coords (under the nest art)
+    
+    def get_structure_position(self, structure_type: str) -> Optional[Tuple[int, int]]:
+        """Get the playfield position for a structure type (for duck movement)."""
+        # Check specific structure positions first
+        if structure_type in self.structure_positions:
+            return self.structure_positions[structure_type]
+        
+        # Default positions based on structure type (calculated from render positions)
+        default_positions = {
+            "nest": (8, 5),
+            "basic_nest": (8, 5),
+            "cozy_nest": (8, 5),
+            "shelter": (8, 6),
+            "bird_bath": (35, 8),
+            "garden_plot": (30, 10),
+            "workbench": (38, 6),
+        }
+        return default_positions.get(structure_type)
     
     @property
     def _current_build(self):

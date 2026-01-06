@@ -5,6 +5,7 @@ from typing import Optional, Dict, Any
 from dataclasses import dataclass, field
 from datetime import datetime
 import random
+import time
 
 from config import DEFAULT_PERSONALITY, DUCK_NAMES, GROWTH_STAGES, DEFAULT_DUCK_NAME
 from duck.needs import Needs
@@ -34,6 +35,7 @@ class Duck:
         """Initialize calculated properties."""
         self._last_autonomous_action = 0.0
         self._action_message = ""
+        self._action_message_expire = 0.0  # Time when message expires
         if self._personality_system is None:
             self._personality_system = Personality(self.personality)
         if self._memory is None:
@@ -231,15 +233,21 @@ class Duck:
         }
         return stage_names.get(self.growth_stage, self.growth_stage.title())
 
-    def set_action_message(self, message: str):
-        """Set a temporary action message to display."""
+    def set_action_message(self, message: str, duration: float = 5.0):
+        """Set a temporary action message to display.
+        
+        Args:
+            message: The message to display
+            duration: How long to show the message in seconds (default 5s)
+        """
         self._action_message = message
+        self._action_message_expire = time.time() + duration
 
     def get_action_message(self) -> str:
-        """Get and clear the action message."""
-        msg = self._action_message
-        self._action_message = ""
-        return msg
+        """Get the current action message (returns empty if expired)."""
+        if time.time() > self._action_message_expire:
+            return ""
+        return self._action_message
 
     def clear_action(self):
         """Clear the current action."""

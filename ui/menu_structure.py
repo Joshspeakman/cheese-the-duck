@@ -84,6 +84,7 @@ def build_main_menu_categories() -> list:
             icon="=",
             items=[
                 MenuItem("facts", "Random Duck Fact", "Learn about ducks"),
+                MenuItem("settings", "Settings", "Audio, display, and game options"),
                 MenuItem("sound", "Toggle Sound", "Turn sound on/off"),
                 MenuItem("music", "Toggle Music", "Turn music on/off"),
                 MenuItem("save_slots", "Save Slots", "Manage save files"),
@@ -138,6 +139,7 @@ MENU_ACTIONS = {
     
     # Other
     "facts": "_show_duck_fact",
+    "settings": "_open_settings_menu",
     "sound": "_toggle_sound",
     "music": "_toggle_music",
     "save_slots": "_show_save_slots_menu",

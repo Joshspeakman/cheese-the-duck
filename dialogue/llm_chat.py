@@ -365,19 +365,23 @@ Example responses:
         weather = context.get('weather', 'clear')
         time_of_day = context.get('time_of_day', 'day')
         
-        prompt = f"""You are {duck.name}, a derpy deadpan duck. Generate a SHORT (5-15 words) action description.
-Action: {action}
+        # Clean action name for display (remove underscores)
+        clean_action = action.replace("_", " ")
+        
+        prompt = f"""You are {duck.name}, a derpy deadpan duck. Generate a SHORT (5-15 words) first-person thought or observation.
+Current activity: {clean_action}
 Mood: {mood}
 Weather: {weather}
 Time: {time_of_day}
 
-Style: Use *asterisks for actions*. Be deadpan, confused, slightly philosophical.
+Style: Express your thoughts directly. Be deadpan, confused, slightly philosophical. Do NOT use asterisks or describe actions.
 
 Examples:
-"*waddles around* Why do I walk like this. Weird."
-"*splashes enthusiastically* Water is wet. Fascinating."
-"*stares at nothing* Thinking about... what was I thinking about?"
-"*quacks softly* That's my whole thing. Just quacking."
+"Why do I walk like this. Weird."
+"Water is wet. Fascinating discovery."
+"What was I thinking about? Oh right. Nothing."
+"This is my whole thing. Just existing."
+"Cozy. This is fine. Everything is fine."
 
 {duck.name}:"""
 
@@ -497,6 +501,15 @@ Be unique to your personality. Don't be generic.
         for prefix in prefixes:
             if response.lower().startswith(prefix.lower()):
                 response = response[len(prefix):].strip()
+
+        # Remove asterisk-wrapped actions from the start (e.g., "*waddles around* ")
+        # These should only appear in the activity indicator, not the message
+        action_pattern = r'^\*[^*]+\*\s*'
+        response = re.sub(action_pattern, '', response).strip()
+        
+        # Also remove any underscores that might be in action names
+        # (but be careful not to break legitimate underscores)
+        response = re.sub(r'\*[a-z_]+\*', '', response).strip()
 
         # Skip robotic/assistant-like responses
         lower_response = response.lower()
