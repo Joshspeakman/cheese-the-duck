@@ -206,9 +206,11 @@ class Game:
         self._title_confirm_new_game = False  # Confirming new game over existing save
         
         # Game updater
-        from core.updater import game_updater, GAME_VERSION
+        from core.updater import game_updater, GAME_VERSION, UpdateStatus
         self._game_updater = game_updater
         self._game_version = GAME_VERSION
+        self._update_available_info = None  # Stores UpdateInfo when update is found
+        self._update_in_progress = False    # Currently downloading/applying update
         
         # Festival activities menu
         self._festival_menu_open = False   # Flag for festival menu
@@ -3252,6 +3254,19 @@ class Game:
                     # Quit
                     self._running = False
             return
+        
+        # Handle [U] key to download/install update
+        if key:
+            key_str = str(key).lower()
+            if key_str == 'u' and self._update_available_info and not self._update_in_progress:
+                sound_engine.play_sound("menu_select")
+                self._download_and_apply_update()
+                return
+            
+            # Handle [R] key to restart game after update
+            if key_str == 'r' and "restart" in self._title_update_status.lower():
+                self._restart_game()
+                return
     
     def _check_for_updates_async(self):
         """Check for updates in background and update status message."""
@@ -3260,10 +3275,49 @@ class Game:
             update_info = self._game_updater.check_for_updates()
             self._title_update_status = self._game_updater.get_status_message(update_info.status)
             if update_info.status.value == "update_available":
-                self._title_update_status = f"Update available: v{update_info.latest_version}"
+                self._update_available_info = update_info
+                self._title_update_status = f"Update v{update_info.latest_version} available! Press [U] to install"
+            else:
+                self._update_available_info = None
         except Exception:
             self._title_update_status = "Could not check for updates"
+            self._update_available_info = None
         self._title_checking_updates = False
+
+    def _download_and_apply_update(self):
+        """Download and apply the available update."""
+        if not self._update_available_info:
+            self._title_update_status = "No update available to install"
+            return
+        
+        if self._update_in_progress:
+            return
+        
+        self._update_in_progress = True
+        self._title_update_status = "Downloading update... Please wait..."
+        
+        try:
+            from core.updater import UpdateStatus
+            result = self._game_updater.download_and_apply_update(self._update_available_info)
+            
+            if result == UpdateStatus.UPDATE_COMPLETE:
+                self._title_update_status = "Update complete! Press [R] to restart the game"
+                self._update_available_info = None
+            else:
+                error = self._game_updater.get_last_error() or "Unknown error"
+                self._title_update_status = f"Update failed: {error[:40]}"
+        except Exception as e:
+            self._title_update_status = f"Update failed: {str(e)[:40]}"
+        finally:
+            self._update_in_progress = False
+
+    def _restart_game(self):
+        """Restart the game after an update."""
+        import sys
+        import os
+        # Re-execute the current Python script
+        python = sys.executable
+        os.execl(python, python, *sys.argv)
 
     def _start_new_game(self):
         """Start a new game with a new duck."""
