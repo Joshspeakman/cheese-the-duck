@@ -605,18 +605,26 @@ class FestivalSystem:
             lines.append("+===============================================+")
             lines.append("|  ACTIVITIES:                                  |")
             
-            for activity in active.activities[:4]:
+            # Show more activities with scroll hint
+            show_count = min(6, len(active.activities))
+            for activity in active.activities[:show_count]:
                 done = self.current_festival_progress.activities_completed.get(activity.id, 0)
                 daily = self.current_festival_progress.daily_activities.get(activity.id, 0)
                 lines.append(f"|   - {activity.name[:25]:25} [{daily}/{activity.max_daily}]   |")
+            if len(active.activities) > show_count:
+                lines.append(f"|   ... and {len(active.activities) - show_count} more activities              |")
             
             lines.append("+===============================================+")
             lines.append("|  REWARDS:                                     |")
             
-            for i, reward in enumerate(active.exclusive_rewards[:3]):
+            # Show more rewards
+            show_rewards = min(5, len(active.exclusive_rewards))
+            for i, reward in enumerate(active.exclusive_rewards[:show_rewards]):
                 req = (i + 1) * 100
                 claimed = "[x]" if reward.name in self.current_festival_progress.rewards_claimed else "[ ]"
                 lines.append(f"|   {claimed} {reward.name[:25]:25} ({req}pts)  |")
+            if len(active.exclusive_rewards) > show_rewards:
+                lines.append(f"|   ... and {len(active.exclusive_rewards) - show_rewards} more rewards                |")
         else:
             lines.append("|                                               |")
             lines.append("|     Press [J]oin to participate!              |")

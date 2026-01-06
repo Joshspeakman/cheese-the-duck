@@ -51,7 +51,7 @@ from world.garden import Garden, garden
 from world.treasure import TreasureHunter, treasure_hunter
 from world.challenges import ChallengeSystem, challenge_system
 from world.friends import FriendsSystem, friends_system
-from world.quests import QuestSystem, quest_system
+from world.quests import QuestSystem, quest_system, QUESTS
 from world.festivals import FestivalSystem, festival_system
 from world.collectibles import CollectiblesSystem, collectibles_system
 from world.decorations import DecorationsSystem, decorations_system
@@ -166,14 +166,14 @@ class Game:
         self._show_goals = False
         self._reset_confirmation = False  # Flag for reset game confirmation
 
-        # Arrow-key menu selectors
-        self._crafting_menu = MenuSelector("CRAFTING", close_keys=['KEY_ESCAPE', 'c'])
-        self._building_menu = MenuSelector("BUILDING", close_keys=['KEY_ESCAPE', 'r'])
-        self._areas_menu = MenuSelector("AREAS", close_keys=['KEY_ESCAPE', 'a'])
-        self._use_menu = MenuSelector("USE ITEM", close_keys=['KEY_ESCAPE', 'u'])
-        self._minigames_menu = MenuSelector("MINI-GAMES", close_keys=['KEY_ESCAPE', 'j'])
-        self._quests_menu = MenuSelector("QUESTS", close_keys=['KEY_ESCAPE', 'o'])
-        self._weather_menu = MenuSelector("WEATHER ACTIVITIES", close_keys=['KEY_ESCAPE', 'w'])
+        # Arrow-key menu selectors with pagination
+        self._crafting_menu = MenuSelector("CRAFTING", close_keys=['KEY_ESCAPE', 'c'], items_per_page=8)
+        self._building_menu = MenuSelector("BUILDING", close_keys=['KEY_ESCAPE', 'r'], items_per_page=8)
+        self._areas_menu = MenuSelector("AREAS", close_keys=['KEY_ESCAPE', 'a'], items_per_page=8)
+        self._use_menu = MenuSelector("USE ITEM", close_keys=['KEY_ESCAPE', 'u'], items_per_page=8)
+        self._minigames_menu = MenuSelector("MINI-GAMES", close_keys=['KEY_ESCAPE', 'j'], items_per_page=8)
+        self._quests_menu = MenuSelector("QUESTS", close_keys=['KEY_ESCAPE', 'o'], items_per_page=8)
+        self._weather_menu = MenuSelector("WEATHER ACTIVITIES", close_keys=['KEY_ESCAPE', 'w'], items_per_page=8)
 
         # Main hierarchical menu (TAB to open)
         self._main_menu = HierarchicalMenuSelector("Main Menu")
@@ -475,9 +475,16 @@ class Game:
             self._handle_confirmation_input(key)
             return
 
-        # Handle inventory item selection
+        # Handle inventory item selection and pagination
         if self.renderer.is_inventory_open() and self.duck:
             key_str = str(key)
+            # Page navigation with < and >
+            if key_str == ',' or key_str == '<':
+                self.renderer.inventory_change_page(-1)
+                return
+            if key_str == '.' or key_str == '>':
+                self.renderer.inventory_change_page(1)
+                return
             if key_str.isdigit() and key_str != '0':
                 self._use_inventory_item(int(key_str) - 1)  # Convert to 0-based index
                 return
@@ -1353,12 +1360,31 @@ class Game:
                 self.renderer.toggle_inventory()
                 return
 
-            # Goals toggle [G]
+            # Goals toggle [G] - handle pagination when open
             if key_str == 'g':
-                self._show_goals = not self._show_goals
                 if self._show_goals:
+                    self._show_goals = False
+                    self.renderer.dismiss_message()
+                else:
+                    self._show_goals = True
+                    self._goals_page = 0  # Reset to first page
                     self._show_goals_overlay()
                 return
+            
+            # Handle goals pagination when goals overlay is open
+            if self._show_goals:
+                if key_str == ',' or key_str == '<':
+                    if not hasattr(self, '_goals_page'):
+                        self._goals_page = 0
+                    self._goals_page = max(0, self._goals_page - 1)
+                    self._show_goals_overlay()
+                    return
+                if key_str == '.' or key_str == '>':
+                    if not hasattr(self, '_goals_page'):
+                        self._goals_page = 0
+                    self._goals_page += 1
+                    self._show_goals_overlay()
+                    return
 
             # Shop toggle [B] (for Buy)
             if key_str == 'b':
@@ -1565,18 +1591,30 @@ class Game:
                 self._perform_interaction(interaction)
 
     def _show_goals_overlay(self):
-        """Show the goals overlay."""
+        """Show the goals overlay with pagination."""
         active_goals = self.goals.get_active_goals()
         completed = self.goals.get_completed_count()
         total = self.goals.get_total_count()
 
+        # Pagination settings
+        items_per_page = 5
+        if not hasattr(self, '_goals_page'):
+            self._goals_page = 0
+        total_pages = max(1, (len(active_goals) + items_per_page - 1) // items_per_page)
+        current_page = min(self._goals_page, total_pages - 1)
+        start_idx = current_page * items_per_page
+        end_idx = min(start_idx + items_per_page, len(active_goals))
+
         # Build goals text
         lines = [
             f"Goals Completed: {completed}/{total}",
-            "-" * 30,
         ]
+        
+        if total_pages > 1:
+            lines.append(f"Page {current_page + 1}/{total_pages} (</> to change)")
+        lines.append("-" * 30)
 
-        for goal in active_goals[:5]:  # Show up to 5 active goals
+        for goal in active_goals[start_idx:end_idx]:
             progress = f"[{goal.progress}/{goal.target}]" if goal.target > 1 else ""
             status = "!" if goal.progress >= goal.target else " "
             lines.append(f"{status} {goal.name} {progress}")
@@ -1593,10 +1631,10 @@ class Game:
             "",
             f"Achievements: {unlocked}/{total_ach} unlocked",
             "",
-            "Press [G] to close",
+            "[G] Close" + (" | [</>] Page" if total_pages > 1 else ""),
         ])
 
-        self.renderer.show_message("\n".join(lines[:2]), duration=5.0)
+        self.renderer.show_message("\n".join(lines), duration=0)
 
     def _perform_interaction(self, interaction: str):
         """Perform an interaction with the duck."""
@@ -1775,10 +1813,7 @@ class Game:
                 self.renderer.show_message(f"[#] Challenge Complete: {challenge_id}!", duration=3.0)
 
         # Update quest progress for this interaction type
-        quest_updates = self.quests.update_progress("interact", interaction, 1)
-        for quest_id, objective, completed in quest_updates:
-            if completed:
-                self.renderer.show_message(f"[=] Quest objective complete!", duration=2.0)
+        self._process_quest_updates("interact", interaction, 1)
 
         # Update personality traits based on interaction
         personality_trait_map = {
@@ -1892,6 +1927,64 @@ class Game:
             else:
                 self.home.unlock_decoration(unlock_id)
                 self.renderer.show_message(f"Unlocked decoration: {unlock_id}!", duration=3.0)
+
+    def _process_quest_updates(self, objective_type: str, target: str, amount: int = 1):
+        """Process quest objective updates and apply any earned rewards."""
+        objective_updates, completed_quests = self.quests.update_progress(objective_type, target, amount)
+        
+        # Show objective completion messages
+        for quest_id, objective, completed in objective_updates:
+            if completed:
+                self.renderer.show_message(f"[=] Quest objective complete!", duration=2.0)
+        
+        # Apply rewards for completed quests
+        for quest_id, reward in completed_quests:
+            quest = QUESTS.get(quest_id)
+            quest_name = quest.name if quest else quest_id.replace("_", " ").title()
+            
+            # Apply coin reward
+            if reward.coins > 0:
+                self.habitat.add_currency(reward.coins)
+            
+            # Apply XP reward
+            if reward.xp > 0:
+                new_level = self.progression.add_xp(reward.xp, "quest")
+                if new_level:
+                    self._on_level_up(new_level)
+            
+            # Apply item rewards
+            for item_id in reward.items:
+                self.inventory.add_item(item_id)
+            
+            # Apply unlocks (achievements, features, etc.)
+            for unlock in reward.unlocks:
+                if unlock.startswith("achievement:"):
+                    self._unlock_achievement(unlock[12:])
+            
+            # Show completion celebration
+            duck_sounds.level_up()
+            self.renderer.show_effect("sparkle", 2.0)
+            
+            # Build reward message
+            reward_lines = []
+            if reward.coins > 0:
+                reward_lines.append(f"+{reward.coins} Coins")
+            if reward.xp > 0:
+                reward_lines.append(f"+{reward.xp} XP")
+            if reward.items:
+                reward_lines.append(f"Items: {', '.join(reward.items)}")
+            if reward.title:
+                reward_lines.append(f"Title: {reward.title}")
+            
+            reward_text = " | ".join(reward_lines) if reward_lines else "Quest Complete!"
+            self.renderer.show_celebration(
+                "quest_complete",
+                f"Quest Complete: {quest_name}!\n{reward_text}",
+                duration=5.0
+            )
+            
+            # Update statistics
+            self.progression.stats["quests_completed"] = self.progression.stats.get("quests_completed", 0) + 1
 
     def _show_collectible_found(self, collectible_id: str):
         """Show notification for finding a collectible."""
@@ -2499,7 +2592,7 @@ class Game:
 
             # Update challenge and quest progress for crafting
             self.challenges.update_progress("craft", 1)
-            self.quests.update_progress("craft", item_id, 1)
+            self._process_quest_updates("craft", item_id, 1)
 
     def _update_building_progress(self):
         """Update building progress if actively building."""
@@ -2546,7 +2639,7 @@ class Game:
 
             # Update challenge and quest progress for building
             self.challenges.update_progress("build", 1)
-            self.quests.update_progress("build", bp_id, 1)
+            self._process_quest_updates("build", bp_id, 1)
 
         elif result.get("stage_completed"):
             stage = result.get("current_stage", 0)
@@ -3877,10 +3970,14 @@ class Game:
             item_id = result["rare_discovery"]
             self.inventory.add_item(item_id)
             sound_engine.play_sound("discovery")
+            # Rare discoveries give bonus coins
+            coins_earned = 25
+            self.habitat.add_currency(coins_earned)
             self.renderer.show_message(
                 f"* RARE DISCOVERY! *\n\n"
                 f"You found: {item_id.replace('_', ' ').title()}!\n"
-                f"Resources: {', '.join(resources_found) if resources_found else 'None'}",
+                f"Resources: {', '.join(resources_found) if resources_found else 'None'}\n"
+                f"+{coins_earned} Coins",
                 duration=5.0
             )
             # Achievement for rare finds
@@ -3898,17 +3995,21 @@ class Game:
             )
             return
 
-        # Normal exploration result
+        # Normal exploration result - award coins based on resources found
+        coins_earned = 5 if resources_found else 2  # Base coins for exploring
+        coins_earned += len(resources_found) * 3  # Bonus per resource type found
+        self.habitat.add_currency(coins_earned)
+        
         biome_name = result.get("biome", "area").replace("_", " ").title()
         if resources_found:
-            msg = f"~ Explored {biome_name} ~\n\nFound: {', '.join(resources_found)}"
+            msg = f"~ Explored {biome_name} ~\n\nFound: {', '.join(resources_found)}\n+{coins_earned} Coins"
             if result.get("skill_up"):
                 msg += f"\n\n* Gathering skill improved!"
                 # Check for gathering master achievement
                 if self.exploration.gathering_skill >= 5:
                     self._unlock_achievement("gathering_master")
         else:
-            msg = f"~ Explored {biome_name} ~\n\nNothing found this time."
+            msg = f"~ Explored {biome_name} ~\n\nNothing found this time.\n+{coins_earned} Coins"
 
         self.renderer.show_message(msg, duration=3.0)
 
@@ -3952,9 +4053,9 @@ class Game:
             self._crafting_menu_open = True
             return
 
-        # Build menu items
+        # Build menu items - show all recipes, let MenuSelector handle pagination
         items = []
-        for recipe in all_recipes[:8]:
+        for recipe in all_recipes:
             can_craft = recipe.result_item in available
             items.append({
                 'id': recipe.id,
@@ -4000,9 +4101,9 @@ class Game:
             self._building_menu_open = True
             return
 
-        # Build menu items
+        # Build menu items - show all blueprints, let MenuSelector handle pagination
         items = []
-        for bp in all_blueprints[:6]:
+        for bp in all_blueprints:
             can_build = bp.id in buildable
             mat_desc = ', '.join(f'{v} {k}' for k, v in bp.required_materials.items())
             items.append({
@@ -4402,7 +4503,7 @@ class Game:
 
         # Update challenge and quest progress for exploration
         self.challenges.update_progress("explore", 1)
-        self.quests.update_progress("explore", "any", 1)
+        self._process_quest_updates("explore", "any", 1)
 
         # Update personality for exploration
         self.extended_personality.adjust_trait("curiosity", 2, "Exploring")
@@ -4762,7 +4863,7 @@ class Game:
 
                     # Update challenges and quests
                     self.challenges.update_progress("fish", 1)
-                    self.quests.update_progress("catch", caught_fish.fish_id, 1)
+                    self._process_quest_updates("catch", caught_fish.fish_id, 1)
 
                     # Update personality
                     self.extended_personality.adjust_trait("patience", 1, "Caught a fish")
@@ -6810,7 +6911,7 @@ Core Systems Tested: {report.total_tests}
                 self._on_level_up(xp)
             
             self.challenges.update_progress("harvest", 1)
-            self.quests.update_progress("harvest", "any", 1)
+            self._process_quest_updates("harvest", "any", 1)
             self.achievements.unlock("first_harvest")
             
             # Check for garden achievements

@@ -676,13 +676,16 @@ class DecorationsSystem:
         lines.append(f"|  Decorations: {len(room.decorations):3}  |  Mood: +{room.mood_modifier:3}       |")
         lines.append(f"|  Comfort: +{room.comfort_level:3}                               |")
         
-        # List placed decorations
+        # List placed decorations with scroll hint
         if room.decorations:
             lines.append("+===============================================+")
-            for placed in room.decorations[:3]:
+            show_count = min(5, len(room.decorations))
+            for placed in room.decorations[:show_count]:
                 decoration = DECORATIONS.get(placed.decoration_id)
                 if decoration:
                     lines.append(f"|   • {decoration.name:^35}   |")
+            if len(room.decorations) > show_count:
+                lines.append(f"|   ... and {len(room.decorations) - show_count} more decorations            |")
         
         lines.append("+===============================================+")
         
@@ -697,13 +700,18 @@ class DecorationsSystem:
         ]
         
         categories = list(DecorationCategory)
-        for cat in categories[:4]:
+        # Show more categories
+        show_cats = min(6, len(categories))
+        for cat in categories[:show_cats]:
             items = [d for d in DECORATIONS.values() if d.category == cat]
             lines.append(f"|  {cat.value.upper():^41}  |")
-            for item in items[:2]:
+            show_items = min(3, len(items))
+            for item in items[:show_items]:
                 owned = self.owned_decorations.get(item.id, 0)
                 owned_str = f"[{owned}]" if owned > 0 else ""
                 lines.append(f"|    {item.name[:20]:20} {item.price:5}c {owned_str:4} |")
+            if len(items) > show_items:
+                lines.append(f"|    ... {len(items) - show_items} more items                     |")
             lines.append("|                                               |")
         
         lines.extend([

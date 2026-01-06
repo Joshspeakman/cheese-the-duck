@@ -17,10 +17,10 @@ class MenuItem:
 
 class MenuSelector:
     """
-    Handles arrow-key navigation for menus.
+    Handles arrow-key navigation for menus with pagination support.
 
     Usage:
-        menu = MenuSelector("Crafting Menu")
+        menu = MenuSelector("Crafting Menu", items_per_page=8)
         menu.set_items([
             MenuItem("1", "Wooden Sword", "Attack +5"),
             MenuItem("2", "Iron Shield", "Defense +3"),
@@ -33,16 +33,18 @@ class MenuSelector:
                 # Do something with selected item
     """
 
-    def __init__(self, title: str = "Menu", close_keys: List[str] = None):
+    def __init__(self, title: str = "Menu", close_keys: List[str] = None, items_per_page: int = 8):
         """
         Initialize the menu selector.
 
         Args:
             title: Display title for the menu
             close_keys: Keys that close the menu (lowercase)
+            items_per_page: Max items to show per page (0 = no pagination)
         """
         self.title = title
         self.close_keys = close_keys or ['KEY_ESCAPE']
+        self.items_per_page = items_per_page
         self._items: List[MenuItem] = []
         self._selected_index = 0
         self._is_open = False
@@ -176,14 +178,43 @@ class MenuSelector:
         """Check if last action was a cancellation."""
         return self._was_cancelled
 
+    @property
+    def current_page(self) -> int:
+        """Get current page number (0-indexed)."""
+        if self.items_per_page <= 0 or not self._items:
+            return 0
+        return self._selected_index // self.items_per_page
+
+    @property
+    def total_pages(self) -> int:
+        """Get total number of pages."""
+        if self.items_per_page <= 0 or not self._items:
+            return 1
+        return max(1, (len(self._items) + self.items_per_page - 1) // self.items_per_page)
+
+    @property
+    def page_start_index(self) -> int:
+        """Get the index of the first item on current page."""
+        if self.items_per_page <= 0:
+            return 0
+        return self.current_page * self.items_per_page
+
+    @property
+    def page_end_index(self) -> int:
+        """Get the index after the last item on current page."""
+        if self.items_per_page <= 0:
+            return len(self._items)
+        return min(self.page_start_index + self.items_per_page, len(self._items))
+
     def get_display_lines(self,
                           width: int = 40,
                           show_numbers: bool = True,
                           selected_prefix: str = "> ",
                           unselected_prefix: str = "  ",
-                          disabled_suffix: str = " (locked)") -> List[str]:
+                          disabled_suffix: str = " (locked)",
+                          max_items: int = 0) -> List[str]:
         """
-        Get formatted display lines for the menu.
+        Get formatted display lines for the menu with pagination.
 
         Args:
             width: Maximum width of lines
@@ -191,15 +222,32 @@ class MenuSelector:
             selected_prefix: Prefix for selected item
             unselected_prefix: Prefix for unselected items
             disabled_suffix: Suffix for disabled items
+            max_items: Override items_per_page (0 = use default)
 
         Returns:
             List of formatted strings for display
         """
         lines = []
         lines.append(f"=== {self.title} ===")
-        lines.append("")
+        
+        # Determine pagination
+        items_limit = max_items if max_items > 0 else self.items_per_page
+        use_pagination = items_limit > 0 and len(self._items) > items_limit
+        
+        if use_pagination:
+            # Show page info
+            page = self.current_page + 1
+            total = self.total_pages
+            lines.append(f"Page {page}/{total}")
+            start_idx = self.page_start_index
+            end_idx = self.page_end_index
+        else:
+            lines.append("")
+            start_idx = 0
+            end_idx = len(self._items)
 
-        for i, item in enumerate(self._items):
+        for i in range(start_idx, end_idx):
+            item = self._items[i]
             is_selected = (i == self._selected_index)
             prefix = selected_prefix if is_selected else unselected_prefix
 
@@ -223,7 +271,10 @@ class MenuSelector:
                 lines.append(line)
 
         lines.append("")
-        lines.append("[^v] Navigate  [Enter] Select  [ESC] Close")
+        if use_pagination:
+            lines.append("[^v] Navigate  [Enter] Select  [ESC] Close")
+        else:
+            lines.append("[^v] Navigate  [Enter] Select  [ESC] Close")
 
         return lines
 
