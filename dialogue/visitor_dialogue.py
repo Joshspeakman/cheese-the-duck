@@ -272,27 +272,8 @@ VISITOR_WEATHER_COMMENTS: Dict[str, Dict[str, List[str]]] = {
 }
 
 
-class ConversationPhase(Enum):
-    """Phases of a visit conversation."""
-    GREETING = "greeting"
-    OPENING = "opening"  # Initial small talk
-    MAIN = "main"  # Main conversation topics
-    STORY = "story"  # Longer stories/anecdotes
-    PERSONAL = "personal"  # Personal revelations (higher friendship)
-    ACTIVITY = "activity"  # Suggesting activities together
-    CLOSING = "closing"  # Wrapping up
-    FAREWELL = "farewell"
-
-
-@dataclass
-class DialogueLine:
-    """A single line of dialogue."""
-    text: str
-    phase: ConversationPhase
-    friendship_min: str = "stranger"  # Minimum friendship level required
-    once_per_visit: bool = False  # Can only be said once per visit
-    unlocks_topic: Optional[str] = None  # Unlocks a new topic for future visits
-    requires_topic: Optional[str] = None  # Requires a topic to be unlocked
+# Import base types from dialogue_base to avoid circular imports
+from dialogue.dialogue_base import ConversationPhase, DialogueLine, DIALOGUE_TREES
 
 
 @dataclass 
@@ -612,12 +593,10 @@ class VisitorDialogueManager:
 # ============================================================================
 # DIALOGUE TREES BY PERSONALITY
 # Each personality has dialogue organized by phase and friendship level
+# DIALOGUE_TREES is imported from dialogue_base to avoid circular imports
 # ============================================================================
 
-DIALOGUE_TREES: Dict[str, Dict[str, List[DialogueLine]]] = {}
-
-# Import personality-specific dialogue - each file registers its dialogue in DIALOGUE_TREES
-# Note: Imports must come after DIALOGUE_TREES is defined since they reference it
+# Import personality-specific dialogue - each file populates DIALOGUE_TREES when imported
 from dialogue.dialogue_adventurous import ADVENTUROUS_DIALOGUE
 from dialogue.dialogue_scholarly import SCHOLARLY_DIALOGUE
 from dialogue.dialogue_artistic import ARTISTIC_DIALOGUE

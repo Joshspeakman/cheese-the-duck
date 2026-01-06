@@ -2,7 +2,7 @@
 Foodie Duck Dialogue - Food-obsessed personality with deep culinary passion.
 Progresses from enthusiastic food-sharer to vulnerable friend discussing emotional eating.
 """
-from dialogue.visitor_dialogue import DialogueLine, ConversationPhase, DIALOGUE_TREES
+from dialogue.dialogue_base import DialogueLine, ConversationPhase, DIALOGUE_TREES
 
 D = DialogueLine
 

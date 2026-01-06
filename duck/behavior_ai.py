@@ -55,221 +55,221 @@ ACTION_DATA = {
     AutonomousAction.IDLE: {
         "messages": [
             "*stands there menacingly*",
-            "*blinks judgmentally*",
-            "*exists with attitude*",
+            "*blinks*",
+            "*exists*",
             "*contemplates the void*",
         ],
         "base_utility": 0.1,
         "need_bonus": None,
         "personality_bonus": None,
-        "duration": 2.0,
+        "duration": 8.0,
     },
     AutonomousAction.WADDLE: {
         "messages": [
-            "*waddle waddle* Get outta my way!",
-            "*waddles around like I own the place*",
-            "*waddles menacingly in your direction*",
-            "*waddles to nowhere. None of your business where.*",
+            "*waddle waddle*",
+            "*waddles around*",
+            "*waddles menacingly*",
+            "*waddles to nowhere*",
         ],
         "base_utility": 0.3,
         "need_bonus": ("fun", 0.3),
         "personality_bonus": ("active_lazy", 0.2),
-        "duration": 3.0,
+        "duration": 10.0,
     },
     AutonomousAction.QUACK: {
         "messages": [
-            "QUACK! Yeah I said it!",
-            "Quack quack! (That's 'pay attention to me' in duck)",
-            "quack? ...Don't make me repeat myself.",
-            "*quacks aggressively* WHAT?!",
-            "QUAAAACK! I do what I want!",
+            "*QUACK!*",
+            "*quack quack*",
+            "*quack?*",
+            "*quacks aggressively*",
+            "*QUAAAACK!*",
         ],
         "base_utility": 0.25,
         "need_bonus": ("social", 0.4),
         "personality_bonus": ("social_shy", 0.3),
-        "duration": 1.5,
+        "duration": 5.0,
     },
     AutonomousAction.PREEN: {
         "messages": [
-            "*preens feathers smugly* Perfection takes work.",
-            "*arranges feathers* Unlike SOME people, I have standards.",
-            "*fluffs up* Yes, I AM this fabulous naturally.",
+            "*preens feathers*",
+            "*arranges feathers*",
+            "*fluffs up*",
         ],
         "base_utility": 0.2,
         "need_bonus": ("cleanliness", 0.5),
         "personality_bonus": ("neat_messy", -0.3),  # Neat ducks preen more
-        "duration": 4.0,
+        "duration": 15.0,
         "effect": {"cleanliness": 0.3},  # Small boost, doesn't prevent decay
     },
     AutonomousAction.NAP: {
         "messages": [
-            "*takes a nap* Wake me and you're dead to me.",
-            "zzZ... *mumbles about bread*",
-            "*dozes off* This is MY time. Go away.",
-            "*sleeping duck noises* ...bread... revenge... zzz...",
+            "*takes a nap*",
+            "*zzZ...*",
+            "*dozes off*",
+            "*sleeping duck noises*",
         ],
         "base_utility": 0.15,
         "need_bonus": ("energy", 0.6),
         "personality_bonus": ("active_lazy", -0.4),  # Lazy ducks nap more
-        "duration": 5.0,
+        "duration": 25.0,
         "effect": {"energy": 0.5},  # Small boost, doesn't prevent decay
     },
     AutonomousAction.LOOK_AROUND: {
         "messages": [
-            "*looks around suspiciously* I don't trust this place.",
-            "*tilts head* Something's off. I can feel it.",
-            "*scans for threats* Always stay vigilant.",
-            "*spots something* ...Probably nothing. Probably.",
+            "*looks around suspiciously*",
+            "*tilts head*",
+            "*scans for threats*",
+            "*spots something*",
         ],
         "base_utility": 0.2,
         "need_bonus": ("fun", 0.2),
         "personality_bonus": ("brave_timid", 0.2),
-        "duration": 2.5,
+        "duration": 8.0,
     },
     AutonomousAction.SPLASH: {
         "messages": [
-            "*splashes EVERYWHERE* DEAL WITH IT!",
-            "*SPLASH SPLASH* Collateral damage is acceptable!",
-            "*aggressive water noises* I do what I want!",
-            "*gets everything wet* Oops. ...Not sorry though.",
+            "*splashes EVERYWHERE*",
+            "*SPLASH SPLASH*",
+            "*aggressive water noises*",
+            "*gets everything wet*",
         ],
         "base_utility": 0.25,
         "need_bonus": ("fun", 0.5),
         "personality_bonus": ("active_lazy", 0.3),
-        "duration": 3.0,
+        "duration": 12.0,
         "effect": {"fun": 0.4, "cleanliness": -0.2},  # Small effects
     },
     AutonomousAction.STARE_BLANKLY: {
         "messages": [
-            "*stares into the abyss* ...It blinks first.",
-            "*vacant expression* I'm thinking deep thoughts. Probably.",
-            "... (I forgot what I was mad about)",
-            "*stares at wall* It knows what it did.",
-            "*forgot what it was doing* This never happened.",
+            "*stares into the abyss*",
+            "*vacant expression*",
+            "*...*",
+            "*stares at wall*",
+            "*forgot what it was doing*",
         ],
         "base_utility": 0.15,
         "need_bonus": None,
         "personality_bonus": ("clever_derpy", -0.5),  # Derpy ducks do this more
-        "duration": 3.0,
+        "duration": 12.0,
     },
     AutonomousAction.CHASE_BUG: {
         "messages": [
-            "*chases bug* GET BACK HERE COWARD!",
-            "*THERE'S A BUG* IT'S PERSONAL NOW!",
-            "*pounces viciously* ...It was dust. Whatever.",
-            "*hunting mode activated* Nowhere to run!",
+            "*chases bug*",
+            "*spots a bug!*",
+            "*pounces*",
+            "*hunting mode activated*",
         ],
         "base_utility": 0.2,
         "need_bonus": ("fun", 0.4),
         "personality_bonus": ("clever_derpy", -0.3),
-        "duration": 3.5,
+        "duration": 10.0,
         "effect": {"fun": 0.3, "energy": -0.2},  # Small effects
     },
     AutonomousAction.FLAP_WINGS: {
         "messages": [
-            "*flap flap flap* Fear my wingspan!",
-            "*flaps dramatically* Behold my POWER!",
-            "*attempts to fly* One day... one day.",
-            "*assertive wing flapping* You WISH you had these.",
+            "*flap flap flap*",
+            "*flaps dramatically*",
+            "*attempts to fly*",
+            "*assertive wing flapping*",
         ],
         "base_utility": 0.2,
         "need_bonus": ("energy", 0.3),
         "personality_bonus": ("active_lazy", 0.3),
-        "duration": 2.0,
+        "duration": 6.0,
         "effect": {"energy": -0.1},  # Small energy cost
     },
     AutonomousAction.WIGGLE: {
         "messages": [
-            "*wiggles smugly* Yeah, I'm adorable. So what?",
-            "*excited wiggling* Don't read into this!",
-            "*tail waggle* I'm not happy, I'm... stretching.",
-            "*whole body wiggle* Okay FINE, I'm in a good mood. For now.",
+            "*wiggles*",
+            "*excited wiggling*",
+            "*tail waggle*",
+            "*whole body wiggle*",
         ],
         "base_utility": 0.25,
         "need_bonus": ("fun", 0.3),
         "personality_bonus": ("social_shy", 0.2),
-        "duration": 1.5,
+        "duration": 5.0,
     },
     AutonomousAction.TRIP: {
         "messages": [
-            "*trips* THAT WAS INTENTIONAL. Don't laugh.",
-            "*stumbles* I meant to do that! It's called STYLE.",
-            "*faceplants* ...You saw nothing. NOTHING.",
-            "*falls over* The floor is UNEVEN. Clearly.",
+            "*trips*",
+            "*stumbles*",
+            "*faceplants*",
+            "*falls over*",
         ],
         "base_utility": 0.05,
         "need_bonus": None,
         "personality_bonus": ("clever_derpy", -0.6),  # Very derpy behavior
-        "duration": 2.0,
+        "duration": 4.0,
     },
     # Structure-related actions (these require structures to be available)
     AutonomousAction.NAP_IN_NEST: {
         "messages": [
-            "*claims nest* This is MY spot now.",
-            "*curls up in nest* Don't even THINK about waking me.",
-            "*nestles aggressively* Peak comfort achieved.",
-            "*tucks beak under wing* The world can wait.",
+            "*claims nest*",
+            "*curls up in nest*",
+            "*nestles in*",
+            "*tucks beak under wing*",
         ],
         "base_utility": 0.0,  # Only available when nest exists
         "need_bonus": ("energy", 0.8),
         "personality_bonus": ("active_lazy", -0.3),
-        "duration": 6.0,
+        "duration": 30.0,
         "effect": {"energy": 1.0},  # Better than regular nap but still small
         "requires_structure": "nest",
     },
     AutonomousAction.HIDE_IN_SHELTER: {
         "messages": [
-            "*hides* I'm not scared, I'm being STRATEGIC.",
-            "*shelters inside* Only an idiot stays in that weather.",
-            "*waits out the storm* I'll be out when I FEEL like it.",
-            "*peeks out* ...Is it safe yet? Not that I care.",
+            "*hides*",
+            "*shelters inside*",
+            "*waits out the storm*",
+            "*peeks out*",
         ],
         "base_utility": 0.0,  # Only used during bad weather
         "need_bonus": None,
         "personality_bonus": ("brave_timid", -0.4),
-        "duration": 5.0,
+        "duration": 20.0,
         "effect": {"energy": 0.2},  # Small energy conservation
         "requires_structure": "shelter",
     },
     AutonomousAction.USE_BIRD_BATH: {
         "messages": [
-            "*splashes in bird bath* MY spa. No sharing.",
-            "*bathes dramatically* This is self-care. Look it up.",
-            "*fluffs up in water* I'm not vain. I'm HYGIENIC.",
-            "*luxury bath time* I deserve this. Obviously.",
+            "*splashes in bird bath*",
+            "*bathes*",
+            "*fluffs up in water*",
+            "*luxury bath time*",
         ],
         "base_utility": 0.0,  # Only when bird bath exists
         "need_bonus": ("cleanliness", 0.7),
         "personality_bonus": ("neat_messy", -0.2),
-        "duration": 4.0,
+        "duration": 18.0,
         "effect": {"cleanliness": 0.8, "fun": 0.3},  # Better than preening but still small
         "requires_structure": "bird_bath",
     },
     AutonomousAction.ADMIRE_GARDEN: {
         "messages": [
-            "*judges the flowers* Not bad. I've seen better.",
-            "*sniffs the garden* ...Acceptable.",
-            "*watches plants grow* Hurry up, I don't have all day.",
-            "*inspects garden critically* Needs more... something.",
+            "*admires the flowers*",
+            "*sniffs the garden*",
+            "*watches plants grow*",
+            "*inspects garden*",
         ],
         "base_utility": 0.0,  # Only when garden exists
         "need_bonus": ("fun", 0.3),
         "personality_bonus": None,
-        "duration": 3.0,
+        "duration": 12.0,
         "effect": {"fun": 0.2},  # Small entertainment
         "requires_structure": "garden_plot",
     },
     AutonomousAction.INSPECT_WORKBENCH: {
         "messages": [
-            "*examines workbench* I could build something. If I felt like it.",
-            "*inspects tools* Amateurs. I could do better.",
-            "*thinks about projects* Too many ideas, too little appreciation.",
-            "*reorganizes smugly* There. Now it's organized MY way.",
+            "*examines workbench*",
+            "*inspects tools*",
+            "*thinks about projects*",
+            "*reorganizes*",
         ],
         "base_utility": 0.0,  # Only when workbench exists
         "need_bonus": None,
         "personality_bonus": ("clever_derpy", 0.3),
-        "duration": 2.5,
+        "duration": 10.0,
         "requires_structure": "workbench",
     },
 }
@@ -300,14 +300,37 @@ class BehaviorAI:
         self._available_structures: set = set()  # Set of available structure types
         self._is_bad_weather: bool = False  # Whether to seek shelter
         self._weather_type: Optional[str] = None  # Current weather type
+        
+        # Structure positions for duck movement (structure_id -> (x, y) playfield coords)
+        self._structure_positions: dict = {}
+        
+        # Movement callback support
+        self._pending_action: Optional[ActionResult] = None  # Action to perform after reaching target
+        self._movement_requested: bool = False  # Whether we're waiting for duck to move
 
     def set_context(self, available_structures: set = None, 
-                    is_bad_weather: bool = False, weather_type: str = None):
+                    is_bad_weather: bool = False, weather_type: str = None,
+                    structure_positions: dict = None):
         """Set context for structure-aware behavior decisions."""
         if available_structures is not None:
             self._available_structures = available_structures
         self._is_bad_weather = is_bad_weather
         self._weather_type = weather_type
+        if structure_positions is not None:
+            self._structure_positions = structure_positions
+
+    def get_structure_position(self, structure_type: str) -> Optional[Tuple[int, int]]:
+        """Get playfield position for a structure the duck should walk to."""
+        # Check if we have a specific position
+        if structure_type in self._structure_positions:
+            return self._structure_positions[structure_type]
+        
+        # Check variations (e.g., "nest" matches "basic_nest")
+        for struct_id, pos in self._structure_positions.items():
+            if structure_type in struct_id or struct_id in structure_type:
+                return pos
+        
+        return None
 
     def should_act(self, current_time: float) -> bool:
         """Check if it's time for a new autonomous action."""
@@ -381,6 +404,40 @@ class BehaviorAI:
             return None
 
         result = self.select_action(duck)
+        
+        # Check if this action requires walking to a structure
+        data = ACTION_DATA.get(result.action, {})
+        required_struct = data.get("requires_structure")
+        
+        if required_struct:
+            # Get the position of the structure
+            struct_pos = self.get_structure_position(required_struct)
+            if struct_pos:
+                # Store the pending action and request movement
+                self._pending_action = result
+                self._movement_requested = True
+                
+                # Return a "walking to" message instead
+                walk_messages = {
+                    "nest": "*waddles toward nest*",
+                    "shelter": "*waddles toward shelter*",
+                    "bird_bath": "*waddles toward bird bath*",
+                    "garden_plot": "*waddles toward garden*",
+                    "workbench": "*waddles toward workbench*",
+                }
+                walk_msg = walk_messages.get(required_struct, f"*waddles toward {required_struct}*")
+                
+                # Update timing for the walk
+                self._last_action_time = current_time
+                duck.set_action_message(walk_msg, duration=5.0)
+                
+                # Return info about needing to move (caller should handle movement)
+                return ActionResult(
+                    action=result.action,
+                    message=walk_msg,
+                    duration=result.duration,
+                    effects={},  # No effects during walking
+                )
 
         # Try to get LLM-generated commentary (seamlessly falls back to template)
         controller = _get_llm_controller()
@@ -394,10 +451,13 @@ class BehaviorAI:
                 data.get("messages", [result.message])
             )
             
+            # Capture duration for callback closure
+            action_duration = result.duration
+            
             # Create callback to update duck message when LLM response is ready
             def on_llm_response(response: Optional[str]):
                 if response and duck:
-                    duck.set_action_message(response)
+                    duck.set_action_message(response, duration=action_duration)
             
             # Request LLM commentary with template fallback and callback
             llm_message = controller.request_action_commentary(
@@ -428,9 +488,9 @@ class BehaviorAI:
         self._current_action = result
         self._action_end_time = current_time + result.duration
 
-        # Set action on duck for display
+        # Set action on duck for display (message lasts for the action duration)
         duck.current_action = result.action.value
-        duck.set_action_message(result.message)
+        duck.set_action_message(result.message, duration=result.duration)
 
         return result
 
@@ -537,3 +597,51 @@ class BehaviorAI:
         """Clear the current action."""
         self._current_action = None
         self._action_end_time = 0
+    
+    def has_pending_movement(self) -> bool:
+        """Check if there's a pending action that requires duck movement."""
+        return self._movement_requested and self._pending_action is not None
+    
+    def get_pending_movement_target(self) -> Optional[Tuple[int, int]]:
+        """Get the target position for pending movement."""
+        if not self._pending_action:
+            return None
+        
+        data = ACTION_DATA.get(self._pending_action.action, {})
+        required_struct = data.get("requires_structure")
+        if required_struct:
+            return self.get_structure_position(required_struct)
+        return None
+    
+    def complete_movement(self, duck: "Duck", current_time: float) -> Optional[ActionResult]:
+        """
+        Called when duck reaches the target structure.
+        Performs the actual action that was pending.
+        """
+        if not self._pending_action:
+            return None
+        
+        result = self._pending_action
+        self._pending_action = None
+        self._movement_requested = False
+        
+        # Apply effects now that we're at the structure
+        for need, change in result.effects.items():
+            if hasattr(duck.needs, need):
+                current = getattr(duck.needs, need)
+                setattr(duck.needs, need, max(0, min(100, current + change)))
+        
+        # Update timing
+        self._current_action = result
+        self._action_end_time = current_time + result.duration
+        
+        # Set action on duck
+        duck.current_action = result.action.value
+        duck.set_action_message(result.message, duration=result.duration)
+        
+        return result
+    
+    def cancel_pending_movement(self):
+        """Cancel any pending movement/action."""
+        self._pending_action = None
+        self._movement_requested = False

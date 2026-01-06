@@ -168,7 +168,7 @@ class DuckPosition:
         # User interaction states
         "sleeping", "eating", "playing", "cleaning", "petting",
         # Weather reaction states
-        "cold", "hot", "shaking", "scared", "excited", "curious",
+        "cold", "hot", "shaking", "scared", "excited", "curious", "hiding",
         # Extended animation states
         "swimming", "diving", "stretching", "yawning", "jumping",
         "thinking", "dancing", "singing", "pecking", "flapping",
@@ -182,6 +182,43 @@ class DuckPosition:
         self._move_timer += delta_time
         self._idle_timer += delta_time
         self._state_animation_timer += delta_time
+
+        # ALWAYS process directed movement first, regardless of animation state
+        # This ensures duck walks to nest/structures before performing actions
+        if self._is_directed_movement:
+            if self.x != self.target_x or self.y != self.target_y:
+                self.is_moving = True
+                if self._move_timer > 0.15:  # Move every 0.15 seconds
+                    self._move_timer = 0
+                    self._animation_frame = (self._animation_frame + 1) % 4
+
+                    # Move one step towards target
+                    if self.x < self.target_x:
+                        self.x += 1
+                        self.facing_right = True
+                    elif self.x > self.target_x:
+                        self.x -= 1
+                        self.facing_right = False
+
+                    if self.y < self.target_y:
+                        self.y += 1
+                    elif self.y > self.target_y:
+                        self.y -= 1
+            else:
+                # Reached target during directed movement
+                self.is_moving = False
+                if self._movement_callback:
+                    callback = self._movement_callback
+                    callback_data = self._movement_callback_data
+                    # Clear callback before calling to prevent re-triggering
+                    self._movement_callback = None
+                    self._movement_callback_data = None
+                    self._is_directed_movement = False
+                    # Execute callback (this will set the sleeping/action state)
+                    callback(callback_data)
+                else:
+                    self._is_directed_movement = False
+            return  # Don't do other movement while directed movement is active
 
         # Cycle animation frames for all animatable states (every 0.4 seconds)
         if self._state in self.ANIMATABLE_STATES:
@@ -203,7 +240,7 @@ class DuckPosition:
                 self._pick_new_target()
                 self._idle_timer = 0
 
-        # Move towards target
+        # Move towards target (normal wandering, not directed)
         if self.x != self.target_x or self.y != self.target_y:
             self.is_moving = True
             self._state = "walking"
@@ -230,17 +267,6 @@ class DuckPosition:
             if self._state == "walking":
                 self._state = "idle"
                 self._idle_timer = 0
-            
-            # Handle movement callback for directed movement
-            if self._is_directed_movement and self._movement_callback:
-                callback = self._movement_callback
-                callback_data = self._movement_callback_data
-                # Clear callback before calling to prevent re-triggering
-                self._movement_callback = None
-                self._movement_callback_data = None
-                self._is_directed_movement = False
-                # Execute callback
-                callback(callback_data)
 
     def _pick_new_target(self):
         """Pick a random target position."""
@@ -513,6 +539,13 @@ class Renderer:
                 x = random.randint(2, self.duck_pos.field_width - 5)
                 y = random.randint(2, self.duck_pos.field_height - 3)
                 self._playfield_objects.append((x, y, obj_type))
+    
+    def add_nest_to_playfield(self, x: int = 3, y: int = 8):
+        """Add a nest at the specified position for the duck to use."""
+        # Remove any existing nest first
+        self._playfield_objects = [(ox, oy, ot) for ox, oy, ot in self._playfield_objects if ot != "nest"]
+        # Add the nest at the specified position
+        self._playfield_objects.append((x, y, "nest"))
 
     def _generate_ground_pattern(self, location: Optional[str] = None):
         """Generate static ground pattern based on current location."""
@@ -966,7 +999,7 @@ class Renderer:
 
         # Update playfield dimensions for duck movement
         field_inner_width = playfield_width - 2
-        field_height = max(8, height - 10)  # Reduced from 15 to 10 for taller playfield
+        field_height = max(8, height - 10)  # Leave room for header, controls, messages
         self.duck_pos.field_width = field_inner_width
         self.duck_pos.field_height = field_height
 
@@ -1033,9 +1066,6 @@ class Renderer:
             pf_line = _visible_ljust(pf_line, playfield_width)
             sp_line = _visible_ljust(sp_line, side_panel_width)
             output.append(pf_line + sp_line)
-
-        # Message area
-        output.extend(self._render_messages(width))
 
         # Controls bar
         output.extend(self._render_controls_bar(width))
@@ -1110,14 +1140,61 @@ class Renderer:
 
         # Weather icons and names
         weather_data = {
+            # Common (all seasons)
             "sunny": ("*", "Sunny"),
+            "partly_cloudy": ("*~", "Partly Cloudy"),
             "cloudy": ("(*)", "Cloudy"),
-            "rainy": ("','", "Rainy"),
-            "stormy": ("!!!", "Stormy"),
-            "snowy": ("*", "Snowy"),
-            "foggy": ("...", "Foggy"),
+            "overcast": ("(~)", "Overcast"),
             "windy": ("~~", "Windy"),
+            "foggy": ("...", "Foggy"),
+            "misty": ("...", "Misty"),
+            # Rain variations
+            "drizzle": ("'", "Drizzle"),
+            "rainy": ("','", "Rainy"),
+            "heavy_rain": ("'''", "Heavy Rain"),
+            "stormy": ("!!!", "Stormy"),
+            "thunderstorm": ("!*!", "Thunderstorm"),
+            # Snow/ice variations
+            "light_snow": ("*", "Light Snow"),
+            "snowy": ("*", "Snowy"),
+            "heavy_snow": ("***", "Heavy Snow"),
+            "blizzard": ("***", "Blizzard"),
+            "sleet": ("'*", "Sleet"),
+            "hail": ("o'o", "Hail"),
+            "frost": ("*.*", "Frost"),
+            "ice_storm": ("*!*", "Ice Storm"),
+            # Spring specific
+            "spring_showers": ("'~'", "Spring Showers"),
             "rainbow": ("(=)", "Rainbow"),
+            "pollen_drift": ("o~o", "Pollen"),
+            "warm_breeze": ("~*~", "Warm Breeze"),
+            "dewy_morning": ("'*'", "Dewy"),
+            # Summer specific
+            "scorching": ("**", "Scorching"),
+            "humid": ("~'~", "Humid"),
+            "heat_wave": ("***", "Heat Wave"),
+            "summer_storm": ("!'!", "Summer Storm"),
+            "balmy_evening": ("~*", "Balmy"),
+            "golden_hour": ("*-*", "Golden Hour"),
+            "muggy": ("~'", "Muggy"),
+            # Fall specific
+            "crisp": ("*~", "Crisp"),
+            "breezy": ("~~", "Breezy"),
+            "leaf_storm": ("{~}", "Leaf Storm"),
+            "harvest_moon": ("O", "Harvest Moon"),
+            "first_frost": ("*.", "First Frost"),
+            "autumnal": ("{*}", "Autumnal"),
+            # Winter specific
+            "bitter_cold": ("***", "Bitter Cold"),
+            "freezing": ("*!*", "Freezing"),
+            "clear_cold": ("*.", "Clear Cold"),
+            "snow_flurries": ("*~*", "Flurries"),
+            "winter_sun": ("*o*", "Winter Sun"),
+            # Rare/special
+            "aurora": ("~*~", "Aurora"),
+            "meteor_shower": ("*!*", "Meteors"),
+            "double_rainbow": ("(==)", "Double Rainbow"),
+            "perfect_day": ("*O*", "Perfect Day"),
         }
 
         # Time of day icons and names
@@ -1659,22 +1736,26 @@ class Renderer:
         # Divider
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
 
-        # Needs bars (compact)
+        # Needs bars (fill the width properly)
         needs_data = [
-            ("HUN", duck.needs.hunger, self._get_need_indicator(duck.needs.hunger)),
-            ("ENG", duck.needs.energy, self._get_need_indicator(duck.needs.energy)),
-            ("FUN", duck.needs.fun, self._get_need_indicator(duck.needs.fun)),
-            ("CLN", duck.needs.cleanliness, self._get_need_indicator(duck.needs.cleanliness)),
-            ("SOC", duck.needs.social, self._get_need_indicator(duck.needs.social)),
+            ("HUN", duck.needs.hunger),
+            ("ENG", duck.needs.energy),
+            ("FUN", duck.needs.fun),
+            ("CLN", duck.needs.cleanliness),
+            ("SOC", duck.needs.social),
         ]
 
-        for name, value, indicator in needs_data:
-            bar = self._make_progress_bar(value, 8)
-            pct = f"{int(value)}%"
-            # Build line: NAME[bar] ##%
-            line_content = f"{name}{bar} {pct}"
-            # Truncate and pad to exact width
-            line_content = _visible_truncate(line_content, inner_width)
+        for name, value in needs_data:
+            # Calculate bar width to fill the space
+            # Format: "HUN[████████] 83%"
+            # Name=3, []=2 (in bar), space=1, pct=4-5 chars
+            pct_str = f"{int(value):>3}%"
+            bar_width = inner_width - len(name) - len(pct_str) - 3  # -3 for [] and space
+            if bar_width < 5:
+                bar_width = 5
+            bar = self._make_progress_bar(value, bar_width)
+            line_content = f"{name}{bar} {pct_str}"
+            # Pad to exact width
             line_content = _visible_ljust(line_content, inner_width)
             lines.append(BOX["v"] + line_content + BOX["v"])
 
@@ -1683,19 +1764,28 @@ class Renderer:
         shortcut_title = _visible_center("--- SHORTCUTS ---", inner_width)
         lines.append(BOX["v"] + shortcut_title + BOX["v"])
 
-        # Actions column - organized by function
-        shortcuts = [
-            "[F] Feed    [P] Play",
-            "[L] Clean  [D] Pet  ",
-            "[Z] Sleep   [T] Talk",
-            "",
-            "[E] Explore [A] Areas",
-            "[C] Craft   [R] Build",
-            "",
-            "[I] Items   [B] Shop",
-            "[G] Goals   [S] Stats",
-            "[H] Help    [Q] Quit",
+        # Actions column - build with proper alignment
+        # Both columns fixed width for consistent centering
+        shortcut_pairs = [
+            ("[F] Feed", "[P] Play"),
+            ("[L] Clean", "[D] Pet"),
+            ("[Z] Sleep", "[T] Talk"),
+            None,  # Empty line
+            ("[E] Explore", "[A] Areas"),
+            ("[C] Craft", "[R] Build"),
+            None,  # Empty line
+            ("[I] Items", "[B] Shop"),
+            ("[G] Goals", "[S] Stats"),
+            ("[H] Help", "[Q] Quit"),
         ]
+        
+        shortcuts = []
+        for pair in shortcut_pairs:
+            if pair is None:
+                shortcuts.append("")
+            else:
+                # Pad both columns: first to 12, second to 10, total = 22
+                shortcuts.append(f"{pair[0]:<12}{pair[1]:<10}")
 
         for shortcut in shortcuts:
             if shortcut:
@@ -2305,17 +2395,40 @@ class Renderer:
         return self._overlay_box(base_output, inv_text, "INVENTORY", width)
 
     def _overlay_box(self, base_output: List[str], content: List[str], title: str, width: int) -> List[str]:
-        """Generic overlay box."""
+        """Generic overlay box with height limiting."""
         box_width = min(50, width - 4)
-        box_height = len(content) + 4
+        
+        # Limit height to fit on screen (leave room for top/bottom margins)
+        max_content_height = len(base_output) - 10  # Leave margins
+        if max_content_height < 10:
+            max_content_height = 10
+        
+        # Truncate content if too tall
+        if len(content) > max_content_height:
+            visible_content = content[:max_content_height - 1]
+            visible_content.append(f"... ({len(content) - max_content_height + 1} more lines)")
+        else:
+            visible_content = content
+        
+        box_height = len(visible_content) + 4
 
-        # Create box - use _visible_len for title to handle colored titles
+        # Create box - the interior is box_width wide
+        # Total line width = tl(1) + interior(box_width) + tr(1) = box_width + 2
         title_visible_len = _visible_len(title)
+        title_with_spaces = f" {title} "
+        title_total_len = title_visible_len + 2  # Including spaces
+        
+        # Top line: tl + h + " title " + remaining h's + tr
+        # Interior width for h's = box_width - len(" title ")
+        remaining_h = box_width - title_total_len - 1  # -1 for the initial h before title
+        if remaining_h < 0:
+            remaining_h = 0
+        
         box_lines = [
-            BOX_DOUBLE["tl"] + BOX_DOUBLE["h"] + f" {title} " + BOX_DOUBLE["h"] * (box_width - title_visible_len - 4) + BOX_DOUBLE["tr"],
+            BOX_DOUBLE["tl"] + BOX_DOUBLE["h"] + title_with_spaces + BOX_DOUBLE["h"] * remaining_h + BOX_DOUBLE["tr"],
         ]
 
-        for line in content:
+        for line in visible_content:
             # Ensure content fills exactly box_width chars with spaces (solid background)
             # First truncate if too long, then pad with spaces to fill
             content_area = _visible_truncate(f" {line}", box_width)
@@ -2596,9 +2709,10 @@ class Renderer:
         self._show_message_overlay = False
 
     def show_menu(self, title: str, items: List[Dict], selected_index: int = 0,
-                  show_numbers: bool = True, footer: str = "[^v] Navigate  [Enter] Select  [ESC] Close"):
+                  show_numbers: bool = True, footer: str = "[^v] Navigate  [Enter] Select  [ESC] Close",
+                  max_visible: int = 12):
         """
-        Show a menu with arrow-key selection highlighting.
+        Show a menu with arrow-key selection highlighting and pagination.
 
         Args:
             title: Menu title
@@ -2606,6 +2720,7 @@ class Renderer:
             selected_index: Currently selected item index
             show_numbers: Show number prefixes
             footer: Footer text with controls hint
+            max_visible: Maximum visible items before scrolling
         """
         lines = []
         lines.append(f"=== {title} ===")
@@ -2614,7 +2729,30 @@ class Renderer:
         if not items:
             lines.append("  (no items)")
         else:
-            for i, item in enumerate(items):
+            # Calculate visible window for scrolling
+            total_items = len(items)
+            
+            if total_items <= max_visible:
+                # No scrolling needed
+                start_idx = 0
+                end_idx = total_items
+            else:
+                # Calculate scroll window to keep selected item visible
+                half_window = max_visible // 2
+                if selected_index < half_window:
+                    start_idx = 0
+                elif selected_index >= total_items - half_window:
+                    start_idx = total_items - max_visible
+                else:
+                    start_idx = selected_index - half_window
+                end_idx = start_idx + max_visible
+            
+            # Show scroll indicator at top if not at beginning
+            if start_idx > 0:
+                lines.append(f"   [...{start_idx} more above...]")
+            
+            for i in range(start_idx, end_idx):
+                item = items[i]
                 is_selected = (i == selected_index)
                 enabled = item.get('enabled', True)
                 label = item.get('label', f'Item {i+1}')
@@ -2643,6 +2781,10 @@ class Renderer:
                 # Show description for selected item
                 if is_selected and desc:
                     lines.append(f"       {desc}")
+            
+            # Show scroll indicator at bottom if not at end
+            if end_idx < total_items:
+                lines.append(f"   [...{total_items - end_idx} more below...]")
 
         lines.append("")
         lines.append(footer)

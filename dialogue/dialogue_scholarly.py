@@ -2,7 +2,7 @@
 Scholarly Duck Dialogue - Intellectual personality with love of learning and facts.
 Progresses from formal stranger to sharing research secrets and deep philosophy.
 """
-from dialogue.visitor_dialogue import DialogueLine, ConversationPhase, DIALOGUE_TREES
+from dialogue.dialogue_base import DialogueLine, ConversationPhase, DIALOGUE_TREES
 
 D = DialogueLine
 

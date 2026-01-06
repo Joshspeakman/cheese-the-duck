@@ -2,7 +2,7 @@
 Playful Duck Dialogue - Fun-loving personality full of jokes, games, and energy.
 Progresses from hyperactive stranger to sharing deeper feelings behind the fun.
 """
-from dialogue.visitor_dialogue import DialogueLine, ConversationPhase, DIALOGUE_TREES
+from dialogue.dialogue_base import DialogueLine, ConversationPhase, DIALOGUE_TREES
 
 D = DialogueLine
 

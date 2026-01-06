@@ -89,6 +89,11 @@ from ui.reactions import DuckReactionController, init_reaction_controller
 from ui.menu_selector import HierarchicalMenuSelector
 from ui.menu_structure import build_main_menu_categories, MENU_ACTIONS
 
+# Settings and menu systems
+from core.settings import settings_manager, get_settings, load_settings, save_settings
+from core.menu_controller import MenuController, ConfirmationDialog, notification_manager
+from ui.settings_menu import SettingsMenu, settings_menu
+
 from enum import Enum, auto
 
 
@@ -186,6 +191,28 @@ class Game:
         self._minigames_menu_selected = 0 # Currently selected minigame
         self._quests_menu_open = False    # Flag for quests menu
         self._weather_menu_open = False   # Flag for weather activities menu
+        
+        # Treasure hunting menu
+        self._treasure_menu_open = False  # Flag for treasure hunting menu
+        self._treasure_menu_selected = 0  # Currently selected location/action
+        self._treasure_menu_items = []    # Menu items for treasure hunting
+        self._treasure_digging = False    # Currently digging for treasure
+        self._treasure_dig_progress = 0   # Dig animation progress
+        
+        # Festival activities menu
+        self._festival_menu_open = False   # Flag for festival menu
+        self._festival_menu_selected = 0   # Currently selected activity
+        self._festival_menu_items = []     # Menu items for festivals
+        self._festival_doing_activity = False  # Currently doing festival activity
+        self._festival_activity_progress = 0   # Activity progress
+        
+        # Settings menu
+        self._settings_menu_open = False  # Flag for settings menu
+        self._settings_menu = settings_menu
+        self._settings_menu.set_sound_engine(sound_engine)
+        
+        # Confirmation dialog
+        self._confirmation_dialog = None  # Active confirmation dialog
         
         # Hidden debug menu (accessed with backtick `)
         self._debug_menu_open = False
@@ -315,14 +342,38 @@ class Game:
         """Start the game."""
         self._running = True
 
-        # Check for existing save
-        if self.save_manager.save_exists():
-            self._load_game()
-        else:
-            self._state = "title"
-            self._start_title_music()
+        # Load user settings first
+        load_settings()
+        self._apply_settings()
+
+        # Always show title screen first with music
+        self._state = "title"
+        self._start_title_music()
 
         self._game_loop()
+
+    def _apply_settings(self):
+        """Apply current settings to game systems."""
+        settings = get_settings()
+        
+        # Apply audio settings
+        if hasattr(sound_engine, 'set_master_volume'):
+            sound_engine.set_master_volume(settings.audio.master_volume)
+        sound_engine.set_enabled(settings.audio.sfx_enabled)
+        if hasattr(sound_engine, 'set_music_enabled'):
+            sound_engine.set_music_enabled(settings.audio.music_enabled)
+        
+        # Apply display settings to renderer (if available)
+        if hasattr(self.renderer, 'set_show_particles'):
+            self.renderer.set_show_particles(settings.display.show_particles)
+        
+        # Register callback for live setting changes
+        settings_manager.register_change_callback(self._on_setting_changed)
+
+    def _on_setting_changed(self, key: str, value):
+        """Handle real-time setting changes."""
+        if key.startswith("audio."):
+            self._apply_settings()
 
     def _start_title_music(self):
         """Start playing title screen music."""
@@ -394,11 +445,23 @@ class Game:
         if self._weather_menu_open:
             self._handle_weather_input_direct(key)
             return
+        if self._treasure_menu_open:
+            self._handle_treasure_input(key)
+            return
+        if self._festival_menu_open:
+            self._handle_festival_input(key)
+            return
         if self._main_menu_open:
             self._handle_main_menu_input(key)
             return
         if self._debug_menu_open:
             self._handle_debug_input(key)
+            return
+        if self._settings_menu_open:
+            self._handle_settings_input(key)
+            return
+        if self._confirmation_dialog and self._confirmation_dialog.is_open:
+            self._handle_confirmation_input(key)
             return
 
         # Handle inventory item selection
@@ -1960,6 +2023,9 @@ class Game:
             if fish_msg:
                 self.renderer.show_message(fish_msg, duration=2.0)
 
+        # Update weather activities (check for completion)
+        self._update_weather_activity()
+
         # Check for travel completion
         if self._duck_traveling:
             if current_time - self._travel_start_time >= self._travel_duration:
@@ -2186,9 +2252,14 @@ class Game:
         if self.behavior_ai and not self._duck_traveling and not self._duck_exploring and not self._duck_building:
             # Update behavior AI context with available structures and weather
             available_structures = set()
+            structure_positions = {}
             for structure in self.building.structures:
                 if structure.status.value == "complete":
                     available_structures.add(structure.blueprint_id)
+                    # Get playfield position for this structure
+                    pos = self.building.get_structure_position(structure.blueprint_id)
+                    if pos:
+                        structure_positions[structure.blueprint_id] = pos
             
             # Check for bad weather
             is_bad_weather = False
@@ -2200,34 +2271,67 @@ class Game:
             self.behavior_ai.set_context(
                 available_structures=available_structures,
                 is_bad_weather=is_bad_weather,
-                weather_type=weather_type
+                weather_type=weather_type,
+                structure_positions=structure_positions
             )
             
-            result = self.behavior_ai.perform_action(self.duck, current_time)
-            if result:
-                self.duck.set_action_message(result.message)
+            # Check if there's a pending movement we need to handle
+            if self.behavior_ai.has_pending_movement():
+                target = self.behavior_ai.get_pending_movement_target()
+                if target:
+                    # Request duck to move to the structure
+                    def on_reach_structure(data):
+                        # Duck reached the structure, perform the action
+                        result = self.behavior_ai.complete_movement(self.duck, time.time())
+                        if result:
+                            # Update visual state based on action
+                            if result.action.value in ["nap", "sleep", "nap_in_nest"]:
+                                self.renderer.set_duck_state("sleeping", duration=result.duration)
+                            elif result.action.value in ["use_bird_bath", "splash"]:
+                                self.renderer.set_duck_state("playing", duration=result.duration)
+                            elif result.action.value in ["hide_in_shelter"]:
+                                self.renderer.set_duck_state("scared", duration=result.duration)
+                            elif result.action.value in ["preen", "admire_garden"]:
+                                self.renderer.set_duck_state("preening", duration=result.duration)
+                    
+                    self.renderer.duck_pos.move_to(
+                        target[0], target[1],
+                        callback=on_reach_structure,
+                        callback_data=None
+                    )
+                    # Clear the pending flag so we don't trigger again
+                    self.behavior_ai._movement_requested = False
+            else:
+                result = self.behavior_ai.perform_action(self.duck, current_time)
+                if result:
+                    # Check if this action needs movement (behavior_ai will set pending)
+                    if self.behavior_ai.has_pending_movement():
+                        # Movement will be handled on next update
+                        pass
+                    else:
+                        self.duck.set_action_message(result.message, duration=result.duration)
 
-                # Update visual state based on action
-                if result.action.value in ["nap", "sleep", "nap_in_nest"]:
-                    self.renderer.set_duck_state("sleeping")
-                elif result.action.value in ["waddle", "look_around", "chase_bug"]:
-                    self.renderer.set_duck_state("walking")
-                elif result.action.value in ["splash", "wiggle", "flap_wings", "use_bird_bath"]:
-                    self.renderer.set_duck_state("playing")
-                elif result.action.value in ["hide_in_shelter"]:
-                    self.renderer.set_duck_state("hiding")
+                        # Update visual state based on action
+                        if result.action.value in ["nap", "sleep", "nap_in_nest"]:
+                            self.renderer.set_duck_state("sleeping", duration=result.duration)
+                        elif result.action.value in ["waddle", "look_around", "chase_bug"]:
+                            self.renderer.set_duck_state("walking")
+                        elif result.action.value in ["splash", "wiggle", "flap_wings", "use_bird_bath"]:
+                            self.renderer.set_duck_state("playing", duration=result.duration)
+                        elif result.action.value in ["hide_in_shelter"]:
+                            self.renderer.set_duck_state("scared", duration=result.duration)
 
-                # Show closeup for emotive actions
-                emotive_actions = ["stare_blankly", "trip", "quack", "wiggle", "flap_wings", 
-                                   "nap_in_nest", "hide_in_shelter", "use_bird_bath"]
-                if result.action.value in emotive_actions:
-                    self.renderer.show_closeup(result.action.value, 1.5)
-                
-                # Play quack sound when duck talks to itself or does vocal actions
-                vocal_actions = ["quack", "look_around", "chase_bug", "trip", "wiggle", "splash"]
-                if result.action.value in vocal_actions:
-                    mood = self.duck.get_mood().state.value
-                    duck_sounds.quack(mood)
+                        # Show closeup for emotive actions
+                        emotive_actions = ["stare_blankly", "trip", "quack", "wiggle", "flap_wings", 
+                                           "nap_in_nest", "hide_in_shelter", "use_bird_bath"]
+                        if result.action.value in emotive_actions:
+                            self.renderer.show_closeup(result.action.value, 1.5)
+                        
+                        # Play quack sound when duck talks to itself or does vocal actions
+                        vocal_actions = ["quack", "look_around", "chase_bug", "trip", "wiggle", "splash"]
+                        if result.action.value in vocal_actions:
+                            mood = self.duck.get_mood().state.value
+                            duck_sounds.quack(mood)
 
         # Duck interacts with nearby habitat items (10% chance per update)
         self._check_item_interaction(current_time)
@@ -2984,6 +3088,16 @@ class Game:
         self.achievements = AchievementSystem()
         self.progression = ProgressionSystem()
         self.home = DuckHome()
+        
+        # Reset building and add starter nest
+        self.building = BuildingSystem()
+        self.building.add_starter_nest()
+        
+        # Add nest to playfield visual
+        if hasattr(self.renderer, 'add_nest_to_playfield'):
+            nest_pos = self.building.get_structure_position("basic_nest")
+            if nest_pos:
+                self.renderer.add_nest_to_playfield(nest_pos[0], nest_pos[1])
 
         # Give starting items
         self.inventory.add_item("bread")
@@ -3118,6 +3232,15 @@ class Game:
             self.building = BuildingSystem.from_dict(data["building"])
         else:
             self.building = BuildingSystem()
+        
+        # Ensure there's always a starter nest
+        self.building.add_starter_nest()
+        
+        # Add nest to playfield visual
+        if hasattr(self.renderer, 'add_nest_to_playfield'):
+            nest_pos = self.building.get_structure_position("basic_nest")
+            if nest_pos:
+                self.renderer.add_nest_to_playfield(nest_pos[0], nest_pos[1])
 
         # Load minigames system
         if "minigames" in data:
@@ -3351,6 +3474,9 @@ class Game:
         self._last_tick = time.time()
         self._last_save = time.time()
         self._last_event_check = time.time()
+        
+        # Show welcome back notification
+        notification_manager.show(f"Welcome back to care for {self.duck.name}!", "success", 2.5)
 
     def _save_game(self):
         """Save the current game state."""
@@ -3408,12 +3534,13 @@ class Game:
         }
 
         self.save_manager.save(save_data)
+        notification_manager.show("Game saved!", "success", 1.5)
 
     def _return_to_title(self):
         """Save the game and return to title screen."""
         if self.duck:
             self._save_game()
-            self.renderer.show_message("Saving game...")
+            notification_manager.show("Saving...", "info", 0.5)
             time.sleep(0.5)
         
         # Reset game state
@@ -3437,6 +3564,9 @@ class Game:
             self._minigames_menu_open or
             self._quests_menu_open or
             self._weather_menu_open or
+            self._treasure_menu_open or
+            self._festival_menu_open or
+            self._settings_menu_open or
             self._main_menu_open or
             self._debug_menu_open or
             self.renderer.is_shop_open() or
@@ -3461,6 +3591,9 @@ class Game:
         self._minigames_menu_open = False
         self._quests_menu_open = False
         self._weather_menu_open = False
+        self._treasure_menu_open = False
+        self._festival_menu_open = False
+        self._settings_menu_open = False
         self._main_menu_open = False
         self._show_goals = False
         self._debug_menu_open = False
@@ -3480,6 +3613,9 @@ class Game:
         self._minigames_menu_open = False
         self._quests_menu_open = False
         self._weather_menu_open = False
+        self._treasure_menu_open = False
+        self._festival_menu_open = False
+        self._settings_menu_open = False
         self._main_menu_open = False
         self._show_goals = False
         self._debug_menu_open = False
@@ -3499,21 +3635,25 @@ class Game:
         self._running = False
 
     def _start_reset_confirmation(self):
-        """Start the reset game confirmation dialog."""
-        self._reset_confirmation = True
-        self.renderer.show_message(
-            "RESET GAME?\n\n"
-            "This will DELETE all progress!\n"
-            "Your duck, items, and achievements\n"
-            "will be PERMANENTLY lost!\n\n"
-            "[Y] Yes, reset everything\n"
-            "[N] No, cancel",
-            duration=0  # Don't auto-dismiss
+        """Start the reset game confirmation dialog using the new system."""
+        self._confirmation_dialog = ConfirmationDialog(
+            title="RESET GAME?",
+            message="This will DELETE all progress!\n"
+                    "Your duck, items, and achievements\n"
+                    "will be PERMANENTLY lost!",
+            dangerous=True,  # Requires typing "yes"
+            on_confirm=self._confirm_reset,
+            on_cancel=lambda: self.renderer.show_message("Reset cancelled.", duration=2.0)
         )
+        self._confirmation_dialog.is_open = True
+        self._render_confirmation_dialog()
 
     def _confirm_reset(self):
         """Confirm and execute game reset."""
         self._reset_confirmation = False
+        # Note: _confirmation_dialog is cleared by _handle_confirmation_input
+        
+        notification_manager.show("Resetting game...", "warning", 2.0)
 
         # Clear Python cache to ensure fresh state
         self._clear_pycache()
@@ -4725,6 +4865,12 @@ class Game:
         self._dream_scene_index = 0
         self._dream_scene_timer = time.time()
 
+        # Set duck to sleeping state for the entire dream duration
+        # Calculate total dream duration (3 seconds per scene)
+        dream_duration = len(self._dream_result.scenes_shown) * 3.0 + 2.0 if self._dream_result else 10.0
+        self.renderer.set_duck_state("sleeping", duration=dream_duration)
+        self.renderer.show_closeup("sleeping", duration=dream_duration)
+
         # Show first dream message
         if self._dream_result and self._dream_result.scenes_shown:
             self._show_dream_scene()
@@ -4765,6 +4911,10 @@ class Game:
             return
 
         result = self._dream_result
+
+        # Wake up the duck - clear sleeping visuals
+        self.renderer.set_duck_state("idle", duration=0)
+        self.renderer.show_closeup("confused", duration=2.0)  # Show groggy wake-up closeup
 
         # Apply mood effect
         if result.mood_effect != 0:
@@ -5074,6 +5224,510 @@ class Game:
                     else:
                         self.renderer.show_message("Couldn't start activity - already busy!", duration=2)
             return
+
+    # ==================== WEATHER ACTIVITY COMPLETION ====================
+
+    def _update_weather_activity(self):
+        """Check for weather activity completion and apply rewards."""
+        if not self.weather_activities.current_activity:
+            return
+        
+        result = self.weather_activities.check_activity_complete()
+        if not result:
+            return
+        
+        activity, rewards = result
+        
+        # Apply rewards
+        if self.duck:
+            # Add coins
+            self.habitat.add_coins(rewards["coins"])
+            
+            # Add XP
+            new_level = self.progression.add_xp(rewards["xp"])
+            if new_level:
+                self._show_level_up(new_level)
+            
+            # Apply mood bonus
+            self.duck.needs.fun = min(100, self.duck.needs.fun + rewards["mood_bonus"])
+            
+            # Handle special drops
+            if rewards["special_drop"]:
+                self.inventory.add_item(rewards["special_drop"])
+        
+        # Show completion message with animation
+        lines = activity.ascii_animation if activity.ascii_animation else []
+        lines.extend([
+            "",
+            f"(!) {rewards['message']}",
+            f"+{rewards['coins']} coins  +{rewards['xp']} XP",
+        ])
+        if rewards["special_drop"]:
+            lines.append(f"Found: {rewards['special_drop']}!")
+        
+        self.renderer.show_message("\n".join(lines), duration=4.0)
+        duck_sounds.quack("happy")
+        
+        # Check for achievements
+        if self.weather_activities.total_activities_done >= 10:
+            self.achievements.unlock("weather_watcher")
+        if self.weather_activities.total_activities_done >= 50:
+            self.achievements.unlock("weather_master")
+
+    # ==================== TREASURE HUNTING INTERACTIVE ====================
+
+    def _show_treasure_hunt(self):
+        """Show the interactive treasure hunting menu."""
+        if not self.duck:
+            return
+        
+        self._treasure_menu_open = True
+        self._treasure_menu_selected = 0
+        self._update_treasure_menu_display()
+
+    def _update_treasure_menu_display(self):
+        """Update the treasure hunting menu display."""
+        stats = self.treasure.get_collection_stats()
+        
+        lines = [
+            "+==========================================+",
+            "|        [D] TREASURE HUNTING [D]           |",
+            "+==========================================+",
+            f"| Collection: {stats['found_types']}/{stats['total_types']} ({stats['completion']}%)",
+            f"| Total Value: {stats['total_value']:,} coins",
+            f"| Digs Today: {self.treasure.dig_attempts_today}/{self.treasure.max_digs_per_day}",
+            f"| Maps: {stats['maps_available']} available",
+            "+==========================================+",
+            "",
+        ]
+        
+        # Build menu items
+        menu_items = []
+        
+        # If currently hunting, show dig option
+        if self.treasure.current_hunt_location:
+            loc = self.treasure.current_hunt_location.value.title()
+            progress = self.treasure.hunt_progress
+            progress_bar = "[" + "#" * (progress // 10) + "-" * (10 - progress // 10) + "]"
+            lines.append(f"  Currently at: {loc}")
+            lines.append(f"  Progress: {progress_bar} {progress}%")
+            lines.append("")
+            menu_items.append(("dig", "DIG!", "Search for treasure"))
+            menu_items.append(("leave", "Leave Area", "Stop hunting here"))
+        else:
+            # Show location options
+            lines.append("  Select a location to hunt:")
+            lines.append("")
+            for loc in self.treasure.unlocked_locations:
+                menu_items.append((f"loc_{loc.value}", loc.value.title(), f"Hunt at {loc.value}"))
+        
+        # Add map option if available
+        unused_maps = [m for m in self.treasure.treasure_maps if not m.found]
+        if unused_maps and not self.treasure.current_hunt_location:
+            menu_items.append(("use_map", f"Use Map ({len(unused_maps)})", "Follow a treasure map"))
+        
+        # Add collection view
+        menu_items.append(("collection", "View Collection", "See found treasures"))
+        
+        # Draw menu items with selection
+        for i, (item_id, label, desc) in enumerate(menu_items):
+            prefix = " >" if i == self._treasure_menu_selected else "  "
+            lines.append(f"{prefix} [{i+1}] {label}")
+            if i == self._treasure_menu_selected:
+                lines.append(f"      {desc}")
+        
+        lines.extend([
+            "",
+            "+==========================================+",
+            "| [^v] Navigate  [Enter] Select  [ESC] Close |",
+            "+==========================================+",
+        ])
+        
+        self._treasure_menu_items = menu_items
+        self.renderer.show_message("\n".join(lines), duration=0)
+
+    def _handle_treasure_input(self, key):
+        """Handle input in treasure hunting menu."""
+        key_str = str(key).lower() if not key.is_sequence else str(key)
+        key_name = key.name if hasattr(key, 'name') else ''
+        
+        # Navigate
+        if key_name == "KEY_UP":
+            if self._treasure_menu_selected > 0:
+                self._treasure_menu_selected -= 1
+                self._update_treasure_menu_display()
+            return
+        if key_name == "KEY_DOWN":
+            if self._treasure_menu_selected < len(self._treasure_menu_items) - 1:
+                self._treasure_menu_selected += 1
+                self._update_treasure_menu_display()
+            return
+        
+        # Select
+        if key_name == "KEY_ENTER" or key_str == ' ':
+            self._treasure_select_current()
+            return
+        
+        # Number keys
+        if key_str.isdigit() and key_str != '0':
+            idx = int(key_str) - 1
+            if 0 <= idx < len(self._treasure_menu_items):
+                self._treasure_menu_selected = idx
+                self._treasure_select_current()
+            return
+        
+        # Quick dig with D
+        if key_str == 'd' and self.treasure.current_hunt_location:
+            self._do_treasure_dig()
+            return
+        
+        # Close
+        if key_name == "KEY_ESCAPE" or key_str == 'b':
+            self._treasure_menu_open = False
+            self.renderer.dismiss_message()
+            return
+
+    def _treasure_select_current(self):
+        """Execute the current treasure menu selection."""
+        if not self._treasure_menu_items:
+            return
+        
+        item_id, label, desc = self._treasure_menu_items[self._treasure_menu_selected]
+        
+        if item_id == "dig":
+            self._do_treasure_dig()
+        elif item_id == "leave":
+            self.treasure.current_hunt_location = None
+            self.treasure.hunt_progress = 0
+            self.renderer.show_message("Left the hunting area.", duration=2)
+            self._treasure_menu_selected = 0
+            self._update_treasure_menu_display()
+        elif item_id.startswith("loc_"):
+            location_str = item_id[4:]
+            from world.treasure import TreasureLocation
+            try:
+                location = TreasureLocation(location_str)
+                success, msg = self.treasure.start_hunt(location)
+                if success:
+                    self._treasure_menu_selected = 0
+                    self._update_treasure_menu_display()
+                else:
+                    self.renderer.show_message(msg, duration=2)
+            except ValueError:
+                self.renderer.show_message("Invalid location!", duration=2)
+        elif item_id == "use_map":
+            self._show_treasure_map_selection()
+        elif item_id == "collection":
+            self._show_treasure_collection()
+
+    def _do_treasure_dig(self):
+        """Perform a treasure dig."""
+        success, message, found = self.treasure.dig()
+        
+        if found:
+            # Found treasure!
+            from world.treasure import TREASURES
+            treasure = TREASURES.get(found.treasure_id)
+            if treasure:
+                # Add rewards
+                self.habitat.add_coins(treasure.coin_value)
+                new_level = self.progression.add_xp(treasure.xp_value)
+                if new_level:
+                    self._show_level_up(new_level)
+                
+                # Show treasure found animation
+                lines = [
+                    "+==========================================+",
+                    "|          [D] TREASURE FOUND! [D]          |",
+                    "+==========================================+",
+                    "",
+                    f"          {treasure.ascii_art}",
+                    "",
+                    f"   {treasure.name}",
+                    f"   {treasure.description}",
+                    "",
+                    f"   Rarity: {treasure.rarity.value.upper()}",
+                    f"   +{treasure.coin_value} coins  +{treasure.xp_value} XP",
+                    "",
+                    f'   "{treasure.lore}"',
+                    "",
+                    "+==========================================+",
+                    "|     [Press any key to continue]          |",
+                    "+==========================================+",
+                ]
+                self.renderer.show_message("\n".join(lines), duration=0)
+                duck_sounds.quack("excited")
+                
+                # Achievements
+                if self.treasure.total_treasures_found >= 10:
+                    self.achievements.unlock("treasure_hunter")
+                if self.treasure.total_treasures_found >= 50:
+                    self.achievements.unlock("treasure_master")
+        else:
+            # Still digging
+            progress = self.treasure.hunt_progress
+            dig_art = [
+                "       d       ",
+                "      [_]      ",
+                "   *digging*   ",
+                f"   Progress: {progress}%",
+            ]
+            lines = dig_art + ["", message]
+            self.renderer.show_message("\n".join(lines), duration=2)
+        
+        # Update display after a moment
+        if not found:
+            self._update_treasure_menu_display()
+
+    def _show_treasure_map_selection(self):
+        """Show available treasure maps."""
+        unused_maps = [m for m in self.treasure.treasure_maps if not m.found]
+        if not unused_maps:
+            self.renderer.show_message("No treasure maps available!", duration=2)
+            return
+        
+        lines = [
+            "+==========================================+",
+            "|          TREASURE MAPS                   |",
+            "+==========================================+",
+        ]
+        
+        for i, tmap in enumerate(unused_maps[:5], 1):
+            from world.treasure import TREASURES
+            treasure = TREASURES.get(tmap.treasure_id)
+            name = treasure.name if treasure else "???"
+            lines.append(f"  [{i}] Map to: {name}")
+            lines.append(f"      Location: {tmap.location.value.title()}")
+            lines.append(f"      Hint: {tmap.hint}")
+            lines.append("")
+        
+        lines.append("[1-5] Use map  [ESC] Back")
+        self.renderer.show_message("\n".join(lines), duration=0)
+
+    def _show_treasure_collection(self):
+        """Show treasure collection."""
+        lines = self.treasure.render_collection()
+        lines.append("")
+        lines.append("[Press any key to return]")
+        self.renderer.show_message("\n".join(lines), duration=0)
+
+    # ==================== FESTIVAL ACTIVITIES INTERACTIVE ====================
+
+    def _show_festival_menu(self):
+        """Show the interactive festival activities menu."""
+        if not self.duck:
+            return
+        
+        self._festival_menu_open = True
+        self._festival_menu_selected = 0
+        self._update_festival_menu_display()
+
+    def _update_festival_menu_display(self):
+        """Update the festival menu display."""
+        # Check for active festival
+        active = self.festivals.get_active_festival()
+        status = self.festivals.get_festival_status()
+        
+        if not active:
+            lines = [
+                "+==========================================+",
+                "|           (!) FESTIVALS (!)               |",
+                "+==========================================+",
+                "",
+                "  No festival is currently active.",
+                "",
+                "  Festivals occur during special times",
+                "  throughout the year!",
+                "",
+                "  Check back during:",
+                "  - Spring Bloom (March 20-April 3)",
+                "  - Summer Splash (June 21-July 5)",
+                "  - Autumn Harvest (Sept 22-Oct 6)",
+                "  - Winter Wonder (Dec 21-Jan 4)",
+                "",
+                "+==========================================+",
+                "|            [ESC] Close                   |",
+                "+==========================================+",
+            ]
+            self.renderer.show_message("\n".join(lines), duration=0)
+            self._festival_menu_items = []
+            return
+        
+        from world.festivals import FESTIVALS
+        festival = FESTIVALS.get(active.id)
+        if not festival:
+            self._festival_menu_open = False
+            return
+        
+        lines = [
+            "+==========================================+",
+            f"|   (!) {festival.name.upper()[:30]:^30} (!)   |",
+            "+==========================================+",
+            f"| {festival.description[:40]}",
+        ]
+        
+        if status:
+            lines.extend([
+                f"| Points: {status['points']}",
+                f"| Activities Done: {status['activities_done']}",
+                f"| Rewards Claimed: {status['rewards_claimed']}",
+            ])
+        else:
+            lines.append("| [Not yet joined - select activity to start!]")
+        
+        lines.extend([
+            "+==========================================+",
+            "",
+            "  ACTIVITIES:",
+        ])
+        
+        menu_items = []
+        for i, activity in enumerate(festival.activities):
+            # Check cooldown
+            daily_count = 0
+            if status:
+                daily_count = status.get('daily_activities', {}).get(activity.id, 0)
+            
+            available = daily_count < activity.max_daily
+            status_str = f"({daily_count}/{activity.max_daily})" if not available else ""
+            
+            menu_items.append((activity.id, activity.name, activity.description, available))
+            
+            prefix = " >" if i == self._festival_menu_selected else "  "
+            avail_mark = "" if available else " [DONE]"
+            lines.append(f"{prefix} [{i+1}] {activity.name} +{activity.participation_points}pts{avail_mark}")
+        
+        # Add rewards section
+        if status and status['points'] > 0:
+            lines.extend([
+                "",
+                "  REWARDS:",
+            ])
+            for i, reward in enumerate(festival.exclusive_rewards):
+                required = (i + 1) * 100
+                claimed = reward.name in (self.festivals.current_festival_progress.rewards_claimed if self.festivals.current_festival_progress else [])
+                if claimed:
+                    lines.append(f"    [*] {reward.name} - CLAIMED!")
+                elif status['points'] >= required:
+                    menu_items.append((f"reward_{i}", f"Claim: {reward.name}", reward.description, True))
+                    lines.append(f"    [!] {reward.name} - {required} pts - AVAILABLE!")
+                else:
+                    lines.append(f"    [ ] {reward.name} - {required} pts needed")
+        
+        lines.extend([
+            "",
+            "+==========================================+",
+            "| [^v] Navigate  [Enter] Do  [ESC] Close    |",
+            "+==========================================+",
+        ])
+        
+        self._festival_menu_items = menu_items
+        self.renderer.show_message("\n".join(lines), duration=0)
+
+    def _handle_festival_input(self, key):
+        """Handle input in festival menu."""
+        key_str = str(key).lower() if not key.is_sequence else str(key)
+        key_name = key.name if hasattr(key, 'name') else ''
+        
+        # Navigate
+        if key_name == "KEY_UP":
+            if self._festival_menu_selected > 0:
+                self._festival_menu_selected -= 1
+                self._update_festival_menu_display()
+            return
+        if key_name == "KEY_DOWN":
+            if self._festival_menu_selected < len(self._festival_menu_items) - 1:
+                self._festival_menu_selected += 1
+                self._update_festival_menu_display()
+            return
+        
+        # Select
+        if key_name == "KEY_ENTER" or key_str == ' ':
+            self._festival_select_current()
+            return
+        
+        # Number keys
+        if key_str.isdigit() and key_str != '0':
+            idx = int(key_str) - 1
+            if 0 <= idx < len(self._festival_menu_items):
+                self._festival_menu_selected = idx
+                self._festival_select_current()
+            return
+        
+        # Close
+        if key_name == "KEY_ESCAPE" or key_str == 'b':
+            self._festival_menu_open = False
+            self.renderer.dismiss_message()
+            return
+
+    def _festival_select_current(self):
+        """Execute the current festival menu selection."""
+        if not self._festival_menu_items:
+            return
+        
+        item_id, label, desc, available = self._festival_menu_items[self._festival_menu_selected]
+        
+        if not available:
+            self.renderer.show_message("Activity not available right now!", duration=2)
+            return
+        
+        if item_id.startswith("reward_"):
+            # Claim reward
+            reward_idx = int(item_id[7:])
+            success, msg, reward = self.festivals.claim_festival_reward(reward_idx)
+            if success:
+                if reward:
+                    # Add to inventory if applicable
+                    if reward.item_type == "cosmetic":
+                        self.inventory.add_item(reward.name.lower().replace(" ", "_"))
+                    new_level = self.progression.add_xp(reward.xp_value)
+                    if new_level:
+                        self._show_level_up(new_level)
+                self.renderer.show_message(msg, duration=3)
+                duck_sounds.quack("excited")
+            else:
+                self.renderer.show_message(msg, duration=2)
+            self._update_festival_menu_display()
+        else:
+            # Do activity
+            success, msg, reward = self.festivals.do_festival_activity(item_id)
+            if success:
+                # Show activity completion
+                lines = [
+                    "+==========================================+",
+                    "|         (!) ACTIVITY COMPLETE! (!)        |",
+                    "+==========================================+",
+                    "",
+                    f"  {label}",
+                    "",
+                    msg,
+                ]
+                if reward:
+                    lines.append(f"  Got: {reward.name}!")
+                    if reward.item_type in ("consumable", "material"):
+                        self.inventory.add_item(reward.name.lower().replace(" ", "_"))
+                    new_level = self.progression.add_xp(reward.xp_value)
+                    if new_level:
+                        self._show_level_up(new_level)
+                
+                lines.extend([
+                    "",
+                    "+==========================================+",
+                ])
+                self.renderer.show_message("\n".join(lines), duration=3)
+                duck_sounds.quack("happy")
+                
+                # Check achievements
+                if self.festivals.current_festival_progress:
+                    total_done = sum(self.festivals.current_festival_progress.activities_completed.values())
+                    if total_done >= 10:
+                        self.achievements.unlock("festival_goer")
+                    if total_done >= 50:
+                        self.achievements.unlock("festival_master")
+            else:
+                self.renderer.show_message(msg, duration=2)
+            
+            self._update_festival_menu_display()
 
     # ==================== DEBUG MENU (HIDDEN) ====================
     
@@ -5668,6 +6322,160 @@ Core Systems Tested: {report.total_tests}
             "+===================================+",
         ])
         
+        self.renderer.show_message("\n".join(lines), duration=0)
+
+    # ==================== SETTINGS SYSTEM ====================
+
+    def _handle_settings_input(self, key):
+        """Handle input while settings menu is open."""
+        key_str = str(key).lower()
+        key_name = key.name if hasattr(key, 'name') else ''
+        
+        # Close with ESC
+        if key_name == "KEY_ESCAPE":
+            # Check for unsaved changes
+            if self._settings_menu.has_unsaved_changes():
+                self._show_save_settings_prompt()
+            else:
+                self._close_settings_menu()
+            return
+        
+        # Navigate categories (LEFT/RIGHT)
+        if key_name == "KEY_LEFT":
+            self._settings_menu.navigate_category(-1)
+            self._render_settings_menu()
+            return
+        if key_name == "KEY_RIGHT":
+            self._settings_menu.navigate_category(1)
+            self._render_settings_menu()
+            return
+        
+        # Navigate items (UP/DOWN)
+        if key_name == "KEY_UP":
+            self._settings_menu.navigate_item(-1)
+            self._render_settings_menu()
+            return
+        if key_name == "KEY_DOWN":
+            self._settings_menu.navigate_item(1)
+            self._render_settings_menu()
+            return
+        
+        # Adjust value (for sliders/choices)
+        if key_str in ('-', '_', '[') or key_name == "KEY_LEFT":
+            self._settings_menu.adjust_value(-1)
+            self._render_settings_menu()
+            return
+        if key_str in ('=', '+', ']') or key_name == "KEY_RIGHT":
+            self._settings_menu.adjust_value(1)
+            self._render_settings_menu()
+            return
+        
+        # Toggle/Select with Enter or Space
+        if key_name == "KEY_ENTER" or key_str == ' ':
+            result = self._settings_menu.select_current()
+            if result == "save":
+                self._save_and_apply_settings()
+            elif result == "reset":
+                self._show_reset_settings_prompt()
+            self._render_settings_menu()
+            return
+        
+        # Quick save with S
+        if key_str == 's':
+            self._save_and_apply_settings()
+            return
+        
+        # Quick reset with R
+        if key_str == 'r':
+            self._show_reset_settings_prompt()
+            return
+
+    def _open_settings_menu(self):
+        """Open the settings menu."""
+        self._settings_menu_open = True
+        self._settings_menu = settings_menu  # Use global instance
+        self._settings_menu.reset_selection()
+        self._render_settings_menu()
+
+    def _close_settings_menu(self):
+        """Close the settings menu without saving."""
+        self._settings_menu_open = False
+        self._settings_menu.discard_changes()
+        self.renderer.dismiss_message()
+
+    def _render_settings_menu(self):
+        """Render the settings menu overlay."""
+        lines = self._settings_menu.render()
+        self.renderer.show_message("\n".join(lines), duration=0)
+
+    def _save_and_apply_settings(self):
+        """Save settings and apply them immediately."""
+        self._settings_menu.save_changes()
+        save_settings()
+        self._apply_settings()
+        notification_manager.show("Settings saved!", "success", 2.0)
+        self._close_settings_menu()
+
+    def _show_save_settings_prompt(self):
+        """Show prompt to save unsaved settings changes."""
+        self._confirmation_dialog = ConfirmationDialog(
+            title="Unsaved Changes",
+            message="You have unsaved settings changes.\nSave before closing?",
+            on_confirm=self._save_and_apply_settings,
+            on_cancel=self._close_settings_menu
+        )
+        self._confirmation_dialog.is_open = True
+        self._render_confirmation_dialog()
+
+    def _show_reset_settings_prompt(self):
+        """Show prompt to confirm settings reset."""
+        self._confirmation_dialog = ConfirmationDialog(
+            title="Reset Settings?",
+            message="Reset all settings to defaults?\nThis cannot be undone.",
+            dangerous=True,
+            on_confirm=self._reset_settings,
+            on_cancel=lambda: None
+        )
+        self._confirmation_dialog.is_open = True
+        self._render_confirmation_dialog()
+
+    def _reset_settings(self):
+        """Reset all settings to defaults."""
+        settings_manager.reset_to_defaults()
+        save_settings()
+        self._apply_settings()
+        self._settings_menu.reload_from_settings()
+        notification_manager.show("Settings reset to defaults!", "info", 2.0)
+        self._render_settings_menu()
+
+    def _handle_confirmation_input(self, key):
+        """Handle input for confirmation dialogs."""
+        if not self._confirmation_dialog:
+            return
+        
+        # Save reference before handle_input (callbacks may clear self._confirmation_dialog)
+        dialog = self._confirmation_dialog
+        
+        # Use the dialog's built-in input handler
+        from core.menu_controller import MenuResult
+        result = self._confirmation_dialog.handle_input(key)
+        
+        # Check if dialog is still open (use saved reference)
+        if dialog.is_open:
+            self._render_confirmation_dialog()
+        else:
+            # Dialog closed (confirmed or cancelled)
+            self._confirmation_dialog = None
+            if self._settings_menu_open:
+                self._render_settings_menu()
+            else:
+                self.renderer.dismiss_message()
+
+    def _render_confirmation_dialog(self):
+        """Render the confirmation dialog overlay."""
+        if not self._confirmation_dialog:
+            return
+        lines = self._confirmation_dialog.get_display_lines()
         self.renderer.show_message("\n".join(lines), duration=0)
 
     # ==================== SCRAPBOOK SYSTEM ====================

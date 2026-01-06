@@ -738,6 +738,7 @@ PLAYFIELD_OBJECTS = {
     "stick": "_/",
     "butterfly": "%",
     "worm": "~",
+    "nest": "(@@)",  # Cozy nest for duck to sleep in
 }
 
 # =============================================================================
@@ -1209,7 +1210,7 @@ def get_mini_duck(
                swimming, diving, stretching, yawning, jumping, scared, thinking, dancing,
                singing, pecking, flapping, preening, napping, curious, waddle_fast, dizzy,
                proud, sneaking, splashing, floating, shaking, hungry, cold, hot, love,
-               angry, bored, excited, waving, tail_wag, reminiscing, wise)
+               angry, bored, excited, waving, tail_wag, reminiscing, wise, hiding)
         facing_right: True if facing right
         animation_frame: Animation frame number (0-3)
 
@@ -1219,6 +1220,12 @@ def get_mini_duck(
     # Map new stage names to sprite sets
     mapped_stage = STAGE_SPRITE_MAP.get(growth_stage, growth_stage)
     stage_sprites = MINI_DUCK.get(mapped_stage, MINI_DUCK["adult"])
+
+    # Map some states to their sprite equivalents
+    state_sprite_map = {
+        "hiding": "scared",  # Use scared sprite for hiding
+    }
+    sprite_state = state_sprite_map.get(state, state)
 
     # List of all animatable states with frame alternation
     animatable_states = [
@@ -1231,12 +1238,12 @@ def get_mini_duck(
         "bored", "excited", "waving", "tail_wag", "reminiscing", "wise"
     ]
 
-    if state in animatable_states:
+    if sprite_state in animatable_states:
         # Alternate between frames for animated states
         if animation_frame % 2 == 0:
-            sprite = stage_sprites.get(state, stage_sprites.get("idle_right", ["?"]))
+            sprite = stage_sprites.get(sprite_state, stage_sprites.get("idle_right", ["?"]))
         else:
-            sprite = stage_sprites.get(f"{state}_2", stage_sprites.get(state, stage_sprites.get("idle_right", ["?"])))
+            sprite = stage_sprites.get(f"{sprite_state}_2", stage_sprites.get(sprite_state, stage_sprites.get("idle_right", ["?"])))
         return sprite
     elif state == "walking":
         # Alternate between walk frames

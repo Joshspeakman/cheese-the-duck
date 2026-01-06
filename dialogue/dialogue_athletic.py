@@ -2,7 +2,7 @@
 Athletic Duck Dialogue - Sports/fitness-obsessed personality with competitive spirit.
 Progresses from high-energy enthusiast to vulnerable friend discussing pressure and burnout.
 """
-from dialogue.visitor_dialogue import DialogueLine, ConversationPhase, DIALOGUE_TREES
+from dialogue.dialogue_base import DialogueLine, ConversationPhase, DIALOGUE_TREES
 
 D = DialogueLine
 

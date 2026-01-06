@@ -17,46 +17,46 @@ _term = Terminal()
 LOCATION_GROUND_CHARS: Dict[str, List[str]] = {
     # Home Pond - 70% grassy shore, 30% calm pond water with reeds
     "Home Pond": [" ", "'", ".", ",", " ", "~", "~", "~", " ", "|"],
-    "Deep End": [" ", "~", "~", "≈", "·", " ", "~", "≈", " ", "·"],
+    "Deep End": [" ", "~", "~", "=", ".", " ", "~", "=", " ", "."],
     
     # Forest - earthy with fallen leaves and twigs
-    "Forest Edge": [" ", " ", ".", ",", "'", "·", " ", ".", " ", " "],
-    "Ancient Oak": [" ", ".", "·", ",", "'", ".", "∙", " ", " ", "·"],
-    "Mushroom Grove": [" ", "·", ".", "∘", " ", "·", ",", " ", " ", "·"],
+    "Forest Edge": [" ", " ", ".", ",", "'", ".", " ", ".", " ", " "],
+    "Ancient Oak": [" ", ".", ".", ",", "'", ".", ".", " ", " ", "."],
+    "Mushroom Grove": [" ", ".", ".", "o", " ", ".", ",", " ", " ", "."],
     
     # Meadow - grassy and flowery
-    "Sunny Meadow": [" ", " ", "'", ".", "·", ",", " ", "'", " ", " "],
-    "Butterfly Garden": [" ", "'", "·", ",", ".", "'", "·", " ", ",", " "],
+    "Sunny Meadow": [" ", " ", "'", ".", ".", ",", " ", "'", " ", " "],
+    "Butterfly Garden": [" ", "'", ".", ",", ".", "'", ".", " ", ",", " "],
     
     # Riverside - sandy with pebbles
-    "Pebble Beach": [" ", "·", ".", "∘", " ", "·", ".", " ", "·", " "],
-    "Waterfall": [" ", "~", "·", "≈", "~", " ", "·", "~", " ", "≈"],
+    "Pebble Beach": [" ", ".", ".", "o", " ", ".", ".", " ", ".", " "],
+    "Waterfall": [" ", "~", ".", "=", "~", " ", ".", "~", " ", "="],
     
     # Garden - organized, clean
-    "Vegetable Patch": [" ", " ", "·", ".", " ", "'", " ", ".", " ", " "],
-    "Tool Shed": [" ", " ", ".", " ", "·", " ", " ", ".", " ", " "],
+    "Vegetable Patch": [" ", " ", ".", ".", " ", "'", " ", ".", " ", " "],
+    "Tool Shed": [" ", " ", ".", " ", ".", " ", " ", ".", " ", " "],
     
     # Mountains - rocky
-    "Foothills": [" ", "·", ".", "∙", " ", "·", ".", " ", " ", "·"],
-    "Crystal Cave": [" ", "·", "*", " ", "·", ".", "*", " ", " ", "·"],
+    "Foothills": [" ", ".", ".", ".", " ", ".", ".", " ", " ", "."],
+    "Crystal Cave": [" ", ".", "*", " ", ".", ".", "*", " ", " ", "."],
     
     # Beach - sandy with shells
-    "Sandy Shore": [" ", " ", "·", ".", " ", "∘", " ", "·", " ", " "],
-    "Shipwreck Cove": [" ", "·", "~", ".", " ", "~", "·", " ", "≈", " "],
+    "Sandy Shore": [" ", " ", ".", ".", " ", "o", " ", ".", " ", " "],
+    "Shipwreck Cove": [" ", ".", "~", ".", " ", "~", ".", " ", "=", " "],
     
     # Swamp - murky and mysterious
-    "Misty Marsh": [" ", "~", "·", "≈", " ", "~", "·", " ", "°", " "],
-    "Cypress Hollow": [" ", "·", ".", "~", " ", "·", ".", "°", " ", " "],
-    "Sunken Ruins": [" ", "·", "≈", ".", " ", "~", "·", ".", " ", "·"],
+    "Misty Marsh": [" ", "~", ".", "=", " ", "~", ".", " ", "*", " "],
+    "Cypress Hollow": [" ", ".", ".", "~", " ", ".", ".", "*", " ", " "],
+    "Sunken Ruins": [" ", ".", "=", ".", " ", "~", ".", ".", " ", "."],
     
     # Urban - concrete and parks
-    "Park Fountain": [" ", " ", "·", ".", " ", "'", " ", ".", " ", " "],
-    "Rooftop Garden": [" ", "'", "·", ".", " ", "'", "·", " ", ".", " "],
-    "Storm Drain": [" ", "·", ".", " ", ".", " ", "·", ".", " ", "."],
+    "Park Fountain": [" ", " ", ".", ".", " ", "'", " ", ".", " ", " "],
+    "Rooftop Garden": [" ", "'", ".", ".", " ", "'", ".", " ", ".", " "],
+    "Storm Drain": [" ", ".", ".", " ", ".", " ", ".", ".", " ", "."],
 }
 
 # Default ground for unknown locations
-DEFAULT_GROUND_CHARS = [" ", " ", "·", " ", ".", " ", "'", " ", " ", " "]
+DEFAULT_GROUND_CHARS = [" ", " ", ".", " ", ".", " ", "'", " ", " ", " "]
 
 
 # ============================================================================
@@ -77,11 +77,11 @@ LOCATION_DECORATIONS: Dict[str, List[Tuple[str, int]]] = {
     ],
     "Deep End": [
         ("~", 8),        # Deep murky water
-        ("≈", 7),        # Dark ripples
-        ("▓", 3),        # Shadow shapes lurking
-        ("░", 4),        # Murky patches
-        ("·", 5),        # Rising bubbles
-        ("○", 2),        # Sunken object
+        ("=", 7),        # Dark ripples
+        ("#", 3),        # Shadow shapes lurking
+        ("%", 4),        # Murky patches
+        (".", 5),        # Rising bubbles
+        ("O", 2),        # Sunken object
         ("?", 2),        # Mystery shape
         ("<", 2),        # Fish silhouette
         (">", 2),        # Fish silhouette
@@ -92,11 +92,11 @@ LOCATION_DECORATIONS: Dict[str, List[Tuple[str, int]]] = {
         ("|", 8),        # Tree trunk
         ("+", 7),        # Bush
         ("~", 6),        # River water
-        ("≈", 6),        # River flow
+        ("=", 6),        # River flow
         (".", 5),        # Fallen leaves
         (",", 4),        # Twigs
         ("'", 3),        # Grass
-        ("·", 4),        # Forest floor
+        (".", 4),        # Forest floor
     ],
     "Ancient Oak": [
         ("A", 10),       # Massive tree canopy
@@ -104,69 +104,69 @@ LOCATION_DECORATIONS: Dict[str, List[Tuple[str, int]]] = {
         ("O", 3),        # Owl knothole
         ("@", 2),        # Squirrel
         ("u", 3),        # Bird nest
-        ("○", 4),        # Acorns
+        ("o", 4),        # Acorns
         ("+", 3),        # Moss
-        ("∩", 2),        # Shelf mushroom
+        ("^", 2),        # Shelf mushroom
         (".", 5),        # Fallen leaves
         ("'", 3),        # Woodpecker holes
     ],
     "Mushroom Grove": [
-        ("∩", 8),        # Small mushroom
-        ("Ω", 5),        # Giant mushroom cap
-        ("Π", 3),        # Tall mushroom
-        ("°", 6),        # Glowing spores floating
-        ("·", 5),        # Spore clouds
+        ("^", 8),        # Small mushroom
+        ("@", 5),        # Giant mushroom cap
+        ("|", 3),        # Tall mushroom
+        ("*", 6),        # Glowing spores floating
+        (".", 5),        # Spore clouds
         ("*", 3),        # Bioluminescent spots
         ("+", 2),        # Moss clump
         ("~", 2),        # Mycelium trails
     ],
     "Sunny Meadow": [
-        ("❀", 5),        # Sunflower
-        ("*", 6),        # Wildflower
-        ("⌂", 3),        # Beehive
+        ("*", 6),        # Flower
+        ("@", 5),        # Sunflower head
+        ("+", 3),        # Beehive
         ("z", 4),        # Buzzing bee
         ("8", 3),        # Bee in flight
         ("+", 4),        # Clover patch
         ("'", 6),        # Tall grass
-        ("·", 3),        # Pollen float
+        (".", 3),        # Pollen float
     ],
     "Butterfly Garden": [
         ("*", 7),        # Nectar flower
-        ("ʚ", 5),        # Butterfly left wing
-        ("ɞ", 5),        # Butterfly right wing
-        ("∂", 3),        # Fluttering butterfly
+        ("V", 5),        # Butterfly left wing
+        ("W", 5),        # Butterfly right wing
+        ("@", 3),        # Fluttering butterfly
         ("o", 3),        # Chrysalis
         ("||", 2),       # Trellis post
         ("A", 3),        # Flowering shrub
         ("~", 2),        # Flutter path
-        ("·", 4),        # Wing scale shimmer
+        (".", 4),        # Wing scale shimmer
     ],
     "Pebble Beach": [
-        ("○", 6),        # Perfect skipping stone
-        ("◎", 4),        # Flat skipping stone
-        ("O", 3),        # Large smooth rock
+        ("o", 6),        # Perfect skipping stone
+        ("O", 4),        # Flat skipping stone
+        ("@", 3),        # Large smooth rock
         ("~", 4),        # Skip ripples
         (".", 3),        # Skip splash point
-        ("∘", 5),        # Tiny pebbles
-        ("·", 5),        # Wet sand
+        (".", 5),        # Tiny pebbles
+        (".", 5),        # Wet sand
         ("-", 2),        # Driftwood piece
     ],
     "Waterfall": [
         ("|", 6),        # Cascading water
-        ("≈", 6),        # Pool swirl
+        ("=", 6),        # Pool swirl
         ("~", 5),        # Splash
-        ("°", 5),        # Mist droplet
-        ("·", 4),        # Fine spray
+        ("*", 5),        # Mist droplet
+        (".", 4),        # Fine spray
         ("*", 3),        # Rainbow sparkle
-        ("◇", 2),        # Hidden treasure glint
-        ("░", 3),        # Cave shadow
+        ("<>", 2),       # Hidden treasure glint
+        ("#", 3),        # Cave shadow
     ],
     "Vegetable Patch": [
         ("@", 4),        # Cabbage head
         ("^", 5),        # Carrot top
         ("Y", 3),        # Tomato stake
         ("o", 4),        # Ripe tomato
-        ("∩", 3),        # Squash
+        ("@", 3),        # Squash
         ("+", 4),        # Herb bush
         ("|", 2),        # Bean pole
         (".", 3),        # Tilled soil
@@ -180,96 +180,96 @@ LOCATION_DECORATIONS: Dict[str, List[Tuple[str, int]]] = {
         ("[", 2),        # Toolbox
         ("-", 4),        # Workbench
         ("O", 2),        # Watering can
-        ("·", 5),        # Sawdust
+        (".", 5),        # Sawdust
         ("=", 2),        # Cobweb
     ],
     "Foothills": [
         ("^", 6),        # Mountain peak
-        ("▲", 5),        # Distant peak
-        ("≡", 3),        # Snow line
+        ("/\\", 5),      # Distant peak
+        ("=", 3),        # Snow line
         ("A", 4),        # Alpine pine
-        ("○", 3),        # Boulder
-        ("≈", 3),        # Mountain stream
-        ("°", 2),        # Eagle soar
+        ("O", 3),        # Boulder
+        ("=", 3),        # Mountain stream
+        ("*", 2),        # Eagle soar
         ("*", 2),        # Edelweiss
-        ("·", 4),        # Rocky scree
+        (".", 4),        # Rocky scree
     ],
     "Crystal Cave": [
-        ("◇", 6),        # Clear crystal
-        ("◆", 5),        # Amethyst cluster
+        ("<>", 6),       # Clear crystal
+        ("*", 5),        # Amethyst cluster
         ("*", 5),        # Light refraction
-        ("°", 4),        # Crystal glow
+        ("*", 4),        # Crystal glow
         ("~", 3),        # Underground pool
-        ("▼", 3),        # Stalactite
-        ("▲", 3),        # Stalagmite
-        ("·", 4),        # Cave sparkle
+        ("V", 3),        # Stalactite
+        ("A", 3),        # Stalagmite
+        (".", 4),        # Cave sparkle
     ],
     "Sandy Shore": [
-        ("☼", 2),        # Sun glint
-        ("¥", 3),        # Palm frond
+        ("*", 2),        # Sun glint
+        ("Y", 3),        # Palm frond
         ("|", 2),        # Palm trunk
-        ("○", 5),        # Spiral shell
-        ("◎", 3),        # Conch shell
+        ("@", 5),        # Spiral shell
+        ("O", 3),        # Conch shell
         ("~", 4),        # Gentle wave
         ("*", 3),        # Starfish
         ("C", 2),        # Crab
-        ("·", 6),        # Warm sand
+        (".", 6),        # Warm sand
     ],
     "Shipwreck Cove": [
         ("#", 4),        # Rotting hull
-        ("¶", 2),        # Torn sail
-        ("╪", 3),        # Broken mast
-        ("≡", 3),        # Deck planks
-        ("⚓", 1),        # Rusty anchor
-        ("○", 3),        # Barrel
+        ("#", 2),        # Torn sail
+        ("|", 3),        # Broken mast
+        ("=", 3),        # Deck planks
+        ("+", 1),        # Rusty anchor
+        ("O", 3),        # Barrel
         ("~", 5),        # Lapping waves
-        ("◆", 1),        # Treasure glint (rare)
-        ("·", 4),        # Barnacles
+        ("*", 1),        # Treasure glint (rare)
+        (".", 4),        # Barnacles
     ],
     # Swamp decorations
     "Misty Marsh": [
         ("~", 7),        # Murky water
-        ("≈", 5),        # Ripples
-        ("°", 6),        # Firefly glow
-        ("·", 4),        # Mist particle
+        ("=", 5),        # Ripples
+        ("*", 6),        # Firefly glow
+        (".", 4),        # Mist particle
         ("+", 3),        # Bog plant
-        ("∩", 2),        # Mushroom
+        ("^", 2),        # Mushroom
     ],
     "Cypress Hollow": [
         ("|", 7),        # Tree trunk
         ("+", 5),        # Moss clump
         ("~", 4),        # Water
-        ("°", 5),        # Firefly
-        ("·", 3),        # Spore
-        ("≈", 3),        # Spanish moss
+        ("*", 5),        # Firefly
+        (".", 3),        # Spore
+        ("=", 3),        # Spanish moss
     ],
     "Sunken Ruins": [
         (".", 5),        # Stone
         ("#", 3),        # Dark stone
         ("~", 6),        # Water
-        ("≈", 4),        # Murk
-        ("○", 2),        # Ancient artifact
-        ("·", 3),        # Debris
+        ("=", 4),        # Murk
+        ("O", 2),        # Ancient artifact
+        (".", 3),        # Debris
     ],
     # Urban decorations
     "Park Fountain": [
-        ("·", 6),        # Cobblestone
+        (".", 6),        # Cobblestone
         ("~", 5),        # Fountain spray
         ("+", 3),        # Trimmed hedge
         ("'", 4),        # Lawn grass
-        ("○", 3),        # Wishing coin
+        ("o", 3),        # Wishing coin
         ("*", 3),        # Flower bed
-        ("◇", 1),        # Rare coin shimmer
+        ("*", 1),        # Rare coin shimmer
         ("A", 2),        # Ornamental tree
     ],
     "Rooftop Garden": [
         ("+", 6),        # Potted vegetable
         ("*", 4),        # Rooftop flower
         ("^", 3),        # Carrot tops
-        ("□", 4),        # Raised bed
+        ("[]", 4),       # Raised bed
         ("o", 3),        # Tomato
-        ("·", 4),        # Gravel path
-        ("○", 3),        # Clay pot
+        (".", 4),        # Gravel path
+        ("O", 3),        # Clay pot
         ("z", 2),        # Urban bee
         ("|", 2),        # Bamboo stake
     ],
@@ -277,16 +277,16 @@ LOCATION_DECORATIONS: Dict[str, List[Tuple[str, int]]] = {
         (".", 5),        # Damp concrete
         ("~", 4),        # Trickling water
         ("#", 4),        # Deep shadow
-        ("○", 3),        # Lost treasure
-        ("░", 4),        # Dim light
-        ("≈", 3),        # Water flow
-        ("°", 2),        # Dripping stalactite
+        ("O", 3),        # Lost treasure
+        ("%", 4),        # Dim light
+        ("=", 3),        # Water flow
+        ("*", 2),        # Dripping stalactite
         ("*", 1),        # Glinting object (rare)
     ],
 }
 
 DEFAULT_DECORATIONS = [
-    ("·", 5),
+    (".", 5),
     (".", 4),
     ("'", 3),
 ]
@@ -322,7 +322,7 @@ LOCATION_SCENERY: Dict[str, List[List[str]]] = {
     ],
     "Deep End": [
         # Murky deep waters with mysterious shapes
-        ["▓▓~~~~~~~▓▓", " ▓~~~~~▓ ", "  ~~~~~  "],
+        ["#######~~~~~~~#######", " ###~~~~~~~~~### ", "  ~~~~~~~~~~~  "],
         # Sunken log with shadows
         ["   =====   ", "  /%%%%%\\  ", " /%%%%%%\\ "],
         # Fish silhouettes lurking
@@ -330,13 +330,17 @@ LOCATION_SCENERY: Dict[str, List[List[str]]] = {
         # Rising bubble columns
         ["  o     o  ", " o  o  o ", "o   o   o", "  o   o  "],
         # Shadow shapes in the deep
-        [" ░▒▓▒░ ", "  ▒▓▒  ", "   ▓   "],
+        [" ###%### ", "  #%#%#  ", "   %#%   "],
         # Mysterious treasure glint
-        ["    *    ", "  . * .  ", " ◇  *  ◇ "],
+        ["    *    ", "  . * .  ", " <>  *  <> "],
         # Deep underwater plants swaying
         [" Y  Y  Y ", "| || || |", "| || || |"],
         # Old sunken barrel
         ["  +===+  ", " |o o o| ", "  +=+=+  "],
+        # Mystery creature shape
+        ["   ???   ", "  ?????  ", " ??????? "],
+        # Sunken treasure chest
+        [" +====+ ", " |$$$$$| ", " +====+ "],
     ],
     "Forest Edge": [
         # Large tree left side
@@ -344,11 +348,11 @@ LOCATION_SCENERY: Dict[str, List[List[str]]] = {
         # Tree row (forest background)
         ["  A   A   A   A  ", "  |   |   |   |  "],
         # Long winding river across playfield
-        ["~≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈~", " ~≈≈≈≈≈≈≈≈≈≈≈≈~ "],
+        ["~================~", " ~==============~ "],
         # River bend going down
-        ["      ≈≈≈≈~", "    ≈≈≈≈~  ", "  ≈≈≈≈~    ", "≈≈≈≈~      "],
+        ["      ====~", "    ====~  ", "  ====~    ", "====~      "],
         # River bend going up
-        ["≈≈≈~        ", "  ≈≈≈~      ", "    ≈≈≈~    ", "      ≈≈≈≈~~"],
+        ["===~        ", "  ===~      ", "    ===~    ", "      ====~~"],
         # Dense tree cluster
         [" A A A A ", "+|+|+|++"],
         # Bush row
@@ -357,42 +361,52 @@ LOCATION_SCENERY: Dict[str, List[List[str]]] = {
         ["=======", "  ###  "],
         # Another tree
         ["   AAA   ", "  AAAAA  ", "    |    ", "    |    "],
+        # Bridge over river
+        ["+=========+", "||~~~~~~~||", "+=========+"],
     ],
     "Ancient Oak": [
         # Massive ancient oak tree with full canopy
         ["      AAAAAAAAAAA      ", "    AAAAAAAAAAAAAAA    ", "   AAAAAAAAAAAAAAAA   ", "         ||||         ", "         ||||         ", "         ||||         "],
         # Owl knothole with watching eyes
-        ["  +---+  ", "  | O O|  ", "  | ^ |  ", "  +---+  "],
+        ["  +---+  ", "  |O O|  ", "  | ^ |  ", "  +---+  "],
         # Squirrel on branch
         ["   ===@@   ", "  /    \\  ", " +      + "],
         # Bird nest with eggs
         ["  u u u  ", " (ooo) ", "  ===  "],
         # Acorns scattered on ground
-        [" ○  ○  ○ ", "○  ○  ○  "],
+        [" o  o  o ", "o  o  o  "],
         # Shelf mushrooms on trunk
-        ["  |∩|  ", " |∩∩| ", "  |||  "],
+        ["  |^|  ", " |^^| ", "  |||  "],
         # Woodpecker holes
-        ["  |·|  ", " |· ·| ", "  |·|  "],
+        ["  |.|  ", " |. .| ", "  |.|  "],
+        # Hanging vines
+        ["~ ~ ~ ~", " ~ ~ ~ ", "~ ~ ~ ~"],
+        # Root system
+        ["/\\/\\/\\/\\", " \\/\\/\\/ "],
     ],
     "Mushroom Grove": [
         # Giant bioluminescent toadstool
         ["   +-----+   ", "  /  * *  \\  ", " |  *   *  | ", "     |||     ", "     |||     "],
         # Mushroom cluster (various sizes)
-        ["  ∩   Ω   ∩  ", " |   |||   | ", " |   |||   | "],
+        ["  ^   @   ^  ", " |   |||   | ", " |   |||   | "],
         # Floating spore clouds
-        [" °  °  ° ", "°  °  °  ", "  °  °  °"],
+        [" *  *  * ", "*  *  *  ", "  *  *  *"],
         # Mycelium network on ground
         [" ~~+~~+~~+~~ ", "+~~+~~+~~+~~+"],
         # Shelf mushroom stairs
-        ["      ∩", "    ∩∩ ", "  ∩∩∩  ", "∩∩∩∩   "],
+        ["      ^", "    ^^ ", "  ^^^  ", "^^^^   "],
         # Glowing moss patches
         [" *...* ", "...*..*"],
         # Tall thin mushrooms
-        [" Π  Π  Π ", " |  |  | ", " |  |  | "],
+        [" @  @  @ ", " |  |  | ", " |  |  | "],
+        # Ring of small mushrooms
+        ["  ^ ^ ^  ", " ^     ^ ", "  ^ ^ ^  "],
+        # Puffball cluster
+        [" (o) (o) (o) ", "  @   @   @  "],
     ],
     "Sunny Meadow": [
         # Large sunflower
-        ["   (❀)   ", "   |||   ", "   |||   ", "  ''|''  "],
+        ["   (*)   ", "   |||   ", "   |||   ", "  ''|''  "],
         # Beehive on post
         ["  +---+  ", " /zzzzz\\ ", "|zzzzzz| ", " \\====/ ", "   ||   "],
         # Buzzing bees
@@ -403,26 +417,32 @@ LOCATION_SCENERY: Dict[str, List[List[str]]] = {
         ["* * * * *", "| | | | |", "''''''''"],
         # Winding bee path
         ["  8   8  ", "   8z8   ", " 8   8   "],
+        # Flower garden
+        ["(*)(*)(*)", " | | | | ", "''''''''"],
+        # Picnic blanket
+        ["+-------+", "|[][][]|", "+-------+"],
     ],
     "Butterfly Garden": [
         # Glass conservatory frame
         ["+==============+", "|  *  *  *  * |", "|  +  +  +  + |", "+==============+"],
         # Trellis archway with vines
         [" /+++++++\\ ", "|* * * * *|", "|  A A A  |", "++       ++"],
-        # Flutter of butterflies
-        ["ʚ ɞ  ʚ ɞ  ", " ɞ ʚ  ɞ ʚ ", "ʚ ɞ  ʚ ɞ  "],
+        # Flutter of butterflies (V W shapes)
+        ["V W  V W  ", " W V  W V ", "V W  V W  "],
         # Chrysalis row
         [" o   o   o ", " |   |   | ", " +   +   + "],
         # Nectar flower bed
         ["* * * * * *", " + + + + + ", "-----------"],
         # Resting platform
-        ["+-------+", "| ʚ ɞ  |", "+-------+"],
+        ["+-------+", "| V W  |", "+-------+"],
+        # Potted flowers
+        ["(*)  (*)", " |    | ", "[+]  [+]"],
     ],
     "Pebble Beach": [
         # Skip ripples across water
         ["    . ~ . ~ .    ", "   ~ . ~ . ~    ", "  . ~ . ~ . ~   "],
         # Collection of skipping stones
-        [" ○ ◎ ○ ◎ ○ ", "◎ ○ ◎ ○ ◎  ", " ○ ◎ ○ ◎   "],
+        [" o O o O o ", "O o O o O  ", " o O o O   "],
         # Champion's flat stone
         ["   +===+   ", " /BEST \\  ", "+========+ "],
         # Driftwood log
@@ -430,7 +450,11 @@ LOCATION_SCENERY: Dict[str, List[List[str]]] = {
         # Water's edge
         ["~~~~~~~~~~~~~", "  ~~~~~~~~   ", "    ~~~~     "],
         # Stone stack tower
-        ["    ○    ", "   ○○   ", "  ○○○  ", " ◎◎◎◎ "],
+        ["    o    ", "   oo   ", "  ooo  ", " OOOO "],
+        # Shell collection
+        ["(@) (@) (@)", " @   @   @ "],
+        # Beach umbrella
+        ["   /====\\   ", "  /======\\  ", "     ||     "],
     ],
     "Waterfall": [
         # Grand waterfall with hidden cave
@@ -438,13 +462,15 @@ LOCATION_SCENERY: Dict[str, List[List[str]]] = {
         # Rainbow in mist
         ["   *  *  *   ", "  *  *  *  * ", "   *  *  *   "],
         # Mist cloud
-        ["° ° ° ° ° °", " ° ° ° ° ° ", "° ° ° ° ° °"],
+        ["* * * * * *", " * * * * * ", "* * * * * *"],
         # Treasure glint behind falls
-        ["  [◇◇◇]  ", "   ◇*◇   "],
+        ["  [<><>]  ", "   <*>   "],
         # Wet rocks
-        [" ◎  ◎  ◎ ", "·········"],
+        [" O  O  O ", "........."],
         # Deep pool
-        ["~≈≈≈≈≈≈≈≈~", " ≈≈≈≈≈≈≈ "],
+        ["~========~", " ======== "],
+        # Cliff face
+        ["###|||||###", "##|||||||##", "#|||||||||#"],
     ],
     "Vegetable Patch": [
         # Cabbage row
@@ -456,21 +482,23 @@ LOCATION_SCENERY: Dict[str, List[List[str]]] = {
         # Bean poles with climbing vines
         ["  +   +   +  ", " /|  /|  /|  ", "+ |  + |  + | "],
         # Squash patch
-        [" ∩  ∩  ∩ ", "~~~~~~~~~"],
+        [" @  @  @ ", "~~~~~~~~~"],
         # Irrigation channel
         [" ~~~~~~~~~ ", "[  ~~~  ]"],
         # Herb spiral
         ["  +++  ", " +++++ ", "+++++++", " +++++ "],
         # Scarecrow
         ["   +   ", "  /|\\  ", "   |   ", "  / \\  "],
+        # Garden plot grid
+        ["+--+--+--+", "|^^|@@|()|", "+--+--+--+"],
     ],
     "Tool Shed": [
         # Main shed building
-        ["   /========\\   ", "  |   ╔══╗   |  ", " |    ║  ║    | ", " |    ╚══╝    | ", " +============+ "],
+        ["   /========\\   ", "  |   +==+   |  ", " |    |  |    | ", " |    +==+    | ", " +============+ "],
         # Wall of hanging tools
         [" T / \\ T / ", " | | | | | ", " | | | | | "],
         # Cluttered workbench
-        ["+----------+", "| []◒ # [] |", "|  ║║  ║║  |", "+----------+"],
+        ["+----------+", "| []= # [] |", "|  ||  ||  |", "+----------+"],
         # Watering can collection
         [" O   O   O ", " |   |   | "],
         # Cobwebby corner
@@ -479,48 +507,54 @@ LOCATION_SCENERY: Dict[str, List[List[str]]] = {
         ["  []  ", " [][] ", "[][][]"],
         # Seed packets on shelf
         ["+------+", "|*+*+*+|", "+------+"],
+        # Wheelbarrow
+        ["  +===+  ", " /     \\ ", " \\O===O/ "],
     ],
     "Foothills": [
         # Majestic mountain range
-        ["       ^       ", "      /^\\      ", "     /^ ^\\     ", "    /^^ ^^\\    ", "   /^^^^^^ \\   "],
+        ["       /\\       ", "      /  \\      ", "     /    \\     ", "    /      \\    ", "   /        \\   "],
         # Snow-capped peaks
-        ["    ≡≡≡    ", "   ^^^^^   ", "  /     \\  "],
+        ["    ***    ", "   /^^^^\\   ", "  /      \\  "],
         # Alpine pines
         ["    A    ", "   AAA   ", "  AAAAA  ", "    |    "],
         # Soaring eagle
-        ["  \\   /  ", "   °°°   "],
+        ["  \\   /  ", "   ***   "],
         # Mountain stream
-        ["≈≈≈≈≈≈≈≈≈", " ≈≈≈≈≈≈ "],
+        ["=========", " ======= "],
         # Rocky outcrop
-        [" ○ ○ ○ ", "○○○○○○"],
+        [" O O O ", "OOOOOO"],
         # Edelweiss flowers
         [" * * * ", " + + + "],
         # Trail markers
-        [" | ", " |▲|", " | "],
+        [" | ", " |^|", " | "],
+        # Goat silhouette
+        ["  /\\ ", " |==|", " || ||"],
     ],
     "Crystal Cave": [
         # Massive geode formation
-        ["    /\\    ", "   /◇*\\   ", "  /◇*◇*\\  ", " |◇*◆*◇| ", " |*◇◇*◇*| ", "  \\____/  "],
+        ["    /\\    ", "   /<>\\   ", "  /<><>\\  ", " |<>*<>| ", " |<><><>| ", "  \\____/  "],
         # Stalactite and stalagmite
-        ["  ▼  ▼  ▼  ", "  |  |  |  ", "         ", "  |  |  |  ", "  ▲  ▲  ▲  "],
+        ["  V  V  V  ", "  |  |  |  ", "         ", "  |  |  |  ", "  A  A  A  "],
         # Light refraction rainbows
         ["  * * * *  ", " * * * * * ", "  * * * *  "],
         # Underground crystal pool
         ["~*~*~*~*~", "*~*~*~*~*", "~~~~~~~~"],
         # Amethyst cluster
-        ["  ◆◇◆  ", " ◇◆◇◆◇ ", "◆◇◆◇◆◇"],
+        ["  <><>  ", " <><><> ", "<><><><>"],
         # Cave entrance
-        ["  +===+  ", " /.....\\ ", "/.......\\"],
+        ["  +===+  ", " /.....\\", "/.......\\ "],
         # Glowing moss patches
-        [" °.°.° ", ".°.°.°."],
+        [" *.*.* ", ".*.*.*." ],
+        # Crystal column
+        ["  /\\  ", " /  \\ ", "|<><>|", " \\  / ", "  \\/  "],
     ],
     "Sandy Shore": [
         # Palm tree
         ["   \\|/   ", "    |    ", "    |    ", "    |    ", "   ===   "],
         # Gentle tropical waves
-        ["~~~~~≈≈≈≈≈~~~~~", " ~~~≈≈≈≈≈~~~ ", "  ~~≈≈≈≈~~  "],
+        ["~~~~~======~~~~~", " ~~~========~~~ ", "  ~~========~~  "],
         # Shell collection
-        [" ○ ◎ * ○ ◎ ", "◎ ○ * ◎ ○  "],
+        [" @ (@) * @ (@) ", "(@) @ * (@) @  "],
         # Crab with claw
         ["  __C__  ", " /|||||\\  "],
         # Starfish
@@ -528,69 +562,91 @@ LOCATION_SCENERY: Dict[str, List[List[str]]] = {
         # Sandy castle
         [" +---+ ", " |[o]| ", "+-----+", "......."],
         # Coconut
-        [" (···) "],
-        # Sun reflection
-        ["☼   ☼   ☼"],
+        [" (...) "],
+        # Sun reflection on water
+        ["*   *   *"],
+        # Beach chair
+        [" /===\\ ", "/     \\", "+-----+"],
     ],
     "Shipwreck Cove": [
         # Wrecked pirate ship
-        ["       /\\      ", "      /¶ \\     ", "     /====\\    ", "   /========\\  ", "  /##########\\  ", " |############| ", " +============+ "],
+        ["       /\\      ", "      /# \\     ", "     /====\\    ", "   /========\\  ", "  /##########\\  ", " |############| ", " +============+ "],
         # Broken mast with torn sail
-        ["   ¶   ", "  /|\\  ", " / | \\ ", "   |   ", "   |   "],
+        ["   #   ", "  /|\\  ", " / | \\ ", "   |   ", "   |   "],
         # Treasure chest (half buried)
-        ["  +===+  ", " |$◆$◆| ", " +===+  ", "...... "],
+        ["  +===+  ", " |$<>$| ", " +===+  ", "...... "],
         # Rusty anchor
-        ["   ⚓   ", "  /|\\ ", " / | \\", "   |   "],
+        ["   [+]   ", "  /|\\ ", " / | \\", "   |   "],
         # Scattered cargo
-        [" ○  ○  ○ ", "  ==== "],
+        [" O  O  O ", "  ==== "],
         # Barnacle-covered rocks
-        [" ◎·◎·◎ ", "·◎·◎·◎"],
+        [" O.O.O ", ".O.O.O"],
         # Wave crash
         ["~~~~~~~", " ~~~~~ ", "  ~~~  "],
+        # Pirate flag
+        ["  +--+  ", "  |XX|  ", "  +--+  ", "   ||   "],
     ],
     # Swamp scenery
     "Misty Marsh": [
         # Fog bank
         ["  . . . .  ", " . . . . . "],
         # Firefly cluster
-        [" ° · ° ", "· ° · °"],
+        [" * . * ", ". * . *"],
         # Murky pool
-        ["  ≈≈≈≈≈  ", " ~≈≈≈≈≈~ "],
+        ["  =====  ", " ~=====~ "],
         # Dead tree
         ["   /\\   ", "  /  \\  ", "    |    "],
+        # Cattail cluster
+        ["Y Y Y Y", "| | | |", "| | | |"],
+        # Frog on lily pad
+        ["  (@)  ", " ~O O~ "],
+        # Gnarled roots
+        ["/\\/\\/\\", "\\/\\/\\/"],
     ],
     "Cypress Hollow": [
         # Twisted cypress tree
-        ["  ≈≈≈≈  ", " /|||\\ ", "  |||  ", "  |||  "],
+        ["  ====  ", " /|||\\", "  |||  ", "  |||  "],
         # Spanish moss
-        ["≈ ≈ ≈ ≈", " ≈ ≈ ≈ "],
+        ["= = = =", " = = = "],
         # Hollow log
-        ["+=====+", "| °°° |", "+=====+"],
+        ["+=====+", "| *** |", "+=====+"],
         # Firefly lanterns
-        ["  °   °  ", " ° ° ° ° "],
+        ["  *   *  ", " * * * * "],
+        # Swamp boat
+        ["  +===+  ", " /     \\ ", " \\=====/ "],
+        # Cypress knees
+        ["  /\\  /\\  /\\  ", " /  \\/  \\/  \\ "],
     ],
     "Sunken Ruins": [
         # Broken column
         ["  +=+  ", "  |.|  ", "  +=+  ", " . . . "],
         # Submerged arch
-        ["+=====+", "| ~~~ |", "╨     ╨"],
+        ["+=====+", "| ~~~ |", "+     +"],
         # Ancient stones
         [" . # . ", "# . # ."],
+        # Sunken statue
+        ["  +==+  ", " |(OO)|", " | || |", "  +==+  "],
+        # Treasure pile
+        [" $ <> $ ", "  $$$  "],
+        # Ancient pillar row
+        ["|   |   |", "|   |   |", "+===+===+"],
     ],
     # Urban scenery
     "Park Fountain": [
         # Grand city fountain
-        ["    +===+    ", "   /~~~~~\\   ", "  |~~~~~~~|  ", "  | ~ ~ ~ |  ", " +=========+ ", " |  ○ ○ ○  | ", " +=========+ "],
+        ["    +===+    ", "   /~~~~~\\   ", "  |~~~~~~~|  ", "  | ~ ~ ~ |  ", " +=========+ ", " |  o o o  | ", " +=========+ "],
         # Ornamental park bench
-        ["+=========+", "|  \u3000 \u3000  |", "|  \u3000 \u3000  |", "++-------++"],
+        ["+=========+", "|         |", "|         |", "++-------++"],
         # Wishing coins at bottom
-        [" ○ ◇ ○ ◇ ○ ", "◇ ○ * ○ ◇ "],
+        [" o <> o <> o ", "<> o * o <> "],
         # Flower bed with tulips
         ["* * * * * *", "| | | | | |", "==========="],
         # Victorian lamp post
-        ["  [○]  ", "   |   ", "   |   ", " +=|=+ "],
+        ["  [O]  ", "   |   ", "   |   ", " +=|=+ "],
         # Hedge sculpture (duck shape!)
         ["  ++++  ", " ++>+++", "  ++++  "],
+        # Pigeon flock
+        [" v v v ", "  v v  "],
     ],
     "Rooftop Garden": [
         # Raised vegetable beds
@@ -604,25 +660,29 @@ LOCATION_SCENERY: Dict[str, List[List[str]]] = {
         # City skyline view
         ["##  ###  ##", " ##   ##  ", "  # # #  "],
         # Rainwater barrel
-        ["  +===+  ", " | ≈≈ | ", " | ≈≈ | ", "  +===+  "],
+        ["  +===+  ", " | == | ", " | == | ", "  +===+  "],
         # Compost bin
         ["+---+", "|+++|", "+---+"],
+        # Solar panel
+        ["/=======\\", "|[=][=][=]|", "\\=======/"],
     ],
     "Storm Drain": [
         # Iron grate entrance with light
-        [" +=╤=╤=╤=+ ", " | | | | | ", " | | | | | ", " +=╧=╧=╧=+ "],
+        [" +=+=+=+=+ ", " | | | | | ", " | | | | | ", " +=+=+=+=+ "],
         # Dark tunnel stretching back
-        ["+=========+", "|░▒▓###▓▒░|", "|░▒▓###▓▒░|", "+=========+"],
+        ["+=========+", "|##%###%##|", "|##%###%##|", "+=========+"],
         # Underground waterfall
         ["    |||    ", "   ~|||~   ", "  ~~~~~  "],
         # Lost treasure pile
-        [" ○  ◇  ○ ", "  *  *  ", " . . . "],
+        [" O  <>  O ", "  *  *  ", " . . . "],
         # Dripping stalactites
-        [" ▼ ° ▼ ° ▼ ", "  .   .   "],
+        [" V * V * V ", "  .   .   "],
         # Mysterious glowing
-        ["  [▓▒░]  ", "   [▒]   "],
+        ["  [###]  ", "   [#]   "],
         # Echoing puddle
         [" ~~~~~~~~ ", "  ~~~~~~  "],
+        # Rat silhouette
+        ["  (@)~~ ", " /|\\    "],
     ],
 }
 
@@ -902,7 +962,7 @@ def _generate_forest_edge_scenery(scenery_pieces: List[List[str]],
     placements = []
     
     # Find river pieces
-    river_pieces = [p for p in scenery_pieces if any('≈' in line or '~' in line for line in p)]
+    river_pieces = [p for p in scenery_pieces if any('=' in line or '~' in line for line in p)]
     tree_pieces = [p for p in scenery_pieces if any('A' in line for line in p)]
     bush_pieces = [p for p in scenery_pieces if any('+' in line for line in p) and not any('A' in line for line in p)]
     
@@ -1012,7 +1072,7 @@ def _generate_home_pond_scenery(scenery_pieces: List[List[str]],
 def get_decoration_color(location: str, char: str) -> Optional[Callable]:
     """Get the color function for a specific decoration character."""
     # Water characters
-    if char in "~≈≋∫":
+    if char in "~=":
         return _term.bright_cyan
 
     # Lily pads (O) - bright green
@@ -1034,21 +1094,15 @@ def get_decoration_color(location: str, char: str) -> Optional[Callable]:
         return _term.color(130)  # Brown wood
 
     # Plants/trees
-    if char in "A+¥ψ":
+    if char in "A+":
         return _term.green
 
     # Tree trunks
     if char in "||":
         return _term.color(130)  # Brown
 
-    # Lily pads and lily flowers (Unicode fallback)
-    if char == "◎":
-        return _term.bright_green  # Lily pad
+    # Cozy elements - firefly/glow
     if char == "*":
-        return _term.bright_magenta  # Lily flower
-
-    # Cozy elements
-    if char == "°":
         return _term.bright_yellow  # Firefly/glow
     
     # Flowers - stable colors (no flashing)
@@ -1060,24 +1114,24 @@ def get_decoration_color(location: str, char: str) -> Optional[Callable]:
         return _term.bright_red
     
     # Crystals - stable colors
-    if char == "*":
+    if char == "<" or char == ">":
         return _term.bright_cyan
     if char == "*":
         return _term.bright_white
-    if char == "◆":
+    if char == "*":
         return _term.bright_magenta
     
     # Rocks/pebbles
-    if char in "○◎∘":
+    if char in "oO":
         return _term.color(250)  # Gray
     
     # Mushrooms
-    if char in "∩Ω":
+    if char in "^@":
         colors = [_term.red, _term.bright_red, _term.bright_magenta]
         return random.choice(colors)
     
     # Mountains
-    if char in "^△":
+    if char in "^/\\":
         return _term.color(240)  # Dark gray
     
     # Wood/structures (not tree trunks)
