@@ -573,9 +573,14 @@ class QuestSystem:
         
         return True, f"[=] Quest Started: {quest.name}", dialogue
     
-    def update_progress(self, objective_type: str, target: str, amount: int = 1) -> List[Tuple[str, str, bool]]:
-        """Update progress on quest objectives."""
+    def update_progress(self, objective_type: str, target: str, amount: int = 1) -> Tuple[List[Tuple[str, str, bool]], List[Tuple[str, QuestReward]]]:
+        """Update progress on quest objectives.
+        Returns: (objective_updates, completed_quests_with_rewards)
+        - objective_updates: List of (quest_id, objective_description, completed)
+        - completed_quests_with_rewards: List of (quest_id, QuestReward)
+        """
         updates = []
+        completed_quests = []
         
         for quest_id, active in list(self.active_quests.items()):
             if active.completed:
@@ -618,11 +623,13 @@ class QuestSystem:
                 
                 updates.append((quest_id, objective.description, completed))
         
-        # Check for step completions
-        for quest_id, active in list(self.active_quests.items()):
-            self._check_step_completion(quest_id)
+        # Check for step completions and collect completed quest rewards
+        for quest_id in list(self.active_quests.keys()):
+            result = self._check_step_completion(quest_id)
+            if result:
+                completed_quests.append(result)
         
-        return updates
+        return updates, completed_quests
     
     def make_choice(self, quest_id: str, choice: str) -> Tuple[bool, str, Optional[int]]:
         """Make a choice in a quest with branching paths."""
@@ -679,15 +686,17 @@ class QuestSystem:
         
         return True, f"You chose: {choice}", next_step
     
-    def _check_step_completion(self, quest_id: str):
-        """Check if current step is complete and advance if so."""
+    def _check_step_completion(self, quest_id: str) -> Optional[Tuple[str, QuestReward]]:
+        """Check if current step is complete and advance if so.
+        Returns (quest_id, reward) if quest was completed, else None.
+        """
         active = self.active_quests.get(quest_id)
         if not active or active.completed:
-            return
+            return None
         
         quest = QUESTS.get(quest_id)
         if not quest:
-            return
+            return None
         
         current_step = next(
             (s for s in quest.steps if s.step_id == active.current_step),
@@ -695,7 +704,7 @@ class QuestSystem:
         )
         
         if not current_step:
-            return
+            return None
         
         # Check if all required objectives are complete
         required_objectives = [o for o in current_step.objectives if not o.optional]
@@ -705,26 +714,30 @@ class QuestSystem:
         )
         
         if not all_complete:
-            return
+            return None
         
         # Step complete!
         if current_step.next_step_id:
             active.current_step = current_step.next_step_id
+            return None
         else:
             # Quest complete!
-            self._complete_quest(quest_id)
+            reward = self._complete_quest(quest_id)
+            if reward:
+                return (quest_id, reward)
+            return None
     
-    def _complete_quest(self, quest_id: str):
-        """Complete a quest and grant rewards."""
+    def _complete_quest(self, quest_id: str) -> Optional[QuestReward]:
+        """Complete a quest and return rewards."""
         active = self.active_quests.get(quest_id)
         if not active:
-            return
+            return None
         
         active.completed = True
         
         quest = QUESTS.get(quest_id)
         if not quest:
-            return
+            return None
         
         # Track completion
         self.completed_quests[quest_id] = self.completed_quests.get(quest_id, 0) + 1
@@ -742,6 +755,9 @@ class QuestSystem:
         
         # Clean up active quest
         del self.active_quests[quest_id]
+        
+        # Return the reward for the caller to apply
+        return quest.final_reward
     
     def get_active_quest_status(self, quest_id: str) -> Optional[Dict]:
         """Get status of an active quest."""
@@ -793,19 +809,22 @@ class QuestSystem:
                     lines.append(f"|  > {quest.name[:35]:35}      |")
                     status = self.get_active_quest_status(quest_id)
                     if status:
-                        for obj in status["objectives"][:2]:
+                        for obj in status["objectives"][:3]:  # Show up to 3 objectives
                             mark = "x" if obj["completed"] else "o"
                             lines.append(f"|    {mark} {obj['description'][:33]:33}  |")
             lines.append("+===============================================+")
         
-        # Available quests
+        # Available quests - show more with scroll hint
         available = self.get_available_quests()
         if available:
             lines.append("|  AVAILABLE QUESTS:                            |")
-            for quest in available[:3]:
+            show_count = min(5, len(available))  # Show up to 5 available
+            for quest in available[:show_count]:
                 diff_icon = {"easy": "*", "medium": "**", "hard": "***", "legendary": "[D]"}
                 icon = diff_icon.get(quest.difficulty.value, "*")
                 lines.append(f"|  {icon} {quest.name[:33]:33}    |")
+            if len(available) > show_count:
+                lines.append(f"|  ... and {len(available) - show_count} more available        |")
         
         lines.extend([
             "+===============================================+",

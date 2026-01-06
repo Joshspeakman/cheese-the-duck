@@ -410,6 +410,7 @@ class Renderer:
         self._shop_category_index = 0
         self._shop_item_index = 0
         self._shop_categories = ["COSMETIC", "TOY", "FURNITURE", "WATER", "PLANT"]
+        self._shop_items_per_page = 8  # Items per page in shop
 
         # Ground pattern cache
         self._ground_pattern: List[str] = []
@@ -2436,13 +2437,8 @@ class Renderer:
         return self._overlay_box(base_output, msg_text, "MESSAGE", width)
 
     def _overlay_inventory(self, base_output: List[str], game: "Game", width: int) -> List[str]:
-        """Overlay inventory screen."""
+        """Overlay inventory screen with pagination."""
         inv = game.inventory
-
-        inv_text = [
-            f"Items: {len(inv.items)}/{inv.max_size}",
-            "-" * 30,
-        ]
 
         # Group items by count and create numbered list
         item_counts: Dict[str, int] = {}
@@ -2452,14 +2448,36 @@ class Renderer:
                 unique_items.append(item_id)
             item_counts[item_id] = item_counts.get(item_id, 0) + 1
 
+        # Pagination settings
+        items_per_page = 9  # Matches [1-9] keys
+        total_items = len(unique_items)
+        total_pages = max(1, (total_items + items_per_page - 1) // items_per_page)
+        
+        # Get current page from state (add if not exists)
+        if not hasattr(self, '_inventory_page'):
+            self._inventory_page = 0
+        current_page = self._inventory_page
+        start_idx = current_page * items_per_page
+        end_idx = min(start_idx + items_per_page, total_items)
+
+        inv_text = [
+            f"Items: {len(inv.items)}/{inv.max_size}",
+        ]
+        
+        if total_pages > 1:
+            inv_text.append(f"Page {current_page + 1}/{total_pages} (</> to change)")
+        inv_text.append("-" * 30)
+
         from world.items import get_item_info
-        for idx, item_id in enumerate(unique_items[:9], start=1):  # Max 9 items shown
+        display_num = 1
+        for idx in range(start_idx, end_idx):
+            item_id = unique_items[idx]
             item = get_item_info(item_id)
             if item:
                 count_str = f"x{item_counts[item_id]}" if item_counts[item_id] > 1 else ""
-                type_tag = item.item_type.value[:4].upper()
-                line = f"[{idx}] {item.icon} {item.name} {count_str}"
+                line = f"[{display_num}] {item.icon} {item.name} {count_str}"
                 inv_text.append(line)
+                display_num += 1
 
         if not item_counts:
             inv_text.append("(Empty)")
@@ -2468,14 +2486,26 @@ class Renderer:
 
         inv_text.extend([
             "",
-            "Press [1-9] to use item",
-            "Press [I] to close",
+            "[1-9] Use item | [</>] Page | [I] Close",
         ])
 
-        # Store unique items list for key handling
-        self._inventory_items = unique_items
+        # Store unique items list for key handling (current page only) and total count for pagination
+        self._inventory_items = unique_items[start_idx:end_idx]
+        self._inventory_total_items = len(unique_items)
 
         return self._overlay_box(base_output, inv_text, "INVENTORY", width)
+
+    def inventory_change_page(self, delta: int):
+        """Change inventory page."""
+        if not hasattr(self, '_inventory_page'):
+            self._inventory_page = 0
+        
+        # Calculate total pages based on total unique items
+        items_per_page = 9
+        total_items = getattr(self, '_inventory_total_items', 0)
+        total_pages = max(1, (total_items + items_per_page - 1) // items_per_page)
+        
+        self._inventory_page = max(0, min(total_pages - 1, self._inventory_page + delta))
 
     def _overlay_box(self, base_output: List[str], content: List[str], title: str, width: int) -> List[str]:
         """Generic overlay box with height limiting."""
@@ -2703,13 +2733,21 @@ class Renderer:
         return result
 
     def _overlay_shop(self, base_output: List[str], habitat, width: int) -> List[str]:
-        """Overlay shop interface."""
+        """Overlay shop interface with pagination."""
         from world.shop import get_items_by_category, ItemCategory
         from ui.habitat_art import render_item_preview
         
         # Get items in current category
         category = ItemCategory(self._shop_categories[self._shop_category_index].lower())
         items = get_items_by_category(category)
+        
+        # Calculate pagination
+        total_items = len(items)
+        items_per_page = self._shop_items_per_page
+        current_page = self._shop_item_index // items_per_page if items_per_page > 0 else 0
+        total_pages = max(1, (total_items + items_per_page - 1) // items_per_page) if items_per_page > 0 else 1
+        start_idx = current_page * items_per_page
+        end_idx = min(start_idx + items_per_page, total_items)
         
         # Build shop display
         content = []
@@ -2719,22 +2757,29 @@ class Renderer:
             f"[{cat}]" if i == self._shop_category_index else cat 
             for i, cat in enumerate(self._shop_categories)
         ))
-        content.append("")
         
-        # Show items (max 10)
-        for i, item in enumerate(items[:10]):
-            prefix = "-> " if i == self._shop_item_index else "  "
+        # Show page info if paginated
+        if total_pages > 1:
+            content.append(f"Page {current_page + 1}/{total_pages}")
+        else:
+            content.append("")
+        
+        # Show items for current page
+        for i in range(start_idx, end_idx):
+            item = items[i]
+            prefix = "-> " if i == self._shop_item_index else "   "
             owned = "[x]" if habitat.owns_item(item.id) else "[ ]"
             affordable = "$" if habitat.can_afford(item.cost) else "X"
             content.append(f"{prefix}{owned} {item.name} ${item.cost} {affordable} (Lv{item.unlock_level})")
         
+        # Show selected item description
         if self._shop_item_index < len(items):
             item = items[self._shop_item_index]
             content.append("")
             content.append(item.description)
         
         content.append("")
-        content.append("<- -> : Change category | ^ v : Select item | [B]uy | [ESC]: Close")
+        content.append("<- -> : Category | ^ v : Select | [B]uy | [ESC]")
         
         return self._overlay_box(base_output, content, "[SHOP]", width)
 
@@ -2926,6 +2971,8 @@ class Renderer:
     def toggle_inventory(self):
         """Toggle the inventory overlay."""
         self._show_inventory = not self._show_inventory
+        if self._show_inventory:
+            self._inventory_page = 0  # Reset to first page when opening
         self._show_help = False
         self._show_stats = False
         self._show_talk = False

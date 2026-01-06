@@ -606,11 +606,16 @@ class CollectiblesSystem:
             "|  SETS:                                        |",
         ]
         
-        for set_id, set_def in list(SETS.items())[:5]:
+        # Show more sets with scroll hint
+        all_sets = list(SETS.items())
+        show_count = min(7, len(all_sets))
+        for set_id, set_def in all_sets[:show_count]:
             owned, total, _ = self.get_set_progress(set_id)
             completed = "x" if set_id in self.completed_sets else " "
             progress = f"{owned}/{total}"
             lines.append(f"|  [{completed}] {set_def.name[:25]:25} {progress:5}   |")
+        if len(all_sets) > show_count:
+            lines.append(f"|  ... and {len(all_sets) - show_count} more sets                       |")
         
         lines.extend([
             "+===============================================+",

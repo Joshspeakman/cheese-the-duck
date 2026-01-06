@@ -1886,19 +1886,23 @@ register_item(ShopItem(
 
 
 def get_items_by_category(category: ItemCategory) -> List[ShopItem]:
-    """Get all items in a category."""
-    return [item for item in SHOP_ITEMS.values() if item.category == category]
+    """Get all items in a category, sorted by level requirement then price."""
+    items = [item for item in SHOP_ITEMS.values() if item.category == category]
+    # Sort by level requirement (ascending), then by price (ascending)
+    return sorted(items, key=lambda x: (x.unlock_level, x.cost))
 
 
 def get_items_by_rarity(rarity: ItemRarity) -> List[ShopItem]:
-    """Get all items of a rarity tier."""
-    return [item for item in SHOP_ITEMS.values() if item.rarity == rarity]
+    """Get all items of a rarity tier, sorted by level requirement then price."""
+    items = [item for item in SHOP_ITEMS.values() if item.rarity == rarity]
+    return sorted(items, key=lambda x: (x.unlock_level, x.cost))
 
 
 def get_affordable_items(currency: int, level: int) -> List[ShopItem]:
-    """Get items the player can afford and has unlocked."""
-    return [item for item in SHOP_ITEMS.values() 
+    """Get items the player can afford and has unlocked, sorted by price."""
+    items = [item for item in SHOP_ITEMS.values() 
             if item.cost <= currency and item.unlock_level <= level]
+    return sorted(items, key=lambda x: (x.unlock_level, x.cost))
 
 
 def get_item(item_id: str) -> Optional[ShopItem]:
