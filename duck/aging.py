@@ -9,7 +9,7 @@ from enum import Enum
 
 
 class GrowthStage(Enum):
-    """Growth stages of the duck."""
+    """Growth stages of the duck (detailed 9-stage system)."""
     EGG = "egg"
     HATCHLING = "hatchling"
     DUCKLING = "duckling"
@@ -19,6 +19,29 @@ class GrowthStage(Enum):
     MATURE = "mature"
     ELDER = "elder"
     LEGENDARY = "legendary"
+
+
+# Mapping from simple growth stages (config.py) to detailed stages (aging.py)
+# This allows the simple progression system to map to detailed aging features
+SIMPLE_TO_DETAILED_STAGE: Dict[str, GrowthStage] = {
+    "egg": GrowthStage.EGG,
+    "duckling": GrowthStage.DUCKLING,  # Hatchling phase is brief, maps to duckling
+    "teen": GrowthStage.JUVENILE,       # Teen maps to juvenile/young_adult
+    "adult": GrowthStage.ADULT,         # Adult maps to adult/mature
+    "elder": GrowthStage.ELDER,         # Elder maps to elder/legendary
+}
+
+
+def get_detailed_stage(simple_stage: str) -> GrowthStage:
+    """Convert a simple stage string to a detailed GrowthStage enum.
+    
+    Args:
+        simple_stage: Stage string from config.py (egg, duckling, teen, adult, elder)
+        
+    Returns:
+        Corresponding GrowthStage enum value
+    """
+    return SIMPLE_TO_DETAILED_STAGE.get(simple_stage, GrowthStage.DUCKLING)
 
 
 @dataclass
@@ -194,8 +217,8 @@ GROWTH_STAGES: Dict[GrowthStage, StageInfo] = {
         },
         unlocks=["elder_wisdom", "legacy_items"],
         ascii_art=[
-            "    o     ",
-            "   __(◕ )> ",
+            "     o     ",
+            "   __(o )> ",
             "  \\_____/  ",
             "  *elder*  ",
         ],
@@ -216,7 +239,7 @@ GROWTH_STAGES: Dict[GrowthStage, StageInfo] = {
         },
         unlocks=["legendary_status", "all_abilities"],
         ascii_art=[
-            "    *^    ",
+            "     *^    ",
             "   __(* )> ",
             "  \\_____/  ",
             " *LEGEND*  ",
@@ -529,5 +552,22 @@ class AgingSystem:
         return system
 
 
-# Global instance
+# Lazy singleton pattern - initialized on first access
+_aging_system: Optional[AgingSystem] = None
+
+
+def get_aging_system() -> AgingSystem:
+    """Get the global aging system instance (lazy initialization).
+    
+    This pattern defers initialization until the system is actually needed,
+    improving startup time and avoiding circular import issues.
+    """
+    global _aging_system
+    if _aging_system is None:
+        _aging_system = AgingSystem()
+    return _aging_system
+
+
+# Direct instance for backwards compatibility - will be initialized on import
+# If you want lazy initialization, use get_aging_system() instead
 aging_system = AgingSystem()

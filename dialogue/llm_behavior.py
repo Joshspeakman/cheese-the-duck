@@ -7,7 +7,11 @@ import threading
 import queue
 import time
 import hashlib
+import logging
 from typing import Optional, Dict, List, Callable, Any, TYPE_CHECKING
+
+# Configure logging for LLM behavior operations
+logger = logging.getLogger(__name__)
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from collections import OrderedDict
@@ -251,8 +255,8 @@ class LLMWorker(threading.Thread):
                 if request.callback:
                     try:
                         request.callback(response)
-                    except Exception:
-                        pass
+                    except Exception as callback_error:
+                        logger.warning(f"Callback error: {callback_error}")
                 
                 self._request_queue.task_done()
                 
@@ -261,7 +265,7 @@ class LLMWorker(threading.Thread):
                 self._controller._cache.cleanup_expired()
             except Exception as e:
                 # Log error but keep running
-                pass
+                logger.error(f"LLM worker error: {e}")
     
     def _process_request(self, request: LLMRequest) -> Optional[str]:
         """Process a single LLM request."""
@@ -304,6 +308,7 @@ class LLMWorker(threading.Thread):
                 )
             
         except Exception as e:
+            logger.error(f"Error processing LLM request {request.request_type}: {e}")
             return None
         
         return None

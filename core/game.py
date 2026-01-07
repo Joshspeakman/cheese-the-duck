@@ -37,6 +37,7 @@ from world.item_interactions import (
     execute_interaction, find_matching_item, get_item_interaction,
     ITEM_INTERACTIONS, InteractionResult
 )
+from world.interaction_controller import InteractionController, InteractionSource
 from dialogue.diary import DuckDiary, duck_diary, DiaryEntryType
 from audio.sound import sound_engine, duck_sounds, get_music_context, MusicContext
 from ui.renderer import Renderer
@@ -134,6 +135,9 @@ class Game:
         # Shop and habitat system
         from world.habitat import Habitat
         self.habitat: Habitat = Habitat()
+
+        # Unified interaction controller - handles all duck-to-item interactions
+        self.interaction_controller: InteractionController = InteractionController()
 
         # Atmosphere and diary systems (Animal Crossing style)
         self.atmosphere: AtmosphereManager = atmosphere
@@ -548,6 +552,11 @@ class Game:
         if key.name == "KEY_ENTER" or key_str == ' ':
             self._purchase_selected_item()
             return
+        
+        # Toggle item visibility with T
+        if key_str == 't':
+            self._toggle_selected_item_visibility()
+            return
 
     def _handle_crafting_input_direct(self, key):
         """Handle crafting menu input directly (like shop)."""
@@ -604,7 +613,7 @@ class Game:
             selected = self._building_menu.get_selected_item()
             if selected and selected.data and selected.enabled:
                 bp = selected.data
-                result = self.building.start_building(bp.id, self.materials)
+                result = self.building.start_building(bp.id, self.materials, player_level=self.progression.level)
                 self._building_menu_open = False
                 if result.get("success"):
                     self._start_building_animation(bp)
@@ -862,6 +871,29 @@ class Game:
             else:
                 self.renderer.show_message(f"Need ${item.cost - self.habitat.currency} more!")
 
+    def _toggle_selected_item_visibility(self):
+        """Toggle the visibility of the currently selected shop item."""
+        item = self.renderer.get_selected_shop_item()
+        if not item:
+            return
+        
+        # Can only toggle owned items
+        if not self.habitat.owns_item(item.id):
+            self.renderer.show_message("Buy the item first!")
+            return
+        
+        # Toggle the item
+        result = self.habitat.toggle_item_visibility(item.id)
+        
+        if result == 'placed':
+            self.renderer.show_message(f"{item.name} is now visible!")
+        elif result == 'stored':
+            self.renderer.show_message(f"{item.name} is now hidden!")
+        elif result == 'cosmetic':
+            self.renderer.show_message("Use [E] to equip/unequip cosmetics!")
+        else:
+            self.renderer.show_message("Can't toggle this item!")
+
     def _use_inventory_item(self, index: int):
         """Use an inventory item by index."""
         if not self.duck:
@@ -969,57 +1001,90 @@ class Game:
                 return (item_x, item_y)
         return None
 
-    def _execute_item_interaction(self, item_id: str):
-        """Execute an interaction with a placed item (with animated movement)."""
+    def _execute_item_interaction(self, item_id: str, source: InteractionSource = InteractionSource.PLAYER_COMMAND):
+        """Execute an interaction with a placed item using the unified controller."""
         if not self.duck:
             return
-        
-        # Check if we're already in an interaction
-        if self._interaction_phase != InteractionPhase.IDLE:
+
+        # Items only exist at Home Pond - check current location
+        current_location = None
+        if hasattr(self, 'exploration') and self.exploration and self.exploration.current_area:
+            current_location = self.exploration.current_area.name
+
+        if current_location is not None and current_location != "Home Pond":
+            self.renderer.show_message("*quack* My stuff is back at home!", duration=2.0)
             return
-        
-        # Build duck state for edge case detection
-        needs = self.duck.get_needs()
+
+        # Check if controller is busy
+        if self.interaction_controller.is_interacting():
+            return
+
+        # Check legacy interaction phase (for visitor/event interactions that still use it)
+        # Reset if stuck for too long (safety measure)
+        if self._interaction_phase != InteractionPhase.IDLE:
+            # Allow item interactions to proceed anyway since unified controller handles them
+            # Only block if we're in MOVING_TO_TARGET for a friend/visitor
+            if self._interaction_target_friend is not None:
+                return
+
+        # Build duck state for contextual messages
         duck_state = {
-            "energy": needs.get("energy", 100),
-            "hunger": needs.get("hunger", 100),
-            "fun": needs.get("fun", 100),
-            "cleanliness": needs.get("cleanliness", 100),
-            "social": needs.get("social", 100),
+            "energy": getattr(self.duck.needs, "energy", 100),
+            "hunger": getattr(self.duck.needs, "hunger", 100),
+            "fun": getattr(self.duck.needs, "fun", 100),
+            "cleanliness": getattr(self.duck.needs, "cleanliness", 100),
+            "social": getattr(self.duck.needs, "social", 100),
             "mood": self.duck.get_mood().state.value,
         }
-        
-        # Execute the interaction to get the result
-        result = execute_interaction(item_id, duck_state)
-        
-        if not result or not result.success:
-            self.renderer.show_message("*confused quack* I don't know how to do that...")
+
+        # Use the unified controller - it handles movement, animation, and effects
+        success, message = self.interaction_controller.request_interaction(
+            item_id=item_id,
+            source=source,
+            duck_state=duck_state
+        )
+
+        if not success:
+            self.renderer.show_message(message)
+
+    def _on_interaction_effects_applied(self, item_id: str, result: InteractionResult):
+        """Callback when interaction controller finishes and applies effects."""
+        # Always record interaction for behavior AI cooldown, even if result is missing
+        if self.behavior_ai:
+            self.behavior_ai.record_item_interaction()
+
+        if not self.duck or not result:
             return
-        
-        # Get item's playfield position
-        item_pos = self._get_item_playfield_position(item_id)
-        
-        if item_pos:
-            # Animated interaction: waddle to item first
-            self._interaction_phase = InteractionPhase.MOVING_TO_TARGET
-            self._interaction_target_item = item_id
-            self._interaction_target_pos = item_pos
-            self._interaction_pending_result = result
-            
-            # Show anticipation message
-            item = get_shop_item(item_id)
-            item_name = item.name if item else item_id
-            self.renderer.show_message(f"*waddles excitedly toward {item_name}*", duration=2.0)
-            
-            # Move duck to item with callback
-            self.renderer.duck_pos.move_to(
-                item_pos[0], item_pos[1],
-                callback=self._on_arrived_at_item,
-                callback_data={"item_id": item_id, "result": result}
-            )
+
+        # Get item info
+        item = get_shop_item(item_id)
+        item_name = item.name if item else item_id
+
+        # Record in memory
+        self.duck.memory.add_interaction(f"interacted_{item_id}", item_name, emotional_value=10)
+
+        # Play sound effect
+        if result.sound:
+            if result.sound == "splash":
+                duck_sounds.eat()  # Use eat sound for now
+            elif result.sound == "bounce":
+                duck_sounds.play()
+            elif result.sound == "music":
+                duck_sounds.quack("happy")
+            else:
+                duck_sounds.play()
         else:
-            # No position found, play animation immediately (fallback)
-            self._complete_item_interaction(item_id, result)
+            duck_sounds.play()
+
+        # Update goals
+        self.goals.update_progress("interact_item", 1)
+
+        # Check achievements
+        self._statistics["item_interactions"] = self._statistics.get("item_interactions", 0) + 1
+        if self._statistics["item_interactions"] >= 10:
+            self._unlock_achievement("playful_duck")
+        if self._statistics["item_interactions"] >= 50:
+            self._unlock_achievement("item_master")
 
     def _on_arrived_at_item(self, data: dict):
         """Callback when duck arrives at item position."""
@@ -1113,6 +1178,7 @@ class Game:
             "cleanliness": needs.get("cleanliness", 100),
             "social": needs.get("social", 100),
             "mood": self.duck.get_mood().state.value,
+            "growth_stage": self.duck.growth_stage.value if hasattr(self.duck.growth_stage, 'value') else str(self.duck.growth_stage),
         }
         
         result = execute_interaction(item_id, duck_state)
@@ -2108,6 +2174,12 @@ class Game:
         # Update item interaction animation
         self._update_item_interaction_animation()
 
+        # Update unified interaction controller
+        self.interaction_controller.update(0.016)  # ~60fps delta
+
+        # Update interaction animation overlay
+        self.renderer.interaction_animator.update()
+
         # Update active minigame
         self._update_minigame()
 
@@ -2357,31 +2429,52 @@ class Game:
 
         # Autonomous behavior (skip if duck is busy traveling/exploring/building)
         if self.behavior_ai and not self._duck_traveling and not self._duck_exploring and not self._duck_building:
+            # Check current location - structures and items only exist at Home Pond
+            current_location = None
+            if hasattr(self, 'exploration') and self.exploration and self.exploration.current_area:
+                current_location = self.exploration.current_area.name
+            is_at_home = current_location is None or current_location == "Home Pond"
+
             # Update behavior AI context with available structures and weather
             available_structures = set()
             structure_positions = {}
-            for structure in self.building.structures:
-                if structure.status.value == "complete":
-                    available_structures.add(structure.blueprint_id)
-                    # Get playfield position for this structure
-                    pos = self.building.get_structure_position(structure.blueprint_id)
-                    if pos:
-                        structure_positions[structure.blueprint_id] = pos
-            
+            placed_items = []
+
+            # Only provide structures and items when at Home Pond
+            if is_at_home:
+                for structure in self.building.structures:
+                    if structure.status.value == "complete":
+                        available_structures.add(structure.blueprint_id)
+                        # Get playfield position for this structure
+                        pos = self.building.get_structure_position(structure.blueprint_id)
+                        if pos:
+                            structure_positions[structure.blueprint_id] = pos
+                placed_items = self.habitat.placed_items
+
             # Check for bad weather
             is_bad_weather = False
             weather_type = None
             if self.atmosphere.current_weather:
                 weather_type = self.atmosphere.current_weather.weather_type.value
                 is_bad_weather = weather_type in ["rainy", "stormy", "snowy"]
-            
+
             self.behavior_ai.set_context(
                 available_structures=available_structures,
                 is_bad_weather=is_bad_weather,
                 weather_type=weather_type,
-                structure_positions=structure_positions
+                structure_positions=structure_positions,
+                placed_items=placed_items  # Only pass items when at Home Pond
             )
-            
+
+            # Check if there's a pending item interaction from AI
+            selected_item = self.behavior_ai.get_selected_item()
+            if selected_item and self.behavior_ai.has_pending_movement():
+                # AI selected an item-based action - use the interaction controller
+                self._execute_item_interaction(selected_item, source=InteractionSource.AI_AUTONOMOUS)
+                self.behavior_ai.clear_selected_item()
+                self.behavior_ai._movement_requested = False
+                return  # Skip other AI processing for this tick
+
             # Check if there's a pending movement we need to handle
             if self.behavior_ai.has_pending_movement():
                 target = self.behavior_ai.get_pending_movement_target()
@@ -2429,13 +2522,15 @@ class Game:
                             self.renderer.set_duck_state("scared", duration=result.duration)
 
                         # Show closeup for emotive actions
-                        emotive_actions = ["stare_blankly", "trip", "quack", "wiggle", "flap_wings", 
-                                           "nap_in_nest", "hide_in_shelter", "use_bird_bath"]
+                        emotive_actions = ["stare_blankly", "trip", "quack", "wiggle", "flap_wings",
+                                           "nap_in_nest", "hide_in_shelter", "use_bird_bath",
+                                           "play_with_toy", "splash_in_water", "rest_on_furniture"]
                         if result.action.value in emotive_actions:
                             self.renderer.show_closeup(result.action.value, 1.5)
-                        
+
                         # Play quack sound when duck talks to itself or does vocal actions
-                        vocal_actions = ["quack", "look_around", "chase_bug", "trip", "wiggle", "splash"]
+                        vocal_actions = ["quack", "look_around", "chase_bug", "trip", "wiggle", "splash",
+                                         "play_with_toy", "splash_in_water"]
                         if result.action.value in vocal_actions:
                             mood = self.duck.get_mood().state.value
                             duck_sounds.quack(mood)
@@ -2481,10 +2576,23 @@ class Game:
         # Update visitor animation and movement
         frame_changed, _ = visitor_animator.update(current_time, duck_x, duck_y)
         
-        # Check for random dialogue
+        # Check for random dialogue from visitor
         dialogue = visitor_animator.get_random_dialogue(self.duck.name, current_time)
         if dialogue:
             self.renderer.show_message(dialogue, duration=5.0)
+            
+            # Schedule Cheese's response to the visitor's dialogue
+            # friend.personality may be an enum, so convert to string
+            personality = friend.personality if hasattr(friend, 'personality') else "playful"
+            if hasattr(personality, 'value'):
+                personality = personality.value  # Convert enum to string
+            elif not isinstance(personality, str):
+                personality = str(personality)
+            duck_response = self.contextual_dialogue.get_conversation_response(personality)
+            if duck_response:
+                # Schedule response after visitor finishes talking
+                self._pending_visitor_comment = f"{self.duck.name}: {duck_response}"
+                self._pending_visitor_comment_time = current_time + 5.5  # After visitor's message duration
         
         # Comment on items/structures the visitor sees (only once per item)
         if visitor_animator.is_near_duck():
@@ -2675,137 +2783,52 @@ class Game:
                 )
 
     def _check_item_interaction(self, current_time: float):
-        """Check if duck should interact with nearby placed items."""
+        """Check if duck should interact with nearby placed items (proximity trigger)."""
         import random
-        
+
+        # Only trigger proximity interactions at Home Pond
+        current_location = None
+        if hasattr(self, 'exploration') and self.exploration and self.exploration.current_area:
+            current_location = self.exploration.current_area.name
+        if current_location is not None and current_location != "Home Pond":
+            return
+
+        # 3% chance per tick, and only if not already interacting
         if not self.duck or not hasattr(self, 'habitat') or random.random() > 0.03:
             return
-        
+
+        # Don't trigger if already interacting
+        if self.interaction_controller.is_interacting():
+            return
+
         # Get duck position in habitat coordinates
-        # Playfield is 44x14, habitat grid is 20x12
-        duck_x = int(self.renderer.duck_pos.x * 20 / 44)
-        duck_y = int(self.renderer.duck_pos.y * 12 / 14)
-        
+        field_width = self.renderer.duck_pos.field_width
+        field_height = self.renderer.duck_pos.field_height
+        duck_x = int(self.renderer.duck_pos.x * 20 / field_width)
+        duck_y = int(self.renderer.duck_pos.y * 12 / field_height)
+
         # Find nearby items
         nearby = self.habitat.get_nearby_items(duck_x, duck_y, radius=3)
         if not nearby:
             return
-        
+
         # Pick a random nearby item to interact with
         item = random.choice(nearby)
-        
+
         # Check cooldown (don't interact with same item too often)
         if current_time - item.last_interaction < 30:  # 30 second cooldown
             return
-        
-        # Get item info
-        from world.shop import get_item, ItemCategory
-        shop_item = get_item(item.item_id)
-        if not shop_item:
-            return
 
-        # Mark interaction
-        self.habitat.mark_interaction(item, current_time)
-
-        # Special handling for boombox - toggle music!
+        # Special handling for boombox - toggle music directly (no walk needed)
         if item.item_id == "toy_boombox":
             self._toggle_boombox_music()
+            self.habitat.mark_interaction(item, current_time)
             return
 
-        # Animate the item based on category
-        item_animations = {
-            ItemCategory.TOY: "bounce",  # Toys bounce when played with
-            ItemCategory.WATER: "shake",  # Water ripples
-            ItemCategory.FURNITURE: "shake",  # Furniture wobbles
-            ItemCategory.PLANT: "shake",  # Plants sway
-            ItemCategory.DECORATION: "bounce",  # Decorations bounce
-            ItemCategory.SPECIAL: "bounce",  # Special items bounce
-        }
-        anim_type = item_animations.get(shop_item.category, "bounce")
-        self.habitat.animate_item(item, anim_type)
-
-        # Generate interaction message based on item category
-        category_actions = {
-            ItemCategory.TOY: [
-                f"*plays with {shop_item.name}*",
-                f"*bounces around the {shop_item.name}!*",
-                f"*has fun with the {shop_item.name}*",
-            ],
-            ItemCategory.FURNITURE: [
-                f"*sits on the {shop_item.name}*",
-                f"*inspects the {shop_item.name}*",
-                f"*rests near the {shop_item.name}*",
-            ],
-            ItemCategory.WATER: [
-                f"*splashes in the {shop_item.name}!*",
-                f"*swims in the {shop_item.name}*",
-                f"*enjoys the {shop_item.name}*",
-            ],
-            ItemCategory.PLANT: [
-                f"*sniffs the {shop_item.name}*",
-                f"*admires the {shop_item.name}*",
-                f"*hides behind the {shop_item.name}*",
-            ],
-            ItemCategory.DECORATION: [
-                f"*stares at the {shop_item.name}*",
-                f"*appreciates the {shop_item.name}*",
-                f"*quacks at the {shop_item.name}*",
-            ],
-            ItemCategory.STRUCTURE: [
-                f"*explores near the {shop_item.name}*",
-                f"*investigates the {shop_item.name}*",
-                f"*waddles around the {shop_item.name}*",
-            ],
-        }
-        
-        messages = category_actions.get(shop_item.category, [f"*looks at {shop_item.name}*"])
-        message = random.choice(messages)
-        
-        self.duck.set_action_message(message)
-        self.renderer.show_message(message, duration=2.5)
-        
-        # Play animation/effect based on item category
-        category_effects = {
-            ItemCategory.TOY: "sparkle",
-            ItemCategory.WATER: "sparkle", 
-            ItemCategory.FURNITURE: "happy",
-            ItemCategory.PLANT: "happy",
-            ItemCategory.DECORATION: "sparkle",
-            ItemCategory.SPECIAL: "hearts",
-        }
-        effect = category_effects.get(shop_item.category, "happy")
-        self.renderer.show_effect(effect, duration=1.5)
-        
-        # Trigger duck animation based on category
-        category_animations = {
-            ItemCategory.TOY: "bounce",
-            ItemCategory.WATER: "splash",
-            ItemCategory.FURNITURE: "wiggle",
-            ItemCategory.PLANT: "wiggle",
-            ItemCategory.DECORATION: "spin",
-            ItemCategory.SPECIAL: "spin",
-        }
-        anim_name = category_animations.get(shop_item.category, "wiggle")
-        self.renderer.duck_pos.set_state(anim_name)
-        
-        # Give small mood boost based on item category
-        mood_boosts = {
-            ItemCategory.TOY: ("fun", 3),
-            ItemCategory.WATER: ("fun", 4),
-            ItemCategory.FURNITURE: ("energy", 2),
-            ItemCategory.PLANT: ("fun", 1),
-            ItemCategory.DECORATION: ("fun", 1),
-        }
-        
-        if shop_item.category in mood_boosts:
-            need, amount = mood_boosts[shop_item.category]
-            current = getattr(self.duck.needs, need, 0)
-            setattr(self.duck.needs, need, min(100, current + amount))
-        
-        # Small XP reward for item interaction
-        new_level = self.progression.add_xp(1, "item_interaction")
-        if new_level:
-            self._on_level_up(new_level)
+        # Use the unified interaction controller - duck will walk to item first
+        # This ensures animation only plays AFTER duck reaches the item
+        from world.interaction_controller import InteractionSource
+        self._execute_item_interaction(item.item_id, source=InteractionSource.PROXIMITY)
 
     def _check_secret_achievements(self):
         """Check for session-based and mood-based secret achievements."""
@@ -3328,6 +3351,14 @@ class Game:
         self.duck = Duck.create_new()
         self.behavior_ai = BehaviorAI()
         self.inventory = Inventory()
+
+        # Set up interaction controller references
+        self.interaction_controller.set_references(
+            habitat=self.habitat,
+            renderer=self.renderer,
+            duck=self.duck,
+            on_effects_applied=self._on_interaction_effects_applied
+        )
         self.goals = GoalSystem()
         self.achievements = AchievementSystem()
         self.progression = ProgressionSystem()
@@ -3337,11 +3368,8 @@ class Game:
         self.building = BuildingSystem()
         self.building.add_starter_nest()
         
-        # Add nest to playfield visual
-        if hasattr(self.renderer, 'add_nest_to_playfield'):
-            nest_pos = self.building.get_structure_position("basic_nest")
-            if nest_pos:
-                self.renderer.add_nest_to_playfield(nest_pos[0], nest_pos[1])
+        # Note: We don't add nest to playfield objects anymore since 
+        # the building system structures are rendered directly
 
         # Give starting items
         self.inventory.add_item("bread")
@@ -3439,6 +3467,14 @@ class Game:
         if "habitat" in data:
             self.habitat.from_dict(data["habitat"])
 
+        # Set up interaction controller references
+        self.interaction_controller.set_references(
+            habitat=self.habitat,
+            renderer=self.renderer,
+            duck=self.duck,
+            on_effects_applied=self._on_interaction_effects_applied
+        )
+
         # Load atmosphere (weather, visitors, fortune)
         if "atmosphere" in data:
             self.atmosphere = AtmosphereManager.from_dict(data["atmosphere"])
@@ -3477,14 +3513,16 @@ class Game:
         else:
             self.building = BuildingSystem()
         
+        # Cleanup any duplicate shelters from old saves
+        removed = self.building.cleanup_duplicate_shelters()
+        if removed:
+            self._pending_messages.append(f"Cleaned up duplicate structures: {', '.join(removed)}")
+        
         # Ensure there's always a starter nest
         self.building.add_starter_nest()
         
-        # Add nest to playfield visual
-        if hasattr(self.renderer, 'add_nest_to_playfield'):
-            nest_pos = self.building.get_structure_position("basic_nest")
-            if nest_pos:
-                self.renderer.add_nest_to_playfield(nest_pos[0], nest_pos[1])
+        # Note: We don't add nest to playfield objects anymore since 
+        # the building system structures are rendered directly
 
         # Load minigames system
         if "minigames" in data:
@@ -3918,6 +3956,15 @@ class Game:
         from world.habitat import Habitat
         self.habitat = Habitat()
 
+        # Update interaction controller with new habitat reference
+        # (duck may be None at this point, will be set properly in _start_new_game)
+        self.interaction_controller.set_references(
+            habitat=self.habitat,
+            renderer=self.renderer,
+            duck=self.duck,
+            on_effects_applied=self._on_interaction_effects_applied
+        )
+
         self.atmosphere = AtmosphereManager()
         self.diary = DuckDiary()
         self.exploration = ExplorationSystem()
@@ -4155,15 +4202,33 @@ class Game:
             self._building_menu_open = True
             return
 
-        # Build menu items - show all blueprints, let MenuSelector handle pagination
+        # Build menu items - show all blueprints with upgrade info
         items = []
         for bp in all_blueprints:
             can_build = bp.id in buildable
-            mat_desc = ', '.join(f'{v} {k}' for k, v in bp.required_materials.items())
+            
+            # Check if this is an upgrade
+            upgrade_info = self.building.get_upgrade_info(bp.id, self.materials)
+            is_upgrade = upgrade_info["is_upgrade"]
+            
+            if is_upgrade:
+                # Show reduced material cost for upgrades
+                can_upgrade, _ = self.building.can_upgrade(bp.id, self.materials, self.progression.level)
+                can_build = can_upgrade
+                mat_desc = ', '.join(f'{v} {k}' for k, v in upgrade_info["reduced_materials"].items() if v > 0)
+                if not mat_desc:
+                    mat_desc = "No extra materials needed!"
+                label = f"{'x' if can_build else ' '} ^ {bp.name}"  # ^ indicates upgrade
+                desc = f"UPGRADE - Needs: {mat_desc}"
+            else:
+                mat_desc = ', '.join(f'{v} {k}' for k, v in bp.required_materials.items())
+                label = f"{'x' if can_build else ' '} {bp.name}"
+                desc = f"Needs: {mat_desc}"
+            
             items.append({
                 'id': bp.id,
-                'label': f"{'x' if can_build else ' '} {bp.name}",
-                'description': f"Needs: {mat_desc}",
+                'label': label,
+                'description': desc,
                 'enabled': can_build,
                 'data': bp
             })
@@ -4305,7 +4370,7 @@ class Game:
             selected = self._building_menu.get_selected_item()
             if selected and selected.data and selected.enabled:
                 bp = selected.data
-                result = self.building.start_building(bp.id, self.materials)
+                result = self.building.start_building(bp.id, self.materials, player_level=self.progression.level)
                 self._building_menu_open = False
                 if result.get("success"):
                     self._start_building_animation(bp)
@@ -6880,6 +6945,15 @@ Core Systems Tested: {report.total_tests}
         self.home = DuckHome()
         from world.habitat import Habitat
         self.habitat = Habitat()
+
+        # Update interaction controller with new habitat reference
+        self.interaction_controller.set_references(
+            habitat=self.habitat,
+            renderer=self.renderer,
+            duck=self.duck,
+            on_effects_applied=self._on_interaction_effects_applied
+        )
+
         self.materials = MaterialInventory()
         self.building = BuildingSystem()
         self.garden = Garden()

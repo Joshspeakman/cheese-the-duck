@@ -863,7 +863,7 @@ class ProgressionSystem:
             last = datetime.strptime(self.last_login_date, "%Y-%m-%d")
             today = datetime.now()
             return (today - last).days
-        except:
+        except (ValueError, TypeError):
             return 0
 
     def to_dict(self) -> dict:

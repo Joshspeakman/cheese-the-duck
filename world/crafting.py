@@ -417,7 +417,7 @@ class Tool:
 class CraftingSystem:
     """Manages crafting operations and skill progression."""
     
-    def __init__(self):
+    def __init__(self, building_system=None):
         self.crafting_skill: int = 1
         self.crafting_xp: int = 0
         self.recipes_unlocked: List[str] = []
@@ -425,6 +425,7 @@ class CraftingSystem:
         self.crafted_count: Dict[str, int] = {}  # recipe_id -> times crafted
         self.tools: Dict[str, Tool] = {}  # tool_id -> Tool instance
         self._player_level: int = 1  # Track player level
+        self._building_system = building_system  # Reference for workbench check
         
         # Unlock starting recipes
         self._unlock_starting_recipes()
@@ -452,7 +453,7 @@ class CraftingSystem:
                     self.crafting_skill, 
                     level,
                     has_tool=self._has_tool(recipe.requires_tool),
-                    has_workbench=True,  # TODO: Check for workbench structure
+                    has_workbench=self._has_workbench(),
                 )
                 if can:
                     available.append(recipe.result_id)  # Return result_id for matching
@@ -467,6 +468,17 @@ class CraftingSystem:
         if not tool_id:
             return True
         return tool_id in self.tools and self.tools[tool_id].durability > 0
+    
+    def _has_workbench(self) -> bool:
+        """Check if player has a workbench structure built."""
+        if self._building_system is None:
+            return True  # Default to True if no building system linked
+        # Check if any workbench-type structure exists
+        return self._building_system.has_structure("workbench")
+    
+    def set_building_system(self, building_system):
+        """Link the building system for workbench checks."""
+        self._building_system = building_system
     
     def start_crafting(self, recipe_id: str, inventory: MaterialInventory, 
                        player_level: int = None) -> Dict:
@@ -491,7 +503,7 @@ class CraftingSystem:
             self.crafting_skill,
             level,
             has_tool=self._has_tool(recipe.requires_tool),
-            has_workbench=True,
+            has_workbench=self._has_workbench(),
         )
         
         if not can:

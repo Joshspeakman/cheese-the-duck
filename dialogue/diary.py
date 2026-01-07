@@ -182,7 +182,7 @@ class DuckDiary:
         try:
             first = datetime.fromisoformat(self.first_entry_date)
             return (datetime.now() - first).days
-        except:
+        except (ValueError, TypeError):
             return 0
 
     def add_entry(
@@ -489,11 +489,27 @@ class DuckDiary:
                     tags=e_data.get("tags", []),
                 )
                 diary.entries.append(entry)
-            except:
+            except (KeyError, TypeError, ValueError):
                 continue
 
         return diary
 
 
-# Global instance
+# Lazy singleton pattern - initialized on first access
+_duck_diary: Optional[DuckDiary] = None
+
+
+def get_duck_diary() -> DuckDiary:
+    """Get the global duck diary instance (lazy initialization).
+    
+    This pattern defers initialization until the system is actually needed,
+    improving startup time and avoiding circular import issues.
+    """
+    global _duck_diary
+    if _duck_diary is None:
+        _duck_diary = DuckDiary()
+    return _duck_diary
+
+
+# Direct instance for backwards compatibility
 duck_diary = DuckDiary()

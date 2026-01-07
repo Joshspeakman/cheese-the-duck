@@ -321,5 +321,21 @@ def create_spin_animation(duck_art_states: Dict[str, List[str]]) -> Animation:
     return Animation("spin", frames, loop=False)
 
 
-# Global animation controller
+# Lazy singleton pattern - initialized on first access
+_animation_controller: Optional[AnimationController] = None
+
+
+def get_animation_controller() -> AnimationController:
+    """Get the global animation controller instance (lazy initialization).
+    
+    This pattern defers initialization until the system is actually needed,
+    improving startup time and avoiding circular import issues.
+    """
+    global _animation_controller
+    if _animation_controller is None:
+        _animation_controller = AnimationController()
+    return _animation_controller
+
+
+# Direct instance for backwards compatibility
 animation_controller = AnimationController()

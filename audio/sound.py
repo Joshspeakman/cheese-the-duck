@@ -12,12 +12,17 @@ import os
 import sys
 import time
 import threading
+import logging
 import subprocess
+import concurrent.futures
 from typing import Optional, List, Tuple
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 import random
+
+# Configure logging for sound system
+logger = logging.getLogger(__name__)
 
 
 class SoundType(Enum):
@@ -264,9 +269,16 @@ class SoundEngine:
     Handles sound playback using various system methods.
     Now includes WAV file playback support!
     Uses pygame for MP3 music when available.
+    Thread-safe implementation with proper locking.
     """
+    
+    # Thread pool for sound effect playback (max 4 concurrent sounds)
+    _sound_executor: Optional[concurrent.futures.ThreadPoolExecutor] = None
 
     def __init__(self):
+        # Thread lock for shared state access
+        self._lock = threading.Lock()
+        
         self.enabled = True  # Enabled by default
         self.volume = 1.0  # 0.0 to 1.0 (quack volume - max, pygame caps at 1.0)
         self.music_volume = 0.3  # Background music volume (30% - audible but not overpowering)
@@ -278,6 +290,13 @@ class SoundEngine:
         self._current_melody = None
         self._music_channel = None  # For seamless looping with Sound object
         self._music_sound = None  # Cached music Sound object
+        
+        # Initialize thread pool for sound effects
+        if SoundEngine._sound_executor is None:
+            SoundEngine._sound_executor = concurrent.futures.ThreadPoolExecutor(
+                max_workers=4, 
+                thread_name_prefix="SoundEffect"
+            )
 
         # Try to initialize pygame for music
         self._pygame_available = False
@@ -341,7 +360,7 @@ class SoundEngine:
             )
             if result.returncode == 0:
                 return 'paplay'
-        except:
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
             pass
 
         # Check for speaker-test
@@ -353,7 +372,7 @@ class SoundEngine:
             )
             if result.returncode == 0:
                 return 'speaker-test'
-        except:
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
             pass
 
         # Check for beep command
@@ -365,7 +384,7 @@ class SoundEngine:
             )
             if result.returncode == 0:
                 return 'beep'
-        except:
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
             pass
 
         # Fallback to terminal bell
@@ -382,7 +401,7 @@ class SoundEngine:
             )
             if result.returncode == 0:
                 return 'paplay'
-        except:
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
             pass
         
         # Check for aplay (ALSA)
@@ -394,7 +413,7 @@ class SoundEngine:
             )
             if result.returncode == 0:
                 return 'aplay'
-        except:
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
             pass
         
         # Check for ffplay (ffmpeg)
@@ -406,7 +425,7 @@ class SoundEngine:
             )
             if result.returncode == 0:
                 return 'ffplay'
-        except:
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
             pass
         
         return None
@@ -422,7 +441,7 @@ class SoundEngine:
             )
             if result.returncode == 0:
                 return 'mpv'
-        except:
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
             pass
 
         # Check for ffplay (ffmpeg) - good fallback
@@ -434,7 +453,7 @@ class SoundEngine:
             )
             if result.returncode == 0:
                 return 'ffplay'
-        except:
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
             pass
 
         # Check for mpg123 (lightweight mp3 player)
@@ -446,7 +465,7 @@ class SoundEngine:
             )
             if result.returncode == 0:
                 return 'mpg123'
-        except:
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
             pass
 
         # Check for aplay (ALSA - WAV files only, but works as fallback)
@@ -458,7 +477,7 @@ class SoundEngine:
             )
             if result.returncode == 0:
                 return 'aplay'
-        except:
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
             pass
 
         # Check for paplay (PulseAudio)
@@ -470,7 +489,7 @@ class SoundEngine:
             )
             if result.returncode == 0:
                 return 'paplay'
-        except:
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
             pass
 
         return None
@@ -655,10 +674,10 @@ class SoundEngine:
             try:
                 self._music_process.terminate()
                 self._music_process.wait(timeout=1)
-            except:
+            except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                 try:
                     self._music_process.kill()
-                except:
+                except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                     pass
             self._music_process = None
         if self._music_thread:
@@ -747,7 +766,7 @@ class SoundEngine:
             if self._music_sound:
                 try:
                     self._music_sound.stop()
-                except:
+                except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                     pass
             self._music_channel = None
             self._current_context = None
@@ -837,12 +856,12 @@ class SoundEngine:
                             vol = start_volume * (1 - (i + 1) / steps)
                             try:
                                 self._music_sound.set_volume(vol)
-                            except:
+                            except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                                 break
                             time.sleep(step_duration)
                         try:
                             self._music_sound.stop()
-                        except:
+                        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                             pass
 
                     # Load and start new music at low volume, fade in
@@ -859,7 +878,7 @@ class SoundEngine:
                                 vol = self.music_volume * ((i + 1) / steps)
                                 try:
                                     new_sound.set_volume(vol)
-                                except:
+                                except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                                     break
                                 time.sleep(step_duration)
 
@@ -961,7 +980,7 @@ class SoundEngine:
                         stderr=subprocess.DEVNULL,
                         timeout=10
                     )
-            except:
+            except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                 pass  # Silently fail if playback issues
         
         # Play in background thread
@@ -1013,7 +1032,7 @@ class SoundEngine:
                             stderr=subprocess.DEVNULL
                         )
                         self._music_process.wait()
-                except:
+                except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                     pass
                 
                 if not loop or not self._music_playing:
@@ -1047,7 +1066,7 @@ class SoundEngine:
                 capture_output=True,
                 timeout=duration + 0.5
             )
-        except:
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
             self._play_bell()
 
     def _play_speaker_test(self, frequency: int, duration: float):
@@ -1060,7 +1079,7 @@ class SoundEngine:
                 timeout=duration + 0.5,
                 stderr=subprocess.DEVNULL
             )
-        except:
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
             self._play_bell()
 
     def _play_bell(self):
@@ -1113,10 +1132,10 @@ class SoundEngine:
             try:
                 self._music_process.terminate()
                 self._music_process.wait(timeout=0.5)
-            except:
+            except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                 try:
                     self._music_process.kill()
-                except:
+                except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                     pass
             self._music_process = None
         if self._music_thread:

@@ -4,7 +4,15 @@ Memory system - duck remembers interactions and events.
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
 from datetime import datetime
+from collections import deque
 import random
+
+
+# Memory limits
+MAX_SHORT_TERM = 10
+MAX_LONG_TERM = 50
+MAX_MOOD_HISTORY = 20
+MAX_AFFINITY_ITEMS = 100
 
 
 @dataclass
@@ -20,18 +28,19 @@ class Memory:
 class DuckMemory:
     """
     Manages the duck's memories of interactions and events.
+    Uses deques for O(1) memory limit enforcement.
     """
 
     def __init__(self):
-        self.short_term: List[Memory] = []  # Last 10 interactions
-        self.long_term: List[Memory] = []   # Important memories (max 50)
+        self.short_term: deque = deque(maxlen=MAX_SHORT_TERM)  # Last 10 interactions
+        self.long_term: List[Memory] = []   # Important memories (max 50, sorted by importance)
         self.player_name: Optional[str] = None
         self.favorite_things: Dict[str, int] = {}  # thing -> affinity score
         self.disliked_things: Dict[str, int] = {}
         self.interaction_counts: Dict[str, int] = {}
         self.total_interactions: int = 0
         self.first_meeting: Optional[str] = None
-        self.mood_history: List[int] = []
+        self.mood_history: deque = deque(maxlen=MAX_MOOD_HISTORY)
 
     def add_interaction(self, interaction_type: str, details: str = "", emotional_value: int = 0):
         """Record an interaction."""
@@ -43,18 +52,24 @@ class DuckMemory:
             importance=3 if emotional_value != 0 else 1,
         )
 
-        # Add to short term
+        # Add to short term (deque auto-removes oldest when full)
         self.short_term.append(memory)
-        if len(self.short_term) > 10:
-            self.short_term.pop(0)
 
-        # Track counts
+        # Track counts (with limit to prevent unbounded growth)
         self.interaction_counts[interaction_type] = self.interaction_counts.get(interaction_type, 0) + 1
+        self._limit_interaction_counts()
         self.total_interactions += 1
 
         # Very positive or negative interactions go to long term
         if abs(emotional_value) >= 50:
             self._add_long_term(memory)
+    
+    def _limit_interaction_counts(self):
+        """Limit interaction counts dict size to prevent unbounded growth."""
+        if len(self.interaction_counts) > MAX_AFFINITY_ITEMS:
+            # Keep only the most frequent interactions
+            sorted_counts = sorted(self.interaction_counts.items(), key=lambda x: x[1], reverse=True)
+            self.interaction_counts = dict(sorted_counts[:MAX_AFFINITY_ITEMS])
 
     def add_event(self, event_name: str, details: str, importance: int = 5, emotional_value: int = 0):
         """Record a significant event."""
@@ -66,9 +81,8 @@ class DuckMemory:
             importance=importance,
         )
 
+        # Add to short term (deque auto-removes oldest when full)
         self.short_term.append(memory)
-        if len(self.short_term) > 10:
-            self.short_term.pop(0)
 
         if importance >= 5:
             self._add_long_term(memory)
@@ -88,9 +102,9 @@ class DuckMemory:
         """Add a memory to long-term storage."""
         self.long_term.append(memory)
         # Keep only most important if over limit
-        if len(self.long_term) > 50:
+        if len(self.long_term) > MAX_LONG_TERM:
             self.long_term.sort(key=lambda m: m.importance, reverse=True)
-            self.long_term = self.long_term[:50]
+            self.long_term = self.long_term[:MAX_LONG_TERM]
 
     def update_affinity(self, thing: str, delta: int):
         """Update affinity for something (food, toy, activity)."""
@@ -214,7 +228,7 @@ class DuckMemory:
             "interaction_counts": self.interaction_counts,
             "total_interactions": self.total_interactions,
             "first_meeting": self.first_meeting,
-            "mood_history": self.mood_history[-100:],
+            "mood_history": list(self.mood_history),  # Convert deque to list for JSON
         }
 
     @classmethod

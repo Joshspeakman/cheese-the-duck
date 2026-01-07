@@ -527,5 +527,21 @@ class AmbientSoundSystem:
         return system
 
 
-# Global instance
+# Lazy singleton pattern - initialized on first access
+_ambient_sound_system: Optional[AmbientSoundSystem] = None
+
+
+def get_ambient_sound_system() -> AmbientSoundSystem:
+    """Get the global ambient sound system instance (lazy initialization).
+    
+    This pattern defers initialization until the system is actually needed,
+    improving startup time and avoiding circular import issues.
+    """
+    global _ambient_sound_system
+    if _ambient_sound_system is None:
+        _ambient_sound_system = AmbientSoundSystem()
+    return _ambient_sound_system
+
+
+# Direct instance for backwards compatibility
 ambient_sound_system = AmbientSoundSystem()

@@ -12,6 +12,9 @@ from enum import Enum
 if TYPE_CHECKING:
     from duck.duck import Duck
 
+# Simple growth stages in order (matching config.py)
+SIMPLE_GROWTH_STAGES = ["egg", "duckling", "teen", "adult", "elder"]
+
 
 class EventType(Enum):
     """Types of events."""
@@ -527,9 +530,8 @@ class EventSystem:
 
             # Check stage requirement
             if event.requires_stage:
-                stages = ["egg", "duckling", "teen", "adult", "elder"]
-                required_idx = stages.index(event.requires_stage) if event.requires_stage in stages else 0
-                current_idx = stages.index(duck.growth_stage) if duck.growth_stage in stages else 0
+                required_idx = SIMPLE_GROWTH_STAGES.index(event.requires_stage) if event.requires_stage in SIMPLE_GROWTH_STAGES else 0
+                current_idx = SIMPLE_GROWTH_STAGES.index(duck.growth_stage) if duck.growth_stage in SIMPLE_GROWTH_STAGES else 0
                 if current_idx < required_idx:
                     continue
 

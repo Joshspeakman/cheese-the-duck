@@ -358,6 +358,24 @@ BLUEPRINTS: Dict[str, StructureBlueprint] = {
 }
 
 
+# Upgrade paths: Maps structure ID to its upgrade
+# When upgrading, the new structure replaces the old one at the same position
+UPGRADE_PATHS: Dict[str, str] = {
+    # Nest tier upgrades
+    "basic_nest": "cozy_nest",
+    "cozy_nest": "deluxe_nest",
+    # House tier upgrades  
+    "mud_hut": "wooden_cottage",
+    "wooden_cottage": "stone_house",
+}
+
+# Reverse lookup: What structure does this upgrade FROM?
+UPGRADE_FROM: Dict[str, str] = {v: k for k, v in UPGRADE_PATHS.items()}
+
+# Material recovery rate when upgrading (50% of old structure materials returned)
+UPGRADE_MATERIAL_RECOVERY = 0.5
+
+
 @dataclass
 class Structure:
     """An instance of a built structure."""
@@ -472,6 +490,42 @@ class BuildingSystem:
         # Duck should be positioned at center of nest interior: x = 20, y = 6
         self.structure_positions["basic_nest"] = (20, 6)  # Playfield coords (centered in nest interior)
     
+    def cleanup_duplicate_shelters(self) -> List[str]:
+        """Remove duplicate nest/house structures, keeping only the best one.
+        Returns list of removed structure names."""
+        removed = []
+        
+        # Find all shelter structures (nests and houses)
+        shelters = [s for s in self.structures 
+                    if s.blueprint and s.blueprint.structure_type in [StructureType.NEST, StructureType.HOUSE]]
+        
+        if len(shelters) <= 1:
+            return removed  # No duplicates
+        
+        # Sort by priority: complete > building, then by bonus (higher is better)
+        def shelter_priority(s):
+            bp = s.blueprint
+            is_complete = 1 if s.is_complete() else 0
+            bonus = bp.energy_regen_bonus if bp else 0
+            return (is_complete, bonus)
+        
+        shelters.sort(key=shelter_priority, reverse=True)
+        
+        # Keep the best one, remove the rest
+        best = shelters[0]
+        for s in shelters[1:]:
+            # Free up cells
+            bp = s.blueprint
+            if bp:
+                x, y = s.position
+                for dx in range(bp.size[0]):
+                    for dy in range(bp.size[1]):
+                        self.occupied_cells.discard((x + dx, y + dy))
+                removed.append(bp.name)
+            self.structures.remove(s)
+        
+        return removed
+    
     def get_structure_position(self, structure_type: str) -> Optional[Tuple[int, int]]:
         """Get the playfield position for a structure type (for duck movement)."""
         # Check specific structure positions first
@@ -522,6 +576,85 @@ class BuildingSystem:
         level = player_level if player_level is not None else self._player_level
         return [bp for bp in BLUEPRINTS.values() if bp.unlock_level <= level]
     
+    def get_structure_to_upgrade(self, blueprint_id: str) -> Optional[Structure]:
+        """Check if this blueprint is an upgrade of an existing structure.
+        Returns the structure that would be upgraded, or None."""
+        if blueprint_id not in UPGRADE_FROM:
+            return None
+        
+        required_structure_id = UPGRADE_FROM[blueprint_id]
+        
+        # Find a complete structure of the required type
+        for structure in self.structures:
+            if structure.blueprint_id == required_structure_id and structure.is_complete():
+                return structure
+        
+        return None
+    
+    def get_upgrade_info(self, blueprint_id: str, inventory: MaterialInventory) -> Dict:
+        """Get info about upgrading to this blueprint.
+        Returns dict with 'is_upgrade', 'from_structure', 'reduced_materials', 'recovered_materials'."""
+        result = {
+            "is_upgrade": False,
+            "from_structure": None,
+            "reduced_materials": {},
+            "recovered_materials": {},
+        }
+        
+        structure_to_upgrade = self.get_structure_to_upgrade(blueprint_id)
+        if not structure_to_upgrade:
+            return result
+        
+        result["is_upgrade"] = True
+        result["from_structure"] = structure_to_upgrade
+        
+        old_bp = structure_to_upgrade.blueprint
+        new_bp = BLUEPRINTS.get(blueprint_id)
+        
+        if not old_bp or not new_bp:
+            return result
+        
+        # Calculate materials recovered from old structure (50%)
+        for mat_id, amount in old_bp.required_materials.items():
+            recovered = int(amount * UPGRADE_MATERIAL_RECOVERY)
+            if recovered > 0:
+                result["recovered_materials"][mat_id] = recovered
+        
+        # Calculate reduced material cost (new cost - recovered)
+        for mat_id, amount in new_bp.required_materials.items():
+            recovered = result["recovered_materials"].get(mat_id, 0)
+            reduced = max(0, amount - recovered)
+            result["reduced_materials"][mat_id] = reduced
+        
+        return result
+    
+    def can_upgrade(self, blueprint_id: str, inventory: MaterialInventory, 
+                    player_level: int) -> Tuple[bool, str]:
+        """Check if player can upgrade to this blueprint."""
+        if blueprint_id not in BLUEPRINTS:
+            return False, "Unknown blueprint"
+        
+        blueprint = BLUEPRINTS[blueprint_id]
+        
+        # Check level
+        if blueprint.unlock_level > player_level:
+            return False, f"Unlock at level {blueprint.unlock_level}"
+        
+        # Check if this is an upgrade
+        upgrade_info = self.get_upgrade_info(blueprint_id, inventory)
+        if not upgrade_info["is_upgrade"]:
+            return False, "Not an upgrade"
+        
+        # Check reduced materials
+        for mat_id, amount in upgrade_info["reduced_materials"].items():
+            if amount > 0 and inventory.get_count(mat_id) < amount:
+                mat = MATERIALS.get(mat_id)
+                mat_name = mat.name if mat else mat_id
+                have = inventory.get_count(mat_id)
+                return False, f"Need {amount}x {mat_name} (have {have})"
+        
+        return True, "Ready to upgrade!"
+    
     def can_build(self, blueprint_id: str, position: Tuple[int, int], 
                   inventory: MaterialInventory, player_level: int) -> Tuple[bool, str]:
         """Check if a structure can be built at a position."""
@@ -560,14 +693,107 @@ class BuildingSystem:
         
         return True, "Ready to build!"
     
+    def has_nest(self) -> bool:
+        """Check if player has any nest structure (building or complete)."""
+        for s in self.structures:
+            if s.blueprint and s.blueprint.structure_type == StructureType.NEST:
+                return True
+        return False
+    
+    def has_house(self) -> bool:
+        """Check if player has any house structure (building or complete)."""
+        for s in self.structures:
+            if s.blueprint and s.blueprint.structure_type == StructureType.HOUSE:
+                return True
+        return False
+    
     def start_building(self, blueprint_id: str, inventory: MaterialInventory,
                        position: Tuple[int, int] = None, player_level: int = None) -> Dict:
-        """Start building a structure."""
+        """Start building a structure. Handles upgrades automatically."""
         level = player_level if player_level is not None else self._player_level
-        pos = position if position is not None else self._find_free_position(blueprint_id)
         
         if self.current_build:
             return {"success": False, "message": "Already building something!"}
+        
+        blueprint = BLUEPRINTS.get(blueprint_id)
+        if not blueprint:
+            return {"success": False, "message": "Unknown blueprint"}
+        
+        # Check if this is an upgrade
+        upgrade_info = self.get_upgrade_info(blueprint_id, inventory)
+        is_upgrade = upgrade_info["is_upgrade"]
+        old_structure = upgrade_info.get("from_structure")
+        
+        # Prevent building duplicate shelter structures (nests/houses)
+        # You can only have ONE nest OR house - upgrade instead of building new
+        if blueprint.structure_type in [StructureType.NEST, StructureType.HOUSE]:
+            if not is_upgrade:
+                # Not an upgrade - check if we already have a shelter
+                for s in self.structures:
+                    if s.blueprint and s.blueprint.structure_type in [StructureType.NEST, StructureType.HOUSE]:
+                        return {
+                            "success": False, 
+                            "message": f"You already have a {s.blueprint.name}! Upgrade it instead."
+                        }
+        
+        if is_upgrade and old_structure:
+            # Use the old structure's position for the upgrade
+            pos = old_structure.position
+            
+            # Check if we can upgrade
+            can, reason = self.can_upgrade(blueprint_id, inventory, level)
+            if not can:
+                return {"success": False, "message": reason}
+            
+            blueprint = BLUEPRINTS[blueprint_id]
+            
+            # Remove old structure and free its cells
+            old_bp = old_structure.blueprint
+            if old_bp:
+                old_x, old_y = old_structure.position
+                for dx in range(old_bp.size[0]):
+                    for dy in range(old_bp.size[1]):
+                        self.occupied_cells.discard((old_x + dx, old_y + dy))
+            
+            self.structures.remove(old_structure)
+            
+            # Update structure positions dict
+            if old_structure.blueprint_id in self.structure_positions:
+                # Move the position to the new structure type
+                old_pos = self.structure_positions.pop(old_structure.blueprint_id)
+                self.structure_positions[blueprint_id] = old_pos
+            
+            # Consume only the reduced materials
+            for mat_id, amount in upgrade_info["reduced_materials"].items():
+                if amount > 0:
+                    inventory.remove_material(mat_id, amount)
+            
+            # Create upgraded structure at same position
+            structure = Structure(
+                blueprint_id=blueprint_id,
+                position=pos,
+                status=StructureStatus.BUILDING,
+                durability=blueprint.max_durability,
+            )
+            
+            # Mark new cells as occupied
+            x, y = pos
+            for dx in range(blueprint.size[0]):
+                for dy in range(blueprint.size[1]):
+                    self.occupied_cells.add((x + dx, y + dy))
+            
+            self.structures.append(structure)
+            self.current_build = BuildProgress(structure=structure)
+            
+            old_name = old_bp.name if old_bp else "structure"
+            return {
+                "success": True, 
+                "message": f"Upgrading {old_name} to {blueprint.name}!",
+                "is_upgrade": True
+            }
+        
+        # Standard build (not an upgrade)
+        pos = position if position is not None else self._find_free_position(blueprint_id)
         
         can, reason = self.can_build(blueprint_id, pos, inventory, level)
         if not can:
