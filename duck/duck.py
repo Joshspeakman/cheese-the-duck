@@ -23,7 +23,7 @@ class Duck:
     created_at: str
     needs: Needs = field(default_factory=Needs)
     personality: Dict[str, int] = field(default_factory=lambda: DEFAULT_PERSONALITY.copy())
-    growth_stage: str = "duckling"
+    growth_stage: str = "hatchling"
     growth_progress: float = 0.0
     current_action: Optional[str] = None
     action_start_time: Optional[float] = None
@@ -36,6 +36,7 @@ class Duck:
         self._last_autonomous_action = 0.0
         self._action_message = ""
         self._action_message_expire = 0.0  # Time when message expires
+        self._action_end_time = 0.0  # Time when current_action should auto-clear
         if self._personality_system is None:
             self._personality_system = Personality(self.personality)
         if self._memory is None:

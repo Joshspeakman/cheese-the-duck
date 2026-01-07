@@ -34,13 +34,13 @@ NEED_MIN = 0
 NEED_CRITICAL = 20  # Below this, urgent warnings
 NEED_LOW = 40       # Below this, duck gets grumpy
 
-# Interaction effects
+# Interaction effects (balanced - should require multiple interactions to fully satisfy a need)
 INTERACTION_EFFECTS = {
-    "feed": {"hunger": 35, "fun": 5},
-    "play": {"fun": 30, "energy": -10, "social": 10},
-    "clean": {"cleanliness": 40, "fun": -5},
-    "pet": {"social": 25, "fun": 10},
-    "sleep": {"energy": 50, "hunger": -5},
+    "feed": {"hunger": 18, "fun": 2},
+    "play": {"fun": 15, "energy": -5, "social": 5},
+    "clean": {"cleanliness": 20, "fun": -2},
+    "pet": {"social": 12, "fun": 5},
+    "sleep": {"energy": 25, "hunger": -3},
 }
 
 # Mood thresholds (based on weighted need average)

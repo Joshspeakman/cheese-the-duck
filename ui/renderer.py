@@ -416,6 +416,10 @@ class Renderer:
         self._shop_categories = ["COSMETIC", "TOY", "FURNITURE", "WATER", "PLANT"]
         self._shop_items_per_page = 8  # Items per page in shop
 
+        # Stats window pagination
+        self._stats_scroll_offset = 0
+        self._stats_page_size = 15  # Lines visible per page
+
         # Ground pattern cache
         self._ground_pattern: List[str] = []
         self._current_location: Optional[str] = None
@@ -428,6 +432,10 @@ class Renderer:
         self._weather_particles: List[Tuple[float, float, str]] = []  # (x, y, char)
         self._weather_frame = 0
         self._current_weather_type: Optional[str] = None
+        
+        # Cached terminal dimensions for stability (prevent micro-jitter)
+        self._cached_width: Optional[int] = None
+        self._cached_height: Optional[int] = None
         
         # Environmental weather decorations (puddles, snow piles, leaves, etc.)
         self._weather_decorations: List[Tuple[int, int, str, Any]] = []  # (x, y, char, color_func)
@@ -994,8 +1002,19 @@ class Renderer:
         term_width = max(self.term.width, 60)
         term_height = max(self.term.height, 20)
         
-        width = min(term_width, MAX_WIDTH)
-        height = min(term_height, MAX_HEIGHT)
+        new_width = min(term_width, MAX_WIDTH)
+        new_height = min(term_height, MAX_HEIGHT)
+        
+        # Use cached dimensions to prevent micro-jitter from terminal size fluctuations
+        # Only update if dimensions changed by more than 2 chars, or if not yet cached
+        if (self._cached_width is None or self._cached_height is None or
+            abs(new_width - self._cached_width) > 2 or 
+            abs(new_height - self._cached_height) > 2):
+            self._cached_width = new_width
+            self._cached_height = new_height
+        
+        width = self._cached_width
+        height = self._cached_height
 
         # Dynamic layout based on terminal width
         # Side panel needs at least 25 chars, playfield gets the rest
@@ -1110,14 +1129,15 @@ class Renderer:
         else:
             print(self.term.home, end="")
             
-        for i, line in enumerate(output):
-            if i < height - 1:  # Leave one line at bottom
-                # Use move to ensure proper positioning and overwrite
-                # Use ANSI-aware functions for lines that may contain color codes
-                truncated = _visible_truncate(line, width)
-                padded = _visible_ljust(truncated, width)
-                # End each line with terminal reset to prevent color bleeding
-                print(self.term.move(i, 0) + padded + self.term.normal, end="")
+        for i in range(height - 1):  # Fill all lines up to height - 1
+            # Get line from output, or use empty line if output is shorter
+            line = output[i] if i < len(output) else ""
+            # Use move to ensure proper positioning and overwrite
+            # Use ANSI-aware functions for lines that may contain color codes
+            truncated = _visible_truncate(line, width)
+            padded = _visible_ljust(truncated, width)
+            # End each line with terminal reset to prevent color bleeding
+            print(self.term.move(i, 0) + padded + self.term.normal, end="")
 
     def _render_header_bar(self, duck: "Duck", width: int, currency: int = 0, weather=None, time_info=None, season_info=None) -> List[str]:
         """Render the top header bar with weather, season, and time info."""
@@ -1863,13 +1883,15 @@ class Renderer:
         action_centered = _visible_center(action_msg, inner_width)
         lines.append(BOX["v"] + action_centered + BOX["v"])
         
-        # Current location (from exploration system)
+        # Current location (from exploration system) - always show line for consistent height
         if hasattr(game, 'exploration') and game.exploration and game.exploration.current_area:
             area_name = game.exploration.current_area.name
             location = f"@ {area_name}"  # Use @ instead of emoji for consistent width
-            location = _visible_truncate(location, inner_width)
-            location_centered = _visible_center(location, inner_width)
-            lines.append(BOX["v"] + location_centered + BOX["v"])
+        else:
+            location = "@ Home Pond"  # Default location
+        location = _visible_truncate(location, inner_width)
+        location_centered = _visible_center(location, inner_width)
+        lines.append(BOX["v"] + location_centered + BOX["v"])
 
         # Bottom
         lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
@@ -1889,6 +1911,13 @@ class Renderer:
 
     def _get_activity_text(self, duck: "Duck") -> str:
         """Get text describing current activity."""
+        import time as _time
+        
+        # Auto-clear expired current_action to prevent stale status display
+        if hasattr(duck, 'current_action') and duck.current_action:
+            if hasattr(duck, '_action_end_time') and _time.time() > duck._action_end_time:
+                duck.current_action = None
+        
         # Check for special activities first (based on duck.current_action if available)
         if hasattr(duck, 'current_action') and duck.current_action:
             action = duck.current_action
@@ -2002,7 +2031,7 @@ class Renderer:
         inner_width = width - 2
 
         # Compact controls hint
-        controls = " [TAB] Menu | [H]elp | [M]ute | [+/-] Volume | [Q]uit "
+        controls = " [TAB] Menu | [H]elp | [M]usic | [+/-] Volume | [Q]uit "
 
         lines = [
             BOX["tl"] + BOX["h"] * inner_width + BOX["tr"],
@@ -2315,7 +2344,7 @@ class Renderer:
         return self._overlay_box(base_output, help_text, "HELP", width)
 
     def _overlay_stats(self, base_output: List[str], duck: "Duck", game: "Game", width: int) -> List[str]:
-        """Overlay statistics screen."""
+        """Overlay statistics screen with pagination."""
         stats = game._statistics
         memory = duck.memory
         prog = game.progression
@@ -2368,39 +2397,65 @@ class Renderer:
         building = game.building
         struct_count = len([s for s in building._structures if s.status.value == "complete"])
 
-        stats_text = [
+        # All stats content
+        all_stats = [
             f"[d] {duck.name} - {duck.get_growth_stage_display()}",
             "",
             f"+============== PROGRESS ==============+",
             f"  Level {prog.level}: {prog.title}",
             f"  XP: {xp_bar} {int(xp_pct)}%",
+            f"  Total XP: {prog.xp}",
             f"  {streak_line}",
             f"  Best Streak: {prog.longest_streak} days",
             f"+======================================+",
             "",
             f"+============== BONDING ===============+",
             f"  Relationship: {memory.get_relationship_description()}",
+            f"  Total Interactions: {memory.total_interactions}",
             f"  Mood Trend: {memory.get_recent_mood_trend()}",
-            f"  Love Score: {'<3' * (love_score // 20)}{'</3' * (5 - love_score // 20)} {love_score}%",
+            f"  Love Score: {'<3' * (love_score // 20)} {love_score}%",
             f"+======================================+",
             "",
             f"+============== WORLD =================+",
-            f"  [?]  Location: {biome_name}",
-            f"  A Areas: {area_count} discovered",
-            f"  [=] Materials: {mat_count} types ({mat_total} total)",
-            f"  [=] Structures: {struct_count} built",
+            f"  Location: {biome_name}",
+            f"  Areas Discovered: {area_count}",
+            f"  Materials: {mat_count} types ({mat_total} total)",
+            f"  Structures Built: {struct_count}",
             f"+======================================+",
             "",
             f"+============== LIFETIME ==============+",
             f"  Days Played: {prog.days_played}",
-            f"  Total Care: {total_care_actions} actions",
-            f"  Collectibles: {coll_owned}/{coll_total} [#]",
+            f"  Total Care Actions: {total_care_actions}",
+            f"  - Feeds: {total_stats.get('total_feeds', 0)}",
+            f"  - Plays: {total_stats.get('total_plays', 0)}",
+            f"  - Cleans: {total_stats.get('total_cleans', 0)}",
+            f"  - Pets: {total_stats.get('total_pets', 0)}",
+            f"  Collectibles: {coll_owned}/{coll_total}",
             f"+======================================+",
-            "",
-            "       Press [S] to close",
         ]
+        
+        # Pagination logic
+        total_lines = len(all_stats)
+        max_scroll = max(0, total_lines - self._stats_page_size)
+        self._stats_scroll_offset = max(0, min(self._stats_scroll_offset, max_scroll))
+        
+        # Get visible portion
+        start_idx = self._stats_scroll_offset
+        end_idx = start_idx + self._stats_page_size
+        visible_stats = all_stats[start_idx:end_idx]
+        
+        # Add navigation hint
+        nav_hints = []
+        if self._stats_scroll_offset > 0:
+            nav_hints.append("[^] Up")
+        if self._stats_scroll_offset < max_scroll:
+            nav_hints.append("[v] Down")
+        nav_hints.append("[ESC] Close")
+        
+        visible_stats.append("")
+        visible_stats.append("  " + " | ".join(nav_hints))
 
-        return self._overlay_box(base_output, stats_text, "[=] STATISTICS", width)
+        return self._overlay_box(base_output, visible_stats, "[=] STATISTICS", width)
 
     def _overlay_talk(self, base_output: List[str], width: int) -> List[str]:
         """Overlay talk/chat interface."""
@@ -2551,9 +2606,9 @@ class Renderer:
         box_width = min(50, width - 4)
         
         # Limit height to fit on screen (leave room for top/bottom margins)
-        max_content_height = len(base_output) - 10  # Leave margins
-        if max_content_height < 10:
-            max_content_height = 10
+        max_content_height = len(base_output) - 6  # Leave small margins, allow more content
+        if max_content_height < 15:
+            max_content_height = 15
         
         # Truncate content if too tall
         if len(content) > max_content_height:
