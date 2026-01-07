@@ -25,7 +25,7 @@ from config import GAME_DIR, SAVE_DIR
 
 
 # Game version - Update this when releasing new versions
-GAME_VERSION = "1.0.1"
+GAME_VERSION = "1.0.5"
 
 # GitHub repository info
 GITHUB_OWNER = "Joshspeakman"
@@ -261,8 +261,31 @@ class GameUpdater:
                     # Copy new version
                     if item.is_dir():
                         if dest.exists():
-                            shutil.rmtree(dest)
-                        shutil.copytree(item, dest)
+                            # Try to remove existing directory, handling locked files
+                            try:
+                                shutil.rmtree(dest, ignore_errors=False)
+                            except OSError:
+                                # If rmtree fails, try removing with ignore_errors
+                                # then manually remove any remaining files
+                                shutil.rmtree(dest, ignore_errors=True)
+                                if dest.exists():
+                                    # Force remove any remaining items
+                                    for root, dirs, files in os.walk(dest, topdown=False):
+                                        for name in files:
+                                            try:
+                                                os.remove(os.path.join(root, name))
+                                            except OSError:
+                                                pass
+                                        for name in dirs:
+                                            try:
+                                                os.rmdir(os.path.join(root, name))
+                                            except OSError:
+                                                pass
+                                    try:
+                                        os.rmdir(dest)
+                                    except OSError:
+                                        pass
+                        shutil.copytree(item, dest, dirs_exist_ok=True)
                     else:
                         shutil.copy2(item, dest)
                 
