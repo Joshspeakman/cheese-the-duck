@@ -249,7 +249,7 @@ AREA_ART = {
         "~~==| XX |=====+====+=~~   ",
         "~===+====+=====|XXXX|===   ",
         "====|    |=====+====+===   ",
-        " ===+/\\\/\\+=============== ",
+        " ===+/\\\\/\\+=============== ",
         "===/______\\=============== ",
         " (@) [$] [*]  (@) [<>] (@) ",
     ],
@@ -1035,6 +1035,13 @@ class ExplorationSystem:
         if not self.current_area:
             # Default to home pond
             self.travel_to("Home Pond")
+        
+        # Validate player level meets area requirements
+        if self.current_area and self.current_area.unlock_level > self._player_level:
+            return {
+                "success": False,
+                "message": f"You need to be level {self.current_area.unlock_level} to explore {self.current_area.name}!",
+            }
         
         self._last_exploration = current_time
         result = {"success": True, "message": "", "xp_gained": 5, "resources": {}}

@@ -220,7 +220,7 @@ ITEMS = {
         mood_bonus=3,
         duck_reaction="content",
         use_message="*munch* Healthy AND tasty! ...Mostly tasty.",
-        icon="[G]",
+        icon="[g]",  # Lowercase to differentiate from cosmic_crumb
     ),
     "grapes": Item(
         id="grapes",
@@ -243,7 +243,7 @@ ITEMS = {
         mood_bonus=4,
         duck_reaction="content",
         use_message="*munch* Healthy... but BORING. Okay fine, it's good.",
-        icon="[O]",
+        icon="[@]",  # Grain-like to differentiate from ball
     ),
     "fish_treat": Item(
         id="fish_treat",
@@ -279,7 +279,7 @@ ITEMS = {
         duck_reaction="transcendent",
         use_message="*SPARKLES* I CAN SEE FOREVER!! ...Is this what enlightenment feels like?!",
         rarity="legendary",
-        icon="[*]",
+        icon="[+]",  # Rainbow sparkle to differentiate from flower
     ),
 
     # === ADDITIONAL TOYS ===

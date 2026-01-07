@@ -649,6 +649,94 @@ VISITOR_COMMENTS: Dict[str, List[ContextComment]] = {
 
 
 # =============================================================================
+# CONVERSATION RESPONSES - Cheese's responses during visitor chats
+# =============================================================================
+
+CONVERSATION_RESPONSES: Dict[str, List[ContextComment]] = {
+    "adventurous": [
+        ContextComment("*nods* That sounds exhausting. In a good way. Allegedly."),
+        ContextComment("*impressed* You actually DID that? I would have stayed home."),
+        ContextComment("*tilts head* Okay but where was the food at this adventure?"),
+        ContextComment("*listening* Mmhmm. Mmhmm. ...sorry, I got distracted by bread thoughts."),
+        ContextComment("That's exciting! I got excited once. It was a lot."),
+        ContextComment("*supportive quack* I believe in your adventures! From here!"),
+        ContextComment("You have 'main character' energy. I have 'background duck' energy."),
+        ContextComment("*nodding along* Go on. I'm very invested. Mostly."),
+    ],
+    "scholarly": [
+        ContextComment("*thoughtful* I understood some of those words. Progress!"),
+        ContextComment("*nodding wisely* Ah yes, I also know things. Different things. Bread things."),
+        ContextComment("That's fascinating! I mean, I assume. I got lost at 'hypothesis'."),
+        ContextComment("*pretending to understand* Mmhmm. Yes. Science."),
+        ContextComment("You're so smart! I'm smart too. Street smart. Pond smart."),
+        ContextComment("*interested* Did you learn that from a book? I learned to avoid books."),
+        ContextComment("*impressed* Big brain energy. I have medium brain energy at best."),
+        ContextComment("Knowledge! I respect it. From a safe distance."),
+    ],
+    "artistic": [
+        ContextComment("*appreciative* That's beautiful! I think? Art is subjective."),
+        ContextComment("*nodding* Very creative. I also create things. Messes, mostly."),
+        ContextComment("You see beauty everywhere! I see potential snacks everywhere."),
+        ContextComment("*moved* That was... profound. I felt something. Possibly gas."),
+        ContextComment("Art is in the eye of the beholder. My eyes behold bread."),
+        ContextComment("*supportive* Express yourself! I express myself through quacking."),
+        ContextComment("Such vision! I have vision too. 20/20. Doctor checked."),
+        ContextComment("*emotional* That spoke to my soul. Or my stomach. Similar area."),
+    ],
+    "playful": [
+        ContextComment("*laughing* Okay that was actually funny. Don't tell anyone I laughed."),
+        ContextComment("Your energy is a lot! But like... a good lot? Maybe?"),
+        ContextComment("*smiling* You're ridiculous. I respect that."),
+        ContextComment("*trying to keep up* Ha! Yes! Fun! ...I need a nap now."),
+        ContextComment("You're like a bounce house. But a duck. Same energy."),
+        ContextComment("*amused* Do you EVER run out of energy? Asking for concern."),
+        ContextComment("*playing along* This is fun! Exhausting, but fun!"),
+        ContextComment("Your chaos is... endearing. Chaotically endearing."),
+    ],
+    "mysterious": [
+        ContextComment("*confused* That was... cryptic. Very on brand for you."),
+        ContextComment("...I have no idea what that means. And I'm okay with that."),
+        ContextComment("*nodding slowly* Mysterious. Very mysterious. Mysteriously mysterious."),
+        ContextComment("You speak in riddles. I speak in quacks. We're both valid."),
+        ContextComment("*intrigued* What does that MEAN though? Never mind. Don't tell me."),
+        ContextComment("*dramatic pause* ...I'm also pausing. For effect. See?"),
+        ContextComment("That sounded deep. I'm shallow. Shallow pond duck."),
+        ContextComment("*whispering back* Why are we being dramatic? ...I love it though."),
+    ],
+    "generous": [
+        ContextComment("*grateful* You're too kind! No, really. Suspiciously kind."),
+        ContextComment("Thank you! I brought you something too! ...no I didn't. But I appreciate you!"),
+        ContextComment("*touched* You thought of me! I think of snacks. You're better."),
+        ContextComment("So generous! I'm also generous. With my presence. You're welcome."),
+        ContextComment("*happy quack* This is why you're my favorite! ...don't tell the others."),
+        ContextComment("You give and give! I take and take! Perfect symbiosis."),
+        ContextComment("*accepting gratefully* I shall treasure this. Or eat it. Depends what it is."),
+        ContextComment("Your heart is huge! My heart is duck-sized but appreciative!"),
+    ],
+    "foodie": [
+        ContextComment("*very interested* Tell me more about this food. All of it. Every detail."),
+        ContextComment("Now THIS is a conversation topic I can get behind! Food!"),
+        ContextComment("*drooling slightly* You understand me. You really understand me."),
+        ContextComment("YES. Food. Finally someone speaking my language!"),
+        ContextComment("*taking mental notes* This is vital information. Life-changing."),
+        ContextComment("*bonding intensifies* We're basically best friends now. Food friends."),
+        ContextComment("I have strong opinions about snacks. Let's compare notes."),
+        ContextComment("*passionate quack* Finally! A kindred spirit! A fellow food appreciator!"),
+    ],
+    "athletic": [
+        ContextComment("*politely declining* That sounds active. I'll watch from here."),
+        ContextComment("You're so fit! I'm so... not fit. But round is a shape!"),
+        ContextComment("*impressed from a distance* Wow! Exercise! ...I'm tired watching."),
+        ContextComment("Your stamina is inspiring! My stamina is... hibernating."),
+        ContextComment("*supportive but stationary* You go! Run! Jump! I'll hold down the pond."),
+        ContextComment("All that energy! I had energy once. In my youth. Last week."),
+        ContextComment("*catching breath* Wait, you're not even winded? HOW?"),
+        ContextComment("Sports! I'm into sports too. Watching sports. From a chair."),
+    ],
+}
+
+
+# =============================================================================
 # TIME OF DAY COMMENTS
 # =============================================================================
 
@@ -775,6 +863,26 @@ class ContextualDialogueSystem:
         text = self._pick_comment(comments, self.last_visitor_comment)
         self.last_visitor_comment = text
         return text
+    
+    def get_conversation_response(self, personality: str) -> Optional[str]:
+        """Get a response to something a visitor said during conversation."""
+        personality_key = personality.lower()
+        comments = CONVERSATION_RESPONSES.get(personality_key)
+        if not comments:
+            # Fallback to generic responses
+            comments = [
+                ContextComment("*nodding* Mmhmm. Yes. I agree. Probably."),
+                ContextComment("*listening* That's interesting! ...I think?"),
+                ContextComment("*thoughtful quack* I see. I see."),
+                ContextComment("*friendly* Tell me more! Or don't. Both fine."),
+            ]
+        
+        # Pick a random response (don't track last to allow repetition in long convos)
+        weighted = []
+        for comment in comments:
+            weight = 4 - comment.rarity
+            weighted.extend([comment] * weight)
+        return random.choice(weighted).text
     
     def get_time_comment(self, time_of_day: str) -> Optional[str]:
         """Get a comment about the time of day."""

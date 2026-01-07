@@ -398,6 +398,10 @@ class Renderer:
         # Cosmetics renderer for showing equipped items
         self._cosmetics_renderer = CosmeticsRenderer()
 
+        # Interaction animation overlay system
+        from ui.interaction_animations import InteractionAnimator
+        self.interaction_animator = InteractionAnimator()
+
         # Playfield decorations (static objects)
         self._playfield_objects: List[Tuple[int, int, str]] = []
         self._generate_playfield_decorations()
@@ -1035,9 +1039,9 @@ class Renderer:
 
         # Get equipped cosmetics and placed items from habitat
         equipped_cosmetics = game.habitat.equipped_cosmetics if hasattr(game, 'habitat') else {}
-        # Placed items (ball, etc.) only appear at Home Pond
+        # Placed items (ball, etc.) only appear at Home Pond - use get_visible_placed_items to respect stored status
         if current_location == "Home Pond" or current_location is None:
-            placed_items = game.habitat.placed_items if hasattr(game, 'habitat') else []
+            placed_items = game.habitat.get_visible_placed_items() if hasattr(game, 'habitat') else []
         else:
             placed_items = []
 
@@ -1402,14 +1406,22 @@ class Renderer:
         # Each entry: (x, y, art_lines, color_func)
         from ui.habitat_art import get_item_art, get_item_color, get_structure_art, get_structure_color
         
+        # Get the item being animated (if any) to hide it from the playfield
+        animating_item_id = self.interaction_animator.get_animating_item_id()
+        
         item_placements = []
         if placed_items:
             for placed_item in placed_items:
+                # Skip the item being animated - it's shown in the animation instead
+                if animating_item_id and placed_item.item_id == animating_item_id:
+                    continue
                 art = get_item_art(placed_item.item_id)
                 color_func = get_item_color(placed_item.item_id)
+                # Use display position which includes animation offset
+                display_x, display_y = placed_item.get_display_position()
                 # Scale item position to playfield coordinates
-                item_x = int(placed_item.x * inner_width / 20)
-                item_y = int(placed_item.y * field_height / 12)
+                item_x = int(display_x * inner_width / 20)
+                item_y = int(display_y * field_height / 12)
                 item_placements.append((item_x, item_y, art, color_func))
         
         # Add built structures to item placements
@@ -1643,24 +1655,51 @@ class Renderer:
                                     color = colors["body"]
                                 row[px] = (char, color)
 
+            # Check if there's an interaction animation playing
+            anim_render_data = self.interaction_animator.get_render_data()
+            if anim_render_data:
+                anim_lines, anim_pos, show_duck, item_color = anim_render_data
+                anim_x, anim_y = anim_pos
+                # Use item color if available, otherwise default to bright yellow
+                anim_color = item_color if item_color else self.term.bright_yellow
+                
+                # Duck characters should stay yellow, item characters get item color
+                # Duck parts: face, beak, body, wings, expressions
+                duck_chars = set("()o>^v-_/\\'|~*")
+
+                # Render animation frame
+                for dy, anim_line in enumerate(anim_lines):
+                    if y == anim_y + dy:
+                        for dx, char in enumerate(anim_line):
+                            px = anim_x + dx
+                            if char != ' ' and 0 <= px < inner_width:
+                                # Duck characters stay yellow, items get item color
+                                if char in duck_chars:
+                                    row[px] = (char, self.term.yellow)
+                                else:
+                                    row[px] = (char, anim_color)
+
             # Add duck if on this row (duck renders ON TOP of items)
+            # Skip if animation is hiding the duck
             duck_y = self.duck_pos.y
             duck_x = self.duck_pos.x
+            should_render_duck = not self.interaction_animator.should_hide_duck()
 
-            for dy in range(duck_height):
-                if y == duck_y + dy:
-                    if duck_grid:
-                        # Use the cosmetics grid (has color info)
-                        duck_row = duck_grid[dy] if dy < len(duck_grid) else []
-                        for dx, (char, color_func) in enumerate(duck_row):
-                            if char != ' ' and 0 <= duck_x + dx < inner_width:
-                                row[duck_x + dx] = (char, color_func)
-                    else:
-                        # No cosmetics, use plain duck art with yellow color
-                        duck_line = duck_art[dy] if dy < len(duck_art) else ""
-                        for dx, char in enumerate(duck_line):
-                            if char != ' ' and 0 <= duck_x + dx < inner_width:
-                                row[duck_x + dx] = (char, self.term.yellow)
+            if should_render_duck:
+                for dy in range(duck_height):
+                    if y == duck_y + dy:
+                        if duck_grid:
+                            # Use the cosmetics grid (has color info)
+                            duck_row = duck_grid[dy] if dy < len(duck_grid) else []
+                            for dx, (char, color_func) in enumerate(duck_row):
+                                if char != ' ' and 0 <= duck_x + dx < inner_width:
+                                    row[duck_x + dx] = (char, color_func)
+                        else:
+                            # No cosmetics, use plain duck art with yellow color
+                            duck_line = duck_art[dy] if dy < len(duck_art) else ""
+                            for dx, char in enumerate(duck_line):
+                                if char != ' ' and 0 <= duck_x + dx < inner_width:
+                                    row[duck_x + dx] = (char, self.term.yellow)
 
             # Add effect overlay above duck if any
             effect_overlay = animation_controller.get_effect_overlay()
@@ -2768,18 +2807,43 @@ class Renderer:
         for i in range(start_idx, end_idx):
             item = items[i]
             prefix = "-> " if i == self._shop_item_index else "   "
-            owned = "[x]" if habitat.owns_item(item.id) else "[ ]"
-            affordable = "$" if habitat.can_afford(item.cost) else "X"
-            content.append(f"{prefix}{owned} {item.name} ${item.cost} {affordable} (Lv{item.unlock_level})")
+            
+            # Show ownership and visibility status
+            if habitat.owns_item(item.id):
+                # Owned item - show placed/stored status
+                if item.category == ItemCategory.COSMETIC:
+                    # Cosmetics show equipped status
+                    is_equipped = item.id in habitat.equipped_cosmetics.values()
+                    status = "[WORN]  " if is_equipped else "[OWNED] "
+                elif habitat.is_item_stored(item.id):
+                    status = "[STORED]"
+                else:
+                    status = "[PLACED]"
+                content.append(f"{prefix}{status} {item.name}")
+            else:
+                # Not owned - show price and affordability
+                affordable = "$" if habitat.can_afford(item.cost) else "X"
+                content.append(f"{prefix}[NEW]    {item.name} ${item.cost} {affordable} Lv{item.unlock_level}")
         
-        # Show selected item description
+        # Show selected item description and actions
         if self._shop_item_index < len(items):
             item = items[self._shop_item_index]
             content.append("")
             content.append(item.description)
+            
+            # Show available action for this item
+            if habitat.owns_item(item.id):
+                if item.category == ItemCategory.COSMETIC:
+                    is_equipped = item.id in habitat.equipped_cosmetics.values()
+                    action_hint = "[E] Unequip" if is_equipped else "[E] Equip"
+                elif habitat.is_item_stored(item.id):
+                    action_hint = "[T] Show (free)"
+                else:
+                    action_hint = "[T] Hide (free)"
+                content.append(action_hint)
         
         content.append("")
-        content.append("<- -> : Category | ^ v : Select | [B]uy | [ESC]")
+        content.append("<- -> : Category | ^ v : Select | [B]uy | [T]oggle | [ESC]")
         
         return self._overlay_box(base_output, content, "[SHOP]", width)
 

@@ -9,6 +9,77 @@ from pathlib import Path
 from world.shop import ShopItem, get_item, ItemCategory
 
 
+# Fixed positions for items - ensures consistent placement
+# Grid is 20x12, organized by category:
+# - Toys: left side (x: 2-7)
+# - Water features: center-right (x: 10-15)
+# - Furniture: right side (x: 15-18)
+# - Decorations/Plants: scattered around edges
+ITEM_FIXED_POSITIONS: Dict[str, Tuple[int, int]] = {
+    # === TOYS (left side) ===
+    "toy_ball": (3, 3),
+    "toy_blocks": (5, 2),
+    "toy_trumpet": (2, 5),
+    "toy_skateboard": (4, 7),
+    "toy_piano": (6, 4),
+    "toy_trampoline": (3, 9),
+    "toy_slide": (5, 6),
+    "toy_swing": (2, 8),
+    "toy_seesaw": (6, 10),
+    "toy_sandbox": (4, 10),
+    "toy_boombox": (7, 3),
+    "toy_car": (3, 6),
+    "rubber_duck": (5, 5),
+    "frisbee": (2, 2),
+    "squeaky_toy": (6, 8),
+    "trampoline": (4, 4),
+
+    # === WATER FEATURES (center-right) ===
+    "pool_kiddie": (11, 5),
+    "pool_large": (12, 7),
+    "fountain_small": (10, 3),
+    "fountain_grand": (13, 4),
+    "sprinkler": (11, 9),
+    "hot_tub": (14, 6),
+    "birdbath": (10, 8),
+    "pond": (12, 2),
+    "water_slide": (13, 9),
+    "waterfall": (14, 3),
+    "fountain_statue": (11, 2),
+    "birdbath_garden": (10, 10),
+    "fountain_decorative": (13, 2),
+
+    # === FURNITURE (right side) ===
+    "chair_wood": (16, 4),
+    "chair_throne": (17, 3),
+    "table_small": (15, 5),
+    "bed_small": (18, 6),
+    "bed_king": (17, 8),
+    "couch": (16, 7),
+    "hammock": (18, 4),
+    "bookshelf": (15, 3),
+    "lamp": (18, 2),
+    "fireplace": (16, 2),
+    "piano": (15, 9),
+
+    # === PLANTS (scattered around edges) ===
+    "flower_rose": (1, 1),
+    "flower_tulip": (19, 1),
+    "flower_sunflower": (1, 10),
+    "tree_oak": (19, 10),
+    "tree_pine": (1, 6),
+    "cactus": (19, 6),
+    "bamboo": (8, 1),
+    "bonsai": (8, 10),
+
+    # === DECORATIONS ===
+    "rock_pile": (9, 2),
+    "garden_gnome": (9, 9),
+    "wind_chime": (8, 5),
+    "bird_feeder": (9, 7),
+}
+
+
 @dataclass
 class PlacedItem:
     """An item that has been placed in the habitat."""
@@ -98,6 +169,7 @@ class Habitat:
     def __init__(self):
         self.owned_items: List[str] = []  # Item IDs owned
         self.placed_items: List[PlacedItem] = []  # Items placed in habitat
+        self.stored_items: List[str] = []  # Item IDs that are hidden/stored (not visible)
         self.equipped_cosmetics: Dict[str, str] = {}  # slot -> item_id
         self.currency: int = 100  # Starting currency
         
@@ -138,30 +210,49 @@ class Habitat:
         return True
     
     def _auto_place_item(self, item_id: str):
-        """Find a random empty spot and place an item."""
-        import random
-        
-        # Try to find an empty spot (avoid edges and center where duck spawns)
-        max_attempts = 50
-        for _ in range(max_attempts):
-            x = random.randint(1, self.width - 2)
-            y = random.randint(1, self.height - 2)
-            
-            # Avoid the center area where duck typically is
-            if 7 <= x <= 12 and 4 <= y <= 8:
-                continue
-            
-            # Check if spot is empty
+        """Place an item at its designated fixed position, or use deterministic fallback."""
+        # First, check for a fixed position
+        if item_id in ITEM_FIXED_POSITIONS:
+            x, y = ITEM_FIXED_POSITIONS[item_id]
             if not self.get_item_at(x, y):
                 self.place_item(item_id, x, y)
                 return
-        
-        # If all attempts failed, place at first available spot
-        for y in range(1, self.height - 1):
-            for x in range(1, self.width - 1):
-                if not self.get_item_at(x, y):
-                    self.place_item(item_id, x, y)
-                    return
+            # Fixed position occupied, try nearby positions
+            for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1)]:
+                nx, ny = x + dx, y + dy
+                if 1 <= nx < self.width - 1 and 1 <= ny < self.height - 1:
+                    if not self.get_item_at(nx, ny):
+                        self.place_item(item_id, nx, ny)
+                        return
+
+        # Fallback: hash-based deterministic placement (same item always tries same spot)
+        hash_val = hash(item_id)
+        base_x = (abs(hash_val) % 16) + 2  # Range 2-17
+        base_y = (abs(hash_val >> 8) % 8) + 2  # Range 2-9
+
+        # Avoid the center area where duck spawns
+        if 7 <= base_x <= 12 and 4 <= base_y <= 8:
+            base_x = (base_x + 8) % 16 + 2
+
+        # Try the deterministic position first
+        if not self.get_item_at(base_x, base_y):
+            self.place_item(item_id, base_x, base_y)
+            return
+
+        # If occupied, spiral outward from the deterministic position
+        for radius in range(1, max(self.width, self.height)):
+            for dx in range(-radius, radius + 1):
+                for dy in range(-radius, radius + 1):
+                    if abs(dx) != radius and abs(dy) != radius:
+                        continue  # Only check perimeter
+                    nx, ny = base_x + dx, base_y + dy
+                    if 1 <= nx < self.width - 1 and 1 <= ny < self.height - 1:
+                        # Avoid center duck spawn area
+                        if 7 <= nx <= 12 and 4 <= ny <= 8:
+                            continue
+                        if not self.get_item_at(nx, ny):
+                            self.place_item(item_id, nx, ny)
+                            return
     
     def owns_item(self, item_id: str) -> bool:
         """Check if player owns an item."""
@@ -209,9 +300,12 @@ class Habitat:
         placed_item.start_animation(anim_type)
 
     def get_items_near(self, x: int, y: int, radius: int = 3) -> List[PlacedItem]:
-        """Get items near a position."""
+        """Get visible items near a position (excludes stored items)."""
         nearby = []
         for item in self.placed_items:
+            # Skip stored (hidden) items
+            if item.item_id in self.stored_items:
+                continue
             dx = abs(item.x - x)
             dy = abs(item.y - y)
             if dx <= radius and dy <= radius:
@@ -219,9 +313,12 @@ class Habitat:
         return nearby
 
     def get_placed_items_by_category(self, category: ItemCategory) -> List[PlacedItem]:
-        """Get all placed items of a category."""
+        """Get all visible placed items of a category (excludes stored items)."""
         result = []
         for placed in self.placed_items:
+            # Skip stored (hidden) items
+            if placed.item_id in self.stored_items:
+                continue
             item = get_item(placed.item_id)
             if item and item.category == category:
                 result.append(placed)
@@ -271,9 +368,12 @@ class Habitat:
         return "head"  # Default to head slot
     
     def get_nearby_items(self, x: int, y: int, radius: int = 2) -> List[PlacedItem]:
-        """Get items near a position (for duck interaction)."""
+        """Get visible items near a position for duck interaction (excludes stored items)."""
         nearby = []
         for item in self.placed_items:
+            # Skip stored (hidden) items
+            if item.item_id in self.stored_items:
+                continue
             dx = abs(item.x - x)
             dy = abs(item.y - y)
             if dx <= radius and dy <= radius:
@@ -317,6 +417,7 @@ class Habitat:
         return {
             "owned_items": self.owned_items,
             "placed_items": [item.to_dict() for item in self.placed_items],
+            "stored_items": self.stored_items,
             "equipped_cosmetics": self.equipped_cosmetics,
             "currency": self.currency
         }
@@ -325,6 +426,7 @@ class Habitat:
         """Load habitat from dictionary."""
         self.owned_items = data.get("owned_items", [])
         self.placed_items = [PlacedItem.from_dict(item) for item in data.get("placed_items", [])]
+        self.stored_items = data.get("stored_items", [])
         self.equipped_cosmetics = data.get("equipped_cosmetics", {})
         self.currency = data.get("currency", 100)
     
@@ -333,6 +435,83 @@ class Habitat:
         return {
             "owned_items": len(self.owned_items),
             "placed_items": len(self.placed_items),
+            "stored_items": len(self.stored_items),
             "currency": self.currency,
             "cosmetics_equipped": len(self.equipped_cosmetics)
         }
+    
+    def is_item_stored(self, item_id: str) -> bool:
+        """Check if an owned item is currently stored (hidden)."""
+        return item_id in self.stored_items
+    
+    def is_item_placed(self, item_id: str) -> bool:
+        """Check if an owned item is currently placed (visible)."""
+        return any(p.item_id == item_id for p in self.placed_items)
+    
+    def toggle_item_visibility(self, item_id: str) -> str:
+        """Toggle an owned item between placed and stored states.
+        
+        Returns:
+            'placed' - item is now visible in habitat
+            'stored' - item is now hidden
+            'not_owned' - item is not owned
+            'cosmetic' - cosmetics can't be toggled this way
+        """
+        if item_id not in self.owned_items:
+            return 'not_owned'
+        
+        # Cosmetics are handled separately via equip/unequip
+        item = get_item(item_id)
+        if item and item.category == ItemCategory.COSMETIC:
+            return 'cosmetic'
+        
+        if item_id in self.stored_items:
+            # Currently stored -> place it
+            self.stored_items.remove(item_id)
+            self._auto_place_item(item_id)
+            return 'placed'
+        else:
+            # Currently placed -> store it
+            # Remove from placed_items
+            self.placed_items = [p for p in self.placed_items if p.item_id != item_id]
+            self.stored_items.append(item_id)
+            return 'stored'
+    
+    def store_item(self, item_id: str) -> bool:
+        """Store (hide) an item from the habitat. Returns True if successful."""
+        if item_id not in self.owned_items:
+            return False
+        
+        item = get_item(item_id)
+        if item and item.category == ItemCategory.COSMETIC:
+            return False
+        
+        if item_id in self.stored_items:
+            return True  # Already stored
+        
+        # Remove from placed_items
+        self.placed_items = [p for p in self.placed_items if p.item_id != item_id]
+        self.stored_items.append(item_id)
+        return True
+    
+    def show_item(self, item_id: str) -> bool:
+        """Show (place) an item in the habitat. Returns True if successful."""
+        if item_id not in self.owned_items:
+            return False
+        
+        item = get_item(item_id)
+        if item and item.category == ItemCategory.COSMETIC:
+            return False
+        
+        if item_id in self.stored_items:
+            self.stored_items.remove(item_id)
+        
+        # Only place if not already placed
+        if not any(p.item_id == item_id for p in self.placed_items):
+            self._auto_place_item(item_id)
+        
+        return True
+    
+    def get_visible_placed_items(self) -> List[PlacedItem]:
+        """Get only the placed items that are visible (not stored)."""
+        return [p for p in self.placed_items if p.item_id not in self.stored_items]

@@ -3,7 +3,7 @@ Save/load system for game persistence using JSON.
 """
 import json
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 from datetime import datetime
 
 from config import SAVE_DIR, SAVE_FILE
@@ -44,11 +44,23 @@ class SaveManager:
 
             # Write atomically using temp file
             temp_path = self.save_path.with_suffix(".tmp")
+            
+            # Remove existing temp file if crashed save left one behind
+            if temp_path.exists():
+                temp_path.unlink()
+            
             with open(temp_path, "w", encoding="utf-8") as f:
                 json.dump(save_data, f, indent=2, ensure_ascii=False)
 
-            # Rename temp to actual save file
-            temp_path.replace(self.save_path)
+            # Rename temp to actual save file (atomic on most systems)
+            try:
+                temp_path.replace(self.save_path)
+            except OSError as rename_error:
+                # If rename fails, try to preserve the temp file data
+                print(f"Warning: Could not complete atomic save: {rename_error}")
+                # Temp file still exists with valid data
+                return False
+            
             return True
 
         except (IOError, OSError, TypeError) as e:

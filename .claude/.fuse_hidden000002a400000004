@@ -3,8 +3,7 @@
     "allow": [
       "Bash(dotnet --list-sdks:*)",
       "Bash(dotnet --list-runtimes:*)",
-      "Bash(lsb_release:*)",
-      "Bash(python3 -m py_compile:*)"
+      "Bash(lsb_release:*)"
     ]
   }
 }

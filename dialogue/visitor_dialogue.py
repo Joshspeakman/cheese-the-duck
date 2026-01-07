@@ -361,12 +361,13 @@ class VisitorDialogueManager:
             # Move to next phase
             return self._advance_phase(duck_name)
         
-        # Pick a line (weighted toward ones not said yet)
+        # Pick a line that hasn't been said yet in this visit
         unsaid = [l for l in available if l.text not in self.state.lines_said]
         if unsaid:
             line = random.choice(unsaid)
         else:
-            line = random.choice(available)
+            # All lines in this phase have been said at least once - advance to next phase
+            return self._advance_phase(duck_name)
         
         # Record that we said it
         self.state.lines_said.append(line.text)

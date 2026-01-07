@@ -82,9 +82,10 @@ class Needs:
         social_shy = personality.get("social_shy", 0)
         modifiers["social"] = 1.0 + (social_shy / 200)
 
-        # Messy ducks get dirty faster
+        # Messy ducks tolerate dirt better (slower cleanliness decay)
+        # Neat ducks notice dirt more (faster cleanliness decay)
         neat_messy = personality.get("neat_messy", 0)
-        modifiers["cleanliness"] = 1.0 - (neat_messy / 200)  # Messy = slower clean decay
+        modifiers["cleanliness"] = 1.0 - (neat_messy / 200)  # Messy = slower decay, neat = faster decay
 
         return modifiers
 

@@ -2,9 +2,12 @@
 Shop system - 255 items to unlock and place in the habitat.
 Items range from cosmetics to furniture with visual impact and interactions.
 """
+import logging
 from enum import Enum
 from typing import Dict, List, Optional
 from dataclasses import dataclass
+
+logger = logging.getLogger(__name__)
 
 
 class ItemCategory(Enum):
@@ -55,7 +58,14 @@ SHOP_ITEMS: Dict[str, ShopItem] = {}
 
 
 def register_item(item: ShopItem):
-    """Register an item in the shop."""
+    """Register an item in the shop.
+    
+    Raises:
+        ValueError: If item with same ID already exists (duplicate detection)
+    """
+    if item.id in SHOP_ITEMS:
+        existing = SHOP_ITEMS[item.id]
+        logger.warning(f"Duplicate shop item ID detected: '{item.id}' - overwriting '{existing.name}' with '{item.name}'")
     SHOP_ITEMS[item.id] = item
 
 

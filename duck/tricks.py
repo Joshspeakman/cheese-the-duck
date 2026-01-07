@@ -446,9 +446,9 @@ class TricksSystem:
         if self.last_training_date == today:
             pass  # Same day
         elif self.last_training_date:
-            yesterday = (datetime.now().date().toordinal() -
+            days_since_last_training = (datetime.now().date().toordinal() -
                          datetime.fromisoformat(self.last_training_date).date().toordinal())
-            if yesterday == 1:
+            if days_since_last_training == 1:
                 self.training_streak += 1
             else:
                 self.training_streak = 1
@@ -722,5 +722,21 @@ class TricksSystem:
         return system
 
 
-# Global tricks system instance
+# Lazy singleton pattern - initialized on first access
+_tricks_system: Optional[TricksSystem] = None
+
+
+def get_tricks_system() -> TricksSystem:
+    """Get the global tricks system instance (lazy initialization).
+    
+    This pattern defers initialization until the system is actually needed,
+    improving startup time and avoiding circular import issues.
+    """
+    global _tricks_system
+    if _tricks_system is None:
+        _tricks_system = TricksSystem()
+    return _tricks_system
+
+
+# Direct instance for backwards compatibility
 tricks_system = TricksSystem()

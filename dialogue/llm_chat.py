@@ -5,8 +5,17 @@ LOCAL ONLY - no external API calls.
 """
 import os
 import sys
-from typing import Optional, List, Dict, TYPE_CHECKING
+import logging
+import threading
+import concurrent.futures
+from typing import Optional, List, Dict, Any, TYPE_CHECKING
 from pathlib import Path
+
+# Configure logging for LLM operations
+logger = logging.getLogger(__name__)
+
+# LLM call timeout in seconds
+LLM_CALL_TIMEOUT = 30.0
 
 if TYPE_CHECKING:
     from duck.duck import Duck
@@ -74,6 +83,32 @@ def _detect_gpu_layers() -> int:
     
     # No GPU detected or detection failed - use CPU
     return 0
+
+
+def _call_with_timeout(func, timeout: float = LLM_CALL_TIMEOUT) -> Any:
+    """
+    Execute an LLM call with a timeout.
+    
+    Args:
+        func: A callable that performs the LLM operation
+        timeout: Maximum time in seconds to wait
+        
+    Returns:
+        The result of func() or None if timeout/error
+        
+    Raises:
+        TimeoutError: If the call exceeds the timeout
+    """
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(func)
+        try:
+            return future.result(timeout=timeout)
+        except concurrent.futures.TimeoutError:
+            logger.warning(f"LLM call timed out after {timeout}s")
+            raise TimeoutError(f"LLM call timed out after {timeout} seconds")
+        except Exception as e:
+            logger.error(f"LLM call failed: {e}")
+            raise
 
 
 class LLMChat:
@@ -265,12 +300,15 @@ Example responses:
         messages.append({"role": "user", "content": player_input})
 
         try:
-            response = self._llama.create_chat_completion(
-                messages=messages,
-                max_tokens=LLM_MAX_TOKENS_CHAT,
-                temperature=LLM_TEMPERATURE,
-                top_p=0.9,
-                stop=["\n\n", "Human:", "User:"],
+            # Use timeout wrapper to prevent hanging
+            response = _call_with_timeout(
+                lambda: self._llama.create_chat_completion(
+                    messages=messages,
+                    max_tokens=LLM_MAX_TOKENS_CHAT,
+                    temperature=LLM_TEMPERATURE,
+                    top_p=0.9,
+                    stop=["\n\n", "Human:", "User:"],
+                )
             )
 
             if response and "choices" in response and response["choices"]:
@@ -290,8 +328,12 @@ Example responses:
             else:
                 self._last_error = "Invalid response structure from model"
 
+        except TimeoutError as e:
+            self._last_error = f"LLM timeout: {e}"
+            logger.warning(f"Chat completion timed out for {duck.name}")
         except Exception as e:
             self._last_error = f"Local model error: {e}"
+            logger.error(f"Chat completion error: {e}")
 
         return None
 
@@ -317,12 +359,15 @@ Example responses:
         prompt += f"Human: {player_input}\n{name}:"
 
         try:
-            response = self._llama(
-                prompt,
-                max_tokens=LLM_MAX_TOKENS,
-                temperature=LLM_TEMPERATURE,
-                top_p=0.9,
-                stop=["Human:", "\n\n", f"\n{name}:"],
+            # Use timeout wrapper to prevent hanging
+            response = _call_with_timeout(
+                lambda: self._llama(
+                    prompt,
+                    max_tokens=LLM_MAX_TOKENS,
+                    temperature=LLM_TEMPERATURE,
+                    top_p=0.9,
+                    stop=["Human:", "\n\n", f"\n{name}:"],
+                )
             )
 
             if response and "choices" in response and response["choices"]:
@@ -342,8 +387,12 @@ Example responses:
             else:
                 self._last_error = "Invalid response structure from model"
 
+        except TimeoutError as e:
+            self._last_error = f"LLM timeout: {e}"
+            logger.warning(f"Completion timed out for {duck.name}")
         except Exception as e:
             self._last_error = f"Local model error: {e}"
+            logger.error(f"Completion error: {e}")
 
         return None
 
@@ -379,12 +428,16 @@ Examples:
 Action:"""
 
         try:
-            response = self._llama(
-                prompt,
-                max_tokens=15,
-                temperature=0.7,
-                top_p=0.9,
-                stop=["\n", ".", "!", "?"],
+            # Use timeout wrapper (shorter timeout for quick action descriptions)
+            response = _call_with_timeout(
+                lambda: self._llama(
+                    prompt,
+                    max_tokens=15,
+                    temperature=0.7,
+                    top_p=0.9,
+                    stop=["\n", ".", "!", "?"],
+                ),
+                timeout=10.0  # Shorter timeout for action commentary
             )
 
             if response and "choices" in response and response["choices"]:
@@ -400,8 +453,11 @@ Action:"""
                     if len(content) <= 25:
                         return content
 
+        except TimeoutError:
+            logger.debug("Action commentary timed out")
         except Exception as e:
             self._last_error = f"Action commentary error: {e}"
+            logger.error(f"Action commentary error: {e}")
 
         return None
 
@@ -451,12 +507,16 @@ Be unique to your personality. Don't be generic.
 {visitor_name}:"""
 
         try:
-            response = self._llama(
-                prompt,
-                max_tokens=60,
-                temperature=0.85,
-                top_p=0.9,
-                stop=["\n\n", "Human:", f"\n{visitor_name}:", f"\n{duck.name}:"],
+            # Use timeout wrapper for visitor dialogue
+            response = _call_with_timeout(
+                lambda: self._llama(
+                    prompt,
+                    max_tokens=60,
+                    temperature=0.85,
+                    top_p=0.9,
+                    stop=["\n\n", "Human:", f"\n{visitor_name}:", f"\n{duck.name}:"],
+                ),
+                timeout=15.0  # Moderate timeout for visitor dialogue
             )
 
             if response and "choices" in response and response["choices"]:
@@ -465,8 +525,11 @@ Be unique to your personality. Don't be generic.
                     cleaned = self._clean_response(content, visitor_name)
                     return cleaned
 
+        except TimeoutError:
+            logger.debug(f"Visitor dialogue timed out for {visitor_name}")
         except Exception as e:
             self._last_error = f"Visitor dialogue error: {e}"
+            logger.error(f"Visitor dialogue error: {e}")
 
         return None
 

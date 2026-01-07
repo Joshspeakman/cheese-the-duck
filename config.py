@@ -144,3 +144,30 @@ LLM_WORKER_TIMEOUT = 10.0       # Max seconds to wait for LLM response
 
 # Conversation Memory
 LLM_MAX_HISTORY = 6             # Messages to keep in conversation history
+
+
+# ===== GAMEPLAY CONSTANTS =====
+# Timing (seconds)
+EXPLORATION_COOLDOWN = 30           # Cooldown between explorations
+DEFAULT_EVENT_COOLDOWN = 300        # Default event cooldown (5 minutes)
+DAILY_COOLDOWN = 86400              # 24 hours in seconds
+HOURLY_COOLDOWN = 3600              # 1 hour in seconds
+MUSIC_COOLDOWN_MIN = 120            # Min seconds between music loops
+MUSIC_COOLDOWN_MAX = 300            # Max seconds between music loops
+
+# XP Rewards
+BASE_EXPLORATION_XP = 5             # XP per exploration
+XP_PER_BUILD_STAGE = 20             # XP per building stage completed
+RARE_DISCOVERY_XP_BONUS = 20        # Bonus XP for rare discoveries
+NEW_AREA_XP_BONUS = 50              # Bonus XP for discovering new areas
+
+# Skill Thresholds (XP required for each level 1-10)
+BUILDING_SKILL_THRESHOLDS = [0, 40, 120, 280, 500, 800, 1200, 1700, 2400, 3200]
+GATHERING_SKILL_THRESHOLDS = [0, 50, 150, 300, 500, 800, 1200, 1800, 2500, 3500]
+CRAFTING_SKILL_THRESHOLDS = [0, 50, 150, 350, 600, 1000, 1500, 2200, 3000, 4000]
+
+# Rates and Chances
+AREA_DISCOVERY_CHANCE = 0.1         # 10% chance to discover new area
+CRAFTING_CANCEL_REFUND_RATE = 0.5   # 50% material refund on cancel
+UPGRADE_MATERIAL_RECOVERY = 0.5     # 50% materials recovered when upgrading
+RAINY_DAY_CHANCE = 0.05             # 5% chance for special rainy day event

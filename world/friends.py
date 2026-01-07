@@ -797,38 +797,7 @@ class VisitorAnimator:
         if not self._near_duck:
             return None
         
-        # Try LLM-powered dialogue first (seamlessly falls back to template)
-        controller = _get_llm_controller()
-        if controller and self._duck_ref:
-            controller.set_duck(self._duck_ref)
-            
-            # Get fallback from dialogue manager or old system
-            fallback_line = None
-            if self._dialogue_manager:
-                fallback_line = self._dialogue_manager.get_next_dialogue(duck_name)
-            if not fallback_line:
-                chat_lines = VISITOR_IDLE_CHAT.get(self._personality, VISITOR_IDLE_CHAT.get("adventurous", [""]))
-                if chat_lines:
-                    fallback_line = f"{self._friend_name}: " + random.choice(chat_lines).format(duck=duck_name)
-            
-            # Request LLM dialogue with fallback
-            llm_dialogue = controller.request_visitor_dialogue(
-                duck=self._duck_ref,
-                visitor_name=self._friend_name,
-                visitor_personality=self._personality,
-                friendship_level=self._friendship_level,
-                shared_memories=self._shared_memories,
-                conversation_phase="main",
-                fallback=fallback_line
-            )
-            
-            if llm_dialogue:
-                # Format with visitor name if not already included
-                if not llm_dialogue.startswith(self._friend_name):
-                    llm_dialogue = f"{self._friend_name}: {llm_dialogue}"
-                return llm_dialogue
-        
-        # Use new dialogue system if available
+        # Use new dialogue system if available (primary source)
         if self._dialogue_manager:
             dialogue = self._dialogue_manager.get_next_dialogue(duck_name)
             if dialogue:
@@ -841,7 +810,7 @@ class VisitorAnimator:
                 self._conversation_over = True
                 return None
         
-        # Fallback to old system
+        # Fallback to old system (only if no dialogue manager)
         chat_lines = VISITOR_IDLE_CHAT.get(self._personality, VISITOR_IDLE_CHAT["adventurous"])
         line = random.choice(chat_lines).format(duck=duck_name)
         return f"{self._friend_name}: {line}"

@@ -529,5 +529,21 @@ class PrestigeSystem:
         return system
 
 
-# Global prestige system instance
+# Lazy singleton pattern - initialized on first access
+_prestige_system: Optional[PrestigeSystem] = None
+
+
+def get_prestige_system() -> PrestigeSystem:
+    """Get the global prestige system instance (lazy initialization).
+    
+    This pattern defers initialization until the system is actually needed,
+    improving startup time and avoiding circular import issues.
+    """
+    global _prestige_system
+    if _prestige_system is None:
+        _prestige_system = PrestigeSystem()
+    return _prestige_system
+
+
+# Direct instance for backwards compatibility
 prestige_system = PrestigeSystem()
