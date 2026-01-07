@@ -203,6 +203,27 @@ class Game:
         self._treasure_digging = False    # Currently digging for treasure
         self._treasure_dig_progress = 0   # Dig animation progress
         
+        # Scrapbook menu
+        self._scrapbook_menu_open = False  # Flag for scrapbook menu
+        self._scrapbook_page = 0           # Current scrapbook page
+        self._scrapbook_selected = 0       # Currently selected photo on page
+        
+        # Tricks menu pagination
+        self._tricks_menu_open = False     # Flag for tricks menu
+        self._tricks_menu_page = 0         # Current page of tricks
+        
+        # Titles menu pagination  
+        self._titles_menu_open = False     # Flag for titles menu
+        self._titles_menu_page = 0         # Current page of titles
+        
+        # Decorations menu pagination
+        self._decorations_menu_open = False  # Flag for decorations menu
+        self._decorations_menu_page = 0      # Current page of decorations
+        
+        # Collectibles menu pagination
+        self._collectibles_menu_open = False  # Flag for collectibles menu
+        self._collectibles_menu_page = 0      # Current page of collectibles
+        
         # Title screen menu state
         self._title_menu_index = 0        # Currently selected title menu option
         self._title_update_status = ""    # Update status message for title screen
@@ -465,6 +486,21 @@ class Game:
         if self._treasure_menu_open:
             self._handle_treasure_input(key)
             return
+        if self._scrapbook_menu_open:
+            self._handle_scrapbook_input(key)
+            return
+        if self._tricks_menu_open:
+            self._handle_tricks_input(key)
+            return
+        if self._titles_menu_open:
+            self._handle_titles_input(key)
+            return
+        if self._decorations_menu_open:
+            self._handle_decorations_input(key)
+            return
+        if self._collectibles_menu_open:
+            self._handle_collectibles_input(key)
+            return
         if self._festival_menu_open:
             self._handle_festival_input(key)
             return
@@ -500,6 +536,7 @@ class Game:
 
     def _handle_talk_input(self, key):
         """Handle input while in talk mode."""
+        # ESC closes talk mode (Backspace is used for text editing)
         if key.name == "KEY_ESCAPE":
             self.renderer.toggle_talk()
             return
@@ -527,8 +564,8 @@ class Game:
         """Handle input while in shop mode."""
         key_str = str(key).lower()
 
-        # Close shop with ESC or B
-        if key.name == "KEY_ESCAPE" or key_str == 'b':
+        # Close shop with ESC, Backspace, or B
+        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'b':
             self.renderer.toggle_shop()
             return
 
@@ -556,6 +593,11 @@ class Game:
         # Toggle item visibility with T
         if key_str == 't':
             self._toggle_selected_item_visibility()
+            return
+
+        # Equip/Unequip cosmetic with E
+        if key_str == 'e':
+            self._toggle_cosmetic_equip()
             return
 
     def _handle_crafting_input_direct(self, key):
@@ -586,8 +628,8 @@ class Game:
                 self._crafting_menu_open = False
                 self.renderer.show_message(result["message"], duration=3.0)
             return
-        # Close with ESC or C
-        if key.name == "KEY_ESCAPE" or key_str == 'c':
+        # Close with ESC, Backspace, or C
+        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'c':
             self._crafting_menu_open = False
             self.renderer.dismiss_message()
             return
@@ -620,7 +662,7 @@ class Game:
                 else:
                     self.renderer.show_message(result["message"], duration=3.0)
             return
-        if key.name == "KEY_ESCAPE" or key_str == 'r':
+        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'r':
             self._building_menu_open = False
             self.renderer.dismiss_message()
             return
@@ -650,7 +692,7 @@ class Game:
                 self.renderer.dismiss_message()
                 self._start_travel_to_area(area)
             return
-        if key.name == "KEY_ESCAPE" or key_str == 'a':
+        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'a':
             self._areas_menu_open = False
             self.renderer.dismiss_message()
             return
@@ -680,7 +722,7 @@ class Game:
                 self.renderer.dismiss_message()
                 self._execute_item_interaction(item_id)
             return
-        if key.name == "KEY_ESCAPE" or key_str == 'u':
+        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'u':
             self._use_menu_open = False
             self.renderer.dismiss_message()
             return
@@ -709,7 +751,7 @@ class Game:
                 self.renderer.dismiss_message()
                 self._start_minigame(selected.data["id"])
             return
-        if key.name == "KEY_ESCAPE" or key_str == 'j':
+        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'j':
             self._minigames_menu_open = False
             self.renderer.dismiss_message()
             return
@@ -740,7 +782,7 @@ class Game:
                     self.renderer.dismiss_message()
                     self._start_selected_quest(quest_id)
             return
-        if key.name == "KEY_ESCAPE" or key_str == 'o':
+        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'o':
             self._quests_menu_open = False
             self.renderer.dismiss_message()
             return
@@ -893,6 +935,41 @@ class Game:
             self.renderer.show_message("Use [E] to equip/unequip cosmetics!")
         else:
             self.renderer.show_message("Can't toggle this item!")
+
+    def _toggle_cosmetic_equip(self):
+        """Toggle equip/unequip of the currently selected cosmetic item."""
+        item = self.renderer.get_selected_shop_item()
+        if not item:
+            return
+        
+        # Can only equip owned cosmetics
+        if not self.habitat.owns_item(item.id):
+            self.renderer.show_message("Buy the item first!")
+            return
+        
+        # Check if it's a cosmetic
+        from world.shop import ItemCategory
+        if item.category != ItemCategory.COSMETIC:
+            self.renderer.show_message("Not a cosmetic item!")
+            return
+        
+        # Check if currently equipped
+        is_equipped = item.id in self.habitat.equipped_cosmetics.values()
+        
+        if is_equipped:
+            # Find the slot and unequip
+            slot_to_remove = None
+            for slot, item_id in self.habitat.equipped_cosmetics.items():
+                if item_id == item.id:
+                    slot_to_remove = slot
+                    break
+            if slot_to_remove:
+                self.habitat.unequip_cosmetic(slot_to_remove)
+                self.renderer.show_message(f"Unequipped {item.name}!")
+        else:
+            # Equip the cosmetic
+            self.habitat.equip_cosmetic(item.id)
+            self.renderer.show_message(f"Equipped {item.name}!")
 
     def _use_inventory_item(self, index: int):
         """Use an inventory item by index."""
@@ -1410,6 +1487,44 @@ class Game:
                     self._quit()
                     return
 
+            # Universal ESC and Backspace to close any overlay
+            if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE":
+                # Check if any overlay is open and close it
+                if self.renderer._show_stats:
+                    self.renderer._stats_scroll_offset = 0
+                    self.renderer.toggle_stats()
+                    return
+                if self.renderer._show_inventory:
+                    self.renderer.toggle_inventory()
+                    return
+                if self.renderer._show_help:
+                    self.renderer.toggle_help()
+                    return
+                if self._show_goals:
+                    self._show_goals = False
+                    self.renderer.dismiss_message()
+                    return
+                # If no overlay open, do nothing (or could close message overlay)
+                if self.renderer._show_message_overlay:
+                    self.renderer._show_message_overlay = False
+                    return
+
+            # Stats overlay - arrow key navigation when open
+            if self.renderer._show_stats:
+                if key.name == "KEY_UP":
+                    self.renderer._stats_scroll_offset = max(0, self.renderer._stats_scroll_offset - 1)
+                    return
+                if key.name == "KEY_DOWN":
+                    self.renderer._stats_scroll_offset += 1
+                    return
+                # S closes stats
+                if key_str == 's':
+                    self.renderer._stats_scroll_offset = 0
+                    self.renderer.toggle_stats()
+                    return
+                # Consume other keys when stats is open
+                return
+
             # Stats toggle [S]
             if key_str == 's':
                 self._close_all_menus()  # Close any open menus first
@@ -1465,18 +1580,18 @@ class Game:
                 self._show_use_menu()
                 return
 
-            # Sound toggle [M]
+            # Music mute toggle [M]
             if key_str == 'm':
-                self._sound_enabled = sound_engine.toggle()
-                status = "ON" if self._sound_enabled else "OFF"
-                self.renderer.show_message(f"Sound: {status}")
-                return
-
-            # Music mute toggle [N]
-            if key_str == 'n':
                 muted = sound_engine.toggle_music_mute()
                 status = "OFF" if muted else "ON"
                 self.renderer.show_message(f"Music: {status}")
+                return
+
+            # Sound toggle [N]
+            if key_str == 'n':
+                self._sound_enabled = sound_engine.toggle()
+                status = "ON" if self._sound_enabled else "OFF"
+                self.renderer.show_message(f"Sound: {status}")
                 return
 
             # Volume up [+] or [=]
@@ -1741,7 +1856,7 @@ class Game:
         state_durations = {
             "feed": 4.0,    # Eating animation for 4 seconds
             "play": 3.0,    # Playing animation for 3 seconds
-            "sleep": 15.0,  # Sleeping animation for 15 seconds
+            "sleep": 20.0,  # Sleeping animation - will be extended by dream if needed
             "clean": 3.5,   # Cleaning animation for 3.5 seconds
             "pet": 2.5,     # Petting animation for 2.5 seconds
         }
@@ -1752,8 +1867,7 @@ class Game:
         elif interaction == "play":
             self.renderer.set_duck_state("playing", duration)
         elif interaction == "sleep":
-            self.renderer.set_duck_state("sleeping", duration)
-            # Start a dream sequence
+            # Start dream first to calculate proper duration, then set state
             self._start_dream()
         elif interaction == "clean":
             self.renderer.set_duck_state("cleaning", duration)
@@ -1803,6 +1917,25 @@ class Game:
                 duration=4.0
             )
             duck_sounds.level_up()
+            
+            # Log relationship milestone to scrapbook
+            from world.scrapbook import PhotoCategory
+            duck_age = self.duck.age_days if self.duck else 1
+            location = self.exploration.current_area.name if self.exploration.current_area else "Home Pond"
+            weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+            mood_val = self.duck.get_mood().state.value if self.duck else "happy"
+            self.scrapbook.take_photo(
+                title=f"{level_name}!",
+                description=f"Our relationship grew to {level_name}!",
+                category=PhotoCategory.MILESTONE,
+                art_key="duck_happy",
+                mood=mood_val,
+                duck_age=duck_age,
+                location=location,
+                weather=weather,
+                tags=["relationship", level_name.lower().replace(" ", "_")]
+            )
+            self.enhanced_diary.add_chapter_event(f"Relationship grew to {level_name}!")
 
         # Record first interactions in diary
         if self._statistics[stat_key] == 1:
@@ -1975,6 +2108,27 @@ class Game:
         self.reaction_controller.trigger_event_reaction("level_up", time.time())
         # Play celebration music temporarily
         sound_engine.play_event_music(MusicContext.CELEBRATION, duration=5.0)
+        
+        # Log to scrapbook
+        from world.scrapbook import PhotoCategory
+        duck_age = self.duck.age_days if self.duck else 1
+        location = self.exploration.current_area.name if self.exploration.current_area else "Home Pond"
+        weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+        mood = self.duck.get_mood().state.value if self.duck else "happy"
+        self.scrapbook.take_photo(
+            title=f"Level {new_level}!",
+            description=f"{self.duck.name if self.duck else 'Duck'} reached level {new_level}!",
+            category=PhotoCategory.MILESTONE,
+            art_key="duck_celebration",
+            mood=mood,
+            duck_age=duck_age,
+            location=location,
+            weather=weather,
+            tags=["level_up", f"level_{new_level}"]
+        )
+        
+        # Log to enhanced diary life chapter
+        self.enhanced_diary.add_chapter_event(f"Reached level {new_level}!")
 
         # Check for new title
         if self.progression.title:
@@ -1995,6 +2149,30 @@ class Game:
             else:
                 self.home.unlock_decoration(unlock_id)
                 self.renderer.show_message(f"Unlocked decoration: {unlock_id}!", duration=3.0)
+
+    def _on_friendship_level_up(self, friend, old_level, new_level):
+        """Handle when friendship with a duck friend increases."""
+        from world.scrapbook import PhotoCategory
+        from world.friends import FriendshipLevel
+        
+        duck_age = self.duck.age_days if self.duck else 1
+        location = self.exploration.current_area.name if self.exploration.current_area else "Home Pond"
+        weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+        mood_val = self.duck.get_mood().state.value if self.duck else "happy"
+        level_name = new_level.value.replace('_', ' ') if hasattr(new_level, 'value') else str(new_level)
+        
+        self.scrapbook.take_photo(
+            title=f"{friend.name}: {level_name}!",
+            description=f"Friendship with {friend.name} grew to {level_name}!",
+            category=PhotoCategory.FRIENDSHIP,
+            art_key="duck_friends",
+            mood=mood_val,
+            duck_age=duck_age,
+            location=location,
+            weather=weather,
+            tags=["friendship", friend.name.lower(), level_name.lower().replace(" ", "_")]
+        )
+        self.enhanced_diary.add_chapter_event(f"Became {level_name} with {friend.name}!")
 
     def _process_quest_updates(self, objective_type: str, target: str, amount: int = 1):
         """Process quest objective updates and apply any earned rewards."""
@@ -2353,6 +2531,28 @@ class Game:
                             self.reaction_controller.trigger_friend_reaction("arrival", current_time)
                             # Play happy music for the visit
                             sound_engine.play_event_music(MusicContext.HAPPY, duration=10.0)
+                            
+                            # Log friend visit to scrapbook
+                            from world.scrapbook import PhotoCategory
+                            duck_age = self.duck.age_days if self.duck else 1
+                            location_name = self.exploration.current_area.name if self.exploration.current_area else "Home Pond"
+                            weather_val = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+                            mood_val = self.duck.get_mood().state.value if self.duck else "happy"
+                            visit_num = friend.times_visited
+                            if visit_num <= 1:
+                                # First meeting - extra special!
+                                self.scrapbook.take_photo(
+                                    title=f"Met {friend.name}!",
+                                    description=f"First time meeting {friend.name}!",
+                                    category=PhotoCategory.FRIENDSHIP,
+                                    art_key="duck_friends",
+                                    mood=mood_val,
+                                    duck_age=duck_age,
+                                    location=location_name,
+                                    weather=weather_val,
+                                    tags=["friend", "first_meeting", friend.name.lower()]
+                                )
+                                self.enhanced_diary.add_chapter_event(f"Met {friend.name} for the first time!")
                             
                             # Duck waddles toward the visitor (animated approach)
                             self._duck_approach_visitor()
@@ -3572,6 +3772,7 @@ class Game:
             self.friends = FriendsSystem.from_dict(data["friends"])
         else:
             self.friends = FriendsSystem()
+        self.friends.on_friendship_level_up = self._on_friendship_level_up
 
         # Load quest system
         if "quests" in data:
@@ -3847,6 +4048,11 @@ class Game:
             self._quests_menu_open or
             self._weather_menu_open or
             self._treasure_menu_open or
+            self._scrapbook_menu_open or
+            self._tricks_menu_open or
+            self._titles_menu_open or
+            self._decorations_menu_open or
+            self._collectibles_menu_open or
             self._festival_menu_open or
             self._settings_menu_open or
             self._main_menu_open or
@@ -3874,6 +4080,11 @@ class Game:
         self._quests_menu_open = False
         self._weather_menu_open = False
         self._treasure_menu_open = False
+        self._scrapbook_menu_open = False
+        self._tricks_menu_open = False
+        self._titles_menu_open = False
+        self._decorations_menu_open = False
+        self._collectibles_menu_open = False
         self._festival_menu_open = False
         self._settings_menu_open = False
         self._main_menu_open = False
@@ -3896,6 +4107,11 @@ class Game:
         self._quests_menu_open = False
         self._weather_menu_open = False
         self._treasure_menu_open = False
+        self._scrapbook_menu_open = False
+        self._tricks_menu_open = False
+        self._titles_menu_open = False
+        self._decorations_menu_open = False
+        self._collectibles_menu_open = False
         self._festival_menu_open = False
         self._settings_menu_open = False
         self._main_menu_open = False
@@ -3979,6 +4195,7 @@ class Game:
         self.treasure = TreasureHunter()
         self.challenges = ChallengeSystem()
         self.friends = FriendsSystem()
+        self.friends.on_friendship_level_up = self._on_friendship_level_up
         self.quests = QuestSystem()
         self.festivals = FestivalSystem()
         self.prestige = PrestigeSystem()
@@ -5158,7 +5375,9 @@ class Game:
 
         # Get recent activities for dream influence
         recent_activities = []
-        for memory in self.duck.memory.short_term[-5:]:
+        # Convert deque to list for slicing (deque doesn't support slice notation)
+        short_term_list = list(self.duck.memory.short_term)
+        for memory in short_term_list[-5:]:
             # Memory objects have a 'type' attribute and 'content'
             if memory.type == "interaction":
                 # Extract the interaction type from content (format: "type: details" or just "type")
@@ -5515,8 +5734,8 @@ class Game:
                     self.renderer.show_message("Couldn't start activity - already busy!", duration=2)
             return
         
-        # Close with ESC, W, or B
-        if key.name == "KEY_ESCAPE" or key_str in ('w', 'b'):
+        # Close with ESC, Backspace, W, or B
+        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str in ('w', 'b'):
             self._weather_menu_open = False
             self.renderer.dismiss_message()
             return
@@ -5698,8 +5917,8 @@ class Game:
             self._do_treasure_dig()
             return
         
-        # Close
-        if key_name == "KEY_ESCAPE" or key_str == 'b':
+        # Close with ESC, Backspace, or B
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE" or key_str == 'b':
             self._treasure_menu_open = False
             self.renderer.dismiss_message()
             return
@@ -5971,8 +6190,8 @@ class Game:
                 self._festival_select_current()
             return
         
-        # Close
-        if key_name == "KEY_ESCAPE" or key_str == 'b':
+        # Close with ESC, Backspace, or B
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE" or key_str == 'b':
             self._festival_menu_open = False
             self.renderer.dismiss_message()
             return
@@ -6053,8 +6272,8 @@ class Game:
         key_str = str(key).lower()
         key_name = key.name if hasattr(key, 'name') else ''
         
-        # Close with ESC or backtick
-        if key_name == "KEY_ESCAPE" or key_str in ('`', '~'):
+        # Close with ESC, Backspace, or backtick
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE" or key_str in ('`', '~'):
             if self._debug_submenu:
                 self._debug_submenu = None
                 self._debug_submenu_selected = 0
@@ -6648,8 +6867,8 @@ Core Systems Tested: {report.total_tests}
         key_str = str(key).lower()
         key_name = key.name if hasattr(key, 'name') else ''
         
-        # Close with ESC
-        if key_name == "KEY_ESCAPE":
+        # Close with ESC or Backspace
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             # Check for unsaved changes
             if self._settings_menu.has_unsaved_changes():
                 self._show_save_settings_prompt()
@@ -6802,13 +7021,64 @@ Core Systems Tested: {report.total_tests}
         if not self.duck:
             return
 
+        self._scrapbook_menu_open = True
+        self._render_scrapbook()
+    
+    def _render_scrapbook(self):
+        """Render the current scrapbook page."""
         # Get scrapbook page display
-        lines = self.scrapbook.render_album_page()
+        total_pages = len(self.scrapbook.pages) if self.scrapbook.pages else 1
+        if self._scrapbook_page >= total_pages:
+            self._scrapbook_page = max(0, total_pages - 1)
+        
+        lines = self.scrapbook.render_album_page(self._scrapbook_page)
+        
+        # Add navigation info
+        lines.append("")
+        lines.append(f"Page {self._scrapbook_page + 1}/{total_pages}")
+        lines.append("")
+        lines.append("[<-/->] Navigate Pages  [F] Toggle Favorite")
+        lines.append("[ESC/Backspace] Close")
         
         scrapbook_text = "\n".join(lines)
-        scrapbook_text += "\n\n[</>/F] Navigate/Favorite  [ESC/Y] Close"
-        
         self.renderer.show_message(scrapbook_text, duration=0)
+    
+    def _handle_scrapbook_input(self, key):
+        """Handle input for scrapbook menu."""
+        key_str = str(key).lower()
+        key_name = key.name if hasattr(key, 'name') else ''
+        
+        # Close with ESC or Backspace
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+            self._scrapbook_menu_open = False
+            self.renderer.dismiss_message()
+            return
+        
+        total_pages = len(self.scrapbook.pages) if self.scrapbook.pages else 1
+        
+        # Navigate pages
+        if key_name == "KEY_LEFT":
+            if self._scrapbook_page > 0:
+                self._scrapbook_page -= 1
+                self._render_scrapbook()
+            return
+        
+        if key_name == "KEY_RIGHT":
+            if self._scrapbook_page < total_pages - 1:
+                self._scrapbook_page += 1
+                self._render_scrapbook()
+            return
+        
+        # Toggle favorite on current page
+        if key_str == 'f':
+            photos_on_page = self.scrapbook.get_page(self._scrapbook_page)
+            if photos_on_page:
+                # Toggle first photo on page (could add selection later)
+                photo = photos_on_page[0]
+                is_fav = self.scrapbook.toggle_favorite(photo.photo_id)
+                status = "favorited" if is_fav else "unfavorited"
+                self.renderer.show_message(f"Photo {status}!", duration=1.5)
+            return
 
     # ==================== TREASURE HUNTING ====================
 
@@ -7164,15 +7434,97 @@ Core Systems Tested: {report.total_tests}
         if not self.duck:
             return
 
-        # Get tricks display
-        lines = self.tricks.render_trick_list()
+        self._tricks_menu_open = True
+        self._render_tricks_menu()
+    
+    def _render_tricks_menu(self):
+        """Render the tricks menu with pagination."""
+        items_per_page = 5
         
+        # Get learned tricks list
+        learned_items = list(self.tricks.learned_tricks.items())
+        total_learned = len(learned_items)
+        total_pages = max(1, (total_learned + items_per_page - 1) // items_per_page)
+        
+        if self._tricks_menu_page >= total_pages:
+            self._tricks_menu_page = max(0, total_pages - 1)
+        
+        start_idx = self._tricks_menu_page * items_per_page
+        end_idx = start_idx + items_per_page
+        page_items = learned_items[start_idx:end_idx]
+        
+        from duck.tricks import TRICKS
+        
+        lines = [
+            "+===============================================+",
+            "|            * DUCK TRICKS *                  |",
+            "+===============================================+",
+            f"|  Learned: {total_learned:2}  |  Performances: {self.tricks.total_performances:5}       |",
+            f"|  Perfect: {self.tricks.total_perfect_performances:3}  |  Highest Combo: {self.tricks.highest_combo:2}          |",
+            "+===============================================+",
+            f"|  LEARNED TRICKS (Page {self._tricks_menu_page + 1}/{total_pages}):                  |",
+        ]
+        
+        for tid, learned in page_items:
+            trick = TRICKS.get(tid)
+            if trick:
+                stars = "*" * learned.mastery_level + "*" * (5 - learned.mastery_level)
+                lines.append(f"|   {trick.name[:20]:20} {stars}         |")
+        
+        if not learned_items:
+            lines.append("|   No tricks learned yet!                      |")
+        
+        # Training status
+        status = self.tricks.get_training_status()
+        if status["training"]:
+            lines.append("+===============================================+")
+            lines.append(f"|  Training: {status['trick_name'][:28]:28}   |")
+            lines.append(f"|  Progress: {status['progress']}/{status['required']} ({status['percent']:.0f}%)                      |")
+        
+        # Available to learn
+        available = self.tricks.get_available_tricks()
+        if available:
+            lines.append("+===============================================+")
+            lines.append("|  AVAILABLE TO LEARN:                          |")
+            for trick in available[:3]:
+                diff_icon = {"easy": "O", "medium": "O", "hard": "O", "master": "O", "legendary": "*"}.get(trick.difficulty.value, "o")
+                lines.append(f"|   {diff_icon} {trick.name[:33]:33}   |")
+        
+        lines.append("+===============================================+")
         lines.append("")
-        lines.append("[T] Train a trick  [P] Perform  [C] Combo")
-        lines.append("[ESC/X] Close")
+        lines.append("[<-/->] Page  [T] Train  [P] Perform  [C] Combo")
+        lines.append("[ESC/Backspace] Close")
         
         tricks_text = "\n".join(lines)
         self.renderer.show_message(tricks_text, duration=0)
+    
+    def _handle_tricks_input(self, key):
+        """Handle input for tricks menu."""
+        key_str = str(key).lower()
+        key_name = key.name if hasattr(key, 'name') else ''
+        
+        # Close with ESC or Backspace
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+            self._tricks_menu_open = False
+            self.renderer.dismiss_message()
+            return
+        
+        # Navigate pages
+        items_per_page = 5
+        learned_items = list(self.tricks.learned_tricks.items())
+        total_pages = max(1, (len(learned_items) + items_per_page - 1) // items_per_page)
+        
+        if key_name == "KEY_LEFT":
+            if self._tricks_menu_page > 0:
+                self._tricks_menu_page -= 1
+                self._render_tricks_menu()
+            return
+        
+        if key_name == "KEY_RIGHT":
+            if self._tricks_menu_page < total_pages - 1:
+                self._tricks_menu_page += 1
+                self._render_tricks_menu()
+            return
 
     def _train_trick(self, trick_id: str):
         """Start or continue training a trick."""
@@ -7244,14 +7596,105 @@ Core Systems Tested: {report.total_tests}
                     duration=3.0
                 )
 
-        # Get titles display
-        lines = self.titles.render_titles_screen()
+        self._titles_menu_open = True
+        self._render_titles_menu()
+    
+    def _render_titles_menu(self):
+        """Render the titles menu with pagination."""
+        from duck.titles import TITLES
+        items_per_page = 5
         
+        # Get earned titles list
+        earned_items = list(self.titles.earned_titles.items())
+        total_earned = len(earned_items)
+        total_pages = max(1, (total_earned + items_per_page - 1) // items_per_page)
+        
+        if self._titles_menu_page >= total_pages:
+            self._titles_menu_page = max(0, total_pages - 1)
+        
+        start_idx = self._titles_menu_page * items_per_page
+        end_idx = start_idx + items_per_page
+        page_items = earned_items[start_idx:end_idx]
+        
+        lines = [
+            "+===============================================+",
+            "|            [=] TITLES & NICKNAMES [=]          |",
+            "+===============================================+",
+            f"|  Duck: {self.titles.duck_nickname:^35}  |",
+            f"|  You: {self.titles.owner_nickname:^36}  |",
+        ]
+        
+        display_name = self.titles.get_display_name()
+        lines.append(f"|  Display: {display_name:^31}  |")
+        
+        current = TITLES.get(self.titles.current_title) if self.titles.current_title else None
+        if current:
+            lines.append(f"|  Current Title: {current.name:^25}  |")
+            if current.xp_bonus > 0:
+                lines.append(f"|  XP Bonus: +{current.xp_bonus}%                             |")
+        
+        lines.append("+===============================================+")
+        lines.append(f"|  Titles Earned: {self.titles.total_titles_earned:3}/{len(TITLES):<3}  (Page {self._titles_menu_page + 1}/{total_pages})         |")
+        lines.append("+===============================================+")
+        lines.append("|  YOUR TITLES:                                 |")
+        
+        for i, (tid, earned) in enumerate(page_items):
+            title = TITLES.get(tid)
+            if title:
+                equipped = "●" if tid == self.titles.current_title else "○"
+                fav = "*" if earned.is_favorite else " "
+                rarity_icon = {"common": "o", "uncommon": "O", "rare": "O", "epic": "O", "legendary": "O", "mythic": "O"}.get(title.rarity.value, "o")
+                num = i + 1
+                lines.append(f"|  [{num}]{equipped}{fav} {rarity_icon} {title.name[:28]:28}   |")
+        
+        if not earned_items:
+            lines.append("|   No titles earned yet!                       |")
+        
+        lines.append("+===============================================+")
         lines.append("")
-        lines.append("[1-5] Equip title  [N] Set nickname  [ESC/`] Close")
+        lines.append("[<-/->] Page  [1-5] Equip  [N] Nickname")
+        lines.append("[ESC/Backspace] Close")
         
         titles_text = "\n".join(lines)
         self.renderer.show_message(titles_text, duration=0)
+    
+    def _handle_titles_input(self, key):
+        """Handle input for titles menu."""
+        key_str = str(key).lower()
+        key_name = key.name if hasattr(key, 'name') else ''
+        
+        # Close with ESC or Backspace
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+            self._titles_menu_open = False
+            self.renderer.dismiss_message()
+            return
+        
+        # Navigate pages
+        items_per_page = 5
+        earned_items = list(self.titles.earned_titles.items())
+        total_pages = max(1, (len(earned_items) + items_per_page - 1) // items_per_page)
+        
+        if key_name == "KEY_LEFT":
+            if self._titles_menu_page > 0:
+                self._titles_menu_page -= 1
+                self._render_titles_menu()
+            return
+        
+        if key_name == "KEY_RIGHT":
+            if self._titles_menu_page < total_pages - 1:
+                self._titles_menu_page += 1
+                self._render_titles_menu()
+            return
+        
+        # Equip title by number
+        if key_str.isdigit() and key_str != '0':
+            idx = int(key_str) - 1
+            start_idx = self._titles_menu_page * items_per_page
+            if 0 <= idx < items_per_page and start_idx + idx < len(earned_items):
+                title_id = earned_items[start_idx + idx][0]
+                self._equip_title(title_id)
+                self._render_titles_menu()
+            return
 
     def _get_title_stats(self) -> Dict:
         """Get current stats for title checking."""
@@ -7398,34 +7841,48 @@ Core Systems Tested: {report.total_tests}
         self.renderer.show_message(diary_text, duration=0)
 
     def _take_diary_photo(self):
-        """Take a photo for the diary."""
+        """Take a photo for the scrapbook."""
         if not self.duck:
             return
         
-        from dialogue.diary_enhanced import PhotoType
+        from world.scrapbook import PhotoCategory
         
-        # Determine photo type based on current activity
+        # Determine photo context
         mood = self.duck.get_mood().state.value
         weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
         location = self.exploration.current_area.name if self.exploration.current_area else "Home Pond"
+        duck_age = self.duck.age_days if self.duck else 1
         
-        # Create caption
-        caption = f"{self.duck.name} at {location} ({weather})"
+        # Choose art key based on mood
+        art_keys = {
+            "happy": "duck_happy",
+            "content": "duck_happy",
+            "excited": "duck_celebration",
+            "sleepy": "duck_sleeping",
+            "hungry": "duck_eating",
+            "playful": "duck_playing",
+            "curious": "duck_discovery",
+        }
+        art_key = art_keys.get(mood, "duck_happy")
         
-        # Take the photo
-        success, msg, photo = self.enhanced_diary.take_photo(
-            photo_type=PhotoType.MOOD,
-            caption=caption,
-            duck_mood=mood,
+        # Take the photo in scrapbook
+        photo = self.scrapbook.take_photo(
+            title=f"Snapshot: {mood.title()}",
+            description=f"{self.duck.name} at {location} on a {weather} day",
+            category=PhotoCategory.DAILY,
+            art_key=art_key,
+            mood=mood,
+            duck_age=duck_age,
+            location=location,
             weather=weather,
-            location=location
+            tags=["selfie", mood, location.lower().replace(" ", "_")]
         )
         
-        if success:
-            self.renderer.show_message(f"[#] {msg}", duration=3.0)
+        if photo:
+            self.renderer.show_message(f"[#] Photo saved to scrapbook!", duration=3.0)
             duck_sounds.play()
         else:
-            self.renderer.show_message(msg, duration=2.0)
+            self.renderer.show_message("Could not take photo", duration=2.0)
 
     # ==================== COLLECTIBLES ALBUM ====================
 
@@ -7434,19 +7891,100 @@ Core Systems Tested: {report.total_tests}
         if not self.duck:
             return
 
-        # Get collection display
-        lines = self.collectibles.render_collection_album()
+        self._collectibles_menu_open = True
+        self._render_collectibles_menu()
+    
+    def _render_collectibles_menu(self):
+        """Render the collectibles album with pagination."""
+        from world.collectibles import SETS
+        items_per_page = 6
         
-        # Add stats
+        # Get all sets
+        all_sets = list(SETS.items())
+        total_sets = len(all_sets)
+        total_pages = max(1, (total_sets + items_per_page - 1) // items_per_page)
+        
+        if self._collectibles_menu_page >= total_pages:
+            self._collectibles_menu_page = max(0, total_pages - 1)
+        
+        start_idx = self._collectibles_menu_page * items_per_page
+        end_idx = start_idx + items_per_page
+        page_sets = all_sets[start_idx:end_idx]
+        
         stats = self.collectibles.get_collection_stats()
+        
+        lines = [
+            "+===============================================+",
+            "|           [=] COLLECTION ALBUM [=]              |",
+            "+===============================================+",
+            f"|  Collected: {stats['unique_owned']:3}/{stats['total_possible']:<3} ({stats['completion_percent']:.1f}%)               |",
+            f"|  Shiny: {stats['shiny_count']:3}  |  Sets: {stats['sets_completed']}/{stats['total_sets']}                |",
+            "+===============================================+",
+            f"|  SETS (Page {self._collectibles_menu_page + 1}/{total_pages}):                           |",
+        ]
+        
+        for i, (set_id, set_def) in enumerate(page_sets):
+            owned, total, _ = self.collectibles.get_set_progress(set_id)
+            completed = "x" if set_id in self.collectibles.completed_sets else " "
+            progress = f"{owned}/{total}"
+            lines.append(f"|  [{completed}] {set_def.name[:25]:25} {progress:5}   |")
+        
+        lines.extend([
+            "+===============================================+",
+            "|  RARITY:                                      |",
+        ])
+        
+        from world.collectibles import CollectibleRarity
+        for rarity in CollectibleRarity:
+            count = stats['by_rarity'].get(rarity.value, 0)
+            icon = {"common": "o", "uncommon": "O", "rare": "O", "epic": "O", "legendary": "O", "mythic": "O"}.get(rarity.value, "o")
+            lines.append(f"|    {icon} {rarity.value.title():12}: {count:3}                    |")
+        
+        lines.append("+===============================================+")
         lines.append("")
         lines.append(f"Collection Progress: {stats['total_owned']}/{stats['total_possible']} ({stats['completion_percent']:.1f}%)")
         lines.append(f"Packs Available: {stats.get('packs_available', 0)}")
         lines.append("")
-        lines.append("[O] Open Pack  [1-9] View Set  [ESC] Close")
+        lines.append("[<-/->] Page  [O] Open Pack  [1-9] View Set")
+        lines.append("[ESC/Backspace] Close")
         
         album_text = "\n".join(lines)
         self.renderer.show_message(album_text, duration=0)
+    
+    def _handle_collectibles_input(self, key):
+        """Handle input for collectibles menu."""
+        key_str = str(key).lower()
+        key_name = key.name if hasattr(key, 'name') else ''
+        
+        # Close with ESC or Backspace
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+            self._collectibles_menu_open = False
+            self.renderer.dismiss_message()
+            return
+        
+        # Navigate pages
+        from world.collectibles import SETS
+        items_per_page = 6
+        total_sets = len(SETS)
+        total_pages = max(1, (total_sets + items_per_page - 1) // items_per_page)
+        
+        if key_name == "KEY_LEFT":
+            if self._collectibles_menu_page > 0:
+                self._collectibles_menu_page -= 1
+                self._render_collectibles_menu()
+            return
+        
+        if key_name == "KEY_RIGHT":
+            if self._collectibles_menu_page < total_pages - 1:
+                self._collectibles_menu_page += 1
+                self._render_collectibles_menu()
+            return
+        
+        # Open pack
+        if key_str == 'o':
+            self._open_collectible_pack()
+            self._render_collectibles_menu()
+            return
 
     def _open_collectible_pack(self, pack_type: str = "standard"):
         """Open a collectible pack."""
@@ -7483,6 +8021,26 @@ Core Systems Tested: {report.total_tests}
         if not self.duck:
             return
 
+        self._decorations_menu_open = True
+        self._render_decorations_menu()
+    
+    def _render_decorations_menu(self):
+        """Render the decorations menu with pagination."""
+        from world.decorations import DECORATIONS
+        items_per_page = 5
+        
+        # Get owned decorations
+        owned = [(did, count) for did, count in self.decorations.owned_decorations.items() if count > 0]
+        total_owned = len(owned)
+        total_pages = max(1, (total_owned + items_per_page - 1) // items_per_page)
+        
+        if self._decorations_menu_page >= total_pages:
+            self._decorations_menu_page = max(0, total_pages - 1)
+        
+        start_idx = self._decorations_menu_page * items_per_page
+        end_idx = start_idx + items_per_page
+        page_items = owned[start_idx:end_idx]
+        
         lines = [
             "+===============================================+",
             "|          [=] DECORATIONS [=]                    |",
@@ -7497,17 +8055,13 @@ Core Systems Tested: {report.total_tests}
         
         lines.append("+===============================================+")
         
-        # Show owned decorations
-        owned = [(did, count) for did, count in self.decorations.owned_decorations.items() if count > 0]
+        # Show owned decorations with pagination
         if owned:
-            lines.append("|  AVAILABLE TO PLACE:                          |")
-            for did, count in owned[:5]:
-                from world.decorations import DECORATIONS
+            lines.append(f"|  AVAILABLE TO PLACE (Page {self._decorations_menu_page + 1}/{total_pages}):            |")
+            for i, (did, count) in enumerate(page_items):
                 decor = DECORATIONS.get(did)
                 if decor:
                     lines.append(f"|   {decor.name[:30]:30} x{count:2}    |")
-            if len(owned) > 5:
-                lines.append(f"|   ... and {len(owned) - 5} more                         |")
         else:
             lines.append("|  No decorations to place. Buy some at shop!  |")
         
@@ -7519,9 +8073,38 @@ Core Systems Tested: {report.total_tests}
         
         lines.append("+===============================================+")
         lines.append("")
-        lines.append("[1-5] View Room  [P] Place  [R] Remove  [ESC] Close")
+        lines.append("[<-/->] Page  [1-5] View Room  [P] Place  [R] Remove")
+        lines.append("[ESC/Backspace] Close")
         
         self.renderer.show_message("\n".join(lines), duration=0)
+    
+    def _handle_decorations_input(self, key):
+        """Handle input for decorations menu."""
+        key_str = str(key).lower()
+        key_name = key.name if hasattr(key, 'name') else ''
+        
+        # Close with ESC or Backspace
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+            self._decorations_menu_open = False
+            self.renderer.dismiss_message()
+            return
+        
+        # Navigate pages
+        items_per_page = 5
+        owned = [(did, count) for did, count in self.decorations.owned_decorations.items() if count > 0]
+        total_pages = max(1, (len(owned) + items_per_page - 1) // items_per_page)
+        
+        if key_name == "KEY_LEFT":
+            if self._decorations_menu_page > 0:
+                self._decorations_menu_page -= 1
+                self._render_decorations_menu()
+            return
+        
+        if key_name == "KEY_RIGHT":
+            if self._decorations_menu_page < total_pages - 1:
+                self._decorations_menu_page += 1
+                self._render_decorations_menu()
+            return
 
     def _place_decoration_in_room(self, decoration_id: str, room_type: str, position: Tuple[int, int] = (0, 0)):
         """Place a decoration in a room."""

@@ -222,7 +222,13 @@ class DailyChallenge:
 
 # XP required per level (exponential curve)
 def xp_for_level(level: int) -> int:
-    """Calculate XP needed to reach a level."""
+    """Calculate XP needed to reach a level.
+    
+    Level 1 requires 0 XP (starting level).
+    Higher levels use exponential curve.
+    """
+    if level <= 1:
+        return 0
     return int(100 * (level ** 1.5))
 
 

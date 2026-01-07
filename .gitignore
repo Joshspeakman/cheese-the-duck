@@ -147,6 +147,11 @@ Thumbs.db
 # Game logs
 logs/
 
+# Development documentation (not needed for game)
+CODEBASE_ARCHITECTURE.md
+AUDIO_SETUP.md
+LOGGING.md
+
 # C# / .NET build outputs
 StupidDuckCS/**/bin/
 StupidDuckCS/**/obj/

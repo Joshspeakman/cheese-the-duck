@@ -126,7 +126,7 @@ def create_new_save(duck_name: str) -> dict:
         "duck": {
             "name": duck_name,
             "created_at": now,
-            "growth_stage": "duckling",
+            "growth_stage": "hatchling",
             "growth_progress": 0.0,
             "needs": {
                 "hunger": 80,

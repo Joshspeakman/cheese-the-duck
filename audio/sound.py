@@ -281,7 +281,7 @@ class SoundEngine:
         
         self.enabled = True  # Enabled by default
         self.volume = 1.0  # 0.0 to 1.0 (quack volume - max, pygame caps at 1.0)
-        self.music_volume = 0.3  # Background music volume (30% - audible but not overpowering)
+        self.music_volume = 0.4  # Background music volume (40% - increased for better audibility)
         self.music_muted = False  # Separate mute for music
         self._sound_method = self._detect_sound_method()
         self._music_thread: Optional[threading.Thread] = None
@@ -1286,8 +1286,9 @@ class DuckSounds:
     def level_up(self):
         """Play level up/growth sound."""
         # Try WAV file first, fall back to synthesized sound
+        # Level up is mixed at 50% volume to avoid being too jarring
         if 'levelup' in self.engine._available_wavs:
-            self.engine.play_wav('levelup')
+            self.engine.play_wav('levelup', volume=0.5)
         else:
             self.engine.play_sound(SoundType.LEVEL_UP)
 

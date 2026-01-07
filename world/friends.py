@@ -992,6 +992,7 @@ class FriendsSystem:
         self.friend_count_by_level: Dict[str, int] = {}
         self.best_friend_id: Optional[str] = None
         self.pending_invitations: List[str] = []
+        self.on_friendship_level_up: Optional[callable] = None  # Callback for level ups
     
     def generate_new_friend(self) -> DuckFriend:
         """Generate a new random friend duck."""
@@ -1121,6 +1122,10 @@ class FriendsSystem:
             friend.special_memories.append(
                 f"Became {new_level.value.replace('_', ' ')} on {datetime.now().strftime('%Y-%m-%d')}"
             )
+            
+            # Trigger callback if set
+            if self.on_friendship_level_up:
+                self.on_friendship_level_up(friend, old_level, new_level)
         
         return True, message, base_points
     

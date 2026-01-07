@@ -390,6 +390,11 @@ class BehaviorAI:
         remaining = self._item_interaction_cooldown - (time.time() - self._last_item_interaction_time)
         return max(0.0, remaining)
 
+    def _has_nest_available(self) -> bool:
+        """Check if any nest structure is available for sleeping."""
+        nest_structures = ["basic_nest", "cozy_nest", "deluxe_nest"]
+        return any(s in self._available_structures for s in nest_structures)
+
     def set_context(self, available_structures: set = None,
                     is_bad_weather: bool = False, weather_type: str = None,
                     structure_positions: dict = None, placed_items: list = None):
@@ -475,6 +480,9 @@ class BehaviorAI:
         """Check if it's time for a new autonomous action."""
         if self._current_action and current_time < self._action_end_time:
             return False
+        # Clear the current action when it has expired
+        if self._current_action and current_time >= self._action_end_time:
+            self._current_action = None
         return current_time - self._last_action_time >= AI_IDLE_INTERVAL
 
     def select_action(self, duck: "Duck") -> ActionResult:
@@ -667,7 +675,9 @@ class BehaviorAI:
         self._action_end_time = current_time + result.duration
 
         # Set action on duck for display (message lasts for the action duration)
+        # Store action end time on duck so it can auto-clear
         duck.current_action = result.action.value
+        duck._action_end_time = self._action_end_time
         duck.set_action_message(result.message, duration=result.duration)
 
         return result
@@ -788,7 +798,15 @@ class BehaviorAI:
                 need_value = getattr(duck.needs, need_name, 50)
                 # Invert: low need value = high bonus
                 need_urgency = (100 - need_value) / 100
-                score += need_urgency * bonus_weight
+                
+                # Special case: If duck wants to NAP and a nest is available,
+                # strongly prefer NAP_IN_NEST over regular NAP
+                if action == AutonomousAction.NAP and self._has_nest_available():
+                    # Reduce NAP utility significantly when nest exists
+                    # Duck should go to nest instead of napping on the ground
+                    score += need_urgency * bonus_weight * 0.2  # Only 20% of normal bonus
+                else:
+                    score += need_urgency * bonus_weight
 
             # Add bonus based on personality alignment
             # Skip for item-based actions - keep scores predictable
