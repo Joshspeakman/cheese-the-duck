@@ -375,7 +375,7 @@ class Renderer:
         # Persistent chat log (WoW-style, newest at bottom)
         self._chat_log: List[tuple] = []  # List of (timestamp, message, category)
         self._chat_log_max_size = 30  # Keep last 30 messages
-        self._chat_log_visible_lines = 3  # Show 3 lines to match status section
+        self._chat_log_visible_lines = 5  # Show 5 lines in the UI
         self._chat_scroll_offset = 0  # Scroll offset (0 = newest at bottom)
         
         # Menu overlay (separate from chat messages)
@@ -1960,6 +1960,9 @@ class Renderer:
         # Divider
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
 
+        # Top padding for vertical centering (aligns with 5-line chat)
+        lines.append(BOX["v"] + " " * inner_width + BOX["v"])
+
         # Activity/Status
         activity = self._get_activity_text(duck)
         activity_centered = _visible_center(activity, inner_width)
@@ -1980,6 +1983,9 @@ class Renderer:
         location = _visible_truncate(location, inner_width)
         location_centered = _visible_center(location, inner_width)
         lines.append(BOX["v"] + location_centered + BOX["v"])
+
+        # Bottom padding for vertical centering
+        lines.append(BOX["v"] + " " * inner_width + BOX["v"])
 
         # Bottom
         lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
