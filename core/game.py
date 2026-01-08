@@ -4245,6 +4245,7 @@ class Game:
         self._main_menu_open = False
         self._show_goals = False
         self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
         self._debug_submenu = None
 
     def _has_open_overlay(self) -> bool:
@@ -4323,6 +4324,7 @@ class Game:
         self._main_menu_open = False
         self._show_goals = False
         self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
         self._debug_submenu = None
 
     def _quit(self):
@@ -6569,7 +6571,7 @@ class Game:
                 self._show_debug_menu()
             else:
                 self._debug_menu_open = False
-                self.renderer.dismiss_message()
+                self.renderer.dismiss_overlay()
             return
         
         # Page navigation with LEFT/RIGHT in submenus
@@ -6734,6 +6736,7 @@ class Game:
             self.renderer.show_message(f"# DEBUG: Failed to set weather", duration=2)
         
         self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
     def _debug_trigger_event(self, event_id: str):
@@ -6759,6 +6762,7 @@ class Game:
             self.renderer.show_message(f"# DEBUG: Event '{event_id}' triggered", duration=2)
         
         self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
     def _debug_spawn_visitor(self, personality: str):
@@ -6806,6 +6810,7 @@ class Game:
         self.renderer.show_message(f"# DEBUG: Spawned {personality} visitor\n{greeting}", duration=4)
         
         self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
     def _debug_set_needs(self, action: str):
@@ -6837,6 +6842,7 @@ class Game:
             self.renderer.show_message("# DEBUG: Social set to 0%", duration=2)
         
         self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
     def _debug_set_money(self, action: str):
@@ -6855,6 +6861,7 @@ class Game:
 
         self.renderer.show_message(f"# DEBUG: Coins now ${self.habitat.currency}", duration=2)
         self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
     def _debug_set_friendship(self, level: str):
@@ -6877,6 +6884,7 @@ class Game:
             self.renderer.show_message("# DEBUG: No friends to modify", duration=2)
         
         self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
     def _debug_set_time(self, action: str):
@@ -6936,6 +6944,7 @@ class Game:
             self.renderer.show_message("# DEBUG: Time display simulating night (11 PM)", duration=2)
         
         self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
     def _debug_misc_action(self, action: str):
@@ -6972,6 +6981,7 @@ class Game:
             return  # Already handles menu close
         
         self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
         self._debug_submenu = None
 
     def _debug_set_age(self, action: str):
@@ -6982,6 +6992,7 @@ class Game:
         if not self.duck:
             self.renderer.show_message("DEBUG: No duck!", duration=2)
             self._debug_menu_open = False
+            self.renderer.dismiss_overlay()
             self._debug_submenu = None
             return
 
@@ -7042,6 +7053,7 @@ class Game:
                 self.renderer.show_message(f"DEBUG: Unknown stage {action}", duration=2)
 
         self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
         self._debug_submenu = None
 
     def _debug_building_action(self, action: str):
@@ -7088,6 +7100,7 @@ class Game:
             self.renderer.show_message("# DEBUG: Cleared all structures!", duration=2)
 
         self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
         self._debug_submenu = None
 
     def _debug_run_autotest(self, action: str):
@@ -7096,6 +7109,7 @@ class Game:
         import os
         
         self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
         self._debug_submenu = None
         
         if action == "run_full_test":
