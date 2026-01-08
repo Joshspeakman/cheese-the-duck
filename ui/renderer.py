@@ -1861,7 +1861,11 @@ class Renderer:
         while len(visible_lines) < self._chat_log_visible_lines:
             visible_lines.insert(0, None)
         
-        # Render each line with fading effect (oldest = dimmest)
+        # Count actual (non-None) messages for proper fade calculation
+        actual_message_count = sum(1 for entry in visible_lines if entry is not None)
+        actual_message_index = 0  # Track which actual message we're on
+        
+        # Render each line with fading effect (oldest = dimmest, newest = brightest)
         for i, entry in enumerate(visible_lines):
             if entry is None:
                 # Empty line
@@ -1869,8 +1873,10 @@ class Renderer:
             else:
                 line_text, effective_category, is_continuation = entry
                 
-                # Calculate fade level (0 = oldest/dimmest, visible_lines-1 = newest/brightest)
-                fade_level = i / max(1, self._chat_log_visible_lines - 1)
+                # Calculate fade based on actual message position, not display row
+                # actual_message_index goes from 0 (oldest visible) to count-1 (newest)
+                fade_level = actual_message_index / max(1, actual_message_count - 1) if actual_message_count > 1 else 1.0
+                actual_message_index += 1
                 
                 # Apply category colors - always colored, with brightness varying by age
                 # Cheese (duck) = yellow, Friends = cyan, Events = magenta, etc.
