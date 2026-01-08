@@ -170,14 +170,15 @@ create_linux_icons() {
     mkdir -p "$ICON_DIR/256x256/apps"
     
     # Convert ICO to different sizes using ImageMagick
+    # Use [8] which is the 512x512 PNG (highest quality) and scale DOWN for best results
     if command_exists convert; then
-        convert "$ico_file[0]" -resize 16x16 "$ICON_DIR/16x16/apps/$APP_ID.png" 2>/dev/null || true
-        convert "$ico_file[0]" -resize 24x24 "$ICON_DIR/24x24/apps/$APP_ID.png" 2>/dev/null || true
-        convert "$ico_file[0]" -resize 32x32 "$ICON_DIR/32x32/apps/$APP_ID.png" 2>/dev/null || true
-        convert "$ico_file[0]" -resize 48x48 "$ICON_DIR/48x48/apps/$APP_ID.png" 2>/dev/null || true
-        convert "$ico_file[0]" -resize 64x64 "$ICON_DIR/64x64/apps/$APP_ID.png" 2>/dev/null || true
-        convert "$ico_file[0]" -resize 128x128 "$ICON_DIR/128x128/apps/$APP_ID.png" 2>/dev/null || true
-        convert "$ico_file[0]" -resize 256x256 "$ICON_DIR/256x256/apps/$APP_ID.png" 2>/dev/null || true
+        convert "$ico_file[8]" -resize 16x16 "$ICON_DIR/16x16/apps/$APP_ID.png" 2>/dev/null || true
+        convert "$ico_file[8]" -resize 24x24 "$ICON_DIR/24x24/apps/$APP_ID.png" 2>/dev/null || true
+        convert "$ico_file[8]" -resize 32x32 "$ICON_DIR/32x32/apps/$APP_ID.png" 2>/dev/null || true
+        convert "$ico_file[8]" -resize 48x48 "$ICON_DIR/48x48/apps/$APP_ID.png" 2>/dev/null || true
+        convert "$ico_file[8]" -resize 64x64 "$ICON_DIR/64x64/apps/$APP_ID.png" 2>/dev/null || true
+        convert "$ico_file[8]" -resize 128x128 "$ICON_DIR/128x128/apps/$APP_ID.png" 2>/dev/null || true
+        convert "$ico_file[8]" -resize 256x256 "$ICON_DIR/256x256/apps/$APP_ID.png" 2>/dev/null || true
         
         # Update icon cache
         if command_exists gtk-update-icon-cache; then
