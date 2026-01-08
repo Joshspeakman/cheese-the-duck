@@ -375,7 +375,7 @@ class Renderer:
         # Persistent chat log (WoW-style, newest at bottom)
         self._chat_log: List[tuple] = []  # List of (timestamp, message, category)
         self._chat_log_max_size = 30  # Keep last 30 messages
-        self._chat_log_visible_lines = 5  # Show 5 lines in the UI
+        self._chat_log_visible_lines = 3  # Show 3 lines to match status section
         self._chat_scroll_offset = 0  # Scroll offset (0 = newest at bottom)
         
         # Menu overlay (separate from chat messages)
@@ -1980,21 +1980,6 @@ class Renderer:
         location = _visible_truncate(location, inner_width)
         location_centered = _visible_center(location, inner_width)
         lines.append(BOX["v"] + location_centered + BOX["v"])
-        
-        # Current visitor info (if any) - adds height to match chat section
-        visitor_line = ""
-        if hasattr(game, 'friends') and game.friends and game.friends.current_visit:
-            friend = game.friends.get_friend_by_id(game.friends.current_visit.friend_id)
-            if friend:
-                visitor_line = f"Visiting: {friend.name}"
-        visitor_centered = _visible_center(visitor_line, inner_width)
-        lines.append(BOX["v"] + visitor_centered + BOX["v"])
-        
-        # Mood line to match chat height (7 lines total including borders)
-        mood = duck.get_mood()
-        mood_line = f"Mood: {mood.description}"
-        mood_centered = _visible_center(mood_line, inner_width)
-        lines.append(BOX["v"] + mood_centered + BOX["v"])
 
         # Bottom
         lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
