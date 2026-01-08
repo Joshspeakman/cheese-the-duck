@@ -2482,7 +2482,7 @@ class Game:
         if self.fishing.is_fishing:
             fish_msg = self.fishing.update(0.016)
             if fish_msg:
-                self._show_message_if_no_menu(fish_msg, duration=2.0)
+                self._show_message_if_no_menu(fish_msg, duration=2.0, category="duck")
 
         # Update weather activities (check for completion)
         self._update_weather_activity()
@@ -2503,7 +2503,7 @@ class Game:
             if build_result.get("completed"):
                 self._complete_building(build_result)
             elif build_result.get("stage_completed"):
-                self._show_message_if_no_menu(build_result.get("message", "Stage complete!"), duration=2.0)
+                self._show_message_if_no_menu(build_result.get("message", "Stage complete!"), duration=2.0, category="action")
                 duck_sounds.play()  # Hammering sound
 
         # Update at tick rate
@@ -2541,7 +2541,7 @@ class Game:
             # Update duck aging system
             new_stage = self.aging.update_stage()
             if new_stage:
-                self._show_message_if_no_menu(f"# Your duck has grown to {new_stage.value}!", duration=5.0)
+                self._show_message_if_no_menu(f"# Your duck has grown to {new_stage.value}!", duration=5.0, category="event")
 
             # Check secret goals for session/mood-based achievements
             self._check_secret_achievements()
@@ -2552,7 +2552,7 @@ class Game:
         if current_time - self._last_atmosphere_check >= 30:
             messages = self.atmosphere.update()
             for msg in messages:
-                self._show_message_if_no_menu(msg, duration=4.0)
+                self._show_message_if_no_menu(msg, duration=4.0, category="event")
 
             # Check for active festivals
             self._check_festival_events()
@@ -2707,7 +2707,7 @@ class Game:
             # Chance for ambient event (peaceful atmosphere)
             ambient = self.progression.get_ambient_event(chance=0.02)
             if ambient:
-                self._show_message_if_no_menu(ambient, duration=3.0)
+                self._show_message_if_no_menu(ambient, duration=3.0, category="event")
 
             self._last_event_check = current_time
 
@@ -2931,7 +2931,7 @@ class Game:
                 item_name = item.name if hasattr(item, 'name') else item_id
                 comment = visitor_animator.get_item_comment(item_id, item_name)
                 if comment:
-                    self._show_message_if_no_menu(comment, duration=4.0)
+                    self._show_message_if_no_menu(comment, duration=4.0, category="friend")
                     break  # Only one comment at a time
             
             # Comment on cosmetics
@@ -2939,7 +2939,7 @@ class Game:
                 if cosmetic_id:
                     comment = visitor_animator.get_cosmetic_comment(self.duck.name, cosmetic_id)
                     if comment:
-                        self._show_message_if_no_menu(comment, duration=4.0)
+                        self._show_message_if_no_menu(comment, duration=4.0, category="friend")
                         break
             
             # Comment on built structures
@@ -2947,7 +2947,7 @@ class Game:
                 if structure.status.value == "complete":
                     comment = visitor_animator.get_item_comment(structure.blueprint_id, structure.blueprint_id)
                     if comment:
-                        self._show_message_if_no_menu(comment, duration=4.0)
+                        self._show_message_if_no_menu(comment, duration=4.0, category="friend")
                         break
         
         # Check if visit should end (time-based or conversation complete)
@@ -2970,7 +2970,7 @@ class Game:
                 
                 visitor_animator.start_leaving()
                 farewell = visitor_animator.get_farewell(self.duck.name)
-                self._show_message_if_no_menu(farewell, duration=5.0)
+                self._show_message_if_no_menu(farewell, duration=5.0, category="friend")
                 duck_sounds.quack("happy")
                 # Trigger friend departure reaction animation
                 self.reaction_controller.trigger_friend_reaction("departure", time.time())

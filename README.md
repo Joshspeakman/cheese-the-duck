@@ -167,67 +167,115 @@ We could list everything, but where's the fun in that?
 
 ## Installation
 
-### 🚀 Easy Install (Recommended)
+### 🚀 One-Click Install (Recommended)
 
 Download and run the installer for your platform - no git or Python knowledge required!
 
-#### Linux
+---
+
+#### 🐧 Linux
+
+**Option 1: Shell Installer** ([install_linux.sh](install_linux.sh))
+
 ```bash
-# Download the repository
+# Download and run:
+curl -fsSL https://raw.githubusercontent.com/Joshspeakman/cheese-the-duck/main/install_linux.sh | bash
+```
+
+Or clone and run locally:
+
+```bash
 git clone https://github.com/Joshspeakman/cheese-the-duck.git
 cd cheese-the-duck
-
-# Run the installer
 chmod +x install_linux.sh
 ./install_linux.sh
 ```
 
-The installer will:
-- ✅ Check Python version
-- ✅ Create a virtual environment
+**Option 2: Build a .deb Package** ([build_deb.sh](build_deb.sh))
+
+```bash
+# For Debian/Ubuntu - creates a proper apt-installable package:
+curl -fsSL https://raw.githubusercontent.com/Joshspeakman/cheese-the-duck/main/build_deb.sh -o build_deb.sh
+chmod +x build_deb.sh
+./build_deb.sh
+sudo dpkg -i cheese-the-duck_*.deb
+```
+
+The installers will:
+
+- ✅ Install required system packages automatically
+- ✅ Set up a Python virtual environment
 - ✅ Install all dependencies
 - ✅ Optionally download the AI model
 - ✅ Create desktop shortcuts and menu entries
 - ✅ Add `cheese-the-duck` command to your terminal
 
-After installation, just run: `cheese-the-duck`
+After installation, launch from your application menu or run: `cheese-the-duck`
 
-#### Windows
-1. Download the repository (or [download ZIP](https://github.com/Joshspeakman/cheese-the-duck/archive/refs/heads/main.zip))
+---
+
+#### 🪟 Windows
+
+**PowerShell Installer** ([install_windows.ps1](install_windows.ps1))
+
+1. [Download the repository ZIP](https://github.com/Joshspeakman/cheese-the-duck/archive/refs/heads/main.zip)
 2. Extract the files
-3. Double-click `install_windows.bat`
+3. Right-click `install_windows.ps1` → **Run with PowerShell**
+
+Or from PowerShell:
+
+```powershell
+# Download and run:
+Set-ExecutionPolicy Bypass -Scope Process -Force
+irm https://raw.githubusercontent.com/Joshspeakman/cheese-the-duck/main/install_windows.ps1 | iex
+```
 
 The installer will:
-- ✅ Check Python installation
-- ✅ Set up virtual environment
-- ✅ Install all dependencies  
-- ✅ Optionally download the AI model
-- ✅ Create Desktop and Start Menu shortcuts
 
-After installation, just double-click "Cheese the Duck" on your Desktop!
+- ✅ Check for Python (offers to download if missing)
+- ✅ Let you choose install location
+- ✅ Set up virtual environment and dependencies
+- ✅ Optionally download the AI model
+- ✅ Create Desktop and Start Menu shortcuts with proper icons
+
+After installation, double-click **"Cheese the Duck"** on your Desktop!
+
+---
+
+#### 🍎 macOS
+
+```bash
+# Install Python via Homebrew (if needed)
+brew install python
+
+# Clone and run installer
+git clone https://github.com/Joshspeakman/cheese-the-duck.git
+cd cheese-the-duck
+chmod +x install_linux.sh
+./install_linux.sh
+```
 
 ---
 
 ### 🔧 Manual Installation
 
+For developers or custom setups:
+
 #### Prerequisites
+
 - Python 3.8 or higher
 - Terminal with color support
 - Audio libraries (Linux): PulseAudio or ALSA
 
-### Linux Dependencies
-
-Before installing, ensure you have the required system packages:
+#### Linux Dependencies
 
 ```bash
 # Ubuntu/Debian
-sudo apt update
-sudo apt install python3 python3-pip python3-venv
-sudo apt install libasound2-dev libpulse-dev  # For audio
-sudo apt install portaudio19-dev              # For pygame audio
+sudo apt install python3 python3-pip python3-venv python3-dev
+sudo apt install libasound2-dev libpulse-dev portaudio19-dev
 
 # Fedora
-sudo dnf install python3 python3-pip
+sudo dnf install python3 python3-pip python3-devel
 sudo dnf install alsa-lib-devel pulseaudio-libs-devel portaudio-devel
 
 # Arch Linux
@@ -235,85 +283,54 @@ sudo pacman -S python python-pip
 sudo pacman -S alsa-lib pulseaudio portaudio
 ```
 
-### Quick Start
+#### Quick Start
 
 ```bash
-# Clone the repository
 git clone https://github.com/Joshspeakman/cheese-the-duck.git
 cd cheese-the-duck
 
-# Create virtual environment (recommended)
-python3 -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-# or: .venv\Scripts\activate  # Windows
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run the game
-python3 main.py
-```
-
-Or use the provided script:
-```bash
-chmod +x run_game.sh
-./run_game.sh
-```
-
-### Windows
-
-```powershell
-# Clone the repository
-git clone https://github.com/Joshspeakman/cheese-the-duck.git
-cd cheese-the-duck
-
-# Create virtual environment
-python -m venv .venv
-.venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run the game
-python main.py
-```
-
-### macOS
-
-```bash
-# Install Python via Homebrew (if needed)
-brew install python
-
-# Clone and setup
-git clone https://github.com/Joshspeakman/cheese-the-duck.git
-cd cheese-the-duck
+# Create and activate virtual environment
 python3 -m venv .venv
 source .venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Run the game
 python3 main.py
 ```
 
-### AI Conversations
+---
 
-The game includes a bundled TinyLlama AI model for dynamic duck conversations. After installing dependencies with `pip install -r requirements.txt`, the AI should work automatically.
+### 🤖 AI Conversations
 
-**Note:** The `llama-cpp-python` package may take several minutes to install as it compiles from source. On some systems you may need a C++ compiler installed.
+The game includes a bundled Llama 3.2 AI model for dynamic duck conversations. The installers will offer to download this automatically.
 
-### Optional: External LLM (Ollama)
+**Note:** The `llama-cpp-python` package may take several minutes to install as it compiles from source.
 
-For larger/better AI models, you can optionally use Ollama:
+#### Optional: External LLM (Ollama)
+
+For larger/better AI models, you can use [Ollama](https://ollama.ai):
 
 ```bash
-# Install Ollama (see https://ollama.ai)
-
-# Pull a model (recommended: llama3.2)
 ollama pull llama3.2
-
-# Start Ollama server
 ollama serve
 ```
 
-The game will prefer Ollama if available, otherwise uses the bundled model.
+The game prefers Ollama if available, otherwise uses the bundled model.
+
+---
+
+## Updates
+
+The game includes a built-in update system. When a new version is available:
+
+1. A notification appears in the game UI
+2. Access **Settings** from the main menu (TAB)
+3. Select **Check for Updates**
+4. Choose to update (Linux apt installs update with one click!)
+
+For manual updates, simply run the installer again or `git pull` if you cloned the repository.
 
 ---
 
@@ -323,7 +340,7 @@ The game will prefer Ollama if available, otherwise uses the bundled model.
 
 Quick shortcuts still work for common actions:
 
-```
+```text
 ┌─────────────────────────────────────┐
 │          DUCK CARE                  │
 ├─────────┬───────────────────────────┤
@@ -404,6 +421,7 @@ Your duck continues living while you're away—offline time is calculated when y
 ## Configuration
 
 Edit `config.py` to customize:
+
 - Need decay rates (make it easier or harder)
 - Time multipliers (speed up for testing)
 - Personality trait defaults
@@ -415,7 +433,7 @@ Edit `config.py` to customize:
 
 ## Project Structure
 
-```
+```text
 cheese_the_duck/
 ├── audio/           # Sound engine and effects
 ├── core/            # Game loop, progression, saves
@@ -436,6 +454,7 @@ cheese_the_duck/
 Pull requests welcome. Issues encouraged. If you find a secret, maybe don't spoil it in the issue tracker.
 
 ### Development Process
+
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature-name`
 3. Make your changes
@@ -461,7 +480,7 @@ MIT License - see LICENSE file for details.
 
 ---
 
-```
+```text
                  __|   |__
                 /   \ /   \
                (___) (___)
