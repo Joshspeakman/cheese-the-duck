@@ -1031,7 +1031,9 @@ class FriendsSystem:
     def start_visit(self, friend_id: Optional[str] = None) -> Tuple[bool, str, Optional[VisitEvent]]:
         """Start a visit from a friend duck."""
         if self.current_visit:
-            return False, "A friend is already visiting!", None
+            current_friend = self.get_friend_by_id(self.current_visit.friend_id)
+            visitor_name = current_friend.name if current_friend else "Someone"
+            return False, f"{visitor_name} is already visiting!", None
         
         # Get or generate friend
         if friend_id and friend_id in self.friends:
