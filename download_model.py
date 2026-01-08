@@ -20,8 +20,22 @@ from typing import Optional, Tuple
 
 # Configuration
 GAME_DIR = Path(__file__).parent
-MODEL_DIR = GAME_DIR / "models"
 VENV_DIR = GAME_DIR / ".venv"
+
+# Model directory - use user-writable location for system installs
+def _get_model_dir():
+    """Get model directory, using user home for system installs."""
+    game_path = str(GAME_DIR)
+    if game_path.startswith('/opt/') or game_path.startswith('/usr/') or game_path.startswith('/snap/'):
+        # System install - use user's home directory
+        user_model_dir = Path.home() / ".local" / "share" / "cheese-the-duck" / "models"
+        user_model_dir.mkdir(parents=True, exist_ok=True)
+        return user_model_dir
+    else:
+        # Local install - use game directory
+        return GAME_DIR / "models"
+
+MODEL_DIR = _get_model_dir()
 
 # Default model (required for LLM features)
 DEFAULT_MODEL = "tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf"
