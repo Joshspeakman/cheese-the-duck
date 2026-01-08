@@ -25,7 +25,7 @@ from config import GAME_DIR, SAVE_DIR
 
 
 # Game version - Update this when releasing new versions
-GAME_VERSION = "1.3.3"
+GAME_VERSION = "1.3.4"
 
 # GitHub repository info
 GITHUB_OWNER = "Joshspeakman"
@@ -499,9 +499,9 @@ launch_terminal() {
         konsole -e cheese-the-duck "$@" && return
     fi
     
-    # xterm
+    # xterm - use TERM=xterm-256color for color support
     if command -v xterm &>/dev/null; then
-        xterm -geometry "${GAME_COLS}x${GAME_ROWS}" -fa 'Monospace' -fs 11 -e cheese-the-duck "$@" && return
+        TERM=xterm-256color xterm -geometry "${GAME_COLS}x${GAME_ROWS}" -fa 'Monospace' -fs 11 -e cheese-the-duck "$@" && return
     fi
     
     # tilix

@@ -221,9 +221,9 @@ launch_terminal() {
         konsole -e cheese-the-duck "$@" && return
     fi
     
-    # xterm (most reliable for geometry)
+    # xterm (most reliable for geometry) - use TERM=xterm-256color for color support
     if command -v xterm &>/dev/null; then
-        xterm -geometry "${GAME_COLS}x${GAME_ROWS}" -fa 'Monospace' -fs 11 -e cheese-the-duck "$@" && return
+        TERM=xterm-256color xterm -geometry "${GAME_COLS}x${GAME_ROWS}" -fa 'Monospace' -fs 11 -e cheese-the-duck "$@" && return
     fi
     
     # tilix
