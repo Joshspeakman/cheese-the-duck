@@ -315,6 +315,17 @@ install_game() {
     cat > "$LAUNCHER_DIR/$APP_ID" << EOF
 #!/bin/bash
 # Cheese the Duck Launcher
+
+# Game requires 116x35 terminal for best experience (minimum 60x20)
+GAME_COLS=120
+GAME_ROWS=38
+
+# Try to resize terminal using escape sequence (works in xterm, gnome-terminal, etc.)
+if [ -t 1 ]; then
+    printf '\033[8;%d;%dt' "\$GAME_ROWS" "\$GAME_COLS"
+    sleep 0.1
+fi
+
 cd "$INSTALL_DIR"
 exec .venv/bin/python main.py "\$@"
 EOF

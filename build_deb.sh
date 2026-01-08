@@ -156,6 +156,23 @@ cat > "$PACKAGE_DIR/usr/bin/cheese-the-duck" << 'EOF'
 GAME_DIR="/opt/cheese-the-duck"
 VENV_DIR="$HOME/.local/share/cheese-the-duck/venv"
 
+# Game requires 116x35 terminal for best experience (minimum 60x20)
+GAME_COLS=120
+GAME_ROWS=38
+
+# Try to resize terminal using escape sequence (works in xterm, gnome-terminal, etc.)
+resize_terminal() {
+    # CSI 8 ; rows ; cols t - resize terminal window
+    printf '\033[8;%d;%dt' "$GAME_ROWS" "$GAME_COLS"
+    # Give terminal time to resize
+    sleep 0.1
+}
+
+# Check if we're in an interactive terminal
+if [ -t 1 ]; then
+    resize_terminal
+fi
+
 cd "$GAME_DIR"
 
 # Create venv in user's home directory on first run
