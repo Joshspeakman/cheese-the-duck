@@ -154,61 +154,11 @@ def check_dependencies():
         return False
 
 
-def _show_startup_screen():
-    """Show startup screen and resize terminal."""
-    import time
-    
-    # Target size for the game
-    GAME_COLS = 116
-    GAME_ROWS = 42
-    
-    # Clear screen
-    print("\033[2J\033[H", end="")
-    
-    # Resize terminal using CSI escape sequence
-    print(f"\033[8;{GAME_ROWS};{GAME_COLS}t", end="", flush=True)
-    time.sleep(0.15)  # Give terminal time to resize
-    
-    # Duck ASCII art
-    duck_art = r"""
-                      __
-                    >(o )___
-                     ( ._> /
-                      `---'
-    """
-    
-    # Center and display
-    print("\n" * 8)
-    print("=" * 60)
-    print()
-    for line in duck_art.strip().split('\n'):
-        print(f"          {line}")
-    print()
-    print("        🧀  CHEESE THE DUCK  🧀")
-    print()
-    print("=" * 60)
-    print()
-    print("           Press ENTER to start...")
-    print()
-    
-    # Wait for Enter
-    try:
-        input()
-    except (EOFError, KeyboardInterrupt):
-        pass
-    
-    # Clear screen before game starts
-    print("\033[2J\033[H", end="")
-
-
 def main():
     """Main entry point."""
     logger = None
 
     try:
-        # Show startup screen and resize terminal
-        _show_startup_screen()
-        
         # Initialize logger first
         logger = get_logger()
         logger.info("=" * 80)
