@@ -158,3 +158,4 @@ StupidDuckCS/**/obj/
 StupidDuckCS/**/*.user
 StupidDuckCS/**/*.suo
 StupidDuckCS/**/.vs/
+*.deb
