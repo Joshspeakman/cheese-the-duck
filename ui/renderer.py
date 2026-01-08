@@ -393,6 +393,8 @@ class Renderer:
         self._animation_frame = 0
         self._animation_time = 0
         self._title_frame = 0
+        self._title_fact: str = ""  # Current fact shown on title screen
+        self._title_fact_last_change = 0  # Frame when fact was last changed
         self._effect_overlay: Optional[str] = None
         self._effect_expire = 0
 
@@ -1097,7 +1099,8 @@ class Renderer:
         playfield_lines = self._render_playfield(duck, playfield_width, field_height, 
                                                    equipped_cosmetics, placed_items, weather_info,
                                                    built_structures, current_visitor, event_animators)
-        sidepanel_lines = self._render_side_panel(duck, game, side_panel_width)
+        # Pass playfield height so side panel can match exactly
+        sidepanel_lines = self._render_side_panel(duck, game, side_panel_width, len(playfield_lines))
 
         # Combine playfield and side panel
         max_lines = max(len(playfield_lines), len(sidepanel_lines))
@@ -1808,11 +1811,27 @@ class Renderer:
         
         all_chat_lines = []  # List of (line_text, category, is_continuation)
         for timestamp, msg, category in self._chat_log:
+            # Auto-detect category from message content if not explicitly set
+            effective_category = category
+            if category == "system":
+                # Check if message is from Cheese (duck's name followed by colon)
+                if msg.startswith("Cheese:") or msg.startswith("Cheese "):
+                    effective_category = "duck"
+                # Check for friend dialogue (Name: pattern, but not Cheese)
+                elif ":" in msg and not msg.startswith("Cheese"):
+                    # Check if it looks like dialogue (Name: text format)
+                    colon_pos = msg.find(":")
+                    if colon_pos > 0 and colon_pos < 20:  # Name should be short
+                        potential_name = msg[:colon_pos].strip()
+                        # If it's a capitalized word (likely a name), treat as friend
+                        if potential_name and potential_name[0].isupper() and " " not in potential_name:
+                            effective_category = "friend"
+            
             # Wrap long messages
             wrapped = textwrap.wrap(msg, width=wrap_width) if msg else ['']
             for j, line in enumerate(wrapped):
                 prefix = f"[{timestamp}] " if j == 0 else "        "  # 8 spaces for continuation
-                all_chat_lines.append((prefix + line, category, j > 0))
+                all_chat_lines.append((prefix + line, effective_category, j > 0))
         
         # Calculate which lines to show based on scroll offset
         total_lines = len(all_chat_lines)
@@ -1843,23 +1862,44 @@ class Renderer:
                 # Calculate fade level (0 = oldest/dimmest, visible_lines-1 = newest/brightest)
                 fade_level = i / max(1, self._chat_log_visible_lines - 1)
                 
-                # Color based on category and fade
-                if fade_level < 0.3:
-                    # Very dim for oldest
-                    color = self.term.dim
-                elif fade_level < 0.6:
-                    # Medium brightness
-                    color = self.term.normal
-                else:
-                    # Full brightness for newest
-                    if category == "duck":
-                        color = self.term.bright_yellow
-                    elif category == "event":
+                # Apply category colors - always colored, with brightness varying by age
+                # Cheese (duck) = yellow, Friends = cyan, Events = magenta, etc.
+                if category == "duck":
+                    # Cheese the Duck - always yellow to match his color!
+                    if fade_level < 0.3:
+                        color = self.term.yellow  # Dim yellow for old
+                    else:
+                        color = self.term.bright_yellow  # Bright yellow for new
+                elif category == "friend":
+                    # Friend/visitor dialogue - cyan
+                    if fade_level < 0.3:
+                        color = self.term.cyan
+                    else:
                         color = self.term.bright_cyan
-                    elif category == "action":
-                        color = self.term.bright_green
-                    elif category == "discovery":
+                elif category == "event":
+                    # Events - magenta
+                    if fade_level < 0.3:
+                        color = self.term.magenta
+                    else:
                         color = self.term.bright_magenta
+                elif category == "action":
+                    # Actions - green  
+                    if fade_level < 0.3:
+                        color = self.term.green
+                    else:
+                        color = self.term.bright_green
+                elif category == "discovery":
+                    # Discoveries - magenta
+                    if fade_level < 0.3:
+                        color = self.term.magenta
+                    else:
+                        color = self.term.bright_magenta
+                else:
+                    # System/default - white with fade
+                    if fade_level < 0.3:
+                        color = self.term.dim
+                    elif fade_level < 0.6:
+                        color = self.term.normal
                     else:
                         color = self.term.bright_white
                 
@@ -1879,8 +1919,12 @@ class Renderer:
 
         return lines
 
-    def _render_side_panel(self, duck: "Duck", game: "Game", width: int) -> List[str]:
-        """Render the side panel with close-up, stats, shortcuts, and info."""
+    def _render_side_panel(self, duck: "Duck", game: "Game", width: int, target_height: int = None) -> List[str]:
+        """Render the side panel with close-up, stats, shortcuts, and info.
+        
+        Args:
+            target_height: If provided, pad the menu section to match this total height.
+        """
         inner_width = width - 2
         lines = []
 
@@ -1943,19 +1987,48 @@ class Renderer:
         # Divider - Master Menu Section
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
         
+        # Calculate how many lines we need for the menu section to match target height
+        # Fixed sections:
+        # - Panel header: 1 line
+        # - Closeup section: varies (typically 7 lines for emotion closeup)
+        # - Divider after closeup: 1 line
+        # - Needs section: 5 lines (HUN, ENG, FUN, CLN, SOC)
+        # - Divider before menu: 1 line
+        # - Menu section: variable (this is what we adjust)
+        # - Divider after menu: 1 line
+        # - Status section: 5 lines (top pad, activity, action, location, bottom pad)
+        # - Bottom border: 1 line
+        
+        # Lines used so far: header(1) + closeup(varies) + divider(1) + needs(5) + divider(1) = current lines
+        lines_before_menu = len(lines)
+        
+        # Lines that come after menu: divider(1) + status(5) + bottom(1) = 7
+        lines_after_menu = 7
+        
+        # Calculate menu lines needed
+        if target_height:
+            menu_lines_needed = target_height - lines_before_menu - lines_after_menu
+            menu_lines_needed = max(6, menu_lines_needed)  # Minimum 6 lines for menu
+        else:
+            menu_lines_needed = 14  # Default
+        
         # Render master menu if available
         if hasattr(game, 'master_menu') and game.master_menu:
-            # Calculate available lines for menu (target ~12 lines for menu content)
-            menu_max_lines = 14
-            menu_lines = game.master_menu.get_render_lines(inner_width, menu_max_lines)
+            menu_lines = game.master_menu.get_render_lines(inner_width, menu_lines_needed)
             for menu_line in menu_lines:
                 lines.append(BOX["v"] + menu_line + BOX["v"])
+            # Pad if menu returned fewer lines than needed
+            while len(lines) < lines_before_menu + menu_lines_needed:
+                lines.append(BOX["v"] + " " * inner_width + BOX["v"])
         else:
             # Fallback if master menu not initialized
             fallback_title = _visible_center("--- MENU ---", inner_width)
             lines.append(BOX["v"] + fallback_title + BOX["v"])
             fallback_msg = _visible_center("Loading...", inner_width)
             lines.append(BOX["v"] + fallback_msg + BOX["v"])
+            # Pad to needed size
+            while len(lines) < lines_before_menu + menu_lines_needed:
+                lines.append(BOX["v"] + " " * inner_width + BOX["v"])
 
         # Divider
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
@@ -1991,6 +2064,52 @@ class Renderer:
         lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
 
         return lines
+
+    def _style_menu_line(self, line: str, width: int) -> str:
+        """Apply styling to a menu line based on its content.
+        
+        Styling:
+        - Headers (-- text --): Bright cyan, centered
+        - Selected items (> text): Yellow highlight with bold
+        - Scroll indicators (^ more ^, v more v): Dim white
+        - Submenu arrows (->): Cyan
+        - Completion indicator (*): Green
+        - Disabled items ([text]): Dim/gray
+        """
+        stripped = line.strip()
+        
+        # Header lines (-- Parent Category --)
+        if stripped.startswith('--') and stripped.endswith('--'):
+            return self.term.bright_cyan + line + self.term.normal
+        
+        # Scroll indicators
+        if stripped in ('^ more ^', 'v more v'):
+            return self.term.dim + line + self.term.normal
+        
+        # Selected item (starts with >)
+        if line.startswith('>'):
+            # Highlight the entire selected line
+            # Replace the > with a bright yellow version
+            styled = self.term.bright_yellow + self.term.bold + line + self.term.normal
+            return styled
+        
+        # Non-selected items - style components
+        styled_line = line
+        
+        # Disabled items (in brackets)
+        if '[' in line and ']' in line:
+            styled_line = self.term.dim + line + self.term.normal
+        else:
+            # Style submenu arrow
+            if '->' in styled_line:
+                styled_line = styled_line.replace('->', self.term.cyan + '->' + self.term.normal)
+            # Style completion indicator
+            if styled_line.rstrip().endswith('*'):
+                # Replace trailing * with green version
+                idx = styled_line.rindex('*')
+                styled_line = styled_line[:idx] + self.term.bright_green + '*' + self.term.normal + styled_line[idx+1:]
+        
+        return styled_line
 
     def _get_need_indicator(self, value: float) -> str:
         """Get a text indicator for need level."""
@@ -2400,7 +2519,7 @@ class Renderer:
         # Build menu lines with selection indicator
         def format_menu_item(text: str, idx: int, selected: bool) -> str:
             if selected:
-                return self.term.bold + self.term.cyan + f"  > {text} <  " + self.term.normal
+                return self.term.bold + self.term.yellow + f"  > {text} <  " + self.term.normal
             else:
                 return f"    {text}    "
         
@@ -2423,11 +2542,52 @@ class Renderer:
                 line_content = _visible_slice(line_content, 0, 54)
             menu_lines.append(f"    |{line_content}|    ")
 
-        # Add footer with menu
+        # Get a duck fact to display (rotate every ~7 seconds)
+        # Use real time instead of frame counter to avoid wrap-around issues
+        import time as time_module
+        from world.facts import get_random_fact
+        current_time = time_module.time()
+        if not self._title_fact or (current_time - self._title_fact_last_change) >= 7.0:
+            self._title_fact = get_random_fact()
+            self._title_fact_last_change = current_time
+        
+        # Format the fact to fit in the box (max ~52 chars per line)
+        fact_text = self._title_fact
+        fact_lines = []
+        
+        # Word wrap the fact to fit the box width
+        max_width = 52
+        words = fact_text.split()
+        current_line = ""
+        for word in words:
+            if len(current_line) + len(word) + 1 <= max_width:
+                current_line = current_line + " " + word if current_line else word
+            else:
+                if current_line:
+                    fact_lines.append(current_line)
+                current_line = word
+        if current_line:
+            fact_lines.append(current_line)
+        
+        # Limit to 2 lines max
+        fact_lines = fact_lines[:2]
+        
+        # Add footer with fact instead of static text
         title_art.extend([
             "    +======================================================+    ",
             "    |                                                      |    ",
-            "    |         Your virtual pet duck awaits!                |    ",
+        ])
+        
+        # Add fact lines (centered)
+        for fact_line in fact_lines:
+            padded = _visible_center(fact_line, 54)
+            title_art.append(f"    |{padded}|    ")
+        
+        # If only 1 line, add empty line for spacing
+        if len(fact_lines) == 1:
+            title_art.append("    |                                                      |    ")
+        
+        title_art.extend([
             "    |                                                      |    ",
             "    +------------------------------------------------------+    ",
         ])
@@ -2759,7 +2919,7 @@ class Renderer:
 
     def _overlay_box(self, base_output: List[str], content: List[str], title: str, width: int) -> List[str]:
         """Generic overlay box with height limiting."""
-        box_width = min(50, width - 4)
+        box_width = min(60, width - 4)  # Increased from 50 to 60 for better content display
         
         # Limit height to fit on screen (leave room for top/bottom margins)
         max_content_height = len(base_output) - 6  # Leave small margins, allow more content
@@ -3252,7 +3412,8 @@ class Renderer:
         lines.append("")
         lines.append(footer)
 
-        self.show_message("\n".join(lines), duration=0)
+        # Use show_overlay instead of show_message to prevent menu content from appearing in chat
+        self.show_overlay("\n".join(lines), duration=0)
 
     def show_effect(self, effect_name: str, duration: float = 1.0):
         """Show a visual effect."""

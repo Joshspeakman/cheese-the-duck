@@ -569,6 +569,11 @@ class Game:
         # Handle inventory item selection and pagination
         if self.renderer.is_inventory_open() and self.duck:
             key_str = str(key)
+            key_name = getattr(key, 'name', '') or ''
+            # Close inventory with backspace or ESC
+            if key_name == 'KEY_BACKSPACE' or key_name == 'KEY_ESCAPE':
+                self.renderer.toggle_inventory()
+                return
             # Page navigation with < and >
             if key_str == ',' or key_str == '<':
                 self.renderer.inventory_change_page(-1)
@@ -608,7 +613,7 @@ class Game:
                 self._process_talk(message)
             else:
                 # Empty message - duck responds to silence
-                self.renderer.show_message("*stares expectantly* ...Well? I'm listening.", duration=3.0)
+                self.renderer.show_message("*stares expectantly* ...Well? I'm listening.", duration=3.0, category="duck")
             return
 
         if key.name == "KEY_BACKSPACE":
@@ -904,6 +909,11 @@ class Game:
         if method_name == "_toggle_goals":
             self._close_all_menus()
             self._show_goals = not self._show_goals
+            if self._show_goals:
+                self._goals_page = 0  # Reset to first page
+                self._show_goals_overlay()
+            else:
+                self.renderer.dismiss_overlay()
             return
         if method_name == "_toggle_shop":
             self._close_all_menus()
@@ -1112,7 +1122,7 @@ class Game:
         self._statistics["conversations"] = self._statistics.get("conversations", 0) + 1
 
         # Show response (longer duration for conversations)
-        self.renderer.show_message(response, duration=8.0)
+        self.renderer.show_message(response, duration=8.0, category="duck")
 
         # Play quacks for each syllable in the duck's response
         mood = self.duck.get_mood().state.value
@@ -1148,12 +1158,23 @@ class Game:
             current_location = self.exploration.current_area.name
 
         if current_location is not None and current_location != "Home Pond":
-            self.renderer.show_message("*quack* My stuff is back at home!", duration=2.0)
+            self.renderer.show_message("*quack* My stuff is back at home!", duration=2.0, category="duck")
             return
 
         # Check if controller is busy
         if self.interaction_controller.is_interacting():
             return
+
+        # For AI/proximity sources, don't interrupt ongoing AI actions (like sleeping)
+        if source != InteractionSource.PLAYER_COMMAND:
+            current_time = time.time()
+            if hasattr(self, 'behavior_ai') and self.behavior_ai._current_action:
+                if current_time < self.behavior_ai._action_end_time:
+                    return  # Don't interrupt ongoing AI action
+            # Also check duck's current_action
+            if self.duck.current_action:
+                if hasattr(self.duck, '_action_end_time') and current_time < self.duck._action_end_time:
+                    return  # Duck still busy
 
         # Check legacy interaction phase (for visitor/event interactions that still use it)
         # Reset if stuck for too long (safety measure)
@@ -1180,8 +1201,10 @@ class Game:
             duck_state=duck_state
         )
 
-        if not success:
-            self.renderer.show_message(message)
+        # Only show error messages for player-initiated interactions, not AI
+        # This prevents immersion-breaking "I'm busy" spam from autonomous behavior
+        if not success and source == InteractionSource.PLAYER_COMMAND:
+            self.renderer.show_message(message, category="duck")
 
     def _on_interaction_effects_applied(self, item_id: str, result: InteractionResult):
         """Callback when interaction controller finishes and applies effects."""
@@ -1320,7 +1343,7 @@ class Game:
         result = execute_interaction(item_id, duck_state)
         
         if not result or not result.success:
-            self.renderer.show_message("*confused quack* I don't know how to do that...")
+            self.renderer.show_message("*confused quack* I don't know how to do that...", category="duck")
             return
         
         self._complete_item_interaction(item_id, result)
@@ -1338,7 +1361,7 @@ class Game:
         self._item_interaction_frame_time = 0.5  # seconds per frame
         
         # Show the message
-        self.renderer.show_message(result.message, duration=result.duration + 1.0)
+        self.renderer.show_message(result.message, duration=result.duration + 1.0, category="duck")
     
     def _update_item_interaction_animation(self):
         """Update the item interaction animation."""
@@ -2606,7 +2629,7 @@ class Game:
                             )
                             greeting = visitor_animator.get_greeting(self.duck.name)
                             if greeting:
-                                self._show_message_if_no_menu(greeting, duration=6.0)
+                                self._show_message_if_no_menu(greeting, duration=6.0, category="friend")
                             duck_sounds.quack("happy")
                             # Trigger friend arrival reaction animation
                             self.reaction_controller.trigger_friend_reaction("arrival", current_time)
@@ -2696,15 +2719,15 @@ class Game:
                     self._make_contextual_comment()
             self._last_random_comment_time = current_time
 
-        # Check for pending visitor reaction comment
+        # Check for pending visitor reaction comment (Cheese responding to friend)
         if self._pending_visitor_comment and current_time >= self._pending_visitor_comment_time:
-            self._show_message_if_no_menu(self._pending_visitor_comment, duration=4.0)
+            self._show_message_if_no_menu(self._pending_visitor_comment, duration=4.0, category="duck")
             duck_sounds.quack("content")
             self._pending_visitor_comment = None
 
-        # Check for pending weather reaction comment
+        # Check for pending weather reaction comment (Cheese reacting to weather)
         if self._pending_weather_comment and current_time >= self._pending_weather_comment_time:
-            self._show_message_if_no_menu(self._pending_weather_comment, duration=4.0)
+            self._show_message_if_no_menu(self._pending_weather_comment, duration=4.0, category="duck")
             duck_sounds.quack("content")
             self._pending_weather_comment = None
 
@@ -2750,11 +2773,18 @@ class Game:
             # Check if there's a pending item interaction from AI
             selected_item = self.behavior_ai.get_selected_item()
             if selected_item and self.behavior_ai.has_pending_movement():
-                # AI selected an item-based action - use the interaction controller
-                self._execute_item_interaction(selected_item, source=InteractionSource.AI_AUTONOMOUS)
-                self.behavior_ai.clear_selected_item()
-                self.behavior_ai._movement_requested = False
-                return  # Skip other AI processing for this tick
+                # Don't interrupt if duck is currently doing another AI action
+                # (e.g., don't interrupt sleeping to play with a toy)
+                if self.behavior_ai._current_action and current_time < self.behavior_ai._action_end_time:
+                    # Cancel the pending item selection, let current action finish
+                    self.behavior_ai.clear_selected_item()
+                    self.behavior_ai._movement_requested = False
+                else:
+                    # AI selected an item-based action - use the interaction controller
+                    self._execute_item_interaction(selected_item, source=InteractionSource.AI_AUTONOMOUS)
+                    self.behavior_ai.clear_selected_item()
+                    self.behavior_ai._movement_requested = False
+                    return  # Skip other AI processing for this tick
 
             # Check if there's a pending movement we need to handle
             if self.behavior_ai.has_pending_movement():
@@ -2850,6 +2880,24 @@ class Game:
         if not friend:
             return
         
+        # Ensure visitor animator has the correct friend name set
+        # This guards against race conditions where visit starts before set_visitor is called
+        personality = friend.personality.value if hasattr(friend.personality, 'value') else str(friend.personality)
+        if visitor_animator._friend_name != friend.name or visitor_animator._personality != personality.lower():
+            friendship_level = friend.friendship_level.value if hasattr(friend.friendship_level, 'value') else str(friend.friendship_level)
+            unlocked_topics = set(friend.unlocked_dialogue) if hasattr(friend, 'unlocked_dialogue') else set()
+            shared_experiences = getattr(friend, 'shared_experiences', [])
+            shared_memories = list(shared_experiences)[:5] if shared_experiences else []
+            visitor_animator.set_visitor(
+                personality, 
+                friend.name,
+                friendship_level,
+                friend.times_visited,
+                unlocked_topics,
+                duck_ref=self.duck,
+                shared_memories=shared_memories,
+            )
+        
         # Get duck's position for visitor to follow/approach
         duck_x = self.renderer.duck_pos.x
         duck_y = self.renderer.duck_pos.y
@@ -2860,7 +2908,7 @@ class Game:
         # Check for random dialogue from visitor
         dialogue = visitor_animator.get_random_dialogue(self.duck.name, current_time)
         if dialogue:
-            self._show_message_if_no_menu(dialogue, duration=5.0)
+            self._show_message_if_no_menu(dialogue, duration=5.0, category="friend")
             
             # Schedule Cheese's response to the visitor's dialogue
             # friend.personality may be an enum, so convert to string
@@ -2932,7 +2980,7 @@ class Game:
             if pos_x >= 65:
                 # End the visit
                 self.friends.end_visit()
-                self._show_message_if_no_menu(f"*{friend.name} waddles away happily*", duration=3.0)
+                self._show_message_if_no_menu(f"*{friend.name} waddles away happily*", duration=3.0, category="friend")
 
     def _update_crafting_progress(self):
         """Update crafting progress and complete if ready."""
@@ -3082,6 +3130,17 @@ class Game:
         if self.interaction_controller.is_interacting():
             return
 
+        # Don't interrupt ongoing AI actions (like sleeping, napping, etc.)
+        # Check if behavior_ai has a current action in progress
+        if hasattr(self, 'behavior_ai') and self.behavior_ai._current_action:
+            if current_time < self.behavior_ai._action_end_time:
+                return  # AI action still in progress, don't interrupt
+
+        # Also check duck's current_action (backup check)
+        if self.duck.current_action:
+            if hasattr(self.duck, '_action_end_time') and current_time < self.duck._action_end_time:
+                return  # Duck still busy with an action
+
         # Get duck position in habitat coordinates
         field_width = self.renderer.duck_pos.field_width
         field_height = self.renderer.duck_pos.field_height
@@ -3170,7 +3229,7 @@ class Game:
         # Check special day events first
         special_event = self.events.check_special_day_events()
         if special_event:
-            self.renderer.show_message(special_event.message, duration=5.0)
+            self.renderer.show_message(special_event.message, duration=5.0, category="event")
             self.events.apply_event(self.duck, special_event)
             return
 
@@ -3186,10 +3245,10 @@ class Game:
             if event.has_animation and event.id in ANIMATED_EVENTS:
                 self._start_event_animation(event.id)
                 # Show message after a short delay for animated events
-                self.renderer.show_message(event.message, duration=5.0)
+                self.renderer.show_message(event.message, duration=5.0, category="duck")
             else:
                 # Show event message immediately for non-animated events
-                self.renderer.show_message(event.message, duration=4.0)
+                self.renderer.show_message(event.message, duration=4.0, category="duck")
 
             # Record in memory
             self.duck.memory.add_event(
@@ -3266,7 +3325,7 @@ class Game:
         )
         
         if comment:
-            self.renderer.show_message(comment, duration=4.0)
+            self.renderer.show_message(comment, duration=4.0, category="duck")
             # Play a soft quack
             duck_sounds.quack("content")
 
@@ -3314,7 +3373,7 @@ class Game:
         """Callback when duck reaches a puddle in the rain."""
         # Set duck to splashing state
         self.renderer.duck_pos.set_state("splashing", duration=3.0)
-        self.renderer.show_message("*splish splash splosh!*", duration=2.5)
+        self.renderer.show_message("*splish splash splosh!*", duration=2.5, category="duck")
         duck_sounds.play()  # Splash sound
 
     def _get_duck_visitor_reaction(self, personality: str) -> Optional[str]:
@@ -3370,7 +3429,7 @@ class Game:
         self.renderer.duck_pos.set_state("excited", duration=2.0)
         
         # Show greeting reaction
-        self.renderer.show_message(f"*happy quack* Hi {friend_name}!", duration=2.5)
+        self.renderer.show_message(f"*happy quack* Hi {friend_name}!", duration=2.5, category="duck")
         duck_sounds.quack("happy")
         
         # Reset interaction phase after a short delay (state duration handles this)
@@ -4213,10 +4272,10 @@ class Game:
             self.renderer._show_help
         )
 
-    def _show_message_if_no_menu(self, message: str, duration: float = 5.0):
+    def _show_message_if_no_menu(self, message: str, duration: float = 5.0, category: str = "system"):
         """Show a message only if no menu is currently open. Used for non-critical duck messages."""
         if not self._is_any_menu_open():
-            self.renderer.show_message(message, duration)
+            self.renderer.show_message(message, duration, category)
 
     def _close_all_menus(self):
         """Close all open game menus (crafting, building, etc.) and dismiss message overlay."""
@@ -5169,7 +5228,7 @@ class Game:
             self._boombox_playing = False
             if self.duck:
                 self.duck.set_action_message("*turns off boombox* The music stops...")
-            self.renderer.show_message("*click* Boombox off.", duration=2.0)
+            self.renderer.show_message("*click* Boombox off.", duration=2.0, category="duck")
         else:
             sound_engine.play_background_music('main')
             self._boombox_playing = True
@@ -5733,7 +5792,7 @@ class Game:
             # Birthday bonus - extra coins!
             bonus_coins = birthday_info.age_days * 5
             self.habitat.add_currency(bonus_coins)
-            self.renderer.show_message(f"Birthday bonus: +{bonus_coins} coins!", duration=3.0)
+            self.renderer.show_message(f"Birthday bonus: +{bonus_coins} coins!", duration=3.0, category="event")
 
         # Check for milestone
         elif birthday_info.milestone:
@@ -5884,7 +5943,7 @@ class Game:
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._trading_menu_open = False
-            self.renderer.dismiss_message()
+            self.renderer.dismiss_overlay()
             return
         
         # Navigate traders
@@ -6351,7 +6410,7 @@ class Game:
     def _update_festival_menu_display(self):
         """Update the festival menu display."""
         # Check for active festival
-        active = self.festivals.get_active_festival()
+        active = self.festivals.check_active_festival()
         status = self.festivals.get_festival_status()
         
         if not active:
@@ -7448,7 +7507,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("[ESC/Backspace] Close")
         
         scrapbook_text = "\n".join(lines)
-        self.renderer.show_message(scrapbook_text, duration=0)
+        self.renderer.show_overlay(scrapbook_text)
     
     def _handle_scrapbook_input(self, key):
         """Handle input for scrapbook menu."""
@@ -7458,7 +7517,7 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._scrapbook_menu_open = False
-            self.renderer.dismiss_message()
+            self.renderer.dismiss_overlay()
             return
         
         total_pages = len(self.scrapbook.pages) if self.scrapbook.pages else 1
@@ -7525,7 +7584,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("")
         lines.append("[<-/->] Navigate Pages  [ESC/Backspace] Close")
         
-        self.renderer.show_overlay("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines))
 
     def _handle_secrets_input(self, key):
         """Handle input for secrets book menu."""
@@ -7534,7 +7593,7 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._secrets_menu_open = False
-            self.renderer.dismiss_message()
+            self.renderer.dismiss_overlay()
             return
         
         # Navigate pages
@@ -7587,7 +7646,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("[P] Prestige  [T] Change Title  [ESC/Backspace] Close")
         
         prestige_text = "\n".join(lines)
-        self.renderer.show_message(prestige_text, duration=0)
+        self.renderer.show_overlay(prestige_text)
 
     def _handle_prestige_input(self, key):
         """Handle input for prestige menu."""
@@ -7597,20 +7656,20 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._prestige_menu_open = False
-            self.renderer.dismiss_message()
+            self.renderer.dismiss_overlay()
             return
         
         # Prestige action
         if key_str == 'p':
             self._prestige_menu_open = False
-            self.renderer.dismiss_message()
+            self.renderer.dismiss_overlay()
             self._perform_prestige()
             return
         
         # Change title
         if key_str == 't':
             self._prestige_menu_open = False
-            self.renderer.dismiss_message()
+            self.renderer.dismiss_overlay()
             self._show_titles_menu()
             return
 
@@ -7854,6 +7913,53 @@ Core Systems Tested: {report.total_tests}
         
         self.renderer.show_message(msg, duration=3.0)
 
+    def _show_garden_view(self):
+        """Show the garden overview."""
+        self._show_garden_menu()
+
+    def _water_all_plants(self):
+        """Water all plants that need water."""
+        if not hasattr(self.garden, 'plots'):
+            self.renderer.show_message("No garden plots available!", duration=2.0)
+            return
+        
+        watered = 0
+        for plot_id, plot in self.garden.plots.items():
+            if plot and plot.plant and plot.needs_water:
+                success, _ = self.garden.water_plant(plot_id)
+                if success:
+                    watered += 1
+        
+        if watered > 0:
+            self.renderer.show_message(f"Watered {watered} plant(s)!", duration=2.0, category="action")
+            duck_sounds.play()
+        else:
+            self.renderer.show_message("No plants need water right now.", duration=2.0)
+
+    def _harvest_all_plants(self):
+        """Harvest all ready plants."""
+        if not hasattr(self.garden, 'plots'):
+            self.renderer.show_message("No garden plots available!", duration=2.0)
+            return
+        
+        harvested = 0
+        for plot_id, plot in self.garden.plots.items():
+            if plot and plot.plant and plot.is_ready_to_harvest:
+                success, msg, rewards = self.garden.harvest_plant(plot_id)
+                if success:
+                    harvested += 1
+                    for item_id, amount in rewards.items():
+                        self.materials.add_material(item_id, amount)
+        
+        if harvested > 0:
+            xp = self.progression.add_xp(20 * harvested, "harvest")
+            if xp:
+                self._on_level_up(xp)
+            self.renderer.show_message(f"Harvested {harvested} plant(s)!", duration=2.0, category="action")
+            sound_engine.play_sound("collect")
+        else:
+            self.renderer.show_message("No plants ready to harvest.", duration=2.0)
+
     # ==================== FESTIVAL SYSTEM ====================
 
     def _check_festival_events(self):
@@ -8000,7 +8106,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("[ESC/Backspace] Close")
         
         tricks_text = "\n".join(lines)
-        self.renderer.show_message(tricks_text, duration=0)
+        self.renderer.show_overlay(tricks_text)
     
     def _handle_tricks_input(self, key):
         """Handle input for tricks menu."""
@@ -8010,7 +8116,7 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._tricks_menu_open = False
-            self.renderer.dismiss_message()
+            self.renderer.dismiss_overlay()
             return
         
         # Navigate pages
@@ -8160,7 +8266,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("[ESC/Backspace] Close")
         
         titles_text = "\n".join(lines)
-        self.renderer.show_message(titles_text, duration=0)
+        self.renderer.show_overlay(titles_text)
     
     def _handle_titles_input(self, key):
         """Handle input for titles menu."""
@@ -8170,7 +8276,7 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._titles_menu_open = False
-            self.renderer.dismiss_message()
+            self.renderer.dismiss_overlay()
             return
         
         # Navigate pages
@@ -8656,7 +8762,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("[ESC/Backspace] Close")
         
         album_text = "\n".join(lines)
-        self.renderer.show_message(album_text, duration=0)
+        self.renderer.show_overlay(album_text)
     
     def _handle_collectibles_input(self, key):
         """Handle input for collectibles menu."""
@@ -8666,7 +8772,7 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._collectibles_menu_open = False
-            self.renderer.dismiss_message()
+            self.renderer.dismiss_overlay()
             return
         
         # Navigate pages
