@@ -944,6 +944,14 @@ class Game:
         if method_name == "_quit_game":
             self._quit()
             return
+        if method_name == "_show_terminal_selector":
+            self._close_all_menus()
+            self._show_terminal_selector()
+            return
+        if method_name == "_open_settings_menu":
+            self._close_all_menus()
+            self._open_settings_menu()
+            return
 
         # Standard method call
         if hasattr(self, method_name):
