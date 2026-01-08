@@ -87,7 +87,7 @@ def build_main_menu_categories() -> list:
                 MenuItem("settings", "Settings", "Audio, display, and game options"),
                 MenuItem("sound", "Toggle Sound", "Turn sound on/off"),
                 MenuItem("music", "Toggle Music", "Turn music on/off"),
-                MenuItem("save_slots", "Save Slots", "Manage save files"),
+                # MenuItem("save_slots", "Save Slots", "Manage save files"),  # Hidden for now
                 MenuItem("help", "Help", "View controls and tips"),
                 MenuItem("reset_game", "Reset Game", "WARNING: Deletes ALL progress!"),
                 MenuItem("quit", "Save & Quit", "Save game and exit"),
@@ -126,6 +126,9 @@ MENU_ACTIONS = {
     "minigames": "_show_minigames_menu",
     "tricks": "_show_tricks_menu",
     "garden": "_show_garden_menu",
+    "garden_view": "_show_garden_view",
+    "garden_water": "_water_all_plants",
+    "garden_harvest": "_harvest_all_plants",
     "festivals": "_show_festival_menu",
     "diary": "_show_enhanced_diary",
     "photo": "_take_diary_photo",
@@ -639,7 +642,7 @@ def build_master_menu_tree():
                 MasterMenuItem(id="settings", label="Settings", action="settings"),
                 MasterMenuItem(id="sound", label="Toggle Sound", action="sound"),
                 MasterMenuItem(id="music", label="Toggle Music", action="music"),
-                MasterMenuItem(id="save_slots", label="Save Slots", action="save_slots"),
+                # MasterMenuItem(id="save_slots", label="Save Slots", action="save_slots"),  # Hidden for now
                 MasterMenuItem(id="help", label="Help", action="help"),
                 MasterMenuItem(id="quit", label="Save & Quit", action="quit"),
             ]

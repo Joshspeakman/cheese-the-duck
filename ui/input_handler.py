@@ -205,9 +205,9 @@ COLLECTIONS
 
 OTHER
 -----
-[K] Duck Fact  [/] Save Slots
+[K] Duck Fact
 [M] Sound  [N] Music  [+/-] Vol
-[H] Help   [Q] Quit
+[H] Help   [Q] Save & Quit
 
 MENU NAVIGATION
 ---------------

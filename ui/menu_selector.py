@@ -636,7 +636,7 @@ class MasterMenuPanel:
         
     def get_render_lines(self, width: int, max_lines: int) -> list:
         """
-        Render the menu to a list of strings.
+        Render the menu to a list of strings (Pixel Art / 8-bit style).
         
         Args:
             width: Available width for each line
@@ -653,16 +653,25 @@ class MasterMenuPanel:
             lines.append(empty_msg.center(width))
             return lines
             
-        # Header showing parent when in submenu
+        # Pixel art style header
         header_lines = 0
         if self._parent_label:
-            header = f"-- {self._parent_label} --"
-            if len(header) > width:
-                header = header[:width-3] + "..."
+            # 8-bit style header: ▄▀▄ LABEL ▄▀▄
+            header_text = self._parent_label.upper()
+            if len(header_text) > width - 8:
+                header_text = header_text[:width-11] + "..."
+            header = f"▄▀▄ {header_text} ▄▀▄"
+            lines.append(header.center(width))
+            header_lines = 1
+        else:
+            # Root level - show MENU title in same style
+            header = "▄▀▄ MENU ▄▀▄"
             lines.append(header.center(width))
             header_lines = 1
             
         # Calculate visible items with scroll-follow
+        # For selected items, we need 3 lines (top bar, content, bottom bar)
+        # But we'll simplify: selected gets highlight bar above
         visible_lines = max_lines - header_lines - 2  # Reserve for scroll indicators
         if visible_lines < 1:
             visible_lines = 1
@@ -677,9 +686,9 @@ class MasterMenuPanel:
         max_scroll = max(0, len(items) - visible_lines)
         self._scroll_offset = max(0, min(self._scroll_offset, max_scroll))
         
-        # Show "^ more" indicator
+        # Show "^ more" indicator (pixel style)
         if self._scroll_offset > 0:
-            indicator = "^ more ^"
+            indicator = "▲▲▲ MORE ▲▲▲"
             lines.append(indicator.center(width))
         else:
             lines.append(" " * width)
@@ -690,41 +699,59 @@ class MasterMenuPanel:
             item = items[i]
             is_selected = (i == self._selected_index)
             
-            # Build line: "> Label -> *" or "  Label    *"
-            prefix = ">" if is_selected else " "
-            
             # Check for submenu indicator
             children = item.children
             if callable(children):
-                # Has dynamic children - assume it's a submenu
                 has_submenu = True
             else:
                 has_submenu = bool(children)
-            submenu_indicator = "->" if has_submenu else "  "
             
             # Completion indicator
             completed = item.completed
             if callable(completed):
                 completed = completed(self.game) if self.game else False
-            completion_indicator = "*" if completed else " "
             
             # Enabled indicator
             if not item.enabled:
                 label = f"[{item.label}]"  # Brackets for locked
             else:
                 label = item.label
-                
-            # Calculate available space for label
-            # Format: "> Label -> *" = prefix(1) + space(1) + label + space(1) + submenu(2) + completion(1)
-            overhead = 6  # "> " + " " + "->" or "  " + "*" or " "
-            max_label_len = width - overhead
-            if len(label) > max_label_len:
-                label = label[:max_label_len-2] + ".."
-                
-            # Pad label to fixed width
-            label = label.ljust(max_label_len)
             
-            line = f"{prefix} {label} {submenu_indicator}{completion_indicator}"
+            if is_selected:
+                # Selected: ▓ ► Label       → ▓  (pixel block style)
+                submenu_arrow = "→" if has_submenu else " "
+                completion_mark = "♦" if completed else " "
+                
+                # Calculate inner content width (▓ + space + ► + content + ▓)
+                inner_width = width - 4  # "▓ " and " ▓"
+                content = f"► {label}"
+                suffix = f"{submenu_arrow}{completion_mark}"
+                
+                # Pad content
+                content_space = inner_width - len(suffix)
+                if len(content) > content_space:
+                    content = content[:content_space-2] + ".."
+                content = content.ljust(content_space)
+                
+                line = f"▓ {content}{suffix} ▓"
+            else:
+                # Non-selected: regular with symbols
+                submenu_arrow = "→" if has_submenu else " "
+                if completed:
+                    prefix = "♦"  # Diamond for completed
+                else:
+                    prefix = " "
+                
+                # Calculate available space for label
+                # Format: "  ♦ Label        → "
+                overhead = 6  # prefix(1) + spaces + arrow(1) + padding
+                max_label_len = width - overhead
+                if len(label) > max_label_len:
+                    label = label[:max_label_len-2] + ".."
+                label = label.ljust(max_label_len)
+                
+                line = f"  {prefix} {label}{submenu_arrow} "
+            
             # Ensure exact width
             if len(line) < width:
                 line = line + " " * (width - len(line))
@@ -738,9 +765,9 @@ class MasterMenuPanel:
         for _ in range(rendered_items, visible_lines):
             lines.append(" " * width)
             
-        # Show "v more" indicator
+        # Show "v more" indicator (pixel style)
         if end_index < len(items):
-            indicator = "v more v"
+            indicator = "▼▼▼ MORE ▼▼▼"
             lines.append(indicator.center(width))
         else:
             lines.append(" " * width)

@@ -147,7 +147,7 @@ class InteractionController:
             message = f"*notices {item_name} and waddles over*"
         else:
             message = f"*waddles excitedly toward {item_name}*"
-        self._renderer.show_message(message, duration=2.0)
+        self._renderer.show_message(message, duration=2.0, category="duck")
 
         # Start movement
         self._renderer.duck_pos.move_to(
@@ -230,7 +230,7 @@ class InteractionController:
         # Show interaction message
         result = self._pending.interaction_result
         if result and result.message:
-            self._renderer.show_message(result.message, duration=result.duration + 1.0)
+            self._renderer.show_message(result.message, duration=result.duration + 1.0, category="duck")
 
         # Set duck animation state based on item type (only if no overlay animation)
         if not self._renderer.interaction_animator.is_animating():
@@ -317,7 +317,7 @@ class InteractionController:
             if elapsed > 15.0:  # 15 seconds max to reach item
                 self.cancel_interaction()
                 if self._renderer:
-                    self._renderer.show_message("*gives up and waddles away*", duration=2.0)
+                    self._renderer.show_message("*gives up and waddles away*", duration=2.0, category="duck")
                 return
 
         # Handle animation completion
