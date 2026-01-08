@@ -895,6 +895,60 @@ class Game:
 
     def _execute_menu_action(self, action_id: str):
         """Execute a menu action by its ID."""
+        # Handle dynamic minigame actions (minigame_bread_catch, etc.)
+        if action_id.startswith("minigame_"):
+            game_id = action_id.replace("minigame_", "")
+            self._start_minigame(game_id)
+            return
+
+        # Handle dynamic travel actions (travel_Home Pond, etc.)
+        if action_id.startswith("travel_"):
+            area_name = action_id.replace("travel_", "")
+            self._travel_to_area(area_name)
+            return
+
+        # Handle dynamic craft actions (craft_recipe_id, etc.)
+        if action_id.startswith("craft_"):
+            recipe_id = action_id.replace("craft_", "")
+            self._craft_item(recipe_id)
+            return
+
+        # Handle dynamic build actions (build_structure_id, etc.)
+        if action_id.startswith("build_"):
+            blueprint_id = action_id.replace("build_", "")
+            self._start_building(blueprint_id)
+            return
+
+        # Handle dynamic trick actions (trick_trick_id, etc.)
+        if action_id.startswith("trick_"):
+            trick_id = action_id.replace("trick_", "")
+            self._perform_trick(trick_id)
+            return
+
+        # Handle dynamic garden plant actions (garden_plant_seed_id, etc.)
+        if action_id.startswith("garden_plant_"):
+            seed_id = action_id.replace("garden_plant_", "")
+            self._plant_seed(seed_id)
+            return
+
+        # Handle dynamic decoration actions (decor_decoration_id, etc.)
+        if action_id.startswith("decor_"):
+            decor_id = action_id.replace("decor_", "")
+            self._place_decoration(decor_id)
+            return
+
+        # Handle dynamic collectible actions (col_collectible_id, etc.)
+        if action_id.startswith("col_"):
+            col_id = action_id.replace("col_", "")
+            self._view_collectible(col_id)
+            return
+
+        # Handle dynamic title actions (title_title_id, etc.)
+        if action_id.startswith("title_"):
+            title_id = action_id.replace("title_", "")
+            self._equip_title(title_id)
+            return
+
         if action_id not in MENU_ACTIONS:
             self.renderer.show_message(f"Unknown action: {action_id}")
             return
@@ -944,8 +998,8 @@ class Game:
             self._close_all_menus()
             self.renderer.toggle_talk()
             return
-        if method_name == "_quit_game":
-            self._quit()
+        if method_name == "_return_to_title":
+            self._return_to_title()
             return
         if method_name == "_show_terminal_selector":
             self._close_all_menus()
@@ -4727,6 +4781,19 @@ class Game:
         self._crafting_menu_open = True
         self._update_crafting_menu_display()
 
+    def _craft_item(self, recipe_id: str):
+        """Craft an item by recipe ID (from menu action)."""
+        if not self.duck:
+            return
+
+        recipe = RECIPES.get(recipe_id)
+        if not recipe:
+            self.renderer.show_message(f"Unknown recipe: {recipe_id}", duration=2.0)
+            return
+
+        result = self.crafting.start_crafting(recipe_id, self.materials)
+        self.renderer.show_message(result["message"], duration=3.0, category="action")
+
     def _show_building_menu(self):
         """Show the building menu overlay."""
         if not self.duck:
@@ -4793,6 +4860,22 @@ class Game:
         self._building_menu.open()
         self._building_menu_open = True
         self._update_building_menu_display()
+
+    def _start_building(self, blueprint_id: str):
+        """Start building a structure by blueprint ID (from menu action)."""
+        if not self.duck:
+            return
+
+        bp = BLUEPRINTS.get(blueprint_id)
+        if not bp:
+            self.renderer.show_message(f"Unknown blueprint: {blueprint_id}", duration=2.0)
+            return
+
+        result = self.building.start_building(bp.id, self.materials, player_level=self.progression.level)
+        if result.get("success"):
+            self._start_building_animation(bp)
+        else:
+            self.renderer.show_message(result["message"], duration=3.0, category="action")
 
     def _show_areas_menu(self):
         """Show discovered areas and allow travel."""
@@ -5076,6 +5159,25 @@ class Game:
             show_numbers=False,
             footer="[^v] Navigate  [Enter] Travel  [A/ESC] Close"
         )
+
+    def _travel_to_area(self, area_name: str):
+        """Travel to an area by name (from menu action)."""
+        if not self.duck:
+            return
+
+        # Look up area by name
+        available = self.exploration.get_available_areas(self.progression.level)
+        target_area = None
+        for area in available:
+            if area.name == area_name:
+                target_area = area
+                break
+
+        if not target_area:
+            self.renderer.show_message(f"Cannot travel to {area_name}", duration=2.0)
+            return
+
+        self._start_travel_to_area(target_area)
 
     def _start_travel_to_area(self, area):
         """Start duck traveling to a new area."""
@@ -7934,11 +8036,29 @@ Core Systems Tested: {report.total_tests}
             self._render_garden_menu()
             return
 
+    def _plant_seed(self, seed_id: str):
+        """Plant a seed in the first available plot (from menu action)."""
+        if not self.duck:
+            return
+
+        # Find first empty plot
+        empty_plot = None
+        for plot_id, plot in self.garden.plots.items():
+            if plot.plant is None:
+                empty_plot = plot_id
+                break
+
+        if empty_plot is None:
+            self.renderer.show_message("No empty plots available!", duration=2.0)
+            return
+
+        self._garden_plant(empty_plot, seed_id)
+
     def _garden_plant(self, plot_id: int, seed_id: str):
         """Plant a seed in a garden plot."""
         success, msg = self.garden.plant_seed(plot_id, seed_id)
         self.renderer.show_message(msg, duration=3.0)
-        
+
         if success:
             self.progression.add_xp(5, "gardening")
             duck_sounds.play()
@@ -8774,7 +8894,34 @@ Core Systems Tested: {report.total_tests}
 
         self._collectibles_menu_open = True
         self._render_collectibles_menu()
-    
+
+    def _view_collectible(self, col_id: str):
+        """View a collectible's details (from menu action)."""
+        if not self.duck:
+            return
+
+        from world.collectibles import COLLECTIBLES
+        collectible = COLLECTIBLES.get(col_id)
+        if not collectible:
+            self.renderer.show_message(f"Unknown collectible: {col_id}", duration=2.0)
+            return
+
+        # Check if owned
+        is_owned = col_id in self.collectibles.owned_collectibles
+        is_shiny = col_id in self.collectibles.shiny_collectibles
+
+        if is_owned:
+            shiny_text = " (SHINY!)" if is_shiny else ""
+            self.renderer.show_message(
+                f"=== {collectible.name}{shiny_text} ===\n\n"
+                f"{collectible.description}\n\n"
+                f"Rarity: {collectible.rarity.value.title()}\n"
+                f"Set: {collectible.set_id.replace('_', ' ').title()}",
+                duration=5.0
+            )
+        else:
+            self.renderer.show_message(f"{collectible.name} - Not yet found!", duration=2.0)
+
     def _render_collectibles_menu(self):
         """Render the collectibles album with pagination."""
         from world.collectibles import SETS
@@ -8987,16 +9134,43 @@ Core Systems Tested: {report.total_tests}
                 self._render_decorations_menu()
             return
 
+    def _place_decoration(self, decor_id: str):
+        """Buy or place a decoration (from menu action)."""
+        if not self.duck:
+            return
+
+        from world.decorations import DECORATIONS
+        decoration = DECORATIONS.get(decor_id)
+        if not decoration:
+            self.renderer.show_message(f"Unknown decoration: {decor_id}", duration=2.0)
+            return
+
+        # Check if owned
+        owned_count = self.decorations.owned_decorations.get(decor_id, 0)
+
+        if owned_count == 0:
+            # Try to buy
+            success, msg, new_coins = self.decorations.buy_decoration(decor_id, self.habitat.currency)
+            if success:
+                self.habitat._currency = new_coins
+                self.renderer.show_message(f"Bought {decoration.name}!", duration=2.0)
+                duck_sounds.play()
+            else:
+                self.renderer.show_message(msg, duration=2.0)
+        else:
+            # Open decorations menu to place it
+            self._show_decorations_menu()
+
     def _place_decoration_in_room(self, decoration_id: str, room_type: str, position: Tuple[int, int] = (0, 0)):
         """Place a decoration in a room."""
         success, msg = self.decorations.place_decoration(decoration_id, room_type, position)
-        
+
         if success:
             self.renderer.show_message(f"* {msg}", duration=3.0)
             sound_engine.play_sound("build")
         else:
             self.renderer.show_message(msg, duration=2.0)
-        
+
         return success
 
     # ==================== SAVE SLOTS SYSTEM ====================

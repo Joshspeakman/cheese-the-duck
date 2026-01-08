@@ -43,18 +43,20 @@ class SaveManager:
             }
 
             # Write atomically using temp file
-            temp_path = self.save_path.with_suffix(".tmp")
-            
+            # Resolve paths to absolute to avoid pathlib rename bugs
+            save_path_resolved = self.save_path.resolve()
+            temp_path = save_path_resolved.with_suffix(".tmp")
+
             # Remove existing temp file if crashed save left one behind
             if temp_path.exists():
                 temp_path.unlink()
-            
+
             with open(temp_path, "w", encoding="utf-8") as f:
                 json.dump(save_data, f, indent=2, ensure_ascii=False)
 
             # Rename temp to actual save file (atomic on most systems)
             try:
-                temp_path.replace(self.save_path)
+                temp_path.replace(save_path_resolved)
             except OSError as rename_error:
                 # If rename fails, try to preserve the temp file data
                 print(f"Warning: Could not complete atomic save: {rename_error}")
