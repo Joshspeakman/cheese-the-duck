@@ -318,7 +318,7 @@ install_game() {
 
 # Game requires 116x35 terminal for best experience (minimum 60x20)
 GAME_COLS=120
-GAME_ROWS=38
+GAME_ROWS=45
 
 # Try to resize terminal using escape sequence (works in xterm, gnome-terminal, etc.)
 if [ -t 1 ]; then
@@ -338,7 +338,7 @@ EOF
 #!/bin/bash
 # Cheese the Duck Desktop Launcher
 GAME_COLS=120
-GAME_ROWS=42
+GAME_ROWS=45
 GAME_CMD="$LAUNCHER_DIR/$APP_ID"
 
 launch_terminal() {

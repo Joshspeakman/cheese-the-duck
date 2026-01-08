@@ -25,7 +25,7 @@ from config import GAME_DIR, SAVE_DIR
 
 
 # Game version - Update this when releasing new versions
-GAME_VERSION = "1.2.8"
+GAME_VERSION = "1.2.9"
 
 # GitHub repository info
 GITHUB_OWNER = "Joshspeakman"
@@ -132,7 +132,7 @@ class GameUpdater:
             content = updater_path.read_text()
             for line in content.split('\n'):
                 if line.startswith('GAME_VERSION'):
-                    # Extract version from: GAME_VERSION = "1.2.8"
+                    # Extract version from: GAME_VERSION = "1.2.9"
                     version = line.split('=')[1].strip().strip('"').strip("'")
                     self.current_version = version
                     break
@@ -450,7 +450,7 @@ VENV_DIR="$HOME/.local/share/cheese-the-duck/venv"
 
 # Game requires 116x35 terminal for best experience
 GAME_COLS=120
-GAME_ROWS=38
+GAME_ROWS=45
 
 if [ -t 1 ]; then
     printf '\\033[8;%d;%dt' "$GAME_ROWS" "$GAME_COLS"

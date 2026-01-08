@@ -158,7 +158,7 @@ VENV_DIR="$HOME/.local/share/cheese-the-duck/venv"
 
 # Game requires 116x35 terminal for best experience (minimum 60x20)
 GAME_COLS=120
-GAME_ROWS=38
+GAME_ROWS=45
 
 # Try to resize terminal using escape sequence (works in xterm, gnome-terminal, etc.)
 resize_terminal() {
@@ -198,7 +198,7 @@ cat > "$PACKAGE_DIR/usr/bin/cheese-the-duck-desktop" << 'EOF'
 # Launches the game in a properly-sized terminal window
 
 GAME_COLS=120
-GAME_ROWS=42
+GAME_ROWS=45
 
 # Detect and use appropriate terminal with geometry
 launch_terminal() {
