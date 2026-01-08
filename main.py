@@ -45,8 +45,19 @@ _ensure_venv()
 from game_logger import get_logger, shutdown_logger
 
 
-# Model configuration
-MODEL_DIR = os.path.join(GAME_DIR, "models")
+# Model configuration - use user-writable location for system installs
+def _get_model_dir():
+    """Get model directory, using user home for system installs."""
+    if GAME_DIR.startswith('/opt/') or GAME_DIR.startswith('/usr/') or GAME_DIR.startswith('/snap/'):
+        # System install - use user's home directory
+        user_model_dir = os.path.join(os.path.expanduser("~"), ".local", "share", "cheese-the-duck", "models")
+        os.makedirs(user_model_dir, exist_ok=True)
+        return user_model_dir
+    else:
+        # Local install - use game directory
+        return os.path.join(GAME_DIR, "models")
+
+MODEL_DIR = _get_model_dir()
 RECOMMENDED_MODEL = {
     "name": "Llama 3.2 3B",
     "url": "https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF/resolve/main/Llama-3.2-3B-Instruct-Q4_K_M.gguf",
