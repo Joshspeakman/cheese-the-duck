@@ -329,10 +329,10 @@ def _get_shop_items(game):
                 if hasattr(game.duck, 'inventory'):
                     owned = item_id in game.duck.inventory
             
-            # Check unlock
+            # Check unlock (level is on progression, not duck)
             unlocked = True
-            if game and hasattr(game, 'duck') and game.duck:
-                unlocked = game.duck.level >= item.unlock_level
+            if game and hasattr(game, 'progression') and game.progression:
+                unlocked = game.progression.level >= item.unlock_level
             
             categories[cat_name].append(MasterMenuItem(
                 id=f"shop_{item_id}",
