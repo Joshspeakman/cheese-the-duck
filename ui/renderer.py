@@ -371,6 +371,12 @@ class Renderer:
         self._message_expire = 0
         self._show_message_overlay = False  # Show messages as overlay instead of bottom bar
         self._message_rendered_inline = False  # Track if message was rendered in playfield
+        
+        # Persistent chat log (WoW-style, newest at bottom)
+        self._chat_log: List[tuple] = []  # List of (timestamp, message, category)
+        self._chat_log_max_size = 50  # Keep last 50 messages
+        self._chat_log_visible_lines = 5  # Show 5 lines in the UI
+        
         self._show_help = False
         self._show_inventory = False
         self._show_stats = False
@@ -1778,22 +1784,61 @@ class Renderer:
             visible_len = len(row)  # We know we have exactly inner_width visible chars
             lines.append(BOX["v"] + row_str + self.term.normal + BOX["v"])
 
-        # Message box at bottom of playfield (if message is active)
-        if self._show_message_overlay and self._message_queue and time.time() < self._message_expire:
-            # Render message inside the playfield area
-            lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
-            for msg_line in self._message_queue[:3]:  # Max 3 lines
-                msg_truncated = _visible_truncate(msg_line, inner_width - 2)
-                msg_centered = _visible_center(msg_truncated, inner_width)
-                lines.append(BOX["v"] + self.term.bright_white + msg_centered + self.term.normal + BOX["v"])
-            # Bottom of playfield
-            lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
-            # Clear overlay flag so it doesn't render twice
-            self._message_rendered_inline = True
-        else:
-            self._message_rendered_inline = False
-            # Bottom of playfield
-            lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
+        # Persistent chat log at bottom of playfield (WoW-style, newest at bottom)
+        lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
+        
+        # Get the last N messages from chat log
+        visible_messages = self._chat_log[-self._chat_log_visible_lines:]
+        
+        # Pad with empty lines if not enough messages
+        while len(visible_messages) < self._chat_log_visible_lines:
+            visible_messages.insert(0, None)
+        
+        # Render each line with fading effect (oldest = dimmest)
+        for i, entry in enumerate(visible_messages):
+            if entry is None:
+                # Empty line
+                lines.append(BOX["v"] + " " * inner_width + BOX["v"])
+            else:
+                timestamp, msg, category = entry
+                
+                # Calculate fade level (0 = oldest/dimmest, visible_lines-1 = newest/brightest)
+                fade_level = i / max(1, self._chat_log_visible_lines - 1)
+                
+                # Color based on category and fade
+                if fade_level < 0.3:
+                    # Very dim for oldest
+                    color = self.term.dim
+                elif fade_level < 0.6:
+                    # Medium brightness
+                    color = self.term.normal
+                else:
+                    # Full brightness for newest
+                    if category == "duck":
+                        color = self.term.bright_yellow
+                    elif category == "event":
+                        color = self.term.bright_cyan
+                    elif category == "action":
+                        color = self.term.bright_green
+                    elif category == "discovery":
+                        color = self.term.bright_magenta
+                    else:
+                        color = self.term.bright_white
+                
+                # Format: [HH:MM] message
+                timestamp_str = self.term.dim + f"[{timestamp}]" + self.term.normal + " "
+                msg_truncated = _visible_truncate(msg, inner_width - 9)  # 9 = "[HH:MM] " + margin
+                
+                line_content = timestamp_str + color + msg_truncated + self.term.normal
+                # Pad to width
+                line_padded = _visible_ljust(line_content, inner_width)
+                lines.append(BOX["v"] + line_padded + BOX["v"])
+        
+        # Bottom of playfield
+        lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
+        
+        # Mark message as rendered so overlay doesn't show
+        self._message_rendered_inline = True
 
         return lines
 
@@ -2992,9 +3037,22 @@ class Renderer:
             return items[self._shop_item_index]
         return None
 
-    def show_message(self, message: str, duration: float = 5.0):
-        """Show a message to the player as an overlay (default 5 seconds). If duration is 0, message persists until dismissed."""
+    def show_message(self, message: str, duration: float = 5.0, category: str = "system"):
+        """Show a message to the player and add to chat log. 
+        Categories: system, action, duck, event, discovery"""
         import textwrap
+        from datetime import datetime
+        
+        # Add to persistent chat log with timestamp
+        timestamp = datetime.now().strftime("%H:%M")
+        # Split multi-line messages into separate log entries
+        for line in message.split('\n'):
+            if line.strip():
+                self._chat_log.append((timestamp, line.strip(), category))
+        
+        # Trim chat log to max size
+        if len(self._chat_log) > self._chat_log_max_size:
+            self._chat_log = self._chat_log[-self._chat_log_max_size:]
         
         # Box width is min(50, width - 4), so content width is about 46 chars
         wrap_width = 44
@@ -3015,6 +3073,17 @@ class Renderer:
             self._message_expire = time.time() + duration
         else:
             self._message_expire = float('inf')  # Never expire automatically
+    
+    def add_chat_message(self, message: str, category: str = "system"):
+        """Add a message to the chat log without showing overlay."""
+        from datetime import datetime
+        timestamp = datetime.now().strftime("%H:%M")
+        for line in message.split('\n'):
+            if line.strip():
+                self._chat_log.append((timestamp, line.strip(), category))
+        # Trim chat log to max size
+        if len(self._chat_log) > self._chat_log_max_size:
+            self._chat_log = self._chat_log[-self._chat_log_max_size:]
 
     def dismiss_message(self):
         """Dismiss the current message overlay."""
