@@ -87,8 +87,8 @@ from ui.event_animations import (
 from ui.badges import BadgesSystem, badges_system
 from ui.mood_visuals import MoodVisualEffects, mood_visual_effects
 from ui.reactions import DuckReactionController, init_reaction_controller
-from ui.menu_selector import HierarchicalMenuSelector
-from ui.menu_structure import build_main_menu_categories, MENU_ACTIONS
+from ui.menu_selector import HierarchicalMenuSelector, MasterMenuPanel
+from ui.menu_structure import build_main_menu_categories, build_master_menu_tree, MENU_ACTIONS
 
 # Settings and menu systems
 from core.settings import settings_manager, get_settings, load_settings, save_settings
@@ -180,10 +180,14 @@ class Game:
         self._quests_menu = MenuSelector("QUESTS", close_keys=['KEY_ESCAPE', 'o'], items_per_page=8)
         self._weather_menu = MenuSelector("WEATHER ACTIVITIES", close_keys=['KEY_ESCAPE', 'w'], items_per_page=8)
 
-        # Main hierarchical menu (TAB to open)
+        # Main hierarchical menu (TAB to open) - DEPRECATED, replaced by master_menu
         self._main_menu = HierarchicalMenuSelector("Main Menu")
         self._main_menu.set_categories(build_main_menu_categories())
         self._main_menu_open = False
+        
+        # NEW: Master menu panel (always visible in side panel)
+        self.master_menu = MasterMenuPanel(self)
+        self.master_menu.set_menu_tree(build_master_menu_tree())
 
         # Backwards compatibility flags (computed from menu state)
         self._crafting_menu_open = False  # Flag for crafting menu
@@ -574,6 +578,16 @@ class Game:
                 return
             if key_str.isdigit() and key_str != '0':
                 self._use_inventory_item(int(key_str) - 1)  # Convert to 0-based index
+                return
+        
+        # Handle master menu navigation (arrow keys, enter, backspace)
+        # Only when no other overlay/menu is open
+        if self._state == "playing" and not self._has_open_overlay():
+            key_name = getattr(key, 'name', '') or ''
+            if key_name in ('KEY_UP', 'KEY_DOWN', 'KEY_LEFT', 'KEY_RIGHT', 'KEY_ENTER', 'KEY_BACKSPACE'):
+                action_id = self.master_menu.handle_key(key)
+                if action_id:
+                    self._execute_menu_action(action_id)
                 return
 
         action = self.input_handler.process_key(key)
@@ -1399,12 +1413,9 @@ class Game:
                     self.renderer.dismiss_message()
                 return
 
-            # Main menu (TAB key)
+            # TAB key - no longer opens menu (master menu is always visible)
+            # Keep for backwards compatibility - just ignore
             if key_str == '\t' or key_name == 'KEY_TAB':
-                self._close_all_overlays()
-                self._main_menu.open()
-                self._main_menu_open = True
-                self._update_main_menu_display()
                 return
 
             # UI keys and interaction keys
@@ -4227,6 +4238,52 @@ class Game:
         self._show_goals = False
         self._debug_menu_open = False
         self._debug_submenu = None
+
+    def _has_open_overlay(self) -> bool:
+        """Check if any overlay or menu is currently open."""
+        # Check renderer overlays
+        if self.renderer.is_talking():
+            return True
+        if self.renderer.is_shop_open():
+            return True
+        if self.renderer._show_stats:
+            return True
+        if self.renderer._show_inventory:
+            return True
+        if self.renderer._show_help:
+            return True
+        if self.renderer._show_message_overlay:
+            return True
+            
+        # Check game menus
+        return (
+            self._crafting_menu_open or
+            self._building_menu_open or
+            self._areas_menu_open or
+            self._use_menu_open or
+            self._minigames_menu_open or
+            self._quests_menu_open or
+            self._weather_menu_open or
+            self._treasure_menu_open or
+            self._scrapbook_menu_open or
+            self._tricks_menu_open or
+            self._titles_menu_open or
+            self._decorations_menu_open or
+            self._collectibles_menu_open or
+            self._secrets_menu_open or
+            self._garden_menu_open or
+            self._prestige_menu_open or
+            self._save_slots_menu_open or
+            self._trading_menu_open or
+            self._enhanced_diary_open or
+            self._festival_menu_open or
+            self._settings_menu_open or
+            self._main_menu_open or
+            self._show_goals or
+            self._debug_menu_open or
+            (self._confirmation_dialog and self._confirmation_dialog.is_open) or
+            self._active_minigame is not None
+        )
 
     def _close_all_overlays(self):
         """Close all open overlays and menus."""

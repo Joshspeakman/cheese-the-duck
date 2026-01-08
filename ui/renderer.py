@@ -1843,38 +1843,22 @@ class Renderer:
             line_content = _visible_ljust(line_content, inner_width)
             lines.append(BOX["v"] + line_content + BOX["v"])
 
-        # Divider - Shortcuts Section
+        # Divider - Master Menu Section
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
-        shortcut_title = _visible_center("--- SHORTCUTS ---", inner_width)
-        lines.append(BOX["v"] + shortcut_title + BOX["v"])
-
-        # Actions column - build with proper alignment
-        # Both columns fixed width for consistent centering
-        shortcut_pairs = [
-            ("[F] Feed", "[P] Play"),
-            ("[L] Clean", "[D] Pet"),
-            ("[Z] Sleep", "[T] Talk"),
-            None,  # Empty line
-            ("[E] Explore", "[A] Areas"),
-            ("[C] Craft", "[R] Build"),
-            None,  # Empty line
-            ("[I] Items", "[B] Shop"),
-            ("[G] Goals", "[S] Stats"),
-            ("[H] Help", "[Q] Quit"),
-        ]
         
-        shortcuts = []
-        for pair in shortcut_pairs:
-            if pair is None:
-                shortcuts.append("")
-            else:
-                # Pad both columns: first to 12, second to 10, total = 22
-                shortcuts.append(f"{pair[0]:<12}{pair[1]:<10}")
-
-        for shortcut in shortcuts:
-            if shortcut:
-                centered = _visible_center(shortcut, inner_width)
-                lines.append(BOX["v"] + centered + BOX["v"])
+        # Render master menu if available
+        if hasattr(game, 'master_menu') and game.master_menu:
+            # Calculate available lines for menu (target ~12 lines for menu content)
+            menu_max_lines = 14
+            menu_lines = game.master_menu.get_render_lines(inner_width, menu_max_lines)
+            for menu_line in menu_lines:
+                lines.append(BOX["v"] + menu_line + BOX["v"])
+        else:
+            # Fallback if master menu not initialized
+            fallback_title = _visible_center("--- MENU ---", inner_width)
+            lines.append(BOX["v"] + fallback_title + BOX["v"])
+            fallback_msg = _visible_center("Loading...", inner_width)
+            lines.append(BOX["v"] + fallback_msg + BOX["v"])
 
         # Divider
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
@@ -2093,8 +2077,8 @@ class Renderer:
         """Render the bottom controls bar."""
         inner_width = max(width - 2, 20)  # Ensure minimum width
 
-        # Compact controls hint
-        controls = "[TAB] Menu | [H]elp | [M]usic | [+/-] Vol | [Q]uit"
+        # Compact controls hint - updated for master menu navigation
+        controls = "[Arrows] Navigate | [Enter] Select | [Bksp] Back | [Q] Quit"
 
         # Pad or truncate to exact width
         if len(controls) < inner_width:
