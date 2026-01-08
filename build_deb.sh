@@ -135,15 +135,16 @@ find "$PACKAGE_DIR" -name "*.pyc" -delete 2>/dev/null || true
 
 echo -e "${GREEN}✓${NC} Game files copied"
 
-# Convert icon
+# Convert icon - use the largest size (512x512 at index 8) for best quality
 if [ -f "$SOURCE_DIR/cheese.ico" ] && command -v convert &> /dev/null; then
     echo -e "${YELLOW}→${NC} Creating icons..."
-    convert "$SOURCE_DIR/cheese.ico[0]" -resize 256x256 "$PACKAGE_DIR/usr/share/icons/hicolor/256x256/apps/cheese-the-duck.png" 2>/dev/null || true
-    convert "$SOURCE_DIR/cheese.ico[0]" -resize 128x128 "$PACKAGE_DIR/usr/share/icons/hicolor/128x128/apps/cheese-the-duck.png" 2>/dev/null || true
-    convert "$SOURCE_DIR/cheese.ico[0]" -resize 64x64 "$PACKAGE_DIR/usr/share/icons/hicolor/64x64/apps/cheese-the-duck.png" 2>/dev/null || true
-    convert "$SOURCE_DIR/cheese.ico[0]" -resize 48x48 "$PACKAGE_DIR/usr/share/icons/hicolor/48x48/apps/cheese-the-duck.png" 2>/dev/null || true
-    convert "$SOURCE_DIR/cheese.ico[0]" -resize 32x32 "$PACKAGE_DIR/usr/share/icons/hicolor/32x32/apps/cheese-the-duck.png" 2>/dev/null || true
-    convert "$SOURCE_DIR/cheese.ico[0]" -resize 16x16 "$PACKAGE_DIR/usr/share/icons/hicolor/16x16/apps/cheese-the-duck.png" 2>/dev/null || true
+    # Use the 512x512 PNG (index 8) for best quality when scaling down
+    convert "$SOURCE_DIR/cheese.ico[8]" -resize 256x256 "$PACKAGE_DIR/usr/share/icons/hicolor/256x256/apps/cheese-the-duck.png" 2>/dev/null || true
+    convert "$SOURCE_DIR/cheese.ico[8]" -resize 128x128 "$PACKAGE_DIR/usr/share/icons/hicolor/128x128/apps/cheese-the-duck.png" 2>/dev/null || true
+    convert "$SOURCE_DIR/cheese.ico[8]" -resize 64x64 "$PACKAGE_DIR/usr/share/icons/hicolor/64x64/apps/cheese-the-duck.png" 2>/dev/null || true
+    convert "$SOURCE_DIR/cheese.ico[8]" -resize 48x48 "$PACKAGE_DIR/usr/share/icons/hicolor/48x48/apps/cheese-the-duck.png" 2>/dev/null || true
+    convert "$SOURCE_DIR/cheese.ico[8]" -resize 32x32 "$PACKAGE_DIR/usr/share/icons/hicolor/32x32/apps/cheese-the-duck.png" 2>/dev/null || true
+    convert "$SOURCE_DIR/cheese.ico[8]" -resize 16x16 "$PACKAGE_DIR/usr/share/icons/hicolor/16x16/apps/cheese-the-duck.png" 2>/dev/null || true
     echo -e "${GREEN}✓${NC} Icons created"
 fi
 
