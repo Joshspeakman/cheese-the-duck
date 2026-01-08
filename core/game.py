@@ -166,6 +166,7 @@ class Game:
         self._statistics = {}
         self._pending_offline_summary = None
         self._pending_daily_rewards = []
+        self._pending_messages = []  # Messages to show after load (e.g., cleanup notifications)
         self._sound_enabled = True
         self._show_goals = False
         self._reset_confirmation = False  # Flag for reset game confirmation
@@ -224,6 +225,30 @@ class Game:
         self._collectibles_menu_open = False  # Flag for collectibles menu
         self._collectibles_menu_page = 0      # Current page of collectibles
         
+        # Secrets book menu
+        self._secrets_menu_open = False       # Flag for secrets book menu
+        self._secrets_menu_page = 0           # Current page of secrets
+        
+        # Garden menu
+        self._garden_menu_open = False        # Flag for garden menu
+        self._garden_selected_plot = 0        # Currently selected garden plot
+        
+        # Prestige menu
+        self._prestige_menu_open = False      # Flag for prestige menu
+        
+        # Save slots menu  
+        self._save_slots_menu_open = False    # Flag for save slots menu
+        self._save_slots_selected = 0         # Currently selected slot
+        
+        # Trading menu
+        self._trading_menu_open = False       # Flag for trading menu
+        self._trading_selected = 0            # Currently selected trader
+        
+        # Enhanced diary menu
+        self._enhanced_diary_open = False       # Flag for enhanced diary menu
+        self._enhanced_diary_tab = "overview"   # Current tab: overview, emotions, photos, dreams, life
+        self._enhanced_diary_page = 0           # Current page within tab
+        
         # Title screen menu state
         self._title_menu_index = 0        # Currently selected title menu option
         self._title_update_status = ""    # Update status message for title screen
@@ -257,6 +282,8 @@ class Game:
         self._debug_menu_selected = 0
         self._debug_submenu = None  # Current debug submenu (weather, events, etc.)
         self._debug_submenu_selected = 0
+        self._debug_submenu_page = 0  # Current page for paginated submenus
+        self._debug_items_per_page = 10  # Items per page in debug submenu
 
         # Mini-games system
         self.minigames: MiniGameSystem = MiniGameSystem()
@@ -500,6 +527,24 @@ class Game:
             return
         if self._collectibles_menu_open:
             self._handle_collectibles_input(key)
+            return
+        if self._secrets_menu_open:
+            self._handle_secrets_input(key)
+            return
+        if self._garden_menu_open:
+            self._handle_garden_input(key)
+            return
+        if self._prestige_menu_open:
+            self._handle_prestige_input(key)
+            return
+        if self._save_slots_menu_open:
+            self._handle_save_slots_input(key)
+            return
+        if self._trading_menu_open:
+            self._handle_trading_input(key)
+            return
+        if self._enhanced_diary_open:
+            self._handle_enhanced_diary_input(key)
             return
         if self._festival_menu_open:
             self._handle_festival_input(key)
@@ -1889,6 +1934,20 @@ class Game:
         self.duck.memory.add_interaction(interaction, "", emotional_value)
         self.duck.memory.total_interactions += 1
         self.duck.memory.record_mood(mood.score)
+        
+        # Log emotion to enhanced diary
+        from dialogue.diary_enhanced import EmotionCategory
+        emotion_map = {
+            "feed": (EmotionCategory.CONTENTMENT, "eating"),
+            "play": (EmotionCategory.JOY, "playing"),
+            "clean": (EmotionCategory.CALM, "bath time"),
+            "pet": (EmotionCategory.LOVE, "being petted"),
+            "sleep": (EmotionCategory.CALM, "resting"),
+        }
+        if interaction in emotion_map:
+            emotion, trigger = emotion_map[interaction]
+            intensity = min(10, max(1, mood.score // 10))
+            self.enhanced_diary.log_emotion(emotion, intensity, trigger=trigger)
 
         # Update statistics
         stat_keys = {
@@ -1920,7 +1979,7 @@ class Game:
             
             # Log relationship milestone to scrapbook
             from world.scrapbook import PhotoCategory
-            duck_age = self.duck.age_days if self.duck else 1
+            duck_age = self.duck.get_age_days() if self.duck else 1
             location = self.exploration.current_area.name if self.exploration.current_area else "Home Pond"
             weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
             mood_val = self.duck.get_mood().state.value if self.duck else "happy"
@@ -2066,6 +2125,9 @@ class Game:
             duck_sounds.quack("content")
         elif interaction == "sleep":
             self.renderer.show_closeup("sleep", 2.5)
+            # Chance to record a dream when sleeping
+            if random.random() < 0.4:  # 40% chance of dream
+                self._record_random_dream()
         elif interaction == "clean":
             self.renderer.show_closeup(None, 1.5)
             duck_sounds.quack("normal")
@@ -2111,7 +2173,7 @@ class Game:
         
         # Log to scrapbook
         from world.scrapbook import PhotoCategory
-        duck_age = self.duck.age_days if self.duck else 1
+        duck_age = self.duck.get_age_days() if self.duck else 1
         location = self.exploration.current_area.name if self.exploration.current_area else "Home Pond"
         weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
         mood = self.duck.get_mood().state.value if self.duck else "happy"
@@ -2155,7 +2217,7 @@ class Game:
         from world.scrapbook import PhotoCategory
         from world.friends import FriendshipLevel
         
-        duck_age = self.duck.age_days if self.duck else 1
+        duck_age = self.duck.get_age_days() if self.duck else 1
         location = self.exploration.current_area.name if self.exploration.current_area else "Home Pond"
         weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
         mood_val = self.duck.get_mood().state.value if self.duck else "happy"
@@ -2378,7 +2440,7 @@ class Game:
         if self.fishing.is_fishing:
             fish_msg = self.fishing.update(0.016)
             if fish_msg:
-                self.renderer.show_message(fish_msg, duration=2.0)
+                self._show_message_if_no_menu(fish_msg, duration=2.0)
 
         # Update weather activities (check for completion)
         self._update_weather_activity()
@@ -2534,7 +2596,7 @@ class Game:
                             
                             # Log friend visit to scrapbook
                             from world.scrapbook import PhotoCategory
-                            duck_age = self.duck.age_days if self.duck else 1
+                            duck_age = self.duck.get_age_days() if self.duck else 1
                             location_name = self.exploration.current_area.name if self.exploration.current_area else "Home Pond"
                             weather_val = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
                             mood_val = self.duck.get_mood().state.value if self.duck else "happy"
@@ -2779,7 +2841,7 @@ class Game:
         # Check for random dialogue from visitor
         dialogue = visitor_animator.get_random_dialogue(self.duck.name, current_time)
         if dialogue:
-            self.renderer.show_message(dialogue, duration=5.0)
+            self._show_message_if_no_menu(dialogue, duration=5.0)
             
             # Schedule Cheese's response to the visitor's dialogue
             # friend.personality may be an enum, so convert to string
@@ -2802,7 +2864,7 @@ class Game:
                 item_name = item.name if hasattr(item, 'name') else item_id
                 comment = visitor_animator.get_item_comment(item_id, item_name)
                 if comment:
-                    self.renderer.show_message(comment, duration=4.0)
+                    self._show_message_if_no_menu(comment, duration=4.0)
                     break  # Only one comment at a time
             
             # Comment on cosmetics
@@ -2810,7 +2872,7 @@ class Game:
                 if cosmetic_id:
                     comment = visitor_animator.get_cosmetic_comment(self.duck.name, cosmetic_id)
                     if comment:
-                        self.renderer.show_message(comment, duration=4.0)
+                        self._show_message_if_no_menu(comment, duration=4.0)
                         break
             
             # Comment on built structures
@@ -2818,7 +2880,7 @@ class Game:
                 if structure.status.value == "complete":
                     comment = visitor_animator.get_item_comment(structure.blueprint_id, structure.blueprint_id)
                     if comment:
-                        self.renderer.show_message(comment, duration=4.0)
+                        self._show_message_if_no_menu(comment, duration=4.0)
                         break
         
         # Check if visit should end (time-based or conversation complete)
@@ -2841,7 +2903,7 @@ class Game:
                 
                 visitor_animator.start_leaving()
                 farewell = visitor_animator.get_farewell(self.duck.name)
-                self.renderer.show_message(farewell, duration=5.0)
+                self._show_message_if_no_menu(farewell, duration=5.0)
                 duck_sounds.quack("happy")
                 # Trigger friend departure reaction animation
                 self.reaction_controller.trigger_friend_reaction("departure", time.time())
@@ -2851,7 +2913,7 @@ class Game:
             if pos_x >= 65:
                 # End the visit
                 self.friends.end_visit()
-                self.renderer.show_message(f"*{friend.name} waddles away happily*", duration=3.0)
+                self._show_message_if_no_menu(f"*{friend.name} waddles away happily*", duration=3.0)
 
     def _update_crafting_progress(self):
         """Update crafting progress and complete if ready."""
@@ -3410,6 +3472,57 @@ class Game:
             )
         elif self._state == "playing":
             self.renderer.render_frame(self)
+            # Keep menus persistent - re-render if a menu is open
+            self._maintain_open_menus()
+
+    def _maintain_open_menus(self):
+        """Re-render any open menu to keep it visible. Prevents softlock from message overlay changes."""
+        if self._tricks_menu_open:
+            self._render_tricks_menu()
+        elif self._titles_menu_open:
+            self._render_titles_menu()
+        elif self._collectibles_menu_open:
+            self._render_collectibles_menu()
+        elif self._secrets_menu_open:
+            self._render_secrets_menu()
+        elif self._garden_menu_open:
+            self._render_garden_menu()
+        elif self._prestige_menu_open:
+            self._render_prestige_menu()
+        elif self._save_slots_menu_open:
+            self._render_save_slots_menu()
+        elif self._trading_menu_open:
+            self._render_trading_menu()
+        elif self._decorations_menu_open:
+            self._render_decorations_menu()
+        elif self._scrapbook_menu_open:
+            self._render_scrapbook()
+        elif self._enhanced_diary_open:
+            self._render_enhanced_diary()
+        elif self._crafting_menu_open:
+            self._update_crafting_menu_display()
+        elif self._building_menu_open:
+            self._update_building_menu_display()
+        elif self._areas_menu_open:
+            self._update_areas_menu_display()
+        elif self._use_menu_open:
+            self._update_use_menu_display()
+        elif self._minigames_menu_open:
+            self._update_minigames_menu_display()
+        elif self._quests_menu_open:
+            self._update_quests_menu_display()
+        elif self._weather_menu_open:
+            self._update_weather_menu_display()
+        elif self._treasure_menu_open:
+            self._update_treasure_menu_display()
+        elif self._festival_menu_open:
+            self._update_festival_menu_display()
+        elif self._settings_menu_open:
+            self._render_settings_menu()
+        elif self._main_menu_open:
+            self._update_main_menu_display()
+        elif self._debug_menu_open:
+            self._show_debug_menu()
 
     def _handle_title_input(self, action: GameAction, key=None):
         """Handle input on the title screen menu."""
@@ -3611,6 +3724,17 @@ class Game:
 
         # Generate daily challenges
         self.progression.generate_daily_challenges()
+        
+        # Start first life chapter in enhanced diary
+        self.enhanced_diary.start_life_chapter(
+            title="The Beginning",
+            summary=f"{self.duck.name} hatched into the world!"
+        )
+        self.enhanced_diary.add_chapter_event("First hatched!")
+        
+        # Log initial excitement emotion
+        from dialogue.diary_enhanced import EmotionCategory
+        self.enhanced_diary.log_emotion(EmotionCategory.EXCITEMENT, 8, trigger="hatching")
 
         self._save_game()
 
@@ -4053,6 +4177,12 @@ class Game:
             self._titles_menu_open or
             self._decorations_menu_open or
             self._collectibles_menu_open or
+            self._secrets_menu_open or
+            self._garden_menu_open or
+            self._prestige_menu_open or
+            self._save_slots_menu_open or
+            self._trading_menu_open or
+            self._enhanced_diary_open or
             self._festival_menu_open or
             self._settings_menu_open or
             self._main_menu_open or
@@ -4085,6 +4215,12 @@ class Game:
         self._titles_menu_open = False
         self._decorations_menu_open = False
         self._collectibles_menu_open = False
+        self._secrets_menu_open = False
+        self._garden_menu_open = False
+        self._prestige_menu_open = False
+        self._save_slots_menu_open = False
+        self._trading_menu_open = False
+        self._enhanced_diary_open = False
         self._festival_menu_open = False
         self._settings_menu_open = False
         self._main_menu_open = False
@@ -4112,6 +4248,12 @@ class Game:
         self._titles_menu_open = False
         self._decorations_menu_open = False
         self._collectibles_menu_open = False
+        self._secrets_menu_open = False
+        self._garden_menu_open = False
+        self._prestige_menu_open = False
+        self._save_slots_menu_open = False
+        self._trading_menu_open = False
+        self._enhanced_diary_open = False
         self._festival_menu_open = False
         self._settings_menu_open = False
         self._main_menu_open = False
@@ -5638,14 +5780,96 @@ class Game:
         """Show the trading post menu."""
         if not self.duck:
             return
+        self._trading_menu_open = True
+        self._trading_selected = 0
+        self._render_trading_menu()
 
-        # Get trader selection display
-        lines = self.trading.render_trader_selection()
+    def _render_trading_menu(self):
+        """Render the trading menu with selection."""
+        lines = [
+            "+=============================================+",
+            "|              TRADING POST                   |",
+            "+=============================================+",
+        ]
         
-        trading_text = "\n".join(lines)
-        trading_text += "\n\n[1-5] Visit trader  [ESC/V] Close"
+        # Get traders from trading system
+        traders = list(self.trading.traders.values()) if hasattr(self.trading, 'traders') else []
         
-        self.renderer.show_message(trading_text, duration=0)
+        if traders:
+            for i, trader in enumerate(traders[:5]):
+                selected = "[>]" if i == self._trading_selected else "   "
+                name = trader.name if hasattr(trader, 'name') else f"Trader {i+1}"
+                specialty = trader.specialty if hasattr(trader, 'specialty') else "General"
+                lines.append(f"| {selected} {name[:20]:20} ({specialty[:15]:15}) |")
+        else:
+            lines.append("|  No traders available right now...          |")
+        
+        lines.append("+=============================================+")
+        lines.append("")
+        lines.append("[^/v] Select  [Enter] Visit  [ESC/Backspace] Close")
+        
+        self.renderer.show_message("\n".join(lines), duration=0)
+
+    def _handle_trading_input(self, key):
+        """Handle input for trading menu."""
+        key_str = str(key).lower()
+        key_name = getattr(key, 'name', None) or ''
+        
+        # Close with ESC or Backspace
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+            self._trading_menu_open = False
+            self.renderer.dismiss_message()
+            return
+        
+        # Navigate traders
+        traders = list(self.trading.traders.values()) if hasattr(self.trading, 'traders') else []
+        max_traders = min(5, len(traders))
+        
+        if key_name == "KEY_UP":
+            if self._trading_selected > 0:
+                self._trading_selected -= 1
+                self._render_trading_menu()
+            return
+        
+        if key_name == "KEY_DOWN":
+            if self._trading_selected < max_traders - 1:
+                self._trading_selected += 1
+                self._render_trading_menu()
+            return
+        
+        # Visit trader with Enter
+        if key_name == "KEY_ENTER" and traders:
+            trader = traders[self._trading_selected]
+            self._trading_menu_open = False
+            self.renderer.dismiss_message()
+            self._visit_trader(trader)
+            return
+        
+        # Number key quick select
+        if key_str.isdigit() and 1 <= int(key_str) <= max_traders:
+            self._trading_selected = int(key_str) - 1
+            if traders:
+                trader = traders[self._trading_selected]
+                self._trading_menu_open = False
+                self.renderer.dismiss_message()
+                self._visit_trader(trader)
+            return
+
+    def _visit_trader(self, trader):
+        """Visit a trader to see their wares."""
+        # Show trader's inventory
+        if hasattr(trader, 'get_inventory'):
+            items = trader.get_inventory()
+            lines = [f"=== {trader.name}'s Wares ===", ""]
+            for item in items[:10]:
+                name = item.name if hasattr(item, 'name') else str(item)
+                price = item.price if hasattr(item, 'price') else 0
+                lines.append(f"  {name[:30]:30} - {price} coins")
+            lines.append("")
+            lines.append("[Press any key to leave]")
+            self.renderer.show_message("\n".join(lines), duration=0)
+        else:
+            self.renderer.show_message(f"Visited {trader.name if hasattr(trader, 'name') else 'trader'}!", duration=3.0)
 
     # ==================== WEATHER ACTIVITIES ====================
 
@@ -6277,10 +6501,27 @@ class Game:
             if self._debug_submenu:
                 self._debug_submenu = None
                 self._debug_submenu_selected = 0
+                self._debug_submenu_page = 0
                 self._show_debug_menu()
             else:
                 self._debug_menu_open = False
                 self.renderer.dismiss_message()
+            return
+        
+        # Page navigation with LEFT/RIGHT in submenus
+        if self._debug_submenu and key_name == "KEY_LEFT":
+            if self._debug_submenu_page > 0:
+                self._debug_submenu_page -= 1
+                self._debug_submenu_selected = 0
+            self._show_debug_menu()
+            return
+        if self._debug_submenu and key_name == "KEY_RIGHT":
+            all_items = self._get_debug_submenu_items()
+            max_pages = (len(all_items) - 1) // self._debug_items_per_page
+            if self._debug_submenu_page < max_pages:
+                self._debug_submenu_page += 1
+                self._debug_submenu_selected = 0
+            self._show_debug_menu()
             return
         
         # Navigate with arrows
@@ -6293,8 +6534,12 @@ class Game:
             return
         if key_name == "KEY_DOWN":
             if self._debug_submenu:
-                max_items = len(self._get_debug_submenu_items())
-                self._debug_submenu_selected = min(max_items - 1, self._debug_submenu_selected + 1)
+                # Get items on current page
+                all_items = self._get_debug_submenu_items()
+                start_idx = self._debug_submenu_page * self._debug_items_per_page
+                page_items = all_items[start_idx:start_idx + self._debug_items_per_page]
+                max_idx = len(page_items) - 1
+                self._debug_submenu_selected = min(max_idx, self._debug_submenu_selected + 1)
             else:
                 self._debug_menu_selected = min(10, self._debug_menu_selected + 1)  # 11 items (0-10)
             self._show_debug_menu()
@@ -6311,14 +6556,18 @@ class Game:
             self._debug_select_current()
             return
         
-        # Number key shortcuts
+        # Number key shortcuts (select item on current page)
         if key_str.isdigit():
             idx = int(key_str) - 1 if key_str != '0' else 9
             if self._debug_submenu:
-                items = self._get_debug_submenu_items()
-                if 0 <= idx < len(items):
-                    self._debug_submenu_selected = idx
-                    self._debug_select_current()
+                # Select item on current page
+                if 0 <= idx < self._debug_items_per_page:
+                    all_items = self._get_debug_submenu_items()
+                    start_idx = self._debug_submenu_page * self._debug_items_per_page
+                    page_items = all_items[start_idx:start_idx + self._debug_items_per_page]
+                    if idx < len(page_items):
+                        self._debug_submenu_selected = idx
+                        self._debug_select_current()
             else:
                 if 0 <= idx < 9:
                     self._debug_menu_selected = idx
@@ -6362,15 +6611,19 @@ class Game:
             if 0 <= self._debug_menu_selected < len(menus):
                 self._debug_submenu = menus[self._debug_menu_selected]
                 self._debug_submenu_selected = 0
+                self._debug_submenu_page = 0  # Reset page on entering submenu
                 self._show_debug_menu()
             return
         
-        # Submenu selection
-        items = self._get_debug_submenu_items()
-        if not (0 <= self._debug_submenu_selected < len(items)):
+        # Submenu selection - account for pagination
+        all_items = self._get_debug_submenu_items()
+        start_idx = self._debug_submenu_page * self._debug_items_per_page
+        actual_idx = start_idx + self._debug_submenu_selected
+        
+        if not (0 <= actual_idx < len(all_items)):
             return
         
-        selected = items[self._debug_submenu_selected]
+        selected = all_items[actual_idx]
         
         if self._debug_submenu == "weather":
             self._debug_set_weather(selected)
@@ -6564,15 +6817,51 @@ class Game:
     
     def _debug_set_time(self, action: str):
         """Manipulate time for testing."""
-        from datetime import datetime, timedelta
+        from datetime import datetime, timedelta, date
         
+        hours = 0
         if action == "advance_1h":
-            # Advance all time-based systems by 1 hour
-            self.renderer.show_message("# DEBUG: Advanced time by 1 hour (effects limited)", duration=2)
+            hours = 1
         elif action == "advance_6h":
-            self.renderer.show_message("# DEBUG: Advanced time by 6 hours (effects limited)", duration=2)
+            hours = 6
         elif action == "advance_1d":
-            self.renderer.show_message("# DEBUG: Advanced time by 1 day (effects limited)", duration=2)
+            hours = 24
+        
+        if hours > 0 and self.duck:
+            # Convert hours to minutes for duck growth
+            minutes_to_add = hours * 60
+            
+            # Update duck growth progress
+            self.duck._update_growth(minutes_to_add)
+            
+            # Update duck's created_at for age display (it's stored as ISO string)
+            if hasattr(self.duck, 'created_at') and self.duck.created_at:
+                if isinstance(self.duck.created_at, str):
+                    # Parse ISO format string
+                    created = datetime.fromisoformat(self.duck.created_at.replace('Z', '+00:00'))
+                    if created.tzinfo is not None:
+                        created = created.replace(tzinfo=None)
+                    new_created = created - timedelta(hours=hours)
+                    self.duck.created_at = new_created.isoformat()
+                else:
+                    new_created = self.duck.created_at - timedelta(hours=hours)
+                    self.duck.created_at = new_created.isoformat()
+            
+            # Update AgingSystem birth_date if advancing by days
+            if hours >= 24 and hasattr(self, 'aging') and self.aging and self.aging.birth_date:
+                days = hours // 24
+                birth = date.fromisoformat(self.aging.birth_date)
+                new_birth = birth - timedelta(days=days)
+                self.aging.birth_date = new_birth.strftime("%Y-%m-%d")
+                new_stage = self.aging.update_stage()
+                if new_stage:
+                    self.duck.growth_stage = new_stage.value
+                    self.duck.growth_progress = 0.0
+            
+            if hours >= 24:
+                self.renderer.show_message(f"# DEBUG: Advanced time by {hours // 24} day(s)", duration=2)
+            else:
+                self.renderer.show_message(f"# DEBUG: Advanced time by {hours} hour(s)", duration=2)
         elif action == "set_dawn":
             self.renderer.show_message("# DEBUG: Time display simulating dawn (5 AM)", duration=2)
         elif action == "set_noon":
@@ -6624,7 +6913,7 @@ class Game:
     def _debug_set_age(self, action: str):
         """Set duck age or growth stage."""
         from duck.aging import GrowthStage
-        from datetime import datetime, timedelta
+        from datetime import datetime, timedelta, date
 
         if not self.duck:
             self.renderer.show_message("DEBUG: No duck!", duration=2)
@@ -6642,28 +6931,49 @@ class Game:
             elif action == "+30_days":
                 days = 30
 
-            if days > 0 and hasattr(self.duck, 'age_tracker') and self.duck.age_tracker:
-                # Advance the birth date backwards to simulate aging
-                if self.duck.age_tracker.birth_date:
-                    birth = datetime.fromisoformat(self.duck.age_tracker.birth_date + "T00:00:00")
+            if days > 0:
+                # Update the AgingSystem (self.aging) birth_date
+                if hasattr(self, 'aging') and self.aging and self.aging.birth_date:
+                    birth = date.fromisoformat(self.aging.birth_date)
                     new_birth = birth - timedelta(days=days)
-                    self.duck.age_tracker.birth_date = new_birth.strftime("%Y-%m-%d")
-                    self.duck.age_tracker.update_growth(self.duck.age_tracker.get_age_days())
-                    self.renderer.show_message(f"DEBUG: Aged duck by {days} day(s)", duration=2)
-                else:
-                    self.renderer.show_message("DEBUG: No birth date set", duration=2)
+                    self.aging.birth_date = new_birth.strftime("%Y-%m-%d")
+                    # Update stage based on new age
+                    new_stage = self.aging.update_stage()
+                    if new_stage:
+                        self.duck.growth_stage = new_stage.value
+                        self.duck.growth_progress = 0.0
+
+                # Also update the duck's created_at for display consistency
+                if hasattr(self.duck, 'created_at') and self.duck.created_at:
+                    if isinstance(self.duck.created_at, str):
+                        created = datetime.fromisoformat(self.duck.created_at.replace('Z', '+00:00'))
+                        if created.tzinfo is not None:
+                            created = created.replace(tzinfo=None)
+                        new_created = created - timedelta(days=days)
+                        self.duck.created_at = new_created.isoformat()
+                    else:
+                        new_created = self.duck.created_at - timedelta(days=days)
+                        self.duck.created_at = new_created.isoformat()
+
+                # Advance growth_progress by simulating time passing
+                minutes_to_add = days * 24 * 60  # Convert days to minutes
+                self.duck._update_growth(minutes_to_add)
+
+                self.renderer.show_message(f"DEBUG: Aged duck by {days} day(s)", duration=2)
             else:
-                self.renderer.show_message("DEBUG: No age tracker", duration=2)
+                self.renderer.show_message("DEBUG: Invalid days", duration=2)
         else:
             # Set specific growth stage
             try:
                 stage = GrowthStage(action)
-                if hasattr(self.duck, 'age_tracker') and self.duck.age_tracker:
-                    self.duck.age_tracker.current_stage = stage
-                    self.renderer.show_message(f"DEBUG: Set stage to {action}", duration=2)
-                # Also update old growth_stage if it exists
+                # Update the AgingSystem
+                if hasattr(self, 'aging') and self.aging:
+                    self.aging.current_stage = stage
+                # Update duck's growth_stage
                 if hasattr(self.duck, 'growth_stage'):
                     self.duck.growth_stage = action
+                    self.duck.growth_progress = 0.0
+                self.renderer.show_message(f"DEBUG: Set stage to {action}", duration=2)
             except ValueError:
                 self.renderer.show_message(f"DEBUG: Unknown stage {action}", duration=2)
 
@@ -6841,15 +7151,33 @@ Core Systems Tested: {report.total_tests}
                 prefix = ">" if i == self._debug_menu_selected else " "
                 lines.append(f"| {prefix} [{key}] {name:<12} {desc:<16} |")
         else:
-            # Submenu
-            lines.append(f"|  << {self._debug_submenu.upper():<29} |")
+            # Submenu with pagination
+            all_items = self._get_debug_submenu_items()
+            total_items = len(all_items)
+            total_pages = (total_items - 1) // self._debug_items_per_page + 1
+            current_page = self._debug_submenu_page + 1
+            
+            # Page indicator
+            page_str = f"({current_page}/{total_pages})" if total_pages > 1 else ""
+            header = f"<< {self._debug_submenu.upper()} {page_str}"
+            lines.append(f"|  {header:<32} |")
             lines.append("+===================================+")
-            items = self._get_debug_submenu_items()
-            for i, item in enumerate(items):
+            
+            # Get items for current page
+            start_idx = self._debug_submenu_page * self._debug_items_per_page
+            end_idx = start_idx + self._debug_items_per_page
+            page_items = all_items[start_idx:end_idx]
+            
+            for i, item in enumerate(page_items):
                 prefix = ">" if i == self._debug_submenu_selected else " "
-                key = str(i + 1) if i < 9 else " "
+                key = str(i + 1) if i < 9 else "0" if i == 9 else " "
                 display = item[:28] if len(item) > 28 else item
                 lines.append(f"| {prefix} [{key}] {display:<28} |")
+            
+            # Add pagination hint if needed
+            if total_pages > 1:
+                lines.append("+===================================+")
+                lines.append("|  [</>] Prev/Next Page             |")
         
         lines.extend([
             "+===================================+",
@@ -6857,6 +7185,8 @@ Core Systems Tested: {report.total_tests}
             "|  [ESC/`] Back/Close               |",
             "+===================================+",
         ])
+        
+        self.renderer.show_message("\n".join(lines), duration=0)
         
         self.renderer.show_message("\n".join(lines), duration=0)
 
@@ -7080,55 +7410,72 @@ Core Systems Tested: {report.total_tests}
                 self.renderer.show_message(f"Photo {status}!", duration=1.5)
             return
 
-    # ==================== TREASURE HUNTING ====================
-
-    def _show_treasure_hunt(self):
-        """Show the treasure hunting menu."""
-        if not self.duck:
-            return
-
-        # Get treasure collection display
-        stats = self.treasure.get_collection_stats()
-        
-        lines = [
-            "=== TREASURE HUNTING ===",
-            "",
-            f"Collection: {stats['found_types']}/{stats['total_types']} ({stats['completion']}%)",
-            f"Total Treasures Found: {stats['total_found']}",
-            f"Total Value: {stats['total_value']} coins",
-            f"Maps Available: {stats['maps_available']}",
-            "",
-            "Available Locations:",
-        ]
-        
-        for i, loc in enumerate(self.treasure.unlocked_locations, 1):
-            lines.append(f"  [{i}] {loc.value.title()}")
-        
-        lines.extend([
-            "",
-            "Digs Remaining Today: " + str(max(0, self.treasure.max_digs_per_day - self.treasure.dig_attempts_today)),
-            "",
-            "[1-9] Hunt location  [C] Collection",
-            "[ESC/6] Close"
-        ])
-        
-        treasure_text = "\n".join(lines)
-        self.renderer.show_message(treasure_text, duration=0)
-
     # ==================== SECRETS BOOK ====================
 
     def _show_secrets_book(self):
         """Show the secrets and easter eggs book."""
         if not self.duck:
             return
+        self._secrets_menu_open = True
+        self._secrets_menu_page = 0
+        self._render_secrets_menu()
 
-        # Get secrets display
-        lines = self.secrets.render_secrets_book()
+    def _render_secrets_menu(self):
+        """Render the secrets book with pagination."""
+        all_secrets = self.secrets.render_secrets_book()
         
-        secrets_text = "\n".join(lines)
-        secrets_text += "\n\n[</>/] Navigate  [ESC/7] Close"
+        # Pagination - show 10 lines per page
+        items_per_page = 10
+        total_pages = max(1, (len(all_secrets) + items_per_page - 1) // items_per_page)
+        start_idx = self._secrets_menu_page * items_per_page
+        end_idx = min(start_idx + items_per_page, len(all_secrets))
+        page_secrets = all_secrets[start_idx:end_idx]
         
-        self.renderer.show_message(secrets_text, duration=0)
+        lines = [
+            "+=============================================+",
+            f"|  SECRETS & EASTER EGGS (Page {self._secrets_menu_page + 1}/{total_pages})          |",
+            "+=============================================+",
+        ]
+        
+        for secret_line in page_secrets:
+            lines.append(f"| {secret_line[:43]:43} |")
+        
+        # Pad to fill page
+        while len(lines) < items_per_page + 3:
+            lines.append("|                                             |")
+        
+        lines.append("+=============================================+")
+        lines.append("")
+        lines.append("[<-/->] Navigate Pages  [ESC/Backspace] Close")
+        
+        self.renderer.show_message("\n".join(lines), duration=0)
+
+    def _handle_secrets_input(self, key):
+        """Handle input for secrets book menu."""
+        key_name = getattr(key, 'name', None) or ''
+        
+        # Close with ESC or Backspace
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+            self._secrets_menu_open = False
+            self.renderer.dismiss_message()
+            return
+        
+        # Navigate pages
+        all_secrets = self.secrets.render_secrets_book()
+        items_per_page = 10
+        total_pages = max(1, (len(all_secrets) + items_per_page - 1) // items_per_page)
+        
+        if key_name == "KEY_LEFT":
+            if self._secrets_menu_page > 0:
+                self._secrets_menu_page -= 1
+                self._render_secrets_menu()
+            return
+        
+        if key_name == "KEY_RIGHT":
+            if self._secrets_menu_page < total_pages - 1:
+                self._secrets_menu_page += 1
+                self._render_secrets_menu()
+            return
 
     # ==================== PRESTIGE/LEGACY SYSTEM ====================
 
@@ -7136,7 +7483,11 @@ Core Systems Tested: {report.total_tests}
         """Show the prestige/legacy system menu."""
         if not self.duck:
             return
+        self._prestige_menu_open = True
+        self._render_prestige_menu()
 
+    def _render_prestige_menu(self):
+        """Render the prestige menu."""
         # Get legacy screen display
         lines = self.prestige.render_legacy_screen()
         
@@ -7156,10 +7507,35 @@ Core Systems Tested: {report.total_tests}
             lines.append(f"  Prestige: {prestige_msg}")
         
         lines.append("")
-        lines.append("[P] Prestige  [T] Change Title  [ESC/8] Close")
+        lines.append("[P] Prestige  [T] Change Title  [ESC/Backspace] Close")
         
         prestige_text = "\n".join(lines)
         self.renderer.show_message(prestige_text, duration=0)
+
+    def _handle_prestige_input(self, key):
+        """Handle input for prestige menu."""
+        key_str = str(key).lower()
+        key_name = getattr(key, 'name', None) or ''
+        
+        # Close with ESC or Backspace
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+            self._prestige_menu_open = False
+            self.renderer.dismiss_message()
+            return
+        
+        # Prestige action
+        if key_str == 'p':
+            self._prestige_menu_open = False
+            self.renderer.dismiss_message()
+            self._perform_prestige()
+            return
+        
+        # Change title
+        if key_str == 't':
+            self._prestige_menu_open = False
+            self.renderer.dismiss_message()
+            self._show_titles_menu()
+            return
 
     def _perform_prestige(self):
         """Perform the prestige/rebirth action."""
@@ -7254,28 +7630,105 @@ Core Systems Tested: {report.total_tests}
         """Show the garden management menu."""
         if not self.duck:
             return
+        self._garden_menu_open = True
+        self._garden_selected_plot = 0
+        self._render_garden_menu()
 
-        # Get garden display
-        lines = self.garden.render_garden()
+    def _render_garden_menu(self):
+        """Render the garden menu with plot selection."""
+        lines = [
+            "+=============================================+",
+            "|              GARDEN                         |",
+            "+=============================================+",
+        ]
         
-        # Add seed inventory
-        lines.append("")
-        lines.append("+=======================================+")
-        lines.append("|  SEED INVENTORY:                      |")
+        # Get plots
+        plots = list(self.garden.plots.items()) if hasattr(self.garden, 'plots') else []
+        num_plots = len(plots) if plots else 4  # Default 4 plots
         
+        # Show each plot with selection indicator
+        for i in range(num_plots):
+            plot_id = i + 1
+            plot = self.garden.plots.get(plot_id) if hasattr(self.garden, 'plots') else None
+            selected = "[>]" if i == self._garden_selected_plot else "   "
+            
+            if plot and plot.plant:
+                status = f"{plot.plant.name} ({plot.plant.growth_stage})"
+                if plot.needs_water:
+                    status += " [THIRSTY]"
+                if plot.is_ready_to_harvest:
+                    status += " [READY!]"
+            else:
+                status = "Empty plot"
+            
+            lines.append(f"| {selected} Plot {plot_id}: {status[:30]:30} |")
+        
+        lines.append("+=============================================+")
+        
+        # Seed inventory
+        lines.append("|  SEEDS:                                     |")
         if self.garden.seed_inventory:
-            for seed_id, count in list(self.garden.seed_inventory.items())[:5]:
+            for seed_id, count in list(self.garden.seed_inventory.items())[:3]:
                 seed_name = seed_id.replace("_", " ").title()
-                lines.append(f"|   {seed_name[:20]:20} x{count:<5}     |")
+                lines.append(f"|    {seed_name[:25]:25} x{count:<5}    |")
         else:
-            lines.append("|   No seeds! Explore to find some.    |")
+            lines.append("|    No seeds! Explore to find some.         |")
         
-        lines.append("+=======================================+")
+        lines.append("+=============================================+")
         lines.append("")
-        lines.append("[P] Plant  [W] Water  [H] Harvest  [ESC/9] Close")
+        lines.append("[^/v] Select Plot  [P] Plant  [W] Water  [H] Harvest")
+        lines.append("[ESC/Backspace] Close")
         
-        garden_text = "\n".join(lines)
-        self.renderer.show_message(garden_text, duration=0)
+        self.renderer.show_message("\n".join(lines), duration=0)
+
+    def _handle_garden_input(self, key):
+        """Handle input for garden menu."""
+        key_str = str(key).lower()
+        key_name = getattr(key, 'name', None) or ''
+        
+        # Close with ESC or Backspace
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+            self._garden_menu_open = False
+            self.renderer.dismiss_message()
+            return
+        
+        # Navigate plots
+        num_plots = len(self.garden.plots) if hasattr(self.garden, 'plots') else 4
+        
+        if key_name == "KEY_UP":
+            if self._garden_selected_plot > 0:
+                self._garden_selected_plot -= 1
+                self._render_garden_menu()
+            return
+        
+        if key_name == "KEY_DOWN":
+            if self._garden_selected_plot < num_plots - 1:
+                self._garden_selected_plot += 1
+                self._render_garden_menu()
+            return
+        
+        # Actions on selected plot
+        plot_id = self._garden_selected_plot + 1
+        
+        if key_str == 'p':
+            # Plant - use first available seed
+            if self.garden.seed_inventory:
+                seed_id = list(self.garden.seed_inventory.keys())[0]
+                self._garden_plant(plot_id, seed_id)
+                self._render_garden_menu()
+            else:
+                self.renderer.show_message("No seeds to plant!", duration=2.0)
+            return
+        
+        if key_str == 'w':
+            self._garden_water(plot_id)
+            self._render_garden_menu()
+            return
+        
+        if key_str == 'h':
+            self._garden_harvest(plot_id)
+            self._render_garden_menu()
+            return
 
     def _garden_plant(self, plot_id: int, seed_id: str):
         """Plant a seed in a garden plot."""
@@ -7325,32 +7778,6 @@ Core Systems Tested: {report.total_tests}
         self.renderer.show_message(msg, duration=3.0)
 
     # ==================== FESTIVAL SYSTEM ====================
-
-    def _show_festival_menu(self):
-        """Show the festival menu."""
-        if not self.duck:
-            return
-
-        # Get festival display
-        lines = self.festivals.render_festival_screen()
-        
-        # Add upcoming festivals if none active
-        active = self.festivals.check_active_festival()
-        if not active:
-            upcoming = self.festivals.get_upcoming_festivals()
-            if upcoming:
-                lines.append("")
-                lines.append("  UPCOMING FESTIVALS:")
-                for name, days in upcoming[:3]:
-                    lines.append(f"    • {name}: {days} days away")
-        
-        lines.append("")
-        if active:
-            lines.append("[J] Join/Participate  [A] Activities  [R] Rewards")
-        lines.append("[ESC/0] Close")
-        
-        festival_text = "\n".join(lines)
-        self.renderer.show_message(festival_text, duration=0)
 
     def _check_festival_events(self):
         """Check for active festival and trigger events."""
@@ -7800,45 +8227,229 @@ Core Systems Tested: {report.total_tests}
 
 
     def _show_enhanced_diary(self):
-        """Show the enhanced diary with emotions, photos, and dreams."""
+        """Show the enhanced diary menu."""
+        if not self.duck:
+            return
+        self._enhanced_diary_open = True
+        self._enhanced_diary_tab = "overview"
+        self._enhanced_diary_page = 0
+        self._render_enhanced_diary()
+
+    def _render_enhanced_diary(self):
+        """Render the enhanced diary with current tab and pagination."""
         if not self.duck:
             return
 
-        # Build combined diary view
-        lines = [
-            "+===============================================+",
-            "|            [=] DUCK'S DIARY [=]                  |",
-            "+===============================================+",
+        width = 48
+        items_per_page = 4
+        lines = []
+        
+        # Compact header with tab indicator
+        tab_names = {"overview": "Overview", "emotions": "Emotions", "photos": "Photos", "dreams": "Dreams", "life": "Life"}
+        current_tab_name = tab_names.get(self._enhanced_diary_tab, "Overview")
+        
+        lines.append("+" + "=" * (width - 2) + "+")
+        lines.append("|" + f" DIARY: {current_tab_name} ".center(width - 2) + "|")
+        lines.append("+" + "-" * (width - 2) + "+")
+        
+        if self._enhanced_diary_tab == "overview":
+            self._render_diary_overview(lines, width)
+        elif self._enhanced_diary_tab == "emotions":
+            self._render_diary_emotions(lines, width, items_per_page)
+        elif self._enhanced_diary_tab == "photos":
+            self._render_diary_photos(lines, width, items_per_page)
+        elif self._enhanced_diary_tab == "dreams":
+            self._render_diary_dreams(lines, width, items_per_page)
+        elif self._enhanced_diary_tab == "life":
+            self._render_diary_life(lines, width, items_per_page)
+        
+        lines.append("+" + "-" * (width - 2) + "+")
+        lines.append("| [<-][->] Navigate Tabs    [ESC] Close   |")
+        lines.append("+" + "=" * (width - 2) + "+")
+        
+        self.renderer.show_message("\n".join(lines), duration=0)
+
+    def _render_diary_overview(self, lines: list, width: int):
+        """Render overview tab with summary stats (compact)."""
+        ed = self.enhanced_diary
+        analysis = ed.get_emotion_analysis(7)
+        dominant = analysis.get("dominant", "calm")
+        
+        lines.append("|" + f" Emotions: {len(ed.emotion_logs):3}  Photos: {ed.photos_taken:3}"[:width-2].ljust(width - 2) + "|")
+        lines.append("|" + f" Dreams: {ed.dreams_recorded:3}    Chapters: {len(ed.life_chapters):3}"[:width-2].ljust(width - 2) + "|")
+        lines.append("|" + f" This Week: {dominant} mood"[:width-2].ljust(width - 2) + "|")
+        if ed.current_chapter:
+            for ch in ed.life_chapters:
+                if ch.chapter_id == ed.current_chapter:
+                    lines.append("|" + f" Chapter: {ch.title[:25]}"[:width-2].ljust(width - 2) + "|")
+                    break
+        else:
+            lines.append("|" + " No active chapter"[:width-2].ljust(width - 2) + "|")
+
+    def _render_diary_emotions(self, lines: list, width: int, items_per_page: int):
+        """Render emotions tab with pagination (compact)."""
+        ed = self.enhanced_diary
+        logs = list(reversed(ed.emotion_logs))
+        total = len(logs)
+        total_pages = max(1, (total + items_per_page - 1) // items_per_page)
+        page = min(self._enhanced_diary_page, total_pages - 1)
+        self._enhanced_diary_page = page
+        
+        start = page * items_per_page
+        page_items = logs[start:start + items_per_page]
+        
+        lines.append("|" + f" Page {page+1}/{total_pages} ({total} total)"[:width-2].ljust(width - 2) + "|")
+        
+        if not page_items:
+            lines.append("|" + " No emotions logged yet."[:width-2].ljust(width - 2) + "|")
+        else:
+            emojis = {"joy": ":)", "sadness": ":(", "excitement": ":D", "calm": "~", 
+                      "anxiety": ":S", "love": "<3", "curiosity": "?", "contentment": ":)"}
+            for log in page_items:
+                dt = log.timestamp[5:10] if log.timestamp else "?"
+                e = emojis.get(log.emotion.value, "?")
+                t = f"({log.trigger})" if log.trigger else ""
+                line = f" {e} {log.emotion.value[:8]:8} {log.intensity}/10 {dt} {t}"
+                lines.append("|" + line[:width-2].ljust(width - 2) + "|")
+
+    def _render_diary_photos(self, lines: list, width: int, items_per_page: int):
+        """Render photos tab with pagination (compact)."""
+        ed = self.enhanced_diary
+        photos = list(reversed(ed.photos))
+        total = len(photos)
+        total_pages = max(1, (total + items_per_page - 1) // items_per_page)
+        page = min(self._enhanced_diary_page, total_pages - 1)
+        self._enhanced_diary_page = page
+        
+        start = page * items_per_page
+        page_items = photos[start:start + items_per_page]
+        
+        lines.append("|" + f" Page {page+1}/{total_pages} ({total} photos)"[:width-2].ljust(width - 2) + "|")
+        
+        if not page_items:
+            lines.append("|" + " No photos yet! Press [;] to take one."[:width-2].ljust(width - 2) + "|")
+        else:
+            for photo in page_items:
+                dt = photo.date_taken[5:10] if photo.date_taken else "?"
+                loc = (photo.location or "?")[:12]
+                cap = photo.caption[:18]
+                line = f" {dt} {cap} @{loc}"
+                lines.append("|" + line[:width-2].ljust(width - 2) + "|")
+
+    def _render_diary_dreams(self, lines: list, width: int, items_per_page: int):
+        """Render dreams tab with pagination (compact)."""
+        ed = self.enhanced_diary
+        dreams = list(reversed(ed.dream_logs))
+        total = len(dreams)
+        total_pages = max(1, (total + items_per_page - 1) // items_per_page)
+        page = min(self._enhanced_diary_page, total_pages - 1)
+        self._enhanced_diary_page = page
+        
+        start = page * items_per_page
+        page_items = dreams[start:start + items_per_page]
+        
+        lines.append("|" + f" Page {page+1}/{total_pages} ({total} dreams)"[:width-2].ljust(width - 2) + "|")
+        
+        if not page_items:
+            lines.append("|" + " No dreams yet. Sleep to dream!"[:width-2].ljust(width - 2) + "|")
+        else:
+            for dream in page_items:
+                dt = dream.date[5:10] if dream.date else "?"
+                r = "*" if dream.recurring else ""
+                title = dream.title[:28]
+                lines.append("|" + f" {r}{dt} {title}"[:width-2].ljust(width - 2) + "|")
+
+    def _render_diary_life(self, lines: list, width: int, items_per_page: int):
+        """Render life story tab with pagination (compact)."""
+        ed = self.enhanced_diary
+        chapters = list(reversed(ed.life_chapters))
+        total = len(chapters)
+        total_pages = max(1, (total + items_per_page - 1) // items_per_page)
+        page = min(self._enhanced_diary_page, total_pages - 1)
+        self._enhanced_diary_page = page
+        
+        start = page * items_per_page
+        page_items = chapters[start:start + items_per_page]
+        
+        lines.append("|" + f" Page {page+1}/{total_pages} ({total} chapters)"[:width-2].ljust(width - 2) + "|")
+        
+        if not page_items:
+            lines.append("|" + " Your story is just beginning..."[:width-2].ljust(width - 2) + "|")
+        else:
+            for ch in page_items:
+                is_current = ch.chapter_id == ed.current_chapter
+                marker = "*" if is_current else "-"
+                dt = ch.start_date[5:10] if ch.start_date else "?"
+                title = ch.title[:25]
+                events_count = len(ch.key_events)
+                lines.append("|" + f" {marker}{dt} {title} ({events_count}ev)"[:width-2].ljust(width - 2) + "|")
+
+    def _handle_enhanced_diary_input(self, key):
+        """Handle input for the enhanced diary menu."""
+        if not key:
+            return
+            
+        key_name = getattr(key, 'name', None) or ""
+        
+        # Close with ESC or Backspace
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+            self._enhanced_diary_open = False
+            self.renderer.dismiss_message()
+            return
+        
+        # Tab order for arrow navigation
+        tabs = ["overview", "emotions", "photos", "dreams", "life"]
+        current_idx = tabs.index(self._enhanced_diary_tab) if self._enhanced_diary_tab in tabs else 0
+        
+        # Navigate tabs with left/right arrows
+        if key_name == "KEY_LEFT":
+            if current_idx > 0:
+                self._enhanced_diary_tab = tabs[current_idx - 1]
+                self._render_enhanced_diary()
+            return
+        
+        if key_name == "KEY_RIGHT":
+            if current_idx < len(tabs) - 1:
+                self._enhanced_diary_tab = tabs[current_idx + 1]
+                self._render_enhanced_diary()
+            return
+
+    def _record_random_dream(self):
+        """Record a random dream when the duck sleeps."""
+        if not self.duck:
+            return
+        
+        import random
+        
+        # Dream themes based on duck's recent activities and mood
+        dream_themes = [
+            ("Flying Over the Pond", "Dreamt of soaring high above the pond, seeing everything from the sky. The water sparkled below like diamonds."),
+            ("The Giant Bread", "Encountered an enormous piece of bread as big as a house! It was warm and smelled wonderful."),
+            ("Making New Friends", "Met lots of friendly ducks and birds. They all played together in a beautiful meadow."),
+            ("Underwater Adventure", "Dove deep under the pond and discovered a secret underwater garden full of shiny treasures."),
+            ("The Cozy Nest", "Found the most comfortable nest ever made, with soft feathers and warm blankets. Slept so peacefully."),
+            ("Dancing in the Rain", "Splashed and twirled in a gentle rain shower while rainbows appeared all around."),
+            ("Stargazing", "Looked up at the night sky and saw the stars rearrange into funny shapes and patterns."),
+            ("The Tasty Garden", "Wandered through a magical garden where every plant grew delicious treats."),
+            ("Playing with Shadows", "Chased shadows that came alive and played hide-and-seek in the moonlight."),
+            ("The Singing Pond", "The pond started singing a beautiful melody, and all the animals joined in harmony."),
         ]
         
-        # Emotion wheel section
-        emotion_lines = self.enhanced_diary.render_emotion_wheel(width=40)
-        for line in emotion_lines[:6]:
-            lines.append(f"| {line:^43} |")
+        # Pick a random dream
+        title, description = random.choice(dream_themes)
         
-        lines.append("+===============================================+")
-        lines.append("|  RECENT PHOTOS:                               |")
+        # Add duck's name for personalization
+        description = f"{self.duck.name} {description[0].lower()}{description[1:]}"
         
-        # Photo album section (mini preview)
-        photo_lines = self.enhanced_diary.render_photo_album_page(page=0, photos_per_page=1)
-        for line in photo_lines[:4]:
-            lines.append(f"|   {line[:40]:40}   |")
+        # Check if this dream is recurring (small chance)
+        recurring = random.random() < 0.1
         
-        lines.append("+===============================================+")
-        lines.append("|  DREAM JOURNAL:                               |")
+        # Record the dream
+        dream = self.enhanced_diary.record_dream(title, description, recurring)
         
-        # Dream journal section
-        dream_lines = self.enhanced_diary.render_dream_journal(width=40)
-        for line in dream_lines[:4]:
-            lines.append(f"|   {line[:40]:40}   |")
-        
-        lines.append("+===============================================+")
-        lines.append("")
-        lines.append("[E] Emotions  [P] Photos  [D] Dreams  [L] Life Story")
-        lines.append("[ESC] Close")
-        
-        diary_text = "\n".join(lines)
-        self.renderer.show_message(diary_text, duration=0)
+        if dream:
+            # Show brief dream notification
+            self.renderer.show_message(f"z {self.duck.name} had a dream... z", duration=3.0)
 
     def _take_diary_photo(self):
         """Take a photo for the scrapbook."""
@@ -7851,7 +8462,7 @@ Core Systems Tested: {report.total_tests}
         mood = self.duck.get_mood().state.value
         weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
         location = self.exploration.current_area.name if self.exploration.current_area else "Home Pond"
-        duck_age = self.duck.age_days if self.duck else 1
+        duck_age = self.duck.get_age_days() if self.duck else 1
         
         # Choose art key based on mood
         art_keys = {
@@ -7881,6 +8492,25 @@ Core Systems Tested: {report.total_tests}
         if photo:
             self.renderer.show_message(f"[#] Photo saved to scrapbook!", duration=3.0)
             duck_sounds.play()
+            
+            # Also log to enhanced diary photos
+            from dialogue.diary_enhanced import PhotoType
+            photo_type_map = {
+                "happy": PhotoType.SELFIE,
+                "content": PhotoType.COZY,
+                "excited": PhotoType.ADVENTURE,
+                "sleepy": PhotoType.COZY,
+                "hungry": PhotoType.FOOD,
+                "playful": PhotoType.SILLY,
+                "curious": PhotoType.ADVENTURE,
+            }
+            diary_photo_type = photo_type_map.get(mood, PhotoType.SELFIE)
+            self.enhanced_diary.take_photo(
+                photo_type=diary_photo_type,
+                caption=f"Snapshot at {location}",
+                location=location,
+                mood=mood
+            )
         else:
             self.renderer.show_message("Could not take photo", duration=2.0)
 
@@ -7942,7 +8572,7 @@ Core Systems Tested: {report.total_tests}
         
         lines.append("+===============================================+")
         lines.append("")
-        lines.append(f"Collection Progress: {stats['total_owned']}/{stats['total_possible']} ({stats['completion_percent']:.1f}%)")
+        lines.append(f"Collection Progress: {stats['unique_owned']}/{stats['total_possible']} ({stats['completion_percent']:.1f}%)")
         lines.append(f"Packs Available: {stats.get('packs_available', 0)}")
         lines.append("")
         lines.append("[<-/->] Page  [O] Open Pack  [1-9] View Set")
@@ -8122,6 +8752,12 @@ Core Systems Tested: {report.total_tests}
 
     def _show_save_slots_menu(self):
         """Show the save slots management menu."""
+        self._save_slots_menu_open = True
+        self._save_slots_selected = 0
+        self._render_save_slots_menu()
+
+    def _render_save_slots_menu(self):
+        """Render the save slots menu with selection."""
         # Refresh slot info
         self.save_slots.refresh_slots()
         
@@ -8131,23 +8767,87 @@ Core Systems Tested: {report.total_tests}
         lines.append("+===============================================+")
         lines.append("")
         
-        for slot_id in range(1, SaveSlotsSystem.MAX_SLOTS + 1):
+        for i, slot_id in enumerate(range(1, SaveSlotsSystem.MAX_SLOTS + 1)):
             slot = self.save_slots.slots.get(slot_id)
+            selected = "[>]" if i == self._save_slots_selected else "   "
+            
             if slot and not slot.is_empty:
                 status = f"Lv.{slot.level} | {slot.playtime_minutes}min | {slot.coins} coins"
                 if slot.prestige_level > 0:
                     status += f" | P{slot.prestige_level}"
-                lines.append(f"  [{slot_id}] {slot.duck_name:<15} {status}")
+                lines.append(f"  {selected} [{slot_id}] {slot.duck_name:<12} {status}")
             else:
-                lines.append(f"  [{slot_id}] -- Empty Slot --")
+                lines.append(f"  {selected} [{slot_id}] -- Empty Slot --")
         
         lines.append("")
         lines.append(f"  Current: Slot {self.save_slots.current_slot}")
         lines.append("")
-        lines.append("  [1-5] Switch Slot  [N] New Game in Slot")
-        lines.append("  [D] Delete Slot    [ESC] Close")
+        lines.append("[^/v] Select  [Enter] Switch  [N] New  [D] Delete")
+        lines.append("[ESC/Backspace] Close")
         
         self.renderer.show_message("\n".join(lines), duration=0)
+
+    def _handle_save_slots_input(self, key):
+        """Handle input for save slots menu."""
+        key_str = str(key).lower()
+        key_name = getattr(key, 'name', None) or ''
+        
+        # Close with ESC or Backspace
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+            self._save_slots_menu_open = False
+            self.renderer.dismiss_message()
+            return
+        
+        # Navigate slots
+        max_slots = SaveSlotsSystem.MAX_SLOTS
+        
+        if key_name == "KEY_UP":
+            if self._save_slots_selected > 0:
+                self._save_slots_selected -= 1
+                self._render_save_slots_menu()
+            return
+        
+        if key_name == "KEY_DOWN":
+            if self._save_slots_selected < max_slots - 1:
+                self._save_slots_selected += 1
+                self._render_save_slots_menu()
+            return
+        
+        # Switch slot with Enter or number
+        slot_id = self._save_slots_selected + 1
+        
+        if key_name == "KEY_ENTER":
+            slot = self.save_slots.slots.get(slot_id)
+            if slot and not slot.is_empty:
+                self.save_slots.switch_slot(slot_id)
+                self._save_slots_menu_open = False
+                self.renderer.dismiss_message()
+                self._load_game()
+            else:
+                self.renderer.show_message("Slot is empty! Use [N] to create new game.", duration=2.0)
+            return
+        
+        if key_str.isdigit() and 1 <= int(key_str) <= max_slots:
+            self._save_slots_selected = int(key_str) - 1
+            self._render_save_slots_menu()
+            return
+        
+        # New game in selected slot
+        if key_str == 'n':
+            self._save_slots_menu_open = False
+            self.renderer.dismiss_message()
+            self.save_slots.switch_slot(slot_id)
+            self._start_new_game()
+            return
+        
+        # Delete slot
+        if key_str == 'd':
+            slot = self.save_slots.slots.get(slot_id)
+            if slot and not slot.is_empty:
+                self.save_slots.delete_slot(slot_id)
+                self._render_save_slots_menu()
+                self.renderer.show_message(f"Deleted slot {slot_id}", duration=2.0)
+            return
 
     def _get_room_decoration_bonus(self) -> Dict[str, int]:
         """Get the total decoration bonuses affecting the duck."""

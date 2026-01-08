@@ -150,10 +150,8 @@ class DuckMemory:
         return "stable"
 
     def record_mood(self, mood_score: float):
-        """Record a mood score for history."""
+        """Record a mood score for history (deque auto-evicts oldest when full)."""
         self.mood_history.append(int(mood_score))
-        if len(self.mood_history) > 100:
-            self.mood_history.pop(0)
 
     def get_relationship_level(self) -> str:
         """Get the relationship level with the player."""
@@ -182,7 +180,7 @@ class DuckMemory:
 
     def recall_random_memory(self) -> Optional[str]:
         """Recall a random memory (for dialogue)."""
-        all_memories = self.short_term + self.long_term
+        all_memories = list(self.short_term) + self.long_term
         if not all_memories:
             return None
 
