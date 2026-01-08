@@ -25,7 +25,7 @@ from config import GAME_DIR, SAVE_DIR
 
 
 # Game version - Update this when releasing new versions
-GAME_VERSION = "1.3.4"
+GAME_VERSION = "1.3.5"
 
 # GitHub repository info
 GITHUB_OWNER = "Joshspeakman"
@@ -477,63 +477,96 @@ exec "$VENV_DIR/bin/python" main.py "$@"
                 desktop_launcher.write_text('''#!/bin/bash
 # Cheese the Duck Desktop Launcher
 # Launches the game in a properly-sized terminal window
+# Reads user's preferred terminal from settings if configured
 
 GAME_COLS=120
 GAME_ROWS=45
+SETTINGS_FILE="$HOME/.cheese_the_duck/settings.json"
 
-# Detect and use appropriate terminal with geometry
-launch_terminal() {
-    # Check for gnome-terminal (Ubuntu default)
-    if command -v gnome-terminal &>/dev/null; then
-        gnome-terminal --geometry="${GAME_COLS}x${GAME_ROWS}" -- cheese-the-duck "$@" 2>/dev/null && return
-        gnome-terminal -- cheese-the-duck "$@" && return
+# Read preferred terminal from settings
+get_preferred_terminal() {
+    if [ -f "$SETTINGS_FILE" ]; then
+        if command -v python3 &>/dev/null; then
+            PREF=$(python3 -c "import json; d=json.load(open('$SETTINGS_FILE')); print(d.get('system',{}).get('preferred_terminal','auto'))" 2>/dev/null)
+            echo "$PREF"
+            return
+        fi
     fi
+    echo "auto"
+}
+
+# Launch with specific terminal
+launch_with_terminal() {
+    local term="$1"
+    shift
     
-    # xfce4-terminal
-    if command -v xfce4-terminal &>/dev/null; then
-        xfce4-terminal --geometry="${GAME_COLS}x${GAME_ROWS}" -e "cheese-the-duck" && return
-    fi
-    
-    # konsole (KDE) - doesn't support --geometry
-    if command -v konsole &>/dev/null; then
-        konsole -e cheese-the-duck "$@" && return
-    fi
-    
-    # xterm - use TERM=xterm-256color for color support
-    if command -v xterm &>/dev/null; then
-        TERM=xterm-256color xterm -geometry "${GAME_COLS}x${GAME_ROWS}" -fa 'Monospace' -fs 11 -e cheese-the-duck "$@" && return
-    fi
-    
-    # tilix
-    if command -v tilix &>/dev/null; then
-        tilix -e "cheese-the-duck" && return
-    fi
-    
-    # terminator
-    if command -v terminator &>/dev/null; then
-        terminator --geometry="${GAME_COLS}x${GAME_ROWS}" -e "cheese-the-duck" && return
-    fi
-    
-    # mate-terminal
-    if command -v mate-terminal &>/dev/null; then
-        mate-terminal --geometry="${GAME_COLS}x${GAME_ROWS}" -e "cheese-the-duck" && return
-    fi
-    
-    # lxterminal
-    if command -v lxterminal &>/dev/null; then
-        lxterminal --geometry="${GAME_COLS}x${GAME_ROWS}" -e "cheese-the-duck" && return
-    fi
-    
-    # Fallback: use x-terminal-emulator
-    if command -v x-terminal-emulator &>/dev/null; then
-        x-terminal-emulator -e cheese-the-duck "$@" && return
-    fi
-    
-    # Last resort: run directly
+    case "$term" in
+        gnome-terminal)
+            gnome-terminal --geometry="${GAME_COLS}x${GAME_ROWS}" -- cheese-the-duck "$@" 2>/dev/null && return 0
+            gnome-terminal -- cheese-the-duck "$@" && return 0
+            ;;
+        konsole)
+            konsole -e cheese-the-duck "$@" && return 0
+            ;;
+        xfce4-terminal)
+            xfce4-terminal --geometry="${GAME_COLS}x${GAME_ROWS}" -e "cheese-the-duck" && return 0
+            ;;
+        xterm)
+            TERM=xterm-256color xterm -geometry "${GAME_COLS}x${GAME_ROWS}" -fa 'Monospace' -fs 11 -e cheese-the-duck "$@" && return 0
+            ;;
+        tilix)
+            tilix -e "cheese-the-duck" && return 0
+            ;;
+        terminator)
+            terminator --geometry="${GAME_COLS}x${GAME_ROWS}" -e "cheese-the-duck" && return 0
+            ;;
+        mate-terminal)
+            mate-terminal --geometry="${GAME_COLS}x${GAME_ROWS}" -e "cheese-the-duck" && return 0
+            ;;
+        lxterminal)
+            lxterminal --geometry="${GAME_COLS}x${GAME_ROWS}" -e "cheese-the-duck" && return 0
+            ;;
+        alacritty)
+            alacritty -o "window.dimensions.columns=${GAME_COLS}" -o "window.dimensions.lines=${GAME_ROWS}" -e cheese-the-duck "$@" && return 0
+            ;;
+        kitty)
+            kitty -o initial_window_width=${GAME_COLS}c -o initial_window_height=${GAME_ROWS}c cheese-the-duck "$@" && return 0
+            ;;
+        wezterm)
+            wezterm start --width ${GAME_COLS} --height ${GAME_ROWS} -- cheese-the-duck "$@" && return 0
+            ;;
+        foot)
+            foot -W ${GAME_COLS}x${GAME_ROWS} cheese-the-duck "$@" && return 0
+            ;;
+        x-terminal-emulator)
+            x-terminal-emulator -e cheese-the-duck "$@" && return 0
+            ;;
+    esac
+    return 1
+}
+
+# Auto-detect and use first available terminal
+auto_detect_terminal() {
+    for term in gnome-terminal konsole xfce4-terminal xterm tilix terminator mate-terminal lxterminal alacritty kitty wezterm foot x-terminal-emulator; do
+        if command -v "$term" &>/dev/null; then
+            launch_with_terminal "$term" "$@" && return 0
+        fi
+    done
     cheese-the-duck "$@"
 }
 
-launch_terminal "$@"
+# Main
+PREFERRED=$(get_preferred_terminal)
+
+if [ "$PREFERRED" = "auto" ] || [ -z "$PREFERRED" ]; then
+    auto_detect_terminal "$@"
+else
+    if command -v "$PREFERRED" &>/dev/null; then
+        launch_with_terminal "$PREFERRED" "$@" || auto_detect_terminal "$@"
+    else
+        auto_detect_terminal "$@"
+    fi
+fi
 ''')
                 desktop_launcher.chmod(0o755)
                 

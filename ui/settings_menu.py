@@ -10,7 +10,7 @@ from enum import Enum
 from core.settings import (
     GameSettings, SettingsManager, settings_manager,
     AudioSettings, DisplaySettings, AccessibilitySettings, 
-    GameplaySettings, KeyBindings
+    GameplaySettings, KeyBindings, SystemSettings
 )
 from core.menu_controller import MenuController, MenuConfig, MenuResult, MenuAction
 
@@ -21,6 +21,7 @@ class SettingsCategory(Enum):
     DISPLAY = "display"
     ACCESSIBILITY = "accessibility"
     GAMEPLAY = "gameplay"
+    SYSTEM = "system"
     KEYBINDINGS = "keybindings"
 
 
@@ -221,6 +222,18 @@ class SettingsMenu:
                 SettingItem("show_tips", "Show Tips", "gameplay", "toggle",
                            settings.gameplay.show_tips,
                            description="Display contextual hints"),
+            ]
+        
+        elif self._current_category == SettingsCategory.SYSTEM:
+            # Detect available terminals dynamically
+            available_terminals = SystemSettings.detect_available_terminals()
+            terminal_choices = [(name, cmd) for cmd, name in available_terminals]
+            
+            self._items = [
+                SettingItem("preferred_terminal", "Preferred Terminal", "system", "choice",
+                           settings.system.preferred_terminal,
+                           choices=terminal_choices,
+                           description="Terminal to use when launching from desktop"),
             ]
         
         elif self._current_category == SettingsCategory.KEYBINDINGS:
