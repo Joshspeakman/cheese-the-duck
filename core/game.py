@@ -4240,8 +4240,8 @@ class Game:
         self._debug_submenu = None
 
     def _has_open_overlay(self) -> bool:
-        """Check if any overlay or menu is currently open."""
-        # Check renderer overlays
+        """Check if any overlay or menu is currently open that should block master menu."""
+        # Check renderer overlays (but NOT message overlay - that's just informational)
         if self.renderer.is_talking():
             return True
         if self.renderer.is_shop_open():
@@ -4252,8 +4252,7 @@ class Game:
             return True
         if self.renderer._show_help:
             return True
-        if self.renderer._show_message_overlay:
-            return True
+        # Note: _show_message_overlay is NOT blocking - messages are informational
             
         # Check game menus
         return (
