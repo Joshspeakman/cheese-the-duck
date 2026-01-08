@@ -4404,7 +4404,26 @@ class Game:
         sound_engine.stop_music()
         sound_engine.stop_background_music()
 
+        # Clean up Python cache directories
+        self._cleanup_pycache()
+
         self._running = False
+
+    def _cleanup_pycache(self):
+        """Remove __pycache__ directories to keep install clean."""
+        import shutil
+        from pathlib import Path
+        
+        try:
+            # Get the game's root directory
+            game_dir = Path(__file__).parent.parent
+            
+            # Find and remove all __pycache__ directories
+            for cache_dir in game_dir.rglob("__pycache__"):
+                if cache_dir.is_dir():
+                    shutil.rmtree(cache_dir, ignore_errors=True)
+        except Exception:
+            pass  # Silently ignore cleanup errors
 
     def _start_reset_confirmation(self):
         """Start the reset game confirmation dialog using the new system."""
