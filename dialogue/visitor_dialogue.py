@@ -333,14 +333,17 @@ class VisitorDialogueManager:
     def get_next_dialogue(self, duck_name: str = "friend") -> Optional[str]:
         """Get the next line of dialogue based on current state."""
         dialogue_tree = DIALOGUE_TREES.get(self.personality, {})
-        
+
         # Special handling for greetings when we've met before
-        if self.state.phase == ConversationPhase.GREETING and self.visit_number > 1:
+        # Only try returning greeting if we haven't said ANY lines yet (first call)
+        if self.state.phase == ConversationPhase.GREETING and self.visit_number > 1 and len(self.state.lines_said) == 0:
             returning_greeting = self._get_returning_greeting(duck_name)
             if returning_greeting:
                 self.state.lines_said.append(returning_greeting)
+                # Advance past greeting phase after returning greeting
+                self.state.phase = ConversationPhase.OPENING
                 return returning_greeting
-        
+
         phase_dialogue = dialogue_tree.get(self.state.phase.value, [])
         
         # Filter to lines we can say
@@ -371,11 +374,16 @@ class VisitorDialogueManager:
         
         # Record that we said it
         self.state.lines_said.append(line.text)
-        
+
         # Handle topic unlocking
         if line.unlocks_topic:
             self.unlocked_topics.add(line.unlocks_topic)
-            
+
+        # After a greeting, automatically advance to opening phase
+        # This ensures exactly ONE greeting per visit, then natural conversation flow
+        if self.state.phase == ConversationPhase.GREETING:
+            self.state.phase = ConversationPhase.OPENING
+
         # Format and return
         text = line.text.format(duck=duck_name, name=self.friend_name)
         return f"{self.friend_name}: {text}"

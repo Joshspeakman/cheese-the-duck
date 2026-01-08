@@ -2316,7 +2316,7 @@ class Renderer:
         inner_width = max(width - 2, 20)  # Ensure minimum width
 
         # Compact controls hint - updated for master menu navigation
-        controls = "[Arrows] Nav | [Enter] Select | [Bksp] Back | [M]usic [N]oise | [H]elp [Q]uit"
+        controls = "[Arrows] Nav | [Enter] Select | [Bksp] Back | [M]usic [N]oise | [H]elp"
 
         # Pad or truncate to exact width
         if len(controls) < inner_width:
@@ -2376,7 +2376,8 @@ class Renderer:
             print(line)
 
     def _render_title_screen(self, menu_index: int = 0, has_save: bool = False, 
-                                update_status: str = "", version: str = "1.0.0"):
+                                update_status: str = "", version: str = "1.0.0",
+                                terminal_options: list = None, terminal_index: int = 0):
         """Render the title/new game screen with dancing duck animation and menu.
         
         Args:
@@ -2384,6 +2385,8 @@ class Renderer:
             has_save: Whether a save file exists (enables Continue option)
             update_status: Status message for updates (e.g., "Update available!")
             version: Current game version to display
+            terminal_options: List of (cmd, name) tuples for terminal selection
+            terminal_index: Currently selected terminal index
         """
         self._title_frame = (self._title_frame + 1) % 120
 
@@ -2611,10 +2614,23 @@ class Renderer:
         # Add menu items
         title_art.extend(menu_lines)
         
+        # Add terminal selector line
+        if terminal_options and len(terminal_options) > 0:
+            current_terminal = terminal_options[terminal_index][1] if terminal_index < len(terminal_options) else "Auto-detect"
+            # Show arrows based on position
+            left_arrow = "<-- " if terminal_index > 0 else "    "
+            right_arrow = " -->" if terminal_index < len(terminal_options) - 1 else "    "
+            terminal_line = f"{left_arrow}{current_terminal}{right_arrow}"
+            terminal_centered = _visible_center(terminal_line, 54)
+            title_art.extend([
+                "    +------------------------------------------------------+    ",
+                f"    |{terminal_centered}|    ",
+            ])
+        
         # Add navigation hint and update status
         title_art.extend([
             "    +------------------------------------------------------+    ",
-            "    |         Use UP/DOWN to select, ENTER to confirm      |    ",
+            "    |    UP/DOWN: menu  |  LEFT/RIGHT: terminal  |  ENTER  |    ",
         ])
         
         # Add update status if available

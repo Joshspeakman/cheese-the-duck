@@ -651,7 +651,7 @@ public class Renderer
     private List<string> BuildControlsBar(int width)
     {
         var innerWidth = width - 2;
-        var controls = "[H]elp for shortcuts • [M]ute • [+/-] Volume • [Q]uit";
+        var controls = "[H]elp for shortcuts • [M]ute • [+/-] Volume";
         var content = CenterString(controls, innerWidth);
         
         return new List<string>
