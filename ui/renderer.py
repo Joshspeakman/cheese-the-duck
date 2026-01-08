@@ -2078,7 +2078,7 @@ class Renderer:
         inner_width = max(width - 2, 20)  # Ensure minimum width
 
         # Compact controls hint - updated for master menu navigation
-        controls = "[Arrows] Navigate | [Enter] Select | [Bksp] Back | [Q] Quit"
+        controls = "[Arrows] Nav | [Enter] Select | [Bksp] Back | [H]elp | [Q]uit"
 
         # Pad or truncate to exact width
         if len(controls) < inner_width:

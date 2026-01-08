@@ -937,15 +937,15 @@ class Game:
     def _toggle_sound_action(self):
         """Toggle sound effects."""
         from audio.sound import sound_engine
-        sound_engine.toggle_sound()
-        status = "ON" if sound_engine.sound_enabled else "OFF"
-        self.renderer.show_message(f"Sound Effects: {status}")
+        sound_engine.toggle()  # toggle() returns new enabled state
+        status = "ON" if sound_engine.enabled else "OFF"
+        self.renderer.show_message(f"Sound: {status}")
 
     def _toggle_music_action(self):
         """Toggle music."""
         from audio.sound import sound_engine
-        sound_engine.toggle_music()
-        status = "ON" if sound_engine.music_enabled else "OFF"
+        sound_engine.toggle_music_mute()  # toggle_music_mute() returns new muted state
+        status = "OFF" if sound_engine.music_muted else "ON"
         self.renderer.show_message(f"Music: {status}")
 
     def _purchase_selected_item(self):
