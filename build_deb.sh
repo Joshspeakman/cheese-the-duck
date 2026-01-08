@@ -156,23 +156,6 @@ cat > "$PACKAGE_DIR/usr/bin/cheese-the-duck" << 'EOF'
 GAME_DIR="/opt/cheese-the-duck"
 VENV_DIR="$HOME/.local/share/cheese-the-duck/venv"
 
-# Game requires 116x35 terminal for best experience (minimum 60x20)
-GAME_COLS=120
-GAME_ROWS=38
-
-# Try to resize terminal using escape sequence (works in xterm, gnome-terminal, etc.)
-resize_terminal() {
-    # CSI 8 ; rows ; cols t - resize terminal window
-    printf '\033[8;%d;%dt' "$GAME_ROWS" "$GAME_COLS"
-    # Give terminal time to resize
-    sleep 0.1
-}
-
-# Check if we're in an interactive terminal
-if [ -t 1 ]; then
-    resize_terminal
-fi
-
 cd "$GAME_DIR"
 
 # Create venv in user's home directory on first run
@@ -182,44 +165,13 @@ if [ ! -d "$VENV_DIR" ]; then
     python3 -m venv "$VENV_DIR"
     "$VENV_DIR/bin/pip" install -q --upgrade pip
     "$VENV_DIR/bin/pip" install -q -r requirements.txt
-    echo "Setup complete! Starting game..."
+    echo "Setup complete!"
 fi
 
 exec "$VENV_DIR/bin/python" main.py "$@"
 EOF
 chmod 755 "$PACKAGE_DIR/usr/bin/cheese-the-duck"
 echo -e "${GREEN}✓${NC} Launcher created"
-
-# Create desktop launcher (launches terminal with proper size)
-echo -e "${YELLOW}→${NC} Creating desktop launcher..."
-cat > "$PACKAGE_DIR/usr/bin/cheese-the-duck-desktop" << 'EOF'
-#!/bin/bash
-# Cheese the Duck Desktop Launcher
-# Launches the game in a properly-sized terminal window
-
-GAME_COLS=120
-GAME_ROWS=38
-
-# Try different terminal emulators with geometry support
-if command -v gnome-terminal &>/dev/null; then
-    gnome-terminal --geometry=${GAME_COLS}x${GAME_ROWS} -- cheese-the-duck "$@"
-elif command -v xfce4-terminal &>/dev/null; then
-    xfce4-terminal --geometry=${GAME_COLS}x${GAME_ROWS} -e "cheese-the-duck $*"
-elif command -v konsole &>/dev/null; then
-    konsole --geometry ${GAME_COLS}x${GAME_ROWS} -e cheese-the-duck "$@"
-elif command -v xterm &>/dev/null; then
-    xterm -geometry ${GAME_COLS}x${GAME_ROWS} -e cheese-the-duck "$@"
-elif command -v tilix &>/dev/null; then
-    tilix -e "cheese-the-duck $*"
-elif command -v terminator &>/dev/null; then
-    terminator --geometry=${GAME_COLS}x${GAME_ROWS} -e "cheese-the-duck $*"
-else
-    # Fallback: use x-terminal-emulator (Debian/Ubuntu default)
-    x-terminal-emulator -e cheese-the-duck "$@"
-fi
-EOF
-chmod 755 "$PACKAGE_DIR/usr/bin/cheese-the-duck-desktop"
-echo -e "${GREEN}✓${NC} Desktop launcher created"
 
 # Create desktop entry
 echo -e "${YELLOW}→${NC} Creating desktop entry..."
@@ -229,9 +181,9 @@ Version=${VERSION}
 Type=Application
 Name=Cheese the Duck
 Comment=A terminal-based virtual pet game
-Exec=cheese-the-duck-desktop
+Exec=cheese-the-duck
 Icon=cheese-the-duck
-Terminal=false
+Terminal=true
 Categories=Game;Simulation;
 Keywords=duck;pet;virtual;game;terminal;
 StartupNotify=false
