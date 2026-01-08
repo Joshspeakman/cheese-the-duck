@@ -152,18 +152,22 @@ echo -e "${YELLOW}→${NC} Creating launcher..."
 cat > "$PACKAGE_DIR/usr/bin/cheese-the-duck" << 'EOF'
 #!/bin/bash
 # Cheese the Duck Launcher
-cd /opt/cheese-the-duck
+GAME_DIR="/opt/cheese-the-duck"
+VENV_DIR="$HOME/.local/share/cheese-the-duck/venv"
 
-# Create venv on first run if needed
-if [ ! -d ".venv" ]; then
+cd "$GAME_DIR"
+
+# Create venv in user's home directory on first run
+if [ ! -d "$VENV_DIR" ]; then
     echo "Setting up Cheese the Duck (first run)..."
-    python3 -m venv .venv
-    .venv/bin/pip install -q --upgrade pip
-    .venv/bin/pip install -q -r requirements.txt
+    mkdir -p "$HOME/.local/share/cheese-the-duck"
+    python3 -m venv "$VENV_DIR"
+    "$VENV_DIR/bin/pip" install -q --upgrade pip
+    "$VENV_DIR/bin/pip" install -q -r requirements.txt
     echo "Setup complete! Starting game..."
 fi
 
-exec .venv/bin/python main.py "$@"
+exec "$VENV_DIR/bin/python" main.py "$@"
 EOF
 chmod 755 "$PACKAGE_DIR/usr/bin/cheese-the-duck"
 echo -e "${GREEN}✓${NC} Launcher created"
@@ -234,12 +238,13 @@ set -e
 
 case "$1" in
     purge|remove)
-        rm -rf /opt/cheese-the-duck/.venv 2>/dev/null || true
         rm -rf /opt/cheese-the-duck/__pycache__ 2>/dev/null || true
         rm -rf /opt/cheese-the-duck/logs 2>/dev/null || true
         [ "$1" = "purge" ] && rm -rf /opt/cheese-the-duck 2>/dev/null || true
         gtk-update-icon-cache -f -t /usr/share/icons/hicolor 2>/dev/null || true
         update-desktop-database /usr/share/applications 2>/dev/null || true
+        # Note: User venv at ~/.local/share/cheese-the-duck is not removed
+        # Users can manually remove it if desired
         ;;
 esac
 
