@@ -338,21 +338,50 @@ EOF
 #!/bin/bash
 # Cheese the Duck Desktop Launcher
 GAME_COLS=120
-GAME_ROWS=38
+GAME_ROWS=42
+GAME_CMD="$LAUNCHER_DIR/$APP_ID"
 
-if command -v gnome-terminal &>/dev/null; then
-    gnome-terminal --geometry=\${GAME_COLS}x\${GAME_ROWS} -- $LAUNCHER_DIR/$APP_ID "\$@"
-elif command -v xfce4-terminal &>/dev/null; then
-    xfce4-terminal --geometry=\${GAME_COLS}x\${GAME_ROWS} -e "$LAUNCHER_DIR/$APP_ID \$*"
-elif command -v konsole &>/dev/null; then
-    konsole --geometry \${GAME_COLS}x\${GAME_ROWS} -e $LAUNCHER_DIR/$APP_ID "\$@"
-elif command -v xterm &>/dev/null; then
-    xterm -geometry \${GAME_COLS}x\${GAME_ROWS} -e $LAUNCHER_DIR/$APP_ID "\$@"
-elif command -v tilix &>/dev/null; then
-    tilix -e "$LAUNCHER_DIR/$APP_ID \$*"
-else
-    x-terminal-emulator -e $LAUNCHER_DIR/$APP_ID "\$@"
-fi
+launch_terminal() {
+    # gnome-terminal (Ubuntu default)
+    if command -v gnome-terminal &>/dev/null; then
+        gnome-terminal --geometry="\${GAME_COLS}x\${GAME_ROWS}" -- \$GAME_CMD "\$@" 2>/dev/null && return
+        gnome-terminal -- \$GAME_CMD "\$@" && return
+    fi
+    # xfce4-terminal
+    if command -v xfce4-terminal &>/dev/null; then
+        xfce4-terminal --geometry="\${GAME_COLS}x\${GAME_ROWS}" -e "\$GAME_CMD" && return
+    fi
+    # konsole
+    if command -v konsole &>/dev/null; then
+        konsole --geometry "\${GAME_COLS}x\${GAME_ROWS}" -e \$GAME_CMD "\$@" && return
+    fi
+    # xterm (most reliable)
+    if command -v xterm &>/dev/null; then
+        xterm -geometry "\${GAME_COLS}x\${GAME_ROWS}" -fa 'Monospace' -fs 11 -e \$GAME_CMD "\$@" && return
+    fi
+    # tilix
+    if command -v tilix &>/dev/null; then
+        tilix -e "\$GAME_CMD" && return
+    fi
+    # terminator
+    if command -v terminator &>/dev/null; then
+        terminator --geometry="\${GAME_COLS}x\${GAME_ROWS}" -e "\$GAME_CMD" && return
+    fi
+    # mate-terminal
+    if command -v mate-terminal &>/dev/null; then
+        mate-terminal --geometry="\${GAME_COLS}x\${GAME_ROWS}" -e "\$GAME_CMD" && return
+    fi
+    # lxterminal
+    if command -v lxterminal &>/dev/null; then
+        lxterminal --geometry="\${GAME_COLS}x\${GAME_ROWS}" -e "\$GAME_CMD" && return
+    fi
+    # Fallback
+    if command -v x-terminal-emulator &>/dev/null; then
+        x-terminal-emulator -e \$GAME_CMD "\$@" && return
+    fi
+    \$GAME_CMD "\$@"
+}
+launch_terminal "\$@"
 EOF
     chmod +x "$LAUNCHER_DIR/$APP_ID-desktop"
     print_success "Desktop launcher created"
