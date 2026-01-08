@@ -25,7 +25,7 @@ from config import GAME_DIR, SAVE_DIR
 
 
 # Game version - Update this when releasing new versions
-GAME_VERSION = "1.2.7"
+GAME_VERSION = "1.2.8"
 
 # GitHub repository info
 GITHUB_OWNER = "Joshspeakman"
@@ -97,7 +97,17 @@ class GameUpdater:
         version_str = version_str.lstrip('v').strip()
         try:
             parts = version_str.split('.')
-            return tuple(int(p) for p in parts)
+            result = []
+            for p in parts:
+                # Extract leading digits (handles suffixes like '1a', '2b')
+                num = ''
+                for c in p:
+                    if c.isdigit():
+                        num += c
+                    else:
+                        break
+                result.append(int(num) if num else 0)
+            return tuple(result) if result else (0, 0, 0)
         except (ValueError, AttributeError):
             return (0, 0, 0)
 
@@ -115,6 +125,20 @@ class GameUpdater:
             return 1
         return 0
 
+    def _refresh_current_version(self):
+        """Re-read the current version from the source file in case it was updated."""
+        try:
+            updater_path = Path(__file__)
+            content = updater_path.read_text()
+            for line in content.split('\n'):
+                if line.startswith('GAME_VERSION'):
+                    # Extract version from: GAME_VERSION = "1.2.8"
+                    version = line.split('=')[1].strip().strip('"').strip("'")
+                    self.current_version = version
+                    break
+        except Exception:
+            pass  # Keep existing version if read fails
+
     def check_for_updates(self) -> UpdateInfo:
         """
         Check GitHub for the latest release (tries tags first, then releases).
@@ -122,6 +146,9 @@ class GameUpdater:
         Returns:
             UpdateInfo with status and version details
         """
+        # Refresh version in case files were updated externally
+        self._refresh_current_version()
+        
         if not HAS_URLLIB:
             return UpdateInfo(
                 current_version=self.current_version,
