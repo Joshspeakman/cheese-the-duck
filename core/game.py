@@ -3690,7 +3690,12 @@ class Game:
             self._title_update_status = self._game_updater.get_status_message(update_info.status)
             if update_info.status.value == "update_available":
                 self._update_available_info = update_info
-                self._title_update_status = f"Update v{update_info.latest_version} available! Press [U] to install"
+                # Check if we can actually update
+                if self._game_updater.is_updatable():
+                    self._title_update_status = f"Update v{update_info.latest_version} available! Press [U] to install"
+                else:
+                    self._title_update_status = f"Update v{update_info.latest_version} available! Use: sudo apt upgrade cheese-the-duck"
+                    self._update_available_info = None  # Disable [U] key
             else:
                 self._update_available_info = None
         except Exception:
