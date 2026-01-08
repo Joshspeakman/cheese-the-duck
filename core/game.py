@@ -3690,12 +3690,8 @@ class Game:
             self._title_update_status = self._game_updater.get_status_message(update_info.status)
             if update_info.status.value == "update_available":
                 self._update_available_info = update_info
-                # Check if we can actually update
-                if self._game_updater.is_updatable():
-                    self._title_update_status = f"Update v{update_info.latest_version} available! Press [U] to install"
-                else:
-                    self._title_update_status = f"Update v{update_info.latest_version} available! Use: sudo apt upgrade cheese-the-duck"
-                    self._update_available_info = None  # Disable [U] key
+                # All installs can now be updated with [U]
+                self._title_update_status = f"Update v{update_info.latest_version} available! Press [U] to install"
             else:
                 self._update_available_info = None
         except Exception:
@@ -3713,11 +3709,17 @@ class Game:
             return
         
         self._update_in_progress = True
-        self._title_update_status = "Downloading update... Please wait..."
         
         try:
             from core.updater import UpdateStatus
-            result = self._game_updater.download_and_apply_update(self._update_available_info)
+            
+            # Use different update method for system installs (apt/deb)
+            if self._game_updater.is_system_install():
+                self._title_update_status = "Building update package... Please wait..."
+                result = self._game_updater.download_and_install_deb(self._update_available_info)
+            else:
+                self._title_update_status = "Downloading update... Please wait..."
+                result = self._game_updater.download_and_apply_update(self._update_available_info)
             
             if result == UpdateStatus.UPDATE_COMPLETE:
                 self._title_update_status = "Update complete! Press [R] to restart the game"
