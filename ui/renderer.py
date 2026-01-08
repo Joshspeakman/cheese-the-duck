@@ -1867,38 +1867,38 @@ class Renderer:
                 # Empty line
                 lines.append(BOX["v"] + " " * inner_width + BOX["v"])
             else:
-                line_text, category, is_continuation = entry
+                line_text, effective_category, is_continuation = entry
                 
                 # Calculate fade level (0 = oldest/dimmest, visible_lines-1 = newest/brightest)
                 fade_level = i / max(1, self._chat_log_visible_lines - 1)
                 
                 # Apply category colors - always colored, with brightness varying by age
                 # Cheese (duck) = yellow, Friends = cyan, Events = magenta, etc.
-                if category == "duck":
+                if effective_category == "duck":
                     # Cheese the Duck - always yellow to match his color!
                     if fade_level < 0.3:
                         color = self.term.yellow  # Dim yellow for old
                     else:
                         color = self.term.bright_yellow  # Bright yellow for new
-                elif category == "friend":
+                elif effective_category == "friend":
                     # Friend/visitor dialogue - cyan
                     if fade_level < 0.3:
                         color = self.term.cyan
                     else:
                         color = self.term.bright_cyan
-                elif category == "event":
+                elif effective_category == "event":
                     # Events - magenta
                     if fade_level < 0.3:
                         color = self.term.magenta
                     else:
                         color = self.term.bright_magenta
-                elif category == "action":
+                elif effective_category == "action":
                     # Actions - green  
                     if fade_level < 0.3:
                         color = self.term.green
                     else:
                         color = self.term.bright_green
-                elif category == "discovery":
+                elif effective_category == "discovery":
                     # Discoveries - magenta
                     if fade_level < 0.3:
                         color = self.term.magenta
