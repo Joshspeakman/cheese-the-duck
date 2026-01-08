@@ -515,3 +515,260 @@ class HierarchicalMenuSelector:
         lines.append("+" + "=" * (width - 2) + "+")
         
         return lines
+
+
+@dataclass
+class MasterMenuItem:
+    """Item in the master menu tree."""
+    id: str
+    label: str
+    action: str = None  # Action ID to execute, or None if has children
+    children: list = None  # List of MasterMenuItem or callable that returns list
+    completed: bool = False  # Whether item shows * indicator
+    enabled: bool = True  # Whether item can be selected
+
+
+class MasterMenuPanel:
+    """
+    Persistent hierarchical menu panel for the side panel.
+    
+    Supports unlimited depth via navigation stack, scroll-follow behavior,
+    and visual indicators (> selected, -> has submenu, * completed).
+    """
+    
+    def __init__(self, game=None):
+        """Initialize the master menu panel."""
+        self.game = game
+        self._menu_tree = []  # Root menu items (set by set_menu_tree)
+        self._navigation_stack = []  # List of (menu_items, selected_index) for each level
+        self._current_items = []  # Current level's items
+        self._selected_index = 0
+        self._scroll_offset = 0
+        self._parent_label = None  # Label to show as header when in submenu
+        
+    def set_menu_tree(self, tree: list):
+        """Set the root menu tree."""
+        self._menu_tree = tree
+        self._current_items = tree
+        self._selected_index = 0
+        self._scroll_offset = 0
+        self._navigation_stack = []
+        self._parent_label = None
+        
+    def _get_current_items(self) -> list:
+        """Get current menu items, resolving dynamic children if needed."""
+        items = []
+        for item in self._current_items:
+            if callable(item):
+                # Dynamic item generator
+                items.extend(item(self.game) if self.game else item(None))
+            elif isinstance(item, MasterMenuItem):
+                items.append(item)
+            elif isinstance(item, dict):
+                # Convert dict to MasterMenuItem
+                children = item.get('children')
+                if callable(children):
+                    children = children(self.game) if self.game else children(None)
+                items.append(MasterMenuItem(
+                    id=item.get('id', ''),
+                    label=item.get('label', ''),
+                    action=item.get('action'),
+                    children=children,
+                    completed=item.get('completed', False),
+                    enabled=item.get('enabled', True)
+                ))
+        return items
+    
+    def navigate(self, direction: int):
+        """Navigate up (direction=-1) or down (direction=1)."""
+        items = self._get_current_items()
+        if not items:
+            return
+            
+        new_index = self._selected_index + direction
+        if 0 <= new_index < len(items):
+            self._selected_index = new_index
+            
+    def select(self) -> str:
+        """
+        Select current item. Returns action ID if leaf, or None if expanded submenu.
+        """
+        items = self._get_current_items()
+        if not items or self._selected_index >= len(items):
+            return None
+            
+        item = items[self._selected_index]
+        if not item.enabled:
+            return None
+            
+        # Check if item has children (submenu)
+        children = item.children
+        if callable(children):
+            children = children(self.game) if self.game else children(None)
+            
+        if children:
+            # Push current state to stack and navigate into submenu
+            self._navigation_stack.append((self._current_items, self._selected_index, self._parent_label))
+            self._current_items = children
+            self._parent_label = item.label
+            self._selected_index = 0
+            self._scroll_offset = 0
+            return None
+        else:
+            # Leaf item - return action
+            return item.action or item.id
+            
+    def back(self) -> bool:
+        """Go back one level. Returns True if went back, False if at root."""
+        if self._navigation_stack:
+            self._current_items, self._selected_index, self._parent_label = self._navigation_stack.pop()
+            self._scroll_offset = 0
+            return True
+        return False
+        
+    def is_at_root(self) -> bool:
+        """Check if at root level."""
+        return len(self._navigation_stack) == 0
+        
+    def get_depth(self) -> int:
+        """Get current navigation depth (0 = root)."""
+        return len(self._navigation_stack)
+        
+    def get_render_lines(self, width: int, max_lines: int) -> list:
+        """
+        Render the menu to a list of strings.
+        
+        Args:
+            width: Available width for each line
+            max_lines: Maximum number of lines to return
+            
+        Returns:
+            List of strings, each exactly 'width' characters
+        """
+        lines = []
+        items = self._get_current_items()
+        
+        if not items:
+            empty_msg = "No items"
+            lines.append(empty_msg.center(width))
+            return lines
+            
+        # Header showing parent when in submenu
+        header_lines = 0
+        if self._parent_label:
+            header = f"-- {self._parent_label} --"
+            if len(header) > width:
+                header = header[:width-3] + "..."
+            lines.append(header.center(width))
+            header_lines = 1
+            
+        # Calculate visible items with scroll-follow
+        visible_lines = max_lines - header_lines - 2  # Reserve for scroll indicators
+        if visible_lines < 1:
+            visible_lines = 1
+            
+        # Ensure selected item is visible (scroll-follow)
+        if self._selected_index < self._scroll_offset:
+            self._scroll_offset = self._selected_index
+        elif self._selected_index >= self._scroll_offset + visible_lines:
+            self._scroll_offset = self._selected_index - visible_lines + 1
+            
+        # Clamp scroll offset
+        max_scroll = max(0, len(items) - visible_lines)
+        self._scroll_offset = max(0, min(self._scroll_offset, max_scroll))
+        
+        # Show "^ more" indicator
+        if self._scroll_offset > 0:
+            indicator = "^ more ^"
+            lines.append(indicator.center(width))
+        else:
+            lines.append(" " * width)
+            
+        # Render visible items
+        end_index = min(self._scroll_offset + visible_lines, len(items))
+        for i in range(self._scroll_offset, end_index):
+            item = items[i]
+            is_selected = (i == self._selected_index)
+            
+            # Build line: "> Label -> *" or "  Label    *"
+            prefix = ">" if is_selected else " "
+            
+            # Check for submenu indicator
+            children = item.children
+            if callable(children):
+                # Has dynamic children - assume it's a submenu
+                has_submenu = True
+            else:
+                has_submenu = bool(children)
+            submenu_indicator = "->" if has_submenu else "  "
+            
+            # Completion indicator
+            completed = item.completed
+            if callable(completed):
+                completed = completed(self.game) if self.game else False
+            completion_indicator = "*" if completed else " "
+            
+            # Enabled indicator
+            if not item.enabled:
+                label = f"[{item.label}]"  # Brackets for locked
+            else:
+                label = item.label
+                
+            # Calculate available space for label
+            # Format: "> Label -> *" = prefix(1) + space(1) + label + space(1) + submenu(2) + completion(1)
+            overhead = 6  # "> " + " " + "->" or "  " + "*" or " "
+            max_label_len = width - overhead
+            if len(label) > max_label_len:
+                label = label[:max_label_len-2] + ".."
+                
+            # Pad label to fixed width
+            label = label.ljust(max_label_len)
+            
+            line = f"{prefix} {label} {submenu_indicator}{completion_indicator}"
+            # Ensure exact width
+            if len(line) < width:
+                line = line + " " * (width - len(line))
+            elif len(line) > width:
+                line = line[:width]
+                
+            lines.append(line)
+            
+        # Fill remaining visible lines if needed
+        rendered_items = end_index - self._scroll_offset
+        for _ in range(rendered_items, visible_lines):
+            lines.append(" " * width)
+            
+        # Show "v more" indicator
+        if end_index < len(items):
+            indicator = "v more v"
+            lines.append(indicator.center(width))
+        else:
+            lines.append(" " * width)
+            
+        return lines
+        
+    def handle_key(self, key) -> str:
+        """
+        Handle a keypress. Returns action ID if action triggered, None otherwise.
+        
+        Args:
+            key: Key object from blessed terminal
+            
+        Returns:
+            Action ID string if action should execute, None otherwise
+        """
+        key_name = getattr(key, 'name', '') or ''
+        
+        if key_name == 'KEY_UP':
+            self.navigate(-1)
+            return None
+        elif key_name == 'KEY_DOWN':
+            self.navigate(1)
+            return None
+        elif key_name == 'KEY_RIGHT' or key_name == 'KEY_ENTER':
+            return self.select()
+        elif key_name == 'KEY_LEFT' or key_name == 'KEY_BACKSPACE':
+            self.back()
+            return None
+            
+        return None
