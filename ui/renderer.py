@@ -370,6 +370,7 @@ class Renderer:
         self._message_queue: List[str] = []
         self._message_expire = 0
         self._show_message_overlay = False  # Show messages as overlay instead of bottom bar
+        self._message_rendered_inline = False  # Track if message was rendered in playfield
         self._show_help = False
         self._show_inventory = False
         self._show_stats = False
@@ -1126,7 +1127,7 @@ class Renderer:
             output = self._overlay_inventory(output, game, width)
         elif self._show_shop:
             output = self._overlay_shop(output, game.habitat, width)
-        elif self._show_message_overlay:
+        elif self._show_message_overlay and not getattr(self, '_message_rendered_inline', False):
             output = self._overlay_message(output, width)
 
         # Print frame - clear on first render to remove title screen remnants
@@ -1777,8 +1778,22 @@ class Renderer:
             visible_len = len(row)  # We know we have exactly inner_width visible chars
             lines.append(BOX["v"] + row_str + self.term.normal + BOX["v"])
 
-        # Bottom of playfield
-        lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
+        # Message box at bottom of playfield (if message is active)
+        if self._show_message_overlay and self._message_queue and time.time() < self._message_expire:
+            # Render message inside the playfield area
+            lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
+            for msg_line in self._message_queue[:3]:  # Max 3 lines
+                msg_truncated = _visible_truncate(msg_line, inner_width - 2)
+                msg_centered = _visible_center(msg_truncated, inner_width)
+                lines.append(BOX["v"] + self.term.bright_white + msg_centered + self.term.normal + BOX["v"])
+            # Bottom of playfield
+            lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
+            # Clear overlay flag so it doesn't render twice
+            self._message_rendered_inline = True
+        else:
+            self._message_rendered_inline = False
+            # Bottom of playfield
+            lines.append(BOX["bl"] + BOX["h"] * inner_width + BOX["br"])
 
         return lines
 
@@ -2078,7 +2093,7 @@ class Renderer:
         inner_width = max(width - 2, 20)  # Ensure minimum width
 
         # Compact controls hint - updated for master menu navigation
-        controls = "[Arrows] Nav | [Enter] Select | [Bksp] Back | [H]elp | [Q]uit"
+        controls = "[Arrows] Nav | [Enter] Select | [Bksp] Back | [M]usic [N]oise | [H]elp [Q]uit"
 
         # Pad or truncate to exact width
         if len(controls) < inner_width:
