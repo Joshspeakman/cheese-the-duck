@@ -374,8 +374,13 @@ class Renderer:
         
         # Persistent chat log (WoW-style, newest at bottom)
         self._chat_log: List[tuple] = []  # List of (timestamp, message, category)
-        self._chat_log_max_size = 50  # Keep last 50 messages
+        self._chat_log_max_size = 30  # Keep last 30 messages
         self._chat_log_visible_lines = 5  # Show 5 lines in the UI
+        self._chat_scroll_offset = 0  # Scroll offset (0 = newest at bottom)
+        
+        # Menu overlay (separate from chat messages)
+        self._menu_overlay_content: List[str] = []  # Menu overlay content
+        self._menu_overlay_active = False  # Whether a menu overlay is shown
         
         self._show_help = False
         self._show_inventory = False
@@ -1133,6 +1138,9 @@ class Renderer:
             output = self._overlay_inventory(output, game, width)
         elif self._show_shop:
             output = self._overlay_shop(output, game.habitat, width)
+        elif self._menu_overlay_active:
+            # Menu overlays (debug menu, settings, etc.) - always show
+            output = self._overlay_menu(output, width)
         elif self._show_message_overlay and not getattr(self, '_message_rendered_inline', False):
             output = self._overlay_message(output, width)
 
@@ -1785,22 +1793,52 @@ class Renderer:
             lines.append(BOX["v"] + row_str + self.term.normal + BOX["v"])
 
         # Persistent chat log at bottom of playfield (WoW-style, newest at bottom)
-        lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
+        # Show scroll indicator if scrolled
+        if self._chat_scroll_offset > 0:
+            scroll_indicator = f" [PgUp/Dn] {self._chat_scroll_offset}+ more "
+            header_pad = inner_width - len(scroll_indicator)
+            lines.append(BOX["t_right"] + BOX["h"] * (header_pad // 2) + scroll_indicator + BOX["h"] * (header_pad - header_pad // 2) + BOX["t_left"])
+        else:
+            lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
         
-        # Get the last N messages from chat log
-        visible_messages = self._chat_log[-self._chat_log_visible_lines:]
+        # Build wrapped chat lines for display
+        # Each message can wrap to multiple lines
+        import textwrap
+        wrap_width = inner_width - 9  # 9 = "[HH:MM] " + margin
+        
+        all_chat_lines = []  # List of (line_text, category, is_continuation)
+        for timestamp, msg, category in self._chat_log:
+            # Wrap long messages
+            wrapped = textwrap.wrap(msg, width=wrap_width) if msg else ['']
+            for j, line in enumerate(wrapped):
+                prefix = f"[{timestamp}] " if j == 0 else "        "  # 8 spaces for continuation
+                all_chat_lines.append((prefix + line, category, j > 0))
+        
+        # Calculate which lines to show based on scroll offset
+        total_lines = len(all_chat_lines)
+        if total_lines <= self._chat_log_visible_lines:
+            # Not enough to scroll
+            visible_start = 0
+            visible_end = total_lines
+        else:
+            # Show lines based on scroll offset (0 = newest at bottom)
+            visible_end = total_lines - self._chat_scroll_offset
+            visible_start = max(0, visible_end - self._chat_log_visible_lines)
+            visible_end = min(total_lines, visible_start + self._chat_log_visible_lines)
+        
+        visible_lines = all_chat_lines[visible_start:visible_end]
         
         # Pad with empty lines if not enough messages
-        while len(visible_messages) < self._chat_log_visible_lines:
-            visible_messages.insert(0, None)
+        while len(visible_lines) < self._chat_log_visible_lines:
+            visible_lines.insert(0, None)
         
         # Render each line with fading effect (oldest = dimmest)
-        for i, entry in enumerate(visible_messages):
+        for i, entry in enumerate(visible_lines):
             if entry is None:
                 # Empty line
                 lines.append(BOX["v"] + " " * inner_width + BOX["v"])
             else:
-                timestamp, msg, category = entry
+                line_text, category, is_continuation = entry
                 
                 # Calculate fade level (0 = oldest/dimmest, visible_lines-1 = newest/brightest)
                 fade_level = i / max(1, self._chat_log_visible_lines - 1)
@@ -1825,11 +1863,10 @@ class Renderer:
                     else:
                         color = self.term.bright_white
                 
-                # Format: [HH:MM] message
-                timestamp_str = self.term.dim + f"[{timestamp}]" + self.term.normal + " "
-                msg_truncated = _visible_truncate(msg, inner_width - 9)  # 9 = "[HH:MM] " + margin
+                # Format line (already has timestamp prefix from wrapping)
+                msg_truncated = _visible_truncate(line_text, inner_width - 1)
                 
-                line_content = timestamp_str + color + msg_truncated + self.term.normal
+                line_content = color + msg_truncated + self.term.normal
                 # Pad to width
                 line_padded = _visible_ljust(line_content, inner_width)
                 lines.append(BOX["v"] + line_padded + BOX["v"])
@@ -3086,24 +3123,22 @@ class Renderer:
             self._chat_log = self._chat_log[-self._chat_log_max_size:]
     
     def show_overlay(self, message: str, duration: float = 0):
-        """Show an overlay message WITHOUT adding to chat log (for menus/debug)."""
-        import textwrap
+        """Show a menu overlay WITHOUT adding to chat log (for menus/debug)."""
+        # Store content directly - don't wrap, the menu formats itself
+        self._menu_overlay_content = message.split('\n')
+        self._menu_overlay_active = True
+
+    def dismiss_overlay(self):
+        """Dismiss the menu overlay."""
+        self._menu_overlay_content = []
+        self._menu_overlay_active = False
+
+    def _overlay_menu(self, base_output: List[str], width: int) -> List[str]:
+        """Overlay menu content (debug menu, settings, etc.)."""
+        if not self._menu_overlay_content:
+            return base_output
         
-        wrap_width = 44
-        wrapped_lines = []
-        for line in message.split('\n'):
-            if line.strip():
-                wrapped = textwrap.wrap(line, width=wrap_width)
-                wrapped_lines.extend(wrapped if wrapped else [''])
-            else:
-                wrapped_lines.append('')
-        
-        self._message_queue = wrapped_lines
-        self._show_message_overlay = True
-        if duration > 0:
-            self._message_expire = time.time() + duration
-        else:
-            self._message_expire = float('inf')
+        return self._overlay_box(base_output, self._menu_overlay_content, "MENU", width)
 
     def dismiss_message(self):
         """Dismiss the current message overlay."""
@@ -3111,6 +3146,24 @@ class Renderer:
             self._message_queue.clear()
         self._message_expire = 0
         self._show_message_overlay = False
+
+    def scroll_chat_up(self):
+        """Scroll chat log up (show older messages)."""
+        import textwrap
+        wrap_width = 60  # Approximate
+        
+        # Calculate total wrapped lines
+        total_lines = 0
+        for _, msg, _ in self._chat_log:
+            wrapped = textwrap.wrap(msg, width=wrap_width) if msg else ['']
+            total_lines += len(wrapped)
+        
+        max_scroll = max(0, total_lines - self._chat_log_visible_lines)
+        self._chat_scroll_offset = min(self._chat_scroll_offset + self._chat_log_visible_lines, max_scroll)
+
+    def scroll_chat_down(self):
+        """Scroll chat log down (show newer messages)."""
+        self._chat_scroll_offset = max(0, self._chat_scroll_offset - self._chat_log_visible_lines)
 
     def show_menu(self, title: str, items: List[Dict], selected_index: int = 0,
                   show_numbers: bool = True, footer: str = "[^v] Navigate  [Enter] Select  [ESC] Close",
