@@ -126,7 +126,21 @@ DUCK_NAMES = [
 # Core LLM Configuration
 LLM_ENABLED = True              # Master switch for all LLM features
 LLM_LOCAL_ONLY = True           # ONLY use local GGUF model (no Ollama/external)
-LLM_MODEL_DIR = GAME_DIR / "models"  # Directory containing .gguf files
+
+# Model directory - use user-writable location for system installs
+def _get_model_dir():
+    """Get model directory, using user home for system installs."""
+    game_path = str(GAME_DIR)
+    if game_path.startswith('/opt/') or game_path.startswith('/usr/') or game_path.startswith('/snap/'):
+        # System install - use user's home directory
+        user_model_dir = Path.home() / ".local" / "share" / "cheese-the-duck" / "models"
+        user_model_dir.mkdir(parents=True, exist_ok=True)
+        return user_model_dir
+    else:
+        # Local install - use game directory
+        return GAME_DIR / "models"
+
+LLM_MODEL_DIR = _get_model_dir()
 
 # GPU Acceleration (auto-detect if -1, or specify layer count)
 LLM_GPU_LAYERS = -1             # -1 = auto-detect, 0 = CPU only, >0 = specific layers
