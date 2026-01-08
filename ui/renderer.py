@@ -1811,21 +1811,31 @@ class Renderer:
         
         all_chat_lines = []  # List of (line_text, category, is_continuation)
         for timestamp, msg, category in self._chat_log:
-            # Auto-detect category from message content if not explicitly set
+            # Determine effective category based on message content
+            # Content-based detection is more reliable than caller-specified categories
             effective_category = category
-            if category == "system":
-                # Check if message is from Cheese (duck's name followed by colon)
-                if msg.startswith("Cheese:") or msg.startswith("Cheese "):
-                    effective_category = "duck"
-                # Check for friend dialogue (Name: pattern, but not Cheese)
-                elif ":" in msg and not msg.startswith("Cheese"):
-                    # Check if it looks like dialogue (Name: text format)
-                    colon_pos = msg.find(":")
-                    if colon_pos > 0 and colon_pos < 20:  # Name should be short
-                        potential_name = msg[:colon_pos].strip()
-                        # If it's a capitalized word (likely a name), treat as friend
-                        if potential_name and potential_name[0].isupper() and " " not in potential_name:
+            
+            # Always try to detect from message content for consistency
+            # Check if message is from Cheese (duck's name followed by colon)
+            if msg.startswith("Cheese:") or msg.startswith("Cheese "):
+                effective_category = "duck"
+            # Check for action messages (asterisk-wrapped actions are typically duck)
+            elif msg.startswith("*") and ":" not in msg[:30]:
+                effective_category = "duck"
+            # Check for friend dialogue (Name: pattern, but not Cheese)
+            elif ":" in msg and not msg.startswith("Cheese"):
+                # Check if it looks like dialogue (Name: text format)
+                colon_pos = msg.find(":")
+                if colon_pos > 0 and colon_pos < 20:  # Name should be short
+                    potential_name = msg[:colon_pos].strip()
+                    # If it's a capitalized word (likely a name), treat as friend
+                    # But only if the caller didn't explicitly set "duck" category
+                    if potential_name and potential_name[0].isupper() and " " not in potential_name:
+                        if category != "duck":  # Respect explicit duck category
                             effective_category = "friend"
+            # Keep explicit event/action/discovery categories
+            elif category in ("event", "action", "discovery"):
+                effective_category = category
             
             # Wrap long messages
             wrapped = textwrap.wrap(msg, width=wrap_width) if msg else ['']
