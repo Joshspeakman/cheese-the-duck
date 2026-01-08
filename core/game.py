@@ -875,7 +875,7 @@ class Game:
     def _update_main_menu_display(self):
         """Update the main menu display."""
         lines = self._main_menu.get_display_lines(width=50)
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _execute_menu_action(self, action_id: str):
         """Execute a menu action by its ID."""
@@ -1873,7 +1873,7 @@ class Game:
             "[G] Close" + (" | [</>] Page" if total_pages > 1 else ""),
         ])
 
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _perform_interaction(self, interaction: str):
         """Perform an interaction with the duck."""
@@ -5816,7 +5816,7 @@ class Game:
         lines.append("")
         lines.append("[Up/Down] Navigate  [Enter] Start  [ESC/O] Close")
 
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _start_selected_quest(self, quest_id: str):
         """Start the selected quest."""
@@ -5864,7 +5864,7 @@ class Game:
         lines.append("")
         lines.append("[^/v] Select  [Enter] Visit  [ESC/Backspace] Close")
         
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _handle_trading_input(self, key):
         """Handle input for trading menu."""
@@ -5923,7 +5923,7 @@ class Game:
                 lines.append(f"  {name[:30]:30} - {price} coins")
             lines.append("")
             lines.append("[Press any key to leave]")
-            self.renderer.show_message("\n".join(lines), duration=0)
+            self.renderer.show_overlay("\n".join(lines), duration=0)
         else:
             self.renderer.show_message(f"Visited {trader.name if hasattr(trader, 'name') else 'trader'}!", duration=3.0)
 
@@ -6160,7 +6160,7 @@ class Game:
         ])
         
         self._treasure_menu_items = menu_items
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _handle_treasure_input(self, key):
         """Handle input in treasure hunting menu."""
@@ -6271,7 +6271,7 @@ class Game:
                     "|     [Press any key to continue]          |",
                     "+==========================================+",
                 ]
-                self.renderer.show_message("\n".join(lines), duration=0)
+                self.renderer.show_overlay("\n".join(lines), duration=0)
                 duck_sounds.quack("excited")
                 
                 # Achievements
@@ -6318,14 +6318,14 @@ class Game:
             lines.append("")
         
         lines.append("[1-5] Use map  [ESC] Back")
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _show_treasure_collection(self):
         """Show treasure collection."""
         lines = self.treasure.render_collection()
         lines.append("")
         lines.append("[Press any key to return]")
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     # ==================== FESTIVAL ACTIVITIES INTERACTIVE ====================
 
@@ -6365,7 +6365,7 @@ class Game:
                 "|            [ESC] Close                   |",
                 "+==========================================+",
             ]
-            self.renderer.show_message("\n".join(lines), duration=0)
+            self.renderer.show_overlay("\n".join(lines), duration=0)
             self._festival_menu_items = []
             return
         
@@ -6438,7 +6438,7 @@ class Game:
         ])
         
         self._festival_menu_items = menu_items
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _handle_festival_input(self, key):
         """Handle input in festival menu."""
@@ -7242,9 +7242,8 @@ Core Systems Tested: {report.total_tests}
             "+===================================+",
         ])
         
-        self.renderer.show_message("\n".join(lines), duration=0)
-        
-        self.renderer.show_message("\n".join(lines), duration=0)
+        # Use show_overlay to avoid adding to chat log
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     # ==================== SETTINGS SYSTEM ====================
 
@@ -7328,7 +7327,7 @@ Core Systems Tested: {report.total_tests}
     def _render_settings_menu(self):
         """Render the settings menu overlay."""
         lines = self._settings_menu.render()
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _save_and_apply_settings(self):
         """Save settings and apply them immediately."""
@@ -7398,7 +7397,7 @@ Core Systems Tested: {report.total_tests}
         if not self._confirmation_dialog:
             return
         lines = self._confirmation_dialog.get_display_lines()
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     # ==================== SCRAPBOOK SYSTEM ====================
 
@@ -7504,7 +7503,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("")
         lines.append("[<-/->] Navigate Pages  [ESC/Backspace] Close")
         
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _handle_secrets_input(self, key):
         """Handle input for secrets book menu."""
@@ -7735,7 +7734,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("[^/v] Select Plot  [P] Plant  [W] Water  [H] Harvest")
         lines.append("[ESC/Backspace] Close")
         
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _handle_garden_input(self, key):
         """Handle input for garden menu."""
@@ -8323,7 +8322,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("| [<-][->] Navigate Tabs    [ESC] Close   |")
         lines.append("+" + "=" * (width - 2) + "+")
         
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _render_diary_overview(self, lines: list, width: int):
         """Render overview tab with summary stats (compact)."""
@@ -8762,7 +8761,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("[<-/->] Page  [1-5] View Room  [P] Place  [R] Remove")
         lines.append("[ESC/Backspace] Close")
         
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
     
     def _handle_decorations_input(self, key):
         """Handle input for decorations menu."""
@@ -8841,7 +8840,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("[^/v] Select  [Enter] Switch  [N] New  [D] Delete")
         lines.append("[ESC/Backspace] Close")
         
-        self.renderer.show_message("\n".join(lines), duration=0)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _handle_save_slots_input(self, key):
         """Handle input for save slots menu."""
