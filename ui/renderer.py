@@ -612,6 +612,7 @@ class Renderer:
         weather_chars = {
             # Rain variants
             "drizzle": ["'", ",", "'", "."],  # Light rain
+            "rain": ["|", "|", "'", ",", ":", "'"],  # Rain streaks (alias for rainy)
             "rainy": ["|", "|", "'", ",", ":", "'"],  # Rain streaks
             "heavy_rain": ["|", "|", "|", "'", ",", "|", ":"],  # Heavy rain
             "spring_rain": ["|", "'", ",", "~"],  # Gentle spring rain
@@ -664,6 +665,7 @@ class Renderer:
         particle_density = {
             # Rain variants
             "drizzle": 0.08,
+            "rain": 0.20,
             "rainy": 0.20,
             "heavy_rain": 0.30,
             "spring_rain": 0.15,
@@ -716,6 +718,7 @@ class Renderer:
         particle_speed = {
             # Rain variants (fast, downward)
             "drizzle": 1.2,
+            "rain": 2.0,
             "rainy": 2.0,
             "heavy_rain": 2.5,
             "spring_rain": 1.5,
@@ -1094,6 +1097,9 @@ class Renderer:
             sp_line = _visible_ljust(sp_line, side_panel_width)
             output.append(pf_line + sp_line)
 
+        # Progress bars (Level/XP and Growth)
+        output.extend(self._render_progress_bars(width, game))
+
         # Controls bar
         output.extend(self._render_controls_bar(width))
 
@@ -1129,9 +1135,10 @@ class Renderer:
         else:
             print(self.term.home, end="")
             
-        for i in range(height - 1):  # Fill all lines up to height - 1
-            # Get line from output, or use empty line if output is shorter
-            line = output[i] if i < len(output) else ""
+        # Print all output lines, not limited by height
+        max_lines = min(len(output), self.term.height - 1)
+        for i in range(max_lines):
+            line = output[i]
             # Use move to ensure proper positioning and overwrite
             # Use ANSI-aware functions for lines that may contain color codes
             truncated = _visible_truncate(line, width)
@@ -2026,16 +2033,78 @@ class Renderer:
 
         return lines
 
+    def _render_progress_bars(self, width: int, game) -> List[str]:
+        """Render a single-line progress status bar above controls."""
+        # Simple non-colored progress bar
+        def make_bar(pct: float, bar_width: int) -> str:
+            filled = int((pct / 100) * bar_width)
+            return "=" * filled + "-" * (bar_width - filled)
+
+        # Get data
+        progression = game.progression
+        xp_in_level, xp_needed, xp_pct = progression.get_xp_progress()
+        level = progression.level
+
+        duck = game.duck
+        stage_name = duck.get_growth_stage_display()
+        growth_pct = duck.growth_progress * 100
+        
+        # Get goal progress
+        goals_completed = game.goals.get_completed_count()
+        goals_total = max(game.goals.get_total_count(), 1)  # Avoid div by zero
+        goals_pct = (goals_completed / goals_total) * 100 if goals_total > 0 else 0
+
+        # Build compact format: "Lv.5 [====----] 50% | Juvenile [====----] 25% | Goals 3/10"
+        bar_width = 10
+        left_bar = make_bar(xp_pct, bar_width)
+
+        if duck.growth_stage in ("elder", "legendary"):
+            age_days = duck.age_days
+            years = age_days // 365
+            days = age_days % 365
+            age_str = f"{years}y {days}d" if years > 0 else f"{days}d"
+            age_part = f"{stage_name} {age_str}"
+        else:
+            right_bar = make_bar(growth_pct, bar_width)
+            age_part = f"{stage_name} [{right_bar}] {int(growth_pct)}%"
+        
+        # Goal part
+        goal_part = f"Goals {goals_completed}/{goals_total}"
+
+        content = f" Lv.{level} [{left_bar}] {int(xp_pct)}% | {age_part} | {goal_part} "
+
+        # Calculate inner width (excluding borders)
+        inner_width = width - 2
+        
+        # Pad or truncate content to fit
+        if len(content) < inner_width:
+            content = content + " " * (inner_width - len(content))
+        else:
+            content = content[:inner_width]
+
+        # Return with full box borders (top, content with sides, bottom)
+        return [
+            BOX["tl"] + BOX["h"] * inner_width + BOX["tr"],
+            BOX["v"] + content + BOX["v"],
+            BOX["bl"] + BOX["h"] * inner_width + BOX["br"],
+        ]
+
     def _render_controls_bar(self, width: int) -> List[str]:
         """Render the bottom controls bar."""
-        inner_width = width - 2
+        inner_width = max(width - 2, 20)  # Ensure minimum width
 
         # Compact controls hint
-        controls = " [TAB] Menu | [H]elp | [M]usic | [+/-] Volume | [Q]uit "
+        controls = "[TAB] Menu | [H]elp | [M]usic | [+/-] Vol | [Q]uit"
+
+        # Pad or truncate to exact width
+        if len(controls) < inner_width:
+            content = controls.center(inner_width)
+        else:
+            content = controls[:inner_width]
 
         lines = [
             BOX["tl"] + BOX["h"] * inner_width + BOX["tr"],
-            BOX["v"] + controls.center(inner_width)[:inner_width] + BOX["v"],
+            BOX["v"] + content + BOX["v"],
             BOX["bl"] + BOX["h"] * inner_width + BOX["br"],
         ]
         return lines

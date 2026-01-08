@@ -38,8 +38,11 @@ class GameClock:
         return delta * self._time_multiplier
 
     def get_delta_minutes(self, delta_seconds: float) -> float:
-        """Convert delta seconds to minutes for need calculations."""
-        return delta_seconds / 60.0
+        """Convert delta seconds to minutes for need calculations.
+        
+        Applies the time multiplier for accelerated gameplay.
+        """
+        return (delta_seconds * self._time_multiplier) / 60.0
 
     def calculate_offline_time(self, last_played_iso: str) -> dict:
         """

@@ -63,12 +63,20 @@ MOOD_WEIGHTS = {
 }
 
 # Growth stages (in real hours to reach next stage)
+# Based on aging.py day ranges: hatchling(0-3d), duckling(3-14d), juvenile(14-30d),
+# young_adult(30-90d), adult(90-365d), mature(365-730d), elder(730-1095d), legendary(1095+)
 GROWTH_STAGES = {
-    "egg": {"duration_hours": 0.5, "next": "duckling"},
-    "duckling": {"duration_hours": 24, "next": "teen"},
-    "teen": {"duration_hours": 72, "next": "adult"},
-    "adult": {"duration_hours": 168, "next": "elder"},
-    "elder": {"duration_hours": None, "next": None},
+    "egg": {"duration_hours": 0.5, "next": "hatchling"},
+    "hatchling": {"duration_hours": 72, "next": "duckling"},      # 3 days
+    "duckling": {"duration_hours": 264, "next": "juvenile"},      # 11 days (3-14)
+    "juvenile": {"duration_hours": 384, "next": "young_adult"},   # 16 days (14-30)
+    "young_adult": {"duration_hours": 1440, "next": "adult"},     # 60 days (30-90)
+    "adult": {"duration_hours": 6600, "next": "mature"},          # 275 days (90-365)
+    "mature": {"duration_hours": 8760, "next": "elder"},          # 365 days (365-730)
+    "elder": {"duration_hours": 8760, "next": "legendary"},       # 365 days (730-1095)
+    "legendary": {"duration_hours": None, "next": None},          # Final stage
+    # Legacy mappings for old saves
+    "teen": {"duration_hours": 384, "next": "young_adult"},       # Maps to juvenile->young_adult
 }
 
 # Personality trait ranges

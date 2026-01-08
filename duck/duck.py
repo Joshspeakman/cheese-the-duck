@@ -9,7 +9,7 @@ import time
 
 from config import DEFAULT_PERSONALITY, DUCK_NAMES, GROWTH_STAGES, DEFAULT_DUCK_NAME
 from duck.needs import Needs
-from duck.mood import MoodCalculator, MoodState, MoodInfo, mood_calculator
+from duck.mood import MoodCalculator, MoodState, MoodInfo
 from duck.personality import Personality
 from dialogue.memory import DuckMemory
 
@@ -217,6 +217,11 @@ class Duck:
             return delta.total_seconds() / 86400
         except (ValueError, TypeError):
             return 0.0
+
+    @property
+    def age_days(self) -> int:
+        """Integer number of days since the duck was created."""
+        return int(self.get_age_days())
 
     def get_growth_stage_display(self) -> str:
         """Get display name for current growth stage."""
