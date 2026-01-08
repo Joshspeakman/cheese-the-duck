@@ -216,9 +216,9 @@ launch_terminal() {
         xfce4-terminal --geometry="${GAME_COLS}x${GAME_ROWS}" -e "cheese-the-duck" && return
     fi
     
-    # konsole (KDE)
+    # konsole (KDE) - doesn't support --geometry, just launch normally
     if command -v konsole &>/dev/null; then
-        konsole --geometry "${GAME_COLS}x${GAME_ROWS}" -e cheese-the-duck "$@" && return
+        konsole -e cheese-the-duck "$@" && return
     fi
     
     # xterm (most reliable for geometry)
