@@ -315,47 +315,11 @@ install_game() {
     cat > "$LAUNCHER_DIR/$APP_ID" << EOF
 #!/bin/bash
 # Cheese the Duck Launcher
-
-# Game requires 116x35 terminal for best experience (minimum 60x20)
-GAME_COLS=120
-GAME_ROWS=38
-
-# Try to resize terminal using escape sequence (works in xterm, gnome-terminal, etc.)
-if [ -t 1 ]; then
-    printf '\033[8;%d;%dt' "\$GAME_ROWS" "\$GAME_COLS"
-    sleep 0.1
-fi
-
 cd "$INSTALL_DIR"
 exec .venv/bin/python main.py "\$@"
 EOF
     chmod +x "$LAUNCHER_DIR/$APP_ID"
     print_success "Launcher created at $LAUNCHER_DIR/$APP_ID"
-    
-    # Create desktop launcher (opens terminal with proper size)
-    print_step "Creating desktop launcher..."
-    cat > "$LAUNCHER_DIR/$APP_ID-desktop" << EOF
-#!/bin/bash
-# Cheese the Duck Desktop Launcher
-GAME_COLS=120
-GAME_ROWS=38
-
-if command -v gnome-terminal &>/dev/null; then
-    gnome-terminal --geometry=\${GAME_COLS}x\${GAME_ROWS} -- $LAUNCHER_DIR/$APP_ID "\$@"
-elif command -v xfce4-terminal &>/dev/null; then
-    xfce4-terminal --geometry=\${GAME_COLS}x\${GAME_ROWS} -e "$LAUNCHER_DIR/$APP_ID \$*"
-elif command -v konsole &>/dev/null; then
-    konsole --geometry \${GAME_COLS}x\${GAME_ROWS} -e $LAUNCHER_DIR/$APP_ID "\$@"
-elif command -v xterm &>/dev/null; then
-    xterm -geometry \${GAME_COLS}x\${GAME_ROWS} -e $LAUNCHER_DIR/$APP_ID "\$@"
-elif command -v tilix &>/dev/null; then
-    tilix -e "$LAUNCHER_DIR/$APP_ID \$*"
-else
-    x-terminal-emulator -e $LAUNCHER_DIR/$APP_ID "\$@"
-fi
-EOF
-    chmod +x "$LAUNCHER_DIR/$APP_ID-desktop"
-    print_success "Desktop launcher created"
     
     # Create desktop file
     print_step "Creating desktop entry..."
@@ -367,9 +331,9 @@ Version=1.2.0
 Type=Application
 Name=Cheese the Duck
 Comment=A terminal-based virtual pet game
-Exec=$LAUNCHER_DIR/$APP_ID-desktop
+Exec=$LAUNCHER_DIR/$APP_ID
 Icon=$APP_ID
-Terminal=false
+Terminal=true
 Categories=Game;Simulation;
 Keywords=duck;pet;virtual;game;terminal;
 StartupNotify=false
