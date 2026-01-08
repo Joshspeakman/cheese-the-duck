@@ -198,25 +198,64 @@ cat > "$PACKAGE_DIR/usr/bin/cheese-the-duck-desktop" << 'EOF'
 # Launches the game in a properly-sized terminal window
 
 GAME_COLS=120
-GAME_ROWS=38
+GAME_ROWS=42
 
-# Try different terminal emulators with geometry support
-if command -v gnome-terminal &>/dev/null; then
-    gnome-terminal --geometry=${GAME_COLS}x${GAME_ROWS} -- cheese-the-duck "$@"
-elif command -v xfce4-terminal &>/dev/null; then
-    xfce4-terminal --geometry=${GAME_COLS}x${GAME_ROWS} -e "cheese-the-duck $*"
-elif command -v konsole &>/dev/null; then
-    konsole --geometry ${GAME_COLS}x${GAME_ROWS} -e cheese-the-duck "$@"
-elif command -v xterm &>/dev/null; then
-    xterm -geometry ${GAME_COLS}x${GAME_ROWS} -e cheese-the-duck "$@"
-elif command -v tilix &>/dev/null; then
-    tilix -e "cheese-the-duck $*"
-elif command -v terminator &>/dev/null; then
-    terminator --geometry=${GAME_COLS}x${GAME_ROWS} -e "cheese-the-duck $*"
-else
-    # Fallback: use x-terminal-emulator (Debian/Ubuntu default)
-    x-terminal-emulator -e cheese-the-duck "$@"
-fi
+# Detect and use appropriate terminal with geometry
+launch_terminal() {
+    # Check for gnome-terminal (Ubuntu default)
+    if command -v gnome-terminal &>/dev/null; then
+        # Modern gnome-terminal uses --geometry COLSxROWS (deprecated but still works)
+        # Also try setting profile default size via gsettings as backup
+        gnome-terminal --geometry="${GAME_COLS}x${GAME_ROWS}" -- cheese-the-duck "$@" 2>/dev/null && return
+        # Fallback without geometry
+        gnome-terminal -- cheese-the-duck "$@" && return
+    fi
+    
+    # xfce4-terminal
+    if command -v xfce4-terminal &>/dev/null; then
+        xfce4-terminal --geometry="${GAME_COLS}x${GAME_ROWS}" -e "cheese-the-duck" && return
+    fi
+    
+    # konsole (KDE)
+    if command -v konsole &>/dev/null; then
+        konsole --geometry "${GAME_COLS}x${GAME_ROWS}" -e cheese-the-duck "$@" && return
+    fi
+    
+    # xterm (most reliable for geometry)
+    if command -v xterm &>/dev/null; then
+        xterm -geometry "${GAME_COLS}x${GAME_ROWS}" -fa 'Monospace' -fs 11 -e cheese-the-duck "$@" && return
+    fi
+    
+    # tilix
+    if command -v tilix &>/dev/null; then
+        tilix -e "cheese-the-duck" && return
+    fi
+    
+    # terminator
+    if command -v terminator &>/dev/null; then
+        terminator --geometry="${GAME_COLS}x${GAME_ROWS}" -e "cheese-the-duck" && return
+    fi
+    
+    # mate-terminal
+    if command -v mate-terminal &>/dev/null; then
+        mate-terminal --geometry="${GAME_COLS}x${GAME_ROWS}" -e "cheese-the-duck" && return
+    fi
+    
+    # lxterminal
+    if command -v lxterminal &>/dev/null; then
+        lxterminal --geometry="${GAME_COLS}x${GAME_ROWS}" -e "cheese-the-duck" && return
+    fi
+    
+    # Fallback: use x-terminal-emulator (Debian/Ubuntu default alternative)
+    if command -v x-terminal-emulator &>/dev/null; then
+        x-terminal-emulator -e cheese-the-duck "$@" && return
+    fi
+    
+    # Last resort: just run directly (assumes we're already in a terminal)
+    cheese-the-duck "$@"
+}
+
+launch_terminal "$@"
 EOF
 chmod 755 "$PACKAGE_DIR/usr/bin/cheese-the-duck-desktop"
 echo -e "${GREEN}✓${NC} Desktop launcher created"
