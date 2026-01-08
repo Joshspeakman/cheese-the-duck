@@ -53,29 +53,31 @@ if [ ${#DEPS_NEEDED[@]} -gt 0 ]; then
 fi
 echo -e "${GREEN}✓${NC} Build dependencies ready"
 
-# Fetch latest release info from GitHub
-echo -e "${YELLOW}→${NC} Fetching latest release from GitHub..."
-RELEASE_INFO=$(curl -s "https://api.github.com/repos/${GITHUB_REPO}/releases/latest" 2>/dev/null || echo "")
+# Fetch latest version from GitHub (check tags first, then releases)
+echo -e "${YELLOW}→${NC} Fetching latest version from GitHub..."
 
-if [ -z "$RELEASE_INFO" ] || echo "$RELEASE_INFO" | grep -q "Not Found"; then
-    # No releases, use latest tag or main branch
-    echo -e "${YELLOW}→${NC} No releases found, checking for tags..."
-    TAG_INFO=$(curl -s "https://api.github.com/repos/${GITHUB_REPO}/tags" 2>/dev/null || echo "[]")
-    
-    if [ "$TAG_INFO" != "[]" ] && echo "$TAG_INFO" | jq -e '.[0].name' > /dev/null 2>&1; then
-        VERSION=$(echo "$TAG_INFO" | jq -r '.[0].name' | sed 's/^v//')
-        DOWNLOAD_URL="https://github.com/${GITHUB_REPO}/archive/refs/tags/$(echo "$TAG_INFO" | jq -r '.[0].name').tar.gz"
-        echo -e "${GREEN}✓${NC} Found tag: v${VERSION}"
-    else
-        # No tags, use main branch
-        VERSION="1.2.0"
-        DOWNLOAD_URL="https://github.com/${GITHUB_REPO}/archive/refs/heads/main.tar.gz"
-        echo -e "${YELLOW}→${NC} No tags found, using main branch (v${VERSION})"
-    fi
+# First try to get the latest tag (most common for this repo)
+TAG_INFO=$(curl -s "https://api.github.com/repos/${GITHUB_REPO}/tags" 2>/dev/null || echo "[]")
+
+if [ "$TAG_INFO" != "[]" ] && echo "$TAG_INFO" | jq -e '.[0].name' > /dev/null 2>&1; then
+    VERSION=$(echo "$TAG_INFO" | jq -r '.[0].name' | sed 's/^v//')
+    TAG_NAME=$(echo "$TAG_INFO" | jq -r '.[0].name')
+    DOWNLOAD_URL="https://github.com/${GITHUB_REPO}/archive/refs/tags/${TAG_NAME}.tar.gz"
+    echo -e "${GREEN}✓${NC} Found latest tag: ${TAG_NAME}"
 else
-    VERSION=$(echo "$RELEASE_INFO" | jq -r '.tag_name' | sed 's/^v//')
-    DOWNLOAD_URL=$(echo "$RELEASE_INFO" | jq -r '.tarball_url')
-    echo -e "${GREEN}✓${NC} Found release: v${VERSION}"
+    # Fallback to releases API
+    RELEASE_INFO=$(curl -s "https://api.github.com/repos/${GITHUB_REPO}/releases/latest" 2>/dev/null || echo "")
+    
+    if [ -n "$RELEASE_INFO" ] && ! echo "$RELEASE_INFO" | grep -q "Not Found"; then
+        VERSION=$(echo "$RELEASE_INFO" | jq -r '.tag_name' | sed 's/^v//')
+        DOWNLOAD_URL=$(echo "$RELEASE_INFO" | jq -r '.tarball_url')
+        echo -e "${GREEN}✓${NC} Found release: v${VERSION}"
+    else
+        # No tags or releases, use main branch
+        VERSION="1.2.1"
+        DOWNLOAD_URL="https://github.com/${GITHUB_REPO}/archive/refs/heads/main.tar.gz"
+        echo -e "${YELLOW}→${NC} No tags/releases found, using main branch (v${VERSION})"
+    fi
 fi
 
 # Create build directory in /tmp for proper permissions
