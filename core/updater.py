@@ -25,12 +25,13 @@ from config import GAME_DIR, SAVE_DIR
 
 
 # Game version - Update this when releasing new versions
-GAME_VERSION = "1.0.5"
+GAME_VERSION = "1.2.1"
 
 # GitHub repository info
 GITHUB_OWNER = "Joshspeakman"
 GITHUB_REPO = "cheese-the-duck"
 GITHUB_API_URL = f"https://api.github.com/repos/{GITHUB_OWNER}/{GITHUB_REPO}/releases/latest"
+GITHUB_TAGS_URL = f"https://api.github.com/repos/{GITHUB_OWNER}/{GITHUB_REPO}/tags"
 
 
 class UpdateStatus(Enum):
@@ -61,6 +62,27 @@ class GameUpdater:
         self.current_version = GAME_VERSION
         self._update_info: Optional[UpdateInfo] = None
         self._last_check_error: Optional[str] = None
+        # Check if we're in a system-managed location (apt install)
+        self._is_system_install = self._check_system_install()
+    
+    def _check_system_install(self) -> bool:
+        """Check if the game is installed in a system location (e.g., /opt, /usr)."""
+        game_path = str(GAME_DIR)
+        system_prefixes = ['/opt/', '/usr/', '/snap/']
+        return any(game_path.startswith(prefix) for prefix in system_prefixes)
+    
+    def is_updatable(self) -> bool:
+        """Return True if the game can be updated in-place."""
+        if self._is_system_install:
+            return False
+        # Check if we have write permission
+        try:
+            test_file = GAME_DIR / ".update_test"
+            test_file.touch()
+            test_file.unlink()
+            return True
+        except (OSError, PermissionError):
+            return False
 
     def _parse_version(self, version_str: str) -> Tuple[int, ...]:
         """Parse version string into tuple for comparison."""
@@ -88,7 +110,7 @@ class GameUpdater:
 
     def check_for_updates(self) -> UpdateInfo:
         """
-        Check GitHub for the latest release.
+        Check GitHub for the latest release (tries tags first, then releases).
         
         Returns:
             UpdateInfo with status and version details
@@ -103,32 +125,48 @@ class GameUpdater:
             )
 
         try:
-            # Create request with User-Agent header (required by GitHub API)
-            request = urllib.request.Request(
-                GITHUB_API_URL,
-                headers={
-                    'User-Agent': f'CheeseTheDuck/{self.current_version}',
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            )
+            headers = {
+                'User-Agent': f'CheeseTheDuck/{self.current_version}',
+                'Accept': 'application/vnd.github.v3+json'
+            }
             
-            with urllib.request.urlopen(request, timeout=10) as response:
-                data = json.loads(response.read().decode('utf-8'))
-            
-            latest_version = data.get('tag_name', '0.0.0')
-            release_notes = data.get('body', 'No release notes available.')
-            
-            # Find the source code zip download URL
+            # Try tags API first (more reliable for this repo)
+            latest_version = None
             download_url = ""
-            assets = data.get('assets', [])
-            for asset in assets:
-                if asset.get('name', '').endswith('.zip'):
-                    download_url = asset.get('browser_download_url', '')
-                    break
+            release_notes = ""
             
-            # If no asset, use the auto-generated source zip
-            if not download_url:
-                download_url = data.get('zipball_url', '')
+            try:
+                request = urllib.request.Request(GITHUB_TAGS_URL, headers=headers)
+                with urllib.request.urlopen(request, timeout=10) as response:
+                    tags_data = json.loads(response.read().decode('utf-8'))
+                
+                if tags_data and len(tags_data) > 0:
+                    latest_version = tags_data[0].get('name', '0.0.0')
+                    # Build download URL from tag
+                    download_url = f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/archive/refs/tags/{latest_version}.zip"
+                    release_notes = f"Update to {latest_version}"
+            except Exception:
+                pass  # Fall through to releases API
+            
+            # If tags didn't work, try releases API
+            if not latest_version:
+                request = urllib.request.Request(GITHUB_API_URL, headers=headers)
+                with urllib.request.urlopen(request, timeout=10) as response:
+                    data = json.loads(response.read().decode('utf-8'))
+                
+                latest_version = data.get('tag_name', '0.0.0')
+                release_notes = data.get('body', 'No release notes available.')
+                
+                # Find the source code zip download URL
+                assets = data.get('assets', [])
+                for asset in assets:
+                    if asset.get('name', '').endswith('.zip'):
+                        download_url = asset.get('browser_download_url', '')
+                        break
+                
+                # If no asset, use the auto-generated source zip
+                if not download_url:
+                    download_url = data.get('zipball_url', '')
             
             # Compare versions
             comparison = self._version_compare(self.current_version, latest_version)
@@ -141,7 +179,7 @@ class GameUpdater:
             self._update_info = UpdateInfo(
                 current_version=self.current_version,
                 latest_version=latest_version,
-                release_notes=release_notes[:500],  # Truncate long notes
+                release_notes=release_notes[:500] if release_notes else "",
                 download_url=download_url,
                 status=status
             )
