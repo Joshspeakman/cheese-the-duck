@@ -447,10 +447,14 @@ def _get_decorations_items(game):
             if cat_name not in categories:
                 categories[cat_name] = []
             
-            # Check if owned
+            # Check if owned (in unlocked_decorations list or currently placed)
             owned = False
             if game and hasattr(game, 'home') and game.home:
-                owned = dec_id in [d.decoration_id for r in game.home.rooms.values() for d in r.decorations]
+                # Check if decoration is unlocked or placed
+                if hasattr(game.home, 'unlocked_decorations'):
+                    owned = dec_id in game.home.unlocked_decorations
+                elif hasattr(game.home, 'decorations'):
+                    owned = dec_id in game.home.decorations.values()
             
             categories[cat_name].append(MasterMenuItem(
                 id=f"decor_{dec_id}",

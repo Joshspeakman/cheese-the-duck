@@ -33,6 +33,7 @@ DATA_DIRS = [
 DATA_FILES = [
     "config.py",
     "game_logger.py",
+    "cheese.ico",
     "*.wav",
     "*.mp3",
 ]
@@ -53,13 +54,22 @@ def build_executable():
     """Build the executable using PyInstaller."""
     system = platform.system().lower()
     
-    # Determine output name
+    # Determine output name and icon
+    icon_path = os.path.join(SCRIPT_DIR, "cheese.ico")
+    
     if system == "windows":
         exe_name = "CheeseTheDuck.exe"
-        icon_opt = []  # Add --icon=icon.ico if you have one
+        if os.path.exists(icon_path):
+            icon_opt = ["--icon", icon_path]
+        else:
+            icon_opt = []
     else:
         exe_name = "CheeseTheDuck"
-        icon_opt = []
+        # Linux doesn't use .ico but we can try anyway
+        if os.path.exists(icon_path):
+            icon_opt = ["--icon", icon_path]
+        else:
+            icon_opt = []
     
     print(f"Building for {system}...")
     

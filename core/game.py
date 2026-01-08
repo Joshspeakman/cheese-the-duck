@@ -690,7 +690,7 @@ class Game:
                 recipe = selected.data
                 result = self.crafting.start_crafting(recipe.id, self.materials)
                 self._crafting_menu_open = False
-                self.renderer.show_message(result["message"], duration=3.0)
+                self.renderer.show_message(result["message"], duration=3.0, category="action")
             return
         # Close with ESC, Backspace, or C
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'c':
@@ -724,7 +724,7 @@ class Game:
                 if result.get("success"):
                     self._start_building_animation(bp)
                 else:
-                    self.renderer.show_message(result["message"], duration=3.0)
+                    self.renderer.show_message(result["message"], duration=3.0, category="action")
             return
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'r':
             self._building_menu_open = False
@@ -1056,7 +1056,7 @@ class Game:
             item = result["item"]
 
             # Show item use message
-            self.renderer.show_message(result["message"], duration=4.0)
+            self.renderer.show_message(result["message"], duration=4.0, category="duck")
 
             # Play appropriate sound
             if item.item_type.value == "food":
@@ -2391,12 +2391,12 @@ class Game:
                 self.inventory.add_item(reward.value)
             item = get_item_info(reward.value)
             name = item.name if item else reward.value
-            self.renderer.show_message(f"Received: {name} x{reward.amount}!", duration=2.0)
+            self.renderer.show_message(f"Received: {name} x{reward.amount}!", duration=2.0, category="action")
 
         elif reward.reward_type == RewardType.XP:
             xp = int(reward.value)
             new_level = self.progression.add_xp(xp, "reward")
-            self.renderer.show_message(f"+{xp} XP!", duration=2.0)
+            self.renderer.show_message(f"+{xp} XP!", duration=2.0, category="action")
             if new_level:
                 self._on_level_up(new_level)
 
@@ -2407,7 +2407,7 @@ class Game:
         elif reward.reward_type == RewardType.TITLE:
             if reward.value not in self.progression.unlocked_titles:
                 self.progression.unlocked_titles.append(reward.value)
-                self.renderer.show_message(f"Unlocked title: {reward.value}!", duration=3.0)
+                self.renderer.show_message(f"Unlocked title: {reward.value}!", duration=3.0, category="discovery")
 
     def _check_daily_login(self):
         """Check for daily login rewards."""
@@ -3787,8 +3787,8 @@ class Game:
 
         # Welcome message
         greeting = self.conversation.get_greeting(self.duck)
-        self.renderer.show_message(f"Welcome, {self.duck.name}!")
-        self.renderer.show_message(greeting, duration=4.0)
+        self.renderer.show_message(f"Welcome, {self.duck.name}!", category="event")
+        self.renderer.show_message(greeting, duration=4.0, category="duck")
 
         # Play welcome sound
         duck_sounds.quack("happy")
