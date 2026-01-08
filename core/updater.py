@@ -25,13 +25,16 @@ from config import GAME_DIR, SAVE_DIR
 
 
 # Game version - Update this when releasing new versions
-GAME_VERSION = "1.2.2"
+GAME_VERSION = "1.2.3"
 
 # GitHub repository info
 GITHUB_OWNER = "Joshspeakman"
 GITHUB_REPO = "cheese-the-duck"
 GITHUB_API_URL = f"https://api.github.com/repos/{GITHUB_OWNER}/{GITHUB_REPO}/releases/latest"
 GITHUB_TAGS_URL = f"https://api.github.com/repos/{GITHUB_OWNER}/{GITHUB_REPO}/tags"
+
+# URL for pre-built .deb packages (we'll build and host these)
+DEB_DOWNLOAD_URL = f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/releases/download"
 
 
 class UpdateStatus(Enum):
@@ -71,8 +74,12 @@ class GameUpdater:
         system_prefixes = ['/opt/', '/usr/', '/snap/']
         return any(game_path.startswith(prefix) for prefix in system_prefixes)
     
+    def is_system_install(self) -> bool:
+        """Return True if this is a system-level installation (apt/deb)."""
+        return self._is_system_install
+    
     def is_updatable(self) -> bool:
-        """Return True if the game can be updated in-place."""
+        """Return True if the game can be updated in-place (non-system install)."""
         if self._is_system_install:
             return False
         # Check if we have write permission
@@ -332,6 +339,200 @@ class GameUpdater:
                 
                 return UpdateStatus.UPDATE_COMPLETE
 
+        except Exception as e:
+            self._last_check_error = str(e)
+            return UpdateStatus.UPDATE_FAILED
+
+    def download_and_install_deb(self, update_info: UpdateInfo) -> UpdateStatus:
+        """
+        Download and install a .deb package update for system installs.
+        
+        This builds the .deb locally from source and installs it using pkexec
+        for a graphical sudo prompt.
+        
+        Args:
+            update_info: The update information from check_for_updates
+            
+        Returns:
+            UpdateStatus indicating success or failure
+        """
+        if not HAS_URLLIB:
+            self._last_check_error = "urllib not available"
+            return UpdateStatus.UPDATE_FAILED
+        
+        try:
+            # Create temp directory for build
+            with tempfile.TemporaryDirectory() as temp_dir:
+                temp_path = Path(temp_dir)
+                
+                version = update_info.latest_version.lstrip('v')
+                deb_name = f"cheese-the-duck_{version}-1_all.deb"
+                deb_path = temp_path / deb_name
+                
+                # Download source code
+                zip_url = f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/archive/refs/tags/{update_info.latest_version}.zip"
+                zip_path = temp_path / "source.zip"
+                
+                request = urllib.request.Request(
+                    zip_url,
+                    headers={'User-Agent': f'CheeseTheDuck/{self.current_version}'}
+                )
+                
+                with urllib.request.urlopen(request, timeout=60) as response:
+                    with open(zip_path, 'wb') as f:
+                        f.write(response.read())
+                
+                # Extract source
+                extract_path = temp_path / "extracted"
+                with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                    zip_ref.extractall(extract_path)
+                
+                # Find extracted directory
+                extracted_contents = list(extract_path.iterdir())
+                if len(extracted_contents) == 1 and extracted_contents[0].is_dir():
+                    source_dir = extracted_contents[0]
+                else:
+                    source_dir = extract_path
+                
+                # Build .deb package structure
+                pkg_dir = temp_path / f"cheese-the-duck_{version}-1_all"
+                
+                # Create directory structure
+                (pkg_dir / "DEBIAN").mkdir(parents=True)
+                (pkg_dir / "opt" / "cheese-the-duck").mkdir(parents=True)
+                (pkg_dir / "usr" / "bin").mkdir(parents=True)
+                (pkg_dir / "usr" / "share" / "applications").mkdir(parents=True)
+                (pkg_dir / "usr" / "share" / "icons" / "hicolor" / "256x256" / "apps").mkdir(parents=True)
+                
+                # Copy game files
+                for item in source_dir.iterdir():
+                    if item.name in ['__pycache__', '.git', '.venv', 'venv', 'data', 'logs']:
+                        continue
+                    dest = pkg_dir / "opt" / "cheese-the-duck" / item.name
+                    if item.is_dir():
+                        shutil.copytree(item, dest, dirs_exist_ok=True)
+                    else:
+                        shutil.copy2(item, dest)
+                
+                # Create launcher script
+                launcher = pkg_dir / "usr" / "bin" / "cheese-the-duck"
+                launcher.write_text('''#!/bin/bash
+# Cheese the Duck Launcher
+GAME_DIR="/opt/cheese-the-duck"
+VENV_DIR="$HOME/.local/share/cheese-the-duck/venv"
+
+# Game requires 116x35 terminal for best experience
+GAME_COLS=120
+GAME_ROWS=38
+
+if [ -t 1 ]; then
+    printf '\\033[8;%d;%dt' "$GAME_ROWS" "$GAME_COLS"
+    sleep 0.1
+fi
+
+cd "$GAME_DIR"
+
+if [ ! -d "$VENV_DIR" ]; then
+    echo "Setting up Cheese the Duck (first run)..."
+    mkdir -p "$HOME/.local/share/cheese-the-duck"
+    python3 -m venv "$VENV_DIR"
+    "$VENV_DIR/bin/pip" install -q --upgrade pip
+    "$VENV_DIR/bin/pip" install -q -r requirements.txt
+    echo "Setup complete! Starting game..."
+fi
+
+exec "$VENV_DIR/bin/python" main.py "$@"
+''')
+                launcher.chmod(0o755)
+                
+                # Create desktop entry
+                desktop_entry = pkg_dir / "usr" / "share" / "applications" / "cheese-the-duck.desktop"
+                desktop_entry.write_text(f'''[Desktop Entry]
+Version={version}
+Type=Application
+Name=Cheese the Duck
+Comment=A terminal-based virtual pet game
+Exec=cheese-the-duck
+Icon=cheese-the-duck
+Terminal=true
+Categories=Game;Simulation;
+Keywords=duck;pet;virtual;game;terminal;
+StartupNotify=false
+''')
+                
+                # Copy icon if available
+                icon_src = source_dir / "assets" / "cheese.ico"
+                if icon_src.exists():
+                    # Try to convert with ImageMagick
+                    icon_dest = pkg_dir / "usr" / "share" / "icons" / "hicolor" / "256x256" / "apps" / "cheese-the-duck.png"
+                    try:
+                        subprocess.run(
+                            ["convert", f"{icon_src}[8]", "-resize", "256x256", str(icon_dest)],
+                            capture_output=True, timeout=30
+                        )
+                    except Exception:
+                        pass  # Icon is optional
+                
+                # Create DEBIAN/control
+                control = pkg_dir / "DEBIAN" / "control"
+                control.write_text(f'''Package: cheese-the-duck
+Version: {version}-1
+Section: games
+Priority: optional
+Architecture: all
+Depends: python3 (>= 3.8), python3-venv, python3-pip, libsdl2-2.0-0, libsdl2-mixer-2.0-0
+Recommends: imagemagick
+Maintainer: Cheese the Duck Team <cheese@example.com>
+Description: A terminal-based virtual pet duck game
+ Cheese the Duck is an interactive terminal game where you care for
+ your virtual pet duck named Cheese.
+Homepage: https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}
+''')
+                
+                # Build .deb
+                result = subprocess.run(
+                    ["dpkg-deb", "--build", "--root-owner-group", str(pkg_dir), str(deb_path)],
+                    capture_output=True, timeout=60
+                )
+                
+                if result.returncode != 0:
+                    self._last_check_error = f"dpkg-deb failed: {result.stderr.decode()[:100]}"
+                    return UpdateStatus.UPDATE_FAILED
+                
+                if not deb_path.exists():
+                    self._last_check_error = "Failed to build .deb package"
+                    return UpdateStatus.UPDATE_FAILED
+                
+                # Install using pkexec (graphical sudo prompt)
+                # Try pkexec first (graphical), fall back to sudo
+                install_cmd = None
+                
+                # Check for pkexec (graphical environments)
+                if shutil.which("pkexec"):
+                    install_cmd = ["pkexec", "apt", "install", "-y", str(deb_path)]
+                # Fall back to sudo in terminal
+                elif shutil.which("sudo"):
+                    install_cmd = ["sudo", "apt", "install", "-y", str(deb_path)]
+                else:
+                    self._last_check_error = "No pkexec or sudo available"
+                    return UpdateStatus.UPDATE_FAILED
+                
+                result = subprocess.run(install_cmd, capture_output=True, timeout=120)
+                
+                if result.returncode != 0:
+                    stderr = result.stderr.decode()[:200]
+                    # Check if user cancelled auth dialog
+                    if "dismissed" in stderr.lower() or "cancelled" in stderr.lower():
+                        self._last_check_error = "Update cancelled by user"
+                    else:
+                        self._last_check_error = f"Install failed: {stderr}"
+                    return UpdateStatus.UPDATE_FAILED
+                
+                return UpdateStatus.UPDATE_COMPLETE
+
+        except subprocess.TimeoutExpired:
+            self._last_check_error = "Update timed out"
+            return UpdateStatus.UPDATE_FAILED
         except Exception as e:
             self._last_check_error = str(e)
             return UpdateStatus.UPDATE_FAILED
