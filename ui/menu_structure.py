@@ -84,6 +84,7 @@ def build_main_menu_categories() -> list:
             icon="=",
             items=[
                 MenuItem("facts", "Random Duck Fact", "Learn about ducks"),
+                MenuItem("terminal", "Change Terminal", "Select preferred terminal app"),
                 MenuItem("settings", "Settings", "Audio, display, and game options"),
                 MenuItem("sound", "Toggle Sound", "Turn sound on/off"),
                 MenuItem("music", "Toggle Music", "Turn music on/off"),
@@ -142,6 +143,7 @@ MENU_ACTIONS = {
     
     # Other
     "facts": "_show_duck_fact",
+    "terminal": "_show_terminal_selector",
     "settings": "_open_settings_menu",
     "sound": "_toggle_sound",
     "music": "_toggle_music",
