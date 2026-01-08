@@ -1410,7 +1410,15 @@ class Game:
                 if self._debug_menu_open:
                     self._show_debug_menu()
                 else:
-                    self.renderer.dismiss_message()
+                    self.renderer.dismiss_overlay()
+                return
+
+            # Page Up/Down for chat log scrolling
+            if key_name == 'KEY_PGUP':
+                self.renderer.scroll_chat_up()
+                return
+            if key_name == 'KEY_PGDOWN':
+                self.renderer.scroll_chat_down()
                 return
 
             # TAB key - no longer opens menu (master menu is always visible)
