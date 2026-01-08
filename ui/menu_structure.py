@@ -90,7 +90,7 @@ def build_main_menu_categories() -> list:
                 # MenuItem("save_slots", "Save Slots", "Manage save files"),  # Hidden for now
                 MenuItem("help", "Help", "View controls and tips"),
                 MenuItem("reset_game", "Reset Game", "WARNING: Deletes ALL progress!"),
-                MenuItem("quit", "Save & Quit", "Save game and exit"),
+                MenuItem("quit", "Return to Title", "Save game and return to title screen"),
             ]
         ),
     ]
@@ -148,7 +148,7 @@ MENU_ACTIONS = {
     "save_slots": "_show_save_slots_menu",
     "help": "_toggle_help",
     "reset_game": "_start_reset_confirmation",
-    "quit": "_quit_game",
+    "quit": "_return_to_title",
 }
 
 
@@ -606,7 +606,7 @@ def build_master_menu_tree():
                 MasterMenuItem(id="stats", label="View Stats", action="stats"),
                 MasterMenuItem(id="inventory", label="Inventory", action="inventory"),
                 MasterMenuItem(id="goals", label="Goals", action="goals"),
-                MasterMenuItem(id="shop", label="Shop", children=_get_shop_items),
+                MasterMenuItem(id="shop", label="Shop", action="shop"),
             ]
         ),
         
@@ -651,6 +651,6 @@ def build_master_menu_tree():
             ]
         ),
 
-        # Save & Quit (at root level for easy access)
-        MasterMenuItem(id="quit", label="Save & Quit", action="quit"),
+        # Save & return to title (at root level for easy access)
+        MasterMenuItem(id="quit", label="Return to Title", action="quit"),
     ]
