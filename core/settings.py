@@ -97,6 +97,41 @@ class KeyBinding:
 
 
 @dataclass
+class SystemSettings:
+    """System-level settings."""
+    preferred_terminal: str = "auto"    # auto, gnome-terminal, konsole, xterm, etc.
+    
+    @staticmethod
+    def detect_available_terminals() -> list:
+        """Detect available terminal emulators on the system."""
+        import shutil
+        
+        terminals = [
+            ("auto", "Auto-detect"),
+            ("gnome-terminal", "GNOME Terminal"),
+            ("konsole", "Konsole (KDE)"),
+            ("xfce4-terminal", "XFCE Terminal"),
+            ("xterm", "XTerm"),
+            ("tilix", "Tilix"),
+            ("terminator", "Terminator"),
+            ("mate-terminal", "MATE Terminal"),
+            ("lxterminal", "LXTerminal"),
+            ("alacritty", "Alacritty"),
+            ("kitty", "Kitty"),
+            ("wezterm", "WezTerm"),
+            ("foot", "Foot"),
+            ("x-terminal-emulator", "System Default"),
+        ]
+        
+        available = [("auto", "Auto-detect")]  # Always include auto
+        for cmd, name in terminals[1:]:  # Skip auto, check rest
+            if shutil.which(cmd):
+                available.append((cmd, name))
+        
+        return available
+
+
+@dataclass
 class KeyBindings:
     """All customizable key bindings."""
     # Core interactions
@@ -163,6 +198,7 @@ class GameSettings:
     accessibility: AccessibilitySettings = field(default_factory=AccessibilitySettings)
     gameplay: GameplaySettings = field(default_factory=GameplaySettings)
     keybindings: KeyBindings = field(default_factory=KeyBindings)
+    system: SystemSettings = field(default_factory=SystemSettings)
     
     # Metadata
     version: str = "1.0"
@@ -178,6 +214,7 @@ class GameSettings:
             "accessibility": asdict(self.accessibility),
             "gameplay": asdict(self.gameplay),
             "keybindings": asdict(self.keybindings),
+            "system": asdict(self.system),
         }
     
     @classmethod
@@ -195,6 +232,8 @@ class GameSettings:
             settings.gameplay = GameplaySettings(**data["gameplay"])
         if "keybindings" in data:
             settings.keybindings = KeyBindings(**data["keybindings"])
+        if "system" in data:
+            settings.system = SystemSettings(**data["system"])
         
         settings.version = data.get("version", "1.0")
         settings.first_launch = data.get("first_launch", True)
