@@ -3084,6 +3084,26 @@ class Renderer:
         # Trim chat log to max size
         if len(self._chat_log) > self._chat_log_max_size:
             self._chat_log = self._chat_log[-self._chat_log_max_size:]
+    
+    def show_overlay(self, message: str, duration: float = 0):
+        """Show an overlay message WITHOUT adding to chat log (for menus/debug)."""
+        import textwrap
+        
+        wrap_width = 44
+        wrapped_lines = []
+        for line in message.split('\n'):
+            if line.strip():
+                wrapped = textwrap.wrap(line, width=wrap_width)
+                wrapped_lines.extend(wrapped if wrapped else [''])
+            else:
+                wrapped_lines.append('')
+        
+        self._message_queue = wrapped_lines
+        self._show_message_overlay = True
+        if duration > 0:
+            self._message_expire = time.time() + duration
+        else:
+            self._message_expire = float('inf')
 
     def dismiss_message(self):
         """Dismiss the current message overlay."""
