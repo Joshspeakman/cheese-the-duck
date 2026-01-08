@@ -278,6 +278,11 @@ class Game:
         self._settings_menu = settings_menu
         self._settings_menu.set_sound_engine(sound_engine)
         
+        # Terminal selector
+        self._terminal_selector_open = False
+        self._terminal_options = []
+        self._terminal_selection_index = 0
+        
         # Confirmation dialog
         self._confirmation_dialog = None  # Active confirmation dialog
         
@@ -558,6 +563,9 @@ class Game:
             return
         if self._debug_menu_open:
             self._handle_debug_input(key)
+            return
+        if self._terminal_selector_open:
+            self._handle_terminal_selector_input(key)
             return
         if self._settings_menu_open:
             self._handle_settings_input(key)
@@ -7424,6 +7432,93 @@ Core Systems Tested: {report.total_tests}
         self._settings_menu = settings_menu  # Use global instance
         self._settings_menu.reset_selection()
         self._render_settings_menu()
+
+    def _show_terminal_selector(self):
+        """Show terminal selection menu."""
+        from core.settings import SystemSettings, settings_manager
+        
+        available = SystemSettings.detect_available_terminals()
+        current = settings_manager.settings.system.preferred_terminal
+        
+        # Build selection list
+        options = []
+        current_idx = 0
+        for i, (cmd, name) in enumerate(available):
+            marker = " [*]" if cmd == current else ""
+            options.append(f"{name}{marker}")
+            if cmd == current:
+                current_idx = i
+        
+        # Store for selection handling
+        self._terminal_options = available
+        self._terminal_selection_index = current_idx
+        self._terminal_selector_open = True
+        
+        self._render_terminal_selector()
+
+    def _render_terminal_selector(self):
+        """Render terminal selector overlay."""
+        from core.settings import settings_manager
+        
+        current = settings_manager.settings.system.preferred_terminal
+        lines = []
+        lines.append("╔════════════════════════════════════════╗")
+        lines.append("║       SELECT PREFERRED TERMINAL        ║")
+        lines.append("╠════════════════════════════════════════╣")
+        lines.append("║  Use ↑/↓ to select, Enter to confirm   ║")
+        lines.append("║  ESC to cancel                         ║")
+        lines.append("╠════════════════════════════════════════╣")
+        
+        for i, (cmd, name) in enumerate(self._terminal_options):
+            is_current = cmd == current
+            is_selected = i == self._terminal_selection_index
+            
+            prefix = "→ " if is_selected else "  "
+            suffix = " [current]" if is_current else ""
+            
+            # Highlight selected
+            line = f"║ {prefix}{name}{suffix}"
+            line = line.ljust(41) + "║"
+            lines.append(line)
+        
+        lines.append("╚════════════════════════════════════════╝")
+        
+        self.renderer.show_overlay("\n".join(lines), duration=0)
+
+    def _handle_terminal_selector_input(self, key):
+        """Handle input for terminal selector."""
+        from core.settings import settings_manager
+        
+        key_name = getattr(key, 'name', "") or ""
+        
+        if key_name == "KEY_ESCAPE":
+            self._terminal_selector_open = False
+            self.renderer.dismiss_message()
+            return True
+        
+        if key_name == "KEY_UP":
+            self._terminal_selection_index = (self._terminal_selection_index - 1) % len(self._terminal_options)
+            self._render_terminal_selector()
+            return True
+        
+        if key_name == "KEY_DOWN":
+            self._terminal_selection_index = (self._terminal_selection_index + 1) % len(self._terminal_options)
+            self._render_terminal_selector()
+            return True
+        
+        if key_name == "KEY_ENTER":
+            # Save selection
+            selected_cmd = self._terminal_options[self._terminal_selection_index][0]
+            selected_name = self._terminal_options[self._terminal_selection_index][1]
+            settings_manager.set_value("system", "preferred_terminal", selected_cmd)
+            settings_manager.save()
+            
+            self._terminal_selector_open = False
+            self.renderer.dismiss_message()
+            self.renderer.show_message(f"Terminal set to: {selected_name}", duration=3.0)
+            return True
+        
+        return False
 
     def _close_settings_menu(self):
         """Close the settings menu without saving."""
