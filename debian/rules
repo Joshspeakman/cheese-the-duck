@@ -1,0 +1,65 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE = 1
+export PYBUILD_NAME = cheese-the-duck
+
+%:
+	dh $@ --with python3
+
+override_dh_auto_install:
+	# Create installation directories
+	mkdir -p debian/cheese-the-duck/opt/cheese-the-duck
+	mkdir -p debian/cheese-the-duck/usr/bin
+	mkdir -p debian/cheese-the-duck/usr/share/applications
+	mkdir -p debian/cheese-the-duck/usr/share/icons/hicolor/256x256/apps
+	mkdir -p debian/cheese-the-duck/usr/share/icons/hicolor/128x128/apps
+	mkdir -p debian/cheese-the-duck/usr/share/icons/hicolor/64x64/apps
+	mkdir -p debian/cheese-the-duck/usr/share/icons/hicolor/48x48/apps
+	mkdir -p debian/cheese-the-duck/usr/share/icons/hicolor/32x32/apps
+	mkdir -p debian/cheese-the-duck/usr/share/icons/hicolor/16x16/apps
+	
+	# Copy game files
+	cp -r audio core dialogue duck ui world debian/cheese-the-duck/opt/cheese-the-duck/
+	cp -r assets data models debian/cheese-the-duck/opt/cheese-the-duck/ 2>/dev/null || true
+	cp main.py config.py game_logger.py requirements.txt debian/cheese-the-duck/opt/cheese-the-duck/
+	cp download_model.py debian/cheese-the-duck/opt/cheese-the-duck/ 2>/dev/null || true
+	cp cheese.ico debian/cheese-the-duck/opt/cheese-the-duck/ 2>/dev/null || true
+	
+	# Create launcher script
+	echo '#!/bin/bash' > debian/cheese-the-duck/usr/bin/cheese-the-duck
+	echo 'cd /opt/cheese-the-duck' >> debian/cheese-the-duck/usr/bin/cheese-the-duck
+	echo 'if [ ! -d ".venv" ]; then' >> debian/cheese-the-duck/usr/bin/cheese-the-duck
+	echo '    python3 -m venv .venv' >> debian/cheese-the-duck/usr/bin/cheese-the-duck
+	echo '    .venv/bin/pip install -q -r requirements.txt' >> debian/cheese-the-duck/usr/bin/cheese-the-duck
+	echo 'fi' >> debian/cheese-the-duck/usr/bin/cheese-the-duck
+	echo 'exec .venv/bin/python main.py "$$@"' >> debian/cheese-the-duck/usr/bin/cheese-the-duck
+	chmod +x debian/cheese-the-duck/usr/bin/cheese-the-duck
+	
+	# Create desktop entry
+	echo '[Desktop Entry]' > debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
+	echo 'Version=1.2.0' >> debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
+	echo 'Type=Application' >> debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
+	echo 'Name=Cheese the Duck' >> debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
+	echo 'Comment=A terminal-based virtual pet game' >> debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
+	echo 'Exec=cheese-the-duck' >> debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
+	echo 'Icon=cheese-the-duck' >> debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
+	echo 'Terminal=true' >> debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
+	echo 'Categories=Game;Simulation;' >> debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
+
+override_dh_auto_build:
+	# Convert icon if imagemagick is available
+	if command -v convert >/dev/null 2>&1 && [ -f cheese.ico ]; then \
+		convert cheese.ico[0] -resize 256x256 debian/cheese-the-duck/usr/share/icons/hicolor/256x256/apps/cheese-the-duck.png 2>/dev/null || true; \
+		convert cheese.ico[0] -resize 128x128 debian/cheese-the-duck/usr/share/icons/hicolor/128x128/apps/cheese-the-duck.png 2>/dev/null || true; \
+		convert cheese.ico[0] -resize 64x64 debian/cheese-the-duck/usr/share/icons/hicolor/64x64/apps/cheese-the-duck.png 2>/dev/null || true; \
+		convert cheese.ico[0] -resize 48x48 debian/cheese-the-duck/usr/share/icons/hicolor/48x48/apps/cheese-the-duck.png 2>/dev/null || true; \
+		convert cheese.ico[0] -resize 32x32 debian/cheese-the-duck/usr/share/icons/hicolor/32x32/apps/cheese-the-duck.png 2>/dev/null || true; \
+		convert cheese.ico[0] -resize 16x16 debian/cheese-the-duck/usr/share/icons/hicolor/16x16/apps/cheese-the-duck.png 2>/dev/null || true; \
+	fi
+
+override_dh_auto_test:
+	# Skip tests during package build
+
+override_dh_auto_clean:
+	# Clean up
+	rm -rf .venv __pycache__ *.pyc

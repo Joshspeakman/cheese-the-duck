@@ -1,0 +1,33 @@
+#!/bin/bash
+# Post-removal script for cheese-the-duck
+
+set -e
+
+case "$1" in
+    purge|remove)
+        # Remove virtual environment and generated files
+        rm -rf /opt/cheese-the-duck/.venv 2>/dev/null || true
+        rm -rf /opt/cheese-the-duck/__pycache__ 2>/dev/null || true
+        rm -rf /opt/cheese-the-duck/logs 2>/dev/null || true
+        
+        # Only remove data on purge
+        if [ "$1" = "purge" ]; then
+            rm -rf /opt/cheese-the-duck/data 2>/dev/null || true
+            rm -rf /opt/cheese-the-duck 2>/dev/null || true
+        fi
+        
+        # Update icon cache
+        if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+            gtk-update-icon-cache -f -t /usr/share/icons/hicolor 2>/dev/null || true
+        fi
+        
+        # Update desktop database
+        if command -v update-desktop-database >/dev/null 2>&1; then
+            update-desktop-database /usr/share/applications 2>/dev/null || true
+        fi
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

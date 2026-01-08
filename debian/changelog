@@ -1,0 +1,25 @@
+cheese-the-duck (1.2.0-1) unstable; urgency=medium
+
+  * Chat color coding system
+  * Rotating duck facts on title screen
+  * Menu overlay system with pixel art styling
+  * AI-powered duck conversations
+  * Festival events and seasonal content
+  * Bug fixes and UI improvements
+
+ -- Cheese the Duck Team <cheese@example.com>  Wed, 08 Jan 2026 12:00:00 +0000
+
+cheese-the-duck (1.1.0-1) unstable; urgency=medium
+
+  * Added exploration system
+  * Added crafting and collectibles
+  * Added friend system
+  * Added achievements
+
+ -- Cheese the Duck Team <cheese@example.com>  Mon, 01 Jan 2026 12:00:00 +0000
+
+cheese-the-duck (1.0.0-1) unstable; urgency=medium
+
+  * Initial release
+
+ -- Cheese the Duck Team <cheese@example.com>  Sun, 01 Dec 2025 12:00:00 +0000

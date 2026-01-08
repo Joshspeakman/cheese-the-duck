@@ -1,0 +1,42 @@
+#!/bin/bash
+# Post-installation script for cheese-the-duck
+
+set -e
+
+case "$1" in
+    configure)
+        # Set proper permissions for the game directory
+        chmod -R a+rX /opt/cheese-the-duck
+        
+        # Create writable directories for saves/data
+        mkdir -p /opt/cheese-the-duck/data
+        mkdir -p /opt/cheese-the-duck/logs
+        chmod 777 /opt/cheese-the-duck/data
+        chmod 777 /opt/cheese-the-duck/logs
+        
+        # Update icon cache
+        if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+            gtk-update-icon-cache -f -t /usr/share/icons/hicolor 2>/dev/null || true
+        fi
+        
+        # Update desktop database
+        if command -v update-desktop-database >/dev/null 2>&1; then
+            update-desktop-database /usr/share/applications 2>/dev/null || true
+        fi
+        
+        echo ""
+        echo "╔════════════════════════════════════════════════════════════╗"
+        echo "║           🦆 Cheese the Duck installed!                     ║"
+        echo "╚════════════════════════════════════════════════════════════╝"
+        echo ""
+        echo "To play, run: cheese-the-duck"
+        echo "Or find 'Cheese the Duck' in your applications menu."
+        echo ""
+        echo "First run will install Python dependencies (may take a minute)."
+        echo ""
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0
