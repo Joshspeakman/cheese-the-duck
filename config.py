@@ -18,14 +18,14 @@ TICK_RATE = 1.0  # Seconds between game ticks
 TIME_MULTIPLIER = 1.0  # Speed up time for testing (1.0 = real time)
 
 # Need decay rates (per real minute)
-# Designed so needs last ~8-12 hours from full
+# Designed for ~8 hour decay from full to empty
 # 100% / rate = minutes to empty
 NEED_DECAY_RATES = {
-    "hunger": 0.15,     # ~11 hours to empty from full
+    "hunger": 0.21,     # ~8 hours to empty from full (100/0.21 = 476 min)
     "energy": 0.12,     # ~14 hours to empty from full  
-    "fun": 0.18,        # ~9 hours to empty (boredom is faster)
+    "fun": 0.21,        # ~8 hours to empty from full
     "cleanliness": 0.08, # ~21 hours to empty (stays clean longest)
-    "social": 0.10,     # ~17 hours to empty
+    "social": 0.21,     # ~8 hours to empty from full
 }
 
 # Need thresholds
