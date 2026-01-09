@@ -7129,8 +7129,11 @@ class Game:
             hours = 24
         
         if hours > 0 and self.duck:
-            # Convert hours to minutes for duck growth
+            # Convert hours to minutes for duck growth and needs
             minutes_to_add = hours * 60
+            
+            # Update duck needs (decay based on time passed)
+            self.duck.needs.update(minutes_to_add, self.duck.personality)
             
             # Update duck growth progress
             self.duck._update_growth(minutes_to_add)
