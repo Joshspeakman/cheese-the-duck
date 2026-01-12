@@ -478,7 +478,9 @@ class BehaviorAI:
 
     def should_act(self, current_time: float) -> bool:
         """Check if it's time for a new autonomous action."""
-        if self._current_action and current_time < self._action_end_time:
+        # Don't act if action end time is still in the future
+        # (this handles both AI actions and user-initiated actions like sleep)
+        if current_time < self._action_end_time:
             return False
         # Clear the current action when it has expired
         if self._current_action and current_time >= self._action_end_time:

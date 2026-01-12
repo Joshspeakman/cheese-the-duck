@@ -2008,8 +2008,8 @@ class Game:
         # Record this interaction time
         self._last_interaction_time[interaction] = current_time
 
-        # Clear any autonomous action
-        if self.behavior_ai:
+        # Clear any autonomous action (skip for sleep - _start_dream will set proper timing)
+        if self.behavior_ai and interaction != "sleep":
             self.behavior_ai.clear_action()
 
         # Set duck visual state with appropriate duration
@@ -2027,7 +2027,7 @@ class Game:
         elif interaction == "play":
             self.renderer.set_duck_state("playing", duration)
         elif interaction == "sleep":
-            # Start dream first to calculate proper duration, then set state
+            # Start dream - this sets the sleeping state with proper duration
             self._start_dream()
         elif interaction == "clean":
             self.renderer.set_duck_state("cleaning", duration)
@@ -2038,7 +2038,9 @@ class Game:
 
         # Notify reaction controller that user action is in progress
         # This prevents weather reactions from overriding user-initiated animations
-        self.reaction_controller.notify_user_action(duration, time.time())
+        # Skip for sleep - it notifies with the correct dream duration in _start_dream()
+        if interaction != "sleep":
+            self.reaction_controller.notify_user_action(duration, time.time())
 
         # Perform the interaction
         result = self.duck.interact(interaction)
@@ -2804,8 +2806,8 @@ class Game:
             duck_sounds.quack("content")
             self._pending_weather_comment = None
 
-        # Autonomous behavior (skip if duck is busy traveling/exploring/building)
-        if self.behavior_ai and not self._duck_traveling and not self._duck_exploring and not self._duck_building:
+        # Autonomous behavior (skip if duck is busy traveling/exploring/building/dreaming)
+        if self.behavior_ai and not self._duck_traveling and not self._duck_exploring and not self._duck_building and not self._dream_active:
             # Check current location - structures and items only exist at Home Pond
             current_location = None
             if hasattr(self, 'exploration') and self.exploration and self.exploration.current_area:
@@ -5839,10 +5841,18 @@ class Game:
         self._dream_scene_timer = time.time()
 
         # Set duck to sleeping state for the entire dream duration
-        # Calculate total dream duration (3 seconds per scene)
-        dream_duration = len(self._dream_result.scenes_shown) * 3.0 + 2.0 if self._dream_result else 10.0
+        # Calculate total dream duration (3 seconds per scene + 3 second buffer)
+        dream_duration = len(self._dream_result.scenes_shown) * 3.0 + 3.0 if self._dream_result else 12.0
         self.renderer.set_duck_state("sleeping", duration=dream_duration)
         self.renderer.show_closeup("sleeping", duration=dream_duration)
+
+        # Notify reaction controller with correct dream duration
+        # This prevents weather reactions from overriding sleeping animation
+        self.reaction_controller.notify_user_action(dream_duration, time.time())
+
+        # Prevent behavior AI from interrupting sleep
+        if self.behavior_ai:
+            self.behavior_ai._action_end_time = time.time() + dream_duration
 
         # Show first dream message
         if self._dream_result and self._dream_result.scenes_shown:
