@@ -216,7 +216,30 @@ After installation, launch from your application menu or run: `cheese-the-duck`
 
 #### 🪟 Windows
 
-**PowerShell Installer** ([install_windows.ps1](install_windows.ps1))
+**Option 1: Offline Portable Package** (Recommended - No Python Required!)
+
+Download the pre-built portable package from [Releases](https://github.com/Joshspeakman/cheese-the-duck/releases):
+1. Download `CheeseTheDuck-Windows-Portable.zip`
+2. Extract anywhere
+3. Run `CheeseTheDuck.bat`
+
+**Option 2: Build Offline Package Yourself**
+
+```batch
+# Clone repository
+git clone https://github.com/Joshspeakman/cheese-the-duck.git
+cd cheese-the-duck
+
+# Build offline package (requires Python on build machine only)
+build_offline_package.bat
+
+# Or with AI model included (~700MB):
+build_offline_package.bat --model
+```
+
+Output: `dist\CheeseTheDuck-Portable\` - ready to zip and distribute!
+
+**Option 3: PowerShell Installer** (Requires Python)
 
 1. [Download the repository ZIP](https://github.com/Joshspeakman/cheese-the-duck/archive/refs/heads/main.zip)
 2. Extract the files
