@@ -117,15 +117,16 @@ class Duck:
         """Get a description of the duck's personality."""
         return self._personality_system.get_personality_summary()
 
-    def update(self, delta_minutes: float):
+    def update(self, delta_minutes: float, aging_modifiers: Optional[dict] = None):
         """
         Update the duck's state based on time passed.
 
         Args:
             delta_minutes: Real minutes that passed
+            aging_modifiers: Optional aging stat modifiers from AgingSystem
         """
-        # Update needs with personality modifiers
-        self.needs.update(delta_minutes, self.personality)
+        # Update needs with personality and aging modifiers
+        self.needs.update(delta_minutes, self.personality, aging_modifiers)
 
         # Update growth progress
         self._update_growth(delta_minutes)

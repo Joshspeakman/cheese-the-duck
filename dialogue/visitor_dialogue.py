@@ -400,25 +400,33 @@ class VisitorDialogueManager:
             ConversationPhase.CLOSING,
             ConversationPhase.FAREWELL,
         ]
-        
+
         current_idx = phase_order.index(self.state.phase)
-        
-        # Skip PERSONAL phase if not close enough friends
-        if current_idx < len(phase_order) - 1:
-            next_phase = phase_order[current_idx + 1]
-            if next_phase == ConversationPhase.PERSONAL:
-                if not friendship_meets_minimum(self.friendship_level, "friend"):
-                    current_idx += 1  # Skip personal
+
+        # Find next valid phase (skip phases that require higher friendship)
+        next_idx = current_idx + 1
+        while next_idx < len(phase_order):
+            next_phase = phase_order[next_idx]
+
+            # Check if this phase should be skipped based on friendship level
             if next_phase == ConversationPhase.STORY:
                 if not friendship_meets_minimum(self.friendship_level, "acquaintance"):
-                    current_idx += 1  # Skip story for strangers
-        
-        if current_idx >= len(phase_order) - 1:
+                    next_idx += 1
+                    continue
+            elif next_phase == ConversationPhase.PERSONAL:
+                if not friendship_meets_minimum(self.friendship_level, "friend"):
+                    next_idx += 1
+                    continue
+
+            # Valid phase found
+            break
+
+        if next_idx >= len(phase_order):
             return None  # Conversation over
-            
-        self.state.phase = phase_order[current_idx + 1]
+
+        self.state.phase = phase_order[next_idx]
         self.state.dialogue_index = 0
-        
+
         # Get first line of new phase
         return self.get_next_dialogue(duck_name)
     

@@ -625,7 +625,47 @@ class MasterMenuPanel:
             self._scroll_offset = 0
             return True
         return False
-        
+
+    def navigate_to_item(self, *path: str) -> bool:
+        """
+        Navigate to a specific menu item by ID path.
+
+        Args:
+            *path: Variable number of item IDs forming the path (e.g., "social", "inventory")
+
+        Returns:
+            True if navigation succeeded, False otherwise
+        """
+        # Reset to root first
+        self._current_items = self._menu_tree
+        self._selected_index = 0
+        self._scroll_offset = 0
+        self._navigation_stack = []
+        self._parent_label = None
+
+        for item_id in path:
+            items = self._get_current_items()
+            found = False
+            for i, item in enumerate(items):
+                if item.id == item_id:
+                    self._selected_index = i
+                    # If this is not the last item in path, drill into it
+                    if item_id != path[-1]:
+                        children = item.children
+                        if callable(children):
+                            children = children(self.game) if self.game else children(None)
+                        if children:
+                            self._navigation_stack.append((self._current_items, self._selected_index, self._parent_label))
+                            self._current_items = children
+                            self._parent_label = item.label
+                            self._selected_index = 0
+                            self._scroll_offset = 0
+                    found = True
+                    break
+            if not found:
+                return False
+        return True
+
     def is_at_root(self) -> bool:
         """Check if at root level."""
         return len(self._navigation_stack) == 0

@@ -6,6 +6,7 @@ import time
 import math
 import random
 import re
+from functools import lru_cache
 from typing import Optional, List, Dict, Tuple, Any, TYPE_CHECKING
 from blessed import Terminal
 
@@ -13,8 +14,9 @@ from blessed import Terminal
 # Regex to strip ANSI escape sequences for visible length calculation
 _ANSI_ESCAPE = re.compile(r'\x1b\[[0-9;]*m|\033\[[0-9;]*m|\x1b\([0-9;]*[a-zA-Z]')
 
+@lru_cache(maxsize=1024)
 def _visible_len(s: str) -> int:
-    """Get visible length of string, ignoring ANSI escape codes."""
+    """Get visible length of string, ignoring ANSI escape codes. Cached for performance."""
     return len(_ANSI_ESCAPE.sub('', s))
 
 
@@ -366,6 +368,10 @@ class Renderer:
 
     def __init__(self, terminal: Terminal):
         self.term = terminal
+
+        # Initialize consistent RGB colors for cross-platform compatibility
+        # These override terminal palette colors for consistent appearance
+        self._init_colors()
         self._last_render_time = 0
         self._message_queue: List[str] = []
         self._message_expire = 0
@@ -454,6 +460,55 @@ class Renderer:
         # Environmental weather decorations (puddles, snow piles, leaves, etc.)
         self._weather_decorations: List[Tuple[int, int, str, Any]] = []  # (x, y, char, color_func)
         self._weather_decoration_weather: Optional[str] = None  # Weather when decorations were generated
+        self._weather_decoration_cache_key: Optional[Tuple] = None  # Full cache key for weather decorations
+
+    def _init_colors(self):
+        """Initialize RGB-based colors for consistent cross-platform appearance.
+
+        Uses true color (24-bit RGB) which is supported by most modern terminals.
+        This ensures the duck and other game elements look the same across
+        different terminals and operating systems.
+        """
+        t = self.term
+
+        # Duck colors - consistent yellow/orange for Cheese
+        self.color_duck_body = t.color_rgb(255, 220, 80)        # Bright golden yellow
+        self.color_duck_body_light = t.color_rgb(255, 240, 120) # Lighter yellow highlight
+        self.color_duck_beak = t.color_rgb(255, 165, 0)         # Orange beak
+        self.color_duck_feet = t.color_rgb(255, 140, 0)         # Orange feet
+
+        # UI colors
+        self.color_ui_border = t.color_rgb(100, 200, 255)       # Cyan border
+        self.color_ui_text = t.color_rgb(220, 220, 220)         # Light gray text
+        self.color_ui_highlight = t.color_rgb(255, 255, 255)    # White highlight
+        self.color_ui_dim = t.color_rgb(128, 128, 128)          # Dim gray
+
+        # Status bar colors
+        self.color_hunger = t.color_rgb(255, 100, 100)          # Red for hunger
+        self.color_energy = t.color_rgb(200, 150, 255)          # Purple for energy
+        self.color_fun = t.color_rgb(255, 200, 50)              # Gold for fun
+        self.color_clean = t.color_rgb(150, 220, 255)           # Light blue for cleanliness
+        self.color_social = t.color_rgb(255, 150, 200)          # Pink for social
+
+        # Mood colors
+        self.color_happy = t.color_rgb(100, 255, 100)           # Green for happy
+        self.color_sad = t.color_rgb(100, 150, 255)             # Blue for sad
+        self.color_angry = t.color_rgb(255, 80, 80)             # Red for angry
+
+        # Weather/nature colors
+        self.color_rain = t.color_rgb(100, 180, 255)            # Light blue rain
+        self.color_snow = t.color_rgb(240, 240, 255)            # White snow
+        self.color_sun = t.color_rgb(255, 230, 100)             # Bright yellow sun
+        self.color_leaf_green = t.color_rgb(80, 180, 80)        # Green leaves
+        self.color_leaf_yellow = t.color_rgb(220, 180, 50)      # Yellow autumn leaves
+        self.color_leaf_red = t.color_rgb(200, 80, 50)          # Red autumn leaves
+        self.color_water = t.color_rgb(80, 150, 220)            # Water blue
+        self.color_grass = t.color_rgb(80, 160, 80)             # Grass green
+
+        # Effect colors
+        self.color_sparkle = t.color_rgb(255, 255, 200)         # Sparkle/magic
+        self.color_lightning = t.color_rgb(255, 255, 150)       # Lightning yellow
+        self.color_fire = t.color_rgb(255, 120, 50)             # Fire orange
 
     def _generate_weather_decorations(self, weather_type: Optional[str], env_effects: List[str], width: int, height: int):
         """Generate environmental decorations based on current weather."""
@@ -620,6 +675,11 @@ class Renderer:
             return
 
         self._weather_frame += 1
+
+        # Cap weather animation to 30 FPS by skipping every other frame at 60 FPS
+        # This makes weather feel more natural and less frantic
+        if self._weather_frame % 2 == 0:
+            return  # Skip particle movement on every 2nd frame
 
         # Weather particle settings - Enhanced for many weather types
         # Note: sunny/clear weather has no particles (just a nice day)
@@ -839,7 +899,7 @@ class Renderer:
 
         # Lightning flash for storms (rare and brief)
         if weather_type in ("stormy", "storm", "thunderstorm", "summer_storm", "ice_storm"):
-            if self._weather_frame % 45 == 0 and random.random() < 0.25:
+            if self._weather_frame % 90 == 0 and random.random() < 0.25:  # 90 frames = ~1.5s at 60 FPS
                 bolt_x = random.randint(3, width - 3)
                 bolt_y = random.randint(0, min(3, height - 1))
                 new_particles.append((float(bolt_x), float(bolt_y), "!"))
@@ -851,7 +911,7 @@ class Renderer:
         # Aurora color waves effect
         if weather_type == "aurora":
             # Add horizontal lines that drift
-            if self._weather_frame % 10 == 0:
+            if self._weather_frame % 20 == 0:  # 20 frames = ~0.33s at 60 FPS
                 wave_y = random.randint(0, min(5, height - 1))
                 for wx in range(0, width, random.randint(3, 6)):
                     char = random.choice(["|", "~", "/", "\\"])
@@ -1384,9 +1444,9 @@ class Renderer:
         # Title bar with weather/time flavor text
         title = " DUCK HABITAT "
         weather_effects = self._get_weather_ambient_effects(weather_type, inner_width)
-        if weather_effects and self._weather_frame % 60 < 30:
+        if weather_effects and self._weather_frame % 120 < 60:  # 120 frames = 2s at 60 FPS
             # Show rotating weather flavor text
-            effect_text = weather_effects[(self._weather_frame // 60) % len(weather_effects)]
+            effect_text = weather_effects[(self._weather_frame // 120) % len(weather_effects)]
             if len(effect_text) < inner_width - 4:
                 title = f" {effect_text} "
         pad = (inner_width - len(title)) // 2
@@ -1720,7 +1780,7 @@ class Renderer:
                             if char != ' ' and 0 <= px < inner_width:
                                 # Duck characters stay yellow, items get item color
                                 if char in duck_chars:
-                                    row[px] = (char, self.term.yellow)
+                                    row[px] = (char, self.color_duck_body)
                                 else:
                                     row[px] = (char, anim_color)
 
@@ -1744,7 +1804,7 @@ class Renderer:
                             duck_line = duck_art[dy] if dy < len(duck_art) else ""
                             for dx, char in enumerate(duck_line):
                                 if char != ' ' and 0 <= duck_x + dx < inner_width:
-                                    row[duck_x + dx] = (char, self.term.yellow)
+                                    row[duck_x + dx] = (char, self.color_duck_body)
 
             # Add effect overlay above duck if any
             effect_overlay = animation_controller.get_effect_overlay()
@@ -1757,19 +1817,18 @@ class Renderer:
                     for dx, char in enumerate(effect_line):
                         px = effect_x + dx
                         if char != ' ' and 0 <= px < inner_width:
-                            # Use bright yellow for effects
-                            row[px] = (char, self.term.bright_yellow)
+                            # Use consistent color for effects
+                            row[px] = (char, self.color_sparkle)
 
             # Add weather particles (rendered on top of everything except text)
-            # Enhanced colors for more dramatic weather effects
-            # Note: sunny weather has no particles, just clear sky
+            # Use RGB colors for consistent appearance across terminals
             weather_colors = {
-                "rainy": self.term.cyan,           # Cool rain color
-                "stormy": self.term.bright_white,  # Bright storm
-                "snowy": self.term.bright_white,   # White snow
-                "foggy": self.term.white,          # Misty fog
-                "windy": self.term.bright_cyan,    # Wind streaks
-                "rainbow": self.term.bright_magenta,  # Magic rainbow
+                "rainy": self.color_rain,          # Cool rain color
+                "stormy": self.color_snow,         # Bright storm
+                "snowy": self.color_snow,          # White snow
+                "foggy": self.color_ui_dim,        # Misty fog
+                "windy": self.color_rain,          # Wind streaks
+                "rainbow": self.color_sparkle,     # Magic rainbow
             }
             weather_color = weather_colors.get(self._current_weather_type)
             for px, py, char in self._weather_particles:
@@ -1962,12 +2021,12 @@ class Renderer:
         closeup = get_emotion_closeup(mood.state, closeup_action)
 
         if closeup:
-            # Show compact close-up with yellow duck color
+            # Show compact close-up with consistent duck color (RGB for cross-platform)
             for closeup_line in closeup:
                 # Center the line properly
                 centered = _visible_center(closeup_line, inner_width)
-                # Apply yellow color to the duck ASCII
-                yellow_line = self.term.yellow + centered + self.term.normal
+                # Apply consistent RGB yellow color to the duck ASCII
+                yellow_line = self.color_duck_body + centered + self.term.normal
                 lines.append(BOX["v"] + yellow_line + BOX["v"])
         else:
             # Show mood status (compact)
@@ -2388,7 +2447,7 @@ class Renderer:
             terminal_options: List of (cmd, name) tuples for terminal selection
             terminal_index: Currently selected terminal index
         """
-        self._title_frame = (self._title_frame + 1) % 120
+        self._title_frame = (self._title_frame + 1) % 240  # 240 frames = 4s cycle at 60 FPS
 
         # Dancing duck animation frames - Teen duck style
         duck_frames = [
@@ -2494,13 +2553,13 @@ class Renderer:
             ],
         ]
 
-        # Slow down animation - change frame every 12 ticks instead of 10
-        frame_idx = (self._title_frame // 12) % len(duck_frames)
+        # Slow down animation - change frame every 24 ticks at 60 FPS (~0.4s per frame)
+        frame_idx = (self._title_frame // 24) % len(duck_frames)
         duck_art = duck_frames[frame_idx]
 
-        # Sparkle effects that rotate slowly (change every 15 ticks)
+        # Sparkle effects that rotate slowly (change every 30 ticks at 60 FPS = 0.5s)
         sparkle_chars = ["*", "*", "*", "*"]
-        sparkle_idx = (self._title_frame // 15) % len(sparkle_chars)
+        sparkle_idx = (self._title_frame // 30) % len(sparkle_chars)
         sparkle1 = sparkle_chars[sparkle_idx]
         sparkle2 = sparkle_chars[(sparkle_idx + 2) % len(sparkle_chars)]
 
@@ -2521,10 +2580,10 @@ class Renderer:
             "    +======================================================+    ",
         ]
 
-        # Add the dancing duck with yellow color
+        # Add the dancing duck with consistent RGB yellow color
         for line in duck_art:
             padded_line = line + " " * (54 - len(line)) if len(line) < 54 else line[:54]
-            yellow_duck = self.term.yellow + padded_line + self.term.normal
+            yellow_duck = self.color_duck_body + padded_line + self.term.normal
             title_art.append(f"    |{yellow_duck}|    ")
 
         # Build menu options
@@ -2538,7 +2597,7 @@ class Renderer:
         # Build menu lines with selection indicator
         def format_menu_item(text: str, idx: int, selected: bool) -> str:
             if selected:
-                return self.term.bold + self.term.yellow + f"  > {text} <  " + self.term.normal
+                return self.term.bold + self.color_duck_body + f"  > {text} <  " + self.term.normal
             else:
                 return f"    {text}    "
         

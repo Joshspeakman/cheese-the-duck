@@ -43,20 +43,26 @@ class Needs:
         self.cleanliness = self._clamp(self.cleanliness)
         self.social = self._clamp(self.social)
 
-    def update(self, delta_minutes: float, personality: Optional[dict] = None):
+    def update(self, delta_minutes: float, personality: Optional[dict] = None, aging_modifiers: Optional[dict] = None):
         """
         Update needs based on time passed.
 
         Args:
             delta_minutes: Real minutes that passed
             personality: Optional personality dict to modify decay rates
+            aging_modifiers: Optional aging stat modifiers (hunger_rate, energy_rate, etc.)
         """
         # Get decay modifiers from personality
         modifiers = self._get_personality_modifiers(personality or {})
 
-        # Apply decay
-        self.hunger -= NEED_DECAY_RATES["hunger"] * delta_minutes * modifiers.get("hunger", 1.0)
-        self.energy -= NEED_DECAY_RATES["energy"] * delta_minutes * modifiers.get("energy", 1.0)
+        # Get aging modifiers (default to 1.0 if not provided)
+        age_mods = aging_modifiers or {}
+        hunger_rate = age_mods.get("hunger_rate", 1.0)
+        energy_rate = age_mods.get("energy_rate", 1.0)
+
+        # Apply decay with both personality and aging modifiers
+        self.hunger -= NEED_DECAY_RATES["hunger"] * delta_minutes * modifiers.get("hunger", 1.0) * hunger_rate
+        self.energy -= NEED_DECAY_RATES["energy"] * delta_minutes * modifiers.get("energy", 1.0) * energy_rate
         self.fun -= NEED_DECAY_RATES["fun"] * delta_minutes * modifiers.get("fun", 1.0)
         self.cleanliness -= NEED_DECAY_RATES["cleanliness"] * delta_minutes * modifiers.get("cleanliness", 1.0)
         self.social -= NEED_DECAY_RATES["social"] * delta_minutes * modifiers.get("social", 1.0)
