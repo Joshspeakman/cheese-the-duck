@@ -260,8 +260,8 @@ VISITOR_ASCII_ART = {
 VISITOR_ANIMATION_STATES = {
     "arriving": ["waddle", "waddle", "idle"],
     "chatting": ["idle", "happy", "idle", "happy"],
-    "playing": ["happy", "bounce" if "playful" else "happy", "waddle", "happy"],
-    "giving_gift": ["idle", "gift" if "adventurous" else "giving", "happy"],
+    "playing": ["happy", "bounce", "waddle", "happy"],
+    "giving_gift": ["idle", "giving", "happy"],
     "receiving_gift": ["happy", "happy", "idle"],
     "eating": ["eating", "eating", "happy"],
     "leaving": ["waddle", "waddle", "waddle"],

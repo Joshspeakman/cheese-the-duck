@@ -13,7 +13,7 @@ SAVE_FILE = SAVE_DIR / "save.json"
 DEFAULT_DUCK_NAME = "Cheese"
 
 # Game timing
-FPS = 30
+FPS = 60
 TICK_RATE = 1.0  # Seconds between game ticks
 TIME_MULTIPLIER = 1.0  # Speed up time for testing (1.0 = real time)
 
@@ -143,7 +143,7 @@ def _get_model_dir():
 LLM_MODEL_DIR = _get_model_dir()
 
 # GPU Acceleration (auto-detect if -1, or specify layer count)
-LLM_GPU_LAYERS = -1             # -1 = auto-detect, 0 = CPU only, >0 = specific layers
+LLM_GPU_LAYERS = 0              # 0 = CPU only (set to -1 after reinstalling llama-cpp-python with CUDA)
 
 # Model Parameters
 LLM_CONTEXT_SIZE = 2048         # Context window size

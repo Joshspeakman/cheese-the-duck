@@ -1563,6 +1563,9 @@ class AtmosphereManager:
                 if visitor.favorite_season and self.current_season.value == visitor.favorite_season:
                     base_chance *= 1.3
 
+                # Cap probability at 1.0 to prevent guaranteed appearances
+                base_chance = min(base_chance, 1.0)
+
                 if random.random() < base_chance:
                     candidates.append(visitor_id)
 

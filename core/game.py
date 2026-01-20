@@ -481,14 +481,20 @@ class Game:
                 # Render
                 self._render()
 
-                # Cap frame rate
+                # Cap frame rate with adaptive sleep for CachyOS/Arch compatibility
                 elapsed = time.time() - loop_start
-                if elapsed < frame_time:
-                    time.sleep(frame_time - elapsed)
+                remaining = frame_time - elapsed
+                if remaining > 0.002:  # Only sleep if >2ms remaining
+                    # Sleep slightly less to avoid overshooting on systems with coarse timers
+                    time.sleep(remaining * 0.9)
+                # Spin-wait for the final milliseconds for precise timing
+                while time.time() - loop_start < frame_time:
+                    pass
 
     def _process_input(self):
         """Process keyboard input."""
-        key = self.terminal.inkey(timeout=0.05)
+        # Reduced timeout from 50ms to 10ms for more responsive input on Arch/CachyOS
+        key = self.terminal.inkey(timeout=0.01)
 
         if not key:
             return
@@ -3539,8 +3545,8 @@ class Game:
                         # Only approach if event is reasonably close
                         distance = abs(duck_x - event_x) + abs(duck_y - event_y)
                         if distance > 5 and distance < 20:
-                            # ~0.2% per frame (at 60fps, ~12% chance per second)
-                            if random.random() < 0.002:
+                            # ~0.1% per frame at 60 FPS = ~6% chance per second
+                            if random.random() < 0.001:
                                 self._duck_approach_event(event_x, event_y, animator.event_id)
                 
         self._event_animators = still_running

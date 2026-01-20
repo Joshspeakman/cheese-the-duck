@@ -121,7 +121,6 @@ EVENTS = {
         mood_change=0,
         message="*stops* ...I wasn't doing ANYTHING. Mind your business.",
         duck_reaction="confused",
-        requires_stage="duckling",
     ),
     "stare_contest": Event(
         id="stare_contest",
@@ -507,6 +506,10 @@ class EventSystem:
         self._pending_events: List[Event] = []
         self._last_special_check: Optional[str] = None
 
+    def set_current_weather(self, weather: str):
+        """Set the current weather for weather-based events."""
+        self._current_weather = weather
+
     def check_random_events(self, duck: "Duck") -> Optional[Event]:
         """
         Check if a random event should occur.
@@ -567,7 +570,7 @@ class EventSystem:
                     if event_id == "first_waddle" and trigger == "stage_change":
                         self._triggered_events.add(event_id)
                         return event
-                    elif event_id == "first_quack" and trigger == "first_quack":
+                    elif event_id == "first_quack" and trigger == "stage_change":
                         self._triggered_events.add(event_id)
                         return event
 
@@ -677,8 +680,9 @@ class EventSystem:
         elif 23 <= hour or hour <= 1:  # Midnight
             events_to_check.append("midnight_snack")
 
-        # Random chance for rainy day
-        if random.random() < 0.05:
+        # Check for rainy day based on actual weather
+        rainy_weather_types = ["rainy", "heavy_rain", "drizzle", "spring_showers", "thunderstorm", "stormy"]
+        if self._current_weather and self._current_weather.lower() in rainy_weather_types:
             events_to_check.append("rainy_day")
 
         # Check which events can actually trigger

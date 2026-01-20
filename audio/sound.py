@@ -14,8 +14,9 @@ import time
 import threading
 import logging
 import subprocess
+import shutil
 import concurrent.futures
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Dict
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -23,6 +24,15 @@ import random
 
 # Configure logging for sound system
 logger = logging.getLogger(__name__)
+
+# Cache for command availability detection (class-level, computed once)
+_COMMAND_CACHE: Dict[str, Optional[str]] = {}
+
+def _which_cached(cmd: str) -> Optional[str]:
+    """Check if a command exists using shutil.which with caching."""
+    if cmd not in _COMMAND_CACHE:
+        _COMMAND_CACHE[cmd] = shutil.which(cmd)
+    return _COMMAND_CACHE[cmd]
 
 
 class SoundType(Enum):
@@ -302,11 +312,12 @@ class SoundEngine:
         self._pygame_available = False
         try:
             import pygame
-            # Smaller buffer for tighter looping
-            pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=1024)
+            # Larger buffer (2048) for PipeWire compatibility on Arch/modern Linux
+            # Smaller buffers cause underruns with PipeWire's different latency model
+            pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=2048)
             self._pygame_available = True
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"pygame mixer init failed: {e}")
         
         # Audio file paths
         self._audio_dir = Path(__file__).parent.parent
@@ -351,147 +362,48 @@ class SoundEngine:
 
     def _detect_sound_method(self) -> str:
         """Detect the best available sound method."""
-        # Check for paplay (PulseAudio)
-        try:
-            result = subprocess.run(
-                ['which', 'paplay'],
-                capture_output=True,
-                timeout=1
-            )
-            if result.returncode == 0:
-                return 'paplay'
-        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-            pass
-
+        # Check for paplay (PulseAudio/PipeWire)
+        if _which_cached('paplay'):
+            return 'paplay'
         # Check for speaker-test
-        try:
-            result = subprocess.run(
-                ['which', 'speaker-test'],
-                capture_output=True,
-                timeout=1
-            )
-            if result.returncode == 0:
-                return 'speaker-test'
-        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-            pass
-
+        if _which_cached('speaker-test'):
+            return 'speaker-test'
         # Check for beep command
-        try:
-            result = subprocess.run(
-                ['which', 'beep'],
-                capture_output=True,
-                timeout=1
-            )
-            if result.returncode == 0:
-                return 'beep'
-        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-            pass
-
+        if _which_cached('beep'):
+            return 'beep'
         # Fallback to terminal bell
         return 'bell'
 
     def _detect_wav_player(self) -> Optional[str]:
         """Detect available WAV file player."""
-        # Check for paplay (PulseAudio) - best for most Linux
-        try:
-            result = subprocess.run(
-                ['which', 'paplay'],
-                capture_output=True,
-                timeout=1
-            )
-            if result.returncode == 0:
-                return 'paplay'
-        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-            pass
-        
+        # Check for paplay (PulseAudio/PipeWire) - best for most Linux
+        if _which_cached('paplay'):
+            return 'paplay'
         # Check for aplay (ALSA)
-        try:
-            result = subprocess.run(
-                ['which', 'aplay'],
-                capture_output=True,
-                timeout=1
-            )
-            if result.returncode == 0:
-                return 'aplay'
-        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-            pass
-        
+        if _which_cached('aplay'):
+            return 'aplay'
         # Check for ffplay (ffmpeg)
-        try:
-            result = subprocess.run(
-                ['which', 'ffplay'],
-                capture_output=True,
-                timeout=1
-            )
-            if result.returncode == 0:
-                return 'ffplay'
-        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-            pass
-        
+        if _which_cached('ffplay'):
+            return 'ffplay'
         return None
 
     def _detect_music_player(self) -> Optional[str]:
         """Detect available music player for MP3/WAV files."""
         # Check for mpv (best for seamless looping)
-        try:
-            result = subprocess.run(
-                ['which', 'mpv'],
-                capture_output=True,
-                timeout=1
-            )
-            if result.returncode == 0:
-                return 'mpv'
-        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-            pass
-
+        if _which_cached('mpv'):
+            return 'mpv'
         # Check for ffplay (ffmpeg) - good fallback
-        try:
-            result = subprocess.run(
-                ['which', 'ffplay'],
-                capture_output=True,
-                timeout=1
-            )
-            if result.returncode == 0:
-                return 'ffplay'
-        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-            pass
-
+        if _which_cached('ffplay'):
+            return 'ffplay'
         # Check for mpg123 (lightweight mp3 player)
-        try:
-            result = subprocess.run(
-                ['which', 'mpg123'],
-                capture_output=True,
-                timeout=1
-            )
-            if result.returncode == 0:
-                return 'mpg123'
-        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-            pass
-
+        if _which_cached('mpg123'):
+            return 'mpg123'
         # Check for aplay (ALSA - WAV files only, but works as fallback)
-        try:
-            result = subprocess.run(
-                ['which', 'aplay'],
-                capture_output=True,
-                timeout=1
-            )
-            if result.returncode == 0:
-                return 'aplay'
-        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-            pass
-
-        # Check for paplay (PulseAudio)
-        try:
-            result = subprocess.run(
-                ['which', 'paplay'],
-                capture_output=True,
-                timeout=1
-            )
-            if result.returncode == 0:
-                return 'paplay'
-        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-            pass
-
+        if _which_cached('aplay'):
+            return 'aplay'
+        # Check for paplay (PulseAudio/PipeWire)
+        if _which_cached('paplay'):
+            return 'paplay'
         return None
 
     def play_background_music(self, music_name: str = 'main'):
