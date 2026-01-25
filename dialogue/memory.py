@@ -131,12 +131,14 @@ class DuckMemory:
         if len(self.mood_history) < 3:
             return "uncertain"
 
-        recent = self.mood_history[-5:]
+        # Convert deque to list for slicing (deque doesn't support slicing)
+        mood_list = list(self.mood_history)
+        recent = mood_list[-5:]
         avg_recent = sum(recent) / len(recent)
 
-        if len(self.mood_history) >= 10:
-            older = self.mood_history[-10:-5]
-            avg_older = sum(older) / len(older)
+        if len(mood_list) >= 10:
+            older = mood_list[-10:-5]
+            avg_older = sum(older) / len(older) if older else avg_recent
 
             if avg_recent > avg_older + 10:
                 return "improving"
