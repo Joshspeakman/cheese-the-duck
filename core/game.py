@@ -961,6 +961,12 @@ class Game:
             self._equip_title(title_id)
             return
 
+        # Handle radio actions (radio_quack_fm, radio_stop, etc.)
+        if action_id.startswith("radio_"):
+            radio_action = action_id.replace("radio_", "")
+            self._handle_radio_action(radio_action)
+            return
+
         if action_id not in MENU_ACTIONS:
             self.renderer.show_message(f"Unknown action: {action_id}")
             return
@@ -1042,6 +1048,45 @@ class Game:
         sound_engine.toggle_music_mute()  # toggle_music_mute() returns new muted state
         status = "OFF" if sound_engine.music_muted else "ON"
         self.renderer.show_message(f"Music: {status}")
+
+    def _handle_radio_action(self, action: str):
+        """Handle radio menu actions."""
+        from audio.sound import sound_engine
+        from audio.radio import StationID
+        
+        if action == "stop":
+            sound_engine.stop_radio()
+            self.renderer.show_message("Radio stopped")
+            return
+        
+        # Try to play the station
+        try:
+            station_id = StationID(action)
+            radio = sound_engine.get_radio()
+            
+            # Check if DJ Duck is available
+            if station_id == StationID.DJ_DUCK_LIVE and not radio.is_dj_duck_live():
+                self.renderer.show_message(f"DJ Duck: {radio.get_dj_duck_status()}")
+                return
+            
+            # Change station
+            if sound_engine.change_radio_station(station_id):
+                station = radio.current_station
+                if station:
+                    self.renderer.show_message(f"Now playing: {station.name}")
+                else:
+                    self.renderer.show_message("Radio started")
+            else:
+                self.renderer.show_message("Couldn't start radio")
+        except ValueError:
+            self.renderer.show_message(f"Unknown station: {action}")
+
+    def _show_radio_menu(self):
+        """Show the radio station selection menu."""
+        # Radio is accessed via the master menu submenu, 
+        # this is just a fallback for direct access
+        self._close_all_menus()
+        self.renderer.show_message("Use TAB menu > Other > Radio")
 
     def _purchase_selected_item(self):
         """Purchase the currently selected shop item."""
