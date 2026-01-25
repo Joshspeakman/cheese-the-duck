@@ -17,13 +17,15 @@ Your duck isn't just a collection of stats—it has moods, personality traits, a
 
 ## 🚀 Quick Install
 
-### 🪟 Windows (One Command)
+### 🪟 Windows
 
-Open **PowerShell** and run:
+Open **PowerShell as Administrator** and run:
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; irm https://raw.githubusercontent.com/Joshspeakman/cheese-the-duck/main/install_windows.ps1 | iex
+cd $env:TEMP; Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Joshspeakman/cheese-the-duck/main/install_windows.ps1" -OutFile "install.ps1"; powershell -ExecutionPolicy Bypass -File install.ps1
 ```
+
+**Alternative:** Download from [Releases](https://github.com/Joshspeakman/cheese-the-duck/releases) and run `install_windows.ps1` → Right-click → "Run with PowerShell"
 
 This will:
 - ✅ Download and install Python if needed
