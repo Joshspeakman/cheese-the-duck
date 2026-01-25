@@ -431,6 +431,9 @@ class Game:
         # Load user settings first
         load_settings()
         self._apply_settings()
+        
+        # Register settings change callback (once, not in _apply_settings)
+        self._register_settings_callback()
 
         # Always show title screen first with music
         self._state = "title"
@@ -452,8 +455,9 @@ class Game:
         # Apply display settings to renderer (if available)
         if hasattr(self.renderer, 'set_show_particles'):
             self.renderer.set_show_particles(settings.display.show_particles)
-        
-        # Register callback for live setting changes
+
+    def _register_settings_callback(self):
+        """Register callback for live setting changes (call once at init)."""
         settings_manager.register_change_callback(self._on_setting_changed)
 
     def _on_setting_changed(self, key: str, value):
