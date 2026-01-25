@@ -155,6 +155,15 @@ Gather 40+ materials. Craft tools and structures. Build your duck's perfect home
 - Duck Race
 - Fishing
 
+### Streaming Radio
+Listen to duck-themed internet radio stations while you play:
+- **Quack FM** - Lofi beats for staring at walls
+- **The Pond** - Ambient nature sounds
+- **Bread Crumbs** - 8-bit chiptune nostalgia
+- **Feather & Bone** - Smooth jazz
+- **HONK Radio** - Chaotic upbeat energy
+- **DJ Duck Live** - Saturday nights 8pm-midnight with deadpan commentary
+
 ### Dynamic Weather & Dreams
 Weather changes naturally. When your duck sleeps, it dreams based on recent activities.
 
@@ -293,6 +302,16 @@ MIT License - see LICENSE file.
 - Built with [blessed](https://github.com/jquast/blessed) for terminal UI
 - Audio powered by [pygame](https://www.pygame.org/)
 - LLM support via [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) and [Ollama](https://ollama.ai/)
+
+### Radio Streaming
+
+The in-game radio streams royalty-free music from these amazing services:
+
+- **[SomaFM](https://somafm.com/)** - Listener-supported, commercial-free internet radio
+- **[laut.fm](https://laut.fm/)** - German internet radio platform
+- **[I Love Radio](https://www.iloveradio.de/)** - German radio network
+
+All streams are used in accordance with their respective terms of service for non-commercial, personal use. This game is not affiliated with these services.
 
 ---
 
