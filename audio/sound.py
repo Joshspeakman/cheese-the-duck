@@ -360,6 +360,9 @@ class SoundEngine:
         self._wav_player = self._detect_wav_player()
         self._music_player = self._detect_music_player()
 
+        # Cached radio player instance (initialized lazily)
+        self._radio: Optional["RadioPlayer"] = None  # noqa: F821
+
     def _detect_sound_method(self) -> str:
         """Detect the best available sound method."""
         # Check for paplay (PulseAudio/PipeWire)
@@ -652,11 +655,12 @@ class SoundEngine:
     
     def get_radio(self):
         """Get the radio player instance, configured to mute game music."""
-        from audio.radio import get_radio_player
-        radio = get_radio_player()
-        # Set up callback to mute game music when radio starts
-        radio.set_on_start_callback(self._mute_music_for_radio)
-        return radio
+        if self._radio is None:
+            from audio.radio import get_radio_player
+            self._radio = get_radio_player()
+            # Set up callback once when radio is first accessed
+            self._radio.set_on_start_callback(self._mute_music_for_radio)
+        return self._radio
     
     def _mute_music_for_radio(self):
         """Mute game music when radio is playing."""

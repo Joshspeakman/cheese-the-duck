@@ -1051,38 +1051,35 @@ class Game:
 
     def _handle_radio_action(self, action: str):
         """Handle radio menu actions."""
-        import threading
         from audio.sound import sound_engine
         from audio.radio import StationID
-        
+
         if action == "stop":
-            # Run in thread to avoid blocking
-            threading.Thread(target=sound_engine.stop_radio, daemon=True).start()
+            # stop_radio() is non-blocking (just kills subprocess)
+            sound_engine.stop_radio()
             self.renderer.show_message("Radio stopped")
             return
-        
+
         # Try to play the station
         try:
             station_id = StationID(action)
             radio = sound_engine.get_radio()
-            
+
             # Check if DJ Duck is available
             if station_id == StationID.DJ_DUCK_LIVE and not radio.is_dj_duck_live():
                 self.renderer.show_message(f"DJ Duck: {radio.get_dj_duck_status()}")
                 return
-            
-            # Get station name before async call
+
+            # Get station name
             from audio.radio import STATIONS
             station = STATIONS.get(station_id)
             station_name = station.name if station else "Radio"
-            
-            # Change station in background thread to avoid blocking
-            def change_async():
-                sound_engine.change_radio_station(station_id)
-            
-            threading.Thread(target=change_async, daemon=True).start()
+
+            # change_radio_station() is now thread-safe and non-blocking
+            # (spawns subprocess with start_new_session=True)
+            sound_engine.change_radio_station(station_id)
             self.renderer.show_message(f"Tuning to {station_name}...")
-            
+
         except ValueError:
             self.renderer.show_message(f"Unknown station: {action}")
 
