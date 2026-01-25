@@ -11,6 +11,7 @@ No polling loops, no thread management, just subprocess control.
 import subprocess
 import os
 import signal
+import threading
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -130,7 +131,10 @@ class RadioPlayer:
         self._on_start_callback: Optional[Callable[[], None]] = None
         self._dj_duck_saturdays = True
         self._last_station_before_dj: Optional[StationID] = None
-        
+
+        # Lock to prevent race conditions during station switching
+        self._lock = threading.Lock()
+
         # Find player once at init
         self._player = self._find_player()
     
@@ -188,26 +192,35 @@ class RadioPlayer:
         return []
     
     def _kill_process(self):
-        """Kill current process if running."""
+        """Kill current process if running. Must be called with lock held."""
         if self._process is None:
             return
-        
+
+        proc = self._process
+        self._process = None  # Clear reference immediately to prevent double-kill
+
         try:
-            # Try SIGTERM first
-            self._process.terminate()
+            # Check if process is still running
+            if proc.poll() is not None:
+                return  # Already dead
+
+            # Try SIGTERM first (graceful shutdown)
+            proc.terminate()
             try:
-                self._process.wait(timeout=0.05)
+                proc.wait(timeout=0.5)  # Give it 500ms to exit gracefully
             except subprocess.TimeoutExpired:
-                # Force kill
-                self._process.kill()
+                # Force kill with SIGKILL
+                proc.kill()
                 try:
-                    self._process.wait(timeout=0.05)
+                    proc.wait(timeout=0.5)  # Wait for forced kill
                 except subprocess.TimeoutExpired:
-                    pass
+                    # Last resort: try to kill by PID directly
+                    try:
+                        os.kill(proc.pid, signal.SIGKILL)
+                    except (OSError, ProcessLookupError):
+                        pass
         except OSError:
             pass
-        
-        self._process = None
     
     @property
     def is_playing(self) -> bool:
@@ -265,69 +278,72 @@ class RadioPlayer:
         return list(STATIONS.values())
     
     def play(self, station_id: Optional[StationID] = None):
-        """Start playing a station."""
+        """Start playing a station. Thread-safe."""
         if not self._enabled or not self._player:
             return
-        
+
         # DJ Duck auto-switch
         if self.is_dj_duck_live() and station_id != StationID.DJ_DUCK_LIVE:
             if self._current_station:
                 self._last_station_before_dj = self._current_station.id
             station_id = StationID.DJ_DUCK_LIVE
-        
+
         if station_id is None:
             station_id = StationID.QUACK_FM
-        
+
         station = STATIONS.get(station_id)
         if not station:
             return
-        
+
         if station.id == StationID.DJ_DUCK_LIVE and not self.is_dj_duck_live():
             return
-        
-        # Kill any existing process first
-        self._kill_process()
-        
-        # Get URL
+
+        # Get URL before acquiring lock (no shared state access)
         if station.id == StationID.NOOK_RADIO:
             url = _get_nook_url()
         else:
             url = station.stream_url
-        
-        # Build and spawn command
+
+        # Build command before acquiring lock
         cmd = self._build_command(url)
         if not cmd:
             return
-        
-        try:
-            # Spawn detached - we don't need to monitor it
-            self._process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                start_new_session=True  # Detach from parent
-            )
-        except OSError:
-            return
-        
-        self._current_station = station
-        self._is_playing = True
-        
-        # Mute game music
+
+        # Lock to prevent race conditions during process management
+        with self._lock:
+            # Kill any existing process first
+            self._kill_process()
+
+            try:
+                # Spawn detached - we don't need to monitor it
+                self._process = subprocess.Popen(
+                    cmd,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    start_new_session=True  # Detach from parent
+                )
+            except OSError:
+                return
+
+            self._current_station = station
+            self._is_playing = True
+
+        # Callbacks outside lock to avoid potential deadlocks
         if self._on_start_callback:
             try:
                 self._on_start_callback()
             except Exception:
                 pass
-        
+
         if self._on_track_change:
             self._on_track_change(station.name)
     
     def stop(self):
-        """Stop radio."""
-        self._kill_process()
-        self._is_playing = False
-        self._current_station = None
+        """Stop radio. Thread-safe."""
+        with self._lock:
+            self._kill_process()
+            self._is_playing = False
+            self._current_station = None
     
     def change_station(self, station_id: StationID) -> bool:
         if station_id == StationID.DJ_DUCK_LIVE and not self.is_dj_duck_live():

@@ -12,7 +12,9 @@
       "Bash(python -m py_compile:*)",
       "Bash(git checkout:*)",
       "Bash(pactl info:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(pkill:*)",
+      "Bash(cd:*)"
     ]
   }
 }
