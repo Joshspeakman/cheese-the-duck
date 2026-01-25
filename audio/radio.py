@@ -276,7 +276,7 @@ class RadioPlayer:
         return list(STATIONS.values())
     
     def play(self, station_id: Optional[StationID] = None):
-        """Start playing a station. Thread-safe."""
+        """Start playing a station. Non-blocking, spawns in background thread."""
         if not self._enabled or not self._player:
             return
 
@@ -296,37 +296,43 @@ class RadioPlayer:
         if station.id == StationID.DJ_DUCK_LIVE and not self.is_dj_duck_live():
             return
 
-        # Get URL before acquiring lock (no shared state access)
+        # Get URL before spawning thread (no shared state access)
         if station.id == StationID.NOOK_RADIO:
             url = _get_nook_url()
         else:
             url = station.stream_url
 
-        # Build command before acquiring lock
+        # Build command before spawning thread
         cmd = self._build_command(url)
         if not cmd:
             return
 
-        # Lock to prevent race conditions during process management
-        with self._lock:
-            # Kill any existing process first
-            self._kill_process()
+        # Update state immediately so UI shows "playing"
+        self._current_station = station
+        self._is_playing = True
 
-            try:
-                # Spawn detached - we don't need to monitor it
-                self._process = subprocess.Popen(
-                    cmd,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                    start_new_session=True  # Detach from parent
-                )
-            except OSError:
-                return
+        # Spawn subprocess in background thread to avoid blocking game loop
+        # (subprocess.Popen can be slow due to fork/network)
+        def spawn_player():
+            with self._lock:
+                # Kill any existing process first
+                self._kill_process()
 
-            self._current_station = station
-            self._is_playing = True
+                try:
+                    # Spawn detached - we don't need to monitor it
+                    self._process = subprocess.Popen(
+                        cmd,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        start_new_session=True  # Detach from parent
+                    )
+                except OSError:
+                    self._is_playing = False
+                    self._current_station = None
 
-        # Callbacks outside lock to avoid potential deadlocks
+        threading.Thread(target=spawn_player, daemon=True).start()
+
+        # Callbacks - these should be fast
         if self._on_start_callback:
             try:
                 self._on_start_callback()
@@ -337,11 +343,17 @@ class RadioPlayer:
             self._on_track_change(station.name)
     
     def stop(self):
-        """Stop radio. Thread-safe."""
-        with self._lock:
-            self._kill_process()
-            self._is_playing = False
-            self._current_station = None
+        """Stop radio. Non-blocking."""
+        # Update state immediately
+        self._is_playing = False
+        self._current_station = None
+
+        # Kill process in background thread to avoid blocking
+        def kill_in_background():
+            with self._lock:
+                self._kill_process()
+
+        threading.Thread(target=kill_in_background, daemon=True).start()
     
     def change_station(self, station_id: StationID) -> bool:
         if station_id == StationID.DJ_DUCK_LIVE and not self.is_dj_duck_live():
