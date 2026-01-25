@@ -89,6 +89,17 @@ class PlayerModel:
     - Reference shared history in deadpan ways
     """
     
+    # Memory limits to prevent unbounded growth
+    MAX_STATEMENTS = 200  # Keep last 200 player statements
+    MAX_QUESTIONS_ASKED = 100  # Keep last 100 questions
+    MAX_QUESTIONS_PENDING = 20  # Max pending questions
+    MAX_SESSION_DURATIONS = 100  # Keep last 100 session durations
+    MAX_VISIT_GAPS = 100  # Keep last 100 visit gaps
+    MAX_ACTION_SEQUENCES = 100  # Keep last 100 action sequences
+    MAX_PROMISES = 50  # Keep last 50 promises
+    MAX_OBSERVATIONS = 20  # Max pending observations
+    MAX_STATEMENT_INDEX_PER_TOPIC = 50  # Max statements per topic index
+    
     def __init__(self):
         # Core identity
         self.name: Optional[str] = None
@@ -221,6 +232,9 @@ class PlayerModel:
         
         self._current_session_start = None
         self._current_session_actions = []
+        
+        # Enforce memory limits periodically
+        self._enforce_memory_limits()
     
     def record_action(self, action: str, duck_mood: Optional[str] = None):
         """Record a player action for pattern analysis."""
@@ -612,6 +626,58 @@ class PlayerModel:
                 if thing:
                     self.record_fact(f"dislikes_{thing.replace(' ', '_')}", thing,
                                     confidence=0.8, source="player_stated")
+    
+    def _enforce_memory_limits(self):
+        """Enforce memory limits on all unbounded data structures."""
+        # Limit statements
+        if len(self.statements) > self.MAX_STATEMENTS:
+            # Keep important statements (high importance or frequently referenced)
+            important = [s for s in self.statements if s.importance > 0.7 or s.times_referenced > 2]
+            recent = self.statements[-self.MAX_STATEMENTS // 2:]
+            # Combine, deduplicate, and limit
+            combined = list({id(s): s for s in (important + recent)}.values())
+            self.statements = combined[-self.MAX_STATEMENTS:]
+            # Rebuild topic index
+            self._rebuild_statement_index()
+        
+        # Limit questions asked
+        if len(self.questions_asked) > self.MAX_QUESTIONS_ASKED:
+            self.questions_asked = self.questions_asked[-self.MAX_QUESTIONS_ASKED:]
+        
+        # Limit pending questions
+        if len(self.questions_pending) > self.MAX_QUESTIONS_PENDING:
+            self.questions_pending = self.questions_pending[-self.MAX_QUESTIONS_PENDING:]
+        
+        # Limit visit pattern data
+        if len(self.visit_pattern.session_durations) > self.MAX_SESSION_DURATIONS:
+            self.visit_pattern.session_durations = self.visit_pattern.session_durations[-self.MAX_SESSION_DURATIONS:]
+        
+        if len(self.visit_pattern.gaps_between_visits) > self.MAX_VISIT_GAPS:
+            self.visit_pattern.gaps_between_visits = self.visit_pattern.gaps_between_visits[-self.MAX_VISIT_GAPS:]
+        
+        # Limit action sequences (already done in end_session, but enforce here too)
+        if len(self.behavior_pattern.action_sequences) > self.MAX_ACTION_SEQUENCES:
+            self.behavior_pattern.action_sequences = self.behavior_pattern.action_sequences[-self.MAX_ACTION_SEQUENCES:]
+        
+        # Limit promises
+        if len(self.promises_made) > self.MAX_PROMISES:
+            self.promises_made = self.promises_made[-self.MAX_PROMISES:]
+        
+        # Limit pending observations
+        if len(self._pending_observations) > self.MAX_OBSERVATIONS:
+            # Keep highest priority observations
+            self._pending_observations.sort(key=lambda x: x[1], reverse=True)
+            self._pending_observations = self._pending_observations[:self.MAX_OBSERVATIONS]
+    
+    def _rebuild_statement_index(self):
+        """Rebuild the statement topic index after trimming statements."""
+        self.statement_topics = defaultdict(list)
+        for idx, stmt in enumerate(self.statements):
+            for tag in stmt.topic_tags:
+                self.statement_topics[tag].append(idx)
+                # Enforce per-topic limit
+                if len(self.statement_topics[tag]) > self.MAX_STATEMENT_INDEX_PER_TOPIC:
+                    self.statement_topics[tag] = self.statement_topics[tag][-self.MAX_STATEMENT_INDEX_PER_TOPIC:]
     
     def to_dict(self) -> Dict:
         """Serialize to dictionary for persistence."""

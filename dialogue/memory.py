@@ -70,6 +70,16 @@ class DuckMemory:
             # Keep only the most frequent interactions
             sorted_counts = sorted(self.interaction_counts.items(), key=lambda x: x[1], reverse=True)
             self.interaction_counts = dict(sorted_counts[:MAX_AFFINITY_ITEMS])
+    
+    def _limit_affinity_dicts(self):
+        """Limit affinity dicts size to prevent unbounded growth."""
+        if len(self.favorite_things) > MAX_AFFINITY_ITEMS:
+            sorted_items = sorted(self.favorite_things.items(), key=lambda x: x[1], reverse=True)
+            self.favorite_things = dict(sorted_items[:MAX_AFFINITY_ITEMS])
+        
+        if len(self.disliked_things) > MAX_AFFINITY_ITEMS:
+            sorted_items = sorted(self.disliked_things.items(), key=lambda x: x[1])  # Most negative first
+            self.disliked_things = dict(sorted_items[:MAX_AFFINITY_ITEMS])
 
     def add_event(self, event_name: str, details: str, importance: int = 5, emotional_value: int = 0):
         """Record a significant event."""
@@ -119,6 +129,9 @@ class DuckMemory:
             self.favorite_things.pop(thing, None)
         else:
             self.favorite_things[thing] = new_value
+        
+        # Enforce limits on affinity dicts
+        self._limit_affinity_dicts()
 
     def get_favorite(self, category: str = None) -> Optional[str]:
         """Get the duck's favorite thing (optionally in a category)."""
