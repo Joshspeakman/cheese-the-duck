@@ -9,8 +9,6 @@ No polling loops, no thread management, just subprocess control.
 """
 
 import subprocess
-import os
-import signal
 import threading
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -204,21 +202,21 @@ class RadioPlayer:
             if proc.poll() is not None:
                 return  # Already dead
 
-            # Try SIGTERM first (graceful shutdown)
-            proc.terminate()
+            # Send SIGKILL immediately - ffplay/mpv don't need graceful shutdown
+            # This is non-blocking, process will die asynchronously
+            proc.kill()
+
+            # Brief wait to reap zombie, but don't block if slow
             try:
-                proc.wait(timeout=0.5)  # Give it 500ms to exit gracefully
+                proc.wait(timeout=0.05)
             except subprocess.TimeoutExpired:
-                # Force kill with SIGKILL
-                proc.kill()
-                try:
-                    proc.wait(timeout=0.5)  # Wait for forced kill
-                except subprocess.TimeoutExpired:
-                    # Last resort: try to kill by PID directly
+                # Spawn background thread to reap zombie later
+                def reap():
                     try:
-                        os.kill(proc.pid, signal.SIGKILL)
-                    except (OSError, ProcessLookupError):
+                        proc.wait(timeout=2)
+                    except Exception:
                         pass
+                threading.Thread(target=reap, daemon=True).start()
         except OSError:
             pass
     

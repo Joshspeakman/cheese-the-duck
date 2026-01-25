@@ -14,7 +14,8 @@
       "Bash(pactl info:*)",
       "Bash(git push:*)",
       "Bash(pkill:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(timeout 10 python3 -c \"\nfrom audio.sound import sound_engine\nfrom audio.radio import StationID\n\nprint\\(''Testing radio...''\\)\nsound_engine.play_radio\\(StationID.QUACK_FM\\)\nprint\\(''Radio started''\\)\n\nimport time\ntime.sleep\\(2\\)\n\nsound_engine.stop_radio\\(\\)\nprint\\(''Radio stopped''\\)\n\")"
     ]
   }
 }
