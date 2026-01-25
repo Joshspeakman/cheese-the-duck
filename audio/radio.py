@@ -136,10 +136,16 @@ class RadioPlayer:
     
     def _find_player(self) -> Optional[str]:
         """Find available audio player."""
-        for player in ["mpv", "ffplay", "vlc"]:
+        # Each player has different version flag
+        player_checks = [
+            ("mpv", ["mpv", "--version"]),
+            ("ffplay", ["ffplay", "-version"]),  # ffplay uses single dash
+            ("vlc", ["vlc", "--version"]),
+        ]
+        for player, cmd in player_checks:
             try:
                 result = subprocess.run(
-                    [player, "--version"],
+                    cmd,
                     capture_output=True,
                     timeout=2
                 )
