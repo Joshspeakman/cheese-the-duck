@@ -5,6 +5,7 @@ LOCAL ONLY - no external API calls.
 """
 import os
 import sys
+import signal
 import logging
 import threading
 import concurrent.futures
@@ -16,6 +17,22 @@ logger = logging.getLogger(__name__)
 
 # LLM call timeout in seconds
 LLM_CALL_TIMEOUT = 30.0
+
+# Flag to track if LLM crashed (SIGSEGV, etc.)
+_llm_crashed = False
+
+def _handle_segfault(signum, frame):
+    """Handle SIGSEGV by disabling LLM instead of crashing."""
+    global _llm_crashed
+    _llm_crashed = True
+    logger.error("LLM caused a segmentation fault - disabling LLM for this session")
+
+# Install signal handler for SIGSEGV
+try:
+    signal.signal(signal.SIGSEGV, _handle_segfault)
+except (ValueError, OSError):
+    # Signal handling not available (Windows, etc.)
+    pass
 
 if TYPE_CHECKING:
     from duck.duck import Duck
@@ -198,11 +215,31 @@ class LLMChat:
             self._available = True
             return True
         except Exception as e:
+            # If GPU failed, try CPU-only as fallback
+            if self._gpu_layers > 0:
+                try:
+                    self._gpu_layers = 0
+                    self._llama = Llama(
+                        model_path=str(model_path),
+                        n_ctx=LLM_CONTEXT_SIZE,
+                        n_threads=4,
+                        n_gpu_layers=0,
+                        verbose=False,
+                    )
+                    self._model_name = model_path.name
+                    self._available = True
+                    return True
+                except Exception as e2:
+                    self._last_error = f"Failed to load model (GPU and CPU): {e2}"
+                    return False
             self._last_error = f"Failed to load model: {e}"
             return False
 
     def is_available(self) -> bool:
         """Check if LLM is available for chat."""
+        global _llm_crashed
+        if _llm_crashed:
+            return False
         return self._available
 
     def get_model_name(self) -> str:
@@ -295,15 +332,13 @@ Context: {context}''' if context else ''}"""
             if not self._available:
                 return None
 
-        # If we have DuckBrain, process the message through it
-        duck_brain = getattr(self, '_duck_brain', None)
-        if duck_brain:
-            # Process player message and get enhanced context
-            memory_context = duck_brain.get_llm_context()
+        # If we have DuckBrain, get context (but DuckBrain handles context via build_llm_prompt)
+        # memory_context is not overwritten - DuckBrain context is used via _build_system_prompt
 
         response = self._generate_local(duck, player_input, memory_context)
         
         # Record the exchange in DuckBrain if available
+        duck_brain = getattr(self, '_duck_brain', None)
         if response and duck_brain:
             duck_brain.process_player_message(player_input, response)
         
