@@ -417,9 +417,9 @@ class SoundEngine:
         if music_name not in self._available_music:
             return
 
-        # Stop radio if playing - can't have both at once
+        # Radio takes priority - don't start background music if radio is playing
         if self.is_radio_playing():
-            self.stop_radio()
+            return
 
         # Stop any existing music first
         self.stop_background_music()
