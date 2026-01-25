@@ -117,8 +117,8 @@ class RadioPlayer:
     No threads, no polling, no locks. Just subprocess management.
     """
     
-    # Very quiet - background ambiance only
-    DEFAULT_VOLUME = 5  # 5% volume
+    # Reasonable default volume
+    DEFAULT_VOLUME = 50  # 50% volume
     
     def __init__(self, on_track_change: Optional[Callable[[str], None]] = None):
         self._current_station: Optional[RadioStation] = None
