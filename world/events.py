@@ -682,8 +682,15 @@ class EventSystem:
 
         # Check for rainy day based on actual weather
         rainy_weather_types = ["rainy", "heavy_rain", "drizzle", "spring_showers", "thunderstorm", "stormy"]
-        if self._current_weather and self._current_weather.lower() in rainy_weather_types:
-            events_to_check.append("rainy_day")
+        if self._current_weather:
+            # Handle both string and enum weather types
+            weather_str = (
+                self._current_weather.value 
+                if hasattr(self._current_weather, 'value') 
+                else str(self._current_weather)
+            ).lower()
+            if weather_str in rainy_weather_types:
+                events_to_check.append("rainy_day")
 
         # Check which events can actually trigger
         for event_id in events_to_check:

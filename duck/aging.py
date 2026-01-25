@@ -25,10 +25,15 @@ class GrowthStage(Enum):
 # This allows the simple progression system to map to detailed aging features
 SIMPLE_TO_DETAILED_STAGE: Dict[str, GrowthStage] = {
     "egg": GrowthStage.EGG,
+    "hatchling": GrowthStage.HATCHLING,  # Add hatchling mapping
     "duckling": GrowthStage.DUCKLING,  # Hatchling phase is brief, maps to duckling
+    "juvenile": GrowthStage.JUVENILE,   # Add juvenile mapping
     "teen": GrowthStage.JUVENILE,       # Teen maps to juvenile/young_adult
+    "young_adult": GrowthStage.YOUNG_ADULT,  # Add young_adult mapping
     "adult": GrowthStage.ADULT,         # Adult maps to adult/mature
+    "mature": GrowthStage.MATURE,       # Add mature mapping
     "elder": GrowthStage.ELDER,         # Elder maps to elder/legendary
+    "legendary": GrowthStage.LEGENDARY, # Add legendary mapping
 }
 
 

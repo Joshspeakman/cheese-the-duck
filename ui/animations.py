@@ -337,5 +337,5 @@ def get_animation_controller() -> AnimationController:
     return _animation_controller
 
 
-# Direct instance for backwards compatibility
-animation_controller = AnimationController()
+# Direct instance for backwards compatibility - uses the singleton
+animation_controller = get_animation_controller()

@@ -258,6 +258,7 @@ class DuckMemory:
         memory.interaction_counts = data.get("interaction_counts", {})
         memory.total_interactions = data.get("total_interactions", 0)
         memory.first_meeting = data.get("first_meeting")
-        memory.mood_history = data.get("mood_history", [])
+        # Restore mood_history as deque with maxlen to preserve the constraint
+        memory.mood_history = deque(data.get("mood_history", []), maxlen=MAX_MOOD_HISTORY)
 
         return memory

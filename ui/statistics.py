@@ -512,6 +512,8 @@ class StatisticsSystem:
             system.times_talked = dict_to_stat(data["times_talked"])
         if "times_cleaned" in data:
             system.times_cleaned = dict_to_stat(data["times_cleaned"])
+        if "times_put_to_sleep" in data:
+            system.times_put_to_sleep = dict_to_stat(data["times_put_to_sleep"])
         
         if "minigames_played" in data:
             system.minigames_played = dict_to_stat(data["minigames_played"])
@@ -523,6 +525,8 @@ class StatisticsSystem:
         system.legendary_fish_caught = data.get("legendary_fish_caught", 0)
         if "plants_grown" in data:
             system.plants_grown = dict_to_stat(data["plants_grown"])
+        if "plants_harvested" in data:
+            system.plants_harvested = dict_to_stat(data["plants_harvested"])
         if "treasures_found" in data:
             system.treasures_found = dict_to_stat(data["treasures_found"])
         if "tricks_performed" in data:
