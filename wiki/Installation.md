@@ -10,86 +10,136 @@
 
 - Python 3.8 or higher
 - Terminal with color support
-- Linux, macOS, or Windows (WSL recommended)
+- Linux, macOS, or Windows
 
-## Quick Install
+---
 
-### 1. Clone the Repository
+## 🪟 Windows
+
+### One-Line Install (PowerShell)
+
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; irm https://raw.githubusercontent.com/Joshspeakman/cheese-the-duck/main/install_windows.ps1 | iex
+```
+
+### Portable Package (No Install)
+
+1. Download `CheeseTheDuck-Windows-Portable.zip` from [Releases](https://github.com/Joshspeakman/cheese-the-duck/releases)
+2. Extract anywhere
+3. Run `CheeseTheDuck.bat`
+
+---
+
+## 🐧 Debian / Ubuntu
+
+### One-Line Install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Joshspeakman/cheese-the-duck/main/install_linux.sh | bash
+```
+
+### Build .deb Package
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Joshspeakman/cheese-the-duck/main/build_deb.sh | bash
+sudo dpkg -i cheese-the-duck_*.deb
+```
+
+After install: `cheese-the-duck`
+
+---
+
+## 🏗️ Arch Linux
+
+```bash
+# Install dependencies
+sudo pacman -S python python-pip python-virtualenv sdl2 sdl2_mixer sdl2_image imagemagick
+
+# Clone and setup
+git clone https://github.com/Joshspeakman/cheese-the-duck.git
+cd cheese-the-duck
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# Run
+python main.py
+```
+
+### Create Launcher
+
+```bash
+mkdir -p ~/.local/bin
+cat > ~/.local/bin/cheese-the-duck << 'EOF'
+#!/bin/bash
+cd ~/cheese-the-duck
+source .venv/bin/activate
+python main.py
+EOF
+chmod +x ~/.local/bin/cheese-the-duck
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+```
+
+---
+
+## 🍎 macOS
+
+```bash
+brew install python
+git clone https://github.com/Joshspeakman/cheese-the-duck.git
+cd cheese-the-duck
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python3 main.py
+```
+
+---
+
+## 🔧 Manual Installation
 
 ```bash
 git clone https://github.com/Joshspeakman/cheese-the-duck.git
 cd cheese-the-duck
-```
-
-### 2. Install Dependencies
-
-**Linux/macOS:**
-```bash
-chmod +x install_linux.sh
-./install_linux.sh
-```
-
-**Windows:**
-```batch
-install_windows.bat
-```
-
-**Manual:**
-```bash
+python3 -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# .\.venv\Scripts\Activate.ps1  # Windows PowerShell
 pip install -r requirements.txt
-```
-
-## Running the Game
-
-```bash
 python main.py
 ```
 
-Or use the run script:
+---
 
-```bash
-./run_game.sh
-```
+## 🤖 Optional: AI Dialogue
 
-## Optional: AI Dialogue
+The game includes a bundled AI model. Installers download this automatically.
 
-The game includes optional AI-powered dialogue using a local LLM. To enable:
-
-### Download the Model
+### Manual Download
 
 ```bash
 python download_model.py
 ```
 
-This downloads a small (~2GB) language model that runs locally on your computer. No internet required during gameplay!
+### Use Ollama (Alternative)
 
-```text
-+--------------------------------------------------+
-|  NOTE: The game works perfectly without the      |
-|  AI model! It will use pre-written dialogue      |
-|  if no model is detected.                        |
-+--------------------------------------------------+
+```bash
+ollama pull llama3.2
+ollama serve
 ```
+
+---
 
 ## Troubleshooting
 
 ### Game looks weird
-
-Make sure your terminal:
-- Supports at least 80x24 characters
-- Has color support enabled
-- Uses a monospace font
+- Terminal must be at least 80x24 characters
+- Use a monospace font
+- Enable color support
 
 ### No sound
-
-Sound is optional. Install audio dependencies:
-
+Sound is optional. Install pygame:
 ```bash
-# Linux
-sudo apt install mpg123 aplay
-
-# macOS  
-brew install mpg123
+pip install pygame
 ```
 
 ---
@@ -98,10 +148,5 @@ brew install mpg123
             .---.       
            / ^   \   Ready to play!
           |   __  |     
-           \  \_) |>    
-            `---|--'    
-              _|  \     
-             (_)  (_)   
+           \____/      
 ```
-
-[[Home]] | [[Getting Started]] | [[Controls]]
