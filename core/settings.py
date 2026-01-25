@@ -49,8 +49,7 @@ class AudioSettings:
     ambient_enabled: bool = True
     radio_enabled: bool = True
     duck_quacks_enabled: bool = True    # Some might find frequent quacks annoying
-    last_radio_station: str = "quack_fm"  # Last played radio station
-    dj_duck_saturdays: bool = True      # Auto-switch to DJ Duck on Saturday nights
+    last_radio_station: str = "nook_radio"  # Last played radio station
 
 
 @dataclass

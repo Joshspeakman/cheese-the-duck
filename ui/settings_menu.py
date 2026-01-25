@@ -146,9 +146,6 @@ class SettingsMenu:
                 SettingItem("duck_quacks_enabled", "Duck Quacks", "audio", "toggle",
                            settings.audio.duck_quacks_enabled,
                            description="Enable/disable duck quacking sounds"),
-                SettingItem("dj_duck_saturdays", "DJ Duck Saturdays", "audio", "toggle",
-                           settings.audio.dj_duck_saturdays,
-                           description="Auto-tune to DJ Duck on Saturday nights"),
             ]
         
         elif self._current_category == SettingsCategory.DISPLAY:
