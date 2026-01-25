@@ -87,11 +87,19 @@ def build_main_menu_categories() -> list:
                 MenuItem("settings", "Settings", "Audio, display, and game options"),
                 MenuItem("sound", "Toggle Sound", "Turn sound on/off"),
                 MenuItem("music", "Toggle Music", "Turn music on/off"),
-                MenuItem("radio", "Radio", "Background noise. For ducks."),
                 # MenuItem("save_slots", "Save Slots", "Manage save files"),  # Hidden for now
                 MenuItem("help", "Help", "View controls and tips"),
                 MenuItem("reset_game", "Reset Game", "WARNING: Deletes ALL progress!"),
                 MenuItem("quit", "Return to Title", "Save game and return to title screen"),
+            ]
+        ),
+        # Radio is a top-level category for quick access
+        MenuCategory(
+            id="radio",
+            label="Radio",
+            icon="~",
+            items=[
+                MenuItem("radio", "Open Radio", "Background noise. For ducks."),
             ]
         ),
     ]
@@ -690,11 +698,13 @@ def build_master_menu_tree():
                 MasterMenuItem(id="settings", label="Settings", action="settings"),
                 MasterMenuItem(id="sound", label="Toggle Sound", action="sound"),
                 MasterMenuItem(id="music", label="Toggle Music", action="music"),
-                MasterMenuItem(id="radio", label="Radio", children=_get_radio_items),
                 # MasterMenuItem(id="save_slots", label="Save Slots", action="save_slots"),  # Hidden for now
                 MasterMenuItem(id="help", label="Help", action="help"),
             ]
         ),
+        
+        # Radio - top level for quick access
+        MasterMenuItem(id="radio", label="Radio", children=_get_radio_items),
 
         # Save & return to title (at root level for easy access)
         MasterMenuItem(id="quit", label="Return to Title", action="quit"),

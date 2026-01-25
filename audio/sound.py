@@ -651,9 +651,16 @@ class SoundEngine:
     # ============== RADIO INTEGRATION ==============
     
     def get_radio(self):
-        """Get the radio player instance."""
+        """Get the radio player instance, configured to mute game music."""
         from audio.radio import get_radio_player
-        return get_radio_player()
+        radio = get_radio_player()
+        # Set up callback to mute game music when radio starts
+        radio.set_on_start_callback(self._mute_music_for_radio)
+        return radio
+    
+    def _mute_music_for_radio(self):
+        """Mute game music when radio is playing."""
+        self.stop_music()
     
     def play_radio(self, station_id=None):
         """

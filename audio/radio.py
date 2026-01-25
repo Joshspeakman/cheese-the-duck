@@ -149,11 +149,18 @@ class RadioPlayer:
         self._last_station_before_dj: Optional[StationID] = None
         self._dj_duck_saturdays = True
         
-        # Detect available player
+        # Detect available player (cache result)
         self._player_cmd = self._detect_player()
         
         # DJ Duck commentary callback
         self._dj_commentary_callback: Optional[Callable[[], str]] = None
+        
+        # Callback when radio starts (for muting game music)
+        self._on_start_callback: Optional[Callable[[], None]] = None
+    
+    def set_on_start_callback(self, callback: Optional[Callable[[], None]]):
+        """Set callback to run when radio starts (e.g., mute game music)."""
+        self._on_start_callback = callback
     
     def _detect_player(self) -> Optional[List[str]]:
         """Detect available audio player for streaming."""
@@ -292,12 +299,19 @@ class RadioPlayer:
         if station.id == StationID.DJ_DUCK_LIVE and not self.is_dj_duck_live():
             return
         
-        # Stop current playback
+        # Stop current playback (fast)
         self.stop()
         
         self._current_station = station
         self._is_playing = True
         self._stop_event.clear()
+        
+        # Mute game music when radio starts
+        if self._on_start_callback:
+            try:
+                self._on_start_callback()
+            except Exception:
+                pass
         
         # Start playback in background thread
         self._play_thread = threading.Thread(
@@ -312,22 +326,21 @@ class RadioPlayer:
             self._on_track_change(station.name)
     
     def stop(self):
-        """Stop radio playback (non-blocking)."""
+        """Stop radio playback (non-blocking, fast)."""
         self._stop_event.set()
         self._is_playing = False
+        self._current_station = None
         
-        if self._process:
-            try:
-                self._process.terminate()
-                # Don't wait - let it die in background
-            except OSError:
-                pass
-            self._process = None
-        
-        # Don't join thread - let it clean up on its own
+        # Kill process immediately - don't wait
+        proc = self._process
+        self._process = None
         self._play_thread = None
         
-        self._current_station = None
+        if proc:
+            try:
+                proc.kill()  # SIGKILL - instant termination
+            except OSError:
+                pass
     
     def change_station(self, station_id: StationID):
         """Change to a different station."""
