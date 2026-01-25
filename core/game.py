@@ -3430,9 +3430,10 @@ class Game:
                 comment = self.duck_brain.get_observation(context)
             elif roll < 0.85:
                 # 15% chance: Maybe ask a question (to learn about player)
-                question = self.duck_brain.get_question()
-                if question:
-                    comment = question.text
+                question_result = self.duck_brain.get_question()
+                if question_result:
+                    # get_question returns (question_id, question_text) tuple
+                    comment = question_result[1]
             # 15% chance: No comment (silence is golden)
         
         # Fallback to original contextual dialogue system
