@@ -75,8 +75,6 @@ class RadioPlayer:
         self._process: Optional[subprocess.Popen] = None
         self._on_track_change = on_track_change
         self._on_start_callback: Optional[Callable[[], None]] = None
-        self._dj_duck_saturdays = True
-        self._last_station_before_dj: Optional[StationID] = None
 
         # Lock to prevent race conditions during station switching
         self._lock = threading.Lock()
@@ -227,29 +225,6 @@ class RadioPlayer:
     def set_on_start_callback(self, callback: Optional[Callable[[], None]]):
         self._on_start_callback = callback
     
-    def set_dj_duck_saturdays(self, enabled: bool):
-        self._dj_duck_saturdays = enabled
-    
-    def set_dj_commentary_callback(self, callback):
-        pass  # Not used in minimal implementation
-    
-    def is_dj_duck_live(self) -> bool:
-        if not self._dj_duck_saturdays:
-            return False
-        now = datetime.now()
-        return now.weekday() == 5 and 20 <= now.hour < 24
-    
-    def get_dj_duck_status(self) -> str:
-        if self.is_dj_duck_live():
-            return "LIVE NOW"
-        now = datetime.now()
-        days = (5 - now.weekday()) % 7
-        if days == 0:
-            return "Live today 8pm" if now.hour < 20 else "Next Saturday"
-        elif days == 1:
-            return "Tomorrow 8pm"
-        return "Saturday 8pm"
-    
     def get_available_stations(self) -> List[RadioStation]:
         return list(STATIONS.values())
     
@@ -260,27 +235,15 @@ class RadioPlayer:
         if not self._player_detected or not self._player:
             return  # Player not yet detected or not available
 
-        # DJ Duck auto-switch
-        if self.is_dj_duck_live() and station_id != StationID.DJ_DUCK_LIVE:
-            if self._current_station:
-                self._last_station_before_dj = self._current_station.id
-            station_id = StationID.DJ_DUCK_LIVE
-
         if station_id is None:
-            station_id = StationID.QUACK_FM
+            station_id = StationID.NOOK_RADIO
 
         station = STATIONS.get(station_id)
         if not station:
             return
 
-        if station.id == StationID.DJ_DUCK_LIVE and not self.is_dj_duck_live():
-            return
-
-        # Get URL before spawning thread (no shared state access)
-        if station.id == StationID.NOOK_RADIO:
-            url = _get_nook_url()
-        else:
-            url = station.stream_url
+        # Get URL for Nook Radio (hour-based)
+        url = _get_nook_url()
 
         # Build command before spawning thread
         cmd = self._build_command(url)
@@ -338,15 +301,12 @@ class RadioPlayer:
         threading.Thread(target=kill_in_background, daemon=True).start()
     
     def change_station(self, station_id: StationID) -> bool:
-        if station_id == StationID.DJ_DUCK_LIVE and not self.is_dj_duck_live():
-            return False
         self.play(station_id)
         return True
     
     def get_station_list(self) -> List[Dict]:
         """Get station list for menu."""
         stations = []
-        dj_live = self.is_dj_duck_live()
         
         for station in STATIONS.values():
             is_current = (
@@ -354,34 +314,21 @@ class RadioPlayer:
                 self._current_station.id == station.id
             )
             
-            if station.id == StationID.DJ_DUCK_LIVE:
-                available = dj_live
-                status = self.get_dj_duck_status()
-            else:
-                available = True
-                status = "Playing" if is_current else ""
-            
             stations.append({
                 "id": station.id,
                 "name": station.name,
                 "tagline": station.tagline,
                 "genre": station.genre,
-                "available": available,
+                "available": True,
                 "is_current": is_current,
-                "status": status,
+                "status": "Playing" if is_current else "",
             })
         
         return stations
     
     def update(self):
-        """Called from game loop - minimal, just check DJ Duck."""
-        if not self._is_playing or not self._dj_duck_saturdays:
-            return
-        
-        # Check if DJ Duck time ended
-        if self._current_station and self._current_station.id == StationID.DJ_DUCK_LIVE:
-            if not self.is_dj_duck_live() and self._last_station_before_dj:
-                self.play(self._last_station_before_dj)
+        """Called from game loop - no-op now that DJ Duck is removed."""
+        pass
 
 
 # Singleton instance

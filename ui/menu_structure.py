@@ -591,15 +591,12 @@ def _get_radio_items(game):
             if station["status"]:
                 label = f"{label} ({station['status']})"
             
-            # DJ Duck special handling
-            is_dj_duck = station["id"] == StationID.DJ_DUCK_LIVE
-            
             items.append(MasterMenuItem(
                 id=f"radio_{station['id'].value}",
                 label=label,
                 action=f"radio_{station['id'].value}",
                 completed=station["is_current"],
-                enabled=station["available"] or not is_dj_duck
+                enabled=station["available"]
             ))
         
         # Add stop radio option if playing
