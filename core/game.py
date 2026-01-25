@@ -1079,6 +1079,10 @@ class Game:
             station = STATIONS.get(station_id)
             station_name = station.name if station else "Radio"
 
+            # Turn off boombox state if it was on (radio takes over)
+            if self._boombox_playing:
+                self._boombox_playing = False
+
             # change_radio_station() is now thread-safe and non-blocking
             # (spawns subprocess with start_new_session=True)
             sound_engine.change_radio_station(station_id)
