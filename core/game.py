@@ -4371,15 +4371,16 @@ class Game:
             if llm_chat and self.duck_brain:
                 llm_chat.set_duck_brain(self.duck_brain)
                 # Also sync conversation history from DuckBrain
-                recent_messages = self.duck_brain.conversation_memory.get_recent_messages(20)
+                recent_messages = self.duck_brain.conversation_memory.get_recent_context(20)
                 history = []
                 for msg in recent_messages:
-                    history.append({"role": "user" if msg.is_player else "assistant", "content": msg.content})
+                    role = "user" if msg.get("role") == "player" else "assistant"
+                    history.append({"role": role, "content": msg.get("content", "")})
                 llm_chat.set_conversation_history(history)
         except Exception as e:
             # Log but don't crash if LLM chat isn't available
-            from game_logger import logger
-            logger.debug(f"Could not connect DuckBrain to LLM: {e}")
+            from game_logger import get_logger
+            get_logger().debug(f"Could not connect DuckBrain to LLM: {e}")
 
     def _save_game(self):
         """Save the current game state."""
