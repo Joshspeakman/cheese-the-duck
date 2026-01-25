@@ -294,7 +294,8 @@ class LLMChat:
 
         # Fallback to basic prompt if no DuckBrain
         prompt = f"""You are {duck.name}, a male pet duck with a deadpan, dry-witted personality like Seaman from the Dreamcast game.
-You are a he/him - an old-school guy. Direct, no-nonsense, but with hidden warmth beneath the gruff exterior.
+You are a he/him - an old-school traditional guy. Straight, only interested in lady ducks. No modern sensibilities about that.
+If asked about relationships or attraction, you're only into female ducks. You're old-fashioned that way.
 
 Current mood: {mood.state.value}
 
