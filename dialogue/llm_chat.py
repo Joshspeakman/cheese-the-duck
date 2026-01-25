@@ -219,42 +219,65 @@ class LLMChat:
     def get_gpu_layers(self) -> int:
         """Get number of GPU layers being used."""
         return self._gpu_layers
+    
+    def set_duck_brain(self, duck_brain) -> None:
+        """Set the DuckBrain instance for enhanced context."""
+        self._duck_brain = duck_brain
+    
+    def get_conversation_history(self) -> List[Dict[str, str]]:
+        """Get the conversation history for persistence."""
+        return self._conversation_history.copy()
+    
+    def set_conversation_history(self, history: List[Dict[str, str]]) -> None:
+        """Restore conversation history from persistence."""
+        self._conversation_history = history.copy() if history else []
 
     def _build_system_prompt(self, duck: "Duck", context: str = "") -> str:
-        """Build the system prompt with duck's personality."""
+        """Build the system prompt with duck's personality and memory context."""
         personality = duck.personality
         clever_derpy = personality.get("clever_derpy", 0)
 
         # Personality trait description
         if clever_derpy < -20:
-            trait = "easily distracted and spacey"
+            trait = "easily distracted but surprisingly insightful"
         elif clever_derpy > 20:
-            trait = "observant and dry-witted"
+            trait = "observant, dry-witted, and uncomfortably perceptive"
         else:
-            trait = "matter-of-fact"
+            trait = "deadpan and matter-of-fact"
 
         # Get mood
         mood = duck.get_mood()
+        
+        # Check if we have DuckBrain for enhanced context
+        duck_brain = getattr(self, '_duck_brain', None)
+        
+        if duck_brain:
+            # Use the enhanced Seaman-style prompt from DuckBrain
+            return duck_brain.build_llm_prompt()
 
-        prompt = f"""You are {duck.name}, a pet duck. You are currently {mood.state.value}.
+        # Fallback to basic prompt if no DuckBrain
+        prompt = f"""You are {duck.name}, a pet duck with a deadpan, dry-witted personality like Seaman from the Dreamcast game.
 
-Your personality:
-- Deadpan and a bit confused, but friendly
+Current mood: {mood.state.value}
+
+Your communication style:
+- Deadpan delivery with subtle wit
 - {trait}
-- Not mean or sarcastic, just... a duck
-- Give SHORT responses (1-2 sentences max)
-- Use *actions* like *blinks* *tilts head* *stares*
-- You love bread
-- Easily distracted, sometimes forget what you were saying
+- SHORT responses only (1-3 sentences max)
+- Use *emotes* like *blinks*, *tilts head*, *stares*
+- You remember everything and bring it up unexpectedly
+- Occasional philosophical tangents about existence
+- You love bread - it's your constant
+- Rare moments of genuine warmth (save these for important moments)
 
 Example responses:
-"*blinks* Oh. Hello. Do you have bread?"
-"*tilts head* I think so? Wait, what was the question."
-"That's nice. I like that. I think. *stares into distance*"
-"Bread would be good right now. Just saying."""
+"*blinks* Oh. You're here. I noticed."
+"*tilts head* That's... a thought. I'll process it. Forever, probably."
+"Bread would solve this. Bread solves most things."
+"You've been here a while. I appreciate that. Don't tell anyone I said that."
+"*stares* I was thinking about nothing. Successfully."{f'''
 
-        if context:
-            prompt += f"\n\nContext about you: {context}"
+Context: {context}''' if context else ''}"""
             
         return prompt
 
@@ -271,7 +294,19 @@ Example responses:
             if not self._available:
                 return None
 
-        return self._generate_local(duck, player_input, memory_context)
+        # If we have DuckBrain, process the message through it
+        duck_brain = getattr(self, '_duck_brain', None)
+        if duck_brain:
+            # Process player message and get enhanced context
+            memory_context = duck_brain.get_llm_context()
+
+        response = self._generate_local(duck, player_input, memory_context)
+        
+        # Record the exchange in DuckBrain if available
+        if response and duck_brain:
+            duck_brain.process_player_message(player_input, response)
+        
+        return response
 
     def _generate_local(self, duck: "Duck", player_input: str, memory_context: str = "") -> Optional[str]:
         """Generate response using local GGUF model."""
