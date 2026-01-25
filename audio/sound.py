@@ -641,7 +641,9 @@ class SoundEngine:
             else:
                 self.stop_background_music()
         else:
-            # Unmute - resume Sound or streaming music
+            # Unmute - resume Sound or streaming music (but not if radio is playing)
+            if self.is_radio_playing():
+                return self.music_muted  # Radio playing, don't resume background music
             if self._music_channel:
                 try:
                     self._music_channel.unpause()
@@ -781,6 +783,10 @@ class SoundEngine:
         if not self.enabled or self.music_muted:
             return
 
+        # Radio takes priority - don't start/update background music
+        if self.is_radio_playing():
+            return
+
         # Don't interrupt ongoing crossfade (unless forcing)
         if self._crossfading and not force:
             return
@@ -827,6 +833,10 @@ class SoundEngine:
         if not self.enabled or self.music_muted:
             return
 
+        # Radio takes priority - don't play event music over radio
+        if self.is_radio_playing():
+            return
+
         # Save current context to resume later
         if self._current_context and self._current_context != context:
             self._previous_context = self._current_context
@@ -845,6 +855,10 @@ class SoundEngine:
         """
         if self._crossfading:
             return  # Already crossfading
+
+        # Radio takes priority - don't start background music
+        if self.is_radio_playing():
+            return
 
         track = MUSIC_TRACKS.get(new_context)
         if not track:
@@ -1333,9 +1347,9 @@ class DuckSounds:
     def level_up(self):
         """Play level up/growth sound."""
         # Try WAV file first, fall back to synthesized sound
-        # Level up is mixed at 50% volume to avoid being too jarring
+        # Level up is mixed at 25% volume to avoid being too jarring
         if 'levelup' in self.engine._available_wavs:
-            self.engine.play_wav('levelup', volume=0.5)
+            self.engine.play_wav('levelup', volume=0.25)
         else:
             self.engine.play_sound(SoundType.LEVEL_UP)
 
