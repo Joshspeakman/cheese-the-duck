@@ -327,33 +327,37 @@ class CosmeticsRenderer:
     def __init__(self, terminal: Terminal = None):
         self.term = terminal or _term
     
-    def render_duck_with_cosmetics(self, duck_art: List[str], equipped: Dict[str, str]) -> List[List[tuple]]:
+    def render_duck_with_cosmetics(self, duck_art: List[str], equipped: Dict[str, str], duck_color: Callable = None) -> List[List[tuple]]:
         """
         Overlay cosmetics onto duck ASCII art.
-        
+
         Returns a 2D grid of (char, color_func) tuples where color_func is None
         for normal duck characters and a color function for cosmetic characters.
-        
+
         Args:
             duck_art: Base duck ASCII art lines
             equipped: Dict of slot -> item_id (e.g. {"head": "hat_red", "eyes": "sunglasses"})
-            
+            duck_color: Color function for duck body (defaults to terminal yellow)
+
         Returns:
             2D list of (char, color_func) tuples with same dimensions as duck_art
         """
         if not duck_art:
             return []
-        
+
+        # Use provided duck color or fall back to terminal yellow
+        body_color = duck_color if duck_color is not None else self.term.yellow
+
         # Find duck dimensions - we will NOT change these
         duck_height = len(duck_art)
         duck_width = max(len(line) for line in duck_art) if duck_art else 0
-        
+
         # Pad all lines to same width
         padded_art = [line.ljust(duck_width) for line in duck_art]
 
         # Convert to a grid of (char, color_func) tuples
-        # Base duck characters get yellow color, spaces get None
-        grid = [[(c, self.term.yellow if c != ' ' else None) for c in line] for line in padded_art]
+        # Base duck characters get the duck's body color, spaces get None
+        grid = [[(c, body_color if c != ' ' else None) for c in line] for line in padded_art]
         
         if not equipped:
             return grid

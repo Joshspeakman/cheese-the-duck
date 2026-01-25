@@ -249,8 +249,7 @@ def _get_areas_items(game):
     items = []
     
     try:
-        from world.exploration import BiomeType
-        from ui.location_art import AREA_ART
+        from world.exploration import BiomeType, AREA_ART
         
         # Get discovered areas
         discovered = set()

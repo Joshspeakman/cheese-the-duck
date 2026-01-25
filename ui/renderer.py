@@ -1466,7 +1466,7 @@ class Renderer:
         # Get cosmetics overlay as a grid of (char, color_func) tuples
         duck_grid = None
         if equipped_cosmetics:
-            duck_grid = self._cosmetics_renderer.render_duck_with_cosmetics(duck_art, equipped_cosmetics)
+            duck_grid = self._cosmetics_renderer.render_duck_with_cosmetics(duck_art, equipped_cosmetics, self.color_duck_body)
         
         duck_height = len(duck_art)
         duck_width = max(len(line) for line in duck_art) if duck_art else 0
