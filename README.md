@@ -31,7 +31,7 @@ This will:
 - ✅ Download and install Python if needed
 - ✅ Install all dependencies automatically
 - ✅ Create Desktop and Start Menu shortcuts
-- ✅ Optionally download the AI model
+- ✅ Download the AI model
 
 After install, double-click **"Cheese the Duck"** on your Desktop!
 
@@ -75,7 +75,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-**Optional: Create a launcher script:**
+**Create a launcher script:**
 
 ```bash
 # Create launcher
@@ -140,7 +140,7 @@ Your duck grows through life stages: Egg → Duckling → Teen → Adult → Eld
 Your duck has agency—it wanders, explores, interacts with items, and makes decisions based on its needs and personality.
 
 ### Dynamic Conversations
-Talk to your duck! With optional **LLM integration**, conversations become truly dynamic—your duck remembers what you've talked about.
+Talk to your duck! With **LLM integration**, conversations are truly dynamic—your duck remembers what you've talked about.
 
 ### World Exploration
 Seven distinct biomes to explore: Pond, Forest, Meadow, Riverside, Garden, Mountains, Beach.
@@ -182,9 +182,11 @@ Weather changes naturally. When your duck sleeps, it dreams based on recent acti
 
 ## 🤖 AI Conversations
 
-The game includes a bundled **Llama 3.2** AI model for dynamic conversations. Installers offer to download this automatically.
+The game includes a bundled **Llama 3.2** AI model for dynamic conversations. Installers download this automatically.
 
-### Optional: Use Ollama (Larger Models)
+### Alternative: Use Ollama (Larger Models)
+
+For better performance with larger models:
 
 ```bash
 # Install Ollama from https://ollama.ai
@@ -192,7 +194,7 @@ ollama pull llama3.2
 ollama serve
 ```
 
-The game prefers Ollama if available.
+The game uses Ollama if available, otherwise falls back to the bundled model.
 
 ---
 

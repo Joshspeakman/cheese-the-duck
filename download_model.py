@@ -316,8 +316,12 @@ def setup_venv():
         return False
 
 
-def main():
-    """Main entry point."""
+def main(auto_mode: bool = False):
+    """Main entry point.
+    
+    Args:
+        auto_mode: If True, skip prompts and use recommended model automatically.
+    """
     print_header()
     
     # Step 1: Detect GPU
@@ -339,6 +343,10 @@ def main():
         print("✅ You already have a model installed!")
         print()
         
+        if auto_mode:
+            print("👍 Setup complete!")
+            return 0
+        
         response = input("🔄 Download a different model anyway? [y/N]: ").strip().lower()
         if response != 'y':
             print("\n👍 Setup complete! Run the game with: ./run_game.sh")
@@ -348,20 +356,25 @@ def main():
     # Get recommended model based on hardware
     recommended = get_recommended_model(gpu_type, vram_mb)
     
-    # Show model options
-    print("📦 Available models:")
-    print()
-    for key, model in MODELS.items():
-        rec_badge = " ← Recommended for your hardware" if key == recommended else ""
-        print(f"   [{key}] {model['name']}{rec_badge}")
-    print()
-    
-    # Get user choice
-    print(f"   Default: {recommended}")
-    print()
-    choice = input(f"🎯 Which model? [llama/phi/qwen/tiny] (default: {recommended}): ").strip().lower()
-    if choice not in MODELS:
+    # In auto mode, skip the menu and use recommended model
+    if auto_mode:
         choice = recommended
+        print(f"📦 Installing recommended model: {MODELS[choice]['name']}")
+    else:
+        # Show model options
+        print("📦 Available models:")
+        print()
+        for key, model in MODELS.items():
+            rec_badge = " ← Recommended for your hardware" if key == recommended else ""
+            print(f"   [{key}] {model['name']}{rec_badge}")
+        print()
+        
+        # Get user choice
+        print(f"   Default: {recommended}")
+        print()
+        choice = input(f"🎯 Which model? [llama/phi/qwen/tiny] (default: {recommended}): ").strip().lower()
+        if choice not in MODELS:
+            choice = recommended
     
     model = MODELS[choice]
     filepath = MODEL_DIR / model["filename"]
@@ -441,4 +454,5 @@ def check_and_prompt_download() -> bool:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    auto_mode = "--auto" in sys.argv or "-a" in sys.argv
+    sys.exit(main(auto_mode=auto_mode))

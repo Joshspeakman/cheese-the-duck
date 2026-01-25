@@ -332,14 +332,10 @@ install_game() {
     deactivate
     print_success "Dependencies installed"
     
-    # Ask about AI model
-    echo ""
-    read -p "Download AI model for conversations? (~700MB) (y/N): " download_model
-    if [ "$download_model" = "y" ] || [ "$download_model" = "Y" ]; then
-        print_step "Downloading AI model (this may take a while)..."
-        cd "$INSTALL_DIR"
-        .venv/bin/python download_model.py
-    fi
+    # Download AI model
+    print_step "Downloading AI model (this may take a while)..."
+    cd "$INSTALL_DIR"
+    .venv/bin/python download_model.py --auto
     
     # Create icons from ICO
     create_linux_icons "$INSTALL_DIR"
