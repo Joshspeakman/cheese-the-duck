@@ -162,6 +162,7 @@ Listen to duck-themed internet radio stations while you play:
 - **Bread Crumbs** - 8-bit chiptune nostalgia
 - **Feather & Bone** - Smooth jazz
 - **HONK Radio** - Chaotic upbeat energy
+- **Nook Radio** - Hourly music that changes with the time of day
 - **DJ Duck Live** - Saturday nights 8pm-midnight with deadpan commentary
 
 ### Dynamic Weather & Dreams
@@ -305,11 +306,12 @@ MIT License - see LICENSE file.
 
 ### Radio Streaming
 
-The in-game radio streams royalty-free music from these amazing services:
+The in-game radio streams music from these services:
 
 - **[SomaFM](https://somafm.com/)** - Listener-supported, commercial-free internet radio
 - **[laut.fm](https://laut.fm/)** - German internet radio platform
 - **[I Love Radio](https://www.iloveradio.de/)** - German radio network
+- **[nook.camp](https://nook.camp/)** - Animal Crossing hourly music (via [nook-desktop](https://github.com/OpenSauce04/nook-desktop))
 
 All streams are used in accordance with their respective terms of service for non-commercial, personal use. This game is not affiliated with these services.
 

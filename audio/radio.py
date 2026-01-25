@@ -24,6 +24,7 @@ class StationID(Enum):
     BREAD_CRUMBS = "bread_crumbs"
     FEATHER_BONE = "feather_bone"
     HONK_RADIO = "honk_radio"
+    NOOK_RADIO = "nook_radio"
     DJ_DUCK_LIVE = "dj_duck_live"
 
 
@@ -98,6 +99,14 @@ STATIONS: Dict[StationID, RadioStation] = {
             "https://ice1.somafm.com/defcon-128-mp3",
             "https://stream.laut.fm/electroswing",
         ]
+    ),
+    StationID.NOOK_RADIO: RadioStation(
+        id=StationID.NOOK_RADIO,
+        name="Nook Radio",
+        tagline="Hourly vibes. Like a certain island.",
+        stream_url="hourly",  # Special marker for hourly music
+        genre="hourly",
+        fallback_urls=[]
     ),
     StationID.DJ_DUCK_LIVE: RadioStation(
         id=StationID.DJ_DUCK_LIVE,
@@ -334,6 +343,11 @@ class RadioPlayer:
     
     def _stream_loop(self, station: RadioStation):
         """Background thread that handles streaming."""
+        # Special handling for Nook Radio (hourly music)
+        if station.id == StationID.NOOK_RADIO:
+            self._nook_radio_loop()
+            return
+        
         urls_to_try = [station.stream_url] + station.fallback_urls
         
         for url in urls_to_try:
@@ -383,6 +397,81 @@ class RadioPlayer:
                 
             except (subprocess.SubprocessError, OSError):
                 continue
+    
+    def _nook_radio_loop(self):
+        """
+        Play hourly Animal Crossing-style music from nook.camp CDN.
+        
+        Music changes based on the current hour and loops until stopped.
+        """
+        # Nook-desktop CDN base URL
+        base_url = "https://d17orwheorv96d.cloudfront.net"
+        # Available game soundtracks
+        games = ["new-leaf", "new-horizons", "wild-world", "population-growing"]
+        current_game_idx = 0
+        last_hour = None
+        
+        while not self._stop_event.is_set():
+            # Get current hour in nook format
+            now = datetime.now()
+            hour_12 = now.hour % 12 or 12
+            am_pm = "am" if now.hour < 12 else "pm"
+            hour_str = f"{hour_12}{am_pm}"
+            
+            # Check if hour changed - switch track
+            if hour_str != last_hour:
+                last_hour = hour_str
+                
+                # Stop current track if playing
+                if self._process and self._process.poll() is None:
+                    try:
+                        self._process.terminate()
+                        self._process.wait(timeout=2)
+                    except (subprocess.TimeoutExpired, OSError):
+                        try:
+                            self._process.kill()
+                        except OSError:
+                            pass
+                
+                # Build URL for current hour
+                game = games[current_game_idx % len(games)]
+                url = f"{base_url}/{game}/{hour_str}.ogg"
+                
+                # Try to play
+                if self._player_cmd:
+                    try:
+                        cmd = self._player_cmd.copy()
+                        
+                        # Add volume and loop flags
+                        if "mpv" in cmd[0]:
+                            cmd.extend([
+                                f"--volume={int(self._volume * 100)}",
+                                "--loop=inf",  # Loop the hourly track
+                                url
+                            ])
+                        elif "ffplay" in cmd[0]:
+                            cmd.extend([
+                                "-volume", str(int(self._volume * 100)),
+                                "-loop", "0",  # Loop forever
+                                url
+                            ])
+                        else:
+                            cmd.append(url)
+                        
+                        self._process = subprocess.Popen(
+                            cmd,
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL
+                        )
+                    except (subprocess.SubprocessError, OSError):
+                        # Try next game on failure
+                        current_game_idx += 1
+            
+            # Wait before checking again (check every 30 seconds)
+            for _ in range(30):
+                if self._stop_event.is_set():
+                    return
+                time.sleep(1)
     
     def get_station_list(self) -> List[Dict]:
         """Get formatted list of stations for menu display."""
