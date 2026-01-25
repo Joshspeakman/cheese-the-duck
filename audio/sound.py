@@ -564,10 +564,10 @@ class SoundEngine:
         self._music_thread.start()
 
     def stop_background_music(self):
-        """Stop background music."""
+        """Stop background music. Non-blocking."""
         self._music_playing = False
 
-        # Stop pygame Sound object if active
+        # Stop pygame Sound object if active (fast, do synchronously)
         if self._music_sound:
             try:
                 self._music_sound.stop()
@@ -576,7 +576,7 @@ class SoundEngine:
             self._music_sound = None
             self._music_channel = None
 
-        # Stop pygame streaming music if active
+        # Stop pygame streaming music if active (fast, do synchronously)
         if self._pygame_available:
             try:
                 import pygame
@@ -584,20 +584,27 @@ class SoundEngine:
             except Exception:
                 pass
 
-        # Stop subprocess-based music
-        if self._music_process:
-            try:
-                self._music_process.terminate()
-                self._music_process.wait(timeout=1)
-            except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+        # Capture references for background thread
+        proc = self._music_process
+        thread = self._music_thread
+        self._music_process = None
+        self._music_thread = None
+
+        # Stop subprocess in background to avoid blocking game loop
+        def stop_in_background():
+            if proc:
                 try:
-                    self._music_process.kill()
+                    proc.terminate()
+                    proc.wait(timeout=1)
                 except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-                    pass
-            self._music_process = None
-        if self._music_thread:
-            self._music_thread.join(timeout=0.5)
-            self._music_thread = None
+                    try:
+                        proc.kill()
+                    except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+                        pass
+            if thread:
+                thread.join(timeout=0.5)
+
+        threading.Thread(target=stop_in_background, daemon=True).start()
 
     def toggle_music_mute(self) -> bool:
         """Toggle music mute on/off. Returns new muted state."""
@@ -1122,21 +1129,30 @@ class SoundEngine:
         pass
 
     def stop_music(self):
-        """Stop currently playing music."""
+        """Stop currently playing music. Non-blocking."""
         self._music_playing = False
-        # Terminate the subprocess if running
-        if self._music_process:
-            try:
-                self._music_process.terminate()
-                self._music_process.wait(timeout=0.5)
-            except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+        
+        # Capture references for background thread
+        proc = self._music_process
+        thread = self._music_thread
+        self._music_process = None
+        self._music_thread = None
+        
+        # Stop in background to avoid blocking game loop
+        def stop_in_background():
+            if proc:
                 try:
-                    self._music_process.kill()
+                    proc.terminate()
+                    proc.wait(timeout=0.5)
                 except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-                    pass
-            self._music_process = None
-        if self._music_thread:
-            self._music_thread.join(timeout=0.5)
+                    try:
+                        proc.kill()
+                    except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+                        pass
+            if thread:
+                thread.join(timeout=0.5)
+        
+        threading.Thread(target=stop_in_background, daemon=True).start()
 
     def set_enabled(self, enabled: bool):
         """Enable or disable sound."""
