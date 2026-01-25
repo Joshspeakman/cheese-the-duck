@@ -140,11 +140,12 @@ class RadioPlayer:
         """
         self._current_station: Optional[RadioStation] = None
         self._is_playing = False
-        self._volume = 0.3  # 30% default - radio shouldn't overpower game
+        self._volume = 0.15  # 15% default - radio should be subtle background
         self._enabled = True
         self._process: Optional[subprocess.Popen] = None
         self._play_thread: Optional[threading.Thread] = None
         self._stop_event = threading.Event()
+        self._lock = threading.Lock()  # Protect process access
         self._on_track_change = on_track_change
         self._last_station_before_dj: Optional[StationID] = None
         self._dj_duck_saturdays = True
@@ -326,21 +327,28 @@ class RadioPlayer:
             self._on_track_change(station.name)
     
     def stop(self):
-        """Stop radio playback (non-blocking, fast)."""
+        """Stop radio playback - kills process immediately."""
         self._stop_event.set()
         self._is_playing = False
         self._current_station = None
         
-        # Kill process immediately - don't wait
-        proc = self._process
-        self._process = None
-        self._play_thread = None
+        # Kill process under lock to prevent race
+        with self._lock:
+            proc = self._process
+            self._process = None
         
         if proc:
             try:
-                proc.kill()  # SIGKILL - instant termination
-            except OSError:
+                proc.kill()  # SIGKILL
+                proc.wait(timeout=0.1)  # Brief wait to reap zombie
+            except (OSError, subprocess.TimeoutExpired):
                 pass
+        
+        # Wait briefly for thread to notice stop
+        thread = self._play_thread
+        self._play_thread = None
+        if thread and thread.is_alive():
+            thread.join(timeout=0.2)
     
     def change_station(self, station_id: StationID):
         """Change to a different station."""
@@ -352,6 +360,10 @@ class RadioPlayer:
     
     def _stream_loop(self, station: RadioStation):
         """Background thread that handles streaming."""
+        # Check stop before doing anything
+        if self._stop_event.is_set():
+            return
+            
         # Special handling for Nook Radio (hourly music)
         if station.id == StationID.NOOK_RADIO:
             self._nook_radio_loop()
@@ -375,15 +387,24 @@ class RadioPlayer:
                 else:
                     cmd.append(url)
                 
-                self._process = subprocess.Popen(
-                    cmd,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL
-                )
+                # Check stop event again before spawning
+                if self._stop_event.is_set():
+                    return
+                
+                # Create process under lock
+                with self._lock:
+                    if self._stop_event.is_set():
+                        return
+                    self._process = subprocess.Popen(
+                        cmd,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL
+                    )
+                    proc = self._process
                 
                 # Wait for process to end or stop signal
                 while not self._stop_event.is_set():
-                    if self._process.poll() is not None:
+                    if proc.poll() is not None:
                         # Process ended, try next URL or restart
                         break
                     
@@ -399,9 +420,14 @@ class RadioPlayer:
                             ).start()
                         break
                     
-                    time.sleep(1)
+                    time.sleep(0.5)  # Check more frequently
                 
+                # Clean up this process if we're stopping
                 if self._stop_event.is_set():
+                    try:
+                        proc.kill()
+                    except OSError:
+                        pass
                     return
                 
             except (subprocess.SubprocessError, OSError):
@@ -419,6 +445,7 @@ class RadioPlayer:
         games = ["new-leaf", "new-horizons", "wild-world", "population-growing"]
         current_game_idx = 0
         last_hour = None
+        local_proc = None  # Track process locally
         
         while not self._stop_event.is_set():
             # Get current hour in nook format
@@ -432,15 +459,16 @@ class RadioPlayer:
                 last_hour = hour_str
                 
                 # Stop current track if playing
-                if self._process and self._process.poll() is None:
+                if local_proc and local_proc.poll() is None:
                     try:
-                        self._process.terminate()
-                        self._process.wait(timeout=2)
+                        local_proc.kill()
+                        local_proc.wait(timeout=0.5)
                     except (subprocess.TimeoutExpired, OSError):
-                        try:
-                            self._process.kill()
-                        except OSError:
-                            pass
+                        pass
+                
+                # Check stop again after cleanup
+                if self._stop_event.is_set():
+                    return
                 
                 # Build URL for current hour
                 game = games[current_game_idx % len(games)]
@@ -467,20 +495,29 @@ class RadioPlayer:
                         else:
                             cmd.append(url)
                         
-                        self._process = subprocess.Popen(
-                            cmd,
-                            stdout=subprocess.DEVNULL,
-                            stderr=subprocess.DEVNULL
-                        )
+                        with self._lock:
+                            if self._stop_event.is_set():
+                                return
+                            local_proc = subprocess.Popen(
+                                cmd,
+                                stdout=subprocess.DEVNULL,
+                                stderr=subprocess.DEVNULL
+                            )
+                            self._process = local_proc
                     except (subprocess.SubprocessError, OSError):
                         # Try next game on failure
                         current_game_idx += 1
             
-            # Wait before checking again (check every 30 seconds)
-            for _ in range(30):
+            # Wait before checking again (check every 0.5 seconds for responsiveness)
+            for _ in range(60):  # 30 second total check interval
                 if self._stop_event.is_set():
+                    if local_proc:
+                        try:
+                            local_proc.kill()
+                        except OSError:
+                            pass
                     return
-                time.sleep(1)
+                time.sleep(0.5)
     
     def get_station_list(self) -> List[Dict]:
         """Get formatted list of stations for menu display."""
