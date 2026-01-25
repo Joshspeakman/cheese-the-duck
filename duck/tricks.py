@@ -446,12 +446,15 @@ class TricksSystem:
         if self.last_training_date == today:
             pass  # Same day
         elif self.last_training_date:
-            days_since_last_training = (datetime.now().date().toordinal() -
-                         datetime.fromisoformat(self.last_training_date).date().toordinal())
-            if days_since_last_training == 1:
-                self.training_streak += 1
-            else:
-                self.training_streak = 1
+            try:
+                last_date = datetime.fromisoformat(self.last_training_date).date()
+                days_since_last_training = datetime.now().date().toordinal() - last_date.toordinal()
+                if days_since_last_training == 1:
+                    self.training_streak += 1
+                else:
+                    self.training_streak = 1
+            except ValueError:
+                self.training_streak = 1  # Reset on parse error
         else:
             self.training_streak = 1
         

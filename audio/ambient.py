@@ -543,5 +543,5 @@ def get_ambient_sound_system() -> AmbientSoundSystem:
     return _ambient_sound_system
 
 
-# Direct instance for backwards compatibility
-ambient_sound_system = AmbientSoundSystem()
+# Direct instance for backwards compatibility - uses the singleton
+ambient_sound_system = get_ambient_sound_system()

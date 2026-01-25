@@ -526,6 +526,21 @@ class BuildingSystem:
         
         return removed
     
+    def has_structure(self, structure_type: str) -> bool:
+        """Check if a structure of the given type exists.
+        
+        Args:
+            structure_type: The type of structure to check for (e.g., 'workbench')
+            
+        Returns:
+            True if the structure exists, False otherwise
+        """
+        return any(
+            s.blueprint and s.blueprint.structure_type == structure_type
+            for s in self.structures
+            if s.status in (StructureStatus.COMPLETE, StructureStatus.OPERATIONAL)
+        )
+    
     def get_structure_position(self, structure_type: str) -> Optional[Tuple[int, int]]:
         """Get the playfield position for a structure type (for duck movement)."""
         # Check specific structure positions first

@@ -100,16 +100,19 @@ class InputHandler:
         if self._input_mode == "text":
             return self._handle_text_input(key)
 
+        # Safely get key name (handles both blessed Key objects and strings)
+        key_name = getattr(key, 'name', None)
+
         # Handle escape key
-        if key.name == "KEY_ESCAPE":
+        if key_name == "KEY_ESCAPE":
             return GameAction.CANCEL
 
         # Handle enter key
-        if key.name == "KEY_ENTER":
+        if key_name == "KEY_ENTER":
             return GameAction.CONFIRM
 
         # Look up key binding
-        key_str = str(key) if not key.name else key.name
+        key_str = str(key) if not key_name else key_name
         action = KEY_BINDINGS.get(key_str, GameAction.NONE)
 
         # Execute callback if registered
@@ -120,12 +123,15 @@ class InputHandler:
 
     def _handle_text_input(self, key) -> GameAction:
         """Handle input in text entry mode."""
-        if key.name == "KEY_ESCAPE":
+        # Safely get key name (handles both blessed Key objects and strings)
+        key_name = getattr(key, 'name', None)
+        
+        if key_name == "KEY_ESCAPE":
             self._input_mode = "normal"
             self._text_buffer = ""
             return GameAction.CANCEL
 
-        if key.name == "KEY_ENTER":
+        if key_name == "KEY_ENTER":
             # Submit text
             if self._text_callback:
                 self._text_callback(self._text_buffer)
@@ -134,12 +140,12 @@ class InputHandler:
             self._text_buffer = ""
             return GameAction.CONFIRM
 
-        if key.name == "KEY_BACKSPACE":
+        if key_name == "KEY_BACKSPACE":
             self._text_buffer = self._text_buffer[:-1]
             return GameAction.NONE
 
         # Add printable characters
-        if key.is_sequence is False and len(str(key)) == 1:
+        if not getattr(key, 'is_sequence', True) and len(str(key)) == 1:
             self._text_buffer += str(key)
 
         return GameAction.NONE

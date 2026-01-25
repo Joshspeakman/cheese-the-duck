@@ -437,10 +437,13 @@ class CosmeticsRenderer:
     
     def get_cosmetic_description(self, item_id: str) -> str:
         """Get a description of the cosmetic for display."""
-        from world.shop import get_item
-        item = get_item(item_id)
-        if item:
-            preview = self.get_cosmetic_preview(item_id)
-            return f"{preview} {item.name}"
+        try:
+            from world.shop import get_item
+            item = get_item(item_id)
+            if item:
+                preview = self.get_cosmetic_preview(item_id)
+                return f"{preview} {item.name}"
+        except ImportError:
+            pass
         return ""
 

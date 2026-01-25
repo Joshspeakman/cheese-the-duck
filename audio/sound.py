@@ -1089,6 +1089,22 @@ class SoundEngine:
         bars = int(self.volume * 10)
         return "█" * bars + "." * (10 - bars)
 
+    def set_master_volume(self, volume: float):
+        """Set master volume (0.0 to 1.0). Affects all sounds."""
+        self.volume = max(0.0, min(1.0, volume))
+
+    def set_sfx_volume(self, volume: float):
+        """Set sound effects volume (0.0 to 1.0)."""
+        self.volume = max(0.0, min(1.0, volume))
+
+    def set_music_enabled(self, enabled: bool):
+        """Enable or disable background music."""
+        if enabled:
+            self.music_muted = False
+        else:
+            self.music_muted = True
+            self.stop_music()
+
 
 def count_syllables(text: str) -> int:
     """

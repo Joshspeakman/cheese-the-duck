@@ -855,7 +855,7 @@ class SeamanDialogue:
             # Recent memories
             memory = duck_memory.recall_memory()
             if memory:
-                prompt_parts.append(f"\nA memory you could reference: {memory.content}")
+                prompt_parts.append(f"\nA memory you could reference: {memory}")
         
         prompt_parts.append("\n\nRemember: SHORT responses. Deadpan delivery. You're an old-school duck with opinions. He/him.")
         

@@ -859,8 +859,14 @@ class ExtendedPersonalitySystem:
         for trait_id in EXTENDED_TRAITS:
             if trait_id not in system.extended_traits:
                 system.extended_traits[trait_id] = 0
-                
-        system.quirks = [QuirkType(q) for q in data.get("quirks", [])]
+        
+        # Load quirks with error handling for invalid values
+        system.quirks = []
+        for q in data.get("quirks", []):
+            try:
+                system.quirks.append(QuirkType(q))
+            except ValueError:
+                pass  # Skip invalid quirks from older versions
         
         system.preferences = {}
         for pt_str, p_data in data.get("preferences", {}).items():
