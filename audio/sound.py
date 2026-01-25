@@ -442,14 +442,21 @@ class SoundEngine:
                         sound = None
 
                     while self._music_playing and not self.music_muted:
+                        # Stop if radio starts playing (radio takes priority)
+                        if self.is_radio_playing():
+                            if sound:
+                                sound.stop()
+                            self._music_playing = False
+                            return
                         try:
                             if sound:
                                 # Play once (loops=0)
                                 self._music_channel = sound.play(loops=0)
                                 # Wait for it to finish
                                 while self._music_channel and self._music_channel.get_busy():
-                                    if not self._music_playing or self.music_muted:
+                                    if not self._music_playing or self.music_muted or self.is_radio_playing():
                                         sound.stop()
+                                        self._music_playing = False
                                         return
                                     time.sleep(0.1)
                             else:
@@ -458,15 +465,17 @@ class SoundEngine:
                                 pygame.mixer.music.set_volume(self.music_volume)
                                 pygame.mixer.music.play(0)
                                 while pygame.mixer.music.get_busy():
-                                    if not self._music_playing or self.music_muted:
+                                    if not self._music_playing or self.music_muted or self.is_radio_playing():
                                         pygame.mixer.music.stop()
+                                        self._music_playing = False
                                         return
                                     time.sleep(0.1)
 
                             # Cooldown: wait 2-5 minutes before playing again
                             cooldown = random.uniform(120, 300)
                             for _ in range(int(cooldown * 10)):
-                                if not self._music_playing or self.music_muted:
+                                if not self._music_playing or self.music_muted or self.is_radio_playing():
+                                    self._music_playing = False
                                     return
                                 time.sleep(0.1)
                         except Exception:
@@ -487,6 +496,10 @@ class SoundEngine:
         
         def play_loop():
             while self._music_playing and not self.music_muted:
+                # Stop if radio starts playing (radio takes priority)
+                if self.is_radio_playing():
+                    self._music_playing = False
+                    return
                 try:
                     if self._music_player == 'mpv':
                         # mpv with loop and low volume
@@ -536,8 +549,9 @@ class SoundEngine:
                         # Wait 2-5 minutes before looping again
                         cooldown = random.uniform(120, 300)
                         for _ in range(int(cooldown * 10)):
-                            if not self._music_playing or self.music_muted:
-                                break
+                            if not self._music_playing or self.music_muted or self.is_radio_playing():
+                                self._music_playing = False
+                                return
                             time.sleep(0.1)
                         continue
                     elif self._music_player == 'paplay':
@@ -553,8 +567,9 @@ class SoundEngine:
                         # Wait 2-5 minutes before looping again
                         cooldown = random.uniform(120, 300)
                         for _ in range(int(cooldown * 10)):
-                            if not self._music_playing or self.music_muted:
-                                break
+                            if not self._music_playing or self.music_muted or self.is_radio_playing():
+                                self._music_playing = False
+                                return
                             time.sleep(0.1)
                         continue
                 except Exception:
