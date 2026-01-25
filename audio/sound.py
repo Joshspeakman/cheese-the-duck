@@ -589,27 +589,19 @@ class SoundEngine:
             except Exception:
                 pass
 
-        # Capture references for background thread
+        # IMPORTANT: Kill the process immediately to unblock the thread's .wait()
+        # The thread is stuck in .wait() on ffplay/mpv which loop internally
         proc = self._music_process
-        thread = self._music_thread
         self._music_process = None
+        
+        if proc:
+            try:
+                proc.kill()  # SIGKILL - immediate, unblocks .wait()
+            except OSError:
+                pass
+
+        # Thread will exit naturally now that process is dead and flag is False
         self._music_thread = None
-
-        # Stop subprocess in background to avoid blocking game loop
-        def stop_in_background():
-            if proc:
-                try:
-                    proc.terminate()
-                    proc.wait(timeout=1)
-                except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-                    try:
-                        proc.kill()
-                    except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-                        pass
-            if thread:
-                thread.join(timeout=0.5)
-
-        threading.Thread(target=stop_in_background, daemon=True).start()
 
     def toggle_music_mute(self) -> bool:
         """Toggle music mute on/off. Returns new muted state."""
@@ -1137,30 +1129,21 @@ class SoundEngine:
         pass
 
     def stop_music(self):
-        """Stop currently playing music. Non-blocking."""
+        """Stop currently playing music. Immediate kill, non-blocking."""
         self._music_playing = False
         
-        # Capture references for background thread
+        # Capture and clear references
         proc = self._music_process
-        thread = self._music_thread
         self._music_process = None
         self._music_thread = None
         
-        # Stop in background to avoid blocking game loop
-        def stop_in_background():
-            if proc:
-                try:
-                    proc.terminate()
-                    proc.wait(timeout=0.5)
-                except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-                    try:
-                        proc.kill()
-                    except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
-                        pass
-            if thread:
-                thread.join(timeout=0.5)
-        
-        threading.Thread(target=stop_in_background, daemon=True).start()
+        # Immediate kill - don't use background thread
+        # ffplay with -loop 0 runs forever, so we must use SIGKILL
+        if proc:
+            try:
+                proc.kill()  # SIGKILL - immediate termination
+            except OSError:
+                pass
 
     def set_enabled(self, enabled: bool):
         """Enable or disable sound."""
