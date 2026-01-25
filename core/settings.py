@@ -43,10 +43,14 @@ class AudioSettings:
     music_volume: float = 0.7           # 0.0 - 1.0
     sfx_volume: float = 0.8             # 0.0 - 1.0
     ambient_volume: float = 0.5         # 0.0 - 1.0
+    radio_volume: float = 0.5           # 0.0 - 1.0
     music_enabled: bool = True
     sfx_enabled: bool = True
     ambient_enabled: bool = True
+    radio_enabled: bool = True
     duck_quacks_enabled: bool = True    # Some might find frequent quacks annoying
+    last_radio_station: str = "quack_fm"  # Last played radio station
+    dj_duck_saturdays: bool = True      # Auto-switch to DJ Duck on Saturday nights
 
 
 @dataclass

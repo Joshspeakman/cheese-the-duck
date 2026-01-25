@@ -87,6 +87,7 @@ def build_main_menu_categories() -> list:
                 MenuItem("settings", "Settings", "Audio, display, and game options"),
                 MenuItem("sound", "Toggle Sound", "Turn sound on/off"),
                 MenuItem("music", "Toggle Music", "Turn music on/off"),
+                MenuItem("radio", "Radio", "Background noise. For ducks."),
                 # MenuItem("save_slots", "Save Slots", "Manage save files"),  # Hidden for now
                 MenuItem("help", "Help", "View controls and tips"),
                 MenuItem("reset_game", "Reset Game", "WARNING: Deletes ALL progress!"),
@@ -145,6 +146,7 @@ MENU_ACTIONS = {
     "settings": "_open_settings_menu",
     "sound": "_toggle_sound",
     "music": "_toggle_music",
+    "radio": "_show_radio_menu",
     "save_slots": "_show_save_slots_menu",
     "help": "_toggle_help",
     "reset_game": "_start_reset_confirmation",
@@ -560,6 +562,49 @@ def _get_titles_items(game):
     return items
 
 
+def _get_radio_items(game):
+    """Build radio station submenu items dynamically."""
+    from ui.menu_selector import MasterMenuItem
+    items = []
+    
+    try:
+        from audio.radio import get_radio_player, StationID
+        
+        radio = get_radio_player()
+        stations = radio.get_station_list()
+        
+        for station in stations:
+            # Format label with status
+            label = station["name"]
+            if station["is_current"]:
+                label = f"▶ {label}"
+            if station["status"]:
+                label = f"{label} ({station['status']})"
+            
+            # DJ Duck special handling
+            is_dj_duck = station["id"] == StationID.DJ_DUCK_LIVE
+            
+            items.append(MasterMenuItem(
+                id=f"radio_{station['id'].value}",
+                label=label,
+                action=f"radio_{station['id'].value}",
+                completed=station["is_current"],
+                enabled=station["available"] or not is_dj_duck
+            ))
+        
+        # Add stop radio option if playing
+        if radio.is_playing:
+            items.append(MasterMenuItem(
+                id="radio_stop",
+                label="■ Stop Radio",
+                action="radio_stop"
+            ))
+    except ImportError:
+        items.append(MasterMenuItem(id="radio_none", label="Radio unavailable", enabled=False))
+    
+    return items
+
+
 def build_master_menu_tree():
     """
     Build the master menu tree structure.
@@ -645,6 +690,7 @@ def build_master_menu_tree():
                 MasterMenuItem(id="settings", label="Settings", action="settings"),
                 MasterMenuItem(id="sound", label="Toggle Sound", action="sound"),
                 MasterMenuItem(id="music", label="Toggle Music", action="music"),
+                MasterMenuItem(id="radio", label="Radio", children=_get_radio_items),
                 # MasterMenuItem(id="save_slots", label="Save Slots", action="save_slots"),  # Hidden for now
                 MasterMenuItem(id="help", label="Help", action="help"),
             ]

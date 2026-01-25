@@ -648,6 +648,80 @@ class SoundEngine:
             except Exception:
                 pass
 
+    # ============== RADIO INTEGRATION ==============
+    
+    def get_radio(self):
+        """Get the radio player instance."""
+        from audio.radio import get_radio_player
+        return get_radio_player()
+    
+    def play_radio(self, station_id=None):
+        """
+        Start radio playback.
+        
+        Args:
+            station_id: Optional StationID to play. If None, uses last station.
+        """
+        radio = self.get_radio()
+        if station_id is None:
+            # Use last station from settings if available
+            try:
+                from core.settings import settings_manager
+                last_station = settings_manager.settings.audio.last_radio_station
+                if last_station:
+                    from audio.radio import StationID
+                    station_id = StationID(last_station)
+            except Exception:
+                pass
+        radio.play(station_id)
+    
+    def stop_radio(self):
+        """Stop radio playback."""
+        self.get_radio().stop()
+    
+    def change_radio_station(self, station_id):
+        """Change to a different radio station."""
+        from audio.radio import StationID
+        if isinstance(station_id, str):
+            station_id = StationID(station_id)
+        
+        result = self.get_radio().change_station(station_id)
+        
+        # Save last station to settings
+        if result:
+            try:
+                from core.settings import settings_manager
+                settings_manager.set_value("audio", "last_radio_station", station_id.value)
+            except Exception:
+                pass
+        
+        return result
+    
+    def set_radio_volume(self, volume: float):
+        """Set radio volume (0.0 to 1.0)."""
+        self.get_radio().set_volume(volume)
+        try:
+            from core.settings import settings_manager
+            settings_manager.set_value("audio", "radio_volume", volume)
+        except Exception:
+            pass
+    
+    def is_radio_playing(self) -> bool:
+        """Check if radio is currently playing."""
+        return self.get_radio().is_playing
+    
+    def get_radio_stations(self):
+        """Get list of available radio stations for menu display."""
+        return self.get_radio().get_station_list()
+    
+    def update_radio(self):
+        """
+        Update radio state (call from game loop).
+        
+        Handles automatic DJ Duck scheduling.
+        """
+        self.get_radio().update()
+
     # ============== DYNAMIC MUSIC METHODS ==============
 
     def update_music(self, context: MusicContext, force: bool = False):
