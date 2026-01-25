@@ -112,7 +112,7 @@ python main.py
 
 ---
 
-## 🤖 Optional: AI Dialogue
+## 🤖 AI Dialogue
 
 The game includes a bundled AI model. Installers download this automatically.
 
@@ -123,6 +123,8 @@ python download_model.py
 ```
 
 ### Use Ollama (Alternative)
+
+For better performance with larger models:
 
 ```bash
 ollama pull llama3.2
@@ -139,7 +141,7 @@ ollama serve
 - Enable color support
 
 ### No sound
-Sound is optional. Install pygame:
+Ensure pygame is installed (included in requirements.txt):
 ```bash
 pip install pygame
 ```

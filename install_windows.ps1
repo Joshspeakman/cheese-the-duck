@@ -345,20 +345,14 @@ function Install-CheeseTheDuck {
         Pop-Location
     }
     
-    # Ask about AI model
-    if (-not $Silent) {
-        Write-Host ""
-        $downloadModel = Read-Host "Download AI model for conversations? (~700MB) (y/N)"
-        if ($downloadModel -eq "y" -or $downloadModel -eq "Y") {
-            Write-Step "Downloading AI model (this may take a while)..."
-            Push-Location $installDir
-            try {
-                $venvPython = Join-Path $installDir ".venv\Scripts\python.exe"
-                & $venvPython download_model.py
-            } finally {
-                Pop-Location
-            }
-        }
+    # Download AI model
+    Write-Step "Downloading AI model (this may take a while)..."
+    Push-Location $installDir
+    try {
+        $venvPython = Join-Path $installDir ".venv\Scripts\python.exe"
+        & $venvPython download_model.py --auto
+    } finally {
+        Pop-Location
     }
     
     # Create launcher batch file

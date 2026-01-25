@@ -66,13 +66,10 @@ python -m pip install --upgrade pip -q
 pip install -r requirements.txt -q
 echo   √ Dependencies installed
 
-REM Download AI model (optional)
+REM Download AI model
 echo.
-set /p download_model="Download AI model for conversations? (~700MB) [y/N]: "
-if /i "%download_model%"=="y" (
-    echo Downloading AI model...
-    python download_model.py
-)
+echo Downloading AI model...
+python download_model.py --auto
 
 REM Create launcher batch file
 echo.
