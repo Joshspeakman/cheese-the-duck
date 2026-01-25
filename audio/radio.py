@@ -38,6 +38,7 @@ class RadioStation:
     genre: str
     fallback_urls: List[str] = field(default_factory=list)
     always_available: bool = True
+    volume_boost: int = 0  # Volume adjustment: positive = louder, negative = quieter
 
 
 # Station definitions - royalty-free streams
@@ -80,7 +81,8 @@ STATIONS: Dict[StationID, RadioStation] = {
         tagline="Chaotic energy for chaotic ducks.",
         stream_url="https://ice1.somafm.com/poptron-128-mp3",
         genre="upbeat",
-        fallback_urls=["https://ice1.somafm.com/defcon-128-mp3"]
+        fallback_urls=["https://ice1.somafm.com/defcon-128-mp3"],
+        volume_boost=-20  # HONK is too loud, reduce by 20%
     ),
     StationID.NOOK_RADIO: RadioStation(
         id=StationID.NOOK_RADIO,
@@ -88,7 +90,8 @@ STATIONS: Dict[StationID, RadioStation] = {
         tagline="Hourly vibes. Like a certain island.",
         stream_url="nook",  # Special marker
         genre="hourly",
-        fallback_urls=[]
+        fallback_urls=[],
+        volume_boost=30  # Nook is too quiet, boost by 30%
     ),
     StationID.DJ_DUCK_LIVE: RadioStation(
         id=StationID.DJ_DUCK_LIVE,
@@ -181,6 +184,12 @@ class RadioPlayer:
     
     def _build_command(self, url: str) -> List[str]:
         """Build player command with volume."""
+        # Get volume with per-station adjustment
+        station_boost = 0
+        if self._current_station:
+            station_boost = self._current_station.volume_boost
+        effective_volume = max(0, min(100, self._volume + station_boost))
+        
         if self._player == "mpv":
             return [
                 "mpv",
@@ -188,7 +197,7 @@ class RadioPlayer:
                 "--really-quiet",
                 "--no-terminal",
                 "--network-timeout=30",  # Prevent hung connection
-                f"--volume={self._volume}",
+                f"--volume={effective_volume}",
                 url
             ]
         elif self._player == "ffplay":
@@ -199,7 +208,7 @@ class RadioPlayer:
                 "-loglevel", "quiet",
                 "-infbuf",  # Use infinite buffer to reduce CPU wake-ups
                 "-framedrop",  # Allow frame dropping (audio only anyway)
-                "-volume", str(self._volume),
+                "-volume", str(effective_volume),
                 url
             ]
         elif self._player == "vlc":
@@ -207,7 +216,7 @@ class RadioPlayer:
                 "vlc",
                 "--intf", "dummy",
                 "--no-video",
-                f"--gain={self._volume / 100}",
+                f"--gain={effective_volume / 100}",
                 url
             ]
         return []
