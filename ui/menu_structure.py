@@ -579,6 +579,16 @@ def _get_radio_items(game):
         from audio.radio import get_radio_player, StationID
         
         radio = get_radio_player()
+        
+        # Check if player is available
+        if not radio.player_available:
+            items.append(MasterMenuItem(
+                id="radio_status",
+                label=radio.player_status,
+                enabled=False
+            ))
+            return items
+        
         stations = radio.get_station_list()
         
         for station in stations:

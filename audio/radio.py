@@ -133,8 +133,29 @@ class RadioPlayer:
         # Lock to prevent race conditions during station switching
         self._lock = threading.Lock()
 
-        # Find player once at init
+        # Detect player in background to avoid blocking init
+        self._player: Optional[str] = None
+        self._player_detected = False
+        threading.Thread(target=self._detect_player_background, daemon=True).start()
+    
+    def _detect_player_background(self):
+        """Detect available audio player in background thread."""
         self._player = self._find_player()
+        self._player_detected = True
+    
+    @property
+    def player_available(self) -> bool:
+        """Check if an audio player is available."""
+        return self._player_detected and self._player is not None
+    
+    @property
+    def player_status(self) -> str:
+        """Get player status for UI display."""
+        if not self._player_detected:
+            return "Detecting audio player..."
+        if not self._player:
+            return "No audio player found (install mpv or ffplay)"
+        return f"Using {self._player}"
     
     def _find_player(self) -> Optional[str]:
         """Find available audio player."""
@@ -165,6 +186,7 @@ class RadioPlayer:
                 "--no-video",
                 "--really-quiet",
                 "--no-terminal",
+                "--network-timeout=30",  # Prevent hung connection
                 f"--volume={self._volume}",
                 url
             ]
@@ -222,11 +244,13 @@ class RadioPlayer:
     
     @property
     def is_playing(self) -> bool:
-        return self._is_playing
+        with self._lock:
+            return self._is_playing
     
     @property
     def current_station(self) -> Optional[RadioStation]:
-        return self._current_station
+        with self._lock:
+            return self._current_station
     
     @property
     def volume(self) -> float:
@@ -277,8 +301,10 @@ class RadioPlayer:
     
     def play(self, station_id: Optional[StationID] = None):
         """Start playing a station. Non-blocking, spawns in background thread."""
-        if not self._enabled or not self._player:
+        if not self._enabled:
             return
+        if not self._player_detected or not self._player:
+            return  # Player not yet detected or not available
 
         # DJ Duck auto-switch
         if self.is_dj_duck_live() and station_id != StationID.DJ_DUCK_LIVE:
@@ -307,9 +333,10 @@ class RadioPlayer:
         if not cmd:
             return
 
-        # Update state immediately so UI shows "playing"
-        self._current_station = station
-        self._is_playing = True
+        # Update state immediately with lock so UI shows "playing"
+        with self._lock:
+            self._current_station = station
+            self._is_playing = True
 
         # Spawn subprocess in background thread to avoid blocking game loop
         # (subprocess.Popen can be slow due to fork/network)
@@ -344,9 +371,10 @@ class RadioPlayer:
     
     def stop(self):
         """Stop radio. Non-blocking."""
-        # Update state immediately
-        self._is_playing = False
-        self._current_station = None
+        # Update state immediately with lock
+        with self._lock:
+            self._is_playing = False
+            self._current_station = None
 
         # Kill process in background thread to avoid blocking
         def kill_in_background():
