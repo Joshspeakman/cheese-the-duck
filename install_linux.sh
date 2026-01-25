@@ -2,11 +2,12 @@
 # ============================================================
 # Cheese the Duck - Linux Installer
 # ============================================================
-# Installs all dependencies via apt, creates virtual environment,
-# desktop shortcuts with icons, and proper launcher.
+# Installs all dependencies via apt/dnf/pacman, creates virtual
+# environment, desktop shortcuts with icons, and proper launcher.
 #
-# Usage: chmod +x install_linux.sh && ./install_linux.sh
-# Uninstall: ./install_linux.sh --uninstall
+# Usage: curl -fsSL https://raw.githubusercontent.com/Joshspeakman/cheese-the-duck/main/install_linux.sh | bash
+#    Or: ./install_linux.sh (from cloned repo)
+# Uninstall: ~/.local/share/CheeseTheDuck/uninstall.sh --uninstall
 # ============================================================
 
 set -e
@@ -14,11 +15,20 @@ set -e
 # Configuration
 APP_NAME="Cheese the Duck"
 APP_ID="cheese-the-duck"
+REPO_URL="https://github.com/Joshspeakman/cheese-the-duck.git"
 DEFAULT_INSTALL_DIR="$HOME/.local/share/CheeseTheDuck"
 LAUNCHER_DIR="$HOME/.local/bin"
 DESKTOP_DIR="$HOME/.local/share/applications"
 ICON_DIR="$HOME/.local/share/icons/hicolor"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Detect if running from piped input (curl | bash) or local file
+if [ -n "${BASH_SOURCE[0]}" ] && [ -f "${BASH_SOURCE[0]}" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    RUN_MODE="local"
+else
+    SCRIPT_DIR=""
+    RUN_MODE="remote"
+fi
 
 # Colors
 RED='\033[0;31m'
@@ -265,6 +275,23 @@ install_game() {
     # Install system dependencies
     install_apt_dependencies
     
+    # Ensure git is installed for remote mode
+    if [ "$RUN_MODE" = "remote" ]; then
+        if ! command_exists git; then
+            print_step "Installing git..."
+            if command_exists apt-get; then
+                sudo apt-get install -y -qq git
+            elif command_exists dnf; then
+                sudo dnf install -y git
+            elif command_exists pacman; then
+                sudo pacman -S --noconfirm git
+            else
+                print_error "Git is required but no package manager found"
+                exit 1
+            fi
+        fi
+    fi
+    
     # Create installation directory
     print_step "Creating installation directory..."
     if [ -d "$INSTALL_DIR" ]; then
@@ -273,16 +300,25 @@ install_game() {
     mkdir -p "$INSTALL_DIR"
     print_success "Directory created"
     
-    # Copy files
-    print_step "Copying game files..."
-    cp -r "$SCRIPT_DIR"/* "$INSTALL_DIR/" 2>/dev/null || true
+    # Get game files
+    if [ "$RUN_MODE" = "remote" ]; then
+        print_step "Cloning repository..."
+        git clone --depth 1 "$REPO_URL" "$INSTALL_DIR"
+        print_success "Repository cloned"
+    else
+        print_step "Copying game files..."
+        cp -r "$SCRIPT_DIR"/* "$INSTALL_DIR/" 2>/dev/null || true
+        print_success "Files copied"
+    fi
     
-    # Remove installer scripts from destination
+    # Remove installer scripts and unnecessary files from destination
+    print_step "Cleaning up..."
     rm -f "$INSTALL_DIR/install_linux.sh" "$INSTALL_DIR/install_windows.ps1" "$INSTALL_DIR/install_windows.bat" 2>/dev/null || true
     rm -rf "$INSTALL_DIR/.venv" "$INSTALL_DIR/.git" "$INSTALL_DIR/__pycache__" 2>/dev/null || true
+    rm -rf "$INSTALL_DIR/StupidDuckCS" "$INSTALL_DIR/debian" 2>/dev/null || true
     find "$INSTALL_DIR" -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
     find "$INSTALL_DIR" -name "*.pyc" -delete 2>/dev/null || true
-    print_success "Files copied"
+    print_success "Cleanup complete"
     
     # Create virtual environment
     print_step "Setting up Python environment..."

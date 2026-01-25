@@ -22,7 +22,16 @@ $AppExeName = "CheeseTheDuck"
 $DefaultInstallDir = "$env:LOCALAPPDATA\CheeseTheDuck"
 $PythonMinVersion = [version]"3.8.0"
 $PythonDownloadUrl = "https://www.python.org/ftp/python/3.12.0/python-3.12.0-amd64.exe"
+$RepoUrl = "https://github.com/Joshspeakman/cheese-the-duck/archive/refs/heads/main.zip"
+$RepoName = "cheese-the-duck-main"
+
+# Detect run mode (local from cloned repo, or remote download)
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+if ([string]::IsNullOrEmpty($ScriptDir) -or -not (Test-Path "$ScriptDir\main.py")) {
+    $RunMode = "remote"
+} else {
+    $RunMode = "local"
+}
 
 # Console colors
 function Write-Header {
@@ -275,20 +284,51 @@ function Install-CheeseTheDuck {
     New-Item -ItemType Directory -Path $installDir -Force | Out-Null
     Write-Success "Directory created"
     
-    # Copy files
-    Write-Step "Copying game files..."
-    $excludeFiles = @("install_windows.ps1", "install_windows.bat", "install_linux.sh", ".venv", ".git", "__pycache__", "*.pyc", "build", "dist")
-    
-    Get-ChildItem -Path $ScriptDir -Exclude $excludeFiles | ForEach-Object {
-        if ($_.PSIsContainer) {
-            if ($_.Name -notin @(".venv", ".git", "__pycache__", "build", "dist")) {
-                Copy-Item $_.FullName -Destination $installDir -Recurse -Force
+    # Get game files
+    if ($RunMode -eq "remote") {
+        Write-Step "Downloading game files from GitHub..."
+        $tempZip = "$env:TEMP\cheese-the-duck.zip"
+        $tempExtract = "$env:TEMP\cheese-the-duck-extract"
+        
+        try {
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            Invoke-WebRequest -Uri $RepoUrl -OutFile $tempZip -UseBasicParsing
+            
+            # Extract
+            if (Test-Path $tempExtract) { Remove-Item $tempExtract -Recurse -Force }
+            Expand-Archive -Path $tempZip -DestinationPath $tempExtract -Force
+            
+            # Move contents from extracted folder to install dir
+            $extractedDir = "$tempExtract\$RepoName"
+            Get-ChildItem -Path $extractedDir | ForEach-Object {
+                if ($_.Name -notin @(".venv", ".git", "__pycache__", "build", "dist", "StupidDuckCS", "debian")) {
+                    if ($_.PSIsContainer) {
+                        Copy-Item $_.FullName -Destination $installDir -Recurse -Force
+                    } else {
+                        Copy-Item $_.FullName -Destination $installDir -Force
+                    }
+                }
             }
-        } else {
-            Copy-Item $_.FullName -Destination $installDir -Force
+            Write-Success "Files downloaded"
+        } finally {
+            if (Test-Path $tempZip) { Remove-Item $tempZip -Force }
+            if (Test-Path $tempExtract) { Remove-Item $tempExtract -Recurse -Force }
         }
+    } else {
+        Write-Step "Copying game files..."
+        $excludeFiles = @("install_windows.ps1", "install_windows.bat", "install_linux.sh", ".venv", ".git", "__pycache__", "*.pyc", "build", "dist", "StupidDuckCS", "debian")
+        
+        Get-ChildItem -Path $ScriptDir -Exclude $excludeFiles | ForEach-Object {
+            if ($_.PSIsContainer) {
+                if ($_.Name -notin @(".venv", ".git", "__pycache__", "build", "dist", "StupidDuckCS", "debian")) {
+                    Copy-Item $_.FullName -Destination $installDir -Recurse -Force
+                }
+            } else {
+                Copy-Item $_.FullName -Destination $installDir -Force
+            }
+        }
+        Write-Success "Files copied"
     }
-    Write-Success "Files copied"
     
     # Create virtual environment
     Write-Step "Setting up Python environment..."
