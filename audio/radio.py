@@ -140,7 +140,7 @@ class RadioPlayer:
         """
         self._current_station: Optional[RadioStation] = None
         self._is_playing = False
-        self._volume = 0.5
+        self._volume = 0.3  # 30% default - radio shouldn't overpower game
         self._enabled = True
         self._process: Optional[subprocess.Popen] = None
         self._play_thread: Optional[threading.Thread] = None
@@ -312,23 +312,19 @@ class RadioPlayer:
             self._on_track_change(station.name)
     
     def stop(self):
-        """Stop radio playback."""
+        """Stop radio playback (non-blocking)."""
         self._stop_event.set()
         self._is_playing = False
         
         if self._process:
             try:
                 self._process.terminate()
-                self._process.wait(timeout=2)
-            except (subprocess.TimeoutExpired, OSError):
-                try:
-                    self._process.kill()
-                except OSError:
-                    pass
+                # Don't wait - let it die in background
+            except OSError:
+                pass
             self._process = None
         
-        if self._play_thread and self._play_thread.is_alive():
-            self._play_thread.join(timeout=2)
+        # Don't join thread - let it clean up on its own
         self._play_thread = None
         
         self._current_station = None

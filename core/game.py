@@ -1051,11 +1051,13 @@ class Game:
 
     def _handle_radio_action(self, action: str):
         """Handle radio menu actions."""
+        import threading
         from audio.sound import sound_engine
         from audio.radio import StationID
         
         if action == "stop":
-            sound_engine.stop_radio()
+            # Run in thread to avoid blocking
+            threading.Thread(target=sound_engine.stop_radio, daemon=True).start()
             self.renderer.show_message("Radio stopped")
             return
         
@@ -1069,15 +1071,18 @@ class Game:
                 self.renderer.show_message(f"DJ Duck: {radio.get_dj_duck_status()}")
                 return
             
-            # Change station
-            if sound_engine.change_radio_station(station_id):
-                station = radio.current_station
-                if station:
-                    self.renderer.show_message(f"Now playing: {station.name}")
-                else:
-                    self.renderer.show_message("Radio started")
-            else:
-                self.renderer.show_message("Couldn't start radio")
+            # Get station name before async call
+            from audio.radio import STATIONS
+            station = STATIONS.get(station_id)
+            station_name = station.name if station else "Radio"
+            
+            # Change station in background thread to avoid blocking
+            def change_async():
+                sound_engine.change_radio_station(station_id)
+            
+            threading.Thread(target=change_async, daemon=True).start()
+            self.renderer.show_message(f"Tuning to {station_name}...")
+            
         except ValueError:
             self.renderer.show_message(f"Unknown station: {action}")
 

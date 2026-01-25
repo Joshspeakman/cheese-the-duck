@@ -43,7 +43,7 @@ class AudioSettings:
     music_volume: float = 0.7           # 0.0 - 1.0
     sfx_volume: float = 0.8             # 0.0 - 1.0
     ambient_volume: float = 0.5         # 0.0 - 1.0
-    radio_volume: float = 0.5           # 0.0 - 1.0
+    radio_volume: float = 0.3           # 0.0 - 1.0 (lower default for background)
     music_enabled: bool = True
     sfx_enabled: bool = True
     ambient_enabled: bool = True
