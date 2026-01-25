@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc:*)",
+      "Bash(gh auth status:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git tag:*)",
+      "Bash(python3 -m py_compile:*)",
+      "Bash(find:*)",
+      "Read(//mnt/System_NVMe/**)",
+      "Bash(python -m py_compile:*)",
+      "Bash(git checkout:*)",
+      "Bash(pactl info:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}
