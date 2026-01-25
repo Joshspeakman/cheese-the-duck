@@ -347,9 +347,10 @@ class RadioPlayer:
                 self._kill_process()
 
                 try:
-                    # Spawn subprocess (no start_new_session - we want it to die with parent)
+                    # Spawn subprocess with all stdio redirected to prevent terminal interference
                     self._process = subprocess.Popen(
                         cmd,
+                        stdin=subprocess.DEVNULL,   # Don't steal terminal input!
                         stdout=subprocess.DEVNULL,
                         stderr=subprocess.DEVNULL
                     )

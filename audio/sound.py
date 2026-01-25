@@ -491,6 +491,7 @@ class SoundEngine:
                             ['mpv', '--no-video', '--loop=inf', 
                              f'--volume={vol_percent}', '--really-quiet',
                              str(music_path)],
+                            stdin=subprocess.DEVNULL,
                             stdout=subprocess.DEVNULL,
                             stderr=subprocess.DEVNULL
                         )
@@ -502,6 +503,7 @@ class SoundEngine:
                             ['ffplay', '-nodisp', '-loop', '0',
                              '-volume', str(vol_percent), '-loglevel', 'quiet',
                              str(music_path)],
+                            stdin=subprocess.DEVNULL,
                             stdout=subprocess.DEVNULL,
                             stderr=subprocess.DEVNULL
                         )
@@ -511,6 +513,7 @@ class SoundEngine:
                         self._music_process = subprocess.Popen(
                             ['mpg123', '-q', '--scale', str(int(self.music_volume * 32768)),
                              str(music_path)],
+                            stdin=subprocess.DEVNULL,
                             stdout=subprocess.DEVNULL,
                             stderr=subprocess.DEVNULL
                         )
@@ -521,6 +524,7 @@ class SoundEngine:
                         # aplay for WAV files (loop in Python with cooldown)
                         self._music_process = subprocess.Popen(
                             ['aplay', '-q', str(music_path)],
+                            stdin=subprocess.DEVNULL,
                             stdout=subprocess.DEVNULL,
                             stderr=subprocess.DEVNULL
                         )
@@ -537,6 +541,7 @@ class SoundEngine:
                         pa_volume = int(self.music_volume * 65536)
                         self._music_process = subprocess.Popen(
                             ['paplay', '--volume', str(pa_volume), str(music_path)],
+                            stdin=subprocess.DEVNULL,
                             stdout=subprocess.DEVNULL,
                             stderr=subprocess.DEVNULL
                         )
@@ -1017,6 +1022,7 @@ class SoundEngine:
                         pa_volume = int(music_vol * 65536)
                         self._music_process = subprocess.Popen(
                             ['paplay', '--volume', str(pa_volume), str(wav_path)],
+                            stdin=subprocess.DEVNULL,
                             stdout=subprocess.DEVNULL,
                             stderr=subprocess.DEVNULL
                         )
@@ -1024,6 +1030,7 @@ class SoundEngine:
                     elif self._wav_player == 'aplay':
                         self._music_process = subprocess.Popen(
                             ['aplay', '-q', str(wav_path)],
+                            stdin=subprocess.DEVNULL,
                             stdout=subprocess.DEVNULL,
                             stderr=subprocess.DEVNULL
                         )
@@ -1032,6 +1039,7 @@ class SoundEngine:
                         self._music_process = subprocess.Popen(
                             ['ffplay', '-nodisp', '-autoexit', '-volume', 
                              str(int(music_vol * 100)), str(wav_path)],
+                            stdin=subprocess.DEVNULL,
                             stdout=subprocess.DEVNULL,
                             stderr=subprocess.DEVNULL
                         )
