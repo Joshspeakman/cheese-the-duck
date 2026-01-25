@@ -25,7 +25,7 @@ from config import GAME_DIR, SAVE_DIR
 
 
 # Game version - Update this when releasing new versions
-GAME_VERSION = "1.7.14"
+GAME_VERSION = "1.8.0"
 
 # GitHub repository info
 GITHUB_OWNER = "Joshspeakman"

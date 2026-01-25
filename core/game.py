@@ -1069,11 +1069,6 @@ class Game:
             station_id = StationID(action)
             radio = sound_engine.get_radio()
 
-            # Check if DJ Duck is available
-            if station_id == StationID.DJ_DUCK_LIVE and not radio.is_dj_duck_live():
-                self.renderer.show_message(f"DJ Duck: {radio.get_dj_duck_status()}")
-                return
-
             # Get station name
             from audio.radio import STATIONS
             station = STATIONS.get(station_id)
@@ -1090,6 +1085,22 @@ class Game:
 
         except ValueError:
             self.renderer.show_message(f"Unknown station: {action}")
+
+    def _toggle_nook_radio(self):
+        """Toggle Nook Radio on/off."""
+        from audio.sound import sound_engine
+        from audio.radio import StationID
+        
+        if sound_engine.is_radio_playing():
+            # Turn off radio
+            sound_engine.stop_radio()
+            self.renderer.show_message("Nook Radio off")
+        else:
+            # Turn on Nook Radio
+            if self._boombox_playing:
+                self._boombox_playing = False
+            sound_engine.change_radio_station(StationID.NOOK_RADIO)
+            self.renderer.show_message("♪ Nook Radio ♪")
 
     def _show_radio_menu(self):
         """Show the radio station selection menu."""

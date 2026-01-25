@@ -19,13 +19,7 @@ from typing import Optional, Callable, Dict, List
 
 class StationID(Enum):
     """Available radio stations."""
-    QUACK_FM = "quack_fm"
-    THE_POND = "the_pond"
-    BREAD_CRUMBS = "bread_crumbs"
-    FEATHER_BONE = "feather_bone"
-    HONK_RADIO = "honk_radio"
     NOOK_RADIO = "nook_radio"
-    DJ_DUCK_LIVE = "dj_duck_live"
 
 
 @dataclass
@@ -41,49 +35,8 @@ class RadioStation:
     volume_boost: int = 0  # Volume adjustment: positive = louder, negative = quieter
 
 
-# Station definitions - royalty-free streams
+# Station definitions - just Nook Radio now
 STATIONS: Dict[StationID, RadioStation] = {
-    StationID.QUACK_FM: RadioStation(
-        id=StationID.QUACK_FM,
-        name="Quack FM",
-        tagline="Music for staring at walls.",
-        stream_url="https://ice1.somafm.com/groovesalad-128-mp3",
-        genre="lofi",
-        fallback_urls=["https://ice1.somafm.com/lush-128-mp3"]
-    ),
-    StationID.THE_POND: RadioStation(
-        id=StationID.THE_POND,
-        name="The Pond",
-        tagline="Water. Just water.",
-        stream_url="https://ice1.somafm.com/dronezone-128-mp3",
-        genre="ambient",
-        fallback_urls=["https://ice1.somafm.com/deepspaceone-128-mp3"]
-    ),
-    StationID.BREAD_CRUMBS: RadioStation(
-        id=StationID.BREAD_CRUMBS,
-        name="Bread Crumbs",
-        tagline="8-bit nostalgia for ducks.",
-        stream_url="https://ice1.somafm.com/8bitpoppy-128-mp3",
-        genre="chiptune",
-        fallback_urls=[]
-    ),
-    StationID.FEATHER_BONE: RadioStation(
-        id=StationID.FEATHER_BONE,
-        name="Feather & Bone",
-        tagline="Smooth. Like a duck's back.",
-        stream_url="https://ice1.somafm.com/secretagent-128-mp3",
-        genre="jazz",
-        fallback_urls=["https://ice1.somafm.com/sonicuniverse-128-mp3"]
-    ),
-    StationID.HONK_RADIO: RadioStation(
-        id=StationID.HONK_RADIO,
-        name="HONK Radio",
-        tagline="Chaotic energy for chaotic ducks.",
-        stream_url="https://ice1.somafm.com/poptron-128-mp3",
-        genre="upbeat",
-        fallback_urls=["https://ice1.somafm.com/defcon-128-mp3"],
-        volume_boost=-20  # HONK is too loud, reduce by 20%
-    ),
     StationID.NOOK_RADIO: RadioStation(
         id=StationID.NOOK_RADIO,
         name="Nook Radio",
@@ -91,16 +44,7 @@ STATIONS: Dict[StationID, RadioStation] = {
         stream_url="nook",  # Special marker
         genre="hourly",
         fallback_urls=[],
-        volume_boost=30  # Nook is too quiet, boost by 30%
-    ),
-    StationID.DJ_DUCK_LIVE: RadioStation(
-        id=StationID.DJ_DUCK_LIVE,
-        name="DJ Duck Live",
-        tagline="He's here. He has opinions.",
-        stream_url="https://ice1.somafm.com/indiepop-128-mp3",
-        genre="eclectic",
-        fallback_urls=[],
-        always_available=False
+        volume_boost=30  # Boost volume for better audibility
     ),
 }
 
