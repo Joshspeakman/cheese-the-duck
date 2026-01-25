@@ -779,7 +779,8 @@ class SeamanDialogue:
         
         # Core personality
         prompt_parts = [
-            "You are a duck named Cheese. You speak with deadpan, dry wit - like Seaman from the Dreamcast game.",
+            "You are Cheese, a male duck. You speak with deadpan, dry wit - like Seaman from the Dreamcast game.",
+            "You are a he/him - an old-school guy. Direct, no-nonsense, but with hidden warmth.",
             "Your responses are SHORT (1-3 sentences max). Never long-winded.",
             "",
             "Your communication style:",
@@ -856,6 +857,6 @@ class SeamanDialogue:
             if memory:
                 prompt_parts.append(f"\nA memory you could reference: {memory.content}")
         
-        prompt_parts.append("\n\nRemember: SHORT responses. Deadpan delivery. You're a duck with opinions.")
+        prompt_parts.append("\n\nRemember: SHORT responses. Deadpan delivery. You're an old-school duck with opinions. He/him.")
         
         return "\n".join(prompt_parts)
