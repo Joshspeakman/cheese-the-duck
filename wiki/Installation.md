@@ -16,11 +16,13 @@
 
 ## 🪟 Windows
 
-### One-Line Install (PowerShell)
+### PowerShell Install (Run as Administrator)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; irm https://raw.githubusercontent.com/Joshspeakman/cheese-the-duck/main/install_windows.ps1 | iex
+cd $env:TEMP; Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Joshspeakman/cheese-the-duck/main/install_windows.ps1" -OutFile "install.ps1"; powershell -ExecutionPolicy Bypass -File install.ps1
 ```
+
+**Alternative:** Download `install_windows.ps1` from the repo, right-click → "Run with PowerShell"
 
 ### Portable Package (No Install)
 
