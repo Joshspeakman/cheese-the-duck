@@ -99,7 +99,7 @@ class ConversationMemory:
     Complete persistent memory of all conversations with the player.
     
     Features:
-    - Full conversation history (no limits)
+    - Bounded conversation history (prevents memory leaks)
     - Topic categorization
     - Fact extraction
     - Summary generation for old conversations
@@ -108,15 +108,23 @@ class ConversationMemory:
     - Callback references ("Remember when you said...")
     """
     
+    # Memory limits to prevent unbounded growth
+    MAX_CONVERSATIONS = 100  # Keep last 100 full conversations
+    MAX_SUMMARIES = 50  # Keep last 50 period summaries
+    MAX_NOTABLE_QUOTES = 100  # Keep last 100 notable quotes
+    MAX_INDEX_ENTRIES_PER_KEY = 50  # Max entries per topic/fact/date
+    MAX_UNANSWERED_QUESTIONS = 20  # Keep last 20 unanswered questions
+    MAX_CALLBACKS = 50  # Keep last 50 callback items
+    
     def __init__(self):
-        # Complete conversation history
+        # Complete conversation history (bounded)
         self.conversations: List[Conversation] = []
         self.current_conversation: Optional[Conversation] = None
         
         # Summaries of old conversations (for context compression)
         self.summaries: List[ConversationSummary] = []
         
-        # Indices for quick lookup
+        # Indices for quick lookup (bounded per key)
         self.topic_index: Dict[str, List[str]] = defaultdict(list)  # topic -> conversation IDs
         self.fact_index: Dict[str, List[str]] = defaultdict(list)  # fact -> conversation IDs
         self.date_index: Dict[str, List[str]] = defaultdict(list)  # YYYY-MM-DD -> conversation IDs
@@ -538,27 +546,18 @@ class ConversationMemory:
         return " ".join(summary_parts)
     
     def _maybe_consolidate_old_conversations(self):
-        """Consolidate very old conversations into summaries."""
-        # Keep full details for last 100 conversations
-        # Summarize older ones
-        if len(self.conversations) <= 100:
+        """Consolidate old conversations into summaries and enforce memory limits."""
+        # Enforce all memory limits
+        self._enforce_memory_limits()
+        
+        # Keep full details for last MAX_CONVERSATIONS
+        if len(self.conversations) <= self.MAX_CONVERSATIONS:
             return
         
-        # Find conversations older than 30 days that haven't been summarized
-        now = datetime.now()
-        cutoff = now - timedelta(days=30)
+        # Find conversations to consolidate (beyond MAX_CONVERSATIONS limit)
+        to_consolidate = self.conversations[:-self.MAX_CONVERSATIONS]
         
-        to_consolidate = []
-        for conv in self.conversations[:-100]:
-            try:
-                conv_date = datetime.fromisoformat(conv.started_at)
-                if conv_date < cutoff and not conv.summary:
-                    to_consolidate.append(conv)
-            except (ValueError, TypeError):
-                continue
-        
-        # Create summary for batch of old conversations
-        if len(to_consolidate) >= 10:
+        if len(to_consolidate) >= 5:
             period_start = to_consolidate[0].started_at
             period_end = to_consolidate[-1].started_at
             
@@ -582,12 +581,54 @@ class ConversationMemory:
                 summary_text=f"Period with {len(to_consolidate)} conversations, {total_messages} messages.",
                 key_topics=list(set(all_topics))[:10],
                 key_facts=list(set(all_facts))[:10],
-                relationship_trend="stable",  # Could calculate from sentiment
+                relationship_trend="stable",
                 notable_moments=all_moments[:5],
                 message_count=total_messages
             )
             
             self.summaries.append(summary)
+            
+            # Enforce summary limit
+            if len(self.summaries) > self.MAX_SUMMARIES:
+                self.summaries = self.summaries[-self.MAX_SUMMARIES:]
+        
+        # ACTUALLY REMOVE the old conversations to free memory
+        self.conversations = self.conversations[-self.MAX_CONVERSATIONS:]
+    
+    def _enforce_memory_limits(self):
+        """Enforce memory limits on all unbounded data structures."""
+        # Limit notable quotes
+        if len(self.notable_quotes) > self.MAX_NOTABLE_QUOTES:
+            self.notable_quotes = self.notable_quotes[-self.MAX_NOTABLE_QUOTES:]
+        
+        # Limit unanswered questions
+        if len(self.unanswered_questions) > self.MAX_UNANSWERED_QUESTIONS:
+            self.unanswered_questions = self.unanswered_questions[-self.MAX_UNANSWERED_QUESTIONS:]
+        
+        # Limit callbacks queue
+        if len(self.callbacks_queue) > self.MAX_CALLBACKS:
+            self.callbacks_queue = self.callbacks_queue[-self.MAX_CALLBACKS:]
+        
+        # Limit index entries per key
+        for topic in list(self.topic_index.keys()):
+            if len(self.topic_index[topic]) > self.MAX_INDEX_ENTRIES_PER_KEY:
+                self.topic_index[topic] = self.topic_index[topic][-self.MAX_INDEX_ENTRIES_PER_KEY:]
+        
+        for fact in list(self.fact_index.keys()):
+            if len(self.fact_index[fact]) > self.MAX_INDEX_ENTRIES_PER_KEY:
+                self.fact_index[fact] = self.fact_index[fact][-self.MAX_INDEX_ENTRIES_PER_KEY:]
+        
+        # Limit date index - only keep last 30 days
+        now = datetime.now()
+        cutoff = (now - timedelta(days=30)).strftime("%Y-%m-%d")
+        old_dates = [d for d in self.date_index.keys() if d < cutoff]
+        for date in old_dates:
+            del self.date_index[date]
+        
+        # Limit remaining date entries
+        for date in list(self.date_index.keys()):
+            if len(self.date_index[date]) > self.MAX_INDEX_ENTRIES_PER_KEY:
+                self.date_index[date] = self.date_index[date][-self.MAX_INDEX_ENTRIES_PER_KEY:]
     
     def to_dict(self) -> Dict:
         """Serialize to dictionary for persistence."""
