@@ -5586,6 +5586,11 @@ class Game:
                 self.duck.set_action_message("*turns off boombox* The music stops...")
             self.renderer.show_message("*click* Boombox off.", duration=2.0, category="duck")
         else:
+            # Radio takes priority - can't use boombox while radio is on
+            if sound_engine.is_radio_playing():
+                self.renderer.show_message("Radio is playing! Stop radio first.", duration=2.0)
+                return
+            
             sound_engine.play_background_music('main')
             self._boombox_playing = True
             if self.duck:
