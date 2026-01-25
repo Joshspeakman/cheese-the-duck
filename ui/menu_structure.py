@@ -93,15 +93,6 @@ def build_main_menu_categories() -> list:
                 MenuItem("quit", "Return to Title", "Save game and return to title screen"),
             ]
         ),
-        # Radio is a top-level category for quick access
-        MenuCategory(
-            id="radio",
-            label="Radio",
-            icon="~",
-            items=[
-                MenuItem("radio", "Open Radio", "Background noise. For ducks."),
-            ]
-        ),
     ]
 
 
@@ -155,6 +146,7 @@ MENU_ACTIONS = {
     "sound": "_toggle_sound",
     "music": "_toggle_music",
     "radio": "_show_radio_menu",
+    "nook_radio_toggle": "_toggle_nook_radio",
     "save_slots": "_show_save_slots_menu",
     "help": "_toggle_help",
     "reset_game": "_start_reset_confirmation",
@@ -623,6 +615,43 @@ def _get_radio_items(game):
     return items
 
 
+def _get_nook_radio_item(game):
+    """Build Nook Radio menu item with dynamic label showing play status."""
+    from ui.menu_selector import MasterMenuItem
+    
+    try:
+        from audio.radio import get_radio_player
+        radio = get_radio_player()
+        
+        if not radio.player_available:
+            return [MasterMenuItem(
+                id="nook_radio",
+                label="Nook Radio (unavailable)",
+                action="nook_radio_toggle",
+                enabled=False
+            )]
+        
+        if radio.is_playing:
+            return [MasterMenuItem(
+                id="nook_radio",
+                label="♪ Nook Radio ♪ (playing)",
+                action="nook_radio_toggle"
+            )]
+        else:
+            return [MasterMenuItem(
+                id="nook_radio",
+                label="Nook Radio",
+                action="nook_radio_toggle"
+            )]
+    except ImportError:
+        return [MasterMenuItem(
+            id="nook_radio",
+            label="Nook Radio (unavailable)",
+            action="nook_radio_toggle",
+            enabled=False
+        )]
+
+
 def build_master_menu_tree():
     """
     Build the master menu tree structure.
@@ -710,11 +739,9 @@ def build_master_menu_tree():
                 MasterMenuItem(id="music", label="Toggle Music", action="music"),
                 # MasterMenuItem(id="save_slots", label="Save Slots", action="save_slots"),  # Hidden for now
                 MasterMenuItem(id="help", label="Help", action="help"),
+                MasterMenuItem(id="nook_radio", label="Nook Radio", action="nook_radio_toggle"),
             ]
         ),
-        
-        # Radio - top level for quick access
-        MasterMenuItem(id="radio", label="Radio", children=_get_radio_items),
 
         # Save & return to title (at root level for easy access)
         MasterMenuItem(id="quit", label="Return to Title", action="quit"),
