@@ -78,6 +78,9 @@ from dialogue.contextual_dialogue import ContextualDialogueSystem, contextual_di
 from audio.ambient import AmbientSoundSystem, ambient_sound_system
 from audio.sound_effects import SoundEffectSystem, sound_effects
 
+# DuckBrain - Seaman-style memory and personality system
+from dialogue.duck_brain import DuckBrain
+
 from ui.statistics import StatisticsSystem, statistics_system
 from ui.day_night import DayNightSystem, day_night_system
 from ui.event_animations import (
@@ -362,6 +365,9 @@ class Game:
         self.mood_dialogue: MoodDialogueSystem = mood_dialogue_system
         self.enhanced_diary: EnhancedDiarySystem = enhanced_diary
         self.contextual_dialogue: ContextualDialogueSystem = contextual_dialogue
+        
+        # DuckBrain - Seaman-style memory and personality system
+        self.duck_brain: Optional[DuckBrain] = None
         
         # Random comment tracking
         self._last_random_comment_time = 0.0
@@ -2058,6 +2064,20 @@ class Game:
         self.duck.memory.total_interactions += 1
         self.duck.memory.record_mood(mood.score)
         
+        # Record action in DuckBrain for Seaman-style callbacks
+        if self.duck_brain:
+            # Build context string
+            context_parts = []
+            if mood:
+                context_parts.append(f"mood: {mood.state.value}")
+            time_of_day = self.clock.get_time_of_day()
+            context_parts.append(f"time: {time_of_day}")
+            weather = self.atmosphere.current_weather
+            if weather:
+                context_parts.append(f"weather: {weather.weather_type.value}")
+            context = ", ".join(context_parts)
+            self.duck_brain.process_action(interaction, context)
+        
         # Log emotion to enhanced diary
         from dialogue.diary_enhanced import EmotionCategory
         emotion_map = {
@@ -3372,7 +3392,11 @@ class Game:
             self._event_animators.append(animator)
 
     def _make_contextual_comment(self):
-        """Make a random contextual comment based on current game state."""
+        """Make a random contextual comment based on current game state.
+        
+        Uses DuckBrain for Seaman-style observations and callbacks when available,
+        falling back to the contextual dialogue system otherwise.
+        """
         if not self.duck:
             return
         
@@ -3380,30 +3404,63 @@ class Game:
         if self._is_any_menu_open():
             return
         
-        # Get current context
-        weather = None
-        if self.atmosphere.current_weather:
-            weather = self.atmosphere.current_weather.weather_type.value
+        comment = None
         
-        # Check for visitor
-        visitor_personality = None
-        if self.friends.current_visit:
-            friend = self.friends.get_friend_by_id(self.friends.current_visit.friend_id)
-            if friend:
-                visitor_personality = friend.personality.value if hasattr(friend.personality, 'value') else str(friend.personality)
+        # Try to get a DuckBrain comment first (Seaman-style)
+        if self.duck_brain:
+            # Decide what type of comment to make
+            roll = random.random()
+            
+            if roll < 0.25:
+                # 25% chance: Callback to a past event or conversation
+                comment = self.duck_brain.get_callback()
+            elif roll < 0.50:
+                # 25% chance: Idle philosophical thought
+                comment = self.duck_brain.get_idle_thought()
+            elif roll < 0.70:
+                # 20% chance: Observation about current situation
+                # Build context
+                context = {}
+                if self.atmosphere.current_weather:
+                    context["weather"] = self.atmosphere.current_weather.weather_type.value
+                if self.exploration.current_area:
+                    context["location"] = self.exploration.current_area.name
+                context["time_of_day"] = self.clock.get_time_of_day()
+                context["mood"] = self.duck.get_mood().state.value if self.duck else "content"
+                comment = self.duck_brain.get_observation(context)
+            elif roll < 0.85:
+                # 15% chance: Maybe ask a question (to learn about player)
+                question = self.duck_brain.get_question()
+                if question:
+                    comment = question.text
+            # 15% chance: No comment (silence is golden)
         
-        # Get time of day
-        time_of_day = None
-        time_obj = self.day_night.get_time_of_day() if hasattr(self.day_night, 'get_time_of_day') else None
-        if time_obj and hasattr(time_obj, 'value'):
-            time_of_day = time_obj.value
-        
-        # Get a contextual comment
-        comment = self.contextual_dialogue.get_contextual_comment(
-            weather=weather,
-            visitor_personality=visitor_personality,
-            time_of_day=time_of_day
-        )
+        # Fallback to original contextual dialogue system
+        if not comment:
+            # Get current context
+            weather = None
+            if self.atmosphere.current_weather:
+                weather = self.atmosphere.current_weather.weather_type.value
+            
+            # Check for visitor
+            visitor_personality = None
+            if self.friends.current_visit:
+                friend = self.friends.get_friend_by_id(self.friends.current_visit.friend_id)
+                if friend:
+                    visitor_personality = friend.personality.value if hasattr(friend.personality, 'value') else str(friend.personality)
+            
+            # Get time of day
+            time_of_day = None
+            time_obj = self.day_night.get_time_of_day() if hasattr(self.day_night, 'get_time_of_day') else None
+            if time_obj and hasattr(time_obj, 'value'):
+                time_of_day = time_obj.value
+            
+            # Get a contextual comment
+            comment = self.contextual_dialogue.get_contextual_comment(
+                weather=weather,
+                visitor_personality=visitor_personality,
+                time_of_day=time_of_day
+            )
         
         if comment:
             self.renderer.show_message(comment, duration=4.0, category="duck")
@@ -3896,8 +3953,12 @@ class Game:
         # Check daily login for streak/rewards
         self._check_daily_login()
 
-        # Welcome message
-        greeting = self.conversation.get_greeting(self.duck)
+        # Welcome message - use DuckBrain greeting if available
+        greeting = None
+        if self.duck_brain:
+            greeting = self.duck_brain.get_greeting()
+        if not greeting:
+            greeting = self.conversation.get_greeting(self.duck)
         self.renderer.show_message(f"Welcome, {self.duck.name}!", category="event")
         self.renderer.show_message(greeting, duration=4.0, category="duck")
 
@@ -3924,6 +3985,14 @@ class Game:
         # Log initial excitement emotion
         from dialogue.diary_enhanced import EmotionCategory
         self.enhanced_diary.log_emotion(EmotionCategory.EXCITEMENT, 8, trigger="hatching")
+
+        # Initialize DuckBrain - Seaman-style persistent memory
+        self.duck_brain = DuckBrain(duck_name=self.duck.name)
+        self._connect_duck_brain_to_llm()
+        self.duck_brain.start_session()
+        
+        # Record the hatching as a significant event
+        self.duck_brain.process_action("hatched", "just hatched into the world")
 
         self._save_game()
 
@@ -4218,6 +4287,20 @@ class Game:
             self.save_slots = SaveSlotsSystem.from_dict(data["save_slots"])
         else:
             self.save_slots = SaveSlotsSystem()
+        
+        # Load DuckBrain - Seaman-style persistent memory system
+        if "duck_brain" in data and data["duck_brain"]:
+            self.duck_brain = DuckBrain.from_dict(data["duck_brain"])
+        else:
+            # Create new DuckBrain with duck's name
+            duck_name = self.duck.name if self.duck else "Cheese"
+            self.duck_brain = DuckBrain(duck_name=duck_name)
+        
+        # Connect DuckBrain to LLM chat if available
+        self._connect_duck_brain_to_llm()
+        
+        # Start a new session in DuckBrain
+        self.duck_brain.start_session()
         # ============== END LOAD NEW FEATURE SYSTEMS ==============
 
         # Load weather history for secret goal
@@ -4271,8 +4354,32 @@ class Game:
         self._last_save = time.time()
         self._last_event_check = time.time()
         
-        # Show welcome back notification
-        notification_manager.show(f"Welcome back to care for {self.duck.name}!", "success", 2.5)
+        # Show welcome back - use DuckBrain greeting if available
+        welcome_msg = None
+        if self.duck_brain:
+            welcome_msg = self.duck_brain.get_greeting()
+        if welcome_msg:
+            notification_manager.show(welcome_msg, "success", 3.5)
+        else:
+            notification_manager.show(f"Welcome back to care for {self.duck.name}!", "success", 2.5)
+
+    def _connect_duck_brain_to_llm(self):
+        """Connect DuckBrain to the LLM chat system for enhanced context."""
+        try:
+            from dialogue.llm_chat import get_llm_chat
+            llm_chat = get_llm_chat()
+            if llm_chat and self.duck_brain:
+                llm_chat.set_duck_brain(self.duck_brain)
+                # Also sync conversation history from DuckBrain
+                recent_messages = self.duck_brain.conversation_memory.get_recent_messages(20)
+                history = []
+                for msg in recent_messages:
+                    history.append({"role": "user" if msg.is_player else "assistant", "content": msg.content})
+                llm_chat.set_conversation_history(history)
+        except Exception as e:
+            # Log but don't crash if LLM chat isn't available
+            from game_logger import logger
+            logger.debug(f"Could not connect DuckBrain to LLM: {e}")
 
     def _save_game(self):
         """Save the current game state."""
@@ -4326,6 +4433,8 @@ class Game:
             "badges": self.badges.to_dict(),
             "enhanced_diary": self.enhanced_diary.to_dict(),
             "save_slots": self.save_slots.to_dict(),
+            # DuckBrain - Seaman-style persistent memory
+            "duck_brain": self.duck_brain.to_dict() if self.duck_brain else None,
             # ============== END NEW FEATURE SYSTEMS ==============
         }
 
@@ -4335,6 +4444,10 @@ class Game:
     def _return_to_title(self):
         """Save the game and return to title screen."""
         if self.duck:
+            # End DuckBrain session before saving
+            if self.duck_brain:
+                self.duck_brain.end_session()
+            
             self._save_game()
             notification_manager.show("Saving...", "info", 0.5)
             time.sleep(0.5)
@@ -4342,6 +4455,7 @@ class Game:
         # Reset game state
         self.duck = None
         self.behavior_ai = None
+        self.duck_brain = None
         self._state = "title"
         
         # Start title music
@@ -4500,6 +4614,10 @@ class Game:
     def _quit(self):
         """Quit the game."""
         if self.duck:
+            # End DuckBrain session before saving
+            if self.duck_brain:
+                self.duck_brain.end_session()
+            
             self._save_game()
             self.renderer.show_message("Saving and quitting...")
             time.sleep(0.5)

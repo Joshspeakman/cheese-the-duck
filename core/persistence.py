@@ -1,12 +1,19 @@
 """
 Save/load system for game persistence using JSON.
+
+Version History:
+- 1.0: Original save format
+- 2.0: Added duck_brain (player model, conversation memory, questions)
 """
 import json
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, Any
 from datetime import datetime
 
 from config import SAVE_DIR, SAVE_FILE
+
+# Current save version - increment when save structure changes
+SAVE_VERSION = "2.0"
 
 
 class SaveManager:
@@ -37,7 +44,7 @@ class SaveManager:
         try:
             # Add metadata
             save_data = {
-                "version": "1.0",
+                "version": SAVE_VERSION,
                 "saved_at": datetime.now().isoformat(),
                 **data,
             }
@@ -82,11 +89,29 @@ class SaveManager:
         try:
             with open(self.save_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
+            
+            # Migrate old saves if needed
+            data = self._migrate_save(data)
+            
             return data
 
         except (IOError, OSError, json.JSONDecodeError) as e:
             print(f"Load failed: {e}")
             return None
+    
+    def _migrate_save(self, data: dict) -> dict:
+        """Migrate old save formats to current version."""
+        version = data.get("version", "1.0")
+        
+        # Migrate from 1.0 to 2.0 (add duck_brain)
+        if version == "1.0":
+            # Add empty duck_brain structure for migration
+            if "duck_brain" not in data:
+                data["duck_brain"] = None  # Will be initialized fresh
+            
+            data["version"] = "2.0"
+        
+        return data
 
     def delete_save(self) -> bool:
         """Delete the save file."""
@@ -125,6 +150,7 @@ def create_new_save(duck_name: str) -> dict:
     now = datetime.now().isoformat()
 
     return {
+        "version": SAVE_VERSION,
         "duck": {
             "name": duck_name,
             "created_at": now,
@@ -157,6 +183,8 @@ def create_new_save(duck_name: str) -> dict:
             "times_petted": 0,
             "conversations": 0,
         },
+        # New in v2.0: Duck Brain for persistent memory
+        "duck_brain": None,  # Will be initialized by game
     }
 
 
