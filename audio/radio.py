@@ -172,6 +172,8 @@ class RadioPlayer:
                 "-nodisp",
                 "-autoexit",
                 "-loglevel", "quiet",
+                "-infbuf",  # Use infinite buffer to reduce CPU wake-ups
+                "-framedrop",  # Allow frame dropping (audio only anyway)
                 "-volume", str(self._volume),
                 url
             ]
