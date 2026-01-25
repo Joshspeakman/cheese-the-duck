@@ -8,6 +8,7 @@ DESIGN: Minimal overhead - just spawn mpv/ffplay and let it run.
 No polling loops, no thread management, just subprocess control.
 """
 
+import atexit
 import subprocess
 import threading
 from dataclasses import dataclass, field
@@ -346,12 +347,11 @@ class RadioPlayer:
                 self._kill_process()
 
                 try:
-                    # Spawn detached - we don't need to monitor it
+                    # Spawn subprocess (no start_new_session - we want it to die with parent)
                     self._process = subprocess.Popen(
                         cmd,
                         stdout=subprocess.DEVNULL,
-                        stderr=subprocess.DEVNULL,
-                        start_new_session=True  # Detach from parent
+                        stderr=subprocess.DEVNULL
                     )
                 except OSError:
                     self._is_playing = False
@@ -432,6 +432,23 @@ class RadioPlayer:
 
 # Singleton instance
 _radio_player: Optional[RadioPlayer] = None
+
+
+def _cleanup_radio():
+    """Kill radio process on program exit."""
+    global _radio_player
+    if _radio_player is not None:
+        try:
+            # Direct kill, no threads - we're exiting
+            if _radio_player._process and _radio_player._process.poll() is None:
+                _radio_player._process.kill()
+                _radio_player._process.wait(timeout=0.1)
+        except Exception:
+            pass
+
+
+# Register cleanup handler
+atexit.register(_cleanup_radio)
 
 
 def get_radio_player() -> RadioPlayer:

@@ -4671,6 +4671,9 @@ class Game:
             self.renderer.show_message("Saving and quitting...")
             time.sleep(0.5)
 
+        # Stop radio first (kills external process)
+        sound_engine.stop_radio()
+        
         # Stop any playing music
         sound_engine.stop_music()
         sound_engine.stop_background_music()
