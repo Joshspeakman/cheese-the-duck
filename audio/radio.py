@@ -144,8 +144,8 @@ class RadioPlayer:
         self._enabled = True
         self._process: Optional[subprocess.Popen] = None
         self._play_thread: Optional[threading.Thread] = None
-        self._stop_event = threading.Event()
-        self._lock = threading.Lock()  # Protect process access
+        self._lock = threading.Lock()  # Protect process and generation access
+        self._generation = 0  # Incremented on each play/stop to invalidate old threads
         self._on_track_change = on_track_change
         self._last_station_before_dj: Optional[StationID] = None
         self._dj_duck_saturdays = True
@@ -305,7 +305,11 @@ class RadioPlayer:
         
         self._current_station = station
         self._is_playing = True
-        self._stop_event.clear()
+        
+        # Get new generation under lock - this invalidates any old threads
+        with self._lock:
+            self._generation += 1
+            my_generation = self._generation
         
         # Mute game music when radio starts
         if self._on_start_callback:
@@ -314,10 +318,10 @@ class RadioPlayer:
             except Exception:
                 pass
         
-        # Start playback in background thread
+        # Start playback in background thread with generation token
         self._play_thread = threading.Thread(
             target=self._stream_loop,
-            args=(station,),
+            args=(station, my_generation),
             daemon=True
         )
         self._play_thread.start()
@@ -328,15 +332,17 @@ class RadioPlayer:
     
     def stop(self):
         """Stop radio playback - kills process immediately."""
-        self._stop_event.set()
         self._is_playing = False
         self._current_station = None
         
-        # Kill process under lock to prevent race
+        # Increment generation and get process under lock
+        # This invalidates any running threads immediately
         with self._lock:
+            self._generation += 1
             proc = self._process
             self._process = None
         
+        # Kill process outside lock
         if proc:
             try:
                 proc.kill()  # SIGKILL
@@ -344,11 +350,7 @@ class RadioPlayer:
             except (OSError, subprocess.TimeoutExpired):
                 pass
         
-        # Wait briefly for thread to notice stop
-        thread = self._play_thread
         self._play_thread = None
-        if thread and thread.is_alive():
-            thread.join(timeout=0.2)
     
     def change_station(self, station_id: StationID):
         """Change to a different station."""
@@ -358,21 +360,26 @@ class RadioPlayer:
         self.play(station_id)
         return True
     
-    def _stream_loop(self, station: RadioStation):
+    def _is_stale(self, generation: int) -> bool:
+        """Check if this thread's generation is outdated."""
+        with self._lock:
+            return self._generation != generation
+    
+    def _stream_loop(self, station: RadioStation, generation: int):
         """Background thread that handles streaming."""
-        # Check stop before doing anything
-        if self._stop_event.is_set():
+        # Check if already stale before doing anything
+        if self._is_stale(generation):
             return
             
         # Special handling for Nook Radio (hourly music)
         if station.id == StationID.NOOK_RADIO:
-            self._nook_radio_loop()
+            self._nook_radio_loop(generation)
             return
         
         urls_to_try = [station.stream_url] + station.fallback_urls
         
         for url in urls_to_try:
-            if self._stop_event.is_set():
+            if self._is_stale(generation):
                 return
             
             try:
@@ -387,43 +394,41 @@ class RadioPlayer:
                 else:
                     cmd.append(url)
                 
-                # Check stop event again before spawning
-                if self._stop_event.is_set():
+                # Check again before spawning
+                if self._is_stale(generation):
                     return
                 
                 # Create process under lock
                 with self._lock:
-                    if self._stop_event.is_set():
+                    if self._generation != generation:
                         return
-                    self._process = subprocess.Popen(
+                    proc = subprocess.Popen(
                         cmd,
                         stdout=subprocess.DEVNULL,
                         stderr=subprocess.DEVNULL
                     )
-                    proc = self._process
+                    self._process = proc
                 
-                # Wait for process to end or stop signal
-                while not self._stop_event.is_set():
+                # Wait for process to end or generation change
+                while not self._is_stale(generation):
                     if proc.poll() is not None:
                         # Process ended, try next URL or restart
                         break
                     
                     # Check if DJ Duck time ended
                     if station.id == StationID.DJ_DUCK_LIVE and not self.is_dj_duck_live():
-                        self._stop_event.set()
                         # Switch back to previous station
                         if self._last_station_before_dj:
-                            # Schedule switch on main thread
                             threading.Thread(
                                 target=lambda: self.play(self._last_station_before_dj),
                                 daemon=True
                             ).start()
-                        break
+                        return
                     
-                    time.sleep(0.5)  # Check more frequently
+                    time.sleep(0.5)
                 
-                # Clean up this process if we're stopping
-                if self._stop_event.is_set():
+                # Clean up if we're stale (another station started)
+                if self._is_stale(generation):
                     try:
                         proc.kill()
                     except OSError:
@@ -433,7 +438,7 @@ class RadioPlayer:
             except (subprocess.SubprocessError, OSError):
                 continue
     
-    def _nook_radio_loop(self):
+    def _nook_radio_loop(self, generation: int):
         """
         Play hourly Animal Crossing-style music from nook.camp CDN.
         
@@ -447,7 +452,7 @@ class RadioPlayer:
         last_hour = None
         local_proc = None  # Track process locally
         
-        while not self._stop_event.is_set():
+        while not self._is_stale(generation):
             # Get current hour in nook format
             now = datetime.now()
             hour_12 = now.hour % 12 or 12
@@ -466,8 +471,8 @@ class RadioPlayer:
                     except (subprocess.TimeoutExpired, OSError):
                         pass
                 
-                # Check stop again after cleanup
-                if self._stop_event.is_set():
+                # Check if stale after cleanup
+                if self._is_stale(generation):
                     return
                 
                 # Build URL for current hour
@@ -496,7 +501,7 @@ class RadioPlayer:
                             cmd.append(url)
                         
                         with self._lock:
-                            if self._stop_event.is_set():
+                            if self._generation != generation:
                                 return
                             local_proc = subprocess.Popen(
                                 cmd,
@@ -510,7 +515,7 @@ class RadioPlayer:
             
             # Wait before checking again (check every 0.5 seconds for responsiveness)
             for _ in range(60):  # 30 second total check interval
-                if self._stop_event.is_set():
+                if self._is_stale(generation):
                     if local_proc:
                         try:
                             local_proc.kill()
