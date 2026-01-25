@@ -417,6 +417,10 @@ class SoundEngine:
         if music_name not in self._available_music:
             return
 
+        # Stop radio if playing - can't have both at once
+        if self.is_radio_playing():
+            self.stop_radio()
+
         # Stop any existing music first
         self.stop_background_music()
 
@@ -677,6 +681,10 @@ class SoundEngine:
         Args:
             station_id: Optional StationID to play. If None, uses last station.
         """
+        # Stop background music if playing - can't have both at once
+        if self._music_playing:
+            self.stop_background_music()
+        
         radio = self.get_radio()
         if station_id is None:
             # Use last station from settings if available
@@ -699,6 +707,10 @@ class SoundEngine:
         from audio.radio import StationID
         if isinstance(station_id, str):
             station_id = StationID(station_id)
+        
+        # Stop background music if playing - can't have both at once
+        if self._music_playing:
+            self.stop_background_music()
         
         result = self.get_radio().change_station(station_id)
         
