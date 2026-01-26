@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 from enum import Enum
+import threading
 
 
 class LegacyTier(Enum):
@@ -529,19 +530,18 @@ class PrestigeSystem:
         return system
 
 
-# Lazy singleton pattern - initialized on first access
+# Lazy singleton pattern with thread-safe initialization
 _prestige_system: Optional[PrestigeSystem] = None
+_prestige_system_lock = threading.Lock()
 
 
 def get_prestige_system() -> PrestigeSystem:
-    """Get the global prestige system instance (lazy initialization).
-    
-    This pattern defers initialization until the system is actually needed,
-    improving startup time and avoiding circular import issues.
-    """
+    """Get the global prestige system instance (lazy initialization). Thread-safe."""
     global _prestige_system
     if _prestige_system is None:
-        _prestige_system = PrestigeSystem()
+        with _prestige_system_lock:
+            if _prestige_system is None:
+                _prestige_system = PrestigeSystem()
     return _prestige_system
 
 

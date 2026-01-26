@@ -9,12 +9,15 @@ No polling loops, no thread management, just subprocess control.
 """
 
 import atexit
+import logging
 import subprocess
 import threading
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Optional, Callable, Dict, List
+
+logger = logging.getLogger(__name__)
 
 
 class StationID(Enum):
@@ -88,6 +91,10 @@ class RadioPlayer:
         """Detect available audio player in background thread."""
         self._player = self._find_player()
         self._player_detected = True
+        if self._player:
+            logger.info(f"Radio using audio player: {self._player}")
+        else:
+            logger.warning("No audio player found for radio (install mpv or ffplay)")
     
     @property
     def player_available(self) -> bool:
@@ -259,6 +266,10 @@ class RadioPlayer:
         # (subprocess.Popen can be slow due to fork/network)
         def spawn_player():
             with self._lock:
+                # Check if stop() was called before we got the lock
+                if not self._is_playing:
+                    return  # Cancelled, don't spawn
+
                 # Kill any existing process first
                 self._kill_process()
 
@@ -270,7 +281,8 @@ class RadioPlayer:
                         stdout=subprocess.DEVNULL,
                         stderr=subprocess.DEVNULL
                     )
-                except OSError:
+                except OSError as e:
+                    logger.warning(f"Failed to spawn radio player: {e}")
                     self._is_playing = False
                     self._current_station = None
 
@@ -331,8 +343,9 @@ class RadioPlayer:
         pass
 
 
-# Singleton instance
+# Singleton instance with thread-safe initialization
 _radio_player: Optional[RadioPlayer] = None
+_radio_player_lock = threading.Lock()
 
 
 def _cleanup_radio():
@@ -353,8 +366,11 @@ atexit.register(_cleanup_radio)
 
 
 def get_radio_player() -> RadioPlayer:
-    """Get or create the radio player singleton."""
+    """Get or create the radio player singleton. Thread-safe."""
     global _radio_player
     if _radio_player is None:
-        _radio_player = RadioPlayer()
+        with _radio_player_lock:
+            # Double-check after acquiring lock
+            if _radio_player is None:
+                _radio_player = RadioPlayer()
     return _radio_player

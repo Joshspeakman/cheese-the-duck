@@ -6,6 +6,7 @@ Uses LLM when available, falls back to pre-written quips.
 """
 
 import random
+import threading
 from typing import Optional, List, TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -210,13 +211,16 @@ class DJDuckCommentary:
             return random.choice(BETWEEN_SONG_LINES)
 
 
-# Singleton instance
+# Singleton instance with thread-safe initialization
 _dj_duck: Optional[DJDuckCommentary] = None
+_dj_duck_lock = threading.Lock()
 
 
 def get_dj_duck() -> DJDuckCommentary:
-    """Get the global DJ Duck commentary instance."""
+    """Get the global DJ Duck commentary instance. Thread-safe."""
     global _dj_duck
     if _dj_duck is None:
-        _dj_duck = DJDuckCommentary()
+        with _dj_duck_lock:
+            if _dj_duck is None:
+                _dj_duck = DJDuckCommentary()
     return _dj_duck

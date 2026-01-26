@@ -2,6 +2,7 @@
 Animation system for duck movements and effects.
 """
 import time
+import threading
 from typing import List, Dict, Optional, Callable
 from dataclasses import dataclass
 from enum import Enum
@@ -321,19 +322,18 @@ def create_spin_animation(duck_art_states: Dict[str, List[str]]) -> Animation:
     return Animation("spin", frames, loop=False)
 
 
-# Lazy singleton pattern - initialized on first access
+# Lazy singleton pattern with thread-safe initialization
 _animation_controller: Optional[AnimationController] = None
+_animation_controller_lock = threading.Lock()
 
 
 def get_animation_controller() -> AnimationController:
-    """Get the global animation controller instance (lazy initialization).
-    
-    This pattern defers initialization until the system is actually needed,
-    improving startup time and avoiding circular import issues.
-    """
+    """Get the global animation controller instance (lazy initialization). Thread-safe."""
     global _animation_controller
     if _animation_controller is None:
-        _animation_controller = AnimationController()
+        with _animation_controller_lock:
+            if _animation_controller is None:
+                _animation_controller = AnimationController()
     return _animation_controller
 
 
