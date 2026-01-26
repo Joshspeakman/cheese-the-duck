@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, date, timedelta
 from typing import Dict, List, Optional, Tuple
 from enum import Enum
+import threading
 
 
 class GrowthStage(Enum):
@@ -557,19 +558,18 @@ class AgingSystem:
         return system
 
 
-# Lazy singleton pattern - initialized on first access
+# Lazy singleton pattern with thread-safe initialization
 _aging_system: Optional[AgingSystem] = None
+_aging_system_lock = threading.Lock()
 
 
 def get_aging_system() -> AgingSystem:
-    """Get the global aging system instance (lazy initialization).
-    
-    This pattern defers initialization until the system is actually needed,
-    improving startup time and avoiding circular import issues.
-    """
+    """Get the global aging system instance (lazy initialization). Thread-safe."""
     global _aging_system
     if _aging_system is None:
-        _aging_system = AgingSystem()
+        with _aging_system_lock:
+            if _aging_system is None:
+                _aging_system = AgingSystem()
     return _aging_system
 
 

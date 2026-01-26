@@ -8,7 +8,6 @@ Uses multiple approaches:
 3. /dev/console for frequency control (if available)
 4. Fallback to silent operation
 """
-import os
 import sys
 import time
 import threading
@@ -16,7 +15,7 @@ import logging
 import subprocess
 import shutil
 import concurrent.futures
-from typing import Optional, List, Tuple, Dict
+from typing import Optional, Dict
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -281,14 +280,15 @@ class SoundEngine:
     Uses pygame for MP3 music when available.
     Thread-safe implementation with proper locking.
     """
-    
+
     # Thread pool for sound effect playback (max 4 concurrent sounds)
     _sound_executor: Optional[concurrent.futures.ThreadPoolExecutor] = None
+    _executor_lock = threading.Lock()  # Class-level lock for thread-safe executor init
 
     def __init__(self):
         # Thread lock for shared state access
         self._lock = threading.Lock()
-        
+
         self.enabled = True  # Enabled by default
         self.volume = 1.0  # 0.0 to 1.0 (quack volume - max, pygame caps at 1.0)
         self.music_volume = 0.4  # Background music volume (40% - increased for better audibility)
@@ -300,13 +300,16 @@ class SoundEngine:
         self._current_melody = None
         self._music_channel = None  # For seamless looping with Sound object
         self._music_sound = None  # Cached music Sound object
-        
-        # Initialize thread pool for sound effects
+
+        # Thread-safe initialization of shared executor
         if SoundEngine._sound_executor is None:
-            SoundEngine._sound_executor = concurrent.futures.ThreadPoolExecutor(
-                max_workers=4, 
-                thread_name_prefix="SoundEffect"
-            )
+            with SoundEngine._executor_lock:
+                # Double-check after acquiring lock
+                if SoundEngine._sound_executor is None:
+                    SoundEngine._sound_executor = concurrent.futures.ThreadPoolExecutor(
+                        max_workers=4,
+                        thread_name_prefix="SoundEffect"
+                    )
 
         # Try to initialize pygame for music
         self._pygame_available = False
@@ -316,8 +319,11 @@ class SoundEngine:
             # Smaller buffers cause underruns with PipeWire's different latency model
             pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=2048)
             self._pygame_available = True
+            logger.info("pygame mixer initialized successfully")
+        except ImportError:
+            logger.info("pygame not installed - using system audio players")
         except Exception as e:
-            logger.debug(f"pygame mixer init failed: {e}")
+            logger.warning(f"pygame mixer init failed: {e} - using system audio players")
         
         # Audio file paths
         self._audio_dir = Path(__file__).parent.parent
@@ -1133,40 +1139,18 @@ class SoundEngine:
         sys.stdout.flush()
 
     def play_sound(self, sound_type):
-        """Play a sound effect. Accepts SoundType enum or string."""
-        if not self.enabled:
-            return
-        
-        # Handle string input by converting to SoundType
-        if isinstance(sound_type, str):
-            try:
-                sound_type = SoundType(sound_type)
-            except ValueError:
-                # Try uppercase
-                try:
-                    sound_type = SoundType[sound_type.upper()]
-                except KeyError:
-                    return  # Unknown sound type, silently ignore
+        """Play a sound effect. Accepts SoundType enum or string.
 
-        notes = SOUND_EFFECTS.get(sound_type, [])
-        if not notes:
-            return
-
-        # Play in a thread to not block
-        thread = threading.Thread(target=self._play_notes, args=(notes,))
-        thread.daemon = True
-        thread.start()
-
-    def _play_notes(self, notes: List[Note]):
-        """Play a sequence of notes."""
-        # Disabled - terminal beeps are annoying
-        # Use WAV files for sound effects instead
+        Note: Terminal beep-based sound effects are disabled. This method
+        is kept for API compatibility but does nothing. Use play_wav() for
+        actual sound playback.
+        """
+        # Terminal beeps disabled - use WAV files instead via play_wav()
         pass
 
     def play_melody(self, melody_name: str, loop: bool = False):
-        """Play a melody. Disabled to avoid terminal beeping."""
-        # Disabled - terminal beeps are annoying and disruptive
-        # The game now relies on WAV/MP3 files for music
+        """Play a melody. Disabled - use play_background_music() instead."""
+        # Terminal beeps disabled - use WAV/MP3 files instead
         pass
 
     def stop_music(self):

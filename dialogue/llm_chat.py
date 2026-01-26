@@ -688,15 +688,19 @@ Be unique to your personality. Don't be generic.
         self._conversation_history = []
 
 
-# Global instance - initialized lazily
+# Global instance - initialized lazily with thread safety
 _llm_chat_instance = None
+_llm_chat_lock = threading.Lock()
 
 
 def get_llm_chat() -> LLMChat:
-    """Get or create the LLM chat instance."""
+    """Get or create the LLM chat instance. Thread-safe."""
     global _llm_chat_instance
     if _llm_chat_instance is None:
-        _llm_chat_instance = LLMChat()
+        with _llm_chat_lock:
+            # Double-check after acquiring lock
+            if _llm_chat_instance is None:
+                _llm_chat_instance = LLMChat()
     return _llm_chat_instance
 
 

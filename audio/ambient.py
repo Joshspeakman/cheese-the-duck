@@ -4,9 +4,9 @@ Plays background sounds based on weather, time, and location.
 """
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 from enum import Enum
-import random
+import threading
 
 
 class AmbientCategory(Enum):
@@ -527,19 +527,23 @@ class AmbientSoundSystem:
         return system
 
 
-# Lazy singleton pattern - initialized on first access
+# Lazy singleton pattern - initialized on first access with thread safety
 _ambient_sound_system: Optional[AmbientSoundSystem] = None
+_ambient_sound_lock = threading.Lock()
 
 
 def get_ambient_sound_system() -> AmbientSoundSystem:
-    """Get the global ambient sound system instance (lazy initialization).
-    
+    """Get the global ambient sound system instance (lazy initialization). Thread-safe.
+
     This pattern defers initialization until the system is actually needed,
     improving startup time and avoiding circular import issues.
     """
     global _ambient_sound_system
     if _ambient_sound_system is None:
-        _ambient_sound_system = AmbientSoundSystem()
+        with _ambient_sound_lock:
+            # Double-check after acquiring lock
+            if _ambient_sound_system is None:
+                _ambient_sound_system = AmbientSoundSystem()
     return _ambient_sound_system
 
 

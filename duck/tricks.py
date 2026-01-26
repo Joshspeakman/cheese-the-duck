@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 from enum import Enum
 import random
+import threading
 
 
 class TrickDifficulty(Enum):
@@ -725,19 +726,18 @@ class TricksSystem:
         return system
 
 
-# Lazy singleton pattern - initialized on first access
+# Lazy singleton pattern with thread-safe initialization
 _tricks_system: Optional[TricksSystem] = None
+_tricks_system_lock = threading.Lock()
 
 
 def get_tricks_system() -> TricksSystem:
-    """Get the global tricks system instance (lazy initialization).
-    
-    This pattern defers initialization until the system is actually needed,
-    improving startup time and avoiding circular import issues.
-    """
+    """Get the global tricks system instance (lazy initialization). Thread-safe."""
     global _tricks_system
     if _tricks_system is None:
-        _tricks_system = TricksSystem()
+        with _tricks_system_lock:
+            if _tricks_system is None:
+                _tricks_system = TricksSystem()
     return _tricks_system
 
 

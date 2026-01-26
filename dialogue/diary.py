@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 from enum import Enum
 import random
+import threading
 
 
 class DiaryEntryType(Enum):
@@ -495,19 +496,18 @@ class DuckDiary:
         return diary
 
 
-# Lazy singleton pattern - initialized on first access
+# Lazy singleton pattern with thread-safe initialization
 _duck_diary: Optional[DuckDiary] = None
+_duck_diary_lock = threading.Lock()
 
 
 def get_duck_diary() -> DuckDiary:
-    """Get the global duck diary instance (lazy initialization).
-    
-    This pattern defers initialization until the system is actually needed,
-    improving startup time and avoiding circular import issues.
-    """
+    """Get the global duck diary instance (lazy initialization). Thread-safe."""
     global _duck_diary
     if _duck_diary is None:
-        _duck_diary = DuckDiary()
+        with _duck_diary_lock:
+            if _duck_diary is None:
+                _duck_diary = DuckDiary()
     return _duck_diary
 
 
