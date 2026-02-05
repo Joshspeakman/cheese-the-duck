@@ -211,13 +211,6 @@ def main():
         except Exception:
             pass
         if logger:
-            shutdown_logger()
-
-        sys.exit(1)
-
-    finally:
-        # Always shutdown logger
-        if logger:
             logger.info("Shutting down logger...")
             shutdown_logger()
 
