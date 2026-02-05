@@ -1222,6 +1222,22 @@ class SoundEngine:
             self.music_muted = True
             self.stop_music()
 
+    def shutdown(self):
+        """Clean up all audio resources. Call on game exit."""
+        self.stop_music()
+        # Shutdown the shared thread pool executor
+        if SoundEngine._sound_executor is not None:
+            SoundEngine._sound_executor.shutdown(wait=False)
+            SoundEngine._sound_executor = None
+        # Quit pygame mixer if it was initialized
+        if self._pygame_available:
+            try:
+                import pygame
+                pygame.mixer.quit()
+            except Exception:
+                pass
+            self._pygame_available = False
+
 
 def count_syllables(text: str) -> int:
     """

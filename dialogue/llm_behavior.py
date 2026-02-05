@@ -522,6 +522,9 @@ class LLMBehaviorController:
     def shutdown(self):
         """Shutdown the controller and worker thread."""
         self._worker.stop_worker()
+        # Wait for worker thread to finish (with timeout to avoid hanging)
+        if self._worker.is_alive():
+            self._worker.join(timeout=5.0)
         self._cache.clear()
 
 

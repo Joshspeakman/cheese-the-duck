@@ -2,7 +2,7 @@
 Outfit System - Full outfit management beyond just hats.
 Includes tops, accessories, costumes, and seasonal clothing.
 """
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 from enum import Enum
 

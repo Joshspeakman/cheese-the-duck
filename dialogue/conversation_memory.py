@@ -277,10 +277,13 @@ class ConversationMemory:
         
         # Update statistics
         msg_count = len(conv.messages)
-        self.avg_conversation_length = (
-            (self.avg_conversation_length * (self.total_conversations - 1) + msg_count)
-            / self.total_conversations
-        )
+        if self.total_conversations > 0:
+            self.avg_conversation_length = (
+                (self.avg_conversation_length * (self.total_conversations - 1) + msg_count)
+                / self.total_conversations
+            )
+        else:
+            self.avg_conversation_length = float(msg_count)
         if msg_count > self.longest_conversation:
             self.longest_conversation = msg_count
         

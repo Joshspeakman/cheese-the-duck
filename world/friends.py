@@ -1276,11 +1276,11 @@ class FriendsSystem:
         appearance = DUCK_APPEARANCES.get(friend.personality.value, {})
         
         level_stars = {
-            FriendshipLevel.STRANGER: "*****",
-            FriendshipLevel.ACQUAINTANCE: "*****",
-            FriendshipLevel.FRIEND: "*****",
-            FriendshipLevel.CLOSE_FRIEND: "*****",
-            FriendshipLevel.BEST_FRIEND: "*****",
+            FriendshipLevel.STRANGER: "o . . . .",
+            FriendshipLevel.ACQUAINTANCE: "o o . . .",
+            FriendshipLevel.FRIEND: "o o o . .",
+            FriendshipLevel.CLOSE_FRIEND: "o o o o .",
+            FriendshipLevel.BEST_FRIEND: "o o o o o",
         }
         
         next_level_points = 0

@@ -188,14 +188,20 @@ class DJDuckCommentary:
         prompt = prompts.get(line_type, prompts["between"])
         
         try:
-            # Use a quick generation with low token count
-            response = self._llm_chat.generate_quick(
-                prompt, 
+            if not self._llm_chat._llama:
+                return self._get_fallback(line_type)
+            # Use raw completion with low token count for quick DJ lines
+            response = self._llm_chat._llama(
+                prompt,
                 max_tokens=50,
-                temperature=0.9
+                temperature=0.9,
+                top_p=0.9,
+                stop=["\n\n", ".", "!"],
             )
-            if response and len(response) < 150:
-                return response.strip().strip('"')
+            if response and "choices" in response and response["choices"]:
+                content = response["choices"][0].get("text", "").strip()
+                if content and len(content) < 150:
+                    return content.strip('"')
         except Exception:
             pass
         

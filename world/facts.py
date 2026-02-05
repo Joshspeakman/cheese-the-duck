@@ -421,7 +421,7 @@ def get_birthday_info(created_at: str, name: str = "Cheese") -> BirthdayInfo:
             milestone=milestone,
             next_milestone_days=next_milestone,
         )
-    except:
+    except (ValueError, TypeError, AttributeError):
         return BirthdayInfo(age_days=0, is_birthday=False, milestone=None, next_milestone_days=7)
 
 

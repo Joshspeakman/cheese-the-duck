@@ -721,6 +721,8 @@ class PlayerModel:
             "behavior_pattern": {
                 "action_sequences": self.behavior_pattern.action_sequences[-50:],
                 "favorite_actions": dict(self.behavior_pattern.favorite_actions),
+                "action_by_mood": {k: dict(v) for k, v in self.behavior_pattern.action_by_mood.items()},
+                "action_by_time": {str(k): dict(v) for k, v in self.behavior_pattern.action_by_time.items()},
                 "avg_actions_per_session": self.behavior_pattern.avg_actions_per_session,
                 "rushed_sessions": self.behavior_pattern.rushed_sessions,
                 "leisurely_sessions": self.behavior_pattern.leisurely_sessions
@@ -797,6 +799,15 @@ class PlayerModel:
         bp = data.get("behavior_pattern", {})
         model.behavior_pattern.action_sequences = bp.get("action_sequences", [])
         model.behavior_pattern.favorite_actions = defaultdict(int, bp.get("favorite_actions", {}))
+        # Restore action_by_mood (nested defaultdict)
+        for mood, actions in bp.get("action_by_mood", {}).items():
+            for action, count in actions.items():
+                model.behavior_pattern.action_by_mood[mood][action] = count
+        # Restore action_by_time (nested defaultdict with int keys)
+        for hour_str, actions in bp.get("action_by_time", {}).items():
+            hour = int(hour_str)
+            for action, count in actions.items():
+                model.behavior_pattern.action_by_time[hour][action] = count
         model.behavior_pattern.avg_actions_per_session = bp.get("avg_actions_per_session", 0)
         model.behavior_pattern.rushed_sessions = bp.get("rushed_sessions", 0)
         model.behavior_pattern.leisurely_sessions = bp.get("leisurely_sessions", 0)

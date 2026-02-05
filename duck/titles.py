@@ -477,6 +477,15 @@ class TitlesSystem:
         if len(nickname) < 1 or len(nickname) > 20:
             return False, "Nickname must be 1-20 characters!"
         
+        # Sanitize: strip control characters and ANSI escape sequences
+        import re
+        nickname = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', nickname)  # Control chars
+        nickname = re.sub(r'\x1b\[[0-9;]*[a-zA-Z]', '', nickname)  # ANSI escapes
+        nickname = nickname.strip()
+        
+        if not nickname:
+            return False, "Nickname must contain visible characters!"
+        
         if is_duck:
             self.duck_nickname = nickname
             return True, f"d Duck is now called: {nickname}"

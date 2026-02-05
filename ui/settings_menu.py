@@ -530,8 +530,11 @@ class SettingsMenu:
         
         elif item.value_type == "slider":
             # Show as bar: [████░░░░░░] 40%
-            percent = int((item.current_value - item.min_value) / 
-                         (item.max_value - item.min_value) * 100)
+            value_range = item.max_value - item.min_value
+            if value_range > 0:
+                percent = int((item.current_value - item.min_value) / value_range * 100)
+            else:
+                percent = 100
             filled = percent // 10
             bar = "█" * filled + "░" * (10 - filled)
             return f"[{bar}] {percent}%"

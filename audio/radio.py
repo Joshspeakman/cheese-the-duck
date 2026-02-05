@@ -81,6 +81,7 @@ class RadioPlayer:
 
         # Lock to prevent race conditions during station switching
         self._lock = threading.Lock()
+        self._generation = 0  # Incremented on each play/stop to prevent stale threads
 
         # Detect player in background to avoid blocking init
         self._player: Optional[str] = None
@@ -259,6 +260,8 @@ class RadioPlayer:
 
         # Update state immediately with lock so UI shows "playing"
         with self._lock:
+            self._generation += 1
+            gen = self._generation
             self._current_station = station
             self._is_playing = True
 
@@ -267,8 +270,8 @@ class RadioPlayer:
         def spawn_player():
             with self._lock:
                 # Check if stop() was called before we got the lock
-                if not self._is_playing:
-                    return  # Cancelled, don't spawn
+                if not self._is_playing or self._generation != gen:
+                    return  # Cancelled or superseded, don't spawn
 
                 # Kill any existing process first
                 self._kill_process()
@@ -302,13 +305,17 @@ class RadioPlayer:
         """Stop radio. Non-blocking."""
         # Update state immediately with lock
         with self._lock:
+            self._generation += 1
+            gen = self._generation
             self._is_playing = False
             self._current_station = None
 
         # Kill process in background thread to avoid blocking
         def kill_in_background():
             with self._lock:
-                self._kill_process()
+                # Only kill if no newer play() has started
+                if self._generation == gen:
+                    self._kill_process()
 
         threading.Thread(target=kill_in_background, daemon=True).start()
     

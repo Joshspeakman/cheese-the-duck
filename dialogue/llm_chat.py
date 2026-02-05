@@ -5,7 +5,6 @@ LOCAL ONLY - no external API calls.
 """
 import os
 import sys
-import signal
 import logging
 import threading
 import concurrent.futures
@@ -18,21 +17,12 @@ logger = logging.getLogger(__name__)
 # LLM call timeout in seconds
 LLM_CALL_TIMEOUT = 30.0
 
-# Flag to track if LLM crashed (SIGSEGV, etc.)
+# Flag to track if LLM has encountered critical errors
 _llm_crashed = False
 
-def _handle_segfault(signum, frame):
-    """Handle SIGSEGV by disabling LLM instead of crashing."""
-    global _llm_crashed
-    _llm_crashed = True
-    logger.error("LLM caused a segmentation fault - disabling LLM for this session")
-
-# Install signal handler for SIGSEGV
-try:
-    signal.signal(signal.SIGSEGV, _handle_segfault)
-except (ValueError, OSError):
-    # Signal handling not available (Windows, etc.)
-    pass
+# NOTE: SIGSEGV handler removed - catching segfaults and continuing is
+# undefined behavior that can corrupt memory/save data. If the LLM causes
+# a segfault, the process should terminate cleanly via OS signal handling.
 
 if TYPE_CHECKING:
     from duck.duck import Duck

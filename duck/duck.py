@@ -1,7 +1,7 @@
 """
 Duck entity - the main character of the game.
 """
-from typing import Optional, Dict, Any
+from typing import Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 import random

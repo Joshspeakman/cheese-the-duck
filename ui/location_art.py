@@ -1072,76 +1072,81 @@ def _generate_home_pond_scenery(scenery_pieces: List[List[str]],
 def get_decoration_color(location: str, char: str) -> Optional[Callable]:
     """Get the color function for a specific decoration character."""
     # Water characters
-    if char in "~=":
+    if char == "~":
         return _term.bright_cyan
 
-    # Lily pads (O) - bright green
+    # = is context-dependent: water vs wood/dock
+    if char == "=":
+        if location in ("Home Pond", "Deep End", "Forest Edge", "Waterfall",
+                        "Misty Marsh", "Cypress Hollow", "Sunken Ruins",
+                        "Storm Drain", "Shipwreck Cove"):
+            return _term.bright_cyan  # Water
+        return _term.color(130)  # Brown wood/dock/structures
+
+    # O is context-dependent by location
     if char == "O":
-        return _term.bright_green
+        if location in ("Home Pond",):
+            return _term.bright_green  # Lily pad
+        return _term.color(250)  # Gray - rocks, barrels, shells, artifacts
 
-    # Lily flowers (*) - bright magenta when near water
-    if char == "*" and location in ("Home Pond", "Deep End"):
-        return _term.bright_magenta
+    # * is context-dependent by location
+    if char == "*":
+        if location in ("Home Pond", "Deep End"):
+            return _term.bright_magenta  # Lily flowers
+        if location in ("Crystal Cave",):
+            return random.choice([_term.bright_white, _term.bright_cyan, _term.bright_magenta])
+        if location in ("Sunny Meadow", "Butterfly Garden", "Park Fountain", "Rooftop Garden"):
+            return random.choice([_term.bright_magenta, _term.bright_yellow, _term.bright_red])
+        if location in ("Foothills", "Sandy Shore", "Waterfall"):
+            return _term.bright_white  # Eagle, edelweiss, mist, starfish
+        # Default for Misty Marsh, Cypress Hollow, Mushroom Grove, etc.
+        return _term.bright_yellow  # Firefly/glow
 
-    # Reeds and cattails (| and Y)
+    # Reeds and cattails
     if char == "|":
         return _term.green
     if char == "Y":
         return _term.color(130)  # Brown cattail tops
 
-    # Dock elements (= and +)
-    if char in "=+-":
+    # + and - are wood/dock
+    if char in "+-":
         return _term.color(130)  # Brown wood
 
     # Plants/trees
-    if char in "A+":
+    if char == "A":
         return _term.green
 
-    # Tree trunks
-    if char in "||":
+    # Crystals
+    if char in "<>":
+        return _term.bright_cyan
+
+    # Rocks/pebbles
+    if char == "o":
+        return _term.color(250)  # Gray
+
+    # ^ is context-dependent: mushroom vs mountain vs carrot
+    if char == "^":
+        if location in ("Foothills",):
+            return _term.color(240)  # Dark gray mountain
+        if location in ("Vegetable Patch", "Rooftop Garden"):
+            return _term.green  # Carrot tops
+        # Default: mushroom (Mushroom Grove, Ancient Oak, Misty Marsh)
+        return random.choice([_term.red, _term.bright_red, _term.bright_magenta])
+
+    # @ - mushrooms/round objects
+    if char == "@":
+        if location in ("Mushroom Grove", "Ancient Oak"):
+            return random.choice([_term.red, _term.bright_red, _term.bright_magenta])
+        return _term.green  # Sunflower/cabbage/squash/shell
+
+    # / and \ - mountains/tools
+    if char in "/\\":
+        return _term.color(240)  # Dark gray
+
+    # # and . - structures
+    if char in "#.":
         return _term.color(130)  # Brown
 
-    # Cozy elements - firefly/glow
-    if char == "*":
-        return _term.bright_yellow  # Firefly/glow
-    
-    # Flowers - stable colors (no flashing)
-    if char == "*":
-        return _term.bright_magenta
-    if char == "*":
-        return _term.bright_yellow
-    if char == "*":
-        return _term.bright_red
-    
-    # Crystals - stable colors
-    if char == "<" or char == ">":
-        return _term.bright_cyan
-    if char == "*":
-        return _term.bright_white
-    if char == "*":
-        return _term.bright_magenta
-    
-    # Rocks/pebbles
-    if char in "oO":
-        return _term.color(250)  # Gray
-    
-    # Mushrooms
-    if char in "^@":
-        colors = [_term.red, _term.bright_red, _term.bright_magenta]
-        return random.choice(colors)
-    
-    # Mountains
-    if char in "^/\\":
-        return _term.color(240)  # Dark gray
-    
-    # Wood/structures (not tree trunks)
-    if char in "#.=":
-        return _term.color(130)  # Brown
-    
-    # Dock elements
-    if char == "=":
-        return _term.color(130)  # Brown dock
-    
     # Default - no color
     return None
 

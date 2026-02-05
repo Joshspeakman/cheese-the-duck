@@ -98,7 +98,7 @@ class Weather:
             start = datetime.fromisoformat(self.start_time)
             elapsed = (datetime.now() - start).total_seconds() / 3600
             return elapsed < self.duration_hours
-        except:
+        except (ValueError, TypeError, AttributeError):
             return False
 
 
@@ -1532,7 +1532,7 @@ class AtmosphereManager:
                 if elapsed >= visitor.stay_duration_hours:
                     self.current_visitor = None
                     return visitor.farewell
-            except:
+            except (ValueError, TypeError, AttributeError):
                 self.current_visitor = None
 
         # Maybe spawn new visitor (higher chance for friends)
@@ -1879,7 +1879,7 @@ class AtmosphereManager:
         if data.get("current_season"):
             try:
                 atm.current_season = Season(data["current_season"])
-            except:
+            except (ValueError, KeyError):
                 pass
 
         if data.get("current_weather"):
@@ -1896,7 +1896,7 @@ class AtmosphereManager:
                     xp_multiplier=weather_data.get("xp_multiplier", 1.0),
                     special_message=weather_data.get("message", ""),
                 )
-            except:
+            except (ValueError, KeyError, TypeError):
                 pass
 
         if data.get("day_fortune"):

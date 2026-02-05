@@ -573,6 +573,6 @@ def get_aging_system() -> AgingSystem:
     return _aging_system
 
 
-# Direct instance for backwards compatibility - will be initialized on import
+# Direct instance for backwards compatibility - uses the same lazy singleton
 # If you want lazy initialization, use get_aging_system() instead
-aging_system = AgingSystem()
+aging_system = get_aging_system()

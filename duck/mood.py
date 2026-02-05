@@ -1,7 +1,7 @@
 """
 Mood system - calculates duck's emotional state from needs.
 """
-from typing import Optional, List
+from typing import Optional
 from dataclasses import dataclass
 from enum import Enum
 
