@@ -3056,10 +3056,6 @@ class Renderer:
         start_row = 4
         start_col = (width - box_width - 2) // 2
         
-        # Get blessed terminal for color reset
-        from blessed import Terminal
-        _term = Terminal()
-
         for i, line in enumerate(box_lines):
             if start_row + i < len(result):
                 row = result[start_row + i]
@@ -3069,7 +3065,7 @@ class Renderer:
                 left_part = _visible_ljust(left_part, start_col)  # Ensure proper width
                 right_part = _visible_slice(row, start_col + box_visible_width, width)
                 # Add terminal reset after left_part to prevent color bleeding into overlay
-                new_row = left_part + _term.normal + line + right_part
+                new_row = left_part + self.term.normal + line + right_part
                 result[start_row + i] = _visible_truncate(new_row, width)
 
         return result
@@ -3112,10 +3108,6 @@ class Renderer:
         result = base_output.copy()
         start_row = max(2, (len(result) - box_height) // 2 - 2)
         start_col = (width - box_width) // 2
-        
-        # Get blessed terminal for color reset
-        from blessed import Terminal
-        _term = Terminal()
 
         for i, line in enumerate(box_lines):
             if start_row + i < len(result):
@@ -3126,7 +3118,7 @@ class Renderer:
                 left_part = _visible_ljust(left_part, start_col)
                 right_part = _visible_slice(row, start_col + box_visible_width, width)
                 # Add terminal reset after left_part to prevent color bleeding into overlay
-                new_row = left_part + _term.normal + line + right_part
+                new_row = left_part + self.term.normal + line + right_part
                 result[start_row + i] = _visible_truncate(new_row, width)
 
         return result
@@ -3214,10 +3206,6 @@ class Renderer:
         result = base_output.copy()
         start_row = max(2, (len(result) - box_height) // 2 - 2)
         start_col = (width - box_width) // 2
-        
-        # Get blessed terminal for color reset
-        from blessed import Terminal
-        _term = Terminal()
 
         for i, line in enumerate(box_lines):
             if start_row + i < len(result):
@@ -3228,7 +3216,7 @@ class Renderer:
                 left_part = _visible_ljust(left_part, start_col)
                 right_part = _visible_slice(row, start_col + box_visible_width, width)
                 # Add terminal reset after left_part to prevent color bleeding into overlay
-                new_row = left_part + _term.normal + line + right_part
+                new_row = left_part + self.term.normal + line + right_part
                 result[start_row + i] = _visible_truncate(new_row, width)
 
         return result

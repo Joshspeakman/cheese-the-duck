@@ -2,7 +2,7 @@
 Cosmetics system - renders hats and accessories on the duck.
 Features mini-sized cosmetics with color support for the playfield duck.
 """
-from typing import List, Dict, Optional, Callable
+from typing import List, Dict, Optional
 from blessed import Terminal
 
 # Global terminal instance for colors

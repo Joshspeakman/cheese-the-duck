@@ -624,7 +624,7 @@ class CollectiblesSystem:
         
         for rarity in CollectibleRarity:
             count = stats['by_rarity'].get(rarity.value, 0)
-            icon = {"common": "o", "uncommon": "O", "rare": "O", "epic": "O", "legendary": "O", "mythic": "O"}.get(rarity.value, "o")
+            icon = {"common": "o", "uncommon": "+", "rare": "*", "epic": "#", "legendary": "@", "mythic": "!",}.get(rarity.value, "o")
             lines.append(f"|    {icon} {rarity.value.title():12}: {count:3}                    |")
         
         lines.append("+===============================================+")
@@ -641,11 +641,11 @@ class CollectiblesSystem:
         
         rarity_colors = {
             CollectibleRarity.COMMON: "o",
-            CollectibleRarity.UNCOMMON: "O",
-            CollectibleRarity.RARE: "O",
-            CollectibleRarity.EPIC: "O",
-            CollectibleRarity.LEGENDARY: "O",
-            CollectibleRarity.MYTHIC: "O",
+            CollectibleRarity.UNCOMMON: "+",
+            CollectibleRarity.RARE: "*",
+            CollectibleRarity.EPIC: "#",
+            CollectibleRarity.LEGENDARY: "@",
+            CollectibleRarity.MYTHIC: "!",
         }
         
         rarity_icon = rarity_colors.get(collectible.rarity, "o")

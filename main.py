@@ -187,7 +187,6 @@ def main():
         print("\n\nQuitting Cheese the Duck. Goodbye!")
         if logger:
             logger.info("Game interrupted by user (Ctrl+C)")
-        sys.exit(0)
 
     except Exception as e:
         error_msg = f"Fatal error in main: {e}"
@@ -198,6 +197,21 @@ def main():
         if logger:
             logger.critical(error_msg, exc_info=True)
             logger.log_exception(e, "Fatal error in main game loop")
+
+    finally:
+        # Clean up resources to prevent leaks
+        try:
+            from audio.sound import sound_engine
+            sound_engine.shutdown()
+        except Exception:
+            pass
+        try:
+            from dialogue.llm_behavior import get_behavior_controller
+            get_behavior_controller().shutdown()
+        except Exception:
+            pass
+        if logger:
+            shutdown_logger()
 
         sys.exit(1)
 

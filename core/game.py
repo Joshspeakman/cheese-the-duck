@@ -7171,7 +7171,7 @@ class Game:
                 special_message=data.get("message", f"Weather set to {weather_type}"),
             )
             self.renderer.show_message(f"# DEBUG: Weather set to {weather_type.upper()}", duration=2)
-        except:
+        except Exception:
             self.renderer.show_message(f"# DEBUG: Failed to set weather", duration=2)
         
         self._debug_menu_open = False

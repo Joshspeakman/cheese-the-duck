@@ -545,5 +545,5 @@ def get_prestige_system() -> PrestigeSystem:
     return _prestige_system
 
 
-# Direct instance for backwards compatibility
-prestige_system = PrestigeSystem()
+# Module-level accessor for backwards compatibility (uses singleton)
+prestige_system = get_prestige_system()

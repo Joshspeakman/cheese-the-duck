@@ -423,7 +423,7 @@ class Garden:
             growth_stage=GrowthStage.SEED,
         )
         
-        return True, f"Planted {plant_def.name}! i"
+        return True, f"Planted {plant_def.name}!"
     
     def water_plant(self, plot_id: int) -> Tuple[bool, str]:
         """Water a plant."""
@@ -519,7 +519,7 @@ class Garden:
         # Clear the plot
         plot.plant = None
         
-        return True, f"Harvested {amount} {plant_def.name}! W", {
+        return True, f"Harvested {amount} {plant_def.name}!", {
             "item": harvest_item,
             "amount": amount,
             "xp": plant_def.xp_value,
@@ -549,7 +549,7 @@ class Garden:
         
         plot.is_unlocked = True
         self.unlocked_plots += 1
-        return True, "Unlocked new garden plot! i"
+        return True, "Unlocked new garden plot!"
     
     def add_seeds(self, seed_id: str, amount: int):
         """Add seeds to inventory."""

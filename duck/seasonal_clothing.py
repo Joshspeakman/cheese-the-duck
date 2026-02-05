@@ -869,7 +869,7 @@ class SeasonalClothingSystem:
         current = get_current_season()
         available = [
             item_id for item_id, item in ALL_SEASONAL_ITEMS.items()
-            if item.season == current or item.season is None
+            if (item.season == current or item.season is None)
             and item.holiday is None
             and item.is_obtainable
             and item_id not in self.wardrobe.owned_items

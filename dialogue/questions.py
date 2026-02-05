@@ -447,9 +447,9 @@ class QuestionManager:
         
         if relationship_level == "stranger":
             timing_filter.append(QuestionTiming.FIRST_MEETING)
-        elif relationship_level in ["stranger", "acquaintance"]:
+        elif relationship_level == "acquaintance":
             timing_filter.append(QuestionTiming.EARLY_RELATIONSHIP)
-        elif relationship_level in ["friend", "best_friend"]:
+        elif relationship_level in ["friend", "best_friend", "bonded"]:
             timing_filter.append(QuestionTiming.ESTABLISHED)
         if relationship_level in ["best_friend", "bonded"]:
             timing_filter.append(QuestionTiming.CLOSE_FRIENDS)

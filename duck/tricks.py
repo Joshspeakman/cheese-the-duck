@@ -741,5 +741,5 @@ def get_tricks_system() -> TricksSystem:
     return _tricks_system
 
 
-# Direct instance for backwards compatibility
-tricks_system = TricksSystem()
+# Module-level accessor for backwards compatibility (uses singleton)
+tricks_system = get_tricks_system()

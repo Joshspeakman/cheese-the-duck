@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Callable
 from enum import Enum
+import copy
 import random
 
 
@@ -599,8 +600,11 @@ class QuestSystem:
                 continue
             
             for objective in current_step.objectives:
-                if objective.completed:
-                    continue
+                obj_key = f"{quest_id}_{objective.id}"
+                current_progress = active.step_progress.get(obj_key, 0)
+                
+                if current_progress >= objective.required_amount:
+                    continue  # Already completed
                 
                 if objective.objective_type.value != objective_type:
                     continue
@@ -609,17 +613,12 @@ class QuestSystem:
                 if objective.target != "any" and objective.target != target:
                     continue
                 
-                # Update progress
-                obj_key = f"{quest_id}_{objective.id}"
-                current = active.step_progress.get(obj_key, 0)
-                new_progress = min(current + amount, objective.required_amount)
+                # Update progress (tracked in active quest, NOT on shared template)
+                new_progress = min(current_progress + amount, objective.required_amount)
                 active.step_progress[obj_key] = new_progress
-                objective.current_progress = new_progress
                 
                 # Check completion
                 completed = new_progress >= objective.required_amount
-                if completed:
-                    objective.completed = True
                 
                 updates.append((quest_id, objective.description, completed))
         

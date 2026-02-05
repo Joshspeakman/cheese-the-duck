@@ -645,7 +645,13 @@ class CraftingSystem:
             "unlocked": self.recipes_unlocked,
             "crafted_count": self.crafted_count,
             "tools": {
-                tid: {"durability": t.durability, "name": t.name}
+                tid: {
+                    "durability": t.durability,
+                    "max_durability": t.max_durability,
+                    "name": t.name,
+                    "bonus_type": t.bonus_type,
+                    "bonus_amount": t.bonus_amount,
+                }
                 for tid, t in self.tools.items()
             },
         }
@@ -659,12 +665,15 @@ class CraftingSystem:
         system.recipes_unlocked = data.get("unlocked", [])
         system.crafted_count = data.get("crafted_count", {})
         
-        # Restore tools
+        # Restore tools with all fields
         for tool_id, tool_data in data.get("tools", {}).items():
             system.tools[tool_id] = Tool(
                 id=tool_id,
                 name=tool_data.get("name", tool_id),
                 durability=tool_data.get("durability", 100),
+                max_durability=tool_data.get("max_durability", 100),
+                bonus_type=tool_data.get("bonus_type", ""),
+                bonus_amount=tool_data.get("bonus_amount", 0.0),
             )
         
         # Ensure starting recipes are unlocked

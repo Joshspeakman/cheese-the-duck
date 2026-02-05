@@ -22,6 +22,9 @@ class GameLogger:
         self.log_dir = Path(log_dir)
         self.log_dir.mkdir(exist_ok=True)
 
+        # Clean up old log files (keep last 10 of each type)
+        self._cleanup_old_logs()
+
         # Create log file with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.log_file = self.log_dir / f"game_{timestamp}.log"
@@ -118,6 +121,23 @@ class GameLogger:
         for handler in self.logger.handlers[:]:
             handler.close()
             self.logger.removeHandler(handler)
+
+    def _cleanup_old_logs(self, keep: int = 10):
+        """Remove old log files, keeping the most recent ones."""
+        try:
+            for prefix in ("game_", "errors_"):
+                log_files = sorted(
+                    self.log_dir.glob(f"{prefix}*.log"),
+                    key=lambda f: f.stat().st_mtime,
+                    reverse=True
+                )
+                for old_file in log_files[keep:]:
+                    try:
+                        old_file.unlink()
+                    except OSError:
+                        pass
+        except Exception:
+            pass  # Don't fail startup over log cleanup
 
     def get_latest_errors(self, count: int = 10) -> list:
         """
