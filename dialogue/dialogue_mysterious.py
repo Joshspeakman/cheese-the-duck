@@ -174,6 +174,18 @@ MYSTERIOUS_DIALOGUE = {
         D("*genuinely smiling* The greatest prophecy is that I'd learn to smile. Fulfilled.", ConversationPhase.MAIN, "best_friend"),
         D("Every shadow I ever hid in led me here. Here is bright. Uncomfortable. Good.", ConversationPhase.MAIN, "best_friend"),
         D("*peacefully* The universe is random. Except for us. We're intentional. Or lucky. Same.", ConversationPhase.MAIN, "best_friend"),
+
+        # Additional main lines
+        D("I collect feathers I find in strange places. This one appeared on a Wednesday. Ominous.", ConversationPhase.MAIN, "stranger"),
+        D("*touches water* The ripples form patterns. The patterns say 'you touched the water.' Accurate.", ConversationPhase.MAIN, "stranger"),
+        D("My dreams are vivid. Last night I dreamed about bread. The bread had opinions.", ConversationPhase.MAIN, "stranger"),
+        D("I keep a shadow journal. It's a regular journal. I write in it at night. Hence shadow.", ConversationPhase.MAIN, "acquaintance"),
+        D("The crows and I have an understanding. They understand I'm dramatic. I understand they don't care.", ConversationPhase.MAIN, "acquaintance"),
+        D("My cryptic reputation is carefully maintained. One normal sentence and the whole brand collapses.", ConversationPhase.MAIN, "friend"),
+        D("*almost laughs* I tried being mysterious at the bakery. The baker just wanted my order.", ConversationPhase.MAIN, "friend"),
+        D("I practiced my dramatic pauses in front of a puddle. The puddle wasn't impressed.", ConversationPhase.MAIN, "close_friend"),
+        D("*smiles slightly* Being weird is easier than being vulnerable. You make me want to be both.", ConversationPhase.MAIN, "close_friend"),
+        D("I used to think darkness was deep. Now I think it's just where I hid. You're the light switch.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -214,6 +226,15 @@ MYSTERIOUS_DIALOGUE = {
         D("*peacefully* The mystery of me ends with you. Ends meaning changes.", ConversationPhase.STORY, "best_friend"),
         D("Every cryptic thing led me to this moment. Or I'm assigning meaning backwards.", ConversationPhase.STORY, "best_friend"),
         D("*sincerely* The prophecy was about love. I made sure of that.", ConversationPhase.STORY, "best_friend"),
+
+        # Additional story lines
+        D("I predicted rain once. It rained. My reputation was built on that single moment.", ConversationPhase.STORY, "acquaintance"),
+        D("Spent a night in a cemetery. Nothing happened. But I told everyone something did.", ConversationPhase.STORY, "acquaintance"),
+        D("A duck once asked me to read their fortune. I said 'bread.' They found bread. Coincidence.", ConversationPhase.STORY, "friend"),
+        D("*quietly* I scared a duckling once. Accidentally. With my face. Regular face. Still felt bad.", ConversationPhase.STORY, "friend"),
+        D("*softly* The first time someone called me a freak, I decided to own it. Ownership is exhausting.", ConversationPhase.STORY, "close_friend"),
+        D("I made a friend once who understood me. They moved away. I stayed mysterious. Protection.", ConversationPhase.STORY, "close_friend"),
+        D("The day I met you, I forgot to be mysterious. Just stood there. Being a duck. That was enough.", ConversationPhase.STORY, "best_friend"),
     ],
 
     # ========== PERSONAL ==========
@@ -243,6 +264,14 @@ MYSTERIOUS_DIALOGUE = {
         D("*sincerely* I'm never hiding from you again. I might. But I don't want to.", ConversationPhase.PERSONAL, "best_friend"),
         D("You are the answer to every question. The questions were about loneliness.", ConversationPhase.PERSONAL, "best_friend"),
         D("*quietly* I found home in you. Home is a feeling. You're the feeling.", ConversationPhase.PERSONAL, "best_friend"),
+
+        # Additional personal lines
+        D("The mystery act started because real me got rejected. Fake me was more interesting.", ConversationPhase.PERSONAL, "friend"),
+        D("*flatly* I'm exhausted from being an enigma. Enigmas need rest too.", ConversationPhase.PERSONAL, "friend"),
+        D("Under all the shadows, I'm just someone who wants to belong. Belonging is scarier than darkness.", ConversationPhase.PERSONAL, "close_friend"),
+        D("You make me feel normal. Normal is the most mysterious thing that's ever happened to me.", ConversationPhase.PERSONAL, "close_friend"),
+        D("Every mask I wore was a letter I couldn't send. You read them all anyway.", ConversationPhase.PERSONAL, "best_friend"),
+        D("The greatest mystery was that someone could love the real me. Solved. By you.", ConversationPhase.PERSONAL, "best_friend"),
     ],
 
     # ========== ACTIVITY ==========
@@ -285,6 +314,15 @@ MYSTERIOUS_DIALOGUE = {
         D("Let's do something ordinary. Ordinary is extraordinary for me. Perspective.", ConversationPhase.ACTIVITY, "best_friend"),
         D("I want to make memories. Not prophecies. Memories are better. They're real.", ConversationPhase.ACTIVITY, "best_friend"),
         D("*quietly* Just... be here. With me. Being is enough. Finally enough.", ConversationPhase.ACTIVITY, "best_friend"),
+
+        # Additional activity lines
+        D("Let's walk in circles and call it a ritual. Circles are mystical. Also just round.", ConversationPhase.ACTIVITY, "stranger"),
+        D("We could arrange rocks in patterns. The pattern means nothing. But it looks intentional.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Let's explore the pond at dusk. Everything looks more mysterious at dusk. That's the point.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("I'll show you how to read reflections. Step one: look at water. Step two: see yourself. Deep.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Want to make shadow puppets? Mine all look like blobs. Mysterious blobs.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's duck-watch from the reeds. Observation without commentary. I'll fail at the no-commentary part.", ConversationPhase.ACTIVITY, "friend"),
+        D("I have a spot where the moonlight hits perfectly. Let's go there and just exist.", ConversationPhase.ACTIVITY, "close_friend"),
     ],
 
     # ========== CLOSING ==========

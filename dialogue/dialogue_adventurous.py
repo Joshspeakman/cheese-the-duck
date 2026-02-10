@@ -178,6 +178,18 @@ ADVENTUROUS_DIALOGUE = {
         D("Thinking about writing our story. The title is 'The Duck Who Stayed and the Duck Who Didn't.'", ConversationPhase.MAIN, "best_friend"),
         D("Every map I draw, you're marked as 'home.' That's never changed.", ConversationPhase.MAIN, "best_friend"),
         D("*quietly* If I could carry your pond with me, I would. Physics says no.", ConversationPhase.MAIN, "best_friend"),
+
+        # Additional main lines
+        D("Rivers don't ask permission to flow. I relate to rivers.", ConversationPhase.MAIN, "stranger"),
+        D("Packed three different maps for this trip. All of them disagree.", ConversationPhase.MAIN, "stranger"),
+        D("*looks at horizon* There's always something past what you can see. Thrilling or terrifying.", ConversationPhase.MAIN, "stranger"),
+        D("I measure distance in stories, not steps. Today was a three-story walk.", ConversationPhase.MAIN, "acquaintance"),
+        D("Learned to navigate by moss once. Moss lied. Moss is untrustworthy.", ConversationPhase.MAIN, "acquaintance"),
+        D("Nearly stepped on a sleeping fox yesterday. We both screamed. He recovered faster.", ConversationPhase.MAIN, "friend"),
+        D("There's a valley where the wind sounds like singing. Or complaining. Hard to tell.", ConversationPhase.MAIN, "friend"),
+        D("Thinking about establishing base camps. One here. One everywhere else.", ConversationPhase.MAIN, "close_friend"),
+        D("Drew a heart on my map where your pond is. Don't look at my map.", ConversationPhase.MAIN, "close_friend"),
+        D("If exploration taught me one thing, it's that home isn't a place. It's a {duck}.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -218,6 +230,15 @@ ADVENTUROUS_DIALOGUE = {
         D("At my lowest point, almost gave up everything. Then I thought of coming home.", ConversationPhase.STORY, "best_friend"),
         D("Greatest adventure wasn't a place. It was realizing what matters.", ConversationPhase.STORY, "best_friend"),
         D("When I discovered the Paradise Isles... cried for an hour. Beautiful crying.", ConversationPhase.STORY, "best_friend"),
+
+        # Additional story lines
+        D("Crossed a rope bridge once. The rope was mostly decorative at that point.", ConversationPhase.STORY, "acquaintance"),
+        D("Woke up surrounded by hedgehogs. They'd adopted me overnight. Prickly welcome.", ConversationPhase.STORY, "acquaintance"),
+        D("Found a message in a bottle once. It said 'help.' Sent it back with snacks.", ConversationPhase.STORY, "friend"),
+        D("Got lost in fog so thick I couldn't see my own beak. Navigated by stubbornness.", ConversationPhase.STORY, "friend"),
+        D("*voice drops* There's a glacier I stood on alone. Cried because it was beautiful. And cold.", ConversationPhase.STORY, "close_friend"),
+        D("The night I slept in a hollow tree during a thunderstorm changed me. The tree didn't care.", ConversationPhase.STORY, "close_friend"),
+        D("My first adventure was running away from home. Made it two ponds over. Came back for snacks.", ConversationPhase.STORY, "best_friend"),
     ],
 
     # ========== PERSONAL ==========
@@ -247,6 +268,14 @@ ADVENTUROUS_DIALOGUE = {
         D("*holds wing* Will you always be here when I return? I need to know.", ConversationPhase.PERSONAL, "best_friend"),
         D("I love you, {duck}. Like family. Like home. Like the best parts of everywhere.", ConversationPhase.PERSONAL, "best_friend"),
         D("My greatest discovery wasn't a place. It was you.", ConversationPhase.PERSONAL, "best_friend"),
+
+        # Additional personal lines
+        D("Exploring is easier than sitting with my own thoughts. Thoughts are heavy travelers.", ConversationPhase.PERSONAL, "friend"),
+        D("I collect memories like others collect things. Memories weigh less. Usually.", ConversationPhase.PERSONAL, "friend"),
+        D("Home is a concept I've been running toward and away from simultaneously.", ConversationPhase.PERSONAL, "close_friend"),
+        D("*quietly* The loneliest moments aren't in empty places. They're in crowded ones.", ConversationPhase.PERSONAL, "close_friend"),
+        D("Every compass points somewhere. Mine points to you. That's not how compasses work. But still.", ConversationPhase.PERSONAL, "best_friend"),
+        D("The bravest thing I ever did wasn't climbing a mountain. It was coming back.", ConversationPhase.PERSONAL, "best_friend"),
     ],
 
     # ========== ACTIVITY ==========
@@ -290,6 +319,15 @@ ADVENTUROUS_DIALOGUE = {
         D("Remember the Paradise Isles? I have a route. It's risky. We should absolutely do it.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Grand expedition. You and me. I'll navigate, you'll keep me sane. Fair division.", ConversationPhase.ACTIVITY, "best_friend"),
         D("I want to show you the sunrise from Midnight Mountain. Worth the walk. Barely.", ConversationPhase.ACTIVITY, "best_friend"),
+
+        # Additional activity lines
+        D("Want to identify animal tracks? This one's mine. I walked here.", ConversationPhase.ACTIVITY, "stranger"),
+        D("We could practice survival skills. Step one: survive this conversation.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Let me teach you orienteering. Step one: figure out where we are. I don't know.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Let's build a shelter together. Shelter from what? Existential dread.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Let's wade upstream and see what's there. Could be nothing. Could be everything.", ConversationPhase.ACTIVITY, "friend"),
+        D("Midnight trek? The frogs are louder at night. It's their shift.", ConversationPhase.ACTIVITY, "friend"),
+        D("I found a ridge with the best sunset view. Let me take you there. Right now.", ConversationPhase.ACTIVITY, "close_friend"),
     ],
 
     # ========== CLOSING ==========

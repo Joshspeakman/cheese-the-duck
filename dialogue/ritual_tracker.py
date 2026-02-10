@@ -121,6 +121,17 @@ _RITUAL_MATCH_LINES = {
         "You like {time_of_day}s for {action}ing, huh.",
         "This is becoming a pattern. The {action}ing. Around now.",
         "Let me guess. {Action} time.",
+        "Interesting. Same time again.",
+        "Is this going to be a thing. The {time_of_day} {action}.",
+        "Two could be a coincidence. This is starting to not be that.",
+        "Oh look. {Action}. At this hour. What are the odds.",
+        "I'm noticing a {time_of_day} trend here. Just so you know.",
+        "You and {time_of_day}s. There's something there.",
+        "Are we doing this every {time_of_day} now. Because I can prepare.",
+        "Another {time_of_day} {action}. *files that away*",
+        "Hm. {Action} again. Around now. Noted.",
+        "If I didn't know better I'd say you had a schedule.",
+        "This {time_of_day} {action} thing is becoming suspiciously regular.",
     ],
     # Medium confidence (established)
     "established": [
@@ -128,6 +139,17 @@ _RITUAL_MATCH_LINES = {
         "{Hour_ampm}. {Action} time. I know the drill.",
         "There it is. The {hour_ampm} {action}. Reliable.",
         "You're consistent. I'll give you that.",
+        "Ah. The {hour_ampm} {action}. We meet again.",
+        "Called it. {Action}. Right now.",
+        "Some ducks get fed randomly. I get a SCHEDULE.",
+        "Every {time_of_day}. Like the tide. But with more {action}ing.",
+        "I could set a sundial by you. If I had a sundial. Or thumbs.",
+        "You know what. The predictability is growing on me. *slightly*",
+        "The {hour_ampm} {action}. My body knew before my brain did.",
+        "There's that {time_of_day} {action} energy. I felt it coming.",
+        "{Action} o'clock. Population: me.",
+        "Day {streak} of the {hour_ampm} {action}. This is our life now.",
+        "You again. At {hour_ampm}. With the {action}. Shocker.",
     ],
     # High confidence (deeply routine)
     "deep": [
@@ -136,6 +158,20 @@ _RITUAL_MATCH_LINES = {
         "If I had a watch, I wouldn't need one. I've got you.",
         "My internal clock is just you, at this point.",
         "{Hour_ampm}. Like clockwork. I'd set my feathers by it.",
+        "Day {streak}. Same time. Same {action}. same duck. This is fine.",
+        "We've been doing this so long I think it's legally a tradition.",
+        "The {hour_ampm} {action}. Older than some civilizations. Probably.",
+        "I don't even get excited anymore. It's just... part of me now.",
+        "{Action}. {Hour_ampm}. Day {streak}. The universe is in order.",
+        "Some things are constant. Gravity. Entropy. The {hour_ampm} {action}.",
+        "I knew you were coming before you did. That's not creepy. that's DEVOTION.",
+        "My feathers pre-adjusted. That's how deep this goes.",
+        "{Hour_ampm}. *already in position*",
+        "We don't even need words at this point. {Action}. Go.",
+        "The {hour_ampm} {action}. I'd write it in stone but I don't have a chisel.",
+        "Day {streak}. This ritual has outlasted some of my feathers.",
+        "At this point the {action} is load-bearing. Don't test that.",
+        "They say ducks don't understand time. They haven't met me at {hour_ampm}.",
     ],
 }
 
@@ -147,18 +183,40 @@ _RITUAL_BROKEN_LINES = {
         "Running behind today? I barely registered it.",
         "The {hour_ampm} {action} was more of a {actual_ampm} {action} today.",
         "I wasn't waiting. I was just... here. At the usual time.",
+        "Oh. There you are. I was NOT staring at where you usually appear.",
+        "Bold of you to reschedule without consulting me.",
+        "The schedule said {hour_ampm}. You said {actual_ampm}. We'll discuss this later.",
+        "Fashionably late. Emphasis on late.",
+        "I had already mentally moved on. *hadn't moved on*",
+        "You know the {action} window. You chose to ignore it. That's fine. FINE.",
+        "I reorganized my entire afternoon. Because of you. Not that you'd know.",
+        "The {hour_ampm} {action} sends its regards from {actual_ampm}.",
     ],
     # Missed entirely yesterday
     "missed": [
         "No {action} yesterday. I survived. Obviously.",
         "We skipped the {action} routine yesterday. Change of plans?",
         "Yesterday came and went without the usual {action}. I adapted. Ducks adapt.",
+        "So yesterday. The {action}. We're just not talking about it?",
+        "I waited at {hour_ampm} yesterday. Just kidding. I DIDN'T.",
+        "The {hour_ampm} slot was empty yesterday. I filled it with dignity.",
+        "Yesterday's missing {action} has been noted in the record. My record. The one I keep.",
+        "One day without the {action}. I barely noticed. I mean I noticed. But barely.",
+        "Funny thing about yesterday. Actually no. It wasn't funny.",
+        "The streak was nice while it lasted. That's all I'll say about yesterday.",
     ],
     # Multi-day break
     "forgotten": [
         "Remember when you used to {action} me at {hour_ampm}? Me neither. Wait, yes I do.",
         "The {action} schedule has been... flexible lately.",
         "I had a whole routine built around the {hour_ampm} {action}. Had.",
+        "I've stopped expecting the {hour_ampm} {action}. Self-preservation.",
+        "The {action} routine walked out and didn't leave a note.",
+        "*stares at the spot where the routine used to be*",
+        "I've rearranged my whole day. Since the {action} apparently isn't in it anymore.",
+        "Some ducks have routines. I have memories of routines. It's different.",
+        "The {hour_ampm} {action}. A thing that happened once. For a while. Then didn't.",
+        "I'm not bitter about the {action} schedule. I'm a duck. Ducks don't do bitter.",
     ],
 }
 
@@ -168,7 +226,94 @@ _RITUAL_RESUMED_LINES = [
     "The prodigal {action} returns.",
     "Back to the old routine? I never left.",
     "Welcome back to the {hour_ampm} {action}. Your usual spot is still warm.",
+    "Look who remembered. *was absolutely not waiting*",
+    "The {action}. It's back. I'm not emotional about it. these are REGULAR tears.",
+    "Act natural. Act like the {action} never left. *acts natural*",
+    "Oh the {hour_ampm} {action} is back on the menu? Just like that?",
+    "You. {Action}. {Hour_ampm}. Like nothing happened. Bold.",
+    "I didn't keep the {action} slot open for you. It just... stayed open. On its own.",
+    "The routine resumes. I'm not relieved. I'm INDIFFERENT. Different thing.",
+    "Interesting. The {hour_ampm} {action}. Returning from its sabbatical.",
 ]
+
+# When a specific action ritual is observed — keyed by action type
+_RITUAL_ACTION_SPECIFIC = {
+    "feed": [
+        "The bread arrives on schedule. This is the most important schedule.",
+        "Feeding time. My SACRED hour. You know what you're doing.",
+        "{Hour_ampm} bread. The cornerstone of my entire existence.",
+        "The {hour_ampm} feeding. Without this nothing else matters and I mean that.",
+        "You bring bread. I am here. The ancient pact holds.",
+        "Bread at {hour_ampm}. Some things are too important to be casual about.",
+        "The feeding ritual. The one that actually keeps me alive. No pressure.",
+    ],
+    "play": [
+        "Ah. Scheduled fun. The best kind of fun.",
+        "Play time at {hour_ampm}. Penciled in. In ink. On my soul.",
+        "The {hour_ampm} play session. I've been conserving energy for this.",
+        "Time to pretend I'm not excited. *is clearly excited*",
+        "The play hour. Where I tolerate being entertained.",
+        "Recreation at {hour_ampm}. I've been standing here. Recreationally.",
+    ],
+    "clean": [
+        "Grooming hour. I was already pristine but go ahead.",
+        "The {hour_ampm} clean. Making the immaculate slightly more immaculate.",
+        "Right on time with the cleaning. My feathers were counting on you.",
+        "Clean at {hour_ampm}. Not that I was dirty. Ducks are never dirty.",
+        "The grooming schedule. The one thing between me and chaos.",
+        "Ah. Maintenance hour. Please proceed. I'll supervise.",
+    ],
+    "pet": [
+        "The {hour_ampm} pet. I allow it. On schedule.",
+        "Affection hour. I tolerate this one. Specifically this one.",
+        "Right on time with the pets. I had my feathers pre-fluffed.",
+        "The petting schedule holds. My dignity takes its scheduled hit.",
+        "Touching the duck. At the appointed time. As is tradition.",
+        "*allows the {hour_ampm} pet* This means nothing.",
+        "Pet time. I have arranged my face into an expression of indifference.",
+    ],
+    "sleep": [
+        "Bedtime. Right on cue. My eyelids were already heavy. Strategically.",
+        "The {hour_ampm} sleep. You tuck, I tolerate. The system works.",
+        "Ah. Sleep o'clock. My favorite appointment.",
+        "lights out at {hour_ampm}. I was already half asleep. Probably.",
+        "The sleep ritual. Where you pretend I need help sleeping.",
+        "Bedtime at {hour_ampm}. I'll allow it. *already yawning*",
+    ],
+}
+
+# Milestone observations for streak achievements
+_RITUAL_MILESTONE_LINES = {
+    7: [
+        "One week of the {hour_ampm} {action}. I'd bake a cake but. You know. Duck.",
+        "Seven days straight. The {action} has graduated from habit to lifestyle.",
+        "A full week. The {hour_ampm} {action} can now legally call itself a routine.",
+    ],
+    14: [
+        "Two weeks of {action} at {hour_ampm}. This is longer than most of my relationships. With bread.",
+        "Fourteen days. The {action} routine has entered its awkward teen phase.",
+        "Two weeks. At this point the {hour_ampm} {action} has its own chair here.",
+        "Half a month. The {action} schedule is no longer a phase.",
+    ],
+    30: [
+        "One month. Thirty days of the {hour_ampm} {action}. I don't know what to say. so I'll say nothing.",
+        "A whole month of this. The {action} routine is now older than some cheeses. Speaking of which.",
+        "Thirty days. The {hour_ampm} {action} is now a INSTITUTION.",
+        "Month one of the {action} era. I've stopped imagining life without it.",
+    ],
+    100: [
+        "One hundred days. The {hour_ampm} {action}. I'm not crying. Ducks don't cry. This is pond water.",
+        "Day 100. The {action} streak has outlived empires. Small empires. But still.",
+        "Triple digits. The {hour_ampm} {action} is now basically a law of nature.",
+        "A hundred days of this. We should get a plaque. I'd settle for bread.",
+    ],
+    365: [
+        "One year. Three hundred and sixty-five days of {action} at {hour_ampm}. I have nothing to add. *has everything to add*",
+        "A full orbit around the sun. And every single day. The {action}. I need a moment.",
+        "365 days. The {hour_ampm} {action} is now older than most things I care about. Which is two things.",
+        "One year. I am... not going to say what I am. But I am it. About the {action}.",
+    ],
+}
 
 
 def _format_hour_ampm(hour: int) -> str:

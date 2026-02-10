@@ -176,6 +176,18 @@ PLAYFUL_DIALOGUE = {
         D("I don't need fun to survive anymore. I need you. Fun is a bonus.", ConversationPhase.MAIN, "best_friend"),
         D("*monotone* I am having a feeling. It is large. It is about you.", ConversationPhase.MAIN, "best_friend"),
         D("Every joke I ever told was secretly for you. The audience was secondary.", ConversationPhase.MAIN, "best_friend"),
+
+        # Additional main lines
+        D("I gave names to all the clouds today. That one's Gerald. He's not trying hard enough.", ConversationPhase.MAIN, "stranger"),
+        D("*holds stick* Wanna sword fight? I already named mine. It's called Dennis.", ConversationPhase.MAIN, "stranger"),
+        D("Life is a game with no instructions. I'm winning anyway. By my own rules.", ConversationPhase.MAIN, "stranger"),
+        D("I challenged a butterfly to a race. I lost. Butterflies are deceptively fast.", ConversationPhase.MAIN, "acquaintance"),
+        D("Made a crown out of lily pads. I'm royalty now. Respect the crown.", ConversationPhase.MAIN, "acquaintance"),
+        D("I wrote you a song. It has one note. The note is enthusiasm.", ConversationPhase.MAIN, "friend"),
+        D("*whispers* Sometimes I pretend puddles are oceans. Don't tell anyone. It's my thing.", ConversationPhase.MAIN, "friend"),
+        D("The fun I have with you isn't performance. It's the only real kind.", ConversationPhase.MAIN, "close_friend"),
+        D("I made a list of everyone who matters. It's short. You're on it. Twice. Intentionally this time.", ConversationPhase.MAIN, "close_friend"),
+        D("Before you, fun was an escape. Now it's just... fun. The word works again.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -224,6 +236,15 @@ PLAYFUL_DIALOGUE = {
         D("*flatly* Thank you for saving me. For real. That's the story.", ConversationPhase.STORY, "best_friend"),
         D("The day I met you, I stopped performing. Briefly. Then started again. But differently.", ConversationPhase.STORY, "best_friend"),
         D("*still* My whole story ends with you. No. Starts over with you. Better.", ConversationPhase.STORY, "best_friend"),
+
+        # Additional story lines
+        D("I tried to teach a rock to swim once. It sank. I called it a lesson in physics.", ConversationPhase.STORY, "acquaintance"),
+        D("*flatly* My first joke got zero laughs. I laughed. That counts as one.", ConversationPhase.STORY, "acquaintance"),
+        D("I organized a parade of one. Me. The spectators were confused ducks. Standing ovation. They were already standing.", ConversationPhase.STORY, "friend"),
+        D("*quietly* The day I realized being funny was a defense mechanism... still told a joke after.", ConversationPhase.STORY, "friend"),
+        D("I held a party for my sadness once. Gave it cake. It didn't leave. But the cake was good.", ConversationPhase.STORY, "close_friend"),
+        D("*softly* There was a whole year I performed happiness. Nobody noticed it wasn't real. That hurt.", ConversationPhase.STORY, "close_friend"),
+        D("The moment I stopped performing for you and just existed. That was the real beginning.", ConversationPhase.STORY, "best_friend"),
     ],
 
     # ========== PERSONAL ==========
@@ -253,6 +274,14 @@ PLAYFUL_DIALOGUE = {
         D("I'm complete when I'm with you. Incomplete otherwise. Math.", ConversationPhase.PERSONAL, "best_friend"),
         D("*still* For the first time, stillness feels right. Mostly right.", ConversationPhase.PERSONAL, "best_friend"),
         D("You're my fun and my peace. Both things. At once. Impressive.", ConversationPhase.PERSONAL, "best_friend"),
+
+        # Additional personal lines
+        D("Joy is a skill. I practice it constantly. Practice implies it's not natural. It's not.", ConversationPhase.PERSONAL, "friend"),
+        D("*quietly* The louder I am, the more I'm hiding. Volume is inversely proportional to honesty.", ConversationPhase.PERSONAL, "friend"),
+        D("*admits* I entertain because being boring means being left behind. Old lesson. Wrong lesson.", ConversationPhase.PERSONAL, "close_friend"),
+        D("What if I'm not fun one day? Will you stay? That's the question. The only one.", ConversationPhase.PERSONAL, "close_friend"),
+        D("You love the quiet me. The quiet me is scared. You love that too. Revolutionary.", ConversationPhase.PERSONAL, "best_friend"),
+        D("The best part of us is I don't have to try. Trying is what I do everywhere else.", ConversationPhase.PERSONAL, "best_friend"),
     ],
 
     # ========== ACTIVITY ==========
@@ -296,6 +325,15 @@ PLAYFUL_DIALOGUE = {
         D("Let's write our story. Chapter one: you showed up. Chapter two: still here.", ConversationPhase.ACTIVITY, "best_friend"),
         D("*holds your wing* The activity is this. Just this. Forever ideally.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Let's do everything. Or one thing. The thing is being near you.", ConversationPhase.ACTIVITY, "best_friend"),
+
+        # Additional activity lines
+        D("Let's invent a language. Word one: 'bloop.' It means everything. And nothing.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Dance battle. Right now. No music needed. Music is in my head. It's bad music.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Let's play 'who can do nothing the longest.' I already lost. Thinking counts as something.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Wanna build the world's smallest dam? It holds back no water. But it exists.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Let's make friendship bracelets. I have no supplies. We'll use imagination. And sticks.", ConversationPhase.ACTIVITY, "friend"),
+        D("Cloud watching but we make up stories for each one. That one's a duck on vacation.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's do absolutely nothing together but make it feel like an adventure.", ConversationPhase.ACTIVITY, "close_friend"),
     ],
 
     # ========== CLOSING ==========

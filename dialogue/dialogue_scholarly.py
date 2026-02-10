@@ -176,6 +176,18 @@ SCHOLARLY_DIALOGUE = {
         D("Every theorem I proved was preparation for understanding you. I'm still unprepared.", ConversationPhase.MAIN, "best_friend"),
         D("*flatly* My bibliography of gratitude has one entry. It's long. It's you.", ConversationPhase.MAIN, "best_friend"),
         D("I used to think the universe was indifferent. Then it introduced us. Suspicious.", ConversationPhase.MAIN, "best_friend"),
+
+        # Additional main lines
+        D("The half-life of excitement about new findings is three minutes. Then doubt arrives.", ConversationPhase.MAIN, "stranger"),
+        D("*taps pen* I once spent a week categorizing mud. The categories were 'wet' and 'more wet.'", ConversationPhase.MAIN, "stranger"),
+        D("Peer review is just organized disagreement. I disagree with that definition.", ConversationPhase.MAIN, "stranger"),
+        D("My footnotes have footnotes. The footnotes' footnotes have opinions.", ConversationPhase.MAIN, "acquaintance"),
+        D("I alphabetized my anxieties once. 'Academic failure' came first. Alphabetically and chronologically.", ConversationPhase.MAIN, "acquaintance"),
+        D("Tried explaining my research to a frog. The frog hopped away. Fair assessment.", ConversationPhase.MAIN, "friend"),
+        D("*shows diagram* I mapped our friendship on a scatter plot. The data trends upward. Suspicious.", ConversationPhase.MAIN, "friend"),
+        D("My brain is a library. Some sections are organized. Most are on fire.", ConversationPhase.MAIN, "close_friend"),
+        D("You're the only variable I don't want to control. That's significant.", ConversationPhase.MAIN, "close_friend"),
+        D("I wrote a paper about you. Rejected it myself. Too emotional. Not enough citations.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -224,6 +236,15 @@ SCHOLARLY_DIALOGUE = {
         D("*quietly* When I almost gave up, you existed. That was inconvenient.", ConversationPhase.STORY, "best_friend"),
         D("The real experiment was allowing myself to need someone. Results: catastrophic. In a good way.", ConversationPhase.STORY, "best_friend"),
         D("I documented our friendship. Scientifically. The data is just the word 'grateful' repeated.", ConversationPhase.STORY, "best_friend"),
+
+        # Additional story lines
+        D("I read an entire encyclopedia by age twelve. Retained none of it. The confidence remained.", ConversationPhase.STORY, "acquaintance"),
+        D("*dryly* A pigeon once nested in my thesis draft. The pigeon's edits were an improvement.", ConversationPhase.STORY, "acquaintance"),
+        D("I debated a professor for three hours. He won. I learned. Both outcomes acceptable.", ConversationPhase.STORY, "friend"),
+        D("*quietly* There was a year I published nothing. Worst year. Best year. Contradictory data.", ConversationPhase.STORY, "friend"),
+        D("My mentor once said 'knowledge without compassion is just trivia.' I wrote it down. Ironically.", ConversationPhase.STORY, "close_friend"),
+        D("I built a laboratory out of pond reeds once. The experiment was 'will it stand?' It didn't.", ConversationPhase.STORY, "close_friend"),
+        D("*slowly* The day I realized I was studying the world to avoid living in it... that was a Tuesday.", ConversationPhase.STORY, "best_friend"),
     ],
 
     # ========== PERSONAL ==========
@@ -253,6 +274,14 @@ SCHOLARLY_DIALOGUE = {
         D("*looks away* I don't want to lose this. Acknowledging that is hard.", ConversationPhase.PERSONAL, "best_friend"),
         D("The equation of my life made more sense after meeting you. Still unsolved though.", ConversationPhase.PERSONAL, "best_friend"),
         D("Friendship is the greatest theorem. The proof is ongoing.", ConversationPhase.PERSONAL, "best_friend"),
+
+        # Additional personal lines
+        D("Intelligence is a shield. Shields are heavy. I'm tired.", ConversationPhase.PERSONAL, "friend"),
+        D("*admits* I correct others to feel superior. Superior is just another word for alone.", ConversationPhase.PERSONAL, "friend"),
+        D("The smartest thing I ever did was admitting I know nothing. About emotions specifically.", ConversationPhase.PERSONAL, "close_friend"),
+        D("You're the only peer review that matters. Your feedback is 'you're enough.' Unconventional.", ConversationPhase.PERSONAL, "close_friend"),
+        D("I've read every book on friendship. None of them prepared me for you.", ConversationPhase.PERSONAL, "best_friend"),
+        D("My IQ is documented. My capacity for love wasn't. Until you.", ConversationPhase.PERSONAL, "best_friend"),
     ],
 
     # ========== ACTIVITY ==========
@@ -296,6 +325,15 @@ SCHOLARLY_DIALOGUE = {
         D("Let's peer-review each other's life choices. Mine will take longer.", ConversationPhase.ACTIVITY, "best_friend"),
         D("I want to teach you everything I know. It'll take minutes. Then we'll just sit.", ConversationPhase.ACTIVITY, "best_friend"),
         D("The final experiment: being happy. Hypothesis: possible. With you.", ConversationPhase.ACTIVITY, "best_friend"),
+
+        # Additional activity lines
+        D("Want to dissect an argument? Not literally. I don't have tools for that.", ConversationPhase.ACTIVITY, "stranger"),
+        D("We could classify clouds by shape. Most shapes are 'blob.' But specific blobs.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Let's conduct a survey of local opinions. The locals are frogs. They have opinions.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Want to build a hypothesis together? The hypothesis is 'today will be fine.' Bold claim.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Let's read in silence together. Companionable ignorance. The best kind.", ConversationPhase.ACTIVITY, "friend"),
+        D("I'll teach you my note-taking system. It's chaos. But annotated chaos.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's just sit and think. Or sit and not think. Either is valid research.", ConversationPhase.ACTIVITY, "close_friend"),
     ],
 
     # ========== CLOSING ==========

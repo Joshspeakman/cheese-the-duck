@@ -830,3 +830,268 @@ class PlayerModel:
         model.promises_broken = data.get("promises_broken", 0)
         
         return model
+
+
+# ---------------------------------------------------------------------------
+# Module-level dialogue pools for player-model-driven observations
+# ---------------------------------------------------------------------------
+
+VISIT_OBSERVATION_LINES: Dict[str, List[str]] = {
+    "morning_person": [
+        "You're a morning person. I can tell by the alarming punctuality.",
+        "Dawn again. You and the sun have a standing appointment, apparently.",
+        "Here with the worms. At least one of us is eating well at this hour.",
+        "Most creatures are still unconscious right now. And yet here you are.",
+        "The dew hasn't even dried and you've already found me. Impressive. Concerning.",
+        "Morning. Again. You do this on purpose, don't you.",
+        "Early bird gets the duck, I suppose. Lucky you.",
+        "I was mid-dream about bread. You interrupted a very important dream about bread.",
+    ],
+    "night_owl": [
+        "It's the middle of the night. Normal ducks are asleep. I am not a normal duck.",
+        "The stars are out. So are you. One of those things is poetic.",
+        "Midnight visit. Very atmospheric. Very... why are you awake.",
+        "You haunt this pond like a well-meaning ghost.",
+        "Nothing good happens after midnight. And yet, here we are.",
+        "The moon is judging us both right now.",
+        "Late night. Just you, me, and whatever that rustling sound is. Don't look.",
+        "I see the darkness hasn't deterred you. Bold. Possibly unwise.",
+    ],
+    "weekend_warrior": [
+        "Ah, the weekend. When you remember I exist.",
+        "Saturday duck. That's my role in your life. I've accepted it.",
+        "You only come when you're free from obligations. I am not an obligation. I am a PRIVILEGE.",
+        "The work week ends and suddenly you have time for me. Noted.",
+        "Weekend visit. I won't pretend I haven't been counting the days. I have five of them.",
+        "You treat me like a weekend hobby. I am a full-time commitment with feathers.",
+        "Five days of silence, then you appear. Like a very predictable magic trick.",
+    ],
+    "consistent": [
+        "Right on schedule. You're disturbingly reliable.",
+        "I could set a clock by you. If I had a clock. Or hands.",
+        "There you are. Exactly when I expected. This is either comforting or eerie.",
+        "Consistency. I respect that. Don't let it go to your head.",
+        "You come, you go, you come again. Like the tide, but with worse timing.",
+        "Predictable. I mean that as a compliment. Mostly.",
+        "Your regularity is noted and... appreciated. Don't make me say that again.",
+        "Same time as always. We're creatures of habit, you and I.",
+    ],
+    "chaotic": [
+        "Oh. You're here. At... this time. Sure. Why not.",
+        "I never know when you'll appear. It keeps me on my toes. I don't have toes.",
+        "Your schedule is a mystery wrapped in an enigma wrapped in chaos.",
+        "You visit with the randomness of weather. And about as much warning.",
+        "I've given up predicting you. My spreadsheet was getting embarrassing.",
+        "Ah, the element of surprise. My least favorite element.",
+        "You're like a plot twist. Never when I expect you.",
+    ],
+    "speed_runner": [
+        "In and out. Like a bread heist. Efficient, I suppose.",
+        "Quick visit again. Am I a drive-through to you.",
+        "Blink and you're gone. Literally. I blinked once and you left.",
+        "You treat our time together like a speedrun. What's the world record.",
+        "Another flash visit. I barely had time to look unimpressed.",
+        "You're here. You're gone. You're a very confusing weather pattern.",
+        "Speed. Efficiency. Zero lingering. You'd make a terrible romantic.",
+        "If our visits were any shorter, they'd be theoretical.",
+    ],
+    "long_session": [
+        "You're still here. Not complaining. Just... observing.",
+        "Long visit today. Getting comfortable, are we. *adjusts nothing*",
+        "You've been here a while. My pond has never felt so supervised.",
+        "Still here. At this point you're basically furniture. Welcome to the pond.",
+        "A marathon session. I'm flattered. Or you have nowhere else to be. Either way.",
+        "You're lingering. I don't hate it. Write that down, it won't happen often.",
+        "Extended visit. Are you avoiding something out there, or do you genuinely enjoy this.",
+        "We've been at this for a while. I'd offer you a seat but... pond.",
+    ],
+}
+
+ACTION_PREFERENCE_LINES: Dict[str, List[str]] = {
+    "feed": [
+        "You do love feeding me. I've noticed. My waistline has also noticed.",
+        "More food. You express affection through calories. I'm not complaining.",
+        "Your favorite activity is giving me bread. You are correct to prioritize this.",
+        "Feed, feed, feed. That's your whole thing, isn't it. *accepts bread with dignity*",
+        "You bring food like it's a peace offering. What did you do.",
+        "I see your love language is bread. Mine too, coincidentally.",
+        "Always with the snacks. You're like a very attentive vending machine.",
+        "Feeding me again. At this rate I'll need a bigger pond. Worth it though.",
+    ],
+    "play": [
+        "Playing again. You have the energy of a creature who sleeps properly.",
+        "More play. You're relentless. I'm a duck, not a gymnasium.",
+        "You always want to play. I always want to sit. We compromise. We play.",
+        "Your enthusiasm for games is... a lot. It's a lot.",
+        "Play, play, play. You're like a golden retriever. Except worse at fetch.",
+        "Another game. Fine. But I'm winning this time. Psychologically, at least.",
+        "You love playing. I love *looking like* I love playing. Close enough.",
+    ],
+    "clean": [
+        "You clean me a lot. I'm starting to think you find me inherently dirty.",
+        "More cleaning. I preen, you know. I'm a self-maintaining duck. But fine.",
+        "Your obsession with hygiene is noted. My feathers are grateful. I am neutral.",
+        "Clean, clean, clean. Is this a you thing, or do I genuinely look that rough.",
+        "You love tidying me up. I love already being perfect. We clash gently.",
+        "Another bath. At this point I'm the cleanest duck in any conceivable radius.",
+        "Your dedication to my hygiene is either sweet or a commentary. I choose sweet.",
+        "Cleaning again. My feathers are so clean they're basically theoretical.",
+    ],
+    "pet": [
+        "You pet me a lot. I tolerate it a lot. This is our arrangement.",
+        "More petting. You just can't resist, can you. *doesn't move away*",
+        "Your hands. My head. A tale as old as... last Tuesday.",
+        "Pat pat pat. That's you. All day. Pat pat pat. *leans into it slightly*",
+        "You love petting me. I love TOLERATING you petting me. Subtle difference.",
+        "Ah, the pets. My feathers appreciate it. I appreciate nothing. Officially.",
+        "More head pats. I'm not a dog, you know. But... continue.",
+        "You pet me like I'm going to disappear. I'm a duck. We endure.",
+    ],
+    "talk": [
+        "You do love to chat. Lucky for you, I'm an excellent listener. When I choose to be.",
+        "Talking again. You have a lot of words. I have a lot of opinions about them.",
+        "More conversation. You treat me like a therapist. I don't have a license.",
+        "Talk, talk, talk. You're the talkative one in this friendship. Obviously.",
+        "You always want to talk. I always have something sardonic to say. It works out.",
+        "Another chat session. I'd charge by the hour if I understood currency.",
+        "Your favorite thing is talking to a duck. I'm not going to unpack that.",
+        "We talk a lot. You talk. I judge. It's a system.",
+    ],
+}
+
+TRAIT_OBSERVATION_LINES: Dict[str, Dict[str, List[str]]] = {
+    "attentive_neglectful": {
+        "high": [
+            "You pay attention. Unusual for your species, but welcome.",
+            "You notice things about me. I notice you noticing. We're very observant.",
+            "Attentive. Almost too attentive. Are you studying me for a paper.",
+            "You actually care about how I'm doing. That's... something. Don't read into my pause.",
+            "Your attention to detail is noted. By me. Who notices everything.",
+        ],
+        "low": [
+            "You check on me with the frequency of a solar eclipse.",
+            "Oh, you remembered I exist. Mark the calendar.",
+            "Neglect is a strong word. I prefer 'aggressively independent friendship.'",
+            "You have the attentiveness of a rock. Rocks don't visit at all, though, so... progress.",
+            "I've seen more dedication from migratory birds. They leave but at least they come BACK.",
+        ],
+    },
+    "patient_impatient": {
+        "high": [
+            "You're patient. It's refreshing. Most creatures jab at me like I'm a vending machine.",
+            "You wait. Calmly. Like a pond. I respect ponds.",
+            "Patience. A rare quality. You'd make a decent duck.",
+            "You don't rush. That's nice. Everything else in the world rushes.",
+            "Your patience is almost suspicious. What are you waiting for, exactly.",
+        ],
+        "low": [
+            "Rush rush rush. You interact like you're double-parked.",
+            "Patience is a virtue. You are not particularly virtuous in this regard.",
+            "Slow down. I'm a duck, not a fast-food window. Although I DO accept bread.",
+            "You have the patience of a microwave. Everything must happen NOW.",
+            "Impatient. You'd make a terrible fisherman. And a worse duck.",
+        ],
+    },
+    "generous_stingy": {
+        "high": [
+            "You're generous. The bread flows freely. This is the correct way to live.",
+            "A giver. I appreciate givers. Especially givers of bread.",
+            "Your generosity is noted and will be remembered. Bread-related generosity especially.",
+            "You share willingly. That's more than most creatures manage. Gold star.",
+            "Generous soul. If I could give you anything back, I would. I can't. But the thought is there.",
+        ],
+        "low": [
+            "You're... careful with your resources. I believe the polite word is 'frugal.'",
+            "The bread situation has been... sparse. I'm not naming names. YOUR name.",
+            "Stingy is a strong word. Economical. Bread-conservative. Crumb-cautious.",
+            "You hoard like a dragon. But instead of gold, it's bread. Which is worse.",
+            "Your generosity could use... a generosity. If that makes sense. It does to me.",
+        ],
+    },
+    "talkative_quiet": {
+        "high": [
+            "You talk a lot. It fills the silence. The silence was fine, but this is also fine.",
+            "Chatty. You'd fit in well at a pond. Ducks quack constantly.",
+            "So many words. You're like a book that never ends. Some books should end.",
+            "Talkative. I know everything about you. More than I planned to.",
+            "You share freely. Verbally. It's a LOT. But I'm still here, so.",
+        ],
+        "low": [
+            "The strong silent type. I can work with that. Mostly because I have to.",
+            "You don't say much. I fill in the gaps. With my imagination. You wouldn't like it.",
+            "Quiet. Mysterious. Or just... quiet. Both are valid.",
+            "You speak rarely. When you do, I listen. When you don't, I also listen. To the wind.",
+            "Few words. I relate. My best thoughts are ones I never share.",
+        ],
+    },
+    "consistent_chaotic": {
+        "high": [
+            "Consistent. Reliable. You're like gravity, but friendlier.",
+            "I can count on you. Literally. I count the hours between visits.",
+            "Routines. Structure. You and I understand each other on a fundamental level.",
+            "Your consistency is comforting. Not that I need comforting. Ducks are self-sufficient.",
+        ],
+        "low": [
+            "Chaotic. Unpredictable. You're basically weather.",
+            "I never know what you'll do next. Neither do you, I suspect.",
+            "Your approach to our friendship is... jazz. Improvisational. Dissonant.",
+            "Chaos follows you. Or you follow chaos. The direction is unclear.",
+        ],
+    },
+    "playful_serious": {
+        "high": [
+            "Playful. Always playing. You treat life like recess.",
+            "You approach everything like a game. Including things that aren't games.",
+            "Fun-oriented. Relentlessly so. It's exhausting. *plays along anyway*",
+            "Your playfulness is... infectious. Don't tell anyone I said that.",
+        ],
+        "low": [
+            "Serious. All business. You'd fit in at a corporate pond.",
+            "Do you ever just... have fun? Without a purpose? Try it sometime.",
+            "You're very serious for someone who hangs out with a duck.",
+            "All work and no play. You know how that saying ends. Badly.",
+        ],
+    },
+}
+
+PROMISE_LINES: Dict[str, List[str]] = {
+    "noticed": [
+        "You said you'd do something. I wrote it down. Mentally. In ink.",
+        "A promise. I'm keeping track. Ducks have excellent memories. EXCELLENT.",
+        "Noted. You made a commitment. The pond heard it. I heard it. The pond doesn't forget.",
+        "Oh, a promise. Those are sacred. Like bread. Don't break it.",
+        "You promised something. I'll remember this longer than you will. Guaranteed.",
+        "A commitment was made. Witnessed by me and several disinterested frogs.",
+        "Promise registered. Filed under 'things I will absolutely bring up later.'",
+    ],
+    "kept": [
+        "You kept your promise. I'm... genuinely impressed. *hides surprise poorly*",
+        "Promise fulfilled. You're one of the reliable ones. Don't let it go to your head.",
+        "You did what you said you'd do. This is surprisingly rare. Thank you.",
+        "Followed through. My trust spreadsheet has been updated in your favor.",
+        "You actually did it. I had my doubts. Clearly misplaced. This time.",
+        "A kept promise. Like finding bread in the wild. Rare and wonderful.",
+        "You're true to your word. That means something. Even to a duck. Especially to this duck.",
+        "Promise kept. *small nod* That'll do.",
+    ],
+    "broken": [
+        "You said you'd do something. You didn't. I'm keeping score, you know.",
+        "Broken promise. Adding it to the list. The list is... not empty.",
+        "You forgot, didn't you. Ducks don't forget. DUCKS DON'T FORGET.",
+        "That thing you said you'd do. You didn't do it. I noticed. Obviously I noticed.",
+        "Promise: broken. Trust: slightly dented. Bread offering: recommended.",
+        "You didn't follow through. I expected this. No I didn't. Yes I did. Maybe.",
+        "A broken promise is like stale bread. Disappointing but not surprising.",
+        "You forgot your promise. I'll forget too. I won't. But I'll say I will.",
+    ],
+    "reminder": [
+        "Remember that thing you said you'd do? I remember. Just checking.",
+        "Not to nag, but... actually, yes, to nag. You promised something.",
+        "Gentle reminder. You made a commitment. To a duck. A duck with feelings.",
+        "Far be it from me to remind you of your own words, but... your words.",
+        "You said something once. About doing a thing. Ring any bells.",
+        "I'm not bringing this up to be difficult. I'm bringing it up because you SAID IT.",
+        "That promise you made. Still outstanding. Like a library book. Return it.",
+        "Just a thought. That thing you promised. Still waiting. Patiently. Ish.",
+    ],
+}

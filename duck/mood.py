@@ -32,40 +32,164 @@ class MoodInfo:
 MOOD_DATA = {
     MoodState.ECSTATIC: {
         "description": "suspiciously smug about life",
-        "expressions": ["!!", "^o^", "*gloat*"],
+        "descriptions": [
+            "radiating an alarming amount of duck satisfaction",
+            "acting like he just got away with something",
+            "smugness levels reaching critical mass",
+            "vibrating at a frequency only happy ducks understand",
+        ],
+        "expressions": [
+            "!!", "^o^", "*gloat*", "*preen*", "*strut*",
+            "*radiant*", "^v^", "*smug waggle*", "*victory lap*", "*bask*",
+        ],
         "can_play": True,
         "can_learn": True,
     },
     MoodState.HAPPY: {
         "description": "tolerating existence quite well",
-        "expressions": ["^-^", ":)", "*waggle*"],
+        "descriptions": [
+            "begrudgingly admitting today is fine",
+            "allowing himself a small, dignified happiness",
+            "suspiciously unbothered by everything",
+            "almost caught smiling. almost.",
+            "willing to admit the pond is acceptable today",
+        ],
+        "expressions": [
+            "^-^", ":)", "*waggle*", "*content quack*", "*small nod*",
+            "*gentle preen*", ":3", "*satisfied ruffle*", "~v~", "*blink blink*",
+        ],
         "can_play": True,
         "can_learn": True,
     },
     MoodState.CONTENT: {
         "description": "not actively plotting revenge",
-        "expressions": ["-.-", "~", "*chill*"],
+        "descriptions": [
+            "existing. that's it. that's the description",
+            "maintaining a carefully neutral vibe",
+            "neither impressed nor disappointed. rare.",
+            "tolerating the passage of time with grace",
+        ],
+        "expressions": [
+            "-.-", "~", "*chill*", "*blank stare*", "*float*",
+            "*idle preen*", ".", "*zen*", "*neutral waggle*", "*exist*",
+        ],
         "can_play": True,
         "can_learn": True,
     },
     MoodState.GRUMPY: {
         "description": "radiating 'don't test me' energy",
-        "expressions": [">:(", "-_-", "*huff*"],
+        "descriptions": [
+            "one inconvenience away from a full meltdown",
+            "composing a mental list of grievances",
+            "judging everything. everything.",
+            "tolerating you. barely.",
+            "has chosen violence as a vibe",
+        ],
+        "expressions": [
+            ">:(", "-_-", "*huff*", "*aggressive preen*", "*side-eye*",
+            "*sharp quack*", ">:|", "*tail flick*", "*pointed silence*", "*glare*",
+        ],
         "can_play": True,
         "can_learn": False,
     },
     MoodState.SAD: {
         "description": "dramatically brooding",
-        "expressions": [":(", "T-T", "*sigh*"],
+        "descriptions": [
+            "staring at the water like it owes him money",
+            "performing sadness for an audience of none",
+            "has written three sad poems in his head already",
+            "channeling main character tragedy energy",
+        ],
+        "expressions": [
+            ":(", "T-T", "*sigh*", "*droop*", "*slow blink*",
+            "*huddle*", "...", "*rain cloud energy*", "*small sad quack*", "*deflate*",
+        ],
         "can_play": False,
         "can_learn": False,
     },
     MoodState.MISERABLE: {
         "description": "convinced the world is against him",
-        "expressions": ["T_T", ";-;", "*gloom*"],
+        "descriptions": [
+            "a small, soggy monument to despair",
+            "has given up on joy as a concept",
+            "would write a memoir but what's the point",
+            "the pond could be lava for all he cares",
+            "emotionally located in the void",
+        ],
+        "expressions": [
+            "T_T", ";-;", "*gloom*", "*wilt*", "*empty stare*",
+            "*abandon hope*", "...", "*crumple*", "*void*", "*flatline*",
+        ],
         "can_play": False,
         "can_learn": False,
     },
+}
+
+# Lines spoken during notable mood transitions
+MOOD_TRANSITION_LINES = {
+    ("content", "happy"): [
+        "fine. things are... fine. don't make it weird.",
+        "i guess today doesn't completely offend me.",
+        "something shifted. won't say what. won't say i like it.",
+        "the pond is adequate. the bread was acceptable. i am... okay.",
+        "*suspicious comfort noises*",
+    ],
+    ("happy", "ecstatic"): [
+        "I'M NOT EXCITED. this is just... elevated tolerance.",
+        "if anyone asks, i'm merely content. CONTENT.",
+        "*vibrating* this means nothing.",
+        "the bread was good. the pond is good. everything is FINE.",
+        "do NOT perceive me right now.",
+    ],
+    ("content", "grumpy"): [
+        "and there it is. knew today was too easy.",
+        "my patience has left the building. the pond. whatever.",
+        "i was having a perfectly neutral time. was.",
+        "everyone involved should feel bad about this.",
+        "*the vibe has shifted and it's everyone else's fault*",
+    ],
+    ("grumpy", "sad"): [
+        "past grumpy now. this is just... heavy.",
+        "don't want to be angry anymore. just tired.",
+        "the fight left. not sure what's still here.",
+        "it's not even worth being mad about. it's just... this.",
+        "*settles into a quieter kind of bad*",
+    ],
+    ("sad", "miserable"): [
+        "oh. so this is the bottom.",
+        "didn't think it could get worse. that was naive.",
+        "everything is far away and made of nothing.",
+        "the concept of bread doesn't even help anymore.",
+        "*has stopped pretending things are okay*",
+    ],
+    ("miserable", "sad"): [
+        "still bad. but... slightly less void.",
+        "felt something today. think it was almost an emotion.",
+        "not okay. but maybe not the worst ever. maybe.",
+        "the bottom had a bottom and i bounced. a little.",
+        "*one degree above empty*",
+    ],
+    ("grumpy", "content"): [
+        "...fine. i'll stop being difficult. FOR NOW.",
+        "the grudge has been downgraded to mild irritation.",
+        "i guess not everything is terrible. statistically.",
+        "my anger has been resolved. don't ask how. bread was involved.",
+        "*aggressive relaxation*",
+    ],
+    ("sad", "content"): [
+        "okay. okay. things are... okay. weird.",
+        "came back from whatever that was. not ready to talk about it.",
+        "the sad part is over. i think. don't jinx it.",
+        "turns out the world wasn't ending. just felt like it.",
+        "*carefully re-entering the realm of the living*",
+    ],
+    ("miserable", "content"): [
+        "i... don't feel terrible. this is suspicious.",
+        "apparently rock bottom has an elevator. who knew.",
+        "something changed. won't question it. refuse to jinx it.",
+        "went from void to vaguely functional. huge if true.",
+        "*cautiously acknowledging that existence is bearable*",
+    ],
 }
 
 

@@ -203,12 +203,25 @@ class Personality:
                 "forgets what it was doing mid-action",
                 "gets confused by simple things",
                 "has moments of profound blankness",
+                "walked into a wall. again. same wall.",
+                "tried to eat his own reflection. it did not go well.",
+                "forgot the pond was wet. seemed genuinely surprised.",
+                "stared at a leaf for nine minutes. learned nothing.",
+                "got lost in a straight line",
+                "had a thought. it left.",
             ])
         elif self.get_trait("clever_derpy") > 30:
             quirks.extend([
                 "seems to understand more than expected",
                 "has surprisingly clever moments",
                 "figures things out quickly",
+                "solved a problem you didn't know existed",
+                "gave you a look that said 'i know what you did'",
+                "is quietly judging your life choices. correctly.",
+                "learned something on the first try. smug about it.",
+                "made a decision that was... actually smart",
+                "knows things. won't say how.",
+                "outsmarted the bread. don't ask.",
             ])
 
         if self.get_trait("brave_timid") < -30:
@@ -216,21 +229,125 @@ class Personality:
                 "gets startled easily",
                 "hides from loud noises",
                 "is cautious about new things",
+                "flinched at his own shadow. then apologized to it.",
+                "treats every new object like it might explode",
+                "hid behind a single blade of grass. felt safe.",
+                "heard a sound. froze. the sound was himself.",
+                "refused to cross the pond. it looked different today.",
+                "is watching the sky like it's up to something",
+                "whispered a quack. in case.",
             ])
         elif self.get_trait("brave_timid") > 30:
             quirks.extend([
                 "isn't afraid of anything",
                 "approaches everything boldly",
                 "is fearless (maybe too fearless)",
+                "challenged a rock. the rock didn't respond. he claimed victory.",
+                "walked toward the danger. on purpose.",
+                "stared down a leaf in the wind. didn't blink.",
+                "has no survival instincts. only vibes.",
+                "confronted the unknown. the unknown left.",
+                "picked a fight with the concept of fear. won.",
+                "fears nothing. this is not a compliment.",
             ])
 
-        if self.get_trait("social_shy") > 30:
+        if self.get_trait("active_lazy") < -30:
+            quirks.extend([
+                "hasn't moved in a while. might be decorative.",
+                "considered doing something. decided against it.",
+                "watched an opportunity pass. from a sitting position.",
+                "napped through something important. no regrets.",
+                "is conserving energy. for what, nobody knows.",
+                "achieved a new personal record for stillness",
+                "blinked once. that's his cardio for today.",
+                "found the optimal resting position. refuses to leave it.",
+                "yawned so hard he almost fell over",
+                "the pond came to him. he waited.",
+            ])
+        elif self.get_trait("active_lazy") > 30:
+            quirks.extend([
+                "has already done three laps of the pond. it's been two minutes.",
+                "can't sit still. literally. he's tried.",
+                "vibrating with unspent energy",
+                "ran somewhere. came back. forgot why.",
+                "preened, splashed, circled, and preened again. needs more.",
+                "treats standing still as a personal challenge",
+                "found a stick. carried it everywhere. put it back. found another.",
+                "did a lap of the pond just to feel something",
+                "paced back and forth. with purpose. undefined purpose.",
+                "exhausting to watch. he doesn't care.",
+            ])
+
+        if self.get_trait("social_shy") < -30:
+            quirks.extend([
+                "turned away when you looked at him",
+                "pretended not to hear you. you were right there.",
+                "found the most distant corner and committed to it",
+                "made eye contact by accident. panicked.",
+                "is over there. on purpose. alone. it's fine.",
+                "would rather the pond swallow him than make conversation",
+                "hid behind himself somehow",
+                "quacked under his breath. hoped nobody heard.",
+                "is present but emotionally unlisted",
+                "ghosted you while standing three feet away",
+            ])
+        elif self.get_trait("social_shy") > 30:
             quirks.extend([
                 "always wants attention",
                 "quacks to get your attention",
                 "follows you around",
+                "made eye contact and will NOT break it",
+                "quacked at you. then again. and again. he has news.",
+                "is standing unreasonably close. on purpose.",
+                "needs you to witness every single thing he does",
+                "narrated his own day. to you. in quacks.",
+                "won't stop looking at you until you acknowledge him",
+                "brought you a leaf. you didn't ask. he doesn't care.",
+            ])
+
+        if self.get_trait("neat_messy") < -30:
+            quirks.extend([
+                "feathers going in nine directions. he doesn't notice.",
+                "rolled in something. won't say what.",
+                "the concept of grooming is optional and he's opted out",
+                "achieved a new level of disheveled",
+                "looks like he lost a fight with the pond. and the pond won.",
+                "his reflection doesn't even recognize him",
+                "splashed everywhere. cleaned nothing.",
+                "has mud in places mud shouldn't be",
+                "preening is for ducks who care. he does not.",
+                "is a mess. a confident, unbothered mess.",
+            ])
+        elif self.get_trait("neat_messy") > 30:
+            quirks.extend([
+                "preened for the third time today. still not satisfied.",
+                "found a speck of dirt. this is now his whole personality.",
+                "reorganized the pond. mentally.",
+                "his feathers are immaculate. it took forty minutes.",
+                "spotted a smudge. the day is ruined.",
+                "aligned every feather. then checked. then checked again.",
+                "the water is dirty and it's EVERYONE'S problem",
+                "performed a full self-inspection. results: acceptable. barely.",
+                "refuses to sit where another duck sat. standards.",
+                "groomed himself to perfection. looked at you. sighed.",
             ])
 
         if quirks:
             return random.choice(quirks)
-        return "is just being a duck"
+
+        # Fallback pool for when no traits are particularly strong
+        generic_quirks = [
+            "is just being a duck",
+            "stared at the pond. the pond stared back. nobody won.",
+            "did a small quack. for no reason. moved on.",
+            "exists in the pond. has no further comment.",
+            "looked at you. looked away. that's it. that's the update.",
+            "had a moment. it passed.",
+            "found a spot. sat in it. this is the whole story.",
+            "bobbed gently. with intent.",
+            "is here. that's his contribution.",
+            "did something. won't say what. probably nothing.",
+            "preened once. briefly. without enthusiasm.",
+            "contemplated the water. reached no conclusions.",
+        ]
+        return random.choice(generic_quirks)

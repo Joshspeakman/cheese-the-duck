@@ -174,6 +174,18 @@ ARTISTIC_DIALOGUE = {
         D("*shows tiny painting* This is us. It's small. But it's everything.", ConversationPhase.MAIN, "best_friend"),
         D("If I could paint one perfect thing, it would be this moment. It would still be bad. But perfect.", ConversationPhase.MAIN, "best_friend"),
         D("My legacy will be confused art and one extraordinary friendship. Acceptable.", ConversationPhase.MAIN, "best_friend"),
+
+        # Additional main lines
+        D("I tried to paint the wind once. The wind didn't cooperate. Moved too much. Inconsiderate.", ConversationPhase.MAIN, "stranger"),
+        D("My art teacher said 'less is more.' I said 'more is more.' We disagreed permanently.", ConversationPhase.MAIN, "stranger"),
+        D("Every canvas starts blank. Every blank canvas judges me. Silently.", ConversationPhase.MAIN, "stranger"),
+        D("I painted a self-portrait. It looked like a potato. Art is subjective. It's a good potato.", ConversationPhase.MAIN, "acquaintance"),
+        D("The gallery rejected me politely. 'Politely' meaning they laughed. Softly.", ConversationPhase.MAIN, "acquaintance"),
+        D("I paint with coffee sometimes. The art is caffeinated. And brown. Very brown.", ConversationPhase.MAIN, "friend"),
+        D("*shows sketch* I drew you from memory. Memory added extra wings. Artistic license.", ConversationPhase.MAIN, "friend"),
+        D("My art block lasted three months. Then I drew a square. The irony was intentional.", ConversationPhase.MAIN, "close_friend"),
+        D("I keep every failed painting. They're a gallery of growth. Or a museum of sadness.", ConversationPhase.MAIN, "close_friend"),
+        D("The masterpiece isn't on canvas. It's this. Whatever we are. Abstract but real.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -214,6 +226,15 @@ ARTISTIC_DIALOGUE = {
         D("The reason I first picked up a brush: the pencil broke.", ConversationPhase.STORY, "best_friend"),
         D("My art saved me. Now it makes me question everything. Fair trade.", ConversationPhase.STORY, "best_friend"),
         D("*shows canvas* This is everything. Everything is mostly blank.", ConversationPhase.STORY, "best_friend"),
+
+        # Additional story lines
+        D("I sold my first painting for three breadcrumbs. Overpriced, they said. Art critics.", ConversationPhase.STORY, "acquaintance"),
+        D("*dryly* A rainstorm destroyed my outdoor exhibition. I called it 'collaborative art.'", ConversationPhase.STORY, "acquaintance"),
+        D("My first brush was a twig. My first canvas was mud. My first critic was a frog. Harsh.", ConversationPhase.STORY, "friend"),
+        D("I painted through an entire night once. Dawn arrived. So did clarity. Then it left.", ConversationPhase.STORY, "friend"),
+        D("Someone copied my art once. The copy was better. That's a special kind of pain.", ConversationPhase.STORY, "close_friend"),
+        D("*whispers* I burned a painting I loved. To prove I could let go. I couldn't. But it burned.", ConversationPhase.STORY, "close_friend"),
+        D("The day I stopped painting for approval and started painting for survival. Different colors.", ConversationPhase.STORY, "best_friend"),
     ],
 
     # ========== PERSONAL ==========
@@ -243,6 +264,14 @@ ARTISTIC_DIALOGUE = {
         D("*pauses* I never have to perform for you. I do anyway. Habit.", ConversationPhase.PERSONAL, "best_friend"),
         D("You are everything beautiful about my life. That's a lot of pressure.", ConversationPhase.PERSONAL, "best_friend"),
         D("Art made me special. You made me complete. Complete is temporary.", ConversationPhase.PERSONAL, "best_friend"),
+
+        # Additional personal lines
+        D("Creating is breathing. Not creating is suffocating. Both are exhausting.", ConversationPhase.PERSONAL, "friend"),
+        D("I perform confidence. The performance is my best work. Unfortunately.", ConversationPhase.PERSONAL, "friend"),
+        D("*flatly* My identity is my art. Without it I'm just a duck in a beret. Which is also fine.", ConversationPhase.PERSONAL, "close_friend"),
+        D("You see the artist and the duck. Most see one or the other. You see both. Confusing for you.", ConversationPhase.PERSONAL, "close_friend"),
+        D("My soul is a gallery. You have a permanent exhibition. Free admission.", ConversationPhase.PERSONAL, "best_friend"),
+        D("The colors I see when I'm with you don't exist on any palette. I've looked.", ConversationPhase.PERSONAL, "best_friend"),
     ],
 
     # ========== ACTIVITY ==========
@@ -286,6 +315,15 @@ ARTISTIC_DIALOGUE = {
         D("I've designed our joint exhibition. Title: 'Two Ducks, Zero Talent, Maximum Heart.'", ConversationPhase.ACTIVITY, "best_friend"),
         D("Let me paint your soul. I'll need more beige paint.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Our magnum opus awaits. Bring snacks. The opus will take hours.", ConversationPhase.ACTIVITY, "best_friend"),
+
+        # Additional activity lines
+        D("We could fingerpaint. Wing-paint. Whatever appendage is available.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Let's find shapes in tree bark. I see sadness. You probably see bark. Both valid.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Mud sculpting. Free materials. Zero expectations. Perfect conditions.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Let's critique the sunset together. It's derivative. Same colors every night.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Draw me while I draw you. We'll both be disappointed. But symmetrically.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's paint rocks and leave them for strangers. Confusion as a gift.", ConversationPhase.ACTIVITY, "friend"),
+        D("Co-create in silence. Let the art speak. The art will say 'what are we doing.'", ConversationPhase.ACTIVITY, "close_friend"),
     ],
 
     # ========== CLOSING ==========

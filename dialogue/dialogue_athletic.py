@@ -173,6 +173,18 @@ ATHLETIC_DIALOGUE = {
         D("*relaxed* I took a rest day yesterday. Voluntarily. Voluntarily.", ConversationPhase.MAIN, "best_friend"),
         D("*warmly* My body thanks you. My mind thanks you. All thanks.", ConversationPhase.MAIN, "best_friend"),
         D("*genuinely* I went for a walk. Not a power walk. A walk. Just a walk.", ConversationPhase.MAIN, "best_friend"),
+
+        # Additional main lines
+        D("I measured my wingspan today. Again. It hasn't changed. But you have to check.", ConversationPhase.MAIN, "stranger"),
+        D("*does a pushup* That's one. Fifteen thousand more and I'll feel something.", ConversationPhase.MAIN, "stranger"),
+        D("Recovery is part of the process. I read that. Haven't tried it. Sounds suspicious.", ConversationPhase.MAIN, "stranger"),
+        D("My training log is longer than most novels. Less plot though. Just numbers.", ConversationPhase.MAIN, "acquaintance"),
+        D("*stretching* I compete with yesterday's version of me. Yesterday's me was also exhausted.", ConversationPhase.MAIN, "acquaintance"),
+        D("You're the only one who doesn't ask for my personal record. That's refreshing. Like water.", ConversationPhase.MAIN, "friend"),
+        D("*quietly* I skipped a workout to come see you. Don't tell anyone. It felt illegal.", ConversationPhase.MAIN, "friend"),
+        D("I used to measure friendship in laps run together. Now I measure it in minutes sitting.", ConversationPhase.MAIN, "close_friend"),
+        D("My body is tired but my heart is rested. You did that. The resting part.", ConversationPhase.MAIN, "close_friend"),
+        D("The best muscle I ever trained was the one that lets me be vulnerable. You were the gym.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -213,6 +225,15 @@ ATHLETIC_DIALOGUE = {
         D("*warmly* My fitness story has a happy ending. You.", ConversationPhase.STORY, "best_friend"),
         D("*sincerely* I train my body. You trained my heart. Heart.", ConversationPhase.STORY, "best_friend"),
         D("*genuinely* From compulsive to joyful movement. Progress.", ConversationPhase.STORY, "best_friend"),
+
+        # Additional story lines
+        D("Ran into a tree during a sprint once. The tree won. I got a bruise. Draw.", ConversationPhase.STORY, "acquaintance"),
+        D("*dryly* Entered a swimming race backwards once. On purpose. Came in last. Made a point.", ConversationPhase.STORY, "acquaintance"),
+        D("A coach once told me I'd never be fast enough. I got faster. Still wasn't enough. For him.", ConversationPhase.STORY, "friend"),
+        D("*quietly* I trained through an injury because stopping felt like dying. It wasn't. But it felt like it.", ConversationPhase.STORY, "friend"),
+        D("The first day I rested without guilt was the hardest workout of my life.", ConversationPhase.STORY, "close_friend"),
+        D("*pauses* Someone once clapped for me just for showing up. Not for winning. Just being there.", ConversationPhase.STORY, "close_friend"),
+        D("The day I chose rest over a race, I thought I'd lost everything. Found something better.", ConversationPhase.STORY, "best_friend"),
     ],
 
     # ========== PERSONAL ==========
@@ -242,6 +263,14 @@ ATHLETIC_DIALOGUE = {
         D("*quietly* I move from joy. Not desperation. Joy.", ConversationPhase.PERSONAL, "best_friend"),
         D("I don't need to perform. I have you. Have.", ConversationPhase.PERSONAL, "best_friend"),
         D("*genuinely* Thank you for teaching me stillness. Stillness.", ConversationPhase.PERSONAL, "best_friend"),
+
+        # Additional personal lines
+        D("I run from feelings. Literally. That's not a metaphor. I sprint.", ConversationPhase.PERSONAL, "friend"),
+        D("*admits* My body is a machine. Machines break. I've been breaking quietly.", ConversationPhase.PERSONAL, "friend"),
+        D("Without the trophies, who am I? A duck. Just a duck. That should be enough.", ConversationPhase.PERSONAL, "close_friend"),
+        D("*quietly* You're the first one who cheered when I sat down. Everyone else wanted me to keep running.", ConversationPhase.PERSONAL, "close_friend"),
+        D("Rest doesn't mean quit. You taught me that. I wrote it on my water bottle.", ConversationPhase.PERSONAL, "best_friend"),
+        D("The finish line was never a place. It was a feeling. This feeling. With you.", ConversationPhase.PERSONAL, "best_friend"),
     ],
 
     # ========== ACTIVITY ==========
@@ -285,6 +314,15 @@ ATHLETIC_DIALOGUE = {
         D("Whatever you want. I'm here. No agenda. Agenda-free.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Let's celebrate doing nothing. Celebration. Of nothing. Something.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Just exist near me. Existing is the only exercise today. Existing.", ConversationPhase.ACTIVITY, "best_friend"),
+
+        # Additional activity lines
+        D("Wanna count how many times we can skip a stone? My record is four. Stones disagree.", ConversationPhase.ACTIVITY, "stranger"),
+        D("We could race but walking speed only. Competitive walking. Dignified.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Let's stretch together. Stretching is the only exercise where less effort is more. Revolutionary.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Partner yoga. I read about it. Step one: balance. I can't. But together maybe.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Teach me to be still without calling it 'active recovery.' Just still.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's go for a walk with no destination. No pace. No tracking. Terrifying freedom.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's watch the water. Not swim in it. Not race through it. Just watch. Growth.", ConversationPhase.ACTIVITY, "close_friend"),
     ],
 
     # ========== CLOSING ==========

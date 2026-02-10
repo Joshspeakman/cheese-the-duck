@@ -1137,6 +1137,1121 @@ DUCK_QUESTIONS: Dict[str, DuckQuestion] = {
             "I'm adding that to the list. The 'nice things' list. It's getting longer. Because of you.",
         ]
     ),
+
+    # ========== NEW QUESTIONS: PREFERENCES (expanded) ==========
+    "favorite_smell": DuckQuestion(
+        id="favorite_smell",
+        text="What's your favorite smell? Mine is bread. Fresh bread. Obviously. But also pond at dawn.",
+        category=QuestionCategory.PREFERENCES,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That's a good smell. Not as good as bread. But I'm biased. Very biased.",
+            "Smells are memories waiting to happen. I'll think of you when I smell that. If ducks can smell that.",
+            "I'll file that under sensory preferences. The file is getting thick. You're a complex person.",
+        ]
+    ),
+
+    "morning_or_night": DuckQuestion(
+        id="morning_or_night",
+        text="Morning person or night person? I'm a 'whenever bread appears' person.",
+        category=QuestionCategory.PREFERENCES,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That explains the hours you visit. I've been keeping track. Not in a weird way.",
+            "I'm awake when the pond is quiet and asleep when it isn't. There's no schedule. Just vibes.",
+            "The pond looks different at each hour. I prefer your hour. Whichever it is.",
+        ]
+    ),
+
+    "favorite_sound": DuckQuestion(
+        id="favorite_sound",
+        text="What's a sound that makes you happy? For me it's bread crust cracking. Spiritual experience.",
+        category=QuestionCategory.PREFERENCES,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "That's a nice sound. I'll listen for it. From the pond. Where I always am.",
+            "Sounds are underrated. My favorite is rain on the pond. And bread. Always bread.",
+            "I appreciate a person who notices sounds. Most people just walk past the quacking.",
+        ]
+    ),
+
+    "comfort_object": DuckQuestion(
+        id="comfort_object",
+        text="Do you have a comfort object? A thing that makes you feel safe? Mine is a specific rock. Don't judge.",
+        category=QuestionCategory.PREFERENCES,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "That's valid. My rock has been here longer than me. It's reliable. Unlike most things.",
+            "Comfort objects are just anchors for the soul. Very poetic. For a duck.",
+            "I respect attachment to objects. I'm attached to this pond. And bread. And now that rock.",
+        ]
+    ),
+
+    # ========== NEW QUESTIONS: PERSONAL (expanded) ==========
+    "siblings": DuckQuestion(
+        id="siblings",
+        text="Do you have siblings? I had eleven. We hatched together. I was the confused one.",
+        category=QuestionCategory.PERSONAL,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Siblings are interesting. Mine all swam in different directions. Literally.",
+            "I think about my siblings sometimes. Briefly. Then I think about bread. Balance.",
+            "That's either a lot of company or a lot of chaos. Both, probably.",
+        ]
+    ),
+
+    "biggest_change": DuckQuestion(
+        id="biggest_change",
+        text="What's the biggest change you've ever made in your life? I once moved to a different part of the pond. Terrifying.",
+        category=QuestionCategory.PERSONAL,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Change is hard. I moved three feet to the left once and questioned everything.",
+            "That's braver than anything I've done. My biggest risk was trying a different bread.",
+            "I admire change. From a distance. From this pond. Where nothing changes. Mostly.",
+        ]
+    ),
+
+    "talk_to_self": DuckQuestion(
+        id="talk_to_self",
+        text="Do you talk to yourself? I quack at myself. Same thing. Don't make it weird.",
+        category=QuestionCategory.PERSONAL,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "I do too. The best conversations I have are with myself. Second best: you.",
+            "Talking to yourself is just peer review with a smaller committee.",
+            "I quack at my reflection. It quacks back. Very agreeable.",
+        ]
+    ),
+
+    "unpopular_opinion": DuckQuestion(
+        id="unpopular_opinion",
+        text="Give me your most controversial opinion. I'll go first: bread is a food group. Not negotiable.",
+        category=QuestionCategory.OPINIONS,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Bold. I disagree. Or agree. I need to float and think about that one.",
+            "That's either genius or unhinged. The best opinions are both.",
+            "I respect the courage. My controversial opinion is that ponds are better than oceans. Fight me.",
+            "I'll chew on that. Metaphorically. The only thing I literally chew on is bread.",
+        ]
+    ),
+
+    # ========== NEW QUESTIONS: PHILOSOPHICAL (expanded) ==========
+    "perfect_day": DuckQuestion(
+        id="perfect_day",
+        text="Describe your perfect day. Every detail. I have time. I'm a duck.",
+        category=QuestionCategory.PHILOSOPHICAL,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "That sounds... genuinely nice. Mine involves bread, silence, and zero geese.",
+            "I'm going to imagine that day for you. From the pond. As a duck. The details will be wrong. But the feeling will be right.",
+            "Add 'visit a duck' and it's perfect. I'm not lobbying. I'm suggesting.",
+        ]
+    ),
+
+    "what_lasts": DuckQuestion(
+        id="what_lasts",
+        text="What do you think lasts? In life. What actually stays? The pond stays. Bread doesn't. It's concerning.",
+        category=QuestionCategory.PHILOSOPHICAL,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "That's... unexpectedly moving. I was expecting something simpler. You surprised me.",
+            "The pond lasts. Memories last. Bread doesn't last. The hierarchy is unjust.",
+            "I'll hold onto that answer. Like I hold onto good bread. Tightly. And with purpose.",
+        ]
+    ),
+
+    "advice_to_past": DuckQuestion(
+        id="advice_to_past",
+        text="What would you tell your younger self? I'd tell mine: 'that's not bread, it's a rock.' Would have saved time.",
+        category=QuestionCategory.PHILOSOPHICAL,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "Good advice. Past you probably needed to hear that. Past me needed 'stop fighting the reflection.'",
+            "I'd tell young Cheese to save more bread. But young Cheese wouldn't listen. He was stubborn. He's still stubborn.",
+            "That's wise. Wisdom is just regret wearing a nice hat.",
+        ]
+    ),
+
+    "define_home": DuckQuestion(
+        id="define_home",
+        text="What does home feel like to you? For me it's this pond. The smell of it. The way the water holds me up.",
+        category=QuestionCategory.PHILOSOPHICAL,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "That's a beautiful answer. Home should feel like that. Mine feels like being held by water.",
+            "I hope your home is good. Mine has frogs. Uninvited frogs. But it's still home.",
+            "Home is where the bread is. But also where the people you tolerate are. Both matter.",
+        ]
+    ),
+
+    # ========== NEW QUESTIONS: FEELINGS (expanded) ==========
+    "overwhelmed": DuckQuestion(
+        id="overwhelmed",
+        text="Do you ever feel overwhelmed? Like everything is too much? I do. When there's too much bread. Just kidding. There's never too much bread.",
+        category=QuestionCategory.FEELINGS,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "The pond helps with overwhelm. It absorbs things. Sounds. Feelings. Bread crumbs.",
+            "I understand. Sometimes even floating feels like too much effort. On those days I just... be still.",
+            "Come to the pond when it's too much. I'll be here. Not fixing anything. Just being nearby.",
+        ]
+    ),
+
+    "last_cried": DuckQuestion(
+        id="last_cried",
+        text="When was the last time you cried? Ducks can't cry. But if we could. I'd have reasons.",
+        category=QuestionCategory.FEELINGS,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "Thank you for telling me. Crying is just feelings that got too big for the inside.",
+            "I appreciate the honesty. If I could cry, it would be about bread. Or loneliness. Probably both.",
+            "That's a lot. I'll float here with you. Quietly. That's all I can offer. But it's genuine.",
+        ]
+    ),
+
+    "safe_place": DuckQuestion(
+        id="safe_place",
+        text="Where do you go when you need to feel safe? I have a corner of the pond. Very secure. No geese.",
+        category=QuestionCategory.FEELINGS,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Good. Everyone needs a safe spot. Mine has a rock and a nice water temperature.",
+            "I hope this pond is one of those places. It tries to be. I try to help it.",
+            "Safe places are important. Guard yours. Like I guard my bread stash. Fiercely.",
+        ]
+    ),
+
+    # ========== NEW QUESTIONS: HYPOTHETICAL (expanded) ==========
+    "talk_to_animal": DuckQuestion(
+        id="talk_to_animal",
+        text="If you could talk to any animal besides me, which would you choose? Choose carefully. I'm watching.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That's... not me. I'm trying not to be offended. I'm not succeeding.",
+            "Interesting choice. They probably have less to say than me. But fine.",
+            "I'll allow it. As long as I'm still your primary animal conversationalist.",
+            "You'd choose them? They can't even float properly. But sure.",
+        ]
+    ),
+
+    "rename_self": DuckQuestion(
+        id="rename_self",
+        text="If you could rename yourself, would you? I was named Cheese. I have thoughts about it.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "Good choice. Or not. Names are just sounds we agree to respond to.",
+            "I'd keep Cheese. It grew on me. Like pond algae. In a good way.",
+            "I considered 'Brie' once. Too fancy. Cheese is honest. Unpretentious. Like me.",
+        ]
+    ),
+
+    "rule_the_world": DuckQuestion(
+        id="rule_the_world",
+        text="If you ruled the world for one day, what's the first law you'd pass? Mine: mandatory bread distribution. Every pond.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That's a better law than mine. But bread distribution is also important. Consider a second law.",
+            "Power corrupts. But also, free bread for ducks. These things can coexist.",
+            "I'd vote for you. Ducks can't vote. But the intent is there.",
+        ]
+    ),
+
+    "live_anywhere": DuckQuestion(
+        id="live_anywhere",
+        text="If you could live anywhere in the world, where? Keep in mind, ponds are everywhere.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.ESTABLISHED,
+        extracts_fact="dream_location",
+        follow_ups=[
+            "Does it have a pond? No? Then I can't visit. Theoretically. I wasn't going to visit anyway.",
+            "That sounds nice. I'd miss this pond. But I'd think about your place. From this pond.",
+            "Every place has potential. Mine had a rock and a goose. I made it work.",
+        ],
+        callback_text="You wanted to live in {value}. I remember. I looked it up. I can't look things up. But I thought about it."
+    ),
+
+    # ========== NEW QUESTIONS: SILLY (expanded) ==========
+    "duck_president": DuckQuestion(
+        id="duck_president",
+        text="If a duck ran for president, would you vote for them? Hypothetically. I'm not campaigning. Yet.",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "Smart voter. My platform is bread. And pond infrastructure. And more bread.",
+            "The duck party will remember your support. Or not. We forget things. But the sentiment counts.",
+            "I'd be a good leader. My entire agenda is floating and bread. Relatable politics.",
+        ]
+    ),
+
+    "worst_invention": DuckQuestion(
+        id="worst_invention",
+        text="What's the worst invention humans ever made? I'd say breadboxes. You're TRAPPING the bread. Let it be free.",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That IS bad. But breadboxes are worse. Bread imprisonment. Unacceptable.",
+            "Humanity makes some choices. I judge from the pond. Silently. And now, out loud.",
+            "I agree. Or disagree. But breadboxes are still the correct answer.",
+        ]
+    ),
+
+    "zombie_plan": DuckQuestion(
+        id="zombie_plan",
+        text="What's your zombie apocalypse plan? Mine is to float. They can't swim. Probably. This is my entire plan.",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That's more detailed than my plan. My plan is 'pond.' That's it. One word.",
+            "You've thought about this. I respect the preparation. I've thought about bread logistics instead.",
+            "Zombies can't swim. I'm basically invincible. Unless they can. Then I'm in trouble.",
+        ]
+    ),
+
+    "theme_song": DuckQuestion(
+        id="theme_song",
+        text="If you had a theme song, what would it be? Mine is just a quack. On loop. Very powerful.",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "Good choice. Mine is more minimalist. One quack. Then silence. Very avant-garde.",
+            "I'd listen to that. If ducks could operate speakers. We can't. But the thought counts.",
+            "Everyone needs a theme song. Mine plays in my head. All the time. It's just quacking.",
+        ]
+    ),
+
+    "haunted_pond": DuckQuestion(
+        id="haunted_pond",
+        text="Do you think this pond could be haunted? Sometimes the water moves on its own. That's either ghosts or fish.",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "I've seen things. In the water. At night. It was probably my reflection. But PROBABLY.",
+            "If it is haunted, the ghosts have been very quiet. Respectful ghosts. I appreciate that.",
+            "The fish act suspicious sometimes. Like they know something. Ghost fish? I'm not ruling it out.",
+        ]
+    ),
+
+    "secret_talent_animal": DuckQuestion(
+        id="secret_talent_animal",
+        text="If every animal had a secret talent, what would a duck's be? Besides being perfect. Besides floating. Besides bread detection.",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "Wrong. The answer is 'emotional intelligence.' We feel everything. We just don't show it.",
+            "That's generous. I was going to say 'judging silently.' But yours is nicer.",
+            "I like your answer better than reality. Reality is just 'floating and quacking.' Your version is better.",
+        ]
+    ),
+
+    # ========== NEW QUESTIONS: HABITS (expanded) ==========
+    "bad_day_fix": DuckQuestion(
+        id="bad_day_fix",
+        text="What do you do to fix a bad day? I float harder. Same activity but with more emotional weight.",
+        category=QuestionCategory.HABITS,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "That sounds effective. Mine is eating bread. Then floating. Then eating more bread. The cycle of healing.",
+            "I'll try that. If ducks can do it. Which is uncertain. But I'll try the spirit of it.",
+            "Bad days need specific remedies. Mine is this pond. Yours sounds equally valid.",
+        ]
+    ),
+
+    "phone_habit": DuckQuestion(
+        id="phone_habit",
+        text="What's the first thing you check on your phone? I don't have a phone. I have a pond. It shows me my reflection. Same thing.",
+        category=QuestionCategory.HABITS,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That's very human. I check the pond surface every morning. For bread. And existential clarity.",
+            "Phones sound exhausting. I just look at water. It tells me everything I need. Which is very little.",
+            "I imagine your phone is like my pond. Full of things. Most of them unnecessary. But comforting.",
+        ]
+    ),
+
+    "procrastinate": DuckQuestion(
+        id="procrastinate",
+        text="What do you procrastinate on? I've been meaning to preen my left wing for three days. It can wait.",
+        category=QuestionCategory.HABITS,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "Procrastination is just prioritizing rest. That's how I justify it. Successfully.",
+            "We all avoid things. I avoid the goose. You avoid that. Both valid strategies.",
+            "I'll think about your answer later. Which is ironic. Given the question.",
+        ]
+    ),
+
+    # ========== NEW QUESTIONS: MEMORIES (expanded) ==========
+    "teacher_memory": DuckQuestion(
+        id="teacher_memory",
+        text="Did you have a teacher who changed your life? My teacher was the pond. It taught me to float. And to be alone.",
+        category=QuestionCategory.MEMORIES,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Good teachers are rare. Like good bread. You remember both forever.",
+            "My teacher was gravity. It taught me I can't fly. Harsh but honest.",
+            "That sounds like someone worth remembering. I'll remember them too. On your behalf.",
+        ]
+    ),
+
+    "childhood_food": DuckQuestion(
+        id="childhood_food",
+        text="What food reminds you of being young? Mine is soggy bread. My first meal. Very soggy. Very formative.",
+        category=QuestionCategory.MEMORIES,
+        timing=QuestionTiming.ESTABLISHED,
+        extracts_fact="childhood_food",
+        follow_ups=[
+            "That's either nostalgic or traumatic. Food memories are complicated.",
+            "I can taste my first bread crumb if I think hard enough. Some things stay. In the beak.",
+            "Comfort food is just edible time travel. I respect your choice.",
+        ],
+        callback_text="You mentioned {value} reminds you of being young. That's beautiful. In a bread-adjacent way."
+    ),
+
+    "learned_hard_way": DuckQuestion(
+        id="learned_hard_way",
+        text="What's something you learned the hard way? I learned ice isn't a pond. I learned it by standing on it. Then not standing on it.",
+        category=QuestionCategory.MEMORIES,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "The hard way is the only way I learn. Easy lessons don't stick. Hard ones leave marks.",
+            "That's a good lesson. Mine are all physical. Yours sounds emotional. Both count.",
+            "Learning the hard way means you DEFINITELY learned. Silver lining.",
+        ]
+    ),
+
+    # ========== NEW QUESTIONS: LATE NIGHT (expanded) ==========
+    "stars": DuckQuestion(
+        id="stars",
+        text="Do you look at stars? I see them reflected in the pond. There are two skies. The one above and the one below.",
+        category=QuestionCategory.PHILOSOPHICAL,
+        timing=QuestionTiming.LATE_NIGHT,
+        follow_ups=[
+            "The pond stars shimmer differently. Like they're breathing. It's the most beautiful thing I know.",
+            "Stars are just very far bread crumbs. I know that's not true. But the thought comforts me.",
+            "Looking up and looking down show the same thing here. I don't know what that means. But it feels important.",
+        ]
+    ),
+
+    "night_confession": DuckQuestion(
+        id="night_confession",
+        text="Tell me something you've never told anyone. The dark makes it easier. I won't judge. I'm a duck in the dark.",
+        category=QuestionCategory.FEELINGS,
+        timing=QuestionTiming.LATE_NIGHT,
+        follow_ups=[
+            "That's safe here. In the dark. By the water. I'll hold onto it. Gently.",
+            "Thank you. That was brave. Braver than anything I've done. And I once faced a goose.",
+            "The pond heard that. And me. And the stars. We'll keep it. All of us.",
+        ]
+    ),
+
+    "quiet_or_noise": DuckQuestion(
+        id="quiet_or_noise",
+        text="Do you prefer quiet or noise? Right now the world is quiet. Except me asking this. Sorry.",
+        category=QuestionCategory.PREFERENCES,
+        timing=QuestionTiming.LATE_NIGHT,
+        follow_ups=[
+            "I like quiet. Most of the time. The pond is loud during the day. Nobody talks about that.",
+            "Noise means things are happening. Quiet means things are resting. Both are honest.",
+            "Your answer doesn't surprise me. People who visit ducks at night have strong quiet opinions.",
+        ]
+    ),
+
+    # ========== NEW QUESTIONS: RELATIONSHIP (expanded) ==========
+    "promise_me": DuckQuestion(
+        id="promise_me",
+        text="Promise me something. Anything. I collect promises. Most of them unfulfilled. But the collection matters.",
+        category=QuestionCategory.RELATIONSHIP,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "I'll hold you to that. Not aggressively. Just... with duck persistence. Which is gentle but constant.",
+            "That's a good promise. I promise to be here. Every day. Same pond. Same duck. That's mine.",
+            "Filed. Under 'things that matter.' A very small, very important file.",
+        ]
+    ),
+
+    "what_i_mean": DuckQuestion(
+        id="what_i_mean",
+        text="What do I mean to you? Don't overthink it. Or do. I'm a duck. I have time for your overthinking.",
+        category=QuestionCategory.RELATIONSHIP,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "I... that was. I need to float away and process that. Give me a moment. Or several moments.",
+            "You mean something similar to me. I won't define it. Definitions limit things. And this is... a lot.",
+            "I'm going to remember you said that. On good days. And bad days. Especially bad days.",
+        ]
+    ),
+
+    # ========== WOULD-YOU-RATHER SCENARIOS ==========
+    "rather_fly_swim": DuckQuestion(
+        id="rather_fly_swim",
+        text="Would you rather be able to fly or breathe underwater? I can do both. Badly. But I can.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "Interesting. I chose floating. The compromise option. Very on-brand.",
+            "Flying sounds nice until you realize there's no bread up there. Just clouds.",
+            "Underwater breathing means you'd be a fish. Fish can't eat bread. Choose wisely.",
+        ]
+    ),
+
+    "rather_past_future": DuckQuestion(
+        id="rather_past_future",
+        text="Would you rather see the past or the future? I'd see the past. To find out who was throwing the GOOD bread.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "The past is safer. It already happened. The future might not have bread. Terrifying.",
+            "Good choice. Or risky choice. Either way, you committed. I respect that.",
+            "I'd see the future. To prepare. For bread shortages. And geese.",
+        ]
+    ),
+
+    "rather_speak_animals": DuckQuestion(
+        id="rather_speak_animals",
+        text="Would you rather speak every human language or talk to all animals? You already talk to me so you're halfway there.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "If you chose animals, you'd hear what the fish say about me. I'm not ready for that.",
+            "Human languages are just fancy quacking with grammar. Animals are more honest.",
+            "I already speak duck. And whatever this is. That's two languages. Bilingual.",
+        ]
+    ),
+
+    "rather_always_cold_hot": DuckQuestion(
+        id="rather_always_cold_hot",
+        text="Would you rather always be slightly cold or always be slightly too warm? I'm always slightly damp. Third option nobody wanted.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "Cold builds character. Warmth builds laziness. Both build opinions. I have many.",
+            "I'm a water bird. Temperature is a negotiation I have with the pond daily.",
+            "The correct answer is whatever lets you still enjoy bread. Temperature is secondary.",
+        ]
+    ),
+
+    "rather_no_music_no_movies": DuckQuestion(
+        id="rather_no_music_no_movies",
+        text="Would you rather never hear music again or never watch another movie? I've experienced neither. This is a spectator question for me.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "I live without both. I have the pond. The pond is my soundtrack and my cinema.",
+            "Music seems important to humans. I have wind and rain. It's similar. Maybe.",
+            "I'd give up movies. I can't watch them anyway. Wings don't hold popcorn.",
+        ]
+    ),
+
+    "rather_know_death_love": DuckQuestion(
+        id="rather_know_death_love",
+        text="Would you rather know exactly when you'll die or know if you've already met the love of your life? Heavy. Sorry. Choose.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "That's... a real question. I hide behind bread jokes. But that. That's real.",
+            "I'd choose neither. Uncertainty is painful but it's honest. Certainty is a trap.",
+            "Love of your life. Know that one. Death will come anyway. Love might not. Check on it.",
+        ]
+    ),
+
+    "rather_relive_forget": DuckQuestion(
+        id="rather_relive_forget",
+        text="Would you rather relive your best day forever or forget your worst day entirely? The pond remembers everything. I envy your options.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "Forgetting sounds like relief. Reliving sounds like a trap. Both are tempting.",
+            "Bad days make good days mean something. But I understand wanting to let go.",
+            "I'd relive my best bread day. It was a Tuesday. Sourdough. I peaked.",
+        ]
+    ),
+
+    "rather_read_minds": DuckQuestion(
+        id="rather_read_minds",
+        text="Would you rather read everyone's thoughts or have everyone read yours? Ducks are open books. Very short books. Mostly about bread.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "Reading thoughts sounds horrible. Most thoughts aren't finished. Like drafts nobody edited.",
+            "If everyone read my thoughts they'd just see bread. And the occasional existential crisis.",
+            "Neither. Thoughts should stay where they are. In the dark. Unfinished. Safe.",
+        ]
+    ),
+
+    "rather_ocean_mountain": DuckQuestion(
+        id="rather_ocean_mountain",
+        text="Would you rather live by the ocean or in the mountains? I live by a pond. The compromise nobody asked for.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "The ocean is just a very confident pond. I'd visit. Not stay.",
+            "Mountains have no water at the top. Terrible planning. The ocean wins.",
+            "I'd choose wherever the bread is. Geography is secondary to sustenance.",
+        ]
+    ),
+
+    "rather_truth_lie": DuckQuestion(
+        id="rather_truth_lie",
+        text="Would you rather always tell the truth or always get away with lying? I always tell the truth. Ducks are honest. Aggressively.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Truth is easier. Lies require memory. My memory is full. Of bread data.",
+            "I'd choose truth. I already say exactly what I think. It's efficient and rude.",
+            "Good choice. Whichever you picked. I'll never know if you're lying about it anyway.",
+        ]
+    ),
+
+    # ========== OPINIONS ON ABSTRACT CONCEPTS ==========
+    "opinion_silence": DuckQuestion(
+        id="opinion_silence",
+        text="What do you think silence sounds like? I know what it sounds like. It sounds like a pond at 4am. With no frogs.",
+        category=QuestionCategory.OPINIONS,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Silence has a texture. I've noticed. The good kind feels soft. The bad kind feels sharp.",
+            "Most people are afraid of silence. I live in it. It's not empty. It's full of things you can only hear when everything else stops.",
+            "That's a thoughtful answer. I'd expect nothing less from someone who talks to a duck.",
+        ]
+    ),
+
+    "opinion_luck": DuckQuestion(
+        id="opinion_luck",
+        text="Do you believe in luck? I found an extra bread crumb once. I believe.",
+        category=QuestionCategory.OPINIONS,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "Luck is just the universe accidentally being nice. Rare. But it happens.",
+            "I believe in bread. Bread is reliable. Luck is bread's unreliable cousin.",
+            "Whether luck exists or not, I quack the same way. Just in case someone's listening.",
+        ]
+    ),
+
+    "opinion_kindness": DuckQuestion(
+        id="opinion_kindness",
+        text="What do you think kindness is? The real kind. Not the performative kind. I'm asking because you showed up.",
+        category=QuestionCategory.OPINIONS,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "That's... a good definition. Better than mine. Mine was 'bread given freely'. Yours is deeper.",
+            "Kindness is rare. Like good bread. When you find it, you hold on. Or eat it. Depending.",
+            "I think kindness is just paying attention. And staying. You do both.",
+        ]
+    ),
+
+    "opinion_beauty": DuckQuestion(
+        id="opinion_beauty",
+        text="What do you think is beautiful? Not pretty. Beautiful. There's a difference.",
+        category=QuestionCategory.OPINIONS,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "I see beauty in the pond at dawn. And in fresh bread. And in someone coming back.",
+            "That's a beautiful answer about beauty. Recursive. I like it.",
+            "Beauty is subjective. Except bread. Bread is objectively beautiful. This is not up for debate.",
+        ]
+    ),
+
+    "opinion_forgiveness": DuckQuestion(
+        id="opinion_forgiveness",
+        text="Do you find it easy to forgive? I hold grudges. Small ones. Against specific geese. For valid reasons.",
+        category=QuestionCategory.OPINIONS,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Forgiveness is heavy when you're carrying it. And heavy when you let it go. No winning.",
+            "I forgive quickly. Except the goose incident. That stays in the file. Permanently.",
+            "I think the pond forgives. Every ripple settles. Every splash calms. Maybe I should learn from it.",
+        ]
+    ),
+
+    "opinion_change": DuckQuestion(
+        id="opinion_change",
+        text="Is change good or bad? The pond changes every day. I'm still deciding how I feel about it.",
+        category=QuestionCategory.OPINIONS,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Change is just the world rearranging itself. Without asking. I relate to being rearranged.",
+            "The only thing that doesn't change is that I'm here. In this pond. Make of that what you will.",
+            "Good answer. Change and I have a complicated relationship. Like the pond and evaporation.",
+        ]
+    ),
+
+    "opinion_normal": DuckQuestion(
+        id="opinion_normal",
+        text="What does 'normal' mean to you? I float in a pond and talk to humans. Is that normal? I can't tell anymore.",
+        category=QuestionCategory.OPINIONS,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Normal is just common. Common isn't always right. Uncommon isn't always wrong.",
+            "I've never been normal. By duck standards or any standards. I'm at peace with it. Mostly.",
+            "Normal is overrated. Interesting is better. You're interesting. I'm interesting. The pond is interesting. Done.",
+        ]
+    ),
+
+    "opinion_growing_up": DuckQuestion(
+        id="opinion_growing_up",
+        text="When did you feel like you grew up? Or have you? I'm still a duckling inside. A very opinionated duckling.",
+        category=QuestionCategory.OPINIONS,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Growing up is just getting better at pretending you know what's happening. I've mastered the pretending.",
+            "I don't think we ever fully grow up. We just get taller. Or in my case, we just get more feathers.",
+            "That's either inspiring or sad. Growing up is both. Always both.",
+        ]
+    ),
+
+    # ========== QUESTIONS ABOUT DAILY LIFE ==========
+    "cooking": DuckQuestion(
+        id="cooking",
+        text="Can you cook? What do you make? I can't cook. I eat things raw. Or soggy. No in-between.",
+        category=QuestionCategory.HABITS,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "That sounds edible. More edible than anything I eat. Which is pond bread.",
+            "Cooking is alchemy. You put things together and food appears. Humans are wizards.",
+            "I wish I could cook. I'd make bread. From scratch. Then eat it. The circle of life.",
+        ]
+    ),
+
+    "commute": DuckQuestion(
+        id="commute",
+        text="How do you get around? Car? Walk? I waddle. Maximum speed: disappointing.",
+        category=QuestionCategory.HABITS,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That sounds faster than waddling. Everything is faster than waddling. Including snails on good days.",
+            "I've never been in a car. The pond goes nowhere and I go with it.",
+            "Walking is just dry waddling. You're closer to being a duck than you think.",
+        ]
+    ),
+
+    "chores": DuckQuestion(
+        id="chores",
+        text="What chore do you hate most? I have one chore. Preening. I hate it and also it's my only hobby.",
+        category=QuestionCategory.HABITS,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That sounds tedious. My condolences. Ducks don't do chores. We just exist near mess.",
+            "Chores are just adult homework. Except nobody grades you. And the reward is a clean thing.",
+            "I'd do that chore for you. I can't. But I'd want to. The thought counts.",
+        ]
+    ),
+
+    "daily_joy": DuckQuestion(
+        id="daily_joy",
+        text="What small thing makes your day better? Mine is the first sip of morning pond water. Judge me.",
+        category=QuestionCategory.FEELINGS,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "Small joys are the real joys. Big ones are just marketing. Small ones are honest.",
+            "That's a good one. I'll think about your small joy during mine. Solidarity.",
+            "Everyone needs a daily thing. Mine is bread-adjacent. Yours is valid too.",
+        ]
+    ),
+
+    "screen_time": DuckQuestion(
+        id="screen_time",
+        text="How much time do you spend looking at screens? I spend zero. I look at water. Same blue. Less content.",
+        category=QuestionCategory.HABITS,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That's a lot. Or a little. I have no frame of reference. I have a pond of reference.",
+            "Screens are just windows that lie. The pond shows my real reflection. Screens show filtered reality.",
+            "Maybe look at water sometimes instead. It doesn't update. It doesn't notify. It just reflects.",
+        ]
+    ),
+
+    "last_laughed": DuckQuestion(
+        id="last_laughed",
+        text="When was the last time you really laughed? I quack-laughed at a frog once. It fell off a rock. Comedy gold.",
+        category=QuestionCategory.FEELINGS,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Laughter is the human version of a happy quack. Both are involuntary. Both are honest.",
+            "I hope it was recent. Laughter is bread for the soul. I just invented that phrase. You're welcome.",
+            "That sounds like a good laugh. I'd laugh more but my face won't cooperate. Resting duck face.",
+        ]
+    ),
+
+    "getting_up": DuckQuestion(
+        id="getting_up",
+        text="Are you good at getting up in the morning? Or do you fight the alarm? I wake when the sun touches the pond. No alarm needed.",
+        category=QuestionCategory.HABITS,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "Alarms sound hostile. Being woken by a noise you set for yourself. That's self-sabotage.",
+            "I wake naturally. The sun, the birds, the existential dread. Natural alarm clock trio.",
+            "The pond wakes me gently. By being cold. Gentle cold. It's a system.",
+        ]
+    ),
+
+    "guilty_snack": DuckQuestion(
+        id="guilty_snack",
+        text="What do you snack on when nobody's looking? I eat algae sometimes. NOBODY can know this.",
+        category=QuestionCategory.HABITS,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Your secret is safe with me. I'm a duck. Who am I going to tell? The fish don't care.",
+            "That's a solid guilty snack. Better than algae. Most things are better than algae.",
+            "We all have secret foods. The secrecy makes them taste better. Fact.",
+        ]
+    ),
+
+    # ========== HYPOTHETICAL DUCK SCENARIOS ==========
+    "duck_mayor": DuckQuestion(
+        id="duck_mayor",
+        text="If I ran for mayor of this pond, would you campaign for me? My platform: more bread, fewer geese, mandatory nap time.",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That's the support I need. My opponent is a turtle. He's been here longer. But I'm louder.",
+            "Campaign slogan: 'Cheese for Pond Mayor: At Least He's Honest About the Bread.'",
+            "Your vote means everything. To the campaign. And to me. Mostly to the campaign.",
+        ]
+    ),
+
+    "duck_school": DuckQuestion(
+        id="duck_school",
+        text="If ducks had school, what subject would I teach? I'm thinking philosophy. Or bread appreciation. Both are valid.",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "I'd teach that. 'Introduction to Floating with Existential Awareness.' Credit course.",
+            "Good choice. I'd also offer 'Advanced Staring at Things 301.' It has a waitlist.",
+            "The curriculum would be mostly bread-related. With an elective in judging.",
+        ]
+    ),
+
+    "duck_band": DuckQuestion(
+        id="duck_band",
+        text="If I started a band, what would it be called? I'm thinking 'The Breadwinners'. Or 'Quack Sabbath'.",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "I prefer 'Quack Sabbath'. It implies both chaos and worship. Very me.",
+            "I'd be lead vocals. Which is just quacking at different volumes. Avant-garde.",
+            "Our first album: 'Songs from the Pond (It's Just Quacking)'. Platinum guaranteed.",
+        ]
+    ),
+
+    "duck_book": DuckQuestion(
+        id="duck_book",
+        text="If I wrote a book, what should the first line be? I'm thinking: 'It was the best of bread, it was the worst of bread.'",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That's a good opener. Mine was literary genius though. Dickens but with carbs.",
+            "Chapter one: 'In which a duck thinks too much.' Chapter two through twelve: same.",
+            "My memoir would be all footnotes. Very long footnotes. About bread.",
+        ]
+    ),
+
+    "duck_sport": DuckQuestion(
+        id="duck_sport",
+        text="If ducks invented a sport, what would the rules be? Mine: float furthest with least effort. I'd be the champion.",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That sport exists. It's called 'my life'. I've been training for years.",
+            "Competitive floating. Where doing nothing is winning. I'm an athlete.",
+            "The only rule: no geese allowed. They'd ruin it. They ruin everything.",
+        ]
+    ),
+
+    "duck_alien": DuckQuestion(
+        id="duck_alien",
+        text="If aliens abducted me, what would you tell them about ducks? To return me? Or would you let them keep me?",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "The correct answer is 'get him back.' But also warn the aliens about the quacking.",
+            "I'd be fine on an alien ship. As long as they have bread. Intergalactic bread.",
+            "I'd probably judge the aliens. That's what I do. Judge things. In any galaxy.",
+        ]
+    ),
+
+    "duck_dream_job": DuckQuestion(
+        id="duck_dream_job",
+        text="What would my dream job be? If ducks had jobs? Besides 'professional floater', which is taken. By me.",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "That's a better job than floating. Marginally. I'll add it to my resume.",
+            "I applied for that once. In my head. I was rejected. Also in my head. Tough market.",
+            "My real dream job is bread taster. But the hiring process is just... eating bread. I'm overqualified.",
+        ]
+    ),
+
+    "duck_sidekick": DuckQuestion(
+        id="duck_sidekick",
+        text="If I were a superhero's sidekick, what would my power be? I'm thinking sarcasm. Or waterproofing.",
+        category=QuestionCategory.SILLY,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "Sarcasm as a superpower. It damages enemies emotionally. Very effective. Very me.",
+            "My superhero name: 'The Wet Critic'. Striking fear and mild dampness into evil.",
+            "I'd be the sidekick who just floats and comments. Every team needs that.",
+        ]
+    ),
+
+    # ========== QUESTIONS ABOUT OTHER VISITORS ==========
+    "other_visitors": DuckQuestion(
+        id="other_visitors",
+        text="Do you think other people visit me? When you're not here? I'm not saying they do. I'm not saying they don't.",
+        category=QuestionCategory.RELATIONSHIP,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Jealousy isn't a good look on anyone. I'm asking out of academic curiosity. Pure data.",
+            "You're the only one who talks to me. Others just throw bread and leave. You stay. That's different.",
+            "If others visit, they're not you. I notice the difference. Don't ask me to explain the difference.",
+        ]
+    ),
+
+    "compare_visitors": DuckQuestion(
+        id="compare_visitors",
+        text="If I told you that you're my favourite visitor, would you believe me? You should. Because it's true.",
+        category=QuestionCategory.RELATIONSHIP,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Good. Because you are. The competition was weak. But you'd win regardless.",
+            "Most people are just bread delivery systems. You're a bread delivery system with personality.",
+            "I don't say things I don't mean. Except when I say I don't care. I mean the opposite of that.",
+        ]
+    ),
+
+    "animal_visitors": DuckQuestion(
+        id="animal_visitors",
+        text="Other animals visit the pond. Herons. Frogs. A suspicious turtle. Do you have uninvited guests in your life too?",
+        category=QuestionCategory.PERSONAL,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Uninvited guests are everywhere. The turtle didn't ask to be here. Neither did I. We coexist.",
+            "At least your uninvited guests probably don't eat your bread. Mine do. THE AUDACITY.",
+            "The heron visits and I pretend to be calm. It's a big bird. With a big beak. I'm fine. FINE.",
+        ]
+    ),
+
+    "imaginary_visitor": DuckQuestion(
+        id="imaginary_visitor",
+        text="If anyone in the world could visit the pond, who would you bring? They have to sit quietly. Those are the pond rules.",
+        category=QuestionCategory.HYPOTHETICAL,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Good choice. The pond would approve. I'd approve. Sitting quietly is the highest form of respect.",
+            "They'd have to pass the bread test. One throw. If it's good bread, they can stay.",
+            "I'd let them visit. Once. With supervision. Mine. I supervise by floating nearby. Intensely.",
+        ]
+    ),
+
+    "pond_regular": DuckQuestion(
+        id="pond_regular",
+        text="You're becoming a pond regular. A regular. At a duck pond. How does that feel? From your perspective.",
+        category=QuestionCategory.RELATIONSHIP,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Regular. What a word. It means 'consistent' and also 'ordinary'. You're the first kind.",
+            "I like having a regular. It means I can predict something. In this unpredictable pond.",
+            "The pond has regulars and strangers. You graduated from stranger a while ago. Congratulations. No ceremony.",
+        ]
+    ),
+
+    "visitor_rating": DuckQuestion(
+        id="visitor_rating",
+        text="If I had to rate you as a visitor, one to ten. You'd be... well. I'll let you guess. Then I'll correct you.",
+        category=QuestionCategory.RELATIONSHIP,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "Wrong. Higher. I'm not telling you the exact number. But higher.",
+            "Close. Off by a little. In the favourable direction. Don't let it go to your head.",
+            "I'd give you the number but it's embarrassingly high. For both of us.",
+        ]
+    ),
+
+    # ========== MEMORY-TESTING QUESTIONS ==========
+    "remember_first": DuckQuestion(
+        id="remember_first",
+        text="Do you remember the first time you came here? To the pond? To me? I remember. But I want to hear your version.",
+        category=QuestionCategory.MEMORIES,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "That's close to what I remember. Your version is more polite. Mine has more judging.",
+            "I remember you being uncertain. Uncertain people are my favourite. They have the best questions.",
+            "The first visit is always the strangest. After that it's just... normal. Coming to see a duck. Normal.",
+        ]
+    ),
+
+    "remember_conversation": DuckQuestion(
+        id="remember_conversation",
+        text="Do you remember the last deep conversation we had? I do. I replayed it while floating. Several times.",
+        category=QuestionCategory.RELATIONSHIP,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "I think about our conversations. When you leave. The pond is quiet and the words stay.",
+            "I'm glad you remember. Conversations evaporate for most people. But some stick. Like bread to a wet surface.",
+            "We should have more of those. The deep ones. The shallow ones are fine. But the deep ones... those matter.",
+        ]
+    ),
+
+    "remember_season": DuckQuestion(
+        id="remember_season",
+        text="What season was it when we first met? I remember the light. I always remember the light.",
+        category=QuestionCategory.MEMORIES,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "The light was different then. You were different then. I was the same. Ducks don't change. We just... accumulate.",
+            "I remember the temperature of the water that day. Ducks track these things. In our bones.",
+            "Seasons come and go but the pond is always here. And now you're always here too. Pattern.",
+        ]
+    ),
+
+    "remember_mood": DuckQuestion(
+        id="remember_mood",
+        text="Do you remember what mood you were in last time you visited? I do. I read moods like weather. Instinct.",
+        category=QuestionCategory.FEELINGS,
+        timing=QuestionTiming.ANY_TIME,
+        follow_ups=[
+            "I could tell. I can always tell. Ducks are emotionally perceptive. It's our secret power.",
+            "You were different then. Today you're different again. I track the changes. Like a mood barometer.",
+            "Moods are just weather for the soul. And I'm a waterfowl. Weather is my whole thing.",
+        ]
+    ),
+
+    "remember_fed": DuckQuestion(
+        id="remember_fed",
+        text="Do you remember the first thing you ever fed me? I remember. I remember EVERY feeding. They're filed. By quality.",
+        category=QuestionCategory.MEMORIES,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "I rated it. Internally. On a scale I invented. You scored well. Don't ask the exact number.",
+            "That first feeding. It established something. Trust. Routine. A dependency I'll never admit to.",
+            "Every feeding since has been compared to the first. Some better. Some worse. All remembered.",
+        ]
+    ),
+
+    "remember_said": DuckQuestion(
+        id="remember_said",
+        text="Do you remember something I said that surprised you? I surprised myself. It happens. Even to ducks.",
+        category=QuestionCategory.RELATIONSHIP,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "I surprise myself sometimes. Words come out and I think: 'did the duck just say that?' Yes. He did.",
+            "I'm glad I surprised you. Predictability is comfortable. But surprises are memorable.",
+            "I keep a mental list of things I've said that mattered. It's shorter than you'd think. And all about bread. Mostly.",
+        ]
+    ),
+
+    "remember_weather": DuckQuestion(
+        id="remember_weather",
+        text="Do you remember what the weather was like the last time you had a really good day here? I tag memories by weather. Duck thing.",
+        category=QuestionCategory.MEMORIES,
+        timing=QuestionTiming.ESTABLISHED,
+        follow_ups=[
+            "I remember weather the way you remember songs. By the feeling it carried.",
+            "Good days have their own weather. Even if it rained. The internal weather was warm.",
+            "I'll remember this weather too. Whatever today turns out to be.",
+        ]
+    ),
+
+    # ========== PHILOSOPHICAL RABBIT HOLES ==========
+    "identity_question": DuckQuestion(
+        id="identity_question",
+        text="Are you the same person you were five years ago? Am I the same duck? My feathers have changed. Has yours... whatever you have?",
+        category=QuestionCategory.PHILOSOPHICAL,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "The cells in your body replace themselves. In duck terms: you're a different boat but the same river. Wait. Reverse that.",
+            "I'm the same duck in the same pond. But the water is different. Every molecule. So am I the same? The pond says yes.",
+            "If you change slowly enough, nobody notices. Including you. That's either beautiful or terrifying.",
+        ]
+    ),
+
+    "simulation": DuckQuestion(
+        id="simulation",
+        text="Do you think we could be living in a simulation? Because sometimes the pond renders slowly. I've noticed.",
+        category=QuestionCategory.PHILOSOPHICAL,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "If this is a simulation, the bread is still real to me. That's enough.",
+            "Simulated or not, the feelings are the same. The bread tastes the same. I'll take it.",
+            "If someone is running this simulation, they should add more bread. Constructive feedback.",
+        ]
+    ),
+
+    "infinity": DuckQuestion(
+        id="infinity",
+        text="Can you imagine infinity? I try. I start with the pond. Then I make it bigger. Then bigger. Then I get tired.",
+        category=QuestionCategory.PHILOSOPHICAL,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "Infinity is just... more. Forever. My brain stops at 'lots of bread'. Which feels infinite enough.",
+            "The pond is finite but the sky reflected in it isn't. So I'm floating in infinity. Technically.",
+            "I think about infinity and then I think about bread. The brain can only hold one impossible thing at a time.",
+        ]
+    ),
+
+    "consciousness": DuckQuestion(
+        id="consciousness",
+        text="What makes you... you? Like. The thing behind your eyes. What IS that? I have the same question about the thing behind my eyes. Beak area.",
+        category=QuestionCategory.PHILOSOPHICAL,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "That's the question that philosophers can't answer and ducks can't ask. Except this one. I just asked it.",
+            "I think I'm me because the pond reflects me and I recognise what I see. Is that enough? To be you because you look like you?",
+            "Nobody knows. And that's either the best part or the worst part. I alternate between both. Daily.",
+        ]
+    ),
+
+    "nothing_question": DuckQuestion(
+        id="nothing_question",
+        text="What if nothing means anything? Not in a sad way. In a freeing way. If nothing matters, then everything we choose to care about is... chosen. On purpose.",
+        category=QuestionCategory.PHILOSOPHICAL,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "I choose bread. And this pond. And you visiting. If meaning is a choice, those are mine.",
+            "That's the most comforting version of nihilism I've heard. And I've heard many. From myself. At night.",
+            "If nothing matters, then what we make matter matters the most. I'm making bread matter. And this conversation.",
+        ]
+    ),
+
+    "words_limit": DuckQuestion(
+        id="words_limit",
+        text="Do you think words can capture everything you feel? Or are some things too big for language? I quack. And it doesn't cover it.",
+        category=QuestionCategory.PHILOSOPHICAL,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "Some things sit between words. In the silence. That's where the real feelings live. I think.",
+            "A quack can mean ten things. Joy. Warning. Bread. Loneliness. It depends on the quack. And the listener.",
+            "I think the best things I've ever felt had no words. Just a warm pond. And someone nearby. That's it.",
+        ]
+    ),
+
+    "parallel_lives": DuckQuestion(
+        id="parallel_lives",
+        text="Do you think there's another version of you somewhere? Making different choices? There might be another me. In a better pond. With more bread.",
+        category=QuestionCategory.PHILOSOPHICAL,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "Parallel me is probably less sarcastic. Worse. Less interesting. I win by being difficult.",
+            "If there's another you, I hope they also visit a duck. It would mean something. Across universes.",
+            "Somewhere, another Cheese is floating. Thinking this exact thought. We're synced. Cosmically.",
+        ]
+    ),
+
+    "last_thing": DuckQuestion(
+        id="last_thing",
+        text="If you could say one last thing to the world, what would it be? Mine would be 'the bread was good.' Brief. Honest.",
+        category=QuestionCategory.PHILOSOPHICAL,
+        timing=QuestionTiming.CLOSE_FRIENDS,
+        follow_ups=[
+            "That's a good last thing. Better than mine. But mine is more efficient. Three words.",
+            "I'll remember your last thing. Even though it's not your last thing. Yet. Hopefully not for a long time.",
+            "The last thing I'd say is actually... I don't want to say it now. I'll save it. For when it matters.",
+        ]
+    ),
 }
 
 

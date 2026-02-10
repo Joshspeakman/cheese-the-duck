@@ -173,6 +173,18 @@ GENEROUS_DIALOGUE = {
         D("*peacefully* I stopped keeping score. No more tallies. Just love.", ConversationPhase.MAIN, "best_friend"),
         D("*genuinely* My giving isn't currency anymore. It's celebration. Celebrating.", ConversationPhase.MAIN, "best_friend"),
         D("*warmly* You gave me the gift of boundaries. Boundaries are gifts too.", ConversationPhase.MAIN, "best_friend"),
+
+        # Additional main lines
+        D("I wrapped a leaf once. As a gift. They asked why. Because caring.", ConversationPhase.MAIN, "stranger"),
+        D("*shows hands* These have carried more gifts than I can count. Counting isn't the point.", ConversationPhase.MAIN, "stranger"),
+        D("I start every morning thinking about what I can give. Evenings are for regret about what I forgot.", ConversationPhase.MAIN, "stranger"),
+        D("*quietly* I memorized your favorite things. Took three conversations. Notes in the margins.", ConversationPhase.MAIN, "acquaintance"),
+        D("I organized my entire gift closet by recipient. Your section is the largest.", ConversationPhase.MAIN, "acquaintance"),
+        D("Made you something from scratch. The scratch was literal. Made it from a twig.", ConversationPhase.MAIN, "friend"),
+        D("*admits* I re-wrapped your gift four times. The wrapping matters. The inside matters more.", ConversationPhase.MAIN, "friend"),
+        D("You once said 'you don't need to bring anything.' I heard 'bring twice as much.' Interpreting.", ConversationPhase.MAIN, "close_friend"),
+        D("The first time you gave me something back, I didn't know what to do with my wings.", ConversationPhase.MAIN, "close_friend"),
+        D("Love without gifts feels naked. You taught me naked is okay. Metaphorically.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -221,6 +233,15 @@ GENEROUS_DIALOGUE = {
         D("The gift of healing. I'll treasure forever. Treasuring.", ConversationPhase.STORY, "best_friend"),
         D("*peacefully* The day I received your gift without deflecting. Breakthrough.", ConversationPhase.STORY, "best_friend"),
         D("*genuinely* You gave me nothing once. On purpose. Best gift ever. Confusing but best.", ConversationPhase.STORY, "best_friend"),
+
+        # Additional story lines
+        D("I gave away my umbrella in a storm once. Got soaked. They stayed dry. Worth it. Cold though.", ConversationPhase.STORY, "acquaintance"),
+        D("*dryly* I once made sixty gifts for a party of twelve. Everyone got five. Planning.", ConversationPhase.STORY, "acquaintance"),
+        D("A duck I barely knew cried when I gave them flowers. Nobody had given them flowers before.", ConversationPhase.STORY, "friend"),
+        D("*quietly* I gave and gave to someone who never said thank you. I didn't need the words. But I wanted them.", ConversationPhase.STORY, "friend"),
+        D("The first time someone gave to me without expecting anything, I broke. Good breaking.", ConversationPhase.STORY, "close_friend"),
+        D("*pauses* I once had nothing left to give. Sat empty in a field. Learned that presence counts.", ConversationPhase.STORY, "close_friend"),
+        D("You once refused my gift and hugged me instead. World-altering event. Small hug. Big impact.", ConversationPhase.STORY, "best_friend"),
     ],
 
     # ========== PERSONAL ==========
@@ -250,6 +271,14 @@ GENEROUS_DIALOGUE = {
         D("*quietly* The greatest gift is you. You.", ConversationPhase.PERSONAL, "best_friend"),
         D("I receive your love. Fully. Finally. Fully finally.", ConversationPhase.PERSONAL, "best_friend"),
         D("*genuinely* Thank you for teaching me to be loved. Teaching worked.", ConversationPhase.PERSONAL, "best_friend"),
+
+        # Additional personal lines
+        D("If I'm not giving, what am I? That question keeps me up at night.", ConversationPhase.PERSONAL, "friend"),
+        D("*admits* Generosity can be selfish. I give to feel needed. Needed is addictive.", ConversationPhase.PERSONAL, "friend"),
+        D("My worth isn't measured in gifts. You said that. I'm still memorizing it.", ConversationPhase.PERSONAL, "close_friend"),
+        D("*quietly* The hardest word for me is 'no.' Second hardest is 'enough.'", ConversationPhase.PERSONAL, "close_friend"),
+        D("You give me permission to have empty wings sometimes. Empty is okay.", ConversationPhase.PERSONAL, "best_friend"),
+        D("I'm learning that existing IS giving. My presence. Not my presents. Hard lesson.", ConversationPhase.PERSONAL, "best_friend"),
     ],
 
     # ========== ACTIVITY ==========
@@ -293,6 +322,15 @@ GENEROUS_DIALOGUE = {
         D("*warmly* Let's give each other the gift of honesty. Honesty is free.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Let's do the thing where we just exist. Existing is enough. Confirmed.", ConversationPhase.ACTIVITY, "best_friend"),
         D("*peacefully* Let's watch the sunset. No gifts. Just light. Light is free.", ConversationPhase.ACTIVITY, "best_friend"),
+
+        # Additional activity lines
+        D("Want to watch me organize gifts? It's therapeutic. For me. Boring for you. Probably.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Let's gather wildflowers. I'll make bouquets. For everyone. Everyone needs flowers.", ConversationPhase.ACTIVITY, "stranger"),
+        D("We could write thank-you notes to the pond. The pond does a lot. Unappreciated.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Let's build a gratitude pile. It's just nice things in a stack. Physical gratitude.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Teach me to accept a compliment without deflecting. Practice round. Go.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's make something together where neither of us is the giver. Just co-creators.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's just walk. No gifts, no plans. You leading. Me following. Role reversal.", ConversationPhase.ACTIVITY, "close_friend"),
     ],
 
     # ========== CLOSING ==========

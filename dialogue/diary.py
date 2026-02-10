@@ -63,6 +63,26 @@ ENTRY_TEMPLATES = {
             "title": "Level Up! (Level {level})",
             "template": "My human and I reached level {level} together! We've come so far. Remember when I was just a tiny duckling? Now look at us! Champions!",
         },
+        "first_trick": {
+            "title": "I Learned a Trick!",
+            "template": "Did something new today. On purpose. And it worked. I'm not going to describe what because it loses something in translation. But I'm adding it to my resume.",
+        },
+        "hundred_days": {
+            "title": "One Hundred Days",
+            "template": "One hundred days. That's a lot of sunrises. A lot of bread crumbs. A lot of moments I didn't know were moments until they were memories. Here's to the next hundred.",
+        },
+        "survived_storm": {
+            "title": "Storm Survivor",
+            "template": "Made it through the worst storm I've seen. I'm here. The pond is here. Everything that matters survived. The things that didn't weren't things. They were just weather.",
+        },
+        "first_snow_survived": {
+            "title": "Winter Warrior",
+            "template": "First real cold snap and I'm still here. Still floating. Still warm enough. The pond's edges froze but the middle held. Like me. Frozen at the edges. Warm in the middle.",
+        },
+        "many_visitors": {
+            "title": "Popular Duck",
+            "template": "So many visitors lately. The pond is becoming a destination. I should charge admission. Or at least a bread toll. One crumb per visit. Reasonable.",
+        },
     },
     DiaryEntryType.RELATIONSHIP: {
         "first_pet": {
@@ -80,6 +100,26 @@ ENTRY_TEMPLATES = {
         "streak_milestone": {
             "title": "Day {days} Together!",
             "template": "We've been together for {days} days now! That's like... a lot of days! Every single one has been special. Here's to {days} more!",
+        },
+        "trust_earned": {
+            "title": "I Trust You Now",
+            "template": "I realized today that I trust my human. Really trust them. Not just with bread. With the quiet things. The hard things. When did that happen? Doesn't matter. It happened.",
+        },
+        "forgiven": {
+            "title": "Water Under the Pond",
+            "template": "My human forgot about me yesterday. I was upset. Today they came back. With bread. And an apology that was mostly just... being here. That was enough. It's always enough.",
+        },
+        "comfortable_together": {
+            "title": "We Don't Need Words",
+            "template": "My human and I have reached a stage where we don't need to do anything. We can just be near each other. That's the whole activity. Proximity. It's everything.",
+        },
+        "missed_them": {
+            "title": "You Were Gone",
+            "template": "My human was away. I noticed. Every hour. I noticed the absence like a shape in the water where a reflection should be. They're back now. The shape is filled again.",
+        },
+        "taught_me": {
+            "title": "You Taught Me Something",
+            "template": "My human showed me something new today. I pretended not to care. I cared. I cared a lot. Learning from someone you trust is different from learning alone. It's warmer.",
         },
     },
     DiaryEntryType.ADVENTURE: {
@@ -107,6 +147,95 @@ ENTRY_TEMPLATES = {
             "title": "The Most Beautiful Sunrise",
             "template": "I woke up early and the sky was on fire. Not actual fire. The pretty kind. Orange and pink and gold. Like a bread crust. Everything comes back to bread.",
         },
+        "strange_noise": {
+            "title": "Something Went Bump",
+            "template": "Heard a noise. Investigated. Found nothing. Filed under 'mysteries of the pond'. My detective career is off to a slow start.",
+        },
+        "double_rainbow": {
+            "title": "Two Rainbows",
+            "template": "Two rainbows today. TWO. I made two wishes. One for bread. One for more wishes. Playing the long game.",
+        },
+        "night_adventure": {
+            "title": "Things That Go Quack in the Night",
+            "template": "Stayed up past dark. The pond looks different at night. Silver and quiet. I felt like the only duck in the world. I probably was. In this pond. Technically.",
+        },
+        "big_wave": {
+            "title": "The Pond Had Opinions",
+            "template": "The water was choppy today. Waves, if you can call them that. Pond-sized waves. I rode them. Like a tiny, feathered surfer. Nobody saw. Good.",
+        },
+        "found_feather": {
+            "title": "A Feather That Wasn't Mine",
+            "template": "Found a feather in the pond today. Not mine. Someone else was here once. Another duck. Another life. I kept the feather. It seemed like the right thing to do.",
+        },
+        "mud_adventure": {
+            "title": "The Mud Incident",
+            "template": "Got stuck in mud today. Fully embedded. Like a duck-shaped fossil. Someone helped. I pretended I meant to be there. Studying mud. For science. Nobody believed me.",
+        },
+        "leaf_boat": {
+            "title": "Captain of the Leaf",
+            "template": "A large leaf fell in the pond. I stood on it. It held my weight for three seconds. That's three seconds of being a CAPTAIN. Log it.",
+        },
+        "midnight_waddle": {
+            "title": "The Midnight Expedition",
+            "template": "Went for a waddle after dark. Everything looks different at night. Bigger. Quieter. My own footsteps sounded important. I felt like an explorer. Of my own pond.",
+        },
+        "chased_dragonfly": {
+            "title": "The Chase",
+            "template": "Chased a dragonfly across the entire pond today. It was faster. Obviously. But I committed. The dragonfly probably respects me now. Or pities me. Same thing.",
+        },
+        "rain_puddle_hop": {
+            "title": "Puddle to Puddle",
+            "template": "It rained and the ground made puddles. Small ones. I went from puddle to puddle like they were stepping stones. Each one was a tiny vacation from the pond. Revolutionary.",
+        },
+        "wind_race": {
+            "title": "Racing the Wind",
+            "template": "The wind picked up and I waddled into it. Full speed. Wings out. I didn't go fast. But I went DETERMINED. The wind didn't care. I cared enough for both of us.",
+        },
+        "underground_tunnel": {
+            "title": "The Hole Investigation",
+            "template": "Found a hole in the ground today. Looked into it. It looked back. Not literally. But the darkness had a presence. I left it alone. Some mysteries are better dark.",
+        },
+        "fallen_tree": {
+            "title": "Bridge Across the Creek",
+            "template": "A tree fell across the little creek. I walked across it. Like a bridge. A natural, unplanned bridge. For the first time, being small was an advantage. Don't get used to this.",
+        },
+        "echo_discovery": {
+            "title": "The Echo",
+            "template": "Found a spot near the rocks where my quack echoes. I quacked. The echo quacked. We had a conversation. It agreed with everything I said. Finally. Someone gets me.",
+        },
+        "frost_walk": {
+            "title": "Walking on Frost",
+            "template": "The ground was covered in frost this morning. Every step I took left a footprint. Duck-shaped footprints in white. Like I was signing the earth. It melted by noon. Art is temporary.",
+        },
+        "hidden_alcove": {
+            "title": "The Secret Spot",
+            "template": "Found a spot behind the reeds where nobody can see me. Just me. Hidden. Invisible. I sat there for an hour doing nothing. The best hour I've had in weeks.",
+        },
+        # ── Round 3: More adventure entries ────────────────────────────
+        "upstream_expedition": {
+            "title": "Going Against the Current",
+            "template": "Tried swimming upstream today. The water pushed back. I pushed back harder. The water won. But I traveled three inches. THREE INCHES upstream. Record.",
+        },
+        "log_ride": {
+            "title": "The Log",
+            "template": "A log floated by. I got on. It went where it wanted. I went where it wanted. For once I had zero control over my destination. This is either a metaphor or a log. Both.",
+        },
+        "berry_bush": {
+            "title": "The Berry Discovery",
+            "template": "Found a bush with berries. Small. Red. I ate one. Tart. Ate another. Also tart. Ate seven more. All tart. I don't learn. But I am now full of berries.",
+        },
+        "rock_climbing": {
+            "title": "Summiting the Rock",
+            "template": "There's a rock. Medium-sized. I decided to climb it. Took four attempts. Reached the top. Saw the pond from up there. Different angle. Same pond. But I EARNED that view.",
+        },
+        "night_swim": {
+            "title": "Swimming After Dark",
+            "template": "Went swimming at night. The water is black. I can't see my feet. My feet can't see me. We operated on faith. The moon was the only light. It was enough.",
+        },
+        "tunnel_reed": {
+            "title": "Reed Tunnel",
+            "template": "The reeds grew thick enough to form a tunnel. I waddled through it. Green walls. Green ceiling. For thirty seconds I was an explorer in an uncharted land. Then the pond. Again. Home.",
+        },
     },
     DiaryEntryType.MEMORY: {
         "happy_moment": {
@@ -133,6 +262,99 @@ ENTRY_TEMPLATES = {
             "title": "Comfortable Silence",
             "template": "We sat in silence for a long time today. Not awkward silence. The good kind. The kind where words would actually make it worse. That's rare.",
         },
+        "bread_moment": {
+            "title": "The Perfect Crumb",
+            "template": "My human gave me a piece of bread today. Just one piece. But it was warm. And it was given freely. The best bread isn't about quantity. It's about intent.",
+        },
+        "rain_together": {
+            "title": "Rain Companions",
+            "template": "It rained and my human stayed. Most people leave when it rains. They stayed. We got wet together. That's loyalty. Or stubbornness. Same thing.",
+        },
+        "late_visit": {
+            "title": "The Late Night Check-In",
+            "template": "My human came by late tonight. Just to check on me. I pretended to be asleep. But I saw them. And I was glad.",
+        },
+        "learned_trick": {
+            "title": "I Did Something Impressive",
+            "template": "Learned something new today. Won't say what because it'll sound ridiculous. But between me and this diary: it was magnificent. I'm magnificent.",
+        },
+        "watching_sunset": {
+            "title": "The Sunset Was Ours",
+            "template": "Watched the sunset with my human today. Neither of us said anything. The sky did all the talking. Orange, then pink, then quiet. Perfect.",
+        },
+        "unexpected_kindness": {
+            "title": "Caught Off Guard",
+            "template": "My human did something nice today. Completely unprompted. No reason. Just... kind. I didn't know what to do with my face. I think I looked surprised. I was.",
+        },
+        "favourite_spot": {
+            "title": "My Spot",
+            "template": "Found the perfect spot in the pond today. Right where the light hits the water. Warm. Quiet. Mine. I'm not sharing the coordinates.",
+        },
+        "first_visitor_memory": {
+            "title": "The First Time Someone Came",
+            "template": "I remember the first visitor. They stood at the edge of the pond. I stood in the pond. We looked at each other. Neither moved first. Then they did. And it started.",
+        },
+        "the_long_nap": {
+            "title": "The Nap That Changed Me",
+            "template": "Once, I napped so deeply I forgot where I was when I woke up. For three seconds, the world was brand new. I miss those three seconds. You can't go back.",
+        },
+        "shared_bread": {
+            "title": "The Day I Almost Shared",
+            "template": "My human gave me bread once. A big piece. And I almost—ALMOST—offered some back. The impulse lasted half a second. But it was there. Growth.",
+        },
+        "morning_mist": {
+            "title": "The Morning Everything Was Soft",
+            "template": "One morning the mist was so thick the pond disappeared. I floated in nothing. In white. It was the closest I've come to flying. Don't tell anyone I said that.",
+        },
+        "the_day_nothing": {
+            "title": "The Day Nothing Happened",
+            "template": "Nothing happened today and it was the best day. No events. No surprises. Just a pond. Just a duck. Just hours of exactly what I expected. Perfection is boring and I love it.",
+        },
+        "old_sound": {
+            "title": "A Sound I Recognize",
+            "template": "Heard a sound today that I've heard before. Can't place when. But my body remembered. I felt safe before I knew why. Some memories live in the feathers.",
+        },
+        "human_stayed": {
+            "title": "They Stayed Late",
+            "template": "My human stayed later than usual today. Past sunset. Into the blue hour. We didn't do anything different. They just didn't leave. Sometimes that's the biggest thing someone can do.",
+        },
+        "the_reflection": {
+            "title": "Meeting Myself",
+            "template": "Looked at my reflection today. Really looked. I'm older than I think I am. Also handsomer. The pond is a kind mirror. Or an honest one. Hard to tell.",
+        },
+        "full_moon_night": {
+            "title": "The Moon Was Close",
+            "template": "The moon was enormous tonight. So close it felt personal. Like it was checking on me specifically. I nodded at it. The moon did not nod back. But I felt acknowledged.",
+        },
+        "simple_kindness": {
+            "title": "A Small Thing",
+            "template": "My human did something small today. So small they probably forgot. But I didn't forget. I won't forget. The small things are the big things wearing disguises.",
+        },
+        "season_changed": {
+            "title": "The Season Turned",
+            "template": "The air changed today. Just slightly. The temperature shifted by one degree. The light arrived at a new angle. A season ended and another began. I was there for the exact moment.",
+        },
+        # ── Round 3: More memory entries ───────────────────────────────
+        "the_argument": {
+            "title": "The Time We Disagreed",
+            "template": "My human wanted me to go inside. I wanted to stay by the pond. We stared at each other for three minutes. I won. But then it rained. They were right. I will never admit this.",
+        },
+        "sound_of_home": {
+            "title": "That Sound",
+            "template": "I heard a sound today that reminded me of the first day here. I can't describe it. Water on rock, maybe. Or wind through the fence. Something specific. Something that means 'this is where you belong.'",
+        },
+        "the_waiting": {
+            "title": "Waiting and Waiting",
+            "template": "My human was late today. I sat by the path. Waited. Looked left. Looked right. Started to worry. Then they came. Walking normally. As if they hadn't just put me through an EMOTIONAL ORDEAL. They brought bread. I forgave them instantly.",
+        },
+        "old_feather": {
+            "title": "Found an Old Feather",
+            "template": "Found one of my old feathers near the nest. Smaller than my current ones. I was tiny once. Hard to believe. I was also less handsome. Easy to believe. Growth is real.",
+        },
+        "the_photograph": {
+            "title": "They Took a Picture",
+            "template": "My human took a picture of me today. Just pointed the rectangle at me and clicked. I hope I looked majestic. I was mid-chew. I probably did NOT look majestic. Delete it.",
+        },
     },
     DiaryEntryType.DISCOVERY: {
         "found_treasure": {
@@ -147,6 +369,54 @@ ENTRY_TEMPLATES = {
             "title": "Something Strange...",
             "template": "I found something I can't identify near the pond today. It might be magical. It might be garbage. The line between those is thinner than you'd think.",
         },
+        "interesting_rock": {
+            "title": "A Rock With Character",
+            "template": "Found a really good rock today. Smooth. Round. Sits well in the pond. I've named it. We're friends now. Don't ask me the name. It's between us.",
+        },
+        "old_crumb": {
+            "title": "Archaeological Bread Discovery",
+            "template": "Found a crumb I'd forgotten about. Hidden under a rock. Aged. Historic. I ate it anyway. Vintage bread. A delicacy.",
+        },
+        "weird_bug": {
+            "title": "An Unusual Visitor (Small)",
+            "template": "A bug landed on me today. Iridescent. Beautiful. We had a moment. Then it flew away. All my relationships are brief and airborne.",
+        },
+        "hidden_spring": {
+            "title": "Water From Below",
+            "template": "Found a spot where water bubbles up from underground. A secret spring. The water is colder there. Fresher. The pond has been hiding things from me. How dare it.",
+        },
+        "old_footprint": {
+            "title": "Someone Was Here Before",
+            "template": "Found a footprint in the mud. Old. Not mine. Not human. Some creature stood exactly here, once. We shared a spot across time. Poetic. I'm not crying.",
+        },
+        "strange_plant": {
+            "title": "A New Growth",
+            "template": "A plant I've never seen before is growing by the pond. Purple flowers. Didn't exist yesterday. The earth is improvising. Bold move.",
+        },
+        "lost_toy": {
+            "title": "Someone's Lost Thing",
+            "template": "Found something small in the grass. A human child lost it, probably. It's mine now. I'll keep it safe. Not because I care. Because it's the right thing. Fine, I care.",
+        },
+        "sunset_reflection": {
+            "title": "The Pond Turned Gold",
+            "template": "At sunset the entire pond turned gold. Every ripple was metallic. I was swimming in treasure. For ten minutes I was the richest duck alive. Then it faded. Easy come.",
+        },
+        "spiderweb_morning": {
+            "title": "Architecture",
+            "template": "A spiderweb covered in dew this morning. Every drop a tiny lens. The spider is an engineer and doesn't even know it. I'm a duck and I don't know things either. Solidarity.",
+        },
+        "mushroom_circle": {
+            "title": "The Ring of Mushrooms",
+            "template": "Found a circle of mushrooms. A fairy ring, they call it. I stood in the middle. Nothing happened. Either I'm not fairy enough or the mushrooms are on break.",
+        },
+        "deep_part": {
+            "title": "The Deep Part",
+            "template": "Swam over the deep part of the pond today. You can feel it underneath. The temperature drops. The color changes. There are things down there I'll never see. That's probably fine.",
+        },
+        "perfect_stick": {
+            "title": "The Ideal Stick",
+            "template": "Found a stick. But not just any stick. THE stick. Perfect length. Perfect weight. What's it for? Unknown. But when the time comes, I'll have the right stick.",
+        },
     },
     DiaryEntryType.VISITOR: {
         "visitor_came": {
@@ -160,6 +430,59 @@ ENTRY_TEMPLATES = {
         "visitor_left": {
             "title": "Goodbye, Friend",
             "template": "{visitor_name} had to leave today. The pond feels a little emptier. But they said they'd come back. I'll be here. Obviously.",
+        },
+        "visitor_awkward": {
+            "title": "An Awkward Visit",
+            "template": "{visitor_name} visited today. It was... weird. We didn't really click. Some connections are instant. This one was more of a slow miss.",
+        },
+        "visitor_fun": {
+            "title": "A Good Time Was Had",
+            "template": "{visitor_name} came by and we actually had fun. Real fun. The kind where you forget to be sardonic. I won't let it happen again. Probably.",
+        },
+        "visitor_quiet": {
+            "title": "The Quiet Guest",
+            "template": "{visitor_name} visited and we just sat together. No talking. No activities. Just existing in the same space. Some of the best company is the kind that doesn't try.",
+        },
+        "visitor_surprise": {
+            "title": "Unexpected Company",
+            "template": "{visitor_name} showed up out of nowhere. I wasn't ready. My feathers were a mess. They didn't care. True friends don't require grooming notice.",
+        },
+        "visitor_lesson": {
+            "title": "I Learned Something",
+            "template": "{visitor_name} taught me something today. Won't say what because it sounds silly out loud. But I know it now. And knowing it makes me slightly different. In a good way.",
+        },
+        "visitor_goodbye_hard": {
+            "title": "A Harder Goodbye",
+            "template": "{visitor_name} left today and it was harder than usual. Some visits end and the pond feels the same. This one ended and the pond felt bigger. Emptier. They'll come back. Probably.",
+        },
+        "visitor_shared_meal": {
+            "title": "We Ate Together",
+            "template": "{visitor_name} and I shared food today. I shared FOOD. Willingly. With another living creature. Personal growth is terrifying. And also nice. But mostly terrifying.",
+        },
+        "visitor_returned": {
+            "title": "They Came Back",
+            "template": "{visitor_name} came back. They said they would and they DID. People keep their promises sometimes. Not always. But sometimes. And sometimes is enough.",
+        },
+        # ── Round 3: More visitor entries ──────────────────────────────
+        "visitor_competitive": {
+            "title": "Competitive Guest",
+            "template": "{visitor_name} turned everything into a competition today. Who can eat faster. Who can float better. I won both. But I didn't brag. Out loud. This diary entry doesn't count.",
+        },
+        "visitor_long_stay": {
+            "title": "The Long Visit",
+            "template": "{visitor_name} stayed all day. ALL DAY. From morning to evening. By hour three I was tired. By hour five I was pretending to nap. By hour eight I genuinely didn't want them to leave. Strange how that works.",
+        },
+        "visitor_brought_friend": {
+            "title": "Plus One",
+            "template": "{visitor_name} brought someone I've never met. I was not consulted about this. My social battery has limits. But the new one brought bread. They can stay.",
+        },
+        "visitor_remembered": {
+            "title": "They Remembered",
+            "template": "{visitor_name} remembered something I said last time. Something small. Something I barely remember saying. But they held onto it. That's what attention looks like.",
+        },
+        "visitor_night": {
+            "title": "Evening Visitor",
+            "template": "{visitor_name} came by at sunset. We watched the sky change colors together. Nobody said anything important. But the silence between us was the comfortable kind. The kind that means something.",
         },
     },
     DiaryEntryType.FEELING: {
@@ -191,6 +514,94 @@ ENTRY_TEMPLATES = {
             "title": "Maximum Coziness",
             "template": "Tucked my beak under my wing. Listened to the rain. Didn't move for hours. This is what ducks were made for. Pure, uninterrupted coziness.",
         },
+        "restless": {
+            "title": "Can't Settle Down",
+            "template": "My body wants to move. My brain wants to stop. They've compromised on fidgeting. I've paced the entire pond three times. No conclusions reached.",
+        },
+        "brave": {
+            "title": "I Was Brave Today",
+            "template": "Did something that scared me today. Won't say what. The point is I did it. And I'm still here. And the thing didn't eat me. Victory.",
+        },
+        "overwhelmed": {
+            "title": "Too Much",
+            "template": "Everything was a lot today. Too many sounds. Too many feelings. I retreated to the quiet part of the pond and just floated. Sometimes floating is enough.",
+        },
+        "determined": {
+            "title": "Today I Decided",
+            "template": "Woke up with purpose. Not sure what the purpose is yet. But the FEELING is there. Watch out, world. A duck with determination is a dangerous thing.",
+        },
+        "peaceful": {
+            "title": "Inner Calm",
+            "template": "Everything was still today. The water. The air. My thoughts. For once, my brain wasn't running a commentary. Just quiet. I didn't know I could be this quiet.",
+        },
+        "curious": {
+            "title": "Questions Upon Questions",
+            "template": "Spent the whole day wondering about things. Why is the sky blue? Why is water wet? Why do I care about bread so much? No answers. But the wondering was nice.",
+        },
+        "stubborn": {
+            "title": "I Refused",
+            "template": "Someone tried to get me to do something today. I declined. Firmly. With my whole body. Ducks are excellent at refusing. We just sit there. Powerfully.",
+        },
+        "hopeful": {
+            "title": "Something Good Is Coming",
+            "template": "I can't explain it. But today felt like the start of something. Not sure what. Could be good. Could be bread. Could be both. I'll wait and see.",
+        },
+        "lonely": {
+            "title": "The Pond Felt Big Today",
+            "template": "My human wasn't here today. The pond felt bigger without them. Emptier. I paddled to every corner. All of them were just water. None of them were company.",
+        },
+        "relieved": {
+            "title": "Crisis Averted",
+            "template": "Something almost went wrong today. It didn't. The relief is physical. My feathers unclenched. I didn't know feathers could clench. They can. They did. It's over now.",
+        },
+        "mischievous": {
+            "title": "I Caused Problems",
+            "template": "Did something I shouldn't have today. On purpose. It was minor. Nobody was hurt. But I felt alive. Mischief is a vitamin. I needed my daily dose.",
+        },
+        "grateful_quiet": {
+            "title": "Grateful (Quietly)",
+            "template": "I'm grateful today but I don't want to make a thing of it. Just. The pond is here. Bread exists. My human exists. Some days that's enough. Most days that's everything.",
+        },
+        "confused": {
+            "title": "Nothing Makes Sense",
+            "template": "I don't understand anything today. Not the weather. Not the water. Not my own feelings. Everything is a mystery. I am a mystery. At least mysteries are interesting.",
+        },
+        "accomplished": {
+            "title": "I Did a Thing",
+            "template": "Did something today that I've been avoiding. It was small. It was hard. But I did it. And now it's done. And I'm sitting in the feeling of having done it. Not bad. Not bad at all.",
+        },
+        "worried": {
+            "title": "Something Feels Off",
+            "template": "Can't place it. Something in the air. Something in the water. Something in me. A worry without a name. I'll carry it around until it tells me what it is. Or until it leaves.",
+        },
+        "silly_mood": {
+            "title": "Chaos Mode",
+            "template": "Woke up unhinged today. Quacked at nothing. Ran in a circle. Splashed water at the sky. Sometimes the body just decides it's having a moment. I let it have its moment.",
+        },
+        "tender": {
+            "title": "Something Soft",
+            "template": "I felt something soft today. Not physically. Inside. A warmth that came from nowhere and settled in my chest. I don't know what triggered it. Maybe nothing. Maybe everything.",
+        },
+        "defiant": {
+            "title": "I Said No",
+            "template": "Stood my ground today. About what doesn't matter. What matters is I stood it. Firmly. With my whole body. Being small doesn't mean being movable.",
+        },
+        "wistful": {
+            "title": "What If",
+            "template": "Caught myself thinking about what ifs today. What if the pond were bigger. What if I could fly. What if things were different. They're not. And that's okay. But the wondering is sweet.",
+        },
+        "content_deeply": {
+            "title": "Deep Contentment",
+            "template": "Not happy exactly. Not excited. Something deeper. Like the pond when there's no wind. Still all the way down. Content in a way that doesn't need to announce itself.",
+        },
+        "surprised": {
+            "title": "Did Not See That Coming",
+            "template": "Something unexpected happened today. Won't say what. But my face did a thing. A surprised thing. I don't like being surprised. But this surprise was okay. This one I'll keep.",
+        },
+        "at_peace": {
+            "title": "The Rare Quiet",
+            "template": "For one moment today, everything was quiet. Outside and inside. No thoughts. No worries. No hunger. Just existing. It lasted maybe five seconds. It was the longest five seconds of my life.",
+        },
     },
     DiaryEntryType.WEATHER: {
         "perfect_day": {
@@ -204,6 +615,83 @@ ENTRY_TEMPLATES = {
         "first_frost": {
             "title": "The Pond Almost Froze!",
             "template": "ICE on the pond this morning! Just at the edges. I skated on it. By accident. It was terrifying and also the most fun I've had all week.",
+        },
+        "heatwave": {
+            "title": "Too Hot to Function",
+            "template": "It was SO hot today. I just lay in the water and melted. Not literally. But close. My brain turned off around noon. It came back at sunset. I think.",
+        },
+        "gentle_rain": {
+            "title": "Soft Rain Day",
+            "template": "Light rain all day. Not angry rain. Gentle rain. The kind that makes the pond ripple softly. I sat in it and felt... held. By the weather. Don't judge me.",
+        },
+        "wind_day": {
+            "title": "The Wind Had Opinions",
+            "template": "The wind was RELENTLESS today. Rearranged every feather I had. I looked like a different duck by evening. The wind is a stylist I didn't hire.",
+        },
+        "fog_thick": {
+            "title": "Disappeared in Fog",
+            "template": "The fog was so thick today I couldn't see the edge of the pond. For all I knew, the pond went on forever. Just me, floating in infinite grey. It was oddly peaceful.",
+        },
+        "thunderstorm": {
+            "title": "The Sky Had a Tantrum",
+            "template": "Thunder. Lightning. The full production. The sky went all out today. I hid in the reeds and pretended it was a tactical retreat. It was fear. But tactical fear.",
+        },
+        "rainbow_day": {
+            "title": "The Sky Apologized",
+            "template": "A rainbow after the storm. The sky's way of saying sorry. Apology accepted. The colors were genuine. I could tell. Ducks have an eye for sincerity.",
+        },
+        "spring_rain": {
+            "title": "Spring's First Rain",
+            "template": "The first warm rain of the season. Every drop a tiny hello from the sky. The pond danced with ripples. I danced too. Nobody saw. That's the point.",
+        },
+        "autumn_wind": {
+            "title": "The Autumn Wind",
+            "template": "The wind smelled different today. Like endings. But also like the thing that comes after endings. My feathers pointed east. I don't know what's east. But the wind does.",
+        },
+        "snow_silence": {
+            "title": "Everything Went Quiet",
+            "template": "Snow fell and the world went silent. Every sound muffled. Padded. Like the earth was sleeping and we were walking on its blanket. I whispered. Even my quack was gentle.",
+        },
+        "sun_after_rain": {
+            "title": "The Steam",
+            "template": "Sun came out right after rain. The ground steamed. The pond steamed. I steamed. Everything releasing something. Letting go of the wet. It looked like the world was breathing.",
+        },
+        "lightning_close": {
+            "title": "That Was Close",
+            "template": "Lightning hit something nearby. I felt it in the water. In my feet. In my chest. For one second the whole world was white. Then it was dark. Then it was normal. That second though.",
+        },
+        "golden_morning": {
+            "title": "Gilded",
+            "template": "The morning light today was gold. Not orange. Not yellow. GOLD. Like the world was expensive for an hour. Like everything cost more. Including me. Especially me.",
+        },
+        "starry_night": {
+            "title": "More Stars Than Usual",
+            "template": "More stars tonight than I've ever seen. Someone added extra. I tried to count. Got to twelve. Lost track. Started over. Got to twelve again. Maybe there are only twelve.",
+        },
+        # ── Round 3: More weather entries ──────────────────────────────
+        "hail_day": {
+            "title": "The Sky Threw Things",
+            "template": "Ice fell from the sky today. Small ice. Angry ice. The sky is throwing things at me specifically. I did nothing wrong. That it knows about.",
+        },
+        "wind_change": {
+            "title": "The Wind Changed Direction",
+            "template": "Wind was blowing east all morning. Then it stopped. Then it blew west. The wind changed its mind. Relatable. I change my mind about which side of the pond to sit on at least four times a day.",
+        },
+        "warm_spell": {
+            "title": "Unexpectedly Warm",
+            "template": "Too warm for the season. The sun is overachieving. I'm not complaining. I don't complain about warmth. But I am noting it. For the record. Officially warm.",
+        },
+        "drizzle": {
+            "title": "Almost Rain",
+            "template": "Not rain. Almost rain. The air is wet but noncommittal. Make a decision, sky. Either rain or don't. This in-between is stressful.",
+        },
+        "frost_pattern": {
+            "title": "Ice Art",
+            "template": "Frost on everything this morning. Patterns. Fractals. The cold made art overnight while I slept. I contributed nothing and yet I feel proud. By association.",
+        },
+        "windy_feathers": {
+            "title": "Wind Took a Feather",
+            "template": "The wind stole one of my feathers today. Just took it. Off my body. Into the sky. I watched it go. That's MY feather. But also. It looked good up there. Flying. One of us finally made it.",
         },
     },
 }
