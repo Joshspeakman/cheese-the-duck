@@ -4567,6 +4567,10 @@ class Game:
         else:
             self.exploration = ExplorationSystem()
 
+        # Sync atmosphere biome with exploration's current area
+        if self.exploration.current_area:
+            self.atmosphere.set_current_biome(self.exploration.current_area.biome.value)
+
         # Load materials inventory
         if "materials" in data:
             self.materials = MaterialInventory.from_dict(data["materials"])
@@ -5872,6 +5876,9 @@ class Game:
         result = self.exploration.travel_to(area)
 
         if result.get("success"):
+            # Switch atmosphere to this biome's independent weather
+            self.atmosphere.set_current_biome(area.biome.value)
+
             # Show area art and description
             from world.exploration import get_area_art
             art_lines = get_area_art(area.name)
