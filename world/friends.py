@@ -270,7 +270,7 @@ VISITOR_ANIMATION_STATES = {
 
 # Visitor animation timing
 VISITOR_ANIMATION_SPEED = 0.5  # Seconds per frame (faster animation)
-VISITOR_DIALOGUE_INTERVAL = 6.0  # Seconds between random dialogue
+VISITOR_DIALOGUE_INTERVAL = 15.0  # Seconds between random dialogue
 VISITOR_MOVE_INTERVAL = 1.2  # Seconds between position changes (faster movement)
 
 

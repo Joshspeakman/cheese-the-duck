@@ -1063,7 +1063,7 @@ AREA_EVENTS: Dict[str, List[AreaEvent]] = {
             id="sr_artifact", area="Sunken Ruins",
             name="Ancient Artifact",
             message="*finds old cup* This cup is ANCIENT. Probably priceless. "
-                    "Probably cursed. I'm keeping it. If I turn into a frog "
+                    "Probably enchanted. I'm keeping it. If I turn into a frog "
                     "that's future me's problem.",
             effects={"fun": 18}, mood_change=10, probability=0.02,
             has_animation=True, animation_id="found_shiny",
@@ -1081,7 +1081,7 @@ AREA_EVENTS: Dict[str, List[AreaEvent]] = {
             id="sr_ancient_trap", area="Sunken Ruins",
             name="Ancient Trap",
             message="*step* *click* ...Was that a trap? Did I just trigger an ancient trap? "
-                    "Nothing happened. Either the trap broke or I'm already cursed. "
+                    "Nothing happened. Either the trap broke or I'm just lucky. "
                     "Probably fine.",
             effects={"fun": -5, "energy": -3}, mood_change=-4, probability=0.04,
         ),

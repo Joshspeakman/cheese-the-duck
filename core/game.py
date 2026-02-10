@@ -3040,19 +3040,23 @@ class Game:
         self._update_visitor_interactions(current_time)
 
         # Check for random events (every 10 seconds)
+        # Skip events during active guest conversations so they don't overlap
+        _in_guest_convo = bool(getattr(self, '_active_guest_conversation', None)) or bool(self._pending_visitor_comment)
         if current_time - self._last_event_check >= 10:
-            self._check_events()
+            if not _in_guest_convo:
+                self._check_events()
 
-            # Chance for ambient event (peaceful atmosphere)
-            ambient = self.progression.get_ambient_event(chance=0.02)
-            if ambient:
-                self._show_message_if_no_menu(ambient, duration=3.0, category="event")
+                # Chance for ambient event (peaceful atmosphere)
+                ambient = self.progression.get_ambient_event(chance=0.02)
+                if ambient:
+                    self._show_message_if_no_menu(ambient, duration=3.0, category="event")
 
             self._last_event_check = current_time
 
         # Check for area-specific events (every 15 seconds)
         if current_time - self._last_area_event_check >= 15:
-            self._check_area_events()
+            if not _in_guest_convo:
+                self._check_area_events()
             self._last_area_event_check = current_time
 
         # Check for spontaneous travel (every 30 seconds)
@@ -3063,8 +3067,8 @@ class Game:
         # Random contextual duck comments (every ~45 seconds when idle)
         if current_time - self._last_random_comment_time >= self._random_comment_interval:
             if not self._duck_traveling and not self._duck_exploring and not self._duck_building:
-                # 25% chance to make a contextual comment
-                if random.random() < 0.25:
+                # 25% chance to make a contextual comment (skip during guest conversations)
+                if random.random() < 0.25 and not _in_guest_convo:
                     self._make_contextual_comment()
             self._last_random_comment_time = current_time
 
@@ -3257,7 +3261,7 @@ class Game:
         # Check for random dialogue from visitor
         dialogue = visitor_animator.get_random_dialogue(self.duck.name, current_time)
         if dialogue:
-            self._show_message_if_no_menu(dialogue, duration=5.0, category="friend")
+            self._show_message_if_no_menu(dialogue, duration=8.0, category="friend")
             
             # Schedule Cheese's response to the visitor's dialogue
             # friend.personality may be an enum, so convert to string
@@ -3274,21 +3278,21 @@ class Game:
                 if convo and convo.exchanges:
                     self._active_guest_conversation = convo
                     self._guest_convo_index = 0
-                    self._guest_convo_next_time = current_time + 6.0
+                    self._guest_convo_next_time = current_time + 10.0
                     # Show first guest line
                     exchange = convo.exchanges[0]
                     self._show_message_if_no_menu(
-                        f"{friend.name}: {exchange.guest_line}", duration=5.0, category="friend"
+                        f"{friend.name}: {exchange.guest_line}", duration=8.0, category="friend"
                     )
                     self._pending_visitor_comment = f"{self.duck.name}: {exchange.cheese_response}"
-                    self._pending_visitor_comment_time = current_time + 5.5
+                    self._pending_visitor_comment_time = current_time + 9.0
                     self._guest_convo_index = 1
             else:
                 duck_response = self.contextual_dialogue.get_conversation_response(personality)
                 if duck_response:
                     # Schedule response after visitor finishes talking
                     self._pending_visitor_comment = f"{self.duck.name}: {duck_response}"
-                    self._pending_visitor_comment_time = current_time + 5.5  # After visitor's message duration
+                    self._pending_visitor_comment_time = current_time + 9.0  # After visitor's message duration
         
         # Continue active scripted conversation
         if getattr(self, '_active_guest_conversation', None):
@@ -3300,17 +3304,17 @@ class Game:
                 friend_obj = self.friends.get_friend_by_id(self.friends.current_visit.friend_id)
                 fname = friend_obj.name if friend_obj else "Visitor"
                 self._show_message_if_no_menu(
-                    f"{fname}: {exchange.guest_line}", duration=5.0, category="friend"
+                    f"{fname}: {exchange.guest_line}", duration=8.0, category="friend"
                 )
                 self._pending_visitor_comment = f"{self.duck.name}: {exchange.cheese_response}"
-                self._pending_visitor_comment_time = current_time + 5.5
+                self._pending_visitor_comment_time = current_time + 9.0
                 # Apply mood/friendship effects
                 if exchange.mood_effect and self.duck:
                     self.duck.needs.fun = min(100, max(0, self.duck.needs.fun + exchange.mood_effect))
                 if exchange.friendship_bonus and friend_obj:
                     friend_obj.friendship_points += int(exchange.friendship_bonus)
                 self._guest_convo_index = idx + 1
-                self._guest_convo_next_time = current_time + 12.0  # Wait before next exchange
+                self._guest_convo_next_time = current_time + 20.0  # Wait before next exchange
             elif idx >= len(convo.exchanges):
                 self._active_guest_conversation = None  # Conversation complete
         
