@@ -172,6 +172,18 @@ FOODIE_DIALOGUE = {
         D("*peacefully* Food tastes like gratitude now. Gratitude is a good flavor.", ConversationPhase.MAIN, "best_friend"),
         D("*genuinely* I cooked without tasting. Because I trust myself now. Trust.", ConversationPhase.MAIN, "best_friend"),
         D("*warmly* My favorite meal is any meal with you. Any. Favorite.", ConversationPhase.MAIN, "best_friend"),
+
+        # Additional main lines
+        D("I rate days by their best meal. Today hasn't peaked yet. But potential.", ConversationPhase.MAIN, "stranger"),
+        D("*inspects bread* This bread has character. The character is 'stale.' Still good.", ConversationPhase.MAIN, "stranger"),
+        D("I dream about meals I haven't had yet. Future dining. Advanced technique.", ConversationPhase.MAIN, "stranger"),
+        D("*quietly* I keep a ranking of every meal I've ever had. Number one is toast. Surprised?", ConversationPhase.MAIN, "acquaintance"),
+        D("Fermentation is just food being patient. I respect that. I am not patient.", ConversationPhase.MAIN, "acquaintance"),
+        D("Cooked something and thought of you. The something burned. But the thought was warm.", ConversationPhase.MAIN, "friend"),
+        D("*admits* I stress-bake. The bread absorbs anxiety. Then I eat the anxiety. Circle of life.", ConversationPhase.MAIN, "friend"),
+        D("Food used to be everything. Now it's just the second-best part of my day. You're first.", ConversationPhase.MAIN, "close_friend"),
+        D("I shared my secret ingredient with you. The ingredient is 'too much butter.' Revolutionary.", ConversationPhase.MAIN, "close_friend"),
+        D("*genuinely* You taught me that not every hunger is about food. Some hungers are about belonging.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -220,6 +232,15 @@ FOODIE_DIALOGUE = {
         D("*genuinely* From emotional eater to emotionally fed. Progress.", ConversationPhase.STORY, "best_friend"),
         D("*warmly* Remember our first meal together? I made too much. On purpose.", ConversationPhase.STORY, "best_friend"),
         D("*peacefully* The story of us. Told in meals. Every chapter delicious.", ConversationPhase.STORY, "best_friend"),
+
+        # Additional story lines
+        D("I once ate an entire cake meant for twelve ducks. The cake was worth the shame.", ConversationPhase.STORY, "acquaintance"),
+        D("*flatly* Found a berry I'd never seen before. Ate it. Spent three days regretting it. Would eat again.", ConversationPhase.STORY, "acquaintance"),
+        D("There was a grandmother duck who taught me to bake. Her recipe was just feelings. No measurements.", ConversationPhase.STORY, "friend"),
+        D("*quietly* I ate alone for a whole season once. Every meal tasted like sadness. Sadness is bland.", ConversationPhase.STORY, "friend"),
+        D("The first time I cooked for someone I loved and they smiled... that was the real recipe.", ConversationPhase.STORY, "close_friend"),
+        D("*pauses* I threw away food once. Intentionally. To prove it didn't control me. It did. But I tried.", ConversationPhase.STORY, "close_friend"),
+        D("Our first shared meal was unremarkable. Bread and water. But I remember every crumb.", ConversationPhase.STORY, "best_friend"),
     ],
 
     # ========== PERSONAL ==========
@@ -249,6 +270,14 @@ FOODIE_DIALOGUE = {
         D("*quietly* I nourish my heart with your love. Nourish.", ConversationPhase.PERSONAL, "best_friend"),
         D("I don't need to eat my feelings. I have you. Have.", ConversationPhase.PERSONAL, "best_friend"),
         D("*genuinely* Thank you for feeding my soul. Fed.", ConversationPhase.PERSONAL, "best_friend"),
+
+        # Additional personal lines
+        D("I feed others because I couldn't feed the emptiness inside. Others are easier.", ConversationPhase.PERSONAL, "friend"),
+        D("*admits* My relationship with food is a conversation. It's not always a healthy one.", ConversationPhase.PERSONAL, "friend"),
+        D("The table I set for others is always full. The one I set for myself is empty.", ConversationPhase.PERSONAL, "close_friend"),
+        D("*quietly* You sat at my table when nobody else would. That changed the menu forever.", ConversationPhase.PERSONAL, "close_friend"),
+        D("For the first time, I'm not eating to fill a void. I'm eating to celebrate being alive.", ConversationPhase.PERSONAL, "best_friend"),
+        D("You nourished something that bread never could. The metaphor works. Don't question it.", ConversationPhase.PERSONAL, "best_friend"),
     ],
 
     # ========== ACTIVITY ==========
@@ -292,6 +321,15 @@ FOODIE_DIALOGUE = {
         D("Let's feed each other's souls. Souls need feeding too. Apparently.", ConversationPhase.ACTIVITY, "best_friend"),
         D("*warmly* An unforgettable meal. Made with love. Love tastes good.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Let's go somewhere we've never eaten. New flavors. New memories.", ConversationPhase.ACTIVITY, "best_friend"),
+
+        # Additional activity lines
+        D("Want to blind taste-test pond water from different spots? Science. Delicious science.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Let's rate every blade of grass by flavor. I've already started. This one's a seven.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Recipe exchange. You share yours, I'll judge. Gently. Probably.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Let's have a crumb trail adventure. I leave crumbs, you follow. It leads to more crumbs.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Let's cook without a recipe. Wing it. Literally. Cooking with wings.", ConversationPhase.ACTIVITY, "friend"),
+        D("Teach me to enjoy a meal slowly. Slowly is hard. I usually inhale.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's just sit at the water's edge and share one perfect bite. One. That's growth.", ConversationPhase.ACTIVITY, "close_friend"),
     ],
 
     # ========== CLOSING ==========

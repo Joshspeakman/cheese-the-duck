@@ -363,6 +363,15 @@ def _get_neglect_complaint(need_name: str) -> str:
             "Remember food? I remember food. Good times.",
             "*staring at nothing* I used to eat. Those were the days.",
             "My stomach is filing a formal complaint. I support it.",
+            "bread. just... bread. one piece. I'm not asking for much.",
+            "*licks empty bowl* There's a ghost of flavor here. It's fading.",
+            "the bowl is empty. the bowl is ALWAYS empty. this is a pattern.",
+            "*lying next to bowl* We're bonding. Me and the emptiness.",
+            "I'm not STARVING. I'm just... involuntarily fasting. Very spiritual.",
+            "*stares at you eating* Oh don't mind me. I'll just PHOTOSYNTHESIZE.",
+            "my organs are having a meeting. the agenda is you.",
+            "*pushes bowl toward you* Subtle enough? No? *pushes harder*",
+            "I dreamed about bread last night. It was warm. I woke up betrayed.",
         ],
         "energy": [
             "*barely standing* I'm not tired. I'm conserving energy. Strategically.",
@@ -370,6 +379,15 @@ def _get_neglect_complaint(need_name: str) -> str:
             "My legs have opinions about standing. Negative ones.",
             "Sleep is for the weak. I am... currently weak.",
             "*lies down* Just resting my eyes. And legs. And everything.",
+            "*wobbles* Gravity is stronger today. That's science. Look it up.",
+            "I blinked and lost forty minutes. Very efficient nap. Not a nap.",
+            "*head drooping* I'm nodding. In agreement. With... the ground.",
+            "my eyelids weigh seven pounds each. I measured.",
+            "*falls over* I MEANT to do that. It's a new position. Very avant-garde.",
+            "consciousness is a spectrum. I'm on the dim end.",
+            "*standing with eyes closed* still here. technically.",
+            "I could sleep standing up. I'm about to prove it.",
+            "every feather is individually exhausted. they told me.",
         ],
         "fun": [
             "*staring into distance* ...the void stares back. It's bored too.",
@@ -377,6 +395,15 @@ def _get_neglect_complaint(need_name: str) -> str:
             "Boredom is a state of mind. My mind is in that state.",
             "Entertainment? Never heard of her.",
             "*pokes ground repeatedly* This is my life now.",
+            "I made up a game. It's called Stare At Dirt. I'm winning.",
+            "*arranging pebbles* ...this is fine art. you wouldn't understand.",
+            "the wind changed direction. that was the most exciting thing today.",
+            "I tried to have fun. Independently. It did not go well.",
+            "*watching a leaf fall* ...riveting. truly. edge of my seat.",
+            "my brain is buffering. there's nothing to load.",
+            "*lying flat* I'm not bored. I'm meditating. On the meaninglessness.",
+            "a bug walked by earlier. I almost felt something.",
+            "*tapping beak on ground* making music. it's avant-garde. you wouldn't get it.",
         ],
         "cleanliness": [
             "*sniffs self* ...concerning. Very concerning.",
@@ -384,6 +411,15 @@ def _get_neglect_complaint(need_name: str) -> str:
             "Feathers should not make this sound when you touch them.",
             "*looks at reflection* I am unrecognizable. Possibly an improvement.",
             "There is a smell. It's me. I am the smell.",
+            "my feathers have formed an alliance with the mud. I am outnumbered.",
+            "*scratching* Something is living in me. We haven't been introduced.",
+            "I used to be orange. Now I'm... abstract.",
+            "the flies are following me. I have an entourage now.",
+            "*looking at pond* I want in. The pond does not want me in. Fair.",
+            "I've reached a new stage of dirty. Scientists would be interested.",
+            "*feathers matted* this is a LOOK. it's called despair chic.",
+            "I can taste the air around me. It tastes like regret. And grime.",
+            "a leaf stuck to me yesterday. It's part of me now. We're family.",
         ],
         "social": [
             "*talking to rock* You get me. You UNDERSTAND.",
@@ -391,6 +427,15 @@ def _get_neglect_complaint(need_name: str) -> str:
             "The silence is deafening. Also lonely. Mostly lonely.",
             "*quiet quack to self* Just checking the acoustics. Not sad.",
             "I'm not lonely. I'm INDEPENDENT. ...please come back.",
+            "*waving at cloud* ...it waved back. probably. hard to tell.",
+            "my shadow left. Even my SHADOW. that's a new low.",
+            "*talking to own reflection* At least you show up consistently.",
+            "I've been rehearsing conversations. Both sides. I'm very good at yours.",
+            "...hello? *echo* ...even the echo sounds disappointed.",
+            "*sitting by the path* not waiting. just... sitting. path-adjacent. coincidentally.",
+            "the spider in the corner has better social skills than me now.",
+            "I said good morning to a puddle. The puddle said nothing. Typical.",
+            "*preening alone* this used to be a group activity. allegedly.",
         ],
     }
     options = complaints.get(need_name, ["...something is wrong."])
@@ -405,6 +450,15 @@ SICKNESS_MESSAGES = [
     "*weak quack* I've been better. I've also been worse. But not recently.",
     "*curled up* This is a STRATEGIC position. For... warmth. And dignity.",
     "*coughs* My feathers are staging a rebellion. I don't blame them.",
+    "*lying on side* The ground is cold. I am cold. We match.",
+    "*sneezes* my immune system has filed for resignation.",
+    "*wrapped in own wings* I am a burrito of misery. A misery-rito.",
+    "*teeth chattering* ducks don't have teeth. that's how sick I am.",
+    "I think my bill is running. Not running away. The other kind. Unfortunately.",
+    "*groans* I can feel every individual feather and they all hurt.",
+    "*staring at ceiling* the ceiling is spinning. or I am. Either way. Bad.",
+    "*very quiet* ...I'm fine. I'm FINE. *immediately not fine*",
+    "*huddled* my body has declared a state of emergency. I agree with my body.",
 ]
 
 SICK_ONGOING_MESSAGES = [
@@ -413,6 +467,13 @@ SICK_ONGOING_MESSAGES = [
     "*shivers* The pond looks cold. Everything looks cold.",
     "*barely moves* I had plans today. They've been cancelled. By my body.",
     "*weak stare* Don't look at me like that. I'm MANAGING.",
+    "*coughs weakly* ...still here. unfortunately. for both of us.",
+    "*one eye open* Has the world improved? No? Wake me when it does.",
+    "*shivers* my feathers are not doing their ONE JOB.",
+    "*lying flat* this is day... I've lost count. of being a pancake.",
+    "*very still* I'm conserving energy. For what? Unclear. But I'm conserving it.",
+    "*quiet wheeze* the pond called. I told it I'm indisposed.",
+    "*tucked into ball* I've achieved perfect aerodynamics. For lying still.",
 ]
 
 MEDICINE_MESSAGES = [
@@ -421,12 +482,26 @@ MEDICINE_MESSAGES = [
     "*swallows reluctantly* I'm not THANKING you. I'm just... less horizontal now.",
     "*shudders* That was the worst thing I've ever consumed. And I've eaten pond algae.",
     "*blinks* ...huh. The world is less terrible. The medicine gets partial credit.",
+    "*gags* who MADE this. I want to speak to the manufacturer. ...but also more please.",
+    "*licks bill* ...vile. repulsive. my body says thank you. I do NOT.",
+    "*stands up slowly* oh. I have legs again. They work. Mildly impressive.",
+    "*shakes head* that tasted like revenge. But revenge that WORKS, so. Fine.",
+    "*stretches cautiously* ...things hurt less. I'm not GRATEFUL. I'm just... observational.",
+    "*looks at medicine suspiciously* ...what was IN that. Actually don't tell me. I felt hope for a second.",
+    "*swallows* I've had worse. Actually no. That was the worst. But I'm vertical now so.",
 ]
 
 COAX_PROGRESS_MESSAGES = [
     "*rustling from hiding spot* ...go away. ({remaining} more visits needed)",
     "*you hear a quiet quack* ...I'm not here. ({remaining} more visits)",
     "*one eye visible* ...you came back. ...whatever. ({remaining} more visits)",
+    "*shuffling sounds* ...I can hear you breathing. Stop it. ({remaining} more visits)",
+    "*feather pokes out from hiding spot* ...that's not me. That's a different feather. ({remaining} more visits)",
+    "*muffled* I LIVE here now. This is my home. The dark is my friend. ({remaining} more visits)",
+    "*quiet* ...you're still trying? ...huh. ({remaining} more visits)",
+    "*barely audible* ...it's warm in here. And safe. From YOU. ({remaining} more visits)",
+    "*small sigh from hiding spot* ...fine. You showed up. Noted. ({remaining} more visits)",
+    "*one foot visible, quickly retracted* ...no. not yet. ({remaining} more visits)",
 ]
 
 COAX_SUCCESS_MESSAGES = [
@@ -434,6 +509,14 @@ COAX_SUCCESS_MESSAGES = [
     "*cautiously waddles out* I wasn't hiding. I was... exploring. Vertically.",
     "*appears* ...don't make a big deal out of this. I just got bored in there.",
     "*emerges looking disheveled* I'm back. Not because you asked. Because I CHOSE to.",
+    "*steps out, squinting* ...the light is aggressive. But less aggressive than loneliness.",
+    "*waddles out slowly* ...I ran out of things to count in there. That's all.",
+    "*emerges, dusting off feathers* ...the darkness was getting too agreeable. Concerning.",
+    "*one foot out, then the other* ...I'm doing this at MY pace. Don't rush me.",
+    "*comes out, sits immediately* ...I need a minute. That was a lot of... being away.",
+    "*appears, not making eye contact* ...you kept coming back. That's... noted. In the file.",
+    "*slowly emerges* ...you're persistent. Annoyingly. *quiet* ...thank you. For the annoyance.",
+    "*walks out with exaggerated casualness* Oh are you here? Hadn't noticed. I was busy. In the dark. Alone.",
 ]
 
 
@@ -446,6 +529,14 @@ COLD_SHOULDER_GREETINGS = [
     "...oh. it's you. I was just... not thinking about you. at all.",
     "*slow blink* I remember you. Vaguely. Like a bad dream.",
     "*sitting very still* Don't mind me. I'm practicing being a rock. Rocks don't get abandoned.",
+    "*glances, then away* ...oh. I thought you were the wind. Disappointing either way.",
+    "*adjusts feathers* I've been FINE. In case you were wondering. Which you clearly weren't.",
+    "*staring at pond* The pond is here every day. Very reliable. Unlike some.",
+    "...who? Oh. Right. You. The sometimes-person.",
+    "*examining own foot* This is more interesting than your arrival. And it's a foot.",
+    "*very deliberate yawn* oh. you. I was just about to not miss you.",
+    "*turns back to you* I've developed new interests. They're all wall-based.",
+    "*seated, immovable* I've put down roots. Metaphorical ones. Because I had to. Because YOU LEFT.",
 ]
 
 COLD_SHOULDER_IDLE = [
@@ -456,6 +547,13 @@ COLD_SHOULDER_IDLE = [
     "*picks at feathers* ...these grew back weird while you were away. probably fine.",
     "...",
     "*quiet quack to self* ...not talking to you. talking to the pond. the pond STAYED.",
+    "*rearranges pebbles* I have a system now. You're not part of it.",
+    "*sighs* the air tastes different when you're here. Worse. Probably.",
+    "*preening aggressively* I'm FINE. These are FINE feathers. I maintained them MYSELF.",
+    "*staring at sky* the clouds don't leave. Just saying. The CLOUDS.",
+    "*very still* I've been thinking. About things. None of them are you.",
+    "*scratches ground* I was drawing a map. Of places to be. That aren't here. With you.",
+    "*lying down facing away* not sleeping. Just resting. My tolerance for your presence.",
 ]
 
 COLD_SHOULDER_INTERACTION = [
@@ -464,6 +562,136 @@ COLD_SHOULDER_INTERACTION = [
     "...fine. but don't think this fixes everything.",
     "*minimal acknowledgment* ...registered. barely.",
     "*sighs* ...you're trying. I see that. I'm choosing to be unimpressed.",
+    "*takes it* ...this doesn't mean we're OKAY. This means I'm hungry. There's a difference.",
+    "*eats without enthusiasm* ...adequate. Not GOOD. Adequate. Don't get excited.",
+    "*slight nod* ...noted. Filed under: too little, debatably too late.",
+    "*accepts, turns away immediately* ...I didn't enjoy that. My stomach did. We disagree.",
+    "...I'll allow it. This once. Don't make it a habit. The allowing, I mean.",
+    "*stares at offering, then at you, then takes it* ...this proves nothing.",
+    "*takes it very slowly* ...you're buying time. I'm aware. *chews* ...it's working. Slightly.",
+]
+
+
+# ── Trust change dialogue ───────────────────────────────────────────────
+
+TRUST_GAIN_MESSAGES = {
+    "distant": [
+        "*flinches less* ...you're still here. Noted.",
+        "*watches from far away* ...you didn't leave yet. Weird.",
+        "...I see you. I'm choosing not to flee. That's PROGRESS.",
+        "*very still* ...you brought food. Okay. Okay. I'll remember that.",
+        "*suspicious stare* ...what's your angle. Everyone has an angle.",
+    ],
+    "wary": [
+        "*steps slightly closer* ...don't read into this.",
+        "I know your footsteps now. Not because I LISTEN for them.",
+        "...you're consistent. I'll give you that. Nothing else. But that.",
+        "*allows eye contact* ...brief. Very brief. Don't get used to it.",
+        "*quiet* ...you came back again. Statistically notable at this point.",
+    ],
+    "familiar": [
+        "*sits nearby* ...this distance is acceptable. Don't close it.",
+        "I've memorized your schedule. For SECURITY purposes.",
+        "*almost smiles* ...no. That was a beak twitch. Medical condition.",
+        "...you're becoming a habit. I don't love habits. But I don't hate this one.",
+        "*waddles a bit closer* ...the wind pushed me. Very strong wind. Directional.",
+    ],
+    "friendly": [
+        "*sits next to you* ...the other spots were taken. By... ghosts.",
+        "I saved you a spot. By the pond. Not because I WANTED to. The geometry was optimal.",
+        "*quiet quack* ...that was a greeting. Don't let it go to your head.",
+        "you're... okay. As far as large non-duck creatures go. Acceptable.",
+        "*preens near you* ...parallel activity. Not TOGETHER. Just... adjacent.",
+    ],
+    "close": [
+        "*leans slightly toward you* ...the wind again. Very persistent wind.",
+        "I thought about you. Once. While you were gone. ONCE. That's the official count.",
+        "*quiet* ...I'm glad you're here. Don't quote me. I'll deny it.",
+        "...you know the thing where someone matters? Hypothetically. You'd hypothetically know.",
+        "*nuzzles, then stops* ...I was checking your temperature. You seem warm. Diagnostically.",
+    ],
+    "devoted": [
+        "*follows you* ...I'm going this direction anyway. Coincidence.",
+        "you make things less terrible. That's... the highest compliment I have.",
+        "*sits in your lap* ...body heat efficiency. Pure science. *stays*",
+        "*quiet* ...I trust you. There. I said it. The words tasted weird but I said them.",
+        "...if you left I would notice. Quickly. Not that I'm MONITORING.",
+    ],
+    "bonded": [
+        "*pressed against you* ...you're my person. I've decided. Unilaterally. Non-negotiable.",
+        "...I love you. In a duck way. Which is the best way. Obviously.",
+        "*very quiet* ...home isn't the pond. It's wherever you are. Don't make me say it again.",
+        "the world is large and cold and you make it small and warm. That's a fact. Not sentiment.",
+        "*nuzzles* I'd follow you anywhere. Except somewhere without bread. I have STANDARDS.",
+    ],
+}
+
+TRUST_LOSS_MESSAGES = {
+    "distant": [
+        "*backs away* ...I knew it. I KNEW it.",
+        "...I shouldn't have looked. Looking leads to hoping. Hoping leads to this.",
+        "*hides* ...the dark is honest. The dark doesn't promise things.",
+        "*very small* ...I am going to be a rock now. Rocks don't get disappointed.",
+        "*gone* ...",
+    ],
+    "wary": [
+        "*steps back* ...I was right to be careful.",
+        "...the distance was CORRECT. I should've kept it.",
+        "*retreating* ...trust is a loan. You defaulted.",
+        "*watching from far* ...I remember when I almost believed. Almost.",
+        "*quiet* ...walls going back up. They were down for maintenance. Maintenance is over.",
+    ],
+    "familiar": [
+        "*moves away slightly* ...I was getting comfortable. Mistake.",
+        "...ah. So this is the part where it stops being nice.",
+        "*pulls away* ...noted. Adjusting expectations downward.",
+        "I had you filed under 'reliable.' Refiling under 'pending.'",
+        "*sighs* ...I almost upgraded you. Almost. Bullet dodged.",
+    ],
+    "friendly": [
+        "*turns away* ...I thought we had something. Not SOMETHING something. But... a thing.",
+        "...you were on the good list. There's an eraser. I'm using it.",
+        "*quiet* ...this is why I have backup rocks to talk to.",
+        "I was going to share my bread stash location. Changed my mind. Forever.",
+        "*removes self from your vicinity* ...I need space. From you specifically.",
+    ],
+    "close": [
+        "*visibly hurt* ...oh. I see. I see how it is.",
+        "...I told you things. Private things. Duck things. And for what.",
+        "*quiet* ...I was going to say something nice today. It's been cancelled.",
+        "*curls up alone* ...the closer you get the more it hurts when you go.",
+        "I should've stayed a rock. Rocks were right. Rocks are always right.",
+    ],
+    "devoted": [
+        "*shaking* ...no. No no no. Not you. Not YOU.",
+        "...I gave you the whole duck. The WHOLE duck. And you just.",
+        "*very quiet* ...I don't have backup plans. I don't have backup anything. There was just you.",
+        "*curled up tight* ...I'm going to need a minute. Or a year. Unclear.",
+        "...how dare you. How DARE you. I was HAPPY. Do you know how RARE that is.",
+    ],
+    "bonded": [
+        "*shattered* ...you were my person. Were.",
+        "...the whole pond feels wrong. Everything feels wrong. You were the thing that was right.",
+        "*silent for a very long time* ...I don't have words for this. I have words for everything. But not this.",
+        "*hiding* ...I can't. I just. Can't.",
+        "...if home is a person then I'm homeless. That's not a metaphor. I'm under a bush.",
+    ],
+}
+
+
+# ── Recovery dialogue ───────────────────────────────────────────────────
+
+RECOVERY_MESSAGES = [
+    "*stretches* ...things are... less terrible. Marginally. Don't get smug.",
+    "*blinks* I can feel my feathers again. Individually. That's probably good.",
+    "...the pond looks blue today. Not grey. I'm not saying it's NICE. But it's blue.",
+    "*stands up straighter* ...my legs work. Both of them. At the same time. Personal best.",
+    "*looks around* ...huh. The world has colors. I forgot about those.",
+    "*eats slowly* ...this tastes like food again. Not like sadness. Improvement.",
+    "*quiet* ...I feel like myself. Or close to it. Close-ish. Cheese-adjacent.",
+    "*waddles experimentally* ...mobility. Restored. I'm not GRATEFUL. I'm... functional.",
+    "*preens carefully* ...the feathers are cooperating again. Truce declared.",
+    "*small quack* ...that sounded normal. Not sad. Just a quack. A regular quack. Huh.",
 ]
 
 
@@ -548,6 +776,18 @@ _DRIFT_THRESHOLD_LINES = {
     ("social_shy", 0): "...I missed... the noise. Not you. The noise.",
     ("playfulness", 0): "...maybe one game wouldn't hurt. A short one.",
     ("optimism", 0): "...things might be okay. Not great. Okay. I'll allow okay.",
+    ("independence", 60): "I don't need help. I don't need ANYTHING. I am a self-contained duck.",
+    ("independence", 0): "...maybe help isn't the worst thing. Maybe. Theoretically.",
+    ("brave_timid", -40): "*hiding behind rock* everything is scary and the rock agrees with me.",
+    ("brave_timid", 0): "...the world is less threatening today. Still threatening. But less.",
+    ("active_lazy", -40): "moving is a suggestion. I'm declining.",
+    ("active_lazy", 0): "...I walked today. On purpose. With my legs. Voluntarily.",
+    ("empathy", 0): "...are you okay? I'm not ASKING. I'm... surveying. Emotionally.",
+    ("playfulness", -60): "fun is a myth invented by optimists. I see through it.",
+    ("optimism", -60): "hope is just disappointment in a hat. I've seen through the hat.",
+    ("stubbornness", 0): "...I changed my mind. About one thing. ONE. Don't make a list.",
+    ("social_shy", -70): "*completely withdrawn* I am a solitary organism. Always was. Always will be.",
+    ("social_shy", 20): "*sits closer than usual* ...spatial coincidence. The physics worked out this way.",
 }
 
 

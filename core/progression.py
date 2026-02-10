@@ -33,6 +33,13 @@ STREAK_LOSS_MESSAGES = [
     "The {n}-day streak has ended, but Cheese is happy you're back!",
     "Your {n}-day streak ended... but every journey starts fresh!",
     "Cheese: 'I counted {n} days... where did you go?' :(",
+    "Cheese: '{n} days. gone. *stares at empty pond* ...whatever.",
+    "Cheese: 'I wasn't counting. it was {n} though. I checked.'",
+    "Cheese: 'the {n}-day thing is over. *preens feather* I'm FINE.'",
+    "Cheese: '{n} days meant nothing. *clutches bread* ...nothing.'",
+    "Cheese: 'oh. you're back. the {n}-day streak isn't. but sure.'",
+    "Cheese: '*sits in exact same spot* {n} days. I didn't move. no reason.'",
+    "Cheese: 'I saved you bread for {n} days. then I ate it. survival.'",
 ]
 
 # Streak recovery bonuses (incentive to return after losing streak)
@@ -41,13 +48,23 @@ STREAK_RECOVERY_DAYS = 3  # Days to earn a "recovery bonus"
 # Messages for streak milestones (celebratory)
 STREAK_CELEBRATION_MESSAGES = {
     3: "3 days! Cheese is starting to recognize you! *",
+    5: "* five days. *adjusts feathers* ...I guess you're consistent.",
     7: "* ONE WEEK STREAK! Cheese does a happy dance! d*",
+    10: "~ ten days. double digits. *looks away* ...don't make it weird.",
     14: "* TWO WEEKS! You and Cheese are becoming best friends!",
     21: "~ THREE WEEKS! Cheese gave you a special feather!",
     30: "* ONE MONTH! WOW! Cheese is SO HAPPY! d<3 DOUBLE XP UNLOCKED!",
+    40: "* forty days. *waddles in circle* I have NOT been tracking this. the calendar is for bread schedules.",
     50: "* FIFTY DAYS! Cheese made you a tiny crown! ^",
+    75: "~ seventy-five. *stares at pond* I wrote a poem. it's about bread. don't read into it.",
     100: "[#] ONE HUNDRED DAYS! LEGENDARY! Cheese will remember this forever! *",
+    150: "* one hundred fifty. *sits very still* I don't know what to say. so I'll say nothing. *",
+    200: "~ two hundred days. *pushes bread toward you* this is the FANCY bread. don't tell anyone.",
+    250: "* 250. a quarter thousand. *preens slowly* I have given you more time than bread. that is not small.",
     365: "* ONE YEAR WITH CHEESE! Eternal bond formed! d<3",
+    500: "[#] five hundred days. *long exhale* at this point we're legally family. duck law.",
+    730: "* two years. *very quiet quack* ...I don't have words. here. have all my bread. <3<3<3",
+    1000: "[#] one thousand days. *sits in sunbeam* you showed up a thousand times. nobody does that. NOBODY. *<3",
 }
 
 
@@ -62,6 +79,14 @@ SURPRISE_GIFT_MESSAGES = [
     "* A lucky find! *",
     "* Something special appeared! *",
     "* Cheese wants to share this with you! *",
+    "* Cheese: 'found this. *drops item* ...you can have it. I GUESS.'",
+    "[+] Cheese: 'I was sitting on this. literally. take it before I change my mind.'",
+    "* Cheese: '*pushes something toward you with beak* ...don't look at me.'",
+    "* Cheese: 'this fell from the sky. or I dug it up. details are unclear.'",
+    "[+] Cheese: 'I've been saving this. not FOR you. just... near you.'",
+    "* Cheese: 'here. *avoids eye contact* it's nothing. IT'S NOTHING.'",
+    "* Cheese: '*waddles over with something shiny* ...finders keepers but I'm sharing.'",
+    "* Cheese: 'you didn't see me find this. this interaction never happened.'",
 ]
 
 # Lucky events that can trigger randomly
@@ -93,6 +118,13 @@ TIME_GREETINGS = {
             "-*- *yawns* Oh! You're up early! Cheese is still sleepy...",
             "* The early bird gets the worm... but ducks get bread!",
             "* *stretches wings* Good morning, friend! Let's make today great!",
+            "-*- Cheese: '*one eye open* ...it's still dark. WHY is it still dark.'",
+            "* Cheese: 'the sun isn't even trying yet. respect.'",
+            "-*- Cheese: '*yawns so wide you can see yesterday's bread* ...morning.'",
+            "* Cheese: 'you're up before the bread. I don't understand you.'",
+            "-*- Cheese: 'dawn. the only hour where silence makes sense. *tucks beak*'",
+            "* Cheese: '*blinks slowly* I was having a dream about bread. you interrupted bread.'",
+            "-*- Cheese: 'the pond is still asleep. we should respect the pond.'",
         ]
     },
     "morning": {
@@ -101,6 +133,13 @@ TIME_GREETINGS = {
             "* Good morning! Cheese is ready for adventure!",
             "* *happy quack* A new day! What will we do today?",
             "B Morning! Is it breakfast time? It's always breakfast time!",
+            "* Cheese: 'morning. I've been awake for hours. *has bread crumbs on face* ...unrelated.'",
+            "* Cheese: 'oh good. you're here. I was about to do something important. *was staring at pond*'",
+            "B Cheese: 'the morning bread hits different. I don't make the rules.'",
+            "* Cheese: '*waddles over* I saved you a spot. by the bread. obviously.'",
+            "* Cheese: 'good morning. or as I call it. bread o'clock.'",
+            "* Cheese: '*preens aggressively* I woke up like this. FLAWLESS.'",
+            "* Cheese: 'another day another opportunity to sit near bread and judge things.'",
         ]
     },
     "afternoon": {
@@ -109,6 +148,13 @@ TIME_GREETINGS = {
             "* Good afternoon! Perfect time for a snack!",
             "*️ *waddles over* Hey! I was just thinking about you!",
             "o The day is going great! How about you?",
+            "* Cheese: 'afternoon. the sun is at peak judgment angle. *squints*'",
+            "* Cheese: '*lying flat on warm rock* I'm not lazy. I'm solar-powered.'",
+            "o Cheese: 'you're here. good. I was running out of things to stare at.'",
+            "* Cheese: 'the afternoon is bread's golden hour. everything tastes better now.'",
+            "* Cheese: '*slow waddle* I've been productive today. I judged three clouds.'",
+            "* Cheese: 'half the day gone. half the bread gone. coincidence? no.'",
+            "o Cheese: 'the pond called. it said come sit. who am I to argue with the pond.'",
         ]
     },
     "evening": {
@@ -117,6 +163,13 @@ TIME_GREETINGS = {
             "-*- Good evening! Time to wind down together.",
             "-*- *content sigh* Nothing like a relaxing evening with a friend.",
             "* The sunset is beautiful... almost as beautiful as bread!",
+            "-*- Cheese: 'evening. *tucks wings* the good part of the day. the sitting part.'",
+            "* Cheese: 'the sunset is nice I guess. *stares at it for forty minutes*'",
+            "-*- Cheese: '*quiet quack* the world gets softer at this hour. like fresh bread.'",
+            "* Cheese: 'evening bread is a ritual. I don't expect you to understand. but I hope you do.'",
+            "-*- Cheese: '*settles by the pond* the day is winding down. I approve of winding down.'",
+            "* Cheese: 'the light is golden and the bread is warm. what else is there.'",
+            "-*- Cheese: 'another evening together. *long pause* ...this is my favorite part.'",
         ]
     },
     "night": {
@@ -125,6 +178,13 @@ TIME_GREETINGS = {
             ") *sleepy quack* It's getting late... but I'm glad you're here.",
             "* The stars are out! Make a wish for more crumbs!",
             "* A night owl, huh? Cheese approves.",
+            ") Cheese: '*blinks slowly* the moon is out. it looks like a very round bread. ...I'm fine.'",
+            "* Cheese: 'night. the hour of deep thoughts. *thinks about bread*'",
+            ") Cheese: '*yawns* I should sleep. *doesn't sleep* ...anyway.'",
+            "* Cheese: 'the stars are out. each one is a tiny bread crumb in the sky. I believe this.'",
+            ") Cheese: 'still here? good. the dark is less dark with you. *tucks beak*'",
+            "* Cheese: 'nighttime is when the pond gets philosophical. don't ask.'",
+            ") Cheese: '*very quiet* the world is sleeping. we are not. *solidarity*'",
         ]
     },
     "late_night": {
@@ -133,6 +193,13 @@ TIME_GREETINGS = {
             ") *whispers* It's very late... but Cheese is always here for you.",
             "z Couldn't sleep? Me neither. Let's hang out.",
             "* The world is quiet, but our friendship is loud! ...that sounded cooler in my head.",
+            ") Cheese: '*whispers* why are we awake. this is a crime against sleep.'",
+            "z Cheese: 'the 3am bread hits different. it tastes like poor decisions and glory.'",
+            ") Cheese: '*one eye open* you're still here. I'm still here. we're both making choices.'",
+            "* Cheese: 'time isn't real at this hour. only bread is real.'",
+            ") Cheese: '*very small voice* ...I couldn't sleep either. don't tell anyone I said that.'",
+            "z Cheese: 'the world forgot about us at this hour. *quiet* ...I kind of like it.'",
+            ") Cheese: '*sits closer* late night means no one's watching. we can just... be. *'",
         ]
     },
 }
@@ -146,16 +213,37 @@ COMFORT_MESSAGES = {
         "You were gone! But Cheese is just happy you're back! <3",
         "I missed you! But I found some good crumbs while you were away.",
         "Welcome back, friend! Everything is better now!",
+        "Cheese: 'oh. you left. I NOTICED. *preens casually* ...welcome back.'",
+        "Cheese: 'gone a couple days. the bread kept me company. the bread always does.'",
+        "Cheese: '*waddles over slowly* ...I wasn't waiting by the pond. I was... inspecting it.'",
+        "Cheese: 'you're back. good. the pond was getting weird without you. not me. the pond.'",
+        "Cheese: '*looks up* oh hi. I definitely forgot you existed. *was clearly watching the door*'",
+        "Cheese: 'a few days. not long. *has tally marks scratched into dirt* ...those are unrelated.'",
+        "Cheese: 'back already? I was just getting used to the silence. *scoots closer*'",
     ],
     "time_away_medium": [  # 4-7 days away
         "It's been a while! Cheese thought about you every day. :(",
         "You came back! I knew you would! *happy waddle*",
         "Life was quiet without you... but now it's good again! <3",
+        "Cheese: 'a week-ish. *stares* I ate ALL the bread. stress eating. don't judge.'",
+        "Cheese: '*waddles over fast then slows down* I wasn't rushing. my legs just do that.'",
+        "Cheese: 'the pond asked about you. I told the pond to mind its business.'",
+        "Cheese: 'I reorganized my bread while you were gone. twice. ...I was bored. THAT'S ALL.'",
+        "Cheese: '*quiet* the days were longer without you. or maybe I just counted them more.'",
+        "Cheese: 'you're back. *exhales* I can stop pretending the rock was you now.'",
+        "Cheese: 'several days. I was FINE. *kicks over carefully arranged bread shrine* ...that was nothing.'",
     ],
     "time_away_long": [  # 8+ days away
         "You're back!! Cheese never gave up hope! <3<3<3",
         "*runs over* I MISSED YOU SO MUCH! Don't worry, I was okay!",
         "No matter how long you're gone, Cheese will always be here waiting. d<3",
+        "Cheese: '*sees you* *freezes* *very small quack* ...you came back.'",
+        "Cheese: 'I told myself you'd come back. *long pause* I was right. *trembles slightly*'",
+        "Cheese: '*pushes entire bread collection toward you* here. I saved it all. every crumb.'",
+        "Cheese: 'I'm not crying. ducks don't cry. *sits in pond* ...the water on my face is pond.'",
+        "Cheese: '*waddles over very slowly* ...I want to be mad but I'm just glad. don't tell anyone.'",
+        "Cheese: 'you were gone so long the seasons changed. but I didn't. *same spot* always here.'",
+        "Cheese: '*quiet* I practiced what I'd say when you came back. I forgot all of it. ...hi. <3'",
     ],
     "encouragement": [
         "You're doing great! Cheese is proud of you! *",
@@ -163,11 +251,25 @@ COMFORT_MESSAGES = {
         "Just being here makes Cheese happy! <3",
         "You're Cheese's favorite human! ...Don't tell the others.",
         "Thanks for taking care of me! You're the best! d",
+        "Cheese: 'you showed up. that's enough. that's always enough. *'",
+        "Cheese: '*nods slowly* you're doing fine. better than fine. *looks away*'",
+        "Cheese: 'I've seen a lot of pond water. you're better than all of it. ...that came out wrong.'",
+        "Cheese: 'hey. *taps your hand with beak* ...you're alright. don't let anyone say otherwise.'",
+        "Cheese: 'bread is the best thing in the world. you're a close second. CLOSE. <3'",
+        "Cheese: '*sits next to you quietly* some things don't need words. this is one of them. *'",
+        "Cheese: 'you exist and the pond is nice and bread is real. good day. ~'",
     ],
     "gentle_reminder": [
         "Cheese will always be here when you need a break! ~",
         "Take your time! No rush! Cheese is very patient. <3",
         "Remember: there's no wrong way to be a duck friend!",
+        "Cheese: 'go do your human things. I'll be here. *sits on bread* guarding.'",
+        "Cheese: 'you don't owe me anything. I mean it. ...but bread is always welcome.'",
+        "Cheese: 'the pond isn't going anywhere. I'm not going anywhere. take your time. ~'",
+        "Cheese: '*preens* rest if you need to. I'll keep the bread warm.'",
+        "Cheese: 'there's no rush. the bread waits. I wait. we're very patient things. <3'",
+        "Cheese: 'go. live. I'll stare at the pond and think deep thoughts until you're back.'",
+        "Cheese: '*tucks beak under wing* it's okay to step away. the good things stay. ~'",
     ],
 }
 
@@ -184,7 +286,129 @@ AMBIENT_EVENTS = [
     "*Birds sing softly in the distance*",
     "*A leaf drifts down gently*",
     "*Cheese takes a deep, contented breath*",
+    "*A dragonfly hovers over the pond, then zips away*",
+    "*Cheese tucks one foot up and balances perfectly*",
+    "*Ripples spread slowly across the still water*",
+    "*A cloud shaped vaguely like bread drifts overhead*",
+    "*Cheese watches a snail make its way across a rock*",
+    "*The grass sways in a rhythm only the wind knows*",
+    "*A frog croaks once from the far side of the pond*",
+    "*Cheese's reflection stares back from the water*",
+    "*Dandelion seeds float past like tiny parachutes*",
+    "*The air smells like rain that hasn't arrived yet*",
+    "*Cheese discovers a warm patch of sunlight and claims it*",
+    "*A fish jumps. Cheese pretends not to be impressed*",
+    "*Fallen petals drift across the surface of the pond*",
+    "*Cheese rearranges bread crumbs into a small pile*",
+    "*The shadows grow longer as the sun moves*",
+    "*A ladybug lands on Cheese's head. Cheese holds very still*",
+    "*Somewhere far away, a church bell rings*",
+    "*Cheese nibbles a blade of grass and immediately regrets it*",
+    "*The pond reflects the sky so perfectly it's hard to tell which is which*",
+    "*A warm gust carries the scent of wildflowers*",
+    "*Cheese closes both eyes. just for a moment. just because*",
+    "*Two leaves chase each other in a spiral down to the water*",
 ]
+
+# =============================================================================
+# LEVEL UP MESSAGES (Cheese reacts to growth)
+# =============================================================================
+
+LEVEL_UP_MESSAGES = {
+    "early": [  # Levels 1-5
+        "Cheese: '*looks at you* ...did something happen. you seem... more.'",
+        "Cheese: 'level up. *nods* I felt that. in my feathers.'",
+        "Cheese: 'you're growing. not literally. I HOPE not literally.'",
+        "Cheese: '*tilts head* huh. you're slightly less of a stranger now.'",
+        "Cheese: 'progress. *stares at pond* the pond doesn't level up. that's its problem.'",
+    ],
+    "mid": [  # Levels 6-15
+        "Cheese: '*preens approvingly* you're getting good at this. whatever THIS is.'",
+        "Cheese: 'another level. *pushes bread toward you* you've earned a crumb. ONE crumb.'",
+        "Cheese: 'I remember when you were small. level-wise. you were always that height.'",
+        "Cheese: '*nods slowly* not bad. for a human. *high praise from a duck*'",
+        "Cheese: 'you keep going up. I keep sitting here. we both have our strengths.'",
+        "Cheese: 'mid-level. the awkward teenage years. *stares* ...you'll get through it.'",
+    ],
+    "high": [  # Levels 16-30
+        "Cheese: '*quiet respect* ...you're actually serious about this. aren't you.'",
+        "Cheese: 'high level. *shares the GOOD bread* you've earned the crust.'",
+        "Cheese: 'at this point you know more about being a duck friend than most ducks.'",
+        "Cheese: '*impressed waddle* I don't impress easily. that was an impressed waddle.'",
+        "Cheese: 'the levels keep coming. you keep showing up. *soft quack* ...noted.'",
+        "Cheese: 'I'd write your name in the pond if water worked that way.'",
+    ],
+    "legendary": [  # Levels 31+
+        "Cheese: '*long stare* ...you're beyond levels now. you're a CONCEPT.'",
+        "Cheese: 'legendary. *places bread crown on your head* I dub thee. friend of duck.'",
+        "Cheese: 'I ran out of things to compare you to. you're past bread. PAST BREAD.'",
+        "Cheese: '*very still* at this level the pond bows to you. I've seen it.'",
+        "Cheese: 'they'll write stories about you. I'll quack them to the other ducks. *'",
+        "Cheese: '*sits in your shadow* some levels are just numbers. yours are monuments. <3'",
+    ],
+}
+
+# =============================================================================
+# COLLECTIBLE DISCOVERY MESSAGES
+# =============================================================================
+
+COLLECTIBLE_DISCOVERY_MESSAGES = [
+    "Cheese: '*drops item at your feet* ...found this. it's yours now. NO TAKEBACKS.'",
+    "Cheese: 'look. *pushes something shiny with beak* I've been sitting on it for warmth but you can have it.'",
+    "Cheese: '*waddles over with something in beak* I don't know what this is but it felt important.'",
+    "Cheese: 'the pond gave this to me. now I'm giving it to you. the cycle of things.'",
+    "Cheese: '*quietly places item nearby* that was in my collection. my PRIVATE collection. you're welcome.'",
+    "Cheese: 'found this under a rock. the rock didn't want it. its loss.'",
+    "Cheese: '*excited waddle that gets forcibly calmed down* ...oh. a thing. how. ordinary. *vibrating*'",
+    "Cheese: 'I wasn't looking for treasure. treasure was looking for ME. *adjusts feathers*'",
+    "Cheese: '*holds up item* is this rare? it feels rare. everything I touch becomes rare. that's science.'",
+    "Cheese: 'this was buried. I unburied it. some call that archaeology. I call it Wednesday.'",
+    "Cheese: '*very carefully places item down* ...I've been carrying this for a while. waiting for the right moment.'",
+    "Cheese: 'another discovery. at this rate I'll need a bigger pond. for the MUSEUM. *grand plans*'",
+]
+
+# =============================================================================
+# SEASON EVENT MESSAGES
+# =============================================================================
+
+SEASON_EVENT_MESSAGES = {
+    "spring": [
+        "Cheese: 'everything is blooming. *sneezes* ...I am not moved by flowers. *sneezes again*'",
+        "Cheese: '*watches ducklings* I was that small once. hard to believe. I was always this wise.'",
+        "Cheese: 'the pond is defrosting. like bread from the freezer. nature is beautiful.'",
+        "Cheese: '*sits among wildflowers* I'm not posing. the flowers grew around me. I've been here that long.'",
+        "Cheese: 'spring rain. *lets it hit beak* free bath. five stars.'",
+        "Cheese: 'new grass. new bugs. new bread opportunities. the season of POTENTIAL.'",
+        "Cheese: '*shakes off pollen* spring is the season of sneezing and rebirth. mostly sneezing.'",
+    ],
+    "summer": [
+        "Cheese: 'it's hot. *melts into pond* I am one with the water now.'",
+        "Cheese: '*lies flat in shade* summer is the season of horizontal living.'",
+        "Cheese: 'the bread dries faster in summer. this is a CRISIS.'",
+        "Cheese: '*squints at sun* we have an arrangement. it stays up there. I stay down here.'",
+        "Cheese: 'summer pond. warm water. *floats* I was born for this. literally.'",
+        "Cheese: 'the humans eat outside now. more bread falls. summer provides.'",
+        "Cheese: '*pants* it's fine. everything's fine. ducks are waterproof not heatproof.'",
+    ],
+    "autumn": [
+        "Cheese: '*watches leaf fall* ...dramatic. I respect it.'",
+        "Cheese: 'the bread matches the leaves now. golden. this is the best season for bread aesthetics.'",
+        "Cheese: '*fluffs feathers* getting my winter coat ready. fashion AND function.'",
+        "Cheese: 'autumn wind. *feathers ruffled* I didn't consent to this makeover.'",
+        "Cheese: '*sits on pile of leaves* this is my throne now. crunchy throne.'",
+        "Cheese: 'everything is falling. leaves. temperatures. my expectations. *deadpan stare*'",
+        "Cheese: 'the pond looks amber in autumn. like a giant bread puddle. I'm emotional.'",
+    ],
+    "winter": [
+        "Cheese: '*puffed up to twice normal size* I'm not fat. I'm INSULATED.'",
+        "Cheese: 'frozen bread is still bread. I will not be deterred by WEATHER.'",
+        "Cheese: '*stands on ice* this used to be my pool. now it's a floor. rude.'",
+        "Cheese: 'snow. frozen sky crumbs. *tastes it* ...not bread. every year I check.'",
+        "Cheese: '*tucks beak* winter is for sitting close and saying nothing. *scoots toward you*'",
+        "Cheese: 'the pond is a mirror now. I look good. *adjusts nothing* ...I always look good.'",
+        "Cheese: 'cold. very cold. *sits on your foot* ...for warmth. don't make it weird. <3'",
+    ],
+}
 
 
 class RewardType(Enum):

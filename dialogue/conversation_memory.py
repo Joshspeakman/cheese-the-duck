@@ -777,3 +777,77 @@ class ConversationMemory:
         mem.callbacks_queue = data.get("callbacks_queue", [])
         
         return mem
+
+
+# ============================================================
+# Callback Intro Templates - Cheese's deadpan voice
+# ============================================================
+
+CALLBACK_INTRO_TEMPLATES = {
+    "quote_recall": [
+        "you said \"{quote}\" once. I wrote it down. in my brain.",
+        "*stares* ...you told me \"{quote}.\" I remember everything.",
+        "fun fact. you once said \"{quote}.\" not sure you meant it.",
+        "I keep a mental file. under Q for quotes. you said \"{quote}.\"",
+        "your exact words were \"{quote}.\" ducks have EXCELLENT memory.",
+        "*flips through invisible notes* ah yes. \"{quote}.\" that was you.",
+        "you probably forgot you said \"{quote}.\" I did not.",
+        "I was thinking about when you said \"{quote}.\" just now. no reason.",
+        "somewhere in our history you stated \"{quote}.\" for the record.",
+        "*taps beak* \"{quote}.\" your words. not mine.",
+    ],
+    "topic_recall": [
+        "we've talked about {topic} a suspicious number of times.",
+        "*tilts head* {topic} again. you have patterns. I NOTICE patterns.",
+        "ah. {topic}. your favorite recurring theme.",
+        "you bring up {topic} a lot. like a LOT a lot.",
+        "*adjusts feathers* so. {topic}. we meet again.",
+        "I was going to bring up {topic} but you always beat me to it.",
+        "the {topic} saga continues. I should start keeping a tally.",
+        "*stares into the distance* {topic}. our old friend.",
+        "you and {topic}. name a more iconic duo. I'll wait.",
+        "every time you mention {topic} I add a mental tally mark. we're in double digits.",
+    ],
+    "unanswered_question": [
+        "you asked me \"{question}\" and I never answered. it's been bothering me.",
+        "*suddenly* wait. you once asked \"{question}\" and I just... didn't respond.",
+        "so about \"{question}\" — I've been thinking. PROCESSING. same thing.",
+        "remember when you asked \"{question}\"? I do. I had no answer then.",
+        "*clears throat* you asked \"{question}\" a while back. I owe you an answer.",
+        "I ghosted your question about \"{question}.\" not on purpose. probably.",
+        "that time you asked \"{question}\" and I went silent. that was THINKING.",
+        "you asked \"{question}\" once. I'm circling back. ducks are thorough.",
+    ],
+    "pattern_observation": [
+        "I've noticed you {pattern}. don't worry about it. or DO worry.",
+        "*squints* you {pattern}. consistently. I have DATA.",
+        "pattern detected. you {pattern}. this is just an observation.",
+        "so you {pattern}. every time. I find that... interesting.",
+        "I'm not judging but you {pattern}. ok maybe I'm judging a LITTLE.",
+        "fun behavioral note. you {pattern}. filed under: habits.",
+        "*pulls out invisible clipboard* subject {pattern}. noted.",
+        "you probably don't realize you {pattern}. but I see everything.",
+        "statistically speaking you {pattern}. the numbers don't lie.",
+        "you {pattern}. this is not a complaint. it's a REPORT.",
+    ],
+    "milestone_recall": [
+        "remember when {milestone}. I remember. I was there.",
+        "*stares wistfully* {milestone}. good times. or at least times.",
+        "we've come a long way since {milestone}. mostly you. I was already great.",
+        "*nods* {milestone}. a moment in our shared history.",
+        "thinking about when {milestone}. nostalgia is a weird feeling for a duck.",
+        "it was a big deal when {milestone}. I played it cool but I was impressed.",
+        "*adjusts feathers* {milestone}. seems like yesterday. or whenever it was.",
+        "I have a mental scrapbook and {milestone} is in it. the page is slightly crumpled.",
+    ],
+    "mood_observation": [
+        "you seem {mood} lately. I notice these things. occupational hazard.",
+        "*tilts head* you've been {mood}. I'm not a therapist but I have observations.",
+        "detecting {mood} energy. my readings are NEVER wrong.",
+        "you're giving {mood} vibes. ducks are very perceptive. it's a whole thing.",
+        "*looks at you sideways* {mood}. am I right. I'm right.",
+        "I've been picking up on some {mood} patterns from you. just saying.",
+        "your whole energy has been {mood} recently. I have a chart. in my head.",
+        "*concerned duck noises* you seem {mood}. not that I'm WORRIED or anything.",
+    ],
+}
