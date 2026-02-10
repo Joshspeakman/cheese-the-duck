@@ -95,6 +95,18 @@ ENTRY_TEMPLATES = {
             "title": "First Snow!",
             "template": "Cold white flakes are falling from the sky! I tried to eat one. Not bread. Still pretty though! My feathers are all floofy from the cold!",
         },
+        "wind_adventure": {
+            "title": "The Wind Took My Feather!",
+            "template": "A strong gust of wind blew one of my loose feathers away! I watched it go. Goodbye, feather. You served me well. I hope you find a nice hat to land in.",
+        },
+        "fog_mystery": {
+            "title": "Lost in the Fog!",
+            "template": "It was SO foggy today I couldn't see across the pond. For a moment I forgot where I was. Then I remembered. Still at the pond. Always at the pond.",
+        },
+        "sunrise_special": {
+            "title": "The Most Beautiful Sunrise",
+            "template": "I woke up early and the sky was on fire. Not actual fire. The pretty kind. Orange and pink and gold. Like a bread crust. Everything comes back to bread.",
+        },
     },
     DiaryEntryType.MEMORY: {
         "happy_moment": {
@@ -109,6 +121,18 @@ ENTRY_TEMPLATES = {
             "title": "The Best Nap Ever",
             "template": "I had the COZIEST nap today! I dreamed of swimming in a pond made of bread. Don't judge me.",
         },
+        "quiet_evening": {
+            "title": "A Quiet Evening Together",
+            "template": "We just sat together tonight. No tricks, no games, just... being. My human seemed to need that. I needed it too. Don't tell anyone.",
+        },
+        "first_swim": {
+            "title": "The Perfect Swim",
+            "template": "I swam three perfect laps around the pond today. Nobody was watching. Nobody needed to be. Some achievements are just for you.",
+        },
+        "shared_silence": {
+            "title": "Comfortable Silence",
+            "template": "We sat in silence for a long time today. Not awkward silence. The good kind. The kind where words would actually make it worse. That's rare.",
+        },
     },
     DiaryEntryType.DISCOVERY: {
         "found_treasure": {
@@ -119,6 +143,10 @@ ENTRY_TEMPLATES = {
             "title": "Amazing Discovery!",
             "template": "THIS IS HUGE! I discovered a {item}! It's super rare and special! I feel like an explorer! Marco Polo Duck!",
         },
+        "mysterious_object": {
+            "title": "Something Strange...",
+            "template": "I found something I can't identify near the pond today. It might be magical. It might be garbage. The line between those is thinner than you'd think.",
+        },
     },
     DiaryEntryType.VISITOR: {
         "visitor_came": {
@@ -128,6 +156,10 @@ ENTRY_TEMPLATES = {
         "visitor_gift": {
             "title": "A Generous Guest",
             "template": "{visitor_name} visited and gave me a gift! A {gift}! Making friends is the BEST!",
+        },
+        "visitor_left": {
+            "title": "Goodbye, Friend",
+            "template": "{visitor_name} had to leave today. The pond feels a little emptier. But they said they'd come back. I'll be here. Obviously.",
         },
     },
     DiaryEntryType.FEELING: {
@@ -142,6 +174,36 @@ ENTRY_TEMPLATES = {
         "contemplative": {
             "title": "Deep Thoughts",
             "template": "I spent today thinking about life, the universe, and bread. Mostly bread. But also important stuff! I'm a very philosophical duck.",
+        },
+        "melancholy": {
+            "title": "A Quiet Kind of Sad",
+            "template": "Not sad exactly. Just... aware of things. The water is cold. The sky is grey. My human wasn't here. It's fine. Everything is fine. It's just quiet.",
+        },
+        "proud": {
+            "title": "Proud Duck Moment",
+            "template": "I did something today and I'm proud of it. I'm not going to explain what because it sounds silly out loud. But I know. And that's enough.",
+        },
+        "nostalgic": {
+            "title": "Remembering When...",
+            "template": "I caught myself thinking about the early days. When everything was new. I was smaller. The pond seemed bigger. My human seemed taller. Time is weird.",
+        },
+        "cozy": {
+            "title": "Maximum Coziness",
+            "template": "Tucked my beak under my wing. Listened to the rain. Didn't move for hours. This is what ducks were made for. Pure, uninterrupted coziness.",
+        },
+    },
+    DiaryEntryType.WEATHER: {
+        "perfect_day": {
+            "title": "A Perfect Weather Day",
+            "template": "The weather was absolutely perfect today. Not too hot, not too cold. The kind of day where the pond sparkles and everything feels possible. Even for a duck.",
+        },
+        "big_storm": {
+            "title": "THE STORM",
+            "template": "The biggest storm I've ever seen hit today. The pond rose. The wind howled. I floated through it. Because that's what ducks do. We float through things.",
+        },
+        "first_frost": {
+            "title": "The Pond Almost Froze!",
+            "template": "ICE on the pond this morning! Just at the edges. I skated on it. By accident. It was terrifying and also the most fun I've had all week.",
         },
     },
 }

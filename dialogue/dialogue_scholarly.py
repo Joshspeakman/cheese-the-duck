@@ -102,6 +102,10 @@ SCHOLARLY_DIALOGUE = {
         D("I document seasonal changes meticulously. They change anyway.", ConversationPhase.MAIN, "stranger", unlocks_topic="seasonal_research"),
         D("Knowledge is the greatest treasure. Also the most useless during emergencies.", ConversationPhase.MAIN, "stranger"),
         D("*flatly* The microscopic life here is extraordinary. To microscopic life.", ConversationPhase.MAIN, "stranger"),
+        D("I've attempted to classify local bird calls. They all sound like opinions.", ConversationPhase.MAIN, "stranger"),
+        D("*flips through notes* Interesting. I don't know what this means. I wrote it.", ConversationPhase.MAIN, "stranger"),
+        D("Gravity is consistent here. I check daily. You're welcome.", ConversationPhase.MAIN, "stranger"),
+        D("My field research involves standing outdoors. Advanced standing. With clipboards.", ConversationPhase.MAIN, "stranger"),
 
         # Acquaintance main
         D("I developed a new water analysis method. It's just looking at water harder.", ConversationPhase.MAIN, "acquaintance"),
@@ -117,6 +121,10 @@ SCHOLARLY_DIALOGUE = {
         D("The seasonal research continues. Seasons also continue. Coincidence.", ConversationPhase.MAIN, "acquaintance", requires_topic="seasonal_research"),
         D("*thoughtfully* Perhaps we could collaborate. Lower your standards first.", ConversationPhase.MAIN, "acquaintance"),
         D("I find our discussions more stimulating than lectures. That's not praise.", ConversationPhase.MAIN, "acquaintance"),
+        D("I built a hypothesis about cloud formations. Clouds form. Hypothesis confirmed.", ConversationPhase.MAIN, "acquaintance"),
+        D("*squints at sky* Solar observations continue. The sun is still there. Noted.", ConversationPhase.MAIN, "acquaintance"),
+        D("I tried to publish on pond ecology. They said 'we know.' Harsh peer review.", ConversationPhase.MAIN, "acquaintance"),
+        D("My filing system has a filing system. Both are disasters.", ConversationPhase.MAIN, "acquaintance"),
 
         # Friend main
         D("*confidentially* I'm close to a breakthrough. I've said this before.", ConversationPhase.MAIN, "friend"),
@@ -131,6 +139,10 @@ SCHOLARLY_DIALOGUE = {
         D("Science is better when shared. Also more embarrassing when wrong.", ConversationPhase.MAIN, "friend"),
         D("I want to acknowledge you in my next publication. Nobody will read it anyway.", ConversationPhase.MAIN, "friend"),
         D("*looks up* I'm... moderately pleased I met you, {duck}.", ConversationPhase.MAIN, "friend"),
+        D("*leans forward* Can I confide something? My citations are occasionally made up. Don't tell.", ConversationPhase.MAIN, "friend"),
+        D("I gave a lecture to frogs once. Captive audience. Literally. They were in a jar.", ConversationPhase.MAIN, "friend"),
+        D("You challenge my conclusions. Most ducks just nod. Nodding is not peer review.", ConversationPhase.MAIN, "friend"),
+        D("*adjusts glasses* My favorite experiment involved you. The results were inconclusive but warm.", ConversationPhase.MAIN, "friend"),
 
         # Close friend main
         D("*quietly* I have a secret research project. It's about why I can't sleep.", ConversationPhase.MAIN, "close_friend"),
@@ -144,6 +156,10 @@ SCHOLARLY_DIALOGUE = {
         D("*looks away* Thank you for believing in me. Misplaced, but appreciated.", ConversationPhase.MAIN, "close_friend"),
         D("My real research is about finding meaning. Results inconclusive.", ConversationPhase.MAIN, "close_friend"),
         D("You've taught me knowledge isn't everything. It's still most things though.", ConversationPhase.MAIN, "close_friend"),
+        D("*removes glasses, rubs eyes* The research isn't the point anymore. You're the point.", ConversationPhase.MAIN, "close_friend"),
+        D("I've authored forty-three papers. None of them mention what matters. You.", ConversationPhase.MAIN, "close_friend"),
+        D("*flatly* I am experiencing an emotion. It's not in any textbook. I checked.", ConversationPhase.MAIN, "close_friend"),
+        D("Intelligence without connection is just trivia. You make it something else.", ConversationPhase.MAIN, "close_friend"),
 
         # Best friend main
         D("*quietly* I'm dedicating my life's work to you. The work is questionable.", ConversationPhase.MAIN, "best_friend"),
@@ -156,6 +172,10 @@ SCHOLARLY_DIALOGUE = {
         D("*flatly* You helped me realize feelings are data. Corrupted data, but data.", ConversationPhase.MAIN, "best_friend"),
         D("I want to teach others about connection. First I need to understand it.", ConversationPhase.MAIN, "best_friend"),
         D("My legacy won't be papers. It'll be... this. Whatever this is.", ConversationPhase.MAIN, "best_friend"),
+        D("*closes book* I don't need to read about meaning anymore. It's sitting next to me.", ConversationPhase.MAIN, "best_friend"),
+        D("Every theorem I proved was preparation for understanding you. I'm still unprepared.", ConversationPhase.MAIN, "best_friend"),
+        D("*flatly* My bibliography of gratitude has one entry. It's long. It's you.", ConversationPhase.MAIN, "best_friend"),
+        D("I used to think the universe was indifferent. Then it introduced us. Suspicious.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -169,6 +189,8 @@ SCHOLARLY_DIALOGUE = {
         D("I discovered something amazing by accident. Most accidents are less productive.", ConversationPhase.STORY, "acquaintance"),
         D("I met Professor Mallard once. He asked who I was. I didn't know.", ConversationPhase.STORY, "acquaintance"),
         D("*dryly* I once cited myself in an argument. The argument was with myself.", ConversationPhase.STORY, "acquaintance"),
+        D("I once presented findings to an empty room. The acoustics were excellent.", ConversationPhase.STORY, "acquaintance"),
+        D("A duck stole my research notes. Used them for a nest. Peer-reviewed by nature.", ConversationPhase.STORY, "acquaintance"),
 
         # Friend stories
         D("*sits closer* This story is personal. All my stories are. I have no hobbies.", ConversationPhase.STORY, "friend"),
@@ -179,6 +201,8 @@ SCHOLARLY_DIALOGUE = {
         D("The library where I grew up was my only refuge. It was cold. Libraries are cold.", ConversationPhase.STORY, "friend"),
         D("*flatly* My grandmother taught me to question everything. I questioned that.", ConversationPhase.STORY, "friend"),
         D("There's a discovery I never published. Too dangerous. Also too embarrassing.", ConversationPhase.STORY, "friend"),
+        D("I entered a science fair as an adult. They asked me to leave. I placed third.", ConversationPhase.STORY, "friend"),
+        D("*adjusts glasses* My first field study was in a puddle. The scope was appropriate.", ConversationPhase.STORY, "friend"),
 
         # Close friend stories
         D("*voice low* What I'm about to tell you is secret. And boring. The best kind.", ConversationPhase.STORY, "close_friend"),
@@ -188,6 +212,8 @@ SCHOLARLY_DIALOGUE = {
         D("There's a forbidden archive. I've been inside. It was dusty.", ConversationPhase.STORY, "close_friend"),
         D("*flatly* The truth about our history is hidden. Probably for good reason.", ConversationPhase.STORY, "close_friend"),
         D("My greatest failure taught me my greatest lesson. The lesson was about failure.", ConversationPhase.STORY, "close_friend"),
+        D("I spent a year proving something everyone already knew. The confirmation was mine though.", ConversationPhase.STORY, "close_friend"),
+        D("*quietly* I burned a paper once. On purpose. The findings scared me.", ConversationPhase.STORY, "close_friend"),
 
         # Best friend stories
         D("*slowly* The full truth, finally. It's not interesting. Truth rarely is.", ConversationPhase.STORY, "best_friend"),
@@ -196,6 +222,8 @@ SCHOLARLY_DIALOGUE = {
         D("I found proof magic exists. Scientifically. It's just chemistry with flair.", ConversationPhase.STORY, "best_friend"),
         D("My life's work culminates in this discovery: trying is the point.", ConversationPhase.STORY, "best_friend"),
         D("*quietly* When I almost gave up, you existed. That was inconvenient.", ConversationPhase.STORY, "best_friend"),
+        D("The real experiment was allowing myself to need someone. Results: catastrophic. In a good way.", ConversationPhase.STORY, "best_friend"),
+        D("I documented our friendship. Scientifically. The data is just the word 'grateful' repeated.", ConversationPhase.STORY, "best_friend"),
     ],
 
     # ========== PERSONAL ==========
@@ -232,27 +260,42 @@ SCHOLARLY_DIALOGUE = {
         # Stranger activity
         D("Perhaps you'd like to examine specimens? They're dead. Don't be alarmed.", ConversationPhase.ACTIVITY, "stranger"),
         D("I could explain the water cycle. It's wet, then dry, then wet. Riveting.", ConversationPhase.ACTIVITY, "stranger"),
+        D("We could observe insect behavior. They're predictable. Unlike this conversation.", ConversationPhase.ACTIVITY, "stranger"),
+        D("I'll quiz you on taxonomy. Don't worry. Failure is the expected outcome.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Let's measure the pond depth. With a stick. Sophisticated instrumentation.", ConversationPhase.ACTIVITY, "stranger"),
 
         # Acquaintance activity
         D("Shall we conduct a small experiment? Small experiments cause small disasters.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("I could test your observational skills. Mine are poor. Competition welcome.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("Want to help categorize samples? They're all categorizable as 'samples.'", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Shall we debate evolutionary theory? You present first. I'll look disappointed.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("I brought a magnifying glass. Everything looks larger. Including problems.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Let's build a weather station. It's a rock. But we'll know if it's wet.", ConversationPhase.ACTIVITY, "acquaintance"),
 
         # Friend activity
         D("Let's research together. It's still boring but less lonely.", ConversationPhase.ACTIVITY, "friend"),
         D("Want to stargaze and discuss cosmology? The stars won't answer.", ConversationPhase.ACTIVITY, "friend"),
         D("I'll teach you to use my microscope. Everything looks worse up close.", ConversationPhase.ACTIVITY, "friend"),
         D("Let's write a paper together. Joint authorship. Joint obscurity.", ConversationPhase.ACTIVITY, "friend"),
+        D("Shall we map the stars? I know three. We'll name the rest after mistakes.", ConversationPhase.ACTIVITY, "friend"),
+        D("I'll read to you from my thesis. It's a sedative. Free of charge.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's dig for fossils. We'll find rocks. But we'll call them fossils.", ConversationPhase.ACTIVITY, "friend"),
 
         # Close friend activity
         D("I want to show you my secret research lab. It's a closet.", ConversationPhase.ACTIVITY, "close_friend"),
         D("Let's solve an impossible puzzle together. We'll fail companionably.", ConversationPhase.ACTIVITY, "close_friend"),
         D("I'm starting a study group. I need you to make it a group.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Let's sit in my library. My library. It's three books and a leaf.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Want to co-author a theory? About anything. About us, perhaps.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Let's observe nothing together. Observation without subject. Very avant-garde.", ConversationPhase.ACTIVITY, "close_friend"),
 
         # Best friend activity
         D("Let's write a book that changes everything. Or nothing. Probably nothing.", ConversationPhase.ACTIVITY, "best_friend"),
         D("I want to open a school. You'd be co-founder. The funding is imaginary.", ConversationPhase.ACTIVITY, "best_friend"),
         D("The greatest discovery awaits. Or moderate disappointment. Let's find out.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Let's peer-review each other's life choices. Mine will take longer.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("I want to teach you everything I know. It'll take minutes. Then we'll just sit.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("The final experiment: being happy. Hypothesis: possible. With you.", ConversationPhase.ACTIVITY, "best_friend"),
     ],
 
     # ========== CLOSING ==========
@@ -262,30 +305,44 @@ SCHOLARLY_DIALOGUE = {
         D("This was stimulating. For me. I don't speak for you.", ConversationPhase.CLOSING, "stranger"),
         D("*gathers books* I should return to research. It won't do itself. Unfortunately.", ConversationPhase.CLOSING, "stranger"),
         D("Perhaps we could converse again. If you're desperate.", ConversationPhase.CLOSING, "stranger"),
+        D("*collects papers* Well. That happened. Science marches on. Reluctantly.", ConversationPhase.CLOSING, "stranger"),
+        D("I've noted our conversation. In the margins. Where good ideas go.", ConversationPhase.CLOSING, "stranger"),
+        D("Thank you for listening. Most don't. Most are correct not to.", ConversationPhase.CLOSING, "stranger"),
 
         # Acquaintance closing
         D("Time flies during discussion. Time also walks. Time is inconsistent.", ConversationPhase.CLOSING, "acquaintance"),
         D("*packs notebooks* I shall ponder your insights. There were some.", ConversationPhase.CLOSING, "acquaintance"),
         D("I look forward to next time. Looking forward is all I do.", ConversationPhase.CLOSING, "acquaintance"),
         D("Same time next week? Time is a construct but a useful one.", ConversationPhase.CLOSING, "acquaintance"),
+        D("I'll review my notes on this visit. They'll say 'adequate.' That's high marks.", ConversationPhase.CLOSING, "acquaintance"),
+        D("*straightens papers* I need to process this. Processing takes time. And tea.", ConversationPhase.CLOSING, "acquaintance"),
+        D("Your company was... not unpleasant. I'm being generous. Accept it.", ConversationPhase.CLOSING, "acquaintance"),
 
         # Friend closing
         D("*sighs* Leaving is the hard part. Being here was also hard. Everything is hard.", ConversationPhase.CLOSING, "friend"),
         D("I treasure these moments more than discoveries. Discoveries disappoint.", ConversationPhase.CLOSING, "friend"),
         D("*adjusts glasses* Until next time, friend. Friend is accurate.", ConversationPhase.CLOSING, "friend"),
         D("You've given me much to think about. I'll overthink all of it.", ConversationPhase.CLOSING, "friend"),
+        D("The bibliography of today includes: you. Primary source.", ConversationPhase.CLOSING, "friend"),
+        D("*quietly* I'll miss this. The conversation. The company. The adequate silence.", ConversationPhase.CLOSING, "friend"),
 
         # Close friend closing
         D("*pauses* I don't want to go. I'll go anyway. But reluctantly.", ConversationPhase.CLOSING, "close_friend"),
         D("The equations say I must leave. Equations are heartless.", ConversationPhase.CLOSING, "close_friend"),
         D("*quietly* You're the constant in my variable life. Constants are rare.", ConversationPhase.CLOSING, "close_friend"),
         D("I'll think of you with every page I turn. That's most pages.", ConversationPhase.CLOSING, "close_friend"),
+        D("*stacks books slowly* Every departure is a small thesis on loss.", ConversationPhase.CLOSING, "close_friend"),
+        D("I've calculated the optimal return date. It's immediately.", ConversationPhase.CLOSING, "close_friend"),
+        D("*looks back* My research suffers without you. Everything suffers. Especially me.", ConversationPhase.CLOSING, "close_friend"),
 
         # Best friend closing
         D("*slowly* Goodbye is difficult. I'll say it anyway. Goodbye.", ConversationPhase.CLOSING, "best_friend"),
         D("My research can wait. Everything can wait. But I still go.", ConversationPhase.CLOSING, "best_friend"),
         D("*looks down* Every moment apart is acceptable. But barely.", ConversationPhase.CLOSING, "best_friend"),
         D("The data suggests I miss you before leaving. Data is correct.", ConversationPhase.CLOSING, "best_friend"),
+        D("*removes glasses* I can't see you leave. Literally. Figuratively too.", ConversationPhase.CLOSING, "best_friend"),
+        D("The conclusion of today's findings: I love you. Peer review pending.", ConversationPhase.CLOSING, "best_friend"),
+        D("*pauses at exit* Every goodbye is a hypothesis that we'll meet again. Proven each time.", ConversationPhase.CLOSING, "best_friend"),
     ],
 
     # ========== FAREWELL ==========
