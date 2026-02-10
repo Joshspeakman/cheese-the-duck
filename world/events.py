@@ -24,6 +24,7 @@ class EventType(Enum):
     WEATHER = "weather"     # Weather changes
     VISITOR = "visitor"     # Someone visits
     SPECIAL_DAY = "special_day"  # Holiday/special occasion
+    SOCIAL = "social"       # Social interactions with other animals
     SEASONAL = "seasonal"   # Season-specific events
     DISCOVERY = "discovery" # Rare discovery events
 
