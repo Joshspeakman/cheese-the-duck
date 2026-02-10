@@ -84,6 +84,8 @@ from core.save_slots import SaveSlotsSystem, save_slots_system
 
 from dialogue.diary_enhanced import EnhancedDiarySystem, enhanced_diary
 from dialogue.contextual_dialogue import ContextualDialogueSystem, contextual_dialogue
+from dialogue.mood_dialogue import MoodDialogueSystem, mood_dialogue_system, MoodType, DialogueContext, MOOD_DIALOGUES
+from dialogue.guest_conversations import get_random_conversation, GuestConversation
 
 from audio.ambient import AmbientSoundSystem, ambient_sound_system
 from audio.sound_effects import SoundEffectSystem, sound_effects
@@ -2144,6 +2146,20 @@ class Game:
                 self._show_message_if_no_menu("...nobody home.", duration=2.0, category="duck")
             return
 
+        # ── Check mood-based willingness ─────────────────────────────
+        mood_info = self.duck.get_mood()
+        if interaction == "play" and not mood_info.can_play:
+            mood_refusals = [
+                "*stares* ...no. not in the mood.",
+                "play? NOW? read the room.",
+                "I am not available for fun right now.",
+                "*turns away* the concept of 'play' is offensive today.",
+                "...no. everything is too much. come back later.",
+            ]
+            self._show_message_if_no_menu(random.choice(mood_refusals), duration=3.0, category="duck")
+            duck_sounds.quack("grumpy")
+            return
+
         # Check cooldown
         current_time = time.time()
         cooldown = self._interaction_cooldowns.get(interaction, 15)
@@ -2407,8 +2423,24 @@ class Game:
         if interaction in sound_map:
             sound_map[interaction]()
 
-        # Get dialogue response
-        response = self.conversation.get_interaction_response(self.duck, interaction)
+        # Get dialogue response — use mood-aware dialogue when available
+        context_map = {
+            "feed": DialogueContext.FEEDING,
+            "play": DialogueContext.PLAYING,
+            "pet": DialogueContext.PETTING,
+            "clean": DialogueContext.TALKING,
+            "sleep": DialogueContext.SLEEPING,
+        }
+        mood_line = None
+        current_mood = self.duck.get_mood()
+        dialogue_ctx = context_map.get(interaction)
+        if dialogue_ctx:
+            mood_line = mood_dialogue_system.get_dialogue(current_mood.state.value, dialogue_ctx.value)
+        
+        if mood_line:
+            response = mood_line.text
+        else:
+            response = self.conversation.get_interaction_response(self.duck, interaction)
         self.renderer.show_message(response)
 
         # Show effect and closeup
@@ -3234,11 +3266,53 @@ class Game:
                 personality = personality.value  # Convert enum to string
             elif not isinstance(personality, str):
                 personality = str(personality)
-            duck_response = self.contextual_dialogue.get_conversation_response(personality)
-            if duck_response:
-                # Schedule response after visitor finishes talking
-                self._pending_visitor_comment = f"{self.duck.name}: {duck_response}"
-                self._pending_visitor_comment_time = current_time + 5.5  # After visitor's message duration
+            
+            # Try to trigger a scripted multi-turn conversation (30% chance)
+            if not getattr(self, '_active_guest_conversation', None) and random.random() < 0.3:
+                friendship_level = friend.friendship_level.value if hasattr(friend.friendship_level, 'value') else str(friend.friendship_level)
+                convo = get_random_conversation(personality, friendship_level)
+                if convo and convo.exchanges:
+                    self._active_guest_conversation = convo
+                    self._guest_convo_index = 0
+                    self._guest_convo_next_time = current_time + 6.0
+                    # Show first guest line
+                    exchange = convo.exchanges[0]
+                    self._show_message_if_no_menu(
+                        f"{friend.name}: {exchange.guest_line}", duration=5.0, category="friend"
+                    )
+                    self._pending_visitor_comment = f"{self.duck.name}: {exchange.cheese_response}"
+                    self._pending_visitor_comment_time = current_time + 5.5
+                    self._guest_convo_index = 1
+            else:
+                duck_response = self.contextual_dialogue.get_conversation_response(personality)
+                if duck_response:
+                    # Schedule response after visitor finishes talking
+                    self._pending_visitor_comment = f"{self.duck.name}: {duck_response}"
+                    self._pending_visitor_comment_time = current_time + 5.5  # After visitor's message duration
+        
+        # Continue active scripted conversation
+        if getattr(self, '_active_guest_conversation', None):
+            convo = self._active_guest_conversation
+            idx = getattr(self, '_guest_convo_index', 0)
+            next_time = getattr(self, '_guest_convo_next_time', 0)
+            if current_time >= next_time and idx < len(convo.exchanges):
+                exchange = convo.exchanges[idx]
+                friend_obj = self.friends.get_friend_by_id(self.friends.current_visit.friend_id)
+                fname = friend_obj.name if friend_obj else "Visitor"
+                self._show_message_if_no_menu(
+                    f"{fname}: {exchange.guest_line}", duration=5.0, category="friend"
+                )
+                self._pending_visitor_comment = f"{self.duck.name}: {exchange.cheese_response}"
+                self._pending_visitor_comment_time = current_time + 5.5
+                # Apply mood/friendship effects
+                if exchange.mood_effect and self.duck:
+                    self.duck.needs.fun = min(100, max(0, self.duck.needs.fun + exchange.mood_effect))
+                if exchange.friendship_bonus and friend_obj:
+                    friend_obj.friendship_points += int(exchange.friendship_bonus)
+                self._guest_convo_index = idx + 1
+                self._guest_convo_next_time = current_time + 12.0  # Wait before next exchange
+            elif idx >= len(convo.exchanges):
+                self._active_guest_conversation = None  # Conversation complete
         
         # Comment on items/structures the visitor sees (only once per item)
         if visitor_animator.is_near_duck():
@@ -6126,6 +6200,19 @@ class Game:
 
     def _start_minigame(self, game_id: str):
         """Start a mini-game."""
+        # Check mood — duck won't play when sad/miserable
+        if self.duck:
+            mood_info = self.duck.get_mood()
+            if not mood_info.can_play:
+                play_refusals = [
+                    "*lies flat* ...games require a will to live. check back later.",
+                    "minigames. now. really. read the room.",
+                    "*turns away* no. the concept of fun is currently offline.",
+                ]
+                self.renderer.show_message(random.choice(play_refusals), duration=3.0)
+                duck_sounds.quack("grumpy")
+                return
+
         # Handle fishing separately
         if game_id == "fishing":
             self._minigames_menu_open = False
@@ -9310,12 +9397,65 @@ Core Systems Tested: {report.total_tests}
 
     def _train_trick(self, trick_id: str):
         """Start or continue training a trick."""
-        duck_trust = getattr(self.duck, 'trust', 100.0) if self.duck else 100.0
-        success, msg = self.tricks.start_training(trick_id, duck_trust=duck_trust)
-        self.renderer.show_message(msg, duration=3.0)
+        # Check mood — duck won't learn when sad/miserable
+        if self.duck:
+            mood_info = self.duck.get_mood()
+            if not mood_info.can_learn:
+                learn_refusals = [
+                    "*lies down* ...no. the brain is closed today.",
+                    "learn? I can barely exist right now.",
+                    "my capacity for new information is at zero.",
+                    "*blank stare* ...come back when the void lifts.",
+                    "training requires motivation. I have the opposite of that.",
+                ]
+                self.renderer.show_message(random.choice(learn_refusals), duration=3.0)
+                duck_sounds.quack("grumpy")
+                return
         
-        if success:
+        duck_trust = getattr(self.duck, 'trust', 100.0) if self.duck else 100.0
+        
+        from duck.tricks import TRICKS, TRICK_ATTEMPT_MESSAGES, TRICK_MASTERY_MESSAGES
+        trick = TRICKS.get(trick_id)
+        
+        if trick_id in self.tricks.learned_tricks:
+            # Already learned — do nothing
+            self.renderer.show_message("Already learned this trick!", duration=2.0)
+            return
+        
+        if not self.tricks.current_training or self.tricks.current_training != trick_id:
+            # Start training
+            success, msg = self.tricks.start_training(trick_id, duck_trust=duck_trust)
+            if not success:
+                self.renderer.show_message(msg, duration=3.0)
+                return
+            # Show attempt message based on difficulty
+            difficulty = trick.difficulty.value if trick else "easy"
+            attempt_lines = TRICK_ATTEMPT_MESSAGES.get(difficulty, TRICK_ATTEMPT_MESSAGES.get("easy", []))
+            if attempt_lines:
+                msg = random.choice(attempt_lines)
+            self.renderer.show_message(msg, duration=3.0)
             self.progression.add_xp(10, "training")
+            duck_sounds.quack("happy")
+        else:
+            # Continue training session
+            success, msg, learned_trick = self.tricks.do_training_session()
+            if learned_trick:
+                # Just mastered it!
+                mastery_lines = TRICK_MASTERY_MESSAGES.get(1, [])
+                if mastery_lines:
+                    msg = random.choice(mastery_lines)
+                self.renderer.show_message(f"* Learned: {learned_trick.name}! *\n{msg}", duration=4.0)
+                duck_sounds.level_up()
+                self.progression.add_xp(25, "training")
+            else:
+                # Show attempt message
+                difficulty = trick.difficulty.value if trick else "easy"
+                attempt_lines = TRICK_ATTEMPT_MESSAGES.get(difficulty, TRICK_ATTEMPT_MESSAGES.get("easy", []))
+                if attempt_lines:
+                    attempt_msg = random.choice(attempt_lines)
+                    msg = f"{attempt_msg}\n{msg}"
+                self.renderer.show_message(msg, duration=3.0)
+                self.progression.add_xp(10, "training")
             duck_sounds.quack("happy")
 
     def _perform_trick(self, trick_id: str):
@@ -9323,8 +9463,21 @@ Core Systems Tested: {report.total_tests}
         success, msg, result = self.tricks.perform_trick(trick_id)
         
         if success:
+            from duck.tricks import TRICK_MASTERY_MESSAGES, TRICK_AUDIENCE_REACTIONS
+            
             # Show trick animation
             anim_lines = self.tricks.render_trick_performance(trick_id)
+            
+            # Add audience reaction
+            if TRICK_AUDIENCE_REACTIONS and random.random() < 0.4:
+                anim_lines.append(random.choice(TRICK_AUDIENCE_REACTIONS))
+            
+            # Add mastery commentary if high mastery
+            mastery_level = result.get("mastery_level", 1)
+            mastery_lines = TRICK_MASTERY_MESSAGES.get(mastery_level, [])
+            if mastery_lines and mastery_level >= 3:
+                anim_lines.append(random.choice(mastery_lines))
+            
             self.renderer.show_message("\n".join(anim_lines), duration=2.0)
             
             # Apply rewards

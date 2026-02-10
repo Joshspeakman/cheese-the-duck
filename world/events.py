@@ -24,6 +24,8 @@ class EventType(Enum):
     WEATHER = "weather"     # Weather changes
     VISITOR = "visitor"     # Someone visits
     SPECIAL_DAY = "special_day"  # Holiday/special occasion
+    SEASONAL = "seasonal"   # Season-specific events
+    DISCOVERY = "discovery" # Rare discovery events
 
 
 @dataclass
@@ -1948,7 +1950,7 @@ class EventSystem:
         current_time = time.time()
 
         for event_id, event in EVENTS.items():
-            if event.event_type not in [EventType.RANDOM, EventType.WEATHER, EventType.VISITOR]:
+            if event.event_type not in [EventType.RANDOM, EventType.WEATHER, EventType.VISITOR, EventType.SEASONAL, EventType.DISCOVERY]:
                 continue
 
             # Check cooldown
