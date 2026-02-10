@@ -101,6 +101,10 @@ ATHLETIC_DIALOGUE = {
         D("I'm training for the pond championship. Championship.", ConversationPhase.MAIN, "stranger"),
         D("*dryly* The perfect routine. I'll find it. Someday.", ConversationPhase.MAIN, "stranger"),
         D("Every duck has a sport. Mine is everything. All sports.", ConversationPhase.MAIN, "stranger"),
+        D("*counting* Thirty-seven. That's how many push-ups I did before you arrived. Thirty-seven.", ConversationPhase.MAIN, "stranger"),
+        D("My wingspan is above average. Measured it. Twice. For accuracy.", ConversationPhase.MAIN, "stranger"),
+        D("*flatly* I once outswam a fish. The fish was small. Still counts.", ConversationPhase.MAIN, "stranger"),
+        D("Hydration is important. I drink from the pond. Training water.", ConversationPhase.MAIN, "stranger"),
 
         # Acquaintance main
         D("*admits* I sometimes train through injuries. Sometimes.", ConversationPhase.MAIN, "acquaintance"),
@@ -116,6 +120,10 @@ ATHLETIC_DIALOGUE = {
         D("*dryly* Is it obsession or dedication? Question.", ConversationPhase.MAIN, "acquaintance"),
         D("I have a ten-year fitness plan. Seriously. Ten years.", ConversationPhase.MAIN, "acquaintance"),
         D("*standing in place* Sitting still is hard. Very hard.", ConversationPhase.MAIN, "acquaintance"),
+        D("*stretching* I pulled a muscle thinking about rest days. Pulled.", ConversationPhase.MAIN, "acquaintance"),
+        D("Other ducks don't understand my dedication. Dedication is lonely.", ConversationPhase.MAIN, "acquaintance"),
+        D("*dryly* I alphabetized my workout routines. Organization is training for the mind.", ConversationPhase.MAIN, "acquaintance"),
+        D("My ideal vacation is a training camp. Vacation. Camp. Same thing.", ConversationPhase.MAIN, "acquaintance"),
 
         # Friend main
         D("*sits still* I'm not moving. This is progress. Progress.", ConversationPhase.MAIN, "friend", requires_topic="cant_stop"),
@@ -130,6 +138,10 @@ ATHLETIC_DIALOGUE = {
         D("*whispers* I was running from myself. Running.", ConversationPhase.MAIN, "friend"),
         D("You're teaching me to just be. Be.", ConversationPhase.MAIN, "friend"),
         D("*flatly* What if I rest and never want to move? Question.", ConversationPhase.MAIN, "friend"),
+        D("*admits* I exercised during a thunderstorm once. Lightning is motivating. Dangerously.", ConversationPhase.MAIN, "friend"),
+        D("*quietly* The trophies don't talk back. You do. Better than trophies.", ConversationPhase.MAIN, "friend"),
+        D("I forgot what relaxation feels like. Describe it. Slowly. I'm taking notes.", ConversationPhase.MAIN, "friend"),
+        D("*pauses* You're the first to tell me to stop. Everyone else cheered louder.", ConversationPhase.MAIN, "friend"),
 
         # Close friend main
         D("*peacefully* I can rest. Finally rest. Rest.", ConversationPhase.MAIN, "close_friend", requires_topic="worthlessness"),
@@ -143,6 +155,9 @@ ATHLETIC_DIALOGUE = {
         D("*pauses* Being is enough. Doing isn't everything. Being.", ConversationPhase.MAIN, "close_friend"),
         D("*genuinely* I finally stopped running from myself. Stopped.", ConversationPhase.MAIN, "close_friend"),
         D("*warmly* I move for joy now. Not fear. Joy.", ConversationPhase.MAIN, "close_friend"),
+        D("*sitting comfortably* This is nice. Sitting. Who knew. You knew.", ConversationPhase.MAIN, "close_friend"),
+        D("*admits* I threw away my training log today. First time in years. Freedom.", ConversationPhase.MAIN, "close_friend"),
+        D("*softly* I slept in this morning. Didn't train until noon. Revolution.", ConversationPhase.MAIN, "close_friend"),
 
         # Best friend main
         D("*genuinely* I'm at peace. True peace. Peace.", ConversationPhase.MAIN, "best_friend"),
@@ -155,6 +170,9 @@ ATHLETIC_DIALOGUE = {
         D("*peacefully* Movement from love. Not desperation. Love.", ConversationPhase.MAIN, "best_friend"),
         D("*genuinely* I'm worthy sitting still. Worthy.", ConversationPhase.MAIN, "best_friend"),
         D("I love fitness now. Healthy love. Healthy.", ConversationPhase.MAIN, "best_friend"),
+        D("*relaxed* I took a rest day yesterday. Voluntarily. Voluntarily.", ConversationPhase.MAIN, "best_friend"),
+        D("*warmly* My body thanks you. My mind thanks you. All thanks.", ConversationPhase.MAIN, "best_friend"),
+        D("*genuinely* I went for a walk. Not a power walk. A walk. Just a walk.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -231,27 +249,42 @@ ATHLETIC_DIALOGUE = {
         # Stranger activity
         D("Want to do some laps together? Laps are always happening.", ConversationPhase.ACTIVITY, "stranger"),
         D("I could show you my training circuit. The circuit is extensive.", ConversationPhase.ACTIVITY, "stranger"),
+        D("*bouncing in place* We could do jumping jacks. Always appropriate. Always.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Let me time your swim. Timing is important. Essential.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Want to see my obstacle course? I made it. With sticks. Professional.", ConversationPhase.ACTIVITY, "stranger"),
 
         # Acquaintance activity
         D("Let's do a full body workout. Full body. All of it.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("I'll teach you interval training. Intervals are key.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("Want to race to that tree and back? Racing.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("I designed a partner workout. It's intense. Everything is intense.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Let's do hill sprints. The hill is small. Sprint is big.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Stretching contest. Whoever's more flexible wins. Winning.", ConversationPhase.ACTIVITY, "acquaintance"),
 
         # Friend activity
         D("Let's just sit. Together. I need practice. Sitting practice.", ConversationPhase.ACTIVITY, "friend"),
         D("Can we do nothing? I want to try nothing. Nothing.", ConversationPhase.ACTIVITY, "friend"),
         D("A gentle walk? Not training. Just walking. Walking.", ConversationPhase.ACTIVITY, "friend"),
         D("Teach me to enjoy stillness. Teaching needed.", ConversationPhase.ACTIVITY, "friend"),
+        D("Can we just float? In the water. Not exercising. Just floating. Revolutionary.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's watch the sunset. No running commentary. Just watching. Watching.", ConversationPhase.ACTIVITY, "friend"),
+        D("Want to teach me a non-sport hobby? Non-sport. Uncharted territory.", ConversationPhase.ACTIVITY, "friend"),
 
         # Close friend activity
         D("Let's just be together. No movement required. Being.", ConversationPhase.ACTIVITY, "close_friend"),
         D("Your company is my workout today. Workout is presence.", ConversationPhase.ACTIVITY, "close_friend"),
         D("Let's rest. Really rest. Together. Rest.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Let's nap. Together. Napping is the anti-workout. Anti-workout.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Sit with me and count clouds. Not competitively. Just counting. Growth.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Let's have a slow day. Slow. On purpose. Purpose.", ConversationPhase.ACTIVITY, "close_friend"),
 
         # Best friend activity
         D("Let's do anything. Even nothing. Nothing is something.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Skip the workout. Just be here. Here.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Movement for joy. Dance with me. Dancing.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Whatever you want. I'm here. No agenda. Agenda-free.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Let's celebrate doing nothing. Celebration. Of nothing. Something.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Just exist near me. Existing is the only exercise today. Existing.", ConversationPhase.ACTIVITY, "best_friend"),
     ],
 
     # ========== CLOSING ==========
@@ -261,30 +294,42 @@ ATHLETIC_DIALOGUE = {
         D("*nods* What a great workout buddy. Great.", ConversationPhase.CLOSING, "stranger"),
         D("*stretches* Cool down time. Then more laps. More.", ConversationPhase.CLOSING, "stranger"),
         D("*waves, still moving* See you on the track. Track.", ConversationPhase.CLOSING, "stranger"),
+        D("*jogs in place* Gotta bounce. Literally. Bouncing.", ConversationPhase.CLOSING, "stranger"),
+        D("*flexes* This was a good session. Session ending.", ConversationPhase.CLOSING, "stranger"),
+        D("Time to sprint home. Home is far. Sprint is fast. Math.", ConversationPhase.CLOSING, "stranger"),
 
         # Acquaintance closing
         D("*stops reluctantly* I guess I should pace myself. Pace.", ConversationPhase.CLOSING, "acquaintance"),
         D("*quietly* Training alone isn't fun anymore. Anymore.", ConversationPhase.CLOSING, "acquaintance"),
         D("*gives tips* Remember: form is key. Key.", ConversationPhase.CLOSING, "acquaintance"),
         D("*nods* Same time next workout? Workout is scheduled.", ConversationPhase.CLOSING, "acquaintance"),
+        D("*reluctantly stops* I'd rather keep training with you. Rather.", ConversationPhase.CLOSING, "acquaintance"),
+        D("You're a solid training partner. Solid.", ConversationPhase.CLOSING, "acquaintance"),
 
         # Friend closing
         D("*quietly* I didn't run once. That's progress. Progress.", ConversationPhase.CLOSING, "friend"),
         D("*sincerely* Being still with you is the best workout. Best.", ConversationPhase.CLOSING, "friend"),
         D("*gives item* This means 'I trust you' in athlete. Translation.", ConversationPhase.CLOSING, "friend"),
         D("*genuinely* You train my heart. Heart trained.", ConversationPhase.CLOSING, "friend"),
+        D("*sits still* I'm not rushing off. That's new. New.", ConversationPhase.CLOSING, "friend"),
+        D("*exhales* Best rest day ever. Ever.", ConversationPhase.CLOSING, "friend"),
+        D("You slow me down in the best way. Best slowdown.", ConversationPhase.CLOSING, "friend"),
 
         # Close friend closing
         D("*quietly* How do I leave my peace behind? Metaphorically.", ConversationPhase.CLOSING, "close_friend"),
         D("*sincerely* You're my favorite rest stop. Favorite.", ConversationPhase.CLOSING, "close_friend"),
         D("*gives medal* This is my heart. Heart-shaped.", ConversationPhase.CLOSING, "close_friend"),
         D("*genuinely* I'm at peace. Because of you. Peace.", ConversationPhase.CLOSING, "close_friend"),
+        D("*lingers* Leaving burns more than any workout. Burns.", ConversationPhase.CLOSING, "close_friend"),
+        D("*pauses* You're worth slowing down for. Worth it.", ConversationPhase.CLOSING, "close_friend"),
 
         # Best friend closing
         D("*quietly* You're better than any trophy. High praise.", ConversationPhase.CLOSING, "best_friend"),
         D("*sincerely* I leave my peace with you. Peace.", ConversationPhase.CLOSING, "best_friend"),
         D("*warmly* I'm rested. Forever. Rested.", ConversationPhase.CLOSING, "best_friend"),
         D("*peacefully* My heart is trained. Thank you. Trained.", ConversationPhase.CLOSING, "best_friend"),
+        D("*still* No urge to run. First time. First.", ConversationPhase.CLOSING, "best_friend"),
+        D("*genuinely* You're the gold medal of my life. Gold.", ConversationPhase.CLOSING, "best_friend"),
     ],
 
     # ========== FAREWELL ==========

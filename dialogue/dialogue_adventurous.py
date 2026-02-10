@@ -103,6 +103,9 @@ ADVENTUROUS_DIALOGUE = {
         D("Finding new ponds is my thing. Yours is nice. Adequate water content.", ConversationPhase.MAIN, "stranger"),
         D("I keep a journal. Mostly it says 'got lost' and 'found bread.'", ConversationPhase.MAIN, "stranger", unlocks_topic="journal"),
         D("Weather prediction is crucial. I'm bad at it. That's what makes it exciting.", ConversationPhase.MAIN, "stranger"),
+        D("Saw a deer once. We stared at each other. Neither of us blinked. I lost.", ConversationPhase.MAIN, "stranger"),
+        D("Packing light is an art. I'm bad at art. My bag weighs more than me.", ConversationPhase.MAIN, "stranger"),
+        D("*taps ground* Soil tells you things. This soil says 'you're standing on me.'", ConversationPhase.MAIN, "stranger"),
 
         # Acquaintance main
         D("Found a waterfall last week. Stood under it. Felt dramatic. Got wet.", ConversationPhase.MAIN, "acquaintance"),
@@ -118,6 +121,10 @@ ADVENTUROUS_DIALOGUE = {
         D("Parents worried at first. Now they just want postcards. Rocks count as postcards.", ConversationPhase.MAIN, "acquaintance"),
         D("Explorer's code: Leave only ripples, take only rocks. I added the rocks part.", ConversationPhase.MAIN, "acquaintance"),
         D("Thinking about writing a travel guide. It would mostly say 'don't do what I did.'", ConversationPhase.MAIN, "acquaintance", unlocks_topic="travel_guide"),
+        D("Crossed a frozen pond once. On purpose? Debatable. Successfully? Barely.", ConversationPhase.MAIN, "acquaintance"),
+        D("There's a tree I climb every spring. Same tree. It doesn't remember me.", ConversationPhase.MAIN, "acquaintance"),
+        D("*shows bruise* This is from Tuesday. Or Wednesday. The days blend when you're rolling down hills.", ConversationPhase.MAIN, "acquaintance"),
+        D("Tried stargazing with a map. Stars don't match the map. Stars are freelancers.", ConversationPhase.MAIN, "acquaintance"),
 
         # Friend main
         D("Real talk: that mountain I climbed? Terrifying. Cried a little. Worth it though.", ConversationPhase.MAIN, "friend"),
@@ -134,6 +141,10 @@ ADVENTUROUS_DIALOGUE = {
         D("*shows journal* This page is about you. It just says 'good friend.' That's enough.", ConversationPhase.MAIN, "friend", requires_topic="journal"),
         D("Travel guide's coming along. Dedicated a chapter to kindness. It's short.", ConversationPhase.MAIN, "friend", requires_topic="travel_guide"),
         D("Want to explore somewhere with you someday. No pressure.", ConversationPhase.MAIN, "friend", unlocks_topic="future_adventure"),
+        D("Fell into a river last week. The river didn't apologize. Rude.", ConversationPhase.MAIN, "friend"),
+        D("Other ducks ask why I look tired. I say 'character development.' They don't get it.", ConversationPhase.MAIN, "friend"),
+        D("Named my walking stick. It's called Stick. Creative, I know.", ConversationPhase.MAIN, "friend"),
+        D("The scariest part of exploring isn't the danger. It's the quiet. Then the danger.", ConversationPhase.MAIN, "friend"),
 
         # Close friend main
         D("Between us? Sometimes exploring is lonely. Don't tell the other explorers.", ConversationPhase.MAIN, "close_friend"),
@@ -148,6 +159,10 @@ ADVENTUROUS_DIALOGUE = {
         D("Starting to think the journey matters more than the destination. Profound, right?", ConversationPhase.MAIN, "close_friend"),
         D("You're why I don't just wander forever. Needed something to come back to.", ConversationPhase.MAIN, "close_friend"),
         D("Dream about showing you all my favorite places. Long dream. You'd get tired.", ConversationPhase.MAIN, "close_friend", requires_topic="future_adventure"),
+        D("Made a promise to myself once. See everything. Getting closer. Slowly.", ConversationPhase.MAIN, "close_friend"),
+        D("*shows worn boots* These have been everywhere I have. They're more traveled than most ducks.", ConversationPhase.MAIN, "close_friend"),
+        D("Sometimes I draw our adventures in the margins of my maps. Tiny. Secret.", ConversationPhase.MAIN, "close_friend"),
+        D("The world tests you constantly. You're the only thing that doesn't feel like a test.", ConversationPhase.MAIN, "close_friend"),
 
         # Best friend main
         D("*deep breath* Planning something huge. Life-changing. Terrifying. Exciting.", ConversationPhase.MAIN, "best_friend"),
@@ -160,6 +175,9 @@ ADVENTUROUS_DIALOGUE = {
         D("Going to circumnavigate the Great Lake. Want to see me off? No pressure.", ConversationPhase.MAIN, "best_friend"),
         D("*voice wavering* Adventures mean nothing without someone to share them. That's you.", ConversationPhase.MAIN, "best_friend"),
         D("Greatest treasure is true friendship. Found it. Not letting go.", ConversationPhase.MAIN, "best_friend"),
+        D("Thinking about writing our story. The title is 'The Duck Who Stayed and the Duck Who Didn't.'", ConversationPhase.MAIN, "best_friend"),
+        D("Every map I draw, you're marked as 'home.' That's never changed.", ConversationPhase.MAIN, "best_friend"),
+        D("*quietly* If I could carry your pond with me, I would. Physics says no.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -236,27 +254,42 @@ ADVENTUROUS_DIALOGUE = {
         # Stranger activity
         D("Want to look at my map collection? No pressure. They're just maps.", ConversationPhase.ACTIVITY, "stranger"),
         D("Could... look at clouds? Imagine they're mountains? No? Fair.", ConversationPhase.ACTIVITY, "stranger"),
+        D("We could skip rocks. I rate them first though. Quality control.", ConversationPhase.ACTIVITY, "stranger"),
+        D("I'm cataloging local plants. Want to watch? It's exactly as thrilling as it sounds.", ConversationPhase.ACTIVITY, "stranger"),
 
         # Acquaintance activity
         D("Short walk around the pond? I'll try not to get lost.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("Want to practice compass reading? I'm... adequate at teaching.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("Could teach you explorer signals. They're mostly waving.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Help me test this trail mix recipe? The mix is just rocks and bread.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Want to build a tiny raft? It won't float. That's the adventure.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("I need someone to time my sprint across the clearing. It'll be slow.", ConversationPhase.ACTIVITY, "acquaintance"),
 
         # Friend activity
         D("Something fun? Stargazing? Treasure hunt? Both involve looking at things.", ConversationPhase.ACTIVITY, "friend"),
         D("Explore the edge of your territory together? Promise not to go too far.", ConversationPhase.ACTIVITY, "friend"),
         D("Race across the pond? Loser admits they're the loser. Simple.", ConversationPhase.ACTIVITY, "friend"),
         D("Draw a map of your pond together? I'll try to make it accurate.", ConversationPhase.ACTIVITY, "friend"),
+        D("Night hike around the ridge? I've done it before. Got lost. Different ridge though.", ConversationPhase.ACTIVITY, "friend"),
+        D("I found this weird hollow log. Want to investigate? Could be empty. Could be not.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's build a signal fire. Not for rescue. Just practice. And warmth.", ConversationPhase.ACTIVITY, "friend"),
 
         # Close friend activity
         D("One day we HAVE to go on a real adventure together. One day.", ConversationPhase.ACTIVITY, "close_friend"),
         D("Want to see the secret grove? It's secret. But you're invited.", ConversationPhase.ACTIVITY, "close_friend"),
         D("Let's make a pact: someday, the mountains. Together.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("There's a cave system I've been mapping. Want to check the entrance? Just the entrance.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("I need a co-pilot for my marsh expedition. You'd be terrible at it. Perfect.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Camp out under the stars tonight? I have supplies. Supplies are optimism and a blanket.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Let's climb that big rock. The one I call Mount Friendship. Named it just now.", ConversationPhase.ACTIVITY, "close_friend"),
 
         # Best friend activity
         D("Pack your things, {duck}. We're going somewhere. Short trip. Maybe long.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Perfect trip planned. Just us. Minimal danger. Maximum rocks.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Want to discover something amazing together? I have coordinates.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Remember the Paradise Isles? I have a route. It's risky. We should absolutely do it.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Grand expedition. You and me. I'll navigate, you'll keep me sane. Fair division.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("I want to show you the sunrise from Midnight Mountain. Worth the walk. Barely.", ConversationPhase.ACTIVITY, "best_friend"),
     ],
 
     # ========== CLOSING ==========
@@ -266,30 +299,44 @@ ADVENTUROUS_DIALOGUE = {
         D("Thanks for letting me rest here. Adequate hospitality.", ConversationPhase.CLOSING, "stranger"),
         D("Maybe I'll stop by again. If I can find my way back.", ConversationPhase.CLOSING, "stranger"),
         D("You're nicer than most ducks I meet. Low bar, but still.", ConversationPhase.CLOSING, "stranger"),
+        D("Well. This was... not terrible. High praise from a wanderer.", ConversationPhase.CLOSING, "stranger"),
+        D("*adjusts hat* Onwards. To somewhere. Direction TBD.", ConversationPhase.CLOSING, "stranger"),
 
         # Acquaintance closing
         D("Time flies when you're talking about getting lost. Ironic.", ConversationPhase.CLOSING, "acquaintance"),
         D("Enjoyed this. We should do it again. If I remember where you are.", ConversationPhase.CLOSING, "acquaintance"),
         D("*stretches* Road calls. But I'll be back. Probably.", ConversationPhase.CLOSING, "acquaintance"),
         D("Same time next week? I'll try to show up. No guarantees.", ConversationPhase.CLOSING, "acquaintance"),
+        D("Need to resupply. And by that I mean find more bread.", ConversationPhase.CLOSING, "acquaintance"),
+        D("*checks compass* The compass says go. The compass is always saying go.", ConversationPhase.CLOSING, "acquaintance"),
+        D("Leaving something behind here. Can't figure out what. Probably nothing.", ConversationPhase.CLOSING, "acquaintance"),
 
         # Friend closing
         D("Never want these hangouts to end. But they do. That's time for you.", ConversationPhase.CLOSING, "friend"),
         D("*sighs* This was exactly what I needed. Don't tell anyone I said that.", ConversationPhase.CLOSING, "friend"),
         D("Promise you won't forget me between visits? I'll forget things, but not you.", ConversationPhase.CLOSING, "friend"),
         D("Until next time, friend. Stay exactly where you are.", ConversationPhase.CLOSING, "friend"),
+        D("Gonna think about this conversation at my next campsite. Fondly. Awkwardly.", ConversationPhase.CLOSING, "friend"),
+        D("*looks back* Keep the pond warm. I'll be cold out there. Building character.", ConversationPhase.CLOSING, "friend"),
+        D("You make leaving harder every time. That's a compliment. I think.", ConversationPhase.CLOSING, "friend"),
 
         # Close friend closing
         D("Leaving is always the hardest part. Everything else is just walking.", ConversationPhase.CLOSING, "close_friend"),
         D("*unexpected hug* I'm gonna miss you. A lot. Don't make it weird.", ConversationPhase.CLOSING, "close_friend"),
         D("My heart stays here. Rest of me has to go. Logistics.", ConversationPhase.CLOSING, "close_friend"),
         D("Count the days until I'm back. I will be. That's a promise.", ConversationPhase.CLOSING, "close_friend"),
+        D("*pauses at the edge* Every direction feels wrong except back to you.", ConversationPhase.CLOSING, "close_friend"),
+        D("The world better have something amazing to show me. Otherwise I'm turning around.", ConversationPhase.CLOSING, "close_friend"),
+        D("You're my compass point, {duck}. Everything else is just scenery.", ConversationPhase.CLOSING, "close_friend"),
 
         # Best friend closing
         D("*trying not to be emotional* Every goodbye with you is too soon.", ConversationPhase.CLOSING, "best_friend"),
         D("Carrying this moment everywhere I go. It weighs nothing. Means everything.", ConversationPhase.CLOSING, "best_friend"),
         D("This isn't goodbye. It's 'see you soon.' There's a difference.", ConversationPhase.CLOSING, "best_friend"),
         D("*holds wing* You're my greatest treasure. Better than any rock.", ConversationPhase.CLOSING, "best_friend"),
+        D("*voice breaking* I'll come back. I always come back. That's the only certainty I have.", ConversationPhase.CLOSING, "best_friend"),
+        D("Every adventure ends here. With you. That's not an accident.", ConversationPhase.CLOSING, "best_friend"),
+        D("*long look* The whole world out there... and you're still the best part of it.", ConversationPhase.CLOSING, "best_friend"),
     ],
 
     # ========== FAREWELL ==========

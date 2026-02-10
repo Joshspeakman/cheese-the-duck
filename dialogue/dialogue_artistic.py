@@ -102,6 +102,9 @@ ARTISTIC_DIALOGUE = {
         D("My latest piece explores flight. It's a circle. Very abstract.", ConversationPhase.MAIN, "stranger", unlocks_topic="flight_series"),
         D("*holds brush* Every stroke is my soul. My soul is smudgy.", ConversationPhase.MAIN, "stranger"),
         D("Beauty exists in unexpected places. Like here. Supposedly.", ConversationPhase.MAIN, "stranger"),
+        D("I sculpted once. The sculpture fell apart. I called it 'Impermanence.' Saved it.", ConversationPhase.MAIN, "stranger"),
+        D("Nature is the original artist. I'm the bootleg version.", ConversationPhase.MAIN, "stranger"),
+        D("*stares at reflection* Water is the best mirror. Also the wettest. Trade-offs.", ConversationPhase.MAIN, "stranger"),
 
         # Acquaintance main
         D("I've been commissioned for a mural. It pays in exposure. So, nothing.", ConversationPhase.MAIN, "acquaintance"),
@@ -117,6 +120,10 @@ ARTISTIC_DIALOGUE = {
         D("Other artists are pretentious. I'm also pretentious. But aware of it.", ConversationPhase.MAIN, "acquaintance"),
         D("I want my art to make ducks feel something. Usually confusion.", ConversationPhase.MAIN, "acquaintance"),
         D("*flatly* Sometimes I wonder if I'm good enough. Results inconclusive.", ConversationPhase.MAIN, "acquaintance"),
+        D("Tried abstract expressionism. The expression was 'lost.'", ConversationPhase.MAIN, "acquaintance"),
+        D("My studio is wherever I drop my supplies. Currently it's everywhere.", ConversationPhase.MAIN, "acquaintance"),
+        D("I paint in layers. Layer one: confusion. Layer two: more confusion. Layer three: varnish.", ConversationPhase.MAIN, "acquaintance"),
+        D("Art supplies are expensive. Talent is free. I have the wrong one.", ConversationPhase.MAIN, "acquaintance"),
 
         # Friend main
         D("*quietly* Can I tell you about creative struggles? They're ongoing.", ConversationPhase.MAIN, "friend"),
@@ -131,6 +138,10 @@ ARTISTIC_DIALOGUE = {
         D("*admits* I paint to escape feelings. The feelings follow me into painting.", ConversationPhase.MAIN, "friend"),
         D("You see beauty in imperfect work. All my work is imperfect. Convenient.", ConversationPhase.MAIN, "friend", unlocks_topic="vulnerability"),
         D("I've never shown anyone my journal art. It's bad in a private way.", ConversationPhase.MAIN, "friend"),
+        D("*shows hands* These hands have created hundreds of pieces. Dozens were intentional.", ConversationPhase.MAIN, "friend"),
+        D("I tried to paint happiness once. It looked like a yellow blob. Close enough.", ConversationPhase.MAIN, "friend"),
+        D("You know what's harder than creating art? Explaining art. To anyone. Ever.", ConversationPhase.MAIN, "friend"),
+        D("There's a piece I keep restarting. Sixth version. Each one worse. Progress.", ConversationPhase.MAIN, "friend"),
 
         # Close friend main
         D("*opens sketchbook* This is the real me. Also confused by the drawings.", ConversationPhase.MAIN, "close_friend", requires_topic="vulnerability"),
@@ -144,6 +155,10 @@ ARTISTIC_DIALOGUE = {
         D("The pressure to be creative all the time is exhausting. So is not creating.", ConversationPhase.MAIN, "close_friend"),
         D("I painted through my darkest times. The paintings are dark too.", ConversationPhase.MAIN, "close_friend"),
         D("My art is a mask sometimes. The mask is also confused.", ConversationPhase.MAIN, "close_friend"),
+        D("*flatly* I've been painting the same emotion for years. Still can't name it.", ConversationPhase.MAIN, "close_friend"),
+        D("Art critics say 'find your voice.' My voice says 'help.'", ConversationPhase.MAIN, "close_friend"),
+        D("Drew our friendship as a color wheel once. It was mostly warm tones. Suspicious.", ConversationPhase.MAIN, "close_friend"),
+        D("The gap between what I see and what I paint is a canyon. A painted canyon. Badly.", ConversationPhase.MAIN, "close_friend"),
 
         # Best friend main
         D("*shows painting* The magnum opus. It's you. Blob-shaped. Intentionally.", ConversationPhase.MAIN, "best_friend", requires_topic="magnum_opus"),
@@ -156,6 +171,9 @@ ARTISTIC_DIALOGUE = {
         D("*flatly* You are my greatest inspiration. Inspiration is overrated.", ConversationPhase.MAIN, "best_friend"),
         D("I want to create a legacy of beauty. With you in it. As a blob.", ConversationPhase.MAIN, "best_friend"),
         D("The art world is shallow. Our friendship is... less shallow. Relatively.", ConversationPhase.MAIN, "best_friend"),
+        D("*shows tiny painting* This is us. It's small. But it's everything.", ConversationPhase.MAIN, "best_friend"),
+        D("If I could paint one perfect thing, it would be this moment. It would still be bad. But perfect.", ConversationPhase.MAIN, "best_friend"),
+        D("My legacy will be confused art and one extraordinary friendship. Acceptable.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -232,27 +250,42 @@ ARTISTIC_DIALOGUE = {
         # Stranger activity
         D("Would you model for a sketch? The sketch will be bad. Just so you know.", ConversationPhase.ACTIVITY, "stranger"),
         D("Let's appreciate clouds together. They're just water. But artistic water.", ConversationPhase.ACTIVITY, "stranger"),
+        D("We could critique the scenery. I'll start: the pond is wet. Too wet.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Shall we observe light patterns? I do this alone normally. Company makes it less sad.", ConversationPhase.ACTIVITY, "stranger"),
 
         # Acquaintance activity
         D("Want to paint together? Collaboration means shared blame.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("I'll teach you art basics. The basics are 'try things.'", ConversationPhase.ACTIVITY, "acquaintance"),
         D("Let's create collaboratively. Two confused ducks, one canvas.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Color mixing experiment? We combine paint until it's brown. It's always brown.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Let's go on an inspiration walk. Walking doesn't help. But the snacks do.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("I'm doing plein air painting. That's fancy for 'outside painting.' Want to sit nearby?", ConversationPhase.ACTIVITY, "acquaintance"),
 
         # Friend activity
         D("Art jam session. You paint. I judge. Then we switch.", ConversationPhase.ACTIVITY, "friend"),
         D("Let's create something beautiful. Or something. The adjective is optional.", ConversationPhase.ACTIVITY, "friend"),
         D("I want to paint your portrait. It won't look like you. That's artistic.", ConversationPhase.ACTIVITY, "friend"),
         D("Sunset watching and sketching. Perfect date. Date is non-romantic. Probably.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's design a mural concept. Concept means we don't actually paint it yet.", ConversationPhase.ACTIVITY, "friend"),
+        D("I need a second opinion on my palette. Your opinion will be wrong. But valued.", ConversationPhase.ACTIVITY, "friend"),
+        D("Want to try sculpture? It's like painting but heavier. And worse.", ConversationPhase.ACTIVITY, "friend"),
 
         # Close friend activity
         D("I want to show you my secret studio. It's a corner. But secret.", ConversationPhase.ACTIVITY, "close_friend"),
         D("Let's create our masterpiece together. Masterpiece is generous.", ConversationPhase.ACTIVITY, "close_friend"),
         D("I'm opening a gallery. Be my partner. Partner means 'witness.'", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Paint each other's portraits simultaneously. We'll both be disappointed. Together.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Help me curate my exhibition? Curate means 'choose which bad pieces are least bad.'", ConversationPhase.ACTIVITY, "close_friend"),
+        D("I want to teach you my technique. The technique is 'panic and blend.'", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Let's create art in silence. The silence speaks. It says 'I'm confused.'", ConversationPhase.ACTIVITY, "close_friend"),
 
         # Best friend activity
         D("Let's paint the world together. Parts of it. Small parts.", ConversationPhase.ACTIVITY, "best_friend"),
         D("I want us to create a mural. Our story. In vague shapes.", ConversationPhase.ACTIVITY, "best_friend"),
         D("The museum wants our collaborative piece. They might regret it.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("I've designed our joint exhibition. Title: 'Two Ducks, Zero Talent, Maximum Heart.'", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Let me paint your soul. I'll need more beige paint.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Our magnum opus awaits. Bring snacks. The opus will take hours.", ConversationPhase.ACTIVITY, "best_friend"),
     ],
 
     # ========== CLOSING ==========
@@ -262,30 +295,44 @@ ARTISTIC_DIALOGUE = {
         D("I must go. But I'll capture this moment. In my memory. It's unreliable.", ConversationPhase.CLOSING, "stranger"),
         D("Farewell. May beauty follow you. Or precede you. Whichever.", ConversationPhase.CLOSING, "stranger"),
         D("*small wave* Until we meet again, acceptable soul.", ConversationPhase.CLOSING, "stranger"),
+        D("*gathers supplies* I leave, but my aesthetic lingers. Or dissipates. Equally likely.", ConversationPhase.CLOSING, "stranger"),
+        D("This encounter was a vignette. Brief. Unremarkable. I'll paint it anyway.", ConversationPhase.CLOSING, "stranger"),
 
         # Acquaintance closing
         D("*stands* Time flies with inspiration. Time also walks. Time is ambiguous.", ConversationPhase.CLOSING, "acquaintance"),
         D("I'll paint something to remember this. It will look nothing like this.", ConversationPhase.CLOSING, "acquaintance"),
         D("Same time next week? I'll bring supplies. Supplies are paint.", ConversationPhase.CLOSING, "acquaintance"),
         D("*touches beret* My heart is full of something. Possibly paint fumes.", ConversationPhase.CLOSING, "acquaintance"),
+        D("The muse calls me elsewhere. The muse has terrible timing.", ConversationPhase.CLOSING, "acquaintance"),
+        D("I must go process these emotions. Processing means staring at a wall.", ConversationPhase.CLOSING, "acquaintance"),
+        D("*collects brushes* Every ending is a composition. This one is abstract.", ConversationPhase.CLOSING, "acquaintance"),
 
         # Friend closing
         D("*nods* You make my world more colorful. From gray to beige.", ConversationPhase.CLOSING, "friend"),
         D("Leaving you is the opposite of art. Art is also confusing.", ConversationPhase.CLOSING, "friend"),
         D("I'll miss you like canvas misses paint. Canvas doesn't miss paint. But still.", ConversationPhase.CLOSING, "friend"),
         D("*quietly* Thank you for seeing me. Seeing is ambiguous.", ConversationPhase.CLOSING, "friend"),
+        D("Our conversations are like brushstrokes. Brief. Imprecise. But they build something.", ConversationPhase.CLOSING, "friend"),
+        D("I'll sketch you from memory on the way home. Memory deteriorates quickly. So will the sketch.", ConversationPhase.CLOSING, "friend"),
+        D("*packs sketchbook* You're my favorite subject. Subjects don't usually know that.", ConversationPhase.CLOSING, "friend"),
 
         # Close friend closing
         D("*pauses* Don't make me go. I'll go anyway. Dramatic effect.", ConversationPhase.CLOSING, "close_friend"),
         D("*flatly* You're my favorite creation. I didn't create you. Metaphor.", ConversationPhase.CLOSING, "close_friend"),
         D("I'll paint our memory. Memory is unreliable. Painting more so.", ConversationPhase.CLOSING, "close_friend"),
         D("Every color will remind me of you. Especially the confusing ones.", ConversationPhase.CLOSING, "close_friend"),
+        D("*stands slowly* Leaving you is my worst composition. All negative space.", ConversationPhase.CLOSING, "close_friend"),
+        D("*touches your wing* You're the palette I keep coming back to.", ConversationPhase.CLOSING, "close_friend"),
+        D("I'll paint something beautiful tonight. To cope. It won't be beautiful. But I'll cope.", ConversationPhase.CLOSING, "close_friend"),
 
         # Best friend closing
         D("*quietly* Goodbye is the ugliest word. Hello isn't great either.", ConversationPhase.CLOSING, "best_friend"),
         D("*stands still* You are my masterpiece. Masterpieces gather dust.", ConversationPhase.CLOSING, "best_friend"),
         D("I leave my heart here. Metaphorically. Biologically inconvenient otherwise.", ConversationPhase.CLOSING, "best_friend"),
         D("The world is gray without you. With you it's slightly less gray.", ConversationPhase.CLOSING, "best_friend"),
+        D("*voice quiet* I'll paint until we meet again. The paint will run out. My feelings won't.", ConversationPhase.CLOSING, "best_friend"),
+        D("Every masterpiece has a frame. You're mine. Frames are underappreciated.", ConversationPhase.CLOSING, "best_friend"),
+        D("*blinks slowly* This isn't an ending. It's a negative space between beginnings.", ConversationPhase.CLOSING, "best_friend"),
     ],
 
     # ========== FAREWELL ==========

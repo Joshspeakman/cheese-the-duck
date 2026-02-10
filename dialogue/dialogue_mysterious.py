@@ -102,6 +102,10 @@ MYSTERIOUS_DIALOGUE = {
         D("*shows rock* I found this in a sacred place. The place was just old.", ConversationPhase.MAIN, "stranger", unlocks_topic="sacred_place"),
         D("The patterns are everywhere. If you look. And squint. And guess.", ConversationPhase.MAIN, "stranger"),
         D("I'm often misunderstood. It's lonely. Also partly my fault.", ConversationPhase.MAIN, "stranger"),
+        D("*stares at leaf* This leaf fell with purpose. No it didn't. Leaves don't plan.", ConversationPhase.MAIN, "stranger"),
+        D("I read tarot once. The cards said 'eat bread.' Unclear prophecy. I ate bread.", ConversationPhase.MAIN, "stranger"),
+        D("*whispers* Can you hear that? It's silence. Silence sounds like nothing. Confirmed.", ConversationPhase.MAIN, "stranger"),
+        D("Everything has meaning. Except some things. Those just happen. Hard to tell which.", ConversationPhase.MAIN, "stranger"),
 
         # Acquaintance main
         D("*sits closer* The sacred place is just a cave. But a good cave.", ConversationPhase.MAIN, "acquaintance", requires_topic="sacred_place"),
@@ -117,6 +121,10 @@ MYSTERIOUS_DIALOGUE = {
         D("The mysterious act started as protection. Now it's just habit.", ConversationPhase.MAIN, "acquaintance"),
         D("I'm searching for where I belong. Still searching.", ConversationPhase.MAIN, "acquaintance", requires_topic="searching"),
         D("*almost smiles* You make the shadows less cold. Shadows are always cold though.", ConversationPhase.MAIN, "acquaintance"),
+        D("*holds up crystal* This amplifies energy. Or it's a nice rock. Fifty-fifty.", ConversationPhase.MAIN, "acquaintance"),
+        D("I wrote down a dream last night. The dream was about toast. Deeply symbolic. Or hungry.", ConversationPhase.MAIN, "acquaintance"),
+        D("*stares at water* The pond knows things. It knows how to be wet. Impressive commitment.", ConversationPhase.MAIN, "acquaintance"),
+        D("Some ducks think I'm strange. I am strange. Observation confirmed.", ConversationPhase.MAIN, "acquaintance"),
 
         # Friend main
         D("*quietly* Can I tell you the real truth? Truth is less mysterious.", ConversationPhase.MAIN, "friend"),
@@ -131,6 +139,10 @@ MYSTERIOUS_DIALOGUE = {
         D("*whispers* I'm not as brave as I seem. I seem mysterious. Different thing.", ConversationPhase.MAIN, "friend"),
         D("You make me want to be known. Being known is terrifying though.", ConversationPhase.MAIN, "friend"),
         D("*quietly* I've been alone for so long. Now I'm less alone. Progress.", ConversationPhase.MAIN, "friend"),
+        D("*removes pendant* It's actually just nice jewelry. The mysticism was for protection.", ConversationPhase.MAIN, "friend"),
+        D("I named all my fears. There are many. Naming didn't help. But I know their names.", ConversationPhase.MAIN, "friend"),
+        D("*flatly* Sometimes the darkness is just darkness. No meaning. Just dark. That's scarier.", ConversationPhase.MAIN, "friend"),
+        D("You make silence comfortable. Usually silence is my performance. With you it's just quiet.", ConversationPhase.MAIN, "friend"),
 
         # Close friend main
         D("*sincerely* I love you, {duck}. The real me does. Real me is small.", ConversationPhase.MAIN, "close_friend"),
@@ -144,6 +156,9 @@ MYSTERIOUS_DIALOGUE = {
         D("*quietly* I was scared of being abandoned. Still scared. Less alone though.", ConversationPhase.MAIN, "close_friend"),
         D("You proved trust is worth the risk. The risk is ongoing.", ConversationPhase.MAIN, "close_friend"),
         D("*slightly smiling* The prophecy was right. I made it right. Same thing.", ConversationPhase.MAIN, "close_friend"),
+        D("*openly* I rehearse being mysterious. Practice. You're the only one who sees the rehearsal.", ConversationPhase.MAIN, "close_friend"),
+        D("I cried once and blamed it on spirits. It was just sadness. Regular sadness.", ConversationPhase.MAIN, "close_friend"),
+        D("*half laughs* I'm dramatic. Always have been. Now I'm dramatic with someone who stays.", ConversationPhase.MAIN, "close_friend"),
 
         # Best friend main
         D("*quietly* The vision showed me this. Us. The vision was just hoping.", ConversationPhase.MAIN, "best_friend", requires_topic="shared_future"),
@@ -156,6 +171,9 @@ MYSTERIOUS_DIALOGUE = {
         D("I see everything in you. And I accept it all. Acceptance is new for me.", ConversationPhase.MAIN, "best_friend"),
         D("*whispers* You are my greatest mystery solved. The solution is friendship.", ConversationPhase.MAIN, "best_friend"),
         D("The stars wrote our story. Or I'm reading into coincidences. Either way.", ConversationPhase.MAIN, "best_friend"),
+        D("*genuinely smiling* The greatest prophecy is that I'd learn to smile. Fulfilled.", ConversationPhase.MAIN, "best_friend"),
+        D("Every shadow I ever hid in led me here. Here is bright. Uncomfortable. Good.", ConversationPhase.MAIN, "best_friend"),
+        D("*peacefully* The universe is random. Except for us. We're intentional. Or lucky. Same.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -232,27 +250,41 @@ MYSTERIOUS_DIALOGUE = {
         # Stranger activity
         D("*gestures* Want to read clouds together? They don't say much. But together.", ConversationPhase.ACTIVITY, "stranger"),
         D("I could show you how to sense energy. Energy sensing is just paying attention.", ConversationPhase.ACTIVITY, "stranger"),
+        D("*squints at nothing* Want to search for hidden messages? They're not there. But we could look.", ConversationPhase.ACTIVITY, "stranger"),
+        D("We could sit in silence and listen. The silence says nothing. Still worth hearing.", ConversationPhase.ACTIVITY, "stranger"),
 
         # Acquaintance activity
         D("Shall we explore the mysterious grove? It's just a grove. But mysterious-ish.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("I'll teach you to read signs in nature. The signs say 'it might rain.'", ConversationPhase.ACTIVITY, "acquaintance"),
         D("Let's stargaze and ponder existence. Existence is confusing. Good pondering topic.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("I know a place where echoes sound different. Or I'm imagining it. Let's go anyway.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Want to decode ancient symbols? I drew them last week. Ancient relative to last week.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("*holds up feather* Let's divine the future with this. The future is 'more pond.' Always.", ConversationPhase.ACTIVITY, "acquaintance"),
 
         # Friend activity
         D("Want to share secrets under the stars? The secrets are mild. But under stars.", ConversationPhase.ACTIVITY, "friend"),
         D("Let's do something silly. No mystery, just fun. Fun is allowed sometimes.", ConversationPhase.ACTIVITY, "friend"),
         D("I want to show you my hidden sanctuary. It's a rock. Hidden behind a bush.", ConversationPhase.ACTIVITY, "friend"),
         D("Let's just be normal together. Normal is hard for me. But I'll try.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's walk the path I never show anyone. The path is unremarkable. But ours.", ConversationPhase.ACTIVITY, "friend"),
+        D("Want to sit under the old tree? The tree isn't magic. But it's old. Same energy.", ConversationPhase.ACTIVITY, "friend"),
+        D("*normally* Let's skip the mysticism and just hang out. Hanging out is underrated.", ConversationPhase.ACTIVITY, "friend"),
 
         # Close friend activity
         D("I want to share my deepest place with you. It's not deep. But meaningful.", ConversationPhase.ACTIVITY, "close_friend"),
         D("Let's create our own ritual. Our secret. The ritual is just meeting regularly.", ConversationPhase.ACTIVITY, "close_friend"),
         D("Come see where the visions happen. They happen in my head. But this is the spot.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Let's just talk. No cryptic metaphors. Direct sentences. Revolutionary for me.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("I want to show you the real midnight sky. No interpretation. Just stars being stars.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Come be bored with me. Boredom is intimate. Or just boring. But together.", ConversationPhase.ACTIVITY, "close_friend"),
 
         # Best friend activity
         D("Let's write our own prophecy. Together. The prophecy is 'we stay friends.'", ConversationPhase.ACTIVITY, "best_friend"),
         D("I want to share every mystery with you. The mysteries are just observations.", ConversationPhase.ACTIVITY, "best_friend"),
         D("The greatest adventure is spending time with you. Adventure is generous. But accurate.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Let's do something ordinary. Ordinary is extraordinary for me. Perspective.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("I want to make memories. Not prophecies. Memories are better. They're real.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("*quietly* Just... be here. With me. Being is enough. Finally enough.", ConversationPhase.ACTIVITY, "best_friend"),
     ],
 
     # ========== CLOSING ==========
@@ -262,30 +294,42 @@ MYSTERIOUS_DIALOGUE = {
         D("The patterns say we'll meet again. The patterns are my schedule.", ConversationPhase.CLOSING, "stranger"),
         D("*nods* Farewell. For now. Now is temporary.", ConversationPhase.CLOSING, "stranger"),
         D("*backs away* Remember what I said. I said mysterious things. That's it.", ConversationPhase.CLOSING, "stranger"),
+        D("*turns slowly* I vanish now. By walking away. Standard vanishing.", ConversationPhase.CLOSING, "stranger"),
+        D("The mist calls me. There is no mist. Atmosphere.", ConversationPhase.CLOSING, "stranger"),
+        D("*cryptically* Our paths diverge. My path goes that way. Specifically left.", ConversationPhase.CLOSING, "stranger"),
 
         # Acquaintance closing
         D("*pauses* The shadows call me back. The shadows are just my home.", ConversationPhase.CLOSING, "acquaintance"),
         D("I don't want to leave, actually. But I will. Reluctantly.", ConversationPhase.CLOSING, "acquaintance"),
         D("*genuinely* I'll count moments until return. Or just wait normally.", ConversationPhase.CLOSING, "acquaintance"),
         D("Being with you is easier than being alone. Alone is my default.", ConversationPhase.CLOSING, "acquaintance"),
+        D("*lingers* I'm stalling. Leaving isn't comfortable anymore.", ConversationPhase.CLOSING, "acquaintance"),
+        D("The night approaches. Dramatically. Also literally. It's evening.", ConversationPhase.CLOSING, "acquaintance"),
 
         # Friend closing
         D("*pauses* I hate leaving you. Hate is strong. Accurate though.", ConversationPhase.CLOSING, "friend"),
         D("*normally* Please don't forget me. Forgetting is possible. But please don't.", ConversationPhase.CLOSING, "friend"),
         D("The darkness seems darker without you. That's melodramatic. But true.", ConversationPhase.CLOSING, "friend"),
         D("*quietly* You're the light I carry with me. Metaphorical light.", ConversationPhase.CLOSING, "friend"),
+        D("*stops* I used to love leaving. Departures are dramatic. Now they're just sad.", ConversationPhase.CLOSING, "friend"),
+        D("*genuinely* Wait. I'm memorizing this moment. Memorized. Okay. Leaving.", ConversationPhase.CLOSING, "friend"),
+        D("The mask goes back on now. It's heavier than before. You made me notice.", ConversationPhase.CLOSING, "friend"),
 
         # Close friend closing
         D("*quietly* Every goodbye hurts. Even temporary ones.", ConversationPhase.CLOSING, "close_friend"),
         D("*sincerely* The shadows are lonely without you. I am. The shadows are me.", ConversationPhase.CLOSING, "close_friend"),
         D("*whispers* I leave my heart here. Metaphorically. It comes with me.", ConversationPhase.CLOSING, "close_friend"),
         D("*flatly* Distance is agony now. Agony is dramatic. But accurate.", ConversationPhase.CLOSING, "close_friend"),
+        D("*pauses* I keep finding reasons to stay. The reasons are you.", ConversationPhase.CLOSING, "close_friend"),
+        D("*normal voice* I don't want to be mysterious right now. I want to stay. Can't though.", ConversationPhase.CLOSING, "close_friend"),
 
         # Best friend closing
         D("*quietly* How do I leave my home? By walking. But emotionally difficult.", ConversationPhase.CLOSING, "best_friend"),
         D("*sincerely* The visions show us together. The visions are hopes.", ConversationPhase.CLOSING, "best_friend"),
         D("*peacefully* You are my light. Light is a metaphor. You're the metaphor.", ConversationPhase.CLOSING, "best_friend"),
         D("Leaving you is the only mystery I hate. It's not a mystery. Just hard.", ConversationPhase.CLOSING, "best_friend"),
+        D("*softly* The stars can wait. I'd rather be here. But I'll go. Reluctantly.", ConversationPhase.CLOSING, "best_friend"),
+        D("*looks back* You make the darkness feel optional. It was always optional. You showed me.", ConversationPhase.CLOSING, "best_friend"),
     ],
 
     # ========== FAREWELL ==========

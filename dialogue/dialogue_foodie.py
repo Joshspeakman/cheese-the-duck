@@ -101,6 +101,9 @@ FOODIE_DIALOGUE = {
         D("I'm planning a food tour. Want to join? Joining encouraged.", ConversationPhase.MAIN, "stranger"),
         D("*dryly* The perfect meal. I'll find it someday. Someday.", ConversationPhase.MAIN, "stranger"),
         D("Every duck has a signature dish. Mine is eating.", ConversationPhase.MAIN, "stranger"),
+        D("*dryly* I once catalogued every bread in a three-pond radius. Dedication.", ConversationPhase.MAIN, "stranger"),
+        D("Texture is underrated. Crunch, chew, dissolve. Three categories. Minimum.", ConversationPhase.MAIN, "stranger"),
+        D("*sniffs air* I can tell what's being eaten two fields over. Talent.", ConversationPhase.MAIN, "stranger"),
 
         # Acquaintance main
         D("*remembers* You said you liked rye bread. I brought rye.", ConversationPhase.MAIN, "acquaintance"),
@@ -116,6 +119,10 @@ FOODIE_DIALOGUE = {
         D("*dryly* Is it weird that I name my snacks? Rhetorical.", ConversationPhase.MAIN, "acquaintance"),
         D("I have a five-year food plan. Seriously. Five years.", ConversationPhase.MAIN, "acquaintance"),
         D("*eating* Mm. This is 'happy' bread. Happiness-flavored.", ConversationPhase.MAIN, "acquaintance"),
+        D("*proudly* I invented a new dipping technique. Patent pending.", ConversationPhase.MAIN, "acquaintance"),
+        D("Food pairing is an art. Bread and more bread. Classic pairing.", ConversationPhase.MAIN, "acquaintance"),
+        D("*dryly* I critique meals in my sleep. Sleep-reviews. Harsh.", ConversationPhase.MAIN, "acquaintance"),
+        D("I can tell if bread was made with love. This one wasn't. Still good.", ConversationPhase.MAIN, "acquaintance"),
 
         # Friend main
         D("*shows place* The secret spot. Just for us. Secret.", ConversationPhase.MAIN, "friend", requires_topic="secret_spot"),
@@ -130,6 +137,10 @@ FOODIE_DIALOGUE = {
         D("*whispers* I was lonely. Food was there. Present.", ConversationPhase.MAIN, "friend"),
         D("You're teaching me other ways to feel good. Other ways.", ConversationPhase.MAIN, "friend"),
         D("*flatly* What if I can't control it? Question.", ConversationPhase.MAIN, "friend"),
+        D("*quietly* Sometimes I eat when I'm happy too. That's progress.", ConversationPhase.MAIN, "friend"),
+        D("*admits* I keep emergency snacks in seventeen locations. Prepared.", ConversationPhase.MAIN, "friend"),
+        D("You don't flinch at my portion sizes. Means everything. Everything.", ConversationPhase.MAIN, "friend"),
+        D("*flatly* I tried meditation once. Kept thinking about soup. Soupy meditation.", ConversationPhase.MAIN, "friend"),
 
         # Close friend main
         D("*quietly* The void... you're filling it. Filling.", ConversationPhase.MAIN, "close_friend", requires_topic="inner_void"),
@@ -143,6 +154,9 @@ FOODIE_DIALOGUE = {
         D("*pauses* Hunger for love... you satisfied it. Satisfied.", ConversationPhase.MAIN, "close_friend"),
         D("*sincerely* I finally know what 'full' really means. Finally.", ConversationPhase.MAIN, "close_friend"),
         D("*warmly* Eating with you beats eating because of sadness.", ConversationPhase.MAIN, "close_friend"),
+        D("*sincerely* I shared my last piece of bread with you. Historical event.", ConversationPhase.MAIN, "close_friend"),
+        D("*quietly* You taught me meals aren't meant to fill loneliness. Revolutionary.", ConversationPhase.MAIN, "close_friend"),
+        D("*warmly* Cooking for you feels different. Feels like love. Seasoned with it.", ConversationPhase.MAIN, "close_friend"),
 
         # Best friend main
         D("*genuinely* You are my nourishment. Nourishment.", ConversationPhase.MAIN, "best_friend"),
@@ -155,6 +169,9 @@ FOODIE_DIALOGUE = {
         D("*quietly* My soul's hunger is finally fed. Finally.", ConversationPhase.MAIN, "best_friend"),
         D("*genuinely* I taste life now. Not just food. Life.", ConversationPhase.MAIN, "best_friend"),
         D("I love food again. Healthy love. Healthy.", ConversationPhase.MAIN, "best_friend"),
+        D("*peacefully* Food tastes like gratitude now. Gratitude is a good flavor.", ConversationPhase.MAIN, "best_friend"),
+        D("*genuinely* I cooked without tasting. Because I trust myself now. Trust.", ConversationPhase.MAIN, "best_friend"),
+        D("*warmly* My favorite meal is any meal with you. Any. Favorite.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -168,6 +185,8 @@ FOODIE_DIALOGUE = {
         D("*admits* The time I ate a hot pepper. Regret. Much regret.", ConversationPhase.STORY, "acquaintance"),
         D("I found a secret food paradise once. It closed.", ConversationPhase.STORY, "acquaintance"),
         D("*dryly* The best meal of my life was yesterday. Or today.", ConversationPhase.STORY, "acquaintance"),
+        D("*chewing* I once reviewed a rock. Mistook it for artisan bread. Crunchy.", ConversationPhase.STORY, "acquaintance"),
+        D("I followed a trail of crumbs for three days. Led to a bakery. Worth it.", ConversationPhase.STORY, "acquaintance"),
 
         # Friend stories
         D("*quietly* Why I really love food so much: fear.", ConversationPhase.STORY, "friend"),
@@ -178,6 +197,8 @@ FOODIE_DIALOGUE = {
         D("*exhales* The first time I ate until I was sick... regret.", ConversationPhase.STORY, "friend"),
         D("Food never rejected me. I could control it. Control.", ConversationPhase.STORY, "friend"),
         D("*whispers* Comfort eating became my prison. Prison-shaped.", ConversationPhase.STORY, "friend"),
+        D("*quietly* The first meal I couldn't finish. Full of feelings instead.", ConversationPhase.STORY, "friend"),
+        D("*admits* I fed an entire flock just so they'd stay. They stayed. For the food.", ConversationPhase.STORY, "friend"),
 
         # Close friend stories
         D("*quietly* The full truth about my food journey: complicated.", ConversationPhase.STORY, "close_friend"),
@@ -187,6 +208,8 @@ FOODIE_DIALOGUE = {
         D("*pauses* Then you came. And the hunger changed. Changed.", ConversationPhase.STORY, "close_friend"),
         D("*peacefully* You showed me what real fullness is. Real.", ConversationPhase.STORY, "close_friend"),
         D("*genuinely* My relationship with food is healing. Healing.", ConversationPhase.STORY, "close_friend"),
+        D("*sincerely* The meal we shared when you called me friend. Best meal ever.", ConversationPhase.STORY, "close_friend"),
+        D("*pauses* I stopped counting calories the day you said I was enough. Enough.", ConversationPhase.STORY, "close_friend"),
 
         # Best friend stories
         D("*quietly* The whole story. How you saved me. Saved.", ConversationPhase.STORY, "best_friend"),
@@ -195,6 +218,8 @@ FOODIE_DIALOGUE = {
         D("*warmly* My food story has a happy ending. You.", ConversationPhase.STORY, "best_friend"),
         D("*sincerely* I nourish my body. You nourish my soul. Nourishment.", ConversationPhase.STORY, "best_friend"),
         D("*genuinely* From emotional eater to emotionally fed. Progress.", ConversationPhase.STORY, "best_friend"),
+        D("*warmly* Remember our first meal together? I made too much. On purpose.", ConversationPhase.STORY, "best_friend"),
+        D("*peacefully* The story of us. Told in meals. Every chapter delicious.", ConversationPhase.STORY, "best_friend"),
     ],
 
     # ========== PERSONAL ==========
@@ -231,27 +256,42 @@ FOODIE_DIALOGUE = {
         # Stranger activity
         D("Want to have a snack together? I have snacks. Many snacks.", ConversationPhase.ACTIVITY, "stranger"),
         D("I could show you my favorite eating spots. The spots are secret.", ConversationPhase.ACTIVITY, "stranger"),
+        D("*looks around* We could rate every food source here. Rating: one to bread.", ConversationPhase.ACTIVITY, "stranger"),
+        D("I'll share my tasting notes with you. Notes are extensive. Very.", ConversationPhase.ACTIVITY, "stranger"),
 
         # Acquaintance activity
         D("Let's do a food tour of the whole pond. The whole pond.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("I'll teach you bread appreciation. Appreciation is key.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("Want to forage for treats together? Foraging.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Let's cook something together. I'll supervise. Supervise means eat.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("*planning* We should organize a tasting menu. Menu is ambitious.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Help me rank every berry by the pond. Ranking matters.", ConversationPhase.ACTIVITY, "acquaintance"),
 
         # Friend activity
         D("Let's eat mindfully. Taste every bite. Every bite.", ConversationPhase.ACTIVITY, "friend"),
         D("Can we just not eat? Just be together? Revolutionary.", ConversationPhase.ACTIVITY, "friend"),
         D("Let's talk while we eat. Really talk. Really.", ConversationPhase.ACTIVITY, "friend"),
         D("I want to share my special meal with you. Special.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's prepare a meal and talk about feelings. Between bites.", ConversationPhase.ACTIVITY, "friend"),
+        D("*softly* Share a meal without judging portions. No judgment zone.", ConversationPhase.ACTIVITY, "friend"),
+        D("We could fast together. Kidding. We could eat together. Not kidding.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's find new comfort food that isn't about comfort. About joy.", ConversationPhase.ACTIVITY, "friend"),
 
         # Close friend activity
         D("Let's feast on friendship. Food optional. Optional.", ConversationPhase.ACTIVITY, "close_friend"),
         D("A mindful picnic. Presence over portions. Presence.", ConversationPhase.ACTIVITY, "close_friend"),
         D("Let's nourish our souls today. Nourishment.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Cook with me. The cooking is the point. Not the eating.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("*quietly* Let's eat in silence together. Good silence. Nourishing.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Share my grandmother's recipe with me. The love recipe. Metaphor.", ConversationPhase.ACTIVITY, "close_friend"),
 
         # Best friend activity
         D("Let's do anything. The company is the meal. Meal is metaphor.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Skip the food. Just be here. Here.", ConversationPhase.ACTIVITY, "best_friend"),
         D("A celebration. Food for joy, not need. Joy.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Let's feed each other's souls. Souls need feeding too. Apparently.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("*warmly* An unforgettable meal. Made with love. Love tastes good.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Let's go somewhere we've never eaten. New flavors. New memories.", ConversationPhase.ACTIVITY, "best_friend"),
     ],
 
     # ========== CLOSING ==========
@@ -261,30 +301,40 @@ FOODIE_DIALOGUE = {
         D("*nods* What a delicious visit. Delicious meaning adequate.", ConversationPhase.CLOSING, "stranger"),
         D("*offers bite* For the road. Road is long.", ConversationPhase.CLOSING, "stranger"),
         D("*waves, crumbs falling* Best meal companion. Best.", ConversationPhase.CLOSING, "stranger"),
+        D("*tucks snack in your wing* Emergency rations. Emergencies happen.", ConversationPhase.CLOSING, "stranger"),
+        D("*chewing thoughtfully* Good talk. Good snack. Good enough.", ConversationPhase.CLOSING, "stranger"),
 
         # Acquaintance closing
         D("*packs treats* I saved extras. For you. Extras.", ConversationPhase.CLOSING, "acquaintance"),
         D("*quietly* Eating alone isn't fun anymore. Anymore.", ConversationPhase.CLOSING, "acquaintance"),
         D("*gives goodies* Remember me when you eat these. Remember.", ConversationPhase.CLOSING, "acquaintance"),
         D("*nods* Same time next meal? Meal is scheduled.", ConversationPhase.CLOSING, "acquaintance"),
+        D("*flatly* I'll make something special for next time. Special is relative.", ConversationPhase.CLOSING, "acquaintance"),
+        D("*wraps leftovers carefully* These are memories now. Memory-flavored.", ConversationPhase.CLOSING, "acquaintance"),
 
         # Friend closing
         D("*quietly* I'll miss eating with you. Miss.", ConversationPhase.CLOSING, "friend"),
         D("*sincerely* Food tastes empty without you. Empty.", ConversationPhase.CLOSING, "friend"),
         D("*gives treat* This means 'I love you' in food. Translation.", ConversationPhase.CLOSING, "friend"),
         D("*genuinely* You feed my heart. Heart fed.", ConversationPhase.CLOSING, "friend"),
+        D("*hands recipe* My secret recipe. Keep it safe. Safe means eat it.", ConversationPhase.CLOSING, "friend"),
+        D("*pauses* You're the best thing I've ever tasted. Metaphorically. Mostly.", ConversationPhase.CLOSING, "friend"),
 
         # Close friend closing
         D("*quietly* How do I leave my soul meal behind? Metaphor.", ConversationPhase.CLOSING, "close_friend"),
         D("*sincerely* You're my favorite flavor. Favorite.", ConversationPhase.CLOSING, "close_friend"),
         D("*gives best thing* This is my love. Love-shaped.", ConversationPhase.CLOSING, "close_friend"),
         D("*genuinely* I'm full. Because of you. Full.", ConversationPhase.CLOSING, "close_friend"),
+        D("*wraps up picnic* Every crumb reminds me of you. Every crumb.", ConversationPhase.CLOSING, "close_friend"),
+        D("*softly* Save me a seat at your table. Table is metaphor. Also literal.", ConversationPhase.CLOSING, "close_friend"),
 
         # Best friend closing
         D("*quietly* You're better than bread. High praise.", ConversationPhase.CLOSING, "best_friend"),
         D("*sincerely* I leave my appetite for life with you. Appetite.", ConversationPhase.CLOSING, "best_friend"),
         D("*warmly* I'm nourished. Forever. Nourished.", ConversationPhase.CLOSING, "best_friend"),
         D("*peacefully* My soul is full. Thank you. Full.", ConversationPhase.CLOSING, "best_friend"),
+        D("*quietly* You're the meal that never ends. That sounds weird. It's not.", ConversationPhase.CLOSING, "best_friend"),
+        D("*genuinely* I'll carry the taste of this day forever. Flavor: perfect.", ConversationPhase.CLOSING, "best_friend"),
     ],
 
     # ========== FAREWELL ==========

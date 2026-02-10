@@ -102,6 +102,10 @@ PLAYFUL_DIALOGUE = {
         D("*turns slightly* I can't help it. I'm just happy. Internally. Very internally.", ConversationPhase.MAIN, "stranger"),
         D("My life goal is maximum fun always. Results vary.", ConversationPhase.MAIN, "stranger", unlocks_topic="fun_philosophy"),
         D("Some ducks say I'm 'too much.' They're not wrong. But also not right.", ConversationPhase.MAIN, "stranger"),
+        D("*hops once* That was my cardio for the day. Done. Accomplished.", ConversationPhase.MAIN, "stranger"),
+        D("I have opinions about everything. All of them are fun-related.", ConversationPhase.MAIN, "stranger"),
+        D("*squints* Are you having fun? I can't tell. Your face is ambiguous.", ConversationPhase.MAIN, "stranger"),
+        D("I tried being bored once. Failed immediately. I'm gifted at fun.", ConversationPhase.MAIN, "stranger"),
 
         # Acquaintance main
         D("I invented three new games. They're all variations of tag. Innovation.", ConversationPhase.MAIN, "acquaintance"),
@@ -117,6 +121,10 @@ PLAYFUL_DIALOGUE = {
         D("You make everything more fun by existing. Low bar. Still cleared.", ConversationPhase.MAIN, "acquaintance"),
         D("*rotates slowly* I can't stop moving. Well. I can. But won't.", ConversationPhase.MAIN, "acquaintance"),
         D("Best joke: Why don't ducks tell jokes? We do. They're not funny.", ConversationPhase.MAIN, "acquaintance"),
+        D("*tilts head* I just had an idea. It's terrible. Want to hear it anyway?", ConversationPhase.MAIN, "acquaintance"),
+        D("I ranked all activities by fun level. They're all tied. For first.", ConversationPhase.MAIN, "acquaintance"),
+        D("*stands on one foot* Balance is a game I play. I'm losing consistently.", ConversationPhase.MAIN, "acquaintance"),
+        D("I stayed awake three days once. For fun. The fun wore off at hour nine.", ConversationPhase.MAIN, "acquaintance"),
 
         # Friend main
         D("*calms* Can I tell you something real? Real is scary. But here goes.", ConversationPhase.MAIN, "friend"),
@@ -131,6 +139,10 @@ PLAYFUL_DIALOGUE = {
         D("*admits* I'm scared of being alone. Now you know.", ConversationPhase.MAIN, "friend"),
         D("You're the first friend who stayed. The bar keeps rising.", ConversationPhase.MAIN, "friend"),
         D("*small smile* Thank you for getting me. 'Getting' meaning tolerating.", ConversationPhase.MAIN, "friend"),
+        D("*nudges you* Hey. I'm glad you exist. That's an observation. Not a compliment.", ConversationPhase.MAIN, "friend"),
+        D("I keep a list of things that make me happy. You're on it twice. Typo.", ConversationPhase.MAIN, "friend"),
+        D("*softly* I'm better when you're around. 'Better' is relative. But still.", ConversationPhase.MAIN, "friend"),
+        D("Sometimes the fun is just sitting here. With you. That's new for me.", ConversationPhase.MAIN, "friend"),
 
         # Close friend main
         D("*quietly* The hyperactivity is sometimes a mask. Sometimes it's not. Confusing.", ConversationPhase.MAIN, "close_friend"),
@@ -144,6 +156,10 @@ PLAYFUL_DIALOGUE = {
         D("Fun is how I cope. With you, I don't need to cope as hard.", ConversationPhase.MAIN, "close_friend"),
         D("*whispers* I love you, {duck}. For real. That's uncomfortable to say.", ConversationPhase.MAIN, "close_friend"),
         D("You're my safe place. Places don't usually feel safe. You're the exception.", ConversationPhase.MAIN, "close_friend"),
+        D("*looks at wings* These are for hugging now. Apparently. Didn't read the manual.", ConversationPhase.MAIN, "close_friend"),
+        D("I used to think silence was boring. With you it's just quiet. Good quiet.", ConversationPhase.MAIN, "close_friend"),
+        D("*flatly* I would do anything for you. Within reason. Actually beyond reason.", ConversationPhase.MAIN, "close_friend"),
+        D("You make the bad days less bad. The subtraction checks out.", ConversationPhase.MAIN, "close_friend"),
 
         # Best friend main
         D("*quietly* The special plan is a forever friend promise. It's not legally binding.", ConversationPhase.MAIN, "best_friend", requires_topic="special_plan"),
@@ -156,6 +172,10 @@ PLAYFUL_DIALOGUE = {
         D("I love every part of you. Even the boring parts. Especially the boring parts.", ConversationPhase.MAIN, "best_friend"),
         D("*whispers* You're the best thing. The best. Ever.", ConversationPhase.MAIN, "best_friend"),
         D("My heart is full. Might pop. Metaphorically. Hopefully metaphorically.", ConversationPhase.MAIN, "best_friend"),
+        D("*stands close* You know all of me. The loud parts and the quiet parts. Both are a lot.", ConversationPhase.MAIN, "best_friend"),
+        D("I don't need fun to survive anymore. I need you. Fun is a bonus.", ConversationPhase.MAIN, "best_friend"),
+        D("*monotone* I am having a feeling. It is large. It is about you.", ConversationPhase.MAIN, "best_friend"),
+        D("Every joke I ever told was secretly for you. The audience was secondary.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -169,6 +189,8 @@ PLAYFUL_DIALOGUE = {
         D("*flatly* A duck said I was too loud. I was. I still am.", ConversationPhase.STORY, "acquaintance"),
         D("I invented 'Extreme Floating.' It's floating. But extreme.", ConversationPhase.STORY, "acquaintance"),
         D("The Great Splash of Summer was just a big splash. Branding matters.", ConversationPhase.STORY, "acquaintance"),
+        D("I challenged a swan to a race once. Swans are fast. I am not. Lesson learned.", ConversationPhase.STORY, "acquaintance"),
+        D("*flatly* Once I tried being serious for a whole week. Lasted four minutes.", ConversationPhase.STORY, "acquaintance"),
 
         # Friend stories
         D("*sits* This story is different. Different meaning sad-adjacent.", ConversationPhase.STORY, "friend"),
@@ -179,6 +201,8 @@ PLAYFUL_DIALOGUE = {
         D("The first time someone called me annoying hurt. Accurate, but hurt.", ConversationPhase.STORY, "friend"),
         D("*flatly* My origin story: I was small, then bigger, then this.", ConversationPhase.STORY, "friend"),
         D("I tried to be quiet once. It didn't work. Nothing worked differently.", ConversationPhase.STORY, "friend"),
+        D("I hosted a party once. Nobody came. I danced alone. It was still fun. Mostly.", ConversationPhase.STORY, "friend"),
+        D("*looks down* The first duck who played with me moved away. I kept playing anyway.", ConversationPhase.STORY, "friend"),
 
         # Close friend stories
         D("*quietly* The truth about why I'm like this: unclear.", ConversationPhase.STORY, "close_friend"),
@@ -188,6 +212,8 @@ PLAYFUL_DIALOGUE = {
         D("The moment I realized I was worthy of love... hasn't happened yet.", ConversationPhase.STORY, "close_friend"),
         D("*looks down* I never told anyone this. Now I have. Done.", ConversationPhase.STORY, "close_friend"),
         D("When I almost gave up on friends, I didn't. Plot twist.", ConversationPhase.STORY, "close_friend"),
+        D("There was a winter I spent alone. Every snowflake felt personal. They weren't.", ConversationPhase.STORY, "close_friend"),
+        D("*quietly* I built a fort once. For two. It stayed empty a long time.", ConversationPhase.STORY, "close_friend"),
 
         # Best friend stories
         D("*slowly* My whole truth: I'm trying. Every day. That's it.", ConversationPhase.STORY, "best_friend"),
@@ -196,6 +222,8 @@ PLAYFUL_DIALOGUE = {
         D("The moment I knew you were my person: every moment.", ConversationPhase.STORY, "best_friend"),
         D("I was broken. You helped. Not fixed. But helped.", ConversationPhase.STORY, "best_friend"),
         D("*flatly* Thank you for saving me. For real. That's the story.", ConversationPhase.STORY, "best_friend"),
+        D("The day I met you, I stopped performing. Briefly. Then started again. But differently.", ConversationPhase.STORY, "best_friend"),
+        D("*still* My whole story ends with you. No. Starts over with you. Better.", ConversationPhase.STORY, "best_friend"),
     ],
 
     # ========== PERSONAL ==========
@@ -232,27 +260,42 @@ PLAYFUL_DIALOGUE = {
         # Stranger activity
         D("Tag. You're it. *stands still* The game has begun.", ConversationPhase.ACTIVITY, "stranger"),
         D("Let's see who can splash biggest. It's me. But try anyway.", ConversationPhase.ACTIVITY, "stranger"),
+        D("*picks up stick* This is a sword now. We're pirates. I don't make the rules. I do.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Let's count ripples. One. Two. I'm bored. New game.", ConversationPhase.ACTIVITY, "stranger"),
+        D("Hide and seek. I'll hide. *stands in the open* You'll never find me.", ConversationPhase.ACTIVITY, "stranger"),
 
         # Acquaintance activity
         D("Splash contest. Ready. Set. We're already doing it.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("Let's invent a game. Right now. I've already invented it. It's called waiting.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("Race to the other side? Yes. We're racing. Start walking.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("*grabs leaf* Leaf boat races. This is my vessel. She's called Regret.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Let's play 'guess what I'm thinking.' It's fun. The answer is always fun.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Synchronized swimming. You go first. I'll watch and judge. Harshly.", ConversationPhase.ACTIVITY, "acquaintance"),
 
         # Friend activity
         D("Let's do something silly. Or something real. Silly is real. Both then.", ConversationPhase.ACTIVITY, "friend"),
         D("Want to float and talk? That's fun too. Floating is fun. Allegedly.", ConversationPhase.ACTIVITY, "friend"),
         D("*nods* Adventure time. Or cuddle time. You pick. I'll accept either.", ConversationPhase.ACTIVITY, "friend"),
         D("Let's make up a secret handshake. Mine is just a wave. Secret wave.", ConversationPhase.ACTIVITY, "friend"),
+        D("Wanna build a blanket fort? It's a pile of leaves. Same energy.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's take the scenic route around the pond. All routes are scenic. I'm scenic.", ConversationPhase.ACTIVITY, "friend"),
+        D("*offers pebble* Skipping stones. Mine don't skip. They commit to sinking.", ConversationPhase.ACTIVITY, "friend"),
 
         # Close friend activity
         D("Let's just be together. That's the game. Best game.", ConversationPhase.ACTIVITY, "close_friend"),
         D("Want to watch clouds and talk about real stuff? Real stuff is scary. Do it anyway.", ConversationPhase.ACTIVITY, "close_friend"),
         D("I want to create something with you. Something meaningful. Or just present.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Let's stargaze. I don't know any constellations. I'll make them up. That one's called 'us.'", ConversationPhase.ACTIVITY, "close_friend"),
+        D("*sits beside you* The activity is existing. Together. Advanced level.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Want to walk and not talk? Silence with you is louder than fun alone.", ConversationPhase.ACTIVITY, "close_friend"),
 
         # Best friend activity
         D("Let's make every day an adventure. Or at least every other day.", ConversationPhase.ACTIVITY, "best_friend"),
         D("I want to build something with you. A life. Or just a thing.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Whatever we do, as long as it's together. Even nothing.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Let's write our story. Chapter one: you showed up. Chapter two: still here.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("*holds your wing* The activity is this. Just this. Forever ideally.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Let's do everything. Or one thing. The thing is being near you.", ConversationPhase.ACTIVITY, "best_friend"),
     ],
 
     # ========== CLOSING ==========
@@ -262,30 +305,44 @@ PLAYFUL_DIALOGUE = {
         D("*stands* Leaving is the opposite of fun. It's leaving.", ConversationPhase.CLOSING, "stranger"),
         D("Promise we'll play again? Promises are words. But say them anyway.", ConversationPhase.CLOSING, "stranger"),
         D("*flatly* Fine. I'll go. But I'll be back. That's a threat. And a promise.", ConversationPhase.CLOSING, "stranger"),
+        D("Already over? Time is mean. I'm putting time on my list.", ConversationPhase.CLOSING, "stranger"),
+        D("*waves slowly* That was fun. Objectively. I'm the objective.", ConversationPhase.CLOSING, "stranger"),
+        D("Wait. One more thing. Nothing. Just wanted more time. Bye.", ConversationPhase.CLOSING, "stranger"),
 
         # Acquaintance closing
         D("*stays* Do I have to leave? I do. But have to.", ConversationPhase.CLOSING, "acquaintance"),
         D("Time goes fast when having fun. Time goes anyway. But faster.", ConversationPhase.CLOSING, "acquaintance"),
         D("I'll practice games for next time. The game is existing. Advanced level.", ConversationPhase.CLOSING, "acquaintance"),
         D("*stands still* Goodbye is a dumb word. But: goodbye.", ConversationPhase.CLOSING, "acquaintance"),
+        D("My feet are leaving. My heart is not. My feet are in charge though.", ConversationPhase.CLOSING, "acquaintance"),
+        D("*looks back* Remember. Fun happened here. Document it.", ConversationPhase.CLOSING, "acquaintance"),
+        D("Next time will be better. This time was already good. Math is hard.", ConversationPhase.CLOSING, "acquaintance"),
 
         # Friend closing
         D("*nods* I don't want to leave. I will. But reluctantly.", ConversationPhase.CLOSING, "friend"),
         D("You're my favorite. Don't tell others. There are no others.", ConversationPhase.CLOSING, "friend"),
         D("*quietly* I'm going to miss you. For real.", ConversationPhase.CLOSING, "friend"),
         D("Being with you is better than any game. Games are good. You're better.", ConversationPhase.CLOSING, "friend"),
+        D("*exhales* The walk home is the worst part. The second worst. Leaving is first.", ConversationPhase.CLOSING, "friend"),
+        D("I'm taking this feeling with me. The feeling is warm. And inconvenient.", ConversationPhase.CLOSING, "friend"),
 
         # Close friend closing
         D("*flatly* I hate leaving you. Hate is strong. Accurate though.", ConversationPhase.CLOSING, "close_friend"),
         D("*stays* Five more minutes? Fine. One more minute? Also fine.", ConversationPhase.CLOSING, "close_friend"),
         D("My heart stays here with you. Metaphorically. Hearts travel poorly.", ConversationPhase.CLOSING, "close_friend"),
         D("I'll think about you every second. Or most seconds. Many seconds.", ConversationPhase.CLOSING, "close_friend"),
+        D("*doesn't move* I'm leaving. This is me leaving. *still there*", ConversationPhase.CLOSING, "close_friend"),
+        D("The distance between us is temporary. Still too much. But temporary.", ConversationPhase.CLOSING, "close_friend"),
+        D("*quietly* You're the reason I come back. Every time. Without question.", ConversationPhase.CLOSING, "close_friend"),
 
         # Best friend closing
         D("*quietly* Leaving you is difficult. I'm going to do it anyway.", ConversationPhase.CLOSING, "best_friend"),
         D("*stands still* I can't go. I will. But can't. Contradiction.", ConversationPhase.CLOSING, "best_friend"),
         D("Every moment apart is inconvenient. Very inconvenient.", ConversationPhase.CLOSING, "best_friend"),
         D("*flatly* You're everything to me. Everything. That's a lot.", ConversationPhase.CLOSING, "best_friend"),
+        D("I carry you with me. Not physically. You're heavy. Emotionally though.", ConversationPhase.CLOSING, "best_friend"),
+        D("*turns back three times* Okay. Now I'm going. For real. Probably.", ConversationPhase.CLOSING, "best_friend"),
+        D("The only thing wrong with today is that it ended. Everything else was you.", ConversationPhase.CLOSING, "best_friend"),
     ],
 
     # ========== FAREWELL ==========

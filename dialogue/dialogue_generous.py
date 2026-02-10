@@ -102,6 +102,9 @@ GENEROUS_DIALOGUE = {
         D("*offers more* Please don't say no. It makes me happy. Say yes.", ConversationPhase.MAIN, "stranger"),
         D("I practice thoughtful giving. It's an art. A compulsive art.", ConversationPhase.MAIN, "stranger"),
         D("*hopeful* Will you let me help with something? Anything.", ConversationPhase.MAIN, "stranger"),
+        D("*surveys area* I brought enough for everyone here. And some who aren't.", ConversationPhase.MAIN, "stranger"),
+        D("My motto is 'give first, think later.' Thinking is secondary.", ConversationPhase.MAIN, "stranger"),
+        D("*flatly* I once gift-wrapped a rock. They loved it. Or said they did.", ConversationPhase.MAIN, "stranger"),
 
         # Acquaintance main
         D("*remembers* You mentioned wanting this. I bought twelve.", ConversationPhase.MAIN, "acquaintance"),
@@ -117,6 +120,10 @@ GENEROUS_DIALOGUE = {
         D("*softly* Taking care of others is how I cope. Coping is ongoing.", ConversationPhase.MAIN, "acquaintance"),
         D("I hope you see me as more than gifts. But also accept the gifts.", ConversationPhase.MAIN, "acquaintance"),
         D("*earnest* Tell me your dreams. I'll help make them real. Or try.", ConversationPhase.MAIN, "acquaintance"),
+        D("*shows list* I have a spreadsheet of everyone's preferences. Detailed.", ConversationPhase.MAIN, "acquaintance"),
+        D("I categorize friends by gift difficulty. You're 'challenging.' Compliment.", ConversationPhase.MAIN, "acquaintance"),
+        D("*admits* I spent three days picking your gift. Three days well spent.", ConversationPhase.MAIN, "acquaintance"),
+        D("*dryly* I gave my bed away once. Slept on the ground. Worth it. Cold though.", ConversationPhase.MAIN, "acquaintance"),
 
         # Friend main
         D("*shows item* I saved this for someone special. You. That's you.", ConversationPhase.MAIN, "friend", requires_topic="special_gift"),
@@ -131,6 +138,10 @@ GENEROUS_DIALOGUE = {
         D("*whispers* Can I be loved for just me? Question. Real question.", ConversationPhase.MAIN, "friend"),
         D("You taught me that my presence is a gift. Still brought things though.", ConversationPhase.MAIN, "friend"),
         D("*flatly* I'm learning to receive. It's terrifying. Very.", ConversationPhase.MAIN, "friend"),
+        D("*quietly* What do you give the duck who gives everything? Answer needed.", ConversationPhase.MAIN, "friend"),
+        D("*flatly* I rehearse gift reactions. If you don't gasp, I've failed.", ConversationPhase.MAIN, "friend"),
+        D("*admits* My nest is empty. I gave away the filling. Worth it.", ConversationPhase.MAIN, "friend"),
+        D("*pauses* You looked at me. Not the gift. First time. Overwhelming.", ConversationPhase.MAIN, "friend"),
 
         # Close friend main
         D("*quietly* The fear of rejection made me give everything. Everything.", ConversationPhase.MAIN, "close_friend", requires_topic="fear_of_rejection"),
@@ -144,6 +155,9 @@ GENEROUS_DIALOGUE = {
         D("*sincerely* You gave me the gift of self-worth. Or partial self-worth.", ConversationPhase.MAIN, "close_friend"),
         D("The greatest gift? Being loved for existing. New concept.", ConversationPhase.MAIN, "close_friend"),
         D("*pauses* I want to give because I love. Not to be loved.", ConversationPhase.MAIN, "close_friend"),
+        D("*sincerely* I made you something with my own feathers. Literally. Itchy now.", ConversationPhase.MAIN, "close_friend"),
+        D("*quietly* You said 'keep it' once. I kept it. Still have it. Treasure.", ConversationPhase.MAIN, "close_friend"),
+        D("*warmly* The first time you gave me something. I cried. Silently. Still crying.", ConversationPhase.MAIN, "close_friend"),
 
         # Best friend main
         D("*quietly* You healed the deepest wound. Wound was deep.", ConversationPhase.MAIN, "best_friend"),
@@ -156,6 +170,9 @@ GENEROUS_DIALOGUE = {
         D("*quietly* Thank you for receiving my love. Receiving matters.", ConversationPhase.MAIN, "best_friend"),
         D("*whispers* You are the greatest gift of my life. Not hyperbole.", ConversationPhase.MAIN, "best_friend"),
         D("I finally know what unconditional love means. Finally.", ConversationPhase.MAIN, "best_friend"),
+        D("*peacefully* I stopped keeping score. No more tallies. Just love.", ConversationPhase.MAIN, "best_friend"),
+        D("*genuinely* My giving isn't currency anymore. It's celebration. Celebrating.", ConversationPhase.MAIN, "best_friend"),
+        D("*warmly* You gave me the gift of boundaries. Boundaries are gifts too.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
@@ -169,6 +186,8 @@ GENEROUS_DIALOGUE = {
         D("I saved for months. For the perfect gift. They didn't want it.", ConversationPhase.STORY, "acquaintance"),
         D("*admits* I accidentally gave away my own dinner. Twice.", ConversationPhase.STORY, "acquaintance"),
         D("The giving traditions of my family are intense. Very intense.", ConversationPhase.STORY, "acquaintance"),
+        D("*dryly* I gave away my lunch to a stranger once. They didn't say thanks. I brought more.", ConversationPhase.STORY, "acquaintance"),
+        D("The time I wrapped gifts for twelve hours straight. My wings still ache.", ConversationPhase.STORY, "acquaintance"),
 
         # Friend stories
         D("*quietly* The truth about why I give so much: fear.", ConversationPhase.STORY, "friend"),
@@ -179,6 +198,8 @@ GENEROUS_DIALOGUE = {
         D("*exhales* Someone took advantage of my giving once. Took a lot.", ConversationPhase.STORY, "friend"),
         D("I gave until I had nothing. They still left. Predictable.", ConversationPhase.STORY, "friend"),
         D("*whispers* That's when the fear started. The fear continues.", ConversationPhase.STORY, "friend"),
+        D("*admits* Someone once returned every gift I gave. Every single one. Box by box.", ConversationPhase.STORY, "friend"),
+        D("*quietly* I kept giving to someone who kept leaving. Pattern recognized. Late.", ConversationPhase.STORY, "friend"),
 
         # Close friend stories
         D("*quietly* The full truth now. About my wounds. Wounds are deep.", ConversationPhase.STORY, "close_friend"),
@@ -188,6 +209,8 @@ GENEROUS_DIALOGUE = {
         D("*admits* The first time I said 'no,' they left. Cause and effect.", ConversationPhase.STORY, "close_friend"),
         D("That taught me to never stop giving. Lesson learned.", ConversationPhase.STORY, "close_friend"),
         D("*pauses* Then you came. And changed things. Changed me.", ConversationPhase.STORY, "close_friend"),
+        D("*sincerely* The day I gave you something and you gave back. Paradigm shift.", ConversationPhase.STORY, "close_friend"),
+        D("*quietly* Someone once said 'your gifts aren't love.' It broke something. Still fixing.", ConversationPhase.STORY, "close_friend"),
 
         # Best friend stories
         D("*peacefully* The final truth. How you saved me. Saved is accurate.", ConversationPhase.STORY, "best_friend"),
@@ -196,6 +219,8 @@ GENEROUS_DIALOGUE = {
         D("*warmly* Now I give from love. Not fear. Mostly love.", ConversationPhase.STORY, "best_friend"),
         D("*sincerely* You rewrote my entire story. Entire.", ConversationPhase.STORY, "best_friend"),
         D("The gift of healing. I'll treasure forever. Treasuring.", ConversationPhase.STORY, "best_friend"),
+        D("*peacefully* The day I received your gift without deflecting. Breakthrough.", ConversationPhase.STORY, "best_friend"),
+        D("*genuinely* You gave me nothing once. On purpose. Best gift ever. Confusing but best.", ConversationPhase.STORY, "best_friend"),
     ],
 
     # ========== PERSONAL ==========
@@ -232,27 +257,42 @@ GENEROUS_DIALOGUE = {
         # Stranger activity
         D("Want to make care packages together? I have supplies. Excessive supplies.", ConversationPhase.ACTIVITY, "stranger"),
         D("I could teach you gift-wrapping techniques. They're elaborate.", ConversationPhase.ACTIVITY, "stranger"),
+        D("We could hand out gifts to passing ducks. I have a system.", ConversationPhase.ACTIVITY, "stranger"),
+        D("*earnestly* Help me sort my giving inventory. It's... extensive.", ConversationPhase.ACTIVITY, "stranger"),
 
         # Acquaintance activity
         D("Let's bake things for other ducks. I already started.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("We could do a surprise gift swap. Surprise mandatory.", ConversationPhase.ACTIVITY, "acquaintance"),
         D("Want to help plan a giving spree? The spree is extensive.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("*planning* Let's make thank-you cards for everyone. Everyone on the pond.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("I want to build a sharing shelf. For communal treats. Communal.", ConversationPhase.ACTIVITY, "acquaintance"),
+        D("Help me deliver these care packages. Packages are numerous.", ConversationPhase.ACTIVITY, "acquaintance"),
 
         # Friend activity
         D("Let's make each other gifts. I'll try to receive. Try.", ConversationPhase.ACTIVITY, "friend"),
         D("You choose what we do. I want to follow you. Following.", ConversationPhase.ACTIVITY, "friend"),
         D("Let's do something where you give to me. Practice.", ConversationPhase.ACTIVITY, "friend"),
         D("Teach me to receive. It'll be hard. Very hard.", ConversationPhase.ACTIVITY, "friend"),
+        D("*quietly* Let's practice saying 'no' together. I'll go first. No. That was hard.", ConversationPhase.ACTIVITY, "friend"),
+        D("Can we just sit here? Without me giving you anything? Experiment.", ConversationPhase.ACTIVITY, "friend"),
+        D("*softly* Teach me a hobby that isn't gift-making. Struggling.", ConversationPhase.ACTIVITY, "friend"),
+        D("Let's make something for me. For me. That felt weird to say.", ConversationPhase.ACTIVITY, "friend"),
 
         # Close friend activity
         D("Let's just be together. No gifts. Just us. Gifts nearby though.", ConversationPhase.ACTIVITY, "close_friend"),
         D("Your company is the only gift I need today. Today specifically.", ConversationPhase.ACTIVITY, "close_friend"),
         D("Give me something. I'm ready. Probably.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("*sincerely* Let's exchange compliments instead of gifts. Terrifying.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("Hold my wings and tell me I'm enough. No gifts involved. None.", ConversationPhase.ACTIVITY, "close_friend"),
+        D("*quietly* Let's go somewhere I can't bring presents. Liberating. Scary.", ConversationPhase.ACTIVITY, "close_friend"),
 
         # Best friend activity
         D("Let's celebrate by doing nothing. Together. Nothing is something.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Every moment with you is a gift. Every moment. All of them.", ConversationPhase.ACTIVITY, "best_friend"),
         D("Shower me with love. I can receive it now. Mostly.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("*warmly* Let's give each other the gift of honesty. Honesty is free.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("Let's do the thing where we just exist. Existing is enough. Confirmed.", ConversationPhase.ACTIVITY, "best_friend"),
+        D("*peacefully* Let's watch the sunset. No gifts. Just light. Light is free.", ConversationPhase.ACTIVITY, "best_friend"),
     ],
 
     # ========== CLOSING ==========
@@ -262,30 +302,40 @@ GENEROUS_DIALOGUE = {
         D("*waves* I'll bring more next time. More.", ConversationPhase.CLOSING, "stranger"),
         D("*hopeful* Can I come back? With more gifts? Gifts are coming.", ConversationPhase.CLOSING, "stranger"),
         D("*nods* You're worth every gift. Worth.", ConversationPhase.CLOSING, "stranger"),
+        D("*leaves extra* In case you need anything. Anything at all. Anything.", ConversationPhase.CLOSING, "stranger"),
+        D("*turns back* Almost forgot. One more gift. Last one. Probably.", ConversationPhase.CLOSING, "stranger"),
 
         # Acquaintance closing
         D("*quietly* I'll think about what you need. Think extensively.", ConversationPhase.CLOSING, "acquaintance"),
         D("*pauses* Promise to accept my gifts next time? Accepting matters.", ConversationPhase.CLOSING, "acquaintance"),
         D("*gives supplies* Just in case. Cases happen.", ConversationPhase.CLOSING, "acquaintance"),
         D("*sincerely* I'll bring even better things. Better is possible.", ConversationPhase.CLOSING, "acquaintance"),
+        D("*stacks gifts neatly* These are organized by urgency. All urgent.", ConversationPhase.CLOSING, "acquaintance"),
+        D("*warmly* I'll dream up better gifts tonight. Dreaming productive.", ConversationPhase.CLOSING, "acquaintance"),
 
         # Friend closing
         D("*quietly* I'm leaving part of me with you. Part.", ConversationPhase.CLOSING, "friend"),
         D("*sincerely* You are my greatest gift. Greatest.", ConversationPhase.CLOSING, "friend"),
         D("*genuinely* Thank you for accepting me. Accepting is the gift.", ConversationPhase.CLOSING, "friend"),
         D("*gives item* Keep this close. Close.", ConversationPhase.CLOSING, "friend"),
+        D("*pauses* I didn't give you anything this time. Growth. Terrifying growth.", ConversationPhase.CLOSING, "friend"),
+        D("*softly* Your friendship is the gift I keep receiving. Receiving still weird.", ConversationPhase.CLOSING, "friend"),
 
         # Close friend closing
         D("*quietly* How do I leave my heart behind? Metaphorically.", ConversationPhase.CLOSING, "close_friend"),
         D("*sincerely* Your love is my favorite gift. Favorite.", ConversationPhase.CLOSING, "close_friend"),
         D("*genuinely* I'll count moments until return. Counting.", ConversationPhase.CLOSING, "close_friend"),
         D("*gives precious thing* This is my love. Love-shaped.", ConversationPhase.CLOSING, "close_friend"),
+        D("*whispers* I left my heart here. You can keep it. Keep.", ConversationPhase.CLOSING, "close_friend"),
+        D("*warmly* The gift of goodbye is knowing I'll return. Return guaranteed.", ConversationPhase.CLOSING, "close_friend"),
 
         # Best friend closing
         D("*quietly* You are the gift. You.", ConversationPhase.CLOSING, "best_friend"),
         D("*sincerely* I leave my soul with you. Soul is metaphorical.", ConversationPhase.CLOSING, "best_friend"),
         D("*warmly* I give you my whole heart. Heart is also metaphorical.", ConversationPhase.CLOSING, "best_friend"),
         D("*peacefully* Love is enough. I know now. Knowing.", ConversationPhase.CLOSING, "best_friend"),
+        D("*genuinely* I'm taking your love with me. Best gift. Carrying it.", ConversationPhase.CLOSING, "best_friend"),
+        D("*sincerely* No goodbye gift needed. You are the gift. Redundant but true.", ConversationPhase.CLOSING, "best_friend"),
     ],
 
     # ========== FAREWELL ==========
