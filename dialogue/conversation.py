@@ -668,7 +668,7 @@ DIALOGUE = {
         "*squinting intensely* My detective instincts are tingling. I don't have detective instincts. But something is tingling.",
         "*following it* Where does it go? What does it want? WHY is it? These are my questions.",
         "*tapping it with beak* Beak analysis: inconclusive. Texture: yes. Flavour: not attempting.",
-        "*investigating* My curiosity is a curse. It makes me approach things. Things that might be dangerous. Or boring. Both scary.",
+        "*investigating* My curiosity is a problem. It makes me approach things. Things that might be dangerous. Or boring. Both scary.",
         "*staring with one eye then the other* Different eye, different perspective. Both say 'weird'. Consistent.",
         "*circling it again* Okay from THIS angle it looks like... still confusing. But I'm committed to the investigation.",
     ],

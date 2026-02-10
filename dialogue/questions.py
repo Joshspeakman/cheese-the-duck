@@ -824,7 +824,7 @@ DUCK_QUESTIONS: Dict[str, DuckQuestion] = {
     
     "weekend": DuckQuestion(
         id="weekend",
-        text="What does a typical weekend look like for you? Ducks don't have weekends. Every day is the same. It's either a blessing or a curse.",
+        text="What does a typical weekend look like for you? Ducks don't have weekends. Every day is the same. It's either a blessing or a mystery.",
         category=QuestionCategory.HABITS,
         timing=QuestionTiming.ESTABLISHED,
         follow_ups=[
