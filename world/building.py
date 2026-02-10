@@ -721,6 +721,20 @@ class BuildingSystem:
             if s.blueprint and s.blueprint.structure_type == StructureType.HOUSE:
                 return True
         return False
+
+    def get_shelter_protection(self) -> float:
+        """Get weather protection factor from best completed shelter (0-100).
+        
+        Returns the protection value of the best completed NEST or HOUSE structure.
+        Higher values mean more protection from harsh weather effects.
+        """
+        best = 0
+        shelter_types = (StructureType.NEST, StructureType.HOUSE)
+        for s in self.structures:
+            if (s.is_complete() and s.blueprint and 
+                    s.blueprint.structure_type in shelter_types):
+                best = max(best, s.blueprint.protection)
+        return best
     
     def start_building(self, blueprint_id: str, inventory: MaterialInventory,
                        position: Tuple[int, int] = None, player_level: int = None) -> Dict:

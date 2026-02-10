@@ -108,13 +108,23 @@ class DJDuckCommentary:
     def set_llm(self, llm_chat: 'LLMChat'):
         """Set the LLM chat instance for dynamic commentary."""
         self._llm_chat = llm_chat
-    
+
+    def _ensure_llm(self) -> bool:
+        """Auto-connect to LLM if not set. Returns True if LLM is available."""
+        if not self._llm_chat:
+            try:
+                from dialogue.llm_chat import get_llm_chat
+                self._llm_chat = get_llm_chat()
+            except Exception:
+                return False
+        return self._llm_chat is not None and self._llm_chat.is_available()
+
     def get_intro(self) -> str:
         """Get a show intro line."""
         self._show_started = True
         self._commentary_count = 0
         
-        if self._llm_chat and self._llm_chat.is_available():
+        if self._ensure_llm():
             return self._generate_llm_line("intro")
         
         return random.choice(INTRO_LINES)
@@ -134,7 +144,7 @@ class DJDuckCommentary:
             if mood_lines:
                 return random.choice(mood_lines)
         
-        if self._llm_chat and self._llm_chat.is_available():
+        if self._ensure_llm():
             return self._generate_llm_line("between", duck_mood)
         
         return random.choice(BETWEEN_SONG_LINES)
@@ -150,7 +160,7 @@ class DJDuckCommentary:
         """Get a show closing line."""
         self._show_started = False
         
-        if self._llm_chat and self._llm_chat.is_available():
+        if self._ensure_llm():
             return self._generate_llm_line("closing")
         
         return random.choice(CLOSING_LINES)
@@ -161,7 +171,7 @@ class DJDuckCommentary:
         duck_mood: Optional[str] = None
     ) -> str:
         """Generate commentary using LLM."""
-        if not self._llm_chat:
+        if not self._llm_chat or not self._llm_chat.is_available():
             return self._get_fallback(line_type)
         
         prompts = {
@@ -191,12 +201,16 @@ class DJDuckCommentary:
             if not self._llm_chat._llama:
                 return self._get_fallback(line_type)
             # Use raw completion with low token count for quick DJ lines
-            response = self._llm_chat._llama(
-                prompt,
-                max_tokens=50,
-                temperature=0.9,
-                top_p=0.9,
-                stop=["\n\n", ".", "!"],
+            from dialogue.llm_chat import _call_with_timeout
+            response = _call_with_timeout(
+                lambda: self._llm_chat._llama(
+                    prompt,
+                    max_tokens=50,
+                    temperature=0.9,
+                    top_p=0.9,
+                    stop=["\n\n", ".", "!"],
+                ),
+                timeout=10.0
             )
             if response and "choices" in response and response["choices"]:
                 content = response["choices"][0].get("text", "").strip()

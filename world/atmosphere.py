@@ -102,6 +102,96 @@ class Weather:
             return False
 
 
+# ── Weather → need decay modifiers ──────────────────────────────────────
+# Maps weather categories to multipliers on each need's decay rate.
+# Values > 1.0 = need decays faster; < 1.0 = need decays slower.
+# None/missing entries default to 1.0 (no effect).
+# Grouped by weather "feel" for maintainability.
+
+_WEATHER_NEED_GROUPS = {
+    # Hot weather: energy drains faster, hunger too (sweating), cleanliness slower (dry)
+    "hot": {"energy": 1.3, "hunger": 1.2, "cleanliness": 0.8},
+    # Cold weather: hunger drains faster (body heat), energy slightly faster
+    "cold": {"hunger": 1.3, "energy": 1.15},
+    # Wet weather: cleanliness drains faster (mud/puddles), fun slightly faster (bored indoors)
+    "wet": {"cleanliness": 1.4, "fun": 1.1},
+    # Harsh weather: energy drains fast, fun drains (scary/stressful), social need rises (huddle)
+    "harsh": {"energy": 1.4, "fun": 1.3, "social": 1.2},
+    # Pleasant weather: everything a bit slower (nice day!)
+    "pleasant": {"hunger": 0.9, "energy": 0.9, "fun": 0.8, "social": 0.9},
+    # Boring weather: fun drains faster
+    "boring": {"fun": 1.2},
+    # Magical weather: everything slows down (wonder!)
+    "magical": {"fun": 0.6, "social": 0.8, "energy": 0.9},
+}
+
+_WEATHER_TYPE_TO_GROUP = {
+    # Hot
+    WeatherType.SCORCHING: "hot", WeatherType.HEAT_WAVE: "hot",
+    WeatherType.HUMID: "hot", WeatherType.MUGGY: "hot",
+    WeatherType.BALMY_EVENING: "hot",
+    # Cold
+    WeatherType.BITTER_COLD: "cold", WeatherType.FREEZING: "cold",
+    WeatherType.CLEAR_COLD: "cold", WeatherType.FROST: "cold",
+    WeatherType.FIRST_FROST: "cold", WeatherType.SNOW_FLURRIES: "cold",
+    WeatherType.LIGHT_SNOW: "cold", WeatherType.SNOWY: "cold",
+    # Wet
+    WeatherType.RAINY: "wet", WeatherType.HEAVY_RAIN: "wet",
+    WeatherType.DRIZZLE: "wet", WeatherType.SPRING_SHOWERS: "wet",
+    WeatherType.SLEET: "wet", WeatherType.POLLEN_DRIFT: "wet",
+    # Harsh
+    WeatherType.STORMY: "harsh", WeatherType.THUNDERSTORM: "harsh",
+    WeatherType.BLIZZARD: "harsh", WeatherType.HEAVY_SNOW: "harsh",
+    WeatherType.ICE_STORM: "harsh", WeatherType.SUMMER_STORM: "harsh",
+    WeatherType.HAIL: "harsh", WeatherType.LEAF_STORM: "harsh",
+    # Pleasant
+    WeatherType.SUNNY: "pleasant", WeatherType.WARM_BREEZE: "pleasant",
+    WeatherType.GOLDEN_HOUR: "pleasant", WeatherType.DEWY_MORNING: "pleasant",
+    WeatherType.RAINBOW: "pleasant", WeatherType.CRISP: "pleasant",
+    WeatherType.WINTER_SUN: "pleasant", WeatherType.PERFECT_DAY: "pleasant",
+    WeatherType.HARVEST_MOON: "pleasant", WeatherType.AUTUMNAL: "pleasant",
+    # Boring
+    WeatherType.OVERCAST: "boring", WeatherType.CLOUDY: "boring",
+    WeatherType.FOGGY: "boring", WeatherType.MISTY: "boring",
+    WeatherType.PARTLY_CLOUDY: "boring", WeatherType.WINDY: "boring",
+    WeatherType.BREEZY: "boring",
+    # Magical
+    WeatherType.AURORA: "magical", WeatherType.METEOR_SHOWER: "magical",
+    WeatherType.DOUBLE_RAINBOW: "magical",
+}
+
+
+def get_weather_need_modifiers(weather) -> Dict[str, float]:
+    """Get need decay multipliers for the current weather.
+    
+    Args:
+        weather: A Weather instance or None
+        
+    Returns:
+        Dict mapping need names to decay multipliers (1.0 = normal).
+        Hot weather drains energy/hunger faster. Rain dirties the duck.
+        Pleasant days slow everything down. Harsh storms are stressful.
+    """
+    default = {"hunger": 1.0, "energy": 1.0, "fun": 1.0, "cleanliness": 1.0, "social": 1.0}
+    if weather is None:
+        return default
+    
+    group = _WEATHER_TYPE_TO_GROUP.get(weather.weather_type)
+    if group is None:
+        return default
+    
+    mods = _WEATHER_NEED_GROUPS.get(group, {})
+    result = default.copy()
+    
+    # Scale effect by weather intensity (0.3-1.0)
+    intensity = getattr(weather, 'intensity', 0.7)
+    for need, mult in mods.items():
+        # Lerp between 1.0 and mult based on intensity
+        result[need] = 1.0 + (mult - 1.0) * intensity
+    
+    return result
+
+
 # Weather definitions with probabilities by season
 # Each weather type has: name, message, mood_modifier, xp_multiplier, and season probabilities
 # Probabilities for each season should sum to approximately 1.0
@@ -1815,6 +1905,40 @@ class AtmosphereManager:
         if event and event.messages:
             return random.choice(event.messages)
         return None
+
+    def get_weather_remaining_hours(self) -> float:
+        """Get how many hours the current weather has left."""
+        if not self.current_weather:
+            return 0.0
+        try:
+            start = datetime.fromisoformat(self.current_weather.start_time)
+            elapsed = (datetime.now() - start).total_seconds() / 3600
+            return max(0.0, self.current_weather.duration_hours - elapsed)
+        except (ValueError, TypeError):
+            return 0.0
+
+    def forecast_next_weather(self) -> Tuple[WeatherType, float]:
+        """Predict the most likely next weather based on season probabilities.
+        
+        Returns:
+            (weather_type, confidence) where confidence is 0.0-1.0
+        """
+        season_key = f"{self.current_season.value}_prob"
+        weights: Dict[WeatherType, float] = {}
+        
+        for weather_type, data in WEATHER_DATA.items():
+            if data.get("special"):
+                continue
+            prob = data.get(season_key, 0.0)
+            if prob > 0:
+                weights[weather_type] = prob
+        
+        if not weights:
+            return WeatherType.SUNNY, 1.0
+        
+        total = sum(weights.values())
+        top = max(weights, key=weights.get)
+        return top, weights[top] / total if total > 0 else 0.0
 
     def get_status_display(self) -> Dict[str, str]:
         """Get current atmosphere status for display."""

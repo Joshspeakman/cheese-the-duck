@@ -23,6 +23,7 @@ from dialogue.player_model import PlayerModel
 from dialogue.conversation_memory import ConversationMemory
 from dialogue.questions import QuestionManager, DUCK_QUESTIONS, DuckQuestion
 from dialogue.seaman_style import SeamanDialogue, DialogueLine, DialogueTone
+from dialogue.ritual_tracker import RitualTracker
 
 if TYPE_CHECKING:
     from dialogue.memory import DuckMemory
@@ -81,6 +82,7 @@ class DuckBrain:
         self.conversation_memory = ConversationMemory()
         self.question_manager = QuestionManager()
         self.dialogue_generator = SeamanDialogue(duck_name=duck_name)
+        self.ritual_tracker = RitualTracker()
         
         # Internal state
         self._internal_mood = DuckMood.NEUTRAL
@@ -114,6 +116,31 @@ class DuckBrain:
         self._genuine_moments_today = 0
         self._last_genuine_moment_date: Optional[str] = None
         self._max_genuine_per_day = 3
+        
+        # External state flags (set by game loop)
+        self.__cold_shoulder_active = False  # Suppresses genuine moments during cold shoulder
+        self.__duck_trust = 20.0  # Synced from duck.trust for genuine moment gating
+    
+    @property
+    def _cold_shoulder_active(self) -> bool:
+        return self.__cold_shoulder_active
+    
+    @_cold_shoulder_active.setter
+    def _cold_shoulder_active(self, value: bool):
+        self.__cold_shoulder_active = value
+        # Propagate to dialogue generator so it can suppress genuine moments too
+        if hasattr(self, 'dialogue_generator'):
+            self.dialogue_generator._cold_shoulder_active = value
+
+    @property
+    def _duck_trust(self) -> float:
+        return self.__duck_trust
+    
+    @_duck_trust.setter
+    def _duck_trust(self, value: float):
+        self.__duck_trust = value
+        if hasattr(self, 'dialogue_generator'):
+            self.dialogue_generator._duck_trust = value
     
     # ========== SESSION MANAGEMENT ==========
     
@@ -234,6 +261,18 @@ class DuckBrain:
         duck_mood = context.get("duck_mood", "content")
         self.player_model.record_action(action, duck_mood)
         
+        # Record in ritual tracker — may return a deadpan observation
+        ritual_obs = self.ritual_tracker.record_interaction(action)
+        if ritual_obs:
+            self._thought_queue.append(DuckThought(
+                text=ritual_obs,
+                priority=ResponsePriority.NORMAL,
+                category="ritual",
+                source="ritual_tracker",
+                tone=DialogueTone.DEADPAN,
+                expires_at=now + 120,  # 2 minute window to surface
+            ))
+        
         # Get action count for milestones
         action_count = self.player_model.behavior_pattern.favorite_actions.get(action, 0)
         
@@ -276,10 +315,25 @@ class DuckBrain:
                           weather: str = None,
                           time_of_day: str = None) -> Optional[str]:
         """Get an idle thought/comment if appropriate."""
-        # Check if we have queued thoughts
+        # Check if we have queued thoughts (includes ritual match observations)
         thought = self._get_next_thought()
         if thought:
             return thought.text
+        
+        # Check for missed rituals (broken routines the duck should mention)
+        missed = self.ritual_tracker.check_missed_rituals()
+        if missed:
+            # Queue all but return the first one now
+            for obs in missed[1:]:
+                self._thought_queue.append(DuckThought(
+                    text=obs,
+                    priority=ResponsePriority.NORMAL,
+                    category="ritual",
+                    source="ritual_tracker_missed",
+                    tone=DialogueTone.DEADPAN,
+                    expires_at=time.time() + 300,
+                ))
+            return missed[0]
         
         # Generate new idle thought
         idle = self.dialogue_generator.generate_idle(
@@ -314,6 +368,48 @@ class DuckBrain:
             return observation.text
         
         return None
+
+    def get_weather_forecast(self, atmosphere) -> Optional[str]:
+        """Get a weather forecast comment if weather is about to change.
+        
+        Args:
+            atmosphere: AtmosphereManager instance
+            
+        Returns:
+            A deadpan forecast comment, or None
+        """
+        remaining = atmosphere.get_weather_remaining_hours()
+        # Only forecast when current weather has < 1 hour left
+        if remaining > 1.0:
+            return None
+        
+        # Low probability (10% per call to prevent spam)
+        if random.random() > 0.10:
+            return None
+        
+        try:
+            from world.atmosphere import WEATHER_DATA
+            next_type, confidence = atmosphere.forecast_next_weather()
+            weather_name = WEATHER_DATA.get(next_type, {}).get("name", next_type.value)
+        except Exception:
+            return None
+        
+        # Higher confidence = more certain predictions
+        if confidence > 0.3:
+            forecasts = [
+                f"My feathers say {weather_name.lower()} is coming. They're rarely wrong. Unfortunately.",
+                f"*sniffs air* ...{weather_name}. Soon. Don't ask how I know.",
+                f"Weather's shifting. I give it an hour before {weather_name.lower()}. Calling it.",
+                f"The wind changed. That means {weather_name.lower()}. Duck meteorology. Look it up.",
+            ]
+        else:
+            forecasts = [
+                f"Something's changing in the air. Could be {weather_name.lower()}. Could be nothing.",
+                f"*tilts head* ...My weather sense is tingling. Maybe {weather_name.lower()}? Maybe gas.",
+                f"I'd say {weather_name.lower()} is on the way, but honestly, I'm guessing. Educated guessing.",
+            ]
+        
+        return random.choice(forecasts)
     
     def get_callback(self) -> Optional[str]:
         """Get a callback to a past conversation if appropriate."""
@@ -588,7 +684,16 @@ class DuckBrain:
         return (pos_count - neg_count) / (pos_count + neg_count)
     
     def _can_do_genuine_moment(self) -> bool:
-        """Check if we can have a genuine moment (keep them rare)."""
+        """Check if we can have a genuine moment (keep them rare).
+        
+        Blocked entirely during cold shoulder — the duck is too upset
+        to let its guard down. Also requires trust ≥ 70 (devoted level).
+        """
+        if self._cold_shoulder_active:
+            return False
+        if self._duck_trust < 70:
+            return False
+        
         today = datetime.now().strftime("%Y-%m-%d")
         
         if self._last_genuine_moment_date != today:
@@ -613,6 +718,7 @@ class DuckBrain:
             "player_model": self.player_model.to_dict(),
             "conversation_memory": self.conversation_memory.to_dict(),
             "question_manager": self.question_manager.to_dict(),
+            "ritual_tracker": self.ritual_tracker.to_dict(),
             "internal_mood": self._internal_mood.value,
             "mood_intensity": self._mood_intensity,
             "genuine_moments_today": self._genuine_moments_today,
@@ -637,6 +743,9 @@ class DuckBrain:
         
         if "question_manager" in data:
             brain.question_manager = QuestionManager.from_dict(data["question_manager"])
+        
+        if "ritual_tracker" in data:
+            brain.ritual_tracker = RitualTracker.from_dict(data["ritual_tracker"])
         
         if "internal_mood" in data:
             try:

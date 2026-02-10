@@ -134,6 +134,7 @@ class LLMChat:
         self._last_error = None
         self._gpu_layers = 0
         self._model_path = None
+        self._duck_brain = None
         
         if LLM_ENABLED:
             self._check_availability()
@@ -629,14 +630,14 @@ Be unique to your personality. Don't be generic.
             if response.lower().startswith(prefix.lower()):
                 response = response[len(prefix):].strip()
 
-        # Remove asterisk-wrapped actions from the start (e.g., "*waddles around* ")
-        # These should only appear in the activity indicator, not the message
-        action_pattern = r'^\*[^*]+\*\s*'
-        response = re.sub(action_pattern, '', response).strip()
-        
-        # Also remove any underscores that might be in action names
-        # (but be careful not to break legitimate underscores)
-        response = re.sub(r'\*[a-z_]+\*', '', response).strip()
+        # Remove standalone action-only responses that have no dialogue
+        # (e.g. the LLM returned just "*waddles around*" with nothing else)
+        import re
+        stripped_actions = re.sub(r'\*[^*]+\*', '', response).strip()
+        if not stripped_actions:
+            # Response is ONLY emotes with no actual words — let it through anyway
+            # as emote-only responses are valid duck behavior
+            pass
 
         # Skip robotic/assistant-like responses
         lower_response = response.lower()

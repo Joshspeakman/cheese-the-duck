@@ -255,6 +255,44 @@ GROWTH_STAGES: Dict[GrowthStage, StageInfo] = {
 }
 
 
+# Consequence engine sensitivity by growth stage
+# Controls how quickly neglect escalates and how fast forgiveness comes
+CONSEQUENCE_MODIFIERS: Dict[GrowthStage, Dict[str, float]] = {
+    # Hatchlings: fragile, get sick fast, but forgive quickly (they're babies)
+    GrowthStage.EGG:         {"sickness_time_mult": 1.0, "coldness_time_mult": 1.0, "trust_decay_mult": 1.0},
+    GrowthStage.HATCHLING:   {"sickness_time_mult": 0.5, "coldness_time_mult": 0.5, "trust_decay_mult": 1.2},
+    GrowthStage.DUCKLING:    {"sickness_time_mult": 0.6, "coldness_time_mult": 0.6, "trust_decay_mult": 1.1},
+    # Juveniles/young adults: standard timers
+    GrowthStage.JUVENILE:    {"sickness_time_mult": 0.8, "coldness_time_mult": 0.8, "trust_decay_mult": 1.0},
+    GrowthStage.YOUNG_ADULT: {"sickness_time_mult": 1.0, "coldness_time_mult": 1.0, "trust_decay_mult": 1.0},
+    GrowthStage.ADULT:       {"sickness_time_mult": 1.0, "coldness_time_mult": 1.0, "trust_decay_mult": 1.0},
+    # Mature/elder: hardier bodies, longer memories
+    GrowthStage.MATURE:      {"sickness_time_mult": 1.2, "coldness_time_mult": 1.3, "trust_decay_mult": 0.9},
+    GrowthStage.ELDER:       {"sickness_time_mult": 1.5, "coldness_time_mult": 1.5, "trust_decay_mult": 0.8},
+    GrowthStage.LEGENDARY:   {"sickness_time_mult": 1.5, "coldness_time_mult": 1.5, "trust_decay_mult": 0.8},
+}
+
+
+def get_consequence_modifiers(simple_stage: str) -> Dict[str, float]:
+    """Get consequence sensitivity modifiers for a growth stage.
+    
+    Args:
+        simple_stage: Stage string from config.py (e.g. 'hatchling', 'adult', 'elder')
+        
+    Returns:
+        Dict with:
+            sickness_time_mult: Multiplier for sickness trigger time (lower = faster)
+            coldness_time_mult: Multiplier for cold shoulder duration (lower = forgives faster)
+            trust_decay_mult: Multiplier for trust decay rate (higher = loses trust faster)
+    """
+    detailed = get_detailed_stage(simple_stage)
+    return CONSEQUENCE_MODIFIERS.get(detailed, {
+        "sickness_time_mult": 1.0,
+        "coldness_time_mult": 1.0,
+        "trust_decay_mult": 1.0,
+    })
+
+
 @dataclass
 class AgeEvent:
     """A special event that occurred during the duck's life."""

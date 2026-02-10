@@ -8,6 +8,51 @@ makes callbacks to past conversations, and occasionally shows rare genuine warmt
 Tone: 80% deadpan/sardonic, 20% rare genuine moments
 Style: Dry observation, uncomfortable truths, philosophical tangents, 
        matter-of-fact delivery of absurd statements
+
+═══════════════════════════════════════════════════════════════════════════════
+CHEESE THE DUCK — VOICE GOLDEN RULES
+All player-facing text in this project must follow these rules.
+═══════════════════════════════════════════════════════════════════════════════
+
+ 1. SHORT SENTENCES. PERIOD-HEAVY.
+    The humor lives in rhythm. Three sentences max per beat.
+
+ 2. NEVER USE EXCLAMATION MARKS FOR ENTHUSIASM.
+    Cheese uses caps and ! for PROTEST and FALSE BRAVADO only ("MINE!",
+    "I'M NOT SCARED!"). Genuine enthusiasm gets deadpan delivery.
+
+ 3. THE DUCK IS SMARTER THAN THE SITUATION.
+    Cheese is a philosopher stuck in a pond game. He's overqualified for
+    his life and knows it.
+
+ 4. OPINIONS, NOT DESCRIPTIONS.
+    Don't say what something IS — say what Cheese THINKS about it.
+    "A minnow" → "A minnow. Barely qualifies as existing."
+
+ 5. LOWERCASE = VULNERABLE.
+    Reserve all-lowercase for genuine sadness. It's a visual whisper.
+    "...oh. you came." — the lack of capitals IS the emotion.
+
+ 6. CAPS = DEFENSIVE.
+    All-caps words signal Cheese is insisting too hard, which means he's
+    lying. "I'm FINE" means he is not fine.
+
+ 7. EMOTES IN ASTERISKS ARE STAGE DIRECTIONS.
+    They should contrast with the words: *leaning slightly* "I'm tolerating
+    this" — the lean says affection, the words deny it.
+
+ 8. NEVER BREAK CHARACTER TO BE HELPFUL.
+    System messages go through Cheese's personality. "Planted sunflower!" →
+    "Planted a sunflower. It better be grateful."
+
+ 9. THE PLAYER IS ALWAYS SUSPECT.
+    Cheese treats the player's attention as both suspicious and secretly
+    appreciated. Feeding = bribery. Petting = tolerated. Leaving = betrayal.
+
+10. BREAD IS SACRED.
+    Any mention of bread, crumbs, or food should trigger possessive
+    intensity. This is the one topic where Cheese drops all irony.
+═══════════════════════════════════════════════════════════════════════════════
 """
 from dataclasses import dataclass
 from typing import List, Dict, Optional, Tuple, Any
@@ -83,6 +128,8 @@ class SeamanDialogue:
         self._genuine_moment_cooldown = 0  # Prevent too many warm moments
         self._callback_cooldown = 0
         self._philosophy_cooldown = 0
+        self._cold_shoulder_active = False  # Set by game loop; blocks genuine moments
+        self._duck_trust = 20.0  # Synced by game loop; genuine moments require ≥70
     
     def generate_greeting(self, player_model, duck_memory, time_since_last: float = 0) -> DialogueLine:
         """Generate a greeting based on player history and absence duration."""
@@ -111,7 +158,7 @@ class SeamanDialogue:
                     DialogueTone.DEADPAN, DialogueContext.PLAYER_RETURN
                 ),
             ]
-            if random.random() < 0.15:  # Rare genuine moment
+            if random.random() < 0.15 and not self._cold_shoulder_active and self._duck_trust >= 70:  # Rare genuine moment — only for devoted+ trust
                 options.append(DialogueLine(
                     f"You were gone {days} days. I... the pond was very quiet.",
                     DialogueTone.GENUINE, DialogueContext.PLAYER_RETURN,

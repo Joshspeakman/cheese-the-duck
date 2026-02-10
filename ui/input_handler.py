@@ -202,25 +202,28 @@ ACTIVITIES
 [J] Mini-games  [7] Tricks
 [9] Garden      [0] Festivals
 [=] Diary       [;] Photo
+[K] Duck Fact   [W] Weather
 
 COLLECTIONS
 -----------
 ['] Collectibles [8] Prestige
-[~] Titles       [Y] Scrapbook
-[\\] Secrets
+[!] Titles       [Y] Scrapbook
+[\\] Secrets      [6] Treasure
 
-OTHER
+AUDIO
 -----
-[K] Duck Fact
-[M] Sound  [N] Music  [+/-] Vol
+[M] Music  [N] Sound  [+/-] Vol
+
+SYSTEM
+------
 [H] Help   [Q] Save & Quit
+[/] Save Slots
 
 MENU NAVIGATION
 ---------------
-[TAB] Main Menu
 [Arrow Keys] Navigate menus
 [Enter] Select/Confirm
-[ESC] Close menu
+[Backspace/ESC] Close/Back
 """
 
 

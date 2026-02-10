@@ -1144,6 +1144,525 @@ class DreamCloudAnimator(EventAnimator):
         return "red" if self.is_bad else "cyan"
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# AREA-SPECIFIC ANIMATORS — used by the 150+ location events
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class LilyPadAnimator(EventAnimator):
+    """Animation for lily pad events — a pad bobs on water."""
+
+    SPRITES = {
+        "pad_1": [
+            " ~~~~ ",
+            "(____)",
+            " ~~~~ ",
+        ],
+        "pad_2": [
+            "  ~~~ ",
+            " (___)",
+            "  ~~~ ",
+        ],
+        "pad_3": [
+            " @~~~ ",
+            "(_*__)",
+            " ~~~~ ",
+        ],
+        "pad_4": [
+            "  @~~ ",
+            " (_*_)",
+            "  ~~~ ",
+        ],
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="lily_pad",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            duration=5.0,
+        )
+        self.x = float(playfield_width // 2 + random.randint(-8, 8))
+        self.y = float(playfield_height - 4)
+        self.frame_duration = 0.4
+        self.bob_phase = 0.0
+
+    def start(self):
+        self.state = EventAnimationState.INTERACTING
+        self.start_time = time.time()
+        self.state_start_time = time.time()
+
+    def update(self, duck_x: int = 30, duck_y: int = 8) -> bool:
+        if self.state == EventAnimationState.FINISHED:
+            return False
+        now = time.time()
+        elapsed = now - self.start_time
+        if now - self.last_frame_time >= self.frame_duration:
+            self._update_sprite_frame()
+            self.last_frame_time = now
+        self.bob_phase += 0.05
+        self.y = float(self.playfield_height - 4) + math.sin(self.bob_phase) * 0.3
+        if elapsed >= self.total_duration:
+            self.state = EventAnimationState.FINISHED
+            return False
+        return True
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 4
+        self.current_sprite_key = f"pad_{self.frame_index + 1}"
+
+    def get_sprite(self) -> List[str]:
+        return self.SPRITES.get(self.current_sprite_key, self.SPRITES["pad_1"])
+
+    def get_color(self) -> str:
+        return "green"
+
+
+class RippleAnimator(EventAnimator):
+    """Expanding ripple circles on water."""
+
+    SPRITES = {
+        "ripple_1": [" . "],
+        "ripple_2": [" o "],
+        "ripple_3": [" O "],
+        "ripple_4": ["( )"],
+        "ripple_5": ["(   )"],
+        "ripple_6": ["(     )"],
+        "ripple_7": [" (       ) "],
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="ripple",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            duration=4.0,
+        )
+        self.x = float(playfield_width // 2 + random.randint(-10, 10))
+        self.y = float(playfield_height - 3)
+        self.frame_duration = 0.3
+
+    def start(self):
+        self.state = EventAnimationState.INTERACTING
+        self.start_time = time.time()
+        self.state_start_time = time.time()
+
+    def update(self, duck_x: int = 30, duck_y: int = 8) -> bool:
+        if self.state == EventAnimationState.FINISHED:
+            return False
+        now = time.time()
+        if now - self.last_frame_time >= self.frame_duration:
+            self._update_sprite_frame()
+            self.last_frame_time = now
+        if now - self.start_time >= self.total_duration:
+            self.state = EventAnimationState.FINISHED
+            return False
+        return True
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 7
+        self.current_sprite_key = f"ripple_{self.frame_index + 1}"
+
+    def get_sprite(self) -> List[str]:
+        return self.SPRITES.get(self.current_sprite_key, self.SPRITES["ripple_1"])
+
+    def get_color(self) -> str:
+        return "cyan"
+
+
+class FrogAnimator(EventAnimator):
+    """A frog hops in, croaks, hops away."""
+
+    SPRITES = {
+        "hop_1": [
+            " @..@ ",
+            "(----)>",
+            " /  \\ ",
+        ],
+        "hop_2": [
+            "  @..@",
+            " (----)>",
+            "  ^^  ",
+        ],
+        "sit_1": [
+            " @..@ ",
+            "(----)>",
+            " \\__/ ",
+        ],
+        "sit_2": [
+            " @oo@ ",
+            "(----)>",
+            " \\__/ ",
+        ],
+        "croak_1": [
+            " @OO@ ",
+            "(OOOO)>",
+            " \\__/ ",
+        ],
+        "croak_2": [
+            " @oo@ ",
+            "(-OO-)>",
+            " \\__/ ",
+        ],
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="frog_hop",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            duration=6.0,
+        )
+        self.coming_from_right = random.random() < 0.5
+        ground = playfield_height - 4
+        self.x = float(playfield_width + 5) if self.coming_from_right else -5.0
+        self.y = float(ground)
+        self.speed = 0.7
+        self.frame_duration = 0.2
+
+    def _setup_arrival_path(self):
+        ground = self.playfield_height - 4
+        mid = self.playfield_width // 2
+        self.path_points = [(self.x, self.y), (mid + random.randint(-5, 5), ground)]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        if elapsed >= 2.5:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        exit_x = -10.0 if not self.coming_from_right else self.playfield_width + 10
+        # Frog hops upward then away
+        self.path_points = [
+            (self.x, self.y),
+            (self.x + (5 if exit_x > self.x else -5), self.y - 3),
+            (exit_x, self.y),
+        ]
+        self.path_index = 0
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+        if self.state == EventAnimationState.ARRIVING:
+            self.current_sprite_key = f"hop_{self.frame_index + 1}"
+        elif self.state == EventAnimationState.INTERACTING:
+            elapsed = time.time() - self.state_start_time
+            if int(elapsed * 2) % 3 == 0:
+                self.current_sprite_key = f"croak_{self.frame_index + 1}"
+            else:
+                self.current_sprite_key = f"sit_{self.frame_index + 1}"
+        elif self.state == EventAnimationState.LEAVING:
+            self.current_sprite_key = f"hop_{self.frame_index + 1}"
+
+    def get_sprite(self) -> List[str]:
+        return self.SPRITES.get(self.current_sprite_key, self.SPRITES["sit_1"])
+
+    def get_color(self) -> str:
+        return "green"
+
+
+class DragonflyAnimator(EventAnimator):
+    """A dragonfly zips erratically around the screen."""
+
+    SPRITES = {
+        "fly_1": ["--O--"],
+        "fly_2": [" =O= "],
+        "fly_3": ["--o--"],
+        "hover_1": ["==O=="],
+        "hover_2": [" =o= "],
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="dragonfly",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            duration=5.0,
+        )
+        self.x = float(playfield_width + 3)
+        self.y = random.uniform(2, playfield_height - 3)
+        self.speed = 1.2
+        self.frame_duration = 0.1
+        self._zip_target_x = 0.0
+        self._zip_target_y = 0.0
+        self._zip_timer = 0.0
+
+    def _setup_arrival_path(self):
+        mid_x = self.playfield_width // 2
+        mid_y = self.playfield_height // 2
+        self.path_points = [(self.x, self.y), (mid_x, mid_y)]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+        self._pick_zip_target()
+
+    def _pick_zip_target(self):
+        self._zip_target_x = random.uniform(5, self.playfield_width - 5)
+        self._zip_target_y = random.uniform(2, self.playfield_height - 3)
+        self._zip_timer = time.time()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        # Zip to random points
+        dx = self._zip_target_x - self.x
+        dy = self._zip_target_y - self.y
+        dist = math.sqrt(dx * dx + dy * dy)
+        if dist < 2 or time.time() - self._zip_timer > 0.8:
+            self._pick_zip_target()
+        else:
+            self.x += (dx / max(dist, 0.1)) * self.speed
+            self.y += (dy / max(dist, 0.1)) * self.speed * 0.5
+        if elapsed >= 3.0:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y), (self.playfield_width + 10, -3)]
+        self.path_index = 0
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 3
+        if self.state == EventAnimationState.INTERACTING:
+            self.current_sprite_key = f"hover_{(self.frame_index % 2) + 1}"
+        else:
+            self.current_sprite_key = f"fly_{self.frame_index + 1}"
+
+    def get_sprite(self) -> List[str]:
+        return self.SPRITES.get(self.current_sprite_key, self.SPRITES["fly_1"])
+
+    def get_color(self) -> str:
+        return "blue"
+
+
+class BubblesAnimator(EventAnimator):
+    """Bubbles rising from underwater — particle-based like BreezeAnimator."""
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="bubbles",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            duration=4.0,
+        )
+        self.particles: List[Tuple[float, float, str]] = []
+        bubble_chars = ["o", "O", ".", "0", "°"]
+        # Spawn bubbles from bottom
+        spawn_x = playfield_width // 2 + random.randint(-10, 10)
+        for _ in range(15):
+            self.particles.append((
+                spawn_x + random.uniform(-4, 4),
+                float(playfield_height - 2 + random.uniform(0, 3)),
+                random.choice(bubble_chars),
+            ))
+        self.frame_duration = 0.1
+
+    def start(self):
+        self.state = EventAnimationState.INTERACTING
+        self.start_time = time.time()
+        self.state_start_time = time.time()
+
+    def update(self, duck_x: int = 30, duck_y: int = 8) -> bool:
+        if self.state == EventAnimationState.FINISHED:
+            return False
+        elapsed = time.time() - self.start_time
+        new_particles = []
+        for x, y, char in self.particles:
+            ny = y - random.uniform(0.2, 0.6)
+            nx = x + random.uniform(-0.3, 0.3)
+            if ny > 0:
+                new_particles.append((nx, ny, char))
+        # Spawn new bubbles from bottom
+        if elapsed < self.total_duration and random.random() < 0.4:
+            spawn_x = self.playfield_width // 2 + random.randint(-8, 8)
+            new_particles.append((
+                spawn_x + random.uniform(-2, 2),
+                float(self.playfield_height - 2),
+                random.choice(["o", "O", ".", "0", "°"]),
+            ))
+        self.particles = new_particles
+        if elapsed >= self.total_duration + 1.0 or not self.particles:
+            self.state = EventAnimationState.FINISHED
+            self.particles = []
+            return False
+        return True
+
+    def get_sprite(self) -> List[str]:
+        return []
+
+    def get_particles(self) -> List[Tuple[int, int, str]]:
+        return [(int(x), int(y), c) for x, y, c in self.particles]
+
+    def get_color(self) -> str:
+        return "cyan"
+
+
+class FallingObjectAnimator(EventAnimator):
+    """Something falls from above — acorns, pinecones, tomatoes."""
+
+    SPRITES = {
+        "fall_1": ["*"],
+        "fall_2": ["+"],
+        "fall_3": ["o"],
+        "impact_1": [
+            " * ",
+            "*+*",
+            " * ",
+        ],
+        "impact_2": [
+            "  .  ",
+            ". + .",
+            "  .  ",
+        ],
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="falling_object",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            duration=3.0,
+        )
+        self.x = float(playfield_width // 2 + random.randint(-10, 10))
+        self.y = 0.0
+        self.target_y = float(playfield_height - 3)
+        self.speed = 0.8
+        self.frame_duration = 0.12
+        self._hit_ground = False
+
+    def start(self):
+        self.state = EventAnimationState.ARRIVING
+        self.start_time = time.time()
+        self.state_start_time = time.time()
+
+    def _setup_arrival_path(self):
+        self.path_points = [(self.x, 0), (self.x + random.uniform(-2, 2), self.target_y)]
+        self.path_index = 0
+
+    def _update_arriving(self, duck_x: int, duck_y: int):
+        self.y += self.speed
+        self.x += random.uniform(-0.1, 0.1)
+        if self.y >= self.target_y:
+            self._hit_ground = True
+            self.state = EventAnimationState.INTERACTING
+            self._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        if elapsed >= 1.0:
+            self.state = EventAnimationState.FINISHED
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 3
+        if self._hit_ground:
+            self.current_sprite_key = f"impact_{(self.frame_index % 2) + 1}"
+        else:
+            self.current_sprite_key = f"fall_{self.frame_index + 1}"
+
+    def get_sprite(self) -> List[str]:
+        return self.SPRITES.get(self.current_sprite_key, self.SPRITES["fall_1"])
+
+    def get_color(self) -> str:
+        return "red" if self._hit_ground else "yellow"
+
+
+class SquirrelAnimator(EventAnimator):
+    """A squirrel dashes across the screen, pauses, then bolts."""
+
+    SPRITES = {
+        "run_right_1": [
+            " /\\ ",
+            "('v')",
+            " /|~",
+        ],
+        "run_right_2": [
+            "  /\\",
+            "('v')",
+            "~|\\ ",
+        ],
+        "sit_1": [
+            " /\\  ",
+            "('.')>",
+            " /|  ",
+        ],
+        "sit_2": [
+            " /\\  ",
+            "(o.o)>",
+            " /|  ",
+        ],
+        "panic_1": [
+            "  /\\!",
+            "('O')",
+            " /|\\ ",
+        ],
+        "panic_2": [
+            "!/\\  ",
+            "('O')",
+            " /|\\ ",
+        ],
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="squirrel",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            duration=5.0,
+        )
+        ground = playfield_height - 4
+        self.coming_from_right = random.random() < 0.5
+        self.x = float(playfield_width + 5) if self.coming_from_right else -5.0
+        self.y = float(ground)
+        self.speed = 1.0
+        self.frame_duration = 0.15
+
+    def _setup_arrival_path(self):
+        ground = self.playfield_height - 4
+        mid = self.playfield_width // 2 + random.randint(-8, 8)
+        self.path_points = [(self.x, self.y), (mid, ground)]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        if elapsed >= 1.5:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        # Squirrel bolts in the opposite direction at high speed
+        exit_x = -10.0 if self.coming_from_right else self.playfield_width + 10
+        self.path_points = [
+            (self.x, self.y),
+            (exit_x, self.y - 2),
+        ]
+        self.path_index = 0
+        self.speed = 2.0  # Panic speed!
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+        if self.state == EventAnimationState.ARRIVING:
+            self.current_sprite_key = f"run_right_{self.frame_index + 1}"
+        elif self.state == EventAnimationState.INTERACTING:
+            self.current_sprite_key = f"sit_{self.frame_index + 1}"
+        elif self.state == EventAnimationState.LEAVING:
+            self.current_sprite_key = f"panic_{self.frame_index + 1}"
+
+    def get_sprite(self) -> List[str]:
+        return self.SPRITES.get(self.current_sprite_key, self.SPRITES["sit_1"])
+
+    def get_color(self) -> str:
+        if self.state == EventAnimationState.LEAVING:
+            return "red"
+        return "yellow"
+
+
 # Factory function to create appropriate animator for an event
 def create_event_animator(
     event_id: str,
@@ -1170,6 +1689,14 @@ def create_event_animator(
         "found_crumb": CrumbAnimator,
         "loud_noise": LoudNoiseAnimator,
         "bad_dream": lambda w, h: DreamCloudAnimator(w, h, is_bad=True),
+        # Area-specific animations
+        "lily_pad": LilyPadAnimator,
+        "ripple": RippleAnimator,
+        "frog_hop": FrogAnimator,
+        "dragonfly": DragonflyAnimator,
+        "bubbles": BubblesAnimator,
+        "falling_object": FallingObjectAnimator,
+        "squirrel": SquirrelAnimator,
     }
     
     animator_class = animators.get(event_id)
@@ -1188,4 +1715,12 @@ ANIMATED_EVENTS = [
     "found_crumb",
     "loud_noise",
     "bad_dream",
+    # Area-specific animations
+    "lily_pad",
+    "ripple",
+    "frog_hop",
+    "dragonfly",
+    "bubbles",
+    "falling_object",
+    "squirrel",
 ]
