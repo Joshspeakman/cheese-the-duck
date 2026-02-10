@@ -22,7 +22,13 @@ logger = logging.getLogger(__name__)
 
 class StationID(Enum):
     """Available radio stations."""
+    QUACK_FM = "quack_fm"
+    THE_POND = "the_pond"
+    BREAD_CRUMBS = "bread_crumbs"
+    FEATHER_AND_BONE = "feather_and_bone"
+    HONK_RADIO = "honk_radio"
     NOOK_RADIO = "nook_radio"
+    DJ_DUCK_LIVE = "dj_duck_live"
 
 
 @dataclass
@@ -38,16 +44,71 @@ class RadioStation:
     volume_boost: int = 0  # Volume adjustment: positive = louder, negative = quieter
 
 
-# Station definitions - just Nook Radio now
+# Station definitions
 STATIONS: Dict[StationID, RadioStation] = {
+    StationID.QUACK_FM: RadioStation(
+        id=StationID.QUACK_FM,
+        name="Quack FM",
+        tagline="Lofi beats for staring at walls",
+        stream_url="https://ice1.somafm.com/groovesalad-256-mp3",
+        genre="lofi",
+        fallback_urls=["https://ice2.somafm.com/groovesalad-256-mp3"],
+        volume_boost=10,
+    ),
+    StationID.THE_POND: RadioStation(
+        id=StationID.THE_POND,
+        name="The Pond",
+        tagline="Ambient nature sounds",
+        stream_url="https://ice1.somafm.com/dronezone-256-mp3",
+        genre="ambient",
+        fallback_urls=["https://ice2.somafm.com/dronezone-256-mp3"],
+        volume_boost=15,
+    ),
+    StationID.BREAD_CRUMBS: RadioStation(
+        id=StationID.BREAD_CRUMBS,
+        name="Bread Crumbs",
+        tagline="8-bit chiptune nostalgia",
+        stream_url="https://stream.laut.fm/chiptune",
+        genre="chiptune",
+        fallback_urls=["https://ice1.somafm.com/cliqhop-256-mp3"],
+        volume_boost=5,
+    ),
+    StationID.FEATHER_AND_BONE: RadioStation(
+        id=StationID.FEATHER_AND_BONE,
+        name="Feather & Bone",
+        tagline="Smooth jazz",
+        stream_url="https://ice1.somafm.com/secretagent-256-mp3",
+        genre="jazz",
+        fallback_urls=["https://ice2.somafm.com/secretagent-256-mp3"],
+        volume_boost=10,
+    ),
+    StationID.HONK_RADIO: RadioStation(
+        id=StationID.HONK_RADIO,
+        name="HONK Radio",
+        tagline="Chaotic upbeat energy",
+        stream_url="https://streams.ilovemusic.de/iloveradio1.mp3",
+        genre="dance",
+        fallback_urls=["https://stream.laut.fm/partyhard"],
+        volume_boost=0,
+    ),
     StationID.NOOK_RADIO: RadioStation(
         id=StationID.NOOK_RADIO,
         name="Nook Radio",
-        tagline="Hourly vibes. Like a certain island.",
-        stream_url="nook",  # Special marker
+        tagline="Hourly music that changes with the time of day",
+        stream_url="nook",  # Special marker — URL generated dynamically
         genre="hourly",
         fallback_urls=[],
-        volume_boost=30  # Boost volume for better audibility
+        volume_boost=30,
+    ),
+    StationID.DJ_DUCK_LIVE: RadioStation(
+        id=StationID.DJ_DUCK_LIVE,
+        name="DJ Duck Live",
+        tagline="Saturday nights 8pm-midnight with deadpan commentary",
+        stream_url="https://ice1.somafm.com/lush-128-mp3",
+        genre="live",
+        fallback_urls=["https://ice2.somafm.com/lush-128-mp3"],
+        always_available=False,  # Only Saturday 8pm-midnight
+        volume_boost=10,
     ),
 }
 
@@ -244,14 +305,23 @@ class RadioPlayer:
             return  # Player not yet detected or not available
 
         if station_id is None:
-            station_id = StationID.NOOK_RADIO
+            station_id = StationID.QUACK_FM
 
         station = STATIONS.get(station_id)
         if not station:
             return
 
-        # Get URL for Nook Radio (hour-based)
-        url = _get_nook_url()
+        # Check DJ Duck Live availability (Saturday 8pm-midnight only)
+        if station_id == StationID.DJ_DUCK_LIVE:
+            now = datetime.now()
+            if now.weekday() != 5 or not (20 <= now.hour < 24):
+                return  # Not Saturday evening — DJ Duck is off-air
+
+        # Get URL — special handling for Nook Radio (hour-based)
+        if station.stream_url == "nook":
+            url = _get_nook_url()
+        else:
+            url = station.stream_url
 
         # Build command before spawning thread
         cmd = self._build_command(url)
@@ -326,6 +396,7 @@ class RadioPlayer:
     def get_station_list(self) -> List[Dict]:
         """Get station list for menu."""
         stations = []
+        now = datetime.now()
         
         for station in STATIONS.values():
             is_current = (
@@ -333,21 +404,51 @@ class RadioPlayer:
                 self._current_station.id == station.id
             )
             
+            # Check availability for DJ Duck Live
+            available = True
+            status_text = ""
+            if station.id == StationID.DJ_DUCK_LIVE:
+                if now.weekday() != 5 or not (20 <= now.hour < 24):
+                    available = False
+                    status_text = "Saturday 8pm-midnight"
+                elif is_current:
+                    status_text = "Playing"
+                else:
+                    status_text = "ON AIR"
+            elif is_current:
+                status_text = "Playing"
+            
             stations.append({
                 "id": station.id,
                 "name": station.name,
                 "tagline": station.tagline,
                 "genre": station.genre,
-                "available": True,
+                "available": available,
                 "is_current": is_current,
-                "status": "Playing" if is_current else "",
+                "status": status_text,
             })
         
         return stations
     
     def update(self):
-        """Called from game loop - no-op now that DJ Duck is removed."""
-        pass
+        """Called from game loop — handle Nook Radio hour transitions."""
+        if not self._is_playing or not self._current_station:
+            return
+        
+        # Nook Radio needs to switch streams on the hour
+        if self._current_station.id == StationID.NOOK_RADIO:
+            now = datetime.now()
+            if not hasattr(self, '_last_nook_hour'):
+                self._last_nook_hour = now.hour
+            if now.hour != self._last_nook_hour:
+                self._last_nook_hour = now.hour
+                self.play(StationID.NOOK_RADIO)  # Restart with new hour URL
+        
+        # DJ Duck Live goes off-air at midnight
+        if self._current_station.id == StationID.DJ_DUCK_LIVE:
+            now = datetime.now()
+            if now.weekday() != 5 or not (20 <= now.hour < 24):
+                self.stop()  # Show's over
 
 
 # Singleton instance with thread-safe initialization
