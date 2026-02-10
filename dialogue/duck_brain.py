@@ -492,12 +492,17 @@ class DuckBrain:
     
     # ========== LLM INTEGRATION ==========
     
-    def build_llm_prompt(self) -> str:
-        """Build the system prompt for LLM dialogue generation."""
+    def build_llm_prompt(self, memory_context: str = "") -> str:
+        """Build the system prompt for LLM dialogue generation.
+        
+        Args:
+            memory_context: Additional context from game state (favorites, mood, etc.)
+        """
         return self.dialogue_generator.build_llm_personality_prompt(
             player_model=self.player_model,
             duck_memory=self.duck_memory,
-            conversation_memory=self.conversation_memory
+            conversation_memory=self.conversation_memory,
+            memory_context=memory_context
         )
     
     def get_llm_context(self, max_messages: int = 10) -> List[Dict]:
