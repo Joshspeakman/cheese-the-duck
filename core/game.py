@@ -398,6 +398,7 @@ class Game:
         self._random_comment_interval = 45.0  # Seconds between random comments
         self._pending_visitor_comment = None
         self._pending_visitor_comment_time = 0.0
+        self._last_visitor_comment_time = 0.0
         self._pending_weather_comment = None
         self._pending_weather_comment_time = 0.0
         self._last_known_weather = None  # Track weather changes
@@ -3074,9 +3075,10 @@ class Game:
 
         # Check for pending visitor reaction comment (Cheese responding to friend)
         if self._pending_visitor_comment and current_time >= self._pending_visitor_comment_time:
-            self._show_message_if_no_menu(self._pending_visitor_comment, duration=4.0, category="duck")
+            self._show_message_if_no_menu(self._pending_visitor_comment, duration=6.0, category="duck")
             duck_sounds.quack("content")
             self._pending_visitor_comment = None
+            self._last_visitor_comment_time = current_time
 
         # Check for pending weather reaction comment (Cheese reacting to weather)
         if self._pending_weather_comment and current_time >= self._pending_weather_comment_time:
@@ -3259,7 +3261,14 @@ class Game:
         frame_changed, _ = visitor_animator.update(current_time, duck_x, duck_y)
         
         # Check for random dialogue from visitor
-        dialogue = visitor_animator.get_random_dialogue(self.duck.name, current_time)
+        # SKIP if Cheese is still waiting to respond or a scripted conversation is active
+        _has_pending = bool(self._pending_visitor_comment)
+        _has_scripted = bool(getattr(self, '_active_guest_conversation', None))
+        
+        dialogue = None
+        if not _has_pending and not _has_scripted:
+            dialogue = visitor_animator.get_random_dialogue(self.duck.name, current_time)
+        
         if dialogue:
             self._show_message_if_no_menu(dialogue, duration=8.0, category="friend")
             
@@ -3272,7 +3281,7 @@ class Game:
                 personality = str(personality)
             
             # Try to trigger a scripted multi-turn conversation (30% chance)
-            if not getattr(self, '_active_guest_conversation', None) and random.random() < 0.3:
+            if random.random() < 0.3:
                 friendship_level = friend.friendship_level.value if hasattr(friend.friendship_level, 'value') else str(friend.friendship_level)
                 convo = get_random_conversation(personality, friendship_level)
                 if convo and convo.exchanges:
@@ -3287,15 +3296,19 @@ class Game:
                     self._pending_visitor_comment = f"{self.duck.name}: {exchange.cheese_response}"
                     self._pending_visitor_comment_time = current_time + 9.0
                     self._guest_convo_index = 1
-            else:
+                    # Mark time so item comments don't pile on
+                    self._last_visitor_comment_time = current_time
+            
+            if not _has_scripted and not getattr(self, '_active_guest_conversation', None):
+                # Cheese always responds to visitor dialogue
                 duck_response = self.contextual_dialogue.get_conversation_response(personality)
                 if duck_response:
-                    # Schedule response after visitor finishes talking
                     self._pending_visitor_comment = f"{self.duck.name}: {duck_response}"
-                    self._pending_visitor_comment_time = current_time + 9.0  # After visitor's message duration
+                    self._pending_visitor_comment_time = current_time + 9.0
+                    self._last_visitor_comment_time = current_time
         
-        # Continue active scripted conversation
-        if getattr(self, '_active_guest_conversation', None):
+        # Continue active scripted conversation (only if no pending comment — one message at a time)
+        if getattr(self, '_active_guest_conversation', None) and not self._pending_visitor_comment:
             convo = self._active_guest_conversation
             idx = getattr(self, '_guest_convo_index', 0)
             next_time = getattr(self, '_guest_convo_next_time', 0)
@@ -3315,35 +3328,51 @@ class Game:
                     friend_obj.friendship_points += int(exchange.friendship_bonus)
                 self._guest_convo_index = idx + 1
                 self._guest_convo_next_time = current_time + 20.0  # Wait before next exchange
+                self._last_visitor_comment_time = current_time
             elif idx >= len(convo.exchanges):
                 self._active_guest_conversation = None  # Conversation complete
         
         # Comment on items/structures the visitor sees (only once per item)
-        if visitor_animator.is_near_duck():
+        # Gate behind: no pending comment, no active conversation, and cooldown since last comment
+        _comment_cooldown = getattr(self, '_last_visitor_comment_time', 0)
+        _can_comment = (not self._pending_visitor_comment 
+                        and not getattr(self, '_active_guest_conversation', None)
+                        and current_time - _comment_cooldown >= 12.0)
+        if _can_comment and visitor_animator.is_near_duck():
+            _made_comment = False
             # Comment on placed items
-            for item in self.habitat.placed_items:
-                item_id = item.item_id if hasattr(item, 'item_id') else str(item)
-                item_name = item.name if hasattr(item, 'name') else item_id
-                comment = visitor_animator.get_item_comment(item_id, item_name)
-                if comment:
-                    self._show_message_if_no_menu(comment, duration=4.0, category="friend")
-                    break  # Only one comment at a time
-            
-            # Comment on cosmetics
-            for slot, cosmetic_id in self.habitat.equipped_cosmetics.items():
-                if cosmetic_id:
-                    comment = visitor_animator.get_cosmetic_comment(self.duck.name, cosmetic_id)
+            if not _made_comment:
+                for item in self.habitat.placed_items:
+                    item_id = item.item_id if hasattr(item, 'item_id') else str(item)
+                    item_name = item.name if hasattr(item, 'name') else item_id
+                    comment = visitor_animator.get_item_comment(item_id, item_name)
                     if comment:
-                        self._show_message_if_no_menu(comment, duration=4.0, category="friend")
-                        break
+                        self._show_message_if_no_menu(comment, duration=5.0, category="friend")
+                        self._last_visitor_comment_time = current_time
+                        _made_comment = True
+                        break  # Only one comment at a time
             
-            # Comment on built structures
-            for structure in self.building.structures:
-                if structure.status.value == "complete":
-                    comment = visitor_animator.get_item_comment(structure.blueprint_id, structure.blueprint_id)
-                    if comment:
-                        self._show_message_if_no_menu(comment, duration=4.0, category="friend")
-                        break
+            # Comment on cosmetics (only if no item comment this cycle)
+            if not _made_comment:
+                for slot, cosmetic_id in self.habitat.equipped_cosmetics.items():
+                    if cosmetic_id:
+                        comment = visitor_animator.get_cosmetic_comment(self.duck.name, cosmetic_id)
+                        if comment:
+                            self._show_message_if_no_menu(comment, duration=5.0, category="friend")
+                            self._last_visitor_comment_time = current_time
+                            _made_comment = True
+                            break
+            
+            # Comment on built structures (only if no other comment this cycle)
+            if not _made_comment:
+                for structure in self.building.structures:
+                    if structure.status.value == "complete":
+                        comment = visitor_animator.get_item_comment(structure.blueprint_id, structure.blueprint_id)
+                        if comment:
+                            self._show_message_if_no_menu(comment, duration=5.0, category="friend")
+                            self._last_visitor_comment_time = current_time
+                            _made_comment = True
+                            break
         
         # Check if visit should end (time-based or conversation complete)
         visit_start = datetime.fromisoformat(self.friends.current_visit.started_at)
