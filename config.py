@@ -144,13 +144,13 @@ def _get_model_dir():
 LLM_MODEL_DIR = _get_model_dir()
 
 # GPU Acceleration (auto-detect if -1, or specify layer count)
-LLM_GPU_LAYERS = 0              # 0 = CPU only (set to -1 after reinstalling llama-cpp-python with CUDA)
+LLM_GPU_LAYERS = -1             # -1 = auto-detect GPU, 0 = CPU only, N = specific layer count
 
 # Model Parameters
-LLM_CONTEXT_SIZE = 2048         # Context window size
-LLM_MAX_TOKENS = 100            # Max tokens for behavior commentary
-LLM_MAX_TOKENS_CHAT = 150       # Max tokens for player chat
-LLM_TEMPERATURE = 0.8           # Response creativity (0.0-1.0)
+LLM_CONTEXT_SIZE = 1024         # Context window size (smaller = faster, 1024 is plenty for short chat)
+LLM_MAX_TOKENS = 80             # Max tokens for behavior commentary
+LLM_MAX_TOKENS_CHAT = 120       # Max tokens for player chat (shorter = faster responses)
+LLM_TEMPERATURE = 0.75          # Response creativity (0.0-1.0)
 
 # LLM Behavior Integration  
 LLM_BEHAVIOR_ENABLED = True     # Use LLM for duck action commentary
@@ -161,12 +161,12 @@ LLM_SPECIAL_EVENT_CHANCE = 1.0  # Always use LLM for special moments
 
 # Caching & Performance
 LLM_CACHE_SIZE = 100            # Max cached responses
-LLM_CACHE_TTL = 60              # Seconds before cache entry expires
+LLM_CACHE_TTL = 300             # Seconds before cache entry expires (5 min)
 LLM_MAX_QUEUE_DEPTH = 3         # Max pending LLM requests before fallback
-LLM_WORKER_TIMEOUT = 10.0       # Max seconds to wait for LLM response
+LLM_WORKER_TIMEOUT = 8.0        # Max seconds to wait for LLM response
 
 # Conversation Memory
-LLM_MAX_HISTORY = 6             # Messages to keep in conversation history
+LLM_MAX_HISTORY = 10            # Messages to keep in conversation history
 
 
 # ===== GAMEPLAY CONSTANTS =====

@@ -15,7 +15,7 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 # LLM call timeout in seconds
-LLM_CALL_TIMEOUT = 30.0
+LLM_CALL_TIMEOUT = 15.0
 
 # Flag to track if LLM has encountered critical errors
 _llm_crashed = False
@@ -92,9 +92,13 @@ def _detect_gpu_layers() -> int:
     return 0
 
 
+# Persistent thread pool for LLM calls (avoid recreating per-call overhead)
+_llm_executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+
+
 def _call_with_timeout(func, timeout: float = LLM_CALL_TIMEOUT) -> Any:
     """
-    Execute an LLM call with a timeout.
+    Execute an LLM call with a timeout using persistent thread pool.
     
     Args:
         func: A callable that performs the LLM operation
@@ -106,16 +110,15 @@ def _call_with_timeout(func, timeout: float = LLM_CALL_TIMEOUT) -> Any:
     Raises:
         TimeoutError: If the call exceeds the timeout
     """
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-        future = executor.submit(func)
-        try:
-            return future.result(timeout=timeout)
-        except concurrent.futures.TimeoutError:
-            logger.warning(f"LLM call timed out after {timeout}s")
-            raise TimeoutError(f"LLM call timed out after {timeout} seconds")
-        except Exception as e:
-            logger.error(f"LLM call failed: {e}")
-            raise
+    future = _llm_executor.submit(func)
+    try:
+        return future.result(timeout=timeout)
+    except concurrent.futures.TimeoutError:
+        logger.warning(f"LLM call timed out after {timeout}s")
+        raise TimeoutError(f"LLM call timed out after {timeout} seconds")
+    except Exception as e:
+        logger.error(f"LLM call failed: {e}")
+        raise
 
 
 class LLMChat:
@@ -189,10 +192,12 @@ class LLMChat:
 
             try:
                 # Load the model with GPU support
+                # Use most CPU cores for faster inference (leave 1 for main thread)
+                n_threads = max(2, (os.cpu_count() or 4) - 1)
                 self._llama = Llama(
                     model_path=str(model_path),
                     n_ctx=LLM_CONTEXT_SIZE,
-                    n_threads=4,
+                    n_threads=n_threads,
                     n_gpu_layers=self._gpu_layers,
                     verbose=False,
                 )
@@ -210,10 +215,11 @@ class LLMChat:
             if self._gpu_layers > 0:
                 try:
                     self._gpu_layers = 0
+                    n_threads = max(2, (os.cpu_count() or 4) - 1)
                     self._llama = Llama(
                         model_path=str(model_path),
                         n_ctx=LLM_CONTEXT_SIZE,
-                        n_threads=4,
+                        n_threads=n_threads,
                         n_gpu_layers=0,
                         verbose=False,
                     )
@@ -281,7 +287,8 @@ class LLMChat:
         
         if duck_brain:
             # Use the enhanced Seaman-style prompt from DuckBrain
-            return duck_brain.build_llm_prompt()
+            # IMPORTANT: Pass memory_context through so the LLM knows duck's favorites, mood, etc.
+            return duck_brain.build_llm_prompt(memory_context=context)
 
         # Fallback to basic prompt if no DuckBrain
         prompt = f"""You are {duck.name}, a male pet duck with a deadpan, dry-witted personality like Seaman from the Dreamcast game.
@@ -372,6 +379,7 @@ Context: {context}''' if context else ''}"""
                     max_tokens=LLM_MAX_TOKENS_CHAT,
                     temperature=LLM_TEMPERATURE,
                     top_p=0.9,
+                    repeat_penalty=1.15,
                     stop=["\n\n", "Human:", "User:"],
                 )
             )
@@ -431,6 +439,7 @@ Context: {context}''' if context else ''}"""
                     max_tokens=LLM_MAX_TOKENS,
                     temperature=LLM_TEMPERATURE,
                     top_p=0.9,
+                    repeat_penalty=1.15,
                     stop=["Human:", "\n\n", f"\n{name}:"],
                 )
             )
@@ -500,9 +509,10 @@ Action:"""
                     max_tokens=15,
                     temperature=0.7,
                     top_p=0.9,
+                    repeat_penalty=1.1,
                     stop=["\n", ".", "!", "?"],
                 ),
-                timeout=10.0  # Shorter timeout for action commentary
+                timeout=8.0  # Shorter timeout for action commentary
             )
 
             if response and "choices" in response and response["choices"]:
@@ -579,9 +589,10 @@ Be unique to your personality. Don't be generic.
                     max_tokens=60,
                     temperature=0.85,
                     top_p=0.9,
+                    repeat_penalty=1.15,
                     stop=["\n\n", "Human:", f"\n{visitor_name}:", f"\n{duck.name}:"],
                 ),
-                timeout=15.0  # Moderate timeout for visitor dialogue
+                timeout=12.0  # Moderate timeout for visitor dialogue
             )
 
             if response and "choices" in response and response["choices"]:
