@@ -192,6 +192,60 @@ def get_weather_need_modifiers(weather) -> Dict[str, float]:
     return result
 
 
+# =============================================================================
+# BIOME-SPECIFIC WEATHER MODIFIERS
+# =============================================================================
+# Multiplies the base seasonal probability for each weather type per biome.
+# Values > 1.0 = more likely in this biome; < 1.0 = less likely.
+# Missing entries default to 1.0 (no modification).
+
+_ALL_BIOMES = ["pond", "forest", "meadow", "riverside", "garden", "mountains", "beach", "swamp", "urban"]
+
+BIOME_WEATHER_MODIFIERS: Dict[str, Dict] = {
+    "pond": {},  # Home base — default season probabilities
+    "forest": {
+        WeatherType.FOGGY: 2.0, WeatherType.MISTY: 2.0, WeatherType.OVERCAST: 1.5,
+        WeatherType.DEWY_MORNING: 2.0, WeatherType.DRIZZLE: 1.5,
+        WeatherType.SCORCHING: 0.3, WeatherType.HEAT_WAVE: 0.3,
+    },
+    "meadow": {
+        WeatherType.SUNNY: 1.5, WeatherType.WARM_BREEZE: 2.0, WeatherType.POLLEN_DRIFT: 2.5,
+        WeatherType.GOLDEN_HOUR: 1.5, WeatherType.BALMY_EVENING: 1.5,
+        WeatherType.FOGGY: 0.5, WeatherType.MISTY: 0.5,
+    },
+    "riverside": {
+        WeatherType.MISTY: 2.0, WeatherType.FOGGY: 1.8, WeatherType.DEWY_MORNING: 2.0,
+        WeatherType.DRIZZLE: 1.5, WeatherType.HUMID: 1.5,
+    },
+    "garden": {
+        WeatherType.SUNNY: 1.3, WeatherType.WARM_BREEZE: 1.5, WeatherType.SPRING_SHOWERS: 1.5,
+        WeatherType.BLIZZARD: 0.3, WeatherType.STORMY: 0.5, WeatherType.THUNDERSTORM: 0.5,
+    },
+    "mountains": {
+        WeatherType.WINDY: 2.5, WeatherType.BITTER_COLD: 2.0, WeatherType.FROST: 2.0,
+        WeatherType.CLEAR_COLD: 1.8, WeatherType.SNOW_FLURRIES: 2.0,
+        WeatherType.LIGHT_SNOW: 1.8, WeatherType.BLIZZARD: 1.5, WeatherType.AURORA: 2.0,
+        WeatherType.HUMID: 0.2, WeatherType.MUGGY: 0.1,
+        WeatherType.SCORCHING: 0.2, WeatherType.HEAT_WAVE: 0.1,
+    },
+    "beach": {
+        WeatherType.SUNNY: 1.8, WeatherType.WINDY: 1.8, WeatherType.BALMY_EVENING: 2.0,
+        WeatherType.GOLDEN_HOUR: 2.0, WeatherType.SUMMER_STORM: 1.5,
+        WeatherType.FOGGY: 0.5, WeatherType.SNOWY: 0.3,
+        WeatherType.HEAVY_SNOW: 0.1, WeatherType.BLIZZARD: 0.1,
+    },
+    "swamp": {
+        WeatherType.FOGGY: 3.0, WeatherType.MISTY: 2.5, WeatherType.HUMID: 2.5,
+        WeatherType.MUGGY: 2.5, WeatherType.DRIZZLE: 2.0, WeatherType.RAINY: 1.5,
+        WeatherType.OVERCAST: 1.5, WeatherType.SUNNY: 0.5, WeatherType.SCORCHING: 0.3,
+    },
+    "urban": {
+        WeatherType.CLOUDY: 1.5, WeatherType.OVERCAST: 1.5, WeatherType.PARTLY_CLOUDY: 1.3,
+        WeatherType.FOGGY: 1.3, WeatherType.BLIZZARD: 0.5, WeatherType.HEAVY_SNOW: 0.7,
+    },
+}
+
+
 # Weather definitions with probabilities by season
 # Each weather type has: name, message, mood_modifier, xp_multiplier, and season probabilities
 # Probabilities for each season should sum to approximately 1.0
@@ -1440,7 +1494,10 @@ class AtmosphereManager:
     """
 
     def __init__(self):
-        self.current_weather: Optional[Weather] = None
+        # Per-biome persistent weather storage
+        self._biome_weather: Dict[str, Weather] = {}
+        self._current_biome: str = "pond"  # Active biome for weather resolution
+
         self.current_season: Season = self._calculate_season()
         self.day_fortune: Optional[DayFortune] = None
         self.current_visitor: Optional[Tuple[Visitor, str]] = None  # (visitor, arrival_time)
@@ -1450,9 +1507,43 @@ class AtmosphereManager:
         self.weather_history: List[str] = []  # Recent weather
         self.visitor_friendships: Dict[str, VisitorFriendship] = {}  # Track friendships
 
-        # Generate initial states
-        self._generate_weather()
+        # Generate initial weather for every known biome
+        for biome in _ALL_BIOMES:
+            self._generate_weather(biome)
         self._generate_fortune()
+
+    # ── Per-biome weather property (backward-compatible) ────────────────
+
+    @property
+    def current_weather(self) -> Optional[Weather]:
+        """Get weather for the current biome."""
+        return self._biome_weather.get(self._current_biome)
+
+    @current_weather.setter
+    def current_weather(self, value: Optional[Weather]):
+        """Set weather for the current biome."""
+        if value is None:
+            self._biome_weather.pop(self._current_biome, None)
+        else:
+            self._biome_weather[self._current_biome] = value
+
+    def set_current_biome(self, biome: str):
+        """Switch the active biome for weather resolution.
+
+        Called when the duck travels to a new area.  Ensures the
+        destination biome already has weather generated.
+        """
+        self._current_biome = biome
+        if biome not in self._biome_weather:
+            self._generate_weather(biome)
+
+    def get_biome_weather(self, biome: str) -> Optional[Weather]:
+        """Get weather for a specific biome without changing the active one."""
+        return self._biome_weather.get(biome)
+
+    def get_all_biome_weather(self) -> Dict[str, Optional[Weather]]:
+        """Get weather dict for all biomes (useful for map overview)."""
+        return dict(self._biome_weather)
 
     def _calculate_season(self) -> Season:
         """Determine current season based on date."""
@@ -1466,20 +1557,31 @@ class AtmosphereManager:
         else:
             return Season.WINTER
 
-    def _generate_weather(self):
-        """Generate new weather based on season."""
+    def _generate_weather(self, biome: Optional[str] = None):
+        """Generate new weather based on season and biome.
+
+        Each biome has its own probability modifiers that make certain
+        weather types more or less likely (e.g. swamps are foggier,
+        mountains are windier, beaches are sunnier).
+        """
+        if biome is None:
+            biome = self._current_biome
+
         season = self.current_season
         season_key = f"{season.value}_prob"
 
-        # Build weighted list
+        # Get biome-specific probability modifiers
+        biome_mods = BIOME_WEATHER_MODIFIERS.get(biome, {})
+
+        # Build weighted list with biome modifiers applied
         weather_options = []
         for weather_type, data in WEATHER_DATA.items():
             if data.get("special"):
                 continue  # Skip special weather like rainbow
             prob = data.get(season_key, 0.0)
-            # Only add weather types that have a non-zero probability
             if prob > 0:
-                weight = int(prob * 100)
+                modifier = biome_mods.get(weather_type, 1.0)
+                weight = int(prob * modifier * 100)
                 weather_options.extend([weather_type] * max(1, weight))
 
         # Fallback to sunny if no options (shouldn't happen)
@@ -1492,7 +1594,7 @@ class AtmosphereManager:
         # Determine duration (3-12 hours) - weather changes less frequently
         duration = random.uniform(3, 12)
 
-        self.current_weather = Weather(
+        self._biome_weather[biome] = Weather(
             weather_type=chosen_type,
             intensity=random.uniform(0.3, 1.0),
             duration_hours=duration,
@@ -1508,22 +1610,26 @@ class AtmosphereManager:
 
         self.last_weather_check = datetime.now().strftime("%Y-%m-%d %H")
 
-    def _maybe_rainbow(self):
-        """Check if rainbow should appear after rain."""
-        if not self.current_weather:
+    def _maybe_rainbow(self, biome: Optional[str] = None):
+        """Check if rainbow should appear after rain in a specific biome."""
+        if biome is None:
+            biome = self._current_biome
+
+        weather = self._biome_weather.get(biome)
+        if not weather:
             return
 
         # Check if this weather type can trigger a rainbow
-        weather_data = WEATHER_DATA.get(self.current_weather.weather_type, {})
+        weather_data = WEATHER_DATA.get(weather.weather_type, {})
         if not weather_data.get("triggers_rainbow", False):
             return
 
         # Rainbow can appear after rain ends (20% chance, 5% for double rainbow!)
-        if not self.current_weather.is_active():
+        if not weather.is_active():
             if random.random() < 0.05:
                 # Ultra rare double rainbow!
                 data = WEATHER_DATA[WeatherType.DOUBLE_RAINBOW]
-                self.current_weather = Weather(
+                self._biome_weather[biome] = Weather(
                     weather_type=WeatherType.DOUBLE_RAINBOW,
                     intensity=1.0,
                     duration_hours=0.3,  # Very short but AMAZING
@@ -1534,7 +1640,7 @@ class AtmosphereManager:
                 )
             elif random.random() < 0.2:
                 data = WEATHER_DATA[WeatherType.RAINBOW]
-                self.current_weather = Weather(
+                self._biome_weather[biome] = Weather(
                     weather_type=WeatherType.RAINBOW,
                     intensity=1.0,
                     duration_hours=0.5,  # Short but magical
@@ -1588,15 +1694,29 @@ class AtmosphereManager:
             content = SEASONAL_CONTENT[new_season]
             messages.append(f"Season changed to {new_season.value}! {content.mood_theme.title()} vibes!")
 
-        # Check weather - now checks every update cycle, not just once per hour
-        if self.current_weather and not self.current_weather.is_active():
-            self._maybe_rainbow()
-            if self.current_weather.weather_type != WeatherType.RAINBOW:
-                self._generate_weather()
-                messages.append(f"Weather changed: {self.current_weather.special_message}")
-        elif not self.current_weather:
-            self._generate_weather()
-            messages.append(f"Weather: {self.current_weather.special_message}")
+        # Update weather for ALL biomes (per-biome persistent weather)
+        for biome in list(self._biome_weather.keys()):
+            weather = self._biome_weather.get(biome)
+            if weather and not weather.is_active():
+                # Try rainbow after rain
+                self._maybe_rainbow(biome)
+                # Check if a rainbow was placed (it would be freshly active)
+                weather = self._biome_weather.get(biome)
+                if not weather or not weather.is_active():
+                    # No rainbow — generate fresh weather for this biome
+                    self._generate_weather(biome)
+                    # Only report weather changes in the duck's current biome
+                    if biome == self._current_biome:
+                        new_w = self._biome_weather.get(biome)
+                        if new_w:
+                            messages.append(f"Weather changed: {new_w.special_message}")
+
+        # Ensure current biome always has weather
+        if self._current_biome not in self._biome_weather:
+            self._generate_weather(self._current_biome)
+            weather = self._biome_weather.get(self._current_biome)
+            if weather:
+                messages.append(f"Weather: {weather.special_message}")
 
         # Check fortune
         today = datetime.now().strftime("%Y-%m-%d")
@@ -1976,6 +2096,16 @@ class AtmosphereManager:
 
         return {
             "current_season": self.current_season.value,
+            "current_biome": self._current_biome,
+            "biome_weather": {
+                biome: {
+                    "type": w.weather_type.value,
+                    "intensity": w.intensity,
+                    "duration": w.duration_hours,
+                    "start": w.start_time,
+                } for biome, w in self._biome_weather.items() if w
+            },
+            # Legacy key kept for backward compatibility
             "current_weather": {
                 "type": self.current_weather.weather_type.value,
                 "intensity": self.current_weather.intensity,
@@ -2000,18 +2130,39 @@ class AtmosphereManager:
         """Create from dictionary."""
         atm = cls()
 
+        # Restore current biome
+        atm._current_biome = data.get("current_biome", "pond")
+
         if data.get("current_season"):
             try:
                 atm.current_season = Season(data["current_season"])
             except (ValueError, KeyError):
                 pass
 
-        if data.get("current_weather"):
+        # Restore per-biome weather (new format)
+        if data.get("biome_weather"):
+            for biome, w in data["biome_weather"].items():
+                try:
+                    weather_type = WeatherType(w["type"])
+                    weather_data = WEATHER_DATA.get(weather_type, {})
+                    atm._biome_weather[biome] = Weather(
+                        weather_type=weather_type,
+                        intensity=w.get("intensity", 0.5),
+                        duration_hours=w.get("duration", 3),
+                        start_time=w.get("start", datetime.now().isoformat()),
+                        mood_modifier=weather_data.get("mood_modifier", 0),
+                        xp_multiplier=weather_data.get("xp_multiplier", 1.0),
+                        special_message=weather_data.get("message", ""),
+                    )
+                except (ValueError, KeyError, TypeError):
+                    pass
+        elif data.get("current_weather"):
+            # Backward compat: old save with single weather → assign to current biome
             w = data["current_weather"]
             try:
                 weather_type = WeatherType(w["type"])
                 weather_data = WEATHER_DATA.get(weather_type, {})
-                atm.current_weather = Weather(
+                atm._biome_weather[atm._current_biome] = Weather(
                     weather_type=weather_type,
                     intensity=w.get("intensity", 0.5),
                     duration_hours=w.get("duration", 3),
