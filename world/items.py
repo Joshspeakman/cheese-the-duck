@@ -489,6 +489,20 @@ ITEMS = {
         rarity="legendary",
         icon="[<3]",
     ),
+    # ── Medicine (consequence engine) ──────────────────────────────
+    "medicine": Item(
+        id="medicine",
+        name="Pond Medicine",
+        description="Dubious herbal remedy. Smells like pond scum and regret.",
+        item_type=ItemType.SPECIAL,
+        effects={},  # Handled by consequence engine, not need effects
+        mood_bonus=5,
+        duck_reaction="grimace",
+        use_message="*gulp* ...disgusting. absolutely vile. ...I feel better. don't tell anyone.",
+        consumable=True,
+        rarity="uncommon",
+        icon="[+]",
+    ),
 }
 
 

@@ -1374,7 +1374,20 @@ class Renderer:
         # Create bordered header
         inner_width = width - 2
 
-        # Simplified format: Name | Season Weather | Time | Mood Age $Money
+        # Trust level indicator
+        from core.consequences import get_trust_level_display
+        trust_display = get_trust_level_display(getattr(duck, 'trust', 20.0))
+        # Sickness/hiding status override
+        if getattr(duck, 'hiding', False):
+            status_tag = "[HIDING]"
+        elif getattr(duck, 'is_sick', False):
+            status_tag = "[SICK]"
+        elif getattr(duck, 'cooldown_until', None) and time.time() < duck.cooldown_until:
+            status_tag = "[COLD]"
+        else:
+            status_tag = ""
+
+        # Simplified format: Name | Season Weather | Time | Mood Trust Age $Money
         left_side = f" {name_part} "
         if season_part or weather_part:
             left_side += "|"
@@ -1384,7 +1397,12 @@ class Renderer:
                 left_side += f" {weather_part}"
         left_side += f" | {time_part.strip()}"
 
-        right_side = f"{mood_part} {age_part} {coin_part} "
+        right_parts = [mood_part]
+        if status_tag:
+            right_parts.append(status_tag)
+        right_parts.append(trust_display)
+        right_parts.extend([age_part, coin_part])
+        right_side = f"{' '.join(right_parts)} "
 
         # Calculate padding
         left_len = _visible_len(left_side)
@@ -2201,6 +2219,12 @@ class Renderer:
         """Get text describing current activity."""
         import time as _time
         
+        # Consequence-engine states override everything
+        if getattr(duck, 'hiding', False):
+            return "*gone*"
+        if getattr(duck, 'is_sick', False):
+            return "Feeling sick..."
+        
         # Auto-clear expired current_action to prevent stale status display
         if hasattr(duck, 'current_action') and duck.current_action:
             if hasattr(duck, '_action_end_time') and _time.time() > duck._action_end_time:
@@ -2375,11 +2399,11 @@ class Renderer:
         inner_width = max(width - 2, 20)  # Ensure minimum width
 
         # Compact controls hint - updated for master menu navigation
-        controls = "[Arrows] Nav | [Enter] Select | [Bksp] Back | [M]usic [N]oise | [H]elp"
+        controls = "[Arrows] Nav | [Enter] Select | [Bksp] Back | [M]usic [N] Sound | [H]elp"
 
         # Pad or truncate to exact width
         if len(controls) < inner_width:
-            content = controls.center(inner_width)
+            content = " " + controls.ljust(inner_width - 1)
         else:
             content = controls[:inner_width]
 
@@ -2730,21 +2754,27 @@ class Renderer:
             "[I] Inventory   [G] Goals    [S] Stats",
             "[B] Shop        [U] Use Item [O] Quests",
             "",
-            "=== ACTIVITIES ===",
+            "=== WORLD ===",
             "[E] Explore     [A] Areas    [C] Craft",
-            "[R] Build       [J] Minigames",
-            "[K] Duck Fact   [W] Weather Activities",
+            "[R] Build       [V] Decorate [<] Trading",
             "",
-            "=== SPECIAL ===",
-            "[V] Trading     [Y] Scrapbook",
-            "[6] Treasure    [7] Secrets",
+            "=== ACTIVITIES ===",
+            "[J] Minigames   [7] Tricks   [W] Weather",
+            "[9] Garden      [0] Festivals",
+            "[K] Duck Fact   [;] Photo    [=] Diary",
+            "",
+            "=== COLLECTIONS ===",
+            "[Y] Scrapbook   ['] Collectibles",
+            "[8] Prestige    [!] Titles",
+            "[6] Treasure    [\\] Secrets",
             "",
             "=== AUDIO ===",
-            "[M] Sound  [N] Music  [+]/[-] Volume",
+            "[M] Music  [N] Sound  [+]/[-] Volume",
             "",
             "=== SYSTEM ===",
-            "[Q] Save & Quit  [X] Reset Game",
+            "[Q] Save & Quit  [/] Save Slots",
             "",
+            "[Arrow Keys] Navigate | [Enter] Select | [Bksp] Back",
             "Press [H] to close",
         ]
 
@@ -2843,6 +2873,7 @@ class Renderer:
         
         # Pagination logic
         total_lines = len(all_stats)
+        self._stats_total_lines = total_lines  # Store for external bounds checks
         max_scroll = max(0, total_lines - self._stats_page_size)
         self._stats_scroll_offset = max(0, min(self._stats_scroll_offset, max_scroll))
         
@@ -2970,13 +3001,15 @@ class Renderer:
         inv_text.append("-" * 30)
 
         from world.items import get_item_info
+        selected = getattr(self, '_inventory_selected', 0)
         display_num = 1
         for idx in range(start_idx, end_idx):
             item_id = unique_items[idx]
             item = get_item_info(item_id)
             if item:
                 count_str = f"x{item_counts[item_id]}" if item_counts[item_id] > 1 else ""
-                line = f"[{display_num}] {item.icon} {item.name} {count_str}"
+                marker = ">" if (display_num - 1) == selected else " "
+                line = f"{marker}[{display_num}] {item.icon} {item.name} {count_str}"
                 inv_text.append(line)
                 display_num += 1
 
@@ -2987,7 +3020,7 @@ class Renderer:
 
         inv_text.extend([
             "",
-            "[1-9] Use item | [</>] Page | [I] Close",
+            "[\u2191/\u2193] Select | [Enter] Use | [</>] Page | [Bksp] Close",
         ])
 
         # Store unique items list for key handling (current page only) and total count for pagination
@@ -3093,21 +3126,34 @@ class Renderer:
         content.append("")
         content.append(_visible_center("Press any key to continue...", 30))
 
-        # Create a larger box for celebrations
+        # Create a larger box for celebrations (using BOX_DOUBLE for consistency)
         box_width = min(60, width - 4)
-        box_height = len(content) + 2
 
         box_lines = []
+        # Top border
+        title_str = " ★ CELEBRATION ★ "
+        remaining_h = box_width - len(title_str) - 1
+        if remaining_h < 0:
+            remaining_h = 0
+        box_lines.append(
+            BOX_DOUBLE["tl"] + BOX_DOUBLE["h"] + title_str + BOX_DOUBLE["h"] * remaining_h + BOX_DOUBLE["tr"]
+        )
+
         for line in content:
             # Center and ensure full width with spaces (solid background)
-            centered = _visible_center(line, box_width)
-            centered = _visible_ljust(_visible_truncate(centered, box_width), box_width)
-            box_lines.append(centered)
+            content_area = _visible_truncate(f" {line}", box_width)
+            content_area = _visible_ljust(content_area, box_width)
+            box_lines.append(BOX_DOUBLE["v"] + content_area + BOX_DOUBLE["v"])
+
+        # Bottom border
+        box_lines.append(BOX_DOUBLE["bl"] + BOX_DOUBLE["h"] * box_width + BOX_DOUBLE["br"])
+
+        box_height = len(box_lines)
 
         # Overlay on base output
         result = base_output.copy()
         start_row = max(2, (len(result) - box_height) // 2 - 2)
-        start_col = (width - box_width) // 2
+        start_col = (width - box_width - 2) // 2
 
         for i, line in enumerate(box_lines):
             if start_row + i < len(result):
@@ -3184,23 +3230,28 @@ class Renderer:
         
         content.append("")
 
-        # Create box
+        # Create box (BOX_DOUBLE for consistency with other overlays)
         box_width = min(44, width - 4)
         box_height = len(content) + 2
 
         box_lines = []
         # Top border
-        box_lines.append(self.term.cyan("+" + "=" * (box_width - 2) + "+"))
+        title_str = " INTERACTING "
+        remaining_h = box_width - len(title_str) - 1
+        if remaining_h < 0:
+            remaining_h = 0
+        box_lines.append(
+            BOX_DOUBLE["tl"] + BOX_DOUBLE["h"] + title_str + BOX_DOUBLE["h"] * remaining_h + BOX_DOUBLE["tr"]
+        )
         
         for line in content:
             # Truncate and pad to box width
-            centered = _visible_center(line, box_width - 4)
-            centered = _visible_truncate(centered, box_width - 4)
-            centered = _visible_ljust(centered, box_width - 4)
-            box_lines.append(self.term.cyan("| ") + centered + self.term.cyan(" |"))
+            content_area = _visible_truncate(f" {line}", box_width)
+            content_area = _visible_ljust(content_area, box_width)
+            box_lines.append(BOX_DOUBLE["v"] + content_area + BOX_DOUBLE["v"])
         
         # Bottom border
-        box_lines.append(self.term.cyan("+" + "=" * (box_width - 2) + "+"))
+        box_lines.append(BOX_DOUBLE["bl"] + BOX_DOUBLE["h"] * box_width + BOX_DOUBLE["br"])
 
         # Overlay on base output
         result = base_output.copy()
@@ -3293,7 +3344,7 @@ class Renderer:
                 content.append(action_hint)
         
         content.append("")
-        content.append("<- -> : Category | ^ v : Select | [B]uy | [T]oggle | [ESC]")
+        content.append("[</> ] Category | [^/v] Select | [Enter] Buy | [T]oggle | [Bksp] Close")
         
         return self._overlay_box(base_output, content, "[SHOP]", width)
 
@@ -3548,6 +3599,7 @@ class Renderer:
         self._show_inventory = not self._show_inventory
         if self._show_inventory:
             self._inventory_page = 0  # Reset to first page when opening
+            self._inventory_selected = 0  # Reset selection
         self._show_help = False
         self._show_stats = False
         self._show_talk = False
@@ -3567,6 +3619,7 @@ class Renderer:
         """Hide all overlays."""
         self._show_help = False
         self._show_stats = False
+        self._stats_scroll_offset = 0  # Reset stats scroll when closing
         self._show_talk = False
         self._show_inventory = False
         self._show_shop = False

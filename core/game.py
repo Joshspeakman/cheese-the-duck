@@ -11,17 +11,28 @@ from blessed import Terminal
 
 from config import FPS, TICK_RATE
 from core.clock import GameClock, game_clock
+from core.consequences import (
+    check_consequences, apply_trust_gain, attempt_coax, apply_medicine,
+    thaw_cold_shoulder, get_trust_level_display, ConsequenceState,
+    get_cold_shoulder_greeting, get_cold_shoulder_interaction,
+    is_cold_shoulder_active, apply_personality_drift,
+)
 from core.persistence import SaveManager, save_manager, create_new_save
 from core.progression import ProgressionSystem, Reward, RewardType, COLLECTIBLES
 from duck.duck import Duck
 from duck.behavior_ai import BehaviorAI
 from dialogue.conversation import ConversationSystem, conversation
 from world.events import EventSystem, event_system
+from world.area_events import (
+    AreaEventSystem, area_event_system,
+    SpontaneousTravelSystem, spontaneous_travel,
+    AREA_EVENTS,
+)
 from world.items import Inventory, get_random_item, get_item_info
 from world.goals import GoalSystem, goal_system
 from world.achievements import AchievementSystem, achievement_system
 from world.home import DuckHome, duck_home
-from world.atmosphere import AtmosphereManager, atmosphere, WeatherType
+from world.atmosphere import AtmosphereManager, atmosphere, WeatherType, get_weather_need_modifiers
 from world.exploration import ExplorationSystem, exploration, BiomeType
 from world.materials import MaterialInventory, material_inventory, MATERIALS
 from world.crafting import CraftingSystem, crafting, RECIPES
@@ -64,14 +75,13 @@ from world.fortune import FortuneSystem, fortune_system
 from duck.outfits import OutfitManager, outfit_manager
 from duck.tricks import TricksSystem, tricks_system
 from duck.titles import TitlesSystem, titles_system
-from duck.aging import AgingSystem, aging_system
+from duck.aging import AgingSystem, aging_system, get_consequence_modifiers
 from duck.personality_extended import ExtendedPersonalitySystem, extended_personality
 from duck.seasonal_clothing import SeasonalClothingSystem, seasonal_clothing
 
 from core.prestige import PrestigeSystem, prestige_system
 from core.save_slots import SaveSlotsSystem, save_slots_system
 
-from dialogue.mood_dialogue import MoodDialogueSystem, mood_dialogue_system
 from dialogue.diary_enhanced import EnhancedDiarySystem, enhanced_diary
 from dialogue.contextual_dialogue import ContextualDialogueSystem, contextual_dialogue
 
@@ -152,6 +162,12 @@ class Game:
         self.crafting: CraftingSystem = crafting
         self.building: BuildingSystem = building
 
+        # Area-specific events and spontaneous travel
+        self.area_events: AreaEventSystem = area_event_system
+        self.spontaneous_travel: SpontaneousTravelSystem = spontaneous_travel
+        self._last_area_event_check: float = 0.0
+        self._last_spontaneous_travel_check: float = 0.0
+
         self._running = False
         self._state = "init"  # init, title, playing, paused, daily_rewards
         self._last_tick = 0.0
@@ -161,6 +177,9 @@ class Game:
         self._last_atmosphere_check = 0.0
         self._last_craft_check = 0.0
         self._last_build_check = 0.0
+        self._last_consequence_state = None       # Latest ConsequenceState snapshot
+        self._last_neglect_warn_time = 0.0        # Throttle neglect warnings
+        self._last_sick_msg_time = 0.0            # Throttle sickness messages
         self._session_start = time.time()
         self._session_feeds = 0  # Track for bread_obsessed secret
         self._ecstatic_start = None  # Track for zen_master secret
@@ -219,18 +238,22 @@ class Game:
         # Tricks menu pagination
         self._tricks_menu_open = False     # Flag for tricks menu
         self._tricks_menu_page = 0         # Current page of tricks
+        self._tricks_menu_selected = 0     # Currently selected trick index on page
         
         # Titles menu pagination  
         self._titles_menu_open = False     # Flag for titles menu
         self._titles_menu_page = 0         # Current page of titles
+        self._titles_menu_selected = 0     # Currently selected title index on page
         
         # Decorations menu pagination
         self._decorations_menu_open = False  # Flag for decorations menu
         self._decorations_menu_page = 0      # Current page of decorations
+        self._decorations_menu_selected = 0  # Currently selected decoration index on page
         
         # Collectibles menu pagination
         self._collectibles_menu_open = False  # Flag for collectibles menu
         self._collectibles_menu_page = 0      # Current page of collectibles
+        self._collectibles_menu_selected = 0  # Currently selected collectible set on page
         
         # Secrets book menu
         self._secrets_menu_open = False       # Flag for secrets book menu
@@ -362,7 +385,6 @@ class Game:
         self.sound_effects: SoundEffectSystem = sound_effects
         
         # Enhanced Dialogue Systems
-        self.mood_dialogue: MoodDialogueSystem = mood_dialogue_system
         self.enhanced_diary: EnhancedDiarySystem = enhanced_diary
         self.contextual_dialogue: ContextualDialogueSystem = contextual_dialogue
         
@@ -413,6 +435,7 @@ class Game:
         self._travel_start_time = 0.0     # When travel started
         self._travel_duration = 2.0       # How long to travel (seconds)
         self._travel_destination = None   # Where duck is traveling to
+        self._spontaneous_arrival_msg = None  # Message to show after spontaneous travel
 
         # Interaction cooldowns (in seconds)
         self._interaction_cooldowns = {
@@ -601,12 +624,29 @@ class Game:
             if key_name == 'KEY_BACKSPACE' or key_name == 'KEY_ESCAPE':
                 self.renderer.toggle_inventory()
                 return
+            # Arrow key navigation
+            if key_name == 'KEY_UP':
+                sel = getattr(self.renderer, '_inventory_selected', 0)
+                self.renderer._inventory_selected = max(0, sel - 1)
+                return
+            if key_name == 'KEY_DOWN':
+                sel = getattr(self.renderer, '_inventory_selected', 0)
+                max_sel = len(getattr(self.renderer, '_inventory_items', [])) - 1
+                self.renderer._inventory_selected = min(max(0, max_sel), sel + 1)
+                return
+            # Enter uses currently selected item
+            if key_name == 'KEY_ENTER':
+                sel = getattr(self.renderer, '_inventory_selected', 0)
+                self._use_inventory_item(sel)
+                return
             # Page navigation with < and >
             if key_str == ',' or key_str == '<':
                 self.renderer.inventory_change_page(-1)
+                self.renderer._inventory_selected = 0
                 return
             if key_str == '.' or key_str == '>':
                 self.renderer.inventory_change_page(1)
+                self.renderer._inventory_selected = 0
                 return
             if key_str.isdigit() and key_str != '0':
                 self._use_inventory_item(int(key_str) - 1)  # Convert to 0-based index
@@ -1201,6 +1241,19 @@ class Game:
             self.renderer.show_message("No item at that slot!")
             return
 
+        # ── Medicine special handling (consequence engine) ────────────
+        if item_id == "medicine":
+            success, msg = apply_medicine(self.duck)
+            if success:
+                # Consume the item
+                self.inventory.use_item(item_id, self.duck)
+                self.renderer.show_message(msg, duration=5.0, category="duck")
+                self.renderer.show_closeup("grimace", 3.0)
+                duck_sounds.quack("happy")
+            else:
+                self.renderer.show_message(msg, duration=3.0, category="duck")
+            return
+
         # Use the item
         result = self.inventory.use_item(item_id, self.duck)
         if result:
@@ -1611,6 +1664,12 @@ class Game:
             self._handle_title_input(action, key)
             return
 
+        # Treat KEY_BACKSPACE the same as CANCEL for closing overlays/menus.
+        # Backspace isn't in KEY_BINDINGS so process_key returns NONE for it,
+        # but it should still close any open overlay just like ESC does.
+        if action == GameAction.NONE and key and getattr(key, 'name', '') == 'KEY_BACKSPACE':
+            action = GameAction.CANCEL
+
         if action == GameAction.NONE:
             return
 
@@ -1629,6 +1688,11 @@ class Game:
             return
 
         if action == GameAction.CANCEL:
+            # If fishing, cancel fishing instead of closing overlays
+            if self._state == "playing" and hasattr(self, 'fishing') and self.fishing.is_fishing:
+                self.fishing.cancel_fishing()
+                self.renderer.show_message("Stopped fishing.", duration=2.0)
+                return
             self.renderer.hide_overlays()
             self._close_all_menus()  # Also close any open menus
             self._show_goals = False
@@ -1753,7 +1817,8 @@ class Game:
                     self.renderer._stats_scroll_offset = max(0, self.renderer._stats_scroll_offset - 1)
                     return
                 if key.name == "KEY_DOWN":
-                    self.renderer._stats_scroll_offset += 1
+                    max_scroll = max(0, getattr(self.renderer, '_stats_total_lines', 50) - self.renderer._stats_page_size)
+                    self.renderer._stats_scroll_offset = min(self.renderer._stats_scroll_offset + 1, max_scroll)
                     return
                 # S closes stats
                 if key_str == 's':
@@ -1936,12 +2001,10 @@ class Game:
                 self._show_tricks_menu()
                 return
 
-            # Titles Menu [`] (backtick - quick access since it's a prestige feature)
-            if key_str == '~' or key_str == '`':
-                # If not in debug menu, show titles
-                if not self._debug_menu_open:
-                    self._show_titles_menu()
-                    return
+            # Titles Menu [!] (Shift+1 - quick access since it's a prestige feature)
+            if key_raw == '!':
+                self._show_titles_menu()
+                return
 
             # Enhanced Diary [=]
             if key_str == '=':
@@ -2052,7 +2115,7 @@ class Game:
             "",
             f"Achievements: {unlocked}/{total_ach} unlocked",
             "",
-            "[G] Close" + (" | [</>] Page" if total_pages > 1 else ""),
+            "[G] Close" + (" | [</> ] Page" if total_pages > 1 else ""),
         ])
 
         self.renderer.show_overlay("\n".join(lines), duration=0)
@@ -2060,6 +2123,25 @@ class Game:
     def _perform_interaction(self, interaction: str):
         """Perform an interaction with the duck."""
         if not self.duck:
+            return
+
+        # ── Check if this interaction resolves an active encounter ───
+        encounter_result = self.events.try_resolve_encounter(interaction)
+        if encounter_result:
+            duck_sounds.relief()
+            self._apply_encounter_result(encounter_result)
+            # Fall through to normal interaction — player still gets the
+            # regular benefits. Helping the duck shouldn't cost them.
+
+        # ── Block interactions if duck is hiding ─────────────────────
+        if getattr(self.duck, 'hiding', False):
+            success, msg = attempt_coax(self.duck)
+            if success:
+                self._show_message_if_no_menu(msg, duration=5.0, category="duck")
+            elif msg:
+                self._show_message_if_no_menu(msg, duration=4.0, category="duck")
+            else:
+                self._show_message_if_no_menu("...nobody home.", duration=2.0, category="duck")
             return
 
         # Check cooldown
@@ -2122,6 +2204,15 @@ class Game:
 
         # Perform the interaction
         result = self.duck.interact(interaction)
+
+        # ── Trust gain from caring interaction ───────────────────────
+        apply_trust_gain(self.duck, "interaction")
+        # If duck is giving cold shoulder, caring visits thaw it
+        if is_cold_shoulder_active(self.duck):
+            thaw_cold_shoulder(self.duck, minutes=5)
+            cold_msg = get_cold_shoulder_interaction(self.duck)
+            if cold_msg:
+                self._show_message_if_no_menu(cold_msg, duration=3.0, category="duck")
 
         # Record in memory
         mood = self.duck.get_mood()
@@ -2638,9 +2729,8 @@ class Game:
         # Update event animations (butterfly, bird, etc.)
         self._update_event_animations()
 
-        # Update mood visual effects (every frame for smooth animations)
-        if self.duck:
-            self.mood_visuals.update(0.016)  # ~60fps delta
+        # mood_visuals.update() disabled — system is defined but not
+        # connected to the renderer; calling it wastes CPU every frame.
 
         # Update sound effects (cleanup expired sounds)
         self.sound_effects.update(current_time)
@@ -2681,12 +2771,62 @@ class Game:
             # Store old stage for growth detection
             old_stage = self.duck.growth_stage
 
-            # Update duck
-            self.duck.update(delta_minutes)
+            # Update duck (with weather effects on need decay)
+            weather_mods = get_weather_need_modifiers(self.atmosphere.current_weather)
+            
+            # Shelter reduces harsh weather effects on needs
+            shelter_protection = self.building.get_shelter_protection()
+            if shelter_protection > 0:
+                # Max 70% reduction at protection=100 (stone house)
+                dampen = 1.0 - (shelter_protection / 100.0) * 0.7
+                for need in weather_mods:
+                    if weather_mods[need] > 1.0:
+                        excess = weather_mods[need] - 1.0
+                        weather_mods[need] = 1.0 + excess * dampen
+            
+            self.duck.update(delta_minutes, weather_modifiers=weather_mods)
 
             # Check for growth stage change
             if self.duck.growth_stage != old_stage:
                 self._on_growth_stage_change(old_stage, self.duck.growth_stage)
+
+            # ── Consequence engine tick ──────────────────────────────
+            stage_mods = get_consequence_modifiers(self.duck.growth_stage)
+            consequence_state = check_consequences(self.duck, delta_minutes, stage_mods)
+            self._last_consequence_state = consequence_state
+
+            # Show neglect warnings (throttled — max one per 60 seconds)
+            if consequence_state.neglect_warnings:
+                now = time.time()
+                if now - getattr(self, '_last_neglect_warn_time', 0) >= 60:
+                    self._last_neglect_warn_time = now
+                    self._show_message_if_no_menu(
+                        consequence_state.neglect_warnings[0],
+                        duration=4.0, category="duck"
+                    )
+
+            # Show sickness message (throttled — max one per 120 seconds)
+            if consequence_state.sickness_message:
+                now = time.time()
+                if now - getattr(self, '_last_sick_msg_time', 0) >= 120:
+                    self._last_sick_msg_time = now
+                    self._show_message_if_no_menu(
+                        consequence_state.sickness_message,
+                        duration=5.0, category="duck"
+                    )
+
+            # Sync cold shoulder state to DuckBrain (suppresses genuine moments)
+            if self.duck_brain:
+                self.duck_brain._cold_shoulder_active = consequence_state.is_cold_shoulder
+                self.duck_brain._duck_trust = self.duck.trust
+
+            # ── Personality drift from neglect / recovery from care ──────
+            drift_obs = apply_personality_drift(
+                self.duck, self.extended_personality,
+                delta_minutes, consequence_state.stage
+            )
+            if drift_obs:
+                self._show_message_if_no_menu(drift_obs, duration=5.0, category="duck")
 
             # Record mood
             self.duck.memory.record_mood(self.duck.get_mood().score)
@@ -2877,6 +3017,16 @@ class Game:
                 self._show_message_if_no_menu(ambient, duration=3.0, category="event")
 
             self._last_event_check = current_time
+
+        # Check for area-specific events (every 15 seconds)
+        if current_time - self._last_area_event_check >= 15:
+            self._check_area_events()
+            self._last_area_event_check = current_time
+
+        # Check for spontaneous travel (every 30 seconds)
+        if current_time - self._last_spontaneous_travel_check >= 30:
+            self._check_spontaneous_travel()
+            self._last_spontaneous_travel_check = current_time
 
         # Random contextual duck comments (every ~45 seconds when idle)
         if current_time - self._last_random_comment_time >= self._random_comment_interval:
@@ -3160,8 +3310,13 @@ class Game:
             item_id = result.get("result_item")
             quantity = result.get("quantity", 1)
 
-            # Add crafted item to materials inventory
-            if item_id in MATERIALS:
+            # Add crafted item to the appropriate inventory
+            from world.items import ITEMS as INVENTORY_ITEMS
+            if item_id in INVENTORY_ITEMS:
+                # It's a usable item (medicine, etc.) — add to item inventory
+                for _ in range(quantity):
+                    self.inventory.add_item(item_id)
+            elif item_id in MATERIALS:
                 self.materials.add_material(item_id, quantity)
             else:
                 # It's a tool or other item - add to tool list
@@ -3393,6 +3548,12 @@ class Game:
         if not self.duck:
             return
 
+        # ── Check encounter timeout (player didn't help in time) ─────
+        timeout_result = self.events.check_encounter_timeout()
+        if timeout_result:
+            self._apply_encounter_result(timeout_result)
+            return
+
         # Check special day events first
         special_event = self.events.check_special_day_events()
         if special_event:
@@ -3400,13 +3561,60 @@ class Game:
             self.events.apply_event(self.duck, special_event)
             return
 
-        event = self.events.check_random_events(self.duck)
+        # Don't roll new events while an encounter is active
+        if self.events.has_active_encounter():
+            return
+
+        # Check if any active encounter has timed out (player didn't help)
+        timeout_result = self.events.check_encounter_timeout()
+        if timeout_result:
+            duck_sounds.stop_panic()
+            self._apply_encounter_result(timeout_result)
+            duck_sounds.quack("sad")
+            return
+
+        # Check if any active event chain should advance
+        chain_event = self.events.check_chain_progress(self.duck)
+        if chain_event:
+            event = chain_event
+        else:
+            event = self.events.check_random_events(self.duck)
         if event:
+            # If this event started an encounter, show the encounter message
+            if event.encounter_id and self.events.has_active_encounter():
+                encounter = self.events.get_active_encounter()
+                if encounter:
+                    self.renderer.show_message(
+                        encounter.trigger_message, duration=6.0, category="duck"
+                    )
+                    self.duck.memory.add_event(
+                        encounter.name, encounter.trigger_message,
+                        importance=7, emotional_value=-5
+                    )
+                return
+
             # Apply event effects
             changes = self.events.apply_event(self.duck, event)
 
             # Trigger duck reaction animation for this event
             self.reaction_controller.trigger_event_reaction(event.id, time.time())
+
+            # If this event started an encounter, show the encounter message
+            # and play the panic sound instead of the normal event message
+            if event.encounter_id and self.events.has_active_encounter():
+                encounter = self.events.get_active_encounter()
+                if encounter:
+                    duck_sounds.panic()
+                    self.renderer.show_message(
+                        encounter.trigger_message, duration=7.0, category="duck"
+                    )
+                    self.duck.memory.add_event(
+                        encounter.name,
+                        encounter.trigger_message,
+                        importance=6,
+                        emotional_value=-5,
+                    )
+                    return
 
             # Start event animation if available
             if event.has_animation and event.id in ANIMATED_EVENTS:
@@ -3445,6 +3653,115 @@ class Game:
                     item = get_item_info(item_id)
                     self.renderer.show_message(f"Found: {item.name}!", duration=3.0)
 
+    def _check_area_events(self):
+        """Check for area-specific random events based on current location."""
+        if not self.duck:
+            return
+
+        # Don't fire during travel, exploration, or menus
+        if self._duck_traveling or self._duck_exploring or self._is_any_menu_open():
+            return
+
+        # Don't fire if an encounter is active
+        if self.events.has_active_encounter():
+            return
+
+        # Get current area
+        area_name = None
+        if self.exploration.current_area:
+            area_name = self.exploration.current_area.name
+        if not area_name:
+            area_name = "Home Pond"  # Default when no area set
+
+        # Roll for area event
+        area_event = self.area_events.check_area_events(area_name)
+        if not area_event:
+            return
+
+        # Apply effects
+        self.area_events.apply_area_event(self.duck, area_event)
+
+        # Start animation if available
+        if area_event.has_animation and area_event.animation_id:
+            self._start_event_animation(area_event.animation_id)
+
+        # Show the deadpan message
+        self.renderer.show_message(area_event.message, duration=5.0, category="duck")
+
+        # Record in memory
+        self.duck.memory.add_event(
+            area_event.name,
+            f"[{area_event.area}] {area_event.message[:80]}",
+            importance=4,
+            emotional_value=area_event.mood_change,
+        )
+
+        # Play sound
+        if area_event.sound:
+            if area_event.sound == "quack":
+                duck_sounds.quack()
+            elif area_event.sound == "eat":
+                duck_sounds.eat()
+            elif area_event.sound == "splash":
+                duck_sounds.quack("happy")
+            elif area_event.sound == "alert":
+                duck_sounds.alert()
+
+        # Random item find on positive events
+        if area_event.mood_change > 5 and random.random() < 0.15:
+            item_id = get_random_item("common")
+            if item_id and self.inventory.add_item(item_id):
+                item = get_item_info(item_id)
+                self.renderer.show_message(f"Found: {item.name}!", duration=3.0)
+
+    def _check_spontaneous_travel(self):
+        """Check if Cheese decides to wander off to a different area."""
+        if not self.duck:
+            return
+
+        # Don't trigger during travel, exploration, menus, or encounters
+        if self._duck_traveling or self._duck_exploring or self._is_any_menu_open():
+            return
+        if self.events.has_active_encounter():
+            return
+
+        # Get current area name
+        current_name = "Home Pond"
+        if self.exploration.current_area:
+            current_name = self.exploration.current_area.name
+
+        # Get available areas
+        available = self.exploration.get_available_areas(self.progression.level)
+        if len(available) < 2:
+            return
+
+        # Roll for spontaneous travel
+        result = self.spontaneous_travel.check_spontaneous_travel(current_name, available)
+        if not result:
+            return
+
+        destination = result["destination"]
+
+        # Show departure message
+        self.renderer.show_message(result["depart_message"], duration=4.0, category="duck")
+
+        # Record in duck memory
+        self.duck.memory.add_event(
+            f"Wandered to {destination.name}",
+            result["depart_message"],
+            importance=4,
+            emotional_value=3,
+        )
+
+        # Store arrival message for when travel completes
+        self._spontaneous_arrival_msg = result.get("arrive_message")
+
+        # Actually travel there
+        self._start_travel_to_area(destination)
+
+        # After a delay, we'll show the arrival message (handled in _complete_travel)
+        self._spontaneous_arrival_msg = result["arrive_message"]
+
     def _start_event_animation(self, event_id: str):
         """Start an event animation."""
         # Get playfield dimensions from renderer
@@ -3456,6 +3773,35 @@ class Game:
         if animator:
             animator.start()
             self._event_animators.append(animator)
+
+    def _apply_encounter_result(self, result: dict):
+        """Apply the outcome of an encounter (helped or timed-out).
+        
+        Args:
+            result: Dict with 'resolved', 'message', 'effects', 'trust_bonus'.
+        """
+        if not self.duck:
+            return
+        # Apply need effects
+        for need, change in result.get("effects", {}).items():
+            if hasattr(self.duck.needs, need):
+                old = getattr(self.duck.needs, need)
+                setattr(self.duck.needs, need, max(0, min(100, old + change)))
+        # Apply trust change
+        trust_delta = result.get("trust_bonus", 0)
+        if trust_delta != 0:
+            self.duck.trust = max(0, min(100, self.duck.trust + trust_delta))
+        # Show the outcome message
+        duration = 6.0 if result.get("resolved") else 5.0
+        self.renderer.show_message(result["message"], duration=duration, category="duck")
+        # Record in memory
+        outcome = "helped" if result.get("resolved") else "ignored"
+        self.duck.memory.add_event(
+            f"Encounter ({outcome})",
+            result["message"],
+            importance=6 if result.get("resolved") else 4,
+            emotional_value=5 if result.get("resolved") else -5,
+        )
 
     def _make_contextual_comment(self):
         """Make a random contextual comment based on current game state.
@@ -3500,7 +3846,10 @@ class Game:
                 if question_result:
                     # get_question returns (question_id, question_text) tuple
                     comment = question_result[1]
-            # 15% chance: No comment (silence is golden)
+            elif roll < 0.92:
+                # 7% chance: Weather forecast (if weather is about to change)
+                comment = self.duck_brain.get_weather_forecast(self.atmosphere)
+            # 8% chance: No comment (silence is golden)
         
         # Fallback to original contextual dialogue system
         if not comment:
@@ -4340,9 +4689,6 @@ class Game:
         # Load sound effects system (stateless)
         self.sound_effects = SoundEffectSystem()
 
-        # Load mood dialogue system (stateless)
-        self.mood_dialogue = MoodDialogueSystem()
-
         # Load enhanced diary system
         if "enhanced_diary" in data:
             self.enhanced_diary = EnhancedDiarySystem.from_dict(data["enhanced_diary"])
@@ -4368,6 +4714,18 @@ class Game:
         
         # Start a new session in DuckBrain
         self.duck_brain.start_session()
+
+        # Load area event system
+        if "area_events" in data:
+            self.area_events = AreaEventSystem.from_dict(data["area_events"])
+        else:
+            self.area_events = AreaEventSystem()
+
+        # Load spontaneous travel system
+        if "spontaneous_travel" in data:
+            self.spontaneous_travel = SpontaneousTravelSystem.from_dict(data["spontaneous_travel"])
+        else:
+            self.spontaneous_travel = SpontaneousTravelSystem()
         # ============== END LOAD NEW FEATURE SYSTEMS ==============
 
         # Load weather history for secret goal
@@ -4384,28 +4742,58 @@ class Game:
         offline = self.clock.calculate_offline_time(last_played)
 
         if offline["hours"] > 0.016:  # More than 1 minute
-            # Apply offline decay
-            old_needs = self.duck.needs.to_dict()
+            # Check vacation mode — if enabled, skip all decay
+            vacation_mode = settings_manager.settings.gameplay.vacation_mode
+            
+            if vacation_mode:
+                # Vacation mode: no decay, no trust loss, friendly return
+                self._pending_offline_summary = {
+                    "name": self.duck.name,
+                    "hours": offline["hours"],
+                    "changes": {},
+                    "vacation": True,
+                }
+                self._state = "offline_summary"
+            else:
+                # Apply offline need decay (capped at 24h worth — needs never worse than 1 bad day)
+                from config import MAX_OFFLINE_NEED_HOURS
+                old_needs = self.duck.needs.to_dict()
 
-            offline_minutes = offline["minutes"] * offline["decay_multiplier"]
-            self.duck.update(offline_minutes)
+                need_hours = min(offline["hours"], MAX_OFFLINE_NEED_HOURS)
+                offline_minutes = (need_hours * 60) * offline["decay_multiplier"]
+                self.duck.update(offline_minutes)
 
-            new_needs = self.duck.needs.to_dict()
+                new_needs = self.duck.needs.to_dict()
 
-            # Calculate changes for summary
-            changes = {}
-            for need in old_needs:
-                diff = new_needs[need] - old_needs[need]
-                if abs(diff) > 1:
-                    changes[need] = diff
+                # Calculate changes for summary
+                changes = {}
+                for need in old_needs:
+                    diff = new_needs[need] - old_needs[need]
+                    if abs(diff) > 1:
+                        changes[need] = diff
 
-            # Show offline summary
-            self._pending_offline_summary = {
-                "name": self.duck.name,
-                "hours": offline["hours"],
-                "changes": changes,
-            }
-            self._state = "offline_summary"
+                # Apply trust decay based on RAW hours (uncapped — real absence matters)
+                raw_hours = offline["raw_hours"]
+                trust_loss = min(raw_hours * 0.4, 60)  # Max 60 trust lost
+                self.duck.trust = max(0, self.duck.trust - trust_loss)
+
+                # Set cold shoulder if gone 3+ days
+                if raw_hours >= 72:  # 3 days
+                    days_away = raw_hours / 24
+                    # Cooldown: ~1 day of playtime per 3 days away, max 5 days
+                    cooldown_days = min(days_away * 0.3, 5)
+                    cooldown_seconds = cooldown_days * 24 * 3600
+                    self.duck.cooldown_until = time.time() + cooldown_seconds
+
+                # Show offline summary
+                self._pending_offline_summary = {
+                    "name": self.duck.name,
+                    "hours": offline["hours"],
+                    "raw_hours": offline["raw_hours"],
+                    "changes": changes,
+                    "trust_loss": round(trust_loss, 1),
+                }
+                self._state = "offline_summary"
         else:
             self._state = "playing"
 
@@ -4421,9 +4809,12 @@ class Game:
         self._last_save = time.time()
         self._last_event_check = time.time()
         
-        # Show welcome back - use DuckBrain greeting if available
+        # Show welcome back - use cold shoulder or DuckBrain greeting
         welcome_msg = None
-        if self.duck_brain:
+        # Cold shoulder overrides normal greetings
+        if self.duck and is_cold_shoulder_active(self.duck):
+            welcome_msg = get_cold_shoulder_greeting(self.duck)
+        elif self.duck_brain:
             welcome_msg = self.duck_brain.get_greeting()
         if welcome_msg:
             notification_manager.show(welcome_msg, "success", 3.5)
@@ -4453,6 +4844,11 @@ class Game:
         """Save the current game state."""
         if not self.duck:
             return
+
+        # ── End-of-session trust bonus: all needs > 40 = "good day" ──
+        needs = self.duck.needs
+        if all(getattr(needs, n) > 40 for n in ["hunger", "energy", "fun", "cleanliness", "social"]):
+            apply_trust_gain(self.duck, "good_day")
 
         save_data = {
             "duck": self.duck.to_dict(),
@@ -4503,6 +4899,9 @@ class Game:
             "save_slots": self.save_slots.to_dict(),
             # DuckBrain - Seaman-style persistent memory
             "duck_brain": self.duck_brain.to_dict() if self.duck_brain else None,
+            # Area event system and spontaneous travel
+            "area_events": self.area_events.to_dict(),
+            "spontaneous_travel": self.spontaneous_travel.to_dict(),
             # ============== END NEW FEATURE SYSTEMS ==============
         }
 
@@ -4803,7 +5202,6 @@ class Game:
         self.mood_visuals = MoodVisualEffects()
         self.ambient = AmbientSoundSystem()
         self.sound_effects = SoundEffectSystem()
-        self.mood_dialogue = MoodDialogueSystem()
         self.enhanced_diary = EnhancedDiarySystem()
         self.save_slots = SaveSlotsSystem()
 
@@ -5088,7 +5486,7 @@ class Game:
             self.renderer.show_message(
                 f"=== AREAS ===\n\nCurrent: {current_name}\n\n"
                 "No other areas discovered yet.\nKeep exploring [E] to find new biomes!\n\n"
-                f"Gathering skill: Lv.{self.exploration.gathering_skill}\n\n[ESC or A] Close",
+                f"Gathering skill: Lv.{self.exploration.gathering_skill}\n\n[Bksp] Close",
                 duration=0
             )
             self._areas_menu_open = True
@@ -5168,7 +5566,7 @@ class Game:
             "CRAFTING",
             items,
             self._crafting_menu.get_selected_index(),
-            footer="[^v] Navigate  [Enter] Craft  [C/ESC] Close"
+            footer="[^/v] Navigate | [Enter] Craft | [Bksp] Close"
         )
 
     def _handle_building_input(self, key_str: str, key_name: str = "", key=None) -> bool:
@@ -5226,7 +5624,7 @@ class Game:
             "BUILDING",
             items,
             self._building_menu.get_selected_index(),
-            footer="[^v] Navigate  [Enter] Build  [R/ESC] Close"
+            footer="[^/v] Navigate | [Enter] Build | [Bksp] Close"
         )
 
     def _start_building_animation(self, blueprint):
@@ -5354,7 +5752,7 @@ class Game:
             items,
             self._areas_menu.get_selected_index(),
             show_numbers=False,
-            footer="[^v] Navigate  [Enter] Travel  [A/ESC] Close"
+            footer="[^/v] Navigate | [Enter] Travel | [Bksp] Close"
         )
 
     def _travel_to_area(self, area_name: str):
@@ -5412,6 +5810,11 @@ class Game:
                 f"[Press any key to explore]"
             )
             self.renderer.show_message(arrival_msg, duration=0)
+
+            # Show spontaneous travel arrival quip if this was a wander
+            if self._spontaneous_arrival_msg:
+                self.renderer.show_message(self._spontaneous_arrival_msg, duration=4.0)
+                self._spontaneous_arrival_msg = None
 
             # Start exploring after showing the art
             self._start_exploring()
@@ -5549,7 +5952,7 @@ class Game:
             "USE ITEM",
             items,
             self._use_menu.get_selected_index(),
-            footer="[^v] Navigate  [Enter] Use  [U/ESC] Close"
+            footer="[^/v] Navigate | [Enter] Use | [Bksp] Close"
         )
 
     def _handle_use_input(self, key_str: str, key_name: str = "", key=None) -> bool:
@@ -5672,7 +6075,7 @@ class Game:
         items = [{'label': item.label, 'description': item.description, 'enabled': item.enabled}
                  for item in self._minigames_menu.get_items()]
 
-        footer = f"Coins: {self.minigames.total_coins_earned} | [^v] Navigate  [Enter] Play  [J/ESC] Close"
+        footer = f"Coins: {self.minigames.total_coins_earned} | [^/v] Navigate | [Enter] Play | [Bksp] Close"
         self.renderer.show_menu(
             "MINI-GAMES",
             items,
@@ -5771,8 +6174,8 @@ class Game:
 
         game = self._active_minigame
 
-        # Quit game with Q
-        if key_str == 'q':
+        # Quit game with Q, ESC, or Backspace
+        if key_str == 'q' or key_name in ('KEY_ESCAPE', 'KEY_BACKSPACE'):
             self._end_minigame(abandoned=True)
             return True
 
@@ -5810,8 +6213,8 @@ class Game:
         if not self.fishing.is_fishing:
             return False
 
-        # Cancel fishing with Q or Escape
-        if key_str == 'q' or key_name == 'KEY_ESCAPE':
+        # Cancel fishing with Q, Escape, or Backspace
+        if key_str == 'q' or key_name in ('KEY_ESCAPE', 'KEY_BACKSPACE'):
             self.fishing.cancel_fishing()
             self.renderer.show_message("Stopped fishing.", duration=2.0)
             return True
@@ -6263,7 +6666,7 @@ class Game:
                 lines.append(f"    {item.description}")
 
         lines.append("")
-        lines.append("[Up/Down] Navigate  [Enter] Start  [ESC/O] Close")
+        lines.append("[^/v] Navigate | [Enter] Start | [Bksp] Close")
 
         self.renderer.show_overlay("\n".join(lines), duration=0)
 
@@ -6311,7 +6714,7 @@ class Game:
         
         lines.append("+=============================================+")
         lines.append("")
-        lines.append("[^/v] Select  [Enter] Visit  [ESC/Backspace] Close")
+        lines.append("[^/v] Select | [Enter] Visit | [Bksp] Close")
         
         self.renderer.show_overlay("\n".join(lines), duration=0)
 
@@ -6425,7 +6828,7 @@ class Game:
             f"WEATHER ACTIVITIES ({weather.upper()})",
             items,
             self._weather_menu.get_selected_index(),
-            footer="[^v] Navigate  [Enter] Start  [W/ESC] Close"
+            footer="[^/v] Navigate | [Enter] Start | [Bksp] Close"
         )
 
     def _handle_weather_input_direct(self, key):
@@ -6604,7 +7007,7 @@ class Game:
         lines.extend([
             "",
             "+==========================================+",
-            "| [^v] Navigate  [Enter] Select  [ESC] Close |",
+            "| [^/v] Navigate | [Enter] Select | [Bksp] Close |",
             "+==========================================+",
         ])
         
@@ -6766,7 +7169,7 @@ class Game:
             lines.append(f"      Hint: {tmap.hint}")
             lines.append("")
         
-        lines.append("[1-5] Use map  [ESC] Back")
+        lines.append("[1-5] Use map | [Bksp] Back")
         self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _show_treasure_collection(self):
@@ -6811,7 +7214,7 @@ class Game:
                 "  - Winter Wonder (Dec 21-Jan 4)",
                 "",
                 "+==========================================+",
-                "|            [ESC] Close                   |",
+                "|            [Bksp] Close                  |",
                 "+==========================================+",
             ]
             self.renderer.show_overlay("\n".join(lines), duration=0)
@@ -6882,7 +7285,7 @@ class Game:
         lines.extend([
             "",
             "+==========================================+",
-            "| [^v] Navigate  [Enter] Do  [ESC] Close    |",
+            "| [^/v] Navigate | [Enter] Do | [Bksp] Close  |",
             "+==========================================+",
         ])
         
@@ -7046,7 +7449,7 @@ class Game:
                 max_idx = len(page_items) - 1
                 self._debug_submenu_selected = min(max_idx, self._debug_submenu_selected + 1)
             else:
-                self._debug_menu_selected = min(10, self._debug_menu_selected + 1)  # 11 items (0-10)
+                self._debug_menu_selected = min(11, self._debug_menu_selected + 1)  # 12 items (0-11)
             self._show_debug_menu()
             return
         
@@ -7055,9 +7458,15 @@ class Game:
             self._debug_select_current()
             return
         
+        # F key for new features
+        if key_str in ('f', 'F') and not self._debug_submenu:
+            self._debug_menu_selected = 10  # Features is index 10
+            self._debug_select_current()
+            return
+
         # T key for autotest
         if key_str in ('t', 'T') and not self._debug_submenu:
-            self._debug_menu_selected = 10  # AutoTest is index 10
+            self._debug_menu_selected = 11  # AutoTest is index 11
             self._debug_select_current()
             return
         
@@ -7104,6 +7513,37 @@ class Game:
             return ["egg", "hatchling", "duckling", "juvenile", "young_adult", "adult", "mature", "elder", "legendary", "+1_day", "+7_days", "+30_days"]
         elif self._debug_submenu == "building":
             return ["give_all_materials", "complete_build", "unlock_blueprints", "clear_structures"]
+        elif self._debug_submenu == "features":
+            return [
+                "-- ENCOUNTERS --",
+                "trigger_predator_shadow",
+                "trigger_stuck_in_mud",
+                "trigger_hungry_bully",
+                "trigger_bored_crisis",
+                "force_encounter_timeout",
+                "-- TRUST & CONSEQUENCES --",
+                "trust_0 (distant)",
+                "trust_25 (familiar)",
+                "trust_50 (close)",
+                "trust_90 (bonded)",
+                "make_sick",
+                "cure_sickness",
+                "trigger_hiding",
+                "trigger_cold_shoulder",
+                "-- PERSONALITY DRIFT --",
+                "drift_neglect (10 cycles)",
+                "drift_care (10 cycles)",
+                "show_personality_state",
+                "reset_personality",
+                "-- RITUALS --",
+                "show_ritual_status",
+                "fake_ritual_history",
+                "clear_rituals",
+                "-- WEATHER EFFECTS --",
+                "show_weather_modifiers",
+                "show_shelter_protection",
+                "show_weather_forecast",
+            ]
         elif self._debug_submenu == "autotest":
             return ["run_full_test", "run_quick_test", "view_last_report"]
         return []
@@ -7112,7 +7552,7 @@ class Game:
         """Execute the currently selected debug option."""
         if not self._debug_submenu:
             # Main menu selection
-            menus = ["weather", "events", "visitor", "needs", "money", "friendship", "time", "misc", "age", "building", "autotest"]
+            menus = ["weather", "events", "visitor", "needs", "money", "friendship", "time", "misc", "age", "building", "features", "autotest"]
             if 0 <= self._debug_menu_selected < len(menus):
                 self._debug_submenu = menus[self._debug_menu_selected]
                 self._debug_submenu_selected = 0
@@ -7150,6 +7590,8 @@ class Game:
             self._debug_set_age(selected)
         elif self._debug_submenu == "building":
             self._debug_building_action(selected)
+        elif self._debug_submenu == "features":
+            self._debug_features_action(selected)
         elif self._debug_submenu == "autotest":
             self._debug_run_autotest(selected)
     
@@ -7644,6 +8086,238 @@ Core Systems Tested: {report.total_tests}
             else:
                 self.renderer.show_message("# No test reports found.\n\nRun a test first!", duration=3)
 
+    def _debug_features_action(self, action: str):
+        """Debug actions for new features: encounters, trust, drift, rituals, weather."""
+        if not self.duck:
+            self.renderer.show_message("# DEBUG: No duck!", duration=2)
+            self._debug_menu_open = False
+            self.renderer.dismiss_overlay()
+            self._debug_submenu = None
+            return
+
+        # Skip section headers
+        if action.startswith("--"):
+            return
+
+        msg = ""
+
+        # ── Encounters ───────────────────────────────────────────
+        if action.startswith("trigger_") and action != "trigger_hiding" and action != "trigger_cold_shoulder":
+            encounter_id = action.replace("trigger_", "")
+            from world.events import ENCOUNTERS
+            if encounter_id in ENCOUNTERS:
+                from audio.sound import duck_sounds
+                trigger_msg = self.events.start_encounter(encounter_id)
+                if trigger_msg:
+                    duck_sounds.panic()
+                    self.renderer.show_message(
+                        f"# DEBUG: Encounter started!\n\n{trigger_msg}",
+                        duration=8.0, category="duck"
+                    )
+                else:
+                    self.renderer.show_message(
+                        "# DEBUG: Encounter already active!", duration=2
+                    )
+            else:
+                self.renderer.show_message(
+                    f"# DEBUG: Unknown encounter '{encounter_id}'", duration=2
+                )
+            self._debug_menu_open = False
+            self.renderer.dismiss_overlay()
+            self._debug_submenu = None
+            return
+
+        elif action == "force_encounter_timeout":
+            if self.events.has_active_encounter():
+                enc = self.events.get_active_encounter()
+                # Force timeout by setting started_at way in the past
+                self.events._active_encounter["started_at"] = 0
+                result = self.events.check_encounter_timeout()
+                if result:
+                    from audio.sound import duck_sounds
+                    duck_sounds.quack("sad")
+                    self._apply_encounter_result(result)
+                    msg = "# DEBUG: Encounter timed out (forced)"
+                else:
+                    msg = "# DEBUG: Timeout check returned nothing"
+            else:
+                msg = "# DEBUG: No active encounter to timeout"
+
+        # ── Trust & Consequences ──────────────────────────────────
+        elif action.startswith("trust_"):
+            val = int(action.split("_")[1].split(" ")[0])
+            self.duck.trust = float(val)
+            from core.consequences import get_trust_level_display
+            level = get_trust_level_display(self.duck)
+            msg = f"# DEBUG: Trust set to {val} ({level})"
+
+        elif action == "make_sick":
+            from datetime import datetime
+            self.duck.is_sick = True
+            self.duck.sick_since = datetime.now().isoformat()
+            msg = "# DEBUG: Duck is now SICK\n*cough* ...this is YOUR fault."
+
+        elif action == "cure_sickness":
+            from core.consequences import apply_medicine
+            result = apply_medicine(self.duck)
+            msg = f"# DEBUG: Medicine applied\n{result}"
+
+        elif action == "trigger_hiding":
+            self.duck.hiding = True
+            self.duck.hiding_coax_visits = 0
+            msg = "# DEBUG: Duck is now HIDING\n...nobody home."
+
+        elif action == "trigger_cold_shoulder":
+            import time as _time
+            self.duck.cooldown_until = _time.time() + 600  # 10 min
+            msg = "# DEBUG: Cold shoulder active (10 min)\n*turns away*"
+
+        # ── Personality Drift ─────────────────────────────────────
+        elif action.startswith("drift_neglect"):
+            from core.consequences import apply_personality_drift
+            for _ in range(10):
+                apply_personality_drift(self.duck, neglect_stage=2, delta_minutes=60)
+            traits = self.duck.personality
+            msg = (f"# DEBUG: Applied 10 neglect drift cycles\n"
+                   f"Social={traits.social} Brave={traits.brave}\n"
+                   f"Active={traits.active} Playful={traits.playful}")
+
+        elif action.startswith("drift_care"):
+            from core.consequences import apply_personality_drift
+            for _ in range(10):
+                apply_personality_drift(self.duck, neglect_stage=0, delta_minutes=60)
+            traits = self.duck.personality
+            msg = (f"# DEBUG: Applied 10 care drift cycles\n"
+                   f"Social={traits.social} Brave={traits.brave}\n"
+                   f"Active={traits.active} Playful={traits.playful}")
+
+        elif action == "show_personality_state":
+            p = self.duck.personality
+            base = getattr(self.duck, '_personality_baseline', None)
+            lines = ["# DEBUG: Personality State"]
+            lines.append(f"Social:  {p.social:+.1f}" + (f"  (base {base.get('social', '?')})" if base else ""))
+            lines.append(f"Brave:   {p.brave:+.1f}" + (f"  (base {base.get('brave', '?')})" if base else ""))
+            lines.append(f"Active:  {p.active:+.1f}" + (f"  (base {base.get('active', '?')})" if base else ""))
+            lines.append(f"Playful: {p.playful:+.1f}" + (f"  (base {base.get('playful', '?')})" if base else ""))
+            if hasattr(self, 'extended_personality'):
+                ext = self.extended_personality
+                ext_base = getattr(self.duck, '_ext_personality_baseline', None)
+                for tid in ['optimism', 'independence', 'stubbornness', 'empathy', 'mischief']:
+                    t = ext.get_trait(tid)
+                    if t:
+                        b = ext_base.get(tid, '?') if ext_base else '?'
+                        lines.append(f"{tid}: {t.value:+.1f}  (base {b})")
+            msg = "\n".join(lines)
+
+        elif action == "reset_personality":
+            base = getattr(self.duck, '_personality_baseline', None)
+            if base:
+                for attr, val in base.items():
+                    if hasattr(self.duck.personality, attr):
+                        setattr(self.duck.personality, attr, val)
+            ext_base = getattr(self.duck, '_ext_personality_baseline', None)
+            if ext_base and hasattr(self, 'extended_personality'):
+                for tid, val in ext_base.items():
+                    t = self.extended_personality.get_trait(tid)
+                    if t:
+                        t.value = val
+            msg = "# DEBUG: Personality reset to baseline"
+
+        # ── Rituals ──────────────────────────────────────────────
+        elif action == "show_ritual_status":
+            if self.duck_brain and hasattr(self.duck_brain, 'ritual_tracker'):
+                summary = self.duck_brain.ritual_tracker.get_summary()
+                if summary:
+                    lines = ["# DEBUG: Ritual Status"]
+                    for s in summary:
+                        lines.append(f"  {s['action']}: ~{s['typical_hour']:02d}:{s['typical_minute']:02d}")
+                        lines.append(f"    conf={s['confidence']:.0%} streak={s['streak']}")
+                    msg = "\n".join(lines)
+                else:
+                    msg = "# DEBUG: No rituals detected yet\n(Need 5+ interactions at similar times)"
+            else:
+                msg = "# DEBUG: DuckBrain/ritual tracker not available"
+
+        elif action == "fake_ritual_history":
+            if self.duck_brain and hasattr(self.duck_brain, 'ritual_tracker'):
+                from datetime import datetime, timedelta
+                now = datetime.now()
+                # Fake 10 days of feeding at ~8:00 AM and playing at ~6:00 PM
+                for day in range(10):
+                    feed_time = now - timedelta(days=day, hours=now.hour-8, minutes=now.minute)
+                    play_time = now - timedelta(days=day, hours=now.hour-18, minutes=now.minute)
+                    self.duck_brain.ritual_tracker.record_interaction(
+                        "feed", feed_time.hour, feed_time.minute, feed_time.weekday(), feed_time.timestamp()
+                    )
+                    self.duck_brain.ritual_tracker.record_interaction(
+                        "play", play_time.hour, play_time.minute, play_time.weekday(), play_time.timestamp()
+                    )
+                msg = "# DEBUG: Faked 10 days of rituals\n  feed ~08:00, play ~18:00"
+            else:
+                msg = "# DEBUG: DuckBrain/ritual tracker not available"
+
+        elif action == "clear_rituals":
+            if self.duck_brain and hasattr(self.duck_brain, 'ritual_tracker'):
+                self.duck_brain.ritual_tracker._history.clear()
+                self.duck_brain.ritual_tracker._rituals.clear()
+                msg = "# DEBUG: Rituals cleared"
+            else:
+                msg = "# DEBUG: DuckBrain/ritual tracker not available"
+
+        # ── Weather Effects ───────────────────────────────────────
+        elif action == "show_weather_modifiers":
+            from world.atmosphere import get_weather_need_modifiers
+            weather = self.atmosphere.current_weather
+            if weather:
+                mods = get_weather_need_modifiers(weather)
+                lines = [f"# DEBUG: Weather Modifiers ({weather.weather_type.value})"]
+                lines.append(f"  Intensity: {weather.intensity:.1f}")
+                for need, mult in sorted(mods.items()):
+                    indicator = "^" if mult > 1.0 else "v" if mult < 1.0 else "="
+                    lines.append(f"  {need}: x{mult:.2f} {indicator}")
+                msg = "\n".join(lines)
+            else:
+                msg = "# DEBUG: No active weather"
+
+        elif action == "show_shelter_protection":
+            protection = self.building.get_shelter_protection()
+            dampen = min(protection / 100.0, 0.7)
+            msg = (f"# DEBUG: Shelter Protection\n"
+                   f"  Protection: {protection}/100\n"
+                   f"  Weather dampening: {dampen:.0%}\n"
+                   f"  (max 70% at protection=100)")
+
+        elif action == "show_weather_forecast":
+            from world.atmosphere import WeatherType
+            weather = self.atmosphere.current_weather
+            if weather:
+                remaining = self.atmosphere.get_weather_remaining_hours()
+                next_type, confidence = self.atmosphere.forecast_next_weather()
+                lines = [f"# DEBUG: Weather Forecast"]
+                lines.append(f"  Current: {weather.weather_type.value} ({weather.intensity:.1f})")
+                lines.append(f"  Remaining: {remaining:.1f}h")
+                lines.append(f"  Next: {next_type.value} ({confidence:.0%} conf)")
+                # Also show what DuckBrain would say
+                if self.duck_brain:
+                    forecast = self.duck_brain.get_weather_forecast(self.atmosphere)
+                    if forecast:
+                        lines.append(f"\n  Duck says: \"{forecast}\"")
+                    else:
+                        lines.append(f"\n  (Duck has no forecast — too much time left)")
+                msg = "\n".join(lines)
+            else:
+                msg = "# DEBUG: No active weather"
+
+        else:
+            msg = f"# DEBUG: Unknown feature action '{action}'"
+
+        if msg:
+            self.renderer.show_message(msg, duration=5.0)
+
+        self._debug_menu_open = False
+        self.renderer.dismiss_overlay()
+        self._debug_submenu = None
+
     def _show_debug_menu(self):
         """Render the debug menu overlay."""
         lines = [
@@ -7665,6 +8339,7 @@ Core Systems Tested: {report.total_tests}
                 ("8", "Misc", "Other debug options"),
                 ("9", "Age", "Set duck age/stage"),
                 ("0", "Building", "Building debug"),
+                ("F", "Features", "New feature tests"),
                 ("T", "AutoTest", "Run auto tests"),
             ]
             for i, (key, name, desc) in enumerate(options):
@@ -7697,12 +8372,12 @@ Core Systems Tested: {report.total_tests}
             # Add pagination hint if needed
             if total_pages > 1:
                 lines.append("+===================================+")
-                lines.append("|  [</>] Prev/Next Page             |")
+                lines.append("|  [</> ] Page                      |")
         
         lines.extend([
             "+===================================+",
-            "|  [^v] Navigate  [Enter] Select    |",
-            "|  [ESC/`] Back/Close               |",
+            "|  [^/v] Navigate | [Enter] Select  |",
+            "|  [</> ] Page | [Bksp] Close        |",
             "+===================================+",
         ])
         
@@ -7886,8 +8561,8 @@ Core Systems Tested: {report.total_tests}
         lines.append("")
         lines.append(f"Page {self._scrapbook_page + 1}/{total_pages}")
         lines.append("")
-        lines.append("[<-/->] Navigate Pages  [F] Toggle Favorite")
-        lines.append("[ESC/Backspace] Close")
+        lines.append("[</> ] Page | [F] Toggle Favorite")
+        lines.append("[Bksp] Close")
         
         scrapbook_text = "\n".join(lines)
         self.renderer.show_overlay(scrapbook_text)
@@ -7965,7 +8640,7 @@ Core Systems Tested: {report.total_tests}
         
         lines.append("+=============================================+")
         lines.append("")
-        lines.append("[<-/->] Navigate Pages  [ESC/Backspace] Close")
+        lines.append("[</> ] Page | [Bksp] Close")
         
         self.renderer.show_overlay("\n".join(lines))
 
@@ -8026,7 +8701,7 @@ Core Systems Tested: {report.total_tests}
             lines.append(f"  Prestige: {prestige_msg}")
         
         lines.append("")
-        lines.append("[P] Prestige  [T] Change Title  [ESC/Backspace] Close")
+        lines.append("[P] Prestige | [T] Title | [Bksp] Close")
         
         prestige_text = "\n".join(lines)
         self.renderer.show_overlay(prestige_text)
@@ -8102,9 +8777,11 @@ Core Systems Tested: {report.total_tests}
         # Store prestige if keeping
         prestige_data = self.prestige.to_dict() if keep_prestige else None
         
-        # Reset all systems
+        # Reset all systems — must create fresh instances to avoid
+        # stale data from module-level singletons persisting
         self.duck = None
         self.behavior_ai = None
+        self.duck_brain = None
         self.inventory = Inventory()
         self.progression = ProgressionSystem()
         self.home = DuckHome()
@@ -8119,6 +8796,7 @@ Core Systems Tested: {report.total_tests}
             on_effects_applied=self._on_interaction_effects_applied
         )
 
+        # Core game systems
         self.materials = MaterialInventory()
         self.building = BuildingSystem()
         self.garden = Garden()
@@ -8130,6 +8808,42 @@ Core Systems Tested: {report.total_tests}
         self.tricks = TricksSystem()
         self.titles = TitlesSystem()
         self.decorations = DecorationsSystem()
+        
+        # Feature systems that were missing from reset
+        self.conversation = None  # Re-created when duck is adopted
+        self.events = EventSystem()
+        self.goals = GoalSystem()
+        self.achievements = AchievementSystem()
+        self.atmosphere = AtmosphereManager()
+        self.exploration = ExplorationSystem()
+        self.crafting = CraftingSystem()
+        self.dreams = DreamSystem()
+        self.friends = FriendsSystem()
+        self.festivals = FestivalSystem()
+        self.collectibles = CollectiblesSystem()
+        self.secrets = SecretsSystem()
+        self.weather_activities = WeatherActivitiesSystem()
+        self.trading = TradingSystem()
+        self.fortune = FortuneSystem()
+        self.outfits = OutfitManager()
+        self.seasonal_clothing = SeasonalClothingSystem()
+        self.aging = AgingSystem()
+        self.extended_personality = ExtendedPersonalitySystem()
+        self.enhanced_diary = EnhancedDiarySystem()
+        self.contextual_dialogue = ContextualDialogueSystem()
+        self.diary = DuckDiary()
+        self.badges = BadgesSystem()
+        self.minigames = MiniGameSystem()
+        
+        # UI systems (stateless but reset for cleanliness)
+        self.statistics = StatisticsSystem()
+        self.day_night = DayNightSystem()
+        
+        # Reset tracking state
+        self._statistics = {}
+        self._weather_seen = set()
+        self._last_random_comment_time = 0.0
+        self._pending_visitor_comment = None
         
         # Restore prestige if keeping
         if prestige_data:
@@ -8195,8 +8909,8 @@ Core Systems Tested: {report.total_tests}
         
         lines.append("+=============================================+")
         lines.append("")
-        lines.append("[^/v] Select Plot  [P] Plant  [W] Water  [H] Harvest")
-        lines.append("[ESC/Backspace] Close")
+        lines.append("[^/v] Select Plot | [P] Plant | [W] Water | [H] Harvest")
+        lines.append("[Bksp] Close")
         
         self.renderer.show_overlay("\n".join(lines), duration=0)
 
@@ -8464,11 +9178,15 @@ Core Systems Tested: {report.total_tests}
         end_idx = start_idx + items_per_page
         page_items = learned_items[start_idx:end_idx]
         
+        # Clamp selection to page
+        if page_items:
+            self._tricks_menu_selected = max(0, min(self._tricks_menu_selected, len(page_items) - 1))
+        
         from duck.tricks import TRICKS
         
         lines = [
             "+===============================================+",
-            "|            * DUCK TRICKS *                  |",
+            "|            * DUCK TRICKS *                    |",
             "+===============================================+",
             f"|  Learned: {total_learned:2}  |  Performances: {self.tricks.total_performances:5}       |",
             f"|  Perfect: {self.tricks.total_perfect_performances:3}  |  Highest Combo: {self.tricks.highest_combo:2}          |",
@@ -8476,11 +9194,12 @@ Core Systems Tested: {report.total_tests}
             f"|  LEARNED TRICKS (Page {self._tricks_menu_page + 1}/{total_pages}):                  |",
         ]
         
-        for tid, learned in page_items:
+        for i, (tid, learned) in enumerate(page_items):
             trick = TRICKS.get(tid)
             if trick:
-                stars = "*" * learned.mastery_level + "*" * (5 - learned.mastery_level)
-                lines.append(f"|   {trick.name[:20]:20} {stars}         |")
+                stars = "*" * learned.mastery_level + "." * (5 - learned.mastery_level)
+                marker = ">" if i == self._tricks_menu_selected else " "
+                lines.append(f"| {marker} {trick.name[:20]:20} {stars}         |")
         
         if not learned_items:
             lines.append("|   No tricks learned yet!                      |")
@@ -8503,8 +9222,8 @@ Core Systems Tested: {report.total_tests}
         
         lines.append("+===============================================+")
         lines.append("")
-        lines.append("[<-/->] Page  [T] Train  [P] Perform  [C] Combo")
-        lines.append("[ESC/Backspace] Close")
+        lines.append("[^/v] Select | [T] Train | [P] Perform")
+        lines.append("[</> ] Page  | [Bksp] Close")
         
         tricks_text = "\n".join(lines)
         self.renderer.show_overlay(tricks_text)
@@ -8525,21 +9244,74 @@ Core Systems Tested: {report.total_tests}
         learned_items = list(self.tricks.learned_tricks.items())
         total_pages = max(1, (len(learned_items) + items_per_page - 1) // items_per_page)
         
-        if key_name == "KEY_LEFT":
+        # Page items on current page
+        start_idx = self._tricks_menu_page * items_per_page
+        end_idx = start_idx + items_per_page
+        page_items = learned_items[start_idx:end_idx]
+        
+        if key_name == "KEY_LEFT" or (key_str == ',' or key_str == '<'):
             if self._tricks_menu_page > 0:
                 self._tricks_menu_page -= 1
+                self._tricks_menu_selected = 0
                 self._render_tricks_menu()
             return
         
-        if key_name == "KEY_RIGHT":
+        if key_name == "KEY_RIGHT" or (key_str == '.' or key_str == '>'):
             if self._tricks_menu_page < total_pages - 1:
                 self._tricks_menu_page += 1
+                self._tricks_menu_selected = 0
                 self._render_tricks_menu()
+            return
+        
+        # UP/DOWN to select trick
+        if key_name == "KEY_UP":
+            if page_items and self._tricks_menu_selected > 0:
+                self._tricks_menu_selected -= 1
+                self._render_tricks_menu()
+            return
+        
+        if key_name == "KEY_DOWN":
+            if page_items and self._tricks_menu_selected < len(page_items) - 1:
+                self._tricks_menu_selected += 1
+                self._render_tricks_menu()
+            return
+        
+        # Get selected trick id
+        selected_trick_id = None
+        if page_items and 0 <= self._tricks_menu_selected < len(page_items):
+            selected_trick_id = page_items[self._tricks_menu_selected][0]
+        
+        # [T] Train selected trick
+        if key_str == 't':
+            if selected_trick_id:
+                self._tricks_menu_open = False
+                self.renderer.dismiss_overlay()
+                self._train_trick(selected_trick_id)
+            else:
+                # Try training an available trick
+                available = self.tricks.get_available_tricks()
+                if available:
+                    self._tricks_menu_open = False
+                    self.renderer.dismiss_overlay()
+                    self._train_trick(available[0].id)
+                else:
+                    self.renderer.show_message("No tricks available to train!", duration=2.0)
+            return
+        
+        # [P] Perform selected trick
+        if key_str == 'p':
+            if selected_trick_id:
+                self._tricks_menu_open = False
+                self.renderer.dismiss_overlay()
+                self._perform_trick(selected_trick_id)
+            else:
+                self.renderer.show_message("Select a learned trick to perform!", duration=2.0)
             return
 
     def _train_trick(self, trick_id: str):
         """Start or continue training a trick."""
-        success, msg = self.tricks.start_training(trick_id)
+        duck_trust = getattr(self.duck, 'trust', 100.0) if self.duck else 100.0
+        success, msg = self.tricks.start_training(trick_id, duck_trust=duck_trust)
         self.renderer.show_message(msg, duration=3.0)
         
         if success:
@@ -8655,16 +9427,16 @@ Core Systems Tested: {report.total_tests}
                 equipped = "●" if tid == self.titles.current_title else "○"
                 fav = "*" if earned.is_favorite else " "
                 rarity_icon = {"common": "o", "uncommon": "O", "rare": "O", "epic": "O", "legendary": "O", "mythic": "O"}.get(title.rarity.value, "o")
-                num = i + 1
-                lines.append(f"|  [{num}]{equipped}{fav} {rarity_icon} {title.name[:28]:28}   |")
+                sel = ">" if i == self._titles_menu_selected else " "
+                lines.append(f"| {sel}[{i+1}]{equipped}{fav} {rarity_icon} {title.name[:27]:27}   |")
         
         if not earned_items:
             lines.append("|   No titles earned yet!                       |")
         
         lines.append("+===============================================+")
         lines.append("")
-        lines.append("[<-/->] Page  [1-5] Equip  [N] Nickname")
-        lines.append("[ESC/Backspace] Close")
+        lines.append("[^/v] Select | [Enter] Equip | [</> ] Page")
+        lines.append("[N] Nickname | [Bksp] Close")
         
         titles_text = "\n".join(lines)
         self.renderer.show_overlay(titles_text)
@@ -8688,19 +9460,42 @@ Core Systems Tested: {report.total_tests}
         if key_name == "KEY_LEFT":
             if self._titles_menu_page > 0:
                 self._titles_menu_page -= 1
+                self._titles_menu_selected = 0
                 self._render_titles_menu()
             return
         
         if key_name == "KEY_RIGHT":
             if self._titles_menu_page < total_pages - 1:
                 self._titles_menu_page += 1
+                self._titles_menu_selected = 0
                 self._render_titles_menu()
             return
         
-        # Equip title by number
+        # UP/DOWN selection
+        start_idx = self._titles_menu_page * items_per_page
+        page_count = min(items_per_page, len(earned_items) - start_idx)
+        
+        if key_name == "KEY_UP":
+            self._titles_menu_selected = max(0, self._titles_menu_selected - 1)
+            self._render_titles_menu()
+            return
+        
+        if key_name == "KEY_DOWN":
+            self._titles_menu_selected = min(max(0, page_count - 1), self._titles_menu_selected + 1)
+            self._render_titles_menu()
+            return
+        
+        # Enter equips the currently selected title
+        if key_name == "KEY_ENTER":
+            if page_count > 0 and 0 <= self._titles_menu_selected < page_count:
+                title_id = earned_items[start_idx + self._titles_menu_selected][0]
+                self._equip_title(title_id)
+                self._render_titles_menu()
+            return
+        
+        # Equip title by number (legacy)
         if key_str.isdigit() and key_str != '0':
             idx = int(key_str) - 1
-            start_idx = self._titles_menu_page * items_per_page
             if 0 <= idx < items_per_page and start_idx + idx < len(earned_items):
                 title_id = earned_items[start_idx + idx][0]
                 self._equip_title(title_id)
@@ -8848,7 +9643,7 @@ Core Systems Tested: {report.total_tests}
             self._render_diary_life(lines, width, items_per_page)
         
         lines.append("+" + "-" * (width - 2) + "+")
-        lines.append("| [<-][->] Navigate Tabs    [ESC] Close   |")
+        lines.append("| [<-][->] Tabs  [^/v] Page  [Bksp] Close |")
         lines.append("+" + "=" * (width - 2) + "+")
         
         self.renderer.show_overlay("\n".join(lines), duration=0)
@@ -8974,6 +9769,7 @@ Core Systems Tested: {report.total_tests}
             return
             
         key_name = getattr(key, 'name', None) or ""
+        key_str = str(key).lower()
         
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
@@ -8989,13 +9785,27 @@ Core Systems Tested: {report.total_tests}
         if key_name == "KEY_LEFT":
             if current_idx > 0:
                 self._enhanced_diary_tab = tabs[current_idx - 1]
+                self._enhanced_diary_page = 0  # Reset page on tab switch
                 self._render_enhanced_diary()
             return
         
         if key_name == "KEY_RIGHT":
             if current_idx < len(tabs) - 1:
                 self._enhanced_diary_tab = tabs[current_idx + 1]
+                self._enhanced_diary_page = 0  # Reset page on tab switch
                 self._render_enhanced_diary()
+            return
+        
+        # UP/DOWN or </> for page navigation within tab
+        if key_name == "KEY_UP" or key_str == ',' or key_str == '<':
+            if self._enhanced_diary_page > 0:
+                self._enhanced_diary_page -= 1
+                self._render_enhanced_diary()
+            return
+        
+        if key_name == "KEY_DOWN" or key_str == '.' or key_str == '>':
+            self._enhanced_diary_page += 1
+            self._render_enhanced_diary()
             return
 
     def _record_random_dream(self):
@@ -9168,7 +9978,8 @@ Core Systems Tested: {report.total_tests}
             owned, total, _ = self.collectibles.get_set_progress(set_id)
             completed = "x" if set_id in self.collectibles.completed_sets else " "
             progress = f"{owned}/{total}"
-            lines.append(f"|  [{completed}] {set_def.name[:25]:25} {progress:5}   |")
+            sel = ">" if i == self._collectibles_menu_selected else " "
+            lines.append(f"| {sel}[{completed}] {set_def.name[:24]:24} {progress:5}   |")
         
         lines.extend([
             "+===============================================+",
@@ -9186,8 +9997,8 @@ Core Systems Tested: {report.total_tests}
         lines.append(f"Collection Progress: {stats['unique_owned']}/{stats['total_possible']} ({stats['completion_percent']:.1f}%)")
         lines.append(f"Packs Available: {stats.get('packs_available', 0)}")
         lines.append("")
-        lines.append("[<-/->] Page  [O] Open Pack  [1-9] View Set")
-        lines.append("[ESC/Backspace] Close")
+        lines.append("[^/v] Select | [Enter] View Set | [</> ] Page")
+        lines.append("[O] Open Pack | [Bksp] Close")
         
         album_text = "\n".join(lines)
         self.renderer.show_overlay(album_text)
@@ -9212,13 +10023,37 @@ Core Systems Tested: {report.total_tests}
         if key_name == "KEY_LEFT":
             if self._collectibles_menu_page > 0:
                 self._collectibles_menu_page -= 1
+                self._collectibles_menu_selected = 0
                 self._render_collectibles_menu()
             return
         
         if key_name == "KEY_RIGHT":
             if self._collectibles_menu_page < total_pages - 1:
                 self._collectibles_menu_page += 1
+                self._collectibles_menu_selected = 0
                 self._render_collectibles_menu()
+            return
+        
+        # UP/DOWN selection
+        all_sets = list(SETS.items())
+        start_idx = self._collectibles_menu_page * items_per_page
+        page_count = min(items_per_page, len(all_sets) - start_idx)
+        
+        if key_name == "KEY_UP":
+            self._collectibles_menu_selected = max(0, self._collectibles_menu_selected - 1)
+            self._render_collectibles_menu()
+            return
+        
+        if key_name == "KEY_DOWN":
+            self._collectibles_menu_selected = min(max(0, page_count - 1), self._collectibles_menu_selected + 1)
+            self._render_collectibles_menu()
+            return
+        
+        # Enter views the currently selected set (same as number key)
+        if key_name == "KEY_ENTER":
+            if page_count > 0 and 0 <= self._collectibles_menu_selected < page_count:
+                set_id = all_sets[start_idx + self._collectibles_menu_selected][0]
+                self._view_collectible_set(set_id)
             return
         
         # Open pack
@@ -9226,6 +10061,25 @@ Core Systems Tested: {report.total_tests}
             self._open_collectible_pack()
             self._render_collectibles_menu()
             return
+
+    def _view_collectible_set(self, set_id: str):
+        """View the items in a collectible set."""
+        from world.collectibles import SETS
+        set_def = SETS.get(set_id)
+        if not set_def:
+            return
+        owned, total, owned_ids = self.collectibles.get_set_progress(set_id)
+        completed = set_id in self.collectibles.completed_sets
+        lines = []
+        lines.append(f"  {set_def.name}  ({owned}/{total})")
+        lines.append(f"  {'COMPLETE!' if completed else 'In Progress'}")
+        lines.append("")
+        for item in set_def.items:
+            have = "x" if item.id in owned_ids else " "
+            rarity_icon = {"common": "o", "uncommon": "O", "rare": "O", "epic": "O", "legendary": "O", "mythic": "O"}.get(
+                item.rarity.value if hasattr(item.rarity, 'value') else str(item.rarity), "o")
+            lines.append(f"  [{have}] {rarity_icon} {item.name[:32]}")
+        self.renderer.show_message("\n".join(lines), duration=8.0)
 
     def _open_collectible_pack(self, pack_type: str = "standard"):
         """Open a collectible pack."""
@@ -9302,7 +10156,8 @@ Core Systems Tested: {report.total_tests}
             for i, (did, count) in enumerate(page_items):
                 decor = DECORATIONS.get(did)
                 if decor:
-                    lines.append(f"|   {decor.name[:30]:30} x{count:2}    |")
+                    sel = ">" if i == self._decorations_menu_selected else " "
+                    lines.append(f"| {sel} {decor.name[:29]:29} x{count:2}    |")
         else:
             lines.append("|  No decorations to place. Buy some at shop!  |")
         
@@ -9314,8 +10169,8 @@ Core Systems Tested: {report.total_tests}
         
         lines.append("+===============================================+")
         lines.append("")
-        lines.append("[<-/->] Page  [1-5] View Room  [P] Place  [R] Remove")
-        lines.append("[ESC/Backspace] Close")
+        lines.append("[^/v] Select | [Enter] Place | [</> ] Page")
+        lines.append("[1-5] Room | [R] Remove | [Bksp] Close")
         
         self.renderer.show_overlay("\n".join(lines), duration=0)
     
@@ -9338,12 +10193,36 @@ Core Systems Tested: {report.total_tests}
         if key_name == "KEY_LEFT":
             if self._decorations_menu_page > 0:
                 self._decorations_menu_page -= 1
+                self._decorations_menu_selected = 0
                 self._render_decorations_menu()
             return
         
         if key_name == "KEY_RIGHT":
             if self._decorations_menu_page < total_pages - 1:
                 self._decorations_menu_page += 1
+                self._decorations_menu_selected = 0
+                self._render_decorations_menu()
+            return
+        
+        # UP/DOWN selection
+        start_idx = self._decorations_menu_page * items_per_page
+        page_count = min(items_per_page, len(owned) - start_idx)
+        
+        if key_name == "KEY_UP":
+            self._decorations_menu_selected = max(0, self._decorations_menu_selected - 1)
+            self._render_decorations_menu()
+            return
+        
+        if key_name == "KEY_DOWN":
+            self._decorations_menu_selected = min(max(0, page_count - 1), self._decorations_menu_selected + 1)
+            self._render_decorations_menu()
+            return
+        
+        # Enter places the currently selected decoration
+        if key_name == "KEY_ENTER":
+            if page_count > 0 and 0 <= self._decorations_menu_selected < page_count:
+                decor_id = owned[start_idx + self._decorations_menu_selected][0]
+                self._place_decoration(decor_id)
                 self._render_decorations_menu()
             return
 
@@ -9420,8 +10299,8 @@ Core Systems Tested: {report.total_tests}
         lines.append("")
         lines.append(f"  Current: Slot {self.save_slots.current_slot}")
         lines.append("")
-        lines.append("[^/v] Select  [Enter] Switch  [N] New  [D] Delete")
-        lines.append("[ESC/Backspace] Close")
+        lines.append("[^/v] Select | [Enter] Switch | [N] New | [D] Delete")
+        lines.append("[Bksp] Close")
         
         self.renderer.show_overlay("\n".join(lines), duration=0)
 

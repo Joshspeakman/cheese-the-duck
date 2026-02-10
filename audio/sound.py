@@ -56,6 +56,8 @@ class SoundType(Enum):
     DISCOVERY = "discovery"
     EXPLORE = "explore"
     GATHER = "gather"
+    PANIC = "panic"
+    RELIEF = "relief"
 
 
 @dataclass
@@ -138,6 +140,16 @@ SOUND_EFFECTS = {
     ],
     SoundType.GATHER: [
         Note(262, 0.05), Note(294, 0.05), Note(330, 0.08),
+    ],
+    # Encounter sounds
+    SoundType.PANIC: [
+        Note(600, 0.04), Note(700, 0.04), Note(600, 0.04), Note(750, 0.04),
+        Note(650, 0.04), Note(800, 0.04), Note(600, 0.04), Note(700, 0.04),
+        Note(800, 0.03), Note(700, 0.03), Note(850, 0.05),
+    ],
+    SoundType.RELIEF: [
+        Note(600, 0.08), Note(500, 0.08), Note(400, 0.1), Note(500, 0.1),
+        Note(600, 0.15),
     ],
 }
 
@@ -1282,6 +1294,7 @@ class DuckSounds:
     def __init__(self, engine: SoundEngine):
         self.engine = engine
         self._quack_thread = None
+        self._panic_active = False
 
     def quack(self, mood: str = "normal"):
         """Play a quack sound based on mood."""
@@ -1360,6 +1373,49 @@ class DuckSounds:
     def step(self):
         """Play footstep sound."""
         self.engine.play_sound(SoundType.STEP)
+
+    def panic(self):
+        """Play repeating SOS quack pattern until stop_panic() is called."""
+        self._panic_active = True
+        def _panic_loop():
+            while self._panic_active:
+                # SOS: 3 short, 3 long, 3 short
+                for _ in range(3):
+                    if not self._panic_active:
+                        return
+                    self.quack("excited")
+                    time.sleep(0.1)
+                time.sleep(0.15)
+                for _ in range(3):
+                    if not self._panic_active:
+                        return
+                    self.quack("excited")
+                    time.sleep(0.25)
+                time.sleep(0.15)
+                for _ in range(3):
+                    if not self._panic_active:
+                        return
+                    self.quack("excited")
+                    time.sleep(0.1)
+                # Pause between SOS repeats
+                time.sleep(0.6)
+        self._quack_thread = threading.Thread(target=_panic_loop, daemon=True)
+        self._quack_thread.start()
+
+    def stop_panic(self):
+        """Stop the SOS panic loop."""
+        self._panic_active = False
+
+    def relief(self):
+        """Play a relieved sigh-quack — encounter resolved positively."""
+        self.stop_panic()
+        def _relief_sequence():
+            time.sleep(0.2)
+            self.quack("happy")
+            time.sleep(0.3)
+            self.quack("happy")
+        self._quack_thread = threading.Thread(target=_relief_sequence, daemon=True)
+        self._quack_thread.start()
 
     def random_quack(self):
         """Play a random quack variation."""

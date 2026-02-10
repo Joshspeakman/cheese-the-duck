@@ -384,6 +384,20 @@ RECIPES: Dict[str, CraftingRecipe] = {
         unlock_level=20,
         xp_reward=200,
     ),
+    # ── Medicine (consequence engine) ──────────────────────────────
+    "medicine": CraftingRecipe(
+        id="medicine",
+        name="Pond Medicine",
+        description="Dubious herbal remedy. Tastes like regret.",
+        category=CraftingCategory.SPECIAL,
+        ingredients={"wildflower": 3, "moss": 2, "mushroom": 1, "pond_weed": 2},
+        result_id="medicine",
+        result_amount=1,
+        crafting_time=5.0,
+        skill_required=2,
+        unlock_level=3,
+        xp_reward=25,
+    ),
 }
 
 

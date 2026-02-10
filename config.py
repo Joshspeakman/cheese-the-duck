@@ -98,7 +98,8 @@ AI_RANDOMNESS = 0.3        # Base randomness in action selection
 DERPY_RANDOMNESS_BONUS = 0.4  # Extra randomness for derpy ducks
 
 # Offline progression
-MAX_OFFLINE_HOURS = 24     # Cap offline time processing
+MAX_OFFLINE_HOURS = 8760   # Cap offline time processing (1 year — effectively uncapped)
+MAX_OFFLINE_NEED_HOURS = 24  # Needs never decay worse than 1 bad day
 OFFLINE_DECAY_MULTIPLIER = 0.5  # Needs decay slower offline
 
 # UI Colors (for blessed terminal)

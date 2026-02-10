@@ -228,6 +228,9 @@ class SettingsMenu:
                 SettingItem("show_tips", "Show Tips", "gameplay", "toggle",
                            settings.gameplay.show_tips,
                            description="Display contextual hints"),
+                SettingItem("vacation_mode", "Vacation Mode", "gameplay", "toggle",
+                           settings.gameplay.vacation_mode,
+                           description="Freeze needs & trust while away"),
             ]
         
         elif self._current_category == SettingsCategory.SYSTEM:

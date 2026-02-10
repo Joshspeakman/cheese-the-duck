@@ -1,7 +1,7 @@
 """
 Duck entity - the main character of the game.
 """
-from typing import Optional
+from typing import Optional, Dict
 from dataclasses import dataclass, field
 from datetime import datetime
 import random
@@ -27,6 +27,14 @@ class Duck:
     growth_progress: float = 0.0
     current_action: Optional[str] = None
     action_start_time: Optional[float] = None
+    # Consequence engine state
+    trust: float = 20.0                     # 0-100, single source of truth for bond
+    is_sick: bool = False                    # Sick from prolonged neglect
+    sick_since: Optional[float] = None       # time.time() when sickness started
+    hiding: bool = False                     # Hiding from extreme neglect
+    hiding_coax_visits: int = 0              # Visits since hiding started (need 3)
+    cooldown_until: Optional[float] = None   # Cold shoulder thaw timestamp
+    neglect_minutes_at_zero: Dict[str, float] = field(default_factory=dict)  # need -> minutes at 0
     _mood_calculator: MoodCalculator = field(default_factory=MoodCalculator, repr=False)
     _personality_system: Personality = field(default=None, repr=False)
     _memory: DuckMemory = field(default=None, repr=False)
@@ -87,6 +95,19 @@ class Duck:
         # Restore personality system
         duck._personality_system = Personality(personality_data)
 
+        # Restore consequence engine state
+        duck.trust = data.get("trust", 20.0)
+        duck.is_sick = data.get("is_sick", False)
+        duck.sick_since = data.get("sick_since", None)
+        duck.hiding = data.get("hiding", False)
+        duck.hiding_coax_visits = data.get("hiding_coax_visits", 0)
+        duck.cooldown_until = data.get("cooldown_until", None)
+        duck.neglect_minutes_at_zero = data.get("neglect_minutes_at_zero", {})
+
+        # Restore personality drift baselines (if absent, current personality IS the baseline)
+        duck._personality_baseline = data.get("personality_baseline", dict(personality_data))
+        duck._ext_personality_baseline = data.get("ext_personality_baseline", {})
+
         return duck
 
     def to_dict(self) -> dict:
@@ -101,6 +122,15 @@ class Duck:
             "current_action": self.current_action,
             "mood_history": self._mood_calculator.get_history(),
             "memory": self._memory.to_dict() if self._memory else {},
+            "trust": round(self.trust, 2),
+            "is_sick": self.is_sick,
+            "sick_since": self.sick_since,
+            "hiding": self.hiding,
+            "hiding_coax_visits": self.hiding_coax_visits,
+            "cooldown_until": self.cooldown_until,
+            "neglect_minutes_at_zero": self.neglect_minutes_at_zero,
+            "personality_baseline": getattr(self, '_personality_baseline', dict(self.personality)),
+            "ext_personality_baseline": getattr(self, '_ext_personality_baseline', {}),
         }
 
     @property
@@ -117,16 +147,29 @@ class Duck:
         """Get a description of the duck's personality."""
         return self._personality_system.get_personality_summary()
 
-    def update(self, delta_minutes: float, aging_modifiers: Optional[dict] = None):
+    def update(self, delta_minutes: float, aging_modifiers: Optional[dict] = None, weather_modifiers: Optional[dict] = None):
         """
         Update the duck's state based on time passed.
 
         Args:
             delta_minutes: Real minutes that passed
             aging_modifiers: Optional aging stat modifiers from AgingSystem
+            weather_modifiers: Optional weather need decay multipliers
         """
-        # Update needs with personality and aging modifiers
-        self.needs.update(delta_minutes, self.personality, aging_modifiers)
+        # Get cascade modifiers from consequence engine
+        from core.consequences import get_cascade_modifiers, SICKNESS_DECAY_MULTIPLIER
+        cascade_mods = get_cascade_modifiers(self.needs)
+        sickness_mult = SICKNESS_DECAY_MULTIPLIER if self.is_sick else 1.0
+
+        # Update needs with personality, aging, cascade, sickness, and weather modifiers
+        self.needs.update(
+            delta_minutes, 
+            self.personality, 
+            aging_modifiers,
+            cascade_modifiers=cascade_mods,
+            sickness_multiplier=sickness_mult,
+            weather_modifiers=weather_modifiers,
+        )
 
         # Update growth progress
         self._update_growth(delta_minutes)

@@ -88,6 +88,7 @@ class GameplaySettings:
     confirm_rare_item_use: bool = True  # Confirm using rare/legendary items
     show_tips: bool = True              # Show contextual tips
     tutorial_completed: bool = False    # Has player completed tutorial
+    vacation_mode: bool = False         # Freeze needs and trust while away
 
 
 @dataclass
@@ -221,22 +222,27 @@ class GameSettings:
         }
     
     @classmethod
+    def _filter_fields(cls, dataclass_type, raw: Dict[str, Any]) -> Dict[str, Any]:
+        """Filter dict to only keys that are valid dataclass fields."""
+        return {k: v for k, v in raw.items() if k in dataclass_type.__dataclass_fields__}
+    
+    @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "GameSettings":
         """Deserialize settings from dictionary."""
         settings = cls()
         
         if "audio" in data:
-            settings.audio = AudioSettings(**data["audio"])
+            settings.audio = AudioSettings(**cls._filter_fields(AudioSettings, data["audio"]))
         if "display" in data:
-            settings.display = DisplaySettings(**data["display"])
+            settings.display = DisplaySettings(**cls._filter_fields(DisplaySettings, data["display"]))
         if "accessibility" in data:
-            settings.accessibility = AccessibilitySettings(**data["accessibility"])
+            settings.accessibility = AccessibilitySettings(**cls._filter_fields(AccessibilitySettings, data["accessibility"]))
         if "gameplay" in data:
-            settings.gameplay = GameplaySettings(**data["gameplay"])
+            settings.gameplay = GameplaySettings(**cls._filter_fields(GameplaySettings, data["gameplay"]))
         if "keybindings" in data:
-            settings.keybindings = KeyBindings(**data["keybindings"])
+            settings.keybindings = KeyBindings(**cls._filter_fields(KeyBindings, data["keybindings"]))
         if "system" in data:
-            settings.system = SystemSettings(**data["system"])
+            settings.system = SystemSettings(**cls._filter_fields(SystemSettings, data["system"]))
         
         settings.version = data.get("version", "1.0")
         settings.first_launch = data.get("first_launch", True)

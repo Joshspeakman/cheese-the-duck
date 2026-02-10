@@ -408,14 +408,33 @@ class TricksSystem:
         
         return available
     
-    def start_training(self, trick_id: str) -> Tuple[bool, str]:
-        """Start training a trick."""
+    def start_training(self, trick_id: str, duck_trust: float = 100.0) -> Tuple[bool, str]:
+        """Start training a trick.
+        
+        Args:
+            trick_id: The trick to start training
+            duck_trust: Current trust level (0-100). Higher-difficulty tricks
+                require more trust — the duck won't learn from someone it
+                doesn't trust yet.
+        """
         if trick_id in self.learned_tricks:
             return False, "Already learned this trick!"
         
         trick = TRICKS.get(trick_id)
         if not trick:
             return False, "Trick not found!"
+        
+        # Trust thresholds per difficulty
+        trust_required = {
+            TrickDifficulty.EASY: 0,
+            TrickDifficulty.MEDIUM: 30,
+            TrickDifficulty.HARD: 50,
+            TrickDifficulty.MASTER: 70,
+            TrickDifficulty.LEGENDARY: 85,
+        }
+        required = trust_required.get(trick.difficulty, 0)
+        if duck_trust < required:
+            return False, f"*stares* ...I don't trust you enough for that yet. (Need trust: {required}%)"
         
         # Check prerequisites
         for prereq in trick.prerequisite_tricks:
