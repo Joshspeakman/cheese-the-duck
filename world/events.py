@@ -1902,6 +1902,11 @@ SPECIAL_DAY_EVENTS = {
 }
 
 
+# Global minimum gap between ANY random event firing (seconds).
+# Prevents the huge pool of 590+ events from overwhelming the player.
+GLOBAL_EVENT_MIN_GAP = 120  # 2 minutes between events
+
+
 class EventSystem:
     """
     Manages game events including special day events.
@@ -1909,6 +1914,7 @@ class EventSystem:
 
     def __init__(self):
         self._last_event_times: Dict[str, float] = {}
+        self._last_any_event_time: float = 0.0  # global cooldown tracker
         self._triggered_events: set = set()
         self._current_weather: Optional[str] = None
         self._pending_events: List[Event] = []
@@ -1950,6 +1956,10 @@ class EventSystem:
         """
         current_time = time.time()
 
+        # Global cooldown — don't fire anything if an event happened recently
+        if current_time - self._last_any_event_time < GLOBAL_EVENT_MIN_GAP:
+            return None
+
         for event_id, event in EVENTS.items():
             if event.event_type not in [EventType.RANDOM, EventType.WEATHER, EventType.VISITOR, EventType.SEASONAL, EventType.DISCOVERY]:
                 continue
@@ -1974,6 +1984,7 @@ class EventSystem:
             # Roll for event
             if random.random() < event.probability:
                 self._last_event_times[event_id] = current_time
+                self._last_any_event_time = current_time  # global cooldown
                 
                 # If this event starts an encounter, activate the encounter
                 if event.encounter_id and event.encounter_id in ENCOUNTERS:
@@ -2295,6 +2306,7 @@ class EventSystem:
         """Convert to dictionary for saving."""
         return {
             "last_event_times": self._last_event_times,
+            "last_any_event_time": self._last_any_event_time,
             "triggered_events": list(self._triggered_events),
             "current_weather": self._current_weather,
         }
@@ -2304,6 +2316,7 @@ class EventSystem:
         """Create from dictionary."""
         system = cls()
         system._last_event_times = data.get("last_event_times", {})
+        system._last_any_event_time = data.get("last_any_event_time", 0.0)
         system._triggered_events = set(data.get("triggered_events", []))
         system._current_weather = data.get("current_weather")
         return system
