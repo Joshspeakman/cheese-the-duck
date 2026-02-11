@@ -300,7 +300,17 @@ def attempt_coax(duck) -> Tuple[bool, str]:
         duck.hiding_coax_visits = 0
         _cure_sickness(duck)
         apply_trust_gain(duck, "coax")
-        return True, random.choice(COAX_SUCCESS_MESSAGES)
+        msg = random.choice(COAX_SUCCESS_MESSAGES)
+        # Rare name-drop on return — very emotional moment
+        name = getattr(duck.memory, 'player_name', None) if hasattr(duck, 'memory') else None
+        if name and random.random() < 0.35:
+            named_coax = [
+                f"*emerges slowly* ...{name.lower()}? ...you kept coming back.",
+                f"*peeks out* ...{name}. You're still here. ...fine. *waddles out*",
+                f"*appears, not making eye contact* ...{name}. That name again. You made me remember it.",
+            ]
+            msg = random.choice(named_coax)
+        return True, msg
     else:
         return False, random.choice(COAX_PROGRESS_MESSAGES).format(remaining=remaining)
 
@@ -699,14 +709,33 @@ def get_cold_shoulder_greeting(duck) -> Optional[str]:
     """Get a cold shoulder greeting if applicable."""
     if not _is_cold_shoulder(duck):
         return None
-    return random.choice(COLD_SHOULDER_GREETINGS)
+    msg = random.choice(COLD_SHOULDER_GREETINGS)
+    # Occasionally use the player's name for extra emotional punch
+    name = getattr(duck.memory, 'player_name', None) if hasattr(duck, 'memory') else None
+    if name and random.random() < 0.3:
+        named_options = [
+            f"Oh. {name}. *turns away* ...whatever.",
+            f"...{name.lower()}. I remember that name. I wish I didn't.",
+            f"*doesn't look up* ...hi, {name}. Or don't-hi. I haven't decided.",
+            f"{name}. You're back. I noticed. I'm choosing not to care.",
+        ]
+        msg = random.choice(named_options)
+    return msg
 
 
 def get_cold_shoulder_idle(duck) -> Optional[str]:
     """Get a cold shoulder idle thought if applicable."""
     if not _is_cold_shoulder(duck):
         return None
-    return random.choice(COLD_SHOULDER_IDLE)
+    msg = random.choice(COLD_SHOULDER_IDLE)
+    name = getattr(duck.memory, 'player_name', None) if hasattr(duck, 'memory') else None
+    if name and random.random() < 0.2:
+        named_options = [
+            f"*quiet* ...{name.lower()}. That name used to mean something. Now it means... this.",
+            f"*staring at pond* the pond doesn't say \"{name}\" and then leave. Just saying.",
+        ]
+        msg = random.choice(named_options)
+    return msg
 
 
 def get_cold_shoulder_interaction(duck) -> Optional[str]:

@@ -131,6 +131,12 @@ class SeamanDialogue:
         self._cold_shoulder_active = False  # Set by game loop; blocks genuine moments
         self._duck_trust = 20.0  # Synced by game loop; genuine moments require ≥70
     
+    def _get_name(self, player_model) -> Optional[str]:
+        """Get player name if known, else None. Used to personalise dialogue."""
+        if player_model and hasattr(player_model, 'name') and player_model.name:
+            return player_model.name
+        return None
+    
     def generate_greeting(self, player_model, duck_memory, time_since_last: float = 0) -> DialogueLine:
         """Generate a greeting based on player history and absence duration."""
         hours_away = time_since_last
@@ -197,6 +203,19 @@ class SeamanDialogue:
                         emote="*shuffles closer*"
                     ),
                 ]))
+            # Name-aware variants (rare, impactful name-drops)
+            name = self._get_name(player_model)
+            if name:
+                options.extend([
+                    DialogueLine(
+                        f"{name}. {days} days. I counted. Not for you. For science.",
+                        DialogueTone.DEADPAN, DialogueContext.PLAYER_RETURN
+                    ),
+                    DialogueLine(
+                        f"Oh. {name}. You're back. After {days} days. I'd almost forgotten the name. Almost.",
+                        DialogueTone.SARDONIC, DialogueContext.PLAYER_RETURN
+                    ),
+                ])
             return random.choice(options)
         
         # Medium absence (1-3 days)
@@ -237,6 +256,19 @@ class SeamanDialogue:
                     DialogueTone.SARDONIC, DialogueContext.PLAYER_RETURN
                 ),
             ]
+            name = self._get_name(player_model)
+            if name:
+                options.extend([
+                    DialogueLine(
+                        f"{name}. You exist again. I had started to wonder.",
+                        DialogueTone.SARDONIC, DialogueContext.PLAYER_RETURN
+                    ),
+                    DialogueLine(
+                        f"...{name.lower()}? *blinks* Oh. You're real. I thought I'd imagined you.",
+                        DialogueTone.DEADPAN, DialogueContext.PLAYER_RETURN,
+                        emote="*blinks*"
+                    ),
+                ])
             return random.choice(options)
         
         # Short absence (< 24 hours) or regular visit
@@ -303,6 +335,18 @@ class SeamanDialogue:
                     DialogueTone.DEADPAN, DialogueContext.GREETING
                 ),
             ]
+            name = self._get_name(player_model)
+            if name:
+                options.extend([
+                    DialogueLine(
+                        f"Oh. {name}. You're here. I was just contemplating nothing. Successfully.",
+                        DialogueTone.DEADPAN, DialogueContext.GREETING
+                    ),
+                    DialogueLine(
+                        f"{name}. Hello. That's the customary greeting. With your name and everything.",
+                        DialogueTone.DEADPAN, DialogueContext.GREETING
+                    ),
+                ])
             return random.choice(options)
     
     def generate_farewell(self, player_model, session_duration: float) -> DialogueLine:
@@ -347,6 +391,12 @@ class SeamanDialogue:
                     DialogueTone.DEADPAN, DialogueContext.FAREWELL
                 ),
             ]
+            name = self._get_name(player_model)
+            if name:
+                options.append(DialogueLine(
+                    f"Leaving already, {name}? You barely said hello. I timed it.",
+                    DialogueTone.SARDONIC, DialogueContext.FAREWELL
+                ))
             return random.choice(options)
         
         # Long session
@@ -388,6 +438,13 @@ class SeamanDialogue:
                     emote="*looks at water*"
                 ),
             ]
+            name = self._get_name(player_model)
+            if name:
+                options.append(DialogueLine(
+                    f"Thank you for staying, {name}. Don't tell anyone I said thank you. Or your name.",
+                    DialogueTone.GENUINE, DialogueContext.FAREWELL,
+                    emote="*looks at water*"
+                ))
             return random.choice(options)
         
         # Normal session
@@ -427,6 +484,12 @@ class SeamanDialogue:
                 emote="*nods*"
             ),
         ]
+        name = self._get_name(player_model)
+        if name:
+            options.append(DialogueLine(
+                f"Goodbye, {name}. The pond will note your absence. I won't. The pond will.",
+                DialogueTone.DEADPAN, DialogueContext.FAREWELL
+            ))
         return random.choice(options)
     
     def generate_observation(self, player_model, duck_memory, context: Dict = None) -> Optional[DialogueLine]:
@@ -610,6 +673,26 @@ class SeamanDialogue:
                     f"{streak} days in a row now. You're very... consistent. It's almost unsettling. In a good way.",
                     DialogueTone.OBSERVATIONAL, DialogueContext.OBSERVATION
                 ))
+            
+            # Name-aware observations (if duck knows the player's name)
+            name = self._get_name(player_model)
+            if name and random.random() < 0.25:
+                named_observations = [
+                    DialogueLine(
+                        f"I know your name, {name}. You told me. I remember everything. It's a burden.",
+                        DialogueTone.OBSERVATIONAL, DialogueContext.OBSERVATION
+                    ),
+                    DialogueLine(
+                        f"{name}. That's your name. I say it sometimes when you're not here. To the pond. The pond doesn't care.",
+                        DialogueTone.DEADPAN, DialogueContext.OBSERVATION,
+                        emote="*looks at water*"
+                    ),
+                    DialogueLine(
+                        f"You told me your name was {name}. I filed it. Under 'things that matter'. It's a short file.",
+                        DialogueTone.SARDONIC, DialogueContext.OBSERVATION
+                    ),
+                ]
+                observations.append(random.choice(named_observations))
         
         if observations:
             return random.choice(observations)
@@ -644,6 +727,13 @@ class SeamanDialogue:
             "My memory is good. You said:",
             "This has been in my head since you told me:",
         ]
+        name = self._get_name(player_model)
+        if name:
+            intros.extend([
+                f"{name}, you once told me:",
+                f"You probably forgot this, {name}, but you said:",
+                f"{name}. Do you remember saying:",
+            ])
         
         callbacks = [
             DialogueLine(
@@ -1381,8 +1471,29 @@ class SeamanDialogue:
         if milestone_type in milestones:
             milestone_texts = milestones[milestone_type]
             if value in milestone_texts:
+                text = milestone_texts[value]
+                
+                # Name-aware relationship milestones (50% chance when name known)
+                name = self._get_name(player_model)
+                if name and milestone_type == "relationship" and random.random() < 0.5:
+                    named_relationship = {
+                        "friend": f"We're friends now, {name}. I didn't know I could have those. The pond is less lonely.",
+                        "close_friend": f"Close friends. That's what this is, {name}. I looked it up. We qualify.",
+                        "best_friend": f"Best friends. You and a duck, {name}. We've achieved something here.",
+                        "bonded": f"Bonded. {name}. That's a strong word. I... feel things now. This is your fault.",
+                        "soulmate": f"...there isn't a word for what this is. You and me, {name}. It just... is.",
+                    }
+                    if value in named_relationship:
+                        text = named_relationship[value]
+                elif name and milestone_type == "days_together" and value in (365, 730) and random.random() < 0.5:
+                    named_days = {
+                        365: f"A year, {name}. We've known each other for a year. I... don't have words. That's rare for me.",
+                        730: f"Two years, {name}. Two entire years. I've known you longer than I've known most ponds. That means something.",
+                    }
+                    text = named_days[value]
+                
                 return DialogueLine(
-                    milestone_texts[value],
+                    text,
                     DialogueTone.GENUINE if milestone_type == "relationship" else DialogueTone.OBSERVATIONAL,
                     DialogueContext.MILESTONE
                 )
