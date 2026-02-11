@@ -221,6 +221,10 @@ class DuckBrain:
             sentiment=sentiment
         )
         
+        # Sync player name to duck memory (so consequences/scripted dialogue can use it)
+        if self.player_model.name and self.duck_memory:
+            self.duck_memory.player_name = self.player_model.name
+        
         # Update relationship based on interaction
         self._update_relationship_from_message(message, sentiment)
         
@@ -487,6 +491,9 @@ class DuckBrain:
                     value=answer,
                     source="question_answer"
                 )
+                # Sync player name to duck memory if just learned
+                if question.extracts_fact == "name" and self.player_model.name and self.duck_memory:
+                    self.duck_memory.player_name = self.player_model.name
         
         return follow_up
     
@@ -764,6 +771,10 @@ class DuckBrain:
         brain._last_observation_time = data.get("last_observation_time", 0)
         brain._last_callback_time = data.get("last_callback_time", 0)
         brain._last_question_time = data.get("last_question_time", 0)
+        
+        # Sync player name to duck memory on load
+        if brain.player_model.name and brain.duck_memory:
+            brain.duck_memory.player_name = brain.player_model.name
         
         return brain
     
