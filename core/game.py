@@ -326,7 +326,7 @@ class Game:
         self._debug_submenu = None  # Current debug submenu (weather, events, etc.)
         self._debug_submenu_selected = 0
         self._debug_submenu_page = 0  # Current page for paginated submenus
-        self._debug_items_per_page = 10  # Items per page in debug submenu
+        self._debug_items_per_page = 15  # Items per page in debug submenu
 
         # Mini-games system
         self.minigames: MiniGameSystem = MiniGameSystem()
@@ -7622,7 +7622,7 @@ class Game:
             return [w.value for w in WeatherType]
         elif self._debug_submenu == "events":
             from world.events import EVENTS
-            return list(EVENTS.keys())[:15]  # First 15 events
+            return list(EVENTS.keys())  # All events (paginated by debug menu)
         elif self._debug_submenu == "visitor":
             return ["adventurous", "scholarly", "artistic", "playful", 
                     "mysterious", "generous", "foodie", "athletic"]

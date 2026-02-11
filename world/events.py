@@ -2309,5 +2309,20 @@ class EventSystem:
         return system
 
 
+# ═══════════════════════════════════════════════════════════════════
+#  Merge expanded events into main dictionaries
+# ═══════════════════════════════════════════════════════════════════
+try:
+    from world.expanded_events import (
+        EXPANDED_EVENTS,
+        EXPANDED_ENCOUNTERS,
+        EXPANDED_CHAINS,
+    )
+    EVENTS.update(EXPANDED_EVENTS)
+    ENCOUNTERS.update(EXPANDED_ENCOUNTERS)
+    EVENT_CHAINS.update(EXPANDED_CHAINS)
+except ImportError:
+    pass  # expanded_events module not available
+
 # Global event system
 event_system = EventSystem()

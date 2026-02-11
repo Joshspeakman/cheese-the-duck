@@ -1663,6 +1663,1392 @@ class SquirrelAnimator(EventAnimator):
         return "yellow"
 
 
+# ---------------------------------------------------------------------------
+# New animator classes for extended events
+# ---------------------------------------------------------------------------
+
+class FoodAnimator(EventAnimator):
+    """Animator for sacred/special food items: the_holy_loaf, baguette_find."""
+
+    SPRITES_MAP = {
+        "the_holy_loaf": {
+            "idle_1": [
+                "  .***. ",
+                " * ~~~ *",
+                "  '***' ",
+            ],
+            "idle_2": [
+                " .****.  ",
+                "* ~~~~ * ",
+                " '****'  ",
+            ],
+        },
+        "baguette_find": {
+            "idle_1": [
+                " ______ ",
+                "/      \\",
+                "\\______/",
+            ],
+            "idle_2": [
+                "  ______  ",
+                " / ~~ ~ \\",
+                " \\______/ ",
+            ],
+        },
+    }
+
+    COLORS_MAP = {
+        "the_holy_loaf": "yellow",
+        "baguette_find": "yellow",
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15,
+                 event_id: str = "the_holy_loaf"):
+        super().__init__(
+            event_id=event_id,
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=float(playfield_width // 2),
+            start_y=-3.0,
+            duration=7.0,
+        )
+        self.speed = 0.3
+        self.wobble_amplitude = 0.5
+        self.wobble_frequency = 2.0
+        self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["the_holy_loaf"])
+        self._color = self.COLORS_MAP.get(event_id, "yellow")
+
+    def _setup_arrival_path(self):
+        cx = self.playfield_width // 2
+        cy = self.playfield_height // 2
+        self.path_points = [(self.x, self.y), (float(cx), float(cy))]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        # gentle hover
+        self.y += math.sin(elapsed * 3) * 0.05
+        if elapsed >= 3.0:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y), (self.x, -5.0)]
+        self.path_index = 0
+        self.speed = 0.5
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        key = f"idle_{self.frame_index + 1}"
+        return self.sprites.get(key, list(self.sprites.values())[0])
+
+    def get_color(self) -> str:
+        return self._color
+
+
+class FallingThingsAnimator(EventAnimator):
+    """Animator for things falling from the sky: bread_rain, cherry_blossom."""
+
+    SPRITES_MAP = {
+        "bread_rain": {
+            "fall_1": [
+                " o  o ",
+                "  o   ",
+                " o  o ",
+            ],
+            "fall_2": [
+                "  o  o",
+                " o    ",
+                "  o o ",
+            ],
+        },
+        "cherry_blossom": {
+            "fall_1": [
+                " *  * ",
+                "  *   ",
+                " *  * ",
+            ],
+            "fall_2": [
+                "  * * ",
+                " *    ",
+                "  * * ",
+            ],
+        },
+    }
+
+    COLORS_MAP = {
+        "bread_rain": "yellow",
+        "cherry_blossom": "magenta",
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15,
+                 event_id: str = "bread_rain"):
+        super().__init__(
+            event_id=event_id,
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=float(playfield_width // 2),
+            start_y=-2.0,
+            duration=6.0,
+        )
+        self.speed = 0.4
+        self.wobble_amplitude = 1.0
+        self.wobble_frequency = 3.0
+        self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["bread_rain"])
+        self._color = self.COLORS_MAP.get(event_id, "yellow")
+
+    def _setup_arrival_path(self):
+        cx = self.playfield_width // 2
+        self.path_points = [(self.x, self.y), (float(cx), float(self.playfield_height - 2))]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        self.y = max(0.0, self.y + math.sin(elapsed * 4) * 0.1)
+        if elapsed >= 3.0:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y), (self.x, float(self.playfield_height + 5))]
+        self.path_index = 0
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        key = f"fall_{self.frame_index + 1}"
+        return self.sprites.get(key, list(self.sprites.values())[0])
+
+    def get_color(self) -> str:
+        return self._color
+
+
+class SkyLightAnimator(EventAnimator):
+    """Animator for lights/streaks in the sky: aurora_borealis, ball_lightning,
+    sun_pillar, shooting_star_wish, meteor_shower."""
+
+    SPRITES_MAP = {
+        "aurora_borealis": {
+            "glow_1": [
+                "~*~*~*~*~",
+                " ~*~*~*~ ",
+                "  ~*~*~  ",
+            ],
+            "glow_2": [
+                " *~*~*~* ",
+                "~*~*~*~*~",
+                "  *~*~*  ",
+            ],
+        },
+        "ball_lightning": {
+            "glow_1": [
+                " .**. ",
+                "* ** *",
+                " '**' ",
+            ],
+            "glow_2": [
+                " .++. ",
+                "+ ++ +",
+                " '++' ",
+            ],
+        },
+        "sun_pillar": {
+            "glow_1": [
+                "  ||  ",
+                "  ||  ",
+                "  ||  ",
+                "  ||  ",
+            ],
+            "glow_2": [
+                "  ||  ",
+                " :|:  ",
+                "  ||  ",
+                "  ||  ",
+            ],
+        },
+        "shooting_star_wish": {
+            "glow_1": [
+                "        *",
+                "      ** ",
+                "    **   ",
+            ],
+            "glow_2": [
+                "       * ",
+                "     **  ",
+                "   **    ",
+            ],
+        },
+        "meteor_shower": {
+            "glow_1": [
+                " *  *  * ",
+                "  \\  \\ \\",
+                "   *  *  ",
+            ],
+            "glow_2": [
+                "  *  * * ",
+                " \\  \\ \\ ",
+                "  *  *   ",
+            ],
+        },
+    }
+
+    COLORS_MAP = {
+        "aurora_borealis": "green",
+        "ball_lightning": "cyan",
+        "sun_pillar": "yellow",
+        "shooting_star_wish": "white",
+        "meteor_shower": "cyan",
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15,
+                 event_id: str = "aurora_borealis"):
+        start_x = float(playfield_width + 5)
+        start_y = random.uniform(1, 4)
+        super().__init__(
+            event_id=event_id,
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=start_x,
+            start_y=start_y,
+            duration=7.0,
+        )
+        self.speed = 0.7
+        self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["aurora_borealis"])
+        self._color = self.COLORS_MAP.get(event_id, "white")
+
+    def _setup_arrival_path(self):
+        mid_x = self.playfield_width // 2
+        self.path_points = [
+            (self.x, self.y),
+            (float(mid_x), self.y),
+        ]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        self.x += math.sin(elapsed * 2) * 0.1
+        if elapsed >= 3.0:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y), (-10.0, self.y)]
+        self.path_index = 0
+        self.speed = 1.0
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        key = f"glow_{self.frame_index + 1}"
+        return self.sprites.get(key, list(self.sprites.values())[0])
+
+    def get_color(self) -> str:
+        return self._color
+
+
+class RainbowAnimator(EventAnimator):
+    """Animator for rainbow events: rainbow_double, rainbow_complete, night_rainbow."""
+
+    SPRITES_MAP = {
+        "rainbow_double": {
+            "arc_1": [
+                "  .~~~.  ",
+                " /     \\ ",
+                " .~~~.   ",
+                "/     \\  ",
+            ],
+            "arc_2": [
+                " .~~~.   ",
+                "/     \\  ",
+                "  .~~~.  ",
+                " /     \\ ",
+            ],
+        },
+        "rainbow_complete": {
+            "arc_1": [
+                "  .=====. ",
+                " / r o y \\",
+                "|  g b v  |",
+            ],
+            "arc_2": [
+                "  .=====.  ",
+                " / R O Y \\ ",
+                "|  G B V  | ",
+            ],
+        },
+        "night_rainbow": {
+            "arc_1": [
+                "  .-----.  ",
+                " / . . . \\",
+                "|  . . .  |",
+            ],
+            "arc_2": [
+                "  .-----.  ",
+                " /  . .  \\ ",
+                "|  . . .  | ",
+            ],
+        },
+    }
+
+    COLORS_MAP = {
+        "rainbow_double": "cyan",
+        "rainbow_complete": "magenta",
+        "night_rainbow": "blue",
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15,
+                 event_id: str = "rainbow_double"):
+        super().__init__(
+            event_id=event_id,
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=float(playfield_width + 10),
+            start_y=2.0,
+            duration=8.0,
+        )
+        self.speed = 0.4
+        self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["rainbow_double"])
+        self._color = self.COLORS_MAP.get(event_id, "cyan")
+
+    def _setup_arrival_path(self):
+        cx = self.playfield_width // 2
+        self.path_points = [(self.x, self.y), (float(cx), 1.0)]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        if elapsed >= 4.0:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y), (self.x, -6.0)]
+        self.path_index = 0
+        self.speed = 0.3
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        key = f"arc_{self.frame_index + 1}"
+        return self.sprites.get(key, list(self.sprites.values())[0])
+
+    def get_color(self) -> str:
+        return self._color
+
+
+class MoonAnimator(EventAnimator):
+    """Animator for moon/celestial body events: full_moon_exp, moonrise_massive,
+    eclipse_event, blood_moon_exp, milky_way_visible."""
+
+    SPRITES_MAP = {
+        "full_moon_exp": {
+            "rise_1": [
+                "  ___  ",
+                " /   \\ ",
+                "|  O  |",
+                " \\___/ ",
+            ],
+            "rise_2": [
+                "  ___  ",
+                " / * \\ ",
+                "|  O  |",
+                " \\___/ ",
+            ],
+        },
+        "moonrise_massive": {
+            "rise_1": [
+                " .----. ",
+                "/      \\",
+                "|  ()  |",
+                "\\      /",
+                " '----' ",
+            ],
+            "rise_2": [
+                " .----. ",
+                "/ *  * \\",
+                "|  ()  |",
+                "\\      /",
+                " '----' ",
+            ],
+        },
+        "eclipse_event": {
+            "rise_1": [
+                "  ___  ",
+                " /###\\ ",
+                "|#####|",
+                " \\###/ ",
+            ],
+            "rise_2": [
+                "  ___  ",
+                " /## \\ ",
+                "|#### |",
+                " \\###/ ",
+            ],
+        },
+        "blood_moon_exp": {
+            "rise_1": [
+                "  ___  ",
+                " /ooo\\ ",
+                "|ooooo|",
+                " \\ooo/ ",
+            ],
+            "rise_2": [
+                "  ___  ",
+                " /OOO\\ ",
+                "|OOOOO|",
+                " \\OOO/ ",
+            ],
+        },
+        "milky_way_visible": {
+            "rise_1": [
+                " . * . * . ",
+                "* . * . * .",
+                " . * . * . ",
+            ],
+            "rise_2": [
+                "* . * . * .",
+                " . * . * . ",
+                "* . * . * .",
+            ],
+        },
+    }
+
+    COLORS_MAP = {
+        "full_moon_exp": "white",
+        "moonrise_massive": "yellow",
+        "eclipse_event": "white",
+        "blood_moon_exp": "red",
+        "milky_way_visible": "cyan",
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15,
+                 event_id: str = "full_moon_exp"):
+        super().__init__(
+            event_id=event_id,
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=float(playfield_width // 2),
+            start_y=float(playfield_height + 3),
+            duration=8.0,
+        )
+        self.speed = 0.25
+        self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["full_moon_exp"])
+        self._color = self.COLORS_MAP.get(event_id, "white")
+
+    def _setup_arrival_path(self):
+        cx = self.playfield_width // 2
+        self.path_points = [(self.x, self.y), (float(cx), 2.0)]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        self.x += math.sin(elapsed) * 0.02
+        if elapsed >= 4.0:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y), (self.x, -6.0)]
+        self.path_index = 0
+        self.speed = 0.2
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        key = f"rise_{self.frame_index + 1}"
+        return self.sprites.get(key, list(self.sprites.values())[0])
+
+    def get_color(self) -> str:
+        return self._color
+
+
+class GlowAnimator(EventAnimator):
+    """Animator for glowing objects: pond_glow, golden_egg_shimmer,
+    glowing_mushroom, will_o_wisp, bioluminescent_insects, algae_bloom_glow,
+    bioluminescent_fish."""
+
+    SPRITES_MAP = {
+        "pond_glow": {
+            "glow_1": [
+                " ~.~.~ ",
+                "~.~.~.~",
+                " ~.~.~ ",
+            ],
+            "glow_2": [
+                ".~.~.~.",
+                " ~.~.~ ",
+                ".~.~.~.",
+            ],
+        },
+        "golden_egg_shimmer": {
+            "glow_1": [
+                "  .-.  ",
+                " /   \\ ",
+                " \\___/ ",
+            ],
+            "glow_2": [
+                "  .*.  ",
+                " / * \\ ",
+                " \\___/ ",
+            ],
+        },
+        "glowing_mushroom": {
+            "glow_1": [
+                "  .--.  ",
+                " / ** \\ ",
+                "   ||   ",
+            ],
+            "glow_2": [
+                "  .--. ",
+                " / oo \\",
+                "   ||  ",
+            ],
+        },
+        "will_o_wisp": {
+            "glow_1": [
+                " o ",
+                "( )",
+                " o ",
+            ],
+            "glow_2": [
+                "  o",
+                " ( )",
+                "  o",
+            ],
+        },
+        "bioluminescent_insects": {
+            "glow_1": [
+                " *  .  * ",
+                "  .  *   ",
+                " *  .  * ",
+            ],
+            "glow_2": [
+                "  .  *  .",
+                " *  .  * ",
+                "  .  *   ",
+            ],
+        },
+        "algae_bloom_glow": {
+            "glow_1": [
+                "~*~*~*~",
+                "*~*~*~*",
+                "~*~*~*~",
+            ],
+            "glow_2": [
+                "*~*~*~*",
+                "~*~*~*~",
+                "*~*~*~*",
+            ],
+        },
+        "bioluminescent_fish": {
+            "glow_1": [
+                " ><((*> ",
+            ],
+            "glow_2": [
+                " ><((o> ",
+            ],
+        },
+    }
+
+    COLORS_MAP = {
+        "pond_glow": "cyan",
+        "golden_egg_shimmer": "yellow",
+        "glowing_mushroom": "green",
+        "will_o_wisp": "green",
+        "bioluminescent_insects": "cyan",
+        "algae_bloom_glow": "green",
+        "bioluminescent_fish": "cyan",
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15,
+                 event_id: str = "pond_glow"):
+        pos_y = float(playfield_height - 3) if event_id in (
+            "pond_glow", "algae_bloom_glow", "bioluminescent_fish"
+        ) else float(playfield_height // 2)
+        super().__init__(
+            event_id=event_id,
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=float(playfield_width // 2),
+            start_y=pos_y,
+            duration=7.0,
+        )
+        self.speed = 0.0  # mostly stationary
+        self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["pond_glow"])
+        self._color = self.COLORS_MAP.get(event_id, "cyan")
+        self._appeared = False
+
+    def _setup_arrival_path(self):
+        # appear in-place
+        self.path_points = [(self.x, self.y)]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        # gentle pulse movement
+        self.y += math.sin(elapsed * 3) * 0.03
+        if elapsed >= 3.5:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y)]
+        self.path_index = 0
+
+    def _update_leaving(self):
+        # fade-out simulated by finishing immediately
+        self.state = EventAnimationState.FINISHED
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        key = f"glow_{self.frame_index + 1}"
+        return self.sprites.get(key, list(self.sprites.values())[0])
+
+    def get_color(self) -> str:
+        return self._color
+
+
+class GreenFlashAnimator(EventAnimator):
+    """Animator for sunset_green_flash."""
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="sunset_green_flash",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=float(playfield_width // 2),
+            start_y=float(playfield_height - 2),
+            duration=4.0,
+        )
+        self.speed = 0.0
+
+    def _setup_arrival_path(self):
+        self.path_points = [(self.x, self.y)]
+        self.path_index = 0
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        if elapsed >= 1.5:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y)]
+        self.path_index = 0
+
+    def _update_leaving(self):
+        self.state = EventAnimationState.FINISHED
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        if self.frame_index == 0:
+            return [
+                "          ",
+                "=*=*=*=*=*",
+                "          ",
+            ]
+        return [
+            "          ",
+            "*=*=*=*=*=",
+            "          ",
+        ]
+
+    def get_color(self) -> str:
+        return "green"
+
+
+class PuffUpAnimator(EventAnimator):
+    """Animator for thunder_puffup - feathers puff up from thunder."""
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="thunder_puffup",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=float(playfield_width // 2),
+            start_y=1.0,
+            duration=5.0,
+        )
+        self.speed = 0.0
+
+    def _setup_arrival_path(self):
+        self.path_points = [(self.x, self.y)]
+        self.path_index = 0
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        if elapsed >= 2.0:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y)]
+        self.path_index = 0
+
+    def _update_leaving(self):
+        self.state = EventAnimationState.FINISHED
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        if self.frame_index == 0:
+            return [
+                " _/\\/\\_ ",
+                "| BOOM! |",
+                " \\/\\/\\/ ",
+            ]
+        return [
+            " \\/\\/\\/ ",
+            "| KRAK! |",
+            " _/\\/\\_ ",
+        ]
+
+    def get_color(self) -> str:
+        return "yellow"
+
+
+class UFOAnimator(EventAnimator):
+    """Animator for ufo_landing."""
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="ufo_landing",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=float(playfield_width // 2),
+            start_y=-4.0,
+            duration=8.0,
+        )
+        self.speed = 0.3
+        self.wobble_amplitude = 0.8
+        self.wobble_frequency = 2.0
+
+    def _setup_arrival_path(self):
+        cx = self.playfield_width // 2
+        cy = self.playfield_height // 2
+        self.path_points = [
+            (self.x, self.y),
+            (float(cx) + 5, float(cy) - 2),
+            (float(cx), float(cy)),
+        ]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        self.x += math.sin(elapsed * 2) * 0.15
+        if elapsed >= 3.5:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y), (self.x + 10, -6.0)]
+        self.path_index = 0
+        self.speed = 0.8
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        if self.frame_index == 0:
+            return [
+                "   ___   ",
+                " _/   \\_ ",
+                "|__-o-__|",
+                "   |||   ",
+            ]
+        return [
+            "   ___   ",
+            " _/ * \\_ ",
+            "|__-O-__|",
+            "   |!|   ",
+        ]
+
+    def get_color(self) -> str:
+        return "green"
+
+
+class GhostDuckAnimator(EventAnimator):
+    """Animator for ghost_duck - a translucent ghost duck drifts through."""
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        side = random.choice(["left", "right"])
+        sx = -5.0 if side == "left" else float(playfield_width + 5)
+        super().__init__(
+            event_id="ghost_duck",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=sx,
+            start_y=float(playfield_height // 2),
+            duration=7.0,
+        )
+        self.speed = 0.35
+        self.wobble_amplitude = 1.0
+        self.wobble_frequency = 1.5
+        self._from_left = (side == "left")
+
+    def _setup_arrival_path(self):
+        cx = self.playfield_width // 2
+        cy = self.playfield_height // 2
+        self.path_points = [(self.x, self.y), (float(cx), float(cy))]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        self.y += math.sin(elapsed * 2) * 0.08
+        if elapsed >= 3.0:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        exit_x = float(self.playfield_width + 10) if self._from_left else -10.0
+        self.path_points = [(self.x, self.y), (exit_x, self.y - 2)]
+        self.path_index = 0
+        self.speed = 0.4
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        if self.frame_index == 0:
+            return [
+                " .--. ",
+                "(o  o)",
+                " \\~~/ ",
+                "  \\/  ",
+            ]
+        return [
+            " .--. ",
+            "(o  o)",
+            " /~~\\ ",
+            "  /\\  ",
+        ]
+
+    def get_color(self) -> str:
+        return "white"
+
+
+class PortalAnimator(EventAnimator):
+    """Animator for pond_portal - a swirling portal opens on the pond."""
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="pond_portal",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=float(playfield_width // 2),
+            start_y=float(playfield_height - 3),
+            duration=7.0,
+        )
+        self.speed = 0.0
+
+    def _setup_arrival_path(self):
+        self.path_points = [(self.x, self.y)]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        if elapsed >= 3.5:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y)]
+        self.path_index = 0
+
+    def _update_leaving(self):
+        self.state = EventAnimationState.FINISHED
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        if self.frame_index == 0:
+            return [
+                " .oOo. ",
+                "( @  @ )",
+                " 'oOo' ",
+            ]
+        return [
+            " .OoO. ",
+            "( @  @ )",
+            " 'OoO' ",
+        ]
+
+    def get_color(self) -> str:
+        return "magenta"
+
+
+class FloatingAnimator(EventAnimator):
+    """Animator for objects floating in the sky: hot_air_balloon, frozen_bubble."""
+
+    SPRITES_MAP = {
+        "hot_air_balloon": {
+            "float_1": [
+                " .--. ",
+                "/    \\",
+                "\\    /",
+                " |__|",
+            ],
+            "float_2": [
+                " .--. ",
+                "/ ** \\",
+                "\\    /",
+                " |__|",
+            ],
+        },
+        "frozen_bubble": {
+            "float_1": [
+                " .-. ",
+                "( * )",
+                " '-' ",
+            ],
+            "float_2": [
+                " .-. ",
+                "(  *)",
+                " '-' ",
+            ],
+        },
+    }
+
+    COLORS_MAP = {
+        "hot_air_balloon": "red",
+        "frozen_bubble": "cyan",
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15,
+                 event_id: str = "hot_air_balloon"):
+        side = random.choice(["left", "right"])
+        sx = -5.0 if side == "left" else float(playfield_width + 5)
+        super().__init__(
+            event_id=event_id,
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=sx,
+            start_y=random.uniform(1, 4),
+            duration=8.0,
+        )
+        self.speed = 0.3
+        self.wobble_amplitude = 0.5
+        self.wobble_frequency = 1.5
+        self._from_left = (side == "left")
+        self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["hot_air_balloon"])
+        self._color = self.COLORS_MAP.get(event_id, "white")
+
+    def _setup_arrival_path(self):
+        cx = self.playfield_width // 2
+        self.path_points = [(self.x, self.y), (float(cx), self.y)]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        self.y += math.sin(elapsed * 1.5) * 0.04
+        if elapsed >= 3.0:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        exit_x = float(self.playfield_width + 10) if self._from_left else -10.0
+        self.path_points = [(self.x, self.y), (exit_x, self.y - 1)]
+        self.path_index = 0
+        self.speed = 0.3
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        key = f"float_{self.frame_index + 1}"
+        return self.sprites.get(key, list(self.sprites.values())[0])
+
+    def get_color(self) -> str:
+        return self._color
+
+
+class FireflyAnimator(EventAnimator):
+    """Animator for firefly events: firefly_show, fireflies_sync."""
+
+    SPRITES_MAP = {
+        "firefly_show": {
+            "blink_1": [
+                " *  .  * ",
+                ".  *  .  ",
+                " *  .  * ",
+            ],
+            "blink_2": [
+                ".  *  .  ",
+                " *  .  * ",
+                ".  *  .  ",
+            ],
+        },
+        "fireflies_sync": {
+            "blink_1": [
+                " *  *  * ",
+                " *  *  * ",
+                " *  *  * ",
+            ],
+            "blink_2": [
+                "         ",
+                "         ",
+                "         ",
+            ],
+        },
+    }
+
+    COLORS_MAP = {
+        "firefly_show": "yellow",
+        "fireflies_sync": "yellow",
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15,
+                 event_id: str = "firefly_show"):
+        super().__init__(
+            event_id=event_id,
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=float(playfield_width // 2),
+            start_y=float(playfield_height // 2),
+            duration=7.0,
+        )
+        self.speed = 0.0
+        self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["firefly_show"])
+        self._color = self.COLORS_MAP.get(event_id, "yellow")
+
+    def _setup_arrival_path(self):
+        self.path_points = [(self.x, self.y)]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        if elapsed >= 3.5:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y)]
+        self.path_index = 0
+
+    def _update_leaving(self):
+        self.state = EventAnimationState.FINISHED
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        key = f"blink_{self.frame_index + 1}"
+        return self.sprites.get(key, list(self.sprites.values())[0])
+
+    def get_color(self) -> str:
+        return self._color
+
+
+class ButterflySwarmAnimator(EventAnimator):
+    """Animator for butterfly_migration_exp and butterfly_mistake."""
+
+    SPRITES_MAP = {
+        "butterfly_migration_exp": {
+            "fly_1": [
+                "\\/ \\/ \\/",
+                " /\\ /\\ ",
+                "\\/ \\/ \\/",
+            ],
+            "fly_2": [
+                " /\\ /\\ ",
+                "\\/ \\/ \\/",
+                " /\\ /\\ ",
+            ],
+        },
+        "butterfly_mistake": {
+            "fly_1": [
+                " \\/ ",
+                " /\\ ",
+            ],
+            "fly_2": [
+                " -- ",
+                " -- ",
+            ],
+        },
+    }
+
+    COLORS_MAP = {
+        "butterfly_migration_exp": "magenta",
+        "butterfly_mistake": "cyan",
+    }
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15,
+                 event_id: str = "butterfly_migration_exp"):
+        side = random.choice(["left", "right"])
+        sx = -8.0 if side == "left" else float(playfield_width + 8)
+        super().__init__(
+            event_id=event_id,
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=sx,
+            start_y=random.uniform(2, playfield_height - 3),
+            duration=7.0,
+        )
+        self.speed = 0.5
+        self.wobble_amplitude = 1.2
+        self.wobble_frequency = 3.0
+        self._from_left = (side == "left")
+        self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["butterfly_migration_exp"])
+        self._color = self.COLORS_MAP.get(event_id, "magenta")
+
+    def _setup_arrival_path(self):
+        cx = self.playfield_width // 2
+        cy = self.playfield_height // 2
+        self.path_points = [(self.x, self.y), (float(cx), float(cy))]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        self.x += math.sin(elapsed * 3) * 0.1
+        self.y += math.cos(elapsed * 2) * 0.08
+        if elapsed >= 2.5:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        exit_x = float(self.playfield_width + 10) if self._from_left else -10.0
+        self.path_points = [(self.x, self.y), (exit_x, self.y - 2)]
+        self.path_index = 0
+        self.speed = 0.6
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        key = f"fly_{self.frame_index + 1}"
+        return self.sprites.get(key, list(self.sprites.values())[0])
+
+    def get_color(self) -> str:
+        return self._color
+
+
+class TurtleAnimator(EventAnimator):
+    """Animator for turtle_encounter_exp - a slow turtle passing through."""
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="turtle_encounter_exp",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=-5.0,
+            start_y=float(playfield_height - 2),
+            duration=10.0,
+        )
+        self.speed = 0.15
+
+    def _setup_arrival_path(self):
+        cx = self.playfield_width // 2
+        self.path_points = [(self.x, self.y), (float(cx), self.y)]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        if elapsed >= 2.5:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y), (float(self.playfield_width + 10), self.y)]
+        self.path_index = 0
+        self.speed = 0.15
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        if self.frame_index == 0:
+            return [
+                "  ___  ",
+                "/(o.o)\\",
+                "  ^^^  ",
+            ]
+        return [
+            "  ___  ",
+            "/(o_o)\\",
+            "  ^^^  ",
+        ]
+
+    def get_color(self) -> str:
+        return "green"
+
+
+class FireworksAnimator(EventAnimator):
+    """Animator for fireworks_distant - fireworks bursting in the sky."""
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="fireworks_distant",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=float(playfield_width // 2),
+            start_y=float(playfield_height),
+            duration=6.0,
+        )
+        self.speed = 0.6
+        self._burst = False
+
+    def _setup_arrival_path(self):
+        cx = self.playfield_width // 2
+        self.path_points = [(self.x, self.y), (float(cx), 2.0)]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+        self._burst = True
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        if elapsed >= 2.5:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y)]
+        self.path_index = 0
+
+    def _update_leaving(self):
+        self.state = EventAnimationState.FINISHED
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        if not self._burst:
+            return [
+                " | ",
+                " | ",
+            ]
+        if self.frame_index == 0:
+            return [
+                " \\|/ ",
+                "-- --",
+                " /|\\ ",
+            ]
+        return [
+            " * * ",
+            "*   *",
+            " * * ",
+        ]
+
+    def get_color(self) -> str:
+        colors = ["red", "yellow", "magenta", "cyan"]
+        return colors[self.frame_index % len(colors)]
+
+
+class IcePalaceAnimator(EventAnimator):
+    """Animator for ice_palace - ice forms into castle shapes."""
+
+    def __init__(self, playfield_width: int = 60, playfield_height: int = 15):
+        super().__init__(
+            event_id="ice_palace",
+            playfield_width=playfield_width,
+            playfield_height=playfield_height,
+            start_x=float(playfield_width // 2),
+            start_y=float(playfield_height - 3),
+            duration=7.0,
+        )
+        self.speed = 0.0
+        self._stage = 0
+
+    def _setup_arrival_path(self):
+        self.path_points = [(self.x, self.y)]
+        self.path_index = 0
+
+    def _setup_interaction(self):
+        super()._setup_interaction()
+
+    def _update_interacting(self, duck_x: int, duck_y: int):
+        elapsed = time.time() - self.state_start_time
+        self._stage = min(2, int(elapsed))
+        if elapsed >= 3.5:
+            self.state = EventAnimationState.LEAVING
+            self._setup_leaving_path()
+
+    def _setup_leaving_path(self):
+        self.path_points = [(self.x, self.y)]
+        self.path_index = 0
+
+    def _update_leaving(self):
+        self.state = EventAnimationState.FINISHED
+
+    def _update_sprite_frame(self):
+        self.frame_index = (self.frame_index + 1) % 2
+
+    def get_sprite(self) -> List[str]:
+        if self._stage == 0:
+            return [
+                "  /\\  ",
+                " /  \\ ",
+            ]
+        if self._stage == 1:
+            return [
+                "  /\\  ",
+                " /  \\ ",
+                "|    |",
+                "|    |",
+            ]
+        return [
+            " /\\/\\ ",
+            "/    \\",
+            "| [] |",
+            "|____|",
+        ]
+
+    def get_color(self) -> str:
+        return "cyan"
+
+
 # Factory function to create appropriate animator for an event
 def create_event_animator(
     event_id: str,
@@ -1697,6 +3083,51 @@ def create_event_animator(
         "bubbles": BubblesAnimator,
         "falling_object": FallingObjectAnimator,
         "squirrel": SquirrelAnimator,
+        # --- Food / Bread themed ---
+        "the_holy_loaf": lambda w, h: FoodAnimator(w, h, event_id="the_holy_loaf"),
+        "baguette_find": lambda w, h: FoodAnimator(w, h, event_id="baguette_find"),
+        "bread_rain": lambda w, h: FallingThingsAnimator(w, h, event_id="bread_rain"),
+        # --- Weather / Sky ---
+        "thunder_puffup": PuffUpAnimator,
+        "rainbow_double": lambda w, h: RainbowAnimator(w, h, event_id="rainbow_double"),
+        "aurora_borealis": lambda w, h: SkyLightAnimator(w, h, event_id="aurora_borealis"),
+        "ball_lightning": lambda w, h: SkyLightAnimator(w, h, event_id="ball_lightning"),
+        "sun_pillar": lambda w, h: SkyLightAnimator(w, h, event_id="sun_pillar"),
+        "rainbow_complete": lambda w, h: RainbowAnimator(w, h, event_id="rainbow_complete"),
+        "night_rainbow": lambda w, h: RainbowAnimator(w, h, event_id="night_rainbow"),
+        # --- Creatures ---
+        "turtle_encounter_exp": TurtleAnimator,
+        "butterfly_mistake": lambda w, h: ButterflySwarmAnimator(w, h, event_id="butterfly_mistake"),
+        "firefly_show": lambda w, h: FireflyAnimator(w, h, event_id="firefly_show"),
+        "butterfly_migration_exp": lambda w, h: ButterflySwarmAnimator(w, h, event_id="butterfly_migration_exp"),
+        "bioluminescent_insects": lambda w, h: GlowAnimator(w, h, event_id="bioluminescent_insects"),
+        "bioluminescent_fish": lambda w, h: GlowAnimator(w, h, event_id="bioluminescent_fish"),
+        # --- Celestial ---
+        "shooting_star_wish": lambda w, h: SkyLightAnimator(w, h, event_id="shooting_star_wish"),
+        "full_moon_exp": lambda w, h: MoonAnimator(w, h, event_id="full_moon_exp"),
+        "eclipse_event": lambda w, h: MoonAnimator(w, h, event_id="eclipse_event"),
+        "sunset_green_flash": GreenFlashAnimator,
+        "moonrise_massive": lambda w, h: MoonAnimator(w, h, event_id="moonrise_massive"),
+        "milky_way_visible": lambda w, h: MoonAnimator(w, h, event_id="milky_way_visible"),
+        "blood_moon_exp": lambda w, h: MoonAnimator(w, h, event_id="blood_moon_exp"),
+        # --- Supernatural / Rare ---
+        "ufo_landing": UFOAnimator,
+        "ghost_duck": GhostDuckAnimator,
+        "meteor_shower": lambda w, h: SkyLightAnimator(w, h, event_id="meteor_shower"),
+        "will_o_wisp": lambda w, h: GlowAnimator(w, h, event_id="will_o_wisp"),
+        "pond_glow": lambda w, h: GlowAnimator(w, h, event_id="pond_glow"),
+        "golden_egg_shimmer": lambda w, h: GlowAnimator(w, h, event_id="golden_egg_shimmer"),
+        "pond_portal": PortalAnimator,
+        "glowing_mushroom": lambda w, h: GlowAnimator(w, h, event_id="glowing_mushroom"),
+        # --- Nature ---
+        "cherry_blossom": lambda w, h: FallingThingsAnimator(w, h, event_id="cherry_blossom"),
+        "hot_air_balloon": lambda w, h: FloatingAnimator(w, h, event_id="hot_air_balloon"),
+        "fireworks_distant": FireworksAnimator,
+        # --- Ice / Weather Special ---
+        "frozen_bubble": lambda w, h: FloatingAnimator(w, h, event_id="frozen_bubble"),
+        "ice_palace": IcePalaceAnimator,
+        "algae_bloom_glow": lambda w, h: GlowAnimator(w, h, event_id="algae_bloom_glow"),
+        "fireflies_sync": lambda w, h: FireflyAnimator(w, h, event_id="fireflies_sync"),
     }
     
     animator_class = animators.get(event_id)
@@ -1723,4 +3154,49 @@ ANIMATED_EVENTS = [
     "bubbles",
     "falling_object",
     "squirrel",
+    # --- Food / Bread themed ---
+    "the_holy_loaf",
+    "bread_rain",
+    "baguette_find",
+    # --- Weather / Sky ---
+    "thunder_puffup",
+    "rainbow_double",
+    "aurora_borealis",
+    "ball_lightning",
+    "sun_pillar",
+    "rainbow_complete",
+    "night_rainbow",
+    # --- Creatures ---
+    "turtle_encounter_exp",
+    "butterfly_mistake",
+    "firefly_show",
+    "butterfly_migration_exp",
+    "bioluminescent_insects",
+    "bioluminescent_fish",
+    # --- Celestial ---
+    "shooting_star_wish",
+    "full_moon_exp",
+    "eclipse_event",
+    "sunset_green_flash",
+    "moonrise_massive",
+    "milky_way_visible",
+    "blood_moon_exp",
+    # --- Supernatural / Rare ---
+    "ufo_landing",
+    "ghost_duck",
+    "meteor_shower",
+    "will_o_wisp",
+    "pond_glow",
+    "golden_egg_shimmer",
+    "pond_portal",
+    "glowing_mushroom",
+    # --- Nature ---
+    "cherry_blossom",
+    "hot_air_balloon",
+    "fireworks_distant",
+    # --- Ice / Weather Special ---
+    "frozen_bubble",
+    "ice_palace",
+    "algae_bloom_glow",
+    "fireflies_sync",
 ]
