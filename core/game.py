@@ -3040,10 +3040,10 @@ class Game:
         # Update active visitor interactions (every frame when there's a visitor)
         self._update_visitor_interactions(current_time)
 
-        # Check for random events (every 10 seconds)
+        # Check for random events (every 30 seconds)
         # Skip events during active guest conversations so they don't overlap
         _in_guest_convo = bool(getattr(self, '_active_guest_conversation', None)) or bool(self._pending_visitor_comment)
-        if current_time - self._last_event_check >= 10:
+        if current_time - self._last_event_check >= 30:
             if not _in_guest_convo:
                 self._check_events()
 
@@ -3054,8 +3054,8 @@ class Game:
 
             self._last_event_check = current_time
 
-        # Check for area-specific events (every 15 seconds)
-        if current_time - self._last_area_event_check >= 15:
+        # Check for area-specific events (every 45 seconds)
+        if current_time - self._last_area_event_check >= 45:
             if not _in_guest_convo:
                 self._check_area_events()
             self._last_area_event_check = current_time

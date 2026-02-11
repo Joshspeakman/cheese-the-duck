@@ -1403,6 +1403,10 @@ class SpontaneousTravelSystem:
 # AREA EVENT SYSTEM — checks and fires location-specific events
 # ═══════════════════════════════════════════════════════════════════════════
 
+# Global minimum gap between area events (seconds)
+AREA_EVENT_MIN_GAP = 90  # 1.5 minutes between area events
+
+
 class AreaEventSystem:
     """
     Manages area-specific random events.
@@ -1413,6 +1417,7 @@ class AreaEventSystem:
 
     def __init__(self):
         self._last_event_times: Dict[str, float] = {}
+        self._last_any_area_event_time: float = 0.0  # global area event cooldown
         self._events_triggered_count: Dict[str, int] = {}
 
     def check_area_events(self, area_name: str) -> Optional[AreaEvent]:
@@ -1431,6 +1436,10 @@ class AreaEventSystem:
 
         now = time.time()
 
+        # Global area event cooldown
+        if now - self._last_any_area_event_time < AREA_EVENT_MIN_GAP:
+            return None
+
         for event in events:
             # Check cooldown
             last = self._last_event_times.get(event.id, 0)
@@ -1440,6 +1449,7 @@ class AreaEventSystem:
             # Roll
             if random.random() < event.probability:
                 self._last_event_times[event.id] = now
+                self._last_any_area_event_time = now  # global cooldown
                 self._events_triggered_count[event.id] = (
                     self._events_triggered_count.get(event.id, 0) + 1
                 )
@@ -1461,6 +1471,7 @@ class AreaEventSystem:
     def to_dict(self) -> dict:
         return {
             "last_event_times": self._last_event_times,
+            "last_any_area_event_time": self._last_any_area_event_time,
             "events_triggered_count": self._events_triggered_count,
         }
 
@@ -1468,6 +1479,7 @@ class AreaEventSystem:
     def from_dict(cls, data: dict) -> "AreaEventSystem":
         system = cls()
         system._last_event_times = data.get("last_event_times", {})
+        system._last_any_area_event_time = data.get("last_any_area_event_time", 0.0)
         system._events_triggered_count = data.get("events_triggered_count", {})
         return system
 
