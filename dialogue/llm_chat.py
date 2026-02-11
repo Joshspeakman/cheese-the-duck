@@ -128,7 +128,7 @@ class LLMChat:
     LOCAL ONLY - no external API calls.
     """
 
-    def __init__(self):
+    def __init__(self, background: bool = False):
         self._available = False
         self._model_name = None
         self._llama = None
@@ -138,9 +138,19 @@ class LLMChat:
         self._gpu_layers = 0
         self._model_path = None
         self._duck_brain = None
+        self._loading = False          # True while model is loading in background
+        self._warmed_up = False        # True after first throwaway inference
+        self._load_thread = None
         
         if LLM_ENABLED:
-            self._check_availability()
+            if background:
+                self._loading = True
+                self._load_thread = threading.Thread(
+                    target=self._background_load, daemon=True
+                )
+                self._load_thread.start()
+            else:
+                self._check_availability()
 
     def _check_availability(self):
         """Check for local GGUF model (local only, no external fallback)."""
@@ -154,6 +164,41 @@ class LLMChat:
         # No fallback - local only mode
         if not self._last_error:
             self._last_error = "No local model available. Run 'python download_model.py' to get started."
+
+    def _background_load(self):
+        """Load model in background thread, then warm up."""
+        try:
+            self._check_availability()
+            if self._available:
+                self._warmup()
+        except Exception as e:
+            logger.error(f"Background LLM load failed: {e}")
+            self._last_error = f"Background load failed: {e}"
+        finally:
+            self._loading = False
+
+    def _warmup(self):
+        """Run a tiny throwaway inference to warm up KV cache and JIT paths."""
+        if not self._llama or self._warmed_up:
+            return
+        try:
+            self._llama.create_chat_completion(
+                messages=[
+                    {"role": "system", "content": "You are a duck. Reply in one word."},
+                    {"role": "user", "content": "hi"},
+                ],
+                max_tokens=4,
+                temperature=0.0,
+            )
+            self._warmed_up = True
+            logger.info("LLM warmup complete")
+        except Exception as e:
+            logger.debug(f"LLM warmup failed (non-critical): {e}")
+            # Warmup failure is non-critical — first real call will just be slower
+
+    def is_loading(self) -> bool:
+        """Check if model is still loading in background."""
+        return self._loading
 
     def _try_local_model(self) -> bool:
         """Try to load a local GGUF model with GPU auto-detection."""
@@ -695,14 +740,20 @@ _llm_chat_instance = None
 _llm_chat_lock = threading.Lock()
 
 
-def get_llm_chat() -> LLMChat:
-    """Get or create the LLM chat instance. Thread-safe."""
+def get_llm_chat(background: bool = False) -> LLMChat:
+    """Get or create the LLM chat instance. Thread-safe.
+    
+    Args:
+        background: If True and creating new instance, load model in
+                    background thread (non-blocking). Default False for
+                    backwards compatibility.
+    """
     global _llm_chat_instance
     if _llm_chat_instance is None:
         with _llm_chat_lock:
             # Double-check after acquiring lock
             if _llm_chat_instance is None:
-                _llm_chat_instance = LLMChat()
+                _llm_chat_instance = LLMChat(background=background)
     return _llm_chat_instance
 
 
