@@ -44,7 +44,7 @@ class Event:
     sound: Optional[str] = None
     requires_stage: Optional[str] = None  # minimum growth stage
     cooldown: float = 300  # seconds before can happen again
-    has_animation: bool = False  # whether this event has a visual animation
+    has_animation: bool = True  # whether this event has a visual animation
     weather_group: Optional[str] = None  # Required weather group (hot/cold/wet/harsh/pleasant/magical)
     chain_id: Optional[str] = None  # If set, this event starts an event chain
     encounter_id: Optional[str] = None  # If set, starts an encounter requiring player action

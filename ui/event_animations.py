@@ -3049,24 +3049,38 @@ class IcePalaceAnimator(EventAnimator):
         return "cyan"
 
 
-# Factory function to create appropriate animator for an event
-def create_event_animator(
-    event_id: str,
-    playfield_width: int = 60,
-    playfield_height: int = 15
-) -> Optional[EventAnimator]:
+# ---------------------------------------------------------------------------
+# Generic animator imports
+# ---------------------------------------------------------------------------
+from ui.generic_animators import (
+    GenericParticleAnimator,
+    GenericSpriteAnimator,
+    GenericDuckReactionAnimator,
+    GenericAmbientAnimator,
+    GenericWeatherAnimator,
+    GenericCreatureAnimator,
+    GenericFoodAnimator,
+    GenericSkyAnimator,
+)
+
+
+# ---------------------------------------------------------------------------
+# Factory function — every event gets an animation
+# ---------------------------------------------------------------------------
+def create_event_animator(event_id, playfield_width=60, playfield_height=15):
+    """Create the appropriate animator for an event.
+
+    First checks for hand-crafted specific animators, then falls back to
+    generic animators organised by category.  If the event is completely
+    unknown a subtle sparkle is returned so *nothing* is ever without
+    animation.
     """
-    Create the appropriate animator for an event.
-    
-    Args:
-        event_id: The event identifier
-        playfield_width: Width of the playfield
-        playfield_height: Height of the playfield
-        
-    Returns:
-        EventAnimator instance or None if no animation exists for this event
-    """
-    animators = {
+    w, h = playfield_width, playfield_height
+
+    # ------------------------------------------------------------------
+    # 1. Specific / hand-crafted animators (original mappings preserved)
+    # ------------------------------------------------------------------
+    specific = {
         "butterfly": ButterflyAnimator,
         "bird_friend": BirdAnimator,
         "another_duck": DuckVisitorAnimator,
@@ -3075,7 +3089,7 @@ def create_event_animator(
         "found_crumb": CrumbAnimator,
         "loud_noise": LoudNoiseAnimator,
         "bad_dream": lambda w, h: DreamCloudAnimator(w, h, is_bad=True),
-        # Area-specific animations
+        # Area-specific
         "lily_pad": LilyPadAnimator,
         "ripple": RippleAnimator,
         "frog_hop": FrogAnimator,
@@ -3083,11 +3097,11 @@ def create_event_animator(
         "bubbles": BubblesAnimator,
         "falling_object": FallingObjectAnimator,
         "squirrel": SquirrelAnimator,
-        # --- Food / Bread themed ---
+        # Food / Bread themed
         "the_holy_loaf": lambda w, h: FoodAnimator(w, h, event_id="the_holy_loaf"),
         "baguette_find": lambda w, h: FoodAnimator(w, h, event_id="baguette_find"),
         "bread_rain": lambda w, h: FallingThingsAnimator(w, h, event_id="bread_rain"),
-        # --- Weather / Sky ---
+        # Weather / Sky
         "thunder_puffup": PuffUpAnimator,
         "rainbow_double": lambda w, h: RainbowAnimator(w, h, event_id="rainbow_double"),
         "aurora_borealis": lambda w, h: SkyLightAnimator(w, h, event_id="aurora_borealis"),
@@ -3095,14 +3109,14 @@ def create_event_animator(
         "sun_pillar": lambda w, h: SkyLightAnimator(w, h, event_id="sun_pillar"),
         "rainbow_complete": lambda w, h: RainbowAnimator(w, h, event_id="rainbow_complete"),
         "night_rainbow": lambda w, h: RainbowAnimator(w, h, event_id="night_rainbow"),
-        # --- Creatures ---
+        # Creatures
         "turtle_encounter_exp": TurtleAnimator,
         "butterfly_mistake": lambda w, h: ButterflySwarmAnimator(w, h, event_id="butterfly_mistake"),
         "firefly_show": lambda w, h: FireflyAnimator(w, h, event_id="firefly_show"),
         "butterfly_migration_exp": lambda w, h: ButterflySwarmAnimator(w, h, event_id="butterfly_migration_exp"),
         "bioluminescent_insects": lambda w, h: GlowAnimator(w, h, event_id="bioluminescent_insects"),
         "bioluminescent_fish": lambda w, h: GlowAnimator(w, h, event_id="bioluminescent_fish"),
-        # --- Celestial ---
+        # Celestial
         "shooting_star_wish": lambda w, h: SkyLightAnimator(w, h, event_id="shooting_star_wish"),
         "full_moon_exp": lambda w, h: MoonAnimator(w, h, event_id="full_moon_exp"),
         "eclipse_event": lambda w, h: MoonAnimator(w, h, event_id="eclipse_event"),
@@ -3110,7 +3124,7 @@ def create_event_animator(
         "moonrise_massive": lambda w, h: MoonAnimator(w, h, event_id="moonrise_massive"),
         "milky_way_visible": lambda w, h: MoonAnimator(w, h, event_id="milky_way_visible"),
         "blood_moon_exp": lambda w, h: MoonAnimator(w, h, event_id="blood_moon_exp"),
-        # --- Supernatural / Rare ---
+        # Supernatural / Rare
         "ufo_landing": UFOAnimator,
         "ghost_duck": GhostDuckAnimator,
         "meteor_shower": lambda w, h: SkyLightAnimator(w, h, event_id="meteor_shower"),
@@ -3119,84 +3133,644 @@ def create_event_animator(
         "golden_egg_shimmer": lambda w, h: GlowAnimator(w, h, event_id="golden_egg_shimmer"),
         "pond_portal": PortalAnimator,
         "glowing_mushroom": lambda w, h: GlowAnimator(w, h, event_id="glowing_mushroom"),
-        # --- Nature ---
+        # Nature
         "cherry_blossom": lambda w, h: FallingThingsAnimator(w, h, event_id="cherry_blossom"),
         "hot_air_balloon": lambda w, h: FloatingAnimator(w, h, event_id="hot_air_balloon"),
         "fireworks_distant": FireworksAnimator,
-        # --- Ice / Weather Special ---
+        # Ice / Weather Special
         "frozen_bubble": lambda w, h: FloatingAnimator(w, h, event_id="frozen_bubble"),
         "ice_palace": IcePalaceAnimator,
         "algae_bloom_glow": lambda w, h: GlowAnimator(w, h, event_id="algae_bloom_glow"),
         "fireflies_sync": lambda w, h: FireflyAnimator(w, h, event_id="fireflies_sync"),
     }
-    
-    animator_class = animators.get(event_id)
-    if animator_class:
-        return animator_class(playfield_width, playfield_height)
-    return None
+
+    if event_id in specific:
+        creator = specific[event_id]
+        return creator(w, h)
+
+    # ------------------------------------------------------------------
+    # 2. Generic animators — organised by category
+    # ------------------------------------------------------------------
+
+    # --- FOOD EVENTS ---------------------------------------------------
+    food_events = {
+        "forgotten_bread": ("[=]", "yellow", "drop"),
+        "breadcrumb_trail": ("...", "yellow", "discover"),
+        "soggy_bread": ("[~]", "cyan", "drop"),
+        "crouton_discovery": ("[#]", "yellow", "discover"),
+        "human_eating_bread": ("[=]", "white", "throw"),
+        "pizza_crust": ("(>)", "yellow", "discover"),
+        "seed_jackpot": (".:.", "yellow", "discover"),
+        "stolen_chip": ("/\\", "yellow", "throw"),
+        "mystery_food": ("[?]", "magenta", "discover"),
+        "pea_discovery": ("o", "green", "discover"),
+        "corn_kernel": ("o", "yellow", "discover"),
+        "lettuce_confusion": ("{~}", "green", "discover"),
+        "grape_chase": ("o", "magenta", "throw"),
+        "toast_fragment": ("[=]", "yellow", "drop"),
+        "worm_surprise": ("~", "green", "discover"),
+        "bird_feeder_raid": ("[=]", "yellow", "throw"),
+        "underwater_snack": ("[~]", "cyan", "discover"),
+        "bread_dream": ("[=]", "yellow", "discover"),
+        "food_sharing_refusal": ("[=]", "red", "throw"),
+        "acorn_toy": ("@", "yellow", "discover"),
+        "gourmet_weed": ("{}", "green", "discover"),
+        "pretzel_find": ("&", "yellow", "discover"),
+        "cheese_cracker": ("[#]", "yellow", "discover"),
+        "popcorn_windfall": ("*", "white", "drop"),
+        "sandwich_nearby": ("[==]", "yellow", "discover"),
+        "apple_encounter": ("@", "red", "discover"),
+        "fish_food_theft": (".:.", "cyan", "throw"),
+        "donut_fragment": ("(O)", "yellow", "discover"),
+        "rice_scattered": ("...", "white", "drop"),
+        "muffin_top": ("(^)", "yellow", "discover"),
+        "noodle_strand": ("~", "yellow", "discover"),
+        "waffle_piece": ("[#]", "yellow", "discover"),
+        "cereal_spill": ("o.o", "yellow", "drop"),
+        "bread_in_eye": ("[=]", "yellow", "throw"),
+        "bread_thrown_far": ("[=]", "yellow", "throw"),
+        "bread_share_stranger": ("[=]", "yellow", "throw"),
+        "bread_museum_fantasy": ("[=]", "magenta", "discover"),
+        "bread_fossils": ("[=]", "yellow", "discover"),
+        "bread_satellite": ("[=]", "cyan", "throw"),
+        "bread_mirage": ("[=]", "magenta", "discover"),
+        "golden_breadcrumb": ("*", "yellow", "discover"),
+        "ancient_bread": ("[=]", "yellow", "discover"),
+    }
+    if event_id in food_events:
+        char, color, style = food_events[event_id]
+        return GenericFoodAnimator(event_id, w, h, food_char=char, color=color, appear_style=style)
+
+    # --- CREATURE EVENTS -----------------------------------------------
+    creature_events = {
+        "friendly_frog": ("medium", "green"),
+        "visiting_ladybug": ("small", "red"),
+        "ant_parade": ("small", "green"),
+        "fish_stare_off": ("swimming", "cyan"),
+        "pigeon_judgement": ("flying", "white"),
+        "bug_in_face": ("small", "yellow"),
+        "worm_surface": ("small", "green"),
+        "catfish_surface": ("swimming", "cyan"),
+        "curious_squirrel": ("medium", "yellow"),
+        "turtle_encounter": ("medium", "green"),
+        "flock_overhead": ("flying", "white"),
+        "visiting_heron": ("large", "blue"),
+        "crow_gift": ("flying", "white"),
+        "baby_ducks": ("medium", "yellow"),
+        "baby_ducks_passing": ("medium", "yellow"),
+        "visiting_owl": ("large", "white"),
+        "dragonfly_landing": ("small", "cyan"),
+        "dragonfly_chase_exp": ("small", "cyan"),
+        "frog_chorus": ("medium", "green"),
+        "frog_duet": ("medium", "green"),
+        "caterpillar_watch": ("small", "green"),
+        "spider_architect": ("small", "white"),
+        "robin_argument": ("flying", "red"),
+        "crow_watching": ("flying", "white"),
+        "snail_race": ("small", "green"),
+        "bee_flower_show": ("small", "yellow"),
+        "moth_confusion": ("small", "white"),
+        "heron_encounter": ("large", "blue"),
+        "goose_intimidation": ("large", "white"),
+        "pelican_stare": ("large", "white"),
+        "kingfisher_dive": ("flying", "cyan"),
+        "crab_encounter": ("small", "red"),
+        "hedgehog_visit": ("medium", "yellow"),
+        "swan_in_distance": ("large", "white"),
+        "deer_sighting": ("large", "yellow"),
+        "fox_distant": ("medium", "red"),
+        "bat_swoops": ("flying", "white"),
+        "peacock_jealousy": ("large", "magenta"),
+        "squirrel_staredown": ("medium", "yellow"),
+        "cat_staredown": ("medium", "white"),
+        "sleeping_cat": ("medium", "white"),
+        "hawk_shadow_pass": ("flying", "white"),
+        "rabbit_sprint": ("medium", "white"),
+        "raccoon_night": ("medium", "white"),
+        "dog_encounter_exp": ("large", "yellow"),
+        "mole_hill_exp": ("small", "green"),
+        "earthworm_rain": ("small", "green"),
+        "worm_standoff": ("small", "green"),
+        "worm_escape": ("small", "green"),
+        "caterpillar_on_nose": ("small", "green"),
+        "singing_frog_choir": ("medium", "green"),
+        "fish_smile": ("swimming", "cyan"),
+        "fish_splashing_fight": ("swimming", "cyan"),
+        "fish_tornado": ("swimming", "cyan"),
+        "butterfly_migration": ("flying", "magenta"),
+        "butterfly_migration_solo": ("flying", "magenta"),
+        "dragonfly_escort": ("small", "cyan"),
+        "heron_flyover": ("flying", "blue"),
+        "owl_stare": ("large", "white"),
+        "owl_conversation": ("large", "white"),
+        "owl_eyes": ("large", "yellow"),
+        "owl_pellet_find": ("medium", "white"),
+        "fox_trot_past": ("medium", "red"),
+        "barn_owl_face": ("large", "white"),
+        "spider_balloon": ("small", "white"),
+        "spider_web_hammock": ("small", "white"),
+        "walking_stick_insect": ("small", "green"),
+        "water_strider_walk": ("small", "cyan"),
+        "iridescent_beetle": ("small", "magenta"),
+        "coyote_howl": ("large", "yellow"),
+        "tree_frog_call": ("small", "green"),
+        "upside_down_beetle": ("small", "green"),
+        "woodpecker_percussion": ("flying", "red"),
+        "woodpecker_rhythm": ("flying", "red"),
+        "flash_mob_birds": ("flying", "white"),
+        "ladybug_landing": ("small", "red"),
+        "ant_carrying_food": ("small", "green"),
+        "witch_cat": ("medium", "magenta"),
+        "hiccup_scare_fish": ("swimming", "cyan"),
+        "wrong_end_fish": ("swimming", "cyan"),
+        "fish_splash": ("swimming", "cyan"),
+        "mosquito_assault": ("small", "red"),
+        "bigfoot_glimpse": ("large", "green"),
+        "venus_flytrap": ("small", "green"),
+        "sunflower_turning": ("medium", "yellow"),
+        "toad_wisdom": ("medium", "green"),
+        "bird_v_formation": ("flying", "white"),
+    }
+    if event_id in creature_events:
+        ctype, color = creature_events[event_id]
+        return GenericCreatureAnimator(event_id, w, h, creature_type=ctype, color=color)
+
+    # --- WEATHER EVENTS ------------------------------------------------
+    weather_events = {
+        "sunny": ("sun", "yellow"),
+        "rain": ("rain", "cyan"),
+        "heat_nap": ("sun", "yellow"),
+        "cool_puddle": ("rain", "cyan"),
+        "frozen_beak": ("snow", "cyan"),
+        "snow_discovery": ("snow", "white"),
+        "mud_splash": ("rain", "green"),
+        "storm_fright": ("rain", "white"),
+        "storm_debris_gift": ("wind", "white"),
+        "perfect_moment": ("sun", "yellow"),
+        "rain_dance": ("rain", "cyan"),
+        "snow_tasting": ("snow", "white"),
+        "wind_surfing": ("wind", "cyan"),
+        "fog_mystery": ("fog", "white"),
+        "sun_glare": ("sun", "yellow"),
+        "frost_art": ("snow", "cyan"),
+        "rainbow_after_rain": ("sun", "yellow"),
+        "first_snowflake_beak": ("snow", "white"),
+        "rain_puddle_music": ("rain", "cyan"),
+        "wind_sideways": ("wind", "cyan"),
+        "sun_too_bright": ("sun", "yellow"),
+        "fog_mystery_exp": ("fog", "white"),
+        "tiny_hail": ("hail", "white"),
+        "sundog_sighting": ("sun", "yellow"),
+        "frost_on_bill": ("snow", "cyan"),
+        "gentle_drizzle": ("rain", "cyan"),
+        "wind_feather_art": ("wind", "white"),
+        "morning_mist": ("mist", "white"),
+        "perfect_breeze": ("wind", "cyan"),
+        "lightning_flash": ("rain", "white"),
+        "snow_angel_attempt": ("snow", "white"),
+        "dew_bath": ("mist", "cyan"),
+        "rain_beak_drum": ("rain", "cyan"),
+        "warm_rain": ("rain", "yellow"),
+        "warm_rock_sun": ("sun", "yellow"),
+        "hail_bounce": ("hail", "white"),
+        "freezing_rain": ("rain", "cyan"),
+        "ice_singing": ("snow", "cyan"),
+        "icicle_boop": ("snow", "cyan"),
+        "mud_puddle_spa": ("rain", "green"),
+        "snowflake_unique": ("snow", "white"),
+        "golden_hour": ("sun", "yellow"),
+        "static_feathers": ("wind", "yellow"),
+        "rainbow_spider_web": ("rain", "magenta"),
+        "humidity_complaint": ("mist", "cyan"),
+        "wind_tunnel_exp": ("wind", "cyan"),
+        "wind_whistle": ("wind", "cyan"),
+        "sunset_colors": ("sun", "red"),
+        "fog_morning": ("fog", "white"),
+        "pond_overflow": ("rain", "cyan"),
+        "rain_crown": ("rain", "cyan"),
+        "first_rain_drop": ("rain", "cyan"),
+        "rain_on_leaf_xylophone": ("rain", "cyan"),
+        "steam_breath": ("mist", "white"),
+        "ice_cracking_sound": ("snow", "cyan"),
+        "sunset_green_sky": ("sun", "green"),
+        "frost_art_window": ("snow", "cyan"),
+        "warm_wind_arrive": ("wind", "yellow"),
+        "dust_devil_mini": ("wind", "yellow"),
+        "ice_crystal_on_feather": ("snow", "cyan"),
+        "worm_rain": ("rain", "green"),
+        "solar_halo": ("sun", "yellow"),
+        "circumhorizontal_arc": ("sun", "magenta"),
+        "heat_shimmer": ("sun", "yellow"),
+        "fogbow": ("fog", "white"),
+        "mud_season": ("rain", "green"),
+        "summer_thunderstorm": ("rain", "white"),
+        "fog_bow": ("fog", "white"),
+        "warm_sunbeam": ("sun", "yellow"),
+    }
+    if event_id in weather_events:
+        wtype, color = weather_events[event_id]
+        return GenericWeatherAnimator(event_id, w, h, weather_type=wtype, color=color)
+
+    # --- DUCK REACTION / BODY EVENTS -----------------------------------
+    reaction_events = {
+        # (emote, color, style)
+        "random_quack": ("!", "yellow", "pop"),
+        "forgot_something": ("?", "yellow", "shake"),
+        "stare_contest": ("o_o", "white", "pop"),
+        "feather_molt": ("~", "white", "float"),
+        "itchy_spot": ("!", "red", "shake"),
+        "deep_thought": ("...", "cyan", "float"),
+        "shadow_watching": ("?", "white", "pop"),
+        "stubbed_toe": ("!!", "red", "shake"),
+        "stepped_in_gum": ("~", "green", "shake"),
+        "startled_by_splash": ("!!", "cyan", "bounce"),
+        "too_warm": ("~", "red", "float"),
+        "too_chilly": ("*", "cyan", "shake"),
+        "persistent_itch": ("!", "red", "shake"),
+        "own_reflection": ("?", "cyan", "pop"),
+        "stepping_on_twig": ("!", "yellow", "bounce"),
+        "morning_stretch": ("~", "yellow", "float"),
+        "sunset_contemplation": ("...", "red", "float"),
+        "forgot_what_doing": ("?", "yellow", "shake"),
+        "satisfying_quack": ("~", "yellow", "pop"),
+        "accidental_bug_catch": ("!", "green", "bounce"),
+        "dewdrop_on_beak": (".", "cyan", "pop"),
+        "loose_feather": ("~", "white", "float"),
+        "tail_waggle": ("~", "yellow", "bounce"),
+        "good_waddle_rhythm": ("~", "yellow", "bounce"),
+        "eye_contact_stranger": ("!", "white", "pop"),
+        "random_hiccup": ("!", "yellow", "bounce"),
+        "sitting_on_foot": ("?", "yellow", "shake"),
+        "bill_click": ("*", "yellow", "pop"),
+        "preen_perfection": ("*", "yellow", "pop"),
+        "puddle_splash_exp": ("~", "cyan", "bounce"),
+        "wing_flap_breeze": ("~", "cyan", "float"),
+        "head_tuck_nap": ("z", "white", "float"),
+        "webbed_foot_inspection": ("?", "yellow", "pop"),
+        "comfortable_bob": ("~", "cyan", "bounce"),
+        "dramatic_yawn": ("O", "yellow", "pop"),
+        "shadow_investigation": ("?", "white", "pop"),
+        "rock_appreciation": ("*", "white", "pop"),
+        "grass_nest_attempt": ("~", "green", "shake"),
+        "mud_squelch": ("~", "green", "bounce"),
+        "tail_chase": ("!", "yellow", "bounce"),
+        "underwater_eyes": ("o", "cyan", "pop"),
+        "perfect_landing": ("*", "yellow", "pop"),
+        "preening_knot": ("!", "yellow", "shake"),
+        "comfortable_rock": ("~", "white", "float"),
+        "feather_ruffle": ("~", "white", "shake"),
+        "water_droplet_race": (".", "cyan", "bounce"),
+        "accidental_dive": ("!!", "cyan", "bounce"),
+        "symmetrical_ripple": ("o", "cyan", "pop"),
+        "warm_breeze_face": ("~", "yellow", "float"),
+        "one_legged_stand": ("!", "yellow", "pop"),
+        "found_own_footprints": ("?", "yellow", "pop"),
+        "feather_dance": ("~", "white", "float"),
+        "yawn_contagion": ("O", "yellow", "pop"),
+        "belly_rub_ground": ("~", "yellow", "bounce"),
+        "bubble_blowing": ("o", "cyan", "float"),
+        "stumble_recovery": ("!", "yellow", "bounce"),
+        "first_swim_today": ("~", "cyan", "bounce"),
+        "counting_feathers": ("...", "white", "pop"),
+        "warmth_appreciation": ("*", "yellow", "float"),
+        "missed_bug": ("!", "red", "shake"),
+        "nice_dirt_bath": ("~", "yellow", "bounce"),
+        "interesting_stick": ("?", "yellow", "pop"),
+        "leaf_on_head": ("~", "green", "float"),
+        "swimming_circles": ("~", "cyan", "bounce"),
+        "splash_face": ("!", "cyan", "bounce"),
+        "belly_flop": ("!!", "cyan", "bounce"),
+        "fell_asleep_swimming": ("z", "cyan", "float"),
+        "slippery_rock": ("!", "yellow", "shake"),
+        "stuck_in_mud_exp": ("!", "green", "shake"),
+        "dramatic_fall": ("!!", "red", "bounce"),
+        "poop_on_head": ("!!", "green", "bounce"),
+        "misjudged_jump": ("!", "yellow", "bounce"),
+        "walked_into_post": ("*", "red", "shake"),
+        "wing_stuck_pose": ("?", "yellow", "shake"),
+        "choked_on_air": ("!", "red", "shake"),
+        "tangled_in_seaweed": ("~", "green", "shake"),
+        "water_up_nose": ("!", "cyan", "shake"),
+        "spider_web_face": ("!!", "white", "shake"),
+        "feather_mouth": ("~", "white", "shake"),
+        "sneeze_too_loud": ("!!", "yellow", "bounce"),
+        "eye_twitch": (".", "yellow", "shake"),
+        "quack_voice_crack": ("?", "yellow", "bounce"),
+        "upside_down": ("!", "yellow", "shake"),
+        "double_quack": ("!!", "yellow", "pop"),
+        "snoring_self": ("z", "white", "float"),
+        "invisible_wall": ("!", "white", "shake"),
+        "wing_hug_self": ("*", "yellow", "pop"),
+        "backwards_waddle": ("?", "yellow", "shake"),
+        "drool_nap": ("z", "cyan", "float"),
+        "belly_rumble_loud": ("~", "yellow", "shake"),
+        "wing_pit_check": ("?", "yellow", "pop"),
+        "head_shake_infinite": ("~", "cyan", "shake"),
+        "accidental_moonwalk": ("*", "yellow", "bounce"),
+        "perfect_scratch": ("*", "yellow", "pop"),
+        "tail_feather_loose": ("~", "white", "float"),
+        "impressive_splash": ("!!", "cyan", "bounce"),
+        "cold_feet_literal": ("*", "cyan", "shake"),
+        "splinter_bill": ("!", "red", "shake"),
+        "quicksand_scare": ("!!", "green", "shake"),
+        "static_shock_exp": ("*", "yellow", "bounce"),
+        "sleeptalk_quack": ("z", "white", "float"),
+        "sleepwalking_exp": ("z", "white", "shake"),
+        # Existential / thought events
+        "consciousness_moment": ("...", "cyan", "float"),
+        "meaning_of_quack": ("?", "cyan", "float"),
+        "identity_crisis_exp": ("?!", "magenta", "shake"),
+        "parallel_cheese": ("?", "magenta", "float"),
+        "what_is_water": ("?", "cyan", "float"),
+        "nature_of_bread": ("?", "yellow", "float"),
+        "fourth_wall_glance": ("!", "magenta", "pop"),
+        "circular_thoughts": ("~", "cyan", "shake"),
+        "gravity_appreciation": (".", "white", "float"),
+        "memory_of_egg": ("...", "yellow", "float"),
+        "purpose_question": ("?", "cyan", "float"),
+        "dream_vs_reality": ("?", "magenta", "shake"),
+        "language_thoughts": ("...", "cyan", "float"),
+        "quantum_duck": ("?", "magenta", "shake"),
+        "time_perception": ("...", "cyan", "float"),
+        "mortality_awareness": ("...", "white", "float"),
+        "pond_infinity": ("~", "cyan", "float"),
+        "deja_vu_paddle": ("?!", "magenta", "shake"),
+        "time_loop": ("~", "magenta", "shake"),
+        "3am_existential": ("...", "white", "float"),
+        "2am_bread_craving": ("!", "yellow", "shake"),
+        # Human / social events
+        "child_feeding_attempt": ("!", "yellow", "pop"),
+        "old_person_bench": ("~", "white", "float"),
+        "jogger_splash_exp": ("!!", "cyan", "bounce"),
+        "kid_pointing": ("!", "yellow", "pop"),
+        "human_sneeze": ("!!", "white", "bounce"),
+        "hat_blew_off": ("?", "yellow", "pop"),
+        "photographer_exp": ("!", "white", "pop"),
+        "person_talking_to_cheese": ("?", "yellow", "pop"),
+        "someone_whistling": ("~", "yellow", "float"),
+        "human_phone_stare": ("?", "white", "pop"),
+        "romantic_couple": ("~", "red", "float"),
+        "couple_arguing": ("!", "red", "pop"),
+        "baby_laughing": ("~", "yellow", "bounce"),
+        "park_ranger_shoo": ("!!", "red", "bounce"),
+        "picnic_nearby": ("!", "yellow", "pop"),
+        "market_day": ("!", "yellow", "pop"),
+        "duck_argument": ("!", "yellow", "shake"),
+        "friendly_wave": ("~", "yellow", "pop"),
+        "old_tire_swing": ("~", "yellow", "bounce"),
+        "helicopter_visit": ("!", "white", "bounce"),
+        "boat_wake": ("~", "cyan", "bounce"),
+        "train_distant": ("~", "white", "float"),
+        "train_distant_horn": ("~", "white", "float"),
+        "kite_flying": ("~", "magenta", "float"),
+        "circus_parade": ("!!", "magenta", "bounce"),
+        "wrong_flock": ("?", "yellow", "shake"),
+        "paper_boat": ("~", "white", "float"),
+        # Encounter events
+        "enc_predator_shadow": ("!!", "red", "shake"),
+        "enc_stuck_in_mud": ("!", "green", "shake"),
+        "enc_hungry_bully": ("!!", "red", "shake"),
+        "enc_bored_crisis": ("...", "white", "float"),
+        # Triggered events
+        "first_waddle": ("!", "yellow", "bounce"),
+        "first_quack": ("!", "yellow", "pop"),
+        # Remaining misc reactions
+        "earthquake_tiny": ("!!", "red", "shake"),
+        "underground_rumble": ("!!", "yellow", "shake"),
+        "magnetic_north_feeling": ("?", "cyan", "shake"),
+        "doppelganger_duck": ("?!", "magenta", "shake"),
+        "toe_curl": ("~", "yellow", "bounce"),
+        "pinecone_investigation": ("?", "yellow", "pop"),
+        "mud_art_prints": ("*", "yellow", "pop"),
+        "tail_dip_painting": ("*", "yellow", "pop"),
+    }
+    if event_id in reaction_events:
+        emote, color, style = reaction_events[event_id]
+        return GenericDuckReactionAnimator(event_id, w, h, emote=emote, color=color, style=style)
+
+    # --- SKY / CELESTIAL EVENTS ----------------------------------------
+    sky_events = {
+        "shooting_star": ("celestial", "white"),
+        "moon_reflection": ("stars", "cyan"),
+        "constellation_duck": ("stars", "white"),
+        "stars_contemplate": ("stars", "white"),
+        "midnight_quack": ("stars", "white"),
+        "moonlight_swim": ("stars", "cyan"),
+        "first_light": ("celestial", "yellow"),
+        "night_fishing_lights": ("stars", "yellow"),
+        "night_pond_sounds": ("stars", "cyan"),
+        "night_fog_shapes": ("stars", "white"),
+        "dusk_silence": ("stars", "white"),
+        "dawn_chorus_exp": ("celestial", "yellow"),
+        "bread_constellation": ("stars", "yellow"),
+        "northern_lights_false_alarm": ("aurora", "green"),
+        "venus_bright": ("celestial", "white"),
+        "shadow_duck": ("stars", "white"),
+        "moth_to_moon": ("celestial", "white"),
+        "moonbeam_path": ("stars", "cyan"),
+        "venus_visible": ("celestial", "white"),
+        "halo_around_moon": ("celestial", "white"),
+        "cloud_mammoth": ("clouds", "white"),
+        # Weather events that are sky-based
+        "aurora_wonder": ("aurora", "green"),
+        "cloud_shaped_bread": ("clouds", "white"),
+        "cloud_racing": ("clouds", "white"),
+        "cloud_spotlight": ("clouds", "yellow"),
+        "nacreous_clouds": ("aurora", "magenta"),
+        "mammatus_clouds": ("clouds", "white"),
+        "lenticular_cloud": ("clouds", "white"),
+        # Seasonal sky events
+        "summer_long_day": ("celestial", "yellow"),
+        "summer_solstice_glow": ("celestial", "yellow"),
+        "winter_short_day": ("stars", "white"),
+        "spring_equinox": ("celestial", "yellow"),
+        "winter_solstice_peace": ("stars", "white"),
+        # Remaining misc sky
+        "rainbow_sighting": ("celestial", "magenta"),
+        "double_rainbow_end": ("celestial", "magenta"),
+        "cloud_shadow_race": ("clouds", "white"),
+        "perfectly_round_cloud": ("clouds", "white"),
+    }
+    if event_id in sky_events:
+        stype, color = sky_events[event_id]
+        return GenericSkyAnimator(event_id, w, h, sky_type=stype, color=color)
+
+    # --- AMBIENT / DISCOVERY EVENTS ------------------------------------
+    ambient_events = {
+        # (pattern, color)
+        "shiny_pebble": ("sparkle", "yellow"),
+        "lost_coin": ("sparkle", "yellow"),
+        "perfect_puddle": ("sparkle", "cyan"),
+        "lucky_clover": ("sparkle", "green"),
+        "shiny_trail": ("sparkle", "yellow"),
+        "strange_visitor": ("sparkle", "white"),
+        "autumn_mushroom": ("sparkle", "green"),
+        "peculiar_stone": ("sparkle", "white"),
+        "forgotten_nest": ("sparkle", "yellow"),
+        "legendary_feather": ("sparkle", "magenta"),
+        "ancient_coin": ("sparkle", "yellow"),
+        "mysterious_map": ("sparkle", "yellow"),
+        "old_bottle": ("sparkle", "cyan"),
+        "buried_crumb": ("sparkle", "yellow"),
+        "perfect_reflection": ("sparkle", "cyan"),
+        "double_yolk": ("sparkle", "yellow"),
+        "lost_kite": ("sparkle", "cyan"),
+        "morning_cobwebs": ("sparkle", "white"),
+        "old_fishing_line": ("sparkle", "white"),
+        "echo_discovery": ("pulse", "cyan"),
+        "crystal_clear_water": ("sparkle", "cyan"),
+        "feather_collection": ("sparkle", "white"),
+        "four_leaf_clover": ("sparkle", "green"),
+        "perfect_stone": ("sparkle", "white"),
+        "rainbow_puddle": ("sparkle", "magenta"),
+        "old_coin": ("sparkle", "yellow"),
+        "compass_found": ("sparkle", "yellow"),
+        "singing_stones": ("pulse", "cyan"),
+        "message_bottle": ("sparkle", "cyan"),
+        "cave_entrance": ("pulse", "white"),
+        "hidden_path": ("sparkle", "green"),
+        "buried_treasure": ("sparkle", "yellow"),
+        "locked_box": ("sparkle", "yellow"),
+        "pirate_flag": ("sparkle", "red"),
+        "rope_bridge": ("sparkle", "yellow"),
+        "secret_garden": ("sparkle", "green"),
+        "underground_spring": ("sparkle", "cyan"),
+        "wishing_well_exp": ("sparkle", "cyan"),
+        "painted_rock": ("sparkle", "magenta"),
+        "natural_hot_tub": ("pulse", "yellow"),
+        "mystery_tunnel": ("pulse", "white"),
+        "hollow_tree": ("pulse", "green"),
+        "echo_cave": ("pulse", "cyan"),
+        "bell_sound": ("pulse", "yellow"),
+        "footprints_unknown": ("sparkle", "white"),
+        "ancient_tree": ("sparkle", "green"),
+        "cosmic_duck_awareness": ("pulse", "magenta"),
+        "sundial": ("sparkle", "yellow"),
+        "mushroom_fairy_ring": ("sparkle", "green"),
+        "rock_stack": ("sparkle", "white"),
+        "beaver_dam_sighting": ("sparkle", "yellow"),
+        "old_bottle_message": ("sparkle", "cyan"),
+        "found_glass": ("sparkle", "cyan"),
+        "found_marble": ("sparkle", "yellow"),
+        "found_snail_shell": ("sparkle", "white"),
+        "pebble_collection": ("sparkle", "white"),
+        "new_spot_discovery": ("sparkle", "yellow"),
+        # Ambiance / misc
+        "dandelion_fluff": ("sparkle", "white"),
+        "cloud_shapes": ("sparkle", "white"),
+        "dandelion_puff": ("sparkle", "white"),
+        "mysterious_sound": ("pulse", "white"),
+        "mysterious_music": ("pulse", "cyan"),
+        "perfect_nap_spot": ("sparkle", "yellow"),
+        "water_perfect_temp": ("sparkle", "cyan"),
+        "perfect_day_exp": ("sparkle", "yellow"),
+        "zen_moment": ("sparkle", "cyan"),
+        "water_whisper": ("sparkle", "cyan"),
+        "perfect_temperature": ("sparkle", "yellow"),
+        "ripple_symphony": ("wave", "cyan"),
+        "wind_chimes_distant": ("sparkle", "cyan"),
+        "sunbeam_spotlight": ("sparkle", "yellow"),
+        "pond_scum_art": ("sparkle", "green"),
+        "cloud_pillow": ("sparkle", "white"),
+        "pine_needle_spa": ("sparkle", "green"),
+        "moss_carpet": ("sparkle", "green"),
+        "bubble_ride": ("sparkle", "cyan"),
+        "sand_bath": ("sparkle", "yellow"),
+        "flower_crown": ("sparkle", "magenta"),
+        "puddle_mirror": ("sparkle", "cyan"),
+        "rainbow_oil_slick": ("sparkle", "magenta"),
+        "morning_cobweb_jewels": ("sparkle", "white"),
+        "pond_singing_bowls": ("pulse", "cyan"),
+        "perfectly_clear_water": ("sparkle", "cyan"),
+        "sound_of_nothing": ("sparkle", "white"),
+        "perfectly_still_day": ("sparkle", "white"),
+        "giant_dandelion": ("sparkle", "white"),
+        "twig_snap_investigation": ("pulse", "white"),
+        "talking_fish": ("pulse", "cyan"),
+        "voice_in_reeds": ("pulse", "green"),
+        "disappearing_island": ("pulse", "white"),
+        "bright_colors": ("sparkle", "magenta"),
+        "night_jasmine": ("sparkle", "magenta"),
+        "fire_rainbow": ("sparkle", "magenta"),
+        # Seasonal ambient
+        "first_flower": ("sparkle", "magenta"),
+        "dewdrop_morning": ("sparkle", "cyan"),
+        "frozen_puddle": ("sparkle", "cyan"),
+        "first_flower_spring": ("sparkle", "magenta"),
+        "spring_rain_smell": ("sparkle", "cyan"),
+        "autumn_harvest_smell": ("sparkle", "yellow"),
+        "winter_silence": ("sparkle", "white"),
+        "first_spring_flower": ("sparkle", "magenta"),
+        "morning_frost_sparkle": ("sparkle", "white"),
+        # Remaining misc ambient
+        "heatwave_mirage": ("wave", "yellow"),
+        "duck_crop_circle": ("pulse", "green"),
+        "sunset_waddle": ("sparkle", "red"),
+        "whirlpool_tiny": ("wave", "cyan"),
+        "human_playing_guitar": ("sparkle", "yellow"),
+        "firefly_one": ("sparkle", "yellow"),
+        "rainbow_in_spray": ("sparkle", "magenta"),
+        "water_lens": ("sparkle", "cyan"),
+        "fish_bubble_message": ("sparkle", "cyan"),
+        "tree_face": ("pulse", "green"),
+        "backward_waterfall": ("wave", "cyan"),
+        "lotus_bloom": ("sparkle", "magenta"),
+        "rain_smell_before": ("sparkle", "cyan"),
+        "slug_trail_art": ("sparkle", "white"),
+        "mushroom_overnight": ("sparkle", "green"),
+        "echo_across_lake": ("pulse", "cyan"),
+        "water_running_uphill": ("wave", "cyan"),
+        "cricket_song": ("sparkle", "green"),
+        "cricket_song_change": ("sparkle", "green"),
+        "warm_egg_shaped_stone": ("sparkle", "yellow"),
+        "dandelion_clock_exp": ("scatter", "white"),
+    }
+    if event_id in ambient_events:
+        pattern, color = ambient_events[event_id]
+        return GenericAmbientAnimator(event_id, w, h, pattern=pattern, color=color)
+
+    # --- PARTICLE EVENTS (falling / drifting things) -------------------
+    particle_events = {
+        # (particles, color, fall_speed)
+        "leaf_falling": ("~.", "yellow", 0.2),
+        "spring_blossom": ("*.'", "magenta", 0.2),
+        "summer_fireflies": ("*.", "yellow", -0.1),
+        "winter_icicle": ("| !", "cyan", 0.3),
+        "autumn_leaf_pile": ("~*", "yellow", 0.2),
+        "autumn_colors": ("*~", "red", 0.2),
+        "spring_melt": (".,~", "cyan", 0.3),
+        "autumn_leaf_fall": ("~*.", "yellow", 0.2),
+        "seed_helicopter": ("~*", "green", 0.2),
+    }
+    if event_id in particle_events:
+        chars, color, fspeed = particle_events[event_id]
+        return GenericParticleAnimator(event_id, w, h, particles=chars, color=color, fall_speed=fspeed)
+
+    # --- SEASONAL (reaction-style) ------------------------------------
+    seasonal_reaction = {
+        "spring_nest_building": ("~", "green", "pop"),
+        "summer_lazy": ("z", "yellow", "float"),
+    }
+    if event_id in seasonal_reaction:
+        emote, color, style = seasonal_reaction[event_id]
+        return GenericDuckReactionAnimator(event_id, w, h, emote=emote, color=color, style=style)
+
+    # ------------------------------------------------------------------
+    # 3. Fallback — any unmapped event gets a subtle sparkle
+    # ------------------------------------------------------------------
+    return GenericAmbientAnimator(event_id, w, h, pattern="sparkle", color="white", duration=4.0, intensity=4)
 
 
-# List of all events that have animations
-ANIMATED_EVENTS = [
-    "butterfly",
-    "bird_friend", 
-    "another_duck",
-    "found_shiny",
-    "nice_breeze",
-    "found_crumb",
-    "loud_noise",
-    "bad_dream",
-    # Area-specific animations
-    "lily_pad",
-    "ripple",
-    "frog_hop",
-    "dragonfly",
-    "bubbles",
-    "falling_object",
-    "squirrel",
-    # --- Food / Bread themed ---
-    "the_holy_loaf",
-    "bread_rain",
-    "baguette_find",
-    # --- Weather / Sky ---
-    "thunder_puffup",
-    "rainbow_double",
-    "aurora_borealis",
-    "ball_lightning",
-    "sun_pillar",
-    "rainbow_complete",
-    "night_rainbow",
-    # --- Creatures ---
-    "turtle_encounter_exp",
-    "butterfly_mistake",
-    "firefly_show",
-    "butterfly_migration_exp",
-    "bioluminescent_insects",
-    "bioluminescent_fish",
-    # --- Celestial ---
-    "shooting_star_wish",
-    "full_moon_exp",
-    "eclipse_event",
-    "sunset_green_flash",
-    "moonrise_massive",
-    "milky_way_visible",
-    "blood_moon_exp",
-    # --- Supernatural / Rare ---
-    "ufo_landing",
-    "ghost_duck",
-    "meteor_shower",
-    "will_o_wisp",
-    "pond_glow",
-    "golden_egg_shimmer",
-    "pond_portal",
-    "glowing_mushroom",
-    # --- Nature ---
-    "cherry_blossom",
-    "hot_air_balloon",
-    "fireworks_distant",
-    # --- Ice / Weather Special ---
-    "frozen_bubble",
-    "ice_palace",
-    "algae_bloom_glow",
-    "fireflies_sync",
-]
+# ---------------------------------------------------------------------------
+# Sentinel: every event now has an animation
+# ---------------------------------------------------------------------------
+class _AllEvents:
+    """Sentinel: every event has animation."""
+    def __contains__(self, item):
+        return True
+    def __iter__(self):
+        return iter([])
+    def __len__(self):
+        return 999
+
+ANIMATED_EVENTS = _AllEvents()
