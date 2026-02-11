@@ -191,6 +191,7 @@ class Game:
         self._pending_offline_summary = None
         self._pending_daily_rewards = []
         self._pending_messages = []  # Messages to show after load (e.g., cleanup notifications)
+        self._last_event_description = None  # Last event for LLM context
         self._sound_enabled = True
         self._show_goals = False
         self._reset_confirmation = False  # Flag for reset game confirmation
@@ -3796,6 +3797,9 @@ class Game:
             else:
                 # Show event message immediately for non-animated events
                 self.renderer.show_message(event.message, duration=4.0, category="duck")
+
+            # Track for LLM context
+            self._last_event_description = event.message
 
             # Record in memory
             self.duck.memory.add_event(
@@ -9787,13 +9791,114 @@ Core Systems Tested: {report.total_tests}
     # ==================== MEMORY RECALL FOR DIALOGUE ====================
 
     def _get_memory_context_for_dialogue(self) -> str:
-        """Get memory context to enhance dialogue responses."""
+        """Get rich game-world context so the LLM knows what's happening around Cheese."""
         if not self.duck or not self.duck.memory:
             return ""
         
         context_parts = []
         
-        # Get favorite things
+        # ---- Current location ----
+        location = "Home Pond"
+        if hasattr(self, 'exploration') and self.exploration and self.exploration.current_area:
+            area = self.exploration.current_area
+            location = area.name
+            if hasattr(area, 'description') and area.description:
+                context_parts.append(f"Current location: {location} — {area.description}")
+            else:
+                context_parts.append(f"Current location: {location}")
+        else:
+            context_parts.append("Current location: Home Pond (your habitat)")
+        
+        # ---- Time of day / season / weather ----
+        try:
+            if hasattr(self, 'day_night') and self.day_night:
+                tod = self.day_night.get_time_of_day()
+                hour = self.day_night.get_current_hour()
+                tod_str = tod.value if hasattr(tod, 'value') else str(tod)
+                context_parts.append(f"Time of day: {tod_str} ({hour}:00)")
+        except Exception:
+            pass
+        
+        try:
+            if hasattr(self, 'atmosphere') and self.atmosphere:
+                season = self.atmosphere.current_season
+                if season:
+                    context_parts.append(f"Season: {season.value if hasattr(season, 'value') else season}")
+                weather = self.atmosphere.current_weather
+                if weather and hasattr(weather, 'weather_type'):
+                    w_name = weather.weather_type.value if hasattr(weather.weather_type, 'value') else str(weather.weather_type)
+                    context_parts.append(f"Weather: {w_name}")
+        except Exception:
+            pass
+        
+        # ---- Visiting friend (CRITICAL — the user's complaint) ----
+        try:
+            if hasattr(self, 'friends') and self.friends and self.friends.current_visit:
+                visit = self.friends.current_visit
+                friend = self.friends.get_friend_by_id(visit.friend_id)
+                if friend:
+                    personality = friend.personality.value if hasattr(friend.personality, 'value') else str(friend.personality)
+                    level = friend.friendship_level.value if hasattr(friend.friendship_level, 'value') else str(friend.friendship_level)
+                    visitor_info = (
+                        f"RIGHT NOW: Your friend {friend.name} is visiting! "
+                        f"They are a {personality} duck. "
+                        f"Friendship level: {level}. "
+                        f"They've visited {friend.times_visited} times."
+                    )
+                    if friend.favorite_food:
+                        visitor_info += f" Their favorite food is {friend.favorite_food}."
+                    if friend.favorite_activity:
+                        visitor_info += f" They love to {friend.favorite_activity}."
+                    if visit.gift_brought:
+                        visitor_info += f" They brought you a gift: {visit.gift_brought}."
+                    if visit.activities_done:
+                        visitor_info += f" Activities you've done together: {', '.join(visit.activities_done)}."
+                    context_parts.append(visitor_info)
+                    
+                    # Active guest conversation
+                    convo = getattr(self, '_active_guest_conversation', None)
+                    if convo:
+                        context_parts.append(
+                            f"You and {friend.name} are in the middle of a conversation about: {convo.title}"
+                        )
+        except Exception:
+            pass
+        
+        # ---- All known friends (so Cheese can reference them) ----
+        try:
+            if hasattr(self, 'friends') and self.friends and self.friends.friends:
+                friend_names = []
+                for f in self.friends.friends.values():
+                    level = f.friendship_level.value if hasattr(f.friendship_level, 'value') else str(f.friendship_level)
+                    personality = f.personality.value if hasattr(f.personality, 'value') else str(f.personality)
+                    friend_names.append(f"{f.name} ({personality}, {level})")
+                if friend_names:
+                    # Show visiting friend first, then others
+                    visiting_id = self.friends.current_visit.friend_id if self.friends.current_visit else None
+                    non_visiting = [
+                        fn for fid, fn in zip(self.friends.friends.keys(), friend_names) 
+                        if fid != visiting_id
+                    ]
+                    if non_visiting:
+                        # Limit to 8 friends to keep prompt reasonable
+                        shown = non_visiting[:8]
+                        extra = len(non_visiting) - len(shown)
+                        friends_str = "Your other duck friends: " + ", ".join(shown)
+                        if extra > 0:
+                            friends_str += f" (and {extra} more)"
+                        context_parts.append(friends_str)
+        except Exception:
+            pass
+        
+        # ---- Duck mood & needs ----
+        try:
+            mood = self.duck.get_mood()
+            if mood:
+                context_parts.append(f"Your current mood: {mood.state.value}")
+        except Exception:
+            pass
+        
+        # ---- Favorite things ----
         fav_food = self.duck.memory.get_favorite("food")
         fav_toy = self.duck.memory.get_favorite("toy")
         fav_activity = self.duck.memory.get_favorite("activity")
@@ -9805,24 +9910,62 @@ Core Systems Tested: {report.total_tests}
         if fav_activity:
             context_parts.append(f"Favorite activity: {fav_activity}")
         
-        # Get recent memory if available
+        # ---- Active quests ----
+        try:
+            from world.quests import QUESTS as _QUESTS
+            qs = getattr(self, 'quests', None)
+            if qs and hasattr(qs, 'active_quests') and qs.active_quests:
+                quest_names = []
+                for qid, aq in qs.active_quests.items():
+                    if not aq.completed and not aq.failed:
+                        quest_def = _QUESTS.get(qid)
+                        if quest_def:
+                            quest_names.append(quest_def.name)
+                if quest_names:
+                    context_parts.append(f"Active quests: {', '.join(quest_names[:5])}")
+        except Exception:
+            pass
+        
+        # ---- Recent event ----
+        try:
+            last_event = getattr(self, '_last_event_description', None)
+            if last_event:
+                context_parts.append(f"Something that happened recently: {last_event}")
+        except Exception:
+            pass
+        
+        # ---- Relationship level ----
+        relationship = self.duck.memory.get_relationship_level()
+        if relationship and relationship != "stranger":
+            context_parts.append(f"Relationship with player: {relationship}")
+        
+        # ---- Recent memory ----
         if hasattr(self.duck.memory, 'recall_memory'):
             memory = self.duck.memory.recall_memory()
             if memory:
-                context_parts.append(f"Recent memory: {memory}")
+                context_parts.append(f"A memory: {memory}")
         
-        # Get relationship level
-        relationship = self.duck.memory.get_relationship_level()
-        if relationship and relationship != "stranger":
-            context_parts.append(f"Relationship: {relationship}")
-        
-        # Get mood trend
+        # ---- Mood trend ----
         if hasattr(self.duck.memory, 'get_mood_trend'):
             trend = self.duck.memory.get_mood_trend()
             if trend:
                 context_parts.append(f"Mood trend: {trend}")
         
-        return " | ".join(context_parts)
+        # ---- Habitat items (so Cheese knows what's around) ----
+        try:
+            if hasattr(self, 'habitat') and self.habitat and self.habitat.placed_items:
+                item_names = []
+                for pi in self.habitat.placed_items[:10]:
+                    # Try to get display name from shop info
+                    info = get_item_info(pi.item_id) if pi.item_id else None
+                    name = info.get('name', pi.item_id) if info else pi.item_id
+                    item_names.append(name.replace('_', ' '))
+                if item_names:
+                    context_parts.append(f"Items in your habitat: {', '.join(item_names)}")
+        except Exception:
+            pass
+        
+        return "\n".join(context_parts)
 
     # ==================== BADGE AWARDING ====================
 
