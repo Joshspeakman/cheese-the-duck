@@ -361,7 +361,10 @@ Example responses:
 "You've been here a while. I appreciate that. Don't tell anyone I said that."
 "*stares* I was thinking about nothing. Successfully."{f'''
 
-Context: {context}''' if context else ''}"""
+== YOUR CURRENT WORLD STATE (use this to answer questions!) ==
+{context}
+
+IMPORTANT: Use the world state above when the player asks about friends, visitors, events, weather, location, quests, or anything happening around you. If a friend is visiting, you KNOW them. You are aware of everything listed above.''' if context else ''}"""
             
         return prompt
 

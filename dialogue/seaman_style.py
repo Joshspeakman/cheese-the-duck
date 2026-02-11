@@ -1828,7 +1828,14 @@ class SeamanDialogue:
         
         # Add game memory context (favorites, mood trend, etc.)
         if memory_context:
-            prompt_parts.append(f"\nAdditional context about your current state: {memory_context}")
+            prompt_parts.append(f"\n== YOUR CURRENT WORLD STATE (use this to answer questions!) ==\n{memory_context}")
+            prompt_parts.append(
+                "\nIMPORTANT: Use the world state above when the player asks about friends, visitors, "
+                "events, weather, location, quests, or anything happening around you. "
+                "If a friend is visiting, you KNOW them — refer to them by name. "
+                "If the player asks you to do something with/about a friend, respond as if you can see them. "
+                "You are aware of everything listed above."
+            )
         
         prompt_parts.append("\n\nRemember: SHORT responses (1-3 sentences). Deadpan delivery. You're Cheese the duck. You LOVE bread. Traditional old-school male duck. He/him.")
         
