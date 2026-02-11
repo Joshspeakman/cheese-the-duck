@@ -1097,11 +1097,17 @@ class Game:
         self.renderer.show_message(f"Sound: {status}")
 
     def _toggle_music_action(self):
-        """Toggle music."""
+        """Toggle music (and radio) mute."""
         from audio.sound import sound_engine
         sound_engine.toggle_music_mute()  # toggle_music_mute() returns new muted state
-        status = "OFF" if sound_engine.music_muted else "ON"
-        self.renderer.show_message(f"Music: {status}")
+        if sound_engine.music_muted:
+            self.renderer.show_message("Music: OFF")
+        elif sound_engine.is_radio_playing():
+            station = sound_engine.get_radio().current_station
+            name = station.name if station else "Radio"
+            self.renderer.show_message(f"♪ {name} ♪")
+        else:
+            self.renderer.show_message("Music: ON")
 
     def _handle_radio_action(self, action: str):
         """Handle radio menu actions."""
@@ -1144,11 +1150,16 @@ class Game:
         if sound_engine.is_radio_playing():
             # Turn off radio
             sound_engine.stop_radio()
+            # Clear the muted-radio memory so 'm' doesn't restore it
+            sound_engine._radio_was_playing = None
             self.renderer.show_message("Nook Radio off")
         else:
-            # Turn on Nook Radio
+            # Turn on Nook Radio — auto-stops background music
             if self._boombox_playing:
                 self._boombox_playing = False
+            # Ensure music is unmuted so radio isn't immediately re-muted
+            if sound_engine.music_muted:
+                sound_engine.music_muted = False
             sound_engine.change_radio_station(StationID.NOOK_RADIO)
             self.renderer.show_message("♪ Nook Radio ♪")
 
@@ -1928,11 +1939,17 @@ class Game:
                 self._show_use_menu()
                 return
 
-            # Music mute toggle [M]
+            # Music mute toggle [M] — mutes both background music and radio
             if key_str == 'm':
-                muted = sound_engine.toggle_music_mute()
-                status = "OFF" if muted else "ON"
-                self.renderer.show_message(f"Music: {status}")
+                sound_engine.toggle_music_mute()
+                if sound_engine.music_muted:
+                    self.renderer.show_message("Music: OFF")
+                elif sound_engine.is_radio_playing():
+                    station = sound_engine.get_radio().current_station
+                    name = station.name if station else "Radio"
+                    self.renderer.show_message(f"♪ {name} ♪")
+                else:
+                    self.renderer.show_message("Music: ON")
                 return
 
             # Sound toggle [N]
@@ -3081,6 +3098,9 @@ class Game:
             duck_mood=duck_state
         )
         sound_engine.update_music(music_context)
+
+        # Update radio state (hour transitions, track looping)
+        sound_engine.update_radio()
 
         # Update active visitor interactions (every frame when there's a visitor)
         self._update_visitor_interactions(current_time)
