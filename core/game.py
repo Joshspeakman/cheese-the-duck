@@ -676,6 +676,13 @@ class Game:
             return
 
         if key.name == "KEY_ENTER":
+            # Block new messages while LLM is still processing
+            pending = getattr(self, '_pending_talk_future', None)
+            if pending is not None and not pending.done():
+                self.renderer.show_message("*still thinking...*", duration=2.0, category="duck")
+                self.renderer.toggle_talk()
+                return
+
             # Submit message
             message = self.renderer.get_talk_buffer()
             self.renderer.toggle_talk()  # Close talk overlay first
@@ -1311,32 +1318,67 @@ class Game:
             self._execute_item_interaction(matching_item)
             return
 
+        # Show a thinking indicator immediately so the player knows Cheese heard them
+        thinking_messages = [
+            "*tilts head* ...",
+            "*blinks* ...",
+            "*thinking* ...",
+            "*considers this* ...",
+            "*processing* ...",
+        ]
+        import random as _rnd
+        self.renderer.show_message(_rnd.choice(thinking_messages), duration=15.0, category="duck")
+
         # Get memory context for enhanced dialogue
         memory_context = self._get_memory_context_for_dialogue()
         
-        # Get response from conversation system (with memory context if LLM available)
-        response = self.conversation.process_player_input(
+        # Submit LLM request asynchronously so the UI doesn't freeze
+        import concurrent.futures
+        if not hasattr(self, '_talk_executor'):
+            self._talk_executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+        self._pending_talk_message = message
+        self._pending_talk_future = self._talk_executor.submit(
+            self.conversation.process_player_input,
             self.duck, 
             message,
-            memory_context=memory_context
+            True,  # use_llm
+            memory_context
         )
 
-        # Record in memory
+        # Record in memory immediately (don't wait for response)
         self.duck.memory.add_interaction("talk", message, emotional_value=5)
         self.duck.memory.total_interactions += 1
 
         # Update statistics
         self._statistics["conversations"] = self._statistics.get("conversations", 0) + 1
 
-        # Show response (longer duration for conversations)
+        # Check goals
+        self.goals.update_progress("talk", 1)
+
+    def _check_pending_talk(self):
+        """Check if an async LLM talk response is ready."""
+        future = getattr(self, '_pending_talk_future', None)
+        if future is None:
+            return
+        
+        if not future.done():
+            return
+        
+        # Response is ready
+        self._pending_talk_future = None
+        try:
+            response = future.result()
+        except Exception as e:
+            from game_logger import get_logger
+            get_logger().debug(f"Async talk failed: {e}")
+            response = "*blinks* ...I had a thought. It escaped. Like a moth."
+
+        # Show the actual response (replaces the thinking indicator)
         self.renderer.show_message(response, duration=8.0, category="duck")
 
         # Play quacks for each syllable in the duck's response
         mood = self.duck.get_mood().state.value
         duck_sounds.quack_for_text(response, mood)
-
-        # Check goals
-        self.goals.update_progress("talk", 1)
 
     def _get_item_playfield_position(self, item_id: str) -> Optional[Tuple[int, int]]:
         """Get the playfield position of a placed item."""
@@ -2743,6 +2785,9 @@ class Game:
     def _update(self):
         """Update game state."""
         current_time = time.time()
+
+        # Check for async LLM talk responses
+        self._check_pending_talk()
 
         # Update item interaction animation
         self._update_item_interaction_animation()
@@ -4933,10 +4978,13 @@ class Game:
             notification_manager.show(f"Welcome back to care for {self.duck.name}!", "success", 2.5)
 
     def _connect_duck_brain_to_llm(self):
-        """Connect DuckBrain to the LLM chat system for enhanced context."""
+        """Connect DuckBrain to the LLM chat system for enhanced context.
+        
+        Loads the model in a background thread so game startup isn't blocked.
+        """
         try:
             from dialogue.llm_chat import get_llm_chat
-            llm_chat = get_llm_chat()
+            llm_chat = get_llm_chat(background=True)
             if llm_chat and self.duck_brain:
                 llm_chat.set_duck_brain(self.duck_brain)
                 # Also sync conversation history from DuckBrain
