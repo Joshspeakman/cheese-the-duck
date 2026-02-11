@@ -58,6 +58,7 @@ class SoundType(Enum):
     GATHER = "gather"
     PANIC = "panic"
     RELIEF = "relief"
+    HOUR_CHIME = "hour_chime"
 
 
 @dataclass
@@ -150,6 +151,10 @@ SOUND_EFFECTS = {
     SoundType.RELIEF: [
         Note(600, 0.08), Note(500, 0.08), Note(400, 0.1), Note(500, 0.1),
         Note(600, 0.15),
+    ],
+    # Hourly clock chime (Westminster-style: E-C-D-G low)
+    SoundType.HOUR_CHIME: [
+        Note(659, 0.25), Note(523, 0.25), Note(587, 0.25), Note(392, 0.5),
     ],
 }
 
@@ -312,6 +317,7 @@ class SoundEngine:
         self._current_melody = None
         self._music_channel = None  # For seamless looping with Sound object
         self._music_sound = None  # Cached music Sound object
+        self._radio_was_playing = None  # Remembers station when music is muted via 'm'
 
         # Thread-safe initialization of shared executor
         if SoundEngine._sound_executor is None:
@@ -608,6 +614,7 @@ class SoundEngine:
     def stop_background_music(self):
         """Stop background music. Non-blocking."""
         self._music_playing = False
+        self._crossfading = False  # Abort any in-progress crossfade
 
         # Stop pygame Sound object if active (fast, do synchronously)
         if self._music_sound:
@@ -641,7 +648,7 @@ class SoundEngine:
         self._music_thread = None
 
     def toggle_music_mute(self) -> bool:
-        """Toggle music mute on/off. Returns new muted state."""
+        """Toggle music mute on/off. Also mutes/unmutes radio. Returns new muted state."""
         self.music_muted = not self.music_muted
         if self.music_muted:
             # Mute - pause Sound or streaming music
@@ -658,11 +665,20 @@ class SoundEngine:
                     pass
             else:
                 self.stop_background_music()
-        else:
-            # Unmute - resume Sound or streaming music (but not if radio is playing)
+            # Also mute radio if it's playing
             if self.is_radio_playing():
-                return self.music_muted  # Radio playing, don't resume background music
-            if self._music_channel:
+                self._radio_was_playing = self.get_radio().current_station
+                self.get_radio().stop()
+            else:
+                self._radio_was_playing = None
+        else:
+            # Unmute
+            radio_was = getattr(self, '_radio_was_playing', None)
+            if radio_was:
+                # Radio was muted — restart it (takes priority over bg music)
+                self._radio_was_playing = None
+                self.get_radio().play(radio_was.id)
+            elif self._music_channel:
                 try:
                     self._music_channel.unpause()
                 except Exception:
@@ -701,13 +717,18 @@ class SoundEngine:
         if self._radio is None:
             from audio.radio import get_radio_player
             self._radio = get_radio_player()
-            # Set up callback once when radio is first accessed
+            # Set up callbacks once when radio is first accessed
             self._radio.set_on_start_callback(self._mute_music_for_radio)
+            self._radio.set_on_hour_chime(self._play_hour_chime)
         return self._radio
     
     def _mute_music_for_radio(self):
         """Mute game music when radio is playing."""
         self.stop_music()
+    
+    def _play_hour_chime(self):
+        """Play a clock chime when the hour changes on Nook Radio."""
+        self.play_sound(SoundType.HOUR_CHIME)
     
     def play_radio(self, station_id=None):
         """
@@ -909,6 +930,11 @@ class SoundEngine:
                     steps = 20
                     step_duration = fade_duration / steps
 
+                    # Abort early if radio started or crossfade was cancelled
+                    if self.is_radio_playing() or not self._crossfading:
+                        self._crossfading = False
+                        return
+
                     # Fade out current music
                     if self._music_sound and self._music_channel:
                         start_volume = self._music_sound.get_volume()
@@ -923,6 +949,11 @@ class SoundEngine:
                             self._music_sound.stop()
                         except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                             pass
+
+                    # Don't start new music if radio started during fade-out
+                    if self.is_radio_playing() or not self._crossfading:
+                        self._crossfading = False
+                        return
 
                     # Load and start new music at low volume, fade in
                     # Play ONCE (loops=0), not infinite
@@ -949,7 +980,7 @@ class SoundEngine:
 
                             # Wait for track to finish, then set cooldown
                             while new_channel and new_channel.get_busy():
-                                if self.music_muted:
+                                if self.music_muted or self.is_radio_playing():
                                     new_sound.stop()
                                     break
                                 time.sleep(0.5)

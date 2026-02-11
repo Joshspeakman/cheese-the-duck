@@ -139,6 +139,7 @@ class RadioPlayer:
         self._process: Optional[subprocess.Popen] = None
         self._on_track_change = on_track_change
         self._on_start_callback: Optional[Callable[[], None]] = None
+        self._on_hour_chime: Optional[Callable[[], None]] = None
 
         # Lock to prevent race conditions during station switching
         self._lock = threading.Lock()
@@ -193,8 +194,8 @@ class RadioPlayer:
                 continue
         return None
     
-    def _build_command(self, url: str) -> List[str]:
-        """Build player command with volume."""
+    def _build_command(self, url: str, loop: bool = False) -> List[str]:
+        """Build player command with volume. If loop=True, loop finite tracks."""
         # Get volume with per-station adjustment
         station_boost = 0
         if self._current_station:
@@ -202,34 +203,44 @@ class RadioPlayer:
         effective_volume = max(0, min(100, self._volume + station_boost))
         
         if self._player == "mpv":
-            return [
+            cmd = [
                 "mpv",
                 "--no-video",
                 "--really-quiet",
                 "--no-terminal",
                 "--network-timeout=30",  # Prevent hung connection
                 f"--volume={effective_volume}",
-                url
             ]
+            if loop:
+                cmd.append("--loop-file=inf")
+            cmd.append(url)
+            return cmd
         elif self._player == "ffplay":
-            return [
+            cmd = [
                 "ffplay",
                 "-nodisp",
-                "-autoexit",
                 "-loglevel", "quiet",
                 "-infbuf",  # Use infinite buffer to reduce CPU wake-ups
                 "-framedrop",  # Allow frame dropping (audio only anyway)
                 "-volume", str(effective_volume),
-                url
             ]
+            if loop:
+                cmd.extend(["-loop", "0"])  # 0 = infinite loop
+            else:
+                cmd.append("-autoexit")
+            cmd.append(url)
+            return cmd
         elif self._player == "vlc":
-            return [
+            cmd = [
                 "vlc",
                 "--intf", "dummy",
                 "--no-video",
                 f"--gain={effective_volume / 100}",
-                url
             ]
+            if loop:
+                cmd.append("--repeat")
+            cmd.append(url)
+            return cmd
         return []
     
     def _kill_process(self):
@@ -318,13 +329,14 @@ class RadioPlayer:
                 return  # Not Saturday evening — DJ Duck is off-air
 
         # Get URL — special handling for Nook Radio (hour-based)
-        if station.stream_url == "nook":
+        is_nook = station.stream_url == "nook"
+        if is_nook:
             url = _get_nook_url()
         else:
             url = station.stream_url
 
-        # Build command before spawning thread
-        cmd = self._build_command(url)
+        # Build command — loop finite Nook Radio tracks for continuous playback
+        cmd = self._build_command(url, loop=is_nook)
         if not cmd:
             return
 
@@ -430,8 +442,12 @@ class RadioPlayer:
         
         return stations
     
+    def set_on_hour_chime(self, callback: Optional[Callable[[], None]]):
+        """Set callback fired when Nook Radio crosses an hour boundary."""
+        self._on_hour_chime = callback
+
     def update(self):
-        """Called from game loop — handle Nook Radio hour transitions."""
+        """Called from game loop — handle Nook Radio hour transitions and track looping."""
         if not self._is_playing or not self._current_station:
             return
         
@@ -442,7 +458,22 @@ class RadioPlayer:
                 self._last_nook_hour = now.hour
             if now.hour != self._last_nook_hour:
                 self._last_nook_hour = now.hour
+                # Play hour chime
+                if self._on_hour_chime:
+                    try:
+                        self._on_hour_chime()
+                    except Exception:
+                        pass
                 self.play(StationID.NOOK_RADIO)  # Restart with new hour URL
+            else:
+                # Check if track process died unexpectedly (e.g. player doesn't
+                # support --loop).  Restart to keep music going.
+                with self._lock:
+                    if self._process is not None and self._process.poll() is not None:
+                        self._process = None
+                # Restart outside lock
+                if self._process is None:
+                    self.play(StationID.NOOK_RADIO)
         
         # DJ Duck Live goes off-air at midnight
         if self._current_station.id == StationID.DJ_DUCK_LIVE:
