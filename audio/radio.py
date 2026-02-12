@@ -22,13 +22,7 @@ logger = logging.getLogger(__name__)
 
 class StationID(Enum):
     """Available radio stations."""
-    QUACK_FM = "quack_fm"
-    THE_POND = "the_pond"
-    BREAD_CRUMBS = "bread_crumbs"
-    FEATHER_AND_BONE = "feather_and_bone"
-    HONK_RADIO = "honk_radio"
     NOOK_RADIO = "nook_radio"
-    DJ_DUCK_LIVE = "dj_duck_live"
 
 
 @dataclass
@@ -46,51 +40,6 @@ class RadioStation:
 
 # Station definitions
 STATIONS: Dict[StationID, RadioStation] = {
-    StationID.QUACK_FM: RadioStation(
-        id=StationID.QUACK_FM,
-        name="Quack FM",
-        tagline="Lofi beats for staring at walls",
-        stream_url="https://ice5.somafm.com/groovesalad-256-mp3",
-        genre="lofi",
-        fallback_urls=["https://ice1.somafm.com/groovesalad-256-mp3"],
-        volume_boost=-15,
-    ),
-    StationID.THE_POND: RadioStation(
-        id=StationID.THE_POND,
-        name="The Pond",
-        tagline="Ambient nature sounds",
-        stream_url="https://ice5.somafm.com/dronezone-256-mp3",
-        genre="ambient",
-        fallback_urls=["https://ice4.somafm.com/dronezone-256-mp3"],
-        volume_boost=-15,
-    ),
-    StationID.BREAD_CRUMBS: RadioStation(
-        id=StationID.BREAD_CRUMBS,
-        name="Bread Crumbs",
-        tagline="8-bit chiptune nostalgia",
-        stream_url="https://ice5.somafm.com/cliqhop-256-mp3",
-        genre="chiptune",
-        fallback_urls=["https://ice4.somafm.com/cliqhop-256-mp3"],
-        volume_boost=-15,
-    ),
-    StationID.FEATHER_AND_BONE: RadioStation(
-        id=StationID.FEATHER_AND_BONE,
-        name="Feather & Bone",
-        tagline="Smooth jazz",
-        stream_url="https://ice5.somafm.com/secretagent-128-mp3",
-        genre="jazz",
-        fallback_urls=["https://ice1.somafm.com/secretagent-128-mp3"],
-        volume_boost=-15,
-    ),
-    StationID.HONK_RADIO: RadioStation(
-        id=StationID.HONK_RADIO,
-        name="HONK Radio",
-        tagline="Chaotic upbeat energy",
-        stream_url="https://streams.ilovemusic.de/iloveradio1.mp3",
-        genre="dance",
-        fallback_urls=["https://stream.laut.fm/partyhard"],
-        volume_boost=-20,
-    ),
     StationID.NOOK_RADIO: RadioStation(
         id=StationID.NOOK_RADIO,
         name="Nook Radio",
@@ -99,16 +48,6 @@ STATIONS: Dict[StationID, RadioStation] = {
         genre="hourly",
         fallback_urls=[],
         volume_boost=45,
-    ),
-    StationID.DJ_DUCK_LIVE: RadioStation(
-        id=StationID.DJ_DUCK_LIVE,
-        name="DJ Duck Live",
-        tagline="Saturday nights 8pm-midnight with deadpan commentary",
-        stream_url="https://ice5.somafm.com/lush-128-mp3",
-        genre="live",
-        fallback_urls=["https://ice4.somafm.com/lush-128-mp3"],
-        always_available=False,  # Only Saturday 8pm-midnight
-        volume_boost=-15,
     ),
 }
 

@@ -1116,31 +1116,30 @@ class Game:
         from audio.radio import StationID
 
         if action == "stop":
-            # stop_radio() is non-blocking (just kills subprocess)
             sound_engine.stop_radio()
-            self.renderer.show_message("Radio stopped")
+            self.renderer.show_message("Nook Radio off")
             return
 
-        # Try to play the station
-        try:
-            station_id = StationID(action)
-            radio = sound_engine.get_radio()
+        # Only Nook Radio is available
+        if action == "nook_radio":
+            # Check ownership
+            if not self.habitat.owns_item("nook_radio"):
+                self.renderer.show_message("Buy Nook Radio from the shop first!")
+                return
 
-            # Get station name
-            from audio.radio import STATIONS
-            station = STATIONS.get(station_id)
-            station_name = station.name if station else "Radio"
+            radio = sound_engine.get_radio()
 
             # Turn off boombox state if it was on (radio takes over)
             if self._boombox_playing:
                 self._boombox_playing = False
 
-            # change_radio_station() is now thread-safe and non-blocking
-            # (spawns subprocess with start_new_session=True)
-            sound_engine.change_radio_station(station_id)
-            self.renderer.show_message(f"Tuning to {station_name}...")
+            # Ensure music is unmuted so radio isn't immediately re-muted
+            if sound_engine.music_muted:
+                sound_engine.music_muted = False
 
-        except ValueError:
+            sound_engine.change_radio_station(StationID.NOOK_RADIO)
+            self.renderer.show_message("♪ Nook Radio ♪")
+        else:
             self.renderer.show_message(f"Unknown station: {action}")
 
     def _toggle_nook_radio(self):

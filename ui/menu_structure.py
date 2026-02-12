@@ -563,16 +563,24 @@ def _get_titles_items(game):
 
 
 def _get_radio_items(game):
-    """Build radio station submenu items dynamically."""
+    """Build Nook Radio menu item — requires owning the nook_radio shop item."""
     from ui.menu_selector import MasterMenuItem
     items = []
-    
+
+    # Check if player owns the Nook Radio item
+    if not hasattr(game, 'habitat') or not game.habitat.owns_item("nook_radio"):
+        items.append(MasterMenuItem(
+            id="radio_locked",
+            label="Buy Nook Radio from the shop!",
+            enabled=False
+        ))
+        return items
+
     try:
-        from audio.radio import get_radio_player, StationID
-        
+        from audio.radio import get_radio_player
+
         radio = get_radio_player()
-        
-        # Check if player is available
+
         if not radio.player_available:
             items.append(MasterMenuItem(
                 id="radio_status",
@@ -580,35 +588,28 @@ def _get_radio_items(game):
                 enabled=False
             ))
             return items
-        
-        stations = radio.get_station_list()
-        
-        for station in stations:
-            # Format label with status
-            label = station["name"]
-            if station["is_current"]:
-                label = f"▶ {label}"
-            if station["status"]:
-                label = f"{label} ({station['status']})"
-            
+
+        if radio.is_playing:
             items.append(MasterMenuItem(
-                id=f"radio_{station['id'].value}",
-                label=label,
-                action=f"radio_{station['id'].value}",
-                completed=station["is_current"],
-                enabled=station["available"]
+                id="radio_nook_radio",
+                label="▶ Nook Radio (Playing)",
+                action="radio_nook_radio",
+                completed=True
             ))
-        
-        # Always show radio off option
-        items.append(MasterMenuItem(
-            id="radio_stop",
-            label="■ Radio Off",
-            action="radio_stop",
-            enabled=radio.is_playing
-        ))
+            items.append(MasterMenuItem(
+                id="radio_stop",
+                label="■ Radio Off",
+                action="radio_stop"
+            ))
+        else:
+            items.append(MasterMenuItem(
+                id="radio_nook_radio",
+                label="♪ Nook Radio",
+                action="radio_nook_radio"
+            ))
     except ImportError:
         items.append(MasterMenuItem(id="radio_none", label="Radio unavailable", enabled=False))
-    
+
     return items
 
 
