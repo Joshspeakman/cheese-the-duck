@@ -53,7 +53,7 @@ STATIONS: Dict[StationID, RadioStation] = {
         stream_url="https://ice5.somafm.com/groovesalad-256-mp3",
         genre="lofi",
         fallback_urls=["https://ice1.somafm.com/groovesalad-256-mp3"],
-        volume_boost=-30,
+        volume_boost=-15,
     ),
     StationID.THE_POND: RadioStation(
         id=StationID.THE_POND,
@@ -62,7 +62,7 @@ STATIONS: Dict[StationID, RadioStation] = {
         stream_url="https://ice5.somafm.com/dronezone-256-mp3",
         genre="ambient",
         fallback_urls=["https://ice4.somafm.com/dronezone-256-mp3"],
-        volume_boost=-30,
+        volume_boost=-15,
     ),
     StationID.BREAD_CRUMBS: RadioStation(
         id=StationID.BREAD_CRUMBS,
@@ -71,7 +71,7 @@ STATIONS: Dict[StationID, RadioStation] = {
         stream_url="https://ice5.somafm.com/cliqhop-256-mp3",
         genre="chiptune",
         fallback_urls=["https://ice4.somafm.com/cliqhop-256-mp3"],
-        volume_boost=5,
+        volume_boost=-15,
     ),
     StationID.FEATHER_AND_BONE: RadioStation(
         id=StationID.FEATHER_AND_BONE,
@@ -80,7 +80,7 @@ STATIONS: Dict[StationID, RadioStation] = {
         stream_url="https://ice5.somafm.com/secretagent-128-mp3",
         genre="jazz",
         fallback_urls=["https://ice1.somafm.com/secretagent-128-mp3"],
-        volume_boost=10,
+        volume_boost=-15,
     ),
     StationID.HONK_RADIO: RadioStation(
         id=StationID.HONK_RADIO,
@@ -89,7 +89,7 @@ STATIONS: Dict[StationID, RadioStation] = {
         stream_url="https://streams.ilovemusic.de/iloveradio1.mp3",
         genre="dance",
         fallback_urls=["https://stream.laut.fm/partyhard"],
-        volume_boost=-35,
+        volume_boost=-20,
     ),
     StationID.NOOK_RADIO: RadioStation(
         id=StationID.NOOK_RADIO,
@@ -98,7 +98,7 @@ STATIONS: Dict[StationID, RadioStation] = {
         stream_url="nook",  # Special marker — URL generated dynamically
         genre="hourly",
         fallback_urls=[],
-        volume_boost=30,
+        volume_boost=45,
     ),
     StationID.DJ_DUCK_LIVE: RadioStation(
         id=StationID.DJ_DUCK_LIVE,
@@ -108,7 +108,7 @@ STATIONS: Dict[StationID, RadioStation] = {
         genre="live",
         fallback_urls=["https://ice4.somafm.com/lush-128-mp3"],
         always_available=False,  # Only Saturday 8pm-midnight
-        volume_boost=10,
+        volume_boost=-15,
     ),
 }
 
