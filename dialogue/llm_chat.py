@@ -417,12 +417,29 @@ Rules: Use at most ONE action per response. Only when contextually appropriate. 
         """Generate response using chat completion (for capable models like Llama 3.2)."""
         system_prompt = self._build_system_prompt(duck, memory_context)
 
+        # Estimate token usage and trim if needed to stay within context window
+        # Rough estimate: 1 token ≈ 4 chars. Reserve tokens for response.
+        max_prompt_chars = (LLM_CONTEXT_SIZE - LLM_MAX_TOKENS_CHAT - 50) * 4
+        
         messages = [{"role": "system", "content": system_prompt}]
 
         # Add conversation history
+        history_msgs = []
         for msg in self._conversation_history[-self._max_history:]:
-            messages.append(msg)
-        messages.append({"role": "user", "content": player_input})
+            history_msgs.append(msg)
+        history_msgs.append({"role": "user", "content": player_input})
+        
+        # Calculate total size and trim history if too large
+        total_chars = len(system_prompt) + sum(len(m["content"]) for m in history_msgs)
+        while total_chars > max_prompt_chars and len(history_msgs) > 1:
+            # Remove oldest history pair (user + assistant)
+            removed = history_msgs.pop(0)
+            total_chars -= len(removed["content"])
+            if history_msgs and history_msgs[0]["role"] == "assistant":
+                removed = history_msgs.pop(0)
+                total_chars -= len(removed["content"])
+        
+        messages.extend(history_msgs)
 
         try:
             # Use timeout wrapper to prevent hanging
