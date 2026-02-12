@@ -1267,6 +1267,11 @@ class SoundEngine:
 
     def shutdown(self):
         """Clean up all audio resources. Call on game exit."""
+        # Stop radio subprocess first
+        try:
+            self.stop_radio()
+        except Exception:
+            pass
         self.stop_music()
         # Shutdown the shared thread pool executor
         if SoundEngine._sound_executor is not None:

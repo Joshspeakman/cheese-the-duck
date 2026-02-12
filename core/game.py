@@ -4498,6 +4498,7 @@ class Game:
                     self._check_for_updates_async()
                 elif self._title_menu_index == 3:
                     # Quit
+                    self._stop_all_audio()
                     self._running = False
             else:
                 # Menu: New Game, Check for Updates, Quit
@@ -4509,6 +4510,7 @@ class Game:
                     self._check_for_updates_async()
                 elif self._title_menu_index == 2:
                     # Quit
+                    self._stop_all_audio()
                     self._running = False
             return
         
@@ -5192,6 +5194,11 @@ class Game:
             notification_manager.show("Saving...", "info", 0.5)
             time.sleep(0.5)
         
+        # Stop radio and music before returning to title
+        sound_engine.stop_radio()
+        sound_engine.stop_background_music()
+        sound_engine.stop_music()
+        
         # Reset game state
         self.duck = None
         self.behavior_ai = None
@@ -5351,6 +5358,13 @@ class Game:
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
 
+    def _stop_all_audio(self):
+        """Stop all audio — radio, music, mixer. Call before quit or title return."""
+        sound_engine.stop_radio()
+        sound_engine.stop_background_music()
+        sound_engine.stop_music()
+        sound_engine.shutdown()
+
     def _quit(self):
         """Quit the game."""
         if self.duck:
@@ -5362,12 +5376,8 @@ class Game:
             self.renderer.show_message("Saving and quitting...")
             time.sleep(0.5)
 
-        # Stop radio first (kills external process)
-        sound_engine.stop_radio()
-        
-        # Stop any playing music
-        sound_engine.stop_music()
-        sound_engine.stop_background_music()
+        # Stop all audio (radio subprocess, music, mixer)
+        self._stop_all_audio()
 
         # Clean up Python cache directories
         self._cleanup_pycache()

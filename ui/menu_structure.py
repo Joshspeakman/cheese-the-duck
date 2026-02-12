@@ -736,7 +736,7 @@ def build_master_menu_tree():
                 MasterMenuItem(id="music", label="Toggle Music", action="music"),
                 # MasterMenuItem(id="save_slots", label="Save Slots", action="save_slots"),  # Hidden for now
                 MasterMenuItem(id="help", label="Help", action="help"),
-                MasterMenuItem(id="nook_radio", label="Nook Radio", action="nook_radio_toggle"),
+                MasterMenuItem(id="radio", label="Radio", children=_get_radio_items),
             ]
         ),
 
