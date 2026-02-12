@@ -797,13 +797,15 @@ class SoundEngine:
         """Get list of available radio stations for menu display."""
         return self.get_radio().get_station_list()
     
-    def update_radio(self):
+    def update_radio(self, weather: str = "sunny"):
         """
         Update radio state (call from game loop).
         
-        Handles automatic DJ Duck scheduling.
+        Handles Nook Radio hour/weather transitions.
         """
-        self.get_radio().update()
+        radio = self.get_radio()
+        radio.set_weather(weather)
+        radio.update()
 
     # ============== DYNAMIC MUSIC METHODS ==============
 

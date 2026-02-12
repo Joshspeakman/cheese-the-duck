@@ -52,12 +52,28 @@ STATIONS: Dict[StationID, RadioStation] = {
 }
 
 
-def _get_nook_url() -> str:
-    """Get current hour's Nook Radio URL."""
+def _get_nook_url(weather: str = "sunny") -> str:
+    """Get current hour's Nook Radio URL, adjusted for weather.
+    
+    CDN has three variants:
+      - new-horizons/       (sunny/default)
+      - new-horizons-rainy/ (rain, heavy rain, storm)
+      - new-horizons-snowy/ (snow, blizzard)
+    """
     now = datetime.now()
     hour_12 = now.hour % 12 or 12
     am_pm = "am" if now.hour < 12 else "pm"
-    return f"https://d17orwheorv96d.cloudfront.net/new-horizons/{hour_12}{am_pm}.ogg"
+    
+    # Pick subdirectory based on weather
+    weather_lower = weather.lower() if weather else "sunny"
+    if weather_lower in ("rainy", "heavy_rain", "stormy", "thunderstorm", "drizzle"):
+        subdir = "new-horizons-rainy"
+    elif weather_lower in ("snowy", "blizzard", "hail", "sleet"):
+        subdir = "new-horizons-snowy"
+    else:
+        subdir = "new-horizons"
+    
+    return f"https://d17orwheorv96d.cloudfront.net/{subdir}/{hour_12}{am_pm}.ogg"
 
 
 class RadioPlayer:
@@ -79,6 +95,8 @@ class RadioPlayer:
         self._on_track_change = on_track_change
         self._on_start_callback: Optional[Callable[[], None]] = None
         self._on_hour_chime: Optional[Callable[[], None]] = None
+        self._weather: str = "sunny"  # Current weather for Nook Radio track selection
+        self._last_nook_weather: str = "sunny"  # Track weather changes
 
         # Lock to prevent race conditions during station switching
         self._lock = threading.Lock()
@@ -270,7 +288,7 @@ class RadioPlayer:
         # Get URL — special handling for Nook Radio (hour-based)
         is_nook = station.stream_url == "nook"
         if is_nook:
-            url = _get_nook_url()
+            url = _get_nook_url(self._weather)
         else:
             url = station.stream_url
 
@@ -385,25 +403,35 @@ class RadioPlayer:
         """Set callback fired when Nook Radio crosses an hour boundary."""
         self._on_hour_chime = callback
 
+    def set_weather(self, weather: str):
+        """Update the current weather for Nook Radio track selection."""
+        self._weather = weather
+
     def update(self):
-        """Called from game loop — handle Nook Radio hour transitions and track looping."""
+        """Called from game loop — handle Nook Radio hour/weather transitions and track looping."""
         if not self._is_playing or not self._current_station:
             return
         
-        # Nook Radio needs to switch streams on the hour
+        # Nook Radio needs to switch streams on the hour or when weather changes
         if self._current_station.id == StationID.NOOK_RADIO:
             now = datetime.now()
             if not hasattr(self, '_last_nook_hour'):
                 self._last_nook_hour = now.hour
-            if now.hour != self._last_nook_hour:
-                self._last_nook_hour = now.hour
-                # Play hour chime
-                if self._on_hour_chime:
-                    try:
-                        self._on_hour_chime()
-                    except Exception:
-                        pass
-                self.play(StationID.NOOK_RADIO)  # Restart with new hour URL
+            
+            hour_changed = now.hour != self._last_nook_hour
+            weather_changed = self._weather != self._last_nook_weather
+            
+            if hour_changed or weather_changed:
+                if hour_changed:
+                    self._last_nook_hour = now.hour
+                    # Play hour chime
+                    if self._on_hour_chime:
+                        try:
+                            self._on_hour_chime()
+                        except Exception:
+                            pass
+                self._last_nook_weather = self._weather
+                self.play(StationID.NOOK_RADIO)  # Restart with new URL
             else:
                 # Check if track process died unexpectedly (e.g. player doesn't
                 # support --loop).  Restart to keep music going.
