@@ -1894,6 +1894,13 @@ register_item(ShopItem(
     interaction_text=["*glows mysteriously*", "The secret of immortality!"]
 ))
 
+register_item(ShopItem(
+    id="nook_radio", name="Nook Radio", description="A cozy radio that plays hourly music!",
+    category=ItemCategory.SPECIAL, rarity=ItemRarity.RARE,
+    cost=500, unlock_level=3, unlock_xp=500, size="small", animated=True,
+    interaction_text=["*music plays softly*", "What a lovely tune!"]
+))
+
 
 def get_items_by_category(category: ItemCategory) -> List[ShopItem]:
     """Get all items in a category, sorted by level requirement then price."""
