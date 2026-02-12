@@ -1385,12 +1385,102 @@ class Game:
             get_logger().debug(f"Async talk failed: {e}")
             response = "*blinks* ...I had a thought. It escaped. Like a moth."
 
+        # Parse and execute any LLM-triggered actions
+        actions, response = self._parse_llm_actions(response)
+        for action in actions:
+            self._execute_llm_action(action)
+
         # Show the actual response (replaces the thinking indicator)
         self.renderer.show_message(response, duration=8.0, category="duck")
 
         # Play quacks for each syllable in the duck's response
         mood = self.duck.get_mood().state.value
         duck_sounds.quack_for_text(response, mood)
+
+    def _parse_llm_actions(self, response: str):
+        """Extract [ACTION:xxx] tags from LLM response.
+        
+        Returns (actions, cleaned_response) where actions is a list of
+        action strings and cleaned_response has the tags stripped out.
+        """
+        import re
+        actions = []
+        # Match [ACTION:word] or [ACTION:word_word] patterns
+        pattern = r'\[ACTION:([a-z_]+)\]'
+        for match in re.finditer(pattern, response):
+            actions.append(match.group(1))
+        # Remove all action tags from displayed text
+        cleaned = re.sub(r'\s*\[ACTION:[a-z_]+\]\s*', ' ', response).strip()
+        # Clean up any double spaces left behind
+        cleaned = re.sub(r'  +', ' ', cleaned)
+        return actions, cleaned
+
+    def _execute_llm_action(self, action: str):
+        """Execute a game action triggered by the LLM response."""
+        if not self.duck:
+            return
+        
+        from game_logger import get_logger
+        logger = get_logger()
+        logger.debug(f"LLM triggered action: {action}")
+        
+        # Basic care interactions — reuse the existing pipeline
+        if action in ("feed", "play", "clean", "pet", "sleep"):
+            self._perform_interaction(action)
+        
+        # Radio control
+        elif action == "radio_on":
+            from audio.sound import sound_engine
+            if not sound_engine.is_radio_playing():
+                self._toggle_nook_radio()
+        elif action == "radio_off":
+            from audio.sound import sound_engine
+            if sound_engine.is_radio_playing():
+                self._toggle_nook_radio()
+        
+        # Exploration
+        elif action == "explore":
+            if hasattr(self, '_do_explore'):
+                self._do_explore()
+        
+        # Trick performance
+        elif action == "do_trick":
+            if self.tricks and self.tricks.learned_tricks:
+                trick_ids = list(self.tricks.learned_tricks.keys())
+                if trick_ids:
+                    import random as _rnd
+                    trick_id = self.tricks.favorite_trick or _rnd.choice(trick_ids)
+                    if hasattr(self, '_perform_trick'):
+                        self._perform_trick(trick_id)
+        
+        # Fishing
+        elif action == "fish":
+            if hasattr(self, '_start_fishing'):
+                self._start_fishing()
+        
+        # Gardening
+        elif action == "garden":
+            if hasattr(self, '_show_garden_menu'):
+                self._show_garden_menu()
+        
+        # Crafting
+        elif action == "craft":
+            if hasattr(self, '_show_crafting_menu'):
+                self._show_crafting_menu()
+        
+        # Go home
+        elif action == "go_home":
+            if hasattr(self, '_travel_home'):
+                self._travel_home()
+            elif self.exploration:
+                self.exploration.current_area = None
+        
+        # Quack
+        elif action == "quack":
+            duck_sounds.quack("happy")
+        
+        else:
+            logger.debug(f"Unknown LLM action: {action}")
 
     def _get_item_playfield_position(self, item_id: str) -> Optional[Tuple[int, int]]:
         """Get the playfield position of a placed item."""
@@ -9791,7 +9881,7 @@ Core Systems Tested: {report.total_tests}
     # ==================== MEMORY RECALL FOR DIALOGUE ====================
 
     def _get_memory_context_for_dialogue(self) -> str:
-        """Get rich game-world context so the LLM knows what's happening around Cheese."""
+        """Get rich game-world context so the LLM knows everything about the game state."""
         if not self.duck or not self.duck.memory:
             return ""
         
@@ -9809,9 +9899,18 @@ Core Systems Tested: {report.total_tests}
         else:
             context_parts.append("Current location: Home Pond (your habitat)")
         
-        # ---- Time of day / season / weather ----
+        # Discovered areas
         try:
-            if hasattr(self, 'day_night') and self.day_night:
+            if self.exploration and self.exploration.discovered_areas:
+                area_names = list(self.exploration.discovered_areas.keys())[:10]
+                if area_names:
+                    context_parts.append(f"Places you've explored: {', '.join(area_names)}")
+        except Exception:
+            pass
+        
+        # ---- Time / season / weather ----
+        try:
+            if self.day_night:
                 tod = self.day_night.get_time_of_day()
                 hour = self.day_night.get_current_hour()
                 tod_str = tod.value if hasattr(tod, 'value') else str(tod)
@@ -9820,7 +9919,7 @@ Core Systems Tested: {report.total_tests}
             pass
         
         try:
-            if hasattr(self, 'atmosphere') and self.atmosphere:
+            if self.atmosphere:
                 season = self.atmosphere.current_season
                 if season:
                     context_parts.append(f"Season: {season.value if hasattr(season, 'value') else season}")
@@ -9831,9 +9930,92 @@ Core Systems Tested: {report.total_tests}
         except Exception:
             pass
         
-        # ---- Visiting friend (CRITICAL — the user's complaint) ----
+        # ---- Duck identity & personality ----
         try:
-            if hasattr(self, 'friends') and self.friends and self.friends.current_visit:
+            if hasattr(self.duck, '_personality_system') and self.duck._personality_system:
+                summary = self.duck._personality_system.get_personality_summary()
+                if summary:
+                    context_parts.append(f"Your personality: {summary}")
+                quirk = self.duck._personality_system.get_quirk()
+                if quirk:
+                    context_parts.append(f"Your quirk: {quirk}")
+        except Exception:
+            pass
+        
+        # Extended personality
+        try:
+            if self.extended_personality:
+                if hasattr(self.extended_personality, 'get_description'):
+                    desc = self.extended_personality.get_description()
+                    if desc:
+                        context_parts.append(f"Extended traits: {desc}")
+        except Exception:
+            pass
+        
+        # ---- Age / growth stage ----
+        try:
+            if self.aging:
+                stage = self.aging.current_stage
+                age_str = self.aging.get_age_string()
+                context_parts.append(f"Growth stage: {stage.value if hasattr(stage, 'value') else stage} ({age_str})")
+                is_bday, years = self.aging.is_birthday()
+                if is_bday:
+                    context_parts.append(f"TODAY IS YOUR BIRTHDAY! You are {years} year(s) old!")
+        except Exception:
+            pass
+        
+        # ---- Duck needs ----
+        try:
+            needs = self.duck.needs
+            if needs:
+                critical = needs.get_critical_needs() if hasattr(needs, 'get_critical_needs') else []
+                low = needs.get_low_needs() if hasattr(needs, 'get_low_needs') else []
+                urgent = needs.get_urgent_need() if hasattr(needs, 'get_urgent_need') else None
+                needs_info = []
+                needs_info.append(f"Hunger: {needs.hunger:.0f}/100")
+                needs_info.append(f"Energy: {needs.energy:.0f}/100")
+                needs_info.append(f"Fun: {needs.fun:.0f}/100")
+                needs_info.append(f"Cleanliness: {needs.cleanliness:.0f}/100")
+                needs_info.append(f"Social: {needs.social:.0f}/100")
+                context_parts.append(f"Your needs: {' | '.join(needs_info)}")
+                if critical:
+                    context_parts.append(f"CRITICAL needs (very low!): {', '.join(critical)}")
+                elif low:
+                    context_parts.append(f"Low needs: {', '.join(low)}")
+                if urgent:
+                    context_parts.append(f"Most urgent need: {urgent}")
+        except Exception:
+            pass
+        
+        # ---- Duck mood ----
+        try:
+            mood = self.duck.get_mood()
+            if mood:
+                context_parts.append(f"Your current mood: {mood.state.value} (score: {mood.score})")
+        except Exception:
+            pass
+        
+        # ---- Trust / bond level ----
+        try:
+            from core.consequences import get_trust_level_display
+            trust = getattr(self.duck, 'trust', None)
+            if trust is not None:
+                trust_desc = get_trust_level_display(trust)
+                context_parts.append(f"Trust/bond with player: {trust_desc} ({trust:.0f}/100)")
+            # Sick / hiding / cold shoulder state
+            if getattr(self.duck, 'is_sick', False):
+                context_parts.append("YOU ARE CURRENTLY SICK! You need medicine.")
+            if getattr(self.duck, 'hiding', False):
+                context_parts.append("You are currently HIDING because you've been neglected.")
+            from core.consequences import is_cold_shoulder_active
+            if is_cold_shoulder_active(self.duck):
+                context_parts.append("You are giving the player the cold shoulder right now (they neglected you).")
+        except Exception:
+            pass
+        
+        # ---- Visiting friend ----
+        try:
+            if self.friends and self.friends.current_visit:
                 visit = self.friends.current_visit
                 friend = self.friends.get_friend_by_id(visit.friend_id)
                 if friend:
@@ -9855,7 +10037,6 @@ Core Systems Tested: {report.total_tests}
                         visitor_info += f" Activities you've done together: {', '.join(visit.activities_done)}."
                     context_parts.append(visitor_info)
                     
-                    # Active guest conversation
                     convo = getattr(self, '_active_guest_conversation', None)
                     if convo:
                         context_parts.append(
@@ -9864,23 +10045,21 @@ Core Systems Tested: {report.total_tests}
         except Exception:
             pass
         
-        # ---- All known friends (so Cheese can reference them) ----
+        # ---- All known friends ----
         try:
-            if hasattr(self, 'friends') and self.friends and self.friends.friends:
+            if self.friends and self.friends.friends:
                 friend_names = []
                 for f in self.friends.friends.values():
                     level = f.friendship_level.value if hasattr(f.friendship_level, 'value') else str(f.friendship_level)
                     personality = f.personality.value if hasattr(f.personality, 'value') else str(f.personality)
                     friend_names.append(f"{f.name} ({personality}, {level})")
                 if friend_names:
-                    # Show visiting friend first, then others
                     visiting_id = self.friends.current_visit.friend_id if self.friends.current_visit else None
                     non_visiting = [
                         fn for fid, fn in zip(self.friends.friends.keys(), friend_names) 
                         if fid != visiting_id
                     ]
                     if non_visiting:
-                        # Limit to 8 friends to keep prompt reasonable
                         shown = non_visiting[:8]
                         extra = len(non_visiting) - len(shown)
                         friends_str = "Your other duck friends: " + ", ".join(shown)
@@ -9890,19 +10069,10 @@ Core Systems Tested: {report.total_tests}
         except Exception:
             pass
         
-        # ---- Duck mood & needs ----
-        try:
-            mood = self.duck.get_mood()
-            if mood:
-                context_parts.append(f"Your current mood: {mood.state.value}")
-        except Exception:
-            pass
-        
         # ---- Favorite things ----
         fav_food = self.duck.memory.get_favorite("food")
         fav_toy = self.duck.memory.get_favorite("toy")
         fav_activity = self.duck.memory.get_favorite("activity")
-        
         if fav_food:
             context_parts.append(f"Favorite food: {fav_food}")
         if fav_toy:
@@ -9910,19 +10080,299 @@ Core Systems Tested: {report.total_tests}
         if fav_activity:
             context_parts.append(f"Favorite activity: {fav_activity}")
         
+        # ---- Tricks ----
+        try:
+            if self.tricks and self.tricks.learned_tricks:
+                from duck.tricks import TRICKS
+                trick_names = []
+                for tid in self.tricks.learned_tricks:
+                    t = TRICKS.get(tid)
+                    trick_names.append(t.name if t else tid.replace('_', ' '))
+                context_parts.append(f"Tricks you know: {', '.join(trick_names[:8])}")
+                if self.tricks.favorite_trick:
+                    fav = TRICKS.get(self.tricks.favorite_trick)
+                    context_parts.append(f"Favorite trick: {fav.name if fav else self.tricks.favorite_trick}")
+                if self.tricks.current_training:
+                    train = TRICKS.get(self.tricks.current_training)
+                    context_parts.append(f"Currently learning: {train.name if train else self.tricks.current_training}")
+        except Exception:
+            pass
+        
+        # ---- Title & outfit ----
+        try:
+            if self.titles:
+                display = self.titles.get_display_name()
+                if display:
+                    context_parts.append(f"Your title: {display}")
+        except Exception:
+            pass
+        
+        try:
+            if self.outfits and self.outfits.current_outfit:
+                from duck.outfits import OUTFIT_ITEMS
+                worn = []
+                outfit = self.outfits.current_outfit
+                for slot in ['hat', 'face', 'neck', 'body', 'wings', 'feet', 'held', 'special']:
+                    item_id = getattr(outfit, slot, None)
+                    if item_id:
+                        item = OUTFIT_ITEMS.get(item_id)
+                        worn.append(f"{slot}: {item.name if item else item_id}")
+                if worn:
+                    context_parts.append(f"Currently wearing: {', '.join(worn)}")
+        except Exception:
+            pass
+        
+        # ---- Progression / level ----
+        try:
+            if self.progression:
+                xp_in, xp_need, pct = self.progression.get_xp_progress()
+                context_parts.append(
+                    f"Level: {self.progression.level} ({self.progression.title}) — "
+                    f"XP: {self.progression.xp} ({pct:.0f}% to next)"
+                )
+                if self.progression.current_streak > 1:
+                    context_parts.append(f"Player's login streak: {self.progression.current_streak} days")
+                stats = self.progression.stats
+                if stats:
+                    stat_items = []
+                    for k, v in stats.items():
+                        if v > 0:
+                            stat_items.append(f"{k.replace('total_', '').replace('_', ' ')}: {v}")
+                    if stat_items:
+                        context_parts.append(f"Lifetime stats: {', '.join(stat_items[:6])}")
+        except Exception:
+            pass
+        
+        # ---- Prestige ----
+        try:
+            if self.prestige and self.prestige.prestige_level > 0:
+                context_parts.append(
+                    f"Prestige level: {self.prestige.prestige_level} "
+                    f"(Legacy points: {self.prestige.legacy_points}, "
+                    f"Ducks raised: {self.prestige.total_ducks_raised})"
+                )
+        except Exception:
+            pass
+        
+        # ---- Currency / inventory ----
+        try:
+            coins = getattr(self.habitat, 'currency', 0)
+            context_parts.append(f"Coins: {coins}")
+        except Exception:
+            pass
+        
+        try:
+            if self.inventory and self.inventory.items:
+                context_parts.append(f"Items in inventory: {len(self.inventory.items)}")
+        except Exception:
+            pass
+        
+        # ---- Garden ----
+        try:
+            if self.garden:
+                active_plots = []
+                for pid, plot in self.garden.plots.items():
+                    if plot.plant:
+                        stage = plot.plant.growth_stage if hasattr(plot.plant, 'growth_stage') else '?'
+                        active_plots.append(f"{plot.plant.plant_id} ({stage})")
+                if active_plots:
+                    context_parts.append(f"Garden plants: {', '.join(active_plots[:5])}")
+                if self.garden.total_harvests > 0:
+                    context_parts.append(f"Total harvests: {self.garden.total_harvests}")
+        except Exception:
+            pass
+        
+        # ---- Fishing ----
+        try:
+            if self.fishing:
+                if self.fishing.total_catches > 0:
+                    fish_info = f"Fish caught: {self.fishing.total_catches}"
+                    if self.fishing.biggest_catch:
+                        fish_info += f" (biggest: {self.fishing.biggest_catch.fish_id})"
+                    context_parts.append(fish_info)
+                if self.fishing.is_fishing:
+                    context_parts.append("You are currently fishing!")
+        except Exception:
+            pass
+        
+        # ---- Crafting ----
+        try:
+            if self.crafting:
+                if self.crafting.crafting_skill > 0:
+                    context_parts.append(f"Crafting skill: {self.crafting.crafting_skill}")
+                if self.crafting.current_craft:
+                    context_parts.append(f"Currently crafting something!")
+                if self.crafting.recipes_unlocked:
+                    context_parts.append(f"Known recipes: {len(self.crafting.recipes_unlocked)}")
+        except Exception:
+            pass
+        
+        # ---- Building ----
+        try:
+            if self.building and hasattr(self.building, 'built_structures'):
+                if self.building.built_structures:
+                    struct_names = [s.name if hasattr(s, 'name') else str(s) for s in self.building.built_structures.values()]
+                    if struct_names:
+                        context_parts.append(f"Built structures: {', '.join(struct_names[:5])}")
+        except Exception:
+            pass
+        
         # ---- Active quests ----
         try:
             from world.quests import QUESTS as _QUESTS
-            qs = getattr(self, 'quests', None)
-            if qs and hasattr(qs, 'active_quests') and qs.active_quests:
+            if self.quests and hasattr(self.quests, 'active_quests') and self.quests.active_quests:
                 quest_names = []
-                for qid, aq in qs.active_quests.items():
+                for qid, aq in self.quests.active_quests.items():
                     if not aq.completed and not aq.failed:
                         quest_def = _QUESTS.get(qid)
                         if quest_def:
                             quest_names.append(quest_def.name)
                 if quest_names:
                     context_parts.append(f"Active quests: {', '.join(quest_names[:5])}")
+        except Exception:
+            pass
+        
+        # ---- Challenges ----
+        try:
+            if self.challenges and hasattr(self.challenges, 'active_challenges'):
+                active = [c for c in self.challenges.active_challenges if not c.completed]
+                if active:
+                    chal_names = [c.name if hasattr(c, 'name') else str(c) for c in active[:3]]
+                    context_parts.append(f"Active challenges: {', '.join(chal_names)}")
+        except Exception:
+            pass
+        
+        # ---- Festivals ----
+        try:
+            if self.festivals and hasattr(self.festivals, 'active_festival') and self.festivals.active_festival:
+                fest = self.festivals.active_festival
+                fname = fest.name if hasattr(fest, 'name') else str(fest)
+                context_parts.append(f"Active festival: {fname}")
+        except Exception:
+            pass
+        
+        # ---- Fortune / horoscope ----
+        try:
+            if self.fortune and hasattr(self.fortune, 'get_today_fortune'):
+                fortune = self.fortune.get_today_fortune()
+                if fortune:
+                    context_parts.append(f"Today's fortune: {fortune}")
+        except Exception:
+            pass
+        
+        # ---- Achievements / badges ----
+        try:
+            if self.achievements:
+                count = self.achievements.get_unlocked_count()
+                total = self.achievements.get_total_count()
+                if count > 0:
+                    context_parts.append(f"Achievements unlocked: {count}/{total}")
+        except Exception:
+            pass
+        
+        try:
+            if self.badges:
+                earned, total = self.badges.get_earned_count()
+                if earned > 0:
+                    context_parts.append(f"Badges earned: {earned}/{total}")
+                    fav = self.badges.favorite_badge
+                    if fav:
+                        context_parts.append(f"Favorite badge: {fav}")
+        except Exception:
+            pass
+        
+        # ---- Collectibles ----
+        try:
+            if self.collectibles and hasattr(self.collectibles, 'collected'):
+                if self.collectibles.collected:
+                    context_parts.append(f"Collectibles found: {len(self.collectibles.collected)}")
+        except Exception:
+            pass
+        
+        # ---- Secrets ----
+        try:
+            if self.secrets and hasattr(self.secrets, 'discovered'):
+                if self.secrets.discovered:
+                    context_parts.append(f"Secrets discovered: {len(self.secrets.discovered)}")
+        except Exception:
+            pass
+        
+        # ---- Treasure hunting ----
+        try:
+            if self.treasure and hasattr(self.treasure, 'total_treasures_found'):
+                if self.treasure.total_treasures_found > 0:
+                    context_parts.append(f"Treasures found: {self.treasure.total_treasures_found}")
+        except Exception:
+            pass
+        
+        # ---- Dreams ----
+        try:
+            if self.dreams and hasattr(self.dreams, 'dream_log') and self.dreams.dream_log:
+                last_dream = self.dreams.dream_log[-1]
+                if hasattr(last_dream, 'description'):
+                    context_parts.append(f"Last dream: {last_dream.description[:80]}")
+        except Exception:
+            pass
+        
+        # ---- Diary (recent entry) ----
+        try:
+            if self.diary and self.diary.entries:
+                last_entry = self.diary.entries[-1]
+                if hasattr(last_entry, 'title') and hasattr(last_entry, 'content'):
+                    context_parts.append(f"Latest diary entry: \"{last_entry.title}\" — {last_entry.content[:60]}")
+        except Exception:
+            pass
+        
+        # ---- Player model (what Cheese knows about the player) ----
+        try:
+            if self.duck_brain and self.duck_brain.player_model:
+                pm = self.duck_brain.player_model
+                if pm.name:
+                    context_parts.append(f"Player's name: {pm.name}")
+                if pm.facts:
+                    fact_strs = [f"{f.fact_type}: {f.value}" for f in pm.facts.values() if f.value][:5]
+                    if fact_strs:
+                        context_parts.append(f"Things you know about the player: {'; '.join(fact_strs)}")
+                if pm.promises_made:
+                    kept = pm.promises_kept
+                    broken = pm.promises_broken
+                    if kept + broken > 0:
+                        context_parts.append(f"Player's promises: {kept} kept, {broken} broken")
+        except Exception:
+            pass
+        
+        # ---- Ritual tracker ----
+        try:
+            if self.duck_brain and self.duck_brain.ritual_tracker:
+                rituals = self.duck_brain.ritual_tracker.detected_rituals
+                established = [
+                    f"{r.action} at {r.typical_hour}:00 (streak: {r.streak}d)"
+                    for r in rituals.values() if r.is_established
+                ]
+                if established:
+                    context_parts.append(f"Player's routines you've noticed: {', '.join(established[:4])}")
+        except Exception:
+            pass
+        
+        # ---- Conversation memory ----
+        try:
+            if self.duck_brain and self.duck_brain.conversation_memory:
+                cm = self.duck_brain.conversation_memory
+                if cm.total_conversations > 0:
+                    context_parts.append(f"Total conversations: {cm.total_conversations}")
+                if cm.topic_counts:
+                    top_topics = sorted(cm.topic_counts.items(), key=lambda x: x[1], reverse=True)[:3]
+                    if top_topics:
+                        context_parts.append(f"Topics you talk about most: {', '.join(t[0] for t in top_topics)}")
+        except Exception:
+            pass
+        
+        # ---- Duck brain internal mood ----
+        try:
+            if self.duck_brain:
+                internal = self.duck_brain._internal_mood
+                if internal and hasattr(internal, 'value'):
+                    context_parts.append(f"Your inner feeling: {internal.value}")
         except Exception:
             pass
         
@@ -9951,17 +10401,26 @@ Core Systems Tested: {report.total_tests}
             if trend:
                 context_parts.append(f"Mood trend: {trend}")
         
-        # ---- Habitat items (so Cheese knows what's around) ----
+        # ---- Habitat items ----
         try:
-            if hasattr(self, 'habitat') and self.habitat and self.habitat.placed_items:
+            if self.habitat and self.habitat.placed_items:
                 item_names = []
                 for pi in self.habitat.placed_items[:10]:
-                    # Try to get display name from shop info
                     info = get_item_info(pi.item_id) if pi.item_id else None
                     name = info.get('name', pi.item_id) if info else pi.item_id
                     item_names.append(name.replace('_', ' '))
                 if item_names:
                     context_parts.append(f"Items in your habitat: {', '.join(item_names)}")
+        except Exception:
+            pass
+        
+        # ---- Radio / music status ----
+        try:
+            from audio.sound import sound_engine
+            if sound_engine.is_radio_playing():
+                radio = sound_engine.get_radio()
+                if radio and radio.current_station:
+                    context_parts.append(f"Currently playing: {radio.current_station.name} radio")
         except Exception:
             pass
         

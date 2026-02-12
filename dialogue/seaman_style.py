@@ -1834,8 +1834,42 @@ class SeamanDialogue:
                 "events, weather, location, quests, or anything happening around you. "
                 "If a friend is visiting, you KNOW them — refer to them by name. "
                 "If the player asks you to do something with/about a friend, respond as if you can see them. "
-                "You are aware of everything listed above."
+                "You are aware of everything listed above — your needs, stats, achievements, garden, "
+                "fishing, crafting, tricks, outfit, trust level, age, growth stage, and more."
             )
+        
+        # Action system — let the LLM trigger game actions
+        prompt_parts.append(
+            "\n== ACTIONS YOU CAN PERFORM =="
+            "\nWhen you decide to DO something in response to the player, add an action tag at the "
+            "END of your response. The tag will be hidden from the player — they only see your words."
+            "\nAvailable actions (use ONLY these exact tags):"
+            "\n  [ACTION:feed] — eat some food"
+            "\n  [ACTION:play] — play / have fun"
+            "\n  [ACTION:clean] — clean/preen your feathers"
+            "\n  [ACTION:pet] — nuzzle up to the player (for affection)"
+            "\n  [ACTION:sleep] — take a nap"
+            "\n  [ACTION:do_trick] — perform one of your tricks"
+            "\n  [ACTION:explore] — go exploring"
+            "\n  [ACTION:fish] — go fishing"
+            "\n  [ACTION:garden] — tend the garden"
+            "\n  [ACTION:craft] — craft something"
+            "\n  [ACTION:radio_on] — turn on Nook Radio"
+            "\n  [ACTION:radio_off] — turn off the radio"
+            "\n  [ACTION:go_home] — go back to Home Pond"
+            "\n  [ACTION:quack] — quack!"
+            "\nRules:"
+            "\n- Use at most ONE action per response"
+            "\n- Only use an action when it makes sense contextually"
+            "\n- If the player asks you to do something (eat, sleep, perform a trick, etc.), USE the action tag"
+            "\n- If just chatting normally, don't include any action tag"
+            "\n- The tag goes at the very end after your dialogue text"
+            "\nExamples:"
+            "\n- Player: 'are you hungry?' → 'Starving, actually. *waddles to food bowl*' [ACTION:feed]"
+            "\n- Player: 'do a trick!' → '*cracks knuckles* ...watch this.' [ACTION:do_trick]"
+            "\n- Player: 'go to sleep' → 'Fine. But I'm dreaming about bread.' [ACTION:sleep]"
+            "\n- Player: 'how are you?' → 'Existing. You?' (no action needed)"
+        )
         
         prompt_parts.append("\n\nRemember: SHORT responses (1-3 sentences). Deadpan delivery. You're Cheese the duck. You LOVE bread. Traditional old-school male duck. He/him.")
         

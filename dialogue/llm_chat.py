@@ -364,7 +364,12 @@ Example responses:
 == YOUR CURRENT WORLD STATE (use this to answer questions!) ==
 {context}
 
-IMPORTANT: Use the world state above when the player asks about friends, visitors, events, weather, location, quests, or anything happening around you. If a friend is visiting, you KNOW them. You are aware of everything listed above.''' if context else ''}"""
+IMPORTANT: Use the world state above when the player asks about friends, visitors, events, weather, location, quests, or anything happening around you. If a friend is visiting, you KNOW them. You are aware of everything listed above — your needs, stats, achievements, garden, fishing, crafting, tricks, outfit, trust level, age, growth stage, and more.
+
+== ACTIONS YOU CAN PERFORM ==
+When you decide to DO something, add an action tag at the END of your response. The tag is hidden from the player.
+Available: [ACTION:feed] [ACTION:play] [ACTION:clean] [ACTION:pet] [ACTION:sleep] [ACTION:do_trick] [ACTION:explore] [ACTION:fish] [ACTION:garden] [ACTION:craft] [ACTION:radio_on] [ACTION:radio_off] [ACTION:go_home] [ACTION:quack]
+Rules: Use at most ONE action per response. Only when contextually appropriate. If the player asks you to do something, use the tag. If just chatting, no tag needed.''' if context else ''}"""
             
         return prompt
 
