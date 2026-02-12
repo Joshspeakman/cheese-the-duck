@@ -599,13 +599,13 @@ def _get_radio_items(game):
                 enabled=station["available"]
             ))
         
-        # Add stop radio option if playing
-        if radio.is_playing:
-            items.append(MasterMenuItem(
-                id="radio_stop",
-                label="■ Stop Radio",
-                action="radio_stop"
-            ))
+        # Always show radio off option
+        items.append(MasterMenuItem(
+            id="radio_stop",
+            label="■ Radio Off",
+            action="radio_stop",
+            enabled=radio.is_playing
+        ))
     except ImportError:
         items.append(MasterMenuItem(id="radio_none", label="Radio unavailable", enabled=False))
     
