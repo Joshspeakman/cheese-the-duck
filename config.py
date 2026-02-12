@@ -147,9 +147,9 @@ LLM_MODEL_DIR = _get_model_dir()
 LLM_GPU_LAYERS = -1             # -1 = auto-detect GPU, 0 = CPU only, N = specific layer count
 
 # Model Parameters
-LLM_CONTEXT_SIZE = 1024         # Context window size (smaller = faster, 1024 is plenty for short chat)
+LLM_CONTEXT_SIZE = 4096         # Context window size (needs room for system prompt + world state + history + response)
 LLM_MAX_TOKENS = 80             # Max tokens for behavior commentary
-LLM_MAX_TOKENS_CHAT = 120       # Max tokens for player chat (shorter = faster responses)
+LLM_MAX_TOKENS_CHAT = 150       # Max tokens for player chat (need room for action tags)
 LLM_TEMPERATURE = 0.75          # Response creativity (0.0-1.0)
 
 # LLM Behavior Integration  

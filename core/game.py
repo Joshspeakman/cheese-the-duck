@@ -10424,7 +10424,23 @@ Core Systems Tested: {report.total_tests}
         except Exception:
             pass
         
-        return "\n".join(context_parts)
+        # Build context and truncate if too long (keep under ~2500 chars ≈ ~625 tokens)
+        result = "\n".join(context_parts)
+        max_context_chars = 2500
+        if len(result) > max_context_chars:
+            # Keep the most important lines (first ones are location/time/needs/mood),
+            # truncate from the end (less critical stats)
+            lines = result.split("\n")
+            truncated = []
+            char_count = 0
+            for line in lines:
+                if char_count + len(line) + 1 > max_context_chars:
+                    break
+                truncated.append(line)
+                char_count += len(line) + 1
+            result = "\n".join(truncated)
+        
+        return result
 
     # ==================== BADGE AWARDING ====================
 
