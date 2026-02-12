@@ -3189,8 +3189,9 @@ class Game:
         )
         sound_engine.update_music(music_context)
 
-        # Update radio state (hour transitions, track looping)
-        sound_engine.update_radio()
+        # Update radio state (hour transitions, weather changes, track looping)
+        weather_for_radio = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+        sound_engine.update_radio(weather=weather_for_radio)
 
         # Update active visitor interactions (every frame when there's a visitor)
         self._update_visitor_interactions(current_time)
