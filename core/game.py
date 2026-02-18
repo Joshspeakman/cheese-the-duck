@@ -275,7 +275,19 @@ class Game:
         
         # Trading menu
         self._trading_menu_open = False       # Flag for trading menu
-        self._trading_selected = 0            # Currently selected trader
+        self._trading_selected = 0            # Currently selected trader row
+        self._trading_state = "selection"     # "selection" or "offers"
+        self._trading_active_trader_id = ""   # Currently viewing trader
+        self._trading_offer_selected = 0      # Currently selected offer index
+
+        # Badges menu
+        self._badges_menu_open = False        # Flag for badges menu
+        self._badges_menu_page = 1            # Current page
+        self._badges_menu_category = None     # Filter category (None = all)
+
+        # Decoration room-selection sub-menu
+        self._decoration_room_select_open = False
+        self._decoration_room_select_decor_id = ""
         
         # Enhanced diary menu
         self._enhanced_diary_open = False       # Flag for enhanced diary menu
@@ -583,8 +595,14 @@ class Game:
         if self._decorations_menu_open:
             self._handle_decorations_input(key)
             return
+        if self._decoration_room_select_open:
+            self._handle_decoration_room_select_input(key)
+            return
         if self._collectibles_menu_open:
             self._handle_collectibles_input(key)
+            return
+        if self._badges_menu_open:
+            self._handle_badges_input(key)
             return
         if self._secrets_menu_open:
             self._handle_secrets_input(key)
@@ -656,6 +674,13 @@ class Game:
                 self._use_inventory_item(int(key_str) - 1)  # Convert to 0-based index
                 return
         
+        # Feed every keypress to the secrets input sequence checker (e.g. Konami code)
+        if self._state == "playing":
+            key_name_for_seq = (getattr(key, 'name', '') or '').lower().replace('key_', '')
+            seq_secret = self.secrets.check_input_sequence(key_name_for_seq)
+            if seq_secret:
+                self._notify_secret_found(seq_secret)
+
         # Handle master menu navigation (arrow keys, enter, backspace)
         # Only when no other overlay/menu is open
         if self._state == "playing" and not self._has_open_overlay():
@@ -1328,6 +1353,11 @@ class Game:
             # This is an item interaction command!
             self._execute_item_interaction(matching_item)
             return
+
+        # Check for text-based secrets before sending to LLM
+        text_secret = self.secrets.check_text_input(message)
+        if text_secret:
+            self._notify_secret_found(text_secret)
 
         # Show a thinking indicator immediately so the player knows Cheese heard them
         thinking_messages = [
@@ -2532,6 +2562,12 @@ class Game:
         # Check achievements
         self._check_achievements(interaction)
 
+        # Check action-based secrets (100 pets = hundred_pets, 1000 feeds = golden_duck)
+        feed_count = self._statistics.get("times_fed", 0)
+        action_secret = self.secrets.check_action_secrets(interaction, feed_count)
+        if action_secret:
+            self._notify_secret_found(action_secret)
+
         # Update challenge progress for this interaction type
         challenge_updates = self.challenges.update_progress(interaction, 1)
         for challenge_id, completed in challenge_updates:
@@ -2971,6 +3007,41 @@ class Game:
             
             self.duck.update(delta_minutes, weather_modifiers=weather_mods)
 
+            # Apply decoration bonuses (comfort/mood) to duck needs each tick
+            try:
+                decor_bonus = self._get_room_decoration_bonus()
+                mood_bonus = decor_bonus.get("mood", 0)
+                comfort_bonus = decor_bonus.get("comfort", 0)
+                if mood_bonus > 0:
+                    # Trickle the bonus over time: +mood_bonus/tick_rate per minute
+                    tick_mood = (mood_bonus / 100.0) * delta_minutes * 0.5
+                    self.duck.needs.fun = min(100, self.duck.needs.fun + tick_mood)
+                if comfort_bonus > 0:
+                    tick_comfort = (comfort_bonus / 100.0) * delta_minutes * 0.5
+                    self.duck.needs.energy = min(100, self.duck.needs.energy + tick_comfort)
+            except Exception:
+                pass
+
+            # Apply completed building bonuses to duck needs each tick
+            try:
+                for structure in self.building.structures:
+                    if not hasattr(structure, 'status') or structure.status.value != 'complete':
+                        continue
+                    from world.building import BLUEPRINTS
+                    bp = BLUEPRINTS.get(structure.blueprint_id)
+                    if not bp:
+                        continue
+                    energy_bonus = getattr(bp, 'energy_regen_bonus', 0)
+                    happiness_bonus = getattr(bp, 'happiness_bonus', 0)
+                    if energy_bonus > 0:
+                        tick_energy = (energy_bonus / 100.0) * delta_minutes * 0.3
+                        self.duck.needs.energy = min(100, self.duck.needs.energy + tick_energy)
+                    if happiness_bonus > 0:
+                        tick_happiness = (happiness_bonus / 100.0) * delta_minutes * 0.3
+                        self.duck.needs.fun = min(100, self.duck.needs.fun + tick_happiness)
+            except Exception:
+                pass
+
             # Check for growth stage change
             if self.duck.growth_stage != old_stage:
                 self._on_growth_stage_change(old_stage, self.duck.growth_stage)
@@ -3152,6 +3223,9 @@ class Game:
                             
                             # Duck waddles toward the visitor (animated approach)
                             self._duck_approach_visitor()
+                            
+                            # Track visitor goal progress
+                            self.goals.update_progress("met_visitors", 1)
                             
                             # Schedule duck's reaction comment after greeting
                             duck_reaction = self._get_duck_visitor_reaction(personality)
@@ -3806,6 +3880,39 @@ class Game:
         if special_event:
             self.goals._check_secret_goal("holiday_play")
 
+        # Check time-based secrets (clock, date)
+        time_secret = self.secrets.check_time_secrets()
+        if time_secret:
+            self._notify_secret_found(time_secret)
+
+        date_secret = self.secrets.check_date_secrets()
+        if date_secret:
+            self._notify_secret_found(date_secret)
+
+        # Check playtime secret (year one)
+        days_played = self.progression.current_streak
+        playtime_secret = self.secrets.check_playtime_secret(days_played)
+        if playtime_secret:
+            self._notify_secret_found(playtime_secret)
+
+    def _notify_secret_found(self, secret):
+        """Show a secret discovery notification and award its rewards."""
+        if not secret:
+            return
+        msg_lines = [
+            f"[?] SECRET DISCOVERED [?]",
+            f"  {secret.name}",
+            f"  {secret.unlock_message}",
+        ]
+        if secret.coins_reward:
+            self.habitat.add_currency(secret.coins_reward)
+            msg_lines.append(f"  +{secret.coins_reward} coins!")
+        if secret.xp_reward:
+            self.progression.add_xp(secret.xp_reward, "secret")
+            msg_lines.append(f"  +{secret.xp_reward} XP!")
+        duck_sounds.level_up()
+        self.renderer.show_celebration("secret", "\n".join(msg_lines), duration=5.0)
+
     def _check_events(self):
         """Check for random events."""
         if not self.duck:
@@ -4393,6 +4500,10 @@ class Game:
             self._render_save_slots_menu()
         elif self._trading_menu_open:
             self._render_trading_menu()
+        elif self._decoration_room_select_open:
+            self._render_decoration_room_select(self._decoration_room_select_decor_id)
+        elif self._badges_menu_open:
+            self._render_badges_menu()
         elif self._decorations_menu_open:
             self._render_decorations_menu()
         elif self._scrapbook_menu_open:
@@ -5226,7 +5337,9 @@ class Game:
             self._tricks_menu_open or
             self._titles_menu_open or
             self._decorations_menu_open or
+            self._decoration_room_select_open or
             self._collectibles_menu_open or
+            self._badges_menu_open or
             self._secrets_menu_open or
             self._garden_menu_open or
             self._prestige_menu_open or
@@ -5264,12 +5377,15 @@ class Game:
         self._tricks_menu_open = False
         self._titles_menu_open = False
         self._decorations_menu_open = False
+        self._decoration_room_select_open = False
         self._collectibles_menu_open = False
+        self._badges_menu_open = False
         self._secrets_menu_open = False
         self._garden_menu_open = False
         self._prestige_menu_open = False
         self._save_slots_menu_open = False
         self._trading_menu_open = False
+        self._trading_state = "selection"
         self._enhanced_diary_open = False
         self._festival_menu_open = False
         self._settings_menu_open = False
@@ -5308,7 +5424,9 @@ class Game:
             self._tricks_menu_open or
             self._titles_menu_open or
             self._decorations_menu_open or
+            self._decoration_room_select_open or
             self._collectibles_menu_open or
+            self._badges_menu_open or
             self._secrets_menu_open or
             self._garden_menu_open or
             self._prestige_menu_open or
@@ -5343,12 +5461,15 @@ class Game:
         self._tricks_menu_open = False
         self._titles_menu_open = False
         self._decorations_menu_open = False
+        self._decoration_room_select_open = False
         self._collectibles_menu_open = False
+        self._badges_menu_open = False
         self._secrets_menu_open = False
         self._garden_menu_open = False
         self._prestige_menu_open = False
         self._save_slots_menu_open = False
         self._trading_menu_open = False
+        self._trading_state = "selection"
         self._enhanced_diary_open = False
         self._festival_menu_open = False
         self._settings_menu_open = False
@@ -6160,6 +6281,21 @@ class Game:
         # Check achievements
         self._check_exploration_achievements()
 
+        # Check exploration-based secrets
+        weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+        expl_secret = self.secrets.check_exploration_secret(weather)
+        if expl_secret:
+            self._notify_secret_found(expl_secret)
+
+        # Rare collectible drop from exploration
+        if random.random() < 0.04:  # 4% chance per explore
+            found = self.collectibles.collect_random(source="exploration")
+            if found:
+                cname = found.name if hasattr(found, 'name') else str(found)
+                crarity = found.rarity.value if hasattr(found, 'rarity') and hasattr(found.rarity, 'value') else "rare"
+                duck_sounds.level_up()
+                self.renderer.show_message(f"* Found collectible: {cname} [{crarity}]!", duration=4.0)
+
         # Update challenge and quest progress for exploration
         self.challenges.update_progress("explore", 1)
         self._process_quest_updates("explore", "any", 1)
@@ -6553,6 +6689,15 @@ class Game:
                         self.achievements.unlock("fish_10")
                     elif total_fish >= 50:
                         self.achievements.unlock("fish_master")
+
+                    # Rare collectible drop when fishing (8% chance)
+                    if random.random() < 0.08:
+                        found = self.collectibles.collect_random(source="fishing", rarity_boost=0.1)
+                        if found:
+                            cname = found.name if hasattr(found, 'name') else str(found)
+                            crarity = found.rarity.value if hasattr(found, 'rarity') and hasattr(found.rarity, 'value') else "rare"
+                            duck_sounds.level_up()
+                            self.renderer.show_message(f"* Found collectible: {cname} [{crarity}]!", duration=4.0)
                 else:
                     self.renderer.show_message(message, duration=2.0)
                     duck_sounds.quack("sad")
@@ -6988,95 +7133,167 @@ class Game:
         if not self.duck:
             return
         self._trading_menu_open = True
+        self._trading_state = "selection"
         self._trading_selected = 0
         self._render_trading_menu()
 
     def _render_trading_menu(self):
-        """Render the trading menu with selection."""
-        lines = [
-            "+=============================================+",
-            "|              TRADING POST                   |",
-            "+=============================================+",
-        ]
-        
-        # Get traders from trading system
-        traders = list(self.trading.traders.values()) if hasattr(self.trading, 'traders') else []
-        
-        if traders:
-            for i, trader in enumerate(traders[:5]):
-                selected = "[>]" if i == self._trading_selected else "   "
-                name = trader.name if hasattr(trader, 'name') else f"Trader {i+1}"
-                specialty = trader.specialty if hasattr(trader, 'specialty') else "General"
-                lines.append(f"| {selected} {name[:20]:20} ({specialty[:15]:15}) |")
+        """Render the trading menu - either trader selection or offer list."""
+        if self._trading_state == "offers" and self._trading_active_trader_id:
+            lines = self.trading.render_trader_offers(self._trading_active_trader_id)
+            offers = self.trading.get_offers_for_trader(self._trading_active_trader_id)
+            if offers:
+                # Overlay selection cursor
+                lines_with_sel = []
+                offer_idx = 0
+                for line in lines:
+                    if line.startswith("|  [") and "] o " in line or "] + " in line or "] * " in line or "] # " in line:
+                        marker = "[>]" if offer_idx == self._trading_offer_selected else "   "
+                        line = line[:3] + marker + line[6:]
+                        offer_idx += 1
+                    lines_with_sel.append(line)
+                self.renderer.show_overlay("\n".join(lines_with_sel), duration=0)
+            else:
+                self.renderer.show_overlay("\n".join(lines), duration=0)
         else:
-            lines.append("|  No traders available right now...          |")
-        
-        lines.append("+=============================================+")
-        lines.append("")
-        lines.append("[^/v] Select | [Enter] Visit | [Bksp] Close")
-        
-        self.renderer.show_overlay("\n".join(lines), duration=0)
+            # Trader selection screen
+            lines = self.trading.render_trader_selection()
+            traders = self.trading.refresh_traders()
+            # Overlay selection cursor
+            trader_row = 0
+            modified = []
+            for line in lines:
+                if line.startswith("|  [") and "] " in line and trader_row < len(traders):
+                    marker = "[>]" if trader_row == self._trading_selected else "   "
+                    line = "|  " + marker + line[6:]
+                    trader_row += 1
+                modified.append(line)
+            modified.append("[^/v] Select | [Enter] Visit | [Bksp] Close")
+            self.renderer.show_overlay("\n".join(modified), duration=0)
 
     def _handle_trading_input(self, key):
         """Handle input for trading menu."""
         key_str = str(key).lower()
         key_name = getattr(key, 'name', None) or ''
-        
-        # Close with ESC or Backspace
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+
+        # Global close
+        if key_name == "KEY_ESCAPE":
             self._trading_menu_open = False
+            self._trading_state = "selection"
             self.renderer.dismiss_overlay()
             return
-        
-        # Navigate traders
-        traders = list(self.trading.traders.values()) if hasattr(self.trading, 'traders') else []
-        max_traders = min(5, len(traders))
-        
-        if key_name == "KEY_UP":
-            if self._trading_selected > 0:
-                self._trading_selected -= 1
+
+        if self._trading_state == "offers":
+            # Back to selection
+            if key_name == "KEY_BACKSPACE" or key_str == 'b':
+                self._trading_state = "selection"
+                self._trading_selected = 0
                 self._render_trading_menu()
-            return
-        
-        if key_name == "KEY_DOWN":
-            if self._trading_selected < max_traders - 1:
-                self._trading_selected += 1
+                return
+
+            offers = self.trading.get_offers_for_trader(self._trading_active_trader_id)
+
+            if key_name == "KEY_UP":
+                self._trading_offer_selected = max(0, self._trading_offer_selected - 1)
                 self._render_trading_menu()
-            return
-        
-        # Visit trader with Enter
-        if key_name == "KEY_ENTER" and traders:
-            trader = traders[self._trading_selected]
-            self._trading_menu_open = False
-            self.renderer.dismiss_message()
-            self._visit_trader(trader)
-            return
-        
-        # Number key quick select
-        if key_str.isdigit() and 1 <= int(key_str) <= max_traders:
-            self._trading_selected = int(key_str) - 1
-            if traders:
-                trader = traders[self._trading_selected]
+                return
+
+            if key_name == "KEY_DOWN":
+                self._trading_offer_selected = min(max(0, len(offers) - 1), self._trading_offer_selected + 1)
+                self._render_trading_menu()
+                return
+
+            if key_name == "KEY_ENTER" and offers:
+                offer = offers[self._trading_offer_selected]
+                self._execute_trade(offer)
+                return
+
+            # Number quick-select
+            if key_str.isdigit() and 1 <= int(key_str) <= len(offers):
+                offer = offers[int(key_str) - 1]
+                self._execute_trade(offer)
+                return
+
+        else:
+            # Trader selection mode
+            if key_name == "KEY_BACKSPACE":
                 self._trading_menu_open = False
-                self.renderer.dismiss_message()
+                self.renderer.dismiss_overlay()
+                return
+
+            traders = self.trading.refresh_traders()
+
+            if key_name == "KEY_UP":
+                self._trading_selected = max(0, self._trading_selected - 1)
+                self._render_trading_menu()
+                return
+
+            if key_name == "KEY_DOWN":
+                self._trading_selected = min(max(0, len(traders) - 1), self._trading_selected + 1)
+                self._render_trading_menu()
+                return
+
+            if key_name == "KEY_ENTER" and traders:
+                trader = traders[self._trading_selected]
                 self._visit_trader(trader)
-            return
+                return
+
+            if key_str.isdigit() and 1 <= int(key_str) <= len(traders):
+                self._visit_trader(traders[int(key_str) - 1])
+                return
 
     def _visit_trader(self, trader):
-        """Visit a trader to see their wares."""
-        # Show trader's inventory
-        if hasattr(trader, 'get_inventory'):
-            items = trader.get_inventory()
-            lines = [f"=== {trader.name}'s Wares ===", ""]
-            for item in items[:10]:
-                name = item.name if hasattr(item, 'name') else str(item)
-                price = item.price if hasattr(item, 'price') else 0
-                lines.append(f"  {name[:30]:30} - {price} coins")
-            lines.append("")
-            lines.append("[Press any key to leave]")
-            self.renderer.show_overlay("\n".join(lines), duration=0)
-        else:
-            self.renderer.show_message(f"Visited {trader.name if hasattr(trader, 'name') else 'trader'}!", duration=3.0)
+        """Open the offer screen for a trader."""
+        self._trading_active_trader_id = trader.id
+        self._trading_state = "offers"
+        self._trading_offer_selected = 0
+        self._render_trading_menu()
+
+    def _execute_trade(self, offer):
+        """Execute a selected trade offer."""
+        # Build inventory snapshot: coins + item counts
+        inventory = {"coins": self.habitat.currency}
+        for item_id in self.inventory.items:
+            inventory[item_id] = inventory.get(item_id, 0) + 1
+
+        if not self.trading.can_complete_trade(offer, inventory):
+            self.renderer.show_message("You don't have the required items!", duration=3.0)
+            return
+
+        # Deduct given items
+        for give_item in offer.you_give:
+            if give_item.item_id == "coins":
+                self.habitat._currency = max(0, self.habitat._currency - give_item.quantity)
+            else:
+                for _ in range(give_item.quantity):
+                    self.inventory.remove_item(give_item.item_id)
+
+        # Execute trade and get received items
+        items_received, was_lucky = self.trading.complete_trade(offer)
+
+        # Award received items
+        msg_lines = ["[=] Trade Complete! [=]", ""]
+        for recv_item in items_received:
+            if recv_item.item_id == "coins":
+                self.habitat.add_currency(recv_item.quantity)
+                # Check coin secret
+                self.secrets.check_coin_secret(self.habitat.currency)
+                msg_lines.append(f"  + {recv_item.quantity} coins")
+            else:
+                for _ in range(recv_item.quantity):
+                    self.inventory.add_item(recv_item.item_id)
+                msg_lines.append(f"  + {recv_item.item_name} x{recv_item.quantity}")
+
+        if was_lucky:
+            msg_lines.append("")
+            msg_lines.append("* Lucky trade! Bonus item received!")
+            duck_sounds.level_up()
+
+        self.renderer.show_message("\n".join(msg_lines), duration=4.0)
+        self.goals.update_progress("trade", 1)
+
+        # Update offers display
+        self._render_trading_menu()
 
     # ==================== WEATHER ACTIVITIES ====================
 
@@ -8903,6 +9120,46 @@ Core Systems Tested: {report.total_tests}
                 self.renderer.show_message(f"Photo {status}!", duration=1.5)
             return
 
+    # ==================== BADGES MENU ====================
+
+    def _show_badges_menu(self):
+        """Show the badge collection/showcase menu."""
+        self._badges_menu_open = True
+        self._badges_menu_page = 1
+        self._badges_menu_category = None
+        self._render_badges_menu()
+
+    def _render_badges_menu(self):
+        """Render the badge collection display."""
+        lines = self.badges.render_badge_collection(
+            category=self._badges_menu_category,
+            page=self._badges_menu_page,
+        )
+        showcase = self.badges.render_showcase()
+        lines += [""] + showcase
+        self.renderer.show_overlay("\n".join(lines), duration=0)
+
+    def _handle_badges_input(self, key):
+        """Handle input for the badges menu."""
+        key_name = getattr(key, 'name', None) or ''
+        key_str = str(key).lower()
+
+        if key_name in ("KEY_ESCAPE", "KEY_BACKSPACE"):
+            self._badges_menu_open = False
+            self.renderer.dismiss_overlay()
+            return
+
+        if key_name == "KEY_LEFT":
+            if self._badges_menu_page > 1:
+                self._badges_menu_page -= 1
+                self._render_badges_menu()
+            return
+
+        if key_name == "KEY_RIGHT":
+            self._badges_menu_page += 1
+            self._render_badges_menu()
+            return
+
     # ==================== SECRETS BOOK ====================
 
     def _show_secrets_book(self):
@@ -10301,9 +10558,9 @@ Core Systems Tested: {report.total_tests}
         
         # ---- Secrets ----
         try:
-            if self.secrets and hasattr(self.secrets, 'discovered'):
-                if self.secrets.discovered:
-                    context_parts.append(f"Secrets discovered: {len(self.secrets.discovered)}")
+            if self.secrets and hasattr(self.secrets, 'discovered_secrets'):
+                if self.secrets.discovered_secrets:
+                    context_parts.append(f"Secrets discovered: {len(self.secrets.discovered_secrets)}")
         except Exception:
             pass
         
@@ -11139,8 +11396,59 @@ Core Systems Tested: {report.total_tests}
             else:
                 self.renderer.show_message(msg, duration=2.0)
         else:
-            # Open decorations menu to place it
+            # Open room selection overlay
+            self._decorations_menu_open = False
+            self._decoration_room_select_open = True
+            self._decoration_room_select_decor_id = decor_id
+            self._render_decoration_room_select(decor_id)
+
+    def _render_decoration_room_select(self, decor_id: str):
+        """Show a room selection overlay for placing a decoration."""
+        from world.decorations import DECORATIONS
+        decoration = DECORATIONS.get(decor_id)
+        name = decoration.name if decoration else decor_id
+
+        rooms = list(self.decorations.rooms.items())
+        lines = [
+            "+===============================================+",
+            f"|  Place: {name[:36]:<36}  |",
+            "+===============================================+",
+            "|  Select a room:                               |",
+            "|                                               |",
+        ]
+        for i, (rid, room) in enumerate(rooms, 1):
+            decor_count = len(getattr(room, 'decorations', []))
+            lines.append(f"|  [{i}] {room.name[:30]:<30} ({decor_count} items) |")
+
+        lines.extend([
+            "|                                               |",
+            "+===============================================+",
+            "|  [1-4] Pick room | [Bksp] Cancel              |",
+            "+===============================================+",
+        ])
+        self.renderer.show_overlay("\n".join(lines), duration=0)
+
+    def _handle_decoration_room_select_input(self, key):
+        """Handle input for decoration room selection sub-menu."""
+        key_str = str(key).lower()
+        key_name = getattr(key, 'name', '') or ''
+
+        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+            self._decoration_room_select_open = False
+            self.renderer.dismiss_overlay()
+            # Reopen decorations menu
             self._show_decorations_menu()
+            return
+
+        rooms = list(self.decorations.rooms.keys())
+        if key_str.isdigit():
+            idx = int(key_str) - 1
+            if 0 <= idx < len(rooms):
+                room_id = rooms[idx]
+                decor_id = self._decoration_room_select_decor_id
+                self._decoration_room_select_open = False
+                self._place_decoration_in_room(decor_id, room_id)
+                return
 
     def _place_decoration_in_room(self, decoration_id: str, room_type: str, position: Tuple[int, int] = (0, 0)):
         """Place a decoration in a room."""

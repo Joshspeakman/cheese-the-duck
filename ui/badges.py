@@ -453,6 +453,11 @@ class BadgesSystem:
         self.total_points: int = 0
         self.favorite_badge: Optional[str] = None
     
+    # Alias for backwards compat — game.py calls award_badge
+    def award_badge(self, badge_id: str) -> Optional[Badge]:
+        """Alias for earn_badge (backwards compat)."""
+        return self.earn_badge(badge_id)
+
     def earn_badge(self, badge_id: str) -> Optional[Badge]:
         """Earn a badge. Returns the badge if newly earned, None if already had."""
         if badge_id not in BADGES:

@@ -72,6 +72,7 @@ def build_main_menu_categories() -> list:
             icon="+",
             items=[
                 MenuItem("collectibles", "Collectibles Album", "View your collection"),
+                MenuItem("badges", "Badges", "View earned achievement badges"),
                 MenuItem("prestige", "Prestige/Legacy", "Rebirth for bonuses"),
                 MenuItem("titles", "Titles & Nicknames", "Manage duck titles"),
                 MenuItem("scrapbook", "Scrapbook", "Memory album"),
@@ -135,6 +136,7 @@ MENU_ACTIONS = {
     
     # Collections & Legacy
     "collectibles": "_show_collectibles_album",
+    "badges": "_show_badges_menu",
     "prestige": "_show_prestige_menu",
     "titles": "_show_titles_menu",
     "scrapbook": "_show_scrapbook",
@@ -206,7 +208,7 @@ def _get_building_items(game):
     items = []
     
     try:
-        from world.building import STRUCTURE_BLUEPRINTS
+        from world.building import BLUEPRINTS as STRUCTURE_BLUEPRINTS
         
         # Group by type
         types = {}
@@ -719,6 +721,7 @@ def build_master_menu_tree():
             label="Collections",
             children=[
                 MasterMenuItem(id="collectibles", label="Collectibles", children=_get_collectibles_items),
+                MasterMenuItem(id="badges", label="Badges", action="badges"),
                 MasterMenuItem(id="prestige", label="Prestige", action="prestige"),
                 MasterMenuItem(id="titles", label="Titles", children=_get_titles_items),
                 MasterMenuItem(id="scrapbook", label="Scrapbook", action="scrapbook"),
