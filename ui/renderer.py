@@ -433,7 +433,7 @@ class Renderer:
         self._show_shop = False
         self._shop_category_index = 0
         self._shop_item_index = 0
-        self._shop_categories = ["COSMETIC", "TOY", "FURNITURE", "WATER", "PLANT"]
+        self._shop_categories = ["COSMETIC", "TOY", "FURNITURE", "WATER", "PLANT", "SPECIAL"]
         self._shop_items_per_page = 8  # Items per page in shop
 
         # Stats window pagination
