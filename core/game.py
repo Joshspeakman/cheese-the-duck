@@ -7263,7 +7263,7 @@ class Game:
         # Deduct given items
         for give_item in offer.you_give:
             if give_item.item_id == "coins":
-                self.habitat._currency = max(0, self.habitat._currency - give_item.quantity)
+                self.habitat.currency = max(0, self.habitat.currency - give_item.quantity)
             else:
                 for _ in range(give_item.quantity):
                     self.inventory.remove_item(give_item.item_id)
@@ -11390,7 +11390,7 @@ Core Systems Tested: {report.total_tests}
             # Try to buy
             success, msg, new_coins = self.decorations.buy_decoration(decor_id, self.habitat.currency)
             if success:
-                self.habitat._currency = new_coins
+                self.habitat.currency = new_coins
                 self.renderer.show_message(f"Bought {decoration.name}!", duration=2.0)
                 duck_sounds.play()
             else:
