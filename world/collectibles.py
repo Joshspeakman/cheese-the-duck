@@ -444,7 +444,52 @@ class CollectiblesSystem:
         names = ", ".join(c.name for c in results)
         return True, f"[=] Pack opened! Got: {names}", results
     
-    def _add_collectible(self, collectible: Collectible):
+    def collect(self, collectible_id: str, source: str = "find") -> bool:
+        """Public method to add a specific collectible by ID. Returns True if acquired."""
+        collectible = COLLECTIBLES.get(collectible_id)
+        if not collectible:
+            return False
+        prev_count = len(self.owned)
+        self._add_collectible_from_source(collectible, source)
+        return len(self.owned) > prev_count or collectible_id in self.owned
+
+    def collect_random(self, source: str = "find", rarity_boost: float = 0.0) -> Optional["Collectible"]:
+        """Collect a random collectible, optionally with a rarity boost (0.0-1.0)."""
+        if not COLLECTIBLES:
+            return None
+        roll = random.uniform(0, 100)
+        cumulative = 0
+        selected_rarity = CollectibleRarity.COMMON
+        for rarity, weight in RARITY_WEIGHTS.items():
+            cumulative += max(0, weight - rarity_boost * weight * 0.5)
+            if roll <= cumulative:
+                selected_rarity = rarity
+                break
+        matching = [c for c in COLLECTIBLES.values() if c.rarity == selected_rarity]
+        if not matching:
+            matching = list(COLLECTIBLES.values())
+        chosen = random.choice(matching)
+        self._add_collectible_from_source(chosen, source)
+        return chosen
+
+    def _add_collectible_from_source(self, collectible: "Collectible", source: str):
+        """Internal: add a collectible and track its source."""
+        is_shiny = random.random() < 0.05
+        if collectible.id in self.owned:
+            self.owned[collectible.id].duplicate_count += 1
+        else:
+            self.owned[collectible.id] = OwnedCollectible(
+                collectible_id=collectible.id,
+                obtained_at=datetime.now().isoformat(),
+                obtained_from=source,
+                is_shiny=is_shiny,
+            )
+            self.total_collected += 1
+            if is_shiny:
+                self.shiny_count += 1
+        self._check_set_completion(collectible.set_id)
+
+    def _add_collectible(self, collectible: "Collectible"):
         """Add a collectible to the collection."""
         # 5% chance of shiny
         is_shiny = random.random() < 0.05
