@@ -135,6 +135,25 @@ ACHIEVEMENT_GOALS = [
         reward_item="lucky_clover",
         reward_message="RARE: Four-Leaf Clover!",
     ),
+    Goal(
+        id="first_trade",
+        name="Open for Business",
+        description="Complete your first trade with a trader",
+        goal_type="achievement",
+        action="trade",
+        target=1,
+        reward_message="You struck your first deal!",
+    ),
+    Goal(
+        id="ten_trades",
+        name="Seasoned Trader",
+        description="Complete 10 trades with traders",
+        goal_type="achievement",
+        action="trade",
+        target=10,
+        reward_item="coin_pouch",
+        reward_message="UNCOMMON: Coin Pouch!",
+    ),
 ]
 
 SECRET_GOALS = [
