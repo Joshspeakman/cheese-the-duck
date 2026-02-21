@@ -178,8 +178,9 @@ def _get_crafting_items(game):
             # Check if can craft
             can_craft = False
             if game and hasattr(game, 'crafting') and hasattr(game, 'materials'):
-                result = game.crafting.can_craft(recipe_id, game.materials)
-                can_craft = result.get('can_craft', False)
+                skill = game.crafting.crafting_skill if hasattr(game.crafting, 'crafting_skill') else 0
+                level = game.progression.level if hasattr(game, 'progression') and game.progression else 0
+                can_craft, _ = recipe.can_craft(game.materials, skill=skill, level=level)
             
             categories[cat_name].append(MasterMenuItem(
                 id=f"craft_{recipe_id}",
