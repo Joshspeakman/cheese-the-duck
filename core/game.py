@@ -8491,8 +8491,8 @@ class Game:
                 self.renderer.show_message("# DEBUG: No building in progress", duration=2)
         elif action == "unlock_blueprints":
             # Set player level high enough to unlock all blueprints
-            if self.duck:
-                self.duck.level = 25
+            if self.progression:
+                self.progression.level = 25
             self.building._player_level = 25
             self.renderer.show_message("# DEBUG: All blueprints unlocked (level 25)!", duration=2)
         elif action == "clear_structures":

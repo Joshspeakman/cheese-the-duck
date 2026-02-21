@@ -225,8 +225,8 @@ def _get_building_items(game):
             
             # Check unlock level
             unlocked = True
-            if game and hasattr(game, 'duck') and game.duck:
-                unlocked = game.duck.level >= bp.unlock_level
+            if game and hasattr(game, 'progression') and game.progression:
+                unlocked = game.progression.level >= bp.unlock_level
             
             types[type_name].append(MasterMenuItem(
                 id=f"build_{bp_id}",
