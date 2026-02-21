@@ -366,6 +366,7 @@ class SoundEngine:
         self._current_context: Optional[MusicContext] = None
         self._crossfade_thread: Optional[threading.Thread] = None
         self._crossfading = False
+        self._crossfade_generation: int = 0  # Generation counter to prevent stale crossfade races
         self._event_music_end_time: float = 0  # When event music should end
         self._previous_context: Optional[MusicContext] = None  # For resuming after events
         self._music_cooldown_until: float = 0  # Cooldown period before next play
@@ -615,6 +616,7 @@ class SoundEngine:
         """Stop background music. Non-blocking."""
         self._music_playing = False
         self._crossfading = False  # Abort any in-progress crossfade
+        self._crossfade_generation += 1  # Signal stale crossfade threads to abort
 
         # Stop pygame Sound object if active (fast, do synchronously)
         if self._music_sound:
@@ -893,6 +895,8 @@ class SoundEngine:
         Crossfade from current music to new context.
 
         Uses a 2-second crossfade for smooth transitions.
+        Uses a generation counter to prevent stale crossfade threads from
+        interfering with newer ones (fixes double-music-on-load bug).
         """
         if self._crossfading:
             return  # Already crossfading
@@ -923,6 +927,8 @@ class SoundEngine:
 
         # Perform crossfade with pygame
         if self._pygame_available:
+            self._crossfade_generation += 1
+            my_generation = self._crossfade_generation
             self._crossfading = True
 
             def do_crossfade():
@@ -932,15 +938,20 @@ class SoundEngine:
                     steps = 20
                     step_duration = fade_duration / steps
 
-                    # Abort early if radio started or crossfade was cancelled
-                    if self.is_radio_playing() or not self._crossfading:
-                        self._crossfading = False
+                    def _stale():
+                        """Check if this crossfade was superseded by a newer one."""
+                        return my_generation != self._crossfade_generation
+
+                    # Abort early if radio started, crossfade was cancelled, or superseded
+                    if self.is_radio_playing() or not self._crossfading or _stale():
                         return
 
                     # Fade out current music
                     if self._music_sound and self._music_channel:
                         start_volume = self._music_sound.get_volume()
                         for i in range(steps):
+                            if _stale():
+                                return
                             vol = start_volume * (1 - (i + 1) / steps)
                             try:
                                 self._music_sound.set_volume(vol)
@@ -952,9 +963,8 @@ class SoundEngine:
                         except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                             pass
 
-                    # Don't start new music if radio started during fade-out
-                    if self.is_radio_playing() or not self._crossfading:
-                        self._crossfading = False
+                    # Don't start new music if radio started during fade-out or superseded
+                    if self.is_radio_playing() or not self._crossfading or _stale():
                         return
 
                     # Load and start new music at low volume, fade in
@@ -968,6 +978,9 @@ class SoundEngine:
 
                             # Fade in
                             for i in range(steps):
+                                if _stale():
+                                    new_sound.stop()
+                                    return
                                 vol = self.music_volume * ((i + 1) / steps)
                                 try:
                                     new_sound.set_volume(vol)
@@ -982,7 +995,7 @@ class SoundEngine:
 
                             # Wait for track to finish, then set cooldown
                             while new_channel and new_channel.get_busy():
-                                if self.music_muted or self.is_radio_playing():
+                                if self.music_muted or self.is_radio_playing() or _stale():
                                     new_sound.stop()
                                     break
                                 time.sleep(0.5)
@@ -997,7 +1010,9 @@ class SoundEngine:
                 except Exception:
                     pass
                 finally:
-                    self._crossfading = False
+                    # Only clear flag if we're still the active crossfade
+                    if my_generation == self._crossfade_generation:
+                        self._crossfading = False
 
             self._crossfade_thread = threading.Thread(target=do_crossfade)
             self._crossfade_thread.daemon = True
