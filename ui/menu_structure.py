@@ -166,7 +166,7 @@ def _get_crafting_items(game):
     items = []
     
     try:
-        from world.crafting import CRAFTING_RECIPES, CraftingCategory
+        from world.crafting import RECIPES as CRAFTING_RECIPES, CraftingCategory
         
         # Group by category
         categories = {}
@@ -366,7 +366,7 @@ def _get_tricks_items(game):
     items = []
     
     try:
-        from duck.tricks import TRICK_LIBRARY, TrickCategory
+        from duck.tricks import TRICKS as TRICK_LIBRARY, TrickCategory
         
         # Group by category
         categories = {}
@@ -410,12 +410,12 @@ def _get_garden_items(game):
     items.append(MasterMenuItem(id="garden_harvest", label="Harvest", action="garden_harvest"))
     
     try:
-        from world.garden import SEED_SHOP
+        from world.garden import SEEDS as SEED_SHOP
         
         # Seeds submenu
         seed_items = []
         for seed_id, seed_data in SEED_SHOP.items():
-            name = seed_data.get('name', seed_id)
+            name = seed_data.get('plant', seed_id).replace('_', ' ').title()
             cost = seed_data.get('cost', 0)
             seed_items.append(MasterMenuItem(
                 id=f"garden_plant_{seed_id}",
@@ -484,7 +484,7 @@ def _get_collectibles_items(game):
     items = []
     
     try:
-        from world.collectibles import COLLECTION_SETS, COLLECTIBLES
+        from world.collectibles import SETS as COLLECTION_SETS, COLLECTIBLES
         
         for set_id, set_data in COLLECTION_SETS.items():
             # Count owned in set
@@ -497,7 +497,7 @@ def _get_collectibles_items(game):
                     total_count += 1
                     owned = False
                     if game and hasattr(game, 'collectibles') and game.collectibles:
-                        owned = col_id in game.collectibles.owned_collectibles
+                        owned = col_id in game.collectibles.owned
                         if owned:
                             owned_count += 1
                     
@@ -527,7 +527,7 @@ def _get_titles_items(game):
     items = []
     
     try:
-        from duck.titles import TITLE_LIBRARY, TitleCategory
+        from duck.titles import TITLES as TITLE_LIBRARY, TitleCategory
         
         # Group by category
         categories = {}

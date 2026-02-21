@@ -1499,10 +1499,8 @@ class Game:
         
         # Go home
         elif action == "go_home":
-            if hasattr(self, '_travel_home'):
-                self._travel_home()
-            elif self.exploration:
-                self.exploration.current_area = None
+            if self.exploration:
+                self._travel_to_area("Home Pond")
         
         # Quack
         elif action == "quack":
@@ -7425,12 +7423,12 @@ class Game:
         # Apply rewards
         if self.duck:
             # Add coins
-            self.habitat.add_coins(rewards["coins"])
+            self.habitat.add_currency(rewards["coins"])
             
             # Add XP
             new_level = self.progression.add_xp(rewards["xp"])
             if new_level:
-                self._show_level_up(new_level)
+                self._on_level_up(new_level)
             
             # Apply mood bonus
             self.duck.needs.fun = min(100, self.duck.needs.fun + rewards["mood_bonus"])
@@ -7614,10 +7612,10 @@ class Game:
             treasure = TREASURES.get(found.treasure_id)
             if treasure:
                 # Add rewards
-                self.habitat.add_coins(treasure.coin_value)
+                self.habitat.add_currency(treasure.coin_value)
                 new_level = self.progression.add_xp(treasure.xp_value)
                 if new_level:
-                    self._show_level_up(new_level)
+                    self._on_level_up(new_level)
                 
                 # Show treasure found animation
                 lines = [
@@ -7866,7 +7864,7 @@ class Game:
                         self.inventory.add_item(reward.name.lower().replace(" ", "_"))
                     new_level = self.progression.add_xp(reward.xp_value)
                     if new_level:
-                        self._show_level_up(new_level)
+                        self._on_level_up(new_level)
                 self.renderer.show_message(msg, duration=3)
                 duck_sounds.quack("excited")
             else:
@@ -7892,7 +7890,7 @@ class Game:
                         self.inventory.add_item(reward.name.lower().replace(" ", "_"))
                     new_level = self.progression.add_xp(reward.xp_value)
                     if new_level:
-                        self._show_level_up(new_level)
+                        self._on_level_up(new_level)
                 
                 lines.extend([
                     "",
@@ -10476,9 +10474,9 @@ Core Systems Tested: {report.total_tests}
         
         # ---- Building ----
         try:
-            if self.building and hasattr(self.building, 'built_structures'):
-                if self.building.built_structures:
-                    struct_names = [s.name if hasattr(s, 'name') else str(s) for s in self.building.built_structures.values()]
+            if self.building and hasattr(self.building, 'structures'):
+                if self.building.structures:
+                    struct_names = [s.name if hasattr(s, 'name') else str(s) for s in self.building.structures]
                     if struct_names:
                         context_parts.append(f"Built structures: {', '.join(struct_names[:5])}")
         except Exception:
@@ -10511,19 +10509,20 @@ Core Systems Tested: {report.total_tests}
         
         # ---- Festivals ----
         try:
-            if self.festivals and hasattr(self.festivals, 'active_festival') and self.festivals.active_festival:
-                fest = self.festivals.active_festival
-                fname = fest.name if hasattr(fest, 'name') else str(fest)
-                context_parts.append(f"Active festival: {fname}")
+            if self.festivals and hasattr(self.festivals, 'check_active_festival'):
+                fest = self.festivals.check_active_festival()
+                if fest:
+                    fname = fest.name if hasattr(fest, 'name') else str(fest)
+                    context_parts.append(f"Active festival: {fname}")
         except Exception:
             pass
         
         # ---- Fortune / horoscope ----
         try:
-            if self.fortune and hasattr(self.fortune, 'get_today_fortune'):
-                fortune = self.fortune.get_today_fortune()
-                if fortune:
-                    context_parts.append(f"Today's fortune: {fortune}")
+            if self.fortune and hasattr(self.fortune, 'generate_daily_horoscope'):
+                horoscope = self.fortune.generate_daily_horoscope()
+                if horoscope:
+                    context_parts.append(f"Today's horoscope: {horoscope.prediction if hasattr(horoscope, 'prediction') else str(horoscope)}")
         except Exception:
             pass
         
@@ -10550,9 +10549,9 @@ Core Systems Tested: {report.total_tests}
         
         # ---- Collectibles ----
         try:
-            if self.collectibles and hasattr(self.collectibles, 'collected'):
-                if self.collectibles.collected:
-                    context_parts.append(f"Collectibles found: {len(self.collectibles.collected)}")
+            if self.collectibles and hasattr(self.collectibles, 'owned'):
+                if self.collectibles.owned:
+                    context_parts.append(f"Collectibles found: {len(self.collectibles.owned)}")
         except Exception:
             pass
         
@@ -11076,8 +11075,9 @@ Core Systems Tested: {report.total_tests}
             return
 
         # Check if owned
-        is_owned = col_id in self.collectibles.owned_collectibles
-        is_shiny = col_id in self.collectibles.shiny_collectibles
+        is_owned = col_id in self.collectibles.owned
+        owned_entry = self.collectibles.owned.get(col_id)
+        is_shiny = owned_entry.is_shiny if owned_entry else False
 
         if is_owned:
             shiny_text = " (SHINY!)" if is_shiny else ""
@@ -11244,7 +11244,7 @@ Core Systems Tested: {report.total_tests}
             
             for item in items:
                 rarity_icon = {"common": "o", "uncommon": "O", "rare": "O", "epic": "O", "legendary": "O"}.get(item.rarity.value if hasattr(item.rarity, 'value') else str(item.rarity), "o")
-                new_marker = "*NEW" if not self.collectibles.is_duplicate(item.id) else ""
+                new_marker = "*NEW" if item.id not in self.collectibles.owned else ""
                 lines.append(f"|  {rarity_icon} {item.name[:30]:30} {new_marker:5} |")
             
             lines.append("+===============================================+")
