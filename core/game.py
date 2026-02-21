@@ -5181,10 +5181,14 @@ class Game:
         # Stop title music and start game music
         sound_engine.stop_music()
         sound_engine.stop_background_music()
-        weather_str = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
-        duck_mood = self.duck.get_mood().state.value if self.duck else "content"
-        music_context = get_music_context(weather=weather_str, duck_mood=duck_mood)
-        sound_engine.update_music(music_context, force=True)
+        # Only start game music if going directly to playing state.
+        # If offline_summary, music will start when the summary is dismissed
+        # (prevents double-music from two overlapping crossfade threads).
+        if self._state == "playing":
+            weather_str = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+            duck_mood = self.duck.get_mood().state.value if self.duck else "content"
+            music_context = get_music_context(weather=weather_str, duck_mood=duck_mood)
+            sound_engine.update_music(music_context, force=True)
 
         self._last_tick = time.time()
         self._last_save = time.time()
