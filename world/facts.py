@@ -777,6 +777,8 @@ def get_mood_response(mood_state: str) -> str:
         "lonely": LONELY_RESPONSES,
         "playful": PLAYFUL_RESPONSES,
         "dirty": DIRTY_RESPONSES,
+        "dramatic": ["*GASP*", "*throws wing across face*", "*monologues to pond*", "*existential quack*"],
+        "petty": ["*icy stare*", "*passive-aggressive preen*", "*hmph*", "*tallying something*"],
     }
 
     mood_responses = responses.get(mood_state, ["*quack*"])

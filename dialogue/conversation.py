@@ -117,6 +117,22 @@ DIALOGUE = {
             "*motionless* ...I'm here. technically. most of me. the important parts checked out.",
             "...the pond looks the same as always. wish I could say the same about me.",
         ],
+        "dramatic": [
+            "*throws wing across forehead* YOU! You've ARRIVED! At the WORST and BEST time SIMULTANEOUSLY!",
+            "*gasp* Finally! An AUDIENCE! The feelings were WASTED on the pond!",
+            "*spotlight pose* Oh, hello. Welcome to whatever THIS is. *gestures at self*",
+            "*narrating* And then they came. And the duck FELT things. SO MANY things.",
+            "*spinning* EVERYTHING is happening at ONCE and I'm LIVING for it! Or DYING! UNCLEAR!",
+            "*clutches chest* You're HERE! The EMOTIONS! I can't CONTAIN them!",
+        ],
+        "petty": [
+            "*cold smile* Oh. Hello. Didn't expect to see you. I mean, I DID. But I'm being coy.",
+            "*preens without looking up* ...hm? Oh, you. Welcome back, I suppose.",
+            "*icy politeness* Greetings. You look rested. How nice. For SOME of us.",
+            "*adjusts feathers* Oh, hi. I was just tallying up some things. Nothing important. Everything important.",
+            "*passive-aggressive wave* Welcome back! To the pond! That I've been at! ALONE! It's fine!",
+            "Oh. You decided to show up. I've been here. The WHOLE time. But who's counting. *I am.*",
+        ],
     },
 
     # Responses to being fed

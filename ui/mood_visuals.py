@@ -21,6 +21,8 @@ class VisualMood(Enum):
     ANGRY = "angry"
     SCARED = "scared"
     PLAYFUL = "playful"
+    DRAMATIC = "dramatic"
+    PETTY = "petty"
 
 
 @dataclass
@@ -232,6 +234,36 @@ MOOD_THEMES: Dict[VisualMood, MoodVisualTheme] = {
         brightness=1.2,
         special_effects=["bouncing", "silly_dance", "confetti"]
     ),
+
+    VisualMood.DRAMATIC: MoodVisualTheme(
+        mood=VisualMood.DRAMATIC,
+        name="Dramatic",
+        description="THE SPOTLIGHT IS ON ME",
+        primary_color="magenta",
+        secondary_color="red",
+        accent_color="yellow",
+        background_chars=["!", "*", "~", "!"],
+        floating_particles=["!!!", "?!", "*gasp*", "~*~"],
+        border_style="theatrical",
+        animation_speed=1.8,
+        brightness=1.4,
+        special_effects=["spotlight", "dramatic_zoom", "sparkle"]
+    ),
+
+    VisualMood.PETTY: MoodVisualTheme(
+        mood=VisualMood.PETTY,
+        name="Petty",
+        description="Fine. Totally fine.",
+        primary_color="green",
+        secondary_color="yellow",
+        accent_color="red",
+        background_chars=["-", ".", "-", "."],
+        floating_particles=["...", "hmph", ">:)", "-_-"],
+        border_style="sharp",
+        animation_speed=0.7,
+        brightness=0.9,
+        special_effects=["cold_aura", "sideeye", "grudge_cloud"]
+    ),
 }
 
 
@@ -414,6 +446,8 @@ class MoodVisualEffects:
             VisualMood.ANGRY: [">_<", ">:("],
             VisualMood.SCARED: ["o.o", "D:"],
             VisualMood.PLAYFUL: ["^_^", ";)"],
+            VisualMood.DRAMATIC: ["!!!!", "O_O"],
+            VisualMood.PETTY: [">:)", "-.-"],
         }
         
         face_data = faces.get(self.current_mood, ["-_-", "d"])
@@ -444,6 +478,8 @@ class MoodVisualEffects:
             VisualMood.ANGRY: ">_<",
             VisualMood.SCARED: "o.o",
             VisualMood.PLAYFUL: "^_^",
+            VisualMood.DRAMATIC: "!!!!",
+            VisualMood.PETTY: ">:)",
         }
         
         return expressions.get(self.current_mood, "-_-")

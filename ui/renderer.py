@@ -1244,6 +1244,8 @@ class Renderer:
             "grumpy": "[>_<]",
             "sad": "[;_;]",
             "miserable": "[T_T]",
+            "dramatic": "[!!!]",
+            "petty": "[>:)]",
         }
         mood_ind = mood_indicators.get(mood.state.value, "[...]")
 

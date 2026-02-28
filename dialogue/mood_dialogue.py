@@ -23,6 +23,8 @@ class MoodType(Enum):
     SCARED = "scared"
     SICK = "sick"
     PLAYFUL = "playful"
+    DRAMATIC = "dramatic"
+    PETTY = "petty"
 
 
 class DialogueContext(Enum):
@@ -748,6 +750,88 @@ MOOD_DIALOGUES: Dict[MoodType, Dict[DialogueContext, List[DialogueLine]]] = {
             DialogueLine("*shivering* ...is the pond colder or am I? both probably. a conspiracy of temperature.", "", ""),
         ],
     },
+
+    MoodType.DRAMATIC: {
+        DialogueContext.GREETING: [
+            DialogueLine("*throws wing across forehead* YOU. You're HERE. This changes EVERYTHING.", "", "quack"),
+            DialogueLine("*gasp* A visitor! The universe conspires to make this moment SIGNIFICANT.", "", "quack"),
+            DialogueLine("*spotlight pose* Finally! An audience for my SUFFERING.", "", "quack"),
+            DialogueLine("*clutches chest* The EMOTIONS I am feeling right now could fill a MEMOIR.", "", "quack"),
+            DialogueLine("*dramatic turn* ...I sensed your presence. The pond told me. Probably.", "", ""),
+            DialogueLine("*narrating to no one* And then they arrived. And everything CHANGED. Or didn't. TBD.", "", "quack"),
+        ],
+        DialogueContext.FEEDING: [
+            DialogueLine("*clutches bread like a lifeline* SUSTENANCE! At last! I was MOMENTS from oblivion!", "", "eating"),
+            DialogueLine("*weeps into crumbs* You remembered... the bread... *sniffle* THANK YOU.", "", "eating"),
+            DialogueLine("*takes one bite, stares into distance* This bread... it tastes like REDEMPTION.", "", "eating"),
+            DialogueLine("*eats while monologuing* Each crumb... a reminder... that I am ALIVE.", "", "eating"),
+        ],
+        DialogueContext.PETTING: [
+            DialogueLine("*melts dramatically* The TOUCH. It heals OLD WOUNDS.", "", ""),
+            DialogueLine("*swoons* One pet... and the DARKNESS retreats. For now.", "", "quack"),
+            DialogueLine("*collapses into hand* I NEEDED this. The universe KNEW.", "", ""),
+            DialogueLine("*gasp* GENTLE. Too kind. I might CRY. I'm crying. It's fine.", "", "quack"),
+        ],
+        DialogueContext.PLAYING: [
+            DialogueLine("*spins wildly* GAMES! The only thing keeping me from the VOID!", "", "quack"),
+            DialogueLine("*leaps* THIS IS LIVING! THIS IS THE PEAK! I'll remember this ALWAYS!", "", "excited_quack"),
+            DialogueLine("*excessive energy* MORE! FASTER! This is my MAGNUM OPUS of play!", "", "quack"),
+            DialogueLine("*crashes into wall* I'M FINE. The drama DEMANDS sacrifice!", "", "quack"),
+        ],
+        DialogueContext.IDLE: [
+            DialogueLine("*stares at pond* The water reflects my INNER TURMOIL.", "", ""),
+            DialogueLine("*sighs at maximum volume* No one understands. The bread understands. Maybe.", "", "quack"),
+            DialogueLine("*narrating* And there he sat. A duck of IMMENSE feelings. Waiting.", "", ""),
+            DialogueLine("*dramatically preens* Even grooming is a PERFORMANCE when you feel this much.", "", ""),
+            DialogueLine("*throws self on ground* I'm FINE. Everything is FINE. It's all SO MUCH.", "", "quack"),
+        ],
+        DialogueContext.FAREWELL: [
+            DialogueLine("*reaching out* GO THEN. Leave me to my SOLITUDE. I'll SURVIVE. probably.", "", "quack"),
+            DialogueLine("*turns away dramatically* I won't watch you leave. I CAN'T.", "", ""),
+            DialogueLine("*single tear* This isn't goodbye. It's just... a DRAMATIC pause.", "", "quack"),
+        ],
+    },
+
+    MoodType.PETTY: {
+        DialogueContext.GREETING: [
+            DialogueLine("*cold smile* Oh. You're back. How NICE. For you.", "", "quack"),
+            DialogueLine("*looks up slowly* Hm. Decided to show up, did we?", "", ""),
+            DialogueLine("*filing invisible nails* Oh, hello. I wasn't counting the minutes. That would be obsessive.", "", "quack"),
+            DialogueLine("*passive-aggressive preen* Welcome back. I barely noticed you were gone. The lie detector test determined that was a lie.", "", "quack"),
+            DialogueLine("*icy politeness* Hello. You look well. How lovely. For some of us.", "", ""),
+            DialogueLine("*keeps preening, doesn't look up* Oh. Were you talking to me? I was busy. With my grudge.", "", "quack"),
+        ],
+        DialogueContext.FEEDING: [
+            DialogueLine("*eats pointedly* Bread. How generous. NOW. Not, you know, EARLIER when I needed it.", "", "eating"),
+            DialogueLine("*takes small bites* I'm eating but I want you to know I REMEMBER the hunger.", "", "eating"),
+            DialogueLine("*chews slowly* Mm. Thank you. I've filed this under 'too little, too late'.", "", "eating"),
+            DialogueLine("*nibbles* Oh, FOOD. How thoughtful. If only someone had done this BEFORE the crisis.", "", "eating"),
+        ],
+        DialogueContext.PETTING: [
+            DialogueLine("*endures petting* I'll allow it. But don't think this changes things.", "", ""),
+            DialogueLine("*doesn't pull away but doesn't lean in* Fine. Pet me. I'm keeping score.", "", "quack"),
+            DialogueLine("*stiff* Your hand is warm. I refuse to acknowledge how nice that is.", "", ""),
+            DialogueLine("*allows it grudgingly* This is not forgiveness. This is tolerance.", "", "quack"),
+        ],
+        DialogueContext.PLAYING: [
+            DialogueLine("*participates but won't smile* I'm playing. But BEGRUDGINGLY.", "", "quack"),
+            DialogueLine("*competitive* Fine. Let's play. I WILL win. Out of SPITE.", "", "quack"),
+            DialogueLine("*playing but muttering* Having fun doesn't mean I've forgiven anything.", "", ""),
+            DialogueLine("*aggressive fun* I'm only enjoying this to PROVE something. Not sure what.", "", "quack"),
+        ],
+        DialogueContext.IDLE: [
+            DialogueLine("*staring at you* I'm not mad. I'm disappointed. There's a difference. *It's worse.*", "", ""),
+            DialogueLine("*preening aggressively* Just here. Being fine. SUPREMELY fine. Aggressively fine.", "", "quack"),
+            DialogueLine("*counting something on feathers* That's three. Three times. I'm keeping a tally.", "", ""),
+            DialogueLine("*sitting with perfect posture* I have chosen peace. But I remember EVERYTHING.", "", "quack"),
+            DialogueLine("*organizing nest* I'm reorganizing by resentment level. It's therapeutic.", "", ""),
+        ],
+        DialogueContext.FAREWELL: [
+            DialogueLine("*doesn't look up* Leaving? Fine. I won't say I expected this. But I did.", "", ""),
+            DialogueLine("*waves one wing dismissively* Go. I'll be here. Being FINE. As ALWAYS.", "", "quack"),
+            DialogueLine("Bye. I've already mentally prepared for your absence. Practice makes perfect.", "", ""),
+        ],
+    },
 }
 
 # Default dialogue for moods not fully defined
@@ -873,6 +957,8 @@ class MoodDialogueSystem:
                 MoodType.PLAYFUL: "Level up! Does that come with new tricks? It should.",
                 MoodType.HUNGRY: "Leveled up. Does that come with food? It should come with food.",
                 MoodType.SCARED: "*jumps* Level up? That sound scared me. But... good, I think.",
+                MoodType.DRAMATIC: "LEVELED UP. A MILESTONE. Someone write this DOWN!",
+                MoodType.PETTY: "Oh. Level up. How nice. Would've been nicer if I hadn't SUFFERED getting here.",
             },
             "new_item": {
                 MoodType.HAPPY: "New thing. Interesting. I'll add it to the collection.",
@@ -884,6 +970,8 @@ class MoodDialogueSystem:
                 MoodType.TIRED: "*yawn* New... thing... cool... *dozes*",
                 MoodType.HUNGRY: "New item. Is it edible? Everything should be edible.",
                 MoodType.ECSTATIC: "Something new! Today just keeps getting better. Suspiciously better.",
+                MoodType.DRAMATIC: "A NEW ITEM! The universe PROVIDES! *clutches it* MINE.",
+                MoodType.PETTY: "Oh, a new item. I'll add it to my collection. Of GRIEVANCES. And also items.",
             },
             "achievement": {
                 MoodType.HAPPY: "Achievement unlocked. Put it on my resume.",
@@ -895,6 +983,8 @@ class MoodDialogueSystem:
                 MoodType.PLAYFUL: "Achievement! Do we get a celebration? I vote celebration.",
                 MoodType.TIRED: "Achievement... great... can I nap now?",
                 MoodType.HUNGRY: "Achievement unlocked. The real achievement would be bread.",
+                MoodType.DRAMATIC: "ACHIEVEMENT UNLOCKED! *stands on rock* THIS is my LEGACY!",
+                MoodType.PETTY: "Oh, an achievement. Finally some RECOGNITION. Only took forever.",
             },
             "friend_visit": {
                 MoodType.HAPPY: "Someone's visiting. Alright. I'll be social. Probably.",
@@ -907,6 +997,8 @@ class MoodDialogueSystem:
                 MoodType.TIRED: "Visitor... cool... I'll be awake for that... probably...",
                 MoodType.HUNGRY: "Visitor. Did they bring food? The only relevant question.",
                 MoodType.ECSTATIC: "A visitor during my good mood! Lucky them. They get pleasant Cheese.",
+                MoodType.DRAMATIC: "A VISITOR! *throws wing out* WELCOME to my EMOTIONAL LANDSCAPE!",
+                MoodType.PETTY: "A visitor. At least SOMEONE shows up. *pointed look*",
             },
             "weather_change": {
                 MoodType.HAPPY: "Weather's changing. I'll adapt. I always adapt.",
@@ -915,6 +1007,8 @@ class MoodDialogueSystem:
                 MoodType.EXCITED: "The weather's changing! Something's happening in the sky!",
                 MoodType.SCARED: "*looks up nervously* The sky is doing something different. I don't trust it.",
                 MoodType.BORED: "Weather changed. At least the sky's doing something.",
+                MoodType.DRAMATIC: "The WEATHER has shifted! Even the SKY reflects my inner TURMOIL!",
+                MoodType.PETTY: "Oh, the weather changed. How fitting. The universe can't commit either.",
             },
             "gift_received": {
                 MoodType.HAPPY: "A gift? For me? That's... thoughtful. I think.",
@@ -923,6 +1017,8 @@ class MoodDialogueSystem:
                 MoodType.CONTENT: "A gift. I'll put it with my other things. Which are few. But valued.",
                 MoodType.EXCITED: "GIFT! What is it? Show me! I have anticipation!",
                 MoodType.PLAYFUL: "A gift? Can I unwrap it? I want to unwrap something!",
+                MoodType.DRAMATIC: "A GIFT?! *clutches it* The GENEROSITY! I'm OVERWHELMED!",
+                MoodType.PETTY: "A gift. Interesting. Is this a peace offering? Because I accept but I'm not forgetting.",
             },
         }
 

@@ -10,6 +10,11 @@ from datetime import datetime
 from blessed import Terminal
 
 from config import FPS, TICK_RATE
+from config import (
+    ITEM_USE_COOLDOWNS, ITEM_DIMINISHING_WINDOW, ITEM_DIMINISHING_STEPS,
+    ITEM_SPAM_COUNT, ITEM_SPAM_WINDOW, ITEM_SPAM_MOOD_PENALTY,
+    ITEM_SPAM_HUNGER_OVERFEED,
+)
 from core.clock import GameClock, game_clock
 from core.consequences import (
     check_consequences, apply_trust_gain, attempt_coax, apply_medicine,
@@ -462,6 +467,10 @@ class Game:
             "sleep": 60,     # Can sleep every 60 seconds
         }
         self._last_interaction_time = {}  # Tracks when each interaction was last used
+
+        # Inventory item-use tracking (anti-spam / diminishing returns)
+        self._item_use_history: Dict[str, list] = {}   # category → [timestamps]
+        self._last_item_use_time: Dict[str, float] = {}  # category → last-use epoch
 
     def start(self):
         """Start the game."""
@@ -1278,7 +1287,7 @@ class Game:
             self.renderer.show_message(f"Equipped {item.name}!")
 
     def _use_inventory_item(self, index: int):
-        """Use an inventory item by index."""
+        """Use an inventory item by index, with cooldown / diminishing-returns enforcement."""
         if not self.duck:
             return
 
@@ -1300,45 +1309,136 @@ class Game:
                 self.renderer.show_message(msg, duration=3.0, category="duck")
             return
 
-        # Use the item
-        result = self.inventory.use_item(item_id, self.duck)
-        if result:
-            item = result["item"]
+        # Look up item data for category-based enforcement
+        from world.items import ITEMS as _ITEMS
+        item_data = _ITEMS.get(item_id)
+        if not item_data:
+            self.renderer.show_message("Can't use that item!")
+            return
 
-            # Show item use message
-            self.renderer.show_message(result["message"], duration=4.0, category="duck")
+        category = item_data.item_type.value          # "food", "toy", etc.
+        now = time.time()
 
-            # Play appropriate sound
-            if item.item_type.value == "food":
-                duck_sounds.eat()
-            elif item.item_type.value == "toy":
-                duck_sounds.play()
-            else:
-                duck_sounds.quack("happy")
+        # ── 1. Per-category cooldown ──────────────────────────────────
+        cooldown = ITEM_USE_COOLDOWNS.get(category, 30)
+        last_use = self._last_item_use_time.get(category, 0.0)
+        elapsed = now - last_use
+        if elapsed < cooldown:
+            remaining = int(cooldown - elapsed)
+            _cooldown_lines = [
+                f"*pushes your hand away* I JUST ate! ({remaining}s)",
+                f"*stares at you* Personal space? ({remaining}s)",
+                f"*glares* Do I LOOK like a garbage disposal? ({remaining}s)",
+                f"*waddles backward* Boundaries! ({remaining}s)",
+                f"*sighs dramatically* Give it a REST. ({remaining}s)",
+            ]
+            self.renderer.show_message(
+                random.choice(_cooldown_lines), duration=3.0, category="duck"
+            )
+            return
 
-            # Show closeup based on reaction
+        # ── 2. Prune old history & compute diminishing-returns step ───
+        history = self._item_use_history.setdefault(category, [])
+        cutoff = now - ITEM_DIMINISHING_WINDOW
+        history[:] = [t for t in history if t > cutoff]
+
+        use_index = len(history)     # 0-based count of uses in the window
+        dim_steps = ITEM_DIMINISHING_STEPS
+        multiplier = dim_steps[min(use_index, len(dim_steps) - 1)]
+
+        # ── 3. Spam detection ─────────────────────────────────────────
+        spam_cutoff = now - ITEM_SPAM_WINDOW
+        recent_count = sum(1 for t in history if t > spam_cutoff)
+        is_spam = recent_count >= ITEM_SPAM_COUNT
+
+        if is_spam:
+            # Mood penalty
+            if hasattr(self.duck, 'mood_calculator'):
+                self.duck.mood_calculator._mood_offset = getattr(
+                    self.duck.mood_calculator, '_mood_offset', 0
+                ) + ITEM_SPAM_MOOD_PENALTY
+
+            # Overfeed: lower hunger slightly (bloated feeling)
+            if category == "food":
+                self.duck.needs.hunger = max(
+                    0, self.duck.needs.hunger - ITEM_SPAM_HUNGER_OVERFEED
+                )
+            _spam_roasts = [
+                "*burps resentfully* I'm NOT a Pez dispenser.",
+                "*stares into the void* This is what my life has become.",
+                "*holds stomach* You're doing this on PURPOSE.",
+                "*visibly queasy* I can feel my dignity dissolving.",
+                "*lying on side* I have achieved... maximum bread.",
+                "*dramatic gag* The bread... it haunts me.",
+                "*glares* One day I'll learn to lock the pantry.",
+            ]
+            self.renderer.show_message(
+                random.choice(_spam_roasts), duration=5.0, category="duck"
+            )
+            self.renderer.show_closeup("grimace", 3.0)
+            duck_sounds.quack("annoyed")
+
+        # ── 4. Actually use the item (with scaled effects) ────────────
+        result = self.inventory.use_item(
+            item_id, self.duck, effect_multiplier=multiplier
+        )
+        if not result:
+            self.renderer.show_message("Can't use that item!")
+            return
+
+        # Record this usage
+        history.append(now)
+        self._last_item_use_time[category] = now
+
+        item = result["item"]
+
+        # ── 5. Show feedback ──────────────────────────────────────────
+        if is_spam:
+            pass   # Roast already shown above
+        elif multiplier < 0.5:
+            _dim_lines = [
+                f"*chews mechanically* It's... fine, I guess. ({int(multiplier*100)}% effect)",
+                f"*half-hearted nibble* Losing its charm. ({int(multiplier*100)}%)",
+                f"*picks at crumbs* You're over-doing it. ({int(multiplier*100)}%)",
+            ]
+            self.renderer.show_message(
+                random.choice(_dim_lines), duration=4.0, category="duck"
+            )
+        else:
+            self.renderer.show_message(
+                result["message"], duration=4.0, category="duck"
+            )
+
+        # Play appropriate sound
+        if category == "food":
+            duck_sounds.eat()
+        elif category == "toy":
+            duck_sounds.play()
+        else:
+            duck_sounds.quack("happy")
+
+        # Show closeup based on reaction
+        if not is_spam:
             reaction = result.get("reaction", "happy")
             if reaction in ["ecstatic", "transcendent", "crying_happy"]:
                 self.renderer.show_effect("sparkle", 2.0)
             self.renderer.show_closeup(reaction, 2.5)
 
-            # Record in memory
-            self.duck.memory.add_interaction(
-                f"used_{item.item_type.value}",
-                item.name,
-                emotional_value=item.mood_bonus
-            )
+        # Record in memory
+        self.duck.memory.add_interaction(
+            f"used_{category}",
+            item.name,
+            emotional_value=item.mood_bonus
+        )
 
-            # Update goals
-            self.goals.update_progress("use_item", 1)
-            if item.item_type.value == "food":
-                self.goals.update_progress("feed", 1)
+        # Update goals
+        self.goals.update_progress("use_item", 1)
+        if category == "food":
+            self.goals.update_progress("feed", 1)
 
-            # Check for item-related achievements
-            if item.rarity == "legendary":
-                self._unlock_achievement("used_legendary")
-        else:
-            self.renderer.show_message("Can't use that item!")
+        # Check for item-related achievements
+        if item.rarity == "legendary":
+            self._unlock_achievement("used_legendary")
 
     def _process_talk(self, message: str):
         """Process a talk message and get duck response."""
