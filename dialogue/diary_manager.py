@@ -519,11 +519,22 @@ class DiaryManager:
 
         self._last_mood_score = mood_score
 
-    def check_absence(self, last_played_timestamp: float):
+    def check_absence(self, last_played_timestamp):
         """
         Called on game load. Checks if player was away long enough
         to trigger a neglect/return entry.
+        Accepts either a numeric Unix timestamp or an ISO-format string.
         """
+        if not last_played_timestamp:
+            return
+        # Convert ISO string to Unix timestamp if needed
+        if isinstance(last_played_timestamp, str):
+            try:
+                from datetime import datetime
+                dt = datetime.fromisoformat(last_played_timestamp)
+                last_played_timestamp = dt.timestamp()
+            except (ValueError, TypeError):
+                return
         if last_played_timestamp <= 0:
             return
         absence_seconds = time.time() - last_played_timestamp
