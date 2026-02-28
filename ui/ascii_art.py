@@ -633,6 +633,8 @@ MOOD_TO_STATE = {
     MoodState.GRUMPY: "grumpy",
     MoodState.SAD: "sad",
     MoodState.MISERABLE: "miserable",
+    MoodState.DRAMATIC: "ecstatic",   # Dramatic reuses ecstatic art (big energy)
+    MoodState.PETTY: "grumpy",        # Petty reuses grumpy art (passive-aggressive)
 }
 
 # Mood to close-up mapping
@@ -643,6 +645,8 @@ MOOD_TO_CLOSEUP = {
     MoodState.GRUMPY: "grumpy",
     MoodState.SAD: "sad",
     MoodState.MISERABLE: "miserable",
+    MoodState.DRAMATIC: "dramatic",
+    MoodState.PETTY: "grumpy",
 }
 
 # Action to close-up mapping

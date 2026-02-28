@@ -547,13 +547,16 @@ class Inventory:
         """Get count of a specific item."""
         return self.items.count(item_id)
 
-    def use_item(self, item_id: str, duck: "Duck") -> Optional[Dict]:
+    def use_item(self, item_id: str, duck: "Duck",
+                 effect_multiplier: float = 1.0) -> Optional[Dict]:
         """
         Use an item on the duck.
 
         Args:
             item_id: Item to use
             duck: Duck to use item on
+            effect_multiplier: Scales all positive effects (diminishing returns).
+                               Negative effects (e.g. energy cost) are NOT scaled.
 
         Returns:
             Dict with results, or None if item not found/usable
@@ -565,12 +568,13 @@ class Inventory:
         if not item:
             return None
 
-        # Apply effects
+        # Apply effects (only positive effects are scaled by multiplier)
         changes = {}
         for need, change in item.effects.items():
             if hasattr(duck.needs, need):
+                scaled = change * effect_multiplier if change > 0 else change
                 old_value = getattr(duck.needs, need)
-                new_value = max(0, min(100, old_value + change))
+                new_value = max(0, min(100, old_value + scaled))
                 setattr(duck.needs, need, new_value)
                 changes[need] = new_value - old_value
 
@@ -583,6 +587,7 @@ class Inventory:
             "changes": changes,
             "message": item.use_message,
             "reaction": item.duck_reaction,
+            "multiplier": effect_multiplier,
         }
 
     def get_items_by_type(self, item_type: ItemType) -> List[str]:

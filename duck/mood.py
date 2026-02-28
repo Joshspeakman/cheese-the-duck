@@ -1,11 +1,17 @@
 """
 Mood system - calculates duck's emotional state from needs.
+Includes 8 moods: 6 score-based + 2 contextual overrides (DRAMATIC, PETTY).
 """
 from typing import List, Optional
 from dataclasses import dataclass
 from enum import Enum
 
-from config import MOOD_THRESHOLDS, MOOD_WEIGHTS
+from config import (
+    MOOD_THRESHOLDS, MOOD_WEIGHTS,
+    MOOD_DRAMATIC_NEED_VARIANCE, MOOD_DRAMATIC_SWING_THRESHOLD,
+    MOOD_PETTY_RECOVERY_FLOOR, MOOD_PETTY_CURRENT_MIN,
+    MOOD_PETTY_HISTORY_DEPTH,
+)
 
 
 class MoodState(Enum):
@@ -16,6 +22,9 @@ class MoodState(Enum):
     GRUMPY = "grumpy"
     SAD = "sad"
     MISERABLE = "miserable"
+    # Contextual overrides — triggered by conditions, not raw score
+    DRAMATIC = "dramatic"
+    PETTY = "petty"
 
 
 @dataclass
@@ -123,6 +132,38 @@ MOOD_DATA = {
         "can_play": False,
         "can_learn": False,
     },
+    MoodState.DRAMATIC: {
+        "description": "performing emotions for an invisible audience",
+        "descriptions": [
+            "convinced this is a pivotal scene in his biopic",
+            "one wing over his forehead, the other clutching pearls",
+            "treating a mild inconvenience like a Greek tragedy",
+            "monologuing to the pond about the duality of bread",
+            "gesturing wildly at nothing while narrating his own pain",
+        ],
+        "expressions": [
+            "!!!", "*gasp*", "*swoon*", "*clutches chest*", "*dramatic turn*",
+            "*spotlight*", "O_O", "*faints*", "*soliloquy*", "*theatre kid*",
+        ],
+        "can_play": True,
+        "can_learn": False,
+    },
+    MoodState.PETTY: {
+        "description": "technically fine but holding a grudge",
+        "descriptions": [
+            "fine. totally fine. not even thinking about it.",
+            "smiling but the vibe is off and everyone knows it",
+            "making a point of how unbothered he is (he is bothered)",
+            "keeping score and the score is damning",
+            "forgave nothing but is choosing to be the bigger duck. for now.",
+        ],
+        "expressions": [
+            ">:)", "-.-", "*hmph*", "*cold shoulder*", "*passive-aggressive preen*",
+            "*icy smile*", "^^;", "*tallying grudges*", "*filing a complaint*", "*fine.*",
+        ],
+        "can_play": True,
+        "can_learn": True,
+    },
 }
 
 # Lines spoken during notable mood transitions
@@ -190,6 +231,65 @@ MOOD_TRANSITION_LINES = {
         "went from void to vaguely functional. huge if true.",
         "*cautiously acknowledging that existence is bearable*",
     ],
+    # ── Transitions INTO contextual moods ──────────────────────────
+    ("content", "dramatic"): [
+        "*throws wing across forehead* THE IMBALANCE. I CAN FEEL IT.",
+        "something is VERY wrong and VERY right at the same time.",
+        "my needs are at war and I am the BATTLEFIELD.",
+        "*stares into middle distance* this is my origin story.",
+    ],
+    ("happy", "dramatic"): [
+        "I was happy. WAS. now I'm experiencing EVERYTHING AT ONCE.",
+        "*spins in a circle* too many feelings! TOO MANY!",
+        "the highs are high and the lows are THEATRICAL.",
+        "*clutches bread like an Oscar* I'd like to thank the academy.",
+    ],
+    ("grumpy", "dramatic"): [
+        "oh it's not just grumpy anymore. this is a SAGA.",
+        "*gestures at everything* look at this! LOOK AT IT!",
+        "I have transcended anger and entered PERFORMANCE ART.",
+        "this isn't a mood. it's a STATEMENT.",
+    ],
+    ("dramatic", "content"): [
+        "*clears throat* ...I'm done. the moment has passed.",
+        "okay. the performance is over. back to baseline.",
+        "*folds wings* ...I may have been slightly theatrical.",
+        "let us never speak of the last five minutes.",
+    ],
+    ("dramatic", "happy"): [
+        "*takes a bow* and SCENE. ...actually things are kinda nice.",
+        "the drama resolved itself. I take full credit.",
+        "*dusts self off* ...okay. I feel better. don't tell anyone.",
+    ],
+    # Petty transitions
+    ("content", "petty"): [
+        "oh I'm FINE. totally fine. not thinking about it AT ALL.",
+        "sure. everything's great NOW. where was this energy earlier?",
+        "*smiles with zero warmth* I've decided to be the bigger duck.",
+        "recovered. healed. absolutely not keeping score. *keeps score*",
+    ],
+    ("happy", "petty"): [
+        "happy? sure. but I REMEMBER what happened. I always remember.",
+        "things are good. I'm choosing to enjoy them. POINTEDLY.",
+        "*preens aggressively* I'm thriving DESPITE everything.",
+        "the joy is real but so is the grudge.",
+    ],
+    ("petty", "content"): [
+        "...fine. the grudge has been... PARTIALLY resolved.",
+        "I've decided to let it go. for now. CONDITIONALLY.",
+        "*exhales* okay. the pettiness has been mostly processed.",
+        "moving on. but I'm saving the receipt.",
+    ],
+    ("petty", "happy"): [
+        "apparently we're over it now. I'll allow it.",
+        "the grudge lost. joy won. won't admit it out loud.",
+        "*reluctant smile* ...ugh, fine, today is okay.",
+    ],
+    ("petty", "grumpy"): [
+        "see? I KNEW the good times wouldn't last. VINDICATED.",
+        "things got worse again and honestly? I expected this.",
+        "*gestures at everything* I told you. I TOLD you.",
+    ],
 }
 
 
@@ -246,6 +346,10 @@ class MoodCalculator:
         """
         Get complete mood information from needs.
 
+        After computing the base score-based mood, checks for contextual
+        overrides (DRAMATIC, PETTY) that depend on need variance, mood
+        history, or recent recovery from low states.
+
         Args:
             needs: The duck's current needs
 
@@ -254,12 +358,41 @@ class MoodCalculator:
         """
         score = self.calculate_score(needs)
         state = self.get_state(score)
-        data = MOOD_DATA[state]
 
         # Track history
         self._history.append(score)
         if len(self._history) > self._max_history:
             self._history.pop(0)
+
+        # ── Contextual override: DRAMATIC ─────────────────────────────
+        # Triggers when needs are wildly unbalanced OR mood is swinging.
+        need_values = [needs.hunger, needs.energy, needs.fun,
+                       needs.cleanliness, needs.social]
+        need_gap = max(need_values) - min(need_values)
+        is_dramatic = False
+
+        if need_gap >= MOOD_DRAMATIC_NEED_VARIANCE:
+            is_dramatic = True
+
+        if (len(self._history) >= 2 and
+                abs(self._history[-1] - self._history[-2])
+                >= MOOD_DRAMATIC_SWING_THRESHOLD):
+            is_dramatic = True
+
+        # Don't override MISERABLE or ECSTATIC with DRAMATIC
+        if is_dramatic and state not in (MoodState.MISERABLE, MoodState.ECSTATIC):
+            state = MoodState.DRAMATIC
+
+        # ── Contextual override: PETTY ────────────────────────────────
+        # Triggers when recovering from recent low mood — grudge state.
+        if (state not in (MoodState.DRAMATIC, MoodState.MISERABLE, MoodState.SAD)
+                and score >= MOOD_PETTY_CURRENT_MIN):
+            depth = min(len(self._history), MOOD_PETTY_HISTORY_DEPTH)
+            recent = self._history[-depth:]
+            if any(s < MOOD_PETTY_RECOVERY_FLOOR for s in recent):
+                state = MoodState.PETTY
+
+        data = MOOD_DATA[state]
 
         return MoodInfo(
             state=state,

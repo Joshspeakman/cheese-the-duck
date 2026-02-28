@@ -832,6 +832,16 @@ class BehaviorAI:
                 if action in [AutonomousAction.IDLE, AutonomousAction.NAP,
                               AutonomousAction.STARE_BLANKLY]:
                     score += 0.15
+            elif mood.state.value == "dramatic":
+                # Dramatic ducks favour performative actions
+                if action in [AutonomousAction.WIGGLE, AutonomousAction.FLAP_WINGS,
+                              AutonomousAction.SPLASH]:
+                    score += 0.2
+            elif mood.state.value == "petty":
+                # Petty ducks favour passive-aggressive idling
+                if action in [AutonomousAction.IDLE, AutonomousAction.STARE_BLANKLY,
+                              AutonomousAction.LOOK_AROUND]:
+                    score += 0.15
             
             # Weather influences for non-structure actions
             if self._is_bad_weather:

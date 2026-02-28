@@ -28,20 +28,57 @@ NEED_DECAY_RATES = {
     "social": 0.21,     # ~8 hours to empty from full
 }
 
+# Exponential decay: when a need drops below this threshold, decay accelerates.
+# The lower the need, the faster it drops — "hunger spiral" effect.
+# Formula: actual_rate = base_rate * (1 + ACCEL * (1 - need/threshold))
+# At threshold: 1× rate.  At 0: 1 + ACCEL × rate.
+NEED_DECAY_ACCEL_THRESHOLD = 30   # Below this value, decay starts accelerating
+NEED_DECAY_ACCEL_FACTOR = 1.5     # At 0 the decay is 2.5× the base rate
+
 # Need thresholds
 NEED_MAX = 100
 NEED_MIN = 0
 NEED_CRITICAL = 20  # Below this, urgent warnings
 NEED_LOW = 40       # Below this, duck gets grumpy
 
+# ── Feeding & Item Use Anti-Spam ──────────────────────────────────────────
+# Normal interaction (F key) is the "intended" path — generous, reliable.
+# Inventory items are a bonus, not a replacement: they have cooldowns and
+# diminishing returns to prevent spamming crackers from inventory.
+
 # Interaction effects (balanced - should require multiple interactions to fully satisfy a need)
 INTERACTION_EFFECTS = {
-    "feed": {"hunger": 18, "fun": 2},
+    "feed": {"hunger": 22, "fun": 3},       # Buffed slightly — this is the "right" way to feed
     "play": {"fun": 15, "energy": -5, "social": 5},
     "clean": {"cleanliness": 20, "fun": -2},
     "pet": {"social": 12, "fun": 5},
     "sleep": {"energy": 25, "hunger": -3},
 }
+
+# Per-category cooldowns for inventory item usage (seconds)
+ITEM_USE_COOLDOWNS = {
+    "food": 45,         # Can use a food item every 45 seconds
+    "toy": 30,          # Toys every 30 seconds
+    "decoration": 10,   # Decorations are cosmetic, short cooldown
+    "special": 60,      # Special items have longest cooldown
+}
+
+# Diminishing returns: each consecutive inventory food use within the window
+# applies a multiplier to the effect.  Resets after WINDOW seconds of not using food.
+ITEM_DIMINISHING_WINDOW = 300     # 5 minute window
+ITEM_DIMINISHING_STEPS = [        # Multiplier for the Nth food item in the window
+    1.0,   # 1st item: full effect
+    0.7,   # 2nd item: 70%
+    0.4,   # 3rd item: 40%
+    0.15,  # 4th+ item: 15% — basically nothing
+]
+
+# Spam detection: if the player uses SPAM_COUNT food items within SPAM_WINDOW
+# seconds, trigger a mood penalty + roast line from Cheese.
+ITEM_SPAM_COUNT = 4              # 4 food items in the window = spam
+ITEM_SPAM_WINDOW = 120           # 2-minute window
+ITEM_SPAM_MOOD_PENALTY = -8      # Direct mood score penalty when spam detected
+ITEM_SPAM_HUNGER_OVERFEED = 5    # Over-full hunger penalty (bloated feeling)
 
 # Mood thresholds (based on weighted need average)
 MOOD_THRESHOLDS = {
@@ -52,6 +89,21 @@ MOOD_THRESHOLDS = {
     "sad": 10,
     "miserable": 0,
 }
+
+# ── Conditional Mood Overrides ────────────────────────────────────────
+# DRAMATIC and PETTY are special moods triggered by context, not raw score.
+# They override the normal score-based mood when conditions are met.
+
+# DRAMATIC: triggers when needs are wildly unbalanced (one high, one low)
+# or when mood is swinging rapidly.  Cheese goes full theatre-kid.
+MOOD_DRAMATIC_NEED_VARIANCE = 40   # min (max_need - min_need) gap to trigger
+MOOD_DRAMATIC_SWING_THRESHOLD = 15 # min score change between last 2 ticks
+
+# PETTY: triggers when Cheese recently climbed OUT of SAD/MISERABLE.
+# He's technically fine now, but he REMEMBERS the neglect.
+MOOD_PETTY_RECOVERY_FLOOR = 30     # history must contain a score below this
+MOOD_PETTY_CURRENT_MIN = 45        # current score must be above this
+MOOD_PETTY_HISTORY_DEPTH = 6       # how many recent ticks to scan for the floor
 
 # Mood weights for need calculation
 MOOD_WEIGHTS = {

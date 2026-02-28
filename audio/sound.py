@@ -271,6 +271,10 @@ def get_music_context(
         return MusicContext.HAPPY
     if duck_mood in ["miserable", "sad"]:
         return MusicContext.SAD
+    if duck_mood == "dramatic":
+        return MusicContext.ENERGETIC
+    if duck_mood == "petty":
+        return MusicContext.MYSTERIOUS
 
     # Priority 4: Normal weather influences
     if weather in ["snowy", "foggy"]:
@@ -1345,8 +1349,10 @@ class DuckSounds:
                 self.engine.play_sound(SoundType.QUACK_HAPPY)
             elif mood in ["sad", "miserable"]:
                 self.engine.play_sound(SoundType.QUACK_SAD)
-            elif mood == "excited":
+            elif mood in ["excited", "dramatic"]:
                 self.engine.play_sound(SoundType.QUACK_EXCITED)
+            elif mood == "petty":
+                self.engine.play_sound(SoundType.QUACK)  # Deadpan quack for pettiness
             else:
                 self.engine.play_sound(SoundType.QUACK)
 
