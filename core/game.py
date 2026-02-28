@@ -55,6 +55,7 @@ from world.item_interactions import (
 )
 from world.interaction_controller import InteractionController, InteractionSource
 from dialogue.diary import DuckDiary, duck_diary, DiaryEntryType
+from dialogue.diary_manager import DiaryManager
 from audio.sound import sound_engine, duck_sounds, get_music_context, MusicContext
 from ui.renderer import Renderer
 from ui.animations import animation_controller
@@ -162,6 +163,9 @@ class Game:
         # Atmosphere and diary systems (Animal Crossing style)
         self.atmosphere: AtmosphereManager = atmosphere
         self.diary: DuckDiary = duck_diary
+
+        # Managed diary system (smart triggers, progressive voice, LLM entries)
+        self.diary_manager: DiaryManager = DiaryManager()
 
         # Exploration, crafting, and building systems
         self.exploration: ExplorationSystem = exploration
@@ -296,8 +300,9 @@ class Game:
         
         # Enhanced diary menu
         self._enhanced_diary_open = False       # Flag for enhanced diary menu
-        self._enhanced_diary_tab = "overview"   # Current tab: overview, emotions, photos, dreams, life
+        self._enhanced_diary_tab = "overview"   # Current tab: overview, journal, emotions, photos, dreams, life
         self._enhanced_diary_page = 0           # Current page within tab
+        self._last_diary_flush: float = 0.0     # Last time diary_manager.flush_pending was called
         
         # Title screen menu state
         self._title_menu_index = 0        # Currently selected title menu option
@@ -1377,6 +1382,9 @@ class Game:
             )
             self.renderer.show_closeup("grimace", 3.0)
             duck_sounds.quack("annoyed")
+
+            # Notify diary manager of overfeed
+            self.diary_manager.on_overfed(recent_count)
 
         # ── 4. Actually use the item (with scaled effects) ────────────
         result = self.inventory.use_item(
@@ -2590,6 +2598,9 @@ class Game:
             )
             self.enhanced_diary.add_chapter_event(f"Relationship grew to {level_name}!")
 
+            # Notify diary manager of relationship level-up
+            self.diary_manager.on_relationship_up(level, level_name)
+
         # Record first interactions in diary
         if self._statistics[stat_key] == 1:
             if interaction == "pet":
@@ -3207,6 +3218,17 @@ class Game:
             # Check secret goals for session/mood-based achievements
             self._check_secret_achievements()
 
+            # ── Diary manager trigger evaluation ─────────────────────
+            try:
+                mood_obj = self.duck.get_mood()
+                self.diary_manager.evaluate_triggers(
+                    mood_score=mood_obj.score,
+                    mood_state=mood_obj.state.value,
+                    game_minutes_elapsed=delta_minutes,
+                )
+            except Exception:
+                pass
+
             self._last_tick = current_time
 
         # Update atmosphere (weather, visitors) every 30 seconds
@@ -3214,6 +3236,15 @@ class Game:
             messages = self.atmosphere.update()
             for msg in messages:
                 self._show_message_if_no_menu(msg, duration=4.0, category="event")
+
+            # ── Flush diary manager pending entries (every 30s) ──────
+            try:
+                if current_time - self._last_diary_flush >= 30:
+                    self.diary_manager.trigger_random_musing()
+                    new_entries = self.diary_manager.flush_pending()
+                    self._last_diary_flush = current_time
+            except Exception:
+                pass
 
             # Check for active festivals
             self._check_festival_events()
@@ -3233,6 +3264,9 @@ class Game:
                     
                     # Animate duck reacting to weather change
                     self._animate_weather_reaction(current_weather)
+
+                    # Notify diary manager of weather change
+                    self.diary_manager.on_weather_event(current_weather)
                 
                 self._last_known_weather = current_weather
 
@@ -4549,6 +4583,9 @@ class Game:
         if new_stage in milestone_map:
             self.diary.record_milestone(milestone_map[new_stage])
 
+        # Notify diary manager of growth stage change
+        self.diary_manager.on_growth_stage(new_stage)
+
         # Unlock achievement
         self._unlock_achievement(f"reach_{new_stage}")
 
@@ -4887,6 +4924,16 @@ class Game:
         # Record the hatching as a significant event
         self.duck_brain.process_action("hatched", "just hatched into the world")
 
+        # Initialize diary manager for new game
+        self.diary_manager = DiaryManager()
+        self.diary_manager.bind(
+            duck=self.duck,
+            diary=self.diary,
+            enhanced=self.enhanced_diary,
+            duck_brain=self.duck_brain,
+            game=self,
+        )
+
         self._save_game()
 
     def _load_game(self):
@@ -5176,6 +5223,24 @@ class Game:
         else:
             self.enhanced_diary = EnhancedDiarySystem()
 
+        # Load managed diary system
+        if "diary_manager" in data:
+            self.diary_manager = DiaryManager.from_dict(data["diary_manager"])
+        else:
+            self.diary_manager = DiaryManager()
+
+        # Bind diary manager to game systems and check for absence
+        self.diary_manager.bind(
+            duck=self.duck,
+            diary=self.diary,
+            enhanced=self.enhanced_diary,
+            duck_brain=self.duck_brain if hasattr(self, 'duck_brain') else None,
+            game=self,
+        )
+        last_played = data.get("last_played", 0)
+        if last_played:
+            self.diary_manager.check_absence(last_played)
+
         # Load save slots system
         if "save_slots" in data:
             self.save_slots = SaveSlotsSystem.from_dict(data["save_slots"])
@@ -5195,6 +5260,9 @@ class Game:
         
         # Start a new session in DuckBrain
         self.duck_brain.start_session()
+
+        # Rebind diary manager with DuckBrain reference (loaded after diary_manager)
+        self.diary_manager._duck_brain = self.duck_brain
 
         # Load area event system
         if "area_events" in data:
@@ -5384,6 +5452,7 @@ class Game:
             "day_night": self.day_night.to_dict(),
             "badges": self.badges.to_dict(),
             "enhanced_diary": self.enhanced_diary.to_dict(),
+            "diary_manager": self.diary_manager.to_dict(),
             "save_slots": self.save_slots.to_dict(),
             # DuckBrain - Seaman-style persistent memory
             "duck_brain": self.duck_brain.to_dict() if self.duck_brain else None,
@@ -10018,6 +10087,8 @@ Core Systems Tested: {report.total_tests}
                 self.renderer.show_message(f"* Learned: {learned_trick.name}! *\n{msg}", duration=4.0)
                 duck_sounds.level_up()
                 self.progression.add_xp(25, "training")
+                # Notify diary manager of trick learned
+                self.diary_manager.on_trick_learned(learned_trick.name)
             else:
                 # Show attempt message
                 difficulty = trick.difficulty.value if trick else "easy"
@@ -10684,9 +10755,12 @@ Core Systems Tested: {report.total_tests}
         except Exception:
             pass
         
-        # ---- Diary (recent entry) ----
+        # ---- Diary (recent entries via diary manager) ----
         try:
-            if self.diary and self.diary.entries:
+            diary_ctx = self.diary_manager.get_llm_diary_context(max_entries=3, max_chars=400)
+            if diary_ctx:
+                context_parts.append(diary_ctx)
+            elif self.diary and self.diary.entries:
                 last_entry = self.diary.entries[-1]
                 if hasattr(last_entry, 'title') and hasattr(last_entry, 'content'):
                     context_parts.append(f"Latest diary entry: \"{last_entry.title}\" — {last_entry.content[:60]}")
@@ -10873,7 +10947,7 @@ Core Systems Tested: {report.total_tests}
         lines = []
         
         # Compact header with tab indicator
-        tab_names = {"overview": "Overview", "emotions": "Emotions", "photos": "Photos", "dreams": "Dreams", "life": "Life"}
+        tab_names = {"overview": "Overview", "journal": "Journal", "emotions": "Emotions", "photos": "Photos", "dreams": "Dreams", "life": "Life"}
         current_tab_name = tab_names.get(self._enhanced_diary_tab, "Overview")
         
         lines.append("+" + "=" * (width - 2) + "+")
@@ -10882,6 +10956,8 @@ Core Systems Tested: {report.total_tests}
         
         if self._enhanced_diary_tab == "overview":
             self._render_diary_overview(lines, width)
+        elif self._enhanced_diary_tab == "journal":
+            self._render_diary_journal(lines, width, items_per_page)
         elif self._enhanced_diary_tab == "emotions":
             self._render_diary_emotions(lines, width, items_per_page)
         elif self._enhanced_diary_tab == "photos":
@@ -10913,6 +10989,51 @@ Core Systems Tested: {report.total_tests}
                     break
         else:
             lines.append("|" + " No active chapter"[:width-2].ljust(width - 2) + "|")
+
+        # Add diary manager stats to overview
+        dm_count = self.diary_manager.get_entry_count()
+        fav_count = len(self.diary_manager.get_favorites())
+        lines.append("|" + f" Journal Entries: {dm_count:3}  Favorites: {fav_count:3}"[:width-2].ljust(width - 2) + "|")
+
+    def _render_diary_journal(self, lines: list, width: int, items_per_page: int):
+        """Render journal tab — Cheese's diary entries from DiaryManager."""
+        entries = self.diary_manager.get_recent(count=50)
+        total = len(entries)
+        total_pages = max(1, (total + items_per_page - 1) // items_per_page)
+        page = min(self._enhanced_diary_page, total_pages - 1)
+        self._enhanced_diary_page = page
+
+        start = page * items_per_page
+        page_items = entries[start:start + items_per_page]
+
+        lines.append("|" + f" Page {page+1}/{total_pages} ({total} entries)"[:width-2].ljust(width - 2) + "|")
+
+        if not page_items:
+            lines.append("|" + " No journal entries yet."[:width-2].ljust(width - 2) + "|")
+            lines.append("|" + " Cheese hasn't felt inspired to"[:width-2].ljust(width - 2) + "|")
+            lines.append("|" + " write anything... yet."[:width-2].ljust(width - 2) + "|")
+        else:
+            mood_icons = {
+                "ecstatic": ":D", "happy": ":)", "content": "~",
+                "grumpy": ">:", "sad": ":(", "miserable": ":'(",
+                "dramatic": "!!", "petty": "-_-",
+            }
+            for entry in page_items:
+                fav = "*" if entry.get("is_favorite") else " "
+                mood = entry.get("mood", "content")
+                icon = mood_icons.get(mood, "?")
+                ts = entry.get("timestamp", "")[:10]
+                src = "AI" if entry.get("source") == "llm" else "  "
+                title = entry.get("title", "Untitled")[:22]
+                # Title line
+                header = f" {fav}{icon} {title} [{ts[5:]}]"
+                lines.append("|" + header[:width-2].ljust(width - 2) + "|")
+                # Body preview (first ~40 chars)
+                body = entry.get("body", "")
+                preview = body[:width-6].replace("\n", " ")
+                lines.append("|" + f"   {preview}"[:width-2].ljust(width - 2) + "|")
+                # Separator
+                lines.append("|" + ("·" * (width - 2)) + "|")
 
     def _render_diary_emotions(self, lines: list, width: int, items_per_page: int):
         """Render emotions tab with pagination (compact)."""
@@ -11027,7 +11148,7 @@ Core Systems Tested: {report.total_tests}
             return
         
         # Tab order for arrow navigation
-        tabs = ["overview", "emotions", "photos", "dreams", "life"]
+        tabs = ["overview", "journal", "emotions", "photos", "dreams", "life"]
         current_idx = tabs.index(self._enhanced_diary_tab) if self._enhanced_diary_tab in tabs else 0
         
         # Navigate tabs with left/right arrows
