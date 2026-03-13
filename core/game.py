@@ -508,6 +508,22 @@ class Game:
         # Apply display settings to renderer (if available)
         if hasattr(self.renderer, 'set_show_particles'):
             self.renderer.set_show_particles(settings.display.show_particles)
+        
+        # Apply AI setting
+        self._apply_ai_setting(settings.gameplay.ai_enabled)
+
+    def _apply_ai_setting(self, enabled: bool):
+        """Toggle AI/LLM features on or off at runtime."""
+        import config as _cfg
+        _cfg.LLM_ENABLED = enabled
+        _cfg.LLM_BEHAVIOR_ENABLED = enabled
+        try:
+            from dialogue.llm_chat import get_llm_chat
+            llm = get_llm_chat()
+            if llm:
+                llm.set_enabled(enabled)
+        except Exception:
+            pass
 
     def _register_settings_callback(self):
         """Register callback for live setting changes (call once at init)."""
@@ -517,6 +533,8 @@ class Game:
         """Handle real-time setting changes."""
         if key.startswith("audio."):
             self._apply_settings()
+        elif key == "gameplay.ai_enabled":
+            self._apply_ai_setting(value)
 
     def _start_title_music(self):
         """Start playing title screen music."""

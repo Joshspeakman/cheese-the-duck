@@ -141,6 +141,7 @@ class LLMChat:
         self._loading = False          # True while model is loading in background
         self._warmed_up = False        # True after first throwaway inference
         self._load_thread = None
+        self._disabled = False         # Runtime toggle from settings
         
         if LLM_ENABLED:
             if background:
@@ -282,7 +283,13 @@ class LLMChat:
         global _llm_crashed
         if _llm_crashed:
             return False
+        if self._disabled:
+            return False
         return self._available
+
+    def set_enabled(self, enabled: bool):
+        """Enable or disable LLM at runtime (settings toggle)."""
+        self._disabled = not enabled
 
     def get_model_name(self) -> str:
         """Get the current model name with backend info."""
