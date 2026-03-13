@@ -231,6 +231,9 @@ class SettingsMenu:
                 SettingItem("vacation_mode", "Vacation Mode", "gameplay", "toggle",
                            settings.gameplay.vacation_mode,
                            description="Freeze needs & trust while away"),
+                SettingItem("ai_enabled", "AI Features", "gameplay", "toggle",
+                           settings.gameplay.ai_enabled,
+                           description="Enable AI chat, behavior & diary entries"),
             ]
         
         elif self._current_category == SettingsCategory.SYSTEM:

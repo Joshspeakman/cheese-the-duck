@@ -89,6 +89,7 @@ class GameplaySettings:
     show_tips: bool = True              # Show contextual tips
     tutorial_completed: bool = False    # Has player completed tutorial
     vacation_mode: bool = False         # Freeze needs and trust while away
+    ai_enabled: bool = True             # Enable AI/LLM features (chat, behavior, diary)
 
 
 @dataclass
