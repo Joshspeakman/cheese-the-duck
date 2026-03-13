@@ -1406,12 +1406,36 @@ class Renderer:
         right_parts.extend([age_part, coin_part])
         right_side = f"{' '.join(right_parts)} "
 
-        # Calculate padding
+        # Calculate padding — ensure a separator between left and right
         left_len = _visible_len(left_side)
         right_len = _visible_len(right_side)
-        pad_len = max(0, inner_width - left_len - right_len)
+        available = inner_width - left_len - right_len
 
-        line1 = left_side + " " * pad_len + right_side
+        if available >= 1:
+            # Enough room — pad normally
+            pad_len = available
+            line1 = left_side + " " * pad_len + right_side
+        else:
+            # Not enough room — truncate mood description to fit with separator
+            # Minimum: left | right_essentials (status, trust, age, coins)
+            essential_parts = []
+            if status_tag:
+                essential_parts.append(status_tag)
+            essential_parts.append(trust_display)
+            essential_parts.extend([age_part, coin_part])
+            essential_right = f"{' '.join(essential_parts)} "
+            essential_len = _visible_len(essential_right)
+            # Space for mood = total - left - essential - separator(" | ")
+            mood_budget = inner_width - left_len - essential_len - 3
+            if mood_budget > 5:
+                truncated_mood = _visible_truncate(mood_desc, mood_budget - 2) + ".."
+                right_side = f"{truncated_mood} {mood_ind} {' '.join(essential_parts)} "
+            else:
+                # Really tight — drop mood text entirely, keep indicator
+                right_side = f"{mood_ind} {' '.join(essential_parts)} "
+            right_len = _visible_len(right_side)
+            pad_len = max(1, inner_width - left_len - right_len)
+            line1 = left_side + " " * pad_len + right_side
 
         # Ensure line fits
         line1 = _visible_ljust(line1, inner_width)
@@ -2049,8 +2073,11 @@ class Renderer:
                 yellow_line = self.color_duck_body + centered + self.term.normal
                 lines.append(BOX["v"] + yellow_line + BOX["v"])
         else:
-            # Show mood status (compact)
-            mood_text = _visible_center(mood.description, inner_width)
+            # Show mood status (compact) — truncate long descriptions
+            desc = mood.description
+            if _visible_len(desc) > inner_width:
+                desc = _visible_truncate(desc, inner_width - 2) + ".."
+            mood_text = _visible_center(desc, inner_width)
             lines.append(BOX["v"] + mood_text + BOX["v"])
 
         # Divider

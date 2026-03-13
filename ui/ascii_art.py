@@ -601,6 +601,20 @@ EMOTION_CLOSEUPS = {
         "     ===      ",
         "              ",
     ],
+    "dramatic": [
+        "            !!",
+        "   O     O    ",
+        "      >       ",
+        "     ===      ",
+        "              ",
+    ],
+    "petty": [
+        "              ",
+        "   >     .    ",
+        "      >       ",
+        "     ===      ",
+        "              ",
+    ],
 }
 
 
@@ -646,7 +660,7 @@ MOOD_TO_CLOSEUP = {
     MoodState.SAD: "sad",
     MoodState.MISERABLE: "miserable",
     MoodState.DRAMATIC: "dramatic",
-    MoodState.PETTY: "grumpy",
+    MoodState.PETTY: "petty",
 }
 
 # Action to close-up mapping
