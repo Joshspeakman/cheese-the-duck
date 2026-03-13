@@ -89,7 +89,7 @@ class GameplaySettings:
     show_tips: bool = True              # Show contextual tips
     tutorial_completed: bool = False    # Has player completed tutorial
     vacation_mode: bool = False         # Freeze needs and trust while away
-    ai_enabled: bool = True             # Enable AI/LLM features (chat, behavior, diary)
+    ai_enabled: bool = False            # Enable AI/LLM features (chat, behavior, diary)
 
 
 @dataclass
@@ -364,11 +364,12 @@ class SettingsManager:
         self._notify_change(category, None)
     
     def set_value(self, category: str, key: str, value: Any):
-        """Set a specific setting value."""
+        """Set a specific setting value and persist to disk."""
         target = getattr(self._settings, category, None)
         if target and hasattr(target, key):
             setattr(target, key, value)
             self._notify_change(f"{category}.{key}", value)
+            self.save()
     
     def get_value(self, category: str, key: str) -> Any:
         """Get a specific setting value."""
