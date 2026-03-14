@@ -72,6 +72,10 @@ class KeywordEngine:
         else:
             pool = best_topic.responses
 
+        # Guard against empty pools
+        if not pool:
+            return None
+
         # Avoid repeating last response for this topic
         last = self._last_responses.get(best_topic.name)
         available = [r for r in pool if r != last]
@@ -115,16 +119,21 @@ class KeywordEngine:
                 matched_keywords += 1
                 score += 1.0
 
+        # Must have at least one keyword or phrase match to count
+        has_match = matched_keywords > 0 or score > 0
+        if not has_match:
+            return 0
+
         # Bonus for multiple keyword matches
         if matched_keywords >= 3:
             score += 2.0
         elif matched_keywords >= 2:
             score += 1.0
 
-        # Priority bonus
+        # Priority bonus (only applied when there's a real match)
         score += topic.priority * 0.1
 
-        return score if matched_keywords > 0 or score > 0 else 0
+        return score
 
     def _get_mood_key(self, duck: "Duck") -> str:
         """Get simplified mood key from duck state."""
