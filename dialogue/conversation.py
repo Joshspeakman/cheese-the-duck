@@ -978,7 +978,9 @@ class ConversationSystem:
             return keyword_response
 
         # No keyword match - use idle thought as ultimate fallback
-        return self.get_idle_thought(duck)
+        idle_response = self.get_idle_thought(duck)
+        self.add_to_history(player_input, idle_response)
+        return idle_response
 
     def add_to_history(self, player_msg: str, duck_response: str):
         """Add an exchange to conversation history."""
