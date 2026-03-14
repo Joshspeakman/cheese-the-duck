@@ -294,6 +294,11 @@ class GameUpdater:
                 
                 # Extract the zip
                 with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                    # Validate no path traversal in zip members
+                    for member in zip_ref.namelist():
+                        member_path = (extract_path / member).resolve()
+                        if not str(member_path).startswith(str(extract_path.resolve())):
+                            raise ValueError(f"Unsafe path in zip archive: {member}")
                     zip_ref.extractall(extract_path)
                 
                 # Find the actual game directory in the extracted files
@@ -412,6 +417,11 @@ class GameUpdater:
                 # Extract source
                 extract_path = temp_path / "extracted"
                 with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                    # Validate no path traversal in zip members
+                    for member in zip_ref.namelist():
+                        member_path = (extract_path / member).resolve()
+                        if not str(member_path).startswith(str(extract_path.resolve())):
+                            raise ValueError(f"Unsafe path in zip archive: {member}")
                     zip_ref.extractall(extract_path)
                 
                 # Find extracted directory

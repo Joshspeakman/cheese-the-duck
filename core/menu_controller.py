@@ -239,6 +239,8 @@ class MenuController:
         """Change page in paginated menus."""
         if self.config.page_size <= 0:
             return MenuAction(MenuResult.NONE)
+        if self.total_pages == 0:
+            return MenuAction(MenuResult.NONE)
         
         old_page = self._current_page
         new_page = self._current_page + direction

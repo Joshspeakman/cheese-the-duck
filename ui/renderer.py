@@ -600,7 +600,7 @@ class Renderer:
             
             for _ in range(density):
                 char, color = random.choice(decorations)
-                x = random.randint(1, width - len(char) - 1)
+                x = random.randint(1, max(1, width - len(char) - 1))
                 y = random.randint(height // 2, height - 2)  # Bottom half of screen
                 self._weather_decorations.append((x, y, char, color))
 
@@ -900,12 +900,12 @@ class Renderer:
         # Lightning flash for storms (rare and brief)
         if weather_type in ("stormy", "storm", "thunderstorm", "summer_storm", "ice_storm"):
             if self._weather_frame % 90 == 0 and random.random() < 0.25:  # 90 frames = ~1.5s at 60 FPS
-                bolt_x = random.randint(3, width - 3)
+                bolt_x = random.randint(3, max(3, width - 3))
                 bolt_y = random.randint(0, min(3, height - 1))
                 new_particles.append((float(bolt_x), float(bolt_y), "!"))
                 # Double flash for thunderstorms
                 if weather_type == "thunderstorm" and random.random() < 0.5:
-                    bolt_x2 = random.randint(3, width - 3)
+                    bolt_x2 = random.randint(3, max(3, width - 3))
                     new_particles.append((float(bolt_x2), float(bolt_y + 1), "!"))
 
         # Aurora color waves effect
@@ -1099,7 +1099,7 @@ class Renderer:
         playfield_width = width - side_panel_width
 
         # Update playfield dimensions for duck movement
-        field_inner_width = playfield_width - 2
+        field_inner_width = max(1, playfield_width - 2)
         field_height = max(8, height - 10)  # Leave room for header, controls, messages
         self.duck_pos.field_width = field_inner_width
         self.duck_pos.field_height = field_height

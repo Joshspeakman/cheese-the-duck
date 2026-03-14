@@ -65,7 +65,8 @@ def register_item(item: ShopItem):
     """
     if item.id in SHOP_ITEMS:
         existing = SHOP_ITEMS[item.id]
-        logger.warning(f"Duplicate shop item ID detected: '{item.id}' - overwriting '{existing.name}' with '{item.name}'")
+        logger.warning(f"Duplicate shop item ID detected: '{item.id}' - keeping existing '{existing.name}', ignoring '{item.name}'")
+        return
     SHOP_ITEMS[item.id] = item
 
 

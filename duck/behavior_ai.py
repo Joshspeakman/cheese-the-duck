@@ -4,6 +4,7 @@ Integrates with LLM for dynamic commentary when available.
 """
 import random
 import time
+from collections import deque
 from typing import List, Tuple, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 from enum import Enum
@@ -353,7 +354,7 @@ class BehaviorAI:
     def __init__(self):
         self._last_action_time = 0.0
         self._last_action: Optional[AutonomousAction] = None
-        self._action_history: List[AutonomousAction] = []
+        self._action_history: deque = deque(maxlen=10)
         self._current_action: Optional[ActionResult] = None
         self._action_end_time: float = 0.0
         
@@ -531,15 +532,27 @@ class BehaviorAI:
             if available_items:
                 self._selected_item = random.choice(available_items)
             else:
-                self._selected_item = None
+                # No items available for this action — pick next best action that doesn't need items
+                for fallback_action, fallback_score in noisy_scores[1:]:
+                    fb_data = ACTION_DATA.get(fallback_action, {})
+                    if not fb_data.get("requires_item_category"):
+                        chosen_action = fallback_action
+                        data = fb_data
+                        message = random.choice(data["messages"])
+                        self._selected_item = None
+                        break
+                else:
+                    # All candidates need items — force idle
+                    self._selected_item = None
+                    chosen_action = AutonomousAction.IDLE
+                    data = ACTION_DATA[chosen_action]
+                    message = random.choice(data["messages"])
         else:
             self._selected_item = None
 
         # Record this action
         self._last_action = chosen_action
         self._action_history.append(chosen_action)
-        if len(self._action_history) > 10:
-            self._action_history.pop(0)
 
         return ActionResult(
             action=chosen_action,

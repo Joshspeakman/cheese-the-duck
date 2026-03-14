@@ -649,7 +649,10 @@ class SoundEngine:
                 pass
 
         # Thread will exit naturally now that process is dead and flag is False
+        old_thread = self._music_thread
         self._music_thread = None
+        if old_thread is not None and old_thread.is_alive():
+            old_thread.join(timeout=1.0)
 
     def toggle_music_mute(self) -> bool:
         """Toggle music mute on/off. Also mutes/unmutes radio. Returns new muted state."""
@@ -969,6 +972,9 @@ class SoundEngine:
                             new_sound = pygame.mixer.Sound(str(music_path))
                             new_sound.set_volume(0)
                             new_channel = new_sound.play(loops=0)  # Play once only
+                            if new_channel is None:
+                                self._crossfading = False
+                                return
 
                             # Fade in
                             for i in range(steps):
@@ -1209,6 +1215,7 @@ class SoundEngine:
         # Capture and clear references
         proc = self._music_process
         self._music_process = None
+        old_thread = self._music_thread
         self._music_thread = None
         
         # Immediate kill - don't use background thread
@@ -1218,6 +1225,9 @@ class SoundEngine:
                 proc.kill()  # SIGKILL - immediate termination
             except OSError:
                 pass
+
+        if old_thread is not None and old_thread.is_alive():
+            old_thread.join(timeout=1.0)
 
     def set_enabled(self, enabled: bool):
         """Enable or disable sound."""
