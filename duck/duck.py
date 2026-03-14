@@ -50,6 +50,10 @@ class Duck:
         if self._memory is None:
             self._memory = DuckMemory()
             self._memory.first_meeting = datetime.now().isoformat()
+        if not hasattr(self, '_personality_baseline'):
+            self._personality_baseline = dict(self.personality)
+        if not hasattr(self, '_ext_personality_baseline'):
+            self._ext_personality_baseline = {}
 
     @classmethod
     def create_new(cls, name: Optional[str] = None) -> "Duck":

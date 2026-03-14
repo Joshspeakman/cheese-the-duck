@@ -108,11 +108,11 @@ class BreadCatchGame:
 
     def move_left(self):
         """Move player left."""
-        self.player_pos = max(1, self.player_pos - 2)
+        self.player_pos = max(1, self.player_pos - 1)
 
     def move_right(self):
         """Move player right."""
-        self.player_pos = min(self.width - 2, self.player_pos + 2)
+        self.player_pos = min(self.width - 2, self.player_pos + 1)
 
     def render(self) -> List[str]:
         """Render game state as ASCII art."""

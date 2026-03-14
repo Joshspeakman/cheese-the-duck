@@ -197,7 +197,7 @@ def _get_crafting_items(game):
                 label=cat_name.replace('_', ' ').title(),
                 children=cat_items
             ))
-    except ImportError:
+    except ImportError as e:
         items.append(MasterMenuItem(id="craft_none", label="No recipes", enabled=False))
     
     return items
@@ -242,7 +242,7 @@ def _get_building_items(game):
                 label=type_name.replace('_', ' ').title(),
                 children=type_items
             ))
-    except ImportError:
+    except ImportError as e:
         items.append(MasterMenuItem(id="build_none", label="No blueprints", enabled=False))
     
     return items
@@ -276,7 +276,7 @@ def _get_areas_items(game):
                 completed=is_discovered,
                 enabled=is_discovered or area_name == "Home Pond"
             ))
-    except ImportError:
+    except ImportError as e:
         items.append(MasterMenuItem(id="travel_none", label="No areas", enabled=False))
     
     return items
@@ -309,7 +309,7 @@ def _get_minigames_items(game):
                 action=f"minigame_{game_id}",
                 completed=has_score
             ))
-    except ImportError:
+    except ImportError as e:
         items.append(MasterMenuItem(id="minigame_none", label="No games", enabled=False))
     
     return items
@@ -355,7 +355,7 @@ def _get_shop_items(game):
                 label=cat_name.replace('_', ' ').title(),
                 children=cat_items
             ))
-    except ImportError:
+    except ImportError as e:
         items.append(MasterMenuItem(id="shop_none", label="Shop unavailable", enabled=False))
     
     return items
@@ -394,7 +394,7 @@ def _get_tricks_items(game):
                 label=cat_name.replace('_', ' ').title(),
                 children=cat_items
             ))
-    except ImportError:
+    except ImportError as e:
         items.append(MasterMenuItem(id="tricks_none", label="No tricks", enabled=False))
     
     return items
@@ -430,8 +430,8 @@ def _get_garden_items(game):
                 label="Plant Seeds",
                 children=seed_items
             ))
-    except ImportError:
-        pass
+    except ImportError as e:
+        pass  # Module not available
     
     return items
 
@@ -473,7 +473,7 @@ def _get_decorations_items(game):
                 label=cat_name.replace('_', ' ').title(),
                 children=cat_items
             ))
-    except ImportError:
+    except ImportError as e:
         items.append(MasterMenuItem(id="decor_none", label="No decorations", enabled=False))
     
     return items
@@ -516,7 +516,7 @@ def _get_collectibles_items(game):
                 children=set_items,
                 completed=(owned_count == total_count and total_count > 0)
             ))
-    except ImportError:
+    except ImportError as e:
         items.append(MasterMenuItem(id="col_none", label="No collectibles", enabled=False))
     
     return items
@@ -559,7 +559,7 @@ def _get_titles_items(game):
                 label=cat_name.replace('_', ' ').title(),
                 children=cat_items
             ))
-    except ImportError:
+    except ImportError as e:
         items.append(MasterMenuItem(id="titles_none", label="No titles", enabled=False))
     
     return items
@@ -610,7 +610,7 @@ def _get_radio_items(game):
                 label="♪ Nook Radio",
                 action="radio_nook_radio"
             ))
-    except ImportError:
+    except ImportError as e:
         items.append(MasterMenuItem(id="radio_none", label="Radio unavailable", enabled=False))
 
     return items
@@ -644,7 +644,7 @@ def _get_nook_radio_item(game):
                 label="Nook Radio",
                 action="nook_radio_toggle"
             )]
-    except ImportError:
+    except ImportError as e:
         return [MasterMenuItem(
             id="nook_radio",
             label="Nook Radio (unavailable)",

@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 class StationID(Enum):
     """Available radio stations."""
     NOOK_RADIO = "nook_radio"
+    QUACK_FM = "quack_fm"
+    DJ_DUCK_LIVE = "dj_duck_live"
 
 
 @dataclass
@@ -48,6 +50,24 @@ STATIONS: Dict[StationID, RadioStation] = {
         genre="hourly",
         fallback_urls=[],
         volume_boost=45,
+    ),
+    StationID.QUACK_FM: RadioStation(
+        id=StationID.QUACK_FM,
+        name="Quack FM",
+        tagline="The pond's favourite station",
+        stream_url="nook",  # Fallback to Nook Radio stream
+        genre="variety",
+        fallback_urls=[],
+        always_available=True,
+    ),
+    StationID.DJ_DUCK_LIVE: RadioStation(
+        id=StationID.DJ_DUCK_LIVE,
+        name="DJ Duck Live",
+        tagline="Live every Saturday night",
+        stream_url="dj_duck_live",  # Special marker for live sessions
+        genre="live",
+        fallback_urls=[],
+        always_available=False,
     ),
 }
 

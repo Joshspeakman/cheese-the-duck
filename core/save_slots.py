@@ -197,8 +197,16 @@ class SaveSlotsSystem:
                 shutil.copy2(save_path, backup_path)
             
             # Save new data
-            with open(save_path, 'w') as f:
-                json.dump(data, f, indent=2)
+            try:
+                with open(save_path, 'w') as f:
+                    json.dump(data, f, indent=2)
+            except Exception:
+                # Restore from backup on write failure
+                if backup_path.exists():
+                    shutil.copy2(backup_path, save_path)
+                elif save_path.exists():
+                    save_path.unlink()
+                return False
             
             # Refresh slot info
             self.refresh_slots()
