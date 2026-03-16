@@ -1461,9 +1461,10 @@ class Game:
         )
 
         # Update goals
-        self.goals.update_progress("use_item", 1)
+        done = self.goals.update_progress("use_item", 1)
         if category == "food":
-            self.goals.update_progress("feed", 1)
+            done += self.goals.update_progress("feed", 1)
+        self._handle_goal_completions(done)
 
         # Check for item-related achievements
         if item.rarity == "legendary":
@@ -1523,7 +1524,7 @@ class Game:
         self._statistics["conversations"] = self._statistics.get("conversations", 0) + 1
 
         # Check goals
-        self.goals.update_progress("talk", 1)
+        self._handle_goal_completions(self.goals.update_progress("talk", 1))
 
     def _check_pending_talk(self):
         """Check if an async LLM talk response is ready."""
@@ -1743,7 +1744,7 @@ class Game:
             duck_sounds.play()
 
         # Update goals
-        self.goals.update_progress("interact_item", 1)
+        self._handle_goal_completions(self.goals.update_progress("interact_item", 1))
 
         # Check achievements
         self._statistics["item_interactions"] = self._statistics.get("item_interactions", 0) + 1
@@ -1816,8 +1817,8 @@ class Game:
             duck_sounds.play()
         
         # Update goals
-        self.goals.update_progress("interact_item", 1)
-        
+        self._handle_goal_completions(self.goals.update_progress("interact_item", 1))
+
         # Check achievements
         self._statistics["item_interactions"] = self._statistics.get("item_interactions", 0) + 1
         if self._statistics["item_interactions"] >= 10:
@@ -2429,6 +2430,36 @@ class Game:
 
         self.renderer.show_overlay("\n".join(lines), duration=0)
 
+    def _handle_goal_completions(self, completed_goals: list):
+        """Show notifications and grant rewards for completed goals."""
+        for goal in completed_goals:
+            # Grant reward item to inventory
+            if goal.reward_item:
+                self.inventory.add_item(goal.reward_item)
+
+            # Show notification
+            if goal.goal_type == "secret":
+                self.renderer.show_celebration(
+                    "secret_goal",
+                    goal.reward_message or f"SECRET: {goal.name}!",
+                    duration=4.0,
+                )
+                duck_sounds.level_up()
+            elif goal.reward_item:
+                self.renderer.show_celebration(
+                    "goal_complete",
+                    goal.reward_message or f"Goal Complete: {goal.name}!",
+                    duration=3.5,
+                )
+                duck_sounds.level_up()
+            else:
+                self.renderer.show_message(
+                    goal.reward_message or f"Goal Complete: {goal.name}!",
+                    duration=3.0,
+                    category="event",
+                )
+                duck_sounds.quack("happy")
+
     def _perform_interaction(self, interaction: str):
         """Perform an interaction with the duck."""
         if not self.duck:
@@ -2614,7 +2645,9 @@ class Game:
         if interaction == "feed":
             self._session_feeds += 1
             if self._session_feeds >= 10:
-                self.goals._check_secret_goal("bread_feast")
+                secret = self.goals.check_secret_goal("bread_feast")
+                if secret:
+                    self._handle_goal_completions([secret])
 
         # Update diary relationship (builds emotional connection)
         level_change = self.diary.increase_relationship(1)
@@ -2658,7 +2691,7 @@ class Game:
         self.diary.record_random_memory()
 
         # Update goals
-        self.goals.update_progress(interaction, 1)
+        self._handle_goal_completions(self.goals.update_progress(interaction, 1))
 
         # Update progression system
         self.progression.record_interaction(interaction)
@@ -2999,6 +3032,9 @@ class Game:
             else:
                 self.renderer.show_message(f"Found {rarity_prefix}collectible: {name}!", duration=4.0)
 
+            # Track for collector secret goal
+            self._handle_goal_completions(self.goals.update_progress("collect_item", 1))
+
     def _show_milestone_achieved(self, category: str, threshold: int, reward: Reward):
         """Show notification for milestone achievement."""
         duck_sounds.level_up()
@@ -3252,7 +3288,9 @@ class Game:
                 self.habitat.update_animations()
 
             # Update goals (time-based)
-            self.goals.update_time(delta_minutes)
+            time_goals = self.goals.update_time(delta_minutes)
+            if time_goals:
+                self._handle_goal_completions(time_goals)
 
             # Update garden plants (convert minutes to hours)
             delta_hours = delta_minutes / 60.0
@@ -3335,21 +3373,29 @@ class Game:
 
                 # Check for rainbow secret
                 if self.atmosphere.current_weather.weather_type == WeatherType.RAINBOW:
-                    self.goals._check_secret_goal("saw_rainbow")
+                    secret = self.goals.check_secret_goal("saw_rainbow")
+                    if secret:
+                        self._handle_goal_completions([secret])
                     self.diary.record_adventure("rainbow")
 
                 # Check for storm secret
                 if self.atmosphere.current_weather.weather_type == WeatherType.STORMY:
-                    self.goals._check_secret_goal("storm_play")
+                    secret = self.goals.check_secret_goal("storm_play")
+                    if secret:
+                        self._handle_goal_completions([secret])
 
             # Check for super lucky day secret
             if self.atmosphere.day_fortune and self.atmosphere.day_fortune.fortune_type == "super_lucky":
-                self.goals._check_secret_goal("super_lucky_day")
+                secret = self.goals.check_secret_goal("super_lucky_day")
+                if secret:
+                    self._handle_goal_completions([secret])
 
             # Check for all weather types seen
             all_basic_weather = {"sunny", "cloudy", "rainy", "stormy", "foggy", "snowy", "windy"}
             if all_basic_weather.issubset(self._weather_seen):
-                self.goals._check_secret_goal("all_weather")
+                secret = self.goals.check_secret_goal("all_weather")
+                if secret:
+                    self._handle_goal_completions([secret])
 
             # Check for duck friend visits (only at Home Pond)
             if self.exploration.current_area and self.exploration.current_area.name == "Home Pond":
@@ -3420,7 +3466,7 @@ class Game:
                             self._duck_approach_visitor()
                             
                             # Track visitor goal progress
-                            self.goals.update_progress("met_visitors", 1)
+                            self._handle_goal_completions(self.goals.update_progress("met_visitors", 1))
                             
                             # Schedule duck's reaction comment after greeting
                             duck_reaction = self._get_duck_visitor_reaction(personality)
@@ -4070,23 +4116,30 @@ class Game:
         current_time = time.time()
         mood = self.duck.get_mood()
         needs = self.duck.needs
+        secrets_found = []
 
         # Check early bird (playing before 6 AM)
         hour = datetime.now().hour
         if hour < 6:
-            self.goals._check_secret_goal("early_bird")
+            secret = self.goals.check_secret_goal("early_bird")
+            if secret:
+                secrets_found.append(secret)
 
         # Check marathon session (30 minutes)
         session_minutes = (current_time - self._session_start) / 60
         if session_minutes >= 30:
-            self.goals._check_secret_goal("marathon")
+            secret = self.goals.check_secret_goal("marathon")
+            if secret:
+                secrets_found.append(secret)
 
         # Check zen master (ecstatic mood for 5 minutes)
         if mood.state.value == "ecstatic":
             if self._ecstatic_start is None:
                 self._ecstatic_start = current_time
             elif current_time - self._ecstatic_start >= 300:  # 5 minutes
-                self.goals._check_secret_goal("zen_master")
+                secret = self.goals.check_secret_goal("zen_master")
+                if secret:
+                    secrets_found.append(secret)
         else:
             self._ecstatic_start = None
 
@@ -4098,20 +4151,31 @@ class Game:
             if self._perfect_care_start is None:
                 self._perfect_care_start = current_time
             elif current_time - self._perfect_care_start >= 600:  # 10 minutes
-                self.goals._check_secret_goal("perfect_care")
+                secret = self.goals.check_secret_goal("perfect_care")
+                if secret:
+                    secrets_found.append(secret)
         else:
             self._perfect_care_start = None
 
         # Check streak milestones
         if self.progression.current_streak >= 7:
-            self.goals._check_secret_goal("week_streak")
+            secret = self.goals.check_secret_goal("week_streak")
+            if secret:
+                secrets_found.append(secret)
         if self.progression.current_streak >= 30:
-            self.goals._check_secret_goal("month_streak")
+            secret = self.goals.check_secret_goal("month_streak")
+            if secret:
+                secrets_found.append(secret)
 
         # Check holiday spirit
         special_event = self.events.check_special_day_events()
         if special_event:
-            self.goals._check_secret_goal("holiday_play")
+            secret = self.goals.check_secret_goal("holiday_play")
+            if secret:
+                secrets_found.append(secret)
+
+        if secrets_found:
+            self._handle_goal_completions(secrets_found)
 
         # Check time-based secrets (clock, date)
         time_secret = self.secrets.check_time_secrets()
@@ -5007,8 +5071,9 @@ class Game:
         music_context = get_music_context(weather="sunny", duck_mood="content")
         sound_engine.update_music(music_context, force=True)
 
-        # First goal
+        # First goals
         self.goals.add_daily_goals()
+        self.goals.add_achievement_goals()
 
         # Generate daily challenges
         self.progression.generate_daily_challenges()
@@ -5074,6 +5139,8 @@ class Game:
         else:
             self.goals = GoalSystem()
             self.goals.add_daily_goals()
+        # Ensure achievement goals are always present
+        self.goals.add_achievement_goals()
 
         # Load achievements
         if "achievements" in data:
@@ -7586,7 +7653,7 @@ class Game:
             duck_sounds.level_up()
 
         self.renderer.show_message("\n".join(msg_lines), duration=4.0)
-        self.goals.update_progress("trade", 1)
+        self._handle_goal_completions(self.goals.update_progress("trade", 1))
 
         # Update offers display
         self._render_trading_menu()
