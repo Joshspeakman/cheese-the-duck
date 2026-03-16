@@ -4798,19 +4798,26 @@ class Game:
     def _check_for_updates_async(self):
         """Check for updates in background and update status message."""
         self._title_update_status = "Checking for updates..."
-        try:
-            update_info = self._game_updater.check_for_updates()
-            self._title_update_status = self._game_updater.get_status_message(update_info.status)
-            if update_info.status.value == "update_available":
-                self._update_available_info = update_info
-                # All installs can now be updated with [U]
-                self._title_update_status = f"Update v{update_info.latest_version} available! Press [U] to install"
-            else:
+        self._title_checking_updates = True
+        
+        import threading
+        def _check():
+            try:
+                update_info = self._game_updater.check_for_updates()
+                self._title_update_status = self._game_updater.get_status_message(update_info.status)
+                if update_info.status.value == "update_available":
+                    self._update_available_info = update_info
+                    self._title_update_status = f"Update v{update_info.latest_version} available! Press [U] to install"
+                else:
+                    self._update_available_info = None
+            except Exception:
+                self._title_update_status = "Could not check for updates"
                 self._update_available_info = None
-        except Exception:
-            self._title_update_status = "Could not check for updates"
-            self._update_available_info = None
-        self._title_checking_updates = False
+            finally:
+                self._title_checking_updates = False
+        
+        thread = threading.Thread(target=_check, daemon=True)
+        thread.start()
 
     def _download_and_apply_update(self):
         """Download and apply the available update."""
