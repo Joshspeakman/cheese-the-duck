@@ -374,6 +374,10 @@ class BehaviorAI:
         
         # Biome context for location-specific behaviors
         self._current_biome: Optional[str] = None  # Current biome name (e.g. "pond", "forest")
+        self._current_location: Optional[str] = None  # Location name (e.g. "Home Pond", "Forest Edge")
+        self._field_width: int = 79   # Playfield width for zone coordinate conversion
+        self._field_height: int = 25  # Playfield height for zone coordinate conversion
+        self._biome_target_position: Optional[Tuple[int, int]] = None  # Target for biome movement
         
         # Cooldown for item interactions (prevents constant item-to-item behavior)
         self._last_item_interaction_time: float = 0.0
@@ -404,7 +408,8 @@ class BehaviorAI:
     def set_context(self, available_structures: set = None,
                     is_bad_weather: bool = False, weather_type: str = None,
                     structure_positions: dict = None, placed_items: list = None,
-                    current_biome: str = None):
+                    current_biome: str = None, current_location: str = None,
+                    field_width: int = None, field_height: int = None):
         """Set context for structure-aware and item-aware behavior decisions."""
         if available_structures is not None:
             self._available_structures = available_structures
@@ -416,6 +421,12 @@ class BehaviorAI:
             self._available_items = self._categorize_items(placed_items)
         if current_biome is not None:
             self._current_biome = current_biome
+        if current_location is not None:
+            self._current_location = current_location
+        if field_width is not None:
+            self._field_width = field_width
+        if field_height is not None:
+            self._field_height = field_height
 
     def _categorize_items(self, placed_items: list) -> dict:
         """Categorize placed items by their shop category for AI decisions."""
@@ -522,7 +533,7 @@ class BehaviorAI:
         for i, (action, score) in enumerate(noisy_scores):
             if action == self._last_action:
                 noisy_scores[i] = (action, score * 0.3)
-            elif action in self._action_history[-3:]:
+            elif action in list(self._action_history)[-3:]:
                 noisy_scores[i] = (action, score * 0.6)
 
         # Sort by score and pick the best
@@ -531,10 +542,19 @@ class BehaviorAI:
 
         # Get action data — biome actions use special handling
         if chosen_action == AutonomousAction.BIOME_ACTION:
-            message, duration = self._pick_biome_behavior()
+            message, duration, feature_tag = self._pick_biome_behavior()
             self._selected_item = None
             self._last_action = chosen_action
             self._action_history.append(chosen_action)
+            # Compute target position from feature zone
+            from duck.biome_behaviors import get_biome_target
+            target = get_biome_target(
+                self._current_location or "",
+                feature_tag,
+                self._field_width,
+                self._field_height,
+            )
+            self._biome_target_position = target
             return ActionResult(
                 action=chosen_action,
                 message=message,
@@ -599,6 +619,20 @@ class BehaviorAI:
 
         result = self.select_action(duck)
         
+        # Check if biome action needs positional movement
+        if result.action == AutonomousAction.BIOME_ACTION and self._biome_target_position:
+            self._pending_action = result
+            self._movement_requested = True
+            walk_msg = "*waddles toward something interesting*"
+            self._last_action_time = current_time
+            duck.set_action_message(walk_msg, duration=5.0)
+            return ActionResult(
+                action=result.action,
+                message=walk_msg,
+                duration=result.duration,
+                effects={},
+            )
+
         # Check if this action requires walking to a structure
         data = ACTION_DATA.get(result.action, {})
         required_struct = data.get("requires_structure")
@@ -718,13 +752,13 @@ class BehaviorAI:
 
         return result
 
-    def _pick_biome_behavior(self) -> Tuple[str, float]:
-        """Pick a random biome-specific behavior message and duration."""
+    def _pick_biome_behavior(self) -> Tuple[str, float, str]:
+        """Pick a random biome-specific behavior message, duration, and feature tag."""
         from duck.biome_behaviors import BIOME_BEHAVIORS
         biome_key = self._current_biome or "pond"
         behaviors = BIOME_BEHAVIORS.get(biome_key, BIOME_BEHAVIORS["pond"])
-        message, duration = random.choice(behaviors)
-        return message, duration
+        message, duration, feature_tag = random.choice(behaviors)
+        return message, duration, feature_tag
 
     def _calculate_utilities(self, duck: "Duck") -> List[Tuple[AutonomousAction, float]]:
         """
@@ -933,6 +967,10 @@ class BehaviorAI:
         if not self._pending_action:
             return None
         
+        # Biome actions have their own target position
+        if self._pending_action.action == AutonomousAction.BIOME_ACTION:
+            return self._biome_target_position
+        
         data = ACTION_DATA.get(self._pending_action.action, {})
         required_struct = data.get("requires_structure")
         if required_struct:
@@ -950,8 +988,7 @@ class BehaviorAI:
         result = self._pending_action
         self._pending_action = None
         self._movement_requested = False
-        
-        # Apply effects now that we're at the structure
+        self._biome_target_position = None
         for need, change in result.effects.items():
             if hasattr(duck.needs, need):
                 current = getattr(duck.needs, need)
@@ -971,3 +1008,4 @@ class BehaviorAI:
         """Cancel any pending movement/action."""
         self._pending_action = None
         self._movement_requested = False
+        self._biome_target_position = None
