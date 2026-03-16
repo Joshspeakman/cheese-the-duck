@@ -120,7 +120,7 @@ ACTION_DATA = {
         "need_bonus": ("energy", 0.6),
         "personality_bonus": ("active_lazy", -0.4),  # Lazy ducks nap more
         "duration": 25.0,
-        "effect": {"energy": 2},  # Small self-care nudge
+        "effect": {},  # Energy regen handled by game tick while napping
     },
     AutonomousAction.LOOK_AROUND: {
         "messages": [
@@ -221,7 +221,7 @@ ACTION_DATA = {
         "need_bonus": ("energy", 0.8),
         "personality_bonus": ("active_lazy", -0.3),
         "duration": 30.0,
-        "effect": {"energy": 4},  # Better than regular nap
+        "effect": {},  # Energy regen handled by game tick while napping (nest is comfier)
         "requires_structure": "nest",
     },
     AutonomousAction.HIDE_IN_SHELTER: {

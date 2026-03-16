@@ -3203,7 +3203,27 @@ class Game:
                         excess = weather_mods[need] - 1.0
                         weather_mods[need] = 1.0 + excess * dampen
             
-            self.duck.update(delta_minutes, weather_modifiers=weather_mods)
+            # Check if duck is currently sleeping (autonomous nap or player dream)
+            # If so, pause energy decay and regenerate energy instead
+            is_napping = self.duck.current_action in ("nap", "nap_in_nest", "sleep")
+            is_dreaming = self._dream_active
+            duck_is_sleeping = is_napping or is_dreaming
+
+            if duck_is_sleeping:
+                # Pause energy decay by saving energy before update and restoring after
+                energy_before = self.duck.needs.energy
+                self.duck.update(delta_minutes, weather_modifiers=weather_mods)
+                self.duck.needs.energy = energy_before
+                # Regenerate energy while sleeping
+                # Rate: ~2 points per real second (at 1× game speed)
+                # NAP (25s) → ~50 energy, NAP_IN_NEST (30s) → ~60, dream (~15s) → ~30
+                regen_rate = 2.0  # per real second
+                if is_napping and self.duck.current_action == "nap_in_nest":
+                    regen_rate = 2.5  # Nest is comfier
+                regen = regen_rate * delta_seconds
+                self.duck.needs.energy = min(100, self.duck.needs.energy + regen)
+            else:
+                self.duck.update(delta_minutes, weather_modifiers=weather_mods)
 
             # Apply decoration bonuses (comfort/mood) to duck needs each tick
             try:
