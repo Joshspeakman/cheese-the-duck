@@ -2275,6 +2275,8 @@ class Renderer:
                 return "Taking shelter"
             elif action == "use_bird_bath":
                 return "Bathing"
+            elif action == "biome_action":
+                return "Exploring area"
         
         state = self.duck_pos.get_state()
         if state == "sleeping":

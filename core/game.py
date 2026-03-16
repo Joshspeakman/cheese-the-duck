@@ -3543,6 +3543,20 @@ class Game:
                                 self.renderer.set_duck_state("scared", duration=result.duration)
                             elif result.action.value in ["preen", "admire_garden"]:
                                 self.renderer.set_duck_state("preening", duration=result.duration)
+                            elif result.action.value == "biome_action":
+                                # Map feature tag to visual state for biome behaviors
+                                tag = self.behavior_ai._biome_feature_tag
+                                _tag_states = {
+                                    "water": "splashing",
+                                    "vegetation": "pecking",
+                                    "ground": "playing",
+                                    "edge": "curious",
+                                    "rocks": "pecking",
+                                    "structure": "curious",
+                                }
+                                state = _tag_states.get(tag, "playing")
+                                self.renderer.set_duck_state(state, duration=result.duration)
+                                self.behavior_ai._biome_feature_tag = None
                     
                     self.renderer.duck_pos.move_to(
                         target[0], target[1],

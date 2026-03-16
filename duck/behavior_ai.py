@@ -378,6 +378,7 @@ class BehaviorAI:
         self._field_width: int = 79   # Playfield width for zone coordinate conversion
         self._field_height: int = 25  # Playfield height for zone coordinate conversion
         self._biome_target_position: Optional[Tuple[int, int]] = None  # Target for biome movement
+        self._biome_feature_tag: Optional[str] = None  # Feature tag for current biome action (water/vegetation/etc.)
         
         # Cooldown for item interactions (prevents constant item-to-item behavior)
         self._last_item_interaction_time: float = 0.0
@@ -555,11 +556,12 @@ class BehaviorAI:
                 self._field_height,
             )
             self._biome_target_position = target
+            self._biome_feature_tag = feature_tag
             return ActionResult(
                 action=chosen_action,
                 message=message,
                 duration=duration,
-                effects={},
+                effects={"fun": 3},
             )
 
         # Get action data
@@ -1009,3 +1011,4 @@ class BehaviorAI:
         self._pending_action = None
         self._movement_requested = False
         self._biome_target_position = None
+        self._biome_feature_tag = None
