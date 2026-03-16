@@ -1425,8 +1425,9 @@ class Renderer:
             essential_parts.extend([age_part, coin_part])
             essential_right = f"{' '.join(essential_parts)} "
             essential_len = _visible_len(essential_right)
-            # Space for mood = total - left - essential - separator(" | ")
-            mood_budget = inner_width - left_len - essential_len - 3
+            # Space for mood = total - left - essential - mood_ind - spaces - min_pad
+            mood_ind_len = _visible_len(mood_ind)
+            mood_budget = inner_width - left_len - essential_len - mood_ind_len - 3
             if mood_budget > 5:
                 truncated_mood = _visible_truncate(mood_desc, mood_budget - 2) + ".."
                 right_side = f"{truncated_mood} {mood_ind} {' '.join(essential_parts)} "
