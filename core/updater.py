@@ -25,7 +25,7 @@ from config import GAME_DIR, SAVE_DIR
 
 
 # Game version - Update this when releasing new versions
-GAME_VERSION = "2.9.0"
+GAME_VERSION = "2.11.2"
 
 # GitHub repository info
 GITHUB_OWNER = "Joshspeakman"
@@ -170,15 +170,36 @@ class GameUpdater:
             release_notes = ""
             
             try:
-                request = urllib.request.Request(GITHUB_TAGS_URL, headers=headers)
-                with urllib.request.urlopen(request, timeout=10) as response:
-                    tags_data = json.loads(response.read().decode('utf-8'))
+                # Fetch tags with pagination (API returns 30 per page by default)
+                all_tags = []
+                page = 1
+                while page <= 5:  # Cap at 5 pages (150 tags) to avoid infinite loops
+                    tag_url = f"{GITHUB_TAGS_URL}?per_page=100&page={page}"
+                    request = urllib.request.Request(tag_url, headers=headers)
+                    with urllib.request.urlopen(request, timeout=10) as response:
+                        tags_data = json.loads(response.read().decode('utf-8'))
+                    if not tags_data:
+                        break
+                    all_tags.extend(tags_data)
+                    if len(tags_data) < 100:
+                        break
+                    page += 1
                 
-                if tags_data and len(tags_data) > 0:
-                    latest_version = tags_data[0].get('name', '0.0.0')
-                    # Build download URL from tag
-                    download_url = f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/archive/refs/tags/{latest_version}.zip"
-                    release_notes = f"Update to {latest_version}"
+                if all_tags:
+                    # Find highest semantic version among all tags
+                    # (API returns by creation date, not by version)
+                    best_version = None
+                    best_tuple = (0, 0, 0)
+                    for tag in all_tags:
+                        tag_name = tag.get('name', '')
+                        tag_tuple = self._parse_version(tag_name)
+                        if tag_tuple > best_tuple:
+                            best_tuple = tag_tuple
+                            best_version = tag_name
+                    if best_version:
+                        latest_version = best_version
+                        download_url = f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/archive/refs/tags/{latest_version}.zip"
+                        release_notes = f"Update to {latest_version}"
             except Exception:
                 pass  # Fall through to releases API
             
