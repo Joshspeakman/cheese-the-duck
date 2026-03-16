@@ -163,6 +163,9 @@ class DuckPosition:
         self._movement_callback_data = None  # Data to pass to callback
         self._is_directed_movement = False  # True if moving to specific target (not wandering)
         self._original_position = None  # For returning after interaction
+        
+        # Motivation affects walk speed (set externally by game loop)
+        self._motivation = 1.0
 
     # All states that support animation frame cycling
     # Only includes states that exist for all growth stages
@@ -187,10 +190,13 @@ class DuckPosition:
 
         # ALWAYS process directed movement first, regardless of animation state
         # This ensures duck walks to nest/structures before performing actions
+        # Walk speed scales with motivation (0.15s at full → 0.50s at zero)
+        step_interval = 0.15 + (1.0 - self._motivation) * 0.35
+
         if self._is_directed_movement:
             if self.x != self.target_x or self.y != self.target_y:
                 self.is_moving = True
-                if self._move_timer > 0.15:  # Move every 0.15 seconds
+                if self._move_timer > step_interval:
                     self._move_timer = 0
                     self._animation_frame = (self._animation_frame + 1) % 4
 
@@ -247,7 +253,7 @@ class DuckPosition:
             self.is_moving = True
             self._state = "walking"
 
-            if self._move_timer > 0.15:  # Move every 0.15 seconds
+            if self._move_timer > step_interval:
                 self._move_timer = 0
                 self._animation_frame = (self._animation_frame + 1) % 4
 

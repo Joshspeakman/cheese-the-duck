@@ -99,6 +99,9 @@ from audio.sound_effects import SoundEffectSystem, sound_effects
 # DuckBrain - Seaman-style memory and personality system
 from dialogue.duck_brain import DuckBrain
 
+# Duck desires - daily goals, motivation, interaction resistance
+from duck.desires import DuckDesires
+
 from ui.statistics import StatisticsSystem, statistics_system
 from ui.day_night import DayNightSystem, day_night_system
 from ui.event_animations import (
@@ -2450,6 +2453,14 @@ class Game:
                 self._show_message_if_no_menu("...nobody home.", duration=2.0, category="duck")
             return
 
+        # ── Motivation-based refusal check ────────────────────────────
+        refused, refusal_msg = DuckDesires.check_interaction_refusal(self.duck, interaction)
+        if refused:
+            if refusal_msg:
+                self._show_message_if_no_menu(refusal_msg, duration=3.0, category="duck")
+            duck_sounds.quack("grumpy")
+            return
+
         # ── Check mood-based willingness ─────────────────────────────
         mood_info = self.duck.get_mood()
         if interaction == "play" and not mood_info.can_play:
@@ -2540,6 +2551,25 @@ class Game:
         self.duck.memory.add_interaction(interaction, "", emotional_value)
         self.duck.memory.total_interactions += 1
         self.duck.memory.record_mood(mood.score)
+
+        # ── Notify desires system of player interaction ───────────────
+        if hasattr(self.duck, '_desires'):
+            # Track which goals were satisfied before this interaction
+            _pre_satisfied = {g.goal_type.value for g in self.duck.desires.goals if g.satisfied}
+            self.duck.desires.on_player_interaction(interaction)
+            # Check need-based goal satisfaction
+            for need_name in ["hunger", "energy", "fun", "cleanliness", "social"]:
+                val = getattr(self.duck.needs, need_name, 50)
+                self.duck.desires.on_need_satisfied(need_name, val)
+            # Notify diary of any newly satisfied goals
+            _post_satisfied = {g.goal_type.value for g in self.duck.desires.goals if g.satisfied}
+            for gt in _post_satisfied - _pre_satisfied:
+                self.diary_manager.on_goal_satisfied(gt)
+            # Check if all 3 goals satisfied → trust + diary bonus
+            if self.duck.desires.check_all_satisfied_bonus():
+                apply_trust_gain(self.duck, "interaction")  # Bonus trust
+                apply_trust_gain(self.duck, "interaction")  # Extra bonus
+                self.diary_manager.on_goal_all_satisfied()
         
         # Record action in DuckBrain for Seaman-style callbacks
         if self.duck_brain:
@@ -3247,6 +3277,21 @@ class Game:
             except Exception:
                 pass
 
+            # ── Duck desires: goal generation / regeneration ─────────
+            if hasattr(self.duck, '_desires'):
+                desires = self.duck.desires
+                if desires.should_regenerate():
+                    # Get unlocked location names for goal targeting
+                    unlocked_locs = []
+                    try:
+                        for area in self.exploration.discovered_areas.values():
+                            if area.is_discovered:
+                                unlocked_locs.append(area.name)
+                    except Exception:
+                        pass
+                    desires.generate_daily_agenda(self.duck, unlocked_locs or None)
+                    desires.reset_session_timer()
+
             self._last_tick = current_time
 
         # Update atmosphere (weather, visitors) every 30 seconds
@@ -3507,7 +3552,12 @@ class Game:
                 current_location=self.exploration.current_area.name if self.exploration.current_area else "Home Pond",
                 field_width=self.renderer.duck_pos.field_width,
                 field_height=self.renderer.duck_pos.field_height,
+                desires=self.duck.desires if hasattr(self.duck, '_desires') else None,
+                motivation=self.duck.motivation if hasattr(self.duck, 'motivation') else 1.0,
             )
+
+            # Sync motivation to renderer for walk speed scaling
+            self.renderer.duck_pos._motivation = self.duck.motivation if hasattr(self.duck, 'motivation') else 1.0
 
             # Check if there's a pending item interaction from AI
             selected_item = self.behavior_ai.get_selected_item()
@@ -3568,6 +3618,21 @@ class Game:
             else:
                 result = self.behavior_ai.perform_action(self.duck, current_time)
                 if result:
+                    # Notify desires engine about AI-performed action
+                    try:
+                        _pre = {g.goal_type.value for g in self.duck.desires.goals if g.satisfied}
+                        current_loc = self.exploration.current_area.name if self.exploration.current_area else ""
+                        self.duck.desires.on_action_performed(result.action.value, current_loc)
+                        _post = {g.goal_type.value for g in self.duck.desires.goals if g.satisfied}
+                        for gt in _post - _pre:
+                            self.diary_manager.on_goal_satisfied(gt)
+                        if self.duck.desires.check_all_satisfied_bonus():
+                            apply_trust_gain(self.duck, "interaction")
+                            apply_trust_gain(self.duck, "interaction")
+                            self.diary_manager.on_goal_all_satisfied()
+                    except Exception:
+                        pass
+
                     # Check if this action needs movement (behavior_ai will set pending)
                     if self.behavior_ai.has_pending_movement():
                         # Movement will be handled on next update
@@ -5318,6 +5383,21 @@ class Game:
             self.spontaneous_travel = SpontaneousTravelSystem.from_dict(data["spontaneous_travel"])
         else:
             self.spontaneous_travel = SpontaneousTravelSystem()
+
+        # Load duck desires / daily goals
+        if "desires" in data and data["desires"]:
+            self.duck._desires = DuckDesires.from_dict(data["desires"])
+        # Generate initial agenda if none exists
+        if hasattr(self.duck, '_desires') and not self.duck.desires.goals:
+            unlocked_locs = []
+            try:
+                for area in self.exploration.discovered_areas.values():
+                    if area.is_discovered:
+                        unlocked_locs.append(area.name)
+            except Exception:
+                pass
+            self.duck.desires.generate_daily_agenda(self.duck, unlocked_locs or None)
+
         # ============== END LOAD NEW FEATURE SYSTEMS ==============
 
         # Load weather history for secret goal
@@ -5502,6 +5582,8 @@ class Game:
             # Area event system and spontaneous travel
             "area_events": self.area_events.to_dict(),
             "spontaneous_travel": self.spontaneous_travel.to_dict(),
+            # Duck desires / daily goals
+            "desires": self.duck.desires.to_dict() if hasattr(self.duck, '_desires') else {},
             # ============== END NEW FEATURE SYSTEMS ==============
         }
 

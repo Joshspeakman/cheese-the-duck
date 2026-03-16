@@ -460,5 +460,19 @@ class MoodCalculator:
         return f"[{char * filled}{' ' * empty}]"
 
 
+    def get_motivation(self, needs: "Needs", duck=None) -> float:
+        """Convenience: compute motivation using DuckDesires.calculate_motivation.
+
+        If a duck reference is available, delegates to the full calculation
+        in duck.desires. Otherwise returns a rough estimate from mood score.
+        """
+        if duck is not None:
+            from duck.desires import DuckDesires
+            return DuckDesires.calculate_motivation(duck)
+        # Fallback: rough estimate from last score
+        score = self.calculate_score(needs)
+        return max(0.0, min(1.0, score / 100.0))
+
+
 # Global mood calculator instance
 mood_calculator = MoodCalculator()
