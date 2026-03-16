@@ -382,7 +382,12 @@ class BehaviorAI:
         
         # Cooldown for item interactions (prevents constant item-to-item behavior)
         self._last_item_interaction_time: float = 0.0
-        self._item_interaction_cooldown: float = 30.0  # Seconds between item interactions
+        self._item_interaction_cooldown: float = 120.0  # Seconds between item interactions
+
+        # Per-category satiation: tracks how many times duck has used each
+        # category recently.  Each use adds 1; decays by 1 every 180s.
+        # Higher satiation → lower utility for that category.
+        self._item_satiation: dict = {}  # category -> (count, last_use_time)
 
         # Movement callback support
         self._pending_action: Optional[ActionResult] = None  # Action to perform after reaching target
@@ -393,9 +398,31 @@ class BehaviorAI:
         self._motivation: float = 1.0  # 0.0-1.0, from DuckDesires.calculate_motivation
         self._desires = None           # DuckDesires reference
 
-    def record_item_interaction(self):
-        """Record that an item interaction just occurred (for cooldown)."""
+    def record_item_interaction(self, category: str = None):
+        """Record that an item interaction just occurred (for cooldown and satiation)."""
         self._last_item_interaction_time = time.time()
+        if category:
+            count, _ = self._item_satiation.get(category, (0, 0.0))
+            self._item_satiation[category] = (count + 1, time.time())
+
+    def _get_item_satiation(self, category: str) -> float:
+        """Get satiation multiplier for a category (0.0 = fully bored, 1.0 = fresh).
+        
+        Each use adds 1 to counter; counter decays by 1 every 180s of non-use.
+        Multiplier: 1.0 at 0, 0.5 at 1, 0.25 at 2, etc.
+        """
+        if category not in self._item_satiation:
+            return 1.0
+        count, last_time = self._item_satiation[category]
+        # Decay: remove 1 count per 180s since last use
+        elapsed = time.time() - last_time
+        decayed_count = max(0, count - int(elapsed / 180.0))
+        if decayed_count <= 0:
+            del self._item_satiation[category]
+            return 1.0
+        self._item_satiation[category] = (decayed_count, last_time)
+        # Halve utility for each stacked use
+        return 0.5 ** decayed_count
 
     def is_item_interaction_on_cooldown(self) -> bool:
         """Check if item interactions are still on cooldown."""
@@ -549,11 +576,18 @@ class BehaviorAI:
         ]
 
         # Reduce score for recently performed actions
+        item_actions = {AutonomousAction.PLAY_WITH_TOY, AutonomousAction.SPLASH_IN_WATER,
+                        AutonomousAction.REST_ON_FURNITURE, AutonomousAction.ADMIRE_DECORATION}
+        recent_had_item = any(a in item_actions for a in list(self._action_history)[-3:])
+
         for i, (action, score) in enumerate(noisy_scores):
             if action == self._last_action:
                 noisy_scores[i] = (action, score * 0.3)
             elif action in list(self._action_history)[-3:]:
                 noisy_scores[i] = (action, score * 0.6)
+            # If ANY item action was recent, suppress ALL item actions
+            elif recent_had_item and action in item_actions:
+                noisy_scores[i] = (action, score * 0.4)
 
         # Sort by score and pick the best
         noisy_scores.sort(key=lambda x: x[1], reverse=True)
@@ -847,53 +881,55 @@ class BehaviorAI:
                     continue  # Skip item actions during cooldown, let duck vibe/idle
                 
                 # Base utility for item interactions (low - duck needs a reason)
-                score = 0.1
+                score = 0.05
                 
-                # PLAY_WITH_TOY - strong bonus when duck needs fun
+                # PLAY_WITH_TOY - bonus when duck needs fun (capped to compete, not dominate)
                 if action == AutonomousAction.PLAY_WITH_TOY:
                     need_value = getattr(duck.needs, "fun", 50)
                     energy_value = getattr(duck.needs, "energy", 50)
                     
-                    # If too tired, don't want to play much
                     if energy_value < 25:
                         score = 0.05  # Too tired to play
                     elif need_value < 30:  # Very bored
-                        score = 0.7
-                    elif need_value < 50:  # Somewhat bored
                         score = 0.45
+                    elif need_value < 50:  # Somewhat bored
+                        score = 0.3
                     elif need_value < 70:  # Slight interest
-                        score = 0.2
+                        score = 0.15
                     else:
-                        score = 0.1  # Not interested when fun is high
+                        score = 0.05  # Not interested when fun is high
 
-                # SPLASH_IN_WATER - strong bonus when duck needs cleaning
+                # SPLASH_IN_WATER - bonus when duck needs cleaning
                 elif action == AutonomousAction.SPLASH_IN_WATER:
                     need_value = getattr(duck.needs, "cleanliness", 50)
                     energy_value = getattr(duck.needs, "energy", 50)
                     
-                    # If very tired, less likely to splash around
                     if energy_value < 20:
-                        score = 0.1  # Too tired for splashing
+                        score = 0.05  # Too tired for splashing
                     elif need_value < 30:  # Very dirty
-                        score = 0.75
-                    elif need_value < 50:  # Dirty
                         score = 0.5
+                    elif need_value < 50:  # Dirty
+                        score = 0.3
                     elif need_value < 70:  # Slightly dirty
-                        score = 0.25
+                        score = 0.15
                     else:
-                        score = 0.1
+                        score = 0.05
 
-                # REST_ON_FURNITURE - strong bonus when duck is tired
+                # REST_ON_FURNITURE - bonus when duck is tired
                 elif action == AutonomousAction.REST_ON_FURNITURE:
                     need_value = getattr(duck.needs, "energy", 50)
                     if need_value < 30:  # Very tired
-                        score = 0.65
+                        score = 0.45
                     elif need_value < 50:  # Tired
-                        score = 0.4
+                        score = 0.3
                     elif need_value < 70:  # Slightly tired
-                        score = 0.2
+                        score = 0.15
                     else:
-                        score = 0.1
+                        score = 0.05
+
+                # Apply satiation decay — repeated use of same category is boring
+                satiation = self._get_item_satiation(required_item_cat)
+                score *= satiation
 
             # Add bonus based on relevant need (lower need = higher bonus)
             # Skip for item-based actions - they have custom need handling above
@@ -969,6 +1005,26 @@ class BehaviorAI:
                               AutonomousAction.IDLE, AutonomousAction.STARE_BLANKLY,
                               AutonomousAction.REST_ON_FURNITURE):
                     score += 0.3 * (1.0 - self._motivation)
+
+            # ── Energy exhaustion gate ───────────────────────────
+            # When energy is very low, suppress physical actions and strongly
+            # prefer rest.  A duck with no energy should nap, not play.
+            energy = getattr(duck.needs, "energy", 50)
+            rest_actions = (AutonomousAction.NAP, AutonomousAction.NAP_IN_NEST,
+                            AutonomousAction.REST_ON_FURNITURE, AutonomousAction.IDLE,
+                            AutonomousAction.STARE_BLANKLY, AutonomousAction.HIDE_IN_SHELTER)
+            if energy < 15:
+                # Exhausted: almost nothing except rest
+                if action not in rest_actions:
+                    score *= 0.05
+                else:
+                    score += 0.6
+            elif energy < 30:
+                # Very tired: strongly discourage physical actions
+                if action not in rest_actions:
+                    score *= 0.3
+                else:
+                    score += 0.3
 
             scores.append((action, max(0, score)))
 

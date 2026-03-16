@@ -1718,7 +1718,12 @@ class Game:
         """Callback when interaction controller finishes and applies effects."""
         # Always record interaction for behavior AI cooldown, even if result is missing
         if self.behavior_ai:
-            self.behavior_ai.record_item_interaction()
+            # Pass category so satiation can track per-category boredom
+            category = None
+            item = get_shop_item(item_id)
+            if item:
+                category = item.category.value.lower()
+            self.behavior_ai.record_item_interaction(category=category)
 
         if not self.duck or not result:
             return
