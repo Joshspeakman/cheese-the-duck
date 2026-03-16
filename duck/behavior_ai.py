@@ -54,6 +54,8 @@ class AutonomousAction(Enum):
     SPLASH_IN_WATER = "splash_in_water"
     REST_ON_FURNITURE = "rest_on_furniture"
     ADMIRE_DECORATION = "admire_decoration"
+    # Biome-specific action (message chosen from biome_behaviors data)
+    BIOME_ACTION = "biome_action"
 
 
 # Action data: base utility, need it helps with, personality affinity
@@ -370,6 +372,9 @@ class BehaviorAI:
         self._available_items: dict = {}  # category -> list of item_ids
         self._selected_item: Optional[str] = None  # Item selected for current action
         
+        # Biome context for location-specific behaviors
+        self._current_biome: Optional[str] = None  # Current biome name (e.g. "pond", "forest")
+        
         # Cooldown for item interactions (prevents constant item-to-item behavior)
         self._last_item_interaction_time: float = 0.0
         self._item_interaction_cooldown: float = 30.0  # Seconds between item interactions
@@ -398,7 +403,8 @@ class BehaviorAI:
 
     def set_context(self, available_structures: set = None,
                     is_bad_weather: bool = False, weather_type: str = None,
-                    structure_positions: dict = None, placed_items: list = None):
+                    structure_positions: dict = None, placed_items: list = None,
+                    current_biome: str = None):
         """Set context for structure-aware and item-aware behavior decisions."""
         if available_structures is not None:
             self._available_structures = available_structures
@@ -408,6 +414,8 @@ class BehaviorAI:
             self._structure_positions = structure_positions
         if placed_items is not None:
             self._available_items = self._categorize_items(placed_items)
+        if current_biome is not None:
+            self._current_biome = current_biome
 
     def _categorize_items(self, placed_items: list) -> dict:
         """Categorize placed items by their shop category for AI decisions."""
@@ -520,6 +528,19 @@ class BehaviorAI:
         # Sort by score and pick the best
         noisy_scores.sort(key=lambda x: x[1], reverse=True)
         chosen_action = noisy_scores[0][0]
+
+        # Get action data — biome actions use special handling
+        if chosen_action == AutonomousAction.BIOME_ACTION:
+            message, duration = self._pick_biome_behavior()
+            self._selected_item = None
+            self._last_action = chosen_action
+            self._action_history.append(chosen_action)
+            return ActionResult(
+                action=chosen_action,
+                message=message,
+                duration=duration,
+                effects={},
+            )
 
         # Get action data
         data = ACTION_DATA[chosen_action]
@@ -697,6 +718,14 @@ class BehaviorAI:
 
         return result
 
+    def _pick_biome_behavior(self) -> Tuple[str, float]:
+        """Pick a random biome-specific behavior message and duration."""
+        from duck.biome_behaviors import BIOME_BEHAVIORS
+        biome_key = self._current_biome or "pond"
+        behaviors = BIOME_BEHAVIORS.get(biome_key, BIOME_BEHAVIORS["pond"])
+        message, duration = random.choice(behaviors)
+        return message, duration
+
     def _calculate_utilities(self, duck: "Duck") -> List[Tuple[AutonomousAction, float]]:
         """
         Calculate utility scores for all possible actions.
@@ -865,6 +894,18 @@ class BehaviorAI:
                     score *= 0.5
 
             scores.append((action, max(0, score)))
+
+        # Add biome-specific action if duck is in a known biome
+        if self._current_biome:
+            from duck.biome_behaviors import BIOME_BEHAVIORS
+            if self._current_biome in BIOME_BEHAVIORS:
+                biome_score = 0.35  # Moderate base — competes with waddle/splash
+                mood = duck.get_mood()
+                if mood.state.value in ["happy", "ecstatic"]:
+                    biome_score += 0.1  # Happy ducks explore more
+                if self._is_bad_weather:
+                    biome_score *= 0.5  # Less exploring in bad weather
+                scores.append((AutonomousAction.BIOME_ACTION, biome_score))
 
         return scores
 
