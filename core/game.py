@@ -3503,7 +3503,10 @@ class Game:
                 weather_type=weather_type,
                 structure_positions=structure_positions,
                 placed_items=placed_items,  # Only pass items when at Home Pond
-                current_biome=self.exploration.current_area.biome.value if self.exploration.current_area else "pond"
+                current_biome=self.exploration.current_area.biome.value if self.exploration.current_area else "pond",
+                current_location=self.exploration.current_area.name if self.exploration.current_area else "Home Pond",
+                field_width=self.renderer.duck_pos.field_width,
+                field_height=self.renderer.duck_pos.field_height,
             )
 
             # Check if there's a pending item interaction from AI
