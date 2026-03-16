@@ -4093,6 +4093,14 @@ class Game:
         if self.interaction_controller.is_interacting():
             return
 
+        # Respect behavior AI item cooldown — prevents constant item spam
+        if hasattr(self, 'behavior_ai') and self.behavior_ai.is_item_interaction_on_cooldown():
+            return
+
+        # Don't interact with items when exhausted — duck should rest instead
+        if getattr(self.duck.needs, 'energy', 50) < 20:
+            return
+
         # Don't interrupt ongoing AI actions (like sleeping, napping, etc.)
         # Check if behavior_ai has a current action in progress
         if hasattr(self, 'behavior_ai') and self.behavior_ai._current_action:
@@ -4119,7 +4127,7 @@ class Game:
         item = random.choice(nearby)
 
         # Check cooldown (don't interact with same item too often)
-        if current_time - item.last_interaction < 30:  # 30 second cooldown
+        if current_time - item.last_interaction < 120:  # 2 minute cooldown per item
             return
 
         # Special handling for boombox - toggle music directly (no walk needed)
