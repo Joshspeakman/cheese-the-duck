@@ -159,7 +159,7 @@ ACHIEVEMENT_GOALS = [
 SECRET_GOALS = [
     Goal(
         id="midnight_quack",
-        name="???",
+        name="Night Owl",
         description="Play at midnight",
         goal_type="secret",
         action="midnight_play",
@@ -170,7 +170,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="triple_play",
-        name="???",
+        name="Triple Threat",
         description="Play 3 times in a row",
         goal_type="secret",
         action="triple_play",
@@ -180,7 +180,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="patient_one",
-        name="???",
+        name="The Patient One",
         description="Wait for 5 minutes without doing anything",
         goal_type="secret",
         action="idle_wait",
@@ -191,7 +191,7 @@ SECRET_GOALS = [
     # New secret goals
     Goal(
         id="early_bird",
-        name="???",
+        name="Early Bird",
         description="Play before 6 AM",
         goal_type="secret",
         action="early_bird",
@@ -202,7 +202,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="bread_obsessed",
-        name="???",
+        name="Bread Obsessed",
         description="Feed bread 10 times in one session",
         goal_type="secret",
         action="bread_feast",
@@ -213,7 +213,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="rainbow_witness",
-        name="???",
+        name="Rainbow Witness",
         description="See a rainbow",
         goal_type="secret",
         action="saw_rainbow",
@@ -224,7 +224,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="visitor_friend",
-        name="???",
+        name="Social Butterfly",
         description="Meet 5 different visitors",
         goal_type="secret",
         action="met_visitors",
@@ -235,7 +235,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="weather_watcher",
-        name="???",
+        name="Weather Watcher",
         description="Experience all weather types",
         goal_type="secret",
         action="all_weather",
@@ -245,7 +245,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="marathon_session",
-        name="???",
+        name="Marathon Duck",
         description="Play for 30 minutes straight",
         goal_type="secret",
         action="marathon",
@@ -256,7 +256,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="perfectionist",
-        name="???",
+        name="Perfectionist",
         description="Keep all needs above 80 for 10 minutes",
         goal_type="secret",
         action="perfect_care",
@@ -267,7 +267,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="chatterbox",
-        name="???",
+        name="Chatterbox",
         description="Talk to duck 20 times",
         goal_type="secret",
         action="talk",
@@ -277,7 +277,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="collector",
-        name="???",
+        name="Shiny Hoarder",
         description="Find 10 collectibles",
         goal_type="secret",
         action="collect_item",
@@ -288,7 +288,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="super_lucky",
-        name="???",
+        name="Fortune's Favorite",
         description="Play on a super lucky day",
         goal_type="secret",
         action="super_lucky_day",
@@ -298,7 +298,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="storm_chaser",
-        name="???",
+        name="Storm Chaser",
         description="Play during a storm",
         goal_type="secret",
         action="storm_play",
@@ -308,7 +308,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="zen_master",
-        name="???",
+        name="Zen Master",
         description="Keep duck at ecstatic mood for 5 minutes",
         goal_type="secret",
         action="zen_master",
@@ -319,7 +319,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="holiday_spirit",
-        name="???",
+        name="Holiday Spirit",
         description="Play on a special holiday",
         goal_type="secret",
         action="holiday_play",
@@ -329,7 +329,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="week_warrior",
-        name="???",
+        name="Week Warrior",
         description="Maintain a 7-day streak",
         goal_type="secret",
         action="week_streak",
@@ -340,7 +340,7 @@ SECRET_GOALS = [
     ),
     Goal(
         id="month_master",
-        name="???",
+        name="Month Master",
         description="Maintain a 30-day streak",
         goal_type="secret",
         action="month_streak",
@@ -363,6 +363,7 @@ class GoalSystem:
         self._last_action: str = ""
         self._action_streak: int = 0
         self._idle_time: float = 0
+        self._add_cumulative_secrets()
 
     def add_daily_goals(self):
         """Add random daily goals."""
@@ -443,13 +444,17 @@ class GoalSystem:
 
         # Check for triple action secret
         if self._action_streak >= 3 and action == "play":
-            self._check_secret_goal("triple_play")
+            secret = self.check_secret_goal("triple_play")
+            if secret:
+                completed.append(secret)
 
         # Check midnight play secret
         if action == "play":
             hour = datetime.now().hour
             if hour == 0 or hour == 23:
-                self._check_secret_goal("midnight_play")
+                secret = self.check_secret_goal("midnight_play")
+                if secret:
+                    completed.append(secret)
 
         for goal in self._active_goals:
             if goal.completed:
@@ -459,18 +464,22 @@ class GoalSystem:
                 goal.progress += amount
                 if goal.progress >= goal.target:
                     goal.completed = True
+                    goal.hidden = False  # Reveal secret goals on completion
                     self._completed_goals.append(goal.id)
                     completed.append(goal)
 
         return completed
 
-    def update_time(self, delta_minutes: float):
-        """Update time-based goals."""
+    def update_time(self, delta_minutes: float) -> List[Goal]:
+        """Update time-based goals. Returns list of newly completed goals."""
         self._idle_time += delta_minutes
+        completed = []
 
         # Check for patient one secret (5 minutes idle)
         if self._idle_time >= 5:
-            self._check_secret_goal("idle_wait")
+            secret = self.check_secret_goal("idle_wait")
+            if secret:
+                completed.append(secret)
 
         # Check for daily/weekly resets
         today = datetime.now().strftime("%Y-%m-%d")
@@ -482,14 +491,36 @@ class GoalSystem:
         if self._last_weekly_reset != week:
             self.add_weekly_goals()
 
-    def _check_secret_goal(self, action: str):
+        return completed
+
+    def _add_cumulative_secrets(self):
+        """Add secret goals that track cumulative progress (hidden until complete)."""
+        cumulative_ids = {"chatterbox", "visitor_friend", "collector"}
+        for template in SECRET_GOALS:
+            if template.id in cumulative_ids and template.id not in self._completed_goals:
+                exists = any(g.id == template.id for g in self._active_goals)
+                if not exists:
+                    goal = Goal(
+                        id=template.id,
+                        name=template.name,
+                        description=template.description,
+                        goal_type=template.goal_type,
+                        action=template.action,
+                        target=template.target,
+                        hidden=True,
+                        reward_item=template.reward_item,
+                        reward_message=template.reward_message,
+                    )
+                    self._active_goals.append(goal)
+
+    def check_secret_goal(self, action: str):
         """Check and potentially unlock a secret goal."""
         for template in SECRET_GOALS:
             if template.action == action and template.id not in self._completed_goals:
                 # Add and complete the secret goal
                 goal = Goal(
                     id=template.id,
-                    name=template.name.replace("???", template.description),
+                    name=template.name,
                     description=template.description,
                     goal_type=template.goal_type,
                     action=template.action,
@@ -545,6 +576,8 @@ class GoalSystem:
     def from_dict(cls, data: dict) -> "GoalSystem":
         """Create from dictionary."""
         system = cls()
+        # Clear init-added goals before loading saved state
+        system._active_goals = []
         system._completed_goals = data.get("completed_goals", [])
         system._last_daily_reset = data.get("last_daily_reset")
         system._last_weekly_reset = data.get("last_weekly_reset")
@@ -564,6 +597,9 @@ class GoalSystem:
                 hidden=g_data.get("hidden", False),
             )
             system._active_goals.append(goal)
+
+        # Ensure cumulative secret goals exist (for saves from before they were added)
+        system._add_cumulative_secrets()
 
         return system
 
