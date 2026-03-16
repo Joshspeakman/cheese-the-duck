@@ -52,7 +52,7 @@ INTERACTION_EFFECTS = {
     "play": {"fun": 15, "energy": -5, "social": 5},
     "clean": {"cleanliness": 20, "fun": -2},
     "pet": {"social": 12, "fun": 5},
-    "sleep": {"energy": 25, "hunger": -3},
+    "sleep": {"energy": 10, "hunger": -3},  # Initial boost; rest comes from regen during dream
 }
 
 # Per-category cooldowns for inventory item usage (seconds)
