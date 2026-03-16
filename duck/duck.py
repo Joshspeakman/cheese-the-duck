@@ -11,6 +11,7 @@ from config import DEFAULT_PERSONALITY, DUCK_NAMES, GROWTH_STAGES, DEFAULT_DUCK_
 from duck.needs import Needs
 from duck.mood import MoodCalculator, MoodState, MoodInfo
 from duck.personality import Personality
+from duck.desires import DuckDesires
 from dialogue.memory import DuckMemory
 
 
@@ -38,6 +39,7 @@ class Duck:
     _mood_calculator: MoodCalculator = field(default_factory=MoodCalculator, repr=False)
     _personality_system: Personality = field(default=None, repr=False)
     _memory: DuckMemory = field(default=None, repr=False)
+    _desires: DuckDesires = field(default_factory=DuckDesires, repr=False)
 
     def __post_init__(self):
         """Initialize calculated properties."""
@@ -136,6 +138,16 @@ class Duck:
             "personality_baseline": getattr(self, '_personality_baseline', dict(self.personality)),
             "ext_personality_baseline": getattr(self, '_ext_personality_baseline', {}),
         }
+
+    @property
+    def desires(self) -> DuckDesires:
+        """Get the duck's desires/goals system."""
+        return self._desires
+
+    @property
+    def motivation(self) -> float:
+        """Get current motivation level (0.0-1.0)."""
+        return DuckDesires.calculate_motivation(self)
 
     @property
     def memory(self) -> DuckMemory:

@@ -46,6 +46,8 @@ class DiaryTrigger(Enum):
     RETURN_AFTER_ABSENCE = "return_after_absence"
     GROWTH_STAGE = "growth_stage"
     HIGH_MOOD = "high_mood"          # sustained high mood (ecstatic 10+ min)
+    GOAL_SATISFIED = "goal_satisfied"        # duck completed a daily goal
+    GOAL_ALL_SATISFIED = "goal_all_satisfied"  # all daily goals completed
 
 
 # ── Voice maturity ────────────────────────────────────────────────────
@@ -607,6 +609,18 @@ class DiaryManager:
             })
         )
 
+    def on_goal_satisfied(self, goal_type: str):
+        """Duck completed one of its daily goals."""
+        self._pending_triggers.append(
+            (DiaryTrigger.GOAL_SATISFIED, {"goal_type": goal_type})
+        )
+
+    def on_goal_all_satisfied(self):
+        """Duck completed ALL its daily goals."""
+        self._pending_triggers.append(
+            (DiaryTrigger.GOAL_ALL_SATISFIED, {})
+        )
+
     def trigger_random_musing(self):
         """Chance to generate an idle philosophical entry."""
         if random.random() < 0.15:  # 15% chance when called
@@ -646,6 +660,8 @@ class DiaryManager:
             DiaryTrigger.VISITOR,
             DiaryTrigger.WEATHER_EVENT,
             DiaryTrigger.DREAM,
+            DiaryTrigger.GOAL_ALL_SATISFIED,
+            DiaryTrigger.GOAL_SATISFIED,
             DiaryTrigger.END_OF_DAY,
             DiaryTrigger.FIRST_OF_DAY,
             DiaryTrigger.RANDOM_MUSING,
@@ -926,6 +942,30 @@ class DiaryManager:
             else:
                 title = "Today"
                 body = "Another day. Another entry. The pond remains the pond."
+
+        elif trigger == DiaryTrigger.GOAL_SATISFIED:
+            goal_type = context.get("goal_type", "something")
+            display = goal_type.replace("_", " ").title()
+            _goal_templates = {
+                "baby": (f"I DID A THING", f"I wanted to {display.lower()} and I DID IT. I'm basically a GENIUS DUCK. Nobody asked me to. I just KNEW."),
+                "young": (f"Goal Complete!", f"Today I decided to {display.lower()} — and I actually did it! All by myself! I feel like a real duck now."),
+                "teen": (f"Mission Accomplished", f"Set a goal: {display.lower()}. Achieved said goal. No help needed. This is what INDEPENDENCE looks like."),
+                "adult": (f"Self-Directed Success", f"I wanted to {display.lower()} today. I did. There's satisfaction in following your own compass. The pond doesn't tell me what to do."),
+                "elder": (f"A Day Well Spent", f"Decided this morning that I would {display.lower()}. And so I did. Small victories, quietly celebrated. That's the way."),
+            }
+            t = _goal_templates.get(va, _goal_templates["teen"])
+            title, body = t
+
+        elif trigger == DiaryTrigger.GOAL_ALL_SATISFIED:
+            _all_templates = {
+                "baby": ("BEST DAY EVERRR", "I did ALL THE THINGS!! Everything I wanted!! I'm the BEST DUCK IN THE WHOLE POND!!! 🎉"),
+                "young": ("Perfect Day!", "I did everything I set out to do today! Every single thing! I bet the big creature didn't even notice but I KNOW."),
+                "teen": ("Flawless Execution", "Every goal. Every single one. Crushed it. The pond should be GRATEFUL to have a duck this efficient. I'm unstoppable."),
+                "adult": ("All Goals Met", "Completed my entire agenda today. There's a quiet pride in that — knowing exactly what you want and getting it done. No help. Just me."),
+                "elder": ("A Complete Day", "Every intention fulfilled. Every task accomplished. Days like this remind me why I still set goals. The satisfaction never gets old."),
+            }
+            t = _all_templates.get(va, _all_templates["teen"])
+            title, body = t
 
         else:
             return None

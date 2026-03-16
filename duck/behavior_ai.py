@@ -388,6 +388,11 @@ class BehaviorAI:
         self._pending_action: Optional[ActionResult] = None  # Action to perform after reaching target
         self._movement_requested: bool = False  # Whether we're waiting for duck to move
 
+        # Desires/motivation context (set each tick from game loop)
+        self._active_goal = None       # DailyGoal or None
+        self._motivation: float = 1.0  # 0.0-1.0, from DuckDesires.calculate_motivation
+        self._desires = None           # DuckDesires reference
+
     def record_item_interaction(self):
         """Record that an item interaction just occurred (for cooldown)."""
         self._last_item_interaction_time = time.time()
@@ -410,7 +415,8 @@ class BehaviorAI:
                     is_bad_weather: bool = False, weather_type: str = None,
                     structure_positions: dict = None, placed_items: list = None,
                     current_biome: str = None, current_location: str = None,
-                    field_width: int = None, field_height: int = None):
+                    field_width: int = None, field_height: int = None,
+                    desires=None, motivation: float = None):
         """Set context for structure-aware and item-aware behavior decisions."""
         if available_structures is not None:
             self._available_structures = available_structures
@@ -428,6 +434,11 @@ class BehaviorAI:
             self._field_width = field_width
         if field_height is not None:
             self._field_height = field_height
+        if desires is not None:
+            self._desires = desires
+            self._active_goal = desires.get_active_goal()
+        if motivation is not None:
+            self._motivation = motivation
 
     def _categorize_items(self, placed_items: list) -> dict:
         """Categorize placed items by their shop category for AI decisions."""
@@ -498,7 +509,10 @@ class BehaviorAI:
         return None
 
     def should_act(self, current_time: float) -> bool:
-        """Check if it's time for a new autonomous action."""
+        """Check if it's time for a new autonomous action.
+        
+        Idle interval scales with motivation: low motivation → longer idle.
+        """
         # Don't act if action end time is still in the future
         # (this handles both AI actions and user-initiated actions like sleep)
         if current_time < self._action_end_time:
@@ -506,7 +520,11 @@ class BehaviorAI:
         # Clear the current action when it has expired
         if self._current_action and current_time >= self._action_end_time:
             self._current_action = None
-        return current_time - self._last_action_time >= AI_IDLE_INTERVAL
+        # Scale idle interval: normal at 1.0, 3× at 0.2, 6× at <0.2
+        mot = max(0.1, self._motivation)
+        idle_scale = 1.0 + (1.0 - mot) * 5.0  # 1× at 1.0 → 6× at 0.0
+        effective_interval = AI_IDLE_INTERVAL * idle_scale
+        return current_time - self._last_action_time >= effective_interval
 
     def select_action(self, duck: "Duck") -> ActionResult:
         """
@@ -557,10 +575,12 @@ class BehaviorAI:
             )
             self._biome_target_position = target
             self._biome_feature_tag = feature_tag
+            # Scale duration by motivation: low motivation = lingering
+            scaled_duration = duration * (2.0 - self._motivation)
             return ActionResult(
                 action=chosen_action,
                 message=message,
-                duration=duration,
+                duration=scaled_duration,
                 effects={"fun": 3},
             )
 
@@ -597,10 +617,13 @@ class BehaviorAI:
         self._last_action = chosen_action
         self._action_history.append(chosen_action)
 
+        # Scale duration by motivation: low motivation = lingering on actions longer
+        scaled_duration = data["duration"] * (2.0 - self._motivation)
+
         return ActionResult(
             action=chosen_action,
             message=message,
-            duration=data["duration"],
+            duration=scaled_duration,
             effects=data.get("effect", {}),
         )
 
@@ -928,6 +951,23 @@ class BehaviorAI:
                                    AutonomousAction.CHASE_BUG, AutonomousAction.LOOK_AROUND]
                 if action in outdoor_actions:
                     score *= 0.5
+
+            # ── Goal-driven utility boost ─────────────────────────
+            if self._desires and self._active_goal:
+                goal_boost = self._desires.get_goal_utility_boost(
+                    action.value, self._current_location)
+                score += goal_boost * self._motivation
+                # Suppression for contradicting actions
+                score += self._desires.get_goal_suppression(
+                    action.value, self._motivation)
+
+            # ── Motivation-driven REST bias ────────────────────────
+            # Low motivation → duck gravitates to passive actions
+            if self._motivation < 0.4:
+                if action in (AutonomousAction.NAP, AutonomousAction.NAP_IN_NEST,
+                              AutonomousAction.IDLE, AutonomousAction.STARE_BLANKLY,
+                              AutonomousAction.REST_ON_FURNITURE):
+                    score += 0.3 * (1.0 - self._motivation)
 
             scores.append((action, max(0, score)))
 
