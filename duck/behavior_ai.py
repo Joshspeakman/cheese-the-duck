@@ -107,7 +107,7 @@ ACTION_DATA = {
         "need_bonus": ("cleanliness", 0.5),
         "personality_bonus": ("neat_messy", -0.3),  # Neat ducks preen more
         "duration": 15.0,
-        "effect": {"cleanliness": 3},  # Small boost (0-100 scale)
+        "effect": {"cleanliness": 1},  # Tiny self-care nudge
     },
     AutonomousAction.NAP: {
         "messages": [
@@ -120,7 +120,7 @@ ACTION_DATA = {
         "need_bonus": ("energy", 0.6),
         "personality_bonus": ("active_lazy", -0.4),  # Lazy ducks nap more
         "duration": 25.0,
-        "effect": {"energy": 5},  # Small boost (0-100 scale)
+        "effect": {"energy": 2},  # Small self-care nudge
     },
     AutonomousAction.LOOK_AROUND: {
         "messages": [
@@ -145,7 +145,7 @@ ACTION_DATA = {
         "need_bonus": ("fun", 0.5),
         "personality_bonus": ("active_lazy", 0.3),
         "duration": 12.0,
-        "effect": {"fun": 4, "cleanliness": -2},  # Small effects (0-100 scale)
+        "effect": {"fun": 1, "cleanliness": -1},  # Tiny nudge
     },
     AutonomousAction.STARE_BLANKLY: {
         "messages": [
@@ -170,7 +170,7 @@ ACTION_DATA = {
         "need_bonus": ("fun", 0.4),
         "personality_bonus": ("clever_derpy", -0.3),
         "duration": 10.0,
-        "effect": {"fun": 3, "energy": -2},  # Small effects (0-100 scale)
+        "effect": {"fun": 1, "energy": -1},  # Tiny nudge
     },
     AutonomousAction.FLAP_WINGS: {
         "messages": [
@@ -183,7 +183,7 @@ ACTION_DATA = {
         "need_bonus": ("energy", 0.3),
         "personality_bonus": ("active_lazy", 0.3),
         "duration": 6.0,
-        "effect": {"energy": -1},  # Small energy cost (0-100 scale)
+        "effect": {"energy": -1},  # Small energy cost
     },
     AutonomousAction.WIGGLE: {
         "messages": [
@@ -221,7 +221,7 @@ ACTION_DATA = {
         "need_bonus": ("energy", 0.8),
         "personality_bonus": ("active_lazy", -0.3),
         "duration": 30.0,
-        "effect": {"energy": 10},  # Better than regular nap (0-100 scale)
+        "effect": {"energy": 4},  # Better than regular nap
         "requires_structure": "nest",
     },
     AutonomousAction.HIDE_IN_SHELTER: {
@@ -235,7 +235,7 @@ ACTION_DATA = {
         "need_bonus": None,
         "personality_bonus": ("brave_timid", -0.4),
         "duration": 20.0,
-        "effect": {"energy": 2},  # Small energy conservation (0-100 scale)
+        "effect": {"energy": 1},  # Small energy conservation
         "requires_structure": "shelter",
     },
     AutonomousAction.USE_BIRD_BATH: {
@@ -249,7 +249,7 @@ ACTION_DATA = {
         "need_bonus": ("cleanliness", 0.7),
         "personality_bonus": ("neat_messy", -0.2),
         "duration": 18.0,
-        "effect": {"cleanliness": 8, "fun": 3},  # Better than preening (0-100 scale)
+        "effect": {"cleanliness": 3, "fun": 1},  # Better than preening
         "requires_structure": "bird_bath",
     },
     AutonomousAction.ADMIRE_GARDEN: {
@@ -263,7 +263,7 @@ ACTION_DATA = {
         "need_bonus": ("fun", 0.3),
         "personality_bonus": None,
         "duration": 12.0,
-        "effect": {"fun": 2},  # Small entertainment (0-100 scale)
+        "effect": {"fun": 1},  # Small entertainment
         "requires_structure": "garden_plot",
     },
     AutonomousAction.INSPECT_WORKBENCH: {
@@ -291,7 +291,7 @@ ACTION_DATA = {
         "need_bonus": ("fun", 0.6),
         "personality_bonus": ("active_lazy", 0.3),
         "duration": 15.0,
-        "effect": {"fun": 15, "energy": -5},
+        "effect": {"fun": 4, "energy": -2},
         "requires_item_category": "toy",
     },
     AutonomousAction.SPLASH_IN_WATER: {
@@ -305,7 +305,7 @@ ACTION_DATA = {
         "need_bonus": ("cleanliness", 0.7),
         "personality_bonus": None,
         "duration": 18.0,
-        "effect": {"cleanliness": 12, "fun": 8},
+        "effect": {"cleanliness": 3, "fun": 2},
         "requires_item_category": "water",
     },
     AutonomousAction.REST_ON_FURNITURE: {
@@ -319,7 +319,7 @@ ACTION_DATA = {
         "need_bonus": ("energy", 0.5),
         "personality_bonus": ("active_lazy", -0.3),
         "duration": 20.0,
-        "effect": {"energy": 8},
+        "effect": {"energy": 3},
         "requires_item_category": "furniture",
     },
     AutonomousAction.ADMIRE_DECORATION: {
@@ -333,7 +333,7 @@ ACTION_DATA = {
         "need_bonus": ("fun", 0.2),
         "personality_bonus": None,
         "duration": 8.0,
-        "effect": {"fun": 5},
+        "effect": {"fun": 1},
         "requires_item_category": "decoration",
     },
 }
@@ -581,7 +581,7 @@ class BehaviorAI:
                 action=chosen_action,
                 message=message,
                 duration=scaled_duration,
-                effects={"fun": 3},
+                effects={"fun": 1},
             )
 
         # Get action data
@@ -680,8 +680,9 @@ class BehaviorAI:
                 }
                 walk_msg = walk_messages.get(required_struct, f"*waddles toward {required_struct}*")
 
-                # Update timing for the walk
+                # Update timing for the walk — block new actions while walking
                 self._last_action_time = current_time
+                self._action_end_time = current_time + result.duration
                 duck.set_action_message(walk_msg, duration=5.0)
 
                 # Return info about needing to move (caller should handle movement)
@@ -708,9 +709,9 @@ class BehaviorAI:
             }
             walk_msg = walk_messages.get(required_item_cat, f"*waddles toward item*")
 
-            # Update timing for the walk
+            # Update timing for the walk — block new actions while walking
             self._last_action_time = current_time
-            duck.set_action_message(walk_msg, duration=5.0)
+            self._action_end_time = current_time + result.duration
 
             # Return info - game will use _selected_item to trigger interaction controller
             return ActionResult(

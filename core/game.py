@@ -3206,11 +3206,11 @@ class Game:
                 mood_bonus = decor_bonus.get("mood", 0)
                 comfort_bonus = decor_bonus.get("comfort", 0)
                 if mood_bonus > 0:
-                    # Trickle the bonus over time: +mood_bonus/tick_rate per minute
-                    tick_mood = (mood_bonus / 100.0) * delta_minutes * 0.5
+                    # Trickle the bonus over time — slows decay but shouldn't reverse it
+                    tick_mood = (mood_bonus / 100.0) * delta_minutes * 0.1
                     self.duck.needs.fun = min(100, self.duck.needs.fun + tick_mood)
                 if comfort_bonus > 0:
-                    tick_comfort = (comfort_bonus / 100.0) * delta_minutes * 0.5
+                    tick_comfort = (comfort_bonus / 100.0) * delta_minutes * 0.1
                     self.duck.needs.energy = min(100, self.duck.needs.energy + tick_comfort)
             except Exception:
                 pass
@@ -3227,10 +3227,10 @@ class Game:
                     energy_bonus = getattr(bp, 'energy_regen_bonus', 0)
                     happiness_bonus = getattr(bp, 'happiness_bonus', 0)
                     if energy_bonus > 0:
-                        tick_energy = (energy_bonus / 100.0) * delta_minutes * 0.3
+                        tick_energy = (energy_bonus / 100.0) * delta_minutes * 0.1
                         self.duck.needs.energy = min(100, self.duck.needs.energy + tick_energy)
                     if happiness_bonus > 0:
-                        tick_happiness = (happiness_bonus / 100.0) * delta_minutes * 0.3
+                        tick_happiness = (happiness_bonus / 100.0) * delta_minutes * 0.1
                         self.duck.needs.fun = min(100, self.duck.needs.fun + tick_happiness)
             except Exception:
                 pass
