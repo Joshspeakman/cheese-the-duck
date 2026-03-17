@@ -1276,6 +1276,25 @@ class SeamanDialogue:
                 DialogueContext.PHILOSOPHY
             ))
         
+        # Voice generator: chance to use a Markov-generated line for variety
+        # Only activates after enough interactions to avoid surprising new players
+        try:
+            from config import VOICE_GENERATOR_ENABLED, VOICE_GENERATOR_IDLE_CHANCE
+            if VOICE_GENERATOR_ENABLED and random.random() < VOICE_GENERATOR_IDLE_CHANCE:
+                from dialogue.voice_generator import get_voice_generator
+                vg = get_voice_generator()
+                if vg.is_trained:
+                    generated = vg.generate()
+                    if generated:
+                        options.append(DialogueLine(
+                            generated,
+                            DialogueTone.DEADPAN,
+                            DialogueContext.IDLE,
+                            priority=0.4,  # Slightly lower priority than hand-crafted
+                        ))
+        except Exception:
+            pass  # Voice generator is best-effort
+
         # Default if nothing else
         if not options:
             defaults = [
@@ -1295,7 +1314,7 @@ class SeamanDialogue:
                 DialogueTone.DEADPAN,
                 DialogueContext.IDLE
             ))
-        
+
         return random.choice(options)
     
     def generate_question_response(self, player_question: str, 
@@ -1753,6 +1772,19 @@ class SeamanDialogue:
             ("Humans queue. In lines. Willingly. I've never understood it. If I want something I waddle toward it directly. No system. Pure intent.", DialogueTone.DEADPAN),
         ]
         
+        # Voice generator: chance to inject a Markov-generated thought
+        try:
+            from config import VOICE_GENERATOR_ENABLED, VOICE_GENERATOR_IDLE_CHANCE
+            if VOICE_GENERATOR_ENABLED and random.random() < VOICE_GENERATOR_IDLE_CHANCE:
+                from dialogue.voice_generator import get_voice_generator
+                vg = get_voice_generator()
+                if vg.is_trained:
+                    generated = vg.generate()
+                    if generated:
+                        thoughts.append((generated, DialogueTone.DEADPAN))
+        except Exception:
+            pass  # Voice generator is best-effort
+
         text, tone = random.choice(thoughts)
         return DialogueLine(text, tone, DialogueContext.RANDOM)
     
