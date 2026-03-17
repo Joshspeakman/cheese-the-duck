@@ -459,6 +459,9 @@ class Renderer:
         self._weather_frame = 0
         self._current_weather_type: Optional[str] = None
         
+        # Biome ambient particles (fireflies, falling leaves, mist, etc.)
+        self._ambient_particles: List[Tuple[float, float, str, Tuple[int, int, int]]] = []  # (x, y, char, rgb)
+
         # Cached terminal dimensions for stability (prevent micro-jitter)
         self._cached_width: Optional[int] = None
         self._cached_height: Optional[int] = None
@@ -925,56 +928,191 @@ class Renderer:
 
         self._weather_particles = new_particles
 
-    def _get_time_of_day_elements(self, width: int) -> Tuple[str, Optional[Any], List[Tuple[int, str]]]:
+    def _update_ambient_particles(self, width: int, height: int,
+                                   biome: str, time_of_day: str, season: str,
+                                   weather_intensity: float = 0.0):
+        """Update biome-specific ambient particles (fireflies, falling leaves, mist, etc.)."""
+        # Suppress during heavy weather to avoid visual clutter
+        if weather_intensity > 0.7 or not biome:
+            self._ambient_particles = []
+            return
+
+        from ui.biome_visuals import get_ambient_particles
+
+        configs = get_ambient_particles(biome, time_of_day, season)
+        if not configs:
+            self._ambient_particles = []
+            return
+
+        # Skip every other frame (30 effective FPS, same as weather particles)
+        if self._weather_frame % 2 != 0:
+            return
+
+        new_particles = []
+
+        # Move existing particles
+        for x, y, char, rgb in self._ambient_particles:
+            # Find which config this particle belongs to (by colour match)
+            speed = 0.1
+            direction = "fall"
+            for cfg in configs:
+                if cfg["color_rgb"] == rgb:
+                    speed = cfg["speed"]
+                    direction = cfg["direction"]
+                    break
+
+            if direction == "fall":
+                ny = y + speed
+                nx = x + random.uniform(-0.15, 0.15)
+            elif direction == "float":
+                ny = y + random.uniform(-speed, speed)
+                nx = x + random.uniform(-speed, speed)
+            elif direction == "drift_right":
+                ny = y + random.uniform(-0.05, 0.05)
+                nx = x + speed
+            elif direction == "drift_left":
+                ny = y + random.uniform(-0.05, 0.05)
+                nx = x - speed
+            elif direction == "static":
+                nx, ny = x, y
+                # Static particles fade out randomly
+                if random.random() < 0.03:
+                    continue
+            else:
+                nx, ny = x, y
+
+            if 0 <= nx < width and 0 <= ny < height:
+                new_particles.append((nx, ny, char, rgb))
+
+        # Spawn new particles from active configs
+        for cfg in configs:
+            density = cfg["density"]
+            # Scale density by area — spawn a few per update
+            spawn_count = density * width * height * 0.02  # Moderate rate
+            if random.random() < spawn_count:
+                char = random.choice(cfg["chars"])
+                rgb = cfg["color_rgb"]
+                direction = cfg["direction"]
+
+                if direction == "fall":
+                    sx = random.uniform(0, width - 1)
+                    sy = 0.0  # Start at top
+                elif direction == "float":
+                    sx = random.uniform(0, width - 1)
+                    sy = random.uniform(0, height - 1)
+                elif direction in ("drift_right", "drift_left"):
+                    sx = 0.0 if direction == "drift_right" else float(width - 1)
+                    sy = random.uniform(0, height - 1)
+                elif direction == "static":
+                    sx = random.uniform(0, width - 1)
+                    sy = random.uniform(0, height * 0.4)  # Upper portion only
+                else:
+                    sx = random.uniform(0, width - 1)
+                    sy = random.uniform(0, height - 1)
+
+                new_particles.append((sx, sy, char, rgb))
+
+        # Cap particle count to prevent runaway
+        max_particles = 20
+        if len(new_particles) > max_particles:
+            new_particles = new_particles[-max_particles:]
+
+        self._ambient_particles = new_particles
+
+    def _get_time_of_day_elements(self, width: int, biome: str = None) -> Tuple[str, Optional[Any], List[Tuple[int, str]]]:
         """
-        Get time-of-day visual elements.
+        Get time-of-day visual elements, optionally blended with biome tint.
         Returns (sky_char, bg_color_func, celestial_objects)
         celestial_objects is a list of (x_position, character) for sun/moon/stars
         """
         from datetime import datetime
         hour = datetime.now().hour
 
+        # Map hour to time-period key (used for biome tint lookup)
+        if 5 <= hour < 7:
+            time_key = "dawn"
+        elif 7 <= hour < 11:
+            time_key = "morning"
+        elif 11 <= hour < 14:
+            time_key = "midday"
+        elif 14 <= hour < 17:
+            time_key = "afternoon"
+        elif 17 <= hour < 19:
+            time_key = "evening"
+        elif 19 <= hour < 21:
+            time_key = "dusk"
+        elif 21 <= hour:
+            time_key = "night"
+        else:
+            time_key = "late_night"
+
+        # Base RGB tints per time period (global defaults)
+        _BASE_TINTS = {
+            "dawn":       (255, 200, 150),
+            "morning":    None,
+            "midday":     None,
+            "afternoon":  None,
+            "evening":    (255, 180, 100),
+            "dusk":       (100, 80, 120),
+            "night":      (20, 20, 40),
+            "late_night": (10, 10, 25),
+        }
+
         # Define time periods with visual elements
-        if 5 <= hour < 7:  # Dawn
+        if time_key == "dawn":
             sky_char = "."
-            bg_color = self.term.on_color_rgb(255, 200, 150)  # Warm orange-pink
             celestials = [(width - 5, "-*-"), (3, "*"), (width - 10, "*")]
-        elif 7 <= hour < 11:  # Morning
+        elif time_key == "morning":
             sky_char = " "
-            bg_color = None  # Clear sky
             celestials = [(width // 4, "*"), (5, "*"), (width - 8, "*")]
-        elif 11 <= hour < 14:  # Midday
+        elif time_key == "midday":
             sky_char = " "
-            bg_color = None
             celestials = [(width // 2, "*")]
-        elif 14 <= hour < 17:  # Afternoon
+        elif time_key == "afternoon":
             sky_char = " "
-            bg_color = None
             celestials = [(3 * width // 4, "*"), (width // 4, "*")]
-        elif 17 <= hour < 19:  # Evening
+        elif time_key == "evening":
             sky_char = "."
-            bg_color = self.term.on_color_rgb(255, 180, 100)  # Golden hour
             celestials = [(width - 3, "-*-"), (width // 2, "*")]
-        elif 19 <= hour < 21:  # Dusk
+        elif time_key == "dusk":
             sky_char = "▒"
-            bg_color = self.term.on_color_rgb(100, 80, 120)  # Purple dusk
             celestials = [(width - 4, "-*-"), (5, "*"), (width // 2, "*")]
-        elif 21 <= hour or hour < 0:  # Night
+        elif time_key == "night":
             sky_char = " "
-            bg_color = self.term.on_color_rgb(20, 20, 40)  # Dark blue
             celestials = [
                 (width - 5, ")"),
                 (3, "*"), (8, "*"), (15, "*"), (width - 12, "*"),
                 (width // 2 - 3, "*"), (width // 2 + 5, "*")
             ]
-        else:  # Late night (0-5)
+        else:  # late_night
             sky_char = " "
-            bg_color = self.term.on_color_rgb(10, 10, 25)  # Very dark
             celestials = [
                 (width - 6, "o"),
                 (4, "*"), (10, "*"), (18, "*"), (width - 15, "*"),
                 (width // 3, "*"), (2 * width // 3, "*")
             ]
+
+        # Compute final background colour — blend base tint with biome tint
+        base_rgb = _BASE_TINTS.get(time_key)
+
+        if biome:
+            from ui.biome_visuals import get_biome_time_tint, blend_tint
+            biome_rgb = get_biome_time_tint(biome, time_key)
+            if biome_rgb:
+                if base_rgb:
+                    r, g, b = blend_tint(base_rgb, biome_rgb, 0.6)
+                else:
+                    # Morning/midday/afternoon have no base tint — use biome tint directly
+                    r, g, b = biome_rgb
+                bg_color = self.term.on_color_rgb(r, g, b)
+            elif base_rgb:
+                bg_color = self.term.on_color_rgb(*base_rgb)
+            else:
+                bg_color = None
+        elif base_rgb:
+            bg_color = self.term.on_color_rgb(*base_rgb)
+        else:
+            bg_color = None
 
         return sky_char, bg_color, celestials
 
@@ -1110,20 +1248,29 @@ class Renderer:
         self.duck_pos.field_width = field_inner_width
         self.duck_pos.field_height = field_height
 
-        # Get current location from exploration system
+        # Get current location and biome from exploration system
         current_location = None
+        current_biome = None
         if hasattr(game, 'exploration') and game.exploration and game.exploration.current_area:
             current_location = game.exploration.current_area.name
+            current_biome = game.exploration.current_area.biome.value
 
-        # Regenerate ground pattern if size or location changed, or on first render
+        # Get current season string
+        current_season = None
+        if hasattr(game, 'atmosphere') and game.atmosphere:
+            current_season = game.atmosphere.current_season.value
+
+        # Regenerate ground pattern if size, location, or season changed
         size_changed = len(self._ground_pattern) != field_height or (self._ground_pattern and len(self._ground_pattern[0]) != field_inner_width)
         location_changed = current_location != self._current_location
-        
+        season_changed = current_season != getattr(self, '_current_season', None)
+
         # Track if this is first render for screen clear later
         is_first_render = self._first_render
 
-        if size_changed or location_changed or self._first_render:
+        if size_changed or location_changed or season_changed or self._first_render:
             self._current_location = current_location
+            self._current_season = current_season
             self._generate_ground_pattern(current_location)
             self._first_render = False
 
@@ -1162,9 +1309,10 @@ class Renderer:
         event_animators = getattr(game, '_event_animators', [])
 
         # Main area: playfield on left, side panel on right
-        playfield_lines = self._render_playfield(duck, playfield_width, field_height, 
+        playfield_lines = self._render_playfield(duck, playfield_width, field_height,
                                                    equipped_cosmetics, placed_items, weather_info,
-                                                   built_structures, current_visitor, event_animators)
+                                                   built_structures, current_visitor, event_animators,
+                                                   biome=current_biome, season=current_season)
         # Pass playfield height so side panel can match exactly
         sidepanel_lines = self._render_side_panel(duck, game, side_panel_width, len(playfield_lines))
 
@@ -1461,7 +1609,9 @@ class Renderer:
                           weather_info = None,
                           built_structures: List = None,
                           current_visitor = None,
-                          event_animators: List = None) -> List[str]:
+                          event_animators: List = None,
+                          biome: str = None,
+                          season: str = None) -> List[str]:
         """Render the main playfield where duck moves around with time/weather visuals."""
         inner_width = width - 2
         lines = []
@@ -1489,8 +1639,19 @@ class Renderer:
             field_height
         )
 
-        # Get time-of-day visual elements
-        sky_char, time_bg_color, celestials = self._get_time_of_day_elements(inner_width)
+        # Get time-of-day visual elements (blended with biome tint)
+        sky_char, time_bg_color, celestials = self._get_time_of_day_elements(inner_width, biome=biome)
+
+        # Update biome ambient particles (fireflies, falling leaves, etc.)
+        if biome and season:
+            from datetime import datetime as _dt
+            _h = _dt.now().hour
+            _time_key = ("dawn" if 5 <= _h < 7 else "morning" if 7 <= _h < 11
+                         else "midday" if 11 <= _h < 14 else "afternoon" if 14 <= _h < 17
+                         else "evening" if 17 <= _h < 19 else "dusk" if 19 <= _h < 21
+                         else "night" if 21 <= _h else "late_night")
+            _intensity = weather_info.intensity if weather_info and hasattr(weather_info, 'intensity') else 0.0
+            self._update_ambient_particles(inner_width, field_height, biome, _time_key, season, _intensity)
 
         # Title bar with weather/time flavor text
         title = " DUCK HABITAT "
@@ -1611,8 +1772,8 @@ class Renderer:
 
         # Build each row of the playfield
         # Use a grid of (char, color_func) tuples to handle colors properly
-        # Get ground color for current location
-        ground_color = get_ground_color(self._current_location) if self._current_location else None
+        # Get ground color for current location (season-aware)
+        ground_color = get_ground_color(self._current_location, season=season) if self._current_location else None
         
         for y in range(field_height):
             # Initialize row with (char, ground_color) tuples for ground pattern
@@ -1629,13 +1790,13 @@ class Renderer:
                     for dx, char in enumerate(scene_line):
                         px = scene_x + dx
                         if char != ' ' and 0 <= px < inner_width:
-                            color_func = get_decoration_color(self._current_location or "", char)
+                            color_func = get_decoration_color(self._current_location or "", char, season=season)
                             row[px] = (char, color_func)
 
             # Add location-specific decorations
             for dec_x, dec_y, dec_char in self._location_decorations:
                 if dec_y == y and 0 <= dec_x < inner_width:
-                    color_func = get_decoration_color(self._current_location or "", dec_char)
+                    color_func = get_decoration_color(self._current_location or "", dec_char, season=season)
                     row[dec_x] = (dec_char, color_func)
 
             # Add legacy decorations (built-in playfield objects) only if no location set
@@ -1891,16 +2052,31 @@ class Renderer:
                         display_char = char[0] if len(char) > 1 else char
                         row[int(px)] = (display_char, weather_color)
 
+            # Add biome ambient particles (fireflies, falling leaves, mist, etc.)
+            for ax, ay, achar, argb in self._ambient_particles:
+                if int(ay) == y and 0 <= int(ax) < inner_width:
+                    existing_char, _ = row[int(ax)]
+                    if existing_char in GROUND_CHARS or existing_char == ' ':
+                        ambient_color = self.term.color_rgb(*argb)
+                        row[int(ax)] = (achar, ambient_color)
+
             # Convert row to string, applying colors
             row_chars = []
-            for char, color_func in row:
-                if color_func:
-                    # Apply color and reset after each colored character
-                    row_chars.append(color_func(char) + self.term.normal)
-                else:
-                    row_chars.append(char)
+            if time_bg_color:
+                # Apply biome+time background tint to the whole row
+                for char, color_func in row:
+                    if color_func:
+                        row_chars.append(time_bg_color + color_func(char) + self.term.normal)
+                    else:
+                        row_chars.append(time_bg_color + char + self.term.normal)
+            else:
+                for char, color_func in row:
+                    if color_func:
+                        row_chars.append(color_func(char) + self.term.normal)
+                    else:
+                        row_chars.append(char)
             row_str = "".join(row_chars)
-            
+
             # Pad to inner_width (but length() counts ANSI codes, so we track visible chars)
             visible_len = len(row)  # We know we have exactly inner_width visible chars
             lines.append(BOX["v"] + row_str + self.term.normal + BOX["v"])

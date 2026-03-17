@@ -1069,8 +1069,20 @@ def _generate_home_pond_scenery(scenery_pieces: List[List[str]],
 # DECORATION CHARACTER COLORS
 # ============================================================================
 
-def get_decoration_color(location: str, char: str) -> Optional[Callable]:
-    """Get the color function for a specific decoration character."""
+def get_decoration_color(location: str, char: str, season: str = None) -> Optional[Callable]:
+    """Get the color function for a specific decoration character.
+
+    If *season* is provided, seasonal colour overrides are checked first for
+    characters that change with the seasons (trees, bushes, grass, flowers).
+    """
+    # Check seasonal override first (only for chars that change: A, +, ', *)
+    if season and char in ("A", "+", "'", "*"):
+        from ui.biome_visuals import get_seasonal_decoration_color
+        override = get_seasonal_decoration_color(char, season, location)
+        if override:
+            r, g, b = override
+            return _term.color_rgb(r, g, b)
+
     # Water characters
     if char == "~":
         return _term.bright_cyan
@@ -1151,8 +1163,17 @@ def get_decoration_color(location: str, char: str) -> Optional[Callable]:
     return None
 
 
-def get_ground_color(location: str) -> Optional[Callable]:
-    """Get the ground/background color for a location."""
+def get_ground_color(location: str, season: str = None) -> Optional[Callable]:
+    """Get the ground/background color for a location.
+
+    If *season* is provided, a seasonal override is checked first.
+    """
+    if season:
+        from ui.biome_visuals import get_seasonal_ground_color
+        seasonal_idx = get_seasonal_ground_color(location, season)
+        if seasonal_idx is not None:
+            return _term.color(seasonal_idx)
+
     ground_colors = {
         "Home Pond": _term.color(22),       # Green-blue (grassy shore with pond)
         "Deep End": _term.color(17),        # Darker blue
