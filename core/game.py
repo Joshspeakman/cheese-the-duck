@@ -204,6 +204,7 @@ class Game:
         self._pending_daily_rewards = []
         self._pending_messages = []  # Messages to show after load (e.g., cleanup notifications)
         self._last_event_description = None  # Last event for LLM context
+        self._last_visitor_dialogue = None  # Last visitor dialogue for LLM context
         self._sound_enabled = True
         self._show_goals = False
         self._reset_confirmation = False  # Flag for reset game confirmation
@@ -1553,7 +1554,24 @@ class Game:
         # enter the memory system for callbacks and context
         original_message = getattr(self, '_pending_talk_message', None)
         if original_message and self.duck_brain:
-            self.duck_brain.process_player_message(original_message, response)
+            # Build rich context for memory recording
+            brain_context = {}
+            try:
+                if self.friends.current_visit:
+                    visit_friend = self.friends.get_friend_by_id(self.friends.current_visit.friend_id)
+                    if visit_friend:
+                        brain_context["visitor_name"] = visit_friend.name
+                        brain_context["visitor_personality"] = visit_friend.personality.value if hasattr(visit_friend.personality, 'value') else str(visit_friend.personality)
+                if hasattr(self, '_current_event') and self._current_event:
+                    brain_context["current_event"] = getattr(self._current_event, 'name', str(self._current_event))
+                if hasattr(self, 'weather') and self.weather:
+                    brain_context["weather"] = getattr(self.weather, 'current_weather', '')
+                if hasattr(self, 'progression') and self.progression:
+                    brain_context["season"] = getattr(self.progression, 'current_season', '')
+                    brain_context["time_of_day"] = getattr(self.progression, 'time_of_day', '')
+            except Exception:
+                pass
+            self.duck_brain.process_player_message(original_message, response, brain_context)
 
         # Show the actual response (replaces the thinking indicator)
         self.renderer.show_message(response, duration=8.0, category="duck")
@@ -1561,6 +1579,30 @@ class Game:
         # Play quacks for each syllable in the duck's response
         mood = self.duck.get_mood().state.value
         duck_sounds.quack_for_text(response, mood)
+        
+        # If a visitor is present, let them react to the conversation
+        if original_message and self.duck and self.friends.current_visit:
+            try:
+                from world.friends import visitor_animator
+                friend = self.friends.get_friend_by_id(self.friends.current_visit.friend_id)
+                if friend:
+                    # Record message in visitor's memory
+                    visitor_animator.record_player_message(original_message, response)
+                    # Keep in friend's persistent chat history (max 20)
+                    friend.player_chat_history.append(original_message)
+                    if len(friend.player_chat_history) > 20:
+                        friend.player_chat_history = friend.player_chat_history[-20:]
+                    # Get visitor reaction (may be None if they don't react)
+                    duck_name = self.duck.name if self.duck else "Cheese"
+                    visitor_response = visitor_animator.respond_to_player_chat(
+                        original_message, mood, duck_name
+                    )
+                    if visitor_response:
+                        # Schedule visitor response after a short delay
+                        self._pending_visitor_comment = visitor_response
+                        self._pending_visitor_comment_time = time.time() + 2.0  # 2 second delay
+            except Exception:
+                pass
 
     def _parse_llm_actions(self, response: str):
         """Extract [ACTION:xxx] tags from LLM response.
@@ -3461,6 +3503,7 @@ class Game:
                                 last_conversation_summary=last_summary,
                                 duck_ref=self.duck,
                                 shared_memories=shared_memories,
+                                duck_mood=self.duck.get_mood().state.value if self.duck else "",
                             )
                             greeting = visitor_animator.get_greeting(self.duck.name)
                             if greeting:
@@ -3791,6 +3834,7 @@ class Game:
                 unlocked_topics,
                 duck_ref=self.duck,
                 shared_memories=shared_memories,
+                duck_mood=self.duck.get_mood().state.value if self.duck else "",
             )
         
         # Get duck's position for visitor to follow/approach
@@ -3800,10 +3844,20 @@ class Game:
         # Update visitor animation and movement
         frame_changed, _ = visitor_animator.update(current_time, duck_x, duck_y)
         
-        # Check for random dialogue from visitor
-        # SKIP if Cheese is still waiting to respond or a scripted conversation is active
+        # Check if Cheese is busy with pending/scripted dialogue
         _has_pending = bool(self._pending_visitor_comment)
         _has_scripted = bool(getattr(self, '_active_guest_conversation', None))
+        
+        # Track duck's mood changes — visitor reacts if mood shifts during visit
+        current_duck_mood = self.duck.get_mood().state.value if self.duck else ""
+        if current_duck_mood and not _has_pending and not _has_scripted:
+            mood_reaction = visitor_animator.get_mood_reaction(current_duck_mood, self.duck.name)
+            if mood_reaction:
+                self._show_message_if_no_menu(mood_reaction, duration=6.0, category="friend")
+                self._last_visitor_comment_time = current_time
+        
+        # Check for random dialogue from visitor
+        # SKIP if Cheese is still waiting to respond or a scripted conversation is active
         
         dialogue = None
         if not _has_pending and not _has_scripted:
@@ -3811,6 +3865,8 @@ class Game:
         
         if dialogue:
             self._show_message_if_no_menu(dialogue, duration=8.0, category="friend")
+            # Track for LLM context so Cheese knows what visitor said
+            self._last_visitor_dialogue = dialogue
             
             # Schedule Cheese's response to the visitor's dialogue
             # friend.personality may be an enum, so convert to string
@@ -3931,6 +3987,33 @@ class Game:
                     for topic in new_topics:
                         if topic not in friend.unlocked_dialogue:
                             friend.unlocked_dialogue.append(topic)
+                
+                # Save visit summary to friend's memory
+                visit_summary = visitor_animator.get_visit_summary()
+                if friend and visit_summary:
+                    # Store mood info
+                    friend.mood_at_last_visit = visit_summary.get("mood_at_arrival", "")
+                    departure_mood = visit_summary.get("mood_at_departure", "")
+                    if departure_mood:
+                        friend.visitor_mood_memory = departure_mood
+                    # Build conversation summary from player messages
+                    if visit_summary.get("had_player_interaction"):
+                        msgs = visit_summary.get("player_messages", [])
+                        summary_parts = []
+                        if msgs:
+                            summary_parts.append(f"Player said: {'; '.join(msgs[-3:])}")
+                        if visit_summary.get("mood_at_arrival") != visit_summary.get("mood_at_departure"):
+                            summary_parts.append(f"{self.duck.name}'s mood went from {visit_summary.get('mood_at_arrival', '?')} to {visit_summary.get('mood_at_departure', '?')}")
+                        if summary_parts:
+                            friend.last_conversation_summary = " | ".join(summary_parts)
+                    # Add to shared experiences if player interacted
+                    if visit_summary.get("messages_exchanged", 0) > 0:
+                        from datetime import datetime as _dt
+                        exp = f"Visit on {_dt.now().strftime('%b %d')}: chatted with player ({visit_summary['messages_exchanged']} messages)"
+                        friend.shared_experiences.append(exp)
+                        # Keep max 10 experiences
+                        if len(friend.shared_experiences) > 10:
+                            friend.shared_experiences = friend.shared_experiences[-10:]
                 
                 visitor_animator.start_leaving()
                 farewell = visitor_animator.get_farewell(self.duck.name)
@@ -10932,7 +11015,25 @@ Core Systems Tested: {report.total_tests}
                         visitor_info += f" They brought you a gift: {visit.gift_brought}."
                     if visit.activities_done:
                         visitor_info += f" Activities you've done together: {', '.join(visit.activities_done)}."
+                    # Include visitor's memory of past player interactions
+                    if friend.mood_at_last_visit:
+                        visitor_info += f" Last time they visited, your mood was {friend.mood_at_last_visit}."
+                    if friend.visitor_mood_memory:
+                        visitor_info += f" {friend.name} remembers your mood being {friend.visitor_mood_memory}."
+                    if friend.player_chat_history:
+                        recent = friend.player_chat_history[-3:]
+                        visitor_info += f" Things the player has said to you during {friend.name}'s visits: {'; '.join(recent)}."
+                    if friend.last_conversation_summary:
+                        visitor_info += f" Last visit summary: {friend.last_conversation_summary}."
                     context_parts.append(visitor_info)
+                    
+                    # Include what the player has said this visit via T key
+                    from world.friends import visitor_animator
+                    if visitor_animator._player_messages_this_visit:
+                        recent_msgs = visitor_animator._player_messages_this_visit[-3:]
+                        context_parts.append(
+                            f"Things the player said THIS visit (while {friend.name} is here): {'; '.join(recent_msgs)}"
+                        )
                     
                     convo = getattr(self, '_active_guest_conversation', None)
                     if convo:
@@ -11285,6 +11386,14 @@ Core Systems Tested: {report.total_tests}
         except Exception:
             pass
         
+        # ---- Recent visitor dialogue (what visitor said recently) ----
+        try:
+            last_vis_dialogue = getattr(self, '_last_visitor_dialogue', None)
+            if last_vis_dialogue and self.friends and self.friends.current_visit:
+                context_parts.append(f"What the visitor just said: {last_vis_dialogue}")
+        except Exception:
+            pass
+        
         # ---- Relationship level ----
         relationship = self.duck.memory.get_relationship_level()
         if relationship and relationship != "stranger":
@@ -11325,9 +11434,9 @@ Core Systems Tested: {report.total_tests}
         except Exception:
             pass
         
-        # Build context and truncate if too long (keep under ~2500 chars ≈ ~625 tokens)
+        # Build context and truncate if too long (keep under ~3000 chars ≈ ~750 tokens)
         result = "\n".join(context_parts)
-        max_context_chars = 2500
+        max_context_chars = 3000
         if len(result) > max_context_chars:
             # Keep the most important lines (first ones are location/time/needs/mood),
             # truncate from the end (less critical stats)

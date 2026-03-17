@@ -610,12 +610,22 @@ class VisitorAnimator:
         # LLM integration
         self._shared_memories: List[str] = []  # Memories from Friend dataclass
         self._duck_ref = None  # Reference to player's duck for LLM context
+        
+        # Mood awareness & player interaction
+        self._duck_mood_at_arrival: str = ""  # Mood when visit started
+        self._last_known_duck_mood: str = ""  # For detecting mood changes
+        self._last_mood_comment_time: float = 0.0
+        self._player_messages_this_visit: List[str] = []  # What player said via T key
+        self._last_player_message: str = ""  # Most recent T key message
+        self._last_cheese_response: str = ""  # What Cheese said in response
+        self._pending_visitor_reaction: str = ""  # Queued visitor response to player chat
     
     def set_visitor(self, personality: str, friend_name: str = "Friend", 
                      friendship_level: str = "stranger", visit_number: int = 1,
                      unlocked_topics: set = None, conversation_topics: list = None,
                      shared_experiences: list = None, last_conversation_summary: str = "",
-                     duck_ref = None, shared_memories: list = None):
+                     duck_ref = None, shared_memories: list = None,
+                     duck_mood: str = ""):
         """Set the current visitor's personality for art selection."""
         self._personality = personality.lower() if personality else "adventurous"
         self._friend_name = friend_name
@@ -636,6 +646,15 @@ class VisitorAnimator:
         # LLM integration references
         self._duck_ref = duck_ref
         self._shared_memories = shared_memories or []
+        
+        # Mood awareness reset
+        self._duck_mood_at_arrival = duck_mood
+        self._last_known_duck_mood = duck_mood
+        self._last_mood_comment_time = 0.0
+        self._player_messages_this_visit = []
+        self._last_player_message = ""
+        self._last_cheese_response = ""
+        self._pending_visitor_reaction = ""
         
         # Setup new dialogue system
         self._friendship_level = friendship_level.lower().replace(" ", "_")
@@ -862,6 +881,223 @@ class VisitorAnimator:
         comment = random.choice(comments).format(duck=duck_name, item=cosmetic_type)
         return f"{self._friend_name}: {comment}"
     
+    def set_duck_mood(self, mood: str):
+        """Track the duck's current mood. Called when visit starts and on mood changes."""
+        if not self._duck_mood_at_arrival:
+            self._duck_mood_at_arrival = mood
+        self._last_known_duck_mood = mood
+    
+    def record_player_message(self, message: str, cheese_response: str = ""):
+        """Record what the player said via T key during this visit."""
+        self._last_player_message = message
+        self._last_cheese_response = cheese_response
+        self._player_messages_this_visit.append(message)
+        # Keep only last 10 messages per visit
+        if len(self._player_messages_this_visit) > 10:
+            self._player_messages_this_visit = self._player_messages_this_visit[-10:]
+    
+    def respond_to_player_chat(self, player_message: str, duck_mood: str, duck_name: str) -> Optional[str]:
+        """Generate a visitor response when the player uses T key during a visit.
+        The visitor reacts to what the player said, influenced by personality and mood."""
+        import time as _time
+        
+        # Don't respond every time - 60% chance
+        if random.random() > 0.6:
+            return None
+        
+        self._last_dialogue_time = _time.time()
+        name = self._friend_name
+        personality = self._personality
+        msg_lower = player_message.lower()
+        
+        # Check for messages directed at the visitor
+        directed_at_visitor = (
+            name.lower() in msg_lower or
+            "visitor" in msg_lower or
+            "friend" in msg_lower or
+            "guest" in msg_lower or
+            "you" in msg_lower
+        )
+        
+        # Higher response chance if directed at visitor
+        if directed_at_visitor:
+            pass  # Always respond
+        elif random.random() > 0.4:
+            return None  # Only 40% chance for non-directed messages
+        
+        # Personality-specific reactions to player talking
+        reactions = {
+            "adventurous": [
+                f"Oh, I heard that! That reminds me of a journey I took once...",
+                f"*perks up* That's interesting! Tell me more!",
+                f"Ha! {duck_name} seems to agree with you on that!",
+                f"You know, I was just thinking something similar!",
+                f"*nods enthusiastically* Adventure is all about conversations like this!",
+            ],
+            "scholarly": [
+                f"Hmm, a fascinating point. I'd love to discuss that further.",
+                f"*adjusts imaginary glasses* That's quite an astute observation.",
+                f"Interesting... {duck_name} and I were just debating something like that.",
+                f"I read something about that recently, actually.",
+                f"*thoughtfully* Yes, that aligns with my research.",
+            ],
+            "artistic": [
+                f"*sighs dreamily* What a beautiful thing to say!",
+                f"That inspires me! I might paint something based on that.",
+                f"You have such a creative way with words!",
+                f"*sketches in imaginary notebook* {duck_name} is lucky to have such an expressive friend.",
+                f"Art is conversation, and conversation is art!",
+            ],
+            "playful": [
+                f"Hehe! That's funny! *bounces around*",
+                f"Ooh ooh, I want to join the conversation too!",
+                f"*giggles* {duck_name} made a face when you said that!",
+                f"That's silly! I love it!",
+                f"*does a little dance* You two are so fun to be around!",
+            ],
+            "mysterious": [
+                f"*peers from the shadows* ...I overheard that. Interesting.",
+                f"The things you say... they echo in ways you don't realize.",
+                f"*whispers* {duck_name} carries secrets too, you know.",
+                f"...curious. Very curious.",
+                f"I sense there's more to what you're saying than meets the eye.",
+            ],
+            "generous": [
+                f"That's so sweet of you to say! Here, have a breadcrumb.",
+                f"*smiles warmly* It's lovely seeing you and {duck_name} chat.",
+                f"You two have such a wonderful bond!",
+                f"If there's anything I can do to help, just say the word!",
+                f"*happily* Your kindness is contagious!",
+            ],
+            "foodie": [
+                f"Ooh, that reminds me of this amazing recipe I found...",
+                f"*munches thoughtfully* Good point! Want a snack?",
+                f"Talking always goes better with food! {duck_name} agrees!",
+                f"*offers breadcrumb* Here, chat fuel!",
+                f"Mmm, conversations like this are as satisfying as a good meal!",
+            ],
+            "athletic": [
+                f"*stretches* Yeah! That's the spirit!",
+                f"You've got energy! I like that!",
+                f"*jogs in place* {duck_name} and I were just talking about staying active!",
+                f"Nice one! High five! ...er, high wing?",
+                f"*pumps wing* Keep that positive energy going!",
+            ],
+        }
+        
+        # Special reactions based on message content
+        if any(word in msg_lower for word in ["hello", "hi", "hey", "greet"]):
+            return f"{name}: *waves* Hey there! Nice to see you chatting with {duck_name}!"
+        
+        if any(word in msg_lower for word in ["bye", "goodbye", "leave", "go"]):
+            return f"{name}: *looks worried* Oh, are you leaving? I hope we can all hang out again!"
+        
+        if any(word in msg_lower for word in ["love", "like", "favorite", "best"]):
+            return f"{name}: *beams* Aww, that's so sweet!"
+        
+        if any(word in msg_lower for word in ["sad", "sorry", "miss", "lonely"]):
+            mood_comments = {
+                "adventurous": f"{name}: *puts wing on your shoulder* Chin up! Every journey has rough patches.",
+                "scholarly": f"{name}: *softly* Studies show social bonds help in difficult times. We're here for you.",
+                "artistic": f"{name}: *gently* Even sadness creates beautiful art. But I hope you feel better soon.",
+                "playful": f"{name}: *hugs* Don't be sad! Let's find something fun to do!",
+                "mysterious": f"{name}: *quietly* ...even shadows lift eventually.",
+                "generous": f"{name}: *offers comfort* Please, let me help however I can!",
+                "foodie": f"{name}: *offers treat* Comfort food always helps a little...",
+                "athletic": f"{name}: *reassuringly* Tough times build character! You've got this!",
+            }
+            return mood_comments.get(personality, f"{name}: I hope you feel better soon!")
+        
+        # Mood-influenced reactions
+        if duck_mood in ["sad", "lonely", "depressed"]:
+            sad_visitors = {
+                "adventurous": f"{name}: *notices {duck_name} seems down* I came at the right time!",
+                "scholarly": f"{name}: *observes {duck_name} carefully* Your duck seems to need cheering up.",
+                "playful": f"{name}: *looks at {duck_name}* Let's cheer this duck up together!",
+                "generous": f"{name}: *glances at {duck_name}* Poor thing... let's make this visit special.",
+            }
+            if personality in sad_visitors and random.random() < 0.3:
+                return sad_visitors[personality]
+        
+        # Default: pick from personality reactions
+        personality_lines = reactions.get(personality, reactions["adventurous"])
+        return f"{name}: {random.choice(personality_lines)}"
+    
+    def get_mood_reaction(self, current_mood: str, duck_name: str) -> Optional[str]:
+        """React to a change in the duck's mood during the visit."""
+        import time as _time
+        
+        # Check cooldown (don't comment on mood more than once per 60 seconds)
+        if _time.time() - self._last_mood_comment_time < 60:
+            return None
+        
+        # Only react if mood actually changed
+        if current_mood == self._last_known_duck_mood:
+            return None
+        
+        old_mood = self._last_known_duck_mood
+        self._last_known_duck_mood = current_mood
+        self._last_mood_comment_time = _time.time()
+        
+        name = self._friend_name
+        personality = self._personality
+        
+        # Personality-specific mood change reactions
+        positive_moods = {"happy", "joyful", "excited", "content", "playful", "loved"}
+        negative_moods = {"sad", "lonely", "angry", "depressed", "anxious", "bored", "hungry", "tired"}
+        
+        mood_improved = current_mood in positive_moods and old_mood in negative_moods
+        mood_worsened = current_mood in negative_moods and old_mood not in negative_moods
+        
+        if mood_improved:
+            improve_reactions = {
+                "adventurous": f"*notices {duck_name} perking up* There's the spirit! Ready for adventure!",
+                "scholarly": f"*observes* Fascinating - {duck_name}'s mood has improved noticeably!",
+                "artistic": f"*smiles* {duck_name}'s whole aura just brightened! Beautiful!",
+                "playful": f"*bounces* Yay! {duck_name} is happy again! Let's play!",
+                "mysterious": f"*nods knowingly* The darkness lifts... I sensed it would.",
+                "generous": f"*claps wings* Oh wonderful! {duck_name} seems so much happier!",
+                "foodie": f"*beams* {duck_name} looks happier! Must be that snack working!",
+                "athletic": f"*pumps wing* {duck_name}'s back in the game! Let's go!",
+            }
+            return f"{name}: {improve_reactions.get(personality, f'*notices {duck_name} seems happier*')}"
+        
+        elif mood_worsened:
+            worsen_reactions = {
+                "adventurous": f"*looks concerned* Hey {duck_name}, you okay? We can go somewhere fun!",
+                "scholarly": f"*frowns* {duck_name} seems troubled. Perhaps I can help...",
+                "artistic": f"*gently* {duck_name}, your colors seem dimmer... what's wrong?",
+                "playful": f"*tilts head* {duck_name}? You seem sad... want to play a game?",
+                "mysterious": f"*watches quietly* Something weighs on {duck_name}'s heart...",
+                "generous": f"*rushes over* {duck_name}, what's wrong? Can I help?",
+                "foodie": f"*worried* {duck_name} doesn't look great... maybe some food will help?",
+                "athletic": f"*concerned* {duck_name}, chin up! Let's go for a walk!",
+            }
+            return f"{name}: {worsen_reactions.get(personality, f'*notices {duck_name} seems upset*')}"
+        
+        # General mood change comment (less dramatic)
+        if random.random() < 0.3:  # Only 30% chance for non-dramatic changes
+            general = {
+                "adventurous": f"*tilts head* {duck_name} seems {current_mood}. Interesting!",
+                "scholarly": f"*notes* {duck_name} appears to be {current_mood} now.",
+                "playful": f"*notices* {duck_name} looks {current_mood}!",
+                "generous": f"I hope {duck_name} is doing okay... they seem {current_mood}.",
+            }
+            if personality in general:
+                return f"{name}: {general[personality]}"
+        
+        return None
+    
+    def get_visit_summary(self) -> dict:
+        """Get a summary of this visit for saving to the friend's memory."""
+        return {
+            "player_messages": list(self._player_messages_this_visit),
+            "mood_at_arrival": self._duck_mood_at_arrival,
+            "mood_at_departure": self._last_known_duck_mood,
+            "messages_exchanged": len(self._player_messages_this_visit),
+            "had_player_interaction": len(self._player_messages_this_visit) > 0,
+        }
+    
     def get_current_art(self) -> List[str]:
         """Get the current animation frame's ASCII art."""
         frames = VISITOR_ANIMATION_STATES.get(self._current_state, ["idle"])
@@ -930,6 +1166,10 @@ class DuckFriend:
     shared_experiences: List[str] = field(default_factory=list)  # Activities done together
     gifts_exchanged_history: List[str] = field(default_factory=list)  # What gifts we've exchanged
     last_conversation_summary: str = ""  # Brief summary of last talk
+    # Player interaction memory — tracks what the player says during visits
+    player_chat_history: List[str] = field(default_factory=list)  # Last things player said (max 20)
+    mood_at_last_visit: str = ""  # Cheese's mood when they last visited
+    visitor_mood_memory: str = ""  # How the visitor felt about the last visit
 
 
 @dataclass
@@ -1383,6 +1623,9 @@ class FriendsSystem:
                     "shared_experiences": f.shared_experiences,
                     "gifts_exchanged_history": f.gifts_exchanged_history,
                     "last_conversation_summary": f.last_conversation_summary,
+                    "player_chat_history": f.player_chat_history,
+                    "mood_at_last_visit": f.mood_at_last_visit,
+                    "visitor_mood_memory": f.visitor_mood_memory,
                 }
                 for fid, f in self.friends.items()
             },
@@ -1427,6 +1670,9 @@ class FriendsSystem:
                 shared_experiences=fdata.get("shared_experiences", []),
                 gifts_exchanged_history=fdata.get("gifts_exchanged_history", []),
                 last_conversation_summary=fdata.get("last_conversation_summary", ""),
+                player_chat_history=fdata.get("player_chat_history", []),
+                mood_at_last_visit=fdata.get("mood_at_last_visit", ""),
+                visitor_mood_memory=fdata.get("visitor_mood_memory", ""),
             )
         
         visit_data = data.get("current_visit")
