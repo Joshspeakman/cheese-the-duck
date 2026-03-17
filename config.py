@@ -175,6 +175,17 @@ DUCK_NAMES = [
     "Sprocket", "Waffles", "Noodle", "Potato", "Beans",
 ]
 
+# ===== LEARNING ENGINE SETTINGS =====
+# Lightweight conversation learning — no external APIs, learns from every chat
+LEARNING_ENGINE_ENABLED = True      # Master switch for learning engine
+LEARNING_CONFIDENCE_HIGH = 0.65     # Confidence threshold for high-priority match
+LEARNING_CONFIDENCE_LOW = 0.45      # Confidence threshold for low-priority match
+
+# ===== VOICE GENERATOR SETTINGS =====
+# Markov chain text generation in Cheese's voice
+VOICE_GENERATOR_ENABLED = True      # Master switch for voice generator
+VOICE_GENERATOR_IDLE_CHANCE = 0.12  # Chance of using generated line in idle/thoughts (12%)
+
 # ===== LLM SETTINGS =====
 # Core LLM Configuration
 LLM_ENABLED = True              # Master switch for all LLM features

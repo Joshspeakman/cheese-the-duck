@@ -941,14 +941,27 @@ class ConversationSystem:
     def process_player_input(self, duck: "Duck", player_input: str, use_llm: bool = True, memory_context: str = "") -> str:
         """
         Process player text input and generate a response.
-        Uses LLM if available, otherwise falls back to templates.
-        
+
+        Response chain (priority order):
+        1. LLM (if available)
+        2. Learning engine high-confidence match (>= 0.65)
+        3. Keyword engine (template matching)
+        4. Learning engine lower-confidence match (>= 0.45)
+        5. Voice generator (Markov chain novel line)
+        6. Idle thought fallback
+
+        Every successful response is fed back to the learning engine
+        so Cheese gets better over time.
+
         Args:
             duck: The Duck instance
             player_input: What the player said
             use_llm: Whether to try using LLM
             memory_context: Optional context from duck's memory for richer responses
         """
+        response = None
+        source = None
+
         # Try LLM first if enabled
         if use_llm:
             try:
@@ -958,29 +971,92 @@ class ConversationSystem:
                     # Pass memory context to LLM for richer responses
                     llm_response = llm.generate_response(duck, player_input, memory_context=memory_context)
                     if llm_response:
-                        self.add_to_history(player_input, llm_response)
-                        return llm_response
-                    # LLM returned None - log for debugging
-                    import logging
-                    logging.debug(f"LLM returned None. Last error: {llm.get_last_error()}")
+                        response = llm_response
+                        source = "llm"
             except Exception as e:
-                # Log the exception for debugging
                 import logging
                 logging.debug(f"LLM exception: {e}")
 
-        # Fall back to Seaman-style contextual keyword detection
-        # Uses the massive keyword response engine for contextual responses
-        from dialogue.keyword_responses import get_keyword_engine
-        engine = get_keyword_engine()
-        keyword_response = engine.process(player_input, duck)
-        if keyword_response:
-            self.add_to_history(player_input, keyword_response)
-            return keyword_response
+        # Try learning engine (high confidence)
+        if not response:
+            try:
+                from dialogue.learning_engine import get_learning_engine
+                from config import LEARNING_ENGINE_ENABLED
+                if LEARNING_ENGINE_ENABLED:
+                    engine = get_learning_engine()
+                    result = engine.get_response(player_input, confidence_threshold=0.65)
+                    if result:
+                        response = result[0]
+                        source = "learned_high"
+            except Exception as e:
+                import logging
+                logging.debug(f"Learning engine exception: {e}")
 
-        # No keyword match - use idle thought as ultimate fallback
-        idle_response = self.get_idle_thought(duck)
-        self.add_to_history(player_input, idle_response)
-        return idle_response
+        # Fall back to Seaman-style contextual keyword detection
+        if not response:
+            from dialogue.keyword_responses import get_keyword_engine
+            kw_engine = get_keyword_engine()
+            keyword_response = kw_engine.process(player_input, duck)
+            if keyword_response:
+                response = keyword_response
+                source = "keyword"
+
+        # Try learning engine again (lower confidence)
+        if not response:
+            try:
+                from dialogue.learning_engine import get_learning_engine
+                from config import LEARNING_ENGINE_ENABLED
+                if LEARNING_ENGINE_ENABLED:
+                    engine = get_learning_engine()
+                    result = engine.get_response(player_input, confidence_threshold=0.45)
+                    if result:
+                        response = result[0]
+                        source = "learned_low"
+            except Exception as e:
+                import logging
+                logging.debug(f"Learning engine low-conf exception: {e}")
+
+        # Try voice generator (Markov chain novel line)
+        if not response:
+            try:
+                from dialogue.voice_generator import get_voice_generator
+                from config import VOICE_GENERATOR_ENABLED
+                if VOICE_GENERATOR_ENABLED:
+                    vg = get_voice_generator()
+                    if vg.is_trained:
+                        # Try to generate with a hint word from the player input
+                        words = player_input.lower().split()
+                        hint = words[0] if words else None
+                        generated = vg.generate(hint=hint)
+                        if not generated:
+                            generated = vg.generate()  # No hint
+                        if generated:
+                            response = generated
+                            source = "voice_gen"
+            except Exception as e:
+                import logging
+                logging.debug(f"Voice generator exception: {e}")
+
+        # Ultimate fallback: idle thought
+        if not response:
+            response = self.get_idle_thought(duck)
+            source = "idle"
+
+        # Record the exchange
+        self.add_to_history(player_input, response)
+
+        # Feed successful responses back to the learning engine
+        if source and source != "idle":
+            try:
+                from dialogue.learning_engine import get_learning_engine
+                from config import LEARNING_ENGINE_ENABLED
+                if LEARNING_ENGINE_ENABLED:
+                    learn_source = "llm" if source == "llm" else "conversation"
+                    get_learning_engine().learn(player_input, response, source=learn_source)
+            except Exception:
+                pass  # Learning is best-effort
+
+        return response
 
     def add_to_history(self, player_msg: str, duck_response: str):
         """Add an exchange to conversation history."""

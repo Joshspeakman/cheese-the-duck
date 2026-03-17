@@ -4528,7 +4528,9 @@ class Game:
             
             if roll < 0.25:
                 # 25% chance: Callback to a past event or conversation
-                comment = self.duck_brain.get_callback()
+                # Pass last player message for contextual memory recall
+                last_msg = getattr(self.duck_brain, '_last_player_message', None)
+                comment = self.duck_brain.get_callback(current_input=last_msg)
             elif roll < 0.50:
                 # 25% chance: Idle philosophical thought
                 comment = self.duck_brain.get_idle_thought()

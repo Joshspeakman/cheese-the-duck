@@ -24,6 +24,7 @@ from dialogue.conversation_memory import ConversationMemory
 from dialogue.questions import QuestionManager, DUCK_QUESTIONS, DuckQuestion
 from dialogue.seaman_style import SeamanDialogue, DialogueLine, DialogueTone
 from dialogue.ritual_tracker import RitualTracker
+from dialogue.memory_recall import MemoryRecall
 
 if TYPE_CHECKING:
     from dialogue.memory import DuckMemory
@@ -83,6 +84,9 @@ class DuckBrain:
         self.question_manager = QuestionManager()
         self.dialogue_generator = SeamanDialogue(duck_name=duck_name)
         self.ritual_tracker = RitualTracker()
+        self.memory_recall = MemoryRecall(
+            self.conversation_memory, self.player_model, duck_memory
+        )
         
         # Internal state
         self._internal_mood = DuckMood.NEUTRAL
@@ -415,30 +419,48 @@ class DuckBrain:
         
         return random.choice(forecasts)
     
-    def get_callback(self) -> Optional[str]:
-        """Get a callback to a past conversation if appropriate."""
+    def get_callback(self, current_input: str = None) -> Optional[str]:
+        """
+        Get a callback to a past conversation if appropriate.
+
+        Uses relevance-based memory recall when current_input is provided,
+        falling back to the original random/sequential callback system.
+        """
         now = time.time()
-        
+
         # Cooldown check (minimum 5 minutes between callbacks)
         if now - self._last_callback_time < 300:
             return None
-        
-        # Try question callback first
+
+        # Try question callback first (always priority)
         callback_data = self.question_manager.get_callback(self.player_model)
         if callback_data:
             self._last_callback_time = now
             return callback_data[0]
-        
-        # Try conversation callback
+
+        # Try relevance-based memory recall (new system)
+        if current_input:
+            recall = self.memory_recall.find_relevant_memory(current_input)
+            if recall:
+                self._last_callback_time = now
+                return recall["intro"]
+
+        # Try time-based anniversary callbacks
+        anniversary = self.memory_recall.get_contextual_callback("time_anniversary")
+        if anniversary:
+            self._last_callback_time = now
+            return anniversary["intro"]
+
+        # Fall back to original callback system
         callback = self.dialogue_generator.generate_callback(
             player_model=self.player_model,
             conversation_memory=self.conversation_memory
         )
-        
+
         if callback:
             self._last_callback_time = now
             return callback.text
-        
+
         return None
     
     def get_question(self, relationship_level: str = "acquaintance",

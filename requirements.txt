@@ -3,3 +3,6 @@ pygame>=2.5.0  # For background music and sound effects
 
 # AI conversations using bundled local model
 llama-cpp-python>=0.2.0
+
+# Markov chain voice generation for Cheese's evolving dialogue
+markovify>=0.9.4
