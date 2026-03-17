@@ -943,12 +943,11 @@ class ConversationSystem:
         Process player text input and generate a response.
 
         Response chain (priority order):
-        1. LLM (if available)
-        2. Learning engine high-confidence match (>= 0.65)
-        3. Keyword engine (template matching)
-        4. Learning engine lower-confidence match (>= 0.45)
-        5. Voice generator (Markov chain novel line)
-        6. Idle thought fallback
+        1. LLM (if available) — best contextual understanding
+        2. Keyword engine — hand-crafted topic-specific responses
+        3. Learning engine — patterns learned from past conversations
+        4. Voice generator — Markov chain novel line
+        5. Idle thought fallback
 
         Every successful response is fed back to the learning engine
         so Cheese gets better over time.
@@ -962,13 +961,12 @@ class ConversationSystem:
         response = None
         source = None
 
-        # Try LLM first if enabled
+        # Try LLM first if enabled — best contextual understanding
         if use_llm:
             try:
                 from dialogue.llm_chat import get_llm_chat
                 llm = get_llm_chat()
                 if llm.is_available():
-                    # Pass memory context to LLM for richer responses
                     llm_response = llm.generate_response(duck, player_input, memory_context=memory_context)
                     if llm_response:
                         response = llm_response
@@ -977,22 +975,7 @@ class ConversationSystem:
                 import logging
                 logging.debug(f"LLM exception: {e}")
 
-        # Try learning engine (high confidence)
-        if not response:
-            try:
-                from dialogue.learning_engine import get_learning_engine
-                from config import LEARNING_ENGINE_ENABLED
-                if LEARNING_ENGINE_ENABLED:
-                    engine = get_learning_engine()
-                    result = engine.get_response(player_input, confidence_threshold=0.65)
-                    if result:
-                        response = result[0]
-                        source = "learned_high"
-            except Exception as e:
-                import logging
-                logging.debug(f"Learning engine exception: {e}")
-
-        # Fall back to Seaman-style contextual keyword detection
+        # Keyword engine — hand-crafted, topic-specific, always contextual
         if not response:
             from dialogue.keyword_responses import get_keyword_engine
             kw_engine = get_keyword_engine()
@@ -1001,22 +984,22 @@ class ConversationSystem:
                 response = keyword_response
                 source = "keyword"
 
-        # Try learning engine again (lower confidence)
+        # Learning engine — patterns learned from past conversations
         if not response:
             try:
                 from dialogue.learning_engine import get_learning_engine
                 from config import LEARNING_ENGINE_ENABLED
                 if LEARNING_ENGINE_ENABLED:
                     engine = get_learning_engine()
-                    result = engine.get_response(player_input, confidence_threshold=0.45)
+                    result = engine.get_response(player_input, confidence_threshold=0.55)
                     if result:
                         response = result[0]
-                        source = "learned_low"
+                        source = "learned"
             except Exception as e:
                 import logging
-                logging.debug(f"Learning engine low-conf exception: {e}")
+                logging.debug(f"Learning engine exception: {e}")
 
-        # Try voice generator (Markov chain novel line)
+        # Voice generator — Markov chain novel line in Cheese's voice
         if not response:
             try:
                 from dialogue.voice_generator import get_voice_generator
@@ -1024,12 +1007,7 @@ class ConversationSystem:
                 if VOICE_GENERATOR_ENABLED:
                     vg = get_voice_generator()
                     if vg.is_trained:
-                        # Try to generate with a hint word from the player input
-                        words = player_input.lower().split()
-                        hint = words[0] if words else None
-                        generated = vg.generate(hint=hint)
-                        if not generated:
-                            generated = vg.generate()  # No hint
+                        generated = vg.generate()
                         if generated:
                             response = generated
                             source = "voice_gen"
@@ -1046,7 +1024,7 @@ class ConversationSystem:
         self.add_to_history(player_input, response)
 
         # Feed successful responses back to the learning engine
-        if source and source != "idle":
+        if source and source not in ("idle", "voice_gen"):
             try:
                 from dialogue.learning_engine import get_learning_engine
                 from config import LEARNING_ENGINE_ENABLED

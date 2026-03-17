@@ -190,8 +190,8 @@ class DuckPosition:
 
         # ALWAYS process directed movement first, regardless of animation state
         # This ensures duck walks to nest/structures before performing actions
-        # Walk speed scales with motivation (0.15s at full → 0.50s at zero)
-        step_interval = 0.15 + (1.0 - self._motivation) * 0.35
+        # Walk speed scales with motivation (0.07s at full → 0.20s at zero)
+        step_interval = 0.07 + (1.0 - self._motivation) * 0.13
 
         if self._is_directed_movement:
             if self.x != self.target_x or self.y != self.target_y:
@@ -228,9 +228,9 @@ class DuckPosition:
                     self._is_directed_movement = False
             return  # Don't do other movement while directed movement is active
 
-        # Cycle animation frames for all animatable states (every 0.4 seconds)
+        # Cycle animation frames for all animatable states (every 0.25 seconds)
         if self._state in self.ANIMATABLE_STATES:
-            if self._state_animation_timer > 0.4:
+            if self._state_animation_timer > 0.25:
                 self._animation_frame = (self._animation_frame + 1) % 2
                 self._state_animation_timer = 0
 
@@ -243,8 +243,8 @@ class DuckPosition:
             return  # Don't wander while in special state
 
         # Randomly pick new target when idle (but not during directed movement)
-        if self._state == "idle" and not self._is_directed_movement and self._idle_timer > random.uniform(3, 8):
-            if random.random() < 0.6:  # 60% chance to wander
+        if self._state == "idle" and not self._is_directed_movement and self._idle_timer > random.uniform(1.5, 4.0):
+            if random.random() < 0.7:  # 70% chance to wander
                 self._pick_new_target()
                 self._idle_timer = 0
 

@@ -397,12 +397,11 @@ Rules: Use at most ONE action per response. Only when contextually appropriate. 
         # memory_context is not overwritten - DuckBrain context is used via _build_system_prompt
 
         response = self._generate_local(duck, player_input, memory_context)
-        
-        # Record the exchange in DuckBrain if available
-        duck_brain = getattr(self, '_duck_brain', None)
-        if response and duck_brain:
-            duck_brain.process_player_message(player_input, response)
-        
+
+        # NOTE: Exchange recording moved to game.py _check_pending_talk()
+        # so ALL response sources (LLM, keyword, learning, voice) get recorded
+        # in DuckBrain's memory systems consistently.
+
         return response
 
     def _generate_local(self, duck: "Duck", player_input: str, memory_context: str = "") -> Optional[str]:

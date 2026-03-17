@@ -148,6 +148,9 @@ class LearningEngine:
         2. SequenceMatcher ratio for precise ranking
         3. Frequency weighting (more-used pairs score slightly higher)
 
+        Heavily penalises mismatched lengths to avoid short seed keywords
+        (e.g. "hello") matching long player sentences.
+
         Args:
             player_input: What the player said
             confidence_threshold: Minimum confidence to return a result
@@ -166,6 +169,8 @@ class LearningEngine:
         if not input_tokens:
             return None
 
+        input_len = len(normalized)
+
         # Fetch candidates — use word overlap for fast pre-filtering
         # We pull a broader set and score them precisely
         with self._lock:
@@ -182,17 +187,20 @@ class LearningEngine:
         best_response = None
 
         for stored_input, response, frequency in candidates:
-            # Stage 1: fast word overlap check (Jaccard)
             stored_tokens = set(stored_input.split())
             if not stored_tokens:
                 continue
 
+            # Stage 1: fast word overlap check (Jaccard)
             intersection = input_tokens & stored_tokens
+            if not intersection:
+                continue  # No shared words at all — skip
+
             union = input_tokens | stored_tokens
             jaccard = len(intersection) / len(union) if union else 0
 
-            # Skip if no word overlap at all (speed optimization)
-            if jaccard < 0.1:
+            # Require meaningful overlap — at least 20% shared words
+            if jaccard < 0.2:
                 continue
 
             # Stage 2: precise SequenceMatcher score
@@ -200,10 +208,16 @@ class LearningEngine:
                 None, normalized, stored_input
             ).ratio()
 
-            # Stage 3: blend scores with frequency bonus
-            # Frequency bonus: log-scaled, capped at 0.1 extra
-            freq_bonus = min(0.1, (frequency - 1) * 0.02)
-            score = (ratio * 0.7 + jaccard * 0.3) + freq_bonus
+            # Stage 3: length similarity penalty
+            # Prevents "hello" (5 chars) from matching "what do you
+            # think about the meaning of life" (38 chars)
+            stored_len = len(stored_input)
+            len_ratio = min(input_len, stored_len) / max(input_len, stored_len)
+            length_penalty = len_ratio  # 0-1, closer lengths = higher
+
+            # Stage 4: blend scores with frequency bonus
+            freq_bonus = min(0.08, (frequency - 1) * 0.015)
+            score = (ratio * 0.5 + jaccard * 0.3 + length_penalty * 0.2) + freq_bonus
 
             if score > best_score:
                 best_score = score

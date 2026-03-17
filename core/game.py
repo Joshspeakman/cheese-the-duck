@@ -1549,6 +1549,12 @@ class Game:
         for action in actions:
             self._execute_llm_action(action)
 
+        # Record the exchange in DuckBrain so ALL responses (not just LLM)
+        # enter the memory system for callbacks and context
+        original_message = getattr(self, '_pending_talk_message', None)
+        if original_message and self.duck_brain:
+            self.duck_brain.process_player_message(original_message, response)
+
         # Show the actual response (replaces the thinking indicator)
         self.renderer.show_message(response, duration=8.0, category="duck")
 
