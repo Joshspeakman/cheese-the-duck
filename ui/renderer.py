@@ -1047,15 +1047,17 @@ class Renderer:
             time_key = "late_night"
 
         # Base RGB tints per time period (global defaults)
+        # Values are DARK — these are subtle ambient background washes.
+        # Morning/midday/afternoon are None (no tint) unless a biome overrides.
         _BASE_TINTS = {
-            "dawn":       (255, 200, 150),
+            "dawn":       (35, 25, 15),
             "morning":    None,
             "midday":     None,
             "afternoon":  None,
-            "evening":    (255, 180, 100),
-            "dusk":       (100, 80, 120),
-            "night":      (20, 20, 40),
-            "late_night": (10, 10, 25),
+            "evening":    (30, 22, 10),
+            "dusk":       (18, 14, 25),
+            "night":      (8, 8, 22),
+            "late_night": (4, 4, 14),
         }
 
         # Define time periods with visual elements

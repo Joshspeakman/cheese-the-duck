@@ -15,99 +15,104 @@ from typing import Dict, List, Optional, Tuple
 # Each biome has an RGB tint for each time period.  These are blended with the
 # global time-of-day base colour in renderer._get_time_of_day_elements().
 #
+# IMPORTANT: Values must be VERY DARK (0-45 range) to keep foreground elements
+# visible.  These are subtle colour casts, not solid fills.  Daytime periods
+# (morning, midday, afternoon) should be the subtlest since they previously
+# had no background at all.
+#
 # Keys: biome enum .value strings   ×   time period strings
-# Values: (R, G, B) absolute background colour for that combo.
+# Values: (R, G, B) — dark ambient background colour hint.
 
 BIOME_TIME_TINTS: Dict[str, Dict[str, Tuple[int, int, int]]] = {
     "pond": {
-        "dawn":       (220, 200, 160),
-        "morning":    (180, 210, 200),
-        "midday":     (200, 220, 210),
-        "afternoon":  (190, 210, 200),
-        "evening":    (210, 180, 120),
-        "dusk":       (90, 85, 110),
-        "night":      (15, 20, 35),
-        "late_night": (8, 10, 22),
+        "dawn":       (35, 28, 18),   # Warm hint
+        "morning":    (8, 14, 12),    # Very subtle teal
+        "midday":     (6, 10, 8),     # Barely there
+        "afternoon":  (8, 12, 10),
+        "evening":    (30, 22, 10),   # Golden warmth
+        "dusk":       (18, 16, 28),   # Purple tinge
+        "night":      (6, 10, 22),    # Dark blue
+        "late_night": (3, 5, 14),
     },
     "forest": {
-        "dawn":       (180, 200, 140),
-        "morning":    (140, 185, 130),
-        "midday":     (120, 170, 110),
-        "afternoon":  (135, 175, 120),
-        "evening":    (160, 150, 80),
-        "dusk":       (60, 70, 50),
-        "night":      (8, 16, 10),
-        "late_night": (4, 10, 6),
+        "dawn":       (22, 30, 12),   # Green-tinged dawn
+        "morning":    (6, 16, 8),     # Dark green filter
+        "midday":     (5, 14, 6),     # Canopy-filtered light
+        "afternoon":  (6, 14, 7),
+        "evening":    (24, 20, 8),    # Orange through trees
+        "dusk":       (12, 18, 10),   # Dark forest dusk
+        "night":      (3, 10, 5),     # Very dark green
+        "late_night": (2, 6, 3),
     },
     "meadow": {
-        "dawn":       (240, 210, 170),
-        "morning":    (210, 220, 180),
-        "midday":     (230, 235, 200),
-        "afternoon":  (220, 215, 175),
-        "evening":    (230, 190, 110),
-        "dusk":       (110, 90, 100),
-        "night":      (18, 18, 35),
-        "late_night": (10, 10, 20),
+        "dawn":       (38, 30, 16),   # Warm golden dawn
+        "morning":    (12, 14, 8),    # Light warm hint
+        "midday":     (10, 12, 6),    # Subtle warmth
+        "afternoon":  (12, 12, 7),
+        "evening":    (35, 25, 10),   # Rich golden hour
+        "dusk":       (22, 16, 20),   # Soft purple
+        "night":      (8, 8, 18),     # Open sky dark blue
+        "late_night": (4, 4, 12),
     },
     "riverside": {
-        "dawn":       (210, 200, 170),
-        "morning":    (180, 210, 215),
-        "midday":     (200, 225, 230),
-        "afternoon":  (190, 215, 210),
-        "evening":    (200, 175, 120),
-        "dusk":       (85, 80, 110),
-        "night":      (12, 18, 30),
-        "late_night": (6, 10, 20),
+        "dawn":       (30, 26, 18),
+        "morning":    (8, 14, 16),    # Cool blue hint
+        "midday":     (6, 12, 14),
+        "afternoon":  (8, 12, 14),
+        "evening":    (28, 22, 12),
+        "dusk":       (16, 14, 24),
+        "night":      (5, 8, 18),
+        "late_night": (3, 5, 12),
     },
     "garden": {
-        "dawn":       (225, 210, 165),
-        "morning":    (195, 215, 180),
-        "midday":     (215, 225, 200),
-        "afternoon":  (205, 215, 185),
-        "evening":    (220, 185, 115),
-        "dusk":       (100, 88, 105),
-        "night":      (15, 18, 30),
-        "late_night": (8, 10, 20),
+        "dawn":       (32, 28, 16),
+        "morning":    (10, 14, 8),
+        "midday":     (8, 12, 6),
+        "afternoon":  (10, 12, 7),
+        "evening":    (30, 24, 10),
+        "dusk":       (20, 16, 22),
+        "night":      (6, 8, 16),
+        "late_night": (3, 5, 10),
     },
     "mountains": {
-        "dawn":       (210, 195, 185),
-        "morning":    (190, 210, 230),
-        "midday":     (210, 225, 245),
-        "afternoon":  (200, 215, 235),
-        "evening":    (195, 170, 140),
-        "dusk":       (80, 75, 110),
-        "night":      (10, 12, 30),
-        "late_night": (5, 6, 18),
+        "dawn":       (28, 24, 22),   # Cool crisp dawn
+        "morning":    (8, 12, 18),    # Clear blue hint
+        "midday":     (6, 10, 16),    # Alpine clarity
+        "afternoon":  (8, 10, 16),
+        "evening":    (26, 20, 14),
+        "dusk":       (14, 12, 24),   # Deep purple twilight
+        "night":      (4, 5, 18),     # Clear dark sky
+        "late_night": (2, 3, 12),
     },
     "beach": {
-        "dawn":       (245, 210, 175),
-        "morning":    (210, 230, 245),
-        "midday":     (230, 240, 250),
-        "afternoon":  (220, 235, 245),
-        "evening":    (240, 185, 120),
-        "dusk":       (110, 85, 105),
-        "night":      (15, 18, 35),
-        "late_night": (8, 10, 22),
+        "dawn":       (38, 28, 18),   # Warm sunrise
+        "morning":    (10, 16, 20),   # Bright cyan hint
+        "midday":     (8, 14, 18),    # Bright open sky
+        "afternoon":  (10, 14, 18),
+        "evening":    (36, 24, 12),   # Sunset warmth
+        "dusk":       (22, 14, 20),
+        "night":      (6, 8, 20),
+        "late_night": (3, 5, 14),
     },
     "swamp": {
-        "dawn":       (170, 180, 120),
-        "morning":    (140, 160, 110),
-        "midday":     (150, 165, 115),
-        "afternoon":  (145, 160, 110),
-        "evening":    (140, 140, 80),
-        "dusk":       (60, 65, 45),
-        "night":      (10, 18, 8),
-        "late_night": (5, 12, 5),
+        "dawn":       (22, 28, 10),   # Murky green dawn
+        "morning":    (8, 16, 6),     # Green murk
+        "midday":     (6, 14, 5),     # Hazy green
+        "afternoon":  (7, 14, 5),
+        "evening":    (18, 20, 6),    # Sickly golden
+        "dusk":       (10, 16, 8),    # Dark murk
+        "night":      (4, 12, 3),     # Eerie dark green
+        "late_night": (2, 8, 2),
     },
     "urban": {
-        "dawn":       (200, 190, 175),
-        "morning":    (195, 200, 205),
-        "midday":     (210, 215, 215),
-        "afternoon":  (205, 208, 210),
-        "evening":    (200, 175, 130),
-        "dusk":       (100, 90, 85),
-        "night":      (25, 20, 15),
-        "late_night": (18, 14, 10),
+        "dawn":       (28, 24, 20),   # Gray-warm
+        "morning":    (12, 12, 14),   # Gray cast
+        "midday":     (10, 10, 12),   # Neutral gray
+        "afternoon":  (12, 12, 12),
+        "evening":    (28, 22, 12),   # Streetlight warmth
+        "dusk":       (20, 16, 14),   # Orange-gray
+        "night":      (16, 12, 8),    # Streetlight amber glow
+        "late_night": (10, 7, 4),     # Dim amber
     },
 }
 
