@@ -210,6 +210,17 @@ class DuckBrain:
         # Record in conversation memory
         topics = self.conversation_memory._detect_topics(message)
         sentiment = self._estimate_sentiment(message)
+        
+        # Enrich topics with environmental context
+        if context.get("visitor_name"):
+            topics.append("visitor")
+        if context.get("current_event"):
+            topics.append("event")
+        if context.get("weather"):
+            topics.append("weather")
+        if context.get("season"):
+            topics.append("season")
+        
         self.conversation_memory.add_message(
             role="player",
             content=message,
@@ -218,9 +229,12 @@ class DuckBrain:
         )
         
         # Record in player model
+        chat_context = context.get("context", "chat")
+        if context.get("visitor_name"):
+            chat_context = f"chat_with_visitor_{context['visitor_name']}"
         self.player_model.record_statement(
             text=message,
-            context=context.get("context", "chat"),
+            context=chat_context,
             topic_tags=topics,
             sentiment=sentiment
         )
