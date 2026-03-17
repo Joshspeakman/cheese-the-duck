@@ -2,7 +2,9 @@
 Expanded event system for Cheese the Duck.
 500 new events across all rarity tiers with animations, dialogue, and encounters.
 """
-from world.events import Event, EventType, Encounter, EventChain
+from world.events import (Event, EventType, Encounter, EventChain,
+                       DAYLIGHT_PERIODS, NIGHT_PERIODS, EVENING_NIGHT_PERIODS,
+                       DUSK_NIGHT_PERIODS, MORNING_PERIODS, DAYTIME_PERIODS)
 
 
 EXPANDED_EVENTS = {
@@ -82,6 +84,7 @@ EXPANDED_EVENTS = {
         effects={"energy": 5, "fun": 3}, mood_change=4,
         message="*stretches wings wide* Every bone. Every feather. I am now 20% longer than I was a moment ago.",
         duck_reaction="refreshed", cooldown=600,
+        required_time=MORNING_PERIODS,
     ),
     "sunset_contemplation": Event(
         id="sunset_contemplation", name="Sunset Contemplation",
@@ -90,6 +93,7 @@ EXPANDED_EVENTS = {
         effects={"fun": 8, "energy": -2}, mood_change=6,
         message="*watches sky* The sun's leaving again. It always comes back. That's strangely comforting. Don't tell anyone I said that.",
         duck_reaction="thoughtful", cooldown=600,
+        required_time=("evening", "dusk"),
     ),
     "forgot_what_doing": Event(
         id="forgot_what_doing", name="Forgot What I Was Doing",
@@ -122,6 +126,7 @@ EXPANDED_EVENTS = {
         effects={"fun": 3}, mood_change=3,
         message="*cross-eyed stare* There's water. On my face. Just sitting there. Being round. Actually kind of beautiful.",
         duck_reaction="curious", cooldown=500,
+        required_time=MORNING_PERIODS,
     ),
     "loose_feather": Event(
         id="loose_feather", name="Loose Feather",
@@ -194,6 +199,7 @@ EXPANDED_EVENTS = {
         effects={"fun": 6, "energy": -2}, mood_change=4,
         message="*SPLASH* ...I didn't mean to do that. But now that it's done, I have no regrets. None.",
         duck_reaction="playful", cooldown=400,
+        weather_group="wet",
     ),
     "wing_flap_breeze": Event(
         id="wing_flap_breeze", name="Self-Made Breeze",
@@ -354,6 +360,8 @@ EXPANDED_EVENTS = {
         effects={"fun": 4, "energy": 2}, mood_change=3,
         message="*closes eyes* This breeze knows me. It knows EXACTLY what I need. I'm being hugged by air.",
         duck_reaction="content", cooldown=500,
+        weather_group="pleasant",
+        required_time=DAYLIGHT_PERIODS,
     ),
     "one_legged_stand": Event(
         id="one_legged_stand", name="One-Legged Stand",
@@ -900,6 +908,7 @@ EXPANDED_EVENTS = {
         effects={"fun": 30, "energy": 5, "social": 5}, mood_change=20,
         message="*absolutely still* The sky is dancing. Green and purple and... I don't have words. For once I have NO words. It's the most beautiful thing I've ever seen.",
         duck_reaction="speechless", sound="alert", cooldown=28800, weather_group="magical", has_animation=True,
+        required_time=NIGHT_PERIODS,
     ),
     "warm_rock_sun": Event(
         id="warm_rock_sun", name="Warm Rock",
@@ -908,6 +917,7 @@ EXPANDED_EVENTS = {
         effects={"energy": 8, "fun": 5}, mood_change=5,
         message="*sits on rock* It's warm. The sun COOKED this rock for me. Nature is my personal heating service. Luxury.",
         duck_reaction="content", cooldown=800, weather_group="hot",
+        required_time=DAYLIGHT_PERIODS,
     ),
     "icicle_boop": Event(
         id="icicle_boop", name="Icicle Boop",
@@ -964,6 +974,7 @@ EXPANDED_EVENTS = {
         effects={"fun": 12, "energy": 3}, mood_change=8,
         message="*watching sunset* Orange. Pink. Purple. Gold. The sky is showing off. Okay sky. You earned this one.",
         duck_reaction="moved", cooldown=2400, weather_group="pleasant",
+        required_time=("evening", "dusk"),
     ),
     "freezing_rain": Event(
         id="freezing_rain", name="Freezing Rain",
@@ -1193,6 +1204,7 @@ EXPANDED_EVENTS = {
         effects={"fun": 6, "energy": 2}, mood_change=4,
         message="*listening* The crickets are at it again. Free music. Every night. They never take requests but I forgive them.",
         duck_reaction="peaceful", cooldown=800,
+        required_time=DUSK_NIGHT_PERIODS,
     ),
     "goose_intimidation": Event(
         id="goose_intimidation", name="Goose Intimidation",
@@ -1233,6 +1245,7 @@ EXPANDED_EVENTS = {
         effects={"fun": 15, "energy": 3}, mood_change=10,
         message="*mesmerized* They're glowing. Dozens of them. Flying tiny lanterns. Like the stars decided to visit the ground.",
         duck_reaction="enchanted", sound="ambient", cooldown=3600, has_animation=True,
+        required_time=DUSK_NIGHT_PERIODS,
     ),
     "crab_encounter": Event(
         id="crab_encounter", name="Crab Encounter",
@@ -1257,6 +1270,7 @@ EXPANDED_EVENTS = {
         effects={"fun": 5, "energy": -3}, mood_change=2,
         message="*staring into darkness* Two. Glowing. Eyes. Watching me. I see you. You see me. This is fine. I'M FINE.",
         duck_reaction="spooked", cooldown=2400,
+        required_time=NIGHT_PERIODS,
     ),
     "hedgehog_visit": Event(
         id="hedgehog_visit", name="Hedgehog Visit",
@@ -1273,6 +1287,7 @@ EXPANDED_EVENTS = {
         effects={"fun": 6}, mood_change=3,
         message="*watching bats* Sky mice. Leather birds. Whatever they are, their flying is CHAOTIC. Like me but airborne.",
         duck_reaction="entertained", cooldown=1200,
+        required_time=EVENING_NIGHT_PERIODS,
     ),
     "rabbit_sprint": Event(
         id="rabbit_sprint", name="Rabbit Sprint",
@@ -1305,6 +1320,7 @@ EXPANDED_EVENTS = {
         effects={"fun": 12, "social": 5}, mood_change=8,
         message="*absolutely still* A deer. Just standing there. Magnificent. Tall. Everything I'm not. We made eye contact. Magic.",
         duck_reaction="awed", cooldown=3600,
+        required_time=MORNING_PERIODS,
     ),
     "mosquito_assault": Event(
         id="mosquito_assault", name="Mosquito Assault",
@@ -1361,6 +1377,7 @@ EXPANDED_EVENTS = {
         effects={"fun": 5}, mood_change=3,
         message="*watching moth fly up* It wants the moon. It'll never get there. But it keeps trying. That's either inspiring or deeply sad.",
         duck_reaction="thoughtful", cooldown=1200,
+        required_time=NIGHT_PERIODS,
     ),
     "mole_hill_exp": Event(
         id="mole_hill_exp", name="Mole Hill Appearance",
@@ -1393,6 +1410,7 @@ EXPANDED_EVENTS = {
         effects={"fun": 6, "social": 3}, mood_change=4,
         message="*staring at raccoon* A tiny bandit. With tiny hands. It's washing food. MORE THOROUGHLY than I eat mine. Showoff.",
         duck_reaction="envious", cooldown=1800,
+        required_time=NIGHT_PERIODS,
     ),
     "peacock_jealousy": Event(
         id="peacock_jealousy", name="Peacock Encounter",
@@ -1454,6 +1472,7 @@ EXPANDED_EVENTS = {
         effects={"fun": 8, "energy": -3}, mood_change=5,
         message="*looking up* Each star is a sun. With maybe its own ponds. Its own ducks. Am I even special? YES. I'm Cheese. Of COURSE I'm special.",
         duck_reaction="humbled", cooldown=1800,
+        required_time=NIGHT_PERIODS,
     ),
     "what_is_water": Event(
         id="what_is_water", name="What IS Water?",
@@ -3291,6 +3310,8 @@ EXPANDED_EVENTS = {
         effects={"fun": 6, "energy": 3}, mood_change=4,
         message="*standing in light* A beam. Of pure LIGHT. Through the trees. Onto ME. I'm on STAGE. The sun is my spotlight. Audience: forest.",
         duck_reaction="dramatic", cooldown=900,
+        weather_group="pleasant",
+        required_time=DAYLIGHT_PERIODS,
     ),
     "tail_dip_painting": Event(
         id="tail_dip_painting", name="Accidental Tail Art",

@@ -29,6 +29,39 @@ class EventType(Enum):
     DISCOVERY = "discovery" # Rare discovery events
 
 
+
+# Time-of-day periods for event filtering
+# Uses real clock hour mapped to these buckets
+def _get_current_time_period() -> str:
+    """Return the current time-of-day period string."""
+    from datetime import datetime
+    h = datetime.now().hour
+    if 5 <= h < 7:
+        return "dawn"
+    elif 7 <= h < 11:
+        return "morning"
+    elif 11 <= h < 14:
+        return "midday"
+    elif 14 <= h < 17:
+        return "afternoon"
+    elif 17 <= h < 19:
+        return "evening"
+    elif 19 <= h < 21:
+        return "dusk"
+    elif 21 <= h:
+        return "night"
+    else:
+        return "late_night"
+
+# Convenience period groups
+DAYTIME_PERIODS = ("morning", "midday", "afternoon")  # Sun is clearly up
+DAYLIGHT_PERIODS = ("dawn", "morning", "midday", "afternoon", "evening")  # Any light
+NIGHT_PERIODS = ("night", "late_night")
+EVENING_NIGHT_PERIODS = ("dusk", "night", "late_night")
+DUSK_NIGHT_PERIODS = ("evening", "dusk", "night", "late_night")
+MORNING_PERIODS = ("dawn", "morning")
+
+
 @dataclass
 class Event:
     """An event that can occur."""
@@ -46,6 +79,7 @@ class Event:
     cooldown: float = 300  # seconds before can happen again
     has_animation: bool = True  # whether this event has a visual animation
     weather_group: Optional[str] = None  # Required weather group (hot/cold/wet/harsh/pleasant/magical)
+    required_time: Optional[tuple] = None  # Tuple of allowed time periods, None = any time
     chain_id: Optional[str] = None  # If set, this event starts an event chain
     encounter_id: Optional[str] = None  # If set, starts an encounter requiring player action
 
@@ -284,6 +318,7 @@ EVENTS = {
         duck_reaction="content",
         sound="splash",
         has_animation=True,
+        weather_group="wet",
     ),
     "warm_sunbeam": Event(
         id="warm_sunbeam",
@@ -296,6 +331,8 @@ EVENTS = {
         message="*melts into sunbeam* ...The sun targeted me specifically. I'm the chosen one. Obviously.",
         duck_reaction="content",
         has_animation=True,
+        weather_group="pleasant",
+        required_time=DAYLIGHT_PERIODS,
     ),
     "dandelion_fluff": Event(
         id="dandelion_fluff",
@@ -379,6 +416,7 @@ EVENTS = {
         mood_change=2,
         message="*looks up* That cloud looks like bread. That one too. They all look like bread. Might be hungry.",
         duck_reaction="thoughtful",
+        required_time=DAYLIGHT_PERIODS,
     ),
     "ant_parade": Event(
         id="ant_parade",
@@ -434,6 +472,7 @@ EVENTS = {
         mood_change=0,
         message="*stares at shadow* ...It copies everything I do. Flattering but also creepy. I'm watching you, shadow.",
         duck_reaction="suspicious",
+        required_time=DAYLIGHT_PERIODS,
     ),
 
     # Random negative events
@@ -505,6 +544,7 @@ EVENTS = {
         mood_change=-4,
         message="*panting* I'm melting. Slowly. This is how it ends. By evaporation.",
         duck_reaction="miserable",
+        weather_group="hot",
     ),
     "too_chilly": Event(
         id="too_chilly",
@@ -516,6 +556,7 @@ EVENTS = {
         mood_change=-3,
         message="*puffs up feathers* Cold. My feathers are doing their BEST. It's not enough.",
         duck_reaction="grumpy",
+        weather_group="cold",
     ),
     "fish_stare_off": Event(
         id="fish_stare_off",
@@ -1006,6 +1047,7 @@ EVENTS = {
         duck_reaction="awed",
         has_animation=True,
         weather_group="pleasant",
+        required_time=DUSK_NIGHT_PERIODS,
     ),
     "winter_icicle": Event(
         id="winter_icicle",
@@ -1215,6 +1257,7 @@ EVENTS = {
         duck_reaction="contemplative",
         has_animation=True,
         weather_group="pleasant",
+        required_time=MORNING_PERIODS,
     ),
     "autumn_leaf_pile": Event(
         id="autumn_leaf_pile",
@@ -1339,6 +1382,7 @@ EVENTS = {
         sound="alert",
         has_animation=True,
         cooldown=14400,
+        required_time=NIGHT_PERIODS,
     ),
     "double_yolk": Event(
         id="double_yolk",
@@ -1380,8 +1424,9 @@ EVENTS = {
         mood_change=5,
         message="Can't see the edges of the pond. Can't see the far bank. For all I know the pond goes on forever now. *floats cautiously* This is either peaceful or the beginning of a horror story. I choose peaceful.",
         duck_reaction="curious",
-        weather_group="fog",
+        weather_group="boring",
         cooldown=3600,
+        required_time=MORNING_PERIODS,
     ),
     "paper_boat": Event(
         id="paper_boat",
@@ -1408,6 +1453,7 @@ EVENTS = {
         duck_reaction="curious",
         sound="ambient",
         cooldown=14400,
+        required_time=EVENING_NIGHT_PERIODS,
     ),
     "lost_kite": Event(
         id="lost_kite",
@@ -1431,8 +1477,9 @@ EVENTS = {
         mood_change=8,
         message="The spiders have been decorating. Every web has a thousand little water diamonds. *waddles closer* Impressive craftsmanship. I couldn't make this. I make ripples. Ripples are good but they don't stay. These stay. Until the sun eats them.",
         duck_reaction="curious",
-        weather_group="clear",
+        weather_group="pleasant",
         cooldown=3600,
+        required_time=MORNING_PERIODS,
     ),
     "frog_chorus": Event(
         id="frog_chorus",
@@ -1446,6 +1493,7 @@ EVENTS = {
         duck_reaction="happy",
         sound="ambient",
         cooldown=3600,
+        required_time=DUSK_NIGHT_PERIODS,
     ),
     "old_fishing_line": Event(
         id="old_fishing_line",
@@ -1972,6 +2020,11 @@ class EventSystem:
             # Check weather group requirement
             if event.weather_group:
                 if not self._weather_group_matches(event.weather_group):
+                    continue
+
+            # Check time-of-day requirement
+            if event.required_time:
+                if _get_current_time_period() not in event.required_time:
                     continue
 
             # Check stage requirement

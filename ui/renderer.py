@@ -190,8 +190,8 @@ class DuckPosition:
 
         # ALWAYS process directed movement first, regardless of animation state
         # This ensures duck walks to nest/structures before performing actions
-        # Walk speed scales with motivation (0.07s at full → 0.20s at zero)
-        step_interval = 0.07 + (1.0 - self._motivation) * 0.13
+        # Walk speed scales with motivation (0.10s at full → 0.25s at zero)
+        step_interval = 0.10 + (1.0 - self._motivation) * 0.15
 
         if self._is_directed_movement:
             if self.x != self.target_x or self.y != self.target_y:

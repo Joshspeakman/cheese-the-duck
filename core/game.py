@@ -8463,6 +8463,30 @@ class Game:
                 "show_weather_modifiers",
                 "show_shelter_protection",
                 "show_weather_forecast",
+                "-- LEARNING ENGINE --",
+                "learning_stats",
+                "learning_test",
+                "learning_seed",
+                "-- VOICE GENERATOR --",
+                "voice_generate_5",
+                "voice_stats",
+                "-- MEMORY & RECALL --",
+                "conv_memory_stats",
+                "memory_recall_test",
+                "-- DJ DUCK --",
+                "dj_duck_segment",
+                "-- CONTEXTUAL DIALOGUE --",
+                "contextual_comment",
+                "contextual_weather",
+                "contextual_time",
+                "-- BIOME & CLOTHING --",
+                "biome_behaviors",
+                "seasonal_clothing_info",
+                "seasonal_equip_random",
+                "-- MOTIVATION & SPEED --",
+                "show_motivation",
+                "motivation_max",
+                "motivation_min",
             ]
         elif self._debug_submenu == "autotest":
             return ["run_full_test", "run_quick_test", "view_last_report"]
@@ -9227,6 +9251,206 @@ Core Systems Tested: {report.total_tests}
                 msg = "\n".join(lines)
             else:
                 msg = "# DEBUG: No active weather"
+
+        # ── Learning Engine ───────────────────────────────────────
+        elif action == "learning_stats":
+            from dialogue.learning_engine import get_learning_engine
+            le = get_learning_engine()
+            stats = le.get_stats()
+            msg = (f"# DEBUG: Learning Engine\n"
+                   f"  Total pairs: {stats.get('total_pairs', 0)}\n"
+                   f"  Templates: {stats.get('template_pairs', 0)}\n"
+                   f"  Learned: {stats.get('learned_pairs', 0)}\n"
+                   f"  Top inputs: {', '.join(str(t) for t in stats.get('top_inputs', [])[:5])}")
+
+        elif action == "learning_test":
+            from dialogue.learning_engine import get_learning_engine
+            le = get_learning_engine()
+            result = le.get_response("hello friend")
+            if result:
+                resp, conf = result
+                msg = f"# DEBUG: Learning Test\n  Input: 'hello friend'\n  Response: {resp}\n  Confidence: {conf:.2f}"
+            else:
+                msg = "# DEBUG: Learning Test\n  No match for 'hello friend'\n  (Engine may need seeding)"
+
+        elif action == "learning_seed":
+            from dialogue.learning_engine import get_learning_engine, extract_corpus
+            le = get_learning_engine()
+            corpus = extract_corpus()
+            le.seed_corpus(corpus, source="debug_seed")
+            msg = f"# DEBUG: Seeded {len(corpus)} pairs into learning engine"
+
+        # ── Voice Generator ───────────────────────────────────────
+        elif action == "voice_generate_5":
+            from dialogue.voice_generator import get_voice_generator
+            vg = get_voice_generator()
+            if not vg.load():
+                from dialogue.voice_generator import extract_voice_corpus
+                corpus = extract_voice_corpus()
+                vg.train(corpus)
+            lines_out = vg.generate_batch(5)
+            if lines_out:
+                lines = ["# DEBUG: Voice Generator (5 lines)"]
+                for i, line in enumerate(lines_out, 1):
+                    lines.append(f"  {i}. {line}")
+                msg = "\n".join(lines)
+            else:
+                msg = "# DEBUG: Voice Generator\n  Could not generate lines\n  (Model may need more training data)"
+
+        elif action == "voice_stats":
+            from dialogue.voice_generator import get_voice_generator
+            vg = get_voice_generator()
+            loaded = vg.load()
+            chain_size = len(vg._chain) if hasattr(vg, '_chain') else 0
+            msg = (f"# DEBUG: Voice Generator\n"
+                   f"  Model loaded: {loaded}\n"
+                   f"  Chain entries: {chain_size}\n"
+                   f"  Min interactions: {vg.MIN_INTERACTIONS if hasattr(vg, 'MIN_INTERACTIONS') else '?'}")
+
+        # ── Memory & Recall ───────────────────────────────────────
+        elif action == "conv_memory_stats":
+            if self.duck_brain and self.duck_brain.conversation_memory:
+                cm = self.duck_brain.conversation_memory
+                topics = getattr(cm, 'topic_counts', {})
+                top_5 = sorted(topics.items(), key=lambda x: x[1], reverse=True)[:5]
+                msg = (f"# DEBUG: Conversation Memory\n"
+                       f"  Messages: {getattr(cm, 'total_messages', '?')}\n"
+                       f"  Conversations: {getattr(cm, 'total_conversations', '?')}\n"
+                       f"  Notable quotes: {len(getattr(cm, 'notable_quotes', []))}\n"
+                       f"  Top topics: {', '.join(f'{t}({c})' for t, c in top_5) if top_5 else 'none'}")
+            else:
+                msg = "# DEBUG: Conversation memory not available"
+
+        elif action == "memory_recall_test":
+            if self.duck_brain and hasattr(self.duck_brain, 'memory_recall'):
+                result = self.duck_brain.memory_recall.find_relevant_memory("hello friend", ["greeting"])
+                if result:
+                    msg = f"# DEBUG: Memory Recall Test\n  Found: {result.get('text', result)}"
+                else:
+                    msg = "# DEBUG: Memory Recall Test\n  No relevant memories found\n  (Need more conversation history)"
+            else:
+                msg = "# DEBUG: Memory recall not available"
+
+        # ── DJ Duck ───────────────────────────────────────────────
+        elif action == "dj_duck_segment":
+            from dialogue.dj_duck import get_dj_duck
+            dj = get_dj_duck()
+            intro = dj.get_intro()
+            mood = self.duck.mood_state if self.duck else "content"
+            between = dj.get_between_songs(mood)
+            closing = dj.get_closing()
+            from datetime import datetime
+            hour_comment = dj.get_hour_comment(datetime.now().hour)
+            lines = ["# DEBUG: DJ Duck Segment"]
+            lines.append(f"  Intro: {intro}")
+            lines.append(f"  Between: {between}")
+            if hour_comment:
+                lines.append(f"  Hour: {hour_comment}")
+            lines.append(f"  Closing: {closing}")
+            msg = "\n".join(lines)
+
+        # ── Contextual Dialogue ───────────────────────────────────
+        elif action == "contextual_comment":
+            weather_type = None
+            if self.atmosphere and self.atmosphere.current_weather:
+                weather_type = self.atmosphere.current_weather.weather_type.value
+            from world.events import _get_current_time_period
+            tod = _get_current_time_period()
+            visitor_p = None
+            if hasattr(self, '_current_visitor') and self._current_visitor:
+                visitor_p = getattr(self._current_visitor, 'personality_type', None)
+            comment = self.contextual_dialogue.get_contextual_comment(
+                weather=weather_type, event=None,
+                visitor_personality=visitor_p, time_of_day=tod
+            )
+            msg = f"# DEBUG: Contextual Comment\n  Weather: {weather_type}\n  Time: {tod}\n  Comment: {comment}"
+
+        elif action == "contextual_weather":
+            if self.atmosphere and self.atmosphere.current_weather:
+                wt = self.atmosphere.current_weather.weather_type.value
+                comment = self.contextual_dialogue.get_weather_comment(wt)
+                msg = f"# DEBUG: Weather Comment ({wt})\n  {comment}"
+            else:
+                msg = "# DEBUG: No active weather for comment"
+
+        elif action == "contextual_time":
+            from world.events import _get_current_time_period
+            tod = _get_current_time_period()
+            comment = self.contextual_dialogue.get_time_comment(tod)
+            msg = f"# DEBUG: Time Comment ({tod})\n  {comment}"
+
+        # ── Biome & Clothing ──────────────────────────────────────
+        elif action == "biome_behaviors":
+            from duck.biome_behaviors import BIOME_BEHAVIORS
+            current_loc = getattr(self, 'current_location', 'pond')
+            if current_loc in BIOME_BEHAVIORS:
+                behaviors = BIOME_BEHAVIORS[current_loc]
+                sample = random.sample(behaviors, min(5, len(behaviors)))
+                lines = [f"# DEBUG: Biome Behaviors ({current_loc})"]
+                lines.append(f"  Total: {len(behaviors)}")
+                for beh_msg, dur, tag in sample:
+                    lines.append(f"  [{tag}] {beh_msg[:40]}...")
+                msg = "\n".join(lines)
+            else:
+                biomes = list(BIOME_BEHAVIORS.keys())
+                msg = f"# DEBUG: Biome '{current_loc}' not found\n  Available: {', '.join(biomes[:8])}"
+
+        elif action == "seasonal_clothing_info":
+            appropriate = self.seasonal_clothing.get_appropriate_items()
+            owned = self.seasonal_clothing.get_owned_items()
+            weather_bonus = 0
+            mood_bonus = 0
+            if self.atmosphere and self.atmosphere.current_weather:
+                weather_bonus = self.seasonal_clothing.get_season_bonus(
+                    self.atmosphere.current_weather.weather_type.value
+                )
+            mood_bonus = self.seasonal_clothing.get_mood_bonus()
+            lines = ["# DEBUG: Seasonal Clothing"]
+            lines.append(f"  Owned: {len(owned)} items")
+            lines.append(f"  Appropriate now: {len(appropriate)}")
+            lines.append(f"  Weather bonus: {weather_bonus:+.1f}")
+            lines.append(f"  Mood bonus: {mood_bonus:+.1f}")
+            if appropriate:
+                for item in appropriate[:5]:
+                    name = getattr(item, 'name', str(item))
+                    lines.append(f"    - {name}")
+            msg = "\n".join(lines)
+
+        elif action == "seasonal_equip_random":
+            appropriate = self.seasonal_clothing.get_appropriate_items()
+            if appropriate:
+                import random as _rng
+                item = _rng.choice(appropriate)
+                item_id = getattr(item, 'id', getattr(item, 'item_id', str(item)))
+                self.seasonal_clothing.equip_item(item_id)
+                msg = f"# DEBUG: Equipped '{getattr(item, 'name', item_id)}'"
+            else:
+                msg = "# DEBUG: No appropriate items to equip"
+
+        # ── Motivation & Speed ────────────────────────────────────
+        elif action == "show_motivation":
+            motivation = self.duck.motivation if hasattr(self.duck, 'motivation') else 0.5
+            from duck.desires import calculate_motivation
+            calc_mot = calculate_motivation(self.duck)
+            step_interval = 0.10 + (1.0 - motivation) * 0.15
+            msg = (f"# DEBUG: Motivation & Speed\n"
+                   f"  Motivation: {motivation:.2f}\n"
+                   f"  Calculated: {calc_mot:.2f}\n"
+                   f"  Step interval: {step_interval:.3f}s\n"
+                   f"  Mood: {self.duck.mood_state}\n"
+                   f"  Energy: {self.duck.energy:.0f}")
+
+        elif action == "motivation_max":
+            if hasattr(self.duck, '_override_motivation'):
+                self.duck._override_motivation = 1.0
+            self.renderer.duck_pos._motivation = 1.0
+            msg = "# DEBUG: Motivation set to MAX (1.0)\n  Step interval: 0.100s (fastest)"
+
+        elif action == "motivation_min":
+            if hasattr(self.duck, '_override_motivation'):
+                self.duck._override_motivation = 0.0
+            self.renderer.duck_pos._motivation = 0.0
+            msg = "# DEBUG: Motivation set to MIN (0.0)\n  Step interval: 0.250s (slowest)"
 
         else:
             msg = f"# DEBUG: Unknown feature action '{action}'"
