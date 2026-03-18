@@ -96,6 +96,15 @@ class MusicContext(Enum):
     FESTIVAL = "festival"
     PEACEFUL = "peaceful"
     ADVENTURE = "adventure"
+    # Mood/weather-based contexts (used by get_music_context)
+    DEFAULT = "default"
+    HAPPY = "happy"
+    SAD = "sad"
+    CALM = "calm"
+    ENERGETIC = "energetic"
+    STORMY = "stormy"
+    MYSTERIOUS = "mysterious"
+    CELEBRATION = "celebration"
 
 
 @dataclass
@@ -1121,6 +1130,69 @@ class DuckSounds:
 # Global instances
 sound_engine = SoundEngine()
 duck_sounds = DuckSounds(sound_engine)
+
+
+def get_music_context(
+    weather: str = "sunny",
+    time_of_day: str = "day",
+    duck_mood: str = "content",
+    event: Optional[str] = None
+) -> MusicContext:
+    """
+    Determine the appropriate music context based on game state.
+
+    Priority (highest to lowest):
+    1. Events (level_up, friend_arrival)
+    2. Weather extremes (stormy, rainbow)
+    3. Duck mood (ecstatic/happy, miserable/sad)
+    4. Normal weather (rainy, snowy, sunny)
+    5. Time of day (night, morning)
+    6. Default (calm/neutral)
+    """
+    weather = weather.lower() if weather else "sunny"
+    time_of_day = time_of_day.lower() if time_of_day else "day"
+    duck_mood = duck_mood.lower() if duck_mood else "content"
+
+    # Priority 1: Events
+    if event:
+        event = event.lower()
+        if event in ["level_up", "achievement"]:
+            return MusicContext.CELEBRATION
+        if event in ["friend_arrival", "visitor_arrival"]:
+            return MusicContext.HAPPY
+
+    # Priority 2: Extreme weather
+    if weather == "stormy":
+        return MusicContext.STORMY
+    if weather == "rainbow":
+        return MusicContext.CELEBRATION
+
+    # Priority 3: Duck mood (strong emotions)
+    if duck_mood in ["ecstatic", "happy"]:
+        return MusicContext.HAPPY
+    if duck_mood in ["miserable", "sad"]:
+        return MusicContext.SAD
+    if duck_mood == "dramatic":
+        return MusicContext.ENERGETIC
+    if duck_mood == "petty":
+        return MusicContext.MYSTERIOUS
+
+    # Priority 4: Normal weather influences
+    if weather in ["snowy", "foggy"]:
+        return MusicContext.CALM
+    if weather == "rainy":
+        return MusicContext.MYSTERIOUS
+    if weather in ["sunny", "windy"]:
+        return MusicContext.ENERGETIC
+
+    # Priority 5: Time of day
+    if time_of_day in ["night", "late_night", "midnight"]:
+        return MusicContext.MYSTERIOUS
+    if time_of_day in ["morning", "dawn"]:
+        return MusicContext.ENERGETIC
+
+    # Priority 6: Default
+    return MusicContext.CALM
 
 
 # ── Event Bus Subscriber Hooks ─────────────────────────────────────────────
