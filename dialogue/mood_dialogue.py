@@ -46,6 +46,7 @@ class DialogueContext(Enum):
     GIFT = "gift"
     WEATHER = "weather"
     FAREWELL = "farewell"
+    LISTENING_TO_MUSIC = "listening_to_music"
 
 
 @dataclass
@@ -891,7 +892,72 @@ DEFAULT_DIALOGUES: Dict[DialogueContext, List[DialogueLine]] = {
         DialogueLine("*looks up* The sky is doing something. As always.", "", ""),
         DialogueLine("Weather. I have opinions. They're mostly 'it exists'.", "", "quack"),
     ],
+    DialogueContext.LISTENING_TO_MUSIC: [
+        DialogueLine("Music. It exists. I acknowledge it.", "", ""),
+        DialogueLine("*listens* Sounds are happening. Musical ones.", "", ""),
+        DialogueLine("A tune. Playing. From the radio. I am aware.", "", "quack"),
+    ],
 }
+
+# ── Music reaction lines per mood ─────────────────────────────────────
+# Used when the duck listens to radio — deadpan reactions to music.
+MUSIC_REACTIONS: Dict[str, List[str]] = {
+    "ecstatic": [
+        "♪ *bobs head enthusiastically* This is my JAM. I didn't know I had a jam. ♪",
+        "♪ *taps both feet* I'm not dancing. This is involuntary. ♪",
+        "♪ This song understands me on a molecular level. ♪",
+        "♪ *sways* If I had arms I'd be doing that lighter thing. ♪",
+        "♪ The vibes are immaculate. I don't say that lightly. I don't say anything lightly. ♪",
+    ],
+    "happy": [
+        "♪ *nods along* Acceptable background noise. Very acceptable. ♪",
+        "♪ I'm enjoying this. Internally. Where no one can see. ♪",
+        "♪ Good song. Not that I'd admit that out loud. Wait. ♪",
+        "♪ *gentle head bob* This frequency is... pleasant. ♪",
+        "♪ Music. Making the pond slightly less mundane since whenever. ♪",
+    ],
+    "content": [
+        "♪ *listens neutrally* This is adequate musical accompaniment. ♪",
+        "♪ Background sounds. I neither love nor hate them. Progress. ♪",
+        "♪ The radio is on. I am aware. That is all. ♪",
+        "♪ *exists to music* The standard experience. ♪",
+    ],
+    "grumpy": [
+        "♪ *frowns at radio* I didn't ask for a concert. ♪",
+        "♪ This song is... fine. I guess. If you like SOUNDS. ♪",
+        "♪ Music won't fix my mood. But it's not making it worse. Barely. ♪",
+        "♪ *listens grudgingly* I'm tolerating this. Don't get excited. ♪",
+    ],
+    "sad": [
+        "♪ *listens quietly* ...this song gets it. ♪",
+        "♪ Music. The universal language of 'things could be worse'. ♪",
+        "♪ *sways softly* Even sad ducks deserve a soundtrack. ♪",
+        "♪ The melody is nice. It doesn't fix anything. But it's nice. ♪",
+    ],
+    "miserable": [
+        "♪ ...the radio is on. Everything else is still terrible. But the radio is on. ♪",
+        "♪ *barely reacts* At least the music doesn't judge me. ♪",
+        "♪ Songs about feelings. I have too many of those already. ♪",
+    ],
+    "dramatic": [
+        "♪ *closes eyes* This is the SOUNDTRACK of my SUFFERING. It's PERFECT. ♪",
+        "♪ *dramatic sway* Every note speaks to my TORTURED SOUL. ♪",
+        "♪ This song was WRITTEN for me. I am CERTAIN of it. ♪",
+        "♪ *pretends to conduct* The orchestra of my EXISTENCE. ♪",
+    ],
+    "petty": [
+        "♪ *listens judgementally* I could compose better. If I wanted to. Which I don't. ♪",
+        "♪ This song is okay. But the PREVIOUS song was better. Just saying. ♪",
+        "♪ *listening with arms crossed* I'm not enjoying this. I'm EVALUATING it. ♪",
+        "♪ The radio has taste. Unlike SOME entities around here. ♪",
+    ],
+}
+
+
+def get_music_reaction(mood: str) -> str:
+    """Get a deadpan music reaction line for the duck's current mood."""
+    lines = MUSIC_REACTIONS.get(mood, MUSIC_REACTIONS.get("content", ["♪ *listens* ♪"]))
+    return random.choice(lines)
 
 
 class MoodDialogueSystem:

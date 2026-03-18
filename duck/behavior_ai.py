@@ -54,6 +54,8 @@ class AutonomousAction(Enum):
     SPLASH_IN_WATER = "splash_in_water"
     REST_ON_FURNITURE = "rest_on_furniture"
     ADMIRE_DECORATION = "admire_decoration"
+    # Radio action (requires nook_radio item)
+    LISTEN_TO_RADIO = "listen_to_radio"
     # Biome-specific action (message chosen from biome_behaviors data)
     BIOME_ACTION = "biome_action"
 
@@ -336,6 +338,23 @@ ACTION_DATA = {
         "effect": {"fun": 1},
         "requires_item_category": "decoration",
     },
+    # === RADIO ACTION (requires nook_radio ownership) ===
+    AutonomousAction.LISTEN_TO_RADIO: {
+        "messages": [
+            "*bobs head to the music*",
+            "*listens intently*",
+            "*taps foot to the beat*",
+            "*vibes quietly*",
+            "*sways gently*",
+            "*closes eyes and listens*",
+        ],
+        "base_utility": 0.0,  # Only when duck owns nook_radio
+        "need_bonus": ("fun", 0.4),
+        "personality_bonus": None,
+        "duration": 25.0,
+        "effect": {"fun": 3, "social": 1},
+        "requires_radio": True,
+    },
 }
 
 
@@ -364,6 +383,10 @@ class BehaviorAI:
         self._available_structures: set = set()  # Set of available structure types
         self._is_bad_weather: bool = False  # Whether to seek shelter
         self._weather_type: Optional[str] = None  # Current weather type
+
+        # Radio context
+        self._has_radio: bool = False  # Whether duck owns nook_radio
+        self._radio_playing: bool = False  # Whether radio is currently on
 
         # Structure positions for duck movement (structure_id -> (x, y) playfield coords)
         self._structure_positions: dict = {}
@@ -443,7 +466,8 @@ class BehaviorAI:
                     structure_positions: dict = None, placed_items: list = None,
                     current_biome: str = None, current_location: str = None,
                     field_width: int = None, field_height: int = None,
-                    desires=None, motivation: float = None):
+                    desires=None, motivation: float = None,
+                    has_radio: bool = None, radio_playing: bool = None):
         """Set context for structure-aware and item-aware behavior decisions."""
         if available_structures is not None:
             self._available_structures = available_structures
@@ -466,6 +490,10 @@ class BehaviorAI:
             self._active_goal = desires.get_active_goal()
         if motivation is not None:
             self._motivation = motivation
+        if has_radio is not None:
+            self._has_radio = has_radio
+        if radio_playing is not None:
+            self._radio_playing = radio_playing
 
     def _categorize_items(self, placed_items: list) -> dict:
         """Categorize placed items by their shop category for AI decisions."""
@@ -858,6 +886,10 @@ class BehaviorAI:
                 if not available_items:
                     continue  # Skip this action - no items of this category
 
+            # Skip radio action if duck doesn't own the radio
+            if data.get("requires_radio") and not self._has_radio:
+                continue
+
             score = data["base_utility"]
             
             # Structure-based actions get bonus utility when available
@@ -931,9 +963,25 @@ class BehaviorAI:
                 satiation = self._get_item_satiation(required_item_cat)
                 score *= satiation
 
+            # Radio action scoring — duck occasionally wants to toggle radio
+            if data.get("requires_radio") and self._has_radio:
+                fun_value = getattr(duck.needs, "fun", 50)
+                energy_value = getattr(duck.needs, "energy", 50)
+                if energy_value < 20:
+                    score = 0.02  # Too tired
+                elif self._radio_playing:
+                    # Radio already on — low chance to toggle off (duck enjoys it)
+                    score = 0.05
+                elif fun_value < 40:
+                    score = 0.35  # Bored — wants music
+                elif fun_value < 60:
+                    score = 0.2   # Slightly bored
+                else:
+                    score = 0.08  # Content — might still want tunes
+
             # Add bonus based on relevant need (lower need = higher bonus)
             # Skip for item-based actions - they have custom need handling above
-            if data["need_bonus"] and not required_item_cat:
+            if data["need_bonus"] and not required_item_cat and not data.get("requires_radio"):
                 need_name, bonus_weight = data["need_bonus"]
                 need_value = getattr(duck.needs, need_name, 50)
                 # Invert: low need value = high bonus
@@ -961,14 +1009,16 @@ class BehaviorAI:
             # Mood influences
             mood = duck.get_mood()
             if mood.state.value in ["happy", "ecstatic"]:
-                # Happy ducks are more active
+                # Happy ducks are more active and enjoy music
                 if action in [AutonomousAction.WADDLE, AutonomousAction.WIGGLE,
-                              AutonomousAction.SPLASH, AutonomousAction.FLAP_WINGS]:
+                              AutonomousAction.SPLASH, AutonomousAction.FLAP_WINGS,
+                              AutonomousAction.LISTEN_TO_RADIO]:
                     score += 0.1
             elif mood.state.value in ["sad", "miserable"]:
-                # Sad ducks prefer calmer actions
+                # Sad ducks prefer calmer actions — but music might comfort them
                 if action in [AutonomousAction.IDLE, AutonomousAction.NAP,
-                              AutonomousAction.STARE_BLANKLY]:
+                              AutonomousAction.STARE_BLANKLY,
+                              AutonomousAction.LISTEN_TO_RADIO]:
                     score += 0.15
             elif mood.state.value == "dramatic":
                 # Dramatic ducks favour performative actions

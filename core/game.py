@@ -1291,6 +1291,84 @@ class Game:
         self._close_all_menus()
         self.renderer.show_message("Use TAB menu > Other > Radio")
 
+    def _duck_toggle_radio(self):
+        """Duck autonomously toggles the radio and reacts to the music."""
+        from audio.sound import sound_engine
+        from audio.radio import StationID
+        from dialogue.mood_dialogue import get_music_reaction
+        import random
+
+        if not self.habitat.owns_item("nook_radio"):
+            return
+
+        mood = self.duck.get_mood().state.value
+
+        if sound_engine.is_radio_playing():
+            # Radio already on — duck vibes to the music (70%) or turns it off (30%)
+            if random.random() < 0.7:
+                msg = get_music_reaction(mood)
+                self.duck.set_action_message(msg, duration=8.0)
+                return
+            # Duck turns radio off — had enough
+            sound_engine.stop_radio()
+            sound_engine._radio_was_playing = None
+            off_reactions = {
+                "ecstatic": "*turns off radio* Silence. Also acceptable.",
+                "happy": "*clicks radio off* Enough music. Back to existing.",
+                "content": "*turns off radio* That's enough culture for today.",
+                "grumpy": "*slaps radio off* Finally. Peace.",
+                "sad": "*quietly turns off radio* ...the silence is fine.",
+                "miserable": "*turns off radio* Music can't fix this.",
+                "dramatic": "*turns off radio with theatrical sigh* The music... understood too much.",
+                "petty": "*turns off radio* I didn't like that song anyway.",
+            }
+            msg = off_reactions.get(mood, "*turns off radio*")
+            self.duck.set_action_message(msg, duration=6.0)
+        else:
+            # Duck turns radio on
+            if self._boombox_playing:
+                self._boombox_playing = False
+            if sound_engine.music_muted:
+                sound_engine.music_muted = False
+            sound_engine.change_radio_station(StationID.NOOK_RADIO)
+            on_reactions = {
+                "ecstatic": "*turns on radio* ♪ This is my song. They're all my song. ♪",
+                "happy": "*clicks radio on* ♪ Music makes everything... less terrible. ♪",
+                "content": "*turns on radio* Background noise. For existing purposes.",
+                "grumpy": "*reluctantly turns on radio* ...fine. But only because it's quiet.",
+                "sad": "*turns on radio* ...maybe this will help. Probably not.",
+                "miserable": "*turns on radio* Misery loves company. Even musical company.",
+                "dramatic": "*dramatically turns on radio* The soundtrack to my LIFE.",
+                "petty": "*turns on radio* I'm listening ironically.",
+            }
+            msg = on_reactions.get(mood, "*turns on radio* ♪")
+            self.duck.set_action_message(msg, duration=6.0)
+
+    def _get_duck_wanted_items(self) -> List[str]:
+        """Get list of desirable items the duck doesn't own yet."""
+        wanted = []
+        # Nook Radio is a high-priority want if duck doesn't own it
+        if self.habitat and not self.habitat.owns_item("nook_radio"):
+            wanted.append("Nook Radio")
+        return wanted
+
+    def _on_item_purchased(self, item_name: str):
+        """Notify duck desires when an item is purchased."""
+        if not hasattr(self.duck, '_desires'):
+            return
+        from duck.desires import GoalType
+        for goal in self.duck.desires.goals:
+            if goal.satisfied:
+                continue
+            if goal.goal_type == GoalType.ACQUIRE and item_name in goal.description:
+                goal.progress = 1.0
+                goal.satisfied = True
+                self.duck.desires._goals_satisfied_today += 1
+                try:
+                    self.diary_manager.on_goal_satisfied(goal.goal_type.value)
+                except Exception:
+                    pass
+
     def _purchase_selected_item(self):
         """Purchase the currently selected shop item."""
         item = self.renderer.get_selected_shop_item()
@@ -1309,6 +1387,8 @@ class Game:
             new_level = self.progression.add_xp(5)
             if new_level:
                 self._on_level_up(new_level)
+            # Satisfy any ACQUIRE goal for this item
+            self._on_item_purchased(item.name)
         else:
             if self.habitat.owns_item(item.id):
                 self.renderer.show_message("Already owned!")
@@ -3522,7 +3602,10 @@ class Game:
                                 unlocked_locs.append(area.name)
                     except Exception:
                         pass
-                    desires.generate_daily_agenda(self.duck, unlocked_locs or None)
+                    desires.generate_daily_agenda(
+                        self.duck, unlocked_locs or None,
+                        wanted_items=self._get_duck_wanted_items(),
+                    )
                     desires.reset_session_timer()
 
             self._last_tick = current_time
@@ -3781,6 +3864,8 @@ class Game:
                 field_height=self.renderer.duck_pos.field_height,
                 desires=self.duck.desires if hasattr(self.duck, '_desires') else None,
                 motivation=self.duck.motivation if hasattr(self.duck, 'motivation') else 1.0,
+                has_radio=self.habitat.owns_item("nook_radio") if self.habitat else False,
+                radio_playing=sound_engine.is_radio_playing(),
             )
 
             # Sync motivation to renderer for walk speed scaling
@@ -3876,11 +3961,16 @@ class Game:
                             self.renderer.set_duck_state("playing", duration=result.duration)
                         elif result.action.value in ["hide_in_shelter"]:
                             self.renderer.set_duck_state("scared", duration=result.duration)
+                        elif result.action.value == "listen_to_radio":
+                            # Duck autonomously toggles the radio
+                            self._duck_toggle_radio()
+                            self.renderer.set_duck_state("playing", duration=result.duration)
 
                         # Show closeup for emotive actions
                         emotive_actions = ["stare_blankly", "trip", "quack", "wiggle", "flap_wings",
                                            "nap_in_nest", "hide_in_shelter", "use_bird_bath",
-                                           "play_with_toy", "splash_in_water", "rest_on_furniture"]
+                                           "play_with_toy", "splash_in_water", "rest_on_furniture",
+                                           "listen_to_radio"]
                         if result.action.value in emotive_actions:
                             self.renderer.show_closeup(result.action.value, 1.5)
 
@@ -5751,7 +5841,10 @@ class Game:
                         unlocked_locs.append(area.name)
             except Exception:
                 pass
-            self.duck.desires.generate_daily_agenda(self.duck, unlocked_locs or None)
+            self.duck.desires.generate_daily_agenda(
+                self.duck, unlocked_locs or None,
+                wanted_items=self._get_duck_wanted_items(),
+            )
 
         # ============== END LOAD NEW FEATURE SYSTEMS ==============
 
