@@ -783,12 +783,25 @@ class SoundEngine:
         if wav_name not in self._available_wavs:
             return
 
-        if not self._wav_player:
-            return
-
         self.stop_music()
         self._music_playing = True
         wav_path = self._available_wavs[wav_name]
+
+        # Prefer pygame for music (proper volume control, no subprocess)
+        if self._pygame_available:
+            try:
+                import pygame
+                pygame.mixer.music.load(str(wav_path))
+                pygame.mixer.music.set_volume(self.music_volume)
+                loops = -1 if loop else 0
+                pygame.mixer.music.play(loops)
+                logger.debug("Playing WAV music via pygame: %s", wav_name)
+                return
+            except Exception as e:
+                logger.debug("pygame WAV music failed: %s", e)
+
+        if not self._wav_player:
+            return
         # Use music_volume for background music (lower volume)
         music_vol = self.music_volume
 
@@ -929,7 +942,8 @@ class SoundEngine:
                                     val *= i / fade_len
                                 elif i >= n_samples - fade_len:
                                     val *= (n_samples - 1 - i) / fade_len
-                            sample = int(val * 32767 * self.volume)
+                            # Scale down synth SFX so they don't overpower music
+                            sample = int(val * 32767 * self.volume * 0.15)
                             buf.append(sample)  # left
                             buf.append(sample)  # right
                         sound = pygame.mixer.Sound(buffer=buf)
