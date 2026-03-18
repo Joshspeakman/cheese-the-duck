@@ -1199,10 +1199,6 @@ class Game:
         if method_name == "_return_to_title":
             self._return_to_title()
             return
-        if method_name == "_show_terminal_selector":
-            self._close_all_menus()
-            self._show_terminal_selector()
-            return
         if method_name == "_open_settings_menu":
             self._close_all_menus()
             self._open_settings_menu()
@@ -9424,29 +9420,29 @@ Core Systems Tested: {report.total_tests}
         elif action.startswith("drift_neglect"):
             from core.consequences import apply_personality_drift
             for _ in range(10):
-                apply_personality_drift(self.duck, neglect_stage=2, delta_minutes=60)
+                apply_personality_drift(self.duck, self.extended_personality, 60, 2)
             traits = self.duck.personality
             msg = (f"# DEBUG: Applied 10 neglect drift cycles\n"
-                   f"Social={traits.social} Brave={traits.brave}\n"
-                   f"Active={traits.active} Playful={traits.playful}")
+                   f"Social={traits.get('social_shy', 0)} Brave={traits.get('brave_timid', 0)}\n"
+                   f"Active={traits.get('active_lazy', 0)} Playful={traits.get('neat_messy', 0)}")
 
         elif action.startswith("drift_care"):
             from core.consequences import apply_personality_drift
             for _ in range(10):
-                apply_personality_drift(self.duck, neglect_stage=0, delta_minutes=60)
+                apply_personality_drift(self.duck, self.extended_personality, 60, 0)
             traits = self.duck.personality
             msg = (f"# DEBUG: Applied 10 care drift cycles\n"
-                   f"Social={traits.social} Brave={traits.brave}\n"
-                   f"Active={traits.active} Playful={traits.playful}")
+                   f"Social={traits.get('social_shy', 0)} Brave={traits.get('brave_timid', 0)}\n"
+                   f"Active={traits.get('active_lazy', 0)} Playful={traits.get('neat_messy', 0)}")
 
         elif action == "show_personality_state":
             p = self.duck.personality
             base = getattr(self.duck, '_personality_baseline', None)
             lines = ["# DEBUG: Personality State"]
-            lines.append(f"Social:  {p.social:+.1f}" + (f"  (base {base.get('social', '?')})" if base else ""))
-            lines.append(f"Brave:   {p.brave:+.1f}" + (f"  (base {base.get('brave', '?')})" if base else ""))
-            lines.append(f"Active:  {p.active:+.1f}" + (f"  (base {base.get('active', '?')})" if base else ""))
-            lines.append(f"Playful: {p.playful:+.1f}" + (f"  (base {base.get('playful', '?')})" if base else ""))
+            lines.append(f"Social:  {p.get('social_shy', 0):+.1f}" + (f"  (base {base.get('social_shy', '?')})" if base else ""))
+            lines.append(f"Brave:   {p.get('brave_timid', 0):+.1f}" + (f"  (base {base.get('brave_timid', '?')})" if base else ""))
+            lines.append(f"Active:  {p.get('active_lazy', 0):+.1f}" + (f"  (base {base.get('active_lazy', '?')})" if base else ""))
+            lines.append(f"Neat:    {p.get('neat_messy', 0):+.1f}" + (f"  (base {base.get('neat_messy', '?')})" if base else ""))
             if hasattr(self, 'extended_personality'):
                 ext = self.extended_personality
                 ext_base = getattr(self.duck, '_ext_personality_baseline', None)
@@ -9461,8 +9457,7 @@ Core Systems Tested: {report.total_tests}
             base = getattr(self.duck, '_personality_baseline', None)
             if base:
                 for attr, val in base.items():
-                    if hasattr(self.duck.personality, attr):
-                        setattr(self.duck.personality, attr, val)
+                    self.duck.personality[attr] = val
             ext_base = getattr(self.duck, '_ext_personality_baseline', None)
             if ext_base and hasattr(self, 'extended_personality'):
                 for tid, val in ext_base.items():
@@ -9640,7 +9635,7 @@ Core Systems Tested: {report.total_tests}
             from dialogue.dj_duck import get_dj_duck
             dj = get_dj_duck()
             intro = dj.get_intro()
-            mood = self.duck.mood_state if self.duck else "content"
+            mood = self.duck.get_mood().state.value if self.duck else "content"
             between = dj.get_between_songs(mood)
             closing = dj.get_closing()
             from datetime import datetime
@@ -9741,8 +9736,8 @@ Core Systems Tested: {report.total_tests}
                    f"  Motivation: {motivation:.2f}\n"
                    f"  Calculated: {calc_mot:.2f}\n"
                    f"  Step interval: {step_interval:.3f}s\n"
-                   f"  Mood: {self.duck.mood_state}\n"
-                   f"  Energy: {self.duck.energy:.0f}")
+                   f"  Mood: {self.duck.get_mood().state.value}\n"
+                   f"  Energy: {self.duck.needs.energy:.0f}")
 
         elif action == "motivation_max":
             if hasattr(self.duck, '_override_motivation'):
