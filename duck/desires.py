@@ -30,6 +30,7 @@ class GoalType(Enum):
     GROOM = "groom"              # Preen, bathe, get clean
     ADVENTURE = "adventure"      # Perform biome action at specific location
     CREATIVE = "creative"        # Learn trick, inspect workbench, discover
+    ACQUIRE = "acquire"          # Want to buy a specific shop item
 
 
 class TimeSlot(Enum):
@@ -156,6 +157,12 @@ GOAL_DESCRIPTIONS: Dict[GoalType, List[str]] = {
         "feeling curious and inventive",
         "itching to tinker or discover",
     ],
+    GoalType.ACQUIRE: [
+        "really wants a {item}",
+        "keeps thinking about that {item} in the shop",
+        "has been eyeing the {item}",
+        "dreams of owning a {item}",
+    ],
 }
 
 # Locations for explore/adventure goals (subset of world/exploration.py locations)
@@ -217,12 +224,13 @@ GOAL_ACTION_MAP: Dict[GoalType, List[str]] = {
     GoalType.EXPLORE: ["biome_action", "waddle", "look_around"],
     GoalType.SOCIALIZE: ["quack", "look_around"],
     GoalType.PLAY: ["splash", "chase_bug", "wiggle", "flap_wings",
-                     "play_with_toy", "splash_in_water"],
+                     "play_with_toy", "splash_in_water", "listen_to_radio"],
     GoalType.REST: ["nap", "nap_in_nest", "rest_on_furniture", "idle"],
     GoalType.FORAGE: ["look_around"],
     GoalType.GROOM: ["preen", "use_bird_bath"],
     GoalType.ADVENTURE: ["biome_action"],
     GoalType.CREATIVE: ["look_around", "inspect_workbench"],
+    GoalType.ACQUIRE: ["look_around", "quack"],  # Duck hints at wanting something
 }
 
 
@@ -238,6 +246,7 @@ class DuckDesires:
         self._session_start: float = time.time()     # When current session began
         self._goals_satisfied_today: int = 0
         self._all_satisfied_triggered: bool = False  # Bonus already given this cycle
+        self._wanted_items: List[str] = []            # Items duck wants to acquire
 
     # ── Motivation calculation ────────────────────────────────────────
 
@@ -360,15 +369,20 @@ class DuckDesires:
     # ── Goal generation ───────────────────────────────────────────────
 
     def generate_daily_agenda(self, duck: "Duck",
-                              unlocked_locations: Optional[List[str]] = None):
+                              unlocked_locations: Optional[List[str]] = None,
+                              wanted_items: Optional[List[str]] = None):
         """
         Generate 3 goals: primary (personality), secondary (needs),
         tertiary (random/aspirational). Mood filters the pool.
+        
+        wanted_items: list of shop item display names the duck doesn't own yet
+                      (e.g. ["Nook Radio"]) — may generate an ACQUIRE goal.
         """
         self.goals.clear()
         self._all_satisfied_triggered = False
         self._goals_satisfied_today = 0
         self._last_generated_date = datetime.now().strftime("%Y-%m-%d")
+        self._wanted_items = wanted_items or []
 
         mood_info = duck.get_mood()
         mood_key = mood_info.state.value
@@ -461,7 +475,11 @@ class DuckDesires:
         return NEED_GOAL_MAP.get(lowest_need, GoalType.PLAY)
 
     def _pick_aspirational_goal(self, duck: "Duck", mood_key: str) -> GoalType:
-        """Pick a random goal influenced by age."""
+        """Pick a random goal influenced by age, with chance to want shop items."""
+        # If there are wanted items, 40% chance to generate ACQUIRE goal
+        if self._wanted_items and random.random() < 0.4:
+            return GoalType.ACQUIRE
+
         age_days = duck.get_age_days()
         if age_days < 7:
             # Young ducks want to explore
@@ -487,6 +505,9 @@ class DuckDesires:
             desc = desc.replace("{location}", location)
         elif "{location}" in desc:
             desc = desc.replace("{location}", "somewhere new")
+        if "{item}" in desc:
+            item_name = random.choice(self._wanted_items) if self._wanted_items else "something nice"
+            desc = desc.replace("{item}", item_name)
         return desc
 
     # ── Goal progress tracking ────────────────────────────────────────
