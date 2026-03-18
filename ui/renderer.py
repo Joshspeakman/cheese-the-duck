@@ -1027,7 +1027,7 @@ class Renderer:
             self._render_title_screen()
             return
 
-        # Build a RenderContext snapshot for future migration (non-disruptive)
+        # Build RenderContext snapshot every frame (stored for external consumers)
         try:
             self._current_context = build_render_context(game)
         except Exception:
@@ -1208,17 +1208,16 @@ class Renderer:
     def render_frame_from_context(self, ctx: "RenderContext"):
         """Render a frame using a pre-built RenderContext.
 
-        This is a stepping-stone toward fully decoupled rendering.
-        Currently it stores the context and delegates to the existing
-        ``render_frame()`` path via the stored ``self.game`` reference.
+        Phase 5 status: ``build_render_context()`` is called every frame
+        inside ``render_frame()`` and the snapshot is stored on
+        ``self._current_context``. The next step (Phase 6) is to
+        migrate ``render_frame()`` internals to read from the stored
+        context rather than the live ``game`` reference.
 
         Args:
             ctx: A :class:`RenderContext` snapshot.
         """
         self._current_context = ctx
-        # Future: implement context-only rendering here.
-        # For now this method exists so callers can begin adopting the
-        # RenderContext interface while the migration is in progress.
 
     def _render_header_bar(self, duck: "Duck", width: int, currency: int = 0, weather=None, time_info=None, season_info=None) -> List[str]:
         """Render the top header bar with weather, season, and time info."""

@@ -129,7 +129,7 @@ from core.update_scheduler import (
     CRAFT_CHECK_INTERVAL, BUILD_CHECK_INTERVAL,
     WEATHER_DAMAGE_INTERVAL, DIARY_FLUSH_INTERVAL,
 )
-from core.input_dispatcher import InputDispatcher, GlobalInputHandler
+from core.input_dispatcher import InputDispatcher, GlobalInputHandler, OverlayInputHandler
 from core.menu_system import MenuSystem, MenuDefinition, MenuItem as MenuItemNew
 
 from enum import Enum, auto
@@ -204,6 +204,7 @@ class Game:
         self._last_atmosphere_check = 0.0
         self._last_craft_check = 0.0
         self._last_build_check = 0.0
+        self._last_weather_damage_check = 0.0
         self._last_consequence_state = None       # Latest ConsequenceState snapshot
         self._last_neglect_warn_time = 0.0        # Throttle neglect warnings
         self._last_sick_msg_time = 0.0            # Throttle sickness messages
@@ -219,7 +220,6 @@ class Game:
         self._last_event_description = None  # Last event for LLM context
         self._last_visitor_dialogue = None  # Last visitor dialogue for LLM context
         self._sound_enabled = True
-        self._show_goals = False
         self._reset_confirmation = False  # Flag for reset game confirmation
 
         # Arrow-key menu selectors with pagination
@@ -234,89 +234,67 @@ class Game:
         # Main hierarchical menu (TAB to open) - DEPRECATED, replaced by master_menu
         self._main_menu = HierarchicalMenuSelector("Main Menu")
         self._main_menu.set_categories(build_main_menu_categories())
-        self._main_menu_open = False
         
         # NEW: Master menu panel (always visible in side panel)
         self.master_menu = MasterMenuPanel(self)
         self.master_menu.set_menu_tree(build_master_menu_tree())
 
         # Backwards compatibility flags (computed from menu state)
-        self._crafting_menu_open = False  # Flag for crafting menu
-        self._building_menu_open = False  # Flag for building menu
-        self._areas_menu_open = False     # Flag for areas menu
-        self._use_menu_open = False       # Flag for use/interact menu
         self._use_menu_items = []         # List of items with interactions
         self._use_menu_selected = 0       # Currently selected item in use menu
-        self._minigames_menu_open = False # Flag for minigames menu
         self._minigames_menu_selected = 0 # Currently selected minigame
-        self._quests_menu_open = False    # Flag for quests menu
-        self._weather_menu_open = False   # Flag for weather activities menu
         
         # Treasure hunting menu
-        self._treasure_menu_open = False  # Flag for treasure hunting menu
         self._treasure_menu_selected = 0  # Currently selected location/action
         self._treasure_menu_items = []    # Menu items for treasure hunting
         self._treasure_digging = False    # Currently digging for treasure
         self._treasure_dig_progress = 0   # Dig animation progress
         
         # Scrapbook menu
-        self._scrapbook_menu_open = False  # Flag for scrapbook menu
         self._scrapbook_page = 0           # Current scrapbook page
         self._scrapbook_selected = 0       # Currently selected photo on page
         
         # Tricks menu pagination
-        self._tricks_menu_open = False     # Flag for tricks menu
         self._tricks_menu_page = 0         # Current page of tricks
         self._tricks_menu_selected = 0     # Currently selected trick index on page
         
         # Titles menu pagination  
-        self._titles_menu_open = False     # Flag for titles menu
         self._titles_menu_page = 0         # Current page of titles
         self._titles_menu_selected = 0     # Currently selected title index on page
         
         # Decorations menu pagination
-        self._decorations_menu_open = False  # Flag for decorations menu
         self._decorations_menu_page = 0      # Current page of decorations
         self._decorations_menu_selected = 0  # Currently selected decoration index on page
         
         # Collectibles menu pagination
-        self._collectibles_menu_open = False  # Flag for collectibles menu
         self._collectibles_menu_page = 0      # Current page of collectibles
         self._collectibles_menu_selected = 0  # Currently selected collectible set on page
         
         # Secrets book menu
-        self._secrets_menu_open = False       # Flag for secrets book menu
         self._secrets_menu_page = 0           # Current page of secrets
         
         # Garden menu
-        self._garden_menu_open = False        # Flag for garden menu
         self._garden_selected_plot = 0        # Currently selected garden plot
         
         # Prestige menu
-        self._prestige_menu_open = False      # Flag for prestige menu
         
         # Save slots menu  
-        self._save_slots_menu_open = False    # Flag for save slots menu
         self._save_slots_selected = 0         # Currently selected slot
         
         # Trading menu
-        self._trading_menu_open = False       # Flag for trading menu
         self._trading_selected = 0            # Currently selected trader row
         self._trading_state = "selection"     # "selection" or "offers"
         self._trading_active_trader_id = ""   # Currently viewing trader
         self._trading_offer_selected = 0      # Currently selected offer index
 
         # Badges menu
-        self._badges_menu_open = False        # Flag for badges menu
         self._badges_menu_page = 1            # Current page
         self._badges_menu_category = None     # Filter category (None = all)
 
         # Decoration room-selection sub-menu
-        self._decoration_room_select_open = False
         self._decoration_room_select_decor_id = ""
         
         # Enhanced diary menu
-        self._enhanced_diary_open = False       # Flag for enhanced diary menu
         self._enhanced_diary_tab = "overview"   # Current tab: overview, journal, emotions, photos, dreams, life
         self._enhanced_diary_page = 0           # Current page within tab
         self._last_diary_flush: float = 0.0     # Last time diary_manager.flush_pending was called
@@ -335,14 +313,12 @@ class Game:
         self._update_in_progress = False    # Currently downloading/applying update
         
         # Festival activities menu
-        self._festival_menu_open = False   # Flag for festival menu
         self._festival_menu_selected = 0   # Currently selected activity
         self._festival_menu_items = []     # Menu items for festivals
         self._festival_doing_activity = False  # Currently doing festival activity
         self._festival_activity_progress = 0   # Activity progress
         
         # Settings menu
-        self._settings_menu_open = False  # Flag for settings menu
         self._settings_menu = settings_menu
         self._settings_menu.set_sound_engine(sound_engine)
         
@@ -361,7 +337,6 @@ class Game:
         self._confirmation_dialog = None  # Active confirmation dialog
         
         # Hidden debug menu (accessed with backtick `)
-        self._debug_menu_open = False
         self._debug_menu_selected = 0
         self._debug_submenu = None  # Current debug submenu (weather, events, etc.)
         self._debug_submenu_selected = 0
@@ -494,9 +469,11 @@ class Game:
         self._item_use_history: Dict[str, list] = {}   # category → [timestamps]
         self._last_item_use_time: Dict[str, float] = {}  # category → last-use epoch
 
-        # ── New subsystem managers (refactor phase 1) ─────────────────
-        # These run alongside the existing boolean-flag system.
-        # Existing code is NOT removed; new infrastructure is additive.
+        # ── Subsystem managers ─────────────────────────────────────────
+        # UIStateManager: sole authority for overlay state
+        # UpdateScheduler: sole authority for periodic callbacks
+        # InputDispatcher: sole authority for input routing
+        # MenuSystem: menu registry (lifecycle authority, items via legacy MenuSelector)
         self.ui_state = UIStateManager()
         self.update_scheduler = UpdateScheduler()
         self.input_dispatcher = InputDispatcher()
@@ -519,12 +496,10 @@ class Game:
         Called once from ``_load_game`` / ``_start_new_game`` after all
         systems are initialised and the duck object exists.
 
-        NOTE: These registrations mirror the timing checks that already
-        live inside ``_update()``.  The scheduler is *not yet* the
-        authority — the original ``_update()`` code still runs.  This
-        method wires up the scheduler so that future migration can
-        swap ``if time.time() - self._last_X >= N`` blocks for
-        ``self.update_scheduler.update(current_time)``.
+        The scheduler is the sole authority for periodic callbacks.
+        Legacy timing blocks in ``_update()`` only contain post-callback
+        logic (weather tracking, festival checks, ambient sounds, etc.)
+        and no longer invoke the core callbacks themselves.
         """
         sched = self.update_scheduler
 
@@ -535,12 +510,10 @@ class Game:
         # Auto-save
         sched.register("auto_save", lambda: self._save_game(), SAVE_INTERVAL, enabled=True)
 
-        # Random events
-        # DISABLED: legacy block has extra ambient event + guest-convo guard
+        # Random event checks
         sched.register("event_check",        lambda: self._check_events(), EVENT_CHECK_INTERVAL, enabled=True)
 
-        # Atmosphere / weather / visitors
-        # DISABLED: legacy block does diary flush, festival check, weather tracking, ambient sounds
+        # Atmosphere (weather, visitor spawning)
         sched.register("atmosphere",          lambda: self.atmosphere.update(), ATMOSPHERE_CHECK_INTERVAL, enabled=True)
 
         # Area-specific events
@@ -561,19 +534,82 @@ class Game:
         # Structure weather damage
         sched.register("weather_damage",      lambda: self._apply_weather_damage_to_structures(), WEATHER_DAMAGE_INTERVAL, enabled=True)
 
+        # Diary manager flush (random musings + pending entries)
+        sched.register("diary_flush",         lambda: self._flush_diary(), DIARY_FLUSH_INTERVAL, enabled=True)
+
     def _setup_input_dispatcher(self):
         """
-        Wire up the InputDispatcher with global handlers.
+        Wire up the InputDispatcher with global and overlay handlers.
 
         Called once from ``_load_game`` / ``_start_new_game``.
 
-        NOTE: The dispatcher is *not yet* the authority — the original
-        ``_process_input()`` chain still runs.  This sets up the
-        infrastructure so that overlay handlers can be added gradually.
+        The dispatcher is the sole authority for input routing.
+        ``_process_input()`` tries the dispatcher first; only talk mode,
+        shop mode, and confirmation dialogs still use the legacy path.
         """
         self.input_dispatcher.register_global_handler(
             GlobalInputHandler(game=self), priority=100
         )
+
+        # Map UIOverlay enum names -> handler methods
+        overlay_handlers = {
+            "CRAFTING":        lambda k: self._handle_crafting_input_direct(k),
+            "BUILDING":        lambda k: self._handle_building_input_direct(k),
+            "AREAS":           lambda k: self._handle_areas_input_direct(k),
+            "USE_ITEM":        lambda k: self._handle_use_input_direct(k),
+            "MINIGAME":        lambda k: self._handle_minigames_input_direct(k),
+            "QUESTS":          lambda k: self._handle_quests_input_direct(k),
+            "WEATHER":         lambda k: self._handle_weather_input_direct(k),
+            "TREASURE":        lambda k: self._handle_treasure_input(k),
+            "SCRAPBOOK":       lambda k: self._handle_scrapbook_input(k),
+            "TRICKS":          lambda k: self._handle_tricks_input(k),
+            "TITLES":          lambda k: self._handle_titles_input(k),
+            "DECORATIONS":     lambda k: self._handle_decorations_input(k),
+            "DECORATION_ROOM": lambda k: self._handle_decoration_room_select_input(k),
+            "COLLECTIBLES":    lambda k: self._handle_collectibles_input(k),
+            "BADGES":          lambda k: self._handle_badges_input(k),
+            "SECRETS":         lambda k: self._handle_secrets_input(k),
+            "GARDEN":          lambda k: self._handle_garden_input(k),
+            "PRESTIGE":        lambda k: self._handle_prestige_input(k),
+            "SAVE_SLOTS":      lambda k: self._handle_save_slots_input(k),
+            "TRADING":         lambda k: self._handle_trading_input(k),
+            "ENHANCED_DIARY":  lambda k: self._handle_enhanced_diary_input(k),
+            "FESTIVAL":        lambda k: self._handle_festival_input(k),
+            "MAIN_MENU":       lambda k: self._handle_main_menu_input(k),
+            "DEBUG_MENU":      lambda k: self._handle_debug_input(k),
+            "SETTINGS":        lambda k: self._handle_settings_input(k),
+        }
+
+        for overlay_name, callback in overlay_handlers.items():
+            self.input_dispatcher.register_handler(
+                overlay_name,
+                OverlayInputHandler(name=overlay_name, callback=callback),
+            )
+
+    def _setup_menu_system(self):
+        """
+        Register menu definitions with the MenuSystem.
+
+        Called once from ``_load_game`` / ``_start_new_game`` after all
+        systems are initialised.
+
+        Items are registered empty; each menu's ``_show_*`` method sets
+        items dynamically via the legacy ``MenuSelector`` when opening.
+        """
+        from core.menu_system import MenuDefinition
+
+        menus = {
+            "crafting":   MenuDefinition(title="CRAFTING", close_keys=["KEY_ESCAPE", "c"], page_size=8),
+            "building":   MenuDefinition(title="BUILDING", close_keys=["KEY_ESCAPE", "r"], page_size=8),
+            "areas":      MenuDefinition(title="AREAS", close_keys=["KEY_ESCAPE", "a"], page_size=8),
+            "use_item":   MenuDefinition(title="USE ITEM", close_keys=["KEY_ESCAPE", "u"], page_size=8),
+            "minigames":  MenuDefinition(title="MINI-GAMES", close_keys=["KEY_ESCAPE", "j"], page_size=8),
+            "quests":     MenuDefinition(title="QUESTS", close_keys=["KEY_ESCAPE", "o"], page_size=8),
+            "weather":    MenuDefinition(title="WEATHER ACTIVITIES", close_keys=["KEY_ESCAPE", "w"], page_size=8),
+        }
+
+        for menu_id, defn in menus.items():
+            self.menu_system.register_menu(menu_id, defn)
 
     def start(self):
         """Start the game."""
@@ -678,15 +714,13 @@ class Game:
         if not key:
             return
 
-        # Try InputDispatcher first (new system — runs alongside legacy chain)
+        # Try InputDispatcher first (sole authority for registered overlays)
         try:
-            if hasattr(self, 'input_dispatcher') and self.input_dispatcher:
-                overlay = self.ui_state.get_active().value if hasattr(self, 'ui_state') else "none"
-                if self.input_dispatcher.dispatch(key, overlay):
-                    return  # Handled by dispatcher
+            overlay = self.ui_state.get_active().name
+            if self.input_dispatcher.dispatch(key, overlay):
+                return  # Handled by dispatcher
         except Exception:
             pass
-        # ... existing if/elif chain continues as fallback
 
         # Handle talk mode specially
         if self.renderer.is_talking():
@@ -698,82 +732,7 @@ class Game:
             self._handle_shop_input(key)
             return
 
-        # Handle menu navigation (same priority as shop)
-        if self._crafting_menu_open:
-            self._handle_crafting_input_direct(key)
-            return
-        if self._building_menu_open:
-            self._handle_building_input_direct(key)
-            return
-        if self._areas_menu_open:
-            self._handle_areas_input_direct(key)
-            return
-        if self._use_menu_open:
-            self._handle_use_input_direct(key)
-            return
-        if self._minigames_menu_open:
-            self._handle_minigames_input_direct(key)
-            return
-        if self._quests_menu_open:
-            self._handle_quests_input_direct(key)
-            return
-        if self._weather_menu_open:
-            self._handle_weather_input_direct(key)
-            return
-        if self._treasure_menu_open:
-            self._handle_treasure_input(key)
-            return
-        if self._scrapbook_menu_open:
-            self._handle_scrapbook_input(key)
-            return
-        if self._tricks_menu_open:
-            self._handle_tricks_input(key)
-            return
-        if self._titles_menu_open:
-            self._handle_titles_input(key)
-            return
-        if self._decorations_menu_open:
-            self._handle_decorations_input(key)
-            return
-        if self._decoration_room_select_open:
-            self._handle_decoration_room_select_input(key)
-            return
-        if self._collectibles_menu_open:
-            self._handle_collectibles_input(key)
-            return
-        if self._badges_menu_open:
-            self._handle_badges_input(key)
-            return
-        if self._secrets_menu_open:
-            self._handle_secrets_input(key)
-            return
-        if self._garden_menu_open:
-            self._handle_garden_input(key)
-            return
-        if self._prestige_menu_open:
-            self._handle_prestige_input(key)
-            return
-        if self._save_slots_menu_open:
-            self._handle_save_slots_input(key)
-            return
-        if self._trading_menu_open:
-            self._handle_trading_input(key)
-            return
-        if self._enhanced_diary_open:
-            self._handle_enhanced_diary_input(key)
-            return
-        if self._festival_menu_open:
-            self._handle_festival_input(key)
-            return
-        if self._main_menu_open:
-            self._handle_main_menu_input(key)
-            return
-        if self._debug_menu_open:
-            self._handle_debug_input(key)
-            return
-        if self._settings_menu_open:
-            self._handle_settings_input(key)
-            return
+        # Confirmation dialog (not yet migrated to dispatcher)
         if self._confirmation_dialog and self._confirmation_dialog.is_open:
             self._handle_confirmation_input(key)
             return
@@ -932,13 +891,11 @@ class Game:
             if selected and selected.data and selected.enabled:
                 recipe = selected.data
                 result = self.crafting.start_crafting(recipe.id, self.materials)
-                self._crafting_menu_open = False
                 self._notify_overlay_closed(UIOverlay.CRAFTING)
                 self.renderer.show_message(result["message"], duration=3.0, category="action")
             return
         # Close with ESC, Backspace, or C
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'c':
-            self._crafting_menu_open = False
             self._notify_overlay_closed(UIOverlay.CRAFTING)
             self.renderer.dismiss_message()
             return
@@ -965,7 +922,6 @@ class Game:
             if selected and selected.data and selected.enabled:
                 bp = selected.data
                 result = self.building.start_building(bp.id, self.materials, player_level=self.progression.level)
-                self._building_menu_open = False
                 self._notify_overlay_closed(UIOverlay.BUILDING)
                 if result.get("success"):
                     self._start_building_animation(bp)
@@ -973,7 +929,6 @@ class Game:
                     self.renderer.show_message(result["message"], duration=3.0, category="action")
             return
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'r':
-            self._building_menu_open = False
             self._notify_overlay_closed(UIOverlay.BUILDING)
             self.renderer.dismiss_message()
             return
@@ -999,13 +954,11 @@ class Game:
             selected = self._areas_menu.get_selected_item()
             if selected and selected.data:
                 area = selected.data
-                self._areas_menu_open = False
                 self._notify_overlay_closed(UIOverlay.AREAS)
                 self.renderer.dismiss_message()
                 self._start_travel_to_area(area)
             return
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'a':
-            self._areas_menu_open = False
             self._notify_overlay_closed(UIOverlay.AREAS)
             self.renderer.dismiss_message()
             return
@@ -1031,13 +984,11 @@ class Game:
             selected = self._use_menu.get_selected_item()
             if selected and selected.data:
                 item_id, item = selected.data
-                self._use_menu_open = False
                 self._notify_overlay_closed(UIOverlay.USE_ITEM)
                 self.renderer.dismiss_message()
                 self._execute_item_interaction(item_id)
             return
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'u':
-            self._use_menu_open = False
             self._notify_overlay_closed(UIOverlay.USE_ITEM)
             self.renderer.dismiss_message()
             return
@@ -1062,13 +1013,11 @@ class Game:
         if key.name == "KEY_ENTER" or key_str == ' ':
             selected = self._minigames_menu.get_selected_item()
             if selected and selected.data and selected.enabled:
-                self._minigames_menu_open = False
                 self._notify_overlay_closed(UIOverlay.MINIGAME)
                 self.renderer.dismiss_message()
                 self._start_minigame(selected.data["id"])
             return
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'j':
-            self._minigames_menu_open = False
             self._notify_overlay_closed(UIOverlay.MINIGAME)
             self.renderer.dismiss_message()
             return
@@ -1095,13 +1044,11 @@ class Game:
             if selected and selected.data and selected.enabled:
                 quest_id = selected.data.get("quest_id")
                 if quest_id:
-                    self._quests_menu_open = False
                     self._notify_overlay_closed(UIOverlay.QUESTS)
                     self.renderer.dismiss_message()
                     self._start_selected_quest(quest_id)
             return
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'o':
-            self._quests_menu_open = False
             self._notify_overlay_closed(UIOverlay.QUESTS)
             self.renderer.dismiss_message()
             return
@@ -1117,7 +1064,6 @@ class Game:
         if self._main_menu.was_action_selected():
             # An action was selected - execute it
             action_id = self._main_menu.get_selected_action()
-            self._main_menu_open = False
             self._notify_overlay_closed(UIOverlay.MAIN_MENU)
             self.renderer.dismiss_message()
             self._execute_menu_action(action_id)
@@ -1125,7 +1071,6 @@ class Game:
 
         if self._main_menu.was_cancelled():
             # Menu was closed
-            self._main_menu_open = False
             self._notify_overlay_closed(UIOverlay.MAIN_MENU)
             self.renderer.dismiss_message()
             return
@@ -1225,11 +1170,12 @@ class Game:
             return
         if method_name == "_toggle_goals":
             self._close_all_menus()
-            self._show_goals = not self._show_goals
-            if self._show_goals:
+            if not self.ui_state.is_open(UIOverlay.GOALS):
+                self.ui_state.open_overlay(UIOverlay.GOALS)
                 self._goals_page = 0  # Reset to first page
                 self._show_goals_overlay()
             else:
+                self.ui_state.close_overlay()
                 self.renderer.dismiss_overlay()
             return
         if method_name == "_toggle_shop":
@@ -2115,13 +2061,14 @@ class Game:
 
             # Hidden debug menu (backtick key)
             if key_str == '`' or key_str == '~':
-                self._debug_menu_open = not self._debug_menu_open
                 self._debug_submenu = None
                 self._debug_menu_selected = 0
-                if self._debug_menu_open:
-                    self._show_debug_menu()
-                else:
+                if self.ui_state.is_open(UIOverlay.DEBUG_MENU):
+                    self.ui_state.close_overlay()
                     self.renderer.dismiss_overlay()
+                else:
+                    self.ui_state.open_overlay(UIOverlay.DEBUG_MENU)
+                    self._show_debug_menu()
                 return
 
             # Page Up/Down for chat log scrolling
@@ -2179,7 +2126,7 @@ class Game:
                 return
             self.renderer.hide_overlays()
             self._close_all_menus()  # Also close any open menus
-            self._show_goals = False
+            self._notify_overlay_closed(UIOverlay.GOALS)
             return
 
         # State-specific actions
@@ -2203,12 +2150,12 @@ class Game:
         # Check if any menu/overlay is open that uses number keys
         # Define this early so it can be used for both direct key handling and fallback
         has_number_key_menu = (
-            self._crafting_menu_open or
-            self._building_menu_open or
-            self._areas_menu_open or
-            self._use_menu_open or
-            self._minigames_menu_open or
-            self._quests_menu_open or
+            self.ui_state.is_open(UIOverlay.CRAFTING) or
+            self.ui_state.is_open(UIOverlay.BUILDING) or
+            self.ui_state.is_open(UIOverlay.AREAS) or
+            self.ui_state.is_open(UIOverlay.USE_ITEM) or
+            self.ui_state.is_open(UIOverlay.MINIGAME) or
+            self.ui_state.is_open(UIOverlay.QUESTS) or
             self.renderer._show_message_overlay or
             self.renderer._show_inventory
         )
@@ -2219,23 +2166,23 @@ class Game:
             key_name = key.name if key.name else ''
 
             # Check for open menus and handle their input
-            if self._crafting_menu_open:
+            if self.ui_state.is_open(UIOverlay.CRAFTING):
                 if self._handle_crafting_input(key_str, key_name, key):
                     return
 
-            if self._building_menu_open:
+            if self.ui_state.is_open(UIOverlay.BUILDING):
                 if self._handle_building_input(key_str, key_name, key):
                     return
 
-            if self._areas_menu_open:
+            if self.ui_state.is_open(UIOverlay.AREAS):
                 if self._handle_areas_input(key_str, key_name, key):
                     return
 
-            if self._use_menu_open:
+            if self.ui_state.is_open(UIOverlay.USE_ITEM):
                 if self._handle_use_input(key_str, key_name, key):
                     return
 
-            if self._minigames_menu_open:
+            if self.ui_state.is_open(UIOverlay.MINIGAME):
                 if self._handle_minigames_menu_input(key_str, key_name, key):
                     return
 
@@ -2253,12 +2200,7 @@ class Game:
             if key_str == 'q':
                 # Check if any menu or overlay is open
                 has_overlay = (
-                    self._crafting_menu_open or
-                    self._building_menu_open or
-                    self._areas_menu_open or
-                    self._use_menu_open or
-                    self._minigames_menu_open or
-                    self._show_goals or
+                    self.ui_state.is_any_open() or
                     self.renderer._show_stats or
                     self.renderer._show_inventory or
                     self.renderer._show_shop or
@@ -2286,8 +2228,8 @@ class Game:
                 if self.renderer._show_help:
                     self.renderer.toggle_help()
                     return
-                if self._show_goals:
-                    self._show_goals = False
+                if self.ui_state.is_open(UIOverlay.GOALS):
+                    self.ui_state.close_overlay()
                     self.renderer.dismiss_message()
                     return
                 # If no overlay open, do nothing (or could close message overlay)
@@ -2332,17 +2274,17 @@ class Game:
 
             # Goals toggle [G] - handle pagination when open
             if key_str == 'g':
-                if self._show_goals:
-                    self._show_goals = False
+                if self.ui_state.is_open(UIOverlay.GOALS):
+                    self._notify_overlay_closed(UIOverlay.GOALS)
                     self.renderer.dismiss_message()
                 else:
-                    self._show_goals = True
+                    self.ui_state.open_overlay(UIOverlay.GOALS)
                     self._goals_page = 0  # Reset to first page
                     self._show_goals_overlay()
                 return
             
             # Handle goals pagination when goals overlay is open
-            if self._show_goals:
+            if self.ui_state.is_open(UIOverlay.GOALS):
                 if key_str == ',' or key_str == '<':
                     if not hasattr(self, '_goals_page'):
                         self._goals_page = 0
@@ -3315,8 +3257,7 @@ class Game:
 
         # Run UpdateScheduler (fires registered periodic callbacks)
         try:
-            if hasattr(self, 'update_scheduler') and self.update_scheduler:
-                self.update_scheduler.update(current_time)
+            self.update_scheduler.update(current_time)
         except Exception:
             pass
 
@@ -3592,22 +3533,7 @@ class Game:
 
         # Update atmosphere (weather, visitors) every 30 seconds
         if current_time - self._last_atmosphere_check >= 30:
-            # Core atmosphere tick — scheduler handles this if enabled
-            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("atmosphere")):
-                messages = self.atmosphere.update()
-            else:
-                messages = []  # scheduler already fired atmosphere.update()
-            for msg in messages:
-                self._show_message_if_no_menu(msg, duration=4.0, category="event")
-
-            # ── Flush diary manager pending entries (every 30s) ──────
-            try:
-                if current_time - self._last_diary_flush >= 30:
-                    self.diary_manager.trigger_random_musing()
-                    new_entries = self.diary_manager.flush_pending()
-                    self._last_diary_flush = current_time
-            except Exception:
-                pass
+            # Scheduler fires atmosphere.update(); post-callback logic follows
 
             # Check for active festivals
             self._check_festival_events()
@@ -3779,8 +3705,7 @@ class Game:
         _in_guest_convo = bool(getattr(self, '_active_guest_conversation', None)) or bool(self._pending_visitor_comment)
         if current_time - self._last_event_check >= 30:
             if not _in_guest_convo:
-                if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("event_check")):
-                    self._check_events()
+                # Scheduler fires _check_events()
 
                 # Chance for ambient event (peaceful atmosphere)
                 ambient = self.progression.get_ambient_event(chance=0.02)
@@ -3791,24 +3716,17 @@ class Game:
 
         # Check for area-specific events (every 45 seconds)
         if current_time - self._last_area_event_check >= 45:
-            if not _in_guest_convo:
-                if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("area_events")):
-                    self._check_area_events()
+            # Scheduler fires _check_area_events()
             self._last_area_event_check = current_time
 
         # Check for spontaneous travel (every 30 seconds)
         if current_time - self._last_spontaneous_travel_check >= 30:
-            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("spontaneous_travel")):
-                self._check_spontaneous_travel()
+            # Scheduler fires _check_spontaneous_travel()
             self._last_spontaneous_travel_check = current_time
 
         # Random contextual duck comments (every ~45 seconds when idle)
         if current_time - self._last_random_comment_time >= self._random_comment_interval:
-            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("random_comment")):
-                if not self._duck_traveling and not self._duck_exploring and not self._duck_building:
-                    # 25% chance to make a contextual comment (skip during guest conversations)
-                    if random.random() < 0.25 and not _in_guest_convo:
-                        self._make_contextual_comment()
+            # Scheduler fires _make_contextual_comment()
             self._last_random_comment_time = current_time
 
         # Check for pending visitor reaction comment (Cheese responding to friend)
@@ -3982,25 +3900,22 @@ class Game:
 
         # Check crafting progress (every 2 seconds)
         if current_time - self._last_craft_check >= 2:
-            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("craft_check")):
-                self._update_crafting_progress()
+            # Scheduler fires _update_crafting_progress()
             self._last_craft_check = current_time
 
         # Check building progress (every 5 seconds)
         if current_time - self._last_build_check >= 5:
-            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("build_check")):
-                self._update_building_progress()
+            # Scheduler fires _update_building_progress()
             self._last_build_check = current_time
 
         # Apply weather damage to structures (every 60 seconds during bad weather)
-        if current_time - self._last_build_check >= 60:
-            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("weather_damage")):
-                self._apply_weather_damage_to_structures()
+        if current_time - self._last_weather_damage_check >= 60:
+            # Scheduler fires _apply_weather_damage_to_structures()
+            self._last_weather_damage_check = current_time
 
         # Auto-save every 60 seconds
         if current_time - self._last_save >= 60:
-            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("auto_save")):
-                self._save_game()
+            # Scheduler fires _save_game()
             self._last_save = current_time
 
     def _update_visitor_interactions(self, current_time: float):
@@ -4338,6 +4253,14 @@ class Game:
             stage_names = ["Foundation", "Frame", "Walls", "Roof", "Finishing"]
             name = stage_names[min(stage, 4)]
             self.renderer.show_message(f"# {name} complete! Continue building...", duration=2.0)
+
+    def _flush_diary(self):
+        """Trigger a random diary musing and flush pending entries."""
+        try:
+            self.diary_manager.trigger_random_musing()
+            self.diary_manager.flush_pending()
+        except Exception:
+            pass
 
     def _apply_weather_damage_to_structures(self):
         """Apply weather damage to structures during bad weather."""
@@ -5118,55 +5041,55 @@ class Game:
 
     def _maintain_open_menus(self):
         """Re-render any open menu to keep it visible. Prevents softlock from message overlay changes."""
-        if self._tricks_menu_open:
+        if self.ui_state.is_open(UIOverlay.TRICKS):
             self._render_tricks_menu()
-        elif self._titles_menu_open:
+        elif self.ui_state.is_open(UIOverlay.TITLES):
             self._render_titles_menu()
-        elif self._collectibles_menu_open:
+        elif self.ui_state.is_open(UIOverlay.COLLECTIBLES):
             self._render_collectibles_menu()
-        elif self._secrets_menu_open:
+        elif self.ui_state.is_open(UIOverlay.SECRETS):
             self._render_secrets_menu()
-        elif self._garden_menu_open:
+        elif self.ui_state.is_open(UIOverlay.GARDEN):
             self._render_garden_menu()
-        elif self._prestige_menu_open:
+        elif self.ui_state.is_open(UIOverlay.PRESTIGE):
             self._render_prestige_menu()
-        elif self._save_slots_menu_open:
+        elif self.ui_state.is_open(UIOverlay.SAVE_SLOTS):
             self._render_save_slots_menu()
-        elif self._trading_menu_open:
+        elif self.ui_state.is_open(UIOverlay.TRADING):
             self._render_trading_menu()
-        elif self._decoration_room_select_open:
+        elif self.ui_state.is_open(UIOverlay.DECORATION_ROOM):
             self._render_decoration_room_select(self._decoration_room_select_decor_id)
-        elif self._badges_menu_open:
+        elif self.ui_state.is_open(UIOverlay.BADGES):
             self._render_badges_menu()
-        elif self._decorations_menu_open:
+        elif self.ui_state.is_open(UIOverlay.DECORATIONS):
             self._render_decorations_menu()
-        elif self._scrapbook_menu_open:
+        elif self.ui_state.is_open(UIOverlay.SCRAPBOOK):
             self._render_scrapbook()
-        elif self._enhanced_diary_open:
+        elif self.ui_state.is_open(UIOverlay.ENHANCED_DIARY):
             self._render_enhanced_diary()
-        elif self._crafting_menu_open:
+        elif self.ui_state.is_open(UIOverlay.CRAFTING):
             self._update_crafting_menu_display()
-        elif self._building_menu_open:
+        elif self.ui_state.is_open(UIOverlay.BUILDING):
             self._update_building_menu_display()
-        elif self._areas_menu_open:
+        elif self.ui_state.is_open(UIOverlay.AREAS):
             self._update_areas_menu_display()
-        elif self._use_menu_open:
+        elif self.ui_state.is_open(UIOverlay.USE_ITEM):
             self._update_use_menu_display()
-        elif self._minigames_menu_open:
+        elif self.ui_state.is_open(UIOverlay.MINIGAME):
             self._update_minigames_menu_display()
-        elif self._quests_menu_open:
+        elif self.ui_state.is_open(UIOverlay.QUESTS):
             self._update_quests_menu_display()
-        elif self._weather_menu_open:
+        elif self.ui_state.is_open(UIOverlay.WEATHER):
             self._update_weather_menu_display()
-        elif self._treasure_menu_open:
+        elif self.ui_state.is_open(UIOverlay.TREASURE):
             self._update_treasure_menu_display()
-        elif self._festival_menu_open:
+        elif self.ui_state.is_open(UIOverlay.FESTIVAL):
             self._update_festival_menu_display()
-        elif self._settings_menu_open:
+        elif self.ui_state.is_open(UIOverlay.SETTINGS):
             self._render_settings_menu()
-        elif self._main_menu_open:
+        elif self.ui_state.is_open(UIOverlay.MAIN_MENU):
             self._update_main_menu_display()
-        elif self._debug_menu_open:
+        elif self.ui_state.is_open(UIOverlay.DEBUG_MENU):
             self._show_debug_menu()
 
     def _handle_title_input(self, action: GameAction, key=None):
@@ -5456,9 +5379,10 @@ class Game:
             game=self,
         )
 
-        # Wire up new subsystem managers (additive — existing code unchanged)
+        # Wire up subsystem managers
         self._setup_update_scheduler()
         self._setup_input_dispatcher()
+        self._setup_menu_system()
 
         self._save_game()
 
@@ -5932,9 +5856,10 @@ class Game:
         except Exception:
             self.time_manager = None
 
-        # Wire up new subsystem managers (additive — existing code unchanged)
+        # Wire up subsystem managers
         self._setup_update_scheduler()
         self._setup_input_dispatcher()
+        self._setup_menu_system()
 
         # Show welcome back - use cold shoulder or DuckBrain greeting
         welcome_msg = None
@@ -6086,32 +6011,11 @@ class Game:
 
     def _is_any_menu_open(self) -> bool:
         """Check if any menu or overlay is currently open."""
+        # UIStateManager is sole authority for game overlays
+        if self.ui_state.is_any_open():
+            return True
+        # Renderer-managed overlays (not yet migrated to UIStateManager)
         return (
-            self._crafting_menu_open or
-            self._building_menu_open or
-            self._areas_menu_open or
-            self._use_menu_open or
-            self._minigames_menu_open or
-            self._quests_menu_open or
-            self._weather_menu_open or
-            self._treasure_menu_open or
-            self._scrapbook_menu_open or
-            self._tricks_menu_open or
-            self._titles_menu_open or
-            self._decorations_menu_open or
-            self._decoration_room_select_open or
-            self._collectibles_menu_open or
-            self._badges_menu_open or
-            self._secrets_menu_open or
-            self._garden_menu_open or
-            self._prestige_menu_open or
-            self._save_slots_menu_open or
-            self._trading_menu_open or
-            self._enhanced_diary_open or
-            self._festival_menu_open or
-            self._settings_menu_open or
-            self._main_menu_open or
-            self._debug_menu_open or
             self.renderer.is_shop_open() or
             self.renderer.is_talking() or
             self.renderer._show_stats or
@@ -6126,52 +6030,19 @@ class Game:
 
     def _close_all_menus(self):
         """Close all open game menus (crafting, building, etc.) and dismiss message overlay."""
-        # Close UIState overlays (new system)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.close_all()
-        except Exception:
-            pass
+        # UIStateManager is sole authority — close all overlays
+        self.ui_state.close_all()
         self.renderer.dismiss_message()
-        self._crafting_menu_open = False
-        self._building_menu_open = False
-        self._areas_menu_open = False
-        self._use_menu_open = False
-        self._minigames_menu_open = False
-        self._quests_menu_open = False
-        self._weather_menu_open = False
-        self._treasure_menu_open = False
-        self._scrapbook_menu_open = False
-        self._tricks_menu_open = False
-        self._titles_menu_open = False
-        self._decorations_menu_open = False
-        self._decoration_room_select_open = False
-        self._collectibles_menu_open = False
-        self._badges_menu_open = False
-        self._secrets_menu_open = False
-        self._garden_menu_open = False
-        self._prestige_menu_open = False
-        self._save_slots_menu_open = False
-        self._trading_menu_open = False
         self._trading_state = "selection"
-        self._enhanced_diary_open = False
-        self._festival_menu_open = False
-        self._settings_menu_open = False
-        self._main_menu_open = False
-        self._show_goals = False
-        self._debug_menu_open = False
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
 
     def _has_open_overlay(self) -> bool:
         """Check if any overlay or menu is currently open that should block master menu."""
-        # Check UIStateManager first (new system)
-        try:
-            if hasattr(self, 'ui_state') and self.ui_state.is_any_open():
-                return True
-        except Exception:
-            pass
-        # Check renderer overlays (but NOT message overlay - that's just informational)
+        # UIStateManager is sole authority for game overlays
+        if self.ui_state.is_any_open():
+            return True
+        # Renderer-managed overlays (not yet migrated to UIStateManager)
         if self.renderer.is_talking():
             return True
         if self.renderer.is_shop_open():
@@ -6182,94 +6053,26 @@ class Game:
             return True
         if self.renderer._show_help:
             return True
-        # Note: _show_message_overlay is NOT blocking - messages are informational
-            
-        # Check game menus
+        # Other non-boolean overlay state
         return (
-            self._crafting_menu_open or
-            self._building_menu_open or
-            self._areas_menu_open or
-            self._use_menu_open or
-            self._minigames_menu_open or
-            self._quests_menu_open or
-            self._weather_menu_open or
-            self._treasure_menu_open or
-            self._scrapbook_menu_open or
-            self._tricks_menu_open or
-            self._titles_menu_open or
-            self._decorations_menu_open or
-            self._decoration_room_select_open or
-            self._collectibles_menu_open or
-            self._badges_menu_open or
-            self._secrets_menu_open or
-            self._garden_menu_open or
-            self._prestige_menu_open or
-            self._save_slots_menu_open or
-            self._trading_menu_open or
-            self._enhanced_diary_open or
-            self._festival_menu_open or
-            self._settings_menu_open or
-            self._main_menu_open or
-            self._show_goals or
-            self._debug_menu_open or
             (self._confirmation_dialog and self._confirmation_dialog.is_open) or
             self._active_minigame is not None
         )
 
     def _close_all_overlays(self):
         """Close all open overlays and menus."""
-        # Close UIState overlays (new system)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.close_all()
-        except Exception:
-            pass
+        # UIStateManager is sole authority — close all overlays
+        self.ui_state.close_all()
         # Close renderer overlays
         self.renderer.hide_overlays()
         self.renderer.dismiss_message()
-
-        # Close game menus
-        self._crafting_menu_open = False
-        self._building_menu_open = False
-        self._areas_menu_open = False
-        self._use_menu_open = False
-        self._minigames_menu_open = False
-        self._quests_menu_open = False
-        self._weather_menu_open = False
-        self._treasure_menu_open = False
-        self._scrapbook_menu_open = False
-        self._tricks_menu_open = False
-        self._titles_menu_open = False
-        self._decorations_menu_open = False
-        self._decoration_room_select_open = False
-        self._collectibles_menu_open = False
-        self._badges_menu_open = False
-        self._secrets_menu_open = False
-        self._garden_menu_open = False
-        self._prestige_menu_open = False
-        self._save_slots_menu_open = False
-        self._trading_menu_open = False
         self._trading_state = "selection"
-        self._enhanced_diary_open = False
-        self._festival_menu_open = False
-        self._settings_menu_open = False
-        self._main_menu_open = False
-        self._show_goals = False
-        self._debug_menu_open = False
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
 
     def _notify_overlay_closed(self, overlay: UIOverlay) -> None:
-        """Dual-write helper: tell UIStateManager an overlay was closed.
-
-        Called alongside the legacy ``self._X_menu_open = False`` assignments
-        so the new UIStateManager stays in sync without removing old flags.
-        """
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.close_overlay()
-        except Exception:
-            pass
+        """Close the active overlay in UIStateManager."""
+        self.ui_state.close_overlay()
 
     def _stop_all_audio(self):
         """Stop all audio — radio, music, mixer. Call before quit or title return."""
@@ -6548,7 +6351,7 @@ class Game:
                 )
             else:
                 self.renderer.show_message("Crafting in progress...", duration=0)
-            self._crafting_menu_open = True
+            self.ui_state.open_overlay(UIOverlay.CRAFTING)
             try:
                 if hasattr(self, 'ui_state'):
                     self.ui_state.open_overlay(UIOverlay.CRAFTING)
@@ -6574,7 +6377,7 @@ class Game:
             for item in items
         ])
         self._crafting_menu.open()
-        self._crafting_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.CRAFTING)
         try:
             if hasattr(self, 'ui_state'):
                 self.ui_state.open_overlay(UIOverlay.CRAFTING)
@@ -6619,7 +6422,7 @@ class Game:
                 )
             else:
                 self.renderer.show_message("Building in progress...", duration=0)
-            self._building_menu_open = True
+            self.ui_state.open_overlay(UIOverlay.BUILDING)
             try:
                 if hasattr(self, 'ui_state'):
                     self.ui_state.open_overlay(UIOverlay.BUILDING)
@@ -6664,7 +6467,7 @@ class Game:
             for item in items
         ])
         self._building_menu.open()
-        self._building_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.BUILDING)
         try:
             if hasattr(self, 'ui_state'):
                 self.ui_state.open_overlay(UIOverlay.BUILDING)
@@ -6705,7 +6508,7 @@ class Game:
                 f"Gathering skill: Lv.{self.exploration.gathering_skill}\n\n[Bksp] Close",
                 duration=0
             )
-            self._areas_menu_open = True
+            self.ui_state.open_overlay(UIOverlay.AREAS)
             try:
                 if hasattr(self, 'ui_state'):
                     self.ui_state.open_overlay(UIOverlay.AREAS)
@@ -6732,7 +6535,7 @@ class Game:
             for item in items
         ])
         self._areas_menu.open()
-        self._areas_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.AREAS)
         try:
             if hasattr(self, 'ui_state'):
                 self.ui_state.open_overlay(UIOverlay.AREAS)
@@ -6742,13 +6545,12 @@ class Game:
 
     def _handle_crafting_input(self, key_str: str, key_name: str = "", key=None) -> bool:
         """Handle input while crafting menu is open. Returns True if handled."""
-        if not self._crafting_menu_open:
+        if not self.ui_state.is_open(UIOverlay.CRAFTING):
             return False
 
         # If crafting in progress, just handle close
         if self.crafting._current_craft:
             if key.name == 'KEY_ESCAPE' or key_str == 'c':
-                self._crafting_menu_open = False
                 self._notify_overlay_closed(UIOverlay.CRAFTING)
                 self._crafting_menu.close()
                 self.renderer.dismiss_message()
@@ -6773,14 +6575,12 @@ class Game:
             if selected and selected.data and selected.enabled:
                 recipe = selected.data
                 result = self.crafting.start_crafting(recipe.id, self.materials)
-                self._crafting_menu_open = False
                 self._notify_overlay_closed(UIOverlay.CRAFTING)
                 self.renderer.show_message(result["message"], duration=3.0)
             return True
 
         # Close on ESC or C
         if key.name == 'KEY_ESCAPE' or key_str == 'c':
-            self._crafting_menu_open = False
             self._notify_overlay_closed(UIOverlay.CRAFTING)
             self.renderer.dismiss_message()
             return True
@@ -6800,13 +6600,12 @@ class Game:
 
     def _handle_building_input(self, key_str: str, key_name: str = "", key=None) -> bool:
         """Handle input while building menu is open. Returns True if handled."""
-        if not self._building_menu_open:
+        if not self.ui_state.is_open(UIOverlay.BUILDING):
             return False
 
         # If building in progress, just handle close
         if self.building._current_build:
             if key.name == 'KEY_ESCAPE' or key_str == 'r':
-                self._building_menu_open = False
                 self._notify_overlay_closed(UIOverlay.BUILDING)
                 self._building_menu.close()
                 self.renderer.dismiss_message()
@@ -6831,7 +6630,6 @@ class Game:
             if selected and selected.data and selected.enabled:
                 bp = selected.data
                 result = self.building.start_building(bp.id, self.materials, player_level=self.progression.level)
-                self._building_menu_open = False
                 self._notify_overlay_closed(UIOverlay.BUILDING)
                 if result.get("success"):
                     self._start_building_animation(bp)
@@ -6841,7 +6639,6 @@ class Game:
 
         # Close on ESC or R
         if key.name == 'KEY_ESCAPE' or key_str == 'r':
-            self._building_menu_open = False
             self._notify_overlay_closed(UIOverlay.BUILDING)
             self.renderer.dismiss_message()
             return True
@@ -6912,14 +6709,13 @@ class Game:
 
     def _handle_areas_input(self, key_str: str, key_name: str = "", key=None) -> bool:
         """Handle input while areas menu is open. Returns True if handled."""
-        if not self._areas_menu_open:
+        if not self.ui_state.is_open(UIOverlay.AREAS):
             return False
 
         # If no areas available, just handle close
         available = self.exploration.get_available_areas()
         if not available:
             if key.name == 'KEY_ESCAPE' or key_str == 'a':
-                self._areas_menu_open = False
                 self._notify_overlay_closed(UIOverlay.AREAS)
                 self._areas_menu.close()
                 self.renderer.dismiss_message()
@@ -6943,7 +6739,6 @@ class Game:
             selected = self._areas_menu.get_selected_item()
             if selected and selected.data:
                 area = selected.data
-                self._areas_menu_open = False
                 self._notify_overlay_closed(UIOverlay.AREAS)
                 self.renderer.dismiss_message()
                 self._start_travel_to_area(area)
@@ -6951,7 +6746,6 @@ class Game:
 
         # Close on ESC or A
         if key.name == 'KEY_ESCAPE' or key_str == 'a':
-            self._areas_menu_open = False
             self._notify_overlay_closed(UIOverlay.AREAS)
             self.renderer.dismiss_message()
             return True
@@ -7194,7 +6988,7 @@ class Game:
         ])
         self._use_menu.open()
         self._use_menu_selected = 0
-        self._use_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.USE_ITEM)
         try:
             if hasattr(self, 'ui_state'):
                 self.ui_state.open_overlay(UIOverlay.USE_ITEM)
@@ -7215,7 +7009,7 @@ class Game:
 
     def _handle_use_input(self, key_str: str, key_name: str = "", key=None) -> bool:
         """Handle input while use menu is open. Returns True if handled."""
-        if not self._use_menu_open:
+        if not self.ui_state.is_open(UIOverlay.USE_ITEM):
             return False
 
         # Handle arrow keys and enter directly (same as shop)
@@ -7236,7 +7030,6 @@ class Game:
             selected = self._use_menu.get_selected_item()
             if selected and selected.data:
                 item_id, item = selected.data
-                self._use_menu_open = False
                 self._notify_overlay_closed(UIOverlay.USE_ITEM)
                 self.renderer.dismiss_message()
                 self._execute_item_interaction(item_id)
@@ -7244,7 +7037,6 @@ class Game:
 
         # Close on ESC or U
         if key.name == 'KEY_ESCAPE' or key_str == 'u':
-            self._use_menu_open = False
             self._notify_overlay_closed(UIOverlay.USE_ITEM)
             self.renderer.dismiss_message()
             return True
@@ -7326,7 +7118,7 @@ class Game:
             for item in items
         ])
         self._minigames_menu.open()
-        self._minigames_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.MINIGAME)
         try:
             if hasattr(self, 'ui_state'):
                 self.ui_state.open_overlay(UIOverlay.MINIGAME)
@@ -7350,7 +7142,7 @@ class Game:
 
     def _handle_minigames_menu_input(self, key_str: str, key_name: str = "", key=None) -> bool:
         """Handle input while minigames menu is open."""
-        if not self._minigames_menu_open:
+        if not self.ui_state.is_open(UIOverlay.MINIGAME):
             return False
 
         # Handle arrow keys and enter directly (same as shop)
@@ -7375,7 +7167,6 @@ class Game:
 
         # Close on ESC or J
         if key.name == 'KEY_ESCAPE' or key_str == 'j':
-            self._minigames_menu_open = False
             self._notify_overlay_closed(UIOverlay.MINIGAME)
             self.renderer.dismiss_message()
             return True
@@ -7407,7 +7198,6 @@ class Game:
 
         # Handle fishing separately
         if game_id == "fishing":
-            self._minigames_menu_open = False
             self._notify_overlay_closed(UIOverlay.MINIGAME)
             self.renderer.dismiss_message()
             self._start_fishing("pond")
@@ -7418,7 +7208,6 @@ class Game:
             self.renderer.show_message(msg, duration=2.0)
             return
 
-        self._minigames_menu_open = False
         self._notify_overlay_closed(UIOverlay.MINIGAME)
         self.renderer.dismiss_message()
 
@@ -7943,7 +7732,7 @@ class Game:
             return
 
         self._quests_menu.set_items(items)
-        self._quests_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.QUESTS)
         try:
             if hasattr(self, 'ui_state'):
                 self.ui_state.open_overlay(UIOverlay.QUESTS)
@@ -7987,7 +7776,7 @@ class Game:
         """Show the trading post menu."""
         if not self.duck:
             return
-        self._trading_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.TRADING)
         try:
             if hasattr(self, 'ui_state'):
                 self.ui_state.open_overlay(UIOverlay.TRADING)
@@ -8038,7 +7827,6 @@ class Game:
 
         # Global close
         if key_name == "KEY_ESCAPE":
-            self._trading_menu_open = False
             self._notify_overlay_closed(UIOverlay.TRADING)
             self._trading_state = "selection"
             self.renderer.dismiss_overlay()
@@ -8078,7 +7866,6 @@ class Game:
         else:
             # Trader selection mode
             if key_name == "KEY_BACKSPACE":
-                self._trading_menu_open = False
                 self._notify_overlay_closed(UIOverlay.TRADING)
                 self.renderer.dismiss_overlay()
                 return
@@ -8192,7 +7979,7 @@ class Game:
             ))
         
         # Show menu
-        self._weather_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.WEATHER)
         try:
             if hasattr(self, 'ui_state'):
                 self.ui_state.open_overlay(UIOverlay.WEATHER)
@@ -8241,7 +8028,6 @@ class Game:
                 weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
                 result = self.weather_activities.start_activity(activity.id, weather)
                 
-                self._weather_menu_open = False
                 self._notify_overlay_closed(UIOverlay.WEATHER)
                 self.renderer.dismiss_message()
                 if result:
@@ -8252,7 +8038,6 @@ class Game:
 
         # Close with ESC, Backspace, W, or B
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str in ('w', 'b'):
-            self._weather_menu_open = False
             self._notify_overlay_closed(UIOverlay.WEATHER)
             self.renderer.dismiss_message()
             return
@@ -8270,7 +8055,7 @@ class Game:
                     weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
                     result = self.weather_activities.start_activity(activity.id, weather)
                     
-                    self._weather_menu_open = False
+                    self._notify_overlay_closed(UIOverlay.WEATHER)
                     self.renderer.dismiss_message()
                     if result:
                         self.renderer.show_message(f"Started: {result.name}\n{result.description}\nDuration: {result.duration_seconds}s", duration=3)
@@ -8338,7 +8123,7 @@ class Game:
         if not self.duck:
             return
         
-        self._treasure_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.TREASURE)
         try:
             if hasattr(self, 'ui_state'):
                 self.ui_state.open_overlay(UIOverlay.TREASURE)
@@ -8445,7 +8230,6 @@ class Game:
         
         # Close with ESC, Backspace, or B
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE" or key_str == 'b':
-            self._treasure_menu_open = False
             self._notify_overlay_closed(UIOverlay.TREASURE)
             self.renderer.dismiss_message()
             return
@@ -8581,7 +8365,7 @@ class Game:
         if not self.duck:
             return
         
-        self._festival_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.FESTIVAL)
         try:
             if hasattr(self, 'ui_state'):
                 self.ui_state.open_overlay(UIOverlay.FESTIVAL)
@@ -8624,7 +8408,6 @@ class Game:
         from world.festivals import FESTIVALS
         festival = FESTIVALS.get(active.id)
         if not festival:
-            self._festival_menu_open = False
             self._notify_overlay_closed(UIOverlay.FESTIVAL)
             return
         
@@ -8725,7 +8508,6 @@ class Game:
         
         # Close with ESC, Backspace, or B
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE" or key_str == 'b':
-            self._festival_menu_open = False
             self._notify_overlay_closed(UIOverlay.FESTIVAL)
             self.renderer.dismiss_message()
             return
@@ -8814,7 +8596,6 @@ class Game:
                 self._debug_submenu_page = 0
                 self._show_debug_menu()
             else:
-                self._debug_menu_open = False
                 self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
                 self.renderer.dismiss_overlay()
             return
@@ -9043,7 +8824,7 @@ class Game:
         except Exception:
             self.renderer.show_message(f"# DEBUG: Failed to set weather", duration=2)
         
-        self._debug_menu_open = False
+        self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
@@ -9074,7 +8855,7 @@ class Game:
         else:
             self.renderer.show_message(f"# DEBUG: Event '{event_id}' triggered", duration=2)
         
-        self._debug_menu_open = False
+        self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
@@ -9122,7 +8903,7 @@ class Game:
         greeting = visitor_animator.get_greeting(self.duck.name if self.duck else "Duck")
         self.renderer.show_message(f"# DEBUG: Spawned {personality} visitor\n{greeting}", duration=4)
         
-        self._debug_menu_open = False
+        self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
@@ -9176,7 +8957,7 @@ class Game:
                 self.duck.needs.social = 0
                 self.renderer.show_message("# DEBUG: Social set to 0%", duration=2)
 
-        self._debug_menu_open = False
+        self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
@@ -9195,7 +8976,7 @@ class Game:
             self.habitat.currency = 0
 
         self.renderer.show_message(f"# DEBUG: Coins now ${self.habitat.currency}", duration=2)
-        self._debug_menu_open = False
+        self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
@@ -9218,7 +8999,7 @@ class Game:
         else:
             self.renderer.show_message("# DEBUG: No friends to modify", duration=2)
         
-        self._debug_menu_open = False
+        self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
@@ -9281,7 +9062,7 @@ class Game:
         elif action == "set_night":
             self.renderer.show_message("# DEBUG: Time display simulating night (11 PM)", duration=2)
         
-        self._debug_menu_open = False
+        self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
     
@@ -9318,7 +9099,7 @@ class Game:
             self._debug_set_weather("rainbow")
             return  # Already handles menu close
         
-        self._debug_menu_open = False
+        self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
 
@@ -9329,7 +9110,7 @@ class Game:
 
         if not self.duck:
             self.renderer.show_message("DEBUG: No duck!", duration=2)
-            self._debug_menu_open = False
+            self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
             self.renderer.dismiss_overlay()
             self._debug_submenu = None
             return
@@ -9390,7 +9171,7 @@ class Game:
             except ValueError:
                 self.renderer.show_message(f"DEBUG: Unknown stage {action}", duration=2)
 
-        self._debug_menu_open = False
+        self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
 
@@ -9437,7 +9218,7 @@ class Game:
             self.building.current_build = None
             self.renderer.show_message("# DEBUG: Cleared all structures!", duration=2)
 
-        self._debug_menu_open = False
+        self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
 
@@ -9446,7 +9227,7 @@ class Game:
         from core.automated_test import AutomatedGameTester
         import os
         
-        self._debug_menu_open = False
+        self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
         
@@ -9544,7 +9325,7 @@ Core Systems Tested: {report.total_tests}
         """Debug actions for new features: encounters, trust, drift, rituals, weather."""
         if not self.duck:
             self.renderer.show_message("# DEBUG: No duck!", duration=2)
-            self._debug_menu_open = False
+            self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
             self.renderer.dismiss_overlay()
             self._debug_submenu = None
             return
@@ -9576,7 +9357,7 @@ Core Systems Tested: {report.total_tests}
                 self.renderer.show_message(
                     f"# DEBUG: Unknown encounter '{encounter_id}'", duration=2
                 )
-            self._debug_menu_open = False
+            self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
             self.renderer.dismiss_overlay()
             self._debug_submenu = None
             return
@@ -9981,7 +9762,7 @@ Core Systems Tested: {report.total_tests}
         if msg:
             self.renderer.show_message(msg, duration=5.0)
 
-        self._debug_menu_open = False
+        self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
 
@@ -10119,7 +9900,7 @@ Core Systems Tested: {report.total_tests}
 
     def _open_settings_menu(self):
         """Open the settings menu."""
-        self._settings_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.SETTINGS)
         try:
             if hasattr(self, 'ui_state'):
                 self.ui_state.open_overlay(UIOverlay.SETTINGS)
@@ -10131,7 +9912,6 @@ Core Systems Tested: {report.total_tests}
 
     def _close_settings_menu(self):
         """Close the settings menu without saving."""
-        self._settings_menu_open = False
         self._notify_overlay_closed(UIOverlay.SETTINGS)
         self._settings_menu.discard_changes()
         self.renderer.dismiss_message()
@@ -10199,7 +9979,7 @@ Core Systems Tested: {report.total_tests}
         else:
             # Dialog closed (confirmed or cancelled)
             self._confirmation_dialog = None
-            if self._settings_menu_open:
+            if self.ui_state.is_open(UIOverlay.SETTINGS):
                 self._render_settings_menu()
             else:
                 self.renderer.dismiss_message()
@@ -10218,7 +9998,7 @@ Core Systems Tested: {report.total_tests}
         if not self.duck:
             return
 
-        self._scrapbook_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.SCRAPBOOK)
         try:
             if hasattr(self, 'ui_state'):
                 self.ui_state.open_overlay(UIOverlay.SCRAPBOOK)
@@ -10252,7 +10032,6 @@ Core Systems Tested: {report.total_tests}
         
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
-            self._scrapbook_menu_open = False
             self._notify_overlay_closed(UIOverlay.SCRAPBOOK)
             self.renderer.dismiss_overlay()
             return
@@ -10287,7 +10066,7 @@ Core Systems Tested: {report.total_tests}
 
     def _show_badges_menu(self):
         """Show the badge collection/showcase menu."""
-        self._badges_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.BADGES)
         self._badges_menu_page = 1
         self._badges_menu_category = None
         self._render_badges_menu()
@@ -10308,7 +10087,6 @@ Core Systems Tested: {report.total_tests}
         key_str = str(key).lower()
 
         if key_name in ("KEY_ESCAPE", "KEY_BACKSPACE"):
-            self._badges_menu_open = False
             self._notify_overlay_closed(UIOverlay.BADGES)
             self.renderer.dismiss_overlay()
             return
@@ -10330,7 +10108,7 @@ Core Systems Tested: {report.total_tests}
         """Show the secrets and easter eggs book."""
         if not self.duck:
             return
-        self._secrets_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.SECRETS)
         self._secrets_menu_page = 0
         self._render_secrets_menu()
 
@@ -10370,7 +10148,6 @@ Core Systems Tested: {report.total_tests}
         
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
-            self._secrets_menu_open = False
             self._notify_overlay_closed(UIOverlay.SECRETS)
             self.renderer.dismiss_overlay()
             return
@@ -10398,7 +10175,7 @@ Core Systems Tested: {report.total_tests}
         """Show the prestige/legacy system menu."""
         if not self.duck:
             return
-        self._prestige_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.PRESTIGE)
         self._render_prestige_menu()
 
     def _render_prestige_menu(self):
@@ -10434,21 +10211,20 @@ Core Systems Tested: {report.total_tests}
         
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
-            self._prestige_menu_open = False
             self._notify_overlay_closed(UIOverlay.PRESTIGE)
             self.renderer.dismiss_overlay()
             return
 
         # Prestige action
         if key_str == 'p':
-            self._prestige_menu_open = False
+            self._notify_overlay_closed(UIOverlay.PRESTIGE)
             self.renderer.dismiss_overlay()
             self._perform_prestige()
             return
         
         # Change title
         if key_str == 't':
-            self._prestige_menu_open = False
+            self._notify_overlay_closed(UIOverlay.PRESTIGE)
             self.renderer.dismiss_overlay()
             self._show_titles_menu()
             return
@@ -10585,7 +10361,7 @@ Core Systems Tested: {report.total_tests}
         """Show the garden management menu."""
         if not self.duck:
             return
-        self._garden_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.GARDEN)
         self._garden_selected_plot = 0
         self._render_garden_menu()
 
@@ -10643,7 +10419,6 @@ Core Systems Tested: {report.total_tests}
         
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
-            self._garden_menu_open = False
             self._notify_overlay_closed(UIOverlay.GARDEN)
             self.renderer.dismiss_message()
             return
@@ -10882,7 +10657,7 @@ Core Systems Tested: {report.total_tests}
         if not self.duck:
             return
 
-        self._tricks_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.TRICKS)
         self._render_tricks_menu()
     
     def _render_tricks_menu(self):
@@ -10958,7 +10733,6 @@ Core Systems Tested: {report.total_tests}
         
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
-            self._tricks_menu_open = False
             self._notify_overlay_closed(UIOverlay.TRICKS)
             self.renderer.dismiss_overlay()
             return
@@ -11008,14 +10782,14 @@ Core Systems Tested: {report.total_tests}
         # [T] Train selected trick
         if key_str == 't':
             if selected_trick_id:
-                self._tricks_menu_open = False
+                self._notify_overlay_closed(UIOverlay.TRICKS)
                 self.renderer.dismiss_overlay()
                 self._train_trick(selected_trick_id)
             else:
                 # Try training an available trick
                 available = self.tricks.get_available_tricks()
                 if available:
-                    self._tricks_menu_open = False
+                    self._notify_overlay_closed(UIOverlay.TRICKS)
                     self.renderer.dismiss_overlay()
                     self._train_trick(available[0].id)
                 else:
@@ -11025,7 +10799,7 @@ Core Systems Tested: {report.total_tests}
         # [P] Perform selected trick
         if key_str == 'p':
             if selected_trick_id:
-                self._tricks_menu_open = False
+                self._notify_overlay_closed(UIOverlay.TRICKS)
                 self.renderer.dismiss_overlay()
                 self._perform_trick(selected_trick_id)
             else:
@@ -11175,7 +10949,7 @@ Core Systems Tested: {report.total_tests}
                     duration=3.0
                 )
 
-        self._titles_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.TITLES)
         self._render_titles_menu()
     
     def _render_titles_menu(self):
@@ -11244,7 +11018,6 @@ Core Systems Tested: {report.total_tests}
         
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
-            self._titles_menu_open = False
             self._notify_overlay_closed(UIOverlay.TITLES)
             self.renderer.dismiss_overlay()
             return
@@ -11960,7 +11733,7 @@ Core Systems Tested: {report.total_tests}
         """Show the enhanced diary menu."""
         if not self.duck:
             return
-        self._enhanced_diary_open = True
+        self.ui_state.open_overlay(UIOverlay.ENHANCED_DIARY)
         self._enhanced_diary_tab = "overview"
         self._enhanced_diary_page = 0
         self._render_enhanced_diary()
@@ -12171,7 +11944,6 @@ Core Systems Tested: {report.total_tests}
         
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
-            self._enhanced_diary_open = False
             self._notify_overlay_closed(UIOverlay.ENHANCED_DIARY)
             self.renderer.dismiss_message()
             return
@@ -12314,7 +12086,7 @@ Core Systems Tested: {report.total_tests}
         if not self.duck:
             return
 
-        self._collectibles_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.COLLECTIBLES)
         self._render_collectibles_menu()
 
     def _view_collectible(self, col_id: str):
@@ -12410,7 +12182,6 @@ Core Systems Tested: {report.total_tests}
         
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
-            self._collectibles_menu_open = False
             self._notify_overlay_closed(UIOverlay.COLLECTIBLES)
             self.renderer.dismiss_overlay()
             return
@@ -12517,7 +12288,7 @@ Core Systems Tested: {report.total_tests}
         if not self.duck:
             return
 
-        self._decorations_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.DECORATIONS)
         self._render_decorations_menu()
     
     def _render_decorations_menu(self):
@@ -12582,7 +12353,6 @@ Core Systems Tested: {report.total_tests}
         
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
-            self._decorations_menu_open = False
             self._notify_overlay_closed(UIOverlay.DECORATIONS)
             self.renderer.dismiss_message()
             return
@@ -12653,8 +12423,8 @@ Core Systems Tested: {report.total_tests}
                 self.renderer.show_message(msg, duration=2.0)
         else:
             # Open room selection overlay
-            self._decorations_menu_open = False
-            self._decoration_room_select_open = True
+            self._notify_overlay_closed(UIOverlay.DECORATIONS)
+            self.ui_state.open_overlay(UIOverlay.DECORATION_ROOM)
             self._decoration_room_select_decor_id = decor_id
             self._render_decoration_room_select(decor_id)
 
@@ -12690,7 +12460,6 @@ Core Systems Tested: {report.total_tests}
         key_name = getattr(key, 'name', '') or ''
 
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
-            self._decoration_room_select_open = False
             self._notify_overlay_closed(UIOverlay.DECORATION_ROOM)
             self.renderer.dismiss_overlay()
             # Reopen decorations menu
@@ -12703,7 +12472,7 @@ Core Systems Tested: {report.total_tests}
             if 0 <= idx < len(rooms):
                 room_id = rooms[idx]
                 decor_id = self._decoration_room_select_decor_id
-                self._decoration_room_select_open = False
+                self._notify_overlay_closed(UIOverlay.DECORATION_ROOM)
                 self._place_decoration_in_room(decor_id, room_id)
                 return
 
@@ -12723,7 +12492,7 @@ Core Systems Tested: {report.total_tests}
 
     def _show_save_slots_menu(self):
         """Show the save slots management menu."""
-        self._save_slots_menu_open = True
+        self.ui_state.open_overlay(UIOverlay.SAVE_SLOTS)
         self._save_slots_selected = 0
         self._render_save_slots_menu()
 
@@ -12765,7 +12534,6 @@ Core Systems Tested: {report.total_tests}
         
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
-            self._save_slots_menu_open = False
             self._notify_overlay_closed(UIOverlay.SAVE_SLOTS)
             self.renderer.dismiss_message()
             return
@@ -12792,7 +12560,7 @@ Core Systems Tested: {report.total_tests}
             slot = self.save_slots.slots.get(slot_id)
             if slot and not slot.is_empty:
                 self.save_slots.switch_slot(slot_id)
-                self._save_slots_menu_open = False
+                self._notify_overlay_closed(UIOverlay.SAVE_SLOTS)
                 self.renderer.dismiss_message()
                 self._load_game()
             else:
@@ -12806,7 +12574,7 @@ Core Systems Tested: {report.total_tests}
         
         # New game in selected slot
         if key_str == 'n':
-            self._save_slots_menu_open = False
+            self._notify_overlay_closed(UIOverlay.SAVE_SLOTS)
             self.renderer.dismiss_message()
             self.save_slots.switch_slot(slot_id)
             self._start_new_game()
