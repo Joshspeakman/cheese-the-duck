@@ -774,14 +774,14 @@ DUCK_QUESTIONS: Dict[str, DuckQuestion] = {
     # ========== HABITS ==========
     "morning_routine": DuckQuestion(
         id="morning_routine",
-        text="What's the first thing you do when you wake up? I flap. Then I contemplate existence. Then bread.",
+        text="What's the first thing you do when you wake up? I stare at the pond. Then I contemplate existence. Then bread.",
         category=QuestionCategory.HABITS,
         timing=QuestionTiming.ANY_TIME,
         follow_ups=[
             "That's more structured than my routine. I respect it.",
             "Interesting. I'll think about that next time I'm floating at dawn.",
             "You should add bread to your routine. It improves everything. Scientific fact.",
-            "That's a lot of steps. I do three things. Flap. Think. Eat. In that order. Always.",
+            "That's a lot of steps. I do three things. Stare. Think. Eat. In that order. Always.",
         ]
     ),
     

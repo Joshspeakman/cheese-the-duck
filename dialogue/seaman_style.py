@@ -1051,7 +1051,7 @@ class SeamanDialogue:
                 "*monologuing to the water* And so the duck stood, torn between ecstasy and despair...",
                 "My needs are at WAR with each other. I am the BATTLEFIELD. Pray for me.",
                 "*swoons* The DRAMA of existence! Each moment a SCENE in my autobiography!",
-                "Everything feels like a CLIMAX right now. The bread, the pond, the FEELINGS.",
+                "Everything feels like a SEASON FINALE right now. The bread, the pond, the FEELINGS.",
                 "*narrating* Chapter 47: In Which The Duck Feels Everything At Once.",
                 "I need a STAGE. This pond isn't big enough for my EMOTIONS.",
                 "*dramatic preen* Even my FEATHERS are having a moment.",
