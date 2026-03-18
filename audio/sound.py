@@ -346,6 +346,9 @@ class SoundEngine:
                 self.play_background_music()
         return self.music_muted
 
+    # Alias used by InputDispatcher and game.py
+    toggle_music_mute = toggle_music
+
     def set_music_volume(self, volume: float):
         """Set music volume (0.0 to 1.0). Recommended to keep low (0.1-0.2)."""
         self.music_volume = max(0.0, min(1.0, volume))
