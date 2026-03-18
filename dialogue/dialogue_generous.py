@@ -184,7 +184,7 @@ GENEROUS_DIALOGUE = {
         D("*admits* I re-wrapped your gift four times. The wrapping matters. The inside matters more.", ConversationPhase.MAIN, "friend"),
         D("You once said 'you don't need to bring anything.' I heard 'bring twice as much.' Interpreting.", ConversationPhase.MAIN, "close_friend"),
         D("The first time you gave me something back, I didn't know what to do with my wings.", ConversationPhase.MAIN, "close_friend"),
-        D("Love without gifts feels naked. You taught me naked is okay. Metaphorically.", ConversationPhase.MAIN, "best_friend"),
+        D("Love without gifts feels incomplete. You taught me incomplete is okay. Emotionally.", ConversationPhase.MAIN, "best_friend"),
     ],
 
     # ========== STORIES ==========
