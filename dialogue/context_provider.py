@@ -253,11 +253,13 @@ class GameContextProvider(ContextProvider):
         if game is None:
             return "pond"
         try:
-            world = getattr(game, "world", None)
-            if world is not None:
-                biome = getattr(world, "current_biome", None)
-                if biome is not None:
-                    return getattr(biome, "name", str(biome))
+            exploration = getattr(game, "exploration", None)
+            if exploration is not None:
+                area = getattr(exploration, "current_area", None)
+                if area is not None:
+                    biome = getattr(area, "biome", None)
+                    if biome is not None:
+                        return getattr(biome, "value", str(biome))
         except Exception:
             logger.debug("Failed to read current biome", exc_info=True)
         return "pond"
@@ -267,11 +269,11 @@ class GameContextProvider(ContextProvider):
         if game is None:
             return "home"
         try:
-            duck = getattr(game, "duck", None)
-            if duck is not None:
-                loc = getattr(duck, "current_location", None)
-                if loc is not None:
-                    return str(loc)
+            exploration = getattr(game, "exploration", None)
+            if exploration is not None:
+                area = getattr(exploration, "current_area", None)
+                if area is not None:
+                    return area.name
         except Exception:
             logger.debug("Failed to read current location", exc_info=True)
         return "home"
