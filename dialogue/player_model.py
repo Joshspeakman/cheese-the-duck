@@ -12,6 +12,7 @@ from enum import Enum
 from collections import defaultdict
 import json
 import random
+from dialogue.content_filter import get_content_filter
 
 
 class PlayerTraitAxis(Enum):
@@ -262,6 +263,10 @@ class PlayerModel:
                          sentiment: float = 0.0,
                          importance: float = 0.5):
         """Record something the player said."""
+        # Content filter gate — don't store inappropriate statements
+        if not get_content_filter().is_safe_to_learn(text):
+            return
+
         statement = PlayerStatement(
             text=text,
             timestamp=datetime.now().isoformat(),
@@ -294,6 +299,11 @@ class PlayerModel:
                     confidence: float = 0.8,
                     source: str = "player_stated"):
         """Record a learned fact about the player."""
+        # Content filter gate — don't store inappropriate facts
+        value_str = str(value) if not isinstance(value, bool) else ""
+        if value_str and not get_content_filter().is_safe_to_learn(value_str):
+            return
+
         existing = self.facts.get(fact_type)
         
         if existing:
@@ -603,16 +613,19 @@ class PlayerModel:
         """Try to extract factual information from a statement."""
         text_lower = statement.text.lower()
         
-        # Name extraction (simple patterns)
+        # Name extraction (with override support: "actually my name is X")
         name_patterns = [
-            "my name is ", "i'm ", "i am ", "call me ", "name's "
+            "my name is ", "i'm ", "i am ", "call me ", "name's ",
+            "actually my name is ", "my real name is ",
         ]
         for pattern in name_patterns:
             if pattern in text_lower:
                 idx = text_lower.index(pattern) + len(pattern)
                 potential_name = statement.text[idx:].split()[0].strip(".,!?")
                 if potential_name and len(potential_name) > 1:
-                    self.record_fact("name", potential_name, confidence=0.9, source="player_stated")
+                    # "actually" prefix → higher confidence override
+                    conf = 0.95 if "actually" in pattern else 0.9
+                    self.record_fact("name", potential_name, confidence=conf, source="player_stated")
                     break
         
         # Pet mentions
@@ -621,11 +634,70 @@ class PlayerModel:
             ("i have a dog", "has_dog"),
             ("my cat", "has_cat"),
             ("my dog", "has_dog"),
+            ("i have a bird", "has_bird"),
+            ("my bird", "has_bird"),
+            ("i have a fish", "has_fish"),
+            ("my fish", "has_fish"),
+            ("i have a rabbit", "has_rabbit"),
+            ("my rabbit", "has_rabbit"),
+            ("i have a hamster", "has_hamster"),
+            ("my hamster", "has_hamster"),
         ]
         for pattern, fact_type in pet_patterns:
             if pattern in text_lower:
                 self.record_fact(fact_type, True, confidence=0.85, source="player_stated")
         
+        # Favorite things: "my favorite X is Y"
+        import re as _re
+        fav_match = _re.search(r'my\s+fav(?:ou?rite)?\s+(\w+)\s+is\s+(.+?)(?:\.|$)', text_lower)
+        if fav_match:
+            category = fav_match.group(1).strip()
+            value = statement.text[fav_match.start(2):fav_match.end(2)].strip().rstrip(".,!?")
+            if category and value:
+                self.record_fact(f"favorite_{category}", value, confidence=0.85, source="player_stated")
+
+        # Age: "I'm N years old" / "I am N"
+        age_match = _re.search(r"i[' ]?m\s+(\d{1,3})\s*(?:years?\s*old)?", text_lower)
+        if age_match:
+            age_val = int(age_match.group(1))
+            if 3 <= age_val <= 120:
+                self.record_fact("age", age_val, confidence=0.85, source="player_stated")
+
+        # Job/occupation: "I'm a/an X" or "I work as a/an X"
+        job_match = _re.search(r"i(?:'m| am)\s+an?\s+(\w[\w\s]{1,25}?)(?:\.|,|$)", text_lower)
+        if job_match and not any(w in job_match.group(1) for w in ["bit", "lot", "little", "fan"]):
+            job = job_match.group(1).strip()
+            if len(job) > 2:
+                self.record_fact("occupation", statement.text[job_match.start(1):job_match.end(1)].strip(), confidence=0.7, source="player_stated")
+
+        work_match = _re.search(r"i work (?:as|at)\s+(?:an?\s+)?(.+?)(?:\.|,|$)", text_lower)
+        if work_match:
+            job = work_match.group(1).strip()
+            if job:
+                self.record_fact("occupation", statement.text[work_match.start(1):work_match.end(1)].strip(), confidence=0.8, source="player_stated")
+
+        # Location: "I live in X"
+        loc_match = _re.search(r"i live in\s+(.+?)(?:\.|,|$)", text_lower)
+        if loc_match:
+            loc = statement.text[loc_match.start(1):loc_match.end(1)].strip().rstrip(".,!?")
+            if loc and len(loc) > 1:
+                self.record_fact("location", loc, confidence=0.8, source="player_stated")
+
+        # Siblings: "I have N siblings/brothers/sisters"
+        sib_match = _re.search(r"i have\s+(\d+|a|an|one|two|three|four|five)\s+(siblings?|brothers?|sisters?)", text_lower)
+        if sib_match:
+            num_word = sib_match.group(1)
+            _num_map = {"a": 1, "an": 1, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5}
+            count = _num_map.get(num_word, None)
+            if count is None:
+                try:
+                    count = int(num_word)
+                except ValueError:
+                    count = None
+            if count is not None:
+                rel_type = sib_match.group(2).rstrip("s")  # normalize
+                self.record_fact(f"has_{rel_type}s", count, confidence=0.85, source="player_stated")
+
         # Preference extraction
         like_patterns = ["i like ", "i love ", "i enjoy ", "i prefer "]
         dislike_patterns = ["i hate ", "i don't like ", "i dislike "]

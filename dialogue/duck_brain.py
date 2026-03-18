@@ -25,6 +25,7 @@ from dialogue.questions import QuestionManager, DUCK_QUESTIONS, DuckQuestion
 from dialogue.seaman_style import SeamanDialogue, DialogueLine, DialogueTone
 from dialogue.ritual_tracker import RitualTracker
 from dialogue.memory_recall import MemoryRecall
+from dialogue.vocabulary import VocabularyMemory
 from dialogue.dialogue_core import DialogueContext, DialogueResponse, DialogueMemory, DialogueState
 from dialogue.response_pipeline import create_default_pipeline
 
@@ -130,6 +131,7 @@ class DuckBrain:
         # New dialogue pipeline integration (dual-write alongside existing systems)
         self._dialogue_memory = DialogueMemory()
         self._dialogue_state = DialogueState()
+        self.vocabulary = VocabularyMemory()
         try:
             self._response_pipeline = create_default_pipeline()
         except Exception:
@@ -259,7 +261,15 @@ class DuckBrain:
         # Use provided response or generate one
         if response is None:
             response = self._generate_response(message, context)
-        
+
+        # Check if the player is teaching us a word
+        vocab_response = self.vocabulary.try_learn(message)
+        if vocab_response and response:
+            # Append vocabulary acknowledgment to the existing response
+            response = f"{response}\n\n{vocab_response}"
+        elif vocab_response:
+            response = vocab_response
+
         # Record duck response
         self._last_duck_response = response
         duck_sentiment = 0.1  # Slightly positive (duck is engaging)
@@ -839,6 +849,7 @@ class DuckBrain:
             "last_question_time": self._last_question_time,
             "duck_name": self.duck_name,
             "dialogue_memory": self._dialogue_memory.to_dict(),
+            "vocabulary": self.vocabulary.to_dict(),
         }
     
     @classmethod
@@ -878,6 +889,9 @@ class DuckBrain:
 
         if "dialogue_memory" in data:
             brain._dialogue_memory = DialogueMemory.from_dict(data["dialogue_memory"])
+
+        if "vocabulary" in data:
+            brain.vocabulary = VocabularyMemory.from_dict(data["vocabulary"])
 
         return brain
     

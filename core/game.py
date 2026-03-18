@@ -1801,6 +1801,10 @@ class Game:
                 pass
             self.duck_brain.process_player_message(original_message, response, brain_context)
 
+            # Sync player name to conversation system for response personalization
+            if self.duck_brain.player_model.name and self.conversation:
+                self.conversation.set_player_name(self.duck_brain.player_model.name)
+
         # Show the actual response (replaces the thinking indicator)
         self.renderer.show_message(response, duration=8.0, category="duck")
 
@@ -6010,6 +6014,10 @@ class Game:
         # Connect DuckBrain to LLM chat if available
         self._connect_duck_brain_to_llm()
         
+        # Sync player name to conversation system
+        if self.duck_brain.player_model.name and self.conversation:
+            self.conversation.set_player_name(self.duck_brain.player_model.name)
+
         # Start a new session in DuckBrain
         self.duck_brain.start_session()
 

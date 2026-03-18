@@ -58,6 +58,9 @@ class StubContextProvider(ContextProvider):
     def get_active_event(self) -> Optional[str]:
         return None
 
+    def get_player_name(self) -> Optional[str]:
+        return None
+
 
 class FakeBiomeType:
     """Stand-in for BiomeType enum value."""

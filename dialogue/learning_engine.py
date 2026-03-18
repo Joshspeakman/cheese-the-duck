@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Optional, Tuple, List
 
 from config import SAVE_DIR
+from dialogue.content_filter import get_content_filter
 
 logger = logging.getLogger(__name__)
 
@@ -107,9 +108,17 @@ class LearningEngine:
         Learn a new input-response pair from a successful exchange.
 
         If this exact pair already exists, increment its frequency.
+        Pairs containing blocked content are silently skipped.
         """
         normalized = _normalize(player_input)
         if not normalized or not duck_response.strip():
+            return
+
+        # Content filter gate — don't learn inappropriate content
+        content_filter = get_content_filter()
+        if not content_filter.is_safe_to_learn(player_input):
+            return
+        if not content_filter.is_safe_to_learn(duck_response):
             return
 
         with self._lock:

@@ -95,6 +95,11 @@ class ContextProvider(ABC):
         """Return the active event name, or None."""
         ...
 
+    @abstractmethod
+    def get_player_name(self) -> Optional[str]:
+        """Return the player's name, or None if unknown."""
+        ...
+
 
 # ---------------------------------------------------------------------------
 # GameContextProvider - reads from a live Game instance
@@ -180,6 +185,7 @@ class GameContextProvider(ContextProvider):
             current_location=self.get_current_location(),
             active_visitor=self.get_active_visitor(),
             active_event=self.get_active_event(),
+            player_name=self.get_player_name(),
             recent_topics=recent_topics,
             session_message_count=session_count,
             triggers=triggers or [],
@@ -304,4 +310,18 @@ class GameContextProvider(ContextProvider):
                     return getattr(event, "name", str(event))
         except Exception:
             logger.debug("Failed to read active event", exc_info=True)
+        return None
+
+    def get_player_name(self) -> Optional[str]:
+        game = self._game()
+        if game is None:
+            return None
+        try:
+            duck_brain = getattr(game, "duck_brain", None)
+            if duck_brain is not None:
+                pm = getattr(duck_brain, "player_model", None)
+                if pm is not None:
+                    return getattr(pm, "name", None)
+        except Exception:
+            logger.debug("Failed to read player name", exc_info=True)
         return None

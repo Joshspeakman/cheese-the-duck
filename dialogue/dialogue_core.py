@@ -41,6 +41,7 @@ class DialogueContext:
     current_location: str = "home"
     active_visitor: Optional[str] = None
     active_event: Optional[str] = None
+    player_name: Optional[str] = None
     recent_topics: List[str] = field(default_factory=list)
     session_message_count: int = 0
     triggers: List[str] = field(default_factory=list)

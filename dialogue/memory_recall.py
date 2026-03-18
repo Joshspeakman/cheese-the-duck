@@ -595,6 +595,18 @@ class MemoryRecall:
                 "your hobbies. I remember you talking about them. I was judging. I mean listening.",
                 "so those hobbies you mentioned. still doing them? I'm tracking your character arc.",
             ],
+            "age": [
+                f"you said you're {value}. I filed that. age is just a number. but I filed it anyway.",
+                f"{value}. that's how old you are. I remembered. you're welcome.",
+            ],
+            "occupation": [
+                f"you work as {value}. how's that going. I'm curious. for research purposes.",
+                f"so you're a {value}. I think about that sometimes. when I'm floating.",
+            ],
+            "location": [
+                f"you live in {value}. I've never been. obviously. I'm a duck. in a pond.",
+                f"{value}. that's where you are when you're not here. I have opinions about that. I'll keep them to myself.",
+            ],
         }
 
         options = templates.get(fact_type)
