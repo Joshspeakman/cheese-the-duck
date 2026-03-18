@@ -223,19 +223,33 @@ class GlobalInputHandler(InputHandlerBase):
         key_str = str(key).lower() if not is_sequence else ""
         key_name = getattr(key, 'name', "") or ""
 
+        # Check if any overlay or text-input mode is active.
+        # When an overlay is open, only ESC/arrow/Enter should work — not
+        # letter shortcuts like m/n/q/h which conflict with typing.
+        _overlay_active = bool(context.overlay) and context.overlay != "NONE"
+        if not _overlay_active:
+            try:
+                r = self._game.renderer
+                _overlay_active = (
+                    r.is_talking() or r.is_shop_open()
+                    or r._show_stats or r._show_inventory or r._show_help
+                )
+            except Exception:
+                pass
+
         # Quit [Q] — only when no overlay is active
-        if key_str == 'q' and not context.overlay:
+        if key_str == 'q' and not _overlay_active:
             self._game._quit()
             return True
 
         # Help toggle [H] — only when no overlay is active
-        if key_str == 'h' and not context.overlay:
+        if key_str == 'h' and not _overlay_active:
             self._game._close_all_menus()
             self._game.renderer.toggle_help()
             return True
 
-        # Music mute toggle [M] — works globally
-        if key_str == 'm':
+        # Music mute toggle [M] — only when no overlay/text input is active
+        if key_str == 'm' and not _overlay_active:
             from audio.sound import sound_engine
             sound_engine.toggle_music_mute()
             if sound_engine.music_muted:
@@ -248,16 +262,16 @@ class GlobalInputHandler(InputHandlerBase):
                 self._game.renderer.show_message("Music: ON")
             return True
 
-        # Sound toggle [N] — works globally
-        if key_str == 'n':
+        # Sound toggle [N] — only when no overlay/text input is active
+        if key_str == 'n' and not _overlay_active:
             from audio.sound import sound_engine
             self._game._sound_enabled = sound_engine.toggle()
             status = "ON" if self._game._sound_enabled else "OFF"
             self._game.renderer.show_message(f"Sound: {status}")
             return True
 
-        # Volume up [+] or [=]
-        if key_str in ('+', '='):
+        # Volume up [+] or [=] — only when no overlay/text input is active
+        if key_str in ('+', '=') and not _overlay_active:
             from audio.sound import sound_engine
             new_vol = sound_engine.volume_up()
             vol_bar = sound_engine.get_volume_display()
@@ -266,8 +280,8 @@ class GlobalInputHandler(InputHandlerBase):
             )
             return True
 
-        # Volume down [-] or [_]
-        if key_str in ('-', '_'):
+        # Volume down [-] or [_] — only when no overlay/text input is active
+        if key_str in ('-', '_') and not _overlay_active:
             from audio.sound import sound_engine
             new_vol = sound_engine.volume_down()
             vol_bar = sound_engine.get_volume_display()
