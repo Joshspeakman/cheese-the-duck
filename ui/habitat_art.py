@@ -350,6 +350,7 @@ HABITAT_ITEM_ART: Dict[str, List[str]] = {
     "wish_fountain": [" ╥", " ║", "╔══╗"],
     "dimensional_door": [" ╔═══╗", " ║ ? ║", " ║ ? ║", " ╚═══╝"],
     "philosophers_stone": [" ◇"],
+    "nook_radio": ["    │", " ╔══╧══╗", " ║♪ ◎◎ ║", " ╚═════╝"],
 }
 
 # Item color mapping - use blessed terminal colors
@@ -428,6 +429,9 @@ ITEM_COLORS = {
     "birdbath_garden": _term.color(250),  # Silver
     "water_slide": _term.bright_cyan,
     "water_slide_mega": _term.bright_cyan,
+    
+    # Radio
+    "nook_radio": _term.color(130),  # Brown
     "koi_pond": _term.bright_blue,
     "water_bowl": _term.bright_blue,
     
