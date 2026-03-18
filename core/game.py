@@ -2434,7 +2434,7 @@ class Game:
                 return
 
             # Titles Menu [!] (Shift+1 - quick access since it's a prestige feature)
-            if key_raw == '!':
+            if key_str == '!':
                 self._show_titles_menu()
                 return
 
