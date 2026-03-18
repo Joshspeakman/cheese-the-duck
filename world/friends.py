@@ -1184,6 +1184,7 @@ class VisitEvent:
     mood: str = "happy"
     gift_brought: Optional[str] = None
     waiting_for_gift: bool = False
+    biome: str = ""  # Which biome the visit is happening in
 
 
 # Friendship point thresholds

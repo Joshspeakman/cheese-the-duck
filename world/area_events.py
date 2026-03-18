@@ -16,6 +16,8 @@ from dataclasses import dataclass
 logger = logging.getLogger(__name__)
 
 from core.event_bus import event_bus, BiomeChangedEvent, WeatherChangedEvent
+from world.atmosphere import atmosphere
+from dialogue.travel_dialogue import get_departure_line
 
 if TYPE_CHECKING:
     from duck.duck import Duck
@@ -1316,13 +1318,17 @@ SPONTANEOUS_ARRIVAL_MESSAGES = [
 ]
 
 
+BAD_WEATHER_TYPES = {"storm", "thunderstorm", "blizzard", "hail", "heavy_rain", "tornado", "hurricane"}
+NICE_WEATHER_TYPES = {"sunny", "clear", "partly_cloudy", "warm_breeze", "gentle_rain"}
+
+
 class SpontaneousTravelSystem:
     """
     Manages Cheese's tendency to randomly wander to different unlocked areas.
     
     Cheese has a small chance each game tick to decide to travel somewhere
     new, provided they've been in one place long enough and the destination
-    is already unlocked/discovered.
+    is already unlocked/discovered.  Now weather-aware and motivation-driven.
     """
 
     def __init__(self):
@@ -1331,11 +1337,138 @@ class SpontaneousTravelSystem:
         self._wander_chance: float = 0.003           # ~0.3% per check
         self._wander_cooldown: float = 1800.0        # 30 min between wanders
         self._is_traveling: bool = False
+        self._away_since: float = 0.0
+
+    # ── Weather-aware destination picking ──────────────────────────────────
+
+    def _pick_motivated_destination(
+        self,
+        current_area_name: str,
+        available_areas: list,
+        duck_mood: Optional[str] = None,
+        duck_age: int = 0,
+    ) -> Optional[Dict[str, Any]]:
+        """Pick a destination with an explicit motivation."""
+        other_areas = [a for a in available_areas if a.name != current_area_name]
+        if not other_areas:
+            return None
+
+        # --- Gather weather info ------------------------------------------------
+        try:
+            all_weather = atmosphere.get_all_biome_weather()
+        except Exception:
+            all_weather = {}
+
+        # Current area biome weather
+        current_area = next((a for a in available_areas if a.name == current_area_name), None)
+        current_weather = None
+        if current_area and all_weather:
+            current_weather = all_weather.get(current_area.biome.value)
+
+        cur_type = current_weather.weather_type.value if current_weather else ""
+        cur_intensity = current_weather.intensity if current_weather else 0.0
+
+        # --- Determine motivation (first applicable wins) ----------------------
+        motivation = "boredom"  # fallback
+
+        # weather_escape: bad weather or high intensity at current biome
+        if cur_type in BAD_WEATHER_TYPES or cur_intensity > 0.7:
+            motivation = "weather_escape"
+
+        # weather_enjoy: another biome has nice weather
+        elif all_weather:
+            nice_biome = None
+            for biome_name, w in all_weather.items():
+                wt = w.weather_type.value
+                if wt in NICE_WEATHER_TYPES and w.intensity < 0.3:
+                    # Make sure at least one destination lives in this biome
+                    if any(a.biome.value == biome_name for a in other_areas):
+                        nice_biome = biome_name
+                        break
+            if nice_biome:
+                motivation = "weather_enjoy"
+
+        # boredom: been here > 20 min
+        if motivation == "boredom":
+            time_here = time.time() - self._last_travel_time
+            if time_here <= 1200:
+                # Not bored yet — check other motivations
+                # curiosity: any destination visited < 3 times
+                if any(a.times_visited < 3 for a in other_areas):
+                    motivation = "curiosity"
+                # mood-based
+                elif duck_mood in ("sad", "lonely"):
+                    motivation = "mood_sad"
+                elif duck_mood in ("energetic", "excited"):
+                    motivation = "mood_energetic"
+
+        # Mood overrides can still apply if nothing weather-related
+        if motivation == "boredom":
+            if duck_mood in ("sad", "lonely"):
+                motivation = "mood_sad"
+            elif duck_mood in ("energetic", "excited"):
+                motivation = "mood_energetic"
+
+        # --- Build destination weights by motivation ---------------------------
+        weights: List[float] = []
+
+        if motivation == "weather_escape":
+            for area in other_areas:
+                w = all_weather.get(area.biome.value)
+                intensity = w.intensity if w else 0.5
+                # Prefer lower-intensity biomes
+                weights.append(max(0.1, 1.0 - intensity))
+
+        elif motivation == "weather_enjoy":
+            for area in other_areas:
+                w = all_weather.get(area.biome.value)
+                wt = w.weather_type.value if w else ""
+                if wt in NICE_WEATHER_TYPES and w and w.intensity < 0.3:
+                    weights.append(5.0)
+                else:
+                    weights.append(0.5)
+
+        elif motivation == "curiosity":
+            for area in other_areas:
+                weights.append(max(1, 10 - area.times_visited))
+
+        else:  # boredom, mood_sad, mood_energetic, or any fallback
+            for area in other_areas:
+                weights.append(max(1, 10 - area.times_visited))
+
+        destination = random.choices(other_areas, weights=weights, k=1)[0]
+
+        # Weather strings for departure line
+        dest_weather_obj = all_weather.get(destination.biome.value)
+        dest_weather_str = dest_weather_obj.weather_type.value if dest_weather_obj else ""
+
+        return {
+            "destination": destination,
+            "motivation": motivation,
+            "current_weather": cur_type,
+            "dest_weather": dest_weather_str,
+        }
+
+    # ── Return-home mechanic ──────────────────────────────────────────────
+
+    def check_return_home(self, time_away: float) -> bool:
+        """Escalating probability that Cheese heads home."""
+        if time_away < 300:  # < 5 min: 0%
+            return False
+        if time_away <= 900:  # 5-15 min: linear ramp 0.001 → 0.01
+            prob = 0.001 + (0.009 * (time_away - 300) / 600)
+        else:  # > 15 min
+            prob = 0.02
+        return random.random() < prob
+
+    # ── Main travel check ─────────────────────────────────────────────────
 
     def check_spontaneous_travel(
         self,
         current_area_name: str,
         available_areas: list,
+        duck_mood: Optional[str] = None,
+        duck_age: int = 0,
     ) -> Optional[Dict[str, Any]]:
         """
         Roll for spontaneous travel. Returns travel info dict or None.
@@ -1343,10 +1476,12 @@ class SpontaneousTravelSystem:
         Args:
             current_area_name: Name of current area
             available_areas: List of BiomeArea objects the duck can access
+            duck_mood: Current mood string (e.g. "sad", "energetic")
+            duck_age: Duck's age in days
             
         Returns:
-            Dict with 'destination' (BiomeArea), 'depart_message', 'arrive_message'
-            or None if no travel triggered.
+            Dict with 'destination', 'depart_message', 'arrive_message',
+            'motivation' — or None if no travel triggered.
         """
         now = time.time()
 
@@ -1367,19 +1502,33 @@ class SpontaneousTravelSystem:
         if random.random() > self._wander_chance:
             return None
 
-        # Pick destination (weighted toward less-visited areas)
-        weights = []
-        for area in other_areas:
-            # Less visited = more interesting
-            visit_weight = max(1, 10 - area.times_visited)
-            weights.append(visit_weight)
+        # Pick a motivation-driven destination
+        pick = self._pick_motivated_destination(
+            current_area_name, available_areas,
+            duck_mood=duck_mood, duck_age=duck_age,
+        )
+        if pick is None:
+            return None
 
-        destination = random.choices(other_areas, weights=weights, k=1)[0]
+        destination = pick["destination"]
+        motivation = pick["motivation"]
         self._last_travel_time = now
+        self._away_since = now
 
-        # Build messages
-        depart_msg = random.choice(SPONTANEOUS_TRAVEL_MESSAGES)
-        depart_msg = depart_msg.replace("{destination}", destination.name)
+        # Departure line from dialogue system
+        try:
+            depart_msg = get_departure_line(
+                motivation=motivation,
+                destination=destination.name,
+                current_weather=pick.get("current_weather", ""),
+                dest_weather=pick.get("dest_weather", ""),
+                friend="",
+                age=duck_age,
+                visits=destination.times_visited,
+            )
+        except Exception:
+            depart_msg = random.choice(SPONTANEOUS_TRAVEL_MESSAGES)
+            depart_msg = depart_msg.replace("{destination}", destination.name)
 
         arrive_msg = random.choice(SPONTANEOUS_ARRIVAL_MESSAGES)
         arrive_msg = arrive_msg.replace("{destination}", destination.name)
@@ -1388,6 +1537,7 @@ class SpontaneousTravelSystem:
             "destination": destination,
             "depart_message": depart_msg,
             "arrive_message": arrive_msg,
+            "motivation": motivation,
         }
 
     def record_travel(self):
@@ -1395,12 +1545,16 @@ class SpontaneousTravelSystem:
         self._last_travel_time = time.time()
 
     def to_dict(self) -> dict:
-        return {"last_travel_time": self._last_travel_time}
+        return {
+            "last_travel_time": self._last_travel_time,
+            "away_since": self._away_since,
+        }
 
     @classmethod
     def from_dict(cls, data: dict) -> "SpontaneousTravelSystem":
         system = cls()
         system._last_travel_time = data.get("last_travel_time", time.time())
+        system._away_since = data.get("away_since", 0.0)
         return system
 
 

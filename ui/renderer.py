@@ -184,6 +184,10 @@ class Renderer:
         self._chat_log_visible_lines = 5  # Show 5 lines in the UI
         self._chat_scroll_offset = 0  # Scroll offset (0 = newest at bottom)
         
+        # Cheese away state — when True, duck chat messages are obscured
+        self._cheese_away = False
+        self._cheese_away_biome = ""
+        
         # Menu overlay (separate from chat messages)
         self._menu_overlay_content: List[str] = []  # Menu overlay content
         self._menu_overlay_active = False  # Whether a menu overlay is shown
@@ -3430,6 +3434,11 @@ class Renderer:
         import textwrap
         from datetime import datetime
         
+        # If Cheese is away, obscure duck-category messages
+        if self._cheese_away and category == "duck":
+            from dialogue.travel_dialogue import get_obscured_chat
+            message = get_obscured_chat(self._cheese_away_biome)
+        
         # Add to persistent chat log with timestamp
         timestamp = datetime.now().strftime("%H:%M")
         # Split multi-line messages into separate log entries
@@ -3464,6 +3473,10 @@ class Renderer:
     def add_chat_message(self, message: str, category: str = "system"):
         """Add a message to the chat log without showing overlay."""
         from datetime import datetime
+        # If Cheese is away, obscure duck-category messages
+        if self._cheese_away and category == "duck":
+            from dialogue.travel_dialogue import get_obscured_chat
+            message = get_obscured_chat(self._cheese_away_biome)
         timestamp = datetime.now().strftime("%H:%M")
         for line in message.split('\n'):
             if line.strip():
@@ -3714,7 +3727,8 @@ class Renderer:
         """Clear talk buffer."""
         self._talk_buffer = ""
 
-    def render_offline_summary(self, duck_name: str, hours: float, changes: dict):
+    def render_offline_summary(self, duck_name: str, hours: float, changes: dict,
+                                events: list = None):
         """Render a summary of what happened while offline."""
         if hours < 0.016:
             return
@@ -3744,6 +3758,13 @@ class Renderer:
                 direction = "decreased" if change < 0 else "recovered"
                 line = f"   - {need}: {direction}"
                 lines.append("  " + BOX_DOUBLE["v"] + pad_line(f"  {line}") + BOX_DOUBLE["v"])
+
+        # Show offline events if any
+        if events:
+            lines.append("  " + BOX_DOUBLE["v"] + " " * 44 + BOX_DOUBLE["v"])
+            lines.append("  " + BOX_DOUBLE["v"] + pad_line("  Things that happened:") + BOX_DOUBLE["v"])
+            for evt in events[:8]:  # Show max 8 events
+                lines.append("  " + BOX_DOUBLE["v"] + pad_line(f"   - {evt}") + BOX_DOUBLE["v"])
 
         lines.extend([
             "  " + BOX_DOUBLE["v"] + " " * 44 + BOX_DOUBLE["v"],
