@@ -181,7 +181,8 @@ class OverlayInputHandler(InputHandlerBase):
         return self._name
 
     def handle(self, key: Any, context: InputAction) -> bool:
-        return bool(self._callback(key))
+        self._callback(key)
+        return True  # overlay always consumes input
 
 
 class GlobalInputHandler(InputHandlerBase):
