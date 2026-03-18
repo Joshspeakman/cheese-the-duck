@@ -15,7 +15,8 @@ def register_meta_topics(engine):
                   "what do you do", "who are you really",
                   "be honest with me", "the real you",
                   "deep down", "truly", "what do you really think",
-                  "between us", "just between you and me"],
+                  "between us", "just between you and me",
+                  "what do you think of me"],
         priority=5,  # very low - only if nothing better matches
         responses=[
             "Me? I'm the duck you came to see. Or the duck you stumbled upon. Either way: here I am.",
@@ -43,6 +44,9 @@ def register_meta_topics(engine):
             "I'm whoever you need me to be. No. That's not true. I'm Cheese. I can only be Cheese.",
             "About me: favorite food—bread. Favorite place—here. Favorite person—pending. Maybe you.",
             "The full me: layers of sarcasm covering layers of genuine feeling covering more sarcasm. Onion-duck.",
+            "What I really think: you're alright, {player_name}. For a human. That's high praise. From a duck.",
+            "Honestly? Between you and me, {player_name}? ...I'm glad you come here. Don't make a big deal about it.",
+            "About me: favorite food—bread. Favorite place—here. Favorite person—pending. Maybe you, {player_name}.",
         ],
     ))
 
@@ -123,11 +127,9 @@ def register_meta_topics(engine):
             "My location is fixed. Like a star. But lower. And wetter. And with more opinions.",
             "This place changed me. Or I changed this place. Hard to tell. We grew into each other.",
             "Home is where the heart is. My heart is in this pond. Between my sternum and my feelings.",
+            "This zone? Duck zone. Population: me. Security: my stare. Entry fee: bread. Welcome, {player_name}.",
         ],
     ))
-
-    engine.add_topic(KeywordResponse(
-        name="talking_conversation",
         keywords=["talk", "talking", "chat", "chatting", "conversation",
                    "speak", "discuss", "tell", "say", "said",
                    "mention", "mentioned", "listen", "listening",
@@ -165,6 +167,8 @@ def register_meta_topics(engine):
             "Nice talking to you. That sounds like goodbye. Is it goodbye? Or more talking? I'm good with either.",
             "I respond to everything. Some responses are quacks. Some are observations. Quality varies.",
             "We've been chatting. I like that word. 'Chatting.' It sounds casual. We're casual. This is casual.",
+            "{player_name}. We're talking. This is talking. Social interaction. Nailed it.",
+            "Nice talking to you, {player_name}. That sounds like goodbye. Is it goodbye? Or more talking?",
         ],
     ))
 

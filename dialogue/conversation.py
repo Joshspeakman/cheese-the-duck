@@ -819,12 +819,40 @@ class ConversationSystem:
         self._unified_memory = DialogueMemory()
         self._pipeline = None  # lazy init
         self._context_provider = None
+        self._player_name: Optional[str] = None  # cached for personalization
         if game is not None:
             try:
                 from dialogue.context_provider import GameContextProvider
                 self._context_provider = GameContextProvider(game)
             except Exception:
                 pass
+
+    def set_player_name(self, name: Optional[str]) -> None:
+        """Update the cached player name for response personalization."""
+        self._player_name = name
+
+    def _personalize_response(self, response: str) -> str:
+        """
+        Substitute {player_name} placeholders and occasionally
+        prepend the player's name to responses for familiarity.
+        """
+        name = self._player_name
+        if not name:
+            # Strip any leftover placeholders
+            response = response.replace("{player_name}", "")
+            response = response.replace("{player_name}. ", "")
+            return response
+
+        # Substitute explicit placeholders
+        if "{player_name}" in response:
+            response = response.replace("{player_name}", name)
+            return response
+
+        # Occasionally prepend name (~12% chance) for deadpan familiarity
+        if random.random() < 0.12 and not response.startswith(name):
+            response = f"{name}. {response}"
+
+        return response
 
     def get_greeting(self, duck: "Duck") -> str:
         """Get a greeting based on duck's current state."""
@@ -1106,6 +1134,9 @@ class ConversationSystem:
             self._unified_memory.record_exchange(player_input, response, ctx, resp)
         except Exception:
             logger.debug("Unified memory dual-write failed", exc_info=True)
+
+        # Personalize response — substitute {player_name} and occasionally prepend name
+        response = self._personalize_response(response)
 
         return response
 

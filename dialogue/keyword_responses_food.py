@@ -52,6 +52,8 @@ def register_food_topics(engine):
             "My stomach and I have a deal: I find food, it processes food. Partnership of the century.",
             "Eating is the closest thing to joy I experience regularly. Close second: bread-related anticipation.",
             "I've never turned down food. My acceptance rate is 100%. Perfect score.",
+            "{player_name}. Food. Now. Please. In that order.",
+            "Feed me, {player_name}. Or witness the saddest duck in recorded history. Your choice.",
         ],
     ))
 

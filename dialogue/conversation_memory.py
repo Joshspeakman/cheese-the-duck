@@ -12,6 +12,7 @@ from enum import Enum
 from collections import defaultdict
 import json
 import hashlib
+from dialogue.content_filter import get_content_filter
 
 
 class MessageRole(Enum):
@@ -222,13 +223,14 @@ class ConversationMemory:
             if self.current_conversation.id not in self.topic_index[topic]:
                 self.topic_index[topic].append(self.current_conversation.id)
         
-        # Check for notable quotes
+        # Check for notable quotes (only if content passes filter)
         if role == "player" and self._is_notable_quote(content):
-            self.notable_quotes.append((
-                content,
-                self.current_conversation.id,
-                msg.timestamp
-            ))
+            if get_content_filter().is_safe_to_learn(content):
+                self.notable_quotes.append((
+                    content,
+                    self.current_conversation.id,
+                    msg.timestamp
+                ))
         
         # Extract facts from player messages
         if role == "player":

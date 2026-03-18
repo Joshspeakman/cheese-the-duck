@@ -86,6 +86,9 @@ def register_social_topics(engine):
             "Friendship bracelets would be awkward. No wrists. But the sentiment? I'd accept the sentiment.",
             "If friendship were a pond, ours would be... this one. Small but real.",
             "I value your company. Not monetarily. Ducks don't have money. But emotionally. A little.",
+            "Are we friends, {player_name}? You show up. I talk. That's friendship by my standards.",
+            "{player_name}. You showed up. Friends are people who show up. The math is simple.",
+            "You're the closest thing I have to a friend, {player_name}. Don't let that go to your head.",
         ],
     ))
 
@@ -502,6 +505,8 @@ def register_social_topics(engine):
             "Need assistance? I'm right here. In the pond. Where I've been. Where I'll continue to be.",
             "Favors? I deal in favors. My currency: bread. Do me a favor? Bread. I do you a favor? Also bread.",
             "I want to help. I genuinely do. The spirit is willing. The duck is... standing here.",
+            "{player_name}. You need help? I'm here. I can't DO much. But I can BE here.",
+            "I'll help, {player_name}. Tell me what you need. If it involves standing here and commenting, I'm YOUR duck.",
         ],
     ))
 
@@ -543,5 +548,7 @@ def register_social_topics(engine):
             "Trust me like you trust the sunrise. I'm here every morning. Same pond. Same duck. Same stance.",
             "Loyalty means choosing someone every day. I choose this pond. And by extension, you. When you're here.",
             "I'm reliable. Like the tides. But smaller. And in freshwater. And less dramatic.",
+            "Trust, {player_name}? I'm in the same spot every day. You can trust that.",
+            "Trust issues? I trust the pond. I trust bread. People? I trust one of them. You, {player_name}. Maybe.",
         ],
     ))

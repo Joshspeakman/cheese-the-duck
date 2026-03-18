@@ -86,6 +86,8 @@ def register_life_topics(engine):
             "I don't need a purpose. I have a pond. A purpose would just complicate things.",
             "*looks at sky* The universe doesn't owe me meaning. But I MAKE meaning. From water. And bread. And this.",
             "What's it all for? If I knew, I'd tell you. But also, knowing might ruin the mystery. And I like the mystery.",
+            "I matter. You matter, {player_name}. The pond matters. Everything matters a little.",
+            "Why are we here, {player_name}? I'm here because this is where the pond is. Your reasons are your own.",
         ],
     ))
 
