@@ -1373,6 +1373,8 @@ class FriendsSystem:
             friend.special_memories.append(
                 f"Became {new_level.value.replace('_', ' ')} on {datetime.now().strftime('%Y-%m-%d')}"
             )
+            if len(friend.special_memories) > 20:
+                friend.special_memories = friend.special_memories[-20:]
             
             # Trigger callback if set
             if self.on_friendship_level_up:

@@ -3,6 +3,7 @@ Mood system - calculates duck's emotional state from needs.
 Includes 8 moods: 6 score-based + 2 contextual overrides (DRAMATIC, PETTY).
 """
 from typing import List, Optional
+from collections import deque
 from dataclasses import dataclass
 from enum import Enum
 
@@ -297,8 +298,8 @@ class MoodCalculator:
     """Calculates and tracks the duck's mood."""
 
     def __init__(self):
-        self._history: List[float] = []
         self._max_history = 10
+        self._history: deque = deque(maxlen=self._max_history)
 
     def calculate_score(self, needs: "Needs") -> float:
         """
@@ -361,8 +362,6 @@ class MoodCalculator:
 
         # Track history
         self._history.append(score)
-        if len(self._history) > self._max_history:
-            self._history.pop(0)
 
         # ── Contextual override: DRAMATIC ─────────────────────────────
         # Triggers when needs are wildly unbalanced OR mood is swinging.
@@ -388,7 +387,7 @@ class MoodCalculator:
         if (state not in (MoodState.DRAMATIC, MoodState.MISERABLE, MoodState.SAD)
                 and score >= MOOD_PETTY_CURRENT_MIN):
             depth = min(len(self._history), MOOD_PETTY_HISTORY_DEPTH)
-            recent = self._history[-depth:]
+            recent = list(self._history)[-depth:]
             if any(s < MOOD_PETTY_RECOVERY_FLOOR for s in recent):
                 state = MoodState.PETTY
 
@@ -412,7 +411,7 @@ class MoodCalculator:
         if len(self._history) < 3:
             return "stable"
 
-        recent = self._history[-3:]
+        recent = list(self._history)[-3:]
         if recent[-1] > recent[0] + 5:
             return "improving"
         elif recent[-1] < recent[0] - 5:
@@ -427,11 +426,11 @@ class MoodCalculator:
 
     def get_history(self) -> List[float]:
         """Get mood score history."""
-        return self._history.copy()
+        return list(self._history)
 
     def set_history(self, history: List[float]):
         """Set mood history from saved data."""
-        self._history = history[-self._max_history:]
+        self._history = deque(history[-self._max_history:], maxlen=self._max_history)
 
     def get_mood_bar(self, score: float, width: int = 20) -> str:
         """

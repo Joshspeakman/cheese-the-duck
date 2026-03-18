@@ -369,10 +369,17 @@ class DayNightSystem:
             bonus_id = f"full_moon_{today}"
             if bonus_id not in self.time_bonuses_claimed:
                 self.time_bonuses_claimed[bonus_id] = today
+                self._prune_bonuses()
                 self.full_moons_experienced += 1
                 return ("O Full Moon Bonus! Mystical energy!", 75, 35)
         
         return None
+    
+    def _prune_bonuses(self):
+        """Keep only the last 30 time bonus entries in memory."""
+        if len(self.time_bonuses_claimed) > 30:
+            items = list(self.time_bonuses_claimed.items())
+            self.time_bonuses_claimed = dict(items[-30:])
     
     def check_shooting_star(self) -> bool:
         """Random chance for a shooting star at night. Returns True if one appears."""

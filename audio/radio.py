@@ -12,6 +12,7 @@ import atexit
 import logging
 import subprocess
 import threading
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -122,10 +123,13 @@ class RadioPlayer:
         self._lock = threading.Lock()
         self._generation = 0  # Incremented on each play/stop to prevent stale threads
 
+        # Single worker thread for play/stop operations (prevents thread accumulation)
+        self._executor = ThreadPoolExecutor(max_workers=1)
+
         # Detect player in background to avoid blocking init
         self._player: Optional[str] = None
         self._player_detected = False
-        threading.Thread(target=self._detect_player_background, daemon=True).start()
+        self._executor.submit(self._detect_player_background)
     
     def _detect_player_background(self):
         """Detect available audio player in background thread."""
@@ -251,9 +255,19 @@ class RadioPlayer:
         except OSError:
             pass
     
+    def shutdown(self):
+        """Shut down the radio executor and kill any running process."""
+        try:
+            with self._lock:
+                self._kill_process()
+            self._executor.shutdown(wait=False)
+        except Exception:
+            pass
+
     @property
     def is_playing(self) -> bool:
         with self._lock:
+
             return self._is_playing
     
     @property
@@ -348,7 +362,7 @@ class RadioPlayer:
                     self._is_playing = False
                     self._current_station = None
 
-        threading.Thread(target=spawn_player, daemon=True).start()
+        self._executor.submit(spawn_player)
 
         # Callbacks - these should be fast
         if self._on_start_callback:
@@ -376,7 +390,7 @@ class RadioPlayer:
                 if self._generation == gen:
                     self._kill_process()
 
-        threading.Thread(target=kill_in_background, daemon=True).start()
+        self._executor.submit(kill_in_background)
     
     def change_station(self, station_id: StationID) -> bool:
         self.play(station_id)

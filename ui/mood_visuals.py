@@ -336,14 +336,13 @@ class MoodVisualEffects:
         lines = []
         
         for _ in range(height):
-            line = ""
+            chars = []
             for _ in range(width):
                 if random.random() < 0.1 * theme.brightness:
-                    char = random.choice(theme.background_chars) if theme.background_chars else " "
+                    chars.append(random.choice(theme.background_chars) if theme.background_chars else " ")
                 else:
-                    char = " "
-                line += char
-            lines.append(line)
+                    chars.append(" ")
+            lines.append("".join(chars))
         
         return lines
     

@@ -80,6 +80,26 @@ class SaveSlotsSystem:
                     is_empty=True,
                 )
     
+    def refresh_slot(self, slot_id: int):
+        """Refresh information about a single save slot."""
+        save_path = self.get_save_path(slot_id)
+        if save_path.exists():
+            try:
+                with open(save_path, 'r') as f:
+                    data = json.load(f)
+                self.slots[slot_id] = self._parse_save_data(slot_id, data)
+            except (json.JSONDecodeError, KeyError, IOError):
+                self.slots[slot_id] = SaveSlotInfo(
+                    slot_id=slot_id,
+                    is_empty=False,
+                    duck_name="CORRUPTED",
+                )
+        else:
+            self.slots[slot_id] = SaveSlotInfo(
+                slot_id=slot_id,
+                is_empty=True,
+            )
+
     def _parse_save_data(self, slot_id: int, data: dict) -> SaveSlotInfo:
         """Parse save data into slot info."""
         duck_data = data.get("duck", {})
@@ -209,7 +229,7 @@ class SaveSlotsSystem:
                 return False
             
             # Refresh slot info
-            self.refresh_slots()
+            self.refresh_slot(slot_id)
             return True
             
         except IOError:
@@ -229,7 +249,7 @@ class SaveSlotsSystem:
             if backup_path.exists():
                 backup_path.unlink()
             
-            self.refresh_slots()
+            self.refresh_slot(slot_id)
             return True
             
         except IOError:
@@ -253,7 +273,7 @@ class SaveSlotsSystem:
         
         try:
             shutil.copy2(backup_path, save_path)
-            self.refresh_slots()
+            self.refresh_slot(slot_id)
             return True
         except IOError:
             return False

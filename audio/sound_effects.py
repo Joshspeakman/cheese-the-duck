@@ -3,6 +3,7 @@ Sound Effects System - Expanded duck sounds and game audio.
 Text-based sound representations with timing and context awareness.
 """
 from dataclasses import dataclass, field
+from collections import deque
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Callable
 from enum import Enum
@@ -894,9 +895,11 @@ ALL_SOUND_EFFECTS = {
 class SoundEffectSystem:
     """Manages sound effects playback (text-based)."""
     
+    MAX_ACTIVE_SOUNDS = 20
+
     def __init__(self):
         self.active_sounds: List[ActiveSound] = []
-        self.sound_history: List[Dict] = []
+        self.sound_history: deque = deque(maxlen=100)
         self.last_played: Dict[str, float] = {}  # sound_id -> timestamp
         self.volume_master: float = 1.0
         self.volume_categories: Dict[SoundCategory, float] = {
@@ -964,19 +967,17 @@ class SoundEffectSystem:
         )
         
         self.active_sounds.append(active)
+        if len(self.active_sounds) > self.MAX_ACTIVE_SOUNDS:
+            self.active_sounds = self.active_sounds[-self.MAX_ACTIVE_SOUNDS:]
         self.last_played[sound_id] = current_time
         
-        # Record in history
+        # Record in history (deque auto-evicts oldest)
         self.sound_history.append({
             "sound_id": sound_id,
             "text": text,
             "time": datetime.now().isoformat(),
             "intensity": intensity,
         })
-        
-        # Keep history limited
-        if len(self.sound_history) > 100:
-            self.sound_history = self.sound_history[-100:]
             
         return text
         

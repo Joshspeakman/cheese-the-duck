@@ -470,7 +470,8 @@ class GoalSystem:
                 if goal.progress >= goal.target:
                     goal.completed = True
                     goal.hidden = False  # Reveal secret goals on completion
-                    self._completed_goals.append(goal.id)
+                    if goal.id not in self._completed_goals:
+                        self._completed_goals.append(goal.id)
                     completed.append(goal)
 
         return completed
