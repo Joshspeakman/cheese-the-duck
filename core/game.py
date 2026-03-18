@@ -714,6 +714,18 @@ class Game:
         if not key:
             return
 
+        # Dismiss offline summary on ANY key press
+        if self._state == "offline_summary":
+            self._state = "playing"
+            self._pending_offline_summary = None
+            # Start game music after dismissing offline summary
+            sound_engine.stop_background_music()
+            weather_str = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+            duck_mood = self.duck.get_mood().state.value if self.duck else "content"
+            music_context = get_music_context(weather=weather_str, duck_mood=duck_mood)
+            sound_engine.update_music(music_context, force=True)
+            return
+
         # Try InputDispatcher first (sole authority for registered overlays)
         try:
             overlay = self.ui_state.get_active().name
@@ -2205,19 +2217,7 @@ class Game:
             self._notify_overlay_closed(UIOverlay.GOALS)
             return
 
-        # State-specific actions
-        if self._state == "offline_summary":
-            self._state = "playing"
-            self._pending_offline_summary = None
-            # Start game music after dismissing offline summary
-            sound_engine.stop_music()
-            sound_engine.stop_background_music()
-            weather_str = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
-            duck_mood = self.duck.get_mood().state.value if self.duck else "content"
-            music_context = get_music_context(weather=weather_str, duck_mood=duck_mood)
-            sound_engine.update_music(music_context, force=True)
-            return
-
+        # State-specific actions (offline_summary handled in _process_input)
         if self._state == "playing" and self.duck:
             self._handle_playing_action(action, key)
 
