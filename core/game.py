@@ -455,6 +455,14 @@ class Game:
         self._travel_destination = None   # Where duck is traveling to
         self._spontaneous_arrival_msg = None  # Message to show after spontaneous travel
 
+        # Cheese-away tracking (autonomous biome travel with separation)
+        self._cheese_away = False             # True when Cheese is in a different biome from player
+        self._cheese_away_biome = ""          # Which biome Cheese is at
+        self._cheese_away_destination = ""    # Name of the area Cheese went to
+        self._cheese_away_since = 0.0         # When Cheese left
+        self._cheese_away_friend = ""         # Friend that went with Cheese (if any)
+        self._player_biome = ""               # The biome the player is viewing
+
         # Interaction cooldowns (in seconds)
         self._interaction_cooldowns = {
             "feed": 30,      # Can feed every 30 seconds
@@ -1392,20 +1400,37 @@ class Game:
             self.renderer.show_message(f"Unlock at level {item.unlock_level}!")
             return
 
+        # Check if this item goes to consumable inventory
+        goes_to_inv = getattr(item, 'goes_to_inventory', False)
+
         # Try to purchase
-        if self.habitat.purchase_item(item.id):
+        if goes_to_inv:
+            # Inventory item: deduct currency manually, add to inventory
+            if not self.habitat.can_afford(item.cost):
+                self.renderer.show_message(f"Need ${item.cost - self.habitat.currency} more!")
+                return
+            self.habitat.currency -= item.cost
+            if self.inventory.add_item(item.id):
+                self.renderer.show_message(f"Purchased {item.name}! Added to inventory.")
+            else:
+                self.renderer.show_message("Inventory full!")
+                self.habitat.currency += item.cost  # Refund
+                return
+        elif self.habitat.purchase_item(item.id):
             self.renderer.show_message(f"Purchased {item.name}! x")
-            # Award XP for shopping
-            new_level = self.progression.add_xp(5)
-            if new_level:
-                self._on_level_up(new_level)
-            # Satisfy any ACQUIRE goal for this item
-            self._on_item_purchased(item.name)
         else:
             if self.habitat.owns_item(item.id):
                 self.renderer.show_message("Already owned!")
             else:
                 self.renderer.show_message(f"Need ${item.cost - self.habitat.currency} more!")
+            return
+
+        # Award XP for shopping (both paths)
+        new_level = self.progression.add_xp(5)
+        if new_level:
+            self._on_level_up(new_level)
+        # Satisfy any ACQUIRE goal for this item
+        self._on_item_purchased(item.name)
 
     def _toggle_selected_item_visibility(self):
         """Toggle the visibility of the currently selected shop item."""
@@ -1486,6 +1511,22 @@ class Game:
                 duck_sounds.quack("happy")
             else:
                 self.renderer.show_message(msg, duration=3.0, category="duck")
+            return
+
+        # ── Breadcrumbs special handling (summon Cheese) ──────────────
+        if item_id == "breadcrumbs":
+            from dialogue.travel_dialogue import get_breadcrumb_line
+            if self._cheese_away:
+                # Summon Cheese home
+                self.inventory.use_item(item_id, self.duck)
+                self._bring_cheese_home(breadcrumb=True)
+                duck_sounds.quack("excited")
+            else:
+                # Cheese is already here — just a snack
+                msg = get_breadcrumb_line(cheese_is_here=True)
+                self.inventory.use_item(item_id, self.duck)
+                self.renderer.show_message(msg, duration=4.0, category="duck")
+                duck_sounds.quack("happy")
             return
 
         # Look up item data for category-based enforcement
@@ -4721,6 +4762,11 @@ class Game:
         if not self.duck:
             return
 
+        # If Cheese is already away, check if he returns
+        if self._cheese_away:
+            self._check_cheese_return()
+            return
+
         # Don't trigger during travel, exploration, menus, or encounters
         if self._duck_traveling or self._duck_exploring or self._is_any_menu_open():
             return
@@ -4737,15 +4783,21 @@ class Game:
         if len(available) < 2:
             return
 
+        # Get duck mood and age for motivation-aware travel
+        duck_mood = self.duck.get_mood().state.value if self.duck else None
+        duck_age = getattr(self.duck, 'age_days', 0) if self.duck else 0
+
         # Roll for spontaneous travel
-        result = self.spontaneous_travel.check_spontaneous_travel(current_name, available)
+        result = self.spontaneous_travel.check_spontaneous_travel(
+            current_name, available, duck_mood=duck_mood, duck_age=duck_age
+        )
         if not result:
             return
 
         destination = result["destination"]
 
         # Show departure message
-        self.renderer.show_message(result["depart_message"], duration=4.0, category="duck")
+        self.renderer.show_message(result["depart_message"], duration=6.0, category="duck")
 
         # Record in duck memory
         self.duck.memory.add_event(
@@ -4755,14 +4807,145 @@ class Game:
             emotional_value=3,
         )
 
-        # Store arrival message for when travel completes
-        self._spontaneous_arrival_msg = result.get("arrive_message")
+        # Set cheese-away state (duck goes, player stays)
+        self._cheese_away = True
+        self._cheese_away_biome = destination.biome.value
+        self._cheese_away_destination = destination.name
+        self._cheese_away_since = time.time()
+        self.renderer._cheese_away = True
+        self.renderer._cheese_away_biome = destination.name
 
-        # Actually travel there
-        self._start_travel_to_area(destination)
+        # 50/50 friend invitation
+        self._try_invite_friend_on_travel(destination)
 
-        # After a delay, we'll show the arrival message (handled in _complete_travel)
-        self._spontaneous_arrival_msg = result["arrive_message"]
+    def _try_invite_friend_on_travel(self, destination):
+        """Maybe invite a friend to travel with Cheese."""
+        import random as _rng
+        if not self.friends or _rng.random() > 0.5:
+            return
+        # Pick a random friend
+        all_friends = list(self.friends.friends.values())
+        if not all_friends:
+            return
+        friend = _rng.choice(all_friends)
+        friend_name = friend.name
+
+        from dialogue.travel_dialogue import get_friend_invite_line, get_friend_response
+        invite_msg = get_friend_invite_line(friend_name, destination.name)
+        self.renderer.add_chat_message(invite_msg, category="duck")
+
+        # 50/50 accept/decline
+        accepted = _rng.random() < 0.5
+        response = get_friend_response(friend_name, destination.name, accepted)
+        self.renderer.add_chat_message(response, category="friend")
+
+        if accepted:
+            self._cheese_away_friend = friend_name
+
+    def _check_cheese_return(self):
+        """Check if Cheese decides to come home."""
+        time_away = time.time() - self._cheese_away_since
+        if self.spontaneous_travel.check_return_home(time_away):
+            self._bring_cheese_home()
+
+    def _bring_cheese_home(self, breadcrumb=False):
+        """Bring Cheese back from autonomous travel."""
+        if not self._cheese_away:
+            return
+
+        if breadcrumb:
+            from dialogue.travel_dialogue import get_breadcrumb_line
+            msg = get_breadcrumb_line(cheese_is_here=False)
+        else:
+            from dialogue.travel_dialogue import get_return_line
+            msg = get_return_line(origin=self._cheese_away_destination)
+
+        self.renderer.show_message(msg, duration=5.0, category="duck")
+
+        # Record in memory
+        if self.duck:
+            self.duck.memory.add_event(
+                f"Returned from {self._cheese_away_destination}",
+                msg,
+                importance=3,
+                emotional_value=3,
+            )
+
+        # Clear cheese-away state
+        self._cheese_away = False
+        self._cheese_away_biome = ""
+        self._cheese_away_destination = ""
+        self._cheese_away_since = 0.0
+        self._cheese_away_friend = ""
+        self.renderer._cheese_away = False
+        self.renderer._cheese_away_biome = ""
+
+    def _simulate_offline_world(self, hours_away: float) -> list:
+        """Simulate world events that happened while the game was closed.
+        
+        Steps through time in 30-minute ticks, rolling for weather changes,
+        friend visits, spontaneous Cheese travel, and item finds.
+        Returns a list of event description strings for the offline summary.
+        """
+        events = []
+        ticks = int(min(hours_away * 2, 96))  # 30-min ticks, cap at 48 hours
+
+        for tick in range(ticks):
+            # Weather changes (~20% chance per tick)
+            if random.random() < 0.20:
+                try:
+                    old_weather = self.atmosphere.current_weather
+                    self.atmosphere.update()
+                    new_weather = self.atmosphere.current_weather
+                    if old_weather and new_weather and old_weather.weather_type != new_weather.weather_type:
+                        events.append(f"Weather changed to {new_weather.weather_type.value}")
+                except Exception:
+                    pass
+
+            # Friend visits (~5% chance per tick, daytime only)
+            simulated_hour = (8 + tick) % 24  # Start from 8 AM
+            if 7 <= simulated_hour <= 22 and random.random() < 0.05:
+                try:
+                    visited, msg = self.friends.check_for_random_visitor(simulated_hour)
+                    if visited:
+                        friend_name = "A friend"
+                        if self.friends.current_visit:
+                            f = self.friends.get_friend_by_id(self.friends.current_visit.friend_id)
+                            if f:
+                                friend_name = f.name
+                            # End the visit immediately for simulation
+                            self.friends.end_visit()
+                        events.append(f"{friend_name} stopped by")
+                except Exception:
+                    pass
+
+            # Cheese spontaneous travel (~3% chance per tick)
+            if random.random() < 0.03:
+                try:
+                    available = self.exploration.get_available_areas(self.progression.level)
+                    if len(available) >= 2:
+                        current_name = "Home Pond"
+                        if self.exploration.current_area:
+                            current_name = self.exploration.current_area.name
+                        areas = [a for a in available if a.name != current_name]
+                        if areas:
+                            dest = random.choice(areas)
+                            events.append(f"Cheese explored {dest.name}")
+                except Exception:
+                    pass
+
+            # Item finds (~2% chance per tick)
+            if random.random() < 0.02:
+                try:
+                    from world.items import get_random_item, get_item_info
+                    item_id = get_random_item("common")
+                    if item_id and self.inventory.add_item(item_id):
+                        item = get_item_info(item_id)
+                        events.append(f"Found {item.name}")
+                except Exception:
+                    pass
+
+        return events
 
     def _start_event_animation(self, event_id: str):
         """Start an event animation."""
@@ -5119,6 +5302,7 @@ class Game:
                 summary["name"],
                 summary["hours"],
                 summary["changes"],
+                events=summary.get("events"),
             )
         elif self._state == "playing":
             self.renderer.render_frame(self)
@@ -5829,6 +6013,16 @@ class Game:
         else:
             self.spontaneous_travel = SpontaneousTravelSystem()
 
+        # Restore cheese-away state
+        self._cheese_away = data.get("cheese_away", False)
+        self._cheese_away_biome = data.get("cheese_away_biome", "")
+        self._cheese_away_destination = data.get("cheese_away_destination", "")
+        self._cheese_away_since = data.get("cheese_away_since", 0.0)
+        self._cheese_away_friend = data.get("cheese_away_friend", "")
+        if self._cheese_away:
+            self.renderer._cheese_away = True
+            self.renderer._cheese_away_biome = self._cheese_away_destination
+
         # Load duck desires / daily goals
         if "desires" in data and data["desires"]:
             self.duck._desires = DuckDesires.from_dict(data["desires"])
@@ -5909,6 +6103,9 @@ class Game:
                     cooldown_seconds = cooldown_days * 24 * 3600
                     self.duck.cooldown_until = time.time() + cooldown_seconds
 
+                # Tick-based offline world simulation
+                offline_events = self._simulate_offline_world(offline["hours"])
+
                 # Show offline summary
                 self._pending_offline_summary = {
                     "name": self.duck.name,
@@ -5916,6 +6113,7 @@ class Game:
                     "raw_hours": offline["raw_hours"],
                     "changes": changes,
                     "trust_loss": round(trust_loss, 1),
+                    "events": offline_events,
                 }
                 self._state = "offline_summary"
         else:
@@ -6054,6 +6252,11 @@ class Game:
             # Area event system and spontaneous travel
             "area_events": self.area_events.to_dict(),
             "spontaneous_travel": self.spontaneous_travel.to_dict(),
+            "cheese_away": self._cheese_away,
+            "cheese_away_biome": self._cheese_away_biome,
+            "cheese_away_destination": self._cheese_away_destination,
+            "cheese_away_since": self._cheese_away_since,
+            "cheese_away_friend": self._cheese_away_friend,
             # Duck desires / daily goals
             "desires": self.duck.desires.to_dict() if hasattr(self.duck, '_desires') else {},
             # ============== END NEW FEATURE SYSTEMS ==============

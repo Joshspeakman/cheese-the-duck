@@ -47,6 +47,7 @@ class ShopItem:
     size: str  # "small", "medium", "large"
     animated: bool = False
     interaction_text: List[str] = None  # What duck says when interacting
+    goes_to_inventory: bool = False  # If True, purchased item goes to consumable inventory
     
     def __post_init__(self):
         if self.interaction_text is None:
@@ -1900,6 +1901,19 @@ register_item(ShopItem(
     category=ItemCategory.SPECIAL, rarity=ItemRarity.RARE,
     cost=500, unlock_level=3, unlock_xp=500, size="small", animated=True,
     interaction_text=["*music plays softly*", "What a lovely tune!"]
+))
+
+# ========================================
+# CONSUMABLE SHOP ITEMS (go to inventory)
+# ========================================
+
+register_item(ShopItem(
+    id="breadcrumbs", name="Breadcrumbs",
+    description="Scatter them to summon Cheese from any biome. He WILL smell them.",
+    category=ItemCategory.SPECIAL, rarity=ItemRarity.COMMON,
+    cost=2, unlock_level=1, unlock_xp=0, size="small",
+    goes_to_inventory=True,
+    interaction_text=["*sniff sniff* Is that... bread?"]
 ))
 
 

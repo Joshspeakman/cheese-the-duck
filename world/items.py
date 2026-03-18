@@ -505,6 +505,20 @@ ITEMS = {
         rarity="uncommon",
         icon="[+]",
     ),
+    # ── Breadcrumbs (summon Cheese when away) ──────────────────────
+    "breadcrumbs": Item(
+        id="breadcrumbs",
+        name="Breadcrumbs",
+        description="Scatter them and Cheese will find his way back.",
+        item_type=ItemType.SPECIAL,
+        effects={},  # Handled by game.py summon logic, not need effects
+        mood_bonus=0,
+        duck_reaction="excited",
+        use_message="",  # Custom message from travel_dialogue
+        consumable=True,
+        rarity="common",
+        icon="[~]",
+    ),
 }
 
 
