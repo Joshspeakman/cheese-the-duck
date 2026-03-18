@@ -59,15 +59,34 @@ class StubContextProvider(ContextProvider):
         return None
 
 
+class FakeBiomeType:
+    """Stand-in for BiomeType enum value."""
+    def __init__(self, value: str = "forest"):
+        self.value = value
+
+
+class FakeArea:
+    """Stand-in for BiomeArea."""
+    def __init__(self, name: str = "Forest Edge", biome_value: str = "forest"):
+        self.name = name
+        self.biome = FakeBiomeType(biome_value)
+
+
+class FakeExploration:
+    """Stand-in for ExplorationSystem."""
+    def __init__(self):
+        self.current_area = FakeArea()
+
+
 class FakeGame:
     """Lightweight stand-in for a Game object."""
 
     def __init__(self):
         self.duck = FakeDuck()
         self.atmosphere = FakeAtmosphere()
+        self.exploration = FakeExploration()
 
     # attributes that GameContextProvider reads optionally
-    world = None
     visitor_manager = None
     event_manager = None
 
@@ -75,7 +94,6 @@ class FakeGame:
 class FakeDuck:
     def __init__(self):
         self.trust = 42.0
-        self.current_location = "pond_edge"
 
     def get_mood(self):
         return FakeMood()
@@ -210,11 +228,17 @@ class TestGameContextProvider:
         assert ctx.player_message == "hey"
         assert ctx.triggers == ["idle_timer"]
 
-    def test_current_location_from_duck(self) -> None:
-        """get_current_location reads from game.duck.current_location."""
+    def test_current_location_from_exploration(self) -> None:
+        """get_current_location reads from game.exploration.current_area.name."""
         game = FakeGame()
         provider = GameContextProvider(game)
-        assert provider.get_current_location() == "pond_edge"
+        assert provider.get_current_location() == "Forest Edge"
+
+    def test_current_biome_from_exploration(self) -> None:
+        """get_current_biome reads from game.exploration.current_area.biome.value."""
+        game = FakeGame()
+        provider = GameContextProvider(game)
+        assert provider.get_current_biome() == "forest"
 
     def test_active_visitor_none_by_default(self) -> None:
         """get_active_visitor returns None when no visitor manager exists."""

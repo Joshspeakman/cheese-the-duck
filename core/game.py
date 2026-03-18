@@ -1792,6 +1792,11 @@ class Game:
                 if hasattr(self, 'progression') and self.progression:
                     brain_context["season"] = getattr(self.progression, 'current_season', '')
                     brain_context["time_of_day"] = getattr(self.progression, 'time_of_day', '')
+                if hasattr(self, 'exploration') and self.exploration:
+                    area = getattr(self.exploration, 'current_area', None)
+                    if area:
+                        brain_context["biome"] = getattr(area.biome, 'value', str(area.biome))
+                        brain_context["location"] = area.name
             except Exception:
                 pass
             self.duck_brain.process_player_message(original_message, response, brain_context)
