@@ -5,6 +5,8 @@ from typing import Dict, List, Optional, Set
 from dataclasses import dataclass
 from datetime import datetime
 
+from core.event_bus import event_bus, AchievementUnlockedEvent
+
 
 @dataclass
 class Achievement:
@@ -1062,6 +1064,11 @@ class AchievementSystem:
         self._unlocked.add(achievement_id)
         self._unlock_times[achievement_id] = datetime.now().isoformat()
         self._pending_notifications.append(achievement)
+
+        try:
+            event_bus.emit(AchievementUnlockedEvent(source="achievements", achievement_id=achievement_id, name=achievement.name))
+        except Exception:
+            pass
 
         return achievement
 

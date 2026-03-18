@@ -19,6 +19,7 @@ from typing import Optional, Dict, List, Tuple
 from dataclasses import dataclass
 
 from config import NEED_CRITICAL
+from core.event_bus import event_bus, SicknessEvent, HidingEvent
 
 
 # ── Consequence timing thresholds (minutes) ─────────────────────────────
@@ -192,6 +193,10 @@ def check_consequences(duck, delta_minutes: float, stage_modifiers: Optional[Dic
         if sick_minutes >= hiding_threshold:
             duck.hiding = True
             duck.hiding_coax_visits = 0
+            try:
+                event_bus.emit(HidingEvent(source="consequences", started=True))
+            except Exception:
+                pass
             return ConsequenceState(
                 stage=3,
                 is_sick=True,
@@ -226,6 +231,10 @@ def check_consequences(duck, delta_minutes: float, stage_modifiers: Optional[Dic
         if max_zero_minutes >= sickness_threshold:
             duck.is_sick = True
             duck.sick_since = time.time()
+            try:
+                event_bus.emit(SicknessEvent(source="consequences", started=True, cause="neglect"))
+            except Exception:
+                pass
             sickness_msg = random.choice(SICKNESS_MESSAGES)
     
     # ── Stage 1: any need at zero for 1+ hour → complain ─────────────
@@ -298,6 +307,10 @@ def attempt_coax(duck) -> Tuple[bool, str]:
         # Duck comes back
         duck.hiding = False
         duck.hiding_coax_visits = 0
+        try:
+            event_bus.emit(HidingEvent(source="consequences", started=False))
+        except Exception:
+            pass
         _cure_sickness(duck)
         apply_trust_gain(duck, "coax")
         msg = random.choice(COAX_SUCCESS_MESSAGES)
@@ -335,6 +348,10 @@ def _cure_sickness(duck):
     """Internal: clear sickness state."""
     duck.is_sick = False
     duck.sick_since = None
+    try:
+        event_bus.emit(SicknessEvent(source="consequences", started=False, cause="recovery"))
+    except Exception:
+        pass
     # Reset all neglect timers
     duck.neglect_minutes_at_zero.clear()
 

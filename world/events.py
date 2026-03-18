@@ -2,12 +2,17 @@
 Event system - random and scheduled events that happen to the duck.
 Animal Crossing-style special days and seasonal events included.
 """
+import logging
 import random
 import time
 from typing import Dict, List, Optional, Callable, TYPE_CHECKING
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+
+logger = logging.getLogger(__name__)
+
+from core.event_bus import event_bus, TimeChangedEvent, SeasonChangedEvent
 
 if TYPE_CHECKING:
     from duck.duck import Duck
@@ -2392,3 +2397,54 @@ except ImportError:
 
 # Global event system
 event_system = EventSystem()
+
+
+# ── Event Bus Subscriber Hooks ─────────────────────────────────────────────
+
+def _on_time_changed_events(event):
+    """Hook: check time-gated events."""
+    try:
+        old_time = getattr(event, "old_time", "")
+        new_time = getattr(event, "new_time", "")
+        logger.debug("Events: time changed %s -> %s", old_time, new_time)
+        # Check for special day events when time period transitions
+        special = event_system.check_special_day_events()
+        if special:
+            logger.debug("Special day event triggered: %s", special.name)
+        # Also check time-of-day events
+        tod_events = event_system.get_time_of_day_events()
+        for tod_event in tod_events:
+            logger.debug("Time-of-day event available: %s", tod_event.name)
+    except Exception:
+        logger.debug("Error in _on_time_changed_events", exc_info=True)
+
+
+def _on_season_changed_events(event):
+    """Hook: trigger seasonal events."""
+    try:
+        old_season = getattr(event, "old_season", "")
+        new_season = getattr(event, "new_season", "")
+        logger.debug("Events: season changed %s -> %s", old_season, new_season)
+        # Update weather context for seasonal event filtering
+        season_weather_map = {
+            "spring": "spring_showers",
+            "summer": "sunny",
+            "autumn": "windy",
+            "winter": "snowy",
+        }
+        default_weather = season_weather_map.get(new_season.lower(), "sunny")
+        event_system.set_current_weather(default_weather)
+        # Reset seasonal event cooldowns so new-season events can fire promptly
+        for event_id, ev in EVENTS.items():
+            if ev.event_type == EventType.SEASONAL:
+                event_system._last_event_times.pop(event_id, None)
+        logger.debug("Seasonal event cooldowns reset for %s", new_season)
+    except Exception:
+        logger.debug("Error in _on_season_changed_events", exc_info=True)
+
+
+try:
+    event_bus.subscribe(TimeChangedEvent, _on_time_changed_events, priority=40)
+    event_bus.subscribe(SeasonChangedEvent, _on_season_changed_events, priority=40)
+except Exception:
+    pass

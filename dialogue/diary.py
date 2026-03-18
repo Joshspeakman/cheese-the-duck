@@ -6,8 +6,13 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 from enum import Enum
+import logging
 import random
 import threading
+
+logger = logging.getLogger(__name__)
+
+from core.event_bus import event_bus, AchievementUnlockedEvent, SicknessEvent, HidingEvent, VisitorArrivedEvent, SeasonChangedEvent
 
 
 class DiaryEntryType(Enum):
@@ -1063,3 +1068,110 @@ def get_duck_diary() -> DuckDiary:
 
 # Direct instance for backwards compatibility
 duck_diary = DuckDiary()
+
+
+# ── Event Bus Subscriber Hooks ─────────────────────────────────────────────
+
+def _on_achievement_diary(event):
+    """Hook: diary entry for achievements."""
+    try:
+        achievement_id = getattr(event, "achievement_id", "")
+        name = getattr(event, "name", "Unknown Achievement")
+        logger.debug("Diary: achievement unlocked - %s", name)
+        duck_diary.add_entry(
+            DiaryEntryType.MILESTONE,
+            title=f"Achievement: {name}!",
+            content=f"Today I unlocked '{name}'. Another feather in my cap. Literally, if it were a feather.",
+            mood="excited",
+            tags=["achievement", achievement_id],
+        )
+    except Exception:
+        logger.debug("Error in _on_achievement_diary", exc_info=True)
+
+
+def _on_sickness_diary(event):
+    """Hook: diary entry for sickness."""
+    try:
+        started = getattr(event, "started", True)
+        cause = getattr(event, "cause", "unknown")
+        logger.debug("Diary: sickness %s (cause=%s)", "started" if started else "ended", cause)
+        if started:
+            duck_diary.add_entry(
+                DiaryEntryType.FEELING,
+                title="Feeling Under the Weather",
+                content=f"I am sick. Cause: {cause}. Everything hurts. Even my feathers hurt. Is that possible? Today it is.",
+                mood="sick",
+                tags=["sickness", "started", cause],
+            )
+        else:
+            duck_diary.add_entry(
+                DiaryEntryType.FEELING,
+                title="Recovery!",
+                content="I am better now. The sickness has retreated. I survived. Barely. Dramatically.",
+                mood="happy",
+                tags=["sickness", "recovered"],
+            )
+    except Exception:
+        logger.debug("Error in _on_sickness_diary", exc_info=True)
+
+
+def _on_hiding_diary(event):
+    """Hook: diary entry for hiding."""
+    try:
+        started = getattr(event, "started", True)
+        logger.debug("Diary: hiding %s", "started" if started else "ended")
+        if started:
+            duck_diary.add_entry(
+                DiaryEntryType.ADVENTURE,
+                title="Gone Into Hiding",
+                content="Something spooked me. I am now one with the shadows. Nobody can find me. This is fine.",
+                mood="scared",
+                tags=["hiding", "started"],
+            )
+        else:
+            duck_diary.add_entry(
+                DiaryEntryType.ADVENTURE,
+                title="Emerged From Hiding",
+                content="Coast is clear. I have returned. The world did not end while I was gone. Disappointing, almost.",
+                mood="content",
+                tags=["hiding", "ended"],
+            )
+    except Exception:
+        logger.debug("Error in _on_hiding_diary", exc_info=True)
+
+
+def _on_visitor_diary(event):
+    """Hook: diary entry for visitors."""
+    try:
+        visitor_name = getattr(event, "visitor_name", "Someone")
+        logger.debug("Diary: visitor arrived - %s", visitor_name)
+        duck_diary.record_visitor(visitor_name)
+    except Exception:
+        logger.debug("Error in _on_visitor_diary", exc_info=True)
+
+
+def _on_season_diary(event):
+    """Hook: diary entry for season change."""
+    try:
+        old_season = getattr(event, "old_season", "")
+        new_season = getattr(event, "new_season", "")
+        logger.debug("Diary: season changed %s -> %s", old_season, new_season)
+        duck_diary.add_entry(
+            DiaryEntryType.WEATHER,
+            title=f"Welcome, {new_season.title()}!",
+            content=f"The season changed from {old_season} to {new_season}. The pond looks different. I look the same. Consistency.",
+            mood="content",
+            tags=["season_change", new_season],
+        )
+    except Exception:
+        logger.debug("Error in _on_season_diary", exc_info=True)
+
+
+try:
+    event_bus.subscribe(AchievementUnlockedEvent, _on_achievement_diary, priority=60)
+    event_bus.subscribe(SicknessEvent, _on_sickness_diary, priority=60)
+    event_bus.subscribe(HidingEvent, _on_hiding_diary, priority=60)
+    event_bus.subscribe(VisitorArrivedEvent, _on_visitor_diary, priority=60)
+    event_bus.subscribe(SeasonChangedEvent, _on_season_diary, priority=60)
+except Exception:
+    pass

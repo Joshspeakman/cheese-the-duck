@@ -4,7 +4,12 @@ Goals/Quests system - gives players objectives to complete.
 from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
+import logging
 import random
+
+logger = logging.getLogger(__name__)
+
+from core.event_bus import event_bus, NeedChangedEvent, ActionPerformedEvent
 
 
 @dataclass
@@ -606,3 +611,41 @@ class GoalSystem:
 
 # Global instance
 goal_system = GoalSystem()
+
+
+# ── Event Bus Subscriber Hooks ─────────────────────────────────────────────
+
+def _on_need_changed_goal_check(event):
+    """Hook: check goal satisfaction on need changes."""
+    try:
+        need = getattr(event, "need", "")
+        old_value = getattr(event, "old_value", 0.0)
+        new_value = getattr(event, "new_value", 0.0)
+        logger.debug("Goal check: need %s changed %.1f -> %.1f", need, old_value, new_value)
+        # Check the "perfectionist" secret goal -- all needs above 80
+        if new_value >= 80:
+            goal_system.check_secret_goal("perfect_care")
+        # Hunger dropping low could trigger feeding-related goal awareness
+        if need == "hunger" and new_value < 20 and old_value >= 20:
+            logger.debug("Duck is getting hungry -- feeding goals relevant")
+    except Exception:
+        logger.debug("Error in _on_need_changed_goal_check", exc_info=True)
+
+
+def _on_action_goal_check(event):
+    """Hook: check goal requirements on actions."""
+    try:
+        action = getattr(event, "action", "")
+        logger.debug("Goal check: action performed '%s'", action)
+        completed = goal_system.update_progress(action)
+        for goal in completed:
+            logger.debug("Goal completed: %s -- %s", goal.name, goal.reward_message)
+    except Exception:
+        logger.debug("Error in _on_action_goal_check", exc_info=True)
+
+
+try:
+    event_bus.subscribe(NeedChangedEvent, _on_need_changed_goal_check, priority=50)
+    event_bus.subscribe(ActionPerformedEvent, _on_action_goal_check, priority=50)
+except Exception:
+    pass

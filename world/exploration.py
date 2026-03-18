@@ -8,6 +8,8 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 
+from core.event_bus import event_bus, BiomeChangedEvent
+
 
 class BiomeType(Enum):
     """Different areas the duck can explore."""
@@ -1010,10 +1012,17 @@ class ExplorationSystem:
         
         if area_name not in self.discovered_areas:
             return {"success": False, "message": f"You haven't discovered {area_name} yet!"}
-        
+
+        old_biome = self.current_area.biome.value if self.current_area else "none"
         self.current_area = self.discovered_areas[area_name]
         self.current_area.times_visited += 1
-        
+        new_biome = self.current_area.biome.value
+
+        try:
+            event_bus.emit(BiomeChangedEvent(source="exploration", old_biome=old_biome, new_biome=new_biome))
+        except Exception:
+            pass
+
         return {"success": True, "message": f"Traveled to {area_name}. {self.current_area.description}"}
     
     def explore(self, duck, player_level: int = None) -> Dict:

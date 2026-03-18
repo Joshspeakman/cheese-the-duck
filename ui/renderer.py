@@ -94,6 +94,11 @@ from ui.location_art import (
 )
 from duck.mood import MoodState
 from duck.cosmetics import CosmeticsRenderer, COSMETIC_ART
+from core.time_system import get_current_time_of_day, get_current_season
+from duck.animator import DuckAnimator
+from ui.particle_system import ParticleSystem
+from ui.biome_config import get_biome_tint, blend_tint
+from ui.render_context import RenderContext, build_render_context
 
 if TYPE_CHECKING:
     from duck.duck import Duck
@@ -138,232 +143,21 @@ BAR_STYLES = {
 GROUND_CHARS = [".", ",", "'", "`", " ", " ", " "]
 
 
-class DuckPosition:
-    """Tracks duck position and movement in the playfield."""
+class DuckPosition(DuckAnimator):
+    """DEPRECATED: Thin backward-compat shim — all logic now lives in DuckAnimator.
+
+    Subclasses DuckAnimator and delegates constructor so existing code that
+    instantiates ``DuckPosition(field_width=44, field_height=14)`` keeps
+    working unchanged.
+    """
 
     def __init__(self, field_width: int = 40, field_height: int = 12):
-        self.field_width = field_width
-        self.field_height = field_height
-        self.x = field_width // 2
-        self.y = field_height // 2
-        self.target_x = self.x
-        self.target_y = self.y
-        self.facing_right = True
-        self.is_moving = False
-        self._move_timer = 0.0
-        self._idle_timer = 0.0
-        self._state = "idle"  # idle, walking, sleeping, eating, playing, cleaning, petting
-        self._animation_frame = 0
-        self._state_animation_timer = 0.0  # Timer for state-specific animations
-        self._state_duration = 0.0  # How long to stay in this state
-        self._state_start_time = 0.0  # When the state started
-        
-        # Movement callback support for animated interactions
-        self._movement_callback = None  # Called when duck reaches target
-        self._movement_callback_data = None  # Data to pass to callback
-        self._is_directed_movement = False  # True if moving to specific target (not wandering)
-        self._original_position = None  # For returning after interaction
-        
-        # Motivation affects walk speed (set externally by game loop)
-        self._motivation = 1.0
-
-    # All states that support animation frame cycling
-    # Only includes states that exist for all growth stages
-    ANIMATABLE_STATES = {
-        # User interaction states
-        "sleeping", "eating", "playing", "cleaning", "petting",
-        # Weather reaction states
-        "cold", "hot", "shaking", "scared", "excited", "curious", "hiding",
-        # Extended animation states
-        "swimming", "diving", "stretching", "yawning", "jumping",
-        "thinking", "dancing", "singing", "pecking", "flapping",
-        "preening", "napping", "waddle_fast", "dizzy", "proud",
-        "sneaking", "splashing", "floating", "hungry", "love",
-        "angry", "bored", "waving", "tail_wag", "reminiscing", "wise"
-    }
-
-    def update(self, delta_time: float):
-        """Update duck position and movement."""
-        self._move_timer += delta_time
-        self._idle_timer += delta_time
-        self._state_animation_timer += delta_time
-
-        # ALWAYS process directed movement first, regardless of animation state
-        # This ensures duck walks to nest/structures before performing actions
-        # Walk speed scales with motivation (0.10s at full → 0.25s at zero)
-        step_interval = 0.10 + (1.0 - self._motivation) * 0.15
-
-        if self._is_directed_movement:
-            if self.x != self.target_x or self.y != self.target_y:
-                self.is_moving = True
-                if self._move_timer > step_interval:
-                    self._move_timer = 0
-                    self._animation_frame = (self._animation_frame + 1) % 4
-
-                    # Move one step towards target
-                    if self.x < self.target_x:
-                        self.x += 1
-                        self.facing_right = True
-                    elif self.x > self.target_x:
-                        self.x -= 1
-                        self.facing_right = False
-
-                    if self.y < self.target_y:
-                        self.y += 1
-                    elif self.y > self.target_y:
-                        self.y -= 1
-            else:
-                # Reached target during directed movement
-                self.is_moving = False
-                if self._movement_callback:
-                    callback = self._movement_callback
-                    callback_data = self._movement_callback_data
-                    # Clear callback before calling to prevent re-triggering
-                    self._movement_callback = None
-                    self._movement_callback_data = None
-                    self._is_directed_movement = False
-                    # Execute callback (this will set the sleeping/action state)
-                    callback(callback_data)
-                else:
-                    self._is_directed_movement = False
-            return  # Don't do other movement while directed movement is active
-
-        # Cycle animation frames for all animatable states (every 0.25 seconds)
-        if self._state in self.ANIMATABLE_STATES:
-            if self._state_animation_timer > 0.25:
-                self._animation_frame = (self._animation_frame + 1) % 2
-                self._state_animation_timer = 0
-
-            # Check if state duration has expired (return to idle)
-            if self._state_duration > 0:
-                import time
-                if time.time() - self._state_start_time > self._state_duration:
-                    self._state = "idle"
-                    self._state_duration = 0
-            return  # Don't wander while in special state
-
-        # Randomly pick new target when idle (but not during directed movement)
-        if self._state == "idle" and not self._is_directed_movement and self._idle_timer > random.uniform(1.5, 4.0):
-            if random.random() < 0.7:  # 70% chance to wander
-                self._pick_new_target()
-                self._idle_timer = 0
-
-        # Move towards target (normal wandering, not directed)
-        if self.x != self.target_x or self.y != self.target_y:
-            self.is_moving = True
-            self._state = "walking"
-
-            if self._move_timer > step_interval:
-                self._move_timer = 0
-                self._animation_frame = (self._animation_frame + 1) % 4
-
-                # Move one step towards target
-                if self.x < self.target_x:
-                    self.x += 1
-                    self.facing_right = True
-                elif self.x > self.target_x:
-                    self.x -= 1
-                    self.facing_right = False
-
-                if self.y < self.target_y:
-                    self.y += 1
-                elif self.y > self.target_y:
-                    self.y -= 1
-        else:
-            # Reached target
-            self.is_moving = False
-            if self._state == "walking":
-                self._state = "idle"
-                self._idle_timer = 0
-
-    def _pick_new_target(self):
-        """Pick a random target position."""
-        margin = 3
-        # Ensure valid ranges even for small fields
-        max_x = max(margin, self.field_width - margin - 6)
-        max_y = max(margin, self.field_height - margin - 3)
-        self.target_x = random.randint(margin, max_x)
-        self.target_y = random.randint(margin, max_y)
-
-    def move_to(self, target_x: int, target_y: int, callback=None, callback_data=None, save_original: bool = True):
-        """
-        Move duck to specific target position with optional callback when reached.
-        
-        Args:
-            target_x: Target x position in playfield coordinates
-            target_y: Target y position in playfield coordinates  
-            callback: Function to call when duck reaches target (receives callback_data)
-            callback_data: Data to pass to callback function
-            save_original: If True, save current position to return to later
-        """
-        # Clamp to field bounds
-        margin = 2
-        max_x = max(margin, self.field_width - margin - 6)
-        max_y = max(margin, self.field_height - margin - 3)
-        target_x = max(margin, min(target_x, max_x))
-        target_y = max(margin, min(target_y, max_y))
-        
-        # Save original position for potential return
-        if save_original and self._original_position is None:
-            self._original_position = (self.x, self.y)
-        
-        self.target_x = target_x
-        self.target_y = target_y
-        self._movement_callback = callback
-        self._movement_callback_data = callback_data
-        self._is_directed_movement = True
-        self._state = "walking"
-        self.is_moving = True
-        
-        # Face the right direction
-        self.facing_right = target_x >= self.x
-
-    def return_to_original(self, callback=None, callback_data=None):
-        """Move duck back to its original position before directed movement."""
-        if self._original_position:
-            orig_x, orig_y = self._original_position
-            self._original_position = None  # Clear so we don't save new position
-            self.move_to(orig_x, orig_y, callback, callback_data, save_original=False)
-        else:
-            # No original position, just stay put
-            if callback:
-                callback(callback_data)
-
-    def cancel_movement(self):
-        """Cancel any pending directed movement and callbacks."""
-        self._movement_callback = None
-        self._movement_callback_data = None
-        self._is_directed_movement = False
-        self._original_position = None
-        self.target_x = self.x
-        self.target_y = self.y
-        self.is_moving = False
-        self._state = "idle"
-
-    def set_state(self, state: str, duration: float = 3.0):
-        """Set duck state for animation."""
-        import time
-        self._state = state
-        self._animation_frame = 0
-        self._state_animation_timer = 0
-        self._state_duration = duration
-        self._state_start_time = time.time()
-
-        # Stop moving during all animatable states
-        if state in self.ANIMATABLE_STATES:
-            self.target_x = self.x
-            self.target_y = self.y
-            self.is_moving = False
-            # Clear directed movement and callbacks if we're entering a special state
-            self._is_directed_movement = False
-            self._movement_callback = None
-            self._movement_callback_data = None
-
-    def get_state(self) -> str:
-        return self._state
-
-    def get_animation_frame(self) -> int:
-        return self._animation_frame
+        super().__init__(
+            x=field_width // 2,
+            y=field_height // 2,
+            play_width=field_width,
+            play_height=field_height,
+        )
 
 
 class Renderer:
@@ -461,6 +255,17 @@ class Renderer:
         
         # Biome ambient particles (fireflies, falling leaves, mist, etc.)
         self._ambient_particles: List[Tuple[float, float, str, Tuple[int, int, int]]] = []  # (x, y, char, rgb)
+
+        # Unified particle system (provides additional particles alongside existing ones)
+        try:
+            self._particle_system = ParticleSystem(
+                self.duck_pos.field_width, self.duck_pos.field_height
+            )
+        except Exception:
+            self._particle_system = None
+
+        # RenderContext snapshot (built each frame for future migration)
+        self._current_context: Optional[RenderContext] = None
 
         # Cached terminal dimensions for stability (prevent micro-jitter)
         self._cached_width: Optional[int] = None
@@ -671,8 +476,18 @@ class Renderer:
             self._location_decorations = []
             self._location_scenery = []
 
-    def _update_weather_particles(self, width: int, height: int, weather_type: Optional[str]):
+    def _update_weather_particles(self, width: int, height: int, weather_type: Optional[str],
+                                   weather_intensity: float = 0.0):
         """Update animated weather particles."""
+        # Update unified ParticleSystem with weather config
+        try:
+            if self._particle_system is not None:
+                self._particle_system.set_bounds(width, height)
+                self._particle_system.configure_weather(weather_type, weather_intensity)
+                self._particle_system.update(0.033)  # ~30fps delta
+        except Exception:
+            pass
+
         # Reset particles if weather changed
         if weather_type != self._current_weather_type:
             self._weather_particles = []
@@ -1025,26 +840,7 @@ class Renderer:
         Returns (sky_char, bg_color_func, celestial_objects)
         celestial_objects is a list of (x_position, character) for sun/moon/stars
         """
-        from datetime import datetime
-        hour = datetime.now().hour
-
-        # Map hour to time-period key (used for biome tint lookup)
-        if 5 <= hour < 7:
-            time_key = "dawn"
-        elif 7 <= hour < 11:
-            time_key = "morning"
-        elif 11 <= hour < 14:
-            time_key = "midday"
-        elif 14 <= hour < 17:
-            time_key = "afternoon"
-        elif 17 <= hour < 19:
-            time_key = "evening"
-        elif 19 <= hour < 21:
-            time_key = "dusk"
-        elif 21 <= hour:
-            time_key = "night"
-        else:
-            time_key = "late_night"
+        time_key = get_current_time_of_day().value  # returns "dawn", "morning", etc.
 
         # Base RGB tints per time period (global defaults)
         # Values are DARK — these are subtle ambient background washes.
@@ -1098,19 +894,42 @@ class Renderer:
         base_rgb = _BASE_TINTS.get(time_key)
 
         if biome:
-            from ui.biome_visuals import get_biome_time_tint, blend_tint
+            from ui.biome_visuals import get_biome_time_tint
+            from ui.biome_visuals import blend_tint as _legacy_blend_tint
             biome_rgb = get_biome_time_tint(biome, time_key)
             if biome_rgb:
                 if base_rgb:
-                    r, g, b = blend_tint(base_rgb, biome_rgb, 0.6)
+                    r, g, b = _legacy_blend_tint(base_rgb, biome_rgb, 0.6)
                 else:
                     # Morning/midday/afternoon have no base tint — use biome tint directly
                     r, g, b = biome_rgb
+                # Further blend with validated biome_config tint (additive refinement)
+                try:
+                    validated_tint = get_biome_tint(biome, time_key)
+                    if validated_tint and validated_tint != (0, 0, 0):
+                        r, g, b = blend_tint((r, g, b), validated_tint, 0.4)
+                except Exception:
+                    pass
                 bg_color = self.term.on_color_rgb(r, g, b)
             elif base_rgb:
-                bg_color = self.term.on_color_rgb(*base_rgb)
+                # No legacy biome tint — try validated biome_config tint
+                r, g, b = base_rgb
+                try:
+                    validated_tint = get_biome_tint(biome, time_key)
+                    if validated_tint and validated_tint != (0, 0, 0):
+                        r, g, b = blend_tint((r, g, b), validated_tint, 0.4)
+                except Exception:
+                    pass
+                bg_color = self.term.on_color_rgb(r, g, b)
             else:
+                # No base tint — try validated biome_config tint alone
                 bg_color = None
+                try:
+                    validated_tint = get_biome_tint(biome, time_key)
+                    if validated_tint and validated_tint != (0, 0, 0):
+                        bg_color = self.term.on_color_rgb(*validated_tint)
+                except Exception:
+                    pass
         elif base_rgb:
             bg_color = self.term.on_color_rgb(*base_rgb)
         else:
@@ -1207,6 +1026,12 @@ class Renderer:
         if duck is None:
             self._render_title_screen()
             return
+
+        # Build a RenderContext snapshot for future migration (non-disruptive)
+        try:
+            self._current_context = build_render_context(game)
+        except Exception:
+            pass
 
         # Check for active minigame - render minigame instead of normal frame
         if hasattr(game, '_active_minigame') and game._active_minigame:
@@ -1380,6 +1205,21 @@ class Renderer:
             # End each line with terminal reset to prevent color bleeding
             print(self.term.move(i, 0) + padded + self.term.normal, end="")
 
+    def render_frame_from_context(self, ctx: "RenderContext"):
+        """Render a frame using a pre-built RenderContext.
+
+        This is a stepping-stone toward fully decoupled rendering.
+        Currently it stores the context and delegates to the existing
+        ``render_frame()`` path via the stored ``self.game`` reference.
+
+        Args:
+            ctx: A :class:`RenderContext` snapshot.
+        """
+        self._current_context = ctx
+        # Future: implement context-only rendering here.
+        # For now this method exists so callers can begin adopting the
+        # RenderContext interface while the migration is in progress.
+
     def _render_header_bar(self, duck: "Duck", width: int, currency: int = 0, weather=None, time_info=None, season_info=None) -> List[str]:
         """Render the top header bar with weather, season, and time info."""
         from datetime import datetime
@@ -1499,25 +1339,7 @@ class Renderer:
         # Build time string with icon, time, and period
         now = datetime.now()
         time_str = now.strftime("%H:%M")
-        hour = now.hour
-
-        # Determine time of day
-        if 5 <= hour < 7:
-            tod = "dawn"
-        elif 7 <= hour < 11:
-            tod = "morning"
-        elif 11 <= hour < 14:
-            tod = "midday"
-        elif 14 <= hour < 17:
-            tod = "afternoon"
-        elif 17 <= hour < 19:
-            tod = "evening"
-        elif 19 <= hour < 21:
-            tod = "dusk"
-        elif 21 <= hour or hour < 0:
-            tod = "night"
-        else:
-            tod = "late_night"
+        tod = get_current_time_of_day().value  # returns "dawn", "morning", etc.
 
         t_icon, t_name = time_data.get(tod, ("⏰", ""))
         time_part = f" {t_icon} {time_str} {t_name} "
@@ -1630,14 +1452,18 @@ class Renderer:
             env_effects = weather_data.get("env_effects", [])
             particle_type = weather_data.get("particle_type")
         
+        # Compute weather intensity for particle systems
+        _weather_intensity = weather_info.intensity if weather_info and hasattr(weather_info, 'intensity') else 0.0
+
         # Update weather particles (use particle_type for specific effects, fallback to weather_type)
-        self._update_weather_particles(inner_width, field_height, particle_type or weather_type)
-        
+        self._update_weather_particles(inner_width, field_height, particle_type or weather_type,
+                                       weather_intensity=_weather_intensity)
+
         # Generate environmental weather decorations (puddles, snow piles, etc.)
         self._generate_weather_decorations(
             weather_type,  # Use weather_type for decoration context
-            env_effects, 
-            inner_width, 
+            env_effects,
+            inner_width,
             field_height
         )
 
@@ -1646,14 +1472,15 @@ class Renderer:
 
         # Update biome ambient particles (fireflies, falling leaves, etc.)
         if biome and season:
-            from datetime import datetime as _dt
-            _h = _dt.now().hour
-            _time_key = ("dawn" if 5 <= _h < 7 else "morning" if 7 <= _h < 11
-                         else "midday" if 11 <= _h < 14 else "afternoon" if 14 <= _h < 17
-                         else "evening" if 17 <= _h < 19 else "dusk" if 19 <= _h < 21
-                         else "night" if 21 <= _h else "late_night")
-            _intensity = weather_info.intensity if weather_info and hasattr(weather_info, 'intensity') else 0.0
-            self._update_ambient_particles(inner_width, field_height, biome, _time_key, season, _intensity)
+            _time_key = get_current_time_of_day().value  # returns "dawn", "morning", etc.
+            self._update_ambient_particles(inner_width, field_height, biome, _time_key, season, _weather_intensity)
+
+            # Configure unified ParticleSystem for biome ambient effects
+            try:
+                if self._particle_system is not None:
+                    self._particle_system.configure_biome(biome, _time_key, season)
+            except Exception:
+                pass
 
         # Title bar with weather/time flavor text
         title = " DUCK HABITAT "
@@ -2061,6 +1888,18 @@ class Renderer:
                     if existing_char in GROUND_CHARS or existing_char == ' ':
                         ambient_color = self.term.color_rgb(*argb)
                         row[int(ax)] = (achar, ambient_color)
+
+            # Add particles from unified ParticleSystem (additional layer)
+            try:
+                if self._particle_system is not None:
+                    for px, py, pchar, prgb in self._particle_system.get_particles():
+                        if py == y and 0 <= px < inner_width:
+                            existing_char, _ = row[px]
+                            if existing_char in GROUND_CHARS or existing_char == ' ':
+                                ps_color = self.term.color_rgb(*prgb)
+                                row[px] = (pchar, ps_color)
+            except Exception:
+                pass
 
             # Convert row to string, applying colors
             row_chars = []
