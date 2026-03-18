@@ -8,6 +8,8 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 
+from core.event_bus import event_bus, WeatherChangedEvent
+
 
 # =============================================================================
 # WEATHER SYSTEM
@@ -1567,6 +1569,9 @@ class AtmosphereManager:
         if biome is None:
             biome = self._current_biome
 
+        old_weather = self._biome_weather.get(biome)
+        old_type = old_weather.weather_type if old_weather else None
+
         season = self.current_season
         season_key = f"{season.value}_prob"
 
@@ -1609,6 +1614,11 @@ class AtmosphereManager:
             self.weather_history = self.weather_history[-10:]
 
         self.last_weather_check = datetime.now().strftime("%Y-%m-%d %H")
+
+        try:
+            event_bus.emit(WeatherChangedEvent(source="atmosphere", old_weather=str(old_type), new_weather=str(chosen_type), intensity=self._biome_weather[biome].intensity))
+        except Exception:
+            pass
 
     def _maybe_rainbow(self, biome: Optional[str] = None):
         """Check if rainbow should appear after rain in a specific biome."""

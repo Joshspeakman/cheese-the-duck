@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from enum import Enum
 import random
 
+from core.event_bus import event_bus, ItemUsedEvent
+
 if TYPE_CHECKING:
     from duck.duck import Duck
 
@@ -581,6 +583,11 @@ class Inventory:
         # Remove if consumable
         if item.consumable:
             self.items.remove(item_id)
+
+        try:
+            event_bus.emit(ItemUsedEvent(source="items", item_name=item.name, target="duck"))
+        except Exception:
+            pass
 
         return {
             "item": item,

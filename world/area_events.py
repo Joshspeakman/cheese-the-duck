@@ -7,10 +7,15 @@ travel system where Cheese occasionally wanders off to a different unlocked area
 Each area (22 total across 9 biomes) gets 6-8 unique events with Cheese's
 signature deadpan commentary. Events have effects, animations, and cooldowns.
 """
+import logging
 import random
 import time
 from typing import Dict, List, Optional, Any, TYPE_CHECKING
 from dataclasses import dataclass
+
+logger = logging.getLogger(__name__)
+
+from core.event_bus import event_bus, BiomeChangedEvent, WeatherChangedEvent
 
 if TYPE_CHECKING:
     from duck.duck import Duck
@@ -1487,3 +1492,54 @@ class AreaEventSystem:
 # Global instances
 area_event_system = AreaEventSystem()
 spontaneous_travel = SpontaneousTravelSystem()
+
+
+# ── Event Bus Subscriber Hooks ─────────────────────────────────────────────
+
+def _on_biome_changed_area_events(event):
+    """Hook: trigger area events on biome change."""
+    try:
+        old_biome = getattr(event, "old_biome", "")
+        new_biome = getattr(event, "new_biome", "")
+        logger.debug("Area events: biome changed %s -> %s", old_biome, new_biome)
+        # Reset the global area event cooldown so the new biome can trigger events sooner
+        area_event_system._last_any_area_event_time = max(
+            0.0,
+            area_event_system._last_any_area_event_time - AREA_EVENT_MIN_GAP * 0.5,
+        )
+        # Try to fire an area event for a default area in the new biome
+        # Area names often contain the biome name (e.g. "Home Pond" for pond biome)
+        for area_name in AREA_EVENTS:
+            if new_biome.lower() in area_name.lower():
+                result = area_event_system.check_area_events(area_name)
+                if result:
+                    logger.debug("Area event triggered on biome change: %s", result.name)
+                break
+    except Exception:
+        logger.debug("Error in _on_biome_changed_area_events", exc_info=True)
+
+
+def _on_weather_changed_area_events(event):
+    """Hook: trigger weather-related area events."""
+    try:
+        old_weather = getattr(event, "old_weather", "")
+        new_weather = getattr(event, "new_weather", "")
+        intensity = getattr(event, "intensity", 0.5)
+        logger.debug("Area events: weather changed %s -> %s (intensity=%.2f)",
+                      old_weather, new_weather, intensity)
+        # Severe weather (high intensity) resets area event cooldown slightly
+        # to allow weather-related area events to fire sooner
+        if intensity > 0.7:
+            area_event_system._last_any_area_event_time = max(
+                0.0,
+                area_event_system._last_any_area_event_time - AREA_EVENT_MIN_GAP * 0.3,
+            )
+    except Exception:
+        logger.debug("Error in _on_weather_changed_area_events", exc_info=True)
+
+
+try:
+    event_bus.subscribe(BiomeChangedEvent, _on_biome_changed_area_events, priority=50)
+    event_bus.subscribe(WeatherChangedEvent, _on_weather_changed_area_events, priority=50)
+except Exception:
+    pass

@@ -6,7 +6,12 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 from enum import Enum
+import logging
 import random
+
+logger = logging.getLogger(__name__)
+
+from core.event_bus import event_bus, MoodChangedEvent
 
 
 class MoodType(Enum):
@@ -1088,3 +1093,31 @@ class MoodDialogueSystem:
 
 # Global instance
 mood_dialogue_system = MoodDialogueSystem()
+
+
+# ── Event Bus Subscriber Hooks ─────────────────────────────────────────────
+
+def _on_mood_changed_dialogue(event):
+    """Hook: react to mood transitions."""
+    try:
+        old_mood = getattr(event, "old_mood", "")
+        new_mood = getattr(event, "new_mood", "")
+        logger.debug("Mood dialogue transition: %s -> %s", old_mood, new_mood)
+        # Record the mood transition in dialogue history for context
+        mood_dialogue_system.dialogue_history.append(
+            (new_mood, "mood_change", f"Mood shifted from {old_mood} to {new_mood}")
+        )
+        # Trim history to avoid unbounded growth
+        if len(mood_dialogue_system.dialogue_history) > 50:
+            mood_dialogue_system.dialogue_history = mood_dialogue_system.dialogue_history[-50:]
+        # Store the current mood as a personality modifier for future dialogue
+        mood_dialogue_system.personality_modifiers["current_mood"] = new_mood
+        mood_dialogue_system.personality_modifiers["previous_mood"] = old_mood
+    except Exception:
+        logger.debug("Error in _on_mood_changed_dialogue", exc_info=True)
+
+
+try:
+    event_bus.subscribe(MoodChangedEvent, _on_mood_changed_dialogue, priority=50)
+except Exception:
+    pass

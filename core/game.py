@@ -119,6 +119,19 @@ from core.settings import settings_manager, get_settings, load_settings, save_se
 from core.menu_controller import MenuController, ConfirmationDialog, notification_manager
 from ui.settings_menu import SettingsMenu, settings_menu
 
+# ── New subsystem managers (refactor phase 1 — additive only) ────────
+from core.ui_state import UIStateManager, UIOverlay
+from core.update_scheduler import (
+    UpdateScheduler,
+    TICK_INTERVAL, SAVE_INTERVAL, EVENT_CHECK_INTERVAL,
+    ATMOSPHERE_CHECK_INTERVAL, AREA_EVENT_INTERVAL,
+    SPONTANEOUS_TRAVEL_INTERVAL, RANDOM_COMMENT_INTERVAL,
+    CRAFT_CHECK_INTERVAL, BUILD_CHECK_INTERVAL,
+    WEATHER_DAMAGE_INTERVAL, DIARY_FLUSH_INTERVAL,
+)
+from core.input_dispatcher import InputDispatcher, GlobalInputHandler
+from core.menu_system import MenuSystem, MenuDefinition, MenuItem as MenuItemNew
+
 from enum import Enum, auto
 
 
@@ -481,6 +494,87 @@ class Game:
         self._item_use_history: Dict[str, list] = {}   # category → [timestamps]
         self._last_item_use_time: Dict[str, float] = {}  # category → last-use epoch
 
+        # ── New subsystem managers (refactor phase 1) ─────────────────
+        # These run alongside the existing boolean-flag system.
+        # Existing code is NOT removed; new infrastructure is additive.
+        self.ui_state = UIStateManager()
+        self.update_scheduler = UpdateScheduler()
+        self.input_dispatcher = InputDispatcher()
+        self.menu_system = MenuSystem(self.ui_state)
+
+        # ── DuckStore (centralized state management) ──────────────────
+        try:
+            from core.duck_store import DuckStore
+            self.duck_store = DuckStore()
+        except Exception:
+            self.duck_store = None
+
+        # ── TimeManager (game clock wrapper) ──────────────────────────
+        self.time_manager = None
+
+    def _setup_update_scheduler(self):
+        """
+        Register periodic subsystems with the UpdateScheduler.
+
+        Called once from ``_load_game`` / ``_start_new_game`` after all
+        systems are initialised and the duck object exists.
+
+        NOTE: These registrations mirror the timing checks that already
+        live inside ``_update()``.  The scheduler is *not yet* the
+        authority — the original ``_update()`` code still runs.  This
+        method wires up the scheduler so that future migration can
+        swap ``if time.time() - self._last_X >= N`` blocks for
+        ``self.update_scheduler.update(current_time)``.
+        """
+        sched = self.update_scheduler
+
+        # Core tick — placeholder; the tick block in _update() is too large
+        # and stateful to migrate via a single lambda.
+        sched.register("tick", lambda: None, TICK_INTERVAL, enabled=True)
+
+        # Auto-save
+        sched.register("auto_save", lambda: self._save_game(), SAVE_INTERVAL, enabled=True)
+
+        # Random events
+        # DISABLED: legacy block has extra ambient event + guest-convo guard
+        sched.register("event_check",        lambda: self._check_events(), EVENT_CHECK_INTERVAL, enabled=True)
+
+        # Atmosphere / weather / visitors
+        # DISABLED: legacy block does diary flush, festival check, weather tracking, ambient sounds
+        sched.register("atmosphere",          lambda: self.atmosphere.update(), ATMOSPHERE_CHECK_INTERVAL, enabled=True)
+
+        # Area-specific events
+        sched.register("area_events",         lambda: self._check_area_events(), AREA_EVENT_INTERVAL, enabled=True)
+
+        # Spontaneous travel
+        sched.register("spontaneous_travel",  lambda: self._check_spontaneous_travel(), SPONTANEOUS_TRAVEL_INTERVAL, enabled=True)
+
+        # Contextual duck comments
+        sched.register("random_comment",      lambda: self._make_contextual_comment(), RANDOM_COMMENT_INTERVAL, enabled=True)
+
+        # Crafting progress
+        sched.register("craft_check",         lambda: self._update_crafting_progress(), CRAFT_CHECK_INTERVAL, enabled=True)
+
+        # Building progress
+        sched.register("build_check",         lambda: self._update_building_progress(), BUILD_CHECK_INTERVAL, enabled=True)
+
+        # Structure weather damage
+        sched.register("weather_damage",      lambda: self._apply_weather_damage_to_structures(), WEATHER_DAMAGE_INTERVAL, enabled=True)
+
+    def _setup_input_dispatcher(self):
+        """
+        Wire up the InputDispatcher with global handlers.
+
+        Called once from ``_load_game`` / ``_start_new_game``.
+
+        NOTE: The dispatcher is *not yet* the authority — the original
+        ``_process_input()`` chain still runs.  This sets up the
+        infrastructure so that overlay handlers can be added gradually.
+        """
+        self.input_dispatcher.register_global_handler(
+            GlobalInputHandler(game=self), priority=100
+        )
+
     def start(self):
         """Start the game."""
         self._running = True
@@ -583,6 +677,16 @@ class Game:
 
         if not key:
             return
+
+        # Try InputDispatcher first (new system — runs alongside legacy chain)
+        try:
+            if hasattr(self, 'input_dispatcher') and self.input_dispatcher:
+                overlay = self.ui_state.get_active().value if hasattr(self, 'ui_state') else "none"
+                if self.input_dispatcher.dispatch(key, overlay):
+                    return  # Handled by dispatcher
+        except Exception:
+            pass
+        # ... existing if/elif chain continues as fallback
 
         # Handle talk mode specially
         if self.renderer.is_talking():
@@ -829,11 +933,13 @@ class Game:
                 recipe = selected.data
                 result = self.crafting.start_crafting(recipe.id, self.materials)
                 self._crafting_menu_open = False
+                self._notify_overlay_closed(UIOverlay.CRAFTING)
                 self.renderer.show_message(result["message"], duration=3.0, category="action")
             return
         # Close with ESC, Backspace, or C
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'c':
             self._crafting_menu_open = False
+            self._notify_overlay_closed(UIOverlay.CRAFTING)
             self.renderer.dismiss_message()
             return
 
@@ -860,6 +966,7 @@ class Game:
                 bp = selected.data
                 result = self.building.start_building(bp.id, self.materials, player_level=self.progression.level)
                 self._building_menu_open = False
+                self._notify_overlay_closed(UIOverlay.BUILDING)
                 if result.get("success"):
                     self._start_building_animation(bp)
                 else:
@@ -867,6 +974,7 @@ class Game:
             return
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'r':
             self._building_menu_open = False
+            self._notify_overlay_closed(UIOverlay.BUILDING)
             self.renderer.dismiss_message()
             return
 
@@ -892,11 +1000,13 @@ class Game:
             if selected and selected.data:
                 area = selected.data
                 self._areas_menu_open = False
+                self._notify_overlay_closed(UIOverlay.AREAS)
                 self.renderer.dismiss_message()
                 self._start_travel_to_area(area)
             return
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'a':
             self._areas_menu_open = False
+            self._notify_overlay_closed(UIOverlay.AREAS)
             self.renderer.dismiss_message()
             return
 
@@ -922,11 +1032,13 @@ class Game:
             if selected and selected.data:
                 item_id, item = selected.data
                 self._use_menu_open = False
+                self._notify_overlay_closed(UIOverlay.USE_ITEM)
                 self.renderer.dismiss_message()
                 self._execute_item_interaction(item_id)
             return
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'u':
             self._use_menu_open = False
+            self._notify_overlay_closed(UIOverlay.USE_ITEM)
             self.renderer.dismiss_message()
             return
 
@@ -951,11 +1063,13 @@ class Game:
             selected = self._minigames_menu.get_selected_item()
             if selected and selected.data and selected.enabled:
                 self._minigames_menu_open = False
+                self._notify_overlay_closed(UIOverlay.MINIGAME)
                 self.renderer.dismiss_message()
                 self._start_minigame(selected.data["id"])
             return
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'j':
             self._minigames_menu_open = False
+            self._notify_overlay_closed(UIOverlay.MINIGAME)
             self.renderer.dismiss_message()
             return
 
@@ -982,11 +1096,13 @@ class Game:
                 quest_id = selected.data.get("quest_id")
                 if quest_id:
                     self._quests_menu_open = False
+                    self._notify_overlay_closed(UIOverlay.QUESTS)
                     self.renderer.dismiss_message()
                     self._start_selected_quest(quest_id)
             return
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'o':
             self._quests_menu_open = False
+            self._notify_overlay_closed(UIOverlay.QUESTS)
             self.renderer.dismiss_message()
             return
 
@@ -1002,6 +1118,7 @@ class Game:
             # An action was selected - execute it
             action_id = self._main_menu.get_selected_action()
             self._main_menu_open = False
+            self._notify_overlay_closed(UIOverlay.MAIN_MENU)
             self.renderer.dismiss_message()
             self._execute_menu_action(action_id)
             return
@@ -1009,6 +1126,7 @@ class Game:
         if self._main_menu.was_cancelled():
             # Menu was closed
             self._main_menu_open = False
+            self._notify_overlay_closed(UIOverlay.MAIN_MENU)
             self.renderer.dismiss_message()
             return
 
@@ -1387,9 +1505,13 @@ class Game:
 
             # Overfeed: lower hunger slightly (bloated feeling)
             if category == "food":
-                self.duck.needs.hunger = max(
-                    0, self.duck.needs.hunger - ITEM_SPAM_HUNGER_OVERFEED
-                )
+                if hasattr(self, 'duck_store') and self.duck_store:
+                    self.duck_store.change_need("hunger", -ITEM_SPAM_HUNGER_OVERFEED, "spam_overfeed")
+                    self.duck_store.sync_to_duck(self.duck)
+                else:
+                    self.duck.needs.hunger = max(
+                        0, self.duck.needs.hunger - ITEM_SPAM_HUNGER_OVERFEED
+                    )
             _spam_roasts = [
                 "*burps resentfully* I'm NOT a Pez dispenser.",
                 "*stares into the void* This is what my life has become.",
@@ -1848,11 +1970,16 @@ class Game:
         self._start_item_interaction_animation(item_id, result)
         
         # Apply effects to duck needs
-        for need, change in result.effects.items():
-            if hasattr(self.duck.needs, need):
-                current = getattr(self.duck.needs, need)
-                setattr(self.duck.needs, need, min(100, max(0, current + change)))
-        
+        if hasattr(self, 'duck_store') and self.duck_store:
+            for need, change in result.effects.items():
+                self.duck_store.change_need(need, change, f"item_{item_id}")
+            self.duck_store.sync_to_duck(self.duck)
+        else:
+            for need, change in result.effects.items():
+                if hasattr(self.duck.needs, need):
+                    current = getattr(self.duck.needs, need)
+                    setattr(self.duck.needs, need, min(100, max(0, current + change)))
+
         # Record in memory
         self.duck.memory.add_interaction(f"interacted_{item_id}", item_name, emotional_value=10)
         
@@ -2893,6 +3020,17 @@ class Game:
             self.renderer.show_closeup(None, 1.5)
             duck_sounds.quack("normal")
 
+        # Emit ActionPerformedEvent for decoupled subsystem notifications
+        try:
+            from core.event_bus import event_bus, ActionPerformedEvent
+            event_bus.emit(ActionPerformedEvent(
+                action=interaction,
+                source="game",
+                result="ok",
+            ))
+        except Exception:
+            pass
+
     def _check_achievements(self, interaction: str):
         """Check for achievement unlocks."""
         if not self.duck:
@@ -3175,6 +3313,27 @@ class Game:
         """Update game state."""
         current_time = time.time()
 
+        # Run UpdateScheduler (fires registered periodic callbacks)
+        try:
+            if hasattr(self, 'update_scheduler') and self.update_scheduler:
+                self.update_scheduler.update(current_time)
+        except Exception:
+            pass
+
+        # Update TimeManager
+        try:
+            if hasattr(self, 'time_manager') and self.time_manager:
+                self.time_manager.update()
+        except Exception:
+            pass
+
+        # Process any async-queued events
+        try:
+            from core.event_bus import event_bus
+            event_bus.process_queued()
+        except Exception:
+            pass
+
         # Check for async LLM talk responses
         self._check_pending_talk()
 
@@ -3261,7 +3420,6 @@ class Game:
                 # Pause energy decay by saving energy before update and restoring after
                 energy_before = self.duck.needs.energy
                 self.duck.update(delta_minutes, weather_modifiers=weather_mods)
-                self.duck.needs.energy = energy_before
                 # Regenerate energy while sleeping
                 # Rate: ~2 points per real second (at 1× game speed)
                 # NAP (25s) → ~50 energy, NAP_IN_NEST (30s) → ~60, dream (~15s) → ~30
@@ -3269,7 +3427,12 @@ class Game:
                 if is_napping and self.duck.current_action == "nap_in_nest":
                     regen_rate = 2.5  # Nest is comfier
                 regen = regen_rate * delta_seconds
-                self.duck.needs.energy = min(100, self.duck.needs.energy + regen)
+                if hasattr(self, 'duck_store') and self.duck_store:
+                    self.duck_store.set_need("energy", energy_before + regen, "sleeping_regen")
+                    self.duck_store.sync_to_duck(self.duck)
+                else:
+                    self.duck.needs.energy = energy_before
+                    self.duck.needs.energy = min(100, self.duck.needs.energy + regen)
             else:
                 self.duck.update(delta_minutes, weather_modifiers=weather_mods)
 
@@ -3278,18 +3441,30 @@ class Game:
                 decor_bonus = self._get_room_decoration_bonus()
                 mood_bonus = decor_bonus.get("mood", 0)
                 comfort_bonus = decor_bonus.get("comfort", 0)
+                _decor_changed = False
                 if mood_bonus > 0:
                     # Trickle the bonus over time — slows decay but shouldn't reverse it
                     tick_mood = (mood_bonus / 100.0) * delta_minutes * 0.1
-                    self.duck.needs.fun = min(100, self.duck.needs.fun + tick_mood)
+                    if hasattr(self, 'duck_store') and self.duck_store:
+                        self.duck_store.change_need("fun", tick_mood, "decoration_mood")
+                    else:
+                        self.duck.needs.fun = min(100, self.duck.needs.fun + tick_mood)
+                    _decor_changed = True
                 if comfort_bonus > 0:
                     tick_comfort = (comfort_bonus / 100.0) * delta_minutes * 0.1
-                    self.duck.needs.energy = min(100, self.duck.needs.energy + tick_comfort)
+                    if hasattr(self, 'duck_store') and self.duck_store:
+                        self.duck_store.change_need("energy", tick_comfort, "decoration_comfort")
+                    else:
+                        self.duck.needs.energy = min(100, self.duck.needs.energy + tick_comfort)
+                    _decor_changed = True
+                if _decor_changed and hasattr(self, 'duck_store') and self.duck_store:
+                    self.duck_store.sync_to_duck(self.duck)
             except Exception:
                 pass
 
             # Apply completed building bonuses to duck needs each tick
             try:
+                _building_changed = False
                 for structure in self.building.structures:
                     if not hasattr(structure, 'status') or structure.status.value != 'complete':
                         continue
@@ -3301,10 +3476,20 @@ class Game:
                     happiness_bonus = getattr(bp, 'happiness_bonus', 0)
                     if energy_bonus > 0:
                         tick_energy = (energy_bonus / 100.0) * delta_minutes * 0.1
-                        self.duck.needs.energy = min(100, self.duck.needs.energy + tick_energy)
+                        if hasattr(self, 'duck_store') and self.duck_store:
+                            self.duck_store.change_need("energy", tick_energy, "building_bonus")
+                        else:
+                            self.duck.needs.energy = min(100, self.duck.needs.energy + tick_energy)
+                        _building_changed = True
                     if happiness_bonus > 0:
                         tick_happiness = (happiness_bonus / 100.0) * delta_minutes * 0.1
-                        self.duck.needs.fun = min(100, self.duck.needs.fun + tick_happiness)
+                        if hasattr(self, 'duck_store') and self.duck_store:
+                            self.duck_store.change_need("fun", tick_happiness, "building_bonus")
+                        else:
+                            self.duck.needs.fun = min(100, self.duck.needs.fun + tick_happiness)
+                        _building_changed = True
+                if _building_changed and hasattr(self, 'duck_store') and self.duck_store:
+                    self.duck_store.sync_to_duck(self.duck)
             except Exception:
                 pass
 
@@ -3407,7 +3592,11 @@ class Game:
 
         # Update atmosphere (weather, visitors) every 30 seconds
         if current_time - self._last_atmosphere_check >= 30:
-            messages = self.atmosphere.update()
+            # Core atmosphere tick — scheduler handles this if enabled
+            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("atmosphere")):
+                messages = self.atmosphere.update()
+            else:
+                messages = []  # scheduler already fired atmosphere.update()
             for msg in messages:
                 self._show_message_if_no_menu(msg, duration=4.0, category="event")
 
@@ -3590,7 +3779,8 @@ class Game:
         _in_guest_convo = bool(getattr(self, '_active_guest_conversation', None)) or bool(self._pending_visitor_comment)
         if current_time - self._last_event_check >= 30:
             if not _in_guest_convo:
-                self._check_events()
+                if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("event_check")):
+                    self._check_events()
 
                 # Chance for ambient event (peaceful atmosphere)
                 ambient = self.progression.get_ambient_event(chance=0.02)
@@ -3602,20 +3792,23 @@ class Game:
         # Check for area-specific events (every 45 seconds)
         if current_time - self._last_area_event_check >= 45:
             if not _in_guest_convo:
-                self._check_area_events()
+                if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("area_events")):
+                    self._check_area_events()
             self._last_area_event_check = current_time
 
         # Check for spontaneous travel (every 30 seconds)
         if current_time - self._last_spontaneous_travel_check >= 30:
-            self._check_spontaneous_travel()
+            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("spontaneous_travel")):
+                self._check_spontaneous_travel()
             self._last_spontaneous_travel_check = current_time
 
         # Random contextual duck comments (every ~45 seconds when idle)
         if current_time - self._last_random_comment_time >= self._random_comment_interval:
-            if not self._duck_traveling and not self._duck_exploring and not self._duck_building:
-                # 25% chance to make a contextual comment (skip during guest conversations)
-                if random.random() < 0.25 and not _in_guest_convo:
-                    self._make_contextual_comment()
+            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("random_comment")):
+                if not self._duck_traveling and not self._duck_exploring and not self._duck_building:
+                    # 25% chance to make a contextual comment (skip during guest conversations)
+                    if random.random() < 0.25 and not _in_guest_convo:
+                        self._make_contextual_comment()
             self._last_random_comment_time = current_time
 
         # Check for pending visitor reaction comment (Cheese responding to friend)
@@ -3789,21 +3982,25 @@ class Game:
 
         # Check crafting progress (every 2 seconds)
         if current_time - self._last_craft_check >= 2:
-            self._update_crafting_progress()
+            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("craft_check")):
+                self._update_crafting_progress()
             self._last_craft_check = current_time
 
         # Check building progress (every 5 seconds)
         if current_time - self._last_build_check >= 5:
-            self._update_building_progress()
+            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("build_check")):
+                self._update_building_progress()
             self._last_build_check = current_time
 
         # Apply weather damage to structures (every 60 seconds during bad weather)
         if current_time - self._last_build_check >= 60:
-            self._apply_weather_damage_to_structures()
+            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("weather_damage")):
+                self._apply_weather_damage_to_structures()
 
         # Auto-save every 60 seconds
         if current_time - self._last_save >= 60:
-            self._save_game()
+            if not (hasattr(self, 'update_scheduler') and self.update_scheduler.is_enabled("auto_save")):
+                self._save_game()
             self._last_save = current_time
 
     def _update_visitor_interactions(self, current_time: float):
@@ -3919,7 +4116,11 @@ class Game:
                 self._pending_visitor_comment_time = current_time + 9.0
                 # Apply mood/friendship effects
                 if exchange.mood_effect and self.duck:
-                    self.duck.needs.fun = min(100, max(0, self.duck.needs.fun + exchange.mood_effect))
+                    if hasattr(self, 'duck_store') and self.duck_store:
+                        self.duck_store.change_need("fun", exchange.mood_effect, "guest_conversation")
+                        self.duck_store.sync_to_duck(self.duck)
+                    else:
+                        self.duck.needs.fun = min(100, max(0, self.duck.needs.fun + exchange.mood_effect))
                 if exchange.friendship_bonus and friend_obj:
                     friend_obj.friendship_points += int(exchange.friendship_bonus)
                 self._guest_convo_index = idx + 1
@@ -4575,14 +4776,23 @@ class Game:
         if not self.duck:
             return
         # Apply need effects
-        for need, change in result.get("effects", {}).items():
-            if hasattr(self.duck.needs, need):
-                old = getattr(self.duck.needs, need)
-                setattr(self.duck.needs, need, max(0, min(100, old + change)))
-        # Apply trust change
-        trust_delta = result.get("trust_bonus", 0)
-        if trust_delta != 0:
-            self.duck.trust = max(0, min(100, self.duck.trust + trust_delta))
+        if hasattr(self, 'duck_store') and self.duck_store:
+            for need, change in result.get("effects", {}).items():
+                self.duck_store.change_need(need, change, "encounter_result")
+            # Apply trust change
+            trust_delta = result.get("trust_bonus", 0)
+            if trust_delta != 0:
+                self.duck_store.change_trust(trust_delta, "encounter_result")
+            self.duck_store.sync_to_duck(self.duck)
+        else:
+            for need, change in result.get("effects", {}).items():
+                if hasattr(self.duck.needs, need):
+                    old = getattr(self.duck.needs, need)
+                    setattr(self.duck.needs, need, max(0, min(100, old + change)))
+            # Apply trust change
+            trust_delta = result.get("trust_bonus", 0)
+            if trust_delta != 0:
+                self.duck.trust = max(0, min(100, self.duck.trust + trust_delta))
         # Show the outcome message
         duration = 6.0 if result.get("resolved") else 5.0
         self.renderer.show_message(result["message"], duration=duration, category="duck")
@@ -5137,6 +5347,21 @@ class Game:
         self.behavior_ai = BehaviorAI()
         self.inventory = Inventory()
 
+        # Sync DuckStore from newly created duck
+        try:
+            if hasattr(self, 'duck_store') and self.duck_store and self.duck:
+                self.duck_store.sync_from_duck(self.duck)
+        except Exception:
+            pass
+
+        # Initialize TimeManager
+        try:
+            from core.time_system import TimeManager
+            from core.clock import game_clock
+            self.time_manager = TimeManager(game_clock)
+        except Exception:
+            self.time_manager = None
+
         # Set up interaction controller references
         self.interaction_controller.set_references(
             habitat=self.habitat,
@@ -5231,6 +5456,10 @@ class Game:
             game=self,
         )
 
+        # Wire up new subsystem managers (additive — existing code unchanged)
+        self._setup_update_scheduler()
+        self._setup_input_dispatcher()
+
         self._save_game()
 
     def _load_game(self):
@@ -5246,6 +5475,21 @@ class Game:
         self.duck = Duck.from_dict(duck_data)
         self.behavior_ai = BehaviorAI()
         self._statistics = data.get("statistics", {})
+
+        # Sync DuckStore from loaded duck
+        try:
+            if hasattr(self, 'duck_store') and self.duck_store and self.duck:
+                self.duck_store.sync_from_duck(self.duck)
+        except Exception:
+            pass
+
+        # Restore DuckStore persisted state (overrides sync_from_duck with saved store data)
+        try:
+            if hasattr(self, 'duck_store') and self.duck_store and "duck_store" in data:
+                self.duck_store.from_dict(data["duck_store"])
+        except Exception:
+            from game_logger import get_logger
+            get_logger().debug("Failed to restore duck_store from save data")
 
         # Load inventory
         if "inventory" in data:
@@ -5638,7 +5882,11 @@ class Game:
                 # Apply trust decay based on RAW hours (uncapped — real absence matters)
                 raw_hours = offline["raw_hours"]
                 trust_loss = min(raw_hours * 0.4, 60)  # Max 60 trust lost
-                self.duck.trust = max(0, self.duck.trust - trust_loss)
+                if hasattr(self, 'duck_store') and self.duck_store:
+                    self.duck_store.change_trust(-trust_loss, "offline_decay")
+                    self.duck_store.sync_to_duck(self.duck)
+                else:
+                    self.duck.trust = max(0, self.duck.trust - trust_loss)
 
                 # Set cold shoulder if gone 3+ days
                 if raw_hours >= 72:  # 3 days
@@ -5675,7 +5923,19 @@ class Game:
         self._last_tick = time.time()
         self._last_save = time.time()
         self._last_event_check = time.time()
-        
+
+        # Initialize TimeManager
+        try:
+            from core.time_system import TimeManager
+            from core.clock import game_clock
+            self.time_manager = TimeManager(game_clock)
+        except Exception:
+            self.time_manager = None
+
+        # Wire up new subsystem managers (additive — existing code unchanged)
+        self._setup_update_scheduler()
+        self._setup_input_dispatcher()
+
         # Show welcome back - use cold shoulder or DuckBrain greeting
         welcome_msg = None
         # Cold shoulder overrides normal greetings
@@ -5714,6 +5974,13 @@ class Game:
         """Save the current game state."""
         if not self.duck:
             return
+
+        # Sync DuckStore state back to duck before saving
+        try:
+            if hasattr(self, 'duck_store') and self.duck_store and self.duck:
+                self.duck_store.sync_to_duck(self.duck)
+        except Exception:
+            pass
 
         # ── End-of-session trust bonus: all needs > 40 = "good day" ──
         needs = self.duck.needs
@@ -5777,6 +6044,14 @@ class Game:
             "desires": self.duck.desires.to_dict() if hasattr(self.duck, '_desires') else {},
             # ============== END NEW FEATURE SYSTEMS ==============
         }
+
+        # Persist DuckStore state alongside the main save data
+        try:
+            if hasattr(self, 'duck_store') and self.duck_store:
+                save_data["duck_store"] = self.duck_store.to_dict()
+        except Exception:
+            from game_logger import get_logger
+            get_logger().debug("Failed to serialize duck_store for save")
 
         self.save_manager.save(save_data)
         notification_manager.show("Game saved!", "success", 1.5)
@@ -5851,6 +6126,12 @@ class Game:
 
     def _close_all_menus(self):
         """Close all open game menus (crafting, building, etc.) and dismiss message overlay."""
+        # Close UIState overlays (new system)
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.close_all()
+        except Exception:
+            pass
         self.renderer.dismiss_message()
         self._crafting_menu_open = False
         self._building_menu_open = False
@@ -5884,6 +6165,12 @@ class Game:
 
     def _has_open_overlay(self) -> bool:
         """Check if any overlay or menu is currently open that should block master menu."""
+        # Check UIStateManager first (new system)
+        try:
+            if hasattr(self, 'ui_state') and self.ui_state.is_any_open():
+                return True
+        except Exception:
+            pass
         # Check renderer overlays (but NOT message overlay - that's just informational)
         if self.renderer.is_talking():
             return True
@@ -5931,6 +6218,12 @@ class Game:
 
     def _close_all_overlays(self):
         """Close all open overlays and menus."""
+        # Close UIState overlays (new system)
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.close_all()
+        except Exception:
+            pass
         # Close renderer overlays
         self.renderer.hide_overlays()
         self.renderer.dismiss_message()
@@ -5965,6 +6258,18 @@ class Game:
         self._debug_menu_open = False
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
+
+    def _notify_overlay_closed(self, overlay: UIOverlay) -> None:
+        """Dual-write helper: tell UIStateManager an overlay was closed.
+
+        Called alongside the legacy ``self._X_menu_open = False`` assignments
+        so the new UIStateManager stays in sync without removing old flags.
+        """
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.close_overlay()
+        except Exception:
+            pass
 
     def _stop_all_audio(self):
         """Stop all audio — radio, music, mixer. Call before quit or title return."""
@@ -6244,6 +6549,11 @@ class Game:
             else:
                 self.renderer.show_message("Crafting in progress...", duration=0)
             self._crafting_menu_open = True
+            try:
+                if hasattr(self, 'ui_state'):
+                    self.ui_state.open_overlay(UIOverlay.CRAFTING)
+            except Exception:
+                pass
             return
 
         # Build menu items - show all recipes, let MenuSelector handle pagination
@@ -6265,6 +6575,11 @@ class Game:
         ])
         self._crafting_menu.open()
         self._crafting_menu_open = True
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.open_overlay(UIOverlay.CRAFTING)
+        except Exception:
+            pass
         self._update_crafting_menu_display()
 
     def _craft_item(self, recipe_id: str):
@@ -6305,6 +6620,11 @@ class Game:
             else:
                 self.renderer.show_message("Building in progress...", duration=0)
             self._building_menu_open = True
+            try:
+                if hasattr(self, 'ui_state'):
+                    self.ui_state.open_overlay(UIOverlay.BUILDING)
+            except Exception:
+                pass
             return
 
         # Build menu items - show all blueprints with upgrade info
@@ -6345,6 +6665,11 @@ class Game:
         ])
         self._building_menu.open()
         self._building_menu_open = True
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.open_overlay(UIOverlay.BUILDING)
+        except Exception:
+            pass
         self._update_building_menu_display()
 
     def _start_building(self, blueprint_id: str):
@@ -6381,6 +6706,11 @@ class Game:
                 duration=0
             )
             self._areas_menu_open = True
+            try:
+                if hasattr(self, 'ui_state'):
+                    self.ui_state.open_overlay(UIOverlay.AREAS)
+            except Exception:
+                pass
             return
 
         # Build menu items
@@ -6403,6 +6733,11 @@ class Game:
         ])
         self._areas_menu.open()
         self._areas_menu_open = True
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.open_overlay(UIOverlay.AREAS)
+        except Exception:
+            pass
         self._update_areas_menu_display()
 
     def _handle_crafting_input(self, key_str: str, key_name: str = "", key=None) -> bool:
@@ -6414,6 +6749,7 @@ class Game:
         if self.crafting._current_craft:
             if key.name == 'KEY_ESCAPE' or key_str == 'c':
                 self._crafting_menu_open = False
+                self._notify_overlay_closed(UIOverlay.CRAFTING)
                 self._crafting_menu.close()
                 self.renderer.dismiss_message()
             return True
@@ -6438,12 +6774,14 @@ class Game:
                 recipe = selected.data
                 result = self.crafting.start_crafting(recipe.id, self.materials)
                 self._crafting_menu_open = False
+                self._notify_overlay_closed(UIOverlay.CRAFTING)
                 self.renderer.show_message(result["message"], duration=3.0)
             return True
 
         # Close on ESC or C
         if key.name == 'KEY_ESCAPE' or key_str == 'c':
             self._crafting_menu_open = False
+            self._notify_overlay_closed(UIOverlay.CRAFTING)
             self.renderer.dismiss_message()
             return True
 
@@ -6469,6 +6807,7 @@ class Game:
         if self.building._current_build:
             if key.name == 'KEY_ESCAPE' or key_str == 'r':
                 self._building_menu_open = False
+                self._notify_overlay_closed(UIOverlay.BUILDING)
                 self._building_menu.close()
                 self.renderer.dismiss_message()
             return True
@@ -6493,6 +6832,7 @@ class Game:
                 bp = selected.data
                 result = self.building.start_building(bp.id, self.materials, player_level=self.progression.level)
                 self._building_menu_open = False
+                self._notify_overlay_closed(UIOverlay.BUILDING)
                 if result.get("success"):
                     self._start_building_animation(bp)
                 else:
@@ -6502,6 +6842,7 @@ class Game:
         # Close on ESC or R
         if key.name == 'KEY_ESCAPE' or key_str == 'r':
             self._building_menu_open = False
+            self._notify_overlay_closed(UIOverlay.BUILDING)
             self.renderer.dismiss_message()
             return True
 
@@ -6579,6 +6920,7 @@ class Game:
         if not available:
             if key.name == 'KEY_ESCAPE' or key_str == 'a':
                 self._areas_menu_open = False
+                self._notify_overlay_closed(UIOverlay.AREAS)
                 self._areas_menu.close()
                 self.renderer.dismiss_message()
             return True
@@ -6602,6 +6944,7 @@ class Game:
             if selected and selected.data:
                 area = selected.data
                 self._areas_menu_open = False
+                self._notify_overlay_closed(UIOverlay.AREAS)
                 self.renderer.dismiss_message()
                 self._start_travel_to_area(area)
             return True
@@ -6609,6 +6952,7 @@ class Game:
         # Close on ESC or A
         if key.name == 'KEY_ESCAPE' or key_str == 'a':
             self._areas_menu_open = False
+            self._notify_overlay_closed(UIOverlay.AREAS)
             self.renderer.dismiss_message()
             return True
 
@@ -6851,6 +7195,11 @@ class Game:
         self._use_menu.open()
         self._use_menu_selected = 0
         self._use_menu_open = True
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.open_overlay(UIOverlay.USE_ITEM)
+        except Exception:
+            pass
         self._update_use_menu_display()
 
     def _update_use_menu_display(self):
@@ -6888,6 +7237,7 @@ class Game:
             if selected and selected.data:
                 item_id, item = selected.data
                 self._use_menu_open = False
+                self._notify_overlay_closed(UIOverlay.USE_ITEM)
                 self.renderer.dismiss_message()
                 self._execute_item_interaction(item_id)
             return True
@@ -6895,6 +7245,7 @@ class Game:
         # Close on ESC or U
         if key.name == 'KEY_ESCAPE' or key_str == 'u':
             self._use_menu_open = False
+            self._notify_overlay_closed(UIOverlay.USE_ITEM)
             self.renderer.dismiss_message()
             return True
 
@@ -6976,6 +7327,11 @@ class Game:
         ])
         self._minigames_menu.open()
         self._minigames_menu_open = True
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.open_overlay(UIOverlay.MINIGAME)
+        except Exception:
+            pass
         self._minigames_menu_selected = 0
         self._update_minigames_menu_display()
 
@@ -7020,6 +7376,7 @@ class Game:
         # Close on ESC or J
         if key.name == 'KEY_ESCAPE' or key_str == 'j':
             self._minigames_menu_open = False
+            self._notify_overlay_closed(UIOverlay.MINIGAME)
             self.renderer.dismiss_message()
             return True
 
@@ -7051,6 +7408,7 @@ class Game:
         # Handle fishing separately
         if game_id == "fishing":
             self._minigames_menu_open = False
+            self._notify_overlay_closed(UIOverlay.MINIGAME)
             self.renderer.dismiss_message()
             self._start_fishing("pond")
             return
@@ -7061,6 +7419,7 @@ class Game:
             return
 
         self._minigames_menu_open = False
+        self._notify_overlay_closed(UIOverlay.MINIGAME)
         self.renderer.dismiss_message()
 
         # Create game instance
@@ -7435,7 +7794,11 @@ class Game:
 
         # Apply mood effect
         if result.mood_effect != 0:
-            self.duck.needs.social = min(100, max(0, self.duck.needs.social + result.mood_effect))
+            if hasattr(self, 'duck_store') and self.duck_store:
+                self.duck_store.change_need("social", result.mood_effect, "dream_result")
+                self.duck_store.sync_to_duck(self.duck)
+            else:
+                self.duck.needs.social = min(100, max(0, self.duck.needs.social + result.mood_effect))
 
         # Apply XP
         if result.xp_earned > 0:
@@ -7581,6 +7944,11 @@ class Game:
 
         self._quests_menu.set_items(items)
         self._quests_menu_open = True
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.open_overlay(UIOverlay.QUESTS)
+        except Exception:
+            pass
         self._update_quests_menu_display()
 
     def _update_quests_menu_display(self):
@@ -7620,6 +7988,11 @@ class Game:
         if not self.duck:
             return
         self._trading_menu_open = True
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.open_overlay(UIOverlay.TRADING)
+        except Exception:
+            pass
         self._trading_state = "selection"
         self._trading_selected = 0
         self._render_trading_menu()
@@ -7666,6 +8039,7 @@ class Game:
         # Global close
         if key_name == "KEY_ESCAPE":
             self._trading_menu_open = False
+            self._notify_overlay_closed(UIOverlay.TRADING)
             self._trading_state = "selection"
             self.renderer.dismiss_overlay()
             return
@@ -7705,6 +8079,7 @@ class Game:
             # Trader selection mode
             if key_name == "KEY_BACKSPACE":
                 self._trading_menu_open = False
+                self._notify_overlay_closed(UIOverlay.TRADING)
                 self.renderer.dismiss_overlay()
                 return
 
@@ -7818,6 +8193,11 @@ class Game:
         
         # Show menu
         self._weather_menu_open = True
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.open_overlay(UIOverlay.WEATHER)
+        except Exception:
+            pass
         self._update_weather_menu_display(weather)
 
     def _update_weather_menu_display(self, weather: str = None):
@@ -7862,16 +8242,18 @@ class Game:
                 result = self.weather_activities.start_activity(activity.id, weather)
                 
                 self._weather_menu_open = False
+                self._notify_overlay_closed(UIOverlay.WEATHER)
                 self.renderer.dismiss_message()
                 if result:
                     self.renderer.show_message(f"Started: {result.name}\n{result.description}\nDuration: {result.duration_seconds}s", duration=3)
                 else:
                     self.renderer.show_message("Couldn't start activity - already busy!", duration=2)
             return
-        
+
         # Close with ESC, Backspace, W, or B
         if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str in ('w', 'b'):
             self._weather_menu_open = False
+            self._notify_overlay_closed(UIOverlay.WEATHER)
             self.renderer.dismiss_message()
             return
         
@@ -7920,8 +8302,12 @@ class Game:
                 self._on_level_up(new_level)
             
             # Apply mood bonus
-            self.duck.needs.fun = min(100, self.duck.needs.fun + rewards["mood_bonus"])
-            
+            if hasattr(self, 'duck_store') and self.duck_store:
+                self.duck_store.change_need("fun", rewards["mood_bonus"], "weather_activity")
+                self.duck_store.sync_to_duck(self.duck)
+            else:
+                self.duck.needs.fun = min(100, self.duck.needs.fun + rewards["mood_bonus"])
+
             # Handle special drops
             if rewards["special_drop"]:
                 self.inventory.add_item(rewards["special_drop"])
@@ -7953,6 +8339,11 @@ class Game:
             return
         
         self._treasure_menu_open = True
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.open_overlay(UIOverlay.TREASURE)
+        except Exception:
+            pass
         self._treasure_menu_selected = 0
         self._update_treasure_menu_display()
 
@@ -8055,6 +8446,7 @@ class Game:
         # Close with ESC, Backspace, or B
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE" or key_str == 'b':
             self._treasure_menu_open = False
+            self._notify_overlay_closed(UIOverlay.TREASURE)
             self.renderer.dismiss_message()
             return
 
@@ -8190,6 +8582,11 @@ class Game:
             return
         
         self._festival_menu_open = True
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.open_overlay(UIOverlay.FESTIVAL)
+        except Exception:
+            pass
         self._festival_menu_selected = 0
         self._update_festival_menu_display()
 
@@ -8228,6 +8625,7 @@ class Game:
         festival = FESTIVALS.get(active.id)
         if not festival:
             self._festival_menu_open = False
+            self._notify_overlay_closed(UIOverlay.FESTIVAL)
             return
         
         lines = [
@@ -8328,6 +8726,7 @@ class Game:
         # Close with ESC, Backspace, or B
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE" or key_str == 'b':
             self._festival_menu_open = False
+            self._notify_overlay_closed(UIOverlay.FESTIVAL)
             self.renderer.dismiss_message()
             return
 
@@ -8416,9 +8815,10 @@ class Game:
                 self._show_debug_menu()
             else:
                 self._debug_menu_open = False
+                self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
                 self.renderer.dismiss_overlay()
             return
-        
+
         # Page navigation with LEFT/RIGHT in submenus
         if self._debug_submenu and key_name == "KEY_LEFT":
             if self._debug_submenu_page > 0:
@@ -8654,12 +9054,17 @@ class Game:
         if event_id in EVENTS and self.duck:
             event = EVENTS[event_id]
             # Apply event effects
-            for need, change in event.effects.items():
-                if hasattr(self.duck.needs, need):
-                    old_val = getattr(self.duck.needs, need)
-                    new_val = max(0, min(100, old_val + change))
-                    setattr(self.duck.needs, need, new_val)
-            
+            if hasattr(self, 'duck_store') and self.duck_store:
+                for need, change in event.effects.items():
+                    self.duck_store.change_need(need, change, f"debug_event_{event_id}")
+                self.duck_store.sync_to_duck(self.duck)
+            else:
+                for need, change in event.effects.items():
+                    if hasattr(self.duck.needs, need):
+                        old_val = getattr(self.duck.needs, need)
+                        new_val = max(0, min(100, old_val + change))
+                        setattr(self.duck.needs, need, new_val)
+
             # Start event animation if available
             if event.has_animation and event_id in ANIMATED_EVENTS:
                 self._start_event_animation(event_id)
@@ -8725,30 +9130,52 @@ class Game:
         """Set duck needs."""
         if not self.duck:
             return
-        
-        if action == "max_all":
-            self.duck.needs.hunger = 100
-            self.duck.needs.energy = 100
-            self.duck.needs.fun = 100
-            self.duck.needs.clean = 100
-            self.duck.needs.social = 100
-            self.renderer.show_message("# DEBUG: All needs set to 100%", duration=2)
-        elif action == "hunger_0":
-            self.duck.needs.hunger = 0
-            self.renderer.show_message("# DEBUG: Hunger set to 0%", duration=2)
-        elif action == "energy_0":
-            self.duck.needs.energy = 0
-            self.renderer.show_message("# DEBUG: Energy set to 0%", duration=2)
-        elif action == "fun_0":
-            self.duck.needs.fun = 0
-            self.renderer.show_message("# DEBUG: Fun set to 0%", duration=2)
-        elif action == "clean_0":
-            self.duck.needs.clean = 0
-            self.renderer.show_message("# DEBUG: Cleanliness set to 0%", duration=2)
-        elif action == "social_0":
-            self.duck.needs.social = 0
-            self.renderer.show_message("# DEBUG: Social set to 0%", duration=2)
-        
+
+        if hasattr(self, 'duck_store') and self.duck_store:
+            if action == "max_all":
+                for need in ("hunger", "energy", "fun", "cleanliness", "social"):
+                    self.duck_store.set_need(need, 100, "debug_max_all")
+                self.renderer.show_message("# DEBUG: All needs set to 100%", duration=2)
+            elif action == "hunger_0":
+                self.duck_store.set_need("hunger", 0, "debug_set")
+                self.renderer.show_message("# DEBUG: Hunger set to 0%", duration=2)
+            elif action == "energy_0":
+                self.duck_store.set_need("energy", 0, "debug_set")
+                self.renderer.show_message("# DEBUG: Energy set to 0%", duration=2)
+            elif action == "fun_0":
+                self.duck_store.set_need("fun", 0, "debug_set")
+                self.renderer.show_message("# DEBUG: Fun set to 0%", duration=2)
+            elif action == "clean_0":
+                self.duck_store.set_need("cleanliness", 0, "debug_set")
+                self.renderer.show_message("# DEBUG: Cleanliness set to 0%", duration=2)
+            elif action == "social_0":
+                self.duck_store.set_need("social", 0, "debug_set")
+                self.renderer.show_message("# DEBUG: Social set to 0%", duration=2)
+            self.duck_store.sync_to_duck(self.duck)
+        else:
+            if action == "max_all":
+                self.duck.needs.hunger = 100
+                self.duck.needs.energy = 100
+                self.duck.needs.fun = 100
+                self.duck.needs.cleanliness = 100
+                self.duck.needs.social = 100
+                self.renderer.show_message("# DEBUG: All needs set to 100%", duration=2)
+            elif action == "hunger_0":
+                self.duck.needs.hunger = 0
+                self.renderer.show_message("# DEBUG: Hunger set to 0%", duration=2)
+            elif action == "energy_0":
+                self.duck.needs.energy = 0
+                self.renderer.show_message("# DEBUG: Energy set to 0%", duration=2)
+            elif action == "fun_0":
+                self.duck.needs.fun = 0
+                self.renderer.show_message("# DEBUG: Fun set to 0%", duration=2)
+            elif action == "clean_0":
+                self.duck.needs.cleanliness = 0
+                self.renderer.show_message("# DEBUG: Cleanliness set to 0%", duration=2)
+            elif action == "social_0":
+                self.duck.needs.social = 0
+                self.renderer.show_message("# DEBUG: Social set to 0%", duration=2)
+
         self._debug_menu_open = False
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
@@ -9173,15 +9600,24 @@ Core Systems Tested: {report.total_tests}
         # ── Trust & Consequences ──────────────────────────────────
         elif action.startswith("trust_"):
             val = int(action.split("_")[1].split(" ")[0])
-            self.duck.trust = float(val)
+            if hasattr(self, 'duck_store') and self.duck_store:
+                current_trust = self.duck_store.get_trust()
+                self.duck_store.change_trust(float(val) - current_trust, "debug_set_trust")
+                self.duck_store.sync_to_duck(self.duck)
+            else:
+                self.duck.trust = float(val)
             from core.consequences import get_trust_level_display
             level = get_trust_level_display(self.duck)
             msg = f"# DEBUG: Trust set to {val} ({level})"
 
         elif action == "make_sick":
             from datetime import datetime
-            self.duck.is_sick = True
-            self.duck.sick_since = datetime.now().isoformat()
+            if hasattr(self, 'duck_store') and self.duck_store:
+                self.duck_store.set_sick(True, "debug_make_sick")
+                self.duck_store.sync_to_duck(self.duck)
+            else:
+                self.duck.is_sick = True
+                self.duck.sick_since = datetime.now().isoformat()
             msg = "# DEBUG: Duck is now SICK\n*cough* ...this is YOUR fault."
 
         elif action == "cure_sickness":
@@ -9190,8 +9626,12 @@ Core Systems Tested: {report.total_tests}
             msg = f"# DEBUG: Medicine applied\n{result}"
 
         elif action == "trigger_hiding":
-            self.duck.hiding = True
-            self.duck.hiding_coax_visits = 0
+            if hasattr(self, 'duck_store') and self.duck_store:
+                self.duck_store.set_hiding(True)
+                self.duck_store.sync_to_duck(self.duck)
+            else:
+                self.duck.hiding = True
+                self.duck.hiding_coax_visits = 0
             msg = "# DEBUG: Duck is now HIDING\n...nobody home."
 
         elif action == "trigger_cold_shoulder":
@@ -9680,6 +10120,11 @@ Core Systems Tested: {report.total_tests}
     def _open_settings_menu(self):
         """Open the settings menu."""
         self._settings_menu_open = True
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.open_overlay(UIOverlay.SETTINGS)
+        except Exception:
+            pass
         self._settings_menu = settings_menu  # Use global instance
         self._settings_menu.reset_selection()
         self._render_settings_menu()
@@ -9687,6 +10132,7 @@ Core Systems Tested: {report.total_tests}
     def _close_settings_menu(self):
         """Close the settings menu without saving."""
         self._settings_menu_open = False
+        self._notify_overlay_closed(UIOverlay.SETTINGS)
         self._settings_menu.discard_changes()
         self.renderer.dismiss_message()
 
@@ -9773,6 +10219,11 @@ Core Systems Tested: {report.total_tests}
             return
 
         self._scrapbook_menu_open = True
+        try:
+            if hasattr(self, 'ui_state'):
+                self.ui_state.open_overlay(UIOverlay.SCRAPBOOK)
+        except Exception:
+            pass
         self._render_scrapbook()
     
     def _render_scrapbook(self):
@@ -9802,9 +10253,10 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._scrapbook_menu_open = False
+            self._notify_overlay_closed(UIOverlay.SCRAPBOOK)
             self.renderer.dismiss_overlay()
             return
-        
+
         total_pages = len(self.scrapbook.pages) if self.scrapbook.pages else 1
         
         # Navigate pages
@@ -9857,6 +10309,7 @@ Core Systems Tested: {report.total_tests}
 
         if key_name in ("KEY_ESCAPE", "KEY_BACKSPACE"):
             self._badges_menu_open = False
+            self._notify_overlay_closed(UIOverlay.BADGES)
             self.renderer.dismiss_overlay()
             return
 
@@ -9918,9 +10371,10 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._secrets_menu_open = False
+            self._notify_overlay_closed(UIOverlay.SECRETS)
             self.renderer.dismiss_overlay()
             return
-        
+
         # Navigate pages
         all_secrets = self.secrets.render_secrets_book()
         items_per_page = 10
@@ -9981,9 +10435,10 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._prestige_menu_open = False
+            self._notify_overlay_closed(UIOverlay.PRESTIGE)
             self.renderer.dismiss_overlay()
             return
-        
+
         # Prestige action
         if key_str == 'p':
             self._prestige_menu_open = False
@@ -10189,9 +10644,10 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._garden_menu_open = False
+            self._notify_overlay_closed(UIOverlay.GARDEN)
             self.renderer.dismiss_message()
             return
-        
+
         # Navigate plots
         num_plots = len(self.garden.plots) if hasattr(self.garden, 'plots') else 4
         
@@ -10503,9 +10959,10 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._tricks_menu_open = False
+            self._notify_overlay_closed(UIOverlay.TRICKS)
             self.renderer.dismiss_overlay()
             return
-        
+
         # Navigate pages
         items_per_page = 5
         learned_items = list(self.tricks.learned_tricks.items())
@@ -10676,8 +11133,12 @@ Core Systems Tested: {report.total_tests}
                 self.habitat.add_currency(coin_gain)
             
             if mood_bonus and self.duck:
-                self.duck.needs.fun = min(100, self.duck.needs.fun + mood_bonus)
-            
+                if hasattr(self, 'duck_store') and self.duck_store:
+                    self.duck_store.change_need("fun", mood_bonus, "trick_performance")
+                    self.duck_store.sync_to_duck(self.duck)
+                else:
+                    self.duck.needs.fun = min(100, self.duck.needs.fun + mood_bonus)
+
             # Check achievements
             if result.get("perfect"):
                 self.achievements.unlock("perfect_trick")
@@ -10784,6 +11245,7 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._titles_menu_open = False
+            self._notify_overlay_closed(UIOverlay.TITLES)
             self.renderer.dismiss_overlay()
             return
         
@@ -11710,9 +12172,10 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._enhanced_diary_open = False
+            self._notify_overlay_closed(UIOverlay.ENHANCED_DIARY)
             self.renderer.dismiss_message()
             return
-        
+
         # Tab order for arrow navigation
         tabs = ["overview", "journal", "emotions", "photos", "dreams", "life"]
         current_idx = tabs.index(self._enhanced_diary_tab) if self._enhanced_diary_tab in tabs else 0
@@ -11948,6 +12411,7 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._collectibles_menu_open = False
+            self._notify_overlay_closed(UIOverlay.COLLECTIBLES)
             self.renderer.dismiss_overlay()
             return
         
@@ -12119,6 +12583,7 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._decorations_menu_open = False
+            self._notify_overlay_closed(UIOverlay.DECORATIONS)
             self.renderer.dismiss_message()
             return
         
@@ -12226,6 +12691,7 @@ Core Systems Tested: {report.total_tests}
 
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._decoration_room_select_open = False
+            self._notify_overlay_closed(UIOverlay.DECORATION_ROOM)
             self.renderer.dismiss_overlay()
             # Reopen decorations menu
             self._show_decorations_menu()
@@ -12300,9 +12766,10 @@ Core Systems Tested: {report.total_tests}
         # Close with ESC or Backspace
         if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
             self._save_slots_menu_open = False
+            self._notify_overlay_closed(UIOverlay.SAVE_SLOTS)
             self.renderer.dismiss_message()
             return
-        
+
         # Navigate slots
         max_slots = SaveSlotsSystem.MAX_SLOTS
         

@@ -6,7 +6,12 @@ from dataclasses import dataclass, field
 from datetime import datetime, date, timedelta
 from typing import Dict, List, Optional, Tuple
 from enum import Enum
+import logging
 import random
+
+logger = logging.getLogger(__name__)
+
+from core.event_bus import event_bus, SeasonChangedEvent
 
 
 class FestivalType(Enum):
@@ -725,3 +730,37 @@ class FestivalSystem:
 
 # Global festival system instance
 festival_system = FestivalSystem()
+
+
+# ── Event Bus Subscriber Hooks ─────────────────────────────────────────────
+
+def _on_season_changed_festivals(event):
+    """Hook: check festival activation on season change."""
+    try:
+        old_season = getattr(event, "old_season", "")
+        new_season = getattr(event, "new_season", "")
+        logger.debug("Festivals: season changed %s -> %s", old_season, new_season)
+        # Check if a festival is now active after the season change
+        active = festival_system.check_active_festival()
+        if active:
+            logger.debug("Active festival detected: %s", active.name)
+            # Auto-start participation if not already participating
+            if not festival_system.current_festival_progress:
+                started, msg = festival_system.start_festival_participation(active)
+                if started:
+                    logger.debug("Auto-joined festival: %s", msg)
+        else:
+            # End current festival participation if the season changed away
+            if festival_system.current_festival_progress:
+                ended, msg, summary = festival_system.end_festival()
+                if ended:
+                    logger.debug("Festival ended on season change: %s", msg)
+        festival_system.last_festival_check = datetime.now().isoformat()
+    except Exception:
+        logger.debug("Error in _on_season_changed_festivals", exc_info=True)
+
+
+try:
+    event_bus.subscribe(SeasonChangedEvent, _on_season_changed_festivals, priority=30)
+except Exception:
+    pass

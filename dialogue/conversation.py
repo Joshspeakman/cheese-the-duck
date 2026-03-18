@@ -3,8 +3,16 @@ Conversation system - text-based chat with the duck.
 Deadpan, dry, witty Animal Crossing 1 style dialogue.
 """
 from typing import Optional, List, Dict, Tuple, TYPE_CHECKING
+import logging
 import random
 import re
+import time
+
+logger = logging.getLogger(__name__)
+
+from dialogue.dialogue_core import DialogueContext, DialogueResponse, DialogueMemory
+from dialogue.response_pipeline import create_default_pipeline
+from core.event_bus import event_bus, ConversationEvent
 
 if TYPE_CHECKING:
     from duck.duck import Duck
@@ -804,10 +812,19 @@ class ConversationSystem:
     Deadpan Animal Crossing 1 style.
     """
 
-    def __init__(self):
+    def __init__(self, game=None):
         self._last_response = ""
         self._conversation_history: List[Tuple[str, str]] = []
         self._response_cooldowns: Dict[str, int] = {}
+        self._unified_memory = DialogueMemory()
+        self._pipeline = None  # lazy init
+        self._context_provider = None
+        if game is not None:
+            try:
+                from dialogue.context_provider import GameContextProvider
+                self._context_provider = GameContextProvider(game)
+            except Exception:
+                pass
 
     def get_greeting(self, duck: "Duck") -> str:
         """Get a greeting based on duck's current state."""
@@ -960,9 +977,46 @@ class ConversationSystem:
         """
         response = None
         source = None
+        _used_pipeline = False
 
+        # Try new ResponsePipeline first (unified response generation)
+        try:
+            if self._pipeline is None:
+                self._pipeline = create_default_pipeline()
+            if self._pipeline:
+                from dialogue.dialogue_core import DialogueState
+                ctx = None
+                if hasattr(self, '_context_provider') and self._context_provider:
+                    try:
+                        ctx = self._context_provider.build_context(
+                            player_input, triggers=["player_input"]
+                        )
+                    except Exception:
+                        ctx = None
+                if ctx is None:
+                    ctx = DialogueContext(
+                        timestamp=time.time(), player_message=player_input,
+                        conversation_state="active",
+                        duck_mood=duck.get_mood().state.value if duck and hasattr(duck, 'get_mood') else "content",
+                        duck_trust=duck.trust if duck and hasattr(duck, 'trust') else 50.0,
+                        time_of_day="", season="", weather="",
+                        current_biome="", current_location="",
+                        active_visitor=None, active_event=None,
+                        recent_topics=self._unified_memory.get_topics(limit=5) if hasattr(self, '_unified_memory') else [],
+                        session_message_count=len(self._conversation_history),
+                        triggers=["player_input"],
+                    )
+                pipeline_resp = self._pipeline.generate_response(ctx, DialogueState())
+                if pipeline_resp and pipeline_resp.text:
+                    response = pipeline_resp.text
+                    source = pipeline_resp.source or "pipeline"
+                    _used_pipeline = True
+        except Exception:
+            logger.debug("Pipeline response generation failed", exc_info=True)
+
+        # Legacy fallback chain (if pipeline didn't produce a response)
         # Try LLM first if enabled — best contextual understanding
-        if use_llm:
+        if not response and use_llm:
             try:
                 from dialogue.llm_chat import get_llm_chat
                 llm = get_llm_chat()
@@ -1032,7 +1086,26 @@ class ConversationSystem:
                     learn_source = "llm" if source == "llm" else "conversation"
                     get_learning_engine().learn(player_input, response, source=learn_source)
             except Exception:
-                pass  # Learning is best-effort
+                logger.debug("Learning engine feedback failed", exc_info=True)
+
+        # Emit conversation event for decoupled listeners
+        try:
+            event_bus.emit(ConversationEvent(source="conversation", speaker="duck", message=response, response_source=source or "unknown"))
+        except Exception:
+            logger.debug("Failed to emit conversation event", exc_info=True)
+
+        # Dual-write to unified memory for gradual migration
+        try:
+            ctx = DialogueContext(timestamp=time.time(), player_message=player_input,
+                conversation_state="active", duck_mood="content", duck_trust=50.0,
+                time_of_day="", season="", weather="", current_biome="", current_location="",
+                active_visitor=None, active_event=None, recent_topics=[],
+                session_message_count=len(self._conversation_history) if hasattr(self, '_conversation_history') else 0,
+                triggers=["player_input"])
+            resp = DialogueResponse(text=response, source="legacy", confidence=1.0, actions=[], mood_hint=None, should_record=True)
+            self._unified_memory.record_exchange(player_input, response, ctx, resp)
+        except Exception:
+            logger.debug("Unified memory dual-write failed", exc_info=True)
 
         return response
 
@@ -1042,6 +1115,32 @@ class ConversationSystem:
         if len(self._conversation_history) > 20:
             self._conversation_history.pop(0)
 
+    def generate_via_pipeline(self, player_input, context, state):
+        """Generate via new pipeline. For gradual migration."""
+        if self._pipeline is None:
+            self._pipeline = create_default_pipeline()
+        return self._pipeline.generate_response(context, state)
+
 
 # Global instance
 conversation = ConversationSystem()
+
+
+# ── Event subscribers ────────────────────────────────────────────────
+try:
+    def _on_conversation_event(event):
+        try:
+            message = getattr(event, "message", "")
+            speaker = getattr(event, "speaker", "unknown")
+            source = getattr(event, "response_source", "unknown")
+            logger.debug("Conversation [%s via %s]: %s", speaker, source, message[:60])
+            # Record in unified memory for retrieval in future conversations
+            conversation._unified_memory.record(
+                speaker=speaker, text=message, source=source
+            )
+        except Exception:
+            logger.debug("Error in _on_conversation_event", exc_info=True)
+
+    event_bus.subscribe(ConversationEvent, _on_conversation_event, priority=70)
+except Exception:
+    pass

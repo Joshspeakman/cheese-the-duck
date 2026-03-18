@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheese the Duck — Refactor Proposal: Current vs Proposed Architecture</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0f;
+    color: #c8c8d0;
+    font-family: 'Courier New', monospace;
+    overflow-x: hidden;
+  }
+  #header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: linear-gradient(180deg, #0a0a0f 70%, transparent);
+    padding: 12px 20px 28px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  #header h1 {
+    font-size: 16px; color: #ffd850;
+    text-shadow: 0 0 12px rgba(255,216,80,0.3);
+  }
+  #header p { font-size: 10px; color: #555; margin-top: 2px; }
+  #view-toggle {
+    display: flex; gap: 0; margin-top: 2px;
+  }
+  #view-toggle button {
+    background: rgba(30,30,40,0.9); border: 1px solid #333;
+    color: #888; font-family: inherit; font-size: 11px;
+    padding: 6px 14px; cursor: pointer; transition: all 0.3s;
+  }
+  #view-toggle button:first-child { border-radius: 4px 0 0 4px; }
+  #view-toggle button:last-child { border-radius: 0 4px 4px 0; }
+  #view-toggle button.active {
+    background: rgba(255,216,80,0.15); border-color: #ffd850;
+    color: #ffd850;
+  }
+  #view-toggle button:hover:not(.active) { color: #ccc; border-color: #555; }
+
+  .view-container {
+    width: 100%; min-height: 100vh; padding-top: 70px;
+    display: none;
+  }
+  .view-container.active { display: block; }
+
+  /* Canvas for both views */
+  svg { display: block; }
+  .node {
+    cursor: pointer; transition: filter 0.2s;
+  }
+  .node:hover { filter: brightness(1.3) drop-shadow(0 0 8px rgba(255,255,255,0.15)); }
+  .node rect, .node circle, .node polygon {
+    transition: stroke-width 0.2s;
+  }
+  .node:hover rect, .node:hover circle, .node:hover polygon {
+    stroke-width: 2.5;
+  }
+  .edge { opacity: 0.4; transition: opacity 0.2s; }
+  .edge:hover { opacity: 0.9; }
+  .edge.highlight { opacity: 0.85; }
+
+  #legend {
+    position: fixed; bottom: 14px; left: 14px; z-index: 200;
+    background: rgba(10,10,15,0.94); border: 1px solid #222;
+    border-radius: 6px; padding: 10px 14px; font-size: 10px;
+    line-height: 1.8;
+  }
+  #legend .swatch {
+    display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+    margin-right: 5px; vertical-align: middle;
+  }
+
+  #info-panel {
+    position: fixed; top: 70px; right: 14px; z-index: 200;
+    background: rgba(10,10,15,0.96); border: 1px solid #333;
+    border-radius: 6px; padding: 14px 16px; font-size: 11px;
+    max-width: 320px; display: none; line-height: 1.6;
+    max-height: 80vh; overflow-y: auto;
+  }
+  #info-panel h3 { color: #ffd850; margin-bottom: 4px; font-size: 13px; }
+  #info-panel .tag { display: inline-block; font-size: 9px; padding: 1px 6px; border-radius: 3px; margin-bottom: 6px; }
+  #info-panel .severity-critical { background: rgba(255,80,80,0.2); color: #ff6666; border: 1px solid #ff4444; }
+  #info-panel .severity-high { background: rgba(255,160,50,0.2); color: #ffaa44; border: 1px solid #ff8800; }
+  #info-panel .severity-medium { background: rgba(255,220,80,0.2); color: #ffdd55; border: 1px solid #ffcc00; }
+  #info-panel .severity-new { background: rgba(80,220,120,0.15); color: #55dd77; border: 1px solid #44cc66; }
+  #info-panel .file { color: #666; font-size: 9px; margin-bottom: 6px; }
+  #info-panel .desc { color: #aaa; margin-bottom: 8px; }
+  #info-panel .problem { color: #ff8866; font-size: 10px; margin-top: 6px; }
+  #info-panel .solution { color: #66ddaa; font-size: 10px; margin-top: 4px; }
+  #info-panel .metric { color: #888; font-size: 10px; }
+  #info-panel hr { border: none; border-top: 1px solid #222; margin: 8px 0; }
+
+  #stats-bar {
+    position: fixed; bottom: 14px; right: 14px; z-index: 200;
+    background: rgba(10,10,15,0.92); border: 1px solid #222;
+    border-radius: 6px; padding: 8px 12px; font-size: 10px;
+    text-align: right; line-height: 1.7;
+  }
+  #stats-bar .label { color: #555; }
+  #stats-bar .val { color: #ffd850; }
+  #stats-bar .val-bad { color: #ff6666; }
+  #stats-bar .val-good { color: #55dd77; }
+
+  /* Phase legend for proposed view */
+  #phase-legend {
+    position: fixed; bottom: 14px; left: 14px; z-index: 200;
+    background: rgba(10,10,15,0.94); border: 1px solid #222;
+    border-radius: 6px; padding: 10px 14px; font-size: 10px;
+    line-height: 1.8; display: none;
+  }
+  .phase-dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 2px;
+    margin-right: 5px; vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div>
+    <h1>🦆 Cheese the Duck — Architecture Refactor Proposal</h1>
+    <p>5-agent analysis · click nodes for details · toggle views above</p>
+  </div>
+  <div id="view-toggle">
+    <button class="active" onclick="showView('current')">CURRENT</button>
+    <button onclick="showView('proposed')">PROPOSED</button>
+  </div>
+</div>
+
+<div id="info-panel"></div>
+
+<!-- ===================== CURRENT ARCHITECTURE VIEW ===================== -->
+<div id="view-current" class="view-container active">
+<svg id="svg-current" width="1400" height="1100" viewBox="0 0 1400 1100">
+  <defs>
+    <marker id="arrow-c" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,3 L0,6" fill="#444"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,3 L0,6" fill="#ff4444"/>
+    </marker>
+    <filter id="glow-red"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="glow-yellow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+
+  <!-- Background grid -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#111" stroke-width="0.5"/>
+  </pattern>
+  <rect width="100%" height="100%" fill="url(#grid)"/>
+
+  <!-- Section labels -->
+  <text x="700" y="42" text-anchor="middle" fill="#333" font-size="11" font-family="monospace">CURRENT ARCHITECTURE — Problems highlighted in red</text>
+
+  <!-- ===== main.py ===== -->
+  <g class="node" onclick="showInfo('current','main')">
+    <rect x="640" y="60" width="120" height="36" rx="4" fill="#1a1a25" stroke="#555" stroke-width="1.5"/>
+    <text x="700" y="83" text-anchor="middle" fill="#ccc" font-size="11" font-family="monospace">main.py</text>
+  </g>
+
+  <!-- ===== GAME.PY — THE GOD OBJECT ===== -->
+  <g class="node" onclick="showInfo('current','game')" filter="url(#glow-red)">
+    <rect x="500" y="140" width="400" height="80" rx="6" fill="#2a1015" stroke="#ff4444" stroke-width="2.5" stroke-dasharray="4,2"/>
+    <text x="700" y="168" text-anchor="middle" fill="#ff6666" font-size="14" font-weight="bold" font-family="monospace">core/game.py</text>
+    <text x="700" y="186" text-anchor="middle" fill="#ff4444" font-size="10" font-family="monospace">~9,400 lines · 120+ imports · 50+ systems · GOD OBJECT</text>
+    <text x="700" y="202" text-anchor="middle" fill="#993333" font-size="9" font-family="monospace">100+ boolean flags · 100+ methods · manages EVERYTHING</text>
+  </g>
+  <line x1="700" y1="96" x2="700" y2="140" stroke="#555" stroke-width="1.5" marker-end="url(#arrow-c)"/>
+
+  <!-- ===== CORE CLUSTER ===== -->
+  <text x="160" y="260" text-anchor="middle" fill="#444" font-size="10" font-family="monospace">── core/ ──</text>
+  <g class="node" onclick="showInfo('current','clock')">
+    <rect x="60" y="275" width="110" height="30" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="115" y="294" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">clock.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','settings')">
+    <rect x="60" y="315" width="110" height="30" rx="3" fill="#151520" stroke="#44cc88" stroke-width="1"/>
+    <text x="115" y="334" text-anchor="middle" fill="#66cc88" font-size="10" font-family="monospace">settings.py ✓</text>
+  </g>
+  <g class="node" onclick="showInfo('current','persistence')">
+    <rect x="60" y="355" width="110" height="30" rx="3" fill="#151520" stroke="#44cc88" stroke-width="1"/>
+    <text x="115" y="374" text-anchor="middle" fill="#66cc88" font-size="10" font-family="monospace">persistence.py ✓</text>
+  </g>
+  <g class="node" onclick="showInfo('current','menu_ctrl')">
+    <rect x="60" y="395" width="130" height="30" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="125" y="414" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">menu_controller.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','consequences')">
+    <rect x="60" y="435" width="130" height="30" rx="3" fill="#151520" stroke="#cc8844" stroke-width="1"/>
+    <text x="125" y="454" text-anchor="middle" fill="#cc8844" font-size="10" font-family="monospace">consequences.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','progression')">
+    <rect x="60" y="475" width="130" height="30" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="125" y="494" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">progression.py</text>
+  </g>
+
+  <!-- Lines from game to core -->
+  <line x1="500" y1="180" x2="170" y2="290" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+  <line x1="500" y1="180" x2="170" y2="330" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+  <line x1="500" y1="180" x2="170" y2="370" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+  <line x1="500" y1="190" x2="190" y2="410" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+  <line x1="500" y1="190" x2="190" y2="450" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+  <line x1="500" y1="190" x2="190" y2="490" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+
+  <!-- ===== DUCK CLUSTER ===== -->
+  <text x="350" y="260" text-anchor="middle" fill="#444" font-size="10" font-family="monospace">── duck/ ──</text>
+  <g class="node" onclick="showInfo('current','duck')">
+    <rect x="280" y="275" width="110" height="30" rx="3" fill="#151520" stroke="#44cc88" stroke-width="1"/>
+    <text x="335" y="294" text-anchor="middle" fill="#66cc88" font-size="10" font-family="monospace">duck.py ✓</text>
+  </g>
+  <g class="node" onclick="showInfo('current','needs')">
+    <rect x="280" y="315" width="110" height="30" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="335" y="334" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">needs.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','personality')">
+    <rect x="280" y="355" width="110" height="30" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="335" y="374" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">personality.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','mood')">
+    <rect x="280" y="395" width="110" height="30" rx="3" fill="#151520" stroke="#cc8844" stroke-width="1"/>
+    <text x="335" y="414" text-anchor="middle" fill="#cc8844" font-size="10" font-family="monospace">mood.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','behavior')">
+    <rect x="280" y="435" width="120" height="30" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="340" y="454" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">behavior_ai.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','desires')">
+    <rect x="280" y="475" width="110" height="30" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="335" y="494" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">desires.py</text>
+  </g>
+
+  <line x1="550" y1="200" x2="390" y2="290" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+  <line x1="550" y1="200" x2="390" y2="330" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+  <line x1="550" y1="200" x2="390" y2="370" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+  <line x1="550" y1="200" x2="390" y2="410" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+  <line x1="550" y1="200" x2="400" y2="450" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+
+  <!-- ===== UI CLUSTER ===== -->
+  <text x="1050" y="260" text-anchor="middle" fill="#444" font-size="10" font-family="monospace">── ui/ ──</text>
+  <g class="node" onclick="showInfo('current','renderer')" filter="url(#glow-red)">
+    <rect x="970" y="275" width="160" height="40" rx="3" fill="#2a1015" stroke="#ff6644" stroke-width="2"/>
+    <text x="1050" y="293" text-anchor="middle" fill="#ff8866" font-size="11" font-family="monospace">renderer.py</text>
+    <text x="1050" y="306" text-anchor="middle" fill="#993333" font-size="8" font-family="monospace">3,900+ lines · monolithic</text>
+  </g>
+  <g class="node" onclick="showInfo('current','day_night')">
+    <rect x="980" y="325" width="140" height="30" rx="3" fill="#151520" stroke="#cc8844" stroke-width="1"/>
+    <text x="1050" y="344" text-anchor="middle" fill="#cc8844" font-size="10" font-family="monospace">day_night.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','biome_visuals')">
+    <rect x="980" y="365" width="140" height="30" rx="3" fill="#151520" stroke="#cc8844" stroke-width="1"/>
+    <text x="1050" y="384" text-anchor="middle" fill="#cc8844" font-size="10" font-family="monospace">biome_visuals.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','input_handler')">
+    <rect x="980" y="405" width="140" height="30" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="1050" y="424" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">input_handler.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','animations')">
+    <rect x="980" y="445" width="140" height="30" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="1050" y="464" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">animations.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','ascii_art')">
+    <rect x="980" y="485" width="140" height="30" rx="3" fill="#151520" stroke="#44cc88" stroke-width="1"/>
+    <text x="1050" y="504" text-anchor="middle" fill="#66cc88" font-size="10" font-family="monospace">ascii_art.py ✓</text>
+  </g>
+
+  <line x1="900" y1="180" x2="970" y2="295" stroke="#ff4444" stroke-width="1.2" opacity="0.4" marker-end="url(#arrow-red)"/>
+  <line x1="900" y1="180" x2="980" y2="340" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+  <line x1="900" y1="180" x2="980" y2="380" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+  <line x1="900" y1="180" x2="980" y2="420" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+
+  <!-- ===== DIALOGUE CLUSTER ===== -->
+  <text x="520" y="560" text-anchor="middle" fill="#444" font-size="10" font-family="monospace">── dialogue/ (35 files) ──</text>
+
+  <g class="node" onclick="showInfo('current','conversation')" filter="url(#glow-red)">
+    <rect x="370" y="578" width="160" height="40" rx="3" fill="#2a1015" stroke="#ff6644" stroke-width="1.5"/>
+    <text x="450" y="596" text-anchor="middle" fill="#ff8866" font-size="10" font-family="monospace">conversation.py</text>
+    <text x="450" y="609" text-anchor="middle" fill="#993333" font-size="8" font-family="monospace">1,000+ lines · DUAL ARCH</text>
+  </g>
+  <g class="node" onclick="showInfo('current','duck_brain')">
+    <rect x="550" y="578" width="140" height="40" rx="3" fill="#1a1520" stroke="#bb66cc" stroke-width="1.5"/>
+    <text x="620" y="596" text-anchor="middle" fill="#cc88dd" font-size="10" font-family="monospace">duck_brain.py</text>
+    <text x="620" y="609" text-anchor="middle" fill="#885599" font-size="8" font-family="monospace">860 lines · orchestrator</text>
+  </g>
+
+  <g class="node" onclick="showInfo('current','llm_chat')">
+    <rect x="310" y="640" width="120" height="28" rx="3" fill="#151520" stroke="#cc6688" stroke-width="1"/>
+    <text x="370" y="658" text-anchor="middle" fill="#cc6688" font-size="9" font-family="monospace">llm_chat.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','seaman')">
+    <rect x="440" y="640" width="120" height="28" rx="3" fill="#151520" stroke="#cc6688" stroke-width="1"/>
+    <text x="500" y="658" text-anchor="middle" fill="#cc6688" font-size="9" font-family="monospace">seaman_style.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','learning')">
+    <rect x="570" y="640" width="130" height="28" rx="3" fill="#151520" stroke="#cc6688" stroke-width="1"/>
+    <text x="635" y="658" text-anchor="middle" fill="#cc6688" font-size="9" font-family="monospace">learning_engine.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','voice')">
+    <rect x="310" y="678" width="130" height="28" rx="3" fill="#151520" stroke="#cc6688" stroke-width="1"/>
+    <text x="375" y="696" text-anchor="middle" fill="#cc6688" font-size="9" font-family="monospace">voice_generator.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','memory_recall')">
+    <rect x="450" y="678" width="130" height="28" rx="3" fill="#151520" stroke="#cc6688" stroke-width="1"/>
+    <text x="515" y="696" text-anchor="middle" fill="#cc6688" font-size="9" font-family="monospace">memory_recall.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','conv_memory')">
+    <rect x="590" y="678" width="140" height="28" rx="3" fill="#151520" stroke="#cc8844" stroke-width="1"/>
+    <text x="660" y="696" text-anchor="middle" fill="#cc8844" font-size="9" font-family="monospace">conv_memory.py ⚠</text>
+  </g>
+  <g class="node" onclick="showInfo('current','keyword_files')">
+    <rect x="340" y="720" width="180" height="28" rx="3" fill="#1a1520" stroke="#cc8844" stroke-width="1" stroke-dasharray="3,2"/>
+    <text x="430" y="738" text-anchor="middle" fill="#cc8844" font-size="9" font-family="monospace">keyword_responses_*.py ×7</text>
+  </g>
+  <g class="node" onclick="showInfo('current','personality_files')">
+    <rect x="530" y="720" width="180" height="28" rx="3" fill="#1a1520" stroke="#cc8844" stroke-width="1" stroke-dasharray="3,2"/>
+    <text x="620" y="738" text-anchor="middle" fill="#cc8844" font-size="9" font-family="monospace">dialogue_*.py ×9 personalities</text>
+  </g>
+
+  <!-- Dialogue internal links -->
+  <line x1="450" y1="618" x2="370" y2="640" stroke="#cc6688" stroke-width="0.6" opacity="0.3"/>
+  <line x1="450" y1="618" x2="500" y2="640" stroke="#cc6688" stroke-width="0.6" opacity="0.3"/>
+  <line x1="620" y1="618" x2="635" y2="640" stroke="#cc6688" stroke-width="0.6" opacity="0.3"/>
+  <line x1="620" y1="618" x2="515" y2="678" stroke="#cc6688" stroke-width="0.6" opacity="0.3"/>
+  <line x1="620" y1="618" x2="660" y2="678" stroke="#cc6688" stroke-width="0.6" opacity="0.3"/>
+
+  <!-- Game to dialogue -->
+  <line x1="600" y1="220" x2="450" y2="578" stroke="#ff4444" stroke-width="1" opacity="0.3" marker-end="url(#arrow-red)"/>
+  <line x1="650" y1="220" x2="620" y2="578" stroke="#ff4444" stroke-width="1" opacity="0.3" marker-end="url(#arrow-red)"/>
+
+  <!-- ===== WORLD CLUSTER ===== -->
+  <text x="1050" y="560" text-anchor="middle" fill="#444" font-size="10" font-family="monospace">── world/ (35 files) ──</text>
+
+  <g class="node" onclick="showInfo('current','atmosphere')">
+    <rect x="920" y="578" width="120" height="28" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="980" y="596" text-anchor="middle" fill="#6699cc" font-size="9" font-family="monospace">atmosphere.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','exploration')">
+    <rect x="1050" y="578" width="120" height="28" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="1110" y="596" text-anchor="middle" fill="#6699cc" font-size="9" font-family="monospace">exploration.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','events')">
+    <rect x="920" y="614" width="120" height="28" rx="3" fill="#151520" stroke="#cc8844" stroke-width="1"/>
+    <text x="980" y="632" text-anchor="middle" fill="#cc8844" font-size="9" font-family="monospace">events.py 2000+</text>
+  </g>
+  <g class="node" onclick="showInfo('current','items')">
+    <rect x="1050" y="614" width="120" height="28" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="1110" y="632" text-anchor="middle" fill="#6699cc" font-size="9" font-family="monospace">items.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','friends')">
+    <rect x="920" y="650" width="120" height="28" rx="3" fill="#151520" stroke="#cc8844" stroke-width="1"/>
+    <text x="980" y="668" text-anchor="middle" fill="#cc8844" font-size="9" font-family="monospace">friends.py 1300+</text>
+  </g>
+  <g class="node" onclick="showInfo('current','achievements')">
+    <rect x="1050" y="650" width="130" height="28" rx="3" fill="#151520" stroke="#cc8844" stroke-width="1"/>
+    <text x="1115" y="668" text-anchor="middle" fill="#cc8844" font-size="9" font-family="monospace">achievements.py</text>
+  </g>
+  <g class="node" onclick="showInfo('current','world_others')">
+    <rect x="930" y="690" width="260" height="28" rx="3" fill="#151520" stroke="#555" stroke-width="1" stroke-dasharray="3,2"/>
+    <text x="1060" y="708" text-anchor="middle" fill="#666" font-size="9" font-family="monospace">+29 more: crafting, fishing, garden, quests...</text>
+  </g>
+
+  <line x1="800" y1="200" x2="920" y2="592" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+  <line x1="850" y1="200" x2="1050" y2="592" stroke="#ff4444" stroke-width="0.8" opacity="0.3" marker-end="url(#arrow-red)"/>
+
+  <!-- ===== AUDIO CLUSTER ===== -->
+  <text x="160" y="560" text-anchor="middle" fill="#444" font-size="10" font-family="monospace">── audio/ ──</text>
+  <g class="node" onclick="showInfo('current','sound')">
+    <rect x="80" y="578" width="140" height="28" rx="3" fill="#151520" stroke="#cc8844" stroke-width="1"/>
+    <text x="150" y="596" text-anchor="middle" fill="#cc8844" font-size="9" font-family="monospace">sound.py 1,487 lines</text>
+  </g>
+
+  <line x1="530" y1="200" x2="220" y2="592" stroke="#ff4444" stroke-width="0.6" opacity="0.2" marker-end="url(#arrow-red)"/>
+
+  <!-- ===== PROBLEM CALLOUTS ===== -->
+  <!-- No event bus -->
+  <rect x="200" y="800" width="280" height="55" rx="4" fill="rgba(255,50,50,0.08)" stroke="#ff4444" stroke-width="1" stroke-dasharray="6,3"/>
+  <text x="340" y="820" text-anchor="middle" fill="#ff6666" font-size="11" font-weight="bold" font-family="monospace">⚠ NO EVENT BUS</text>
+  <text x="340" y="836" text-anchor="middle" fill="#994444" font-size="9" font-family="monospace">All state changes are imperative mutations</text>
+  <text x="340" y="848" text-anchor="middle" fill="#994444" font-size="9" font-family="monospace">Systems poll instead of subscribe</text>
+
+  <!-- 3 conversation histories -->
+  <rect x="560" y="800" width="280" height="55" rx="4" fill="rgba(255,50,50,0.08)" stroke="#ff4444" stroke-width="1" stroke-dasharray="6,3"/>
+  <text x="700" y="820" text-anchor="middle" fill="#ff6666" font-size="11" font-weight="bold" font-family="monospace">⚠ 3 SEPARATE HISTORIES</text>
+  <text x="700" y="836" text-anchor="middle" fill="#994444" font-size="9" font-family="monospace">ConversationSystem + ConversationMemory</text>
+  <text x="700" y="848" text-anchor="middle" fill="#994444" font-size="9" font-family="monospace">+ LLMChat each track their own</text>
+
+  <!-- No tests -->
+  <rect x="920" y="800" width="280" height="55" rx="4" fill="rgba(255,50,50,0.08)" stroke="#ff4444" stroke-width="1" stroke-dasharray="6,3"/>
+  <text x="1060" y="820" text-anchor="middle" fill="#ff6666" font-size="11" font-weight="bold" font-family="monospace">⚠ NO TEST INFRASTRUCTURE</text>
+  <text x="1060" y="836" text-anchor="middle" fill="#994444" font-size="9" font-family="monospace">3 ad-hoc test files, no pytest</text>
+  <text x="1060" y="848" text-anchor="middle" fill="#994444" font-size="9" font-family="monospace">80+ bare Exception catches mask bugs</text>
+
+  <!-- Time fragmentation -->
+  <rect x="200" y="870" width="280" height="45" rx="4" fill="rgba(255,160,50,0.08)" stroke="#cc8844" stroke-width="1" stroke-dasharray="6,3"/>
+  <text x="340" y="888" text-anchor="middle" fill="#cc8844" font-size="11" font-weight="bold" font-family="monospace">⚠ TIME SYSTEM FRAGMENTED</text>
+  <text x="340" y="903" text-anchor="middle" fill="#886633" font-size="9" font-family="monospace">4 files each calculate time-of-day differently</text>
+
+  <!-- Scattered state -->
+  <rect x="560" y="870" width="280" height="45" rx="4" fill="rgba(255,160,50,0.08)" stroke="#cc8844" stroke-width="1" stroke-dasharray="6,3"/>
+  <text x="700" y="888" text-anchor="middle" fill="#cc8844" font-size="11" font-weight="bold" font-family="monospace">⚠ SCATTERED STATE</text>
+  <text x="700" y="903" text-anchor="middle" fill="#886633" font-size="9" font-family="monospace">Duck state split across 7+ files, no validation</text>
+
+  <!-- Singleton proliferation -->
+  <rect x="920" y="870" width="280" height="45" rx="4" fill="rgba(255,160,50,0.08)" stroke="#cc8844" stroke-width="1" stroke-dasharray="6,3"/>
+  <text x="1060" y="888" text-anchor="middle" fill="#cc8844" font-size="11" font-weight="bold" font-family="monospace">⚠ 35+ GLOBAL SINGLETONS</text>
+  <text x="1060" y="903" text-anchor="middle" fill="#886633" font-size="9" font-family="monospace">No dependency injection, untestable</text>
+
+  <!-- Stats -->
+  <text x="700" y="970" text-anchor="middle" fill="#333" font-size="10" font-family="monospace">137 Python files · ~80,000 lines · 50+ systems · 0% test coverage · 5 agents voted: REFACTOR NEEDED</text>
+
+  <!-- Red tangled web lines from game.py to everything -->
+  <g opacity="0.08">
+    <line x1="600" y1="220" x2="150" y2="592" stroke="#ff0000" stroke-width="2"/>
+    <line x1="650" y1="220" x2="370" y2="658" stroke="#ff0000" stroke-width="2"/>
+    <line x1="700" y1="220" x2="500" y2="658" stroke="#ff0000" stroke-width="2"/>
+    <line x1="750" y1="220" x2="635" y2="658" stroke="#ff0000" stroke-width="2"/>
+    <line x1="800" y1="220" x2="980" y2="632" stroke="#ff0000" stroke-width="2"/>
+    <line x1="850" y1="220" x2="1110" y2="668" stroke="#ff0000" stroke-width="2"/>
+    <line x1="700" y1="220" x2="1050" y2="424" stroke="#ff0000" stroke-width="2"/>
+    <line x1="700" y1="220" x2="1050" y2="464" stroke="#ff0000" stroke-width="2"/>
+    <line x1="700" y1="220" x2="335" y2="454" stroke="#ff0000" stroke-width="2"/>
+    <line x1="700" y1="220" x2="125" y2="454" stroke="#ff0000" stroke-width="2"/>
+    <line x1="700" y1="220" x2="430" y2="738" stroke="#ff0000" stroke-width="2"/>
+    <line x1="700" y1="220" x2="620" y2="738" stroke="#ff0000" stroke-width="2"/>
+    <line x1="700" y1="220" x2="1060" y2="708" stroke="#ff0000" stroke-width="2"/>
+    <line x1="700" y1="220" x2="335" y2="334" stroke="#ff0000" stroke-width="2"/>
+    <line x1="700" y1="220" x2="335" y2="374" stroke="#ff0000" stroke-width="2"/>
+  </g>
+</svg>
+</div>
+
+<!-- ===================== PROPOSED ARCHITECTURE VIEW ===================== -->
+<div id="view-proposed" class="view-container">
+<svg id="svg-proposed" width="1400" height="1200" viewBox="0 0 1400 1200">
+  <defs>
+    <marker id="arrow-p" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,3 L0,6" fill="#555"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,3 L0,6" fill="#44cc66"/>
+    </marker>
+    <marker id="arrow-event" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="5" orient="auto">
+      <path d="M0,0 L10,3 L0,6" fill="#ffd850"/>
+    </marker>
+    <filter id="glow-green"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+
+  <pattern id="grid2" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#111" stroke-width="0.5"/>
+  </pattern>
+  <rect width="100%" height="100%" fill="url(#grid2)"/>
+
+  <text x="700" y="42" text-anchor="middle" fill="#333" font-size="11" font-family="monospace">PROPOSED ARCHITECTURE — New modules in green · Event bus in gold</text>
+
+  <!-- ===== main.py ===== -->
+  <g class="node" onclick="showInfo('proposed','p_main')">
+    <rect x="640" y="60" width="120" height="36" rx="4" fill="#1a1a25" stroke="#555" stroke-width="1.5"/>
+    <text x="700" y="83" text-anchor="middle" fill="#ccc" font-size="11" font-family="monospace">main.py</text>
+  </g>
+
+  <!-- ===== SLIM GAME.PY ===== -->
+  <g class="node" onclick="showInfo('proposed','p_game')" filter="url(#glow-green)">
+    <rect x="560" y="120" width="280" height="50" rx="6" fill="#0a1a10" stroke="#44cc66" stroke-width="2"/>
+    <text x="700" y="143" text-anchor="middle" fill="#55dd77" font-size="13" font-weight="bold" font-family="monospace">core/game.py (SLIM)</text>
+    <text x="700" y="158" text-anchor="middle" fill="#338844" font-size="9" font-family="monospace">~500 lines · orchestrator only · delegates everything</text>
+  </g>
+  <line x1="700" y1="96" x2="700" y2="120" stroke="#555" stroke-width="1.5" marker-end="url(#arrow-p)"/>
+
+  <!-- ===== EVENT BUS — CENTRAL SPINE ===== -->
+  <g class="node" onclick="showInfo('proposed','p_eventbus')" filter="url(#glow-green)">
+    <rect x="300" y="200" width="800" height="36" rx="18" fill="#1a1508" stroke="#ffd850" stroke-width="2"/>
+    <text x="700" y="223" text-anchor="middle" fill="#ffd850" font-size="12" font-weight="bold" font-family="monospace">⚡ EVENT BUS — core/event_bus.py — All systems communicate through events</text>
+  </g>
+  <line x1="700" y1="170" x2="700" y2="200" stroke="#ffd850" stroke-width="1.5" marker-end="url(#arrow-event)"/>
+
+  <!-- ===== PHASE 1 ROW: Core Managers ===== -->
+  <text x="140" y="265" fill="#338844" font-size="9" font-family="monospace">PHASE 1</text>
+  <rect x="128" y="258" width="55" height="14" rx="2" fill="none" stroke="#338844" stroke-width="0.5"/>
+
+  <g class="node" onclick="showInfo('proposed','p_menu_sys')">
+    <rect x="80" y="285" width="150" height="44" rx="4" fill="#0a1a10" stroke="#44cc66" stroke-width="1.5"/>
+    <text x="155" y="304" text-anchor="middle" fill="#55dd77" font-size="10" font-family="monospace">MenuSystem</text>
+    <text x="155" y="318" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">NEW · replaces 100+ flags</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_ui_state')">
+    <rect x="250" y="285" width="150" height="44" rx="4" fill="#0a1a10" stroke="#44cc66" stroke-width="1.5"/>
+    <text x="325" y="304" text-anchor="middle" fill="#55dd77" font-size="10" font-family="monospace">UIStateManager</text>
+    <text x="325" y="318" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">NEW · unified UI state</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_input_dispatch')">
+    <rect x="420" y="285" width="150" height="44" rx="4" fill="#0a1a10" stroke="#44cc66" stroke-width="1.5"/>
+    <text x="495" y="304" text-anchor="middle" fill="#55dd77" font-size="10" font-family="monospace">InputDispatcher</text>
+    <text x="495" y="318" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">NEW · routes by state</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_update_sched')">
+    <rect x="590" y="285" width="160" height="44" rx="4" fill="#0a1a10" stroke="#44cc66" stroke-width="1.5"/>
+    <text x="670" y="304" text-anchor="middle" fill="#55dd77" font-size="10" font-family="monospace">UpdateScheduler</text>
+    <text x="670" y="318" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">NEW · tick management</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_time_mgr')">
+    <rect x="770" y="285" width="150" height="44" rx="4" fill="#0a1a10" stroke="#44cc66" stroke-width="1.5"/>
+    <text x="845" y="304" text-anchor="middle" fill="#55dd77" font-size="10" font-family="monospace">TimeManager</text>
+    <text x="845" y="318" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">NEW · single time source</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_settings')">
+    <rect x="940" y="285" width="130" height="44" rx="4" fill="#151520" stroke="#44cc88" stroke-width="1"/>
+    <text x="1005" y="304" text-anchor="middle" fill="#66cc88" font-size="10" font-family="monospace">Settings ✓</text>
+    <text x="1005" y="318" text-anchor="middle" fill="#448855" font-size="8" font-family="monospace">KEEP · already good</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_persist')">
+    <rect x="1090" y="285" width="130" height="44" rx="4" fill="#151520" stroke="#44cc88" stroke-width="1"/>
+    <text x="1155" y="304" text-anchor="middle" fill="#66cc88" font-size="10" font-family="monospace">Persistence ✓</text>
+    <text x="1155" y="318" text-anchor="middle" fill="#448855" font-size="8" font-family="monospace">KEEP · add validation</text>
+  </g>
+
+  <!-- Event bus connections down to Phase 1 -->
+  <line x1="155" y1="236" x2="155" y2="285" stroke="#ffd850" stroke-width="0.8" opacity="0.4" stroke-dasharray="3,3"/>
+  <line x1="325" y1="236" x2="325" y2="285" stroke="#ffd850" stroke-width="0.8" opacity="0.4" stroke-dasharray="3,3"/>
+  <line x1="495" y1="236" x2="495" y2="285" stroke="#ffd850" stroke-width="0.8" opacity="0.4" stroke-dasharray="3,3"/>
+  <line x1="670" y1="236" x2="670" y2="285" stroke="#ffd850" stroke-width="0.8" opacity="0.4" stroke-dasharray="3,3"/>
+  <line x1="845" y1="236" x2="845" y2="285" stroke="#ffd850" stroke-width="0.8" opacity="0.4" stroke-dasharray="3,3"/>
+  <line x1="1005" y1="236" x2="1005" y2="285" stroke="#ffd850" stroke-width="0.8" opacity="0.4" stroke-dasharray="3,3"/>
+  <line x1="1155" y1="236" x2="1155" y2="285" stroke="#ffd850" stroke-width="0.8" opacity="0.4" stroke-dasharray="3,3"/>
+
+  <!-- ===== PHASE 2 ROW: Duck State Store ===== -->
+  <text x="140" y="370" fill="#338844" font-size="9" font-family="monospace">PHASE 2</text>
+  <rect x="128" y="363" width="55" height="14" rx="2" fill="none" stroke="#338844" stroke-width="0.5"/>
+
+  <g class="node" onclick="showInfo('proposed','p_duck_store')" filter="url(#glow-green)">
+    <rect x="200" y="385" width="260" height="50" rx="5" fill="#0a1a10" stroke="#44cc66" stroke-width="2"/>
+    <text x="330" y="407" text-anchor="middle" fill="#55dd77" font-size="12" font-weight="bold" font-family="monospace">DuckStore</text>
+    <text x="330" y="422" text-anchor="middle" fill="#338844" font-size="9" font-family="monospace">NEW · single source of truth for duck state</text>
+  </g>
+
+  <!-- Duck subsystems feeding into DuckStore -->
+  <g class="node" onclick="showInfo('proposed','p_duck_entity')">
+    <rect x="100" y="460" width="100" height="30" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="150" y="479" text-anchor="middle" fill="#6699cc" font-size="9" font-family="monospace">Duck Entity</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_needs')">
+    <rect x="210" y="460" width="90" height="30" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="255" y="479" text-anchor="middle" fill="#6699cc" font-size="9" font-family="monospace">Needs</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_personality')">
+    <rect x="310" y="460" width="100" height="30" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="360" y="479" text-anchor="middle" fill="#6699cc" font-size="9" font-family="monospace">Personality</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_mood')">
+    <rect x="420" y="460" width="80" height="30" rx="3" fill="#0a1a10" stroke="#44cc66" stroke-width="1"/>
+    <text x="460" y="479" text-anchor="middle" fill="#55dd77" font-size="9" font-family="monospace">Mood ⚡</text>
+  </g>
+
+  <line x1="150" y1="460" x2="260" y2="435" stroke="#4488cc" stroke-width="0.8" opacity="0.4"/>
+  <line x1="255" y1="460" x2="300" y2="435" stroke="#4488cc" stroke-width="0.8" opacity="0.4"/>
+  <line x1="360" y1="460" x2="360" y2="435" stroke="#4488cc" stroke-width="0.8" opacity="0.4"/>
+  <line x1="460" y1="460" x2="420" y2="435" stroke="#44cc66" stroke-width="0.8" opacity="0.4"/>
+
+  <!-- Event bus to DuckStore -->
+  <line x1="330" y1="236" x2="330" y2="385" stroke="#ffd850" stroke-width="1.2" opacity="0.5" stroke-dasharray="3,3" marker-end="url(#arrow-event)"/>
+  <text x="342" y="360" fill="#ffd850" font-size="8" font-family="monospace" opacity="0.5">emits NeedChanged, MoodChanged</text>
+
+  <!-- Consequence engine (event-driven) -->
+  <g class="node" onclick="showInfo('proposed','p_consequences')">
+    <rect x="530" y="390" width="160" height="44" rx="4" fill="#0a1a10" stroke="#44cc66" stroke-width="1.5"/>
+    <text x="610" y="409" text-anchor="middle" fill="#55dd77" font-size="10" font-family="monospace">Consequences ⚡</text>
+    <text x="610" y="423" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">event-driven, not tick-based</text>
+  </g>
+  <line x1="460" y1="410" x2="530" y2="410" stroke="#ffd850" stroke-width="1" opacity="0.4" stroke-dasharray="3,3" marker-end="url(#arrow-event)"/>
+
+  <!-- Behavior AI -->
+  <g class="node" onclick="showInfo('proposed','p_behavior')">
+    <rect x="530" y="450" width="160" height="30" rx="3" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="610" y="469" text-anchor="middle" fill="#6699cc" font-size="9" font-family="monospace">BehaviorAI ✓</text>
+  </g>
+
+  <!-- ===== PHASE 3 ROW: Dialogue Pipeline ===== -->
+  <text x="140" y="530" fill="#338844" font-size="9" font-family="monospace">PHASE 3</text>
+  <rect x="128" y="523" width="55" height="14" rx="2" fill="none" stroke="#338844" stroke-width="0.5"/>
+
+  <g class="node" onclick="showInfo('proposed','p_dialogue_facade')" filter="url(#glow-green)">
+    <rect x="200" y="548" width="220" height="50" rx="5" fill="#0a1a10" stroke="#44cc66" stroke-width="2"/>
+    <text x="310" y="570" text-anchor="middle" fill="#55dd77" font-size="12" font-weight="bold" font-family="monospace">DuckBrain (Facade)</text>
+    <text x="310" y="584" text-anchor="middle" fill="#338844" font-size="9" font-family="monospace">thin coordinator · unified interface</text>
+  </g>
+
+  <!-- Response Pipeline -->
+  <g class="node" onclick="showInfo('proposed','p_pipeline')" filter="url(#glow-green)">
+    <rect x="460" y="548" width="220" height="50" rx="5" fill="#0a1a10" stroke="#44cc66" stroke-width="2"/>
+    <text x="570" y="570" text-anchor="middle" fill="#55dd77" font-size="12" font-weight="bold" font-family="monospace">ResponsePipeline</text>
+    <text x="570" y="584" text-anchor="middle" fill="#338844" font-size="9" font-family="monospace">NEW · pluggable response sources</text>
+  </g>
+
+  <!-- Dialogue Memory (unified) -->
+  <g class="node" onclick="showInfo('proposed','p_dialogue_mem')">
+    <rect x="720" y="548" width="180" height="50" rx="5" fill="#0a1a10" stroke="#44cc66" stroke-width="1.5"/>
+    <text x="810" y="570" text-anchor="middle" fill="#55dd77" font-size="10" font-family="monospace">DialogueMemory</text>
+    <text x="810" y="584" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">NEW · 1 history, not 3</text>
+  </g>
+
+  <line x1="420" y1="573" x2="460" y2="573" stroke="#44cc66" stroke-width="1" opacity="0.5" marker-end="url(#arrow-green)"/>
+  <line x1="680" y1="573" x2="720" y2="573" stroke="#44cc66" stroke-width="1" opacity="0.5" marker-end="url(#arrow-green)"/>
+
+  <!-- Response Sources -->
+  <g class="node" onclick="showInfo('proposed','p_source_llm')">
+    <rect x="380" y="620" width="110" height="28" rx="3" fill="#151520" stroke="#cc6688" stroke-width="1"/>
+    <text x="435" y="638" text-anchor="middle" fill="#cc6688" font-size="9" font-family="monospace">LLM Source</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_source_keyword')">
+    <rect x="500" y="620" width="120" height="28" rx="3" fill="#151520" stroke="#cc6688" stroke-width="1"/>
+    <text x="560" y="638" text-anchor="middle" fill="#cc6688" font-size="9" font-family="monospace">Keyword Source</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_source_learning')">
+    <rect x="630" y="620" width="120" height="28" rx="3" fill="#151520" stroke="#cc6688" stroke-width="1"/>
+    <text x="690" y="638" text-anchor="middle" fill="#cc6688" font-size="9" font-family="monospace">Learning Source</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_source_voice')">
+    <rect x="440" y="656" width="110" height="28" rx="3" fill="#151520" stroke="#cc6688" stroke-width="1"/>
+    <text x="495" y="674" text-anchor="middle" fill="#cc6688" font-size="9" font-family="monospace">Voice Source</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_source_seaman')">
+    <rect x="560" y="656" width="120" height="28" rx="3" fill="#151520" stroke="#cc6688" stroke-width="1"/>
+    <text x="620" y="674" text-anchor="middle" fill="#cc6688" font-size="9" font-family="monospace">Seaman Source</text>
+  </g>
+
+  <line x1="435" y1="598" x2="435" y2="620" stroke="#cc6688" stroke-width="0.6" opacity="0.3"/>
+  <line x1="560" y1="598" x2="560" y2="620" stroke="#cc6688" stroke-width="0.6" opacity="0.3"/>
+  <line x1="680" y1="598" x2="690" y2="620" stroke="#cc6688" stroke-width="0.6" opacity="0.3"/>
+  <line x1="500" y1="598" x2="495" y2="656" stroke="#cc6688" stroke-width="0.6" opacity="0.3"/>
+  <line x1="600" y1="598" x2="620" y2="656" stroke="#cc6688" stroke-width="0.6" opacity="0.3"/>
+
+  <!-- Event bus to dialogue -->
+  <line x1="310" y1="236" x2="310" y2="548" stroke="#ffd850" stroke-width="0.8" opacity="0.3" stroke-dasharray="3,3"/>
+
+  <!-- PlayerModel -->
+  <g class="node" onclick="showInfo('proposed','p_player_model')">
+    <rect x="160" y="620" width="130" height="30" rx="3" fill="#151520" stroke="#bb66cc" stroke-width="1"/>
+    <text x="225" y="639" text-anchor="middle" fill="#cc88dd" font-size="9" font-family="monospace">PlayerModel</text>
+  </g>
+  <line x1="225" y1="598" x2="225" y2="620" stroke="#bb66cc" stroke-width="0.6" opacity="0.3"/>
+
+  <!-- ===== PHASE 4 ROW: Rendering ===== -->
+  <text x="140" y="730" fill="#338844" font-size="9" font-family="monospace">PHASE 4</text>
+  <rect x="128" y="723" width="55" height="14" rx="2" fill="none" stroke="#338844" stroke-width="0.5"/>
+
+  <g class="node" onclick="showInfo('proposed','p_renderer_slim')">
+    <rect x="160" y="748" width="180" height="44" rx="4" fill="#0a1a10" stroke="#44cc66" stroke-width="1.5"/>
+    <text x="250" y="767" text-anchor="middle" fill="#55dd77" font-size="10" font-family="monospace">Renderer (SLIM)</text>
+    <text x="250" y="781" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">orchestrator · calls sub-renderers</text>
+  </g>
+
+  <g class="node" onclick="showInfo('proposed','p_playfield')">
+    <rect x="100" y="810" width="130" height="30" rx="3" fill="#0a1a10" stroke="#44cc66" stroke-width="1"/>
+    <text x="165" y="829" text-anchor="middle" fill="#55dd77" font-size="9" font-family="monospace">PlayfieldRenderer</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_hud')">
+    <rect x="240" y="810" width="110" height="30" rx="3" fill="#0a1a10" stroke="#44cc66" stroke-width="1"/>
+    <text x="295" y="829" text-anchor="middle" fill="#55dd77" font-size="9" font-family="monospace">HUDRenderer</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_menu_render')">
+    <rect x="360" y="810" width="120" height="30" rx="3" fill="#0a1a10" stroke="#44cc66" stroke-width="1"/>
+    <text x="420" y="829" text-anchor="middle" fill="#55dd77" font-size="9" font-family="monospace">MenuRenderer</text>
+  </g>
+
+  <line x1="190" y1="792" x2="165" y2="810" stroke="#44cc66" stroke-width="0.6" opacity="0.3"/>
+  <line x1="250" y1="792" x2="295" y2="810" stroke="#44cc66" stroke-width="0.6" opacity="0.3"/>
+  <line x1="310" y1="792" x2="420" y2="810" stroke="#44cc66" stroke-width="0.6" opacity="0.3"/>
+
+  <!-- Particle System -->
+  <g class="node" onclick="showInfo('proposed','p_particles')">
+    <rect x="520" y="748" width="160" height="44" rx="4" fill="#0a1a10" stroke="#44cc66" stroke-width="1.5"/>
+    <text x="600" y="767" text-anchor="middle" fill="#55dd77" font-size="10" font-family="monospace">ParticleSystem</text>
+    <text x="600" y="781" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">NEW · unified weather+ambient</text>
+  </g>
+
+  <!-- Duck Animator -->
+  <g class="node" onclick="showInfo('proposed','p_animator')">
+    <rect x="700" y="748" width="160" height="44" rx="4" fill="#0a1a10" stroke="#44cc66" stroke-width="1.5"/>
+    <text x="780" y="767" text-anchor="middle" fill="#55dd77" font-size="10" font-family="monospace">DuckAnimator</text>
+    <text x="780" y="781" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">NEW · extracted from renderer</text>
+  </g>
+
+  <!-- Biome Config -->
+  <g class="node" onclick="showInfo('proposed','p_biome_config')">
+    <rect x="880" y="748" width="160" height="44" rx="4" fill="#0a1a10" stroke="#44cc66" stroke-width="1.5"/>
+    <text x="960" y="767" text-anchor="middle" fill="#55dd77" font-size="10" font-family="monospace">BiomeConfig</text>
+    <text x="960" y="781" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">NEW · validated at load</text>
+  </g>
+
+  <!-- ===== PHASE 5 ROW: World Systems ===== -->
+  <text x="140" y="880" fill="#338844" font-size="9" font-family="monospace">PHASE 5</text>
+  <rect x="128" y="873" width="55" height="14" rx="2" fill="none" stroke="#338844" stroke-width="0.5"/>
+
+  <g class="node" onclick="showInfo('proposed','p_world_state')">
+    <rect x="100" y="900" width="160" height="44" rx="4" fill="#0a1a10" stroke="#44cc66" stroke-width="1.5"/>
+    <text x="180" y="919" text-anchor="middle" fill="#55dd77" font-size="10" font-family="monospace">WorldState</text>
+    <text x="180" y="933" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">NEW · biome+weather+time</text>
+  </g>
+
+  <g class="node" onclick="showInfo('proposed','p_world_systems')">
+    <rect x="280" y="900" width="200" height="44" rx="4" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="380" y="919" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">World Systems</text>
+    <text x="380" y="933" text-anchor="middle" fill="#445577" font-size="8" font-family="monospace">crafting, fishing, garden, etc.</text>
+  </g>
+
+  <g class="node" onclick="showInfo('proposed','p_world_events')">
+    <rect x="500" y="900" width="160" height="44" rx="4" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="580" y="919" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">Events + Quests</text>
+    <text x="580" y="933" text-anchor="middle" fill="#445577" font-size="8" font-family="monospace">event-driven via bus</text>
+  </g>
+
+  <g class="node" onclick="showInfo('proposed','p_world_social')">
+    <rect x="680" y="900" width="160" height="44" rx="4" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="760" y="919" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">Social Systems</text>
+    <text x="760" y="933" text-anchor="middle" fill="#445577" font-size="8" font-family="monospace">friends, visitors, trading</text>
+  </g>
+
+  <g class="node" onclick="showInfo('proposed','p_world_progress')">
+    <rect x="860" y="900" width="170" height="44" rx="4" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="945" y="919" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">Progression</text>
+    <text x="945" y="933" text-anchor="middle" fill="#445577" font-size="8" font-family="monospace">achievements, goals, badges</text>
+  </g>
+
+  <!-- Event bus vertical lines to world row -->
+  <line x1="180" y1="236" x2="180" y2="900" stroke="#ffd850" stroke-width="0.6" opacity="0.15" stroke-dasharray="3,3"/>
+  <line x1="580" y1="236" x2="580" y2="900" stroke="#ffd850" stroke-width="0.6" opacity="0.15" stroke-dasharray="3,3"/>
+  <line x1="760" y1="236" x2="760" y2="900" stroke="#ffd850" stroke-width="0.6" opacity="0.15" stroke-dasharray="3,3"/>
+  <line x1="945" y1="236" x2="945" y2="900" stroke="#ffd850" stroke-width="0.6" opacity="0.15" stroke-dasharray="3,3"/>
+
+  <!-- ===== TESTING (bottom) ===== -->
+  <g class="node" onclick="showInfo('proposed','p_tests')">
+    <rect x="1060" y="748" width="180" height="44" rx="4" fill="#0a1a10" stroke="#44cc66" stroke-width="1.5"/>
+    <text x="1150" y="767" text-anchor="middle" fill="#55dd77" font-size="10" font-family="monospace">tests/</text>
+    <text x="1150" y="781" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">NEW · pytest + fixtures</text>
+  </g>
+  <g class="node" onclick="showInfo('proposed','p_exceptions')">
+    <rect x="1060" y="810" width="180" height="30" rx="3" fill="#0a1a10" stroke="#44cc66" stroke-width="1"/>
+    <text x="1150" y="829" text-anchor="middle" fill="#55dd77" font-size="9" font-family="monospace">core/exceptions.py</text>
+  </g>
+
+  <!-- ===== AUDIO (side) ===== -->
+  <g class="node" onclick="showInfo('proposed','p_audio')">
+    <rect x="1060" y="900" width="180" height="44" rx="4" fill="#151520" stroke="#4488cc" stroke-width="1"/>
+    <text x="1150" y="919" text-anchor="middle" fill="#6699cc" font-size="10" font-family="monospace">Audio ✓</text>
+    <text x="1150" y="933" text-anchor="middle" fill="#445577" font-size="8" font-family="monospace">subscribes to events</text>
+  </g>
+  <line x1="1100" y1="236" x2="1150" y2="900" stroke="#ffd850" stroke-width="0.6" opacity="0.15" stroke-dasharray="3,3"/>
+
+  <!-- Summary stats -->
+  <text x="700" y="1000" text-anchor="middle" fill="#338844" font-size="10" font-family="monospace">game.py: 9,400 → ~500 lines · 0 → 80%+ test coverage · 3 histories → 1 · 100+ flags → UIStateManager</text>
+  <text x="700" y="1020" text-anchor="middle" fill="#333" font-size="9" font-family="monospace">Estimated effort: 5 phases over 12-16 weeks · Each phase ships independently</text>
+
+  <!-- Phase summary boxes at bottom -->
+  <rect x="100" y="1050" width="220" height="55" rx="4" fill="rgba(68,204,102,0.06)" stroke="#338844" stroke-width="1"/>
+  <text x="210" y="1068" text-anchor="middle" fill="#55dd77" font-size="10" font-weight="bold" font-family="monospace">Phase 1: Core Managers</text>
+  <text x="210" y="1082" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">Menu, UI State, Input, Scheduler</text>
+  <text x="210" y="1094" text-anchor="middle" fill="#336633" font-size="8" font-family="monospace">~3 weeks · LOW RISK</text>
+
+  <rect x="340" y="1050" width="200" height="55" rx="4" fill="rgba(68,204,102,0.06)" stroke="#338844" stroke-width="1"/>
+  <text x="440" y="1068" text-anchor="middle" fill="#55dd77" font-size="10" font-weight="bold" font-family="monospace">Phase 2: State Store</text>
+  <text x="440" y="1082" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">DuckStore + EventBus + Validation</text>
+  <text x="440" y="1094" text-anchor="middle" fill="#336633" font-size="8" font-family="monospace">~3 weeks · MEDIUM RISK</text>
+
+  <rect x="560" y="1050" width="220" height="55" rx="4" fill="rgba(68,204,102,0.06)" stroke="#338844" stroke-width="1"/>
+  <text x="670" y="1068" text-anchor="middle" fill="#55dd77" font-size="10" font-weight="bold" font-family="monospace">Phase 3: Dialogue</text>
+  <text x="670" y="1082" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">ResponsePipeline + Unified Memory</text>
+  <text x="670" y="1094" text-anchor="middle" fill="#336633" font-size="8" font-family="monospace">~3 weeks · MEDIUM RISK</text>
+
+  <rect x="800" y="1050" width="200" height="55" rx="4" fill="rgba(68,204,102,0.06)" stroke="#338844" stroke-width="1"/>
+  <text x="900" y="1068" text-anchor="middle" fill="#55dd77" font-size="10" font-weight="bold" font-family="monospace">Phase 4: Rendering</text>
+  <text x="900" y="1082" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">Particles, Animator, Sub-renderers</text>
+  <text x="900" y="1094" text-anchor="middle" fill="#336633" font-size="8" font-family="monospace">~3 weeks · MEDIUM-HIGH RISK</text>
+
+  <rect x="1020" y="1050" width="220" height="55" rx="4" fill="rgba(68,204,102,0.06)" stroke="#338844" stroke-width="1"/>
+  <text x="1130" y="1068" text-anchor="middle" fill="#55dd77" font-size="10" font-weight="bold" font-family="monospace">Phase 5: World + Tests</text>
+  <text x="1130" y="1082" text-anchor="middle" fill="#338844" font-size="8" font-family="monospace">WorldState, System base, pytest</text>
+  <text x="1130" y="1094" text-anchor="middle" fill="#336633" font-size="8" font-family="monospace">~4 weeks · LOW-MEDIUM RISK</text>
+</svg>
+</div>
+
+<div id="legend">
+  <span class="swatch" style="background:#ff4444"></span> Critical problem<br>
+  <span class="swatch" style="background:#cc8844"></span> Warning / needs work<br>
+  <span class="swatch" style="background:#44cc88"></span> Good / keep as-is<br>
+  <span class="swatch" style="background:#4488cc"></span> Standard module<br>
+  <span class="swatch" style="background:#cc6688"></span> Dialogue subsystem<br>
+  <span class="swatch" style="background:#bb66cc"></span> Memory / personality<br>
+</div>
+
+<div id="stats-bar">
+  <span class="label">view:</span> <span class="val" id="stats-view">CURRENT</span><br>
+  <span class="label">files:</span> <span class="val">137</span> &nbsp;
+  <span class="label">lines:</span> <span class="val">~80k</span><br>
+  <span class="label">agents:</span> <span class="val">5/5 voted refactor</span>
+</div>
+
+<script>
+const INFO = {
+  current: {
+    main: {
+      title: 'main.py',
+      file: 'main.py',
+      tags: [],
+      desc: 'Entry point. Handles venv re-execution, model downloads, and game initialization.',
+      metrics: 'Clean entry point, no major issues.'
+    },
+    game: {
+      title: 'core/game.py — GOD OBJECT',
+      file: 'core/game.py · ~9,400 lines',
+      tags: [{text:'CRITICAL',cls:'severity-critical'}],
+      desc: 'The single biggest problem in the codebase. This file orchestrates ALL 50+ systems, manages 100+ boolean flags, contains 100+ methods, and imports from 120+ modules.',
+      problem: 'PROBLEMS: Single Responsibility Principle massively violated. Every change ripples through the entire codebase. Impossible to test. 20+ if/elif chains for input dispatch. 50+ timing variables for update scheduling.',
+      solution: 'PROPOSED: Extract MenuSystem, UIStateManager, InputDispatcher, UpdateScheduler. Reduce to ~500 line orchestrator that delegates everything.',
+      metrics: '~9,400 lines → target ~500 lines (95% reduction)'
+    },
+    clock: {
+      title: 'core/clock.py',
+      file: 'core/clock.py',
+      tags: [],
+      desc: 'GameClock manages real-time, offline progression, and time multipliers. Returns time_of_day as string (4 categories).',
+      problem: 'Uses 4 time categories while DayNightSystem uses 8. Inconsistent with renderer which recalculates its own time.',
+      metrics: 'Well-structured internally.'
+    },
+    settings: {
+      title: 'core/settings.py ✓',
+      file: 'core/settings.py · ~400 lines',
+      tags: [],
+      desc: 'GameSettings dataclass + SettingsManager. Well-designed, good separation of concerns. One of the best-architected modules.',
+      metrics: 'KEEP AS-IS'
+    },
+    persistence: {
+      title: 'core/persistence.py ✓',
+      file: 'core/persistence.py · ~100 lines',
+      tags: [],
+      desc: 'SaveManager handles JSON serialization with atomic file operations. Clean design.',
+      problem: 'No schema validation on load. Missing invariant checks. All-or-nothing save blob (~500KB).',
+      solution: 'Add Pydantic validation on load. Consider modular saves in future.',
+      metrics: 'KEEP, enhance with validation'
+    },
+    renderer: {
+      title: 'ui/renderer.py — MONOLITHIC',
+      file: 'ui/renderer.py · 3,900+ lines',
+      tags: [{text:'HIGH',cls:'severity-high'}],
+      desc: 'Terminal rendering engine. Contains DuckPosition animation class (200+ lines), weather decoration generation, ambient particle updates, color management, and all rendering layers.',
+      problem: 'PROBLEMS: DuckPosition is game logic inside UI. Weather/particle systems duplicated. Cannot test duck movement without Terminal. Cannot reuse animation for NPCs.',
+      solution: 'PROPOSED: Extract DuckAnimator, ParticleSystem, PlayfieldRenderer, HUDRenderer, MenuRenderer.',
+      metrics: '3,900 lines → target ~800 lines orchestrator'
+    },
+    conversation: {
+      title: 'dialogue/conversation.py — DUAL ARCHITECTURE',
+      file: 'dialogue/conversation.py · 1,000+ lines',
+      tags: [{text:'CRITICAL',cls:'severity-critical'}],
+      desc: 'Legacy ConversationSystem coexists uneasily with the newer DuckBrain system. Both can generate greetings, both track conversation history (separately!), both interface with LLM.',
+      problem: 'PROBLEMS: Two systems generating responses with unclear ownership. 3 separate conversation histories that can get out of sync. No clear fallback chain between response sources.',
+      solution: 'PROPOSED: Replace with ResponsePipeline + unified DialogueMemory. DuckBrain becomes thin facade.',
+    },
+    duck_brain: {
+      title: 'dialogue/duck_brain.py',
+      file: 'dialogue/duck_brain.py · 860 lines',
+      tags: [{text:'HIGH',cls:'severity-high'}],
+      desc: 'Sophisticated memory + personality orchestrator. Manages PlayerModel, ConversationMemory, QuestionManager, SeamanDialogue, RitualTracker, MemoryRecall.',
+      problem: 'Doesn\'t influence response generation directly. Memory recording is async AFTER player sees response. Manual state sync with game (trust, cold_shoulder, mood).',
+      solution: 'PROPOSED: Becomes thin facade over DialogueState + ResponsePipeline. Automatic state sync via EventBus.',
+    },
+    keyword_files: {
+      title: 'keyword_responses_*.py × 7',
+      file: '7 files with identical structure',
+      tags: [{text:'MEDIUM',cls:'severity-medium'}],
+      desc: 'Topic-specific keyword→response mappings split across 7 files: life, world, social, activities, food, meta, misc.',
+      problem: 'All follow identical pattern. Could be consolidated into data-driven JSON/YAML loading. ~1,200 lines of near-duplicate structure.',
+      solution: 'PROPOSED: Consolidate into KeywordResponseSource + keywords.json data file.',
+    },
+    personality_files: {
+      title: 'dialogue_*.py × 9 personalities',
+      file: '9 files with identical structure',
+      tags: [{text:'MEDIUM',cls:'severity-medium'}],
+      desc: 'Personality-specific dialogue trees: adventurous, scholarly, artistic, playful, mysterious, athletic, foodie, generous, etc.',
+      problem: 'Each ~150 lines with identical structure. Could consolidate into parameterized system. ~800 lines of near-duplicate code.',
+      solution: 'PROPOSED: Consolidate into personality_system.py + personalities.yml data.',
+    },
+    duck: {
+      title: 'duck/duck.py ✓',
+      file: 'duck/duck.py · ~300 lines',
+      tags: [],
+      desc: 'Clean Duck dataclass. Good use of Python dataclass pattern. One of the well-designed modules.',
+      metrics: 'KEEP AS-IS, wrap with DuckStore'
+    },
+    world_others: {
+      title: 'world/ — 35 Files',
+      file: '35 modules in world/',
+      tags: [{text:'HIGH',cls:'severity-high'}],
+      desc: 'Items, shops, crafting, building, fishing, garden, quests, challenges, achievements, exploration, events, minigames, scrapbook, collectibles, decorations, secrets, treasures, trading, festivals, fortune, dreams, goals, friends, materials, atmosphere, and more.',
+      problem: 'No clear layering or categorization. Unclear what is core vs extra content. Many systems duplicate similar patterns (state dict, update(), get_status()). No base class.',
+      solution: 'PROPOSED: Organize into categories (resources, activities, environment, social, progression). Add GameSystem base class.',
+    }
+  },
+  proposed: {
+    p_game: {
+      title: 'core/game.py (SLIM)',
+      file: 'core/game.py · target ~500 lines',
+      tags: [{text:'NEW',cls:'severity-new'}],
+      desc: 'Thin orchestrator that delegates to subsystem managers. Only responsibilities: initialize systems, run main loop, coordinate between managers.',
+      solution: 'Instantiates: MenuSystem, UIStateManager, InputDispatcher, UpdateScheduler, DuckStore, DuckBrain, Renderer. Delegates ALL logic to them.',
+      metrics: '9,400 → ~500 lines (95% reduction)'
+    },
+    p_eventbus: {
+      title: 'Event Bus — core/event_bus.py',
+      file: 'NEW: core/event_bus.py',
+      tags: [{text:'NEW',cls:'severity-new'},{text:'FOUNDATION',cls:'severity-medium'}],
+      desc: 'Central communication backbone. All systems emit and subscribe to typed events instead of direct method calls. Enables reactive architecture.',
+      solution: 'Events: NeedChanged, MoodChanged, TrustChanged, ActionPerformed, ItemUsed, WeatherChanged, TimeChanged, etc. Each event is a typed dataclass. Systems subscribe to events they care about.',
+      metrics: 'Replaces 50+ direct method calls with decoupled events'
+    },
+    p_duck_store: {
+      title: 'DuckStore — Centralized State',
+      file: 'NEW: core/duck_store.py',
+      tags: [{text:'NEW',cls:'severity-new'}],
+      desc: 'Single source of truth for all duck state. All mutations go through validated command methods. Emits events on state change. Computes derived state (mood, motivation) reactively.',
+      solution: 'Methods: apply_need_change(), apply_trust_change(), get_mood(), get_motivation(). Validates invariants (trust 0-100, needs 0-100). Audit log for debugging.',
+      metrics: 'Replaces scattered state across 7+ files'
+    },
+    p_pipeline: {
+      title: 'ResponsePipeline — Pluggable Dialogue',
+      file: 'NEW: dialogue/response_pipeline.py',
+      tags: [{text:'NEW',cls:'severity-new'}],
+      desc: 'Ordered chain of ResponseSource implementations. Each source can handle or pass. Clear fallback order: LLM → Keywords → Learning → Seaman → Voice → Idle.',
+      solution: 'Interface: ResponseSource.can_handle(context) → bool, ResponseSource.generate(context) → Optional[str]. Adding new source = implement interface + register with priority.',
+      metrics: 'Replaces tangled if/elif chain in conversation.py'
+    },
+    p_dialogue_mem: {
+      title: 'DialogueMemory — Unified History',
+      file: 'NEW: dialogue/dialogue_core.py',
+      tags: [{text:'NEW',cls:'severity-new'}],
+      desc: 'Single conversation history replacing 3 separate systems. Shared schema for all message types. Provides views for different consumers (LLM context window, memory recall, diary).',
+      metrics: '3 separate histories → 1 unified system'
+    },
+    p_particles: {
+      title: 'ParticleSystem — Unified VFX',
+      file: 'NEW: ui/particle_system.py',
+      tags: [{text:'NEW',cls:'severity-new'}],
+      desc: 'Unified weather + ambient particle system. ParticleConfig dataclass with chars, color, direction, speed, density, lifetime, time/season filters. Single update loop, single render pass.',
+      solution: 'Replaces separate _generate_weather_decorations() and _update_ambient_particles() in renderer.py. Consistent data types (float positions), single particle cap, composable effects.',
+    },
+    p_animator: {
+      title: 'DuckAnimator — Extracted Movement',
+      file: 'NEW: duck/animator.py',
+      tags: [{text:'NEW',cls:'severity-new'}],
+      desc: 'Movement and animation state machine extracted from renderer.py DuckPosition class. Can be reused for NPC animation. Testable without Terminal dependency.',
+      solution: 'DuckAnimationState: position, target, facing, state, frame. Methods: update(), move_to(), set_state(). Game logic separated from rendering.',
+    },
+    p_time_mgr: {
+      title: 'TimeManager — Single Time Source',
+      file: 'NEW: core/time_system.py',
+      tags: [{text:'NEW',cls:'severity-new'}],
+      desc: 'Single source of truth for time-of-day and season. TimeOfDay enum (8 phases) and Season enum (4 seasons). Replaces 4 separate time calculations.',
+      solution: 'get_current_time_of_day() → TimeOfDay enum. get_current_season() → Season enum. All systems use enums, not strings. Validated at startup.',
+      metrics: 'Replaces duplicated time logic in clock.py, day_night.py, renderer.py, biome_visuals.py'
+    },
+    p_menu_sys: {
+      title: 'MenuSystem — Unified Menu State',
+      file: 'NEW: core/menu_system.py',
+      tags: [{text:'NEW',cls:'severity-new'}],
+      desc: 'Manages all menu open/close state. Unified input dispatch for menus. Replaces 20+ _*_menu_open boolean flags in game.py.',
+      solution: 'State: {active_menu_type, menu_state, selected_index, page}. Methods: open_menu(), close_menu(), handle_input(), render().',
+    },
+    p_ui_state: {
+      title: 'UIStateManager — Overlay State',
+      file: 'NEW: core/ui_state.py',
+      tags: [{text:'NEW',cls:'severity-new'}],
+      desc: 'Single source of truth for UI overlay states. Replaces 100+ boolean flags tracking what\'s open/active.',
+      solution: 'Methods: open_overlay(), close_overlay(), is_any_overlay_open(), get_active_overlay(). Stack-based for nested overlays.',
+    },
+    p_tests: {
+      title: 'tests/ — Test Infrastructure',
+      file: 'NEW: tests/',
+      tags: [{text:'NEW',cls:'severity-new'}],
+      desc: 'pytest infrastructure with fixtures, mocks, and factories. Unit tests for each subsystem. Integration tests for system interactions. Target 80%+ coverage.',
+      solution: 'conftest.py with DuckFactory, MockEventBus, FakeTerminal. Per-module test files. CI/CD integration.',
+      metrics: '0% → 80%+ test coverage'
+    },
+    p_consequences: {
+      title: 'Consequences — Event-Driven',
+      file: 'core/consequences.py (refactored)',
+      tags: [{text:'NEW',cls:'severity-new'}],
+      desc: 'Consequence engine subscribes to NeedCriticalEvent instead of polling every tick. State machine for neglect stages. Clearer cascade logic.',
+      solution: '@event_bus.subscribe(NeedCriticalEvent) triggers sickness checks. Emits SickStartedEvent, HidingStartedEvent for other systems to react to.',
+    }
+  }
+};
+
+function showView(view) {
+  document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('#view-toggle button').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  document.querySelectorAll('#view-toggle button').forEach(btn => {
+    if (btn.textContent === view.toUpperCase()) btn.classList.add('active');
+  });
+  document.getElementById('stats-view').textContent = view.toUpperCase();
+  document.getElementById('info-panel').style.display = 'none';
+}
+
+function showInfo(view, key) {
+  const info = INFO[view]?.[key];
+  if (!info) return;
+  const panel = document.getElementById('info-panel');
+  let html = `<h3>${info.title}</h3>`;
+  if (info.tags) {
+    info.tags.forEach(t => { html += `<span class="tag ${t.cls}">${t.text}</span> `; });
+  }
+  html += `<div class="file">${info.file || ''}</div>`;
+  html += `<div class="desc">${info.desc || ''}</div>`;
+  if (info.problem) html += `<hr><div class="problem">⚠ ${info.problem}</div>`;
+  if (info.solution) html += `<div class="solution">✓ ${info.solution}</div>`;
+  if (info.metrics) html += `<hr><div class="metric">${info.metrics}</div>`;
+  panel.innerHTML = html;
+  panel.style.display = 'block';
+}
+
+// Close panel on background click
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.node') && !e.target.closest('#info-panel')) {
+    document.getElementById('info-panel').style.display = 'none';
+  }
+});
+</script>
+</body>
+</html>

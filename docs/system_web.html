@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheese the Duck - System Architecture Web (v3 Refactored)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0f;
+    color: #c8c8d0;
+    font-family: 'Courier New', monospace;
+    overflow: hidden;
+  }
+  #header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: linear-gradient(180deg, #0a0a0f 60%, transparent);
+    padding: 12px 20px 24px;
+    pointer-events: none;
+  }
+  #header h1 {
+    font-size: 18px; color: #ffd850; pointer-events: auto;
+    text-shadow: 0 0 12px rgba(255,216,80,0.3);
+  }
+  #header p { font-size: 11px; color: #666; margin-top: 2px; }
+  #header .version { font-size: 10px; color: #44ddaa; margin-top: 2px; }
+  #legend {
+    position: fixed; bottom: 14px; left: 14px; z-index: 100;
+    background: rgba(10,10,15,0.92); border: 1px solid #222;
+    border-radius: 6px; padding: 10px 14px; font-size: 11px;
+    line-height: 1.7;
+  }
+  #legend .swatch {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    margin-right: 5px; vertical-align: middle;
+  }
+  #info-panel {
+    position: fixed; top: 60px; right: 14px; z-index: 100;
+    background: rgba(10,10,15,0.94); border: 1px solid #333;
+    border-radius: 6px; padding: 14px 16px; font-size: 12px;
+    max-width: 320px; display: none; line-height: 1.5;
+  }
+  #info-panel h3 { color: #ffd850; margin-bottom: 6px; font-size: 14px; }
+  #info-panel .file { color: #888; font-size: 10px; margin-bottom: 6px; }
+  #info-panel .new-badge { color: #44ddaa; font-size: 10px; font-weight: bold; }
+  #info-panel .dep-label { color: #666; font-size: 10px; margin-top: 8px; }
+  #info-panel .dep-list { color: #aaa; font-size: 11px; }
+  #controls {
+    position: fixed; bottom: 14px; right: 14px; z-index: 100;
+    font-size: 10px; color: #555;
+  }
+  svg { display: block; }
+  .link { stroke-opacity: 0.18; }
+  .link.highlighted { stroke-opacity: 0.7; }
+  .link.event-link { stroke-dasharray: 4 3; }
+  .node-label {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    fill: #999;
+    pointer-events: none;
+    text-anchor: middle;
+  }
+  .node-label.highlighted { fill: #eee; font-size: 10px; }
+  .group-label {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    fill-opacity: 0.08;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>~ Cheese the Duck ~ System Architecture Web</h1>
+  <p>Drag nodes | Scroll to zoom | Click node for details | Click background to reset</p>
+  <div class="version">v3.0 — Refactored: EventBus + DuckStore + ResponsePipeline + TimeManager + UIState</div>
+</div>
+<div id="legend">
+  <div><span class="swatch" style="background:#ffd850"></span> Core Systems</div>
+  <div><span class="swatch" style="background:#44ddaa"></span> New Infrastructure</div>
+  <div><span class="swatch" style="background:#ff8844"></span> Duck Entity</div>
+  <div><span class="swatch" style="background:#44bbff"></span> Dialogue & AI</div>
+  <div><span class="swatch" style="background:#66dd66"></span> World & Content</div>
+  <div><span class="swatch" style="background:#cc66ff"></span> UI & Rendering</div>
+  <div><span class="swatch" style="background:#ff6688"></span> Audio</div>
+  <div style="margin-top:4px;border-top:1px solid #333;padding-top:4px">
+    <span style="color:#44ddaa">- - -</span> Event Bus connections
+  </div>
+</div>
+<div id="info-panel"></div>
+<div id="controls">scroll = zoom | drag = move</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+// ── System Nodes ──────────────────────────────────────────────────────────
+const groups = {
+  core:     { color: '#ffd850', label: 'Core Systems' },
+  infra:    { color: '#44ddaa', label: 'New Infrastructure' },
+  duck:     { color: '#ff8844', label: 'Duck Entity' },
+  dialogue: { color: '#44bbff', label: 'Dialogue & AI' },
+  world:    { color: '#66dd66', label: 'World & Content' },
+  ui:       { color: '#cc66ff', label: 'UI & Rendering' },
+  audio:    { color: '#ff6688', label: 'Audio' },
+};
+
+const nodes = [
+  // ── Core ──
+  { id: 'game',          label: 'Game Loop',         group: 'core', file: 'core/game.py',          desc: 'Central orchestrator. 60 FPS main loop. Now delegates to UpdateScheduler, InputDispatcher, and UIStateManager.', r: 18 },
+  { id: 'clock',         label: 'Clock',             group: 'core', file: 'core/clock.py',         desc: 'Real-time simulation & offline progression. Feeds TimeManager.' },
+  { id: 'persistence',   label: 'Save/Load',         group: 'core', file: 'core/persistence.py',   desc: 'JSON save/load with migration. Now syncs through DuckStore before save.' },
+  { id: 'consequences',  label: 'Consequences',      group: 'core', file: 'core/consequences.py',  desc: 'Trust, sickness, hiding, cold shoulder. Now emits SicknessEvent/HidingEvent via EventBus.' },
+  { id: 'progression',   label: 'Progression',       group: 'core', file: 'core/progression.py',   desc: 'XP, levels, daily streaks, surprise rewards.' },
+  { id: 'prestige',      label: 'Prestige',          group: 'core', file: 'core/prestige.py',      desc: 'Rebirth system with permanent legacy bonuses.' },
+  { id: 'settings',      label: 'Settings',          group: 'core', file: 'core/settings.py',      desc: 'Audio, display, accessibility, gameplay preferences.' },
+  { id: 'config',        label: 'Config',            group: 'core', file: 'config.py',             desc: 'All game constants: FPS, decay rates, thresholds, feature flags.' },
+
+  // ── New Infrastructure ──
+  { id: 'event_bus',     label: 'Event Bus',         group: 'infra', file: 'core/event_bus.py',     desc: 'Central pub/sub backbone. 15 event types. Thread-safe. Recursion-guarded. All systems emit and subscribe via this.', r: 18 },
+  { id: 'duck_store',    label: 'Duck Store',        group: 'infra', file: 'core/duck_store.py',    desc: 'Centralized duck state with validation, audit log, and auto event emission. All mutations flow through here.', r: 16 },
+  { id: 'time_system',   label: 'Time Manager',      group: 'infra', file: 'core/time_system.py',   desc: 'Unified 8-phase time-of-day + 4-season system. Single source of truth replacing 4 scattered implementations.', r: 14 },
+  { id: 'ui_state',      label: 'UI State',          group: 'infra', file: 'core/ui_state.py',      desc: '42-member UIOverlay enum with stack-based overlay manager. Replaces 20+ boolean flags.' },
+  { id: 'update_sched',  label: 'Update Scheduler',  group: 'infra', file: 'core/update_scheduler.py', desc: 'Tick-based system scheduler. 10 registered systems with configurable intervals.' },
+  { id: 'input_dispatch',label: 'Input Dispatcher',  group: 'infra', file: 'core/input_dispatcher.py', desc: 'Priority-based input routing. Global handlers + overlay-specific handlers. Replaces if/elif chain.' },
+  { id: 'menu_system',   label: 'Menu System',       group: 'infra', file: 'core/menu_system.py',   desc: 'Unified menu registration, navigation, and selection. Integrates with UIState.' },
+  { id: 'exceptions',    label: 'Exceptions',        group: 'infra', file: 'core/exceptions.py',    desc: 'Custom exception hierarchy: GameError, SaveError, LoadError, ValidationError, etc.' },
+  { id: 'resp_pipeline', label: 'Response Pipeline',  group: 'infra', file: 'dialogue/response_pipeline.py', desc: 'Pluggable response chain: LLM → Keywords → Learning → Seaman → Voice. Each source is a swappable ResponseSource.', r: 14 },
+  { id: 'dialogue_core', label: 'Dialogue Core',     group: 'infra', file: 'dialogue/dialogue_core.py', desc: 'Unified DialogueContext, DialogueResponse, DialogueMemory, DialogueState. Single source of truth for conversation data.' },
+  { id: 'ctx_provider',  label: 'Context Provider',  group: 'infra', file: 'dialogue/context_provider.py', desc: 'Bridge between game state and dialogue. Builds DialogueContext from Game instance via weakref.' },
+  { id: 'duck_animator', label: 'Duck Animator',      group: 'infra', file: 'duck/animator.py',      desc: 'Extracted movement/animation state machine. Reusable for duck and NPCs. No UI dependency.' },
+  { id: 'particle_sys',  label: 'Particle System',   group: 'infra', file: 'ui/particle_system.py', desc: 'Unified weather + ambient particles. Configurable direction, speed, density, time/season filters.' },
+  { id: 'render_ctx',    label: 'Render Context',    group: 'infra', file: 'ui/render_context.py',  desc: 'Data snapshot for rendering. Replaces passing entire Game object to renderer.' },
+  { id: 'biome_config',  label: 'Biome Config',      group: 'infra', file: 'ui/biome_config.py',    desc: 'Validated biome visual configuration. Tints, particles, and ground colors with load-time validation.' },
+
+  // ── Duck ──
+  { id: 'duck',          label: 'Duck',              group: 'duck', file: 'duck/duck.py',          desc: 'Central duck entity. State now managed through DuckStore for validated mutations.', r: 16 },
+  { id: 'needs',         label: 'Needs',             group: 'duck', file: 'duck/needs.py',         desc: 'Hunger, energy, fun, cleanliness, social. Changes emit NeedChangedEvent.' },
+  { id: 'mood',          label: 'Mood',              group: 'duck', file: 'duck/mood.py',          desc: '8 moods. Recalculated from needs. Changes emit MoodChangedEvent.' },
+  { id: 'personality',   label: 'Personality',       group: 'duck', file: 'duck/personality.py',   desc: '5 bipolar traits with drift detection.' },
+  { id: 'behavior_ai',   label: 'Behavior AI',       group: 'duck', file: 'duck/behavior_ai.py',   desc: 'Autonomous actions scored by utility function.' },
+  { id: 'desires',       label: 'Desires',           group: 'duck', file: 'duck/desires.py',       desc: 'Hidden daily goals & motivation tiers.' },
+  { id: 'aging',         label: 'Aging/Growth',      group: 'duck', file: 'duck/aging.py',         desc: '9 growth stages with stat modifiers.' },
+  { id: 'outfits',       label: 'Outfits',           group: 'duck', file: 'duck/outfits.py',       desc: 'Equipment slots: hats, faces, bodies, wings.' },
+  { id: 'tricks',        label: 'Tricks',            group: 'duck', file: 'duck/tricks.py',        desc: 'Learnable tricks with mastery progression.' },
+  { id: 'seasonal_clothes', label: 'Seasonal Clothes', group: 'duck', file: 'duck/seasonal_clothing.py', desc: 'Automatic outfit changes. Now uses TimeManager for season.' },
+  { id: 'biome_behaviors', label: 'Biome Behaviors', group: 'duck', file: 'duck/biome_behaviors.py', desc: '450 autonomous behaviors tied to biome zones.' },
+
+  // ── Dialogue ──
+  { id: 'duck_brain',    label: 'Duck Brain',        group: 'dialogue', file: 'dialogue/duck_brain.py',       desc: 'Now a FACADE over ResponsePipeline + DialogueMemory. Dual-writes to old and new memory. Has generate_response_via_pipeline().', r: 16 },
+  { id: 'conversation',  label: 'Conversation',      group: 'dialogue', file: 'dialogue/conversation.py',     desc: 'Legacy chat interface. Now emits ConversationEvent and dual-writes to unified DialogueMemory.' },
+  { id: 'conv_memory',   label: 'Conv. Memory',      group: 'dialogue', file: 'dialogue/conversation_memory.py', desc: 'Legacy history. Being replaced by DialogueMemory in dialogue_core.' },
+  { id: 'player_model',  label: 'Player Model',      group: 'dialogue', file: 'dialogue/player_model.py',     desc: 'Learns player preferences and patterns.' },
+  { id: 'seaman_style',  label: 'Seaman Style',      group: 'dialogue', file: 'dialogue/seaman_style.py',     desc: 'Voice rules. Now a SeamanResponseSource in the pipeline.' },
+  { id: 'llm_chat',      label: 'LLM Chat',          group: 'dialogue', file: 'dialogue/llm_chat.py',         desc: 'Local GGUF inference. Now an LLMResponseSource in the pipeline.' },
+  { id: 'llm_behavior',  label: 'LLM Behavior',      group: 'dialogue', file: 'dialogue/llm_behavior.py',     desc: 'Non-blocking background LLM thread.' },
+  { id: 'learning',      label: 'Learning Engine',   group: 'dialogue', file: 'dialogue/learning_engine.py',  desc: 'Fuzzy SQLite matching. Now a LearningResponseSource in the pipeline.' },
+  { id: 'voice_gen',     label: 'Voice Generator',   group: 'dialogue', file: 'dialogue/voice_generator.py',  desc: 'Markov chain generation. Now a VoiceResponseSource in the pipeline.' },
+  { id: 'memory_recall', label: 'Memory Recall',     group: 'dialogue', file: 'dialogue/memory_recall.py',    desc: 'Contextual memory scoring and retrieval.' },
+  { id: 'keywords',      label: 'Keyword Responses', group: 'dialogue', file: 'dialogue/keyword_responses.py', desc: '7 topic files. Now a KeywordResponseSource in the pipeline.' },
+  { id: 'mood_dialogue', label: 'Mood Dialogue',     group: 'dialogue', file: 'dialogue/mood_dialogue.py',    desc: 'Mood-specific pools. Subscribes to MoodChangedEvent.' },
+  { id: 'context_dlg',   label: 'Contextual Dialogue', group: 'dialogue', file: 'dialogue/contextual_dialogue.py', desc: 'Location and activity-specific responses.' },
+  { id: 'questions',     label: 'Questions',         group: 'dialogue', file: 'dialogue/questions.py',        desc: 'Interactive questions duck asks player.' },
+  { id: 'ritual',        label: 'Ritual Tracker',    group: 'dialogue', file: 'dialogue/ritual_tracker.py',   desc: 'Notices repetitive player behaviors.' },
+  { id: 'diary',         label: 'Diary',             group: 'dialogue', file: 'dialogue/diary.py',            desc: 'Narrative journal. Subscribes to Achievement/Sickness/Hiding/Visitor/Season events.' },
+  { id: 'duck_memory',   label: 'Duck Memory',       group: 'dialogue', file: 'dialogue/memory.py',           desc: 'Episodic memories with emotional values.' },
+
+  // ── World ──
+  { id: 'exploration',   label: 'Exploration',       group: 'world', file: 'world/exploration.py',     desc: '9 biomes, 22 locations. Now emits BiomeChangedEvent on travel.', r: 14 },
+  { id: 'atmosphere',    label: 'Atmosphere',        group: 'world', file: 'world/atmosphere.py',      desc: '80+ weather types. Now emits WeatherChangedEvent on transitions.', r: 14 },
+  { id: 'habitat',       label: 'Habitat',           group: 'world', file: 'world/habitat.py',         desc: 'Home with purchasable & placeable items.' },
+  { id: 'shop',          label: 'Shop',              group: 'world', file: 'world/shop.py',            desc: '255 purchasable items.' },
+  { id: 'items',         label: 'Items',             group: 'world', file: 'world/items.py',           desc: 'Consumables. Now emits ItemUsedEvent on use.' },
+  { id: 'events',        label: 'Events',            group: 'world', file: 'world/events.py',          desc: 'Random/scheduled events. Subscribes to TimeChanged/SeasonChanged.' },
+  { id: 'area_events',   label: 'Area Events',       group: 'world', file: 'world/area_events.py',     desc: '154+ location events. Subscribes to BiomeChanged/WeatherChanged.' },
+  { id: 'crafting',      label: 'Crafting',          group: 'world', file: 'world/crafting.py',        desc: 'Material combination recipes.' },
+  { id: 'materials',     label: 'Materials',         group: 'world', file: 'world/materials.py',       desc: '20+ gatherables.' },
+  { id: 'building',      label: 'Building',          group: 'world', file: 'world/building.py',        desc: 'Construct structures.' },
+  { id: 'goals',         label: 'Goals',             group: 'world', file: 'world/goals.py',           desc: 'Daily/weekly objectives. Subscribes to NeedChanged/ActionPerformed.' },
+  { id: 'achievements',  label: 'Achievements',      group: 'world', file: 'world/achievements.py',    desc: 'Long-term unlockables. Now emits AchievementUnlockedEvent.' },
+  { id: 'friends',       label: 'Friends/Visitors',  group: 'world', file: 'world/friends.py',         desc: 'NPC visitors. Now emits VisitorArrived/VisitorDeparted events.' },
+  { id: 'minigames',     label: 'Minigames',         group: 'world', file: 'world/minigames.py',       desc: '4 minigames.' },
+  { id: 'quests',        label: 'Quests',            group: 'world', file: 'world/quests.py',          desc: 'Multi-step narrative chains.' },
+  { id: 'festivals',     label: 'Festivals',         group: 'world', file: 'world/festivals.py',       desc: 'Seasonal events. Subscribes to SeasonChangedEvent.' },
+  { id: 'fishing',       label: 'Fishing',           group: 'world', file: 'world/fishing.py',         desc: 'Fishing locations and catch game.' },
+  { id: 'garden',        label: 'Garden',            group: 'world', file: 'world/garden.py',          desc: 'Plant and grow.' },
+  { id: 'dreams',        label: 'Dreams',            group: 'world', file: 'world/dreams.py',          desc: 'Sleep dreams with mood/need benefits.' },
+  { id: 'interaction_ctrl', label: 'Interaction Ctrl', group: 'world', file: 'world/interaction_controller.py', desc: 'Coordinates duck walking to items.' },
+  { id: 'trading',       label: 'Trading',           group: 'world', file: 'world/trading.py',         desc: 'Trade with NPC visitors.' },
+  { id: 'secrets',       label: 'Secrets',           group: 'world', file: 'world/secrets.py',         desc: 'Hidden discoveries and Easter eggs.' },
+
+  // ── UI ──
+  { id: 'renderer',      label: 'Renderer',          group: 'ui', file: 'ui/renderer.py',         desc: 'Terminal renderer. Now uses TimeManager for time/season. DuckAnimator extracted. ParticleSystem available.', r: 16 },
+  { id: 'biome_visuals', label: 'Biome Visuals',     group: 'ui', file: 'ui/biome_visuals.py',    desc: 'Legacy biome tints. Being replaced by biome_config.py.' },
+  { id: 'location_art',  label: 'Location Art',      group: 'ui', file: 'ui/location_art.py',     desc: 'Per-location ground patterns and scenery.' },
+  { id: 'day_night',     label: 'Day/Night',         group: 'ui', file: 'ui/day_night.py',        desc: 'Legacy time phases. TimeManager is now source of truth.' },
+  { id: 'mood_visuals',  label: 'Mood Visuals',      group: 'ui', file: 'ui/mood_visuals.py',     desc: 'Border styles and particles per mood.' },
+  { id: 'animations',    label: 'Animations',        group: 'ui', file: 'ui/animations.py',       desc: 'Duck action animations and walk cycles.' },
+  { id: 'ascii_art',     label: 'ASCII Art',         group: 'ui', file: 'ui/ascii_art.py',        desc: 'Duck sprites, closeups, UI box drawing.' },
+  { id: 'input_handler', label: 'Input Handler',     group: 'ui', file: 'ui/input_handler.py',    desc: 'Keyboard input to game actions.' },
+  { id: 'menus',         label: 'Menu Structure',    group: 'ui', file: 'ui/menu_structure.py',   desc: 'Legacy menu navigation. Being replaced by MenuSystem.' },
+  { id: 'cosmetics_rdr', label: 'Cosmetics Render',  group: 'ui', file: 'duck/cosmetics.py',      desc: 'Overlays hats/accessories on duck sprite.' },
+
+  // ── Audio ──
+  { id: 'sound',         label: 'Sound Engine',      group: 'audio', file: 'audio/sound.py',        desc: 'Chiptune + WAV. Subscribes to Action/Item/Achievement events.' },
+  { id: 'ambient',       label: 'Ambient Sound',     group: 'audio', file: 'audio/ambient.py',      desc: 'Background soundscapes. Subscribes to Weather/Biome/Time events.' },
+  { id: 'radio',         label: 'Duck Radio',        group: 'audio', file: 'audio/radio.py',        desc: 'DJ Duck radio show.' },
+
+  // ── Tests ──
+  { id: 'tests',         label: 'Test Suite',        group: 'infra', file: 'tests/',               desc: '61 tests: DuckStore (36), EventBus (11), TimeSystem (14). All passing.' },
+];
+
+// ── System Connections ────────────────────────────────────────────────────
+const links = [
+  // ── Game → New Infrastructure (primary delegation) ──
+  { source: 'game', target: 'event_bus',      weight: 3 },
+  { source: 'game', target: 'duck_store',     weight: 3 },
+  { source: 'game', target: 'time_system',    weight: 2 },
+  { source: 'game', target: 'ui_state',       weight: 2 },
+  { source: 'game', target: 'update_sched',   weight: 2 },
+  { source: 'game', target: 'input_dispatch', weight: 2 },
+  { source: 'game', target: 'menu_system',    weight: 2 },
+
+  // Game → existing systems (still connected but lighter coupling)
+  { source: 'game', target: 'duck',          weight: 3 },
+  { source: 'game', target: 'duck_brain',    weight: 3 },
+  { source: 'game', target: 'renderer',      weight: 3 },
+  { source: 'game', target: 'exploration',   weight: 2 },
+  { source: 'game', target: 'atmosphere',    weight: 2 },
+  { source: 'game', target: 'habitat',       weight: 2 },
+  { source: 'game', target: 'clock',         weight: 2 },
+  { source: 'game', target: 'persistence',   weight: 2 },
+  { source: 'game', target: 'consequences',  weight: 2 },
+  { source: 'game', target: 'progression',   weight: 2 },
+  { source: 'game', target: 'conversation',  weight: 2 },
+  { source: 'game', target: 'input_handler', weight: 2 },
+  { source: 'game', target: 'sound',         weight: 1 },
+  { source: 'game', target: 'prestige',      weight: 1 },
+  { source: 'game', target: 'settings',      weight: 1 },
+  { source: 'game', target: 'events',        weight: 2 },
+  { source: 'game', target: 'area_events',   weight: 1 },
+  { source: 'game', target: 'goals',         weight: 1 },
+  { source: 'game', target: 'achievements',  weight: 1 },
+  { source: 'game', target: 'friends',       weight: 1 },
+  { source: 'game', target: 'minigames',     weight: 1 },
+  { source: 'game', target: 'quests',        weight: 1 },
+  { source: 'game', target: 'crafting',      weight: 1 },
+  { source: 'game', target: 'building',      weight: 1 },
+  { source: 'game', target: 'fishing',       weight: 1 },
+  { source: 'game', target: 'garden',        weight: 1 },
+  { source: 'game', target: 'festivals',     weight: 1 },
+  { source: 'game', target: 'dreams',        weight: 1 },
+  { source: 'game', target: 'trading',       weight: 1 },
+  { source: 'game', target: 'secrets',       weight: 1 },
+  { source: 'game', target: 'menus',         weight: 1 },
+  { source: 'game', target: 'interaction_ctrl', weight: 1 },
+  { source: 'game', target: 'day_night',     weight: 1 },
+
+  // ── EventBus → subscribers (dashed event connections) ──
+  { source: 'event_bus', target: 'goals',         weight: 1, event: true },
+  { source: 'event_bus', target: 'area_events',   weight: 1, event: true },
+  { source: 'event_bus', target: 'events',        weight: 1, event: true },
+  { source: 'event_bus', target: 'festivals',     weight: 1, event: true },
+  { source: 'event_bus', target: 'sound',         weight: 1, event: true },
+  { source: 'event_bus', target: 'ambient',        weight: 1, event: true },
+  { source: 'event_bus', target: 'diary',          weight: 1, event: true },
+  { source: 'event_bus', target: 'mood_dialogue',  weight: 1, event: true },
+
+  // ── EventBus ← emitters ──
+  { source: 'consequences', target: 'event_bus',  weight: 2, event: true },
+  { source: 'atmosphere',   target: 'event_bus',  weight: 2, event: true },
+  { source: 'exploration',  target: 'event_bus',  weight: 2, event: true },
+  { source: 'friends',      target: 'event_bus',  weight: 1, event: true },
+  { source: 'items',        target: 'event_bus',  weight: 1, event: true },
+  { source: 'achievements', target: 'event_bus',  weight: 1, event: true },
+  { source: 'conversation', target: 'event_bus',  weight: 1, event: true },
+  { source: 'time_system',  target: 'event_bus',  weight: 2, event: true },
+  { source: 'duck_store',   target: 'event_bus',  weight: 2, event: true },
+
+  // ── DuckStore ↔ Duck ──
+  { source: 'duck_store', target: 'duck',    weight: 3 },
+  { source: 'duck_store', target: 'needs',   weight: 2 },
+  { source: 'duck_store', target: 'mood',    weight: 2 },
+
+  // ── TimeManager ──
+  { source: 'time_system', target: 'clock',  weight: 2 },
+  { source: 'renderer', target: 'time_system', weight: 2 },
+
+  // ── UIState + Menu ──
+  { source: 'menu_system', target: 'ui_state', weight: 2 },
+  { source: 'input_dispatch', target: 'ui_state', weight: 1 },
+
+  // ── Response Pipeline ──
+  { source: 'resp_pipeline', target: 'llm_chat',      weight: 2 },
+  { source: 'resp_pipeline', target: 'keywords',      weight: 2 },
+  { source: 'resp_pipeline', target: 'learning',      weight: 2 },
+  { source: 'resp_pipeline', target: 'seaman_style',  weight: 2 },
+  { source: 'resp_pipeline', target: 'voice_gen',     weight: 1 },
+  { source: 'duck_brain', target: 'resp_pipeline',    weight: 3 },
+  { source: 'duck_brain', target: 'dialogue_core',    weight: 2 },
+  { source: 'conversation', target: 'dialogue_core',  weight: 2 },
+  { source: 'ctx_provider', target: 'dialogue_core',  weight: 2 },
+  { source: 'ctx_provider', target: 'game',           weight: 1 },
+  { source: 'dialogue_core', target: 'resp_pipeline', weight: 2 },
+
+  // ── Duck entity internals ──
+  { source: 'duck', target: 'needs',       weight: 3 },
+  { source: 'duck', target: 'mood',        weight: 3 },
+  { source: 'duck', target: 'personality', weight: 2 },
+  { source: 'duck', target: 'duck_memory', weight: 2 },
+  { source: 'duck', target: 'desires',     weight: 2 },
+  { source: 'duck', target: 'aging',       weight: 2 },
+  { source: 'duck', target: 'outfits',     weight: 1 },
+  { source: 'duck', target: 'tricks',      weight: 1 },
+  { source: 'mood', target: 'needs',       weight: 3 },
+  { source: 'desires', target: 'mood',     weight: 2 },
+  { source: 'behavior_ai', target: 'duck', weight: 2 },
+  { source: 'behavior_ai', target: 'llm_behavior', weight: 1 },
+  { source: 'behavior_ai', target: 'biome_behaviors', weight: 2 },
+  { source: 'biome_behaviors', target: 'exploration', weight: 2 },
+  { source: 'seasonal_clothes', target: 'atmosphere', weight: 1 },
+  { source: 'seasonal_clothes', target: 'outfits', weight: 1 },
+
+  // Dialogue internals
+  { source: 'duck_brain', target: 'player_model',  weight: 2 },
+  { source: 'duck_brain', target: 'conv_memory',   weight: 2 },
+  { source: 'duck_brain', target: 'questions',     weight: 1 },
+  { source: 'duck_brain', target: 'seaman_style',  weight: 2 },
+  { source: 'duck_brain', target: 'ritual',        weight: 1 },
+  { source: 'duck_brain', target: 'memory_recall', weight: 2 },
+  { source: 'duck_brain', target: 'mood_dialogue', weight: 2 },
+  { source: 'duck_brain', target: 'duck_memory',   weight: 2 },
+  { source: 'memory_recall', target: 'conv_memory', weight: 2 },
+  { source: 'memory_recall', target: 'duck_memory', weight: 2 },
+  { source: 'llm_behavior', target: 'llm_chat',    weight: 2 },
+  { source: 'context_dlg', target: 'exploration',  weight: 1 },
+  { source: 'diary', target: 'duck_memory',        weight: 1 },
+  { source: 'mood_dialogue', target: 'mood',       weight: 2 },
+  { source: 'conversation', target: 'duck_brain',  weight: 3 },
+  { source: 'conversation', target: 'conv_memory', weight: 2 },
+  { source: 'conversation', target: 'keywords',    weight: 2 },
+  { source: 'conversation', target: 'seaman_style',weight: 2 },
+  { source: 'conversation', target: 'learning',    weight: 2 },
+  { source: 'conversation', target: 'voice_gen',   weight: 1 },
+  { source: 'conversation', target: 'llm_chat',    weight: 2 },
+  { source: 'conversation', target: 'mood_dialogue',weight: 1 },
+  { source: 'memory_recall', target: 'player_model',weight: 1 },
+  { source: 'learning', target: 'keywords',        weight: 1 },
+  { source: 'learning', target: 'seaman_style',    weight: 1 },
+  { source: 'voice_gen', target: 'seaman_style',   weight: 2 },
+
+  // World connections
+  { source: 'habitat', target: 'shop',       weight: 2 },
+  { source: 'habitat', target: 'items',      weight: 2 },
+  { source: 'area_events', target: 'events', weight: 2 },
+  { source: 'area_events', target: 'exploration', weight: 2 },
+  { source: 'crafting', target: 'materials', weight: 2 },
+  { source: 'building', target: 'materials', weight: 2 },
+  { source: 'festivals', target: 'atmosphere', weight: 2 },
+  { source: 'friends', target: 'events',      weight: 1 },
+  { source: 'fishing', target: 'exploration', weight: 1 },
+  { source: 'garden', target: 'materials',    weight: 1 },
+  { source: 'trading', target: 'items',       weight: 1 },
+  { source: 'trading', target: 'friends',     weight: 1 },
+  { source: 'trading', target: 'materials',   weight: 1 },
+  { source: 'building', target: 'crafting',   weight: 1 },
+  { source: 'festivals', target: 'events',    weight: 1 },
+  { source: 'fishing', target: 'minigames',   weight: 1 },
+  { source: 'dreams', target: 'needs',        weight: 1 },
+  { source: 'dreams', target: 'mood',         weight: 1 },
+  { source: 'exploration', target: 'materials', weight: 1 },
+  { source: 'events', target: 'atmosphere',   weight: 1 },
+  { source: 'interaction_ctrl', target: 'habitat', weight: 2 },
+  { source: 'interaction_ctrl', target: 'renderer', weight: 1 },
+  { source: 'items', target: 'duck',          weight: 1 },
+
+  // Atmosphere -> visual
+  { source: 'atmosphere', target: 'renderer',      weight: 2 },
+  { source: 'atmosphere', target: 'biome_visuals',  weight: 2 },
+
+  // UI connections
+  { source: 'renderer', target: 'location_art',   weight: 2 },
+  { source: 'renderer', target: 'biome_visuals',  weight: 2 },
+  { source: 'renderer', target: 'biome_config',   weight: 1 },
+  { source: 'renderer', target: 'day_night',      weight: 2 },
+  { source: 'renderer', target: 'mood_visuals',   weight: 2 },
+  { source: 'renderer', target: 'animations',     weight: 2 },
+  { source: 'renderer', target: 'ascii_art',      weight: 2 },
+  { source: 'renderer', target: 'cosmetics_rdr',  weight: 1 },
+  { source: 'renderer', target: 'particle_sys',   weight: 1 },
+  { source: 'renderer', target: 'duck_animator',  weight: 1 },
+  { source: 'renderer', target: 'render_ctx',     weight: 1 },
+  { source: 'biome_config', target: 'biome_visuals', weight: 2 },
+  { source: 'biome_visuals', target: 'exploration',  weight: 1 },
+  { source: 'location_art', target: 'biome_visuals', weight: 2 },
+  { source: 'menus', target: 'menu_system',          weight: 1 },
+  { source: 'exceptions', target: 'duck_store',      weight: 1 },
+  { source: 'mood_visuals', target: 'mood',        weight: 2 },
+  { source: 'cosmetics_rdr', target: 'outfits',   weight: 1 },
+
+  // Audio
+  { source: 'ambient', target: 'sound',       weight: 2 },
+  { source: 'ambient', target: 'atmosphere',  weight: 1 },
+  { source: 'radio', target: 'sound',         weight: 2 },
+
+  // Config -> systems
+  { source: 'needs', target: 'config',        weight: 1 },
+  { source: 'mood', target: 'config',         weight: 1 },
+  { source: 'consequences', target: 'config', weight: 1 },
+  { source: 'clock', target: 'config',        weight: 1 },
+  { source: 'atmosphere', target: 'config',   weight: 1 },
+
+  // Tests
+  { source: 'tests', target: 'duck_store',    weight: 1 },
+  { source: 'tests', target: 'event_bus',     weight: 1 },
+  { source: 'tests', target: 'time_system',   weight: 1 },
+];
+
+// ── Build adjacency for highlighting ──
+const adjacency = {};
+nodes.forEach(n => adjacency[n.id] = new Set());
+links.forEach(l => {
+  adjacency[l.source]?.add(l.target);
+  adjacency[l.target]?.add(l.source);
+});
+
+// ── D3 Setup ──────────────────────────────────────────────────────────────
+const width = window.innerWidth;
+const height = window.innerHeight;
+
+const svg = d3.select('body').append('svg')
+  .attr('width', width).attr('height', height);
+
+const g = svg.append('g');
+
+// Zoom
+const zoom = d3.zoom().scaleExtent([0.3, 4]).on('zoom', e => g.attr('transform', e.transform));
+svg.call(zoom);
+
+// Simulation
+const simulation = d3.forceSimulation(nodes)
+  .force('link', d3.forceLink(links).id(d => d.id).distance(d => 120 - d.weight * 15).strength(d => 0.15 + d.weight * 0.05))
+  .force('charge', d3.forceManyBody().strength(-320))
+  .force('center', d3.forceCenter(width / 2, height / 2))
+  .force('collision', d3.forceCollide().radius(d => (d.r || 10) + 12))
+  .force('x', d3.forceX(width / 2).strength(0.03))
+  .force('y', d3.forceY(height / 2).strength(0.03));
+
+// Links
+const link = g.append('g').selectAll('line')
+  .data(links).join('line')
+  .attr('class', d => 'link' + (d.event ? ' event-link' : ''))
+  .attr('stroke', d => {
+    if (d.event) return '#44ddaa';
+    const src = nodes.find(n => n.id === (d.source.id || d.source));
+    return src ? groups[src.group].color : '#444';
+  })
+  .attr('stroke-width', d => 0.5 + d.weight * 0.5);
+
+// Nodes
+const node = g.append('g').selectAll('g')
+  .data(nodes).join('g')
+  .attr('cursor', 'pointer')
+  .call(d3.drag()
+    .on('start', (e, d) => { if (!e.active) simulation.alphaTarget(0.15).restart(); d.fx = d.x; d.fy = d.y; })
+    .on('drag', (e, d) => { d.fx = e.x; d.fy = e.y; })
+    .on('end', (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; })
+  );
+
+node.append('circle')
+  .attr('r', d => d.r || 10)
+  .attr('fill', d => groups[d.group].color)
+  .attr('fill-opacity', 0.15)
+  .attr('stroke', d => groups[d.group].color)
+  .attr('stroke-width', 1.5)
+  .attr('stroke-opacity', 0.6);
+
+// Glow for hub nodes
+node.filter(d => d.r > 12).append('circle')
+  .attr('r', d => (d.r || 10) + 6)
+  .attr('fill', 'none')
+  .attr('stroke', d => groups[d.group].color)
+  .attr('stroke-width', 0.5)
+  .attr('stroke-opacity', 0.15);
+
+// New infrastructure badge (double ring)
+node.filter(d => d.group === 'infra').append('circle')
+  .attr('r', d => (d.r || 10) + 3)
+  .attr('fill', 'none')
+  .attr('stroke', '#44ddaa')
+  .attr('stroke-width', 0.8)
+  .attr('stroke-opacity', 0.4)
+  .attr('stroke-dasharray', '2 2');
+
+// Labels
+const label = g.append('g').selectAll('text')
+  .data(nodes).join('text')
+  .attr('class', 'node-label')
+  .attr('dy', d => (d.r || 10) + 12)
+  .text(d => d.label);
+
+// ── Interaction ───────────────────────────────────────────────────────────
+const infoPanel = d3.select('#info-panel');
+
+node.on('click', (e, d) => {
+  e.stopPropagation();
+  highlightNode(d);
+  showInfo(d);
+});
+
+svg.on('click', () => {
+  resetHighlight();
+  infoPanel.style('display', 'none');
+});
+
+function highlightNode(d) {
+  const connected = adjacency[d.id];
+  node.select('circle:first-child')
+    .attr('fill-opacity', n => n.id === d.id ? 0.4 : connected.has(n.id) ? 0.25 : 0.04)
+    .attr('stroke-opacity', n => n.id === d.id ? 1 : connected.has(n.id) ? 0.7 : 0.1);
+  link
+    .classed('highlighted', l => l.source.id === d.id || l.target.id === d.id)
+    .attr('stroke-opacity', l => (l.source.id === d.id || l.target.id === d.id) ? 0.7 : 0.04);
+  label
+    .classed('highlighted', n => n.id === d.id || connected.has(n.id))
+    .attr('fill-opacity', n => n.id === d.id ? 1 : connected.has(n.id) ? 0.8 : 0.15);
+}
+
+function resetHighlight() {
+  node.select('circle:first-child')
+    .attr('fill-opacity', 0.15).attr('stroke-opacity', 0.6);
+  link.classed('highlighted', false).attr('stroke-opacity', 0.18);
+  label.classed('highlighted', false).attr('fill-opacity', 1);
+}
+
+function showInfo(d) {
+  const connected = adjacency[d.id];
+  const deps = [...connected].map(id => {
+    const n = nodes.find(x => x.id === id);
+    return n ? `<span style="color:${groups[n.group].color}">${n.label}</span>` : id;
+  });
+  const isNew = d.group === 'infra' ? '<span class="new-badge">NEW</span> ' : '';
+  infoPanel.html(`
+    <h3>${isNew}${d.label}</h3>
+    <div class="file">${d.file}</div>
+    <div>${d.desc}</div>
+    <div class="dep-label">Connected to (${deps.length}):</div>
+    <div class="dep-list">${deps.join(' &middot; ')}</div>
+  `).style('display', 'block');
+}
+
+// ── Tick ──────────────────────────────────────────────────────────────────
+simulation.on('tick', () => {
+  link
+    .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+    .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+  node.attr('transform', d => `translate(${d.x},${d.y})`);
+  label.attr('x', d => d.x).attr('y', d => d.y);
+});
+
+// Initial zoom to fit
+setTimeout(() => {
+  const bounds = g.node().getBBox();
+  const dx = bounds.width, dy = bounds.height;
+  const x = bounds.x + dx / 2, y = bounds.y + dy / 2;
+  const scale = 0.85 / Math.max(dx / width, dy / height);
+  const t = d3.zoomIdentity.translate(width / 2 - scale * x, height / 2 - scale * y).scale(scale);
+  svg.transition().duration(750).call(zoom.transform, t);
+}, 2000);
+</script>
+</body>
+</html>

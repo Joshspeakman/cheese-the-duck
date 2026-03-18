@@ -25,6 +25,8 @@ from dialogue.questions import QuestionManager, DUCK_QUESTIONS, DuckQuestion
 from dialogue.seaman_style import SeamanDialogue, DialogueLine, DialogueTone
 from dialogue.ritual_tracker import RitualTracker
 from dialogue.memory_recall import MemoryRecall
+from dialogue.dialogue_core import DialogueContext, DialogueResponse, DialogueMemory, DialogueState
+from dialogue.response_pipeline import create_default_pipeline
 
 if TYPE_CHECKING:
     from dialogue.memory import DuckMemory
@@ -124,6 +126,14 @@ class DuckBrain:
         # External state flags (set by game loop)
         self.__cold_shoulder_active = False  # Suppresses genuine moments during cold shoulder
         self.__duck_trust = 20.0  # Synced from duck.trust for genuine moment gating
+
+        # New dialogue pipeline integration (dual-write alongside existing systems)
+        self._dialogue_memory = DialogueMemory()
+        self._dialogue_state = DialogueState()
+        try:
+            self._response_pipeline = create_default_pipeline()
+        except Exception:
+            self._response_pipeline = None
     
     @property
     def _cold_shoulder_active(self) -> bool:
@@ -258,7 +268,29 @@ class DuckBrain:
             content=response,
             sentiment=duck_sentiment
         )
-        
+
+        # Dual-write to new DialogueMemory for gradual migration
+        context_dict = context
+        try:
+            dl_context = DialogueContext(
+                timestamp=time.time(), player_message=message,
+                conversation_state="active", duck_mood=self._internal_mood.value if self._internal_mood else "content",
+                duck_trust=self._duck_trust,
+                time_of_day=context_dict.get("time_of_day", "") if context_dict else "",
+                season=context_dict.get("season", "") if context_dict else "",
+                weather=context_dict.get("weather", "") if context_dict else "",
+                current_biome=context_dict.get("biome", "") if context_dict else "",
+                current_location=context_dict.get("location", "") if context_dict else "",
+                active_visitor=context_dict.get("visitor") if context_dict else None,
+                active_event=context_dict.get("event") if context_dict else None,
+                recent_topics=[], session_message_count=self._session_messages,
+                triggers=["player_input"]
+            )
+            resp_obj = DialogueResponse(text=response, source="legacy", confidence=1.0, actions=[], mood_hint=None, should_record=True)
+            self._dialogue_memory.record_exchange(message, response, dl_context, resp_obj)
+        except Exception:
+            pass
+
         return response
     
     def process_action(self, action: str, context = None) -> str:
@@ -758,6 +790,37 @@ class DuckBrain:
             self._last_genuine_moment_date = today
         self._genuine_moments_today += 1
     
+    # ========== NEW PIPELINE METHODS ==========
+
+    def generate_response_via_pipeline(self, player_message, context_dict=None):
+        """Generate response using new pipeline. For gradual migration."""
+        if not self._response_pipeline:
+            return None
+        try:
+            context = self._build_dialogue_context(player_message, context_dict)
+            self._dialogue_state.sync_from_game(context_dict or {})
+            response = self._response_pipeline.generate_response(context, self._dialogue_state)
+            self._dialogue_memory.record_exchange(player_message, response.text, context, response)
+            return response.text
+        except Exception:
+            return None
+
+    def _build_dialogue_context(self, player_message, context_dict=None):
+        cd = context_dict or {}
+        return DialogueContext(
+            timestamp=time.time(), player_message=player_message,
+            conversation_state="active" if player_message else "idle",
+            duck_mood=self._internal_mood.value if self._internal_mood else "content",
+            duck_trust=self._duck_trust,
+            time_of_day=cd.get("time_of_day", ""), season=cd.get("season", ""),
+            weather=cd.get("weather", ""), current_biome=cd.get("biome", ""),
+            current_location=cd.get("location", ""),
+            active_visitor=cd.get("visitor"), active_event=cd.get("event"),
+            recent_topics=self._dialogue_memory.get_topics(limit=5),
+            session_message_count=self._session_messages,
+            triggers=["player_input"] if player_message else ["idle_timer"]
+        )
+
     # ========== PERSISTENCE ==========
     
     def to_dict(self) -> Dict:
@@ -775,6 +838,7 @@ class DuckBrain:
             "last_callback_time": self._last_callback_time,
             "last_question_time": self._last_question_time,
             "duck_name": self.duck_name,
+            "dialogue_memory": self._dialogue_memory.to_dict(),
         }
     
     @classmethod
@@ -811,7 +875,10 @@ class DuckBrain:
         # Sync player name to duck memory on load
         if brain.player_model.name and brain.duck_memory:
             brain.duck_memory.player_name = brain.player_model.name
-        
+
+        if "dialogue_memory" in data:
+            brain._dialogue_memory = DialogueMemory.from_dict(data["dialogue_memory"])
+
         return brain
     
     # ========== STATISTICS & DEBUG ==========

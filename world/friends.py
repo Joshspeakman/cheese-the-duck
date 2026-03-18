@@ -9,6 +9,8 @@ from enum import Enum
 import random
 import time
 
+from core.event_bus import event_bus, VisitorArrivedEvent, VisitorDepartedEvent
+
 
 class FriendshipLevel(Enum):
     """Friendship tier with visiting ducks."""
@@ -1318,6 +1320,12 @@ class FriendsSystem:
         self.last_visitor_time = datetime.now().isoformat()
         
         gift_msg = f" They brought you a {gift}!" if gift else ""
+
+        try:
+            event_bus.emit(VisitorArrivedEvent(source="friends", visitor_name=friend.name))
+        except Exception:
+            pass
+
         return True, f"d {friend.name} is visiting!{gift_msg}", self.current_visit
     
     def interact_with_visitor(self, activity: str) -> Tuple[bool, str, int]:
@@ -1453,7 +1461,12 @@ class FriendsSystem:
         ]
         
         self.current_visit = None
-        
+
+        try:
+            event_bus.emit(VisitorDepartedEvent(source="friends", visitor_name=friend.name))
+        except Exception:
+            pass
+
         return True, random.choice(farewell_messages), summary
     
     def _calculate_level(self, points: int) -> FriendshipLevel:
@@ -1698,3 +1711,22 @@ class FriendsSystem:
 
 # Global friends system instance
 friends_system = FriendsSystem()
+
+
+# ── Event subscribers ────────────────────────────────────────────────
+try:
+    import logging as _logging
+    _friends_logger = _logging.getLogger(__name__)
+
+    def _on_visitor_departed(event):
+        try:
+            visitor_name = getattr(event, "visitor_name", "Someone")
+            _friends_logger.debug("Visitor departed: %s", visitor_name)
+            # Update visit stats
+            friends_system.total_visits += 1
+        except Exception:
+            _friends_logger.debug("Error in _on_visitor_departed", exc_info=True)
+
+    event_bus.subscribe(VisitorDepartedEvent, _on_visitor_departed, priority=60)
+except Exception:
+    pass
