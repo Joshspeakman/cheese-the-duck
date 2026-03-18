@@ -497,6 +497,38 @@ class Game:
         # ── TimeManager (game clock wrapper) ──────────────────────────
         self.time_manager = None
 
+    # ── Centralized need modification ────────────────────────────────────
+
+    def _change_need(self, need: str, delta: float, reason: str = "") -> None:
+        """Change a duck need by *delta*, routing through DuckStore when available.
+
+        Handles clamping, audit logging, mood cache invalidation, and
+        sync back to the Duck object in one place.
+        """
+        if not self.duck:
+            return
+        if self.duck_store:
+            self.duck_store.change_need(need, delta, reason)
+            self.duck_store.sync_to_duck(self.duck)
+        else:
+            val = getattr(self.duck.needs, need, 50.0)
+            setattr(self.duck.needs, need, max(0, min(100, val + delta)))
+
+    def _set_need(self, need: str, value: float, reason: str = "") -> None:
+        """Set a duck need to an absolute *value*, routing through DuckStore."""
+        if not self.duck:
+            return
+        if self.duck_store:
+            self.duck_store.set_need(need, value, reason)
+            self.duck_store.sync_to_duck(self.duck)
+        else:
+            setattr(self.duck.needs, need, max(0, min(100, value)))
+
+    def _set_all_needs(self, value: float, reason: str = "") -> None:
+        """Set every duck need to *value*, routing through DuckStore."""
+        for need in ("hunger", "energy", "fun", "cleanliness", "social"):
+            self._set_need(need, value, reason)
+
     def _setup_update_scheduler(self):
         """
         Register periodic subsystems with the UpdateScheduler.
@@ -1580,13 +1612,7 @@ class Game:
 
             # Overfeed: lower hunger slightly (bloated feeling)
             if category == "food":
-                if hasattr(self, 'duck_store') and self.duck_store:
-                    self.duck_store.change_need("hunger", -ITEM_SPAM_HUNGER_OVERFEED, "spam_overfeed")
-                    self.duck_store.sync_to_duck(self.duck)
-                else:
-                    self.duck.needs.hunger = max(
-                        0, self.duck.needs.hunger - ITEM_SPAM_HUNGER_OVERFEED
-                    )
+                self._change_need("hunger", -ITEM_SPAM_HUNGER_OVERFEED, "spam_overfeed")
             _spam_roasts = [
                 "*burps resentfully* I'm NOT a Pez dispenser.",
                 "*stares into the void* This is what my life has become.",
@@ -2051,9 +2077,7 @@ class Game:
             self.duck_store.sync_to_duck(self.duck)
         else:
             for need, change in result.effects.items():
-                if hasattr(self.duck.needs, need):
-                    current = getattr(self.duck.needs, need)
-                    setattr(self.duck.needs, need, min(100, max(0, current + change)))
+                self._change_need(need, change, f"item_{item_id}")
 
         # Record in memory
         self.duck.memory.add_interaction(f"interacted_{item_id}", item_name, emotional_value=10)
@@ -2806,6 +2830,10 @@ class Game:
         # Perform the interaction
         result = self.duck.interact(interaction)
 
+        # Sync needs back to DuckStore after interaction effects
+        if self.duck_store:
+            self.duck_store.sync_from_duck(self.duck)
+
         # ── Trust gain from caring interaction ───────────────────────
         apply_trust_gain(self.duck, "interaction")
         # If duck is giving cold shoulder, caring visits thaw it
@@ -3490,40 +3518,31 @@ class Game:
                     self.duck_store.set_need("energy", energy_before + regen, "sleeping_regen")
                     self.duck_store.sync_to_duck(self.duck)
                 else:
-                    self.duck.needs.energy = energy_before
-                    self.duck.needs.energy = min(100, self.duck.needs.energy + regen)
+                    self._set_need("energy", min(100, energy_before + regen), "sleeping_regen")
             else:
                 self.duck.update(delta_minutes, weather_modifiers=weather_mods)
+
+            # Sync decayed needs back into DuckStore so derived state (mood, motivation) stays valid
+            if self.duck_store:
+                self.duck_store.sync_from_duck(self.duck)
 
             # Apply decoration bonuses (comfort/mood) to duck needs each tick
             try:
                 decor_bonus = self._get_room_decoration_bonus()
                 mood_bonus = decor_bonus.get("mood", 0)
                 comfort_bonus = decor_bonus.get("comfort", 0)
-                _decor_changed = False
                 if mood_bonus > 0:
                     # Trickle the bonus over time — slows decay but shouldn't reverse it
                     tick_mood = (mood_bonus / 100.0) * delta_minutes * 0.1
-                    if hasattr(self, 'duck_store') and self.duck_store:
-                        self.duck_store.change_need("fun", tick_mood, "decoration_mood")
-                    else:
-                        self.duck.needs.fun = min(100, self.duck.needs.fun + tick_mood)
-                    _decor_changed = True
+                    self._change_need("fun", tick_mood, "decoration_mood")
                 if comfort_bonus > 0:
                     tick_comfort = (comfort_bonus / 100.0) * delta_minutes * 0.1
-                    if hasattr(self, 'duck_store') and self.duck_store:
-                        self.duck_store.change_need("energy", tick_comfort, "decoration_comfort")
-                    else:
-                        self.duck.needs.energy = min(100, self.duck.needs.energy + tick_comfort)
-                    _decor_changed = True
-                if _decor_changed and hasattr(self, 'duck_store') and self.duck_store:
-                    self.duck_store.sync_to_duck(self.duck)
+                    self._change_need("energy", tick_comfort, "decoration_comfort")
             except Exception:
                 pass
 
             # Apply completed building bonuses to duck needs each tick
             try:
-                _building_changed = False
                 for structure in self.building.structures:
                     if not hasattr(structure, 'status') or structure.status.value != 'complete':
                         continue
@@ -3535,20 +3554,10 @@ class Game:
                     happiness_bonus = getattr(bp, 'happiness_bonus', 0)
                     if energy_bonus > 0:
                         tick_energy = (energy_bonus / 100.0) * delta_minutes * 0.1
-                        if hasattr(self, 'duck_store') and self.duck_store:
-                            self.duck_store.change_need("energy", tick_energy, "building_bonus")
-                        else:
-                            self.duck.needs.energy = min(100, self.duck.needs.energy + tick_energy)
-                        _building_changed = True
+                        self._change_need("energy", tick_energy, "building_bonus")
                     if happiness_bonus > 0:
                         tick_happiness = (happiness_bonus / 100.0) * delta_minutes * 0.1
-                        if hasattr(self, 'duck_store') and self.duck_store:
-                            self.duck_store.change_need("fun", tick_happiness, "building_bonus")
-                        else:
-                            self.duck.needs.fun = min(100, self.duck.needs.fun + tick_happiness)
-                        _building_changed = True
-                if _building_changed and hasattr(self, 'duck_store') and self.duck_store:
-                    self.duck_store.sync_to_duck(self.duck)
+                        self._change_need("fun", tick_happiness, "building_bonus")
             except Exception:
                 pass
 
@@ -4159,11 +4168,7 @@ class Game:
                 self._pending_visitor_comment_time = current_time + 9.0
                 # Apply mood/friendship effects
                 if exchange.mood_effect and self.duck:
-                    if hasattr(self, 'duck_store') and self.duck_store:
-                        self.duck_store.change_need("fun", exchange.mood_effect, "guest_conversation")
-                        self.duck_store.sync_to_duck(self.duck)
-                    else:
-                        self.duck.needs.fun = min(100, max(0, self.duck.needs.fun + exchange.mood_effect))
+                    self._change_need("fun", exchange.mood_effect, "guest_conversation")
                 if exchange.friendship_bonus and friend_obj:
                     friend_obj.friendship_points += int(exchange.friendship_bonus)
                 self._guest_convo_index = idx + 1
@@ -4983,9 +4988,7 @@ class Game:
             self.duck_store.sync_to_duck(self.duck)
         else:
             for need, change in result.get("effects", {}).items():
-                if hasattr(self.duck.needs, need):
-                    old = getattr(self.duck.needs, need)
-                    setattr(self.duck.needs, need, max(0, min(100, old + change)))
+                self._change_need(need, change, "encounter_result")
             # Apply trust change
             trust_delta = result.get("trust_bonus", 0)
             if trust_delta != 0:
@@ -7886,11 +7889,7 @@ class Game:
 
         # Apply mood effect
         if result.mood_effect != 0:
-            if hasattr(self, 'duck_store') and self.duck_store:
-                self.duck_store.change_need("social", result.mood_effect, "dream_result")
-                self.duck_store.sync_to_duck(self.duck)
-            else:
-                self.duck.needs.social = min(100, max(0, self.duck.needs.social + result.mood_effect))
+            self._change_need("social", result.mood_effect, "dream_result")
 
         # Apply XP
         if result.xp_earned > 0:
@@ -8390,11 +8389,7 @@ class Game:
                 self._on_level_up(new_level)
             
             # Apply mood bonus
-            if hasattr(self, 'duck_store') and self.duck_store:
-                self.duck_store.change_need("fun", rewards["mood_bonus"], "weather_activity")
-                self.duck_store.sync_to_duck(self.duck)
-            else:
-                self.duck.needs.fun = min(100, self.duck.needs.fun + rewards["mood_bonus"])
+            self._change_need("fun", rewards["mood_bonus"], "weather_activity")
 
             # Handle special drops
             if rewards["special_drop"]:
@@ -9144,10 +9139,7 @@ class Game:
                 self.duck_store.sync_to_duck(self.duck)
             else:
                 for need, change in event.effects.items():
-                    if hasattr(self.duck.needs, need):
-                        old_val = getattr(self.duck.needs, need)
-                        new_val = max(0, min(100, old_val + change))
-                        setattr(self.duck.needs, need, new_val)
+                    self._change_need(need, change, f"debug_event_{event_id}")
 
             # Start event animation if available
             if event.has_animation and event_id in ANIMATED_EVENTS:
@@ -9238,26 +9230,22 @@ class Game:
             self.duck_store.sync_to_duck(self.duck)
         else:
             if action == "max_all":
-                self.duck.needs.hunger = 100
-                self.duck.needs.energy = 100
-                self.duck.needs.fun = 100
-                self.duck.needs.cleanliness = 100
-                self.duck.needs.social = 100
+                self._set_all_needs(100, "debug_max_all")
                 self.renderer.show_message("# DEBUG: All needs set to 100%", duration=2)
             elif action == "hunger_0":
-                self.duck.needs.hunger = 0
+                self._set_need("hunger", 0, "debug_set")
                 self.renderer.show_message("# DEBUG: Hunger set to 0%", duration=2)
             elif action == "energy_0":
-                self.duck.needs.energy = 0
+                self._set_need("energy", 0, "debug_set")
                 self.renderer.show_message("# DEBUG: Energy set to 0%", duration=2)
             elif action == "fun_0":
-                self.duck.needs.fun = 0
+                self._set_need("fun", 0, "debug_set")
                 self.renderer.show_message("# DEBUG: Fun set to 0%", duration=2)
             elif action == "clean_0":
-                self.duck.needs.cleanliness = 0
+                self._set_need("cleanliness", 0, "debug_set")
                 self.renderer.show_message("# DEBUG: Cleanliness set to 0%", duration=2)
             elif action == "social_0":
-                self.duck.needs.social = 0
+                self._set_need("social", 0, "debug_set")
                 self.renderer.show_message("# DEBUG: Social set to 0%", duration=2)
 
         self._notify_overlay_closed(UIOverlay.DEBUG_MENU)
@@ -11209,11 +11197,7 @@ Core Systems Tested: {report.total_tests}
                 self.habitat.add_currency(coin_gain)
             
             if mood_bonus and self.duck:
-                if hasattr(self, 'duck_store') and self.duck_store:
-                    self.duck_store.change_need("fun", mood_bonus, "trick_performance")
-                    self.duck_store.sync_to_duck(self.duck)
-                else:
-                    self.duck.needs.fun = min(100, self.duck.needs.fun + mood_bonus)
+                self._change_need("fun", mood_bonus, "trick_performance")
 
             # Check achievements
             if result.get("perfect"):

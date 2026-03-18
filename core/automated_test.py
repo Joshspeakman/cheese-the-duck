@@ -410,12 +410,16 @@ class AutomatedGameTester:
                     return False
             self._test_with_timeout(test_pet, "Pet executes without error", category)
             
-            # Restore needs
-            self.game.duck.needs.hunger = original_needs['hunger']
-            self.game.duck.needs.energy = original_needs['energy']
-            self.game.duck.needs.fun = original_needs['fun']
-            self.game.duck.needs.cleanliness = original_needs['cleanliness']
-            self.game.duck.needs.social = original_needs['social']
+            # Restore needs (via DuckStore if available, otherwise direct)
+            if hasattr(self.game, '_set_need'):
+                for need, val in original_needs.items():
+                    self.game._set_need(need, val, "test_restore")
+            else:
+                self.game.duck.needs.hunger = original_needs['hunger']
+                self.game.duck.needs.energy = original_needs['energy']
+                self.game.duck.needs.fun = original_needs['fun']
+                self.game.duck.needs.cleanliness = original_needs['cleanliness']
+                self.game.duck.needs.social = original_needs['social']
             
     # ==================== SHOP SYSTEM TESTS ====================
     
