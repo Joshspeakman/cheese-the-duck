@@ -202,10 +202,11 @@ class SoundEngine:
         self._music_channel = None  # pygame Channel for current music
         self._music_cooldown_until: float = 0  # timestamp when cooldown expires
         self._event_music_end_time: float = 0  # timestamp when event music expires
-        # Audio directory
-        self._audio_dir = Path(__file__).parent / "assets"
+        # Audio directory — project root where audio files live
+        self._audio_dir = Path(__file__).parent.parent
         # Radio player instance (lazy-loaded)
         self._radio = None
+        self._radio_was_playing = None
         self._detect_capabilities()
 
     @classmethod
@@ -248,37 +249,71 @@ class SoundEngine:
         self._scan_audio_assets()
 
     def _scan_audio_assets(self):
-        """Scan the audio assets directory for WAV and music files."""
+        """Scan the audio directory for WAV and music files."""
         if not self._audio_dir.exists():
             return
 
-        # Scan for WAV sound effects
-        wav_dir = self._audio_dir / "sfx"
-        if wav_dir.exists():
-            for wav_file in wav_dir.glob("*.wav"):
-                name = wav_file.stem
-                self._available_wavs[name] = wav_file
-                logger.debug("Found WAV: %s", name)
+        # Name aliases: map friendly keys to actual file stems
+        _WAV_ALIASES = {
+            "single-quack-from-a-duck": "quack",
+        }
 
-        # Also check root audio dir
+        # Music file stems (WAV files that should be treated as music, not SFX)
+        _MUSIC_STEMS = {"Bell Breeze Loop", "sunny_day1", "sunny_day2"}
+        # WAV music files also accessible via play_wav_music (need to be in both dicts)
+        _WAV_MUSIC_STEMS = {"Title"}
+
+        # Scan for WAV files in root audio dir
         for wav_file in self._audio_dir.glob("*.wav"):
-            name = wav_file.stem
-            self._available_wavs[name] = wav_file
+            stem = wav_file.stem
+            if stem in _MUSIC_STEMS:
+                # Register as music only
+                self._available_music[wav_file.name] = wav_file
+                self._available_music[stem.lower()] = wav_file
+                logger.debug("Found music WAV: %s", stem)
+            elif stem in _WAV_MUSIC_STEMS:
+                # Register as both music and WAV (for play_wav_music)
+                self._available_music[wav_file.name] = wav_file
+                self._available_music[stem.lower()] = wav_file
+                self._available_wavs[stem.lower()] = wav_file
+                self._available_wavs[stem] = wav_file
+                logger.debug("Found WAV music: %s", stem)
+            else:
+                # Register as SFX under stem (lowercase) and any alias
+                key = stem.lower()
+                self._available_wavs[key] = wav_file
+                self._available_wavs[stem] = wav_file
+                if stem in _WAV_ALIASES:
+                    self._available_wavs[_WAV_ALIASES[stem]] = wav_file
+                logger.debug("Found WAV: %s", key)
 
-        # Scan for music files
+        # Scan sfx/ subdirectory if it exists
+        sfx_dir = self._audio_dir / "sfx"
+        if sfx_dir.exists():
+            for wav_file in sfx_dir.glob("*.wav"):
+                stem = wav_file.stem
+                self._available_wavs[stem.lower()] = wav_file
+                self._available_wavs[stem] = wav_file
+                if stem in _WAV_ALIASES:
+                    self._available_wavs[_WAV_ALIASES[stem]] = wav_file
+                logger.debug("Found SFX WAV: %s", stem)
+
+        # Scan for MP3/OGG music files
+        for ext in ('*.mp3', '*.ogg'):
+            for music_file in self._audio_dir.glob(ext):
+                self._available_music[music_file.name] = music_file
+                # Also register under lowercase stem for easy lookup
+                self._available_music[music_file.stem.lower()] = music_file
+                logger.debug("Found music: %s", music_file.name)
+
+        # Scan music/ subdirectory if it exists
         music_dir = self._audio_dir / "music"
         if music_dir.exists():
             for music_file in music_dir.glob("*.*"):
                 if music_file.suffix.lower() in ('.wav', '.mp3', '.ogg'):
-                    name = music_file.name  # Keep extension for matching
-                    self._available_music[name] = music_file
-                    logger.debug("Found music: %s", name)
-
-        # Also check root audio dir for music
-        for music_file in self._audio_dir.glob("*.mp3"):
-            self._available_music[music_file.name] = music_file
-        for music_file in self._audio_dir.glob("*.ogg"):
-            self._available_music[music_file.name] = music_file
+                    self._available_music[music_file.name] = music_file
+                    self._available_music[music_file.stem.lower()] = music_file
+                    logger.debug("Found music: %s", music_file.name)
 
     def play_background_music(self, track_name: str = None):
         """Play background music. Uses pygame streaming for MP3/OGG, or WAV player."""
@@ -845,12 +880,71 @@ class SoundEngine:
     def play_sound(self, sound_type):
         """Play a sound effect. Accepts SoundType enum or string.
 
-        Note: Terminal beep-based sound effects are disabled. This method
-        is kept for API compatibility but does nothing. Use play_wav() for
-        actual sound playback.
+        Uses pygame to generate synthesized tones from the SOUND_EFFECTS
+        definitions. Falls back to terminal beep methods if pygame is
+        unavailable.
         """
-        # Terminal beeps disabled - use WAV files instead via play_wav()
-        pass
+        if not self.enabled:
+            return
+
+        # Resolve string to SoundType enum
+        if isinstance(sound_type, str):
+            # Map string names to SoundType values
+            _STRING_MAP = {
+                "menu_move": SoundType.STEP,
+                "menu_select": SoundType.MUSIC_NOTE,
+                "collect": SoundType.COLLECT,
+                "discovery": SoundType.DISCOVER,
+                "craft_complete": SoundType.CRAFT_COMPLETE,
+                "build_complete": SoundType.BUILD_COMPLETE,
+                "build": SoundType.BUILD_COMPLETE,
+                "level_up": SoundType.LEVEL_UP,
+                "success": SoundType.LEVEL_UP,
+            }
+            sound_type = _STRING_MAP.get(sound_type)
+            if sound_type is None:
+                return
+
+        effects = SOUND_EFFECTS.get(sound_type)
+        if not effects:
+            return
+
+        # Try pygame sine-wave synthesis
+        if self._pygame_available:
+            def _play_tones():
+                try:
+                    import pygame
+                    import array
+                    import math
+                    sample_rate = 44100
+                    for freq, duration in effects:
+                        n_samples = int(sample_rate * duration)
+                        fade_len = min(int(n_samples * 0.1), 200)
+                        buf = array.array('h')  # signed short
+                        for i in range(n_samples):
+                            val = math.sin(2 * math.pi * freq * i / sample_rate)
+                            # Apply fade envelope
+                            if fade_len > 0:
+                                if i < fade_len:
+                                    val *= i / fade_len
+                                elif i >= n_samples - fade_len:
+                                    val *= (n_samples - 1 - i) / fade_len
+                            sample = int(val * 32767 * self.volume)
+                            buf.append(sample)  # left
+                            buf.append(sample)  # right
+                        sound = pygame.mixer.Sound(buffer=buf)
+                        sound.play()
+                        pygame.time.wait(int(duration * 1000))
+                except Exception:
+                    pass
+
+            thread = threading.Thread(target=_play_tones, daemon=True)
+            thread.start()
+            return
+
+        # Fallback to beep/bell methods
+        for freq, duration in effects:
+            self.play_tone(freq, duration)
 
     def play_melody(self, melody_name: str, loop: bool = False):
         """Play a melody. Disabled - use play_background_music() instead."""
