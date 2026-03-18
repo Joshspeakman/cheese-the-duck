@@ -490,6 +490,8 @@ class FestivalSystem:
         
         if reward:
             self.festival_rewards_collected.append(reward.name)
+            if len(self.festival_rewards_collected) > 100:
+                self.festival_rewards_collected = self.festival_rewards_collected[-100:]
             return True, f"(!) {activity.name} complete! +{activity.participation_points} points! Got: {reward.name}", reward
         
         return True, f"(!) {activity.name} complete! +{activity.participation_points} points!", None
@@ -520,6 +522,8 @@ class FestivalSystem:
         # Claim reward
         self.current_festival_progress.rewards_claimed.append(reward.name)
         self.festival_rewards_collected.append(reward.name)
+        if len(self.festival_rewards_collected) > 100:
+            self.festival_rewards_collected = self.festival_rewards_collected[-100:]
         
         return True, f"[#] Claimed: {reward.name}!", reward
     

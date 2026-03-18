@@ -99,6 +99,10 @@ class PlayerModel:
     MAX_PROMISES = 50  # Keep last 50 promises
     MAX_OBSERVATIONS = 20  # Max pending observations
     MAX_STATEMENT_INDEX_PER_TOPIC = 50  # Max statements per topic index
+    MAX_FACTS = 200  # Max total fact entries
+    MAX_TOPICS_DISCUSSED = 200  # Max topic keys
+    MAX_ACTION_BY_MOOD_KEYS = 50  # Max mood keys in action_by_mood
+    MAX_ACTION_BY_TIME_ACTIONS = 30  # Max action keys per time slot
     
     def __init__(self):
         # Core identity
@@ -304,6 +308,14 @@ class PlayerModel:
                     existing.contradicted = True
                     existing.source = source
         else:
+            # Cap facts dict before adding new entry
+            if len(self.facts) >= self.MAX_FACTS:
+                # Evict lowest-confidence, least-confirmed facts
+                evict_key = min(
+                    self.facts,
+                    key=lambda k: (self.facts[k].times_confirmed, self.facts[k].confidence)
+                )
+                del self.facts[evict_key]
             self.facts[fact_type] = PlayerFact(
                 fact_type=fact_type,
                 value=value,
@@ -528,6 +540,13 @@ class PlayerModel:
         obs, _ = self._pending_observations.pop(0)
         return obs
     
+    def _add_observation(self, observation: str, priority: float):
+        """Add an observation, capping the list at MAX_OBSERVATIONS."""
+        self._pending_observations.append((observation, priority))
+        if len(self._pending_observations) > self.MAX_OBSERVATIONS:
+            self._pending_observations.sort(key=lambda x: x[1], reverse=True)
+            self._pending_observations = self._pending_observations[:self.MAX_OBSERVATIONS]
+    
     def _generate_visit_observations(self, now: datetime):
         """Generate observations about this visit."""
         # Long absence
@@ -540,12 +559,12 @@ class PlayerModel:
                     f"{days} days. I had started to think you'd found a better duck. Have you?",
                     f"It's been {days} days. The pond was very quiet. I talked to a frog. It wasn't the same.",
                 ]
-                self._pending_observations.append((random.choice(obs), 0.9))
+                self._add_observation(random.choice(obs), 0.9)
             elif last_gap > 24:
-                self._pending_observations.append((
+                self._add_observation(
                     "You were gone a while. Not that I track these things. But I do.",
                     0.5
-                ))
+                )
         
         # Unusual time
         peak_hour = max(self.visit_pattern.hour_counts.items(), key=lambda x: x[1], default=(12, 0))[0]
@@ -554,7 +573,7 @@ class PlayerModel:
                 f"You're here at {now.hour}:00? That's not your usual time. Everything alright?",
                 "This is... an unusual hour for you. I notice these things.",
             ]
-            self._pending_observations.append((random.choice(obs), 0.4))
+            self._add_observation(random.choice(obs), 0.4)
     
     def _adjust_trait(self, trait: PlayerTraitAxis, delta: float):
         """Adjust an inferred trait value."""
@@ -668,6 +687,36 @@ class PlayerModel:
             # Keep highest priority observations
             self._pending_observations.sort(key=lambda x: x[1], reverse=True)
             self._pending_observations = self._pending_observations[:self.MAX_OBSERVATIONS]
+        
+        # Limit facts dict
+        if len(self.facts) > self.MAX_FACTS:
+            sorted_facts = sorted(
+                self.facts.items(),
+                key=lambda kv: (kv[1].times_confirmed, kv[1].confidence)
+            )
+            for key, _ in sorted_facts[:len(self.facts) - self.MAX_FACTS]:
+                del self.facts[key]
+        
+        # Limit topics_discussed
+        if len(self.topics_discussed) > self.MAX_TOPICS_DISCUSSED:
+            sorted_topics = sorted(self.topics_discussed.items(), key=lambda kv: kv[1])
+            for key, _ in sorted_topics[:len(self.topics_discussed) - self.MAX_TOPICS_DISCUSSED]:
+                del self.topics_discussed[key]
+        
+        # Limit action_by_mood keys
+        bp = self.behavior_pattern
+        if len(bp.action_by_mood) > self.MAX_ACTION_BY_MOOD_KEYS:
+            sorted_moods = sorted(bp.action_by_mood.items(), key=lambda kv: sum(kv[1].values()))
+            for key, _ in sorted_moods[:len(bp.action_by_mood) - self.MAX_ACTION_BY_MOOD_KEYS]:
+                del bp.action_by_mood[key]
+        
+        # Limit action_by_time — cap actions per time slot
+        for hour in list(bp.action_by_time.keys()):
+            actions = bp.action_by_time[hour]
+            if len(actions) > self.MAX_ACTION_BY_TIME_ACTIONS:
+                sorted_actions = sorted(actions.items(), key=lambda kv: kv[1])
+                for key, _ in sorted_actions[:len(actions) - self.MAX_ACTION_BY_TIME_ACTIONS]:
+                    del actions[key]
     
     def _rebuild_statement_index(self):
         """Rebuild the statement topic index after trimming statements."""

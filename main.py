@@ -157,6 +157,7 @@ def check_dependencies():
 def main():
     """Main entry point."""
     logger = None
+    game = None
 
     try:
         # Initialize logger first
@@ -208,6 +209,11 @@ def main():
         try:
             from dialogue.llm_behavior import get_behavior_controller
             get_behavior_controller().shutdown()
+        except Exception:
+            pass
+        try:
+            if game and hasattr(game, '_talk_executor'):
+                game._talk_executor.shutdown(wait=False)
         except Exception:
             pass
         if logger:

@@ -113,6 +113,7 @@ class ConversationMemory:
     MAX_SUMMARIES = 50  # Keep last 50 period summaries
     MAX_NOTABLE_QUOTES = 100  # Keep last 100 notable quotes
     MAX_INDEX_ENTRIES_PER_KEY = 50  # Max entries per topic/fact/date
+    MAX_INDEX_KEYS = 500  # Max number of distinct topic/fact keys
     MAX_UNANSWERED_QUESTIONS = 20  # Keep last 20 unanswered questions
     MAX_CALLBACKS = 50  # Keep last 50 callback items
     
@@ -617,9 +618,21 @@ class ConversationMemory:
             if len(self.topic_index[topic]) > self.MAX_INDEX_ENTRIES_PER_KEY:
                 self.topic_index[topic] = self.topic_index[topic][-self.MAX_INDEX_ENTRIES_PER_KEY:]
         
+        # Cap total number of topic keys — evict keys with fewest entries
+        if len(self.topic_index) > self.MAX_INDEX_KEYS:
+            sorted_keys = sorted(self.topic_index.keys(), key=lambda k: len(self.topic_index[k]))
+            for key in sorted_keys[:len(self.topic_index) - self.MAX_INDEX_KEYS]:
+                del self.topic_index[key]
+        
         for fact in list(self.fact_index.keys()):
             if len(self.fact_index[fact]) > self.MAX_INDEX_ENTRIES_PER_KEY:
                 self.fact_index[fact] = self.fact_index[fact][-self.MAX_INDEX_ENTRIES_PER_KEY:]
+        
+        # Cap total number of fact keys — evict keys with fewest entries
+        if len(self.fact_index) > self.MAX_INDEX_KEYS:
+            sorted_keys = sorted(self.fact_index.keys(), key=lambda k: len(self.fact_index[k]))
+            for key in sorted_keys[:len(self.fact_index) - self.MAX_INDEX_KEYS]:
+                del self.fact_index[key]
         
         # Limit date index - only keep last 30 days
         now = datetime.now()

@@ -1560,7 +1560,7 @@ class Game:
         # ── 2. Prune old history & compute diminishing-returns step ───
         history = self._item_use_history.setdefault(category, [])
         cutoff = now - ITEM_DIMINISHING_WINDOW
-        history[:] = [t for t in history if t > cutoff]
+        history[:] = [t for t in history if t > cutoff][-50:]
 
         use_index = len(history)     # 0-based count of uses in the window
         dim_steps = ITEM_DIMINISHING_STEPS
@@ -2877,8 +2877,9 @@ class Game:
             "pet": "times_petted",
             "sleep": "times_slept",
         }
-        stat_key = stat_keys.get(interaction, f"times_{interaction}")
-        self._statistics[stat_key] = self._statistics.get(stat_key, 0) + 1
+        stat_key = stat_keys.get(interaction)
+        if stat_key:
+            self._statistics[stat_key] = self._statistics.get(stat_key, 0) + 1
 
         # Track for bread_obsessed secret (10 feeds in one session)
         if interaction == "feed":
@@ -2922,7 +2923,7 @@ class Game:
             self.diary_manager.on_relationship_up(level, level_name)
 
         # Record first interactions in diary
-        if self._statistics[stat_key] == 1:
+        if stat_key and self._statistics.get(stat_key) == 1:
             if interaction == "pet":
                 self.diary.record_relationship_change("first_pet")
 
@@ -5591,6 +5592,8 @@ class Game:
             "times_petted": 0,
             "times_slept": 0,
             "conversations": 0,
+            "item_interactions": 0,
+            "facts_shown": 0,
         }
         self._state = "playing"
         self._last_tick = time.time()
@@ -6390,6 +6393,10 @@ class Game:
 
         # Stop all audio (radio subprocess, music, mixer)
         self._stop_all_audio()
+
+        # Shutdown talk executor thread pool
+        if hasattr(self, '_talk_executor'):
+            self._talk_executor.shutdown(wait=False)
 
         # Clean up Python cache directories
         self._cleanup_pycache()
