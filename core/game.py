@@ -4809,14 +4809,16 @@ class Game:
 
         # Set cheese-away state (duck goes, player stays)
         self._cheese_away = True
-        self._cheese_away_biome = destination.biome.value
+        self._cheese_away_biome = destination.name
         self._cheese_away_destination = destination.name
         self._cheese_away_since = time.time()
+
+        # Friend invitation BEFORE obscuring renderer (so invite text is visible)
+        self._try_invite_friend_on_travel(destination)
+
+        # Now enable obscured chat on the renderer
         self.renderer._cheese_away = True
         self.renderer._cheese_away_biome = destination.name
-
-        # 50/50 friend invitation
-        self._try_invite_friend_on_travel(destination)
 
     def _try_invite_friend_on_travel(self, destination):
         """Maybe invite a friend to travel with Cheese."""
@@ -4860,6 +4862,10 @@ class Game:
             from dialogue.travel_dialogue import get_return_line
             msg = get_return_line(origin=self._cheese_away_destination)
 
+        # Clear renderer obscuring BEFORE showing return message
+        self.renderer._cheese_away = False
+        self.renderer._cheese_away_biome = ""
+
         self.renderer.show_message(msg, duration=5.0, category="duck")
 
         # Record in memory
@@ -4877,8 +4883,6 @@ class Game:
         self._cheese_away_destination = ""
         self._cheese_away_since = 0.0
         self._cheese_away_friend = ""
-        self.renderer._cheese_away = False
-        self.renderer._cheese_away_biome = ""
 
     def _simulate_offline_world(self, hours_away: float) -> list:
         """Simulate world events that happened while the game was closed.
