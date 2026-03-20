@@ -802,7 +802,6 @@ class AutomatedGameTester:
         
         # Test menu open flags exist
         menu_flags = [
-            '_main_menu_open',
             '_crafting_menu_open',
             '_building_menu_open',
             '_areas_menu_open',
@@ -821,7 +820,6 @@ class AutomatedGameTester:
             
         # Test menu show methods exist (check both game and renderer)
         menu_methods = [
-            ('_show_main_menu', 'Main Menu'),
             ('_show_crafting_menu', 'Crafting Menu'),
             ('_show_building_menu', 'Building Menu'),
             ('_show_exploration_menu', 'Exploration Menu'),

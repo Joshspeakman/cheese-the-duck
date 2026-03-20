@@ -22,9 +22,6 @@ import time
 import threading
 
 from dialogue.diary import DuckDiary, DiaryEntry, DiaryEntryType, ENTRY_TEMPLATES
-from dialogue.diary_enhanced import (
-    EnhancedDiarySystem, EmotionCategory, EmotionLog
-)
 
 
 # ── Trigger types ─────────────────────────────────────────────────────
@@ -410,18 +407,16 @@ class DiaryManager:
         # ── References (set by Game during init) ──────────────────────
         self._duck = None          # Duck instance
         self._diary = None         # DuckDiary instance
-        self._enhanced = None      # EnhancedDiarySystem instance
         self._duck_brain = None    # DuckBrain for LLM access
         self._game_ref = None      # Weak reference to Game for context
         self._llm_lock = threading.Lock()
 
     # ── Setup ─────────────────────────────────────────────────────────
-    def bind(self, duck, diary: DuckDiary, enhanced: EnhancedDiarySystem,
+    def bind(self, duck, diary: DuckDiary, enhanced=None,
              duck_brain=None, game=None):
         """Bind to game systems. Call once after Game.__init__."""
         self._duck = duck
         self._diary = diary
-        self._enhanced = enhanced
         self._duck_brain = duck_brain
         self._game_ref = game
         self._last_session_time = time.time()

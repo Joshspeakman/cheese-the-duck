@@ -109,10 +109,9 @@ from ui.event_animations import (
     EventAnimationState, BreezeAnimator
 )
 from ui.badges import BadgesSystem, badges_system
-from ui.mood_visuals import MoodVisualEffects, mood_visual_effects
 from ui.reactions import DuckReactionController, init_reaction_controller
-from ui.menu_selector import HierarchicalMenuSelector, MasterMenuPanel
-from ui.menu_structure import build_main_menu_categories, build_master_menu_tree, MENU_ACTIONS
+from ui.menu_selector import MasterMenuPanel
+from ui.menu_structure import build_master_menu_tree, MENU_ACTIONS
 
 # Settings and menu systems
 from core.settings import settings_manager, get_settings, load_settings, save_settings
@@ -231,11 +230,7 @@ class Game:
         self._quests_menu = MenuSelector("QUESTS", close_keys=['KEY_ESCAPE', 'o'], items_per_page=8)
         self._weather_menu = MenuSelector("WEATHER ACTIVITIES", close_keys=['KEY_ESCAPE', 'w'], items_per_page=8)
 
-        # Main hierarchical menu (TAB to open) - DEPRECATED, replaced by master_menu
-        self._main_menu = HierarchicalMenuSelector("Main Menu")
-        self._main_menu.set_categories(build_main_menu_categories())
-        
-        # NEW: Master menu panel (always visible in side panel)
+        # Master menu panel (always visible in side panel)
         self.master_menu = MasterMenuPanel(self)
         self.master_menu.set_menu_tree(build_master_menu_tree())
 
@@ -395,7 +390,6 @@ class Game:
         self.statistics: StatisticsSystem = statistics_system
         self.day_night: DayNightSystem = day_night_system
         self.badges: BadgesSystem = badges_system
-        self.mood_visuals: MoodVisualEffects = mood_visual_effects
         
         # Audio Systems
         self.ambient: AmbientSoundSystem = ambient_sound_system
@@ -615,7 +609,6 @@ class Game:
             "TRADING":         lambda k: self._handle_trading_input(k),
             "ENHANCED_DIARY":  lambda k: self._handle_enhanced_diary_input(k),
             "FESTIVAL":        lambda k: self._handle_festival_input(k),
-            "MAIN_MENU":       lambda k: self._handle_main_menu_input(k),
             "DEBUG_MENU":      lambda k: self._handle_debug_input(k),
             "SETTINGS":        lambda k: self._handle_settings_input(k),
         }
@@ -1104,37 +1097,6 @@ class Game:
             self._notify_overlay_closed(UIOverlay.QUESTS)
             self.renderer.dismiss_message()
             return
-
-    def _handle_main_menu_input(self, key):
-        """Handle input while main menu is open."""
-        key_str = str(key).lower() if not key.is_sequence else str(key)
-        key_name = key.name if hasattr(key, 'name') else ""
-
-        # Let the hierarchical menu handle the key
-        handled = self._main_menu.handle_key(key_str, key_name)
-
-        if self._main_menu.was_action_selected():
-            # An action was selected - execute it
-            action_id = self._main_menu.get_selected_action()
-            self._notify_overlay_closed(UIOverlay.MAIN_MENU)
-            self.renderer.dismiss_message()
-            self._execute_menu_action(action_id)
-            return
-
-        if self._main_menu.was_cancelled():
-            # Menu was closed
-            self._notify_overlay_closed(UIOverlay.MAIN_MENU)
-            self.renderer.dismiss_message()
-            return
-
-        if handled:
-            # Navigation occurred - update display
-            self._update_main_menu_display()
-
-    def _update_main_menu_display(self):
-        """Update the main menu display."""
-        lines = self._main_menu.get_display_lines(width=50)
-        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _execute_menu_action(self, action_id: str):
         """Execute a menu action by its ID."""
@@ -3451,9 +3413,6 @@ class Game:
         # Update event animations (butterfly, bird, etc.)
         self._update_event_animations()
 
-        # mood_visuals.update() disabled — system is defined but not
-        # connected to the renderer; calling it wastes CPU every frame.
-
         # Update sound effects (cleanup expired sounds)
         self.sound_effects.update(current_time)
 
@@ -5374,8 +5333,6 @@ class Game:
             self._update_festival_menu_display()
         elif self.ui_state.is_open(UIOverlay.SETTINGS):
             self._render_settings_menu()
-        elif self.ui_state.is_open(UIOverlay.MAIN_MENU):
-            self._update_main_menu_display()
         elif self.ui_state.is_open(UIOverlay.DEBUG_MENU):
             self._show_debug_menu()
 
@@ -5964,9 +5921,6 @@ class Game:
         else:
             self.badges = BadgesSystem()
 
-        # Load mood visuals (stateless, no save needed)
-        self.mood_visuals = MoodVisualEffects()
-
         # Load ambient sound system (mostly stateless)
         self.ambient = AmbientSoundSystem()
 
@@ -6517,7 +6471,6 @@ class Game:
         self.statistics = StatisticsSystem()
         self.day_night = DayNightSystem()
         self.badges = BadgesSystem()
-        self.mood_visuals = MoodVisualEffects()
         self.ambient = AmbientSoundSystem()
         self.sound_effects = SoundEffectSystem()
         self.enhanced_diary = EnhancedDiarySystem()
@@ -9357,6 +9310,7 @@ class Game:
                 self.renderer.show_message(f"# DEBUG: Advanced time by {hours // 24} day(s)", duration=2)
             else:
                 self.renderer.show_message(f"# DEBUG: Advanced time by {hours} hour(s)", duration=2)
+            self.duck_store.sync_from_duck(self.duck)
         elif action == "set_dawn":
             self.renderer.show_message("# DEBUG: Time display simulating dawn (5 AM)", duration=2)
         elif action == "set_noon":
@@ -12356,25 +12310,6 @@ Core Systems Tested: {report.total_tests}
         if photo:
             self.renderer.show_message(f"[#] Photo saved to scrapbook!", duration=3.0)
             duck_sounds.play()
-            
-            # Also log to enhanced diary photos
-            from dialogue.diary_enhanced import PhotoType
-            photo_type_map = {
-                "happy": PhotoType.SELFIE,
-                "content": PhotoType.COZY,
-                "excited": PhotoType.ADVENTURE,
-                "sleepy": PhotoType.COZY,
-                "hungry": PhotoType.FOOD,
-                "playful": PhotoType.SILLY,
-                "curious": PhotoType.ADVENTURE,
-            }
-            diary_photo_type = photo_type_map.get(mood, PhotoType.SELFIE)
-            self.enhanced_diary.take_photo(
-                photo_type=diary_photo_type,
-                caption=f"Snapshot at {location}",
-                location=location,
-                mood=mood
-            )
         else:
             self.renderer.show_message("Could not take photo", duration=2.0)
 

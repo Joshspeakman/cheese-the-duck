@@ -1,6 +1,6 @@
 """
 Enhanced Diary System - Extends the base diary with more features.
-Adds emotional tracking, photo attachments, prompts, and deeper narrative.
+Adds emotional tracking, dream journaling, life chapters, and deeper narrative.
 """
 from dataclasses import dataclass, field
 from datetime import datetime, date, timedelta
@@ -21,28 +21,6 @@ class EmotionCategory(Enum):
     CONTENTMENT = "contentment"
 
 
-class DiaryPromptType(Enum):
-    """Types of diary writing prompts."""
-    REFLECTION = "reflection"
-    GRATITUDE = "gratitude"
-    DREAM = "dream"
-    GOAL = "goal"
-    MEMORY = "memory"
-    LETTER = "letter"
-    WISHLIST = "wishlist"
-
-
-class PhotoType(Enum):
-    """Types of diary photos (ASCII representations)."""
-    SELFIE = "selfie"
-    SCENERY = "scenery"
-    FRIEND = "friend"
-    FOOD = "food"
-    ADVENTURE = "adventure"
-    COZY = "cozy"
-    SILLY = "silly"
-
-
 @dataclass
 class EmotionLog:
     """A logged emotion moment."""
@@ -51,28 +29,6 @@ class EmotionLog:
     timestamp: str
     trigger: Optional[str] = None
     notes: Optional[str] = None
-
-
-@dataclass
-class DiaryPhoto:
-    """An ASCII photo in the diary."""
-    photo_id: str
-    photo_type: PhotoType
-    ascii_art: List[str]
-    caption: str
-    date_taken: str
-    location: Optional[str] = None
-    mood: Optional[str] = None
-
-
-@dataclass
-class DiaryPrompt:
-    """A writing prompt for the diary."""
-    prompt_id: str
-    prompt_type: DiaryPromptType
-    question: str
-    response: Optional[str] = None
-    date_answered: Optional[str] = None
 
 
 @dataclass
@@ -98,340 +54,6 @@ class DreamLog:
     interpretation: Optional[str] = None
     recurring: bool = False
 
-
-# ASCII photo templates
-PHOTO_TEMPLATES = {
-    PhotoType.SELFIE: [
-        [
-            "  +---------+  ",
-            "  |  [#]     |  ",
-            "  |   d    |  ",
-            "  |  *pose* |  ",
-            "  +---------+  ",
-        ],
-        [
-            "  +=========+  ",
-            "  | SELFIE! |  ",
-            "  |   *d*  |  ",
-            "  |  smile! |  ",
-            "  +=========+  ",
-        ],
-    ],
-    PhotoType.SCENERY: [
-        [
-            "  +---------+  ",
-            "  | (*)  *  |  ",
-            "  |  /\\A  |  ",
-            "  |d ~~~   |  ",
-            "  +---------+  ",
-        ],
-        [
-            "  +=========+  ",
-            "  |  -*-     |  ",
-            "  |  ~~~  |  ",
-            "  |    d   |  ",
-            "  +=========+  ",
-        ],
-    ],
-    PhotoType.FRIEND: [
-        [
-            "  +---------+  ",
-            "  | FRIENDS |  ",
-            "  | d  d  |  ",
-            "  |  <3 BFF <3 |  ",
-            "  +---------+  ",
-        ],
-    ],
-    PhotoType.FOOD: [
-        [
-            "  +---------+  ",
-            "  |  YUM!   |  ",
-            "  |  BW   |  ",
-            "  | d *nom* |  ",
-            "  +---------+  ",
-        ],
-    ],
-    PhotoType.ADVENTURE: [
-        [
-            "  +---------+  ",
-            "  |ADVENTURE|  ",
-            "  | [?]  (+)  |  ",
-            "  |  d->->   |  ",
-            "  +---------+  ",
-        ],
-    ],
-    PhotoType.COZY: [
-        [
-            "  +---------+  ",
-            "  |  COZY   |  ",
-            "  | c S   |  ",
-            "  |   dz  |  ",
-            "  +---------+  ",
-        ],
-    ],
-    PhotoType.SILLY: [
-        [
-            "  +---------+  ",
-            "  | DERP!   |  ",
-            "  |   @_@   |  ",
-            "  |   d    |  ",
-            "  +---------+  ",
-        ],
-    ],
-}
-
-# Writing prompts
-DIARY_PROMPTS = {
-    DiaryPromptType.REFLECTION: [
-        "What made today special?",
-        "What did you learn today?",
-        "How have you grown this week?",
-        "What challenges did you face today?",
-        "What are you proud of right now?",
-        "What surprised you about yourself today?",
-        "What would you do differently if you could redo today?",
-        "What moment from today will you remember?",
-        "What was the hardest part of your day?",
-        "How are you different from who you were a month ago?",
-        "What did you notice that you usually overlook?",
-        "What thought kept coming back to you today?",
-        "What did you do today that your past self would be proud of?",
-        "What's one thing you understood today that you didn't yesterday?",
-        "What part of today felt most like 'you'?",
-        "What did you avoid today, and why?",
-        "What would today look like if you described it to a stranger?",
-        "What's one thing that went differently than you expected?",
-        "If today were a chapter in a book, what would the title be?",
-        "What conversation—real or imagined—occupied your mind today?",
-        "What's something you said today that you actually meant?",
-        "What would today look like from someone else's perspective?",
-        "What pattern in your life are you just now noticing?",
-        "What did you do on autopilot today that deserves more attention?",
-        "What feeling did you push away today instead of sitting with?",
-        "What's one thing you did today just because you wanted to?",
-        "What would you tell yourself at the start of today, knowing how it ended?",
-    ],
-    DiaryPromptType.GRATITUDE: [
-        "What are three things you're grateful for?",
-        "Who made you smile today?",
-        "What small joy did you experience?",
-        "What comfort do you appreciate most?",
-        "What about your home makes you happy?",
-        "What food are you thankful for today? (Bread is always acceptable.)",
-        "What sound made you feel peaceful?",
-        "Who do you wish you could thank right now?",
-        "What part of your routine do you secretly love?",
-        "What's something you take for granted that's actually amazing?",
-        "What made you feel safe today?",
-        "What's one thing about your pond that you'd miss if it were gone?",
-        "What's the most reliable thing in your life right now?",
-        "Who showed up for you recently without being asked?",
-        "What ability do you have that you're thankful for?",
-        "What moment today would you save in a jar if you could?",
-        "What's something boring that you're secretly grateful for?",
-        "What comfort did you not appreciate until now?",
-        "What's one thing about today's weather that was actually kind of nice?",
-        "Who in your life asks nothing of you but still shows up?",
-        "What's a food you had today that you're glad exists?",
-        "What's something your body did today without you even thinking about it?",
-        "What problem do you NOT have right now that you're thankful for?",
-        "What's a sound you heard today that made the world feel okay?",
-        "What's something free that brought you joy today?",
-        "What part of your routine secretly makes you feel safe?",
-        "What's a texture that makes you feel calm?",
-        "What's something you saw today that you're glad you noticed?",
-        "What's one thing that worked today without you having to try?",
-        "Who makes your world smaller in a good way?",
-        "What did the weather do for you today, even if it wasn't trying?",
-        "What's a skill you have that you forget to appreciate?",
-        "What's something ugly or imperfect that you love anyway?",
-        # ── Round 3: More gratitude prompts ────────────────────────────
-        "What's a sound you heard today that you're glad exists?",
-        "What part of your body worked well today without you asking it to?",
-        "What's a boring thing in your life that's actually a luxury?",
-        "Who's someone you've never thanked but should?",
-        "What mistake are you grateful for because of where it led?",
-        "What's something you use every day that someone else made with care?",
-        "What's a view you see so often you've stopped appreciating it?",
-        "What did the world give you today that it didn't have to?",
-    ],
-    DiaryPromptType.DREAM: [
-        "If you could go anywhere, where would it be?",
-        "What's your biggest dream?",
-        "If you could fly, where would you go first?",
-        "What would your perfect day look like?",
-        "If you could meet anyone, who would it be?",
-        "If you woke up in a different body, what would you do first?",
-        "What does your ideal pond look like?",
-        "If you could talk to any animal, which one?",
-        "What would you build if you had unlimited resources?",
-        "If time stopped for everyone but you, what would you do?",
-        "What world from a story would you want to visit?",
-        "If you could have any superpower, what would you choose and why?",
-        "What would your life look like if you had zero fear?",
-        "If you could live in any time period, which one?",
-        "What would you do with an entire day where nothing could go wrong?",
-        "If you could send a message to every duck in the world, what would it say?",
-        "If the pond had no edges, where would you float to first?",
-        "What impossible thing do you secretly believe might happen someday?",
-        "If you could wake up tomorrow with one new ability, what would it be?",
-        "What does your perfect morning look like, down to every detail?",
-        "If the pond had no limits, what would you build beside it?",
-        "What would you do if you were invisible for one day?",
-        "If you could live inside any dream you've had, which one?",
-        "What's a place that doesn't exist that you wish did?",
-        "If you could give one gift to every duck in the world, what would it be?",
-        "What would your life look like if every day were exactly like your best day?",
-        "If you could have a conversation with any version of yourself, which age?",
-        "What would you create if you had no fear of failure?",
-        "If you could redesign the pond from scratch, what would it include?",
-        "What adventure would you go on if someone else handled the scary parts?",
-        "If you could bottle a moment and open it whenever you wanted, which moment?",
-        "What would your dream day smell like?",
-        "If the stars rearranged into a message just for you, what would it say?",
-    ],
-    DiaryPromptType.GOAL: [
-        "What do you want to achieve this week?",
-        "What new thing do you want to try?",
-        "How do you want to grow?",
-        "What skill do you want to improve?",
-        "What habit do you want to build?",
-        "What fear do you want to face?",
-        "What relationship do you want to strengthen?",
-        "What bad habit do you want to leave behind?",
-        "What would make you prouder of yourself?",
-        "What's one small step you can take tomorrow?",
-        "What would you attempt if you knew no one was watching?",
-        "What do you want to be known for?",
-        "What's one thing you keep putting off that would make life better?",
-        "What boundary do you want to set this week?",
-        "What's something you want to try even though it might not work?",
-        "What would make you proud of this week when it's over?",
-        "What conversation are you avoiding that might make things better?",
-        "What's one thing you could stop doing that would improve your life?",
-        "What would you practice every day if you knew it would pay off?",
-        "What's the smallest possible step toward something you want?",
-        "What would you do more of if nobody judged you?",
-        "What's a compliment you want to be true that isn't yet?",
-        "What are you tolerating that you could actually change?",
-        "What would make you feel braver tomorrow?",
-        "What would you do differently if you cared less about what others think?",
-        "What relationship in your life needs the most attention right now?",
-        "What's one thing you could forgive yourself for this week?",
-        "What area of your life are you coasting in that deserves real effort?",
-        "What would your life look like with one more hour in the day?",
-        "What skill would future-you be glad you started learning today?",
-        "What's one promise you want to make to yourself and actually keep?",
-        # ── Round 3: More goal prompts ─────────────────────────────────
-        "What would you build if you had unlimited time?",
-        "What's a habit you admire in someone else that you want to adopt?",
-        "What scares you just enough to be exciting?",
-        "What would you do more of if you trusted yourself more?",
-        "What part of your routine deserves an upgrade?",
-        "What would your life look like in a year if everything went well?",
-        "What kindness do you want to practice more?",
-        "What do you keep almost doing that you should just do?",
-    ],
-    DiaryPromptType.MEMORY: [
-        "What's your earliest happy memory?",
-        "What's the best day you remember?",
-        "What's a funny moment you'll never forget?",
-        "What's the kindest thing anyone did for you?",
-        "What adventure do you remember most?",
-        "What smell brings back a strong memory?",
-        "What's a memory that still makes you laugh?",
-        "What's a moment you wish you could relive?",
-        "What's the bravest thing you ever did?",
-        "What memory do you think about before falling asleep?",
-        "What's a small moment that turned out to matter a lot?",
-        "What's the most peaceful moment you can remember?",
-        "What's a memory that always makes you feel warm inside?",
-        "When was the last time you were truly surprised?",
-        "What's a moment where everything felt exactly right?",
-        "What sound from the past do you still hear sometimes?",
-        "What's a memory you'd want to show someone who doesn't know you?",
-        "What's the most ordinary moment that turned out to matter?",
-        "What's a meal you remember not because of the food but because of the company?",
-        "What's the youngest memory you can access?",
-        "What's a place you used to go that you can't go back to?",
-        "What's something someone said to you years ago that you still carry?",
-        "When was the last time you laughed so hard it hurt?",
-        "What's a scent that unlocks a specific moment in your past?",
-        "What's a goodbye you still think about?",
-        "What's a taste that takes you back to a specific time and place?",
-        "What's a moment of courage you had that nobody else knows about?",
-        "When was the last time you felt completely safe?",
-        "What's a conversation you replay in your mind sometimes?",
-        "What memory makes you proud of who you used to be?",
-        "What's the most beautiful thing you've ever seen, and where were you?",
-        "What's a promise someone kept that meant more than they knew?",
-    ],
-    DiaryPromptType.LETTER: [
-        "Write a letter to your future self.",
-        "Write a thank you note to your human.",
-        "Write a letter to your past self.",
-        "Write a note to a friend.",
-        "Write about why you matter.",
-        "Write a letter to someone you miss.",
-        "Write a letter to the pond.",
-        "Write a note you'd want to find in a bottle.",
-        "Write to the person you want to become.",
-        "Write a letter forgiving yourself for something.",
-        "Write a letter to the version of you that was having the worst day.",
-        "Write a thank-you note to someone who'll never read it.",
-        "Write a note to the next duck who'll live at this pond.",
-        "Write a letter to the sky. Tell it what you think of its work.",
-        "Write a letter to bread. Be honest about your feelings.",
-        "Write to someone you argued with. Say what you wish you'd said.",
-        "Write a letter to the rain. Thank it or complain. Your choice.",
-        "Write a letter to your favorite food. Be honest about the relationship.",
-        "Write a note to yourself for the next bad day.",
-        "Write a letter to someone you've never met but think about sometimes.",
-        "Write to the moon. Ask it something you've always wondered.",
-        "Write a letter to the version of you that exists in other people's memories.",
-        "Write a letter to silence. Tell it what you hear when it's around.",
-        "Write a thank-you note to your pond. List what it's given you.",
-        "Write a letter to the first friend you ever made.",
-        "Write a message to the duck you'll be in a year.",
-        "Write a letter to your fear. Tell it you see it.",
-        "Write to the wind. Ask it where it's been.",
-        "Write a letter to yesterday. Tell it what it missed.",
-        "Write a note to your future self about what matters right now.",
-    ],
-    DiaryPromptType.WISHLIST: [
-        "What three wishes would you make?",
-        "What would you put on your bucket list?",
-        "What experiences do you want to have?",
-        "What would make next month amazing?",
-        "What do you hope for?",
-        "What would you wish for someone you love?",
-        "If you could change one thing about the world, what?",
-        "What invention do you wish existed?",
-        "What's on your dream menu? (Bread doesn't count. Just kidding. Bread always counts.)",
-        "What would you do if you knew you couldn't fail?",
-        "What would you add to the pond if you could add anything?",
-        "If you could relive one perfect day, which would it be?",
-        "What do you wish someone would say to you right now?",
-        "What's one thing you wish you could tell every duckling?",
-        "If you had a magic quack that granted one wish, what would you quack for?",
-        "What would make tomorrow the best day of your life?",
-        "What's something you'd love to try but haven't had the courage?",
-        "What would you add to the world if you could add anything at all?",
-        "What's a sound you wish you could hear right now?",
-        "If you could bottle one feeling and keep it forever, which feeling?",
-        "What's one thing you'd want every duck to experience at least once?",
-        "What would the perfect gift for you look like?",
-        "If tomorrow could be any kind of day, what kind would you pick?",
-        "What's something that doesn't exist yet but absolutely should?",
-        "What would you ask for if you knew the answer would be yes?",
-        "What experience do you keep postponing that you should just do?",
-        "What would your perfect shelter look like?",
-        "If you could master one thing overnight, what would it be?",
-        "What's a place you've imagined but never been to?",
-        "What conversation do you wish you could have?",
-        "What would you grow in a magic garden?",
-    ],
-}
 
 # Dream symbols and interpretations
 DREAM_SYMBOLS = {
@@ -506,16 +128,12 @@ class EnhancedDiarySystem:
     
     def __init__(self):
         self.emotion_logs: List[EmotionLog] = []
-        self.photos: List[DiaryPhoto] = []
-        self.prompts: List[DiaryPrompt] = []
         self.life_chapters: List[LifeChapter] = []
         self.dream_logs: List[DreamLog] = []
         
         # Tracking
         self.current_chapter: Optional[str] = None
         self.daily_mood_summary: Dict[str, List[str]] = {}  # date -> moods
-        self.prompts_completed: int = 0
-        self.photos_taken: int = 0
         self.dreams_recorded: int = 0
         
     def log_emotion(self, emotion: EmotionCategory, intensity: int,
@@ -570,59 +188,6 @@ class EnhancedDiarySystem:
             "breakdown": {e.value: c for e, c in emotion_counts.items()},
         }
         
-    def take_photo(self, photo_type: PhotoType, caption: str,
-                  location: Optional[str] = None, mood: Optional[str] = None) -> DiaryPhoto:
-        """Take a diary photo."""
-        templates = PHOTO_TEMPLATES.get(photo_type, PHOTO_TEMPLATES[PhotoType.SELFIE])
-        ascii_art = random.choice(templates)
-        
-        photo = DiaryPhoto(
-            photo_id=f"photo_{self.photos_taken + 1}",
-            photo_type=photo_type,
-            ascii_art=ascii_art,
-            caption=caption,
-            date_taken=datetime.now().isoformat(),
-            location=location,
-            mood=mood,
-        )
-        
-        self.photos.append(photo)
-        self.photos_taken += 1
-        
-        # Keep photos manageable
-        if len(self.photos) > 50:
-            self.photos = self.photos[-50:]
-            
-        return photo
-        
-    def get_random_prompt(self, prompt_type: Optional[DiaryPromptType] = None) -> DiaryPrompt:
-        """Get a random writing prompt."""
-        if prompt_type:
-            prompts = DIARY_PROMPTS.get(prompt_type, [])
-        else:
-            prompt_type = random.choice(list(DiaryPromptType))
-            prompts = DIARY_PROMPTS.get(prompt_type, [])
-            
-        question = random.choice(prompts) if prompts else "Write about your day."
-        
-        prompt = DiaryPrompt(
-            prompt_id=f"prompt_{len(self.prompts) + 1}",
-            prompt_type=prompt_type,
-            question=question,
-        )
-        
-        self.prompts.append(prompt)
-        return prompt
-        
-    def answer_prompt(self, prompt_id: str, response: str):
-        """Answer a writing prompt."""
-        for prompt in self.prompts:
-            if prompt.prompt_id == prompt_id:
-                prompt.response = response
-                prompt.date_answered = datetime.now().isoformat()
-                self.prompts_completed += 1
-                break
-                
     def start_life_chapter(self, title: str, summary: str) -> LifeChapter:
         """Start a new life chapter."""
         # End current chapter if exists
@@ -730,19 +295,8 @@ class EnhancedDiarySystem:
         """Generate a weekly emotional summary."""
         analysis = self.get_emotion_analysis(7)
         
-        # Get photos from this week
-        week_ago = datetime.now() - timedelta(days=7)
-        week_photos = [p for p in self.photos 
-                       if datetime.fromisoformat(p.date_taken) > week_ago]
-        
-        # Get answered prompts
-        week_prompts = [p for p in self.prompts if p.date_answered and
-                        datetime.fromisoformat(p.date_answered) > week_ago]
-        
         return {
             "emotion_analysis": analysis,
-            "photos_taken": len(week_photos),
-            "prompts_completed": len(week_prompts),
             "highlight_emotion": analysis.get("dominant", "calm"),
             "emotional_variety": analysis.get("variety", 0),
         }
@@ -787,34 +341,6 @@ class EnhancedDiarySystem:
         lines.append("|" + f" Dominant mood: {dominant} ".center(width - 2) + "|")
         
         lines.append("+" + "=" * (width - 2) + "+")
-        
-        return lines
-        
-    def render_photo_album_page(self, page: int = 0, photos_per_page: int = 2) -> List[str]:
-        """Render a page of the photo album."""
-        lines = []
-        
-        start_idx = page * photos_per_page
-        page_photos = self.photos[start_idx:start_idx + photos_per_page]
-        
-        lines.append("+========================================+")
-        lines.append("|        [#] Photo Album Page {:02d} [#]        |".format(page + 1))
-        lines.append("+========================================+")
-        
-        if not page_photos:
-            lines.append("|         No photos yet!                 |")
-            lines.append("|      Take some photos to fill         |")
-            lines.append("|          this album! [#]               |")
-        else:
-            for photo in page_photos:
-                lines.append("|                                        |")
-                for art_line in photo.ascii_art:
-                    lines.append("|" + art_line.center(40) + "|")
-                lines.append("|" + f'"{photo.caption}"'.center(40) + "|")
-                lines.append("|" + f"- {photo.date_taken[:10]} -".center(40) + "|")
-                lines.append("|                                        |")
-                
-        lines.append("+========================================+")
         
         return lines
         
@@ -886,28 +412,6 @@ class EnhancedDiarySystem:
                 }
                 for log in self.emotion_logs[-100:]  # Keep last 100
             ],
-            "photos": [
-                {
-                    "photo_id": p.photo_id,
-                    "photo_type": p.photo_type.value,
-                    "ascii_art": p.ascii_art,
-                    "caption": p.caption,
-                    "date_taken": p.date_taken,
-                    "location": p.location,
-                    "mood": p.mood,
-                }
-                for p in self.photos
-            ],
-            "prompts": [
-                {
-                    "prompt_id": p.prompt_id,
-                    "prompt_type": p.prompt_type.value,
-                    "question": p.question,
-                    "response": p.response,
-                    "date_answered": p.date_answered,
-                }
-                for p in self.prompts if p.response  # Only save answered
-            ],
             "life_chapters": [
                 {
                     "chapter_id": c.chapter_id,
@@ -934,8 +438,6 @@ class EnhancedDiarySystem:
             ],
             "current_chapter": self.current_chapter,
             "daily_mood_summary": dict(list(self.daily_mood_summary.items())[-30:]),
-            "prompts_completed": self.prompts_completed,
-            "photos_taken": self.photos_taken,
             "dreams_recorded": self.dreams_recorded,
         }
     
@@ -952,34 +454,6 @@ class EnhancedDiarySystem:
                     timestamp=log_data["timestamp"],
                     trigger=log_data.get("trigger"),
                     notes=log_data.get("notes"),
-                ))
-            except (ValueError, KeyError):
-                pass
-                
-        system.photos = []
-        for p_data in data.get("photos", []):
-            try:
-                system.photos.append(DiaryPhoto(
-                    photo_id=p_data["photo_id"],
-                    photo_type=PhotoType(p_data["photo_type"]),
-                    ascii_art=p_data["ascii_art"],
-                    caption=p_data["caption"],
-                    date_taken=p_data["date_taken"],
-                    location=p_data.get("location"),
-                    mood=p_data.get("mood"),
-                ))
-            except (ValueError, KeyError):
-                pass
-                
-        system.prompts = []
-        for p_data in data.get("prompts", []):
-            try:
-                system.prompts.append(DiaryPrompt(
-                    prompt_id=p_data["prompt_id"],
-                    prompt_type=DiaryPromptType(p_data["prompt_type"]),
-                    question=p_data["question"],
-                    response=p_data.get("response"),
-                    date_answered=p_data.get("date_answered"),
                 ))
             except (ValueError, KeyError):
                 pass
@@ -1016,8 +490,6 @@ class EnhancedDiarySystem:
                 
         system.current_chapter = data.get("current_chapter")
         system.daily_mood_summary = data.get("daily_mood_summary", {})
-        system.prompts_completed = data.get("prompts_completed", 0)
-        system.photos_taken = data.get("photos_taken", 0)
         system.dreams_recorded = data.get("dreams_recorded", 0)
         return system
 
