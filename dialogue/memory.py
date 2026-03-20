@@ -37,7 +37,6 @@ class DuckMemory:
         self.player_name: Optional[str] = None
         self.favorite_things: Dict[str, int] = {}  # thing -> affinity score
         self.disliked_things: Dict[str, int] = {}
-        self.interaction_counts: Dict[str, int] = {}
         self.total_interactions: int = 0
         self.first_meeting: Optional[str] = None
         self.mood_history: deque = deque(maxlen=MAX_MOOD_HISTORY)
@@ -56,20 +55,11 @@ class DuckMemory:
         self.short_term.append(memory)
 
         # Track counts (with limit to prevent unbounded growth)
-        self.interaction_counts[interaction_type] = self.interaction_counts.get(interaction_type, 0) + 1
-        self._limit_interaction_counts()
         self.total_interactions += 1
 
         # Very positive or negative interactions go to long term
         if abs(emotional_value) >= 50:
             self._add_long_term(memory)
-    
-    def _limit_interaction_counts(self):
-        """Limit interaction counts dict size to prevent unbounded growth."""
-        if len(self.interaction_counts) > MAX_AFFINITY_ITEMS:
-            # Keep only the most frequent interactions
-            sorted_counts = sorted(self.interaction_counts.items(), key=lambda x: x[1], reverse=True)
-            self.interaction_counts = dict(sorted_counts[:MAX_AFFINITY_ITEMS])
     
     def _limit_affinity_dicts(self):
         """Limit affinity dicts size to prevent unbounded growth."""
@@ -238,7 +228,6 @@ class DuckMemory:
             "player_name": self.player_name,
             "favorite_things": self.favorite_things,
             "disliked_things": self.disliked_things,
-            "interaction_counts": self.interaction_counts,
             "total_interactions": self.total_interactions,
             "first_meeting": self.first_meeting,
             "mood_history": list(self.mood_history),  # Convert deque to list for JSON
@@ -270,7 +259,6 @@ class DuckMemory:
         memory.player_name = data.get("player_name")
         memory.favorite_things = data.get("favorite_things", {})
         memory.disliked_things = data.get("disliked_things", {})
-        memory.interaction_counts = data.get("interaction_counts", {})
         memory.total_interactions = data.get("total_interactions", 0)
         memory.first_meeting = data.get("first_meeting")
         # Restore mood_history as deque with maxlen to preserve the constraint
