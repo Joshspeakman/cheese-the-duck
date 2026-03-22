@@ -231,6 +231,12 @@ LLM_WORKER_TIMEOUT = 8.0        # Max seconds to wait for LLM response
 # Conversation Memory
 LLM_MAX_HISTORY = 10            # Messages to keep in conversation history
 
+# Ambient Line Generation (background pre-generation of future dialogue)
+LLM_AMBIENT_ENABLED = True      # Generate contextual lines in background
+LLM_AMBIENT_COOLDOWN = 120      # Seconds between background generations
+LLM_AMBIENT_MAX_STORED = 100    # Max unused ambient lines to keep
+LLM_AMBIENT_USE_CHANCE = 0.25   # Chance to use an ambient line vs template (0.0-1.0)
+
 
 # ===== GAMEPLAY CONSTANTS =====
 # Timing (seconds)

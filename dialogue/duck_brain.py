@@ -28,6 +28,7 @@ from dialogue.memory_recall import MemoryRecall
 from dialogue.vocabulary import VocabularyMemory
 from dialogue.dialogue_core import DialogueContext, DialogueResponse, DialogueMemory, DialogueState
 from dialogue.response_pipeline import create_default_pipeline
+from dialogue.ambient_lines import AmbientLineGenerator
 
 if TYPE_CHECKING:
     from dialogue.memory import DuckMemory
@@ -115,6 +116,9 @@ class DuckBrain:
         self._last_callback_time = 0.0
         self._last_question_time = 0.0
         
+        # Ambient line generator (set via set_llm_chat)
+        self._ambient_generator: Optional[AmbientLineGenerator] = None
+
         # Personality evolution
         self._affection_growth_rate = 0.1  # How fast affection builds
         self._trust_growth_rate = 0.05
@@ -301,6 +305,9 @@ class DuckBrain:
         except Exception:
             pass
 
+        # Fire ambient line generation in background
+        self._request_ambient("chat", message, response, context)
+
         return response
     
     def process_action(self, action: str, context = None) -> str:
@@ -340,22 +347,37 @@ class DuckBrain:
         # Get action count for milestones
         action_count = self.player_model.behavior_pattern.favorite_actions.get(action, 0)
         
-        # Generate response
-        response_line = self.dialogue_generator.generate_after_action(
-            action=action,
-            duck_mood=duck_mood,
-            player_model=self.player_model,
-            action_count=action_count
-        )
+        # Try ambient pool for this action type
+        ambient = self._try_ambient(action) if action in ("feed", "play", "pet", "clean") else None
+        
+        if ambient:
+            response_text = ambient
+        else:
+            # Generate response from templates
+            response_line = self.dialogue_generator.generate_after_action(
+                action=action,
+                duck_mood=duck_mood,
+                player_model=self.player_model,
+                action_count=action_count
+            )
+            response_text = response_line.text
         
         # Maybe add a follow-up thought
         if random.random() < 0.2:  # 20% chance
             self._maybe_add_observation()
-        
-        return response_line.text
+
+        # Fire ambient line generation in background
+        self._request_ambient(action, context=context)
+
+        return response_text
     
     def get_greeting(self, time_since_last: float = 0) -> str:
         """Get a greeting when player arrives."""
+        # Try ambient pool first
+        ambient = self._try_ambient("greeting")
+        if ambient:
+            return ambient
+
         greeting = self.dialogue_generator.generate_greeting(
             player_model=self.player_model,
             duck_memory=self.duck_memory,
@@ -399,6 +421,11 @@ class DuckBrain:
                 ))
             return missed[0]
         
+        # Try ambient pool before templates
+        ambient = self._try_ambient("idle")
+        if ambient:
+            return ambient
+
         # Generate new idle thought
         idle = self.dialogue_generator.generate_idle(
             duck_mood=duck_mood or "content",
@@ -506,6 +533,12 @@ class DuckBrain:
         if anniversary:
             self._last_callback_time = now
             return anniversary["intro"]
+
+        # Try ambient callback pool
+        ambient = self._try_ambient("callback")
+        if ambient:
+            self._last_callback_time = now
+            return ambient
 
         # Fall back to original callback system
         callback = self.dialogue_generator.generate_callback(
@@ -723,7 +756,57 @@ class DuckBrain:
         # Sort by priority and return highest
         self._thought_queue.sort(key=lambda t: t.priority.value, reverse=True)
         return self._thought_queue.pop(0)
-    
+
+    # ── Ambient line generation helpers ───────────────────────────────
+
+    def set_llm_chat(self, llm_chat):
+        """Wire up the ambient line generator once LLMChat is available."""
+        try:
+            from config import (
+                LLM_AMBIENT_ENABLED, LLM_AMBIENT_COOLDOWN, LLM_AMBIENT_MAX_STORED,
+            )
+        except ImportError:
+            LLM_AMBIENT_ENABLED = True
+            LLM_AMBIENT_COOLDOWN = 120
+            LLM_AMBIENT_MAX_STORED = 100
+
+        if LLM_AMBIENT_ENABLED and llm_chat:
+            self._ambient_generator = AmbientLineGenerator(
+                llm_chat=llm_chat,
+                cooldown=LLM_AMBIENT_COOLDOWN,
+                max_stored=LLM_AMBIENT_MAX_STORED,
+            )
+
+    def _try_ambient(self, context: str) -> Optional[str]:
+        """Try to consume an ambient line. Gated by LLM_AMBIENT_USE_CHANCE."""
+        if not self._ambient_generator:
+            return None
+        try:
+            from config import LLM_AMBIENT_USE_CHANCE
+        except ImportError:
+            LLM_AMBIENT_USE_CHANCE = 0.25
+        if random.random() > LLM_AMBIENT_USE_CHANCE:
+            return None
+        return self._ambient_generator.consume_line(context)
+
+    def _request_ambient(self, trigger: str, player_input: str = "",
+                         duck_response: str = "", context=None):
+        """Fire-and-forget ambient line generation request."""
+        if not self._ambient_generator:
+            return
+        ctx = {}
+        if isinstance(context, dict):
+            ctx = context
+        if self.player_model.name:
+            ctx.setdefault("player_name", self.player_model.name)
+        ctx.setdefault("duck_mood", self._internal_mood.value if self._internal_mood else "content")
+        self._ambient_generator.request_lines(
+            trigger=trigger,
+            player_input=player_input,
+            duck_response=duck_response,
+            context=ctx,
+        )
+
     def _update_relationship_from_message(self, message: str, sentiment: float):
         """Update relationship metrics based on a message."""
         # Positive messages increase trust and affection

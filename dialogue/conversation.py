@@ -1034,8 +1034,13 @@ class ConversationSystem:
                         session_message_count=len(self._conversation_history),
                         triggers=["player_input"],
                     )
-                pipeline_resp = self._pipeline.generate_response(ctx, DialogueState())
-                if pipeline_resp and pipeline_resp.text:
+                state = DialogueState()
+                state._duck_ref = duck
+                state._memory_context = memory_context
+                if duck:
+                    state.sync_from_duck(duck)
+                pipeline_resp = self._pipeline.generate_response(ctx, state)
+                if pipeline_resp and pipeline_resp.text and pipeline_resp.source != "fallback":
                     response = pipeline_resp.text
                     source = pipeline_resp.source or "pipeline"
                     _used_pipeline = True

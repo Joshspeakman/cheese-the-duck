@@ -132,6 +132,7 @@ class LLMChat:
         self._available = False
         self._model_name = None
         self._llama = None
+        self._inference_lock = threading.Lock()  # Serialize all _llama calls
         self._conversation_history: List[Dict[str, str]] = []
         self._max_history = LLM_MAX_HISTORY
         self._last_error = None
@@ -183,14 +184,15 @@ class LLMChat:
         if not self._llama or self._warmed_up:
             return
         try:
-            self._llama.create_chat_completion(
-                messages=[
-                    {"role": "system", "content": "You are a duck. Reply in one word."},
-                    {"role": "user", "content": "hi"},
-                ],
-                max_tokens=4,
-                temperature=0.0,
-            )
+            with self._inference_lock:
+                self._llama.create_chat_completion(
+                    messages=[
+                        {"role": "system", "content": "You are a duck. Reply in one word."},
+                        {"role": "user", "content": "hi"},
+                    ],
+                    max_tokens=4,
+                    temperature=0.0,
+                )
             self._warmed_up = True
             logger.info("LLM warmup complete")
         except Exception as e:
@@ -449,16 +451,17 @@ Rules: Use at most ONE action per response. Only when contextually appropriate. 
 
         try:
             # Use timeout wrapper to prevent hanging
-            response = _call_with_timeout(
-                lambda: self._llama.create_chat_completion(
-                    messages=messages,
-                    max_tokens=LLM_MAX_TOKENS_CHAT,
-                    temperature=LLM_TEMPERATURE,
-                    top_p=0.9,
-                    repeat_penalty=1.15,
-                    stop=["\n\n", "Human:", "User:"],
-                )
-            )
+            def _chat_infer():
+                with self._inference_lock:
+                    return self._llama.create_chat_completion(
+                        messages=messages,
+                        max_tokens=LLM_MAX_TOKENS_CHAT,
+                        temperature=LLM_TEMPERATURE,
+                        top_p=0.9,
+                        repeat_penalty=1.15,
+                        stop=["\n\n", "Human:", "User:"],
+                    )
+            response = _call_with_timeout(_chat_infer)
 
             if response and "choices" in response and response["choices"]:
                 content = response["choices"][0].get("message", {}).get("content", "")
@@ -509,16 +512,17 @@ Rules: Use at most ONE action per response. Only when contextually appropriate. 
 
         try:
             # Use timeout wrapper to prevent hanging
-            response = _call_with_timeout(
-                lambda: self._llama(
-                    prompt,
-                    max_tokens=LLM_MAX_TOKENS,
-                    temperature=LLM_TEMPERATURE,
-                    top_p=0.9,
-                    repeat_penalty=1.15,
-                    stop=["Human:", "\n\n", f"\n{name}:"],
-                )
-            )
+            def _completion_infer():
+                with self._inference_lock:
+                    return self._llama(
+                        prompt,
+                        max_tokens=LLM_MAX_TOKENS,
+                        temperature=LLM_TEMPERATURE,
+                        top_p=0.9,
+                        repeat_penalty=1.15,
+                        stop=["Human:", "\n\n", f"\n{name}:"],
+                    )
+            response = _call_with_timeout(_completion_infer)
 
             if response and "choices" in response and response["choices"]:
                 content = response["choices"][0].get("text", "")
@@ -579,17 +583,17 @@ Action:"""
 
         try:
             # Use timeout wrapper (shorter timeout for quick action descriptions)
-            response = _call_with_timeout(
-                lambda: self._llama(
-                    prompt,
-                    max_tokens=15,
-                    temperature=0.7,
-                    top_p=0.9,
-                    repeat_penalty=1.1,
-                    stop=["\n", ".", "!", "?"],
-                ),
-                timeout=8.0  # Shorter timeout for action commentary
-            )
+            def _action_infer():
+                with self._inference_lock:
+                    return self._llama(
+                        prompt,
+                        max_tokens=15,
+                        temperature=0.7,
+                        top_p=0.9,
+                        repeat_penalty=1.1,
+                        stop=["\n", ".", "!", "?"],
+                    )
+            response = _call_with_timeout(_action_infer, timeout=8.0)
 
             if response and "choices" in response and response["choices"]:
                 content = response["choices"][0].get("text", "").strip()
@@ -659,17 +663,17 @@ Be unique to your personality. Don't be generic.
 
         try:
             # Use timeout wrapper for visitor dialogue
-            response = _call_with_timeout(
-                lambda: self._llama(
-                    prompt,
-                    max_tokens=60,
-                    temperature=0.85,
-                    top_p=0.9,
-                    repeat_penalty=1.15,
-                    stop=["\n\n", "Human:", f"\n{visitor_name}:", f"\n{duck.name}:"],
-                ),
-                timeout=12.0  # Moderate timeout for visitor dialogue
-            )
+            def _visitor_infer():
+                with self._inference_lock:
+                    return self._llama(
+                        prompt,
+                        max_tokens=60,
+                        temperature=0.85,
+                        top_p=0.9,
+                        repeat_penalty=1.15,
+                        stop=["\n\n", "Human:", f"\n{visitor_name}:", f"\n{duck.name}:"],
+                    )
+            response = _call_with_timeout(_visitor_infer, timeout=12.0)
 
             if response and "choices" in response and response["choices"]:
                 content = response["choices"][0].get("text", "")
