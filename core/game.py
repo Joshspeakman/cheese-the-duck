@@ -5514,10 +5514,9 @@ class Game:
         self.behavior_ai = BehaviorAI()
         self.inventory = Inventory()
 
-        # Sync DuckStore from newly created duck
+        # Reset DuckStore with fresh duck
         try:
-            if hasattr(self, 'duck_store') and self.duck_store and self.duck:
-                self.duck_store.sync_from_duck(self.duck)
+            self.duck_store = DuckStore(self.duck)
         except Exception:
             pass
 
@@ -5528,6 +5527,10 @@ class Game:
             self.time_manager = TimeManager(game_clock)
         except Exception:
             self.time_manager = None
+
+        # Reset habitat
+        from world.habitat import Habitat
+        self.habitat = Habitat()
 
         # Set up interaction controller references
         self.interaction_controller.set_references(
@@ -5544,9 +5547,52 @@ class Game:
         # Reset building and add starter nest
         self.building = BuildingSystem()
         self.building.add_starter_nest()
-        
-        # Note: We don't add nest to playfield objects anymore since 
-        # the building system structures are rendered directly
+
+        # Reset world and feature systems
+        self.atmosphere = AtmosphereManager()
+        self.diary = DuckDiary()
+        self.exploration = ExplorationSystem()
+        self.materials = MaterialInventory()
+        self.crafting = CraftingSystem()
+        self.scrapbook = Scrapbook()
+        self.fishing = FishingMinigame()
+        self.garden = Garden()
+        self.treasure = TreasureHunter()
+        self.challenges = ChallengeSystem()
+        self.friends = FriendsSystem()
+        self.friends.on_friendship_level_up = self._on_friendship_level_up
+        self.quests = QuestSystem()
+        self.festivals = FestivalSystem()
+        self.prestige = PrestigeSystem()
+        self.collectibles = CollectiblesSystem()
+        self.tricks = TricksSystem()
+        self.decorations = DecorationsSystem()
+        self.titles = TitlesSystem()
+        self.outfits = OutfitManager()
+        self.seasonal_clothing = SeasonalClothingSystem()
+        self.secrets = SecretsSystem()
+        self.weather_activities = WeatherActivitiesSystem()
+        self.trading = TradingSystem()
+        self.fortune = FortuneSystem()
+        self.aging = AgingSystem()
+        self.extended_personality = ExtendedPersonalitySystem()
+        self.statistics = StatisticsSystem()
+        self.day_night = DayNightSystem()
+        self.badges = BadgesSystem()
+        self.enhanced_diary = EnhancedDiarySystem()
+        self.contextual_dialogue = ContextualDialogueSystem()
+        self.dreams = DreamSystem()
+        self.minigames = MiniGameSystem()
+        self.events = EventSystem()
+        self.area_events = AreaEventSystem()
+        self.spontaneous_travel = SpontaneousTravelSystem()
+
+        # Clear ambient lines from previous duck
+        try:
+            from dialogue.ambient_lines import AmbientLineGenerator
+            AmbientLineGenerator.clear_all_lines()
+        except Exception:
+            pass
 
         # Give starting items
         self.inventory.add_item("bread")
@@ -5564,6 +5610,10 @@ class Game:
             "item_interactions": 0,
             "facts_shown": 0,
         }
+        self._weather_seen = set()
+        self._session_feeds = 0
+        self._last_random_comment_time = 0.0
+        self._pending_visitor_comment = None
         self._state = "playing"
         self._last_tick = time.time()
         self._last_save = time.time()
@@ -6147,6 +6197,7 @@ class Game:
             llm_chat = get_llm_chat(background=True)
             if llm_chat and self.duck_brain:
                 llm_chat.set_duck_brain(self.duck_brain)
+                self.duck_brain.set_llm_chat(llm_chat)
                 # Also sync conversation history from DuckBrain
                 recent_messages = self.duck_brain.conversation_memory.get_recent_context(20)
                 history = []
@@ -6475,6 +6526,13 @@ class Game:
         self.sound_effects = SoundEffectSystem()
         self.enhanced_diary = EnhancedDiarySystem()
         self.save_slots = SaveSlotsSystem()
+
+        # Clear ambient lines from previous duck
+        try:
+            from dialogue.ambient_lines import AmbientLineGenerator
+            AmbientLineGenerator.clear_all_lines()
+        except Exception:
+            pass
 
         self._statistics = {}
         self._weather_seen = set()
@@ -10594,6 +10652,13 @@ Core Systems Tested: {report.total_tests}
         self.statistics = StatisticsSystem()
         self.day_night = DayNightSystem()
         
+        # Clear ambient lines from previous duck
+        try:
+            from dialogue.ambient_lines import AmbientLineGenerator
+            AmbientLineGenerator.clear_all_lines()
+        except Exception:
+            pass
+
         # Reset tracking state
         self._statistics = {}
         self._weather_seen = set()
