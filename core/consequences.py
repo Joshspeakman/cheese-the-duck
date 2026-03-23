@@ -141,7 +141,8 @@ def get_cascade_modifiers(needs) -> Dict[str, float]:
 
 # ── Consequence checking ────────────────────────────────────────────────
 
-def check_consequences(duck, delta_minutes: float, stage_modifiers: Optional[Dict[str, float]] = None) -> ConsequenceState:
+def check_consequences(duck, delta_minutes: float, stage_modifiers: Optional[Dict[str, float]] = None,
+                       duck_store: "Optional[DuckStore]" = None) -> ConsequenceState:
     """Check and update consequence state based on current needs.
     
     Called every game tick after needs.update(). Tracks how long needs
@@ -154,6 +155,7 @@ def check_consequences(duck, delta_minutes: float, stage_modifiers: Optional[Dic
             sickness_time_mult: Multiplier for sickness trigger time
             coldness_time_mult: Multiplier for cold shoulder duration
             trust_decay_mult: Multiplier for trust decay rate
+        duck_store: Optional DuckStore for validated state changes
     
     Returns:
         ConsequenceState with current status and any messages
@@ -196,6 +198,9 @@ def check_consequences(duck, delta_minutes: float, stage_modifiers: Optional[Dic
         if sick_minutes >= hiding_threshold:
             duck.hiding = True
             duck.hiding_coax_visits = 0
+            if duck_store:
+                duck_store.set_hiding(True)
+                duck_store.sync_to_duck(duck)
             try:
                 event_bus.emit(HidingEvent(source="consequences", started=True))
             except Exception:
@@ -220,7 +225,7 @@ def check_consequences(duck, delta_minutes: float, stage_modifiers: Optional[Dic
         if all_above_threshold and duck.sick_since:
             healthy_time = (time.time() - duck.sick_since) / 60
             if healthy_time >= SICKNESS_NATURAL_CURE_MINUTES:
-                _cure_sickness(duck)
+                _cure_sickness(duck, duck_store=duck_store)
                 sickness_msg = "*stretches* ...okay. I feel less terrible. Don't get smug about it."
     
     # ── Stage 1 → 2 escalation: prolonged zero needs → sickness ──────
@@ -234,6 +239,9 @@ def check_consequences(duck, delta_minutes: float, stage_modifiers: Optional[Dic
         if max_zero_minutes >= sickness_threshold:
             duck.is_sick = True
             duck.sick_since = time.time()
+            if duck_store:
+                duck_store.set_sick(True, cause="neglect")
+                duck_store.sync_to_duck(duck)
             try:
                 event_bus.emit(SicknessEvent(source="consequences", started=True, cause="neglect"))
             except Exception:

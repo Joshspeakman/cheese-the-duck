@@ -3555,7 +3555,8 @@ class Game:
 
             # ── Consequence engine tick ──────────────────────────────
             stage_mods = get_consequence_modifiers(self.duck.growth_stage)
-            consequence_state = check_consequences(self.duck, delta_minutes, stage_mods)
+            consequence_state = check_consequences(self.duck, delta_minutes, stage_mods,
+                                                   duck_store=self.duck_store)
             self._last_consequence_state = consequence_state
 
             # Show neglect warnings (throttled — max one per 60 seconds)
@@ -5019,7 +5020,11 @@ class Game:
             # Apply trust change
             trust_delta = result.get("trust_bonus", 0)
             if trust_delta != 0:
-                self.duck.trust = max(0, min(100, self.duck.trust + trust_delta))
+                if hasattr(self, 'duck_store') and self.duck_store:
+                    self.duck_store.change_trust(trust_delta, "encounter_result")
+                    self.duck_store.sync_to_duck(self.duck)
+                else:
+                    self.duck.trust = max(0, min(100, self.duck.trust + trust_delta))
         # Show the outcome message
         duration = 6.0 if result.get("resolved") else 5.0
         self.renderer.show_message(result["message"], duration=duration, category="duck")
