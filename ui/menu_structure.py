@@ -20,37 +20,37 @@ def build_main_menu_categories() -> list:
             label="Duck Care",
             icon="<>",
             items=[
-                MenuItem("feed", "Feed", "Give your duck some food (F/1)"),
-                MenuItem("play", "Play", "Have fun with your duck (P/2)"),
-                MenuItem("clean", "Clean", "Give your duck a bath (L/3)"),
-                MenuItem("pet", "Pet", "Show your duck some love (D/4)"),
-                MenuItem("sleep", "Sleep", "Put your duck to bed (Z/5)"),
+                MenuItem("feed", "Feed [F]", "Give your duck some food"),
+                MenuItem("play", "Play [P]", "Have fun with your duck"),
+                MenuItem("clean", "Clean [L]", "Give your duck a bath"),
+                MenuItem("pet", "Pet [D]", "Show your duck some love"),
+                MenuItem("sleep", "Sleep [Z]", "Put your duck to bed"),
+                MenuItem("use", "Use Item [U]", "Use an item on your duck"),
+                MenuItem("inventory", "Inventory [I]", "Check your items"),
+            ]
+        ),
+        MenuCategory(
+            id="items",
+            label="Items & Shop",
+            icon="$",
+            items=[
+                MenuItem("shop", "Shop [B]", "Buy items with coins"),
+                MenuItem("trade", "Trading Post [<]", "Trade with visiting merchants"),
+                MenuItem("craft", "Crafting [C]", "Create items from materials"),
+                MenuItem("build", "Building [R]", "Construct structures"),
+                MenuItem("decorate", "Decorations [V]", "Place furniture and decorations"),
             ]
         ),
         MenuCategory(
             id="world",
-            label="World & Building",
+            label="World",
             icon="*",
             items=[
-                MenuItem("explore", "Explore", "Search the current area for resources"),
-                MenuItem("travel", "Travel", "Visit other locations"),
-                MenuItem("craft", "Crafting", "Create items from materials"),
-                MenuItem("build", "Building", "Construct structures"),
-                MenuItem("decorate", "Decorations", "Place furniture and decorations"),
-                MenuItem("trade", "Trading Post", "Trade with visiting merchants"),
-                MenuItem("use", "Use Item", "Interact with placed items"),
-            ]
-        ),
-        MenuCategory(
-            id="social",
-            label="Social & Info",
-            icon="@",
-            items=[
-                MenuItem("talk", "Talk to Duck", "Have a conversation"),
-                MenuItem("stats", "View Stats", "See detailed statistics"),
-                MenuItem("inventory", "Inventory", "Check your items"),
-                MenuItem("goals", "Goals", "View your objectives"),
-                MenuItem("shop", "Shop", "Buy items with coins"),
+                MenuItem("explore", "Explore [E]", "Search the current area for resources"),
+                MenuItem("travel", "Travel [A]", "Visit other locations"),
+                MenuItem("garden", "Garden [9]", "Plant and harvest crops"),
+                MenuItem("weather", "Weather [W]", "Weather activities"),
+                MenuItem("treasure", "Treasure Hunt [6]", "Search for buried treasure"),
             ]
         ),
         MenuCategory(
@@ -58,40 +58,50 @@ def build_main_menu_categories() -> list:
             label="Activities",
             icon="#",
             items=[
-                MenuItem("minigames", "Mini-games", "Play games for rewards"),
-                MenuItem("tricks", "Tricks", "Teach and perform tricks"),
-                MenuItem("garden", "Garden", "Plant and harvest crops"),
-                MenuItem("festivals", "Festivals", "Seasonal celebrations"),
-                MenuItem("diary", "Enhanced Diary", "Write in your diary"),
-                MenuItem("photo", "Take Photo", "Capture a moment"),
+                MenuItem("minigames", "Mini-games [J]", "Play games for rewards"),
+                MenuItem("tricks", "Tricks [7]", "Teach and perform tricks"),
+                MenuItem("festivals", "Festivals [0]", "Seasonal celebrations"),
+                MenuItem("photo", "Take Photo [;]", "Capture a moment"),
+                MenuItem("diary", "Diary [=]", "Write in your diary"),
+            ]
+        ),
+        MenuCategory(
+            id="myduck",
+            label="My Duck",
+            icon="@",
+            items=[
+                MenuItem("talk", "Talk [T]", "Have a conversation"),
+                MenuItem("stats", "View Stats [S]", "See detailed statistics"),
+                MenuItem("goals", "Goals [G]", "View your objectives"),
+                MenuItem("scrapbook", "Scrapbook [Y]", "Memory album"),
+                MenuItem("titles", "Titles [!]", "Manage duck titles"),
+                MenuItem("facts", "Duck Fact [K]", "Learn about ducks"),
             ]
         ),
         MenuCategory(
             id="collections",
-            label="Collections & Legacy",
+            label="Collections",
             icon="+",
             items=[
-                MenuItem("collectibles", "Collectibles Album", "View your collection"),
+                MenuItem("collectibles", "Collectibles [']", "View your collection"),
                 MenuItem("badges", "Badges", "View earned achievement badges"),
-                MenuItem("prestige", "Prestige/Legacy", "Rebirth for bonuses"),
-                MenuItem("titles", "Titles & Nicknames", "Manage duck titles"),
-                MenuItem("scrapbook", "Scrapbook", "Memory album"),
-                MenuItem("secrets", "Secrets Book", "Hidden discoveries"),
+                MenuItem("prestige", "Prestige [8]", "Rebirth for bonuses"),
+                MenuItem("secrets", "Secrets Book [\\]", "Hidden discoveries"),
             ]
         ),
         MenuCategory(
-            id="other",
-            label="Other",
+            id="settings_cat",
+            label="Settings",
             icon="=",
             items=[
-                MenuItem("facts", "Random Duck Fact", "Learn about ducks"),
                 MenuItem("settings", "Settings", "Audio, display, and game options"),
-                MenuItem("sound", "Toggle Sound", "Turn sound on/off"),
-                MenuItem("music", "Toggle Music", "Turn music on/off"),
-                # MenuItem("save_slots", "Save Slots", "Manage save files"),  # Hidden for now
-                MenuItem("help", "Help", "View controls and tips"),
+                MenuItem("sound", "Toggle Sound [N]", "Turn sound on/off"),
+                MenuItem("music", "Toggle Music [M]", "Turn music on/off"),
+                MenuItem("radio", "Radio", "Nook Radio"),
+                MenuItem("help", "Help [H]", "View controls and tips"),
+                MenuItem("save_slots", "Save Slots [/]", "Manage save files"),
                 MenuItem("reset_game", "Reset Game", "WARNING: Deletes ALL progress!"),
-                MenuItem("quit", "Return to Title", "Save game and return to title screen"),
+                MenuItem("quit", "Return to Title [Q]", "Save game and return to title screen"),
             ]
         ),
     ]
@@ -106,51 +116,55 @@ MENU_ACTIONS = {
     "clean": "_perform_interaction_clean",
     "pet": "_perform_interaction_pet",
     "sleep": "_perform_interaction_sleep",
+    "use": "_show_use_menu",
+    "inventory": "_toggle_inventory",
     
-    # World & Building
-    "explore": "_do_explore",
-    "travel": "_show_areas_menu",
+    # Items & Shop
+    "shop": "_toggle_shop",
+    "trade": "_show_trading_menu",
     "craft": "_show_crafting_menu",
     "build": "_show_building_menu",
     "decorate": "_show_decorations_menu",
-    "trade": "_show_trading_menu",
-    "use": "_show_use_menu",
     
-    # Social & Info
-    "talk": "_start_talk_mode",
-    "stats": "_toggle_stats",
-    "inventory": "_toggle_inventory",
-    "goals": "_toggle_goals",
-    "shop": "_toggle_shop",
-    
-    # Activities
-    "minigames": "_show_minigames_menu",
-    "tricks": "_show_tricks_menu",
+    # World
+    "explore": "_do_explore",
+    "travel": "_show_areas_menu",
     "garden": "_show_garden_menu",
     "garden_view": "_show_garden_view",
     "garden_water": "_water_all_plants",
     "garden_harvest": "_harvest_all_plants",
-    "festivals": "_show_festival_menu",
-    "diary": "_show_enhanced_diary",
-    "photo": "_take_diary_photo",
+    "weather": "_show_weather_activities",
+    "treasure": "_show_treasure_hunt",
     
-    # Collections & Legacy
+    # Activities
+    "minigames": "_show_minigames_menu",
+    "tricks": "_show_tricks_menu",
+    "festivals": "_show_festival_menu",
+    "photo": "_take_diary_photo",
+    "diary": "_show_enhanced_diary",
+    
+    # My Duck
+    "talk": "_start_talk_mode",
+    "stats": "_toggle_stats",
+    "goals": "_toggle_goals",
+    "scrapbook": "_show_scrapbook",
+    "titles": "_show_titles_menu",
+    "facts": "_show_duck_fact",
+    
+    # Collections
     "collectibles": "_show_collectibles_album",
     "badges": "_show_badges_menu",
     "prestige": "_show_prestige_menu",
-    "titles": "_show_titles_menu",
-    "scrapbook": "_show_scrapbook",
     "secrets": "_show_secrets_book",
     
-    # Other
-    "facts": "_show_duck_fact",
+    # Settings
     "settings": "_open_settings_menu",
     "sound": "_toggle_sound",
     "music": "_toggle_music",
     "radio": "_show_radio_menu",
     "nook_radio_toggle": "_toggle_nook_radio",
-    "save_slots": "_show_save_slots_menu",
     "help": "_toggle_help",
+    "save_slots": "_show_save_slots_menu",
     "reset_game": "_start_reset_confirmation",
     "quit": "_return_to_title",
 }
@@ -661,44 +675,44 @@ def build_master_menu_tree():
     from ui.menu_selector import MasterMenuItem
     
     return [
-        # Duck Care (quick actions)
+        # Duck Care (quick actions + item use + inventory)
         MasterMenuItem(
             id="care",
             label="Duck Care",
             children=[
-                MasterMenuItem(id="feed", label="Feed", action="feed"),
-                MasterMenuItem(id="play", label="Play", action="play"),
-                MasterMenuItem(id="clean", label="Clean", action="clean"),
-                MasterMenuItem(id="pet", label="Pet", action="pet"),
-                MasterMenuItem(id="sleep", label="Sleep", action="sleep"),
+                MasterMenuItem(id="feed", label="Feed [F]", action="feed"),
+                MasterMenuItem(id="play", label="Play [P]", action="play"),
+                MasterMenuItem(id="clean", label="Clean [L]", action="clean"),
+                MasterMenuItem(id="pet", label="Pet [D]", action="pet"),
+                MasterMenuItem(id="sleep", label="Sleep [Z]", action="sleep"),
+                MasterMenuItem(id="use", label="Use Item [U]", action="use"),
+                MasterMenuItem(id="inventory", label="Inventory [I]", action="inventory"),
             ]
         ),
         
-        # World & Building
+        # Items & Shop (all commerce and crafting)
+        MasterMenuItem(
+            id="items",
+            label="Items & Shop",
+            children=[
+                MasterMenuItem(id="shop", label="Shop [B]", action="shop"),
+                MasterMenuItem(id="trade", label="Trading Post [<]", action="trade"),
+                MasterMenuItem(id="craft", label="Crafting [C]", children=_get_crafting_items),
+                MasterMenuItem(id="build", label="Building [R]", children=_get_building_items),
+                MasterMenuItem(id="decorate", label="Decorations [V]", children=_get_decorations_items),
+            ]
+        ),
+        
+        # World (exploration, travel, outdoor)
         MasterMenuItem(
             id="world",
             label="World",
             children=[
-                MasterMenuItem(id="explore", label="Explore", action="explore"),
-                MasterMenuItem(id="travel", label="Travel", children=_get_areas_items),
-                MasterMenuItem(id="craft", label="Crafting", children=_get_crafting_items),
-                MasterMenuItem(id="build", label="Building", children=_get_building_items),
-                MasterMenuItem(id="decorate", label="Decorations", children=_get_decorations_items),
-                MasterMenuItem(id="trade", label="Trading Post", action="trade"),
-                MasterMenuItem(id="use", label="Use Item", action="use"),
-            ]
-        ),
-        
-        # Social & Info
-        MasterMenuItem(
-            id="social",
-            label="Social",
-            children=[
-                MasterMenuItem(id="talk", label="Talk to Duck", action="talk"),
-                MasterMenuItem(id="stats", label="View Stats", action="stats"),
-                MasterMenuItem(id="inventory", label="Inventory", action="inventory"),
-                MasterMenuItem(id="goals", label="Goals", action="goals"),
-                MasterMenuItem(id="shop", label="Shop", action="shop"),
+                MasterMenuItem(id="explore", label="Explore [E]", action="explore"),
+                MasterMenuItem(id="travel", label="Travel [A]", children=_get_areas_items),
+                MasterMenuItem(id="garden", label="Garden [9]", children=_get_garden_items),
+                MasterMenuItem(id="weather", label="Weather [W]", action="weather"),
+                MasterMenuItem(id="treasure", label="Treasure Hunt [6]", action="treasure"),
             ]
         ),
         
@@ -707,44 +721,54 @@ def build_master_menu_tree():
             id="activities",
             label="Activities",
             children=[
-                MasterMenuItem(id="minigames", label="Mini-games", children=_get_minigames_items),
-                MasterMenuItem(id="tricks", label="Tricks", children=_get_tricks_items),
-                MasterMenuItem(id="garden", label="Garden", children=_get_garden_items),
-                MasterMenuItem(id="festivals", label="Festivals", action="festivals"),
-                MasterMenuItem(id="diary", label="Enhanced Diary", action="diary"),
-                MasterMenuItem(id="photo", label="Take Photo", action="photo"),
+                MasterMenuItem(id="minigames", label="Mini-games [J]", children=_get_minigames_items),
+                MasterMenuItem(id="tricks", label="Tricks [7]", children=_get_tricks_items),
+                MasterMenuItem(id="festivals", label="Festivals [0]", action="festivals"),
+                MasterMenuItem(id="photo", label="Take Photo [;]", action="photo"),
+                MasterMenuItem(id="diary", label="Diary [=]", action="diary"),
             ]
         ),
         
-        # Collections & Legacy
+        # My Duck (duck info, conversation, progression)
+        MasterMenuItem(
+            id="myduck",
+            label="My Duck",
+            children=[
+                MasterMenuItem(id="talk", label="Talk [T]", action="talk"),
+                MasterMenuItem(id="stats", label="View Stats [S]", action="stats"),
+                MasterMenuItem(id="goals", label="Goals [G]", action="goals"),
+                MasterMenuItem(id="scrapbook", label="Scrapbook [Y]", action="scrapbook"),
+                MasterMenuItem(id="titles", label="Titles [!]", children=_get_titles_items),
+                MasterMenuItem(id="facts", label="Duck Fact [K]", action="facts"),
+            ]
+        ),
+        
+        # Collections
         MasterMenuItem(
             id="collections",
             label="Collections",
             children=[
-                MasterMenuItem(id="collectibles", label="Collectibles", children=_get_collectibles_items),
+                MasterMenuItem(id="collectibles", label="Collectibles [']", children=_get_collectibles_items),
                 MasterMenuItem(id="badges", label="Badges", action="badges"),
-                MasterMenuItem(id="prestige", label="Prestige", action="prestige"),
-                MasterMenuItem(id="titles", label="Titles", children=_get_titles_items),
-                MasterMenuItem(id="scrapbook", label="Scrapbook", action="scrapbook"),
-                MasterMenuItem(id="secrets", label="Secrets Book", action="secrets"),
+                MasterMenuItem(id="prestige", label="Prestige [8]", action="prestige"),
+                MasterMenuItem(id="secrets", label="Secrets Book [\\]", action="secrets"),
             ]
         ),
         
-        # Other
+        # Settings
         MasterMenuItem(
-            id="other",
-            label="Other",
+            id="settings_cat",
+            label="Settings",
             children=[
-                MasterMenuItem(id="facts", label="Duck Fact", action="facts"),
                 MasterMenuItem(id="settings", label="Settings", action="settings"),
-                MasterMenuItem(id="sound", label="Toggle Sound", action="sound"),
-                MasterMenuItem(id="music", label="Toggle Music", action="music"),
-                # MasterMenuItem(id="save_slots", label="Save Slots", action="save_slots"),  # Hidden for now
-                MasterMenuItem(id="help", label="Help", action="help"),
+                MasterMenuItem(id="sound", label="Toggle Sound [N]", action="sound"),
+                MasterMenuItem(id="music", label="Toggle Music [M]", action="music"),
                 MasterMenuItem(id="radio", label="Radio", children=_get_radio_items),
+                MasterMenuItem(id="help", label="Help [H]", action="help"),
+                MasterMenuItem(id="save_slots", label="Save Slots [/]", action="save_slots"),
             ]
         ),
 
         # Save & return to title (at root level for easy access)
-        MasterMenuItem(id="quit", label="Return to Title", action="quit"),
+        MasterMenuItem(id="quit", label="Return to Title [Q]", action="quit"),
     ]
