@@ -2,6 +2,7 @@
 Terminal UI renderer using blessed library - Enhanced version with side panel layout.
 Features a main playfield with moving duck and side panel with close-up, stats, etc.
 """
+import sys
 import time
 import math
 import random
@@ -225,6 +226,9 @@ class Renderer:
         # Interaction animation overlay system
         from ui.interaction_animations import InteractionAnimator
         self.interaction_animator = InteractionAnimator()
+
+        # Dirty-frame detection: skip writes when output hasn't changed
+        self._last_frame_output: str = ""
 
         # Playfield decorations (static objects)
         self._playfield_objects: List[Tuple[int, int, str]] = []
@@ -1192,22 +1196,26 @@ class Renderer:
         elif self._show_message_overlay and not getattr(self, '_message_rendered_inline', False):
             output = self._overlay_message(output, width)
 
-        # Print frame - clear on first render to remove title screen remnants
-        if is_first_render:
-            print(self.term.home + self.term.clear, end="")
-        else:
-            print(self.term.home, end="")
-            
-        # Print all output lines, not limited by height
+        # Build batched frame string — one sys.stdout.write() instead of ~35 print() calls
         max_lines = min(len(output), self.term.height - 1)
+        parts: list[str] = []
         for i in range(max_lines):
             line = output[i]
-            # Use move to ensure proper positioning and overwrite
-            # Use ANSI-aware functions for lines that may contain color codes
             truncated = _visible_truncate(line, width)
             padded = _visible_ljust(truncated, width)
-            # End each line with terminal reset to prevent color bleeding
-            print(self.term.move(i, 0) + padded + self.term.normal, end="")
+            parts.append(self.term.move(i, 0) + padded + self.term.normal)
+        frame_body = "".join(parts)
+
+        if is_first_render:
+            frame_str = self.term.home + self.term.clear + frame_body
+        else:
+            frame_str = self.term.home + frame_body
+
+        # Dirty-frame detection: skip write when output is identical to last frame
+        if is_first_render or frame_str != self._last_frame_output:
+            sys.stdout.write(frame_str)
+            sys.stdout.flush()
+            self._last_frame_output = frame_str
 
     def render_frame_from_context(self, ctx: "RenderContext"):
         """Render a frame using a pre-built RenderContext.
@@ -1829,10 +1837,10 @@ class Renderer:
                                     row[px] = (char, anim_color)
 
             # Add duck if on this row (duck renders ON TOP of items)
-            # Skip if animation is hiding the duck
+            # Skip if animation is hiding the duck or duck is away in another biome
             duck_y = self.duck_pos.y
             duck_x = self.duck_pos.x
-            should_render_duck = not self.interaction_animator.should_hide_duck()
+            should_render_duck = not self.interaction_animator.should_hide_duck() and not self._cheese_away
 
             if should_render_duck:
                 for dy in range(duck_height):
@@ -1850,9 +1858,9 @@ class Renderer:
                                 if char != ' ' and 0 <= duck_x + dx < inner_width:
                                     row[duck_x + dx] = (char, self.color_duck_body)
 
-            # Add effect overlay above duck if any
+            # Add effect overlay above duck if any (skip if duck is away)
             effect_overlay = animation_controller.get_effect_overlay()
-            if effect_overlay:
+            if effect_overlay and not self._cheese_away:
                 effect_offset_y = duck_y - len(effect_overlay)  # Render above duck
                 effect_row_idx = y - effect_offset_y
                 if 0 <= effect_row_idx < len(effect_overlay):

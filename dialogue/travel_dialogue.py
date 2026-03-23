@@ -160,6 +160,33 @@ DEPARTURE_MOOD_ENERGETIC = [
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# MOOD/TRUST DEPARTURE REASON LINES
+# ═══════════════════════════════════════════════════════════════════════════
+
+DEPARTURE_LINES_NEGLECT = [
+    "*doesn't look back* ...I need some space. From... everything.",
+    "*quietly leaves* You probably won't notice I'm gone anyway.",
+    "*walks away slowly* Maybe somewhere else will be... better.",
+    "*sighs* I'm going. Not that anyone asked how I'm doing.",
+    "*slips away* The nest feels cold lately. Not the temperature kind.",
+]
+
+DEPARTURE_LINES_COMFORT = [
+    "*looks around sadly* ...I need to find something. I don't know what.",
+    "*wanders off* Maybe a change of scenery will help...",
+    "*shuffles away* I just... need a minute. Or several minutes. In another biome.",
+    "*leaves quietly* Don't worry about me. I'll figure it out.",
+]
+
+DEPARTURE_LINES_INDEPENDENCE = [
+    "*stretches wings* I'm going out. Don't wait up.",
+    "*casual wave* I do my own thing sometimes. It's a duck thing.",
+    "*walks off confidently* I'll be around. Or over there. Wherever 'there' is.",
+    "*nods* I have plans. Independent duck plans. Very important.",
+]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # FRIEND INVITATION LINES
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -245,6 +272,30 @@ RETURN_HOME_LINES = [
     "I missed me too. Being away from myself is impossible though.",
     "*appears* I went. I saw. I came back. "
     "The other biome sends its regards. Which is nothing. Biomes don't talk.",
+]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# REUNION — player travels to the biome Cheese wandered off to
+# ═══════════════════════════════════════════════════════════════════════════
+
+REUNION_LINES = [
+    "*looks up surprised* ...YOU came to ME? "
+    "That's never happened before. I'm touched. Genuinely.",
+    "*gasps* You FOUND me! I mean... I wasn't hiding. "
+    "I was exploring. Independently. But you're here now!",
+    "*waves wing* Oh hey! You came all the way here? "
+    "That's... actually really sweet. Don't tell anyone I said that.",
+    "*blinks* Wait. We're in the same place again? "
+    "Did you MISS me? ...I missed you too. A little. Fine, a lot.",
+    "*excited quacking* YOU'RE HERE! At {biome}! "
+    "I was JUST thinking about you! Not in a weird way. In a duck way.",
+    "*drops bread* You tracked me down?! "
+    "I feel like a celebrity. A bread-eating, waddling celebrity.",
+    "*runs over* FINALLY someone with good taste! "
+    "You chose {biome}. Same as me. Great minds, am I right?",
+    "*happy flap* Oh! Oh! You came to find me! "
+    "This is the nicest thing since that time you gave me bread. So, yesterday.",
 ]
 
 
@@ -557,8 +608,24 @@ def get_departure_line(
     friend: str = "",
     age: int = 0,
     visits: int = 0,
+    reason: Optional[str] = None,
 ) -> str:
-    """Get a random departure line for the given motivation."""
+    """Get a random departure line for the given motivation.
+    
+    If *reason* is provided (neglect / comfort_seeking / independence /
+    curiosity) AND it has dedicated lines, those override the
+    motivation-based pool.  Otherwise we fall back to the normal
+    motivation map.  'curiosity' reason uses the existing default lines.
+    """
+    reason_map = {
+        "neglect": DEPARTURE_LINES_NEGLECT,
+        "comfort_seeking": DEPARTURE_LINES_COMFORT,
+        "independence": DEPARTURE_LINES_INDEPENDENCE,
+    }
+    # Reason-specific lines don't use format placeholders, return as-is
+    if reason and reason in reason_map:
+        return random.choice(reason_map[reason])
+
     lines_map = {
         "weather_escape": DEPARTURE_WEATHER_ESCAPE,
         "weather_enjoy": DEPARTURE_WEATHER_ENJOY,
@@ -613,6 +680,11 @@ def get_cheese_not_here(cheese_biome: str) -> str:
 def get_return_line(origin: str = "somewhere") -> str:
     """Get a line for when Cheese returns on his own."""
     return random.choice(RETURN_HOME_LINES).format(origin=origin)
+
+
+def get_reunion_line(biome: str = "here") -> str:
+    """Get a line for when the player finds Cheese by traveling to his biome."""
+    return random.choice(REUNION_LINES).format(biome=biome)
 
 
 def get_biome_visitor_comment(

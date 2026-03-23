@@ -1449,16 +1449,90 @@ class SpontaneousTravelSystem:
             "dest_weather": dest_weather_str,
         }
 
+    # ── Mood/trust wander-chance table ─────────────────────────────────────
+
+    @staticmethod
+    def _mood_trust_wander_chance(
+        mood_score: Optional[float], trust: Optional[float]
+    ) -> float:
+        """Return wander probability scaled by mood × trust."""
+        ms = mood_score if mood_score is not None else 60.0
+        tr = trust if trust is not None else 35.0
+
+        if ms >= 70:
+            if tr >= 50:
+                return 0.001
+            elif tr >= 20:
+                return 0.003
+            else:
+                return 0.005
+        elif ms >= 50:
+            if tr >= 50:
+                return 0.003
+            elif tr >= 20:
+                return 0.005
+            else:
+                return 0.010
+        elif ms >= 30:
+            if tr >= 50:
+                return 0.005
+            elif tr >= 20:
+                return 0.010
+            else:
+                return 0.020
+        else:
+            if tr >= 50:
+                return 0.010
+            elif tr >= 20:
+                return 0.020
+            else:
+                return 0.030
+
+    @staticmethod
+    def _mood_return_multiplier(mood_score: Optional[float]) -> float:
+        """Return-chance multiplier based on mood score."""
+        if mood_score is None:
+            return 1.0
+        if mood_score >= 70:
+            return 2.0
+        elif mood_score >= 50:
+            return 1.0
+        elif mood_score >= 30:
+            return 0.5
+        else:
+            return 0.3
+
+    @staticmethod
+    def _departure_reason(
+        mood_score: Optional[float], trust: Optional[float]
+    ) -> str:
+        """Determine *why* Cheese is leaving based on mood × trust."""
+        ms = mood_score if mood_score is not None else 60.0
+        tr = trust if trust is not None else 35.0
+        low_mood = ms < 50
+        low_trust = tr < 50
+        if low_mood and low_trust:
+            return "neglect"
+        elif low_mood and not low_trust:
+            return "comfort_seeking"
+        elif not low_mood and low_trust:
+            return "independence"
+        else:
+            return "curiosity"
+
     # ── Return-home mechanic ──────────────────────────────────────────────
 
-    def check_return_home(self, time_away: float) -> bool:
-        """Escalating probability that Cheese heads home."""
+    def check_return_home(
+        self, time_away: float, mood_score: Optional[float] = None
+    ) -> bool:
+        """Escalating probability that Cheese heads home, scaled by mood."""
         if time_away < 300:  # < 5 min: 0%
             return False
         if time_away <= 900:  # 5-15 min: linear ramp 0.001 → 0.01
             prob = 0.001 + (0.009 * (time_away - 300) / 600)
         else:  # > 15 min
             prob = 0.02
+        prob *= self._mood_return_multiplier(mood_score)
         return random.random() < prob
 
     # ── Main travel check ─────────────────────────────────────────────────
@@ -1469,6 +1543,8 @@ class SpontaneousTravelSystem:
         available_areas: list,
         duck_mood: Optional[str] = None,
         duck_age: int = 0,
+        mood_score: Optional[float] = None,
+        trust: Optional[float] = None,
     ) -> Optional[Dict[str, Any]]:
         """
         Roll for spontaneous travel. Returns travel info dict or None.
@@ -1478,10 +1554,12 @@ class SpontaneousTravelSystem:
             available_areas: List of BiomeArea objects the duck can access
             duck_mood: Current mood string (e.g. "sad", "energetic")
             duck_age: Duck's age in days
+            mood_score: Numeric mood score 0-100 (for wander-chance scaling)
+            trust: Numeric trust score 0-100 (for wander-chance scaling)
             
         Returns:
             Dict with 'destination', 'depart_message', 'arrive_message',
-            'motivation' — or None if no travel triggered.
+            'motivation', 'departure_reason' — or None if no travel triggered.
         """
         now = time.time()
 
@@ -1498,8 +1576,9 @@ class SpontaneousTravelSystem:
         if not other_areas:
             return None
 
-        # Roll
-        if random.random() > self._wander_chance:
+        # Roll with mood×trust-scaled wander chance
+        effective_chance = self._mood_trust_wander_chance(mood_score, trust)
+        if random.random() > effective_chance:
             return None
 
         # Pick a motivation-driven destination
@@ -1515,6 +1594,9 @@ class SpontaneousTravelSystem:
         self._last_travel_time = now
         self._away_since = now
 
+        # Determine departure reason from mood × trust
+        departure_reason = self._departure_reason(mood_score, trust)
+
         # Departure line from dialogue system
         try:
             depart_msg = get_departure_line(
@@ -1525,6 +1607,7 @@ class SpontaneousTravelSystem:
                 friend="",
                 age=duck_age,
                 visits=destination.times_visited,
+                reason=departure_reason,
             )
         except Exception:
             depart_msg = random.choice(SPONTANEOUS_TRAVEL_MESSAGES)
@@ -1538,6 +1621,7 @@ class SpontaneousTravelSystem:
             "depart_message": depart_msg,
             "arrive_message": arrive_msg,
             "motivation": motivation,
+            "departure_reason": departure_reason,
         }
 
     def record_travel(self):
