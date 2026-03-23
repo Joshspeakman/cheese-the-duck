@@ -1048,19 +1048,8 @@ class ConversationSystem:
             logger.debug("Pipeline response generation failed", exc_info=True)
 
         # Legacy fallback chain (if pipeline didn't produce a response)
-        # Try LLM first if enabled — best contextual understanding
-        if not response and use_llm:
-            try:
-                from dialogue.llm_chat import get_llm_chat
-                llm = get_llm_chat()
-                if llm.is_available():
-                    llm_response = llm.generate_response(duck, player_input, memory_context=memory_context)
-                    if llm_response:
-                        response = llm_response
-                        source = "llm"
-            except Exception as e:
-                import logging
-                logging.debug(f"LLM exception: {e}")
+        # LLM is no longer a direct responder — it enriches in the background.
+        # Try keyword, learning, voice, and idle template chains.
 
         # Keyword engine — hand-crafted, topic-specific, always contextual
         if not response:
@@ -1139,6 +1128,26 @@ class ConversationSystem:
             self._unified_memory.record_exchange(player_input, response, ctx, resp)
         except Exception:
             logger.debug("Unified memory dual-write failed", exc_info=True)
+
+        # Background LLM enrichment — fire-and-forget request to generate
+        # better chat_response ambient lines based on what was just said.
+        # These lines will be consumed in future conversations.
+        if use_llm and source and source != "idle":
+            try:
+                if duck and hasattr(duck, '_duck_brain') and duck._duck_brain:
+                    brain = duck._duck_brain
+                    enrich_ctx = {
+                        "player_name": self._player_name or "",
+                        "duck_mood": duck.get_mood().state.value if hasattr(duck, 'get_mood') else "content",
+                        "location": "",
+                        "weather": "",
+                    }
+                    brain._request_ambient(
+                        "chat_enrich", player_input=player_input,
+                        duck_response=response, context=enrich_ctx,
+                    )
+            except Exception:
+                logger.debug("Background LLM enrichment failed", exc_info=True)
 
         # Personalize response — substitute {player_name} and occasionally prepend name
         response = self._personalize_response(response)

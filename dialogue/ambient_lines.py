@@ -30,7 +30,7 @@ DB_PATH = SAVE_DIR / "cheese_brain.db"
 # Valid context types for generated lines
 VALID_CONTEXTS = frozenset({
     "greeting", "feed", "play", "pet", "clean",
-    "idle", "callback",
+    "idle", "callback", "chat_response",
 })
 
 # Regex to parse tagged lines from LLM output
@@ -79,12 +79,22 @@ class AmbientLineGenerator:
                 text TEXT NOT NULL,
                 created_at REAL NOT NULL,
                 used INTEGER DEFAULT 0,
-                source_trigger TEXT
+                source_trigger TEXT,
+                topics TEXT DEFAULT ''
             )
         """)
+        # Add topics column if upgrading from older schema
+        try:
+            self._conn.execute(
+                "ALTER TABLE ambient_lines ADD COLUMN topics TEXT DEFAULT ''"
+            )
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+        self._conn.commit()
         self._conn.commit()
 
-    def _store_lines(self, lines: List[Tuple[str, str]], source_trigger: str):
+    def _store_lines(self, lines: List[Tuple[str, str]], source_trigger: str,
+                     topics: str = ""):
         """Store parsed lines in the database."""
         if not self._conn:
             return
@@ -92,9 +102,9 @@ class AmbientLineGenerator:
         with self._lock:
             for ctx, text in lines:
                 self._conn.execute(
-                    "INSERT INTO ambient_lines (context, text, created_at, source_trigger) "
-                    "VALUES (?, ?, ?, ?)",
-                    (ctx, text, now, source_trigger),
+                    "INSERT INTO ambient_lines (context, text, created_at, source_trigger, topics) "
+                    "VALUES (?, ?, ?, ?, ?)",
+                    (ctx, text, now, source_trigger, topics),
                 )
             self._conn.commit()
             self._prune()
@@ -138,6 +148,57 @@ class AmbientLineGenerator:
                 "WHERE context = ? AND used = 0 "
                 "ORDER BY created_at ASC LIMIT 1",
                 (context,),
+            ).fetchone()
+            if not row:
+                return None
+            self._conn.execute(
+                "UPDATE ambient_lines SET used = 1 WHERE id = ?",
+                (row[0],),
+            )
+            self._conn.commit()
+            return row[1]
+
+    def consume_chat_response(self, player_input: str = "") -> Optional[str]:
+        """
+        Try to consume a chat_response ambient line, preferring topic matches.
+
+        If player_input is provided, tries to find a line whose stored topics
+        overlap with words in the input. Falls back to any chat_response line.
+        """
+        if not self._conn:
+            return None
+        with self._lock:
+            if player_input:
+                # Extract content words for matching
+                words = set(player_input.lower().split())
+                # Try topic-matched line first
+                rows = self._conn.execute(
+                    "SELECT id, text, topics FROM ambient_lines "
+                    "WHERE context = 'chat_response' AND used = 0 "
+                    "ORDER BY created_at DESC LIMIT 20",
+                ).fetchall()
+                best_row = None
+                best_score = 0
+                for row_id, text, topics in rows:
+                    if topics:
+                        topic_words = set(topics.lower().split(","))
+                        overlap = len(words & topic_words)
+                        if overlap > best_score:
+                            best_score = overlap
+                            best_row = (row_id, text)
+                if best_row:
+                    self._conn.execute(
+                        "UPDATE ambient_lines SET used = 1 WHERE id = ?",
+                        (best_row[0],),
+                    )
+                    self._conn.commit()
+                    return best_row[1]
+
+            # Fall back to any unused chat_response line
+            row = self._conn.execute(
+                "SELECT id, text FROM ambient_lines "
+                "WHERE context = 'chat_response' AND used = 0 "
+                "ORDER BY created_at ASC LIMIT 1",
             ).fetchone()
             if not row:
                 return None
@@ -208,13 +269,17 @@ class AmbientLineGenerator:
     def _pick_contexts(self, trigger: str) -> List[str]:
         """Pick which context types to request based on trigger."""
         if trigger == "chat":
-            return ["greeting", "idle", "callback"]
+            return ["greeting", "idle", "callback", "chat_response"]
+        elif trigger == "chat_enrich":
+            return ["chat_response"]
         elif trigger in ("feed", "play", "pet", "clean"):
             return [trigger, "idle"]
         elif trigger == "login":
             return ["greeting", "idle"]
         elif trigger == "vocab":
             return ["idle", "callback"]
+        elif trigger == "warmup":
+            return ["greeting", "idle", "chat_response"]
         else:
             return ["idle"]
 
@@ -244,7 +309,12 @@ class AmbientLineGenerator:
             lines = self._filter_lines(lines)
             if lines:
                 source = f"{trigger}:{player_input[:50]}" if player_input else trigger
-                self._store_lines(lines, source)
+                # Extract topic keywords from player input for chat_response matching
+                topics = ""
+                if player_input and any(ctx == "chat_response" for ctx, _ in lines):
+                    topic_words = [w for w in player_input.lower().split() if len(w) > 3]
+                    topics = ",".join(topic_words[:10])
+                self._store_lines(lines, source, topics=topics)
                 logger.debug(
                     "Ambient: stored %d lines from trigger '%s'",
                     len(lines), trigger,
@@ -271,6 +341,7 @@ class AmbientLineGenerator:
             "clean": "right after being cleaned",
             "idle": "random thoughts while hanging around",
             "callback": "referencing something from a past conversation",
+            "chat_response": "a reply to what the player just said in conversation",
         }
 
         ctx_lines = "\n".join(

@@ -186,6 +186,15 @@ class DuckBrain:
         # Start conversation in conversation memory
         mood_str = self._internal_mood.value if self._internal_mood else "neutral"
         self.conversation_memory.start_conversation(duck_mood=mood_str)
+
+        # Warm-up: seed ambient line pool if running low
+        if self._ambient_generator:
+            try:
+                stock = self._ambient_generator.count_unused()
+                if stock < 5:
+                    self._request_ambient("warmup")
+            except Exception:
+                pass
     
     def end_session(self):
         """Called when player stops playing."""

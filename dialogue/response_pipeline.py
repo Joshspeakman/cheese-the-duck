@@ -160,6 +160,69 @@ class LLMResponseSource(ResponseSource):
 
 
 # ---------------------------------------------------------------------------
+# AmbientChatSource — pre-generated LLM responses from background enrichment
+# ---------------------------------------------------------------------------
+
+class AmbientChatSource(ResponseSource):
+    """
+    Serves pre-generated ``chat_response`` ambient lines that were
+    created in the background by the LLM after previous conversations.
+    """
+
+    @property
+    def name(self) -> str:
+        return "ambient_chat"
+
+    def is_enabled(self) -> bool:
+        try:
+            from config import LLM_ENABLED, LLM_AMBIENT_ENABLED
+            return LLM_ENABLED and LLM_AMBIENT_ENABLED
+        except ImportError:
+            return True
+
+    def can_handle(
+        self, context: DialogueContext, state: DialogueState
+    ) -> bool:
+        if context.player_message is None:
+            return False
+        # Only serve ambient lines if the generator has stock
+        duck = getattr(state, "_duck_ref", None)
+        if duck is None:
+            return False
+        brain = getattr(duck, "_duck_brain", None)
+        if brain is None:
+            return False
+        gen = getattr(brain, "_ambient_generator", None)
+        if gen is None:
+            return False
+        return gen.count_unused("chat_response") > 0
+
+    def generate(
+        self, context: DialogueContext, state: DialogueState
+    ) -> Optional[DialogueResponse]:
+        duck = getattr(state, "_duck_ref", None)
+        if duck is None:
+            return None
+        brain = getattr(duck, "_duck_brain", None)
+        if brain is None:
+            return None
+        gen = getattr(brain, "_ambient_generator", None)
+        if gen is None:
+            return None
+
+        line = gen.consume_chat_response(context.player_message or "")
+        if not line:
+            return None
+
+        return DialogueResponse(
+            text=line,
+            source="ambient_chat",
+            confidence=0.80,
+            should_record=True,
+        )
+
+
+# ---------------------------------------------------------------------------
 # KeywordResponseSource
 # ---------------------------------------------------------------------------
 
@@ -558,31 +621,34 @@ def create_default_pipeline() -> ResponsePipeline:
     Sources that fail to initialise are silently skipped so the game
     can always start, even without an LLM model.
 
+    The LLM is NOT a direct response source — it enriches future
+    responses via the ambient line system in the background.
+
     Default priority order:
-        10 - LLM  (best contextual understanding)
-        20 - Keywords  (hand-crafted topic-specific)
-        30 - Learning engine  (fuzzy-match learned pairs)
-        40 - Seaman  (template deadpan fallback)
-        50 - Voice  (Markov chain novel lines)
+        5  - AmbientChat  (pre-generated LLM responses from background)
+        10 - Keywords  (hand-crafted topic-specific)
+        20 - Learning engine  (fuzzy-match learned pairs)
+        30 - Seaman  (template deadpan fallback)
+        40 - Voice  (Markov chain novel lines)
     """
     pipeline = ResponsePipeline()
 
     try:
-        pipeline.register_source(LLMResponseSource(), priority=10)
+        pipeline.register_source(AmbientChatSource(), priority=5)
     except Exception:
-        logger.debug("Source init failed: LLMResponseSource", exc_info=True)
+        logger.debug("Source init failed: AmbientChatSource", exc_info=True)
 
-    pipeline.register_source(KeywordResponseSource(), priority=20)
+    pipeline.register_source(KeywordResponseSource(), priority=10)
 
     try:
-        pipeline.register_source(LearningResponseSource(), priority=30)
+        pipeline.register_source(LearningResponseSource(), priority=20)
     except Exception:
         logger.debug("Source init failed: LearningResponseSource", exc_info=True)
 
-    pipeline.register_source(SeamanResponseSource(), priority=40)
+    pipeline.register_source(SeamanResponseSource(), priority=30)
 
     try:
-        pipeline.register_source(VoiceResponseSource(), priority=50)
+        pipeline.register_source(VoiceResponseSource(), priority=40)
     except Exception:
         logger.debug("Source init failed: VoiceResponseSource", exc_info=True)
 
