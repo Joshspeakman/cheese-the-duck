@@ -82,7 +82,7 @@ class TestLineRegex:
 
 class TestValidContexts:
     def test_all_expected_contexts_present(self):
-        expected = {"greeting", "feed", "play", "pet", "clean", "idle", "callback"}
+        expected = {"greeting", "feed", "play", "pet", "clean", "idle", "callback", "chat_response"}
         assert VALID_CONTEXTS == expected
 
 
@@ -445,4 +445,4 @@ class TestDbInit:
         gen = _make_gen(tmp_path)
         cursor = gen._conn.execute("PRAGMA table_info(ambient_lines)")
         columns = {row[1] for row in cursor.fetchall()}
-        assert columns == {"id", "context", "text", "created_at", "used", "source_trigger"}
+        assert columns == {"id", "context", "text", "created_at", "used", "source_trigger", "topics"}
