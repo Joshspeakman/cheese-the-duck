@@ -53,6 +53,7 @@ class SaveManager:
             # Resolve paths to absolute to avoid pathlib rename bugs
             save_path_resolved = self.save_path.resolve()
             temp_path = save_path_resolved.with_suffix(".tmp")
+            bak_path = save_path_resolved.with_suffix(".bak")
 
             # Remove existing temp file if crashed save left one behind
             if temp_path.exists():
@@ -61,13 +62,30 @@ class SaveManager:
             with open(temp_path, "w", encoding="utf-8") as f:
                 json.dump(save_data, f, indent=2, ensure_ascii=False)
 
+            # Backup current save before replacing
+            if save_path_resolved.exists():
+                try:
+                    save_path_resolved.replace(bak_path)
+                except OSError:
+                    pass  # Best-effort backup
+
             # Rename temp to actual save file (atomic on most systems)
             try:
                 temp_path.replace(save_path_resolved)
             except OSError as rename_error:
-                # If rename fails, try to preserve the temp file data
+                # Try to restore backup if rename failed
+                if bak_path.exists():
+                    try:
+                        bak_path.replace(save_path_resolved)
+                    except OSError:
+                        pass
                 print(f"Warning: Could not complete atomic save: {rename_error}")
-                # Temp file still exists with valid data
+                # Clean up orphaned temp file
+                if temp_path.exists():
+                    try:
+                        temp_path.unlink()
+                    except OSError:
+                        pass
                 return False
             
             return True
@@ -79,24 +97,46 @@ class SaveManager:
     def load(self) -> Optional[dict]:
         """
         Load game data from JSON file.
+        Falls back to .bak if main save is corrupted.
+        Cleans up orphaned .tmp files.
 
         Returns:
             Game state dictionary or None if load fails
         """
-        if not self.save_exists():
+        save_path_resolved = self.save_path.resolve()
+        temp_path = save_path_resolved.with_suffix(".tmp")
+        bak_path = save_path_resolved.with_suffix(".bak")
+
+        # Clean up orphaned temp files from crashed saves
+        if temp_path.exists():
+            try:
+                temp_path.unlink()
+            except OSError:
+                pass
+
+        # Try main save first
+        data = self._try_load_file(self.save_path)
+        if data is not None:
+            return self._migrate_save(data)
+
+        # Fall back to backup
+        if bak_path.exists():
+            print("Main save corrupted, loading backup...")
+            data = self._try_load_file(bak_path)
+            if data is not None:
+                return self._migrate_save(data)
+
+        return None
+
+    def _try_load_file(self, path: Path) -> Optional[dict]:
+        """Try to load and parse a JSON save file."""
+        if not path.exists():
             return None
-
         try:
-            with open(self.save_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            
-            # Migrate old saves if needed
-            data = self._migrate_save(data)
-            
-            return data
-
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
         except (IOError, OSError, json.JSONDecodeError) as e:
-            print(f"Load failed: {e}")
+            print(f"Load failed for {path.name}: {e}")
             return None
     
     def _migrate_save(self, data: dict) -> dict:

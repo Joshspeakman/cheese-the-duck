@@ -17,6 +17,7 @@ from typing import Dict, List, Optional, Any, Tuple, TYPE_CHECKING
 from datetime import datetime, timedelta
 from enum import Enum
 import random
+import threading
 import time
 
 from dialogue.player_model import PlayerModel
@@ -98,7 +99,9 @@ class DuckBrain:
         self._last_mood_update = time.time()
         
         # Thought queue (prioritized things to say)
+        self._thought_lock = threading.Lock()
         self._thought_queue: List[DuckThought] = []
+        self._thought_queue_max = 50
         
         # Recent interaction tracking
         self._last_player_message: Optional[str] = None
@@ -221,7 +224,8 @@ class DuckBrain:
         
         self._last_player_message = message
         self._last_interaction_time = now
-        self._session_messages += 1
+        with self._thought_lock:
+            self._session_messages += 1
         
         # Record in conversation memory
         topics = self.conversation_memory._detect_topics(message)
@@ -335,7 +339,7 @@ class DuckBrain:
         # Record in ritual tracker — may return a deadpan observation
         ritual_obs = self.ritual_tracker.record_interaction(action)
         if ritual_obs:
-            self._thought_queue.append(DuckThought(
+            self._enqueue_thought(DuckThought(
                 text=ritual_obs,
                 priority=ResponsePriority.NORMAL,
                 category="ritual",
@@ -411,7 +415,7 @@ class DuckBrain:
         if missed:
             # Queue all but return the first one now
             for obs in missed[1:]:
-                self._thought_queue.append(DuckThought(
+                self._enqueue_thought(DuckThought(
                     text=obs,
                     priority=ResponsePriority.NORMAL,
                     category="ritual",
@@ -693,6 +697,12 @@ class DuckBrain:
         ]
         return random.choice(responses)
     
+    def _enqueue_thought(self, thought: DuckThought) -> None:
+        """Thread-safe append to the thought queue with cap."""
+        with self._thought_lock:
+            if len(self._thought_queue) < self._thought_queue_max:
+                self._thought_queue.append(thought)
+
     def _generate_session_start_thoughts(self, time_since_last: float):
         """Generate thoughts for the start of a session."""
         hours = time_since_last
@@ -700,7 +710,7 @@ class DuckBrain:
         # Long absence observation
         if hours > 72:
             days = int(hours / 24)
-            self._thought_queue.append(DuckThought(
+            self._enqueue_thought(DuckThought(
                 text=f"You were gone {days} days. I wasn't worried. Ducks don't worry. Much.",
                 priority=ResponsePriority.HIGH,
                 category="observation",
@@ -711,7 +721,7 @@ class DuckBrain:
         # Check for pending observations from player model
         obs = self.player_model.get_pending_observation()
         if obs:
-            self._thought_queue.append(DuckThought(
+            self._enqueue_thought(DuckThought(
                 text=obs,
                 priority=ResponsePriority.NORMAL,
                 category="observation",
@@ -729,7 +739,7 @@ class DuckBrain:
         )
         
         if observation:
-            self._thought_queue.append(DuckThought(
+            self._enqueue_thought(DuckThought(
                 text=observation.text,
                 priority=ResponsePriority.LOW,
                 category="observation",
@@ -738,24 +748,25 @@ class DuckBrain:
             ))
     
     def _get_next_thought(self) -> Optional[DuckThought]:
-        """Get the next thought from the queue if available."""
-        if not self._thought_queue:
-            return None
-        
-        now = time.time()
-        
-        # Remove expired thoughts
-        self._thought_queue = [
-            t for t in self._thought_queue
-            if not t.expires_at or t.expires_at > now
-        ]
-        
-        if not self._thought_queue:
-            return None
-        
-        # Sort by priority and return highest
-        self._thought_queue.sort(key=lambda t: t.priority.value, reverse=True)
-        return self._thought_queue.pop(0)
+        """Get the next thought from the queue (thread-safe)."""
+        with self._thought_lock:
+            if not self._thought_queue:
+                return None
+            
+            now = time.time()
+            
+            # Remove expired thoughts
+            self._thought_queue = [
+                t for t in self._thought_queue
+                if not t.expires_at or t.expires_at > now
+            ]
+            
+            if not self._thought_queue:
+                return None
+            
+            # Sort by priority and return highest
+            self._thought_queue.sort(key=lambda t: t.priority.value, reverse=True)
+            return self._thought_queue.pop(0)
 
     # ── Ambient line generation helpers ───────────────────────────────
 
