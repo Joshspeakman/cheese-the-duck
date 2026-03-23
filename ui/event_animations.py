@@ -74,7 +74,7 @@ class EventAnimator:
         self.frame_duration = 0.2  # Seconds per frame
         
         # Movement parameters
-        self.speed = 0.5  # Units per update
+        self.speed = 0.15  # Units per update
         self.wobble_amplitude = 0.0
         self.wobble_frequency = 0.0
         
@@ -292,8 +292,8 @@ class ButterflyAnimator(EventAnimator):
         
         # Butterfly-specific movement
         self.wobble_amplitude = 1.5
-        self.wobble_frequency = 4.0
-        self.speed = 0.6
+        self.wobble_frequency = 2.5
+        self.speed = 0.18
         self.frame_duration = 0.15
         
         self.color_index = 0
@@ -474,7 +474,7 @@ class BirdAnimator(EventAnimator):
         self.y = 2.0
         
         # Bird-specific movement
-        self.speed = 0.8
+        self.speed = 0.20
         self.frame_duration = 0.18
         self.is_hopping = False
         self.hop_count = 0
@@ -607,7 +607,7 @@ class DuckVisitorAnimator(EventAnimator):
         self.y = float(ground_y)
         
         # Duck movement
-        self.speed = 0.3  # Slow waddle
+        self.speed = 0.12  # Slow waddle
         self.frame_duration = 0.25
         self.waddle_phase = 0
         
@@ -1317,7 +1317,7 @@ class FrogAnimator(EventAnimator):
         ground = playfield_height - 4
         self.x = float(playfield_width + 5) if self.coming_from_right else -5.0
         self.y = float(ground)
-        self.speed = 0.7
+        self.speed = 0.15
         self.frame_duration = 0.2
 
     def _setup_arrival_path(self):
@@ -1385,7 +1385,7 @@ class DragonflyAnimator(EventAnimator):
         )
         self.x = float(playfield_width + 3)
         self.y = random.uniform(2, playfield_height - 3)
-        self.speed = 1.2
+        self.speed = 0.25
         self.frame_duration = 0.1
         self._zip_target_x = 0.0
         self._zip_target_y = 0.0
@@ -1530,7 +1530,7 @@ class FallingObjectAnimator(EventAnimator):
         self.x = float(playfield_width // 2 + random.randint(-10, 10))
         self.y = 0.0
         self.target_y = float(playfield_height - 3)
-        self.speed = 0.8
+        self.speed = 0.30
         self.frame_duration = 0.12
         self._hit_ground = False
 
@@ -1617,7 +1617,7 @@ class SquirrelAnimator(EventAnimator):
         self.coming_from_right = random.random() < 0.5
         self.x = float(playfield_width + 5) if self.coming_from_right else -5.0
         self.y = float(ground)
-        self.speed = 1.0
+        self.speed = 0.20
         self.frame_duration = 0.15
 
     def _setup_arrival_path(self):
@@ -1643,7 +1643,7 @@ class SquirrelAnimator(EventAnimator):
             (exit_x, self.y - 2),
         ]
         self.path_index = 0
-        self.speed = 2.0  # Panic speed!
+        self.speed = 0.40  # Panic speed!
 
     def _update_sprite_frame(self):
         self.frame_index = (self.frame_index + 1) % 2
@@ -1712,9 +1712,9 @@ class FoodAnimator(EventAnimator):
             start_y=-3.0,
             duration=7.0,
         )
-        self.speed = 0.3
+        self.speed = 0.12
         self.wobble_amplitude = 0.5
-        self.wobble_frequency = 2.0
+        self.wobble_frequency = 1.5
         self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["the_holy_loaf"])
         self._color = self.COLORS_MAP.get(event_id, "yellow")
 
@@ -1738,7 +1738,7 @@ class FoodAnimator(EventAnimator):
     def _setup_leaving_path(self):
         self.path_points = [(self.x, self.y), (self.x, -5.0)]
         self.path_index = 0
-        self.speed = 0.5
+        self.speed = 0.15
 
     def _update_sprite_frame(self):
         self.frame_index = (self.frame_index + 1) % 2
@@ -1796,9 +1796,9 @@ class FallingThingsAnimator(EventAnimator):
             start_y=-2.0,
             duration=6.0,
         )
-        self.speed = 0.4
+        self.speed = 0.15
         self.wobble_amplitude = 1.0
-        self.wobble_frequency = 3.0
+        self.wobble_frequency = 2.0
         self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["bread_rain"])
         self._color = self.COLORS_MAP.get(event_id, "yellow")
 
@@ -1921,7 +1921,7 @@ class SkyLightAnimator(EventAnimator):
             start_y=start_y,
             duration=7.0,
         )
-        self.speed = 0.7
+        self.speed = 0.15
         self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["aurora_borealis"])
         self._color = self.COLORS_MAP.get(event_id, "white")
 
@@ -1946,7 +1946,7 @@ class SkyLightAnimator(EventAnimator):
     def _setup_leaving_path(self):
         self.path_points = [(self.x, self.y), (-10.0, self.y)]
         self.path_index = 0
-        self.speed = 1.0
+        self.speed = 0.20
 
     def _update_sprite_frame(self):
         self.frame_index = (self.frame_index + 1) % 2
@@ -2019,7 +2019,7 @@ class RainbowAnimator(EventAnimator):
             start_y=2.0,
             duration=8.0,
         )
-        self.speed = 0.4
+        self.speed = 0.12
         self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["rainbow_double"])
         self._color = self.COLORS_MAP.get(event_id, "cyan")
 
@@ -2040,7 +2040,7 @@ class RainbowAnimator(EventAnimator):
     def _setup_leaving_path(self):
         self.path_points = [(self.x, self.y), (self.x, -6.0)]
         self.path_index = 0
-        self.speed = 0.3
+        self.speed = 0.10
 
     def _update_sprite_frame(self):
         self.frame_index = (self.frame_index + 1) % 2
@@ -2148,7 +2148,7 @@ class MoonAnimator(EventAnimator):
             start_y=float(playfield_height + 3),
             duration=8.0,
         )
-        self.speed = 0.25
+        self.speed = 0.08
         self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["full_moon_exp"])
         self._color = self.COLORS_MAP.get(event_id, "white")
 
@@ -2170,7 +2170,7 @@ class MoonAnimator(EventAnimator):
     def _setup_leaving_path(self):
         self.path_points = [(self.x, self.y), (self.x, -6.0)]
         self.path_index = 0
-        self.speed = 0.2
+        self.speed = 0.06
 
     def _update_sprite_frame(self):
         self.frame_index = (self.frame_index + 1) % 2
@@ -2448,9 +2448,9 @@ class UFOAnimator(EventAnimator):
             start_y=-4.0,
             duration=8.0,
         )
-        self.speed = 0.3
+        self.speed = 0.12
         self.wobble_amplitude = 0.8
-        self.wobble_frequency = 2.0
+        self.wobble_frequency = 1.5
 
     def _setup_arrival_path(self):
         cx = self.playfield_width // 2
@@ -2475,7 +2475,7 @@ class UFOAnimator(EventAnimator):
     def _setup_leaving_path(self):
         self.path_points = [(self.x, self.y), (self.x + 10, -6.0)]
         self.path_index = 0
-        self.speed = 0.8
+        self.speed = 0.25
 
     def _update_sprite_frame(self):
         self.frame_index = (self.frame_index + 1) % 2
@@ -2513,9 +2513,9 @@ class GhostDuckAnimator(EventAnimator):
             start_y=float(playfield_height // 2),
             duration=7.0,
         )
-        self.speed = 0.35
+        self.speed = 0.10
         self.wobble_amplitude = 1.0
-        self.wobble_frequency = 1.5
+        self.wobble_frequency = 1.0
         self._from_left = (side == "left")
 
     def _setup_arrival_path(self):
@@ -2538,7 +2538,7 @@ class GhostDuckAnimator(EventAnimator):
         exit_x = float(self.playfield_width + 10) if self._from_left else -10.0
         self.path_points = [(self.x, self.y), (exit_x, self.y - 2)]
         self.path_index = 0
-        self.speed = 0.4
+        self.speed = 0.12
 
     def _update_sprite_frame(self):
         self.frame_index = (self.frame_index + 1) % 2
@@ -2665,9 +2665,9 @@ class FloatingAnimator(EventAnimator):
             start_y=random.uniform(1, 4),
             duration=8.0,
         )
-        self.speed = 0.3
+        self.speed = 0.10
         self.wobble_amplitude = 0.5
-        self.wobble_frequency = 1.5
+        self.wobble_frequency = 1.0
         self._from_left = (side == "left")
         self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["hot_air_balloon"])
         self._color = self.COLORS_MAP.get(event_id, "white")
@@ -2691,7 +2691,7 @@ class FloatingAnimator(EventAnimator):
         exit_x = float(self.playfield_width + 10) if self._from_left else -10.0
         self.path_points = [(self.x, self.y), (exit_x, self.y - 1)]
         self.path_index = 0
-        self.speed = 0.3
+        self.speed = 0.10
 
     def _update_sprite_frame(self):
         self.frame_index = (self.frame_index + 1) % 2
@@ -2829,9 +2829,9 @@ class ButterflySwarmAnimator(EventAnimator):
             start_y=random.uniform(2, playfield_height - 3),
             duration=7.0,
         )
-        self.speed = 0.5
+        self.speed = 0.15
         self.wobble_amplitude = 1.2
-        self.wobble_frequency = 3.0
+        self.wobble_frequency = 2.0
         self._from_left = (side == "left")
         self.sprites = self.SPRITES_MAP.get(event_id, self.SPRITES_MAP["butterfly_migration_exp"])
         self._color = self.COLORS_MAP.get(event_id, "magenta")
@@ -2857,7 +2857,7 @@ class ButterflySwarmAnimator(EventAnimator):
         exit_x = float(self.playfield_width + 10) if self._from_left else -10.0
         self.path_points = [(self.x, self.y), (exit_x, self.y - 2)]
         self.path_index = 0
-        self.speed = 0.6
+        self.speed = 0.20
 
     def _update_sprite_frame(self):
         self.frame_index = (self.frame_index + 1) % 2
@@ -2935,7 +2935,7 @@ class FireworksAnimator(EventAnimator):
             start_y=float(playfield_height),
             duration=6.0,
         )
-        self.speed = 0.6
+        self.speed = 0.25
         self._burst = False
 
     def _setup_arrival_path(self):
