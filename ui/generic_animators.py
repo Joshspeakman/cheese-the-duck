@@ -42,14 +42,14 @@ class CreatureSceneAnimator(EventAnimator):
     """
 
     BEHAVIORS = {
-        "hop":    {"speed": 0.45, "wobble_amp": 1.8, "wobble_freq": 5.0, "interact_time": 3.0},
-        "walk":   {"speed": 0.3,  "wobble_amp": 0.3, "wobble_freq": 2.0, "interact_time": 3.5},
-        "fly":    {"speed": 0.6,  "wobble_amp": 2.0, "wobble_freq": 3.0, "interact_time": 2.5},
-        "swim":   {"speed": 0.35, "wobble_amp": 0.8, "wobble_freq": 2.5, "interact_time": 3.0},
-        "crawl":  {"speed": 0.2,  "wobble_amp": 0.2, "wobble_freq": 1.5, "interact_time": 4.0},
-        "sneak":  {"speed": 0.25, "wobble_amp": 0.0, "wobble_freq": 0.0, "interact_time": 3.0},
-        "swoop":  {"speed": 0.7,  "wobble_amp": 3.0, "wobble_freq": 4.0, "interact_time": 2.0},
-        "float":  {"speed": 0.2,  "wobble_amp": 1.0, "wobble_freq": 1.0, "interact_time": 4.0},
+        "hop":    {"speed": 0.15, "wobble_amp": 1.8, "wobble_freq": 3.0, "interact_time": 3.0},
+        "walk":   {"speed": 0.15, "wobble_amp": 0.3, "wobble_freq": 1.5, "interact_time": 3.5},
+        "fly":    {"speed": 0.20, "wobble_amp": 2.0, "wobble_freq": 2.0, "interact_time": 2.5},
+        "swim":   {"speed": 0.12, "wobble_amp": 0.8, "wobble_freq": 1.5, "interact_time": 3.0},
+        "crawl":  {"speed": 0.10, "wobble_amp": 0.2, "wobble_freq": 1.0, "interact_time": 4.0},
+        "sneak":  {"speed": 0.10, "wobble_amp": 0.0, "wobble_freq": 0.0, "interact_time": 3.0},
+        "swoop":  {"speed": 0.25, "wobble_amp": 3.0, "wobble_freq": 2.5, "interact_time": 2.0},
+        "float":  {"speed": 0.10, "wobble_amp": 1.0, "wobble_freq": 0.8, "interact_time": 4.0},
     }
 
     def __init__(
@@ -145,11 +145,11 @@ class CreatureSceneAnimator(EventAnimator):
         elapsed = time.time() - self.state_start_time
 
         if self._behavior_name in ("hop", "crawl"):
-            self._hop_timer += 0.1
+            self._hop_timer += 0.05
             self.x = self._interact_base_x + math.sin(self._hop_timer * 2) * 3
             self.y = self._interact_base_y - abs(math.sin(self._hop_timer * 3)) * 1.5
         elif self._behavior_name in ("fly", "swoop"):
-            self._orbit_angle += 0.12
+            self._orbit_angle += 0.05
             radius = 8 + math.sin(elapsed * 1.5) * 2
             self.x = duck_x + math.cos(self._orbit_angle) * radius
             self.y = duck_y + math.sin(self._orbit_angle) * radius * 0.4
@@ -263,7 +263,7 @@ class FoodSceneAnimator(EventAnimator):
         else:
             self.path_points = [(self.x, self.y)]
         self.path_index = 0
-        self.speed = 0.8 if self._appear_style == "drop" else 0.6
+        self.speed = 0.3 if self._appear_style == "drop" else 0.2
 
     def _update_arriving(self, duck_x: int, duck_y: int):
         if self._appear_style == "discover":
@@ -290,7 +290,7 @@ class FoodSceneAnimator(EventAnimator):
     def _setup_leaving_path(self):
         self.path_points = [(self.x, self.y), (self.x, self.y - 8)]
         self.path_index = 0
-        self.speed = 0.3
+        self.speed = 0.10
 
     def _update_leaving(self):
         reached = self._move_along_path()
@@ -413,7 +413,7 @@ class HumanSceneAnimator(EventAnimator):
         self._sprite_keys = list(self._sprites.keys())
         self._color = color
         self._coming_from_right = coming_from_right
-        self.speed = 0.35
+        self.speed = 0.12
         self.frame_duration = 0.25
 
     def _setup_arrival_path(self):
@@ -491,7 +491,7 @@ class CelestialSceneAnimator(EventAnimator):
         self._sprite_keys = list(self._sprites.keys())
         self._color = color
         self._drift_dir = drift_direction
-        self.speed = 0.25
+        self.speed = 0.08
         self.frame_duration = 0.35
 
     def _setup_arrival_path(self):
@@ -591,7 +591,7 @@ class PropSceneAnimator(EventAnimator):
     def _setup_arrival_path(self):
         if self._appear_style in ("drop", "slide", "rise"):
             self.path_points = [(self.x, self.y), (self._target_x, self._target_y)]
-            self.speed = 0.5
+            self.speed = 0.15
         else:
             self.path_points = [(self.x, self.y)]
         self.path_index = 0
@@ -639,7 +639,7 @@ class PropSceneAnimator(EventAnimator):
     def _setup_leaving_path(self):
         self.path_points = [(self.x, self.y), (self.x + random.uniform(-3, 3), self.y - 6)]
         self.path_index = 0
-        self.speed = 0.25
+        self.speed = 0.10
 
     def _update_leaving(self):
         reached = self._move_along_path()
@@ -699,7 +699,7 @@ class VehicleSceneAnimator(EventAnimator):
         self._sprites = VEHICLES.get(vehicle_name, VEHICLES.get("boat", {}))
         self._sprite_keys = list(self._sprites.keys())
         self._color = color
-        self.speed = 0.3
+        self.speed = 0.15
         self.frame_duration = 0.3
 
     def _setup_arrival_path(self):
