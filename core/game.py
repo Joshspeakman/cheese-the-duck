@@ -456,6 +456,8 @@ class Game:
         self._cheese_away_since = 0.0         # When Cheese left
         self._cheese_away_friend = ""         # Friend that went with Cheese (if any)
         self._player_biome = ""               # The biome the player is viewing
+        self._pending_note_fetch = None       # Visitor note to fetch friend for
+        self._pending_note_fetch_time = 0.0   # When to trigger the fetch
 
         # Interaction cooldowns (in seconds)
         self._interaction_cooldowns = {
@@ -741,8 +743,8 @@ class Game:
 
     def _process_input(self):
         """Process keyboard input."""
-        # Reduced timeout from 50ms to 10ms for more responsive input on Arch/CachyOS
-        key = self.terminal.inkey(timeout=0.01)
+        # Reduced timeout from 10ms to 3ms for more responsive input
+        key = self.terminal.inkey(timeout=0.003)
 
         if not key:
             return
@@ -3430,6 +3432,24 @@ class Game:
             if current_time - self._travel_start_time >= self._travel_duration:
                 self._complete_travel()
 
+        # Check if Cheese should fetch a friend (after reading a visitor note)
+        if self._pending_note_fetch and current_time >= self._pending_note_fetch_time:
+            note = self._pending_note_fetch
+            self._pending_note_fetch = None
+            try:
+                self.friends.start_visit(note['friend_id'])
+                self.renderer.show_message(
+                    f"*returns with {note['friend_name']}* "
+                    f"Look who I found! They were still nearby!",
+                    duration=5.0, category="duck"
+                )
+            except Exception:
+                self.renderer.show_message(
+                    f"*returns alone* ...{note['friend_name']} already left. "
+                    f"Figures.",
+                    duration=4.0, category="duck"
+                )
+
         # Check for exploration completion
         if self._duck_exploring:
             if current_time - self._exploring_start_time >= self._exploring_duration:
@@ -3689,9 +3709,14 @@ class Game:
                 current_hour = datetime.now().hour
                 visitor_arrived, visitor_msg = self.friends.check_for_random_visitor(current_hour)
                 if visitor_arrived and visitor_msg:
-                    # Get the visitor's greeting
-                    from world.friends import visitor_animator
-                    if self.friends.current_visit:
+                    # If cheese is away, the visitor left a note instead of a full visit
+                    if self.friends.cheese_is_away:
+                        self.renderer.show_message(
+                            f"d {visitor_msg} They left a note at the nest.",
+                            duration=4.0, category="system"
+                        )
+                    elif self.friends.current_visit:
+                        from world.friends import visitor_animator
                         friend = self.friends.get_friend_by_id(self.friends.current_visit.friend_id)
                         if friend:
                             personality = friend.personality.value if hasattr(friend.personality, 'value') else str(friend.personality)
@@ -4760,10 +4785,13 @@ class Game:
         # Get duck mood and age for motivation-aware travel
         duck_mood = self.duck.get_mood().state.value if self.duck else None
         duck_age = getattr(self.duck, 'age_days', 0) if self.duck else 0
+        mood_score = self.duck.get_mood().score if self.duck else 50
+        trust = getattr(self.duck, 'trust', 50) if self.duck else 50
 
         # Roll for spontaneous travel
         result = self.spontaneous_travel.check_spontaneous_travel(
-            current_name, available, duck_mood=duck_mood, duck_age=duck_age
+            current_name, available, duck_mood=duck_mood, duck_age=duck_age,
+            mood_score=mood_score, trust=trust
         )
         if not result:
             return
@@ -4786,6 +4814,7 @@ class Game:
         self._cheese_away_biome = destination.name
         self._cheese_away_destination = destination.name
         self._cheese_away_since = time.time()
+        self.friends.cheese_is_away = True
 
         # Friend invitation BEFORE obscuring renderer (so invite text is visible)
         self._try_invite_friend_on_travel(destination)
@@ -4821,7 +4850,8 @@ class Game:
     def _check_cheese_return(self):
         """Check if Cheese decides to come home."""
         time_away = time.time() - self._cheese_away_since
-        if self.spontaneous_travel.check_return_home(time_away):
+        mood_score = self.duck.get_mood().score if self.duck else 50
+        if self.spontaneous_travel.check_return_home(time_away, mood_score=mood_score):
             self._bring_cheese_home()
 
     def _bring_cheese_home(self, breadcrumb=False):
@@ -4857,6 +4887,35 @@ class Game:
         self._cheese_away_destination = ""
         self._cheese_away_since = 0.0
         self._cheese_away_friend = ""
+        self.friends.cheese_is_away = False
+
+        # Check for visitor notes left while away
+        try:
+            if self.friends.has_pending_notes():
+                notes = self.friends.get_pending_notes()
+                latest = notes[-1]
+                mood = self.duck.get_mood() if self.duck else None
+                mood_score = mood.score if mood else 50
+
+                if mood_score >= 70:
+                    self._pending_note_fetch = latest
+                    self._pending_note_fetch_time = time.time() + 3.0
+                    note_msg = (f"*reads note* ...{latest['friend_name']} came by? "
+                                f"And I MISSED it? Hold on, I'll go get them!")
+                else:
+                    note_msg = (f"*reads note* ...{latest['friend_name']} stopped by. "
+                                f"Cool. I was busy. Doing... things.")
+
+                self.renderer.show_message(note_msg, duration=5.0, category="duck")
+
+                if len(notes) > 1:
+                    others = ", ".join(n['friend_name'] for n in notes[:-1])
+                    self.renderer.show_message(
+                        f"*shuffles through notes* ...{others} also came by. Popular today.",
+                        duration=4.0, category="duck"
+                    )
+        except Exception:
+            pass
 
     def _simulate_offline_world(self, hours_away: float) -> list:
         """Simulate world events that happened while the game was closed.
@@ -6049,6 +6108,7 @@ class Game:
         if self._cheese_away:
             self.renderer._cheese_away = True
             self.renderer._cheese_away_biome = self._cheese_away_destination
+            self.friends.cheese_is_away = True
 
         # Load duck desires / daily goals
         if "desires" in data and data["desires"]:
@@ -6298,7 +6358,16 @@ class Game:
             from game_logger import get_logger
             get_logger().debug("Failed to serialize duck_store for save")
 
-        self.save_manager.save(save_data)
+        # Deep-copy and write to disk on a background thread so the main
+        # loop never blocks on JSON serialization + file I/O.
+        import copy
+        save_copy = copy.deepcopy(save_data)
+        if not hasattr(self, '_save_executor'):
+            import concurrent.futures
+            self._save_executor = concurrent.futures.ThreadPoolExecutor(
+                max_workers=1, thread_name_prefix="save"
+            )
+        self._save_executor.submit(self.save_manager.save, save_copy)
         notification_manager.show("Game saved!", "success", 1.5)
 
     def _return_to_title(self):
@@ -7135,6 +7204,44 @@ class Game:
 
     def _start_travel_to_area(self, area):
         """Start duck traveling to a new area."""
+        # Check if Cheese wants to come along
+        if self.duck:
+            mood = self.duck.get_mood()
+            mood_score = mood.score if mood else 50
+            trust = getattr(self.duck, 'trust', 50)
+
+            if mood_score < 50 or trust < 35:
+                # Cheese refuses to follow — player travels alone
+                current_area = self.exploration.current_area
+                cheese_stays_at = current_area.name if current_area else "Home Pond"
+
+                # Set cheese-away state (cheese stays, player leaves)
+                self._cheese_away = True
+                self._cheese_away_biome = cheese_stays_at
+                self._cheese_away_destination = cheese_stays_at
+                self._cheese_away_since = time.time()
+                self._cheese_away_friend = ""
+                self.renderer._cheese_away = True
+                self.renderer._cheese_away_biome = cheese_stays_at
+                self.friends.cheese_is_away = True
+
+                # Show refusal message
+                if mood_score < 30:
+                    refusal = "*sits down firmly* ...No. I'm staying here. Go without me."
+                elif mood_score < 50:
+                    refusal = "*looks away* ...I don't really feel like going anywhere. You go."
+                else:
+                    refusal = "*hesitates* ...I barely know you enough to follow you around."
+                self.renderer.show_message(refusal, duration=4.0, category="duck")
+
+                # Continue with player travel (but Cheese doesn't come)
+                self._duck_traveling = True
+                self._travel_start_time = time.time()
+                self._travel_destination = area
+                self.renderer.show_message(f"d Traveling to {area.name}...", duration=self._travel_duration)
+                duck_sounds.play()
+                return
+
         self._duck_traveling = True
         self._travel_start_time = time.time()
         self._travel_destination = area
@@ -7177,6 +7284,53 @@ class Game:
             if self._spontaneous_arrival_msg:
                 self.renderer.show_message(self._spontaneous_arrival_msg, duration=4.0)
                 self._spontaneous_arrival_msg = None
+
+            # Reunite with Cheese if the player traveled to his biome
+            if self._cheese_away and area.name == self._cheese_away_destination:
+                from dialogue.travel_dialogue import get_reunion_line
+                reunion_msg = get_reunion_line(biome=area.name)
+                # Clear away state so duck shows and chat works normally
+                self.renderer._cheese_away = False
+                self.renderer._cheese_away_biome = ""
+                self.renderer.show_message(reunion_msg, duration=5.0, category="duck")
+                if self.duck:
+                    self.duck.memory.add_event(
+                        f"Player found Cheese at {self._cheese_away_destination}",
+                        reunion_msg,
+                        importance=4,
+                        emotional_value=5,
+                    )
+                self._cheese_away = False
+                self._cheese_away_biome = ""
+                self._cheese_away_destination = ""
+                self._cheese_away_since = 0.0
+                self._cheese_away_friend = ""
+                self.friends.cheese_is_away = False
+
+                # Check for visitor notes left while away
+                if self.friends.has_pending_notes():
+                    notes = self.friends.get_pending_notes()
+                    latest = notes[-1]
+                    mood = self.duck.get_mood() if self.duck else None
+                    mood_score = mood.score if mood else 50
+
+                    if mood_score >= 70:
+                        self._pending_note_fetch = latest
+                        self._pending_note_fetch_time = time.time() + 3.0
+                        note_msg = (f"*reads note* ...{latest['friend_name']} came by? "
+                                    f"And I MISSED it? Hold on, I'll go get them!")
+                    else:
+                        note_msg = (f"*reads note* ...{latest['friend_name']} stopped by. "
+                                    f"Cool. I was busy. Doing... things.")
+
+                    self.renderer.show_message(note_msg, duration=5.0, category="duck")
+
+                    if len(notes) > 1:
+                        others = ", ".join(n['friend_name'] for n in notes[:-1])
+                        self.renderer.show_message(
+                            f"*shuffles through notes* ...{others} also came by. Popular today.",
+                            duration=4.0, category="duck"
+                        )
 
             # Start exploring after showing the art
             self._start_exploring()
@@ -9073,6 +9227,67 @@ class Game:
                 "show_motivation",
                 "motivation_max",
                 "motivation_min",
+                "-- SPONTANEOUS TRAVEL --",
+                "cheese_wander_off",
+                "cheese_come_home",
+                "show_travel_state",
+                "-- AMBIENT LINES --",
+                "ambient_request",
+                "ambient_consume",
+                "ambient_stats",
+                "-- FISHING --",
+                "start_fishing",
+                "fishing_stats",
+                "-- GARDEN --",
+                "garden_plant",
+                "garden_water_all",
+                "garden_stats",
+                "-- QUESTS --",
+                "quest_start_random",
+                "quest_stats",
+                "-- CHALLENGES --",
+                "challenge_refresh",
+                "challenge_stats",
+                "-- COLLECTIBLES --",
+                "collectibles_open_pack",
+                "collectibles_stats",
+                "-- TRICKS --",
+                "tricks_unlock_all",
+                "tricks_stats",
+                "-- FORTUNE --",
+                "fortune_cookie",
+                "fortune_horoscope",
+                "-- DIARY --",
+                "diary_generate",
+                "diary_stats",
+                "-- PRESTIGE --",
+                "prestige_info",
+                "prestige_add_legacy",
+                "-- PROGRESSION --",
+                "progression_info",
+                "progression_add_xp",
+                "-- STATISTICS --",
+                "show_statistics",
+                "-- SCRAPBOOK --",
+                "scrapbook_take_photo",
+                "scrapbook_stats",
+                "-- SECRETS --",
+                "secrets_stats",
+                "-- ACHIEVEMENTS --",
+                "achievements_stats",
+                "-- FESTIVALS --",
+                "festival_start",
+                "festival_stats",
+                "-- TRADING --",
+                "trading_show_offers",
+                "-- INVENTORY & ITEMS --",
+                "inventory_give_all",
+                "inventory_stats",
+                "-- DUCK MEMORY --",
+                "duck_memory_stats",
+                "duck_memory_clear",
+                "-- PLAYER MODEL --",
+                "player_model_info",
             ]
         elif self._debug_submenu == "autotest":
             return ["run_full_test", "run_quick_test", "view_last_report"]
@@ -10071,7 +10286,534 @@ Core Systems Tested: {report.total_tests}
             self.renderer.duck_pos._motivation = 0.0
             msg = "# DEBUG: Motivation set to MIN (0.0)\n  Step interval: 0.250s (slowest)"
 
-        else:
+        # ── Spontaneous Travel ────────────────────────────────────
+        elif action == "cheese_wander_off":
+            if self._cheese_away:
+                msg = f"# DEBUG: Cheese already away at {self._cheese_away_destination}"
+            else:
+                available = self.exploration.get_available_areas(self.progression.level)
+                current = self.exploration.current_area
+                other = [a for a in available if a != current]
+                if other:
+                    import random as _rng
+                    dest = _rng.choice(other)
+                    self._cheese_away = True
+                    self._cheese_away_biome = dest.name
+                    self._cheese_away_destination = dest.name
+                    self._cheese_away_since = time.time()
+                    self.renderer._cheese_away = True
+                    self.renderer._cheese_away_biome = dest.name
+                    self.friends.cheese_is_away = True
+                    msg = f"# DEBUG: Cheese wandered to {dest.name}\n  *waddles off purposefully*"
+                else:
+                    msg = "# DEBUG: No other areas to wander to\n  (unlock more areas first)"
+
+        elif action == "cheese_come_home":
+            if self._cheese_away:
+                dest = self._cheese_away_destination
+                self._bring_cheese_home()
+                msg = f"# DEBUG: Cheese returned from {dest}"
+            else:
+                msg = "# DEBUG: Cheese is already here"
+
+        elif action == "show_travel_state":
+            if self._cheese_away:
+                elapsed = time.time() - self._cheese_away_since
+                friend = self._cheese_away_friend or "none"
+                msg = (f"# DEBUG: Travel State\n"
+                       f"  Away: YES\n"
+                       f"  Destination: {self._cheese_away_destination}\n"
+                       f"  Time away: {elapsed:.0f}s\n"
+                       f"  Friend: {friend}\n"
+                       f"  renderer._cheese_away: {self.renderer._cheese_away}")
+            else:
+                msg = "# DEBUG: Travel State\n  Away: NO\n  Cheese is here"
+
+        # ── Ambient Lines ─────────────────────────────────────────
+        elif action == "ambient_request":
+            if self.duck_brain and hasattr(self.duck_brain, 'ambient_generator'):
+                gen = self.duck_brain.ambient_generator
+                if gen:
+                    gen._cooldown = 0  # Override cooldown for debug
+                    gen._last_generation_time = 0
+                    gen.request_lines("chat", player_input="debug test",
+                                      duck_response="*blinks*",
+                                      context={"duck_mood": self.duck.get_mood().state.value if self.duck else "content"})
+                    msg = "# DEBUG: Ambient line generation requested\n  (check stats in a few seconds)"
+                else:
+                    msg = "# DEBUG: Ambient generator not initialized"
+            else:
+                msg = "# DEBUG: DuckBrain/ambient generator not available"
+
+        elif action == "ambient_consume":
+            if self.duck_brain and hasattr(self.duck_brain, 'ambient_generator'):
+                gen = self.duck_brain.ambient_generator
+                if gen:
+                    contexts = ["greeting", "idle", "feed", "play", "pet", "clean", "callback"]
+                    lines = ["# DEBUG: Ambient Lines Consumed"]
+                    found = False
+                    for ctx in contexts:
+                        line = gen.consume_line(ctx)
+                        if line:
+                            lines.append(f"  [{ctx}] {line[:50]}")
+                            found = True
+                    if not found:
+                        lines.append("  (no unused lines available)")
+                    msg = "\n".join(lines)
+                else:
+                    msg = "# DEBUG: Ambient generator not initialized"
+            else:
+                msg = "# DEBUG: DuckBrain/ambient generator not available"
+
+        elif action == "ambient_stats":
+            if self.duck_brain and hasattr(self.duck_brain, 'ambient_generator'):
+                gen = self.duck_brain.ambient_generator
+                if gen:
+                    contexts = ["greeting", "idle", "feed", "play", "pet", "clean", "callback"]
+                    total = gen.count_unused()
+                    lines = [f"# DEBUG: Ambient Lines ({total} total unused)"]
+                    for ctx in contexts:
+                        c = gen.count_unused(ctx)
+                        if c > 0:
+                            lines.append(f"  {ctx}: {c}")
+                    msg = "\n".join(lines)
+                else:
+                    msg = "# DEBUG: Ambient generator not initialized"
+            else:
+                msg = "# DEBUG: DuckBrain/ambient generator not available"
+
+        # ── Fishing ───────────────────────────────────────────────
+        elif action == "start_fishing":
+            if hasattr(self, 'fishing') and self.fishing:
+                result = self.fishing.start_fishing()
+                if isinstance(result, dict):
+                    msg = f"# DEBUG: Fishing started!\n  {result.get('message', 'Cast line...')}"
+                else:
+                    msg = f"# DEBUG: Fishing: {result}"
+            else:
+                msg = "# DEBUG: Fishing system not available"
+
+        elif action == "fishing_stats":
+            if hasattr(self, 'fishing') and self.fishing:
+                stats = self.fishing.get_fish_collection_stats() if hasattr(self.fishing, 'get_fish_collection_stats') else {}
+                caught = stats.get('total_caught', getattr(self.fishing, 'total_caught', 0))
+                species = stats.get('species_caught', getattr(self.fishing, 'species_caught', 0))
+                msg = (f"# DEBUG: Fishing Stats\n"
+                       f"  Total caught: {caught}\n"
+                       f"  Species: {species}")
+            else:
+                msg = "# DEBUG: Fishing system not available"
+
+        # ── Garden ────────────────────────────────────────────────
+        elif action == "garden_plant":
+            if hasattr(self, 'garden') and self.garden:
+                seeds = getattr(self.garden, 'available_seeds', None)
+                if seeds:
+                    import random as _rng
+                    seed = _rng.choice(list(seeds)) if isinstance(seeds, (list, set, dict)) else seeds[0]
+                    result = self.garden.plant_seed(seed)
+                    msg = f"# DEBUG: Planted {seed}\n  {result if result else 'Done'}"
+                else:
+                    result = self.garden.plant_seed("sunflower")
+                    msg = f"# DEBUG: Planted sunflower\n  {result if result else 'Done'}"
+            else:
+                msg = "# DEBUG: Garden system not available"
+
+        elif action == "garden_water_all":
+            if hasattr(self, 'garden') and self.garden:
+                plants = getattr(self.garden, 'plants', [])
+                count = 0
+                for plant in plants:
+                    if hasattr(self.garden, 'water_plant'):
+                        self.garden.water_plant(plant if isinstance(plant, str) else getattr(plant, 'id', 0))
+                        count += 1
+                msg = f"# DEBUG: Watered {count} plants"
+            else:
+                msg = "# DEBUG: Garden system not available"
+
+        elif action == "garden_stats":
+            if hasattr(self, 'garden') and self.garden:
+                plants = getattr(self.garden, 'plants', [])
+                plots = getattr(self.garden, 'unlocked_plots', getattr(self.garden, 'plots', 0))
+                msg = (f"# DEBUG: Garden Stats\n"
+                       f"  Plants: {len(plants) if hasattr(plants, '__len__') else plants}\n"
+                       f"  Plots: {plots}")
+            else:
+                msg = "# DEBUG: Garden system not available"
+
+        # ── Quests ────────────────────────────────────────────────
+        elif action == "quest_start_random":
+            if hasattr(self, 'quests') and self.quests:
+                available = getattr(self.quests, 'available_quests', [])
+                if available:
+                    import random as _rng
+                    quest = _rng.choice(available) if isinstance(available, list) else available
+                    quest_id = getattr(quest, 'id', getattr(quest, 'quest_id', str(quest)))
+                    result = self.quests.start_quest(quest_id)
+                    msg = f"# DEBUG: Started quest '{quest_id}'\n  {result if result else 'Started!'}"
+                else:
+                    msg = "# DEBUG: No available quests"
+            else:
+                msg = "# DEBUG: Quest system not available"
+
+        elif action == "quest_stats":
+            if hasattr(self, 'quests') and self.quests:
+                active = getattr(self.quests, 'active_quests', [])
+                completed = getattr(self.quests, 'completed_quests', [])
+                msg = (f"# DEBUG: Quest Stats\n"
+                       f"  Active: {len(active) if hasattr(active, '__len__') else active}\n"
+                       f"  Completed: {len(completed) if hasattr(completed, '__len__') else completed}")
+            else:
+                msg = "# DEBUG: Quest system not available"
+
+        # ── Challenges ────────────────────────────────────────────
+        elif action == "challenge_refresh":
+            if hasattr(self, 'challenges') and self.challenges:
+                self.challenges.refresh_daily_challenges()
+                msg = "# DEBUG: Daily challenges refreshed!"
+            else:
+                msg = "# DEBUG: Challenge system not available"
+
+        elif action == "challenge_stats":
+            if hasattr(self, 'challenges') and self.challenges:
+                daily = getattr(self.challenges, 'daily_challenges', [])
+                weekly = getattr(self.challenges, 'weekly_challenges', [])
+                completed = getattr(self.challenges, 'completed_count', 0)
+                lines = [f"# DEBUG: Challenge Stats"]
+                lines.append(f"  Daily: {len(daily) if hasattr(daily, '__len__') else daily}")
+                lines.append(f"  Weekly: {len(weekly) if hasattr(weekly, '__len__') else weekly}")
+                lines.append(f"  Completed: {completed}")
+                for ch in (daily if hasattr(daily, '__iter__') else []):
+                    name = getattr(ch, 'name', getattr(ch, 'description', str(ch)))
+                    progress = getattr(ch, 'progress', 0)
+                    target = getattr(ch, 'target', 1)
+                    lines.append(f"    {name[:25]}: {progress}/{target}")
+                msg = "\n".join(lines[:12])
+            else:
+                msg = "# DEBUG: Challenge system not available"
+
+        # ── Collectibles ──────────────────────────────────────────
+        elif action == "collectibles_open_pack":
+            if hasattr(self, 'collectibles') and self.collectibles:
+                result = self.collectibles.open_pack()
+                if result:
+                    if isinstance(result, list):
+                        lines = ["# DEBUG: Opened collectible pack!"]
+                        for item in result[:5]:
+                            name = getattr(item, 'name', str(item))
+                            rarity = getattr(item, 'rarity', '?')
+                            lines.append(f"  {rarity}: {name}")
+                        msg = "\n".join(lines)
+                    else:
+                        msg = f"# DEBUG: Pack result: {result}"
+                else:
+                    msg = "# DEBUG: Could not open pack"
+            else:
+                msg = "# DEBUG: Collectibles system not available"
+
+        elif action == "collectibles_stats":
+            if hasattr(self, 'collectibles') and self.collectibles:
+                stats = self.collectibles.get_collection_stats() if hasattr(self.collectibles, 'get_collection_stats') else {}
+                total = stats.get('total', getattr(self.collectibles, 'total_collected', 0))
+                unique = stats.get('unique', getattr(self.collectibles, 'unique_collected', 0))
+                msg = (f"# DEBUG: Collectibles Stats\n"
+                       f"  Total: {total}\n"
+                       f"  Unique: {unique}")
+            else:
+                msg = "# DEBUG: Collectibles system not available"
+
+        # ── Tricks ────────────────────────────────────────────────
+        elif action == "tricks_unlock_all":
+            if hasattr(self, 'tricks') and self.tricks:
+                all_tricks = getattr(self.tricks, 'all_tricks', getattr(self.tricks, '_tricks', {}))
+                count = 0
+                for trick_id in (all_tricks if isinstance(all_tricks, dict) else []):
+                    trick = all_tricks[trick_id] if isinstance(all_tricks, dict) else trick_id
+                    if hasattr(trick, 'learned'):
+                        trick.learned = True
+                        count += 1
+                    elif hasattr(trick, 'unlocked'):
+                        trick.unlocked = True
+                        count += 1
+                msg = f"# DEBUG: Unlocked {count} tricks"
+            else:
+                msg = "# DEBUG: Tricks system not available"
+
+        elif action == "tricks_stats":
+            if hasattr(self, 'tricks') and self.tricks:
+                all_tricks = getattr(self.tricks, 'all_tricks', getattr(self.tricks, '_tricks', {}))
+                learned = sum(1 for t in (all_tricks.values() if isinstance(all_tricks, dict) else all_tricks)
+                              if getattr(t, 'learned', getattr(t, 'unlocked', False)))
+                total = len(all_tricks) if hasattr(all_tricks, '__len__') else 0
+                msg = (f"# DEBUG: Tricks Stats\n"
+                       f"  Learned: {learned}/{total}")
+            else:
+                msg = "# DEBUG: Tricks system not available"
+
+        # ── Fortune ───────────────────────────────────────────────
+        elif action == "fortune_cookie":
+            if hasattr(self, 'fortune') and self.fortune:
+                cookie = self.fortune.get_fortune_cookie()
+                msg = f"# DEBUG: Fortune Cookie\n  {cookie}"
+            else:
+                msg = "# DEBUG: Fortune system not available"
+
+        elif action == "fortune_horoscope":
+            if hasattr(self, 'fortune') and self.fortune:
+                horoscope = self.fortune.generate_daily_horoscope()
+                if horoscope:
+                    sign = horoscope.get('sign', '?')
+                    reading = horoscope.get('reading', horoscope.get('message', str(horoscope)))
+                    msg = f"# DEBUG: Daily Horoscope ({sign})\n  {reading[:80]}"
+                else:
+                    msg = "# DEBUG: Could not generate horoscope"
+            else:
+                msg = "# DEBUG: Fortune system not available"
+
+        # ── Diary ─────────────────────────────────────────────────
+        elif action == "diary_generate":
+            if hasattr(self, 'diary_manager') and self.diary_manager:
+                entry = self.diary_manager.generate_entry(self.duck) if self.duck else None
+                if entry:
+                    text = getattr(entry, 'text', getattr(entry, 'content', str(entry)))
+                    msg = f"# DEBUG: Diary Entry Generated\n  {text[:100]}"
+                else:
+                    msg = "# DEBUG: Could not generate diary entry"
+            elif hasattr(self, 'diary') and self.diary:
+                msg = "# DEBUG: Diary available but no manager\n  (DiaryManager not initialized)"
+            else:
+                msg = "# DEBUG: Diary system not available"
+
+        elif action == "diary_stats":
+            if hasattr(self, 'diary') and self.diary:
+                entries = getattr(self.diary, 'entries', [])
+                total = len(entries) if hasattr(entries, '__len__') else 0
+                msg = f"# DEBUG: Diary Stats\n  Entries: {total}"
+                if total > 0 and hasattr(entries, '__getitem__'):
+                    latest = entries[-1]
+                    text = getattr(latest, 'text', getattr(latest, 'content', str(latest)))
+                    msg += f"\n  Latest: {text[:60]}..."
+            else:
+                msg = "# DEBUG: Diary system not available"
+
+        # ── Prestige ──────────────────────────────────────────────
+        elif action == "prestige_info":
+            if hasattr(self, 'prestige') and self.prestige:
+                can = self.prestige.can_prestige() if hasattr(self.prestige, 'can_prestige') else False
+                level = getattr(self.prestige, 'prestige_level', getattr(self.prestige, 'level', 0))
+                points = getattr(self.prestige, 'legacy_points', 0)
+                bonuses = self.prestige.get_active_bonuses() if hasattr(self.prestige, 'get_active_bonuses') else []
+                lines = [f"# DEBUG: Prestige Info"]
+                lines.append(f"  Level: {level}")
+                lines.append(f"  Legacy points: {points}")
+                lines.append(f"  Can prestige: {can}")
+                if bonuses:
+                    lines.append(f"  Active bonuses: {len(bonuses)}")
+                    for b in bonuses[:3]:
+                        lines.append(f"    - {b}")
+                msg = "\n".join(lines)
+            else:
+                msg = "# DEBUG: Prestige system not available"
+
+        elif action == "prestige_add_legacy":
+            if hasattr(self, 'prestige') and self.prestige:
+                if hasattr(self.prestige, 'legacy_points'):
+                    self.prestige.legacy_points += 100
+                    msg = f"# DEBUG: +100 legacy points (now {self.prestige.legacy_points})"
+                else:
+                    msg = "# DEBUG: Prestige system has no legacy_points"
+            else:
+                msg = "# DEBUG: Prestige system not available"
+
+        # ── Progression ───────────────────────────────────────────
+        elif action == "progression_info":
+            if hasattr(self, 'progression') and self.progression:
+                level = self.progression.level
+                xp = self.progression.xp
+                next_xp = getattr(self.progression, 'xp_to_next', getattr(self.progression, 'next_level_xp', '?'))
+                title = getattr(self.progression, 'title', '?')
+                msg = (f"# DEBUG: Progression Info\n"
+                       f"  Level: {level}\n"
+                       f"  XP: {xp}\n"
+                       f"  Next level: {next_xp}\n"
+                       f"  Title: {title}")
+            else:
+                msg = "# DEBUG: Progression system not available"
+
+        elif action == "progression_add_xp":
+            if hasattr(self, 'progression') and self.progression:
+                result = self.progression.add_xp(500)
+                level = self.progression.level
+                msg = f"# DEBUG: +500 XP (now level {level})\n  {result if result else ''}"
+            else:
+                msg = "# DEBUG: Progression system not available"
+
+        # ── Statistics ────────────────────────────────────────────
+        elif action == "show_statistics":
+            stats = self._statistics if hasattr(self, '_statistics') else {}
+            lines = ["# DEBUG: Game Statistics"]
+            for key in sorted(stats.keys())[:15]:
+                lines.append(f"  {key}: {stats[key]}")
+            if not stats:
+                lines.append("  (no statistics recorded)")
+            msg = "\n".join(lines)
+
+        # ── Scrapbook ─────────────────────────────────────────────
+        elif action == "scrapbook_take_photo":
+            if hasattr(self, 'scrapbook') and self.scrapbook:
+                result = self.scrapbook.take_photo()
+                msg = f"# DEBUG: Photo taken!\n  {result if result else 'Snap!'}"
+            else:
+                msg = "# DEBUG: Scrapbook system not available"
+
+        elif action == "scrapbook_stats":
+            if hasattr(self, 'scrapbook') and self.scrapbook:
+                photos = getattr(self.scrapbook, 'photos', [])
+                pages = getattr(self.scrapbook, 'pages', [])
+                favorites = sum(1 for p in photos if getattr(p, 'favorite', False)) if hasattr(photos, '__iter__') else 0
+                msg = (f"# DEBUG: Scrapbook Stats\n"
+                       f"  Photos: {len(photos) if hasattr(photos, '__len__') else photos}\n"
+                       f"  Pages: {len(pages) if hasattr(pages, '__len__') else pages}\n"
+                       f"  Favorites: {favorites}")
+            else:
+                msg = "# DEBUG: Scrapbook system not available"
+
+        # ── Secrets ───────────────────────────────────────────────
+        elif action == "secrets_stats":
+            if hasattr(self, 'secrets') and self.secrets:
+                discovered = self.secrets.get_discovered_count() if hasattr(self.secrets, 'get_discovered_count') else 0
+                total = getattr(self.secrets, 'total_secrets', '?')
+                msg = (f"# DEBUG: Secrets Stats\n"
+                       f"  Discovered: {discovered}\n"
+                       f"  Total: {total}")
+            else:
+                msg = "# DEBUG: Secrets system not available"
+
+        # ── Achievements ──────────────────────────────────────────
+        elif action == "achievements_stats":
+            if hasattr(self, 'achievements') and self.achievements:
+                unlocked = self.achievements.get_unlocked() if hasattr(self.achievements, 'get_unlocked') else []
+                total = getattr(self.achievements, 'total_achievements', len(getattr(self.achievements, '_achievements', {})))
+                lines = [f"# DEBUG: Achievements"]
+                lines.append(f"  Unlocked: {len(unlocked) if hasattr(unlocked, '__len__') else unlocked}/{total}")
+                for ach in (unlocked[:5] if hasattr(unlocked, '__getitem__') else []):
+                    name = getattr(ach, 'name', str(ach))
+                    lines.append(f"    - {name}")
+                msg = "\n".join(lines)
+            else:
+                msg = "# DEBUG: Achievement system not available"
+
+        # ── Festivals ─────────────────────────────────────────────
+        elif action == "festival_start":
+            if hasattr(self, 'festivals') and self.festivals:
+                active = self.festivals.check_active_festival() if hasattr(self.festivals, 'check_active_festival') else None
+                if active:
+                    msg = f"# DEBUG: Festival already active: {getattr(active, 'name', active)}"
+                else:
+                    result = self.festivals.start_festival_participation() if hasattr(self.festivals, 'start_festival_participation') else None
+                    msg = f"# DEBUG: Festival started!\n  {result if result else 'No festival available today'}"
+            else:
+                msg = "# DEBUG: Festival system not available"
+
+        elif action == "festival_stats":
+            if hasattr(self, 'festivals') and self.festivals:
+                active = self.festivals.check_active_festival() if hasattr(self.festivals, 'check_active_festival') else None
+                participated = getattr(self.festivals, 'festivals_participated', 0)
+                msg = (f"# DEBUG: Festival Stats\n"
+                       f"  Active: {getattr(active, 'name', 'none') if active else 'none'}\n"
+                       f"  Participated: {participated}")
+            else:
+                msg = "# DEBUG: Festival system not available"
+
+        # ── Trading ───────────────────────────────────────────────
+        elif action == "trading_show_offers":
+            if hasattr(self, 'trading') and self.trading:
+                offers = self.trading.get_offers_for_trader("debug") if hasattr(self.trading, 'get_offers_for_trader') else []
+                if offers:
+                    lines = ["# DEBUG: Trading Offers"]
+                    for offer in (offers[:5] if hasattr(offers, '__getitem__') else []):
+                        name = getattr(offer, 'name', getattr(offer, 'item_name', str(offer)))
+                        cost = getattr(offer, 'cost', getattr(offer, 'price', '?'))
+                        lines.append(f"  {name}: {cost} coins")
+                    msg = "\n".join(lines)
+                else:
+                    msg = "# DEBUG: No trading offers available"
+            else:
+                msg = "# DEBUG: Trading system not available"
+
+        # ── Inventory & Items ─────────────────────────────────────
+        elif action == "inventory_give_all":
+            if hasattr(self, 'materials') and self.materials:
+                from world.crafting import MATERIAL_TYPES
+                if MATERIAL_TYPES:
+                    for mat_id in MATERIAL_TYPES:
+                        self.materials.add(mat_id, 99)
+                    msg = f"# DEBUG: Gave 99 of all {len(MATERIAL_TYPES)} materials"
+                else:
+                    msg = "# DEBUG: No material types defined"
+            else:
+                msg = "# DEBUG: Materials system not available"
+
+        elif action == "inventory_stats":
+            if hasattr(self, 'materials') and self.materials:
+                inv = self.materials.get_all() if hasattr(self.materials, 'get_all') else {}
+                total_items = sum(inv.values()) if isinstance(inv, dict) else 0
+                types = len(inv) if isinstance(inv, dict) else 0
+                lines = [f"# DEBUG: Inventory ({total_items} items, {types} types)"]
+                for mat_id, qty in sorted((inv if isinstance(inv, dict) else {}).items())[:10]:
+                    lines.append(f"  {mat_id}: {qty}")
+                if types > 10:
+                    lines.append(f"  ... and {types - 10} more")
+                msg = "\n".join(lines)
+            else:
+                msg = "# DEBUG: Materials system not available"
+
+        # ── Duck Memory ───────────────────────────────────────────
+        elif action == "duck_memory_stats":
+            if self.duck and hasattr(self.duck, 'memory') and self.duck.memory:
+                mem = self.duck.memory
+                interactions = getattr(mem, 'total_interactions', 0)
+                events = len(getattr(mem, 'events', []))
+                favorites = getattr(mem, 'favorites', {})
+                lines = [f"# DEBUG: Duck Memory"]
+                lines.append(f"  Interactions: {interactions}")
+                lines.append(f"  Events: {events}")
+                if favorites:
+                    lines.append(f"  Favorites:")
+                    for key, val in list(favorites.items())[:5]:
+                        lines.append(f"    {key}: {val}")
+                msg = "\n".join(lines)
+            else:
+                msg = "# DEBUG: Duck memory not available"
+
+        elif action == "duck_memory_clear":
+            if self.duck and hasattr(self.duck, 'memory') and self.duck.memory:
+                mem = self.duck.memory
+                if hasattr(mem, 'events'):
+                    mem.events.clear()
+                if hasattr(mem, 'total_interactions'):
+                    mem.total_interactions = 0
+                msg = "# DEBUG: Duck memory cleared"
+            else:
+                msg = "# DEBUG: Duck memory not available"
+
+        # ── Player Model ──────────────────────────────────────────
+        elif action == "player_model_info":
+            if self.duck_brain and hasattr(self.duck_brain, 'player_model'):
+                pm = self.duck_brain.player_model
+                name = getattr(pm, 'name', '?')
+                play_style = getattr(pm, 'play_style', '?')
+                engagement = getattr(pm, 'engagement_level', '?')
+                interests = getattr(pm, 'interests', [])
+                lines = [f"# DEBUG: Player Model"]
+                lines.append(f"  Name: {name}")
+                lines.append(f"  Play style: {play_style}")
+                lines.append(f"  Engagement: {engagement}")
+                if interests:
+                    lines.append(f"  Interests: {', '.join(str(i) for i in interests[:5])}")
+                msg = "\n".join(lines)
+            else:
+                msg = "# DEBUG: Player model not available"
             msg = f"# DEBUG: Unknown feature action '{action}'"
 
         if msg:

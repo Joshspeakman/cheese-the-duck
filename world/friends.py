@@ -1236,6 +1236,8 @@ class FriendsSystem:
         self.best_friend_id: Optional[str] = None
         self.pending_invitations: List[str] = []
         self.on_friendship_level_up: Optional[callable] = None  # Callback for level ups
+        self.cheese_is_away: bool = False
+        self._visitor_notes: list = []  # Notes left by visitors when cheese was away
     
     def generate_new_friend(self) -> DuckFriend:
         """Generate a new random friend duck."""
@@ -1485,6 +1487,29 @@ class FriendsSystem:
         else:
             return FriendshipLevel.STRANGER
     
+    def _leave_visitor_note(self, friend_id: str) -> Optional[dict]:
+        """Visitor leaves a note at the nest instead of a full visit."""
+        import time as _time
+        friend = self.get_friend_by_id(friend_id)
+        if not friend:
+            return None
+        note = {
+            "friend_id": friend_id,
+            "friend_name": friend.name,
+            "timestamp": _time.time(),
+        }
+        self._visitor_notes.append(note)
+        return note
+
+    def get_pending_notes(self) -> list:
+        """Get and clear all pending visitor notes."""
+        notes = list(self._visitor_notes)
+        self._visitor_notes.clear()
+        return notes
+
+    def has_pending_notes(self) -> bool:
+        return len(self._visitor_notes) > 0
+
     def check_for_random_visitor(self, hour: int) -> Tuple[bool, Optional[str]]:
         """Check if a random visitor should appear."""
         if self.current_visit:
@@ -1500,6 +1525,16 @@ class FriendsSystem:
         chance += min(len(self.friends) * 0.005, 0.03)
         
         if random.random() < chance:
+            # If cheese is away, leave a note instead of a full visit
+            if self.cheese_is_away:
+                # Pick a friend to leave the note
+                if self.friends:
+                    friend = random.choice(list(self.friends.values()))
+                    note = self._leave_visitor_note(friend.id)
+                    if note:
+                        return True, f"{note['friend_name']} stopped by while Cheese was out."
+                return False, None
+
             _, message, _ = self.start_visit()
             return True, message
         
@@ -1659,6 +1694,7 @@ class FriendsSystem:
             "last_visitor_time": self.last_visitor_time,
             "best_friend_id": self.best_friend_id,
             "pending_invitations": self.pending_invitations,
+            "visitor_notes": self._visitor_notes,
         }
     
     @classmethod
@@ -1708,6 +1744,7 @@ class FriendsSystem:
         system.last_visitor_time = data.get("last_visitor_time", "")
         system.best_friend_id = data.get("best_friend_id")
         system.pending_invitations = data.get("pending_invitations", [])
+        system._visitor_notes = data.get("visitor_notes", [])
         
         return system
 
