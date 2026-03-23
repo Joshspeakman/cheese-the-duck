@@ -134,7 +134,7 @@ MOOD_DATA = {
         "can_learn": False,
     },
     MoodState.DRAMATIC: {
-        "description": "performing emotions for an invisible audience",
+        "description": "performing emotions (needs imbalanced)",
         "descriptions": [
             "convinced this is a pivotal scene in his biopic",
             "one wing over his forehead, the other clutching pearls",
@@ -150,7 +150,7 @@ MOOD_DATA = {
         "can_learn": False,
     },
     MoodState.PETTY: {
-        "description": "technically fine but holding a grudge",
+        "description": "technically fine but holding a grudge (recovering)",
         "descriptions": [
             "fine. totally fine. not even thinking about it.",
             "smiling but the vibe is off and everyone knows it",

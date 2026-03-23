@@ -564,6 +564,61 @@ VISITOR_COSMETIC_COMMENTS = {
     ],
 }
 
+# ── Friend voice archetypes ─────────────────────────────────────────────
+# Each personality has a speaking style that flavors their dialogue.
+# Used by the visitor system to keep NPC speech patterns consistent.
+FRIEND_VOICE_ARCHETYPES = {
+    "adventurous": {
+        "quirk": "exclamation-heavy, directional language",
+        "filler": ["Onwards!", "No time to waste!"],
+        "punctuation_style": "!",
+    },
+    "scholarly": {
+        "quirk": "polysyllabic, cites facts, hedges with 'perhaps'",
+        "filler": ["Fascinating.", "Indeed."],
+        "punctuation_style": ".",
+    },
+    "artistic": {
+        "quirk": "flowery adjectives, dramatic pauses with '...'",
+        "filler": ["*chef's kiss*", "Magnifique!"],
+        "punctuation_style": "...",
+    },
+    "playful": {
+        "quirk": "ALL CAPS bursts, onomatopoeia, rapid-fire",
+        "filler": ["Hehe!", "WHEEE!"],
+        "punctuation_style": "!",
+    },
+    "mysterious": {
+        "quirk": "ellipses, low-key ominous, cryptic",
+        "filler": ["...perhaps.", "*knowing look*"],
+        "punctuation_style": "...",
+    },
+    "generous": {
+        "quirk": "warm, inclusive, gift-offering",
+        "filler": ["For you!", "You deserve this."],
+        "punctuation_style": "!",
+    },
+    "foodie": {
+        "quirk": "food metaphors, sensory language, hunger references",
+        "filler": ["*stomach growls*", "Delicious."],
+        "punctuation_style": "!",
+    },
+    "athletic": {
+        "quirk": "action verbs, competitive, motivational",
+        "filler": ["Let's GO!", "No pain, no gain!"],
+        "punctuation_style": "!",
+    },
+}
+
+
+def get_voice_filler(personality: str) -> str:
+    """Get a random voice-archetype filler phrase for a personality type."""
+    archetype = FRIEND_VOICE_ARCHETYPES.get(personality)
+    if archetype:
+        return random.choice(archetype["filler"])
+    return ""
+
+
 # Lazy import for LLM behavior controller
 _llm_controller = None
 

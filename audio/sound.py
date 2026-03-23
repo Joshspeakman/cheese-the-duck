@@ -42,6 +42,9 @@ class SoundType(Enum):
     QUACK_HAPPY = "quack_happy"
     QUACK_SAD = "quack_sad"
     QUACK_EXCITED = "quack_excited"
+    QUACK_GRUMPY = "quack_grumpy"
+    QUACK_PETTY = "quack_petty"
+    QUACK_DRAMATIC = "quack_dramatic"
     EAT = "eat"
     SPLASH = "splash"
     SLEEP = "sleep"
@@ -59,6 +62,11 @@ class SoundType(Enum):
     COLLECT = "collect"
     TRADE = "trade"
     HOUR_CHIME = "hour_chime"
+    # Stingers — short musical cues for events
+    STINGER_ACHIEVEMENT = "stinger_achievement"
+    STINGER_SEASON_CHANGE = "stinger_season_change"
+    STINGER_FRIEND_ARRIVE = "stinger_friend_arrive"
+    STINGER_MILESTONE = "stinger_milestone"
 
 
 # Sound definitions (frequency, duration pairs)
@@ -67,6 +75,9 @@ SOUND_EFFECTS = {
     SoundType.QUACK_HAPPY: [(900, 0.1), (1100, 0.1), (900, 0.15)],
     SoundType.QUACK_SAD: [(600, 0.2), (400, 0.25)],
     SoundType.QUACK_EXCITED: [(800, 0.08), (1000, 0.08), (1200, 0.08), (1000, 0.12)],
+    SoundType.QUACK_GRUMPY: [(500, 0.15), (350, 0.2)],
+    SoundType.QUACK_PETTY: [(700, 0.06), (500, 0.06), (700, 0.06), (500, 0.12)],
+    SoundType.QUACK_DRAMATIC: [(600, 0.12), (900, 0.12), (600, 0.12), (1100, 0.2)],
     SoundType.EAT: [(400, 0.05), (500, 0.05), (400, 0.05)],
     SoundType.SPLASH: [(300, 0.1), (500, 0.05), (200, 0.15)],
     SoundType.SLEEP: [(300, 0.3), (250, 0.4)],
@@ -83,6 +94,11 @@ SOUND_EFFECTS = {
     SoundType.COLLECT: [(500, 0.08), (700, 0.08), (900, 0.12)],
     SoundType.TRADE: [(700, 0.1), (900, 0.1), (700, 0.15)],
     SoundType.HOUR_CHIME: [(523, 0.4), (392, 0.4)],
+    # Stingers
+    SoundType.STINGER_ACHIEVEMENT: [(523, 0.1), (659, 0.1), (784, 0.1), (1047, 0.1), (1319, 0.25)],
+    SoundType.STINGER_SEASON_CHANGE: [(392, 0.2), (523, 0.2), (659, 0.2), (784, 0.3)],
+    SoundType.STINGER_FRIEND_ARRIVE: [(659, 0.1), (784, 0.1), (659, 0.15)],
+    SoundType.STINGER_MILESTONE: [(523, 0.1), (784, 0.1), (1047, 0.1), (784, 0.1), (1047, 0.25)],
 }
 
 
@@ -1117,9 +1133,11 @@ class DuckSounds:
             elif mood in ["sad", "miserable"]:
                 self.engine.play_sound(SoundType.QUACK_SAD)
             elif mood in ["excited", "dramatic"]:
-                self.engine.play_sound(SoundType.QUACK_EXCITED)
+                self.engine.play_sound(SoundType.QUACK_DRAMATIC)
             elif mood == "petty":
-                self.engine.play_sound(SoundType.QUACK)  # Deadpan quack for pettiness
+                self.engine.play_sound(SoundType.QUACK_PETTY)
+            elif mood in ["grumpy", "annoyed"]:
+                self.engine.play_sound(SoundType.QUACK_GRUMPY)
             else:
                 self.engine.play_sound(SoundType.QUACK)
 
@@ -1234,8 +1252,39 @@ class DuckSounds:
             SoundType.QUACK,
             SoundType.QUACK_HAPPY,
             SoundType.QUACK_EXCITED,
+            SoundType.QUACK_GRUMPY,
+            SoundType.QUACK_PETTY,
+            SoundType.QUACK_DRAMATIC,
         ]
         self.engine.play_sound(random.choice(variations))
+
+    # ── Stingers ────────────────────────────────────────────────────────
+    def play_stinger(self, event_type: str):
+        """Play a short musical stinger for a game event."""
+        stinger_map = {
+            "achievement": SoundType.STINGER_ACHIEVEMENT,
+            "season_change": SoundType.STINGER_SEASON_CHANGE,
+            "friend_arrive": SoundType.STINGER_FRIEND_ARRIVE,
+            "milestone": SoundType.STINGER_MILESTONE,
+        }
+        sound_type = stinger_map.get(event_type)
+        if sound_type:
+            self.engine.play_sound(sound_type)
+
+    # ── Signature sounds ────────────────────────────────────────────────
+    def play_signature(self, action: str):
+        """Play a signature sound cue for specific game moments."""
+        sig_map = {
+            "discover": SoundType.DISCOVER,
+            "collect": SoundType.COLLECT,
+            "craft": SoundType.CRAFT_COMPLETE,
+            "build": SoundType.BUILD_COMPLETE,
+            "trade": SoundType.TRADE,
+            "level_up": SoundType.LEVEL_UP,
+        }
+        sound_type = sig_map.get(action)
+        if sound_type:
+            self.engine.play_sound(sound_type)
 
 
 # Global instances

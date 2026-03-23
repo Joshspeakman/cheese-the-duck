@@ -1100,13 +1100,14 @@ class ConversationSystem:
         self.add_to_history(player_input, response)
 
         # Feed successful responses back to the learning engine
-        if source and source not in ("idle", "voice_gen"):
+        # Only learn from voice-safe sources (keyword, seaman) — never from LLM/ambient
+        _LEARNABLE_SOURCES = {"keyword", "seaman", "learned"}
+        if source and source in _LEARNABLE_SOURCES:
             try:
                 from dialogue.learning_engine import get_learning_engine
                 from config import LEARNING_ENGINE_ENABLED
                 if LEARNING_ENGINE_ENABLED:
-                    learn_source = "llm" if source == "llm" else "conversation"
-                    get_learning_engine().learn(player_input, response, source=learn_source)
+                    get_learning_engine().learn(player_input, response, source=source)
             except Exception:
                 logger.debug("Learning engine feedback failed", exc_info=True)
 

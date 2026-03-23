@@ -229,6 +229,15 @@ class Duck:
         # Apply need changes
         changes = self.needs.apply_interaction(interaction)
 
+        # Sickness reduces interaction effectiveness by 50% (except feeding)
+        if getattr(self, 'is_sick', False) and interaction != "feed":
+            for need, delta in changes.items():
+                if delta > 0:
+                    rollback = delta * 0.5
+                    current = getattr(self.needs, need)
+                    setattr(self.needs, need, max(0, current - rollback))
+                    changes[need] = delta * 0.5
+
         # Get mood after interaction
         mood = self.get_mood()
 

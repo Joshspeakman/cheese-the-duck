@@ -49,6 +49,9 @@ CASCADE_THRESHOLD = 20           # Below this value, cascade kicks in
 SICKNESS_DECAY_MULTIPLIER = 1.5  # All needs decay faster when sick
 SICKNESS_NATURAL_CURE_MINUTES = 120  # 2 hours of good care cures sickness
 SICKNESS_CURE_THRESHOLD = 40     # All needs must be above this to natural-cure
+SICKNESS_AUTO_CURE_MINUTES = 1440  # 24 hours — sickness auto-cures as safety net
+HIDING_AUTO_EMERGE_MINUTES = 120   # 2 hours — hiding auto-resolves as safety net
+SICK_INTERACTION_MULTIPLIER = 0.5  # Interactions are 50% effective when sick
 
 
 @dataclass
@@ -177,8 +180,32 @@ def check_consequences(duck, delta_minutes: float, stage_modifiers: Optional[Dic
             # Reset timer when need is no longer at zero
             duck.neglect_minutes_at_zero.pop(need_name, None)
     
-    # ── If hiding, only check for coax visits ────────────────────────
+    # ── If hiding, check for auto-emerge safety net ──────────────────
     if duck.hiding:
+        # Safety net: auto-emerge after 2 hours so the game can't deadlock
+        hiding_since = getattr(duck, 'hiding_since', None)
+        if hiding_since:
+            hidden_minutes = (time.time() - hiding_since) / 60
+            if hidden_minutes >= HIDING_AUTO_EMERGE_MINUTES:
+                duck.hiding = False
+                duck.hiding_coax_visits = 0
+                if duck_store:
+                    duck_store.set_hiding(False)
+                _cure_sickness(duck, duck_store=duck_store)
+                try:
+                    event_bus.emit(HidingEvent(source="consequences", started=False))
+                except Exception:
+                    pass
+                return ConsequenceState(
+                    stage=0,
+                    is_sick=False,
+                    is_hiding=False,
+                    is_cold_shoulder=_is_cold_shoulder(duck),
+                    trust=duck.trust,
+                    trust_level=get_trust_level(duck.trust),
+                    neglect_warnings=[],
+                    sickness_message="*emerges, disheveled* ...I got bored of hiding. Don't read into it.",
+                )
         return ConsequenceState(
             stage=3,
             is_sick=duck.is_sick,
@@ -195,9 +222,24 @@ def check_consequences(duck, delta_minutes: float, stage_modifiers: Optional[Dic
         sick_minutes = (time.time() - duck.sick_since) / 60
         hiding_threshold = STAGE3_MINUTES * mods["sickness_time_mult"]
         
+        # Safety net: auto-cure sickness after 24 hours
+        if sick_minutes >= SICKNESS_AUTO_CURE_MINUTES:
+            _cure_sickness(duck, duck_store=duck_store)
+            return ConsequenceState(
+                stage=0,
+                is_sick=False,
+                is_hiding=False,
+                is_cold_shoulder=_is_cold_shoulder(duck),
+                trust=duck.trust,
+                trust_level=get_trust_level(duck.trust),
+                neglect_warnings=[],
+                sickness_message="*shakes it off* ...survived. no thanks to anyone.",
+            )
+        
         if sick_minutes >= hiding_threshold:
             duck.hiding = True
             duck.hiding_coax_visits = 0
+            duck.hiding_since = time.time()
             if duck_store:
                 duck_store.set_hiding(True)
                 duck_store.sync_to_duck(duck)

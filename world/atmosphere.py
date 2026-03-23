@@ -978,6 +978,43 @@ SEASONAL_CONTENT = {
 
 
 # =============================================================================
+# SEASON TRANSITION CEREMONIES
+# =============================================================================
+
+SEASON_TRANSITION_CEREMONY = {
+    (Season.WINTER, Season.SPRING): [
+        "...the ice is melting. I can feel my feathers again.",
+        "Spring. The pond's thawing. I survived another winter. Barely.",
+        "Flowers are sprouting. I didn't ask for this much optimism.",
+    ],
+    (Season.SPRING, Season.SUMMER): [
+        "It's getting hot. My feathers are not designed for this.",
+        "Summer. The pond's warm. Everything smells like grass. Fine.",
+        "The sun's out and it won't leave. Neither will I, I suppose.",
+    ],
+    (Season.SUMMER, Season.FALL): [
+        "Leaves are falling. Everything's orange. I respect the commitment.",
+        "Autumn. The pond smells like wet leaves. It's... actually nice.",
+        "Things are dying gracefully. I can relate to that energy.",
+    ],
+    (Season.FALL, Season.WINTER): [
+        "It's cold now. The pond's getting crunchy. Fantastic.",
+        "Winter. Time to sit very still and pretend I'm a statue.",
+        "Snow. My nemesis. We meet again.",
+    ],
+}
+
+
+def get_season_transition_message(old_season: Season, new_season: Season) -> str:
+    """Get Cheese's ceremony commentary for a season change."""
+    key = (old_season, new_season)
+    lines = SEASON_TRANSITION_CEREMONY.get(key, [
+        f"...seasons changed. It's {new_season.value} now. I'm adjusting.",
+    ])
+    return random.choice(lines)
+
+
+# =============================================================================
 # LUCKY / UNLUCKY DAYS
 # =============================================================================
 
@@ -1700,9 +1737,10 @@ class AtmosphereManager:
         # Update season if needed
         new_season = self._calculate_season()
         if new_season != self.current_season:
+            old_season = self.current_season
             self.current_season = new_season
-            content = SEASONAL_CONTENT[new_season]
-            messages.append(f"Season changed to {new_season.value}! {content.mood_theme.title()} vibes!")
+            ceremony = get_season_transition_message(old_season, new_season)
+            messages.append(ceremony)
 
         # Update weather for ALL biomes (per-biome persistent weather)
         for biome in list(self._biome_weather.keys()):

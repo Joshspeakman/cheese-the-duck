@@ -65,9 +65,17 @@ class LearningEngine:
                 response TEXT NOT NULL,
                 frequency INTEGER DEFAULT 1,
                 last_used TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                source TEXT DEFAULT 'template'
+                source TEXT DEFAULT 'template',
+                tone TEXT DEFAULT '',
+                context TEXT DEFAULT ''
             )
         """)
+        # Migrate older schemas
+        for col, default in [("tone", "''"), ("context", "''")]:
+            try:
+                self._conn.execute(f"ALTER TABLE pairs ADD COLUMN {col} TEXT DEFAULT {default}")
+            except sqlite3.OperationalError:
+                pass  # Column already exists
         self._conn.execute("""
             CREATE INDEX IF NOT EXISTS idx_input_normalized
             ON pairs(input_normalized)
@@ -103,12 +111,14 @@ class LearningEngine:
             logger.info(f"Learning engine seeded with {len(pairs)} pairs from '{source}'")
 
     def learn(self, player_input: str, duck_response: str,
-              source: str = "conversation"):
+              source: str = "conversation", tone: str = "",
+              context: str = ""):
         """
         Learn a new input-response pair from a successful exchange.
 
         If this exact pair already exists, increment its frequency.
         Pairs containing blocked content are silently skipped.
+        Only learns from voice-safe sources (keyword, seaman).
         """
         normalized = _normalize(player_input)
         if not normalized or not duck_response.strip():
@@ -141,14 +151,14 @@ class LearningEngine:
                 # New pair
                 self._conn.execute(
                     """INSERT INTO pairs
-                       (input_text, input_normalized, response, source)
-                       VALUES (?, ?, ?, ?)""",
-                    (player_input, normalized, duck_response, source)
+                       (input_text, input_normalized, response, source, tone, context)
+                       VALUES (?, ?, ?, ?, ?, ?)""",
+                    (player_input, normalized, duck_response, source, tone, context)
                 )
             self._conn.commit()
 
     def get_response(self, player_input: str,
-                     confidence_threshold: float = 0.55) -> Optional[Tuple[str, float]]:
+                     confidence_threshold: float = 0.65) -> Optional[Tuple[str, float]]:
         """
         Find the best learned response for the given input.
 
@@ -237,15 +247,15 @@ class LearningEngine:
 
         return None
 
-    def prune(self, max_age_days: int = 180, min_frequency: int = 1):
+    def prune(self, max_age_days: int = 90, min_frequency: int = 1):
         """
         Remove old, low-frequency learned pairs to prevent unbounded growth.
-        Never removes template-seeded pairs.
+        Never removes template-seeded pairs or rare-tagged pairs.
         """
         with self._lock:
             self._conn.execute(
                 """DELETE FROM pairs
-                   WHERE source != 'template'
+                   WHERE source NOT IN ('template', 'rare')
                    AND frequency <= ?
                    AND last_used < datetime('now', ?)""",
                 (min_frequency, f'-{max_age_days} days')
@@ -265,12 +275,28 @@ class LearningEngine:
             top_freq = self._conn.execute(
                 "SELECT input_text, frequency FROM pairs ORDER BY frequency DESC LIMIT 5"
             ).fetchall()
+            # Source distribution
+            sources = self._conn.execute(
+                "SELECT source, COUNT(*) FROM pairs GROUP BY source"
+            ).fetchall()
+            # Avg confidence proxy (avg frequency)
+            avg_freq = self._conn.execute(
+                "SELECT AVG(frequency) FROM pairs WHERE source != 'template'"
+            ).fetchone()[0] or 0.0
+            # Staleness: pairs not used in 30+ days
+            stale = self._conn.execute(
+                "SELECT COUNT(*) FROM pairs WHERE source != 'template' "
+                "AND last_used < datetime('now', '-30 days')"
+            ).fetchone()[0]
 
         return {
             "total_pairs": total,
             "template_pairs": templates,
             "learned_pairs": learned,
             "top_inputs": [(t, f) for t, f in top_freq],
+            "source_distribution": dict(sources),
+            "avg_frequency": round(avg_freq, 2),
+            "stale_pairs": stale,
         }
 
     def close(self):

@@ -2119,6 +2119,8 @@ class Renderer:
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
 
         # Needs bars (fill the width properly)
+        # Cascade threshold: need < 20 triggers cross-need drain
+        CASCADE_THRESHOLD = 20
         needs_data = [
             ("HUN", duck.needs.hunger),
             ("ENG", duck.needs.energy),
@@ -2126,20 +2128,54 @@ class Renderer:
             ("CLN", duck.needs.cleanliness),
             ("SOC", duck.needs.social),
         ]
+        # Determine which needs are being drained by cascade
+        cascade_victims = set()
+        if duck.needs.hunger < CASCADE_THRESHOLD:
+            cascade_victims.add("ENG")
+        if duck.needs.social < CASCADE_THRESHOLD:
+            cascade_victims.add("FUN")
 
         for name, value in needs_data:
             # Calculate bar width to fill the space
-            # Format: "HUN[████████] 83%"
-            # Name=3, []=2 (in bar), space=1, pct=4-5 chars
+            # Format: "HUN[████████] 83%" or "ENG▼[░░░░░░░░] 12%" (cascade)
+            cascade_marker = "▼" if name in cascade_victims else ""
             pct_str = f"{int(value):>3}%"
-            bar_width = inner_width - len(name) - len(pct_str) - 3  # -3 for [] and space
+            bar_width = inner_width - len(name) - len(cascade_marker) - len(pct_str) - 3  # -3 for [] and space
             if bar_width < 5:
                 bar_width = 5
             bar = self._make_progress_bar(value, bar_width)
-            line_content = f"{name}{bar} {pct_str}"
+            line_content = f"{name}{cascade_marker}{bar} {pct_str}"
             # Pad to exact width
             line_content = _visible_ljust(line_content, inner_width)
             lines.append(BOX["v"] + line_content + BOX["v"])
+
+        # Trust bar — primary relationship indicator
+        trust_val = getattr(duck, 'trust', 20.0)
+        trust_pct = f"{int(trust_val):>3}%"
+        trust_label = "TRS"
+        # Color hint via badge: [DISTANT] when < 20
+        if trust_val < 20:
+            trust_badge = "[DISTANT]"
+        elif getattr(duck, 'cooldown_until', None) and time.time() < duck.cooldown_until:
+            trust_badge = "[COLD]"
+        else:
+            trust_badge = ""
+        badge_part = f" {trust_badge}" if trust_badge else ""
+        trust_bar_w = inner_width - len(trust_label) - len(trust_pct) - len(badge_part) - 3
+        if trust_bar_w < 5:
+            trust_bar_w = 5
+        trust_bar = self._make_progress_bar(trust_val, trust_bar_w)
+        trust_line = f"{trust_label}{trust_bar} {trust_pct}{badge_part}"
+        trust_line = _visible_ljust(trust_line, inner_width)
+        lines.append(BOX["v"] + trust_line + BOX["v"])
+
+        # Consequence stage alert
+        consequence_stage = getattr(self, '_last_consequence_stage', 0)
+        if consequence_stage >= 1:
+            alert_char = "⚠" if int(time.time()) % 2 == 0 else " "
+            alert_text = f" {alert_char} NEEDS ATTENTION {alert_char} "
+            alert_line = _visible_center(alert_text, inner_width)
+            lines.append(BOX["v"] + alert_line + BOX["v"])
 
         # Divider - Master Menu Section
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])

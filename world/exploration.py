@@ -941,6 +941,7 @@ class ExplorationSystem:
         self._last_exploration: float = 0
         self._exploration_cooldown: float = 30  # 30 seconds between explorations
         self._player_level: int = 1  # Track player level for unlocks
+        self._last_biome_ceremony: Optional[str] = None  # Ceremony msg for new biome
         
         # Aliases for compatibility
         self._gathering_skill = self.gathering_skill
@@ -1132,6 +1133,7 @@ class ExplorationSystem:
     
     def _discover_area(self, area: BiomeArea):
         """Discover a new area."""
+        self._last_biome_ceremony = self.get_biome_ceremony(area)
         area.is_discovered = True
         self._populate_area_resources(area)
         self.discovered_areas[area.name] = area
@@ -1211,6 +1213,49 @@ class ExplorationSystem:
         ]
         return "\n".join(lines)
     
+    def get_progression_summary(self) -> str:
+        """Get a formatted summary of exploration progress."""
+        total_areas = sum(len(areas) for areas in AREAS.values())
+        discovered = len(self.discovered_areas)
+        biomes_seen = {a.biome.value for a in self.discovered_areas.values()}
+        total_biomes = len(BiomeType)
+        lines = [
+            f"  EXPLORATION LOG",
+            f"  ───────────────────",
+            f"  Areas: {discovered}/{total_areas} discovered",
+            f"  Biomes: {len(biomes_seen)}/{total_biomes} explored",
+            f"  Gathering Skill: {self.gathering_skill}",
+            f"  XP: {self.exploration_xp}",
+            f"  Resources gathered: {self.total_resources_gathered}",
+            f"  Rare finds: {len(self.rare_items_found)}",
+        ]
+        if self.current_area:
+            lines.append(f"  Location: {self.current_area.name}")
+        return "\n".join(lines)
+
+    def get_biome_ceremony(self, area: BiomeArea) -> Optional[str]:
+        """Return a first-visit ceremony message when discovering a new biome type.
+        
+        Returns None if this biome type has already been visited.
+        """
+        biomes_seen = {a.biome for a in self.discovered_areas.values()
+                       if a.name != area.name}
+        if area.biome in biomes_seen:
+            return None
+        ceremonies = {
+            BiomeType.POND: "*looks around* ...home. it's always been home. but now it's OFFICIAL.",
+            BiomeType.FOREST: "*steps into shade* ...trees. so many trees. I'm basically an explorer now.",
+            BiomeType.MEADOW: "*sniffs flowers* ...open sky, tall grass. this is dramatically scenic. I deserve it.",
+            BiomeType.RIVERSIDE: "*dips beak in current* ...moving water. revolutionary. the pond could never.",
+            BiomeType.GARDEN: "*inspects vegetables* ...organized nature. someone PLANNED this. suspicious but impressive.",
+            BiomeType.MOUNTAINS: "*looks up* ...high places. the air is different. thinner. more prestigious.",
+            BiomeType.BEACH: "*feels sand* ...warm ground, salt air. I was BORN for coastal living.",
+            BiomeType.SWAMP: "*peers into fog* ...murky. mysterious. deeply on-brand for me honestly.",
+            BiomeType.URBAN: "*watches humans* ...concrete everywhere. loud. chaotic. ...I kind of love it.",
+        }
+        msg = ceremonies.get(area.biome, "*looks around* ...new territory. claiming it.")
+        return f"★ NEW BIOME DISCOVERED: {area.biome.value.upper()} ★\n{msg}"
+
     def to_dict(self) -> Dict:
         """Serialize for saving."""
         return {

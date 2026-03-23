@@ -11,6 +11,7 @@ architecture while reusing ALL existing generation code.
 """
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional, Tuple
+from collections import deque
 import logging
 import re
 
@@ -21,6 +22,15 @@ from dialogue.dialogue_core import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Voice compliance constants (seaman golden rules)
+# ---------------------------------------------------------------------------
+_MAX_SENTENCE_LEN = 80        # Max chars in a single sentence
+_MAX_EXCLAMATIONS = 1          # Enthusiasm exclamation cap (protest ok)
+_COMPLIANCE_WORDS_BANNED = {"awesome", "amazing", "wonderful", "fantastic",
+                            "incredible", "absolutely"}  # Too enthusiastic
 
 
 # ---------------------------------------------------------------------------
@@ -337,7 +347,7 @@ class LearningResponseSource(ResponseSource):
 
         try:
             result = engine.get_response(
-                context.player_message, confidence_threshold=0.55
+                context.player_message, confidence_threshold=0.65
             )
         except Exception as exc:
             logger.debug("Learning engine failed: %s", exc)
@@ -517,12 +527,21 @@ class ResponsePipeline:
     Tries registered ResponseSources in priority order (lower number
     = tried first) and returns the first successful response.
 
+    Tracks tonal rotation, source distribution, and genuine-moment ratio
+    to maintain voice consistency. Applies a voice compliance post-filter
+    to ALL responses.
+
     If every source fails, returns a minimal ``"..."`` fallback.
     """
 
     def __init__(self) -> None:
         # List of (priority, source) tuples, kept sorted
         self._sources: List[Tuple[int, ResponseSource]] = []
+        # Phase 3 tracking
+        self._recent_tones: deque = deque(maxlen=5)
+        self._recent_sources: deque = deque(maxlen=50)
+        self._genuine_count: int = 0
+        self._response_count: int = 0
 
     def register_source(
         self, source: ResponseSource, priority: int
@@ -556,7 +575,8 @@ class ResponsePipeline:
     ) -> DialogueResponse:
         """
         Run through sources in priority order and return the first
-        successful response.
+        successful response.  Applies voice compliance post-filter
+        and tracks tonal/source statistics.
 
         Args:
             context: The current DialogueContext.
@@ -587,6 +607,15 @@ class ResponsePipeline:
                 continue
 
             if response is not None:
+                # Voice compliance post-filter
+                response = self._apply_voice_compliance(response)
+                # Track source distribution and tones
+                self._recent_sources.append(response.source)
+                if response.mood_hint:
+                    self._recent_tones.append(response.mood_hint)
+                self._response_count += 1
+                if response.mood_hint in ("genuine", "vulnerable", "warm"):
+                    self._genuine_count += 1
                 return response
 
         # Ultimate fallback
@@ -608,6 +637,59 @@ class ResponsePipeline:
             (priority, source.name, source.is_enabled())
             for priority, source in self._sources
         ]
+
+    # ── Voice compliance post-filter ──────────────────────────────────
+
+    @staticmethod
+    def _apply_voice_compliance(response: DialogueResponse) -> DialogueResponse:
+        """Apply seaman voice golden rules as post-filter on any source."""
+        text = response.text
+        # Strip banned enthusiasm words
+        for word in _COMPLIANCE_WORDS_BANNED:
+            text = re.sub(rf'\b{word}\b', '', text, flags=re.IGNORECASE)
+        # Cap exclamation marks (allow max 1 per response)
+        excl_count = text.count('!')
+        if excl_count > _MAX_EXCLAMATIONS:
+            parts = text.split('!')
+            text = '!'.join(parts[:_MAX_EXCLAMATIONS + 1]) + '.'.join(parts[_MAX_EXCLAMATIONS + 1:])
+        # Clean up double spaces from removals
+        text = re.sub(r'  +', ' ', text).strip()
+        if text != response.text:
+            response = DialogueResponse(
+                text=text,
+                source=response.source,
+                confidence=response.confidence,
+                actions=response.actions,
+                mood_hint=response.mood_hint,
+                should_record=response.should_record,
+            )
+        return response
+
+    def get_genuine_ratio(self) -> float:
+        """Return the ratio of genuine/vulnerable responses in recent history."""
+        if self._response_count == 0:
+            return 0.0
+        return self._genuine_count / self._response_count
+
+    def get_source_distribution(self) -> Dict[str, int]:
+        """Return source usage counts from recent responses."""
+        dist: Dict[str, int] = {}
+        for src in self._recent_sources:
+            dist[src] = dist.get(src, 0) + 1
+        return dist
+
+    def get_voice_health(self) -> Dict[str, object]:
+        """Return voice health diagnostics for debug menu."""
+        dist = self.get_source_distribution()
+        total = len(self._recent_sources) or 1
+        dominant_pct = max(dist.values(), default=0) / total
+        return {
+            "source_distribution": dist,
+            "genuine_ratio": round(self.get_genuine_ratio(), 3),
+            "dominant_source_pct": round(dominant_pct, 3),
+            "recent_tones": list(self._recent_tones),
+            "warning": dominant_pct > 0.6 or self.get_genuine_ratio() > 0.25,
+        }
 
 
 # ---------------------------------------------------------------------------
