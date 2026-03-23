@@ -386,6 +386,48 @@ RARITY_WEIGHTS = {
 }
 
 
+# =============================================================================
+# COLLECTIBLE MILESTONES
+# =============================================================================
+
+COLLECTION_MILESTONES = {
+    5: "Five things in my collection. I'm not saying I'm a hoarder, but...",
+    10: "Ten collectibles. This is becoming a habit. A very shiny habit.",
+    25: "Twenty-five. I've officially collected more things than I have opinions. Almost.",
+    50: "Fifty collectibles. At this point I need a bigger pond just for storage.",
+    100: "One hundred. I am become collector, destroyer of free shelf space.",
+    250: "Two hundred and fifty. This is no longer a hobby. This is a lifestyle.",
+}
+
+SHINY_MILESTONES = {
+    1: "A shiny one. It sparkles. I'm trying not to care but... it sparkles.",
+    5: "Five shinies. My pond has a visible glow now. The fish are concerned.",
+    10: "Ten shinies. I could open a museum. A very small, very glittery museum.",
+    25: "Twenty-five shinies. At this point I AM the museum.",
+}
+
+SET_COMPLETION_MESSAGES = [
+    "Completed a full set. The satisfaction is... acceptable.",
+    "Set complete. I feel a brief flicker of accomplishment. It'll pass.",
+    "Another set done. My organizational skills are frankly terrifying.",
+]
+
+
+def get_collection_milestone(total: int) -> Optional[str]:
+    """Check if the current total hits a milestone. Returns message or None."""
+    return COLLECTION_MILESTONES.get(total)
+
+
+def get_shiny_milestone(shiny_count: int) -> Optional[str]:
+    """Check if shiny count hits a milestone. Returns message or None."""
+    return SHINY_MILESTONES.get(shiny_count)
+
+
+def get_set_completion_message() -> str:
+    """Get Cheese's commentary on completing a set."""
+    return random.choice(SET_COMPLETION_MESSAGES)
+
+
 class CollectiblesSystem:
     """
     Manages collectibles, albums, and trading.

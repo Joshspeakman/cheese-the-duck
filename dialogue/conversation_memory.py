@@ -155,6 +155,10 @@ class ConversationMemory:
         
         # Things to bring up later
         self.callbacks_queue: List[Dict] = []  # {type, content, context, priority}
+        
+        # Emotional arc tracking — rolling sentiment trend
+        self._sentiment_history: List[float] = []  # Last N conversation sentiments
+        self._max_sentiment_history = 20
     
     def start_conversation(self, duck_mood: Optional[str] = None) -> str:
         """Start a new conversation session."""
@@ -302,6 +306,11 @@ class ConversationMemory:
         self.conversations.append(conv)
         self.current_conversation = None
         
+        # Track emotional arc
+        self._sentiment_history.append(conv.player_sentiment_avg)
+        if len(self._sentiment_history) > self._max_sentiment_history:
+            self._sentiment_history = self._sentiment_history[-self._max_sentiment_history:]
+        
         # Periodically consolidate old conversations into summaries
         self._maybe_consolidate_old_conversations()
     
@@ -360,7 +369,11 @@ class ConversationMemory:
         return results
     
     def get_random_callback(self) -> Optional[Dict]:
-        """Get a random past conversation element to bring up."""
+        """Get a random past conversation element to bring up.
+        
+        Returns a dict with 'type', 'content', 'intro', and 'prefix' keys.
+        The 'prefix' field contains a [MEMORY] marker for the response pipeline.
+        """
         import random
         
         callbacks = []
@@ -370,6 +383,7 @@ class ConversationMemory:
             callbacks.append({
                 "type": "quote",
                 "content": quote,
+                "prefix": "[MEMORY] ",
                 "intro": random.choice([
                     "You once said:",
                     "I remember you telling me:",
@@ -417,8 +431,27 @@ class ConversationMemory:
             "longest_conversation": self.longest_conversation,
             "top_topics": sorted(self.topic_counts.items(), key=lambda x: x[1], reverse=True)[:10],
             "notable_quotes_count": len(self.notable_quotes),
-            "unanswered_questions": len(self.unanswered_questions)
+            "unanswered_questions": len(self.unanswered_questions),
+            "emotional_trend": self.get_emotional_trend(),
         }
+    
+    def get_emotional_trend(self) -> str:
+        """Get the recent emotional trend from conversation sentiments.
+        
+        Returns: 'warming', 'cooling', 'stable', or 'unknown'.
+        """
+        history = self._sentiment_history
+        if len(history) < 4:
+            return "unknown"
+        half = len(history) // 2
+        first_half_avg = sum(history[:half]) / half
+        second_half_avg = sum(history[half:]) / (len(history) - half)
+        diff = second_half_avg - first_half_avg
+        if diff > 0.15:
+            return "warming"
+        elif diff < -0.15:
+            return "cooling"
+        return "stable"
     
     def get_topic_summary(self) -> Dict[str, Dict]:
         """Get summary of topics discussed."""

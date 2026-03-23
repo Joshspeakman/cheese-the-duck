@@ -74,19 +74,16 @@ STREAK_CELEBRATION_MESSAGES = {
 
 # Random gift announcements (builds excitement)
 SURPRISE_GIFT_MESSAGES = [
-    "* Cheese found something for you! *",
-    "[+] Look what Cheese discovered! [+]",
-    "* A lucky find! *",
-    "* Something special appeared! *",
-    "* Cheese wants to share this with you! *",
-    "* Cheese: 'found this. *drops item* ...you can have it. I GUESS.'",
-    "[+] Cheese: 'I was sitting on this. literally. take it before I change my mind.'",
-    "* Cheese: '*pushes something toward you with beak* ...don't look at me.'",
-    "* Cheese: 'this fell from the sky. or I dug it up. details are unclear.'",
-    "[+] Cheese: 'I've been saving this. not FOR you. just... near you.'",
-    "* Cheese: 'here. *avoids eye contact* it's nothing. IT'S NOTHING.'",
-    "* Cheese: '*waddles over with something shiny* ...finders keepers but I'm sharing.'",
-    "* Cheese: 'you didn't see me find this. this interaction never happened.'",
+    "...here. *drops item* don't look at me.",
+    "*pushes something toward you with beak* ...don't read into it.",
+    "found this. not FOR you. just... near you. take it before I change my mind.",
+    "I was sitting on this. literally. it's yours now. I GUESS.",
+    "*waddles over with something shiny* ...finders keepers but I'm sharing.",
+    "you didn't see me find this. this interaction never happened.",
+    "*avoids eye contact* it's nothing. IT'S NOTHING.",
+    "this fell from the sky. or I dug it up. details are unclear.",
+    "I've been saving this. not for YOU specifically. just... nearby.",
+    "*drops item and walks away quickly* ...what? I tripped.",
 ]
 
 # Lucky events that can trigger randomly
@@ -100,11 +97,11 @@ LUCKY_EVENTS = [
 
 # Time-based bonus multipliers (engagement hooks)
 TIME_BONUSES = {
-    "morning": {"hours": (6, 9), "xp_mult": 1.2, "message": "-*- Early bird bonus! +20% XP"},
-    "lunch": {"hours": (12, 13), "xp_mult": 1.15, "message": "* Lunch break bonus! +15% XP"},
-    "evening": {"hours": (18, 21), "xp_mult": 1.25, "message": "-*- Evening chill bonus! +25% XP"},
-    "night_owl": {"hours": (23, 24), "xp_mult": 1.3, "message": "O Night owl bonus! +30% XP"},
-    "midnight": {"hours": (0, 2), "xp_mult": 1.5, "message": ") Midnight dedication! +50% XP"},
+    "morning": {"hours": (6, 9), "xp_mult": 1.2, "message": "★ early bird. +20% XP. ...don't expect praise."},
+    "lunch": {"hours": (12, 13), "xp_mult": 1.15, "message": "★ lunch break. +15% XP. bread o'clock."},
+    "evening": {"hours": (18, 21), "xp_mult": 1.25, "message": "★ evening hours. +25% XP. the good time."},
+    "night_owl": {"hours": (23, 24), "xp_mult": 1.3, "message": "★ night owl. +30% XP. ...you should sleep."},
+    "midnight": {"hours": (0, 2), "xp_mult": 1.5, "message": "★ midnight dedication. +50% XP. we're both awake. concerning."},
 }
 
 # =============================================================================

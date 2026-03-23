@@ -6148,19 +6148,43 @@ class Game:
         offline = self.clock.calculate_offline_time(last_played)
 
         if offline["hours"] > 0.016:  # More than 1 minute
-            # Check vacation mode — if enabled, skip all decay
+            # Check vacation mode — if enabled, skip all decay (max 14 days)
             vacation_mode = settings_manager.settings.gameplay.vacation_mode
             
             if vacation_mode:
-                # Vacation mode: no decay, no trust loss, friendly return
-                self._pending_offline_summary = {
-                    "name": self.duck.name,
-                    "hours": offline["hours"],
-                    "changes": {},
-                    "vacation": True,
-                }
-                self._state = "offline_summary"
-            else:
+                # Enforce 14-day maximum
+                from datetime import timedelta as _td
+                vac_started = settings_manager.settings.gameplay.vacation_mode_started
+                vac_max = settings_manager.settings.gameplay.vacation_max_days
+                vacation_expired = False
+                if vac_started:
+                    try:
+                        vac_dt = datetime.fromisoformat(vac_started)
+                        if (datetime.now() - vac_dt).days > vac_max:
+                            vacation_expired = True
+                            settings_manager.settings.gameplay.vacation_mode = False
+                            settings_manager.save()
+                    except (ValueError, TypeError):
+                        pass
+                elif not vac_started:
+                    # Record when vacation started
+                    settings_manager.settings.gameplay.vacation_mode_started = datetime.now().isoformat()
+                    settings_manager.save()
+                
+                if not vacation_expired:
+                    # Vacation mode: no decay, no trust loss, friendly return
+                    self._pending_offline_summary = {
+                        "name": self.duck.name,
+                        "hours": offline["hours"],
+                        "changes": {},
+                        "vacation": True,
+                    }
+                    self._state = "offline_summary"
+                else:
+                    # Vacation expired — fall through to normal decay
+                    vacation_mode = False
+            
+            if not vacation_mode:
                 # Apply offline need decay (capped at 24h worth — needs never worse than 1 bad day)
                 from config import MAX_OFFLINE_NEED_HOURS
                 old_needs = self.duck.needs.to_dict()

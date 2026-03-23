@@ -33,10 +33,35 @@ class AreaEvent:
     effects: Dict[str, float]
     mood_change: int
     probability: float     # 0.0 to 1.0 per check
-    cooldown: float = 600  # seconds
+    cooldown: float = 600  # seconds — overridden by tier defaults below
     has_animation: bool = False
     animation_id: Optional[str] = None  # Key into the animation factory
     sound: Optional[str] = None
+
+
+# Cooldown tiers — events self-classify by mood_change magnitude
+# Small events cycle faster; big ones stay rare
+COOLDOWN_TIER_MINOR = 300     # <=3 mood_change: 5 min
+COOLDOWN_TIER_STANDARD = 600  # 4-6 mood_change: 10 min
+COOLDOWN_TIER_MAJOR = 1200    # 7+ mood_change: 20 min
+COOLDOWN_TIER_NEGATIVE = 900  # negative mood_change: 15 min (mercy spacing)
+
+
+def _apply_cooldown_tiers(events_dict: Dict[str, List[AreaEvent]]):
+    """Set cooldowns based on event significance if still at default (600)."""
+    for area_events in events_dict.values():
+        for ev in area_events:
+            if ev.cooldown != 600:
+                continue  # already has a custom cooldown
+            mc = ev.mood_change
+            if mc < 0:
+                ev.cooldown = COOLDOWN_TIER_NEGATIVE
+            elif abs(mc) <= 3:
+                ev.cooldown = COOLDOWN_TIER_MINOR
+            elif abs(mc) <= 6:
+                ev.cooldown = COOLDOWN_TIER_STANDARD
+            else:
+                ev.cooldown = COOLDOWN_TIER_MAJOR
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1276,6 +1301,9 @@ AREA_EVENTS: Dict[str, List[AreaEvent]] = {
         ),
     ],
 }
+
+# Apply cooldown tiers to events that still use the 600s default
+_apply_cooldown_tiers(AREA_EVENTS)
 
 
 # ═══════════════════════════════════════════════════════════════════════════

@@ -927,9 +927,36 @@ class BuildingSystem:
         return {
             "in_progress": True,
             "current_stage": structure.current_stage,
-            "progress": structure.stage_progress
+            "progress": structure.stage_progress,
+            "commentary": self._get_build_commentary(structure),
         }
     
+    def _get_build_commentary(self, structure: "Structure") -> str:
+        """Get Cheese's commentary on background building progress."""
+        import random as _rng
+        progress = structure.stage_progress
+        stage = structure.current_stage
+        name = structure.blueprint.name if structure.blueprint else "thing"
+        if progress < 0.25:
+            lines = [
+                f"*stares at {name}* ...it's going to be a THING. eventually.",
+                f"*taps materials* beginning. every masterpiece starts with confusion.",
+                f"*measuring* the foundation of {name}. historic moment. someone take notes.",
+            ]
+        elif progress < 0.75:
+            lines = [
+                f"*building* stage {stage}... getting there. slowly. like bread rising.",
+                f"*hammering* {name} is taking shape. I can SEE it. sort of. if I squint.",
+                f"*working* halfway-ish. the 'ish' is doing heavy lifting there.",
+            ]
+        else:
+            lines = [
+                f"*almost done* {name} is ALMOST... so close... don't rush greatness.",
+                f"*final touches* the end is near. the GOOD kind of near.",
+                f"*polishing* {name} is nearly complete. I might cry. I won't. but I MIGHT.",
+            ]
+        return _rng.choice(lines)
+
     def repair_structure(self, structure: Structure, inventory: MaterialInventory) -> Tuple[bool, str]:
         """Repair a damaged structure."""
         if not structure.blueprint:

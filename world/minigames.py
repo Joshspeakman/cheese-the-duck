@@ -9,6 +9,122 @@ from typing import List, Dict, Optional, Tuple
 from enum import Enum
 
 
+# ── Cheese's minigame commentary ───────────────────────────────────────
+MINIGAME_PRE_DIALOGUE = {
+    "bread_catch": [
+        "*cracks neck* bread is falling from the sky. this is either a miracle or a trap. either way I'm ready.",
+        "*stretches wings* the bread won't catch itself. well. it WILL hit the ground. but I prefer catching.",
+        "*narrows eyes at sky* I was BORN for this.",
+    ],
+    "bug_chase": [
+        "*wiggles* bugs think they're fast. they haven't met me. they're about to.",
+        "*bouncing* reflexes of a... well, a duck. which is faster than you'd think.",
+        "*hunter stance* nothing personal, bugs. actually, everything personal.",
+    ],
+    "memory_match": [
+        "*taps head* my memory is excellent. I remember every bread I've ever eaten. this will be easy.",
+        "*concentrates* cards. patterns. I see through the matrix. ...the matching matrix. of cards.",
+        "*squints at cards* I WILL remember. probably.",
+    ],
+    "duck_race": [
+        "*stretches legs* these other ducks don't know who they're racing against.",
+        "*warming up* fast feet, strong lungs, questionable sportsmanship. let's go.",
+        "*at starting line* I've been training for this my entire life. the training was mostly eating. but still.",
+    ],
+}
+
+MINIGAME_DURING_DIALOGUE = {
+    "bread_catch": [
+        "*focused* bread. bread. bread. ROTTEN one dodge dodge--",
+        "golden bread... GOLDEN bread... mine mine MINE--",
+        "*panting* so much bread. never enough bread.",
+    ],
+    "bug_chase": [
+        "THERE. *lunges* ...got it.",
+        "come HERE you little-- GOT IT.",
+        "*misses* ...that didn't happen. no witnesses.",
+    ],
+    "memory_match": [
+        "that one was... a star? no. a duck? ...I'll come back to it.",
+        "MATCH. knew it. obviously. *did not know it*",
+        "*sweating* they all look the same when you panic.",
+    ],
+    "duck_race": [
+        "FASTER FASTER FASTER--",
+        "*huffing* still... in... this...",
+        "eat my wake, Quackers.",
+    ],
+}
+
+MINIGAME_POST_DIALOGUE = {
+    "win": [
+        "*dusts wings* as expected. I would say 'good game' but I'd be lying. that game was GREAT. for me.",
+        "*casual* another victory. I should keep a trophy shelf. ...I should BUILD a trophy shelf.",
+        "put that on my résumé. 'professional winner.' has a nice ring to it.",
+    ],
+    "lose": [
+        "*stares* ...the game cheated. I don't make the rules but I know when they're broken.",
+        "*sits down heavily* ...best two out of three. or five. or however many it takes.",
+        "I wasn't trying. that was my 'not trying' performance. COMPLETELY different from trying.",
+    ],
+    "high_score": [
+        "NEW HIGH SCORE. *mic drop* *picks mic back up* *mic drop again*",
+        "*vibrating with pride* put my name on the leaderboard. in GOLD. actually, in BREAD.",
+        "HISTORY. I just made HISTORY. someone write this down. actually I'LL write it down.",
+    ],
+}
+
+MINIGAME_REWARD_NARRATIVE = {
+    "coins": [
+        "★ {amount} coins. not bad. I'll add it to the bread fund.",
+        "★ {amount} coins acquired. wealth accumulates. like crumbs.",
+    ],
+    "xp": [
+        "★ +{amount} XP. I can FEEL myself getting wiser. or maybe that's just hunger.",
+        "★ +{amount} XP. every point counts. toward what? toward EVERYTHING.",
+    ],
+    "item": [
+        "★ found {item}. ...mine now. no take-backs.",
+        "★ {item} acquired. the universe provides. the universe is wise.",
+    ],
+}
+
+
+def get_pre_game_line(game_type: str) -> str:
+    """Get Cheese's commentary before a minigame starts."""
+    lines = MINIGAME_PRE_DIALOGUE.get(game_type, MINIGAME_PRE_DIALOGUE["bread_catch"])
+    return random.choice(lines)
+
+
+def get_during_game_line(game_type: str) -> str:
+    """Get Cheese's commentary during a minigame."""
+    lines = MINIGAME_DURING_DIALOGUE.get(game_type, MINIGAME_DURING_DIALOGUE["bread_catch"])
+    return random.choice(lines)
+
+
+def get_post_game_line(result: "MiniGameResult") -> str:
+    """Get Cheese's commentary after a minigame."""
+    if result.high_score:
+        line = random.choice(MINIGAME_POST_DIALOGUE["high_score"])
+    elif result.coins_earned > 20:
+        line = random.choice(MINIGAME_POST_DIALOGUE["win"])
+    else:
+        line = random.choice(MINIGAME_POST_DIALOGUE["lose"])
+    return line
+
+
+def get_reward_narrative(result: "MiniGameResult") -> str:
+    """Get Cheese's narration of rewards earned."""
+    parts = []
+    if result.coins_earned > 0:
+        parts.append(random.choice(MINIGAME_REWARD_NARRATIVE["coins"]).format(amount=result.coins_earned))
+    if result.xp_earned > 0:
+        parts.append(random.choice(MINIGAME_REWARD_NARRATIVE["xp"]).format(amount=result.xp_earned))
+    for item in result.items_earned:
+        parts.append(random.choice(MINIGAME_REWARD_NARRATIVE["item"]).format(item=item))
+    return " ".join(parts) if parts else ""
+
+
 class MiniGameType(Enum):
     BREAD_CATCH = "bread_catch"
     BUG_CHASE = "bug_chase"

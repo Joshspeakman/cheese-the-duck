@@ -454,7 +454,41 @@ class CraftingSystem:
         for recipe_id, recipe in RECIPES.items():
             if recipe.unlock_level <= 1 and recipe.skill_required <= 1:
                 self.recipes_unlocked.append(recipe_id)
-    
+
+    def get_cost_preview(self, recipe_id: str, inventory: "MaterialInventory") -> str:
+        """Return a formatted cost breakdown for a recipe, showing have/need."""
+        recipe = RECIPES.get(recipe_id)
+        if not recipe:
+            return "unknown recipe."
+        lines = [f"  {recipe.name}"]
+        for mat_id, need in recipe.ingredients.items():
+            mat = MATERIALS.get(mat_id)
+            name = mat.name if mat else mat_id
+            have = inventory.get_count(mat_id)
+            ok = "✓" if have >= need else "✗"
+            lines.append(f"    {ok} {name}: {have}/{need}")
+        if recipe.requires_workbench:
+            wb = "✓" if self._has_workbench() else "✗"
+            lines.append(f"    {wb} workbench required")
+        if recipe.requires_tool:
+            tl = "✓" if self._has_tool(recipe.requires_tool) else "✗"
+            lines.append(f"    {tl} tool: {recipe.requires_tool}")
+        return "\n".join(lines)
+
+    def get_unlock_tooltip(self, recipe_id: str) -> str:
+        """Return a tooltip explaining what's needed to unlock a locked recipe."""
+        recipe = RECIPES.get(recipe_id)
+        if not recipe:
+            return "???"
+        if recipe_id in self.recipes_unlocked:
+            return f"{recipe.name} — already unlocked"
+        parts = [f"  [LOCKED] {recipe.name}"]
+        if recipe.unlock_level > self._player_level:
+            parts.append(f"    reach level {recipe.unlock_level}")
+        if recipe.skill_required > self.crafting_skill:
+            parts.append(f"    crafting skill {recipe.skill_required} needed")
+        return "\n".join(parts)
+
     def get_available_recipes(self, inventory: MaterialInventory, player_level: int = None) -> List[str]:
         """Get all recipe IDs that can currently be crafted. Returns result item IDs."""
         level = player_level if player_level is not None else self._player_level

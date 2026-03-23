@@ -24,6 +24,7 @@ MAX_CONFIDENCE = 1.0
 CONFIDENCE_PER_DAY = 1.0 / 7.0  # ~1 week to full confidence
 COMMENT_COOLDOWN_HOURS = 20  # Don't comment on same ritual twice in 20h
 BROKEN_GRACE_MINUTES = 90   # How late before "broken" kicks in
+MERCY_DAYS_PER_MONTH = 2    # Missed days that don't break a streak
 
 
 # ── Data structures ─────────────────────────────────────────────────────
@@ -377,6 +378,9 @@ class RitualTracker:
         self.action_history: Dict[str, List[ActionTimestamp]] = {}
         self.detected_rituals: Dict[str, RitualPattern] = {}
         self._last_ritual_check: float = 0.0
+        # Mercy days: allow 2 missed days per month without breaking streak
+        self._mercy_days_used: Dict[str, int] = {}  # action -> count used this month
+        self._mercy_month: int = 0  # Month number to reset counter
 
     def record_interaction(self, action: str) -> Optional[str]:
         """
@@ -436,6 +440,8 @@ class RitualTracker:
         Check for rituals that should have happened by now but haven't.
         Call this periodically from the game tick.
         
+        Allows MERCY_DAYS_PER_MONTH missed days without breaking streak.
+        
         Returns:
             List of deadpan observations about broken routines.
         """
@@ -445,6 +451,12 @@ class RitualTracker:
         if now - self._last_ritual_check < 1800:
             return []
         self._last_ritual_check = now
+        
+        # Reset mercy days each calendar month
+        current_month = datetime.now().month
+        if current_month != self._mercy_month:
+            self._mercy_month = current_month
+            self._mercy_days_used.clear()
         
         dt = datetime.now()
         current_minutes = dt.hour * 60 + dt.minute
@@ -473,6 +485,13 @@ class RitualTracker:
             
             # Comment cooldown
             if now - ritual.last_commented < COMMENT_COOLDOWN_HOURS * 3600:
+                continue
+            
+            # Mercy day: don't break streak if allowance remains
+            used = self._mercy_days_used.get(action, 0)
+            if used < MERCY_DAYS_PER_MONTH and ritual.streak > 0:
+                self._mercy_days_used[action] = used + 1
+                # Don't break streak, don't comment harshly
                 continue
             
             # Broken!
@@ -649,6 +668,8 @@ class RitualTracker:
                 for action, ritual in self.detected_rituals.items()
             },
             "last_ritual_check": self._last_ritual_check,
+            "mercy_days_used": dict(self._mercy_days_used),
+            "mercy_month": self._mercy_month,
         }
 
     @classmethod
@@ -665,4 +686,6 @@ class RitualTracker:
             tracker.detected_rituals[action] = RitualPattern.from_dict(ritual_data)
         
         tracker._last_ritual_check = data.get("last_ritual_check", 0.0)
+        tracker._mercy_days_used = data.get("mercy_days_used", {})
+        tracker._mercy_month = data.get("mercy_month", 0)
         return tracker

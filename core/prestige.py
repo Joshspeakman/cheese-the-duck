@@ -446,6 +446,9 @@ class PrestigeSystem:
         lines = [
             "+==============================================+",
             "|            * LEGACY SYSTEM *               |",
+            "|  Prestige resets your duck but keeps        |",
+            "|  permanent bonuses. Higher level = more.    |",
+            "+==============================================+",
             f"|  Prestige Level: {self.prestige_level:3}                        |",
             f"|  Tier: {tier.value.capitalize():15}                   |",
             f"|  Legacy Points: {self.legacy_points:5}                      |",

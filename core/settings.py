@@ -89,7 +89,10 @@ class GameplaySettings:
     show_tips: bool = True              # Show contextual tips
     tutorial_completed: bool = False    # Has player completed tutorial
     vacation_mode: bool = False         # Freeze needs and trust while away
+    vacation_mode_started: str = ""     # ISO timestamp when vacation was activated
+    vacation_max_days: int = 14         # Maximum vacation duration
     ai_enabled: bool = False            # Enable AI/LLM features (chat, behavior, diary)
+    learning_enabled: bool = False      # Learning engine learns from conversations
 
 
 @dataclass
