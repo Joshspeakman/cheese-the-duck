@@ -15,8 +15,11 @@ Trust: grows +0.3/day of good care, +0.05/interaction. Decays during absence.
 """
 import time
 import random
-from typing import Optional, Dict, List, Tuple
+from typing import Optional, Dict, List, Tuple, TYPE_CHECKING
 from dataclasses import dataclass
+
+if TYPE_CHECKING:
+    from core.duck_store import DuckStore
 
 from config import NEED_CRITICAL
 from core.event_bus import event_bus, SicknessEvent, HidingEvent
@@ -269,12 +272,14 @@ def check_consequences(duck, delta_minutes: float, stage_modifiers: Optional[Dic
     )
 
 
-def apply_trust_gain(duck, reason: str = "interaction") -> float:
+def apply_trust_gain(duck, reason: str = "interaction",
+                     duck_store: "Optional[DuckStore]" = None) -> float:
     """Apply trust gain from a positive interaction.
     
     Args:
         duck: The Duck object
         reason: Why trust increased (interaction, good_day, cure, coax)
+        duck_store: Optional DuckStore for validated state changes
     
     Returns:
         Amount of trust gained
@@ -286,12 +291,19 @@ def apply_trust_gain(duck, reason: str = "interaction") -> float:
         "coax": TRUST_COAX_RETURN_BONUS,
     }
     gain = gains.get(reason, TRUST_PER_INTERACTION)
+
+    if duck_store:
+        old = duck_store.get_trust()
+        duck_store.change_trust(gain, reason=reason)
+        duck_store.sync_to_duck(duck)
+        return duck_store.get_trust() - old
+
     old = duck.trust
     duck.trust = clamp_trust(duck.trust + gain)
     return duck.trust - old
 
 
-def attempt_coax(duck) -> Tuple[bool, str]:
+def attempt_coax(duck, duck_store: "Optional[DuckStore]" = None) -> Tuple[bool, str]:
     """Attempt to coax a hiding duck out.
     
     Must be called across separate sessions (game restarts).
@@ -307,12 +319,14 @@ def attempt_coax(duck) -> Tuple[bool, str]:
         # Duck comes back
         duck.hiding = False
         duck.hiding_coax_visits = 0
+        if duck_store:
+            duck_store.set_hiding(False)
         try:
             event_bus.emit(HidingEvent(source="consequences", started=False))
         except Exception:
             pass
-        _cure_sickness(duck)
-        apply_trust_gain(duck, "coax")
+        _cure_sickness(duck, duck_store=duck_store)
+        apply_trust_gain(duck, "coax", duck_store=duck_store)
         msg = random.choice(COAX_SUCCESS_MESSAGES)
         # Rare name-drop on return — very emotional moment
         name = getattr(duck.memory, 'player_name', None) if hasattr(duck, 'memory') else None
@@ -328,7 +342,7 @@ def attempt_coax(duck) -> Tuple[bool, str]:
         return False, random.choice(COAX_PROGRESS_MESSAGES).format(remaining=remaining)
 
 
-def apply_medicine(duck) -> Tuple[bool, str]:
+def apply_medicine(duck, duck_store: "Optional[DuckStore]" = None) -> Tuple[bool, str]:
     """Apply medicine to cure sickness.
     
     Returns (success, message).
@@ -339,15 +353,17 @@ def apply_medicine(duck) -> Tuple[bool, str]:
     if duck.hiding:
         return False, "..."  # Can't medicine a duck that won't come out
     
-    _cure_sickness(duck)
-    apply_trust_gain(duck, "cure")
+    _cure_sickness(duck, duck_store=duck_store)
+    apply_trust_gain(duck, "cure", duck_store=duck_store)
     return True, random.choice(MEDICINE_MESSAGES)
 
 
-def _cure_sickness(duck):
+def _cure_sickness(duck, duck_store: "Optional[DuckStore]" = None):
     """Internal: clear sickness state."""
     duck.is_sick = False
     duck.sick_since = None
+    if duck_store:
+        duck_store.set_sick(False, cause="recovery")
     try:
         event_bus.emit(SicknessEvent(source="consequences", started=False, cause="recovery"))
     except Exception:

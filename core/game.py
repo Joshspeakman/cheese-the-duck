@@ -1498,7 +1498,7 @@ class Game:
 
         # ── Medicine special handling (consequence engine) ────────────
         if item_id == "medicine":
-            success, msg = apply_medicine(self.duck)
+            success, msg = apply_medicine(self.duck, duck_store=self.duck_store)
             if success:
                 # Consume the item
                 self.inventory.use_item(item_id, self.duck)
@@ -2711,7 +2711,7 @@ class Game:
 
         # ── Block interactions if duck is hiding ─────────────────────
         if getattr(self.duck, 'hiding', False):
-            success, msg = attempt_coax(self.duck)
+            success, msg = attempt_coax(self.duck, duck_store=self.duck_store)
             if success:
                 self._show_message_if_no_menu(msg, duration=5.0, category="duck")
             elif msg:
@@ -2808,7 +2808,7 @@ class Game:
             self.duck_store.sync_from_duck(self.duck)
 
         # ── Trust gain from caring interaction ───────────────────────
-        apply_trust_gain(self.duck, "interaction")
+        apply_trust_gain(self.duck, "interaction", duck_store=self.duck_store)
         # If duck is giving cold shoulder, caring visits thaw it
         if is_cold_shoulder_active(self.duck):
             thaw_cold_shoulder(self.duck, minutes=5)
@@ -2838,8 +2838,8 @@ class Game:
                 self.diary_manager.on_goal_satisfied(gt)
             # Check if all 3 goals satisfied → trust + diary bonus
             if self.duck.desires.check_all_satisfied_bonus():
-                apply_trust_gain(self.duck, "interaction")  # Bonus trust
-                apply_trust_gain(self.duck, "interaction")  # Extra bonus
+                apply_trust_gain(self.duck, "interaction", duck_store=self.duck_store)  # Bonus trust
+                apply_trust_gain(self.duck, "interaction", duck_store=self.duck_store)  # Extra bonus
                 self.diary_manager.on_goal_all_satisfied()
         
         # Record action in DuckBrain for Seaman-style callbacks
@@ -3983,8 +3983,8 @@ class Game:
                         for gt in _post - _pre:
                             self.diary_manager.on_goal_satisfied(gt)
                         if self.duck.desires.check_all_satisfied_bonus():
-                            apply_trust_gain(self.duck, "interaction")
-                            apply_trust_gain(self.duck, "interaction")
+                            apply_trust_gain(self.duck, "interaction", duck_store=self.duck_store)
+                            apply_trust_gain(self.duck, "interaction", duck_store=self.duck_store)
                             self.diary_manager.on_goal_all_satisfied()
                     except Exception:
                         pass
@@ -6285,7 +6285,7 @@ class Game:
         # ── End-of-session trust bonus: all needs > 40 = "good day" ──
         needs = self.duck.needs
         if all(getattr(needs, n) > 40 for n in ["hunger", "energy", "fun", "cleanliness", "social"]):
-            apply_trust_gain(self.duck, "good_day")
+            apply_trust_gain(self.duck, "good_day", duck_store=self.duck_store)
 
         save_data = {
             "duck": self.duck.to_dict(),
@@ -9934,7 +9934,7 @@ Core Systems Tested: {report.total_tests}
 
         elif action == "cure_sickness":
             from core.consequences import apply_medicine
-            result = apply_medicine(self.duck)
+            result = apply_medicine(self.duck, duck_store=self.duck_store)
             msg = f"# DEBUG: Medicine applied\n{result}"
 
         elif action == "trigger_hiding":
