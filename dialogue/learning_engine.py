@@ -288,6 +288,14 @@ class LearningEngine:
                 "SELECT COUNT(*) FROM pairs WHERE source != 'template' "
                 "AND last_used < datetime('now', '-30 days')"
             ).fetchone()[0]
+            # Tone distribution
+            tones = self._conn.execute(
+                "SELECT tone, COUNT(*) FROM pairs WHERE tone != '' GROUP BY tone"
+            ).fetchall()
+            # Context distribution
+            contexts = self._conn.execute(
+                "SELECT context, COUNT(*) FROM pairs WHERE context != '' GROUP BY context"
+            ).fetchall()
 
         return {
             "total_pairs": total,
@@ -295,6 +303,8 @@ class LearningEngine:
             "learned_pairs": learned,
             "top_inputs": [(t, f) for t, f in top_freq],
             "source_distribution": dict(sources),
+            "tone_distribution": dict(tones),
+            "context_distribution": dict(contexts),
             "avg_frequency": round(avg_freq, 2),
             "stale_pairs": stale,
         }
