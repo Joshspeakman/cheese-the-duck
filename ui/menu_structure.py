@@ -556,7 +556,7 @@ def _get_titles_items(game):
             equipped = False
             if game and hasattr(game, 'titles') and game.titles:
                 earned = title_id in game.titles.earned_titles
-                equipped = game.titles.equipped_title == title_id
+                equipped = game.titles.current_title == title_id
             
             prefix = "@ " if equipped else ""
             categories[cat_name].append(MasterMenuItem(
