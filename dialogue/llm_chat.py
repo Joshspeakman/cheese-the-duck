@@ -5,6 +5,7 @@ LOCAL ONLY - no external API calls.
 """
 import os
 import sys
+import atexit
 import logging
 import threading
 import concurrent.futures
@@ -94,6 +95,7 @@ def _detect_gpu_layers() -> int:
 
 # Persistent thread pool for LLM calls (avoid recreating per-call overhead)
 _llm_executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+atexit.register(_llm_executor.shutdown, wait=False)
 
 
 def _call_with_timeout(func, timeout: float = LLM_CALL_TIMEOUT) -> Any:
@@ -114,6 +116,7 @@ def _call_with_timeout(func, timeout: float = LLM_CALL_TIMEOUT) -> Any:
     try:
         return future.result(timeout=timeout)
     except concurrent.futures.TimeoutError:
+        future.cancel()
         logger.warning(f"LLM call timed out after {timeout}s")
         raise TimeoutError(f"LLM call timed out after {timeout} seconds")
     except Exception as e:
