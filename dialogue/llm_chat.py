@@ -8,6 +8,8 @@ import sys
 import atexit
 import logging
 import threading
+import queue as _queue_mod
+import multiprocessing as mp
 import concurrent.futures
 from typing import Optional, List, Dict, Any, TYPE_CHECKING
 from pathlib import Path
@@ -21,9 +23,9 @@ LLM_CALL_TIMEOUT = 15.0
 # Flag to track if LLM has encountered critical errors
 _llm_crashed = False
 
-# NOTE: SIGSEGV handler removed - catching segfaults and continuing is
-# undefined behavior that can corrupt memory/save data. If the LLM causes
-# a segfault, the process should terminate cleanly via OS signal handling.
+# NOTE: LLM inference runs in an isolated subprocess so that a native
+# crash (e.g. SIGSEGV in GGML) only kills the worker process, not the
+# game itself.  The main process detects the death and disables LLM.
 
 if TYPE_CHECKING:
     from duck.duck import Duck
@@ -95,7 +97,19 @@ def _detect_gpu_layers() -> int:
 
 # Persistent thread pool for LLM calls (avoid recreating per-call overhead)
 _llm_executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-atexit.register(_llm_executor.shutdown, wait=False)
+
+
+def _cleanup_llm():
+    \"\"\"Shut down the LLM subprocess and thread pool at exit.\"\"\"
+    global _llm_chat_instance
+    if _llm_chat_instance is not None:
+        llama = getattr(_llm_chat_instance, '_llama', None)
+        if isinstance(llama, _LLMProxy):
+            llama.shutdown()
+    _llm_executor.shutdown(wait=False)
+
+
+atexit.register(_cleanup_llm)
 
 
 def _call_with_timeout(func, timeout: float = LLM_CALL_TIMEOUT) -> Any:
@@ -122,6 +136,174 @@ def _call_with_timeout(func, timeout: float = LLM_CALL_TIMEOUT) -> Any:
     except Exception as e:
         logger.error(f"LLM call failed: {e}")
         raise
+
+
+# ── Subprocess isolation for native LLM code ───────────────────────
+
+def _llm_subprocess_worker(model_path, n_ctx, n_threads, n_gpu_layers,
+                           request_queue, response_queue):
+    """LLM inference worker running in an isolated subprocess.
+
+    If this process crashes (e.g. SIGSEGV in GGML), only this subprocess
+    dies — the main game process survives.
+    """
+    # Prevent thread-pool conflicts between OpenBLAS/MKL and GGML OpenMP
+    os.environ["OPENBLAS_NUM_THREADS"] = "1"
+    os.environ["MKL_NUM_THREADS"] = "1"
+
+    try:
+        from llama_cpp import Llama
+
+        # Suppress noisy llama.cpp logging on stderr
+        stderr_fd = sys.stderr.fileno()
+        old_stderr = os.dup(stderr_fd)
+        devnull = os.open(os.devnull, os.O_WRONLY)
+        os.dup2(devnull, stderr_fd)
+
+        gpu_used = n_gpu_layers
+        try:
+            model = Llama(
+                model_path=model_path, n_ctx=n_ctx,
+                n_threads=n_threads, n_gpu_layers=n_gpu_layers,
+                verbose=False,
+            )
+        except Exception:
+            if n_gpu_layers > 0:
+                gpu_used = 0
+                model = Llama(
+                    model_path=model_path, n_ctx=n_ctx,
+                    n_threads=n_threads, n_gpu_layers=0,
+                    verbose=False,
+                )
+            else:
+                raise
+        finally:
+            os.dup2(old_stderr, stderr_fd)
+            os.close(old_stderr)
+            os.close(devnull)
+
+        # Warmup (JIT / KV-cache prime)
+        try:
+            model.create_chat_completion(
+                messages=[
+                    {"role": "system", "content": "Reply in one word."},
+                    {"role": "user", "content": "hi"},
+                ],
+                max_tokens=4, temperature=0.0,
+            )
+        except Exception:
+            pass  # warmup failure is non-critical
+
+        response_queue.put({
+            "type": "ready",
+            "model_name": os.path.basename(model_path),
+            "gpu_layers": gpu_used,
+        })
+    except Exception as e:
+        response_queue.put({"type": "load_error", "error": str(e)})
+        return
+
+    # ── main request loop ──────────────────────────────────────────
+    while True:
+        try:
+            req = request_queue.get()
+        except (EOFError, OSError):
+            break
+        if req is None:          # shutdown sentinel
+            break
+        try:
+            if req["method"] == "chat":
+                result = model.create_chat_completion(**req["kwargs"])
+            else:
+                result = model(req["prompt"], **req["kwargs"])
+            response_queue.put({"type": "result", "data": result,
+                                "id": req["id"]})
+        except Exception as e:
+            response_queue.put({"type": "error", "error": str(e),
+                                "id": req["id"]})
+
+
+class _LLMProxy:
+    """Proxy that forwards inference calls to an isolated subprocess.
+
+    The subprocess loads and owns the ``Llama`` model.  If the native code
+    crashes the subprocess dies but the main game process is unaffected.
+    """
+
+    def __init__(self, model_path: str, n_ctx: int, n_threads: int,
+                 n_gpu_layers: int, load_timeout: int = 120):
+        ctx = mp.get_context("spawn")  # clean process, no inherited threads
+        self._request_q = ctx.Queue()
+        self._response_q = ctx.Queue()
+        self._process = ctx.Process(
+            target=_llm_subprocess_worker,
+            args=(model_path, n_ctx, n_threads, n_gpu_layers,
+                  self._request_q, self._response_q),
+            daemon=True,
+        )
+        self._process.start()
+
+        # Wait for model load + warmup in the subprocess
+        try:
+            msg = self._response_q.get(timeout=load_timeout)
+        except _queue_mod.Empty:
+            self._process.terminate()
+            raise RuntimeError("LLM subprocess timed out during model loading")
+
+        if msg["type"] == "load_error":
+            raise RuntimeError(msg["error"])
+        if msg["type"] != "ready":
+            raise RuntimeError(f"Unexpected subprocess message: {msg}")
+
+        self.model_name: str = msg.get("model_name", "unknown")
+        self.gpu_layers: int = msg.get("gpu_layers", 0)
+        self._req_counter = 0
+
+    # ── public interface (mirrors llama_cpp.Llama) ─────────────────
+
+    def create_chat_completion(self, **kwargs):
+        return self._send_request({"method": "chat", "kwargs": kwargs})
+
+    def __call__(self, prompt, **kwargs):
+        return self._send_request({"method": "completion",
+                                   "prompt": prompt, "kwargs": kwargs})
+
+    # ── helpers ────────────────────────────────────────────────────
+
+    def _send_request(self, request: dict) -> Any:
+        if not self._process.is_alive():
+            raise RuntimeError(
+                "LLM worker process has died (possible native crash)")
+        self._req_counter += 1
+        request["id"] = self._req_counter
+        self._request_q.put(request)
+
+        # Poll for response, checking subprocess health every second
+        while True:
+            try:
+                msg = self._response_q.get(timeout=1.0)
+                break
+            except _queue_mod.Empty:
+                if not self._process.is_alive():
+                    raise RuntimeError(
+                        "LLM worker process crashed during inference")
+                continue
+
+        if msg["type"] == "error":
+            raise RuntimeError(msg["error"])
+        return msg["data"]
+
+    def is_alive(self) -> bool:
+        return self._process.is_alive()
+
+    def shutdown(self):
+        try:
+            self._request_q.put(None)
+            self._process.join(timeout=5)
+        except Exception:
+            pass
+        if self._process.is_alive():
+            self._process.terminate()
 
 
 class LLMChat:
@@ -183,46 +365,28 @@ class LLMChat:
             self._loading = False
 
     def _warmup(self):
-        """Run a tiny throwaway inference to warm up KV cache and JIT paths."""
-        if not self._llama or self._warmed_up:
-            return
-        try:
-            with self._inference_lock:
-                self._llama.create_chat_completion(
-                    messages=[
-                        {"role": "system", "content": "You are a duck. Reply in one word."},
-                        {"role": "user", "content": "hi"},
-                    ],
-                    max_tokens=4,
-                    temperature=0.0,
-                )
-            self._warmed_up = True
-            logger.info("LLM warmup complete")
-        except Exception as e:
-            logger.debug(f"LLM warmup failed (non-critical): {e}")
-            # Warmup failure is non-critical — first real call will just be slower
+        """Warmup is handled by the subprocess worker during initialization."""
+        self._warmed_up = True
 
     def is_loading(self) -> bool:
         """Check if model is still loading in background."""
         return self._loading
 
     def _try_local_model(self) -> bool:
-        """Try to load a local GGUF model with GPU auto-detection."""
+        """Try to load a local GGUF model in an isolated subprocess."""
         try:
-            from llama_cpp import Llama
+            import llama_cpp  # noqa: F401 – verify importable
         except ImportError:
             self._last_error = "llama-cpp-python not installed. Run: pip install llama-cpp-python"
             return False
 
         model_dir = Path(LLM_MODEL_DIR)
-        
-        # Look for model files
+
         if not model_dir.exists():
             model_dir.mkdir(parents=True, exist_ok=True)
             self._last_error = f"Model directory created at {model_dir}. Run 'python download_model.py' to download a model."
             return False
 
-        # Find any .gguf file
         gguf_files = list(model_dir.glob("*.gguf"))
         if not gguf_files:
             self._last_error = f"No .gguf model found in {model_dir}. Run 'python download_model.py' to download a model."
@@ -230,56 +394,24 @@ class LLMChat:
 
         model_path = gguf_files[0]
         self._model_path = model_path
-
-        # Auto-detect GPU layers
         self._gpu_layers = _detect_gpu_layers()
 
         try:
-            # Suppress llama.cpp warnings during model loading
-            stderr_fd = sys.stderr.fileno()
-            old_stderr = os.dup(stderr_fd)
-            devnull = os.open(os.devnull, os.O_WRONLY)
-            os.dup2(devnull, stderr_fd)
-
-            try:
-                # Load the model with GPU support
-                # Use most CPU cores for faster inference (leave 1 for main thread)
-                n_threads = max(2, (os.cpu_count() or 4) - 1)
-                self._llama = Llama(
-                    model_path=str(model_path),
-                    n_ctx=LLM_CONTEXT_SIZE,
-                    n_threads=n_threads,
-                    n_gpu_layers=self._gpu_layers,
-                    verbose=False,
-                )
-            finally:
-                # Restore stderr
-                os.dup2(old_stderr, stderr_fd)
-                os.close(old_stderr)
-                os.close(devnull)
-
-            self._model_name = model_path.name
+            # Cap threads to avoid oversubscription with GGML OpenMP workers
+            n_threads = max(2, min(8, (os.cpu_count() or 4) - 1))
+            proxy = _LLMProxy(
+                model_path=str(model_path),
+                n_ctx=LLM_CONTEXT_SIZE,
+                n_threads=n_threads,
+                n_gpu_layers=self._gpu_layers,
+            )
+            self._llama = proxy
+            self._model_name = proxy.model_name
+            self._gpu_layers = proxy.gpu_layers
             self._available = True
+            self._warmed_up = True  # subprocess handles warmup
             return True
         except Exception as e:
-            # If GPU failed, try CPU-only as fallback
-            if self._gpu_layers > 0:
-                try:
-                    self._gpu_layers = 0
-                    n_threads = max(2, (os.cpu_count() or 4) - 1)
-                    self._llama = Llama(
-                        model_path=str(model_path),
-                        n_ctx=LLM_CONTEXT_SIZE,
-                        n_threads=n_threads,
-                        n_gpu_layers=0,
-                        verbose=False,
-                    )
-                    self._model_name = model_path.name
-                    self._available = True
-                    return True
-                except Exception as e2:
-                    self._last_error = f"Failed to load model (GPU and CPU): {e2}"
-                    return False
             self._last_error = f"Failed to load model: {e}"
             return False
 
@@ -289,6 +421,14 @@ class LLMChat:
         if _llm_crashed:
             return False
         if self._disabled:
+            return False
+        # Detect subprocess death (native crash)
+        if (self._available and isinstance(self._llama, _LLMProxy)
+                and not self._llama.is_alive()):
+            self._available = False
+            _llm_crashed = True
+            self._last_error = "LLM worker process crashed (native library error)"
+            logger.error("LLM subprocess died — disabling LLM for this session")
             return False
         return self._available
 
