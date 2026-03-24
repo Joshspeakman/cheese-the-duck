@@ -4870,6 +4870,12 @@ class Game:
         # Clear renderer obscuring BEFORE showing return message
         self.renderer._cheese_away = False
         self.renderer._cheese_away_biome = ""
+        # Reset duck position to center so player can see him
+        dp = self.renderer.duck_pos
+        dp.x = dp.field_width // 2
+        dp.y = dp.field_height // 2
+        dp.target_x = dp.x
+        dp.target_y = dp.y
 
         self.renderer.show_message(msg, duration=5.0, category="duck")
 
@@ -7241,27 +7247,28 @@ class Game:
 
             if mood_score < 50 or trust < 35:
                 # Cheese refuses to follow — player travels alone
-                current_area = self.exploration.current_area
-                cheese_stays_at = current_area.name if current_area else "Home Pond"
+                if not self._cheese_away:
+                    # First refusal: record where Cheese stays
+                    current_area = self.exploration.current_area
+                    cheese_stays_at = current_area.name if current_area else "Home Pond"
 
-                # Set cheese-away state (cheese stays, player leaves)
-                self._cheese_away = True
-                self._cheese_away_biome = cheese_stays_at
-                self._cheese_away_destination = cheese_stays_at
-                self._cheese_away_since = time.time()
-                self._cheese_away_friend = ""
-                self.renderer._cheese_away = True
-                self.renderer._cheese_away_biome = cheese_stays_at
-                self.friends.cheese_is_away = True
+                    self._cheese_away = True
+                    self._cheese_away_biome = cheese_stays_at
+                    self._cheese_away_destination = cheese_stays_at
+                    self._cheese_away_since = time.time()
+                    self._cheese_away_friend = ""
+                    self.renderer._cheese_away = True
+                    self.renderer._cheese_away_biome = cheese_stays_at
+                    self.friends.cheese_is_away = True
 
-                # Show refusal message
-                if mood_score < 30:
-                    refusal = "*sits down firmly* ...No. I'm staying here. Go without me."
-                elif mood_score < 50:
-                    refusal = "*looks away* ...I don't really feel like going anywhere. You go."
-                else:
-                    refusal = "*hesitates* ...I barely know you enough to follow you around."
-                self.renderer.show_message(refusal, duration=4.0, category="duck")
+                    # Show refusal message
+                    if mood_score < 30:
+                        refusal = "*sits down firmly* ...No. I'm staying here. Go without me."
+                    elif mood_score < 50:
+                        refusal = "*looks away* ...I don't really feel like going anywhere. You go."
+                    else:
+                        refusal = "*hesitates* ...I barely know you enough to follow you around."
+                    self.renderer.show_message(refusal, duration=4.0, category="duck")
 
                 # Continue with player travel (but Cheese doesn't come)
                 self._duck_traveling = True
@@ -7321,6 +7328,12 @@ class Game:
                 # Clear away state so duck shows and chat works normally
                 self.renderer._cheese_away = False
                 self.renderer._cheese_away_biome = ""
+                # Reset duck position to center so player can see him
+                dp = self.renderer.duck_pos
+                dp.x = dp.field_width // 2
+                dp.y = dp.field_height // 2
+                dp.target_x = dp.x
+                dp.target_y = dp.y
                 self.renderer.show_message(reunion_msg, duration=5.0, category="duck")
                 if self.duck:
                     self.duck.memory.add_event(
