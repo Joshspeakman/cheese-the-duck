@@ -130,6 +130,9 @@ def register_meta_topics(engine):
             "This zone? Duck zone. Population: me. Security: my stare. Entry fee: bread. Welcome, {player_name}.",
         ],
     ))
+
+    engine.add_topic(KeywordResponse(
+        name="talking_conversation",
         keywords=["talk", "talking", "chat", "chatting", "conversation",
                    "speak", "discuss", "tell", "say", "said",
                    "mention", "mentioned", "listen", "listening",

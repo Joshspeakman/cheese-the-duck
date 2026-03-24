@@ -100,7 +100,7 @@ _llm_executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
 
 
 def _cleanup_llm():
-    \"\"\"Shut down the LLM subprocess and thread pool at exit.\"\"\"
+    """Shut down the LLM subprocess and thread pool at exit."""
     global _llm_chat_instance
     if _llm_chat_instance is not None:
         llama = getattr(_llm_chat_instance, '_llama', None)
