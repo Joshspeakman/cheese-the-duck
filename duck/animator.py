@@ -118,6 +118,9 @@ class DuckAnimator:
         # Tracks whether the animator is currently translating
         self._is_moving: bool = False
 
+        # When frozen, all movement (update/move_to) is suppressed (e.g. egg state)
+        self.frozen: bool = False
+
     # ------------------------------------------------------------------
     # Properties
     # ------------------------------------------------------------------
@@ -307,6 +310,8 @@ class DuckAnimator:
             save_original: If ``True``, remember the current position so
                            :meth:`return_to_original` can restore it later.
         """
+        if self.frozen:
+            return
         margin = 2
         max_x = max(margin, self._play_width - margin - 6)
         max_y = max(margin, self._play_height - margin - 3)

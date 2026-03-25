@@ -1209,6 +1209,9 @@ class Game:
             self._toggle_music_action()
             return
         if method_name == "_start_talk_mode":
+            if self.duck and self.duck.growth_stage == "egg":
+                self.renderer.show_message("*the egg wobbles silently*", duration=2.0, category="duck")
+                return
             self._close_all_menus()
             self.renderer.toggle_talk()
             return
@@ -3471,6 +3474,9 @@ class Game:
 
             # Store old stage for growth detection
             old_stage = self.duck.growth_stage
+
+            # Freeze duck movement when in egg state
+            self.renderer.duck_pos.frozen = (old_stage == "egg")
 
             # Update duck (with weather effects on need decay)
             weather_mods = get_weather_need_modifiers(self.atmosphere.current_weather)
