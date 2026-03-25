@@ -388,13 +388,8 @@ class SoundEngine:
         self.music_muted = not self.music_muted
         if self.music_muted:
             self.stop_background_music()
-        else:
-            # If radio is playing, don't restart background music
-            if not self.is_radio_playing():
-                if self._available_music:
-                    self.play_background_music()
-            else:
-                self.play_background_music()
+        # When re-enabling, don't force-start — let the normal
+        # update_music() cycle handle when music should next play.
         return self.music_muted
 
     # Alias used by InputDispatcher and game.py

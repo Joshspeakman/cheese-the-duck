@@ -118,7 +118,7 @@ MOOD_WEIGHTS = {
 # Based on aging.py day ranges: hatchling(0-3d), duckling(3-14d), juvenile(14-30d),
 # young_adult(30-90d), adult(90-365d), mature(365-730d), elder(730-1095d), legendary(1095+)
 GROWTH_STAGES = {
-    "egg": {"duration_hours": 0.5, "next": "hatchling"},
+    "egg": {"duration_hours": 0.083, "next": "hatchling"},  # ~5 minutes
     "hatchling": {"duration_hours": 72, "next": "duckling"},      # 3 days
     "duckling": {"duration_hours": 264, "next": "juvenile"},      # 11 days (3-14)
     "juvenile": {"duration_hours": 384, "next": "young_adult"},   # 16 days (14-30)

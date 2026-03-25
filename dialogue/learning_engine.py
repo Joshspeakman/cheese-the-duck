@@ -91,6 +91,17 @@ class LearningEngine:
     def is_seeded(self) -> bool:
         return self._seeded
 
+    @staticmethod
+    def clear_all_pairs():
+        """Delete all learned pairs from the database (for new game reset)."""
+        try:
+            conn = sqlite3.connect(str(DB_PATH), check_same_thread=False)
+            conn.execute("DELETE FROM pairs")
+            conn.commit()
+            conn.close()
+        except Exception:
+            pass
+
     def seed_corpus(self, pairs: List[Tuple[str, str]], source: str = "template"):
         """
         Seed the database with input-response pairs.

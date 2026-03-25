@@ -1046,9 +1046,10 @@ class Renderer:
             self._render_minigame_frame(game)
             return
 
-        # Update duck position
+        # Update duck position (skip when egg — egg stays in nest)
         delta = time.time() - self._last_render_time if self._last_render_time else 0.033
-        self.duck_pos.update(delta)
+        if getattr(duck, 'growth_stage', '') != 'egg':
+            self.duck_pos.update(delta)
         self._last_render_time = time.time()
 
         # Get terminal size - cap to reasonable maximum for consistent gameplay
