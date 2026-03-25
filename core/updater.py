@@ -25,7 +25,7 @@ from config import GAME_DIR, SAVE_DIR
 
 
 # Game version - Update this when releasing new versions
-GAME_VERSION = "2.22.0"
+GAME_VERSION = "2.24.0"
 
 # GitHub repository info
 GITHUB_OWNER = "Joshspeakman"
@@ -73,6 +73,10 @@ class GameUpdater:
         game_path = str(GAME_DIR)
         system_prefixes = ['/opt/', '/usr/', '/snap/']
         return any(game_path.startswith(prefix) for prefix in system_prefixes)
+
+    def _is_git_repo(self) -> bool:
+        """Check if the game directory is a git repository."""
+        return (GAME_DIR / '.git').is_dir()
     
     def is_system_install(self) -> bool:
         """Return True if this is a system-level installation (apt/deb)."""
@@ -277,15 +281,65 @@ class GameUpdater:
                 status=UpdateStatus.CHECK_FAILED
             )
 
+    def _update_via_git(self) -> UpdateStatus:
+        """Update the game using git pull (for git clone installs)."""
+        try:
+            result = subprocess.run(
+                ['git', 'fetch', 'origin'],
+                cwd=str(GAME_DIR),
+                capture_output=True, timeout=30
+            )
+            if result.returncode != 0:
+                self._last_check_error = f"git fetch failed: {result.stderr.decode()[:100]}"
+                return UpdateStatus.UPDATE_FAILED
+
+            result = subprocess.run(
+                ['git', 'reset', '--hard', 'origin/main'],
+                cwd=str(GAME_DIR),
+                capture_output=True, timeout=30
+            )
+            if result.returncode != 0:
+                self._last_check_error = f"git reset failed: {result.stderr.decode()[:100]}"
+                return UpdateStatus.UPDATE_FAILED
+
+            # Ensure venv dependencies are up to date
+            self._ensure_venv_deps()
+
+            return UpdateStatus.UPDATE_COMPLETE
+        except subprocess.TimeoutExpired:
+            self._last_check_error = "git update timed out"
+            return UpdateStatus.UPDATE_FAILED
+        except Exception as e:
+            self._last_check_error = str(e)
+            return UpdateStatus.UPDATE_FAILED
+
+    def _ensure_venv_deps(self):
+        """Ensure venv exists and has all required packages installed."""
+        try:
+            venv_pip = GAME_DIR / '.venv' / 'bin' / 'pip'
+            req_file = GAME_DIR / 'requirements.txt'
+            if not venv_pip.is_file() or not req_file.is_file():
+                return
+            # Bootstrap pip if missing
+            venv_python = GAME_DIR / '.venv' / 'bin' / 'python'
+            if not venv_pip.is_file() and venv_python.is_file():
+                subprocess.run(
+                    [str(venv_python), '-m', 'ensurepip'],
+                    capture_output=True, timeout=60
+                )
+            subprocess.run(
+                [str(venv_pip), 'install', '-q', '-r', str(req_file)],
+                capture_output=True, timeout=180
+            )
+        except Exception:
+            pass  # Non-fatal, game may still work
+
     def download_and_apply_update(self, update_info: UpdateInfo) -> UpdateStatus:
         """
         Download and apply an update.
         
-        This will:
-        1. Download the new version to a temp directory
-        2. Backup current game files (not save data)
-        3. Replace game files with new version
-        4. Preserve the save directory completely
+        For git clones, uses git pull for a clean update.
+        Otherwise downloads a zip from GitHub and overlays files.
         
         Args:
             update_info: The update information from check_for_updates
@@ -293,6 +347,10 @@ class GameUpdater:
         Returns:
             UpdateStatus indicating success or failure
         """
+        # For git clones, use git pull instead of zip download
+        if self._is_git_repo() and shutil.which('git'):
+            return self._update_via_git()
+
         if not update_info.download_url:
             return UpdateStatus.UPDATE_FAILED
 
@@ -389,6 +447,9 @@ class GameUpdater:
                 
                 # Save data is preserved automatically since it's in ~/.cheese_the_duck
                 # and we never touch that directory
+                
+                # Ensure venv dependencies are intact after file replacement
+                self._ensure_venv_deps()
                 
                 return UpdateStatus.UPDATE_COMPLETE
 
