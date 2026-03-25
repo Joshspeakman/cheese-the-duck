@@ -2704,6 +2704,11 @@ class Game:
         if not self.duck:
             return
 
+        # ── Eggs can't be interacted with ────────────────────────────
+        if self.duck.growth_stage == "egg":
+            self._show_message_if_no_menu("*the egg wobbles gently*", duration=2.0, category="event")
+            return
+
         # ── Check if this interaction resolves an active encounter ───
         encounter_result = self.events.try_resolve_encounter(interaction)
         if encounter_result:
@@ -5713,17 +5718,18 @@ class Game:
         # Check daily login for streak/rewards
         self._check_daily_login()
 
-        # Welcome message - use DuckBrain greeting if available
-        greeting = None
-        if self.duck_brain:
-            greeting = self.duck_brain.get_greeting()
-        if not greeting:
-            greeting = self.conversation.get_greeting(self.duck)
-        self.renderer.show_message(f"Welcome, {self.duck.name}!", category="event")
-        self.renderer.show_message(greeting, duration=4.0, category="duck")
-
-        # Play welcome sound
-        duck_sounds.quack("happy")
+        # Welcome message — eggs don't talk
+        if self.duck.growth_stage == "egg":
+            self.renderer.show_message("A mysterious egg appeared!", category="event")
+        else:
+            greeting = None
+            if self.duck_brain:
+                greeting = self.duck_brain.get_greeting()
+            if not greeting:
+                greeting = self.conversation.get_greeting(self.duck)
+            self.renderer.show_message(f"Welcome, {self.duck.name}!", category="event")
+            self.renderer.show_message(greeting, duration=4.0, category="duck")
+            duck_sounds.quack("happy")
 
         # Start main game background music using dynamic system
         music_context = get_music_context(weather="sunny", duck_mood="content")
