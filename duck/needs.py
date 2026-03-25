@@ -213,11 +213,11 @@ class Needs:
     def from_dict(cls, data: dict) -> "Needs":
         """Create Needs from dictionary."""
         return cls(
-            hunger=data.get("hunger", 80),
-            energy=data.get("energy", 100),
-            fun=data.get("fun", 70),
-            cleanliness=data.get("cleanliness", 100),
-            social=data.get("social", 60),
+            hunger=data.get("hunger", 50.0),
+            energy=data.get("energy", 50.0),
+            fun=data.get("fun", 50.0),
+            cleanliness=data.get("cleanliness", 50.0),
+            social=data.get("social", 50.0),
         )
 
     def get_status_emoji(self, need: str) -> str:

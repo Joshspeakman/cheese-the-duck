@@ -2087,33 +2087,47 @@ class Renderer:
 
         # Close-up face section (compact)
         mood = duck.get_mood()
-        
-        # Determine which action to show for closeup
-        # Priority: 1) Temporary closeup action, 2) Duck's current action, 3) Mood-based
-        if self._show_closeup and self._closeup_action:
-            closeup_action = self._closeup_action
-        elif duck.current_action:
-            closeup_action = duck.current_action
-        else:
-            closeup_action = None
-        
-        closeup = get_emotion_closeup(mood.state, closeup_action)
 
-        if closeup:
-            # Show compact close-up with consistent duck color (RGB for cross-platform)
-            for closeup_line in closeup:
-                # Center the line properly
-                centered = _visible_center(closeup_line, inner_width)
-                # Apply consistent RGB yellow color to the duck ASCII
+        # Egg state: show egg art instead of duck face
+        if hasattr(duck, 'growth_stage') and duck.growth_stage == "egg":
+            egg_closeup = [
+                "              ",
+                "     __       ",
+                "    /  \\      ",
+                "    \\__/      ",
+                "              ",
+            ]
+            for egg_line in egg_closeup:
+                centered = _visible_center(egg_line, inner_width)
                 yellow_line = self.color_duck_body + centered + self.term.normal
                 lines.append(BOX["v"] + yellow_line + BOX["v"])
         else:
-            # Show mood status (compact) — truncate long descriptions
-            desc = mood.description
-            if _visible_len(desc) > inner_width:
-                desc = _visible_truncate(desc, inner_width - 2) + ".."
-            mood_text = _visible_center(desc, inner_width)
-            lines.append(BOX["v"] + mood_text + BOX["v"])
+            # Determine which action to show for closeup
+            # Priority: 1) Temporary closeup action, 2) Duck's current action, 3) Mood-based
+            if self._show_closeup and self._closeup_action:
+                closeup_action = self._closeup_action
+            elif duck.current_action:
+                closeup_action = duck.current_action
+            else:
+                closeup_action = None
+            
+            closeup = get_emotion_closeup(mood.state, closeup_action)
+
+            if closeup:
+                # Show compact close-up with consistent duck color (RGB for cross-platform)
+                for closeup_line in closeup:
+                    # Center the line properly
+                    centered = _visible_center(closeup_line, inner_width)
+                    # Apply consistent RGB yellow color to the duck ASCII
+                    yellow_line = self.color_duck_body + centered + self.term.normal
+                    lines.append(BOX["v"] + yellow_line + BOX["v"])
+            else:
+                # Show mood status (compact) — truncate long descriptions
+                desc = mood.description
+                if _visible_len(desc) > inner_width:
+                    desc = _visible_truncate(desc, inner_width - 2) + ".."
+                mood_text = _visible_center(desc, inner_width)
+                lines.append(BOX["v"] + mood_text + BOX["v"])
 
         # Divider
         lines.append(BOX["t_right"] + BOX["h"] * inner_width + BOX["t_left"])
@@ -2235,7 +2249,10 @@ class Renderer:
         lines.append(BOX["v"] + activity_centered + BOX["v"])
 
         # Current action message (truncate if needed)
-        action_msg = duck.get_action_message() or "Just vibing..."
+        if hasattr(duck, 'growth_stage') and duck.growth_stage == "egg":
+            action_msg = "Waiting to hatch..."
+        else:
+            action_msg = duck.get_action_message() or "Just vibing..."
         action_msg = _visible_truncate(action_msg, inner_width - 2)
         action_centered = _visible_center(action_msg, inner_width)
         lines.append(BOX["v"] + action_centered + BOX["v"])
