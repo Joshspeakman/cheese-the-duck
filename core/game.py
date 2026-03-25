@@ -3668,8 +3668,8 @@ class Game:
                 current_weather = self.atmosphere.current_weather.weather_type.value
                 self._weather_seen.add(current_weather)
 
-                # Duck comments on weather changes
-                if self._last_known_weather and self._last_known_weather != current_weather:
+                # Duck comments on weather changes (eggs don't react)
+                if self._last_known_weather and self._last_known_weather != current_weather and self.duck.growth_stage != "egg":
                     weather_comment = self._get_duck_weather_reaction(current_weather)
                     if weather_comment:
                         # Schedule weather comment after atmosphere message
@@ -3860,16 +3860,19 @@ class Game:
             self._last_random_comment_time = current_time
 
         # Check for pending visitor reaction comment (Cheese responding to friend)
+        # Eggs don't talk — suppress any queued comments
         if self._pending_visitor_comment and current_time >= self._pending_visitor_comment_time:
-            self._show_message_if_no_menu(self._pending_visitor_comment, duration=6.0, category="duck")
-            duck_sounds.quack("content")
+            if self.duck and self.duck.growth_stage != "egg":
+                self._show_message_if_no_menu(self._pending_visitor_comment, duration=6.0, category="duck")
+                duck_sounds.quack("content")
             self._pending_visitor_comment = None
             self._last_visitor_comment_time = current_time
 
         # Check for pending weather reaction comment (Cheese reacting to weather)
         if self._pending_weather_comment and current_time >= self._pending_weather_comment_time:
-            self._show_message_if_no_menu(self._pending_weather_comment, duration=4.0, category="duck")
-            duck_sounds.quack("content")
+            if self.duck and self.duck.growth_stage != "egg":
+                self._show_message_if_no_menu(self._pending_weather_comment, duration=4.0, category="duck")
+                duck_sounds.quack("content")
             self._pending_weather_comment = None
 
         # Autonomous behavior (skip if duck is busy traveling/exploring/building/dreaming/egg)
@@ -5057,6 +5060,10 @@ class Game:
         falling back to the contextual dialogue system otherwise.
         """
         if not self.duck:
+            return
+        
+        # Eggs don't make comments
+        if self.duck.growth_stage == "egg":
             return
         
         # Don't interrupt open menus or overlays
@@ -6588,6 +6595,7 @@ class Game:
         # Reset all state
         self.duck = None
         self.behavior_ai = None
+        self.duck_brain = None
         self.inventory = Inventory()
         self.goals = GoalSystem()
         self.achievements = AchievementSystem()
@@ -6643,6 +6651,12 @@ class Game:
         self.sound_effects = SoundEffectSystem()
         self.enhanced_diary = EnhancedDiarySystem()
         self.save_slots = SaveSlotsSystem()
+        self.contextual_dialogue = ContextualDialogueSystem()
+        self.dreams = DreamSystem()
+        self.minigames = MiniGameSystem()
+        self.events = EventSystem()
+        self.area_events = AreaEventSystem()
+        self.spontaneous_travel = SpontaneousTravelSystem()
 
         # Clear ambient lines and learned pairs from previous duck
         try:
@@ -6659,6 +6673,9 @@ class Game:
         self._statistics = {}
         self._weather_seen = set()
         self._session_feeds = 0
+        self._last_random_comment_time = 0.0
+        self._pending_visitor_comment = None
+        self._pending_weather_comment = None
 
         # Stop music and return to title
         sound_engine.stop_music()

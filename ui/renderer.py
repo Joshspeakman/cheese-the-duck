@@ -2319,6 +2319,10 @@ class Renderer:
         """Get text describing current activity."""
         import time as _time
         
+        # Egg state — no status other than incubating
+        if hasattr(duck, 'growth_stage') and duck.growth_stage == "egg":
+            return "Incubating..."
+        
         # Consequence-engine states override everything
         if getattr(duck, 'hiding', False):
             return "*gone*"
