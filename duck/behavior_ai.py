@@ -971,13 +971,13 @@ class BehaviorAI:
                     score = 0.02  # Too tired
                 elif self._radio_playing:
                     # Radio already on — low chance to toggle off (duck enjoys it)
-                    score = 0.05
+                    score = 0.08
                 elif fun_value < 40:
-                    score = 0.35  # Bored — wants music
+                    score = 0.55  # Bored — wants music
                 elif fun_value < 60:
-                    score = 0.2   # Slightly bored
+                    score = 0.35  # Slightly bored
                 else:
-                    score = 0.08  # Content — might still want tunes
+                    score = 0.15  # Content — might still want tunes
 
             # Add bonus based on relevant need (lower need = higher bonus)
             # Skip for item-based actions - they have custom need handling above

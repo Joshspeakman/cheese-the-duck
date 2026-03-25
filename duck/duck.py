@@ -24,7 +24,7 @@ class Duck:
     created_at: str
     needs: Needs = field(default_factory=Needs)
     personality: Dict[str, int] = field(default_factory=lambda: DEFAULT_PERSONALITY.copy())
-    growth_stage: str = "hatchling"
+    growth_stage: str = "egg"
     growth_progress: float = 0.0
     current_action: Optional[str] = None
     action_start_time: Optional[float] = None

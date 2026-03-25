@@ -3866,8 +3866,9 @@ class Game:
             duck_sounds.quack("content")
             self._pending_weather_comment = None
 
-        # Autonomous behavior (skip if duck is busy traveling/exploring/building/dreaming)
-        if self.behavior_ai and not self._duck_traveling and not self._duck_exploring and not self._duck_building and not self._dream_active:
+        # Autonomous behavior (skip if duck is busy traveling/exploring/building/dreaming/egg)
+        is_egg = self.duck and self.duck.growth_stage == "egg"
+        if self.behavior_ai and not self._duck_traveling and not self._duck_exploring and not self._duck_building and not self._dream_active and not is_egg:
             # Check current location - structures and items only exist at Home Pond
             current_location = None
             if hasattr(self, 'exploration') and self.exploration and self.exploration.current_area:
@@ -5312,6 +5313,7 @@ class Game:
 
         # Record in diary (narrative storytelling)
         milestone_map = {
+            "hatchling": "hatched",
             "duckling": "first_steps",
             "teen": "became_teen",
             "adult": "became_adult",
@@ -5657,10 +5659,15 @@ class Game:
         self.area_events = AreaEventSystem()
         self.spontaneous_travel = SpontaneousTravelSystem()
 
-        # Clear ambient lines from previous duck
+        # Clear ambient lines and learned pairs from previous duck
         try:
             from dialogue.ambient_lines import AmbientLineGenerator
             AmbientLineGenerator.clear_all_lines()
+        except Exception:
+            pass
+        try:
+            from dialogue.learning_engine import LearningEngine
+            LearningEngine.clear_all_pairs()
         except Exception:
             pass
 
@@ -6631,10 +6638,15 @@ class Game:
         self.enhanced_diary = EnhancedDiarySystem()
         self.save_slots = SaveSlotsSystem()
 
-        # Clear ambient lines from previous duck
+        # Clear ambient lines and learned pairs from previous duck
         try:
             from dialogue.ambient_lines import AmbientLineGenerator
             AmbientLineGenerator.clear_all_lines()
+        except Exception:
+            pass
+        try:
+            from dialogue.learning_engine import LearningEngine
+            LearningEngine.clear_all_pairs()
         except Exception:
             pass
 
@@ -11436,10 +11448,15 @@ Core Systems Tested: {report.total_tests}
         self.statistics = StatisticsSystem()
         self.day_night = DayNightSystem()
         
-        # Clear ambient lines from previous duck
+        # Clear ambient lines and learned pairs from previous duck
         try:
             from dialogue.ambient_lines import AmbientLineGenerator
             AmbientLineGenerator.clear_all_lines()
+        except Exception:
+            pass
+        try:
+            from dialogue.learning_engine import LearningEngine
+            LearningEngine.clear_all_pairs()
         except Exception:
             pass
 
