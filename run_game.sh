@@ -1,5 +1,5 @@
 #!/bin/bash
-cd "/home/joshspeakman/System_NVMe/Claude Code/Projects/Stupid Duck/stupid_duck"
+cd "$(dirname "$0")"
 
 # Use venv if it exists (for AI support)
 if [ -f ".venv/bin/python" ]; then
