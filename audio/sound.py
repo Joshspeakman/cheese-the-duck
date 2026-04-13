@@ -134,53 +134,105 @@ class MusicTrack:
 
 
 # Music track definitions
+# Available audio files: Bell Breeze Loop.wav, sunny_day1.wav, sunny_day2.wav, Main.mp3
+# Keys match what _scan_audio_assets registers (lowercase stem).
 MUSIC_TRACKS = {
+    # Contexts returned by get_music_context()
+    MusicContext.CALM: MusicTrack(
+        context=MusicContext.CALM,
+        name="Bell Breeze",
+        audio_file="bell breeze loop",
+        tempo_bpm=85,
+    ),
+    MusicContext.HAPPY: MusicTrack(
+        context=MusicContext.HAPPY,
+        name="Sunny Day",
+        audio_file="sunny_day1",
+        tempo_bpm=110,
+    ),
+    MusicContext.ENERGETIC: MusicTrack(
+        context=MusicContext.ENERGETIC,
+        name="Sunny Day 2",
+        audio_file="sunny_day2",
+        tempo_bpm=120,
+    ),
+    MusicContext.SAD: MusicTrack(
+        context=MusicContext.SAD,
+        name="Bell Breeze",
+        audio_file="bell breeze loop",
+        tempo_bpm=85,
+    ),
+    MusicContext.MYSTERIOUS: MusicTrack(
+        context=MusicContext.MYSTERIOUS,
+        name="Main Theme",
+        audio_file="main",
+        tempo_bpm=100,
+    ),
+    MusicContext.STORMY: MusicTrack(
+        context=MusicContext.STORMY,
+        name="Main Theme",
+        audio_file="main",
+        tempo_bpm=100,
+    ),
+    MusicContext.CELEBRATION: MusicTrack(
+        context=MusicContext.CELEBRATION,
+        name="Sunny Day",
+        audio_file="sunny_day1",
+        tempo_bpm=110,
+    ),
+    MusicContext.DEFAULT: MusicTrack(
+        context=MusicContext.DEFAULT,
+        name="Bell Breeze",
+        audio_file="bell breeze loop",
+        tempo_bpm=85,
+    ),
+    # Legacy time-of-day / event contexts
     MusicContext.MORNING: MusicTrack(
         context=MusicContext.MORNING,
-        name="Morning Dew",
-        audio_file="morning.mp3",
+        name="Sunny Day",
+        audio_file="sunny_day1",
         tempo_bpm=100,
     ),
     MusicContext.AFTERNOON: MusicTrack(
         context=MusicContext.AFTERNOON,
-        name="Sunny Afternoon",
-        audio_file="afternoon.mp3",
+        name="Sunny Day 2",
+        audio_file="sunny_day2",
         tempo_bpm=110,
     ),
     MusicContext.EVENING: MusicTrack(
         context=MusicContext.EVENING,
-        name="Twilight Pond",
-        audio_file="evening.mp3",
+        name="Bell Breeze",
+        audio_file="bell breeze loop",
         tempo_bpm=90,
     ),
     MusicContext.NIGHT: MusicTrack(
         context=MusicContext.NIGHT,
-        name="Moonlight Lullaby",
-        audio_file="night.mp3",
+        name="Main Theme",
+        audio_file="main",
         tempo_bpm=70,
     ),
     MusicContext.RAIN: MusicTrack(
         context=MusicContext.RAIN,
-        name="Rainy Day",
-        audio_file="rain.mp3",
+        name="Bell Breeze",
+        audio_file="bell breeze loop",
         tempo_bpm=80,
     ),
     MusicContext.FESTIVAL: MusicTrack(
         context=MusicContext.FESTIVAL,
-        name="Festival Dance",
-        audio_file="festival.mp3",
+        name="Sunny Day",
+        audio_file="sunny_day1",
         tempo_bpm=140,
     ),
     MusicContext.PEACEFUL: MusicTrack(
         context=MusicContext.PEACEFUL,
-        name="Peaceful Pond",
-        audio_file="peaceful.mp3",
+        name="Bell Breeze",
+        audio_file="bell breeze loop",
         tempo_bpm=85,
     ),
     MusicContext.ADVENTURE: MusicTrack(
         context=MusicContext.ADVENTURE,
-        name="Adventure Ahead",
-        audio_file="adventure.mp3",
+        name="Sunny Day 2",
+        audio_file="sunny_day2",
         tempo_bpm=130,
     ),
 }
@@ -426,6 +478,7 @@ class SoundEngine:
 
     def _mute_music_for_radio(self):
         """Mute game music when radio is playing."""
+        self._current_context = None  # reset so music restarts when radio stops
         self.stop_music()
 
     def _play_hour_chime(self):
@@ -459,6 +512,7 @@ class SoundEngine:
     def stop_radio(self):
         """Stop radio playback."""
         self.get_radio().stop()
+        self._current_context = None  # allow update_music() to restart after radio stops
 
     def change_radio_station(self, station_id):
         """Change to a different radio station."""
@@ -618,9 +672,9 @@ class SoundEngine:
                 self._available_music[track.audio_file] = audio_path
                 audio_file = track.audio_file
 
-        # If no audio file, skip this context (don't use beeping fallback)
+        # If no audio file, use synthesized ambient fallback
         if not audio_file:
-            # Just silently skip - no beeping fallback as it's annoying
+            self._play_fallback_ambient(new_context)
             return
 
         # Perform crossfade with pygame
@@ -718,6 +772,69 @@ class SoundEngine:
                 self._available_music['dynamic'] = self._available_music[audio_file]
                 self.play_background_music('dynamic')
                 self._music_files = old_music_files
+
+    def _play_fallback_ambient(self, context: MusicContext):
+        """
+        Play a short synthesized ambient tone sequence when no audio file is available.
+
+        Gives the game an Animal Crossing feel — periodic ambient tones that reflect
+        the current time/mood context.  The 2-5 minute cooldown set here ensures they
+        play sparingly rather than constantly.
+        """
+        # Mark context and set cooldown immediately so update_music() won't double-fire
+        self._current_context = context
+        self._music_cooldown_until = time.time() + random.uniform(120, 300)
+
+        if not self._pygame_available or not self.enabled or self.music_muted:
+            return
+
+        # Context → tone sequences  (frequency Hz, duration seconds)
+        _AMBIENT_TONES = {
+            MusicContext.HAPPY:       [(523, 0.25), (659, 0.25), (784, 0.25), (1047, 0.5)],
+            MusicContext.CELEBRATION: [(523, 0.15), (659, 0.15), (784, 0.15), (1047, 0.4), (1318, 0.6)],
+            MusicContext.ENERGETIC:   [(523, 0.2),  (659, 0.2),  (784, 0.2),  (523, 0.3)],
+            MusicContext.CALM:        [(392, 0.4),  (494, 0.4),  (523, 0.6)],
+            MusicContext.MYSTERIOUS:  [(349, 0.5),  (440, 0.4),  (392, 0.7)],
+            MusicContext.SAD:         [(349, 0.6),  (311, 0.8)],
+            MusicContext.STORMY:      [(261, 0.5),  (220, 0.5),  (196, 0.8)],
+            MusicContext.MORNING:     [(523, 0.2),  (659, 0.2),  (784, 0.3)],
+            MusicContext.AFTERNOON:   [(392, 0.3),  (523, 0.3),  (659, 0.5)],
+            MusicContext.EVENING:     [(330, 0.4),  (415, 0.4),  (392, 0.6)],
+            MusicContext.NIGHT:       [(261, 0.6),  (311, 0.5),  (370, 0.8)],
+        }
+
+        tones = _AMBIENT_TONES.get(context, _AMBIENT_TONES[MusicContext.CALM])
+
+        def _play():
+            try:
+                import pygame
+                import array
+                import math
+                sample_rate = 44100
+                for freq, duration in tones:
+                    if self.is_radio_playing() or self.music_muted:
+                        return  # radio started or muted — abort
+                    n_samples = int(sample_rate * duration)
+                    fade_len = min(int(n_samples * 0.15), 400)
+                    buf = array.array('h')
+                    for i in range(n_samples):
+                        val = math.sin(2 * math.pi * freq * i / sample_rate)
+                        if fade_len > 0:
+                            if i < fade_len:
+                                val *= i / fade_len
+                            elif i >= n_samples - fade_len:
+                                val *= (n_samples - 1 - i) / fade_len
+                        sample = int(val * 32767 * self.music_volume)
+                        buf.append(sample)
+                        buf.append(sample)
+                    sound = pygame.mixer.Sound(buffer=buf)
+                    sound.play()
+                    pygame.time.wait(int(duration * 1000))
+            except Exception:
+                pass
+
+        thread = threading.Thread(target=_play, daemon=True)
+        thread.start()
 
     def get_current_context(self) -> Optional[MusicContext]:
         """Get the current music context."""
@@ -1332,19 +1449,26 @@ def get_music_context(
     if duck_mood == "petty":
         return MusicContext.MYSTERIOUS
 
-    # Priority 4: Normal weather influences
+    # Priority 4: Atmospheric weather (only truly atmospheric conditions override time-of-day)
+    # Sunny/windy are neutral — let time-of-day take precedence for AC-style hourly music
     if weather in ["snowy", "foggy"]:
         return MusicContext.CALM
     if weather == "rainy":
         return MusicContext.MYSTERIOUS
-    if weather in ["sunny", "windy"]:
-        return MusicContext.ENERGETIC
 
-    # Priority 5: Time of day
-    if time_of_day in ["night", "late_night", "midnight"]:
-        return MusicContext.MYSTERIOUS
-    if time_of_day in ["morning", "dawn"]:
+    # Priority 5: Time of day — all 8 periods mapped for Animal Crossing feel
+    if time_of_day in ["night", "midnight"]:
+        return MusicContext.SAD
+    if time_of_day == "late_night":
+        return MusicContext.CALM
+    if time_of_day in ["dawn", "morning"]:
         return MusicContext.ENERGETIC
+    if time_of_day == "midday":
+        return MusicContext.HAPPY
+    if time_of_day == "afternoon":
+        return MusicContext.CALM
+    if time_of_day in ["evening", "dusk"]:
+        return MusicContext.MYSTERIOUS
 
     # Priority 6: Default
     return MusicContext.CALM

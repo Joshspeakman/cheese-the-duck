@@ -541,25 +541,80 @@ class BuildingSystem:
             if s.status in (StructureStatus.COMPLETE, StructureStatus.OPERATIONAL)
         )
     
-    def get_structure_position(self, structure_type: str) -> Optional[Tuple[int, int]]:
-        """Get the playfield position for a structure type (for duck movement)."""
+    def get_structure_position(
+        self,
+        structure_type: str,
+        world_width: int = 0,
+        world_height: int = 0,
+    ) -> Optional[Tuple[int, int]]:
+        """Get the world-space playfield position for a structure (for duck movement).
+
+        When *world_width* and *world_height* are provided the position is
+        computed from the structure's building-grid coordinates using the same
+        formula as the renderer, plus a per-type interior offset so the duck
+        stands inside the structure.  This is the correct path for scrollable
+        worlds.  Omitting the args falls back to the legacy viewport coords.
+        """
+        # Interior offsets (cells from structure top-left to where duck stands)
+        # Calibrated to each art's dimensions so the duck is visually inside.
+        INTERIOR_OFFSETS: Dict[str, Tuple[int, int]] = {
+            "basic_nest":      (6,  2),
+            "cozy_nest":       (6,  3),
+            "deluxe_nest":     (6,  4),
+            "mud_hut":         (6,  3),
+            "wooden_cottage":  (7,  3),
+            "stone_house":     (7,  4),
+            "workbench":       (5,  2),
+            "storage_chest":   (4,  2),
+            "garden_plot":     (5,  3),
+            "bird_bath":       (4,  2),
+            "watchtower":      (5,  2),
+            "flower_bed":      (4,  2),
+            "stone_path":      (4,  1),
+            "pond_fountain":   (5,  3),
+        }
+
+        if world_width and world_height:
+            # Prefer to look up the actual structure object for its grid position
+            for s in self.structures:
+                if s.blueprint_id == structure_type and hasattr(s, 'position') and s.position:
+                    gx, gy = s.position
+                    wx = int(gx * world_width / 10)
+                    wy = int(gy * world_height / 8)
+                    ox, oy = INTERIOR_OFFSETS.get(structure_type, (5, 2))
+                    return (wx + ox, wy + oy)
+                # Also check variant names (e.g. caller uses "nest", struct is "basic_nest")
+                if s.blueprint_id.startswith(structure_type) or structure_type in s.blueprint_id:
+                    if hasattr(s, 'position') and s.position:
+                        gx, gy = s.position
+                        wx = int(gx * world_width / 10)
+                        wy = int(gy * world_height / 8)
+                        ox, oy = INTERIOR_OFFSETS.get(s.blueprint_id, (5, 2))
+                        return (wx + ox, wy + oy)
+
+        # ── Legacy fallback (old fixed viewport coords) ────────────────────
         # Check specific structure positions first
         if structure_type in self.structure_positions:
             return self.structure_positions[structure_type]
-        
-        # Default positions based on structure type (calculated from render positions)
-        # These are centered in the interior of each structure type
-        default_positions = {
-            "nest": (20, 6),
-            "basic_nest": (20, 6),
-            "cozy_nest": (20, 7),
-            "shelter": (20, 6),
-            "bird_bath": (35, 8),
-            "garden_plot": (30, 10),
-            "workbench": (38, 6),
+
+        # Check if this is an abstract type that maps to actual structures
+        struct_mapping = {
+            "nest":    ["basic_nest", "cozy_nest", "deluxe_nest"],
+            "shelter": ["basic_nest", "cozy_nest", "deluxe_nest",
+                        "mud_hut", "wooden_cottage", "stone_house"],
         }
-        return default_positions.get(structure_type)
-    
+        if structure_type in struct_mapping:
+            for actual_struct in struct_mapping[structure_type]:
+                if actual_struct in self.structure_positions:
+                    return self.structure_positions[actual_struct]
+
+        # Check variations
+        for struct_id, pos in self.structure_positions.items():
+            if structure_type in struct_id or struct_id in structure_type:
+                return pos
+
+        return None
+
     @property
     def _current_build(self):
         """Alias for current_build for game.py compatibility."""

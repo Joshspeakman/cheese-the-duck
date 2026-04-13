@@ -463,15 +463,29 @@ class DuckAnimator:
     # ------------------------------------------------------------------
 
     def _pick_new_target(self) -> None:
-        """Pick a random target position within the playfield bounds.
+        """Pick a random target position near the duck's current location.
 
-        Uses the same margins as the original ``DuckPosition._pick_new_target``.
+        Targets are constrained to a local wander radius so the duck always
+        appears to move on screen. For small playfields the radius covers most
+        of the area; for large scrollable worlds it keeps the duck visibly
+        active rather than sprinting off-camera.
         """
         margin = 3
         max_x = max(margin, self._play_width - margin - 6)
         max_y = max(margin, self._play_height - margin - 3)
-        self.target_x = random.randint(margin, max_x)
-        self.target_y = random.randint(margin, max_y)
+
+        # Wander radius: large enough to look lively, small enough to stay
+        # within the visible viewport regardless of world size.
+        radius_x = min(22, max(10, self._play_width // 4))
+        radius_y = min(8, max(4, self._play_height // 4))
+
+        x_min = max(margin, self.x - radius_x)
+        x_max = min(max_x, self.x + radius_x)
+        y_min = max(margin, self.y - radius_y)
+        y_max = min(max_y, self.y + radius_y)
+
+        self.target_x = random.randint(x_min, x_max)
+        self.target_y = random.randint(y_min, y_max)
 
 
 # ---------------------------------------------------------------------------
