@@ -916,6 +916,51 @@ def get_area_art(area_name: str) -> List[str]:
     ])
 
 
+# Biome adjacency map: (current_biome, direction) -> neighbouring_biome
+# Directions: "north", "south", "east", "west"
+ADJACENT_BIOMES: Dict[Tuple[BiomeType, str], BiomeType] = {
+    (BiomeType.POND, "north"):      BiomeType.MEADOW,
+    (BiomeType.POND, "south"):      BiomeType.RIVERSIDE,
+    (BiomeType.POND, "east"):       BiomeType.FOREST,
+    (BiomeType.POND, "west"):       BiomeType.GARDEN,
+    (BiomeType.FOREST, "north"):    BiomeType.MOUNTAINS,
+    (BiomeType.FOREST, "south"):    BiomeType.SWAMP,
+    (BiomeType.FOREST, "east"):     BiomeType.MOUNTAINS,
+    (BiomeType.FOREST, "west"):     BiomeType.POND,
+    (BiomeType.MEADOW, "north"):    BiomeType.MOUNTAINS,
+    (BiomeType.MEADOW, "south"):    BiomeType.POND,
+    (BiomeType.MEADOW, "east"):     BiomeType.GARDEN,
+    (BiomeType.MEADOW, "west"):     BiomeType.FOREST,
+    (BiomeType.RIVERSIDE, "north"): BiomeType.POND,
+    (BiomeType.RIVERSIDE, "south"): BiomeType.BEACH,
+    (BiomeType.RIVERSIDE, "east"):  BiomeType.SWAMP,
+    (BiomeType.RIVERSIDE, "west"):  BiomeType.GARDEN,
+    (BiomeType.GARDEN, "north"):    BiomeType.MEADOW,
+    (BiomeType.GARDEN, "south"):    BiomeType.RIVERSIDE,
+    (BiomeType.GARDEN, "east"):     BiomeType.POND,
+    (BiomeType.GARDEN, "west"):     BiomeType.URBAN,
+    (BiomeType.MOUNTAINS, "north"): BiomeType.MOUNTAINS,
+    (BiomeType.MOUNTAINS, "south"): BiomeType.FOREST,
+    (BiomeType.MOUNTAINS, "east"):  BiomeType.MOUNTAINS,
+    (BiomeType.MOUNTAINS, "west"):  BiomeType.MEADOW,
+    (BiomeType.BEACH, "north"):     BiomeType.RIVERSIDE,
+    (BiomeType.BEACH, "south"):     BiomeType.BEACH,
+    (BiomeType.BEACH, "east"):      BiomeType.URBAN,
+    (BiomeType.BEACH, "west"):      BiomeType.SWAMP,
+    (BiomeType.SWAMP, "north"):     BiomeType.FOREST,
+    (BiomeType.SWAMP, "south"):     BiomeType.BEACH,
+    (BiomeType.SWAMP, "east"):      BiomeType.RIVERSIDE,
+    (BiomeType.SWAMP, "west"):      BiomeType.URBAN,
+    (BiomeType.URBAN, "north"):     BiomeType.GARDEN,
+    (BiomeType.URBAN, "south"):     BiomeType.BEACH,
+    (BiomeType.URBAN, "east"):      BiomeType.SWAMP,
+    (BiomeType.URBAN, "west"):      BiomeType.URBAN,
+}
+
+
+def get_adjacent_biome(current: BiomeType, direction: str) -> Optional[BiomeType]:
+    """Return the biome reached by walking in the given direction from current."""
+    return ADJACENT_BIOMES.get((current, direction))
 @dataclass
 class ExplorationResult:
     """Result of an exploration action."""

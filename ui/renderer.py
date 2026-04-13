@@ -143,6 +143,10 @@ BAR_STYLES = {
 # Ground patterns for playfield
 GROUND_CHARS = [".", ",", "'", "`", " ", " ", " "]
 
+# Scrollable world dimensions (camera viewport is smaller)
+WORLD_WIDTH = 132
+WORLD_HEIGHT = 42
+
 
 class DuckPosition(DuckAnimator):
     """DEPRECATED: Thin backward-compat shim — all logic now lives in DuckAnimator.
@@ -217,8 +221,12 @@ class Renderer:
         self._celebration_frame = 0
         self._celebration_frame_time = 0
 
-        # Duck position tracking
-        self.duck_pos = DuckPosition(field_width=44, field_height=14)
+        # Duck position tracking (uses full world dimensions; camera maps to viewport)
+        self.duck_pos = DuckPosition(field_width=WORLD_WIDTH, field_height=WORLD_HEIGHT)
+        self._camera_x: int = WORLD_WIDTH // 2 - 22   # centre camera over starting position
+        self._camera_y: int = WORLD_HEIGHT // 2 - 7
+        self._viewport_width: int = 44
+        self._viewport_height: int = 14
 
         # Cosmetics renderer for showing equipped items
         self._cosmetics_renderer = CosmeticsRenderer()
@@ -425,6 +433,34 @@ class Renderer:
                 x = random.randint(1, max(1, width - len(char) - 1))
                 y = random.randint(height // 2, height - 2)  # Bottom half of screen
                 self._weather_decorations.append((x, y, char, color))
+
+    def _update_camera(self, viewport_w: int, viewport_h: int) -> None:
+        """Update camera position using dead-zone tracking.
+
+        The dead zone is the centre third of the viewport.  The camera only
+        scrolls when the duck walks outside that zone so small movements feel
+        stable.  Camera coordinates are then clamped to world bounds.
+        """
+        dz_x_min = viewport_w // 3
+        dz_x_max = (viewport_w * 2) // 3
+        dz_y_min = viewport_h // 3
+        dz_y_max = (viewport_h * 2) // 3
+
+        duck_vp_x = self.duck_pos.x - self._camera_x
+        duck_vp_y = self.duck_pos.y - self._camera_y
+
+        if duck_vp_x < dz_x_min:
+            self._camera_x = self.duck_pos.x - dz_x_min
+        elif duck_vp_x > dz_x_max:
+            self._camera_x = self.duck_pos.x - dz_x_max
+
+        if duck_vp_y < dz_y_min:
+            self._camera_y = self.duck_pos.y - dz_y_min
+        elif duck_vp_y > dz_y_max:
+            self._camera_y = self.duck_pos.y - dz_y_max
+
+        self._camera_x = max(0, min(self._camera_x, WORLD_WIDTH - viewport_w))
+        self._camera_y = max(0, min(self._camera_y, WORLD_HEIGHT - viewport_h))
 
     def _generate_playfield_decorations(self):
         """Generate random decorations for the playfield."""
@@ -1080,8 +1116,11 @@ class Renderer:
         # Update playfield dimensions for duck movement
         field_inner_width = max(1, playfield_width - 2)
         field_height = max(8, height - 10)  # Leave room for header, controls, messages
-        self.duck_pos.field_width = field_inner_width
-        self.duck_pos.field_height = field_height
+        # Duck roams the full world; viewport dims are tracked separately
+        self.duck_pos.field_width = WORLD_WIDTH
+        self.duck_pos.field_height = WORLD_HEIGHT
+        self._viewport_width = field_inner_width
+        self._viewport_height = field_height
 
         # Get current location and biome from exploration system
         current_location = None
@@ -1096,7 +1135,7 @@ class Renderer:
             current_season = game.atmosphere.current_season.value
 
         # Regenerate ground pattern if size, location, or season changed
-        size_changed = len(self._ground_pattern) != field_height or (self._ground_pattern and len(self._ground_pattern[0]) != field_inner_width)
+        size_changed = len(self._ground_pattern) != WORLD_HEIGHT or (self._ground_pattern and len(self._ground_pattern[0]) != WORLD_WIDTH)
         location_changed = current_location != self._current_location
         season_changed = current_season != getattr(self, '_current_season', None)
 
@@ -1452,11 +1491,17 @@ class Renderer:
         lines = []
 
         # Get particle type from weather data for more specific particle rendering
-        field_height = height if height else self.duck_pos.field_height
+        field_height = height if height else self._viewport_height
         weather_type = weather_info.weather_type.value if weather_info else None
         particle_type = None
         env_effects = []
-        
+
+        # Update camera and capture viewport-to-world offset for this frame.
+        # Skip when duck is away so the viewport doesn't follow a hidden sprite.
+        if not self._cheese_away:
+            self._update_camera(inner_width, field_height)
+        cam_x, cam_y = self._camera_x, self._camera_y
+
         if weather_info and hasattr(weather_info, 'weather_type'):
             from world.atmosphere import WEATHER_DATA
             weather_data = WEATHER_DATA.get(weather_info.weather_type, {})
@@ -1471,11 +1516,12 @@ class Renderer:
                                        weather_intensity=_weather_intensity)
 
         # Generate environmental weather decorations (puddles, snow piles, etc.)
+        # Use world dims so decoration positions are world-space (camera offset applied when rendering)
         self._generate_weather_decorations(
             weather_type,  # Use weather_type for decoration context
             env_effects,
-            inner_width,
-            field_height
+            WORLD_WIDTH,
+            WORLD_HEIGHT
         )
 
         # Get time-of-day visual elements (blended with biome tint)
@@ -1504,8 +1550,8 @@ class Renderer:
         pad = (inner_width - len(title)) // 2
         lines.append(BOX["tl"] + BOX["h"] * pad + title + BOX["h"] * (inner_width - pad - len(title)) + BOX["tr"])
 
-        # Create the playfield grid - use passed height or fall back to duck_pos
-        field_height = height if height is not None else self.duck_pos.field_height
+        # Create the playfield grid - use passed height or fall back to viewport height
+        field_height = height if height is not None else self._viewport_height
 
         # Get mini duck art for playfield
         duck_art = get_mini_duck(
@@ -1548,9 +1594,9 @@ class Renderer:
                     duck_ref=duck,
                     shared_memories=shared_memories
                 )
-            # Update visitor with duck's actual screen position
-            duck_screen_x = self.duck_pos.x
-            duck_screen_y = self.duck_pos.y
+            # Update visitor with duck's screen position (world coord minus camera offset)
+            duck_screen_x = self.duck_pos.x - cam_x
+            duck_screen_y = self.duck_pos.y - cam_y
             visitor_animator.update(time.time(), duck_screen_x, duck_screen_y)
             # Get absolute position from animator
             visitor_x, visitor_y = visitor_animator.get_position()
@@ -1576,9 +1622,9 @@ class Renderer:
                 color_func = get_item_color(placed_item.item_id)
                 # Use display position which includes animation offset
                 display_x, display_y = placed_item.get_display_position()
-                # Scale item position to playfield coordinates
-                item_x = int(display_x * inner_width / 20)
-                item_y = int(display_y * field_height / 12)
+                # Scale item position to world coordinates, then offset by camera
+                item_x = int(display_x * WORLD_WIDTH / 20) - cam_x
+                item_y = int(display_y * WORLD_HEIGHT / 12) - cam_y
                 item_placements.append((item_x, item_y, art, color_func))
         
         # Add built structures to item placements
@@ -1600,14 +1646,14 @@ class Renderer:
                         "magenta": self.term.magenta,
                     }
                     color_func = color_map.get(color_name)
-                # Position structures at their grid position, or space them out if position not set
+                # Position structures at their grid position scaled to world, offset by camera
                 if hasattr(structure, 'position') and structure.position:
-                    struct_x = int(structure.position[0] * inner_width / 10)
-                    struct_y = int(structure.position[1] * field_height / 8)
+                    struct_x = int(structure.position[0] * WORLD_WIDTH / 10) - cam_x
+                    struct_y = int(structure.position[1] * WORLD_HEIGHT / 8) - cam_y
                 else:
                     # Default spacing if no position
-                    struct_x = 2 + (i * 8) % (inner_width - 10)
-                    struct_y = field_height - len(art) - 1
+                    struct_x = 2 + (i * 8) % (WORLD_WIDTH - 10) - cam_x
+                    struct_y = WORLD_HEIGHT - len(art) - 1 - cam_y
                 item_placements.append((struct_x, struct_y, art, color_func))
 
         # Build each row of the playfield
@@ -1616,43 +1662,53 @@ class Renderer:
         ground_color = get_ground_color(self._current_location, season=season) if self._current_location else None
         
         for y in range(field_height):
-            # Initialize row with (char, ground_color) tuples for ground pattern
-            row = [(c, ground_color if c != ' ' else None) for c in self._ground_pattern[y][:inner_width]]
+            # Initialize row with (char, ground_color) tuples, slicing world ground at camera offset
+            world_y = cam_y + y
+            ground_row = self._ground_pattern[world_y] if world_y < len(self._ground_pattern) else ""
+            row = [(c, ground_color if c != ' ' else None) for c in ground_row[cam_x : cam_x + inner_width]]
             # Pad to inner_width
             while len(row) < inner_width:
                 row.append((' ', None))
 
             # Add location-specific scenery (large multi-line elements) - render first (background)
             for scene_x, scene_y, scene_art in self._location_scenery:
-                scene_row_index = y - scene_y
-                if 0 <= scene_row_index < len(scene_art):
-                    scene_line = scene_art[scene_row_index]
+                # scene_art is either List[str] (static) or List[List[str]] (animated frames)
+                if scene_art and isinstance(scene_art[0], list):
+                    # Animated: pick frame based on animation counter
+                    active_frame = scene_art[self._animation_frame % len(scene_art)]
+                else:
+                    active_frame = scene_art
+                scene_row_index = (cam_y + y) - scene_y
+                if 0 <= scene_row_index < len(active_frame):
+                    scene_line = active_frame[scene_row_index]
                     for dx, char in enumerate(scene_line):
-                        px = scene_x + dx
+                        px = scene_x + dx - cam_x
                         if char != ' ' and 0 <= px < inner_width:
                             color_func = get_decoration_color(self._current_location or "", char, season=season)
                             row[px] = (char, color_func)
 
             # Add location-specific decorations
             for dec_x, dec_y, dec_char in self._location_decorations:
-                if dec_y == y and 0 <= dec_x < inner_width:
+                dec_screen_x = dec_x - cam_x
+                if dec_y == cam_y + y and 0 <= dec_screen_x < inner_width:
                     color_func = get_decoration_color(self._current_location or "", dec_char, season=season)
-                    row[dec_x] = (dec_char, color_func)
+                    row[dec_screen_x] = (dec_char, color_func)
 
             # Add legacy decorations (built-in playfield objects) only if no location set
             if not self._current_location:
                 for obj_x, obj_y, obj_type in self._playfield_objects:
-                    if obj_y == y and 0 <= obj_x < inner_width:
+                    obj_screen_x = obj_x - cam_x
+                    if obj_y == cam_y + y and 0 <= obj_screen_x < inner_width:
                         obj_chars = PLAYFIELD_OBJECTS.get(obj_type, "*")
                         for i, char in enumerate(obj_chars):
-                            if obj_x + i < inner_width:
-                                row[obj_x + i] = (char, None)
+                            if obj_screen_x + i < inner_width:
+                                row[obj_screen_x + i] = (char, None)
 
             # Add weather-based environmental decorations (puddles, snow piles, leaves, etc.)
             for wx, wy, wchar, wcolor in self._weather_decorations:
-                if wy == y:
+                if wy == cam_y + y:
                     for i, char in enumerate(wchar):
-                        px = wx + i
+                        px = wx + i - cam_x
                         if 0 <= px < inner_width:
                             existing_char, _ = row[px]
                             # Only place on empty ground, not over other objects
@@ -1816,7 +1872,9 @@ class Renderer:
             anim_render_data = self.interaction_animator.get_render_data()
             if anim_render_data:
                 anim_lines, anim_pos, show_duck, item_color = anim_render_data
-                anim_x, anim_y = anim_pos
+                # anim_pos uses world coords (duck_pos.x/y); apply camera offset for screen
+                anim_x = anim_pos[0] - cam_x
+                anim_y = anim_pos[1] - cam_y
                 # Use item color if available, otherwise default to bright yellow
                 anim_color = item_color if item_color else self.term.bright_yellow
                 
@@ -1838,8 +1896,8 @@ class Renderer:
 
             # Add duck if on this row (duck renders ON TOP of items)
             # Skip if animation is hiding the duck or duck is away in another biome
-            duck_y = self.duck_pos.y
-            duck_x = self.duck_pos.x
+            duck_y = self.duck_pos.y - cam_y   # screen-space Y
+            duck_x = self.duck_pos.x - cam_x   # screen-space X
             should_render_duck = not self.interaction_animator.should_hide_duck() and not self._cheese_away
 
             if should_render_duck:

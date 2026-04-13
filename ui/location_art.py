@@ -15,44 +15,45 @@ _term = Terminal()
 
 # Ground tiles - characters that make up the floor/base of each location
 LOCATION_GROUND_CHARS: Dict[str, List[str]] = {
-    # Home Pond - 70% grassy shore, 30% calm pond water with reeds
-    "Home Pond": [" ", "'", ".", ",", " ", "~", "~", "~", " ", "|"],
-    "Deep End": [" ", "~", "~", "=", ".", " ", "~", "=", " ", "."],
-    
-    # Forest - earthy with fallen leaves and twigs
-    "Forest Edge": [" ", " ", ".", ",", "'", ".", " ", ".", " ", " "],
-    "Ancient Oak": [" ", ".", ".", ",", "'", ".", ".", " ", " ", "."],
-    "Mushroom Grove": [" ", ".", ".", "o", " ", ".", ",", " ", " ", "."],
-    
-    # Meadow - grassy and flowery
-    "Sunny Meadow": [" ", " ", "'", ".", ".", ",", " ", "'", " ", " "],
-    "Butterfly Garden": [" ", "'", ".", ",", ".", "'", ".", " ", ",", " "],
-    
-    # Riverside - sandy with pebbles
-    "Pebble Beach": [" ", ".", ".", "o", " ", ".", ".", " ", ".", " "],
-    "Waterfall": [" ", "~", ".", "=", "~", " ", ".", "~", " ", "="],
-    
-    # Garden - organized, clean
-    "Vegetable Patch": [" ", " ", ".", ".", " ", "'", " ", ".", " ", " "],
-    "Tool Shed": [" ", " ", ".", " ", ".", " ", " ", ".", " ", " "],
-    
-    # Mountains - rocky
-    "Foothills": [" ", ".", ".", ".", " ", ".", ".", " ", " ", "."],
-    "Crystal Cave": [" ", ".", "*", " ", ".", ".", "*", " ", " ", "."],
-    
-    # Beach - sandy with shells
-    "Sandy Shore": [" ", " ", ".", ".", " ", "o", " ", ".", " ", " "],
-    "Shipwreck Cove": [" ", ".", "~", ".", " ", "~", ".", " ", "=", " "],
-    
-    # Swamp - murky and mysterious
-    "Misty Marsh": [" ", "~", ".", "=", " ", "~", ".", " ", "*", " "],
-    "Cypress Hollow": [" ", ".", ".", "~", " ", ".", ".", "*", " ", " "],
-    "Sunken Ruins": [" ", ".", "=", ".", " ", "~", ".", ".", " ", "."],
-    
-    # Urban - concrete and parks
-    "Park Fountain": [" ", " ", ".", ".", " ", "'", " ", ".", " ", " "],
-    "Rooftop Garden": [" ", "'", ".", ".", " ", "'", ".", " ", ".", " "],
-    "Storm Drain": [" ", ".", ".", " ", ".", " ", ".", ".", " ", "."],
+    # Home Pond - grassy shore meets calm pond water
+    "Home Pond": [" ", "~", "~", "'", ".", " ", "~", "~", "~", ","],
+    # Deep End - nothing but dark water and shadow
+    "Deep End": ["~", "=", " ", "#", "~", "=", "~", " ", "=", "~"],
+
+    # Forest - damp earth, leaf litter, twigs
+    "Forest Edge": [" ", ".", ",", " ", ".", "'", " ", ",", ".", " "],
+    "Ancient Oak": [".", ",", " ", ".", "o", " ", ",", ".", " ", "'"],
+    "Mushroom Grove": [".", "~", " ", "*", ".", "~", " ", ".", "~", " "],
+
+    # Meadow - wildflower meadow, breezy
+    "Sunny Meadow": ["'", " ", "'", ".", " ", "'", ",", " ", "'", " "],
+    "Butterfly Garden": ["'", " ", ".", "'", " ", "'", ".", " ", "'", ","],
+
+    # Riverside - pebbles, fine sand, water edge
+    "Pebble Beach": ["o", ".", " ", "o", ".", "O", " ", ".", "o", " "],
+    "Waterfall": [".", "~", " ", ".", "=", " ", ".", "~", ".", " "],
+
+    # Garden - tilled soil, organic
+    "Vegetable Patch": [".", " ", ".", " ", ",", ".", " ", ".", ",", " "],
+    "Tool Shed": [".", " ", ".", " ", ".", " ", " ", ".", " ", " "],
+
+    # Mountains - alpine scree, rocky
+    "Foothills": [" ", ".", ".", " ", ".", " ", ".", ",", " ", "."],
+    "Crystal Cave": [".", " ", "*", ".", " ", ".", "*", " ", ".", " "],
+
+    # Beach - fine sand, shell fragments
+    "Sandy Shore": [" ", ".", " ", ".", " ", "o", " ", " ", ".", " "],
+    "Shipwreck Cove": [".", "~", " ", ".", "=", " ", ".", " ", "o", " "],
+
+    # Swamp - wet bog, murky
+    "Misty Marsh": ["~", " ", "=", ".", "~", " ", ".", "~", " ", "="],
+    "Cypress Hollow": [".", "~", " ", ".", "+", " ", "~", ".", " ", "+"],
+    "Sunken Ruins": [".", "=", " ", "#", ".", "~", ".", " ", "=", "."],
+
+    # Urban - cobblestone, concrete, gravel
+    "Park Fountain": [".", " ", ".", " ", "'", ".", " ", ".", "'", " "],
+    "Rooftop Garden": [".", " ", ".", "'", " ", ".", " ", ".", " ", "'"],
+    "Storm Drain": [".", " ", ".", " ", ".", "#", " ", ".", " ", "."],
 }
 
 # Default ground for unknown locations
@@ -296,395 +297,483 @@ DEFAULT_DECORATIONS = [
 # SCENERY ELEMENTS - Large multi-line decorations
 # ============================================================================
 
-# Large scenery pieces that get placed in specific spots
-LOCATION_SCENERY: Dict[str, List[List[str]]] = {
+# Large scenery pieces that get placed in specific spots.
+# Each piece is either List[str] (static) or List[List[str]] (animated frames,
+# renderer picks frame = piece[_animation_frame % len(piece)]).
+LOCATION_SCENERY: Dict[str, List] = {
     "Home Pond": [
-        # Large pond water area (central feature)
-        ["~~~~~~~~~~~", "~~~~~~~~~~~", "~~~~~~~~~~~"],
-        # Lily pad clusters floating on pond
-        ["  ~  O  ~  O  ~  ", " ~ O ~ O ~ O ~ ", "  ~  O  ~  O  ~  "],
-        # More lily pads with flowers
-        [" O ~ O ~ O ", "~ O * O ~ ", " O ~ O ~ O "],
-        # Reed cluster at water's edge (tall)
-        ["| | | | |", "| | | | |", "| | | | |", "Y Y Y Y Y"],
-        # Another reed cluster
-        ["| | |", "| | |", "Y Y Y"],
-        # Cattails along shore
-        ["| | | | | |", "| | | | | |", "Y Y Y Y Y Y"],
-        # Water edge with ripples
-        ["~=~=~=~=~=~", " ~~~~~~~~~ "],
-        # Small grassy shore patch
-        ["' ' ' ' '", ".,.,.,.,.'"],
-        # Cozy dock extending into water
-        ["=======", "|     |", "+-----+"],
+        # === ANIMATED: Water surface sparkle - 3 frames ===
+        [
+            ["~~~~~~~~~~~", "~~~~~~~~~~~", "~~~~~~~~~~~"],
+            ["~=~~~~~~~~~", "~~~~~~~~~~~", "~~~~~~~~~~~"],
+            ["~~~~~~~~~~~", "~~~=~~~~~~~", "~~~~~~~~~~~"],
+        ],
+        # === ANIMATED: Reed sway in breeze - 4 frames ===
+        [
+            ["| | | | |", "| | | | |", "| | | | |", "Y Y Y Y Y"],
+            ["/ / / / /", "| | | | |", "| | | | |", "Y Y Y Y Y"],
+            ["| | | | |", "| | | | |", "| | | | |", "Y Y Y Y Y"],
+            ["\\ \\ \\ \\ \\", "| | | | |", "| | | | |", "Y Y Y Y Y"],
+        ],
+        # Lily pad constellation centered on pond
+        ["  ~  O  ~  O  ~  ", " ~ O ~ O ~ O ~ ", "  ~  O  *  O  ~  ",
+         " ~ O ~ O ~ O ~ ", "  ~  O  ~  O  ~  "],
+        # Duck's weathered dock
+        ["=========", "|       |", "+=======+"],
+        # Cattail border
+        ["@ @ @ @ @ @", "| | | | | |", "| | | | | |"],
         # Pebble shore edge
         [". . . . . .", " . . . . . "],
     ],
     "Deep End": [
-        # Murky deep waters with mysterious shapes
-        ["#######~~~~~~~#######", " ###~~~~~~~~~### ", "  ~~~~~~~~~~~  "],
-        # Sunken log with shadows
-        ["   =====   ", "  /%%%%%\\  ", " /%%%%%%\\ "],
+        # === ANIMATED: Shadow entity pulse - 2 frames ===
+        [
+            ["   ###    ", " #######  ", " ## ? ##  ", " #######  "],
+            ["  ####    ", " ######## ", " ## ? ##  ", " ######## "],
+        ],
+        # === ANIMATED: Rising bubbles - 3 frames ===
+        [
+            ["  o     o  ", " o  o  o  ", "o    o   o "],
+            ["o     o    ", "  o  o  o  ", " o    o   o"],
+            ["   o     o ", "o  o  o    ", "  o    o   "],
+        ],
+        # Sunken log with glint inside
+        ["  =========  ", " /%%%%%%%%%\\", "/%%%%%%%%%*%\\"],
         # Fish silhouettes lurking
-        ["  <><    ", "    <>< ", " <><   <><"],
-        # Rising bubble columns
-        ["  o     o  ", " o  o  o ", "o   o   o", "  o   o  "],
-        # Shadow shapes in the deep
-        [" ###%### ", "  #%#%#  ", "   %#%   "],
-        # Mysterious treasure glint
-        ["    *    ", "  . * .  ", " <>  *  <> "],
-        # Deep underwater plants swaying
-        [" Y  Y  Y ", "| || || |", "| || || |"],
-        # Old sunken barrel
+        ["  ><((((o>   ", "    ><(o>    ", "  <>        "],
+        # Deep pool bottom texture
+        ["#=#=#=#=#=#=", "=#=#=#=#=#=#"],
+        # Ancient sunken barrel
         ["  +===+  ", " |o o o| ", "  +=+=+  "],
-        # Mystery creature shape
-        ["   ???   ", "  ?????  ", " ??????? "],
-        # Sunken treasure chest
-        [" +====+ ", " |$$$$$| ", " +====+ "],
     ],
     "Forest Edge": [
-        # Large tree left side
-        ["    AAAAA    ", "   AAAAAAA   ", "      |      ", "      |      "],
-        # Tree row (forest background)
-        ["  A   A   A   A  ", "  |   |   |   |  "],
-        # Long winding river across playfield
-        ["~================~", " ~==============~ "],
-        # River bend going down
-        ["      ====~", "    ====~  ", "  ====~    ", "====~      "],
-        # River bend going up
-        ["===~        ", "  ===~      ", "    ===~    ", "      ====~~"],
+        # === ANIMATED: Treeline canopy sway - 2 frames ===
+        [
+            ["A   A   A   A   A", "AAA AAA AAA AAA ", " |   |   |   |  "],
+            [" A   A   A   A  A", " AAA AAA AAA AAA", " |   |   |   |  "],
+        ],
+        # === ANIMATED: River ripple propagation - 3 frames ===
+        [
+            ["~~~================~~~"],
+            [" ~~~==============~~~~"],
+            ["~~~~==============~~~"],
+        ],
+        # Stone bridge over river
+        ["o  o  o  o  o  o  o", " #================# ", "~~~~~~~~~~~~~~~~~~~"],
         # Dense tree cluster
         [" A A A A ", "+|+|+|++"],
-        # Bush row
-        ["+ + + + +"],
-        # Fallen log
-        ["=======", "  ###  "],
-        # Another tree
-        ["   AAA   ", "  AAAAA  ", "    |    ", "    |    "],
-        # Bridge over river
-        ["+=========+", "||~~~~~~~||", "+=========+"],
+        # Mossy fallen log
+        ["+==========+", "|+++++####++|", "+==========+"],
+        # Signpost at the forest boundary
+        ["  /=======\\  ", " | FOREST |  ", "     |||     "],
     ],
     "Ancient Oak": [
-        # Massive ancient oak tree with full canopy
-        ["      AAAAAAAAAAA      ", "    AAAAAAAAAAAAAAA    ", "   AAAAAAAAAAAAAAAA   ", "         ||||         ", "         ||||         ", "         ||||         "],
-        # Owl knothole with watching eyes
-        ["  +---+  ", "  |O O|  ", "  | ^ |  ", "  +---+  "],
-        # Squirrel on branch
-        ["   ===@@   ", "  /    \\  ", " +      + "],
-        # Bird nest with eggs
-        ["  u u u  ", " (ooo) ", "  ===  "],
-        # Acorns scattered on ground
-        [" o  o  o ", "o  o  o  "],
-        # Shelf mushrooms on trunk
-        ["  |^|  ", " |^^| ", "  |||  "],
-        # Woodpecker holes
-        ["  |.|  ", " |. .| ", "  |.|  "],
-        # Hanging vines
-        ["~ ~ ~ ~", " ~ ~ ~ ", "~ ~ ~ ~"],
-        # Root system
-        ["/\\/\\/\\/\\", " \\/\\/\\/ "],
+        # === ANIMATED: Massive canopy sway - 2 frames ===
+        [
+            ["      AAAAAAAAAAAAAAAAA      ", "    AAAAAAAAAAAAAAAAAAAAA    ",
+             "   AAAAAAAAAAAAAAAAAAAAAA    ", "         |||||||||           ",
+             "         |||||||||           ", "         |||||||||           "],
+            ["       AAAAAAAAAAAAAAAAA     ", "     AAAAAAAAAAAAAAAAAAAAA   ",
+             "    AAAAAAAAAAAAAAAAAAAAAA   ", "         |||||||||           ",
+             "         |||||||||           ", "         |||||||||           "],
+        ],
+        # === ANIMATED: Resident owl blink - 4 frames ===
+        [
+            ["  +------+  ", "  | O  O |  ", "  |  /\\  |  ", "  +------+  "],
+            ["  +------+  ", "  | O  O |  ", "  |  /\\  |  ", "  +------+  "],
+            ["  +------+  ", "  | -  - |  ", "  |  /\\  |  ", "  +------+  "],
+            ["  +------+  ", "  | O  O |  ", "  |  /\\  |  ", "  +------+  "],
+        ],
+        # Ancient root tangle at the base
+        ["/\\/\\/\\/\\/\\/\\/\\", "\\/\\/\\/\\/\\/\\/\\/", "/\\/\\    /\\/\\/\\"],
+        # Bird nest in a crook
+        ["  (u u u)  ", " (*o*o*o*) ", "  =======  "],
+        # Squirrel hoarding an acorn
+        ["  @@@  ", " @(@)@ ", "  | o  "],
+        # Beehive hanging from a branch
+        [" +=====+  ", "/zzzzzzz\\ ", "\\zzzzzzz/ ", "  +---+   ", "    |     "],
     ],
     "Mushroom Grove": [
+        # === ANIMATED: Spore cloud drift - 3 frames ===
+        [
+            [" *  *  *  * ", "*  *  *  *  ", " *  *  *  * "],
+            ["*  *  *  *  ", " *  *  *  * ", "  *  *  *  *"],
+            ["  *  *  *  *", "*  *  *  *  ", " *  *  *  * "],
+        ],
+        # === ANIMATED: Mycelium network pulse - 2 frames ===
+        [
+            ["~+~+~+~+~+~+~", "+~+~+~+~+~+~+"],
+            ["+~+~+~+~+~+~+", "~+~+~+~+~+~+~"],
+        ],
         # Giant bioluminescent toadstool
-        ["   +-----+   ", "  /  * *  \\  ", " |  *   *  | ", "     |||     ", "     |||     "],
-        # Mushroom cluster (various sizes)
-        ["  ^   @   ^  ", " |   |||   | ", " |   |||   | "],
-        # Floating spore clouds
-        [" *  *  * ", "*  *  *  ", "  *  *  *"],
-        # Mycelium network on ground
-        [" ~~+~~+~~+~~ ", "+~~+~~+~~+~~+"],
-        # Shelf mushroom stairs
-        ["      ^", "    ^^ ", "  ^^^  ", "^^^^   "],
-        # Glowing moss patches
-        [" *...* ", "...*..*"],
-        # Tall thin mushrooms
-        [" @  @  @ ", " |  |  | ", " |  |  | "],
-        # Ring of small mushrooms
-        ["  ^ ^ ^  ", " ^     ^ ", "  ^ ^ ^  "],
-        # Puffball cluster
-        [" (o) (o) (o) ", "  @   @   @  "],
+        ["    /=========\\    ", "   /* * * * * *\\   ", "  |  *  *  *  * |  ",
+         "      |||||||       ", "      |||||||       ", "      |||||||       "],
+        # Tall thin mushroom cluster
+        [" @    @    @  ", " |    |    |  ", " |    |    |  "],
+        # Fairy ring of small mushrooms
+        ["  ^ ^ ^ ^  ", " ^       ^ ", "  ^ ^ ^ ^  "],
+        # Glowing underground pool
+        ["  *~*~*~*~*  ", " *~*~*~*~*~* "],
     ],
     "Sunny Meadow": [
-        # Large sunflower
-        ["   (*)   ", "   |||   ", "   |||   ", "  ''|''  "],
-        # Beehive on post
-        ["  +---+  ", " /zzzzz\\ ", "|zzzzzz| ", " \\====/ ", "   ||   "],
-        # Buzzing bees
-        [" z 8 z ", "8 z 8 z", " z 8 z "],
-        # Clover patch with lucky clover
-        [" + + + + ", "+ + ++ + +", " + + + + "],
-        # Tall wildflower row
-        ["* * * * *", "| | | | |", "''''''''"],
-        # Winding bee path
-        ["  8   8  ", "   8z8   ", " 8   8   "],
-        # Flower garden
-        ["(*)(*)(*)", " | | | | ", "''''''''"],
+        # === ANIMATED: Wildflower sway - 2 frames ===
+        [
+            ["* * * * * * *", "| | | | | | |", "'''''''''''"],
+            ["* * * * * * *", "/ / / / / / /", "'''''''''''"],
+        ],
+        # === ANIMATED: Bees buzzing - 2 frames ===
+        [
+            [" z 8 z 8 z ", "8 z 8 z 8  ", " z 8 z 8 z "],
+            [" 8 z 8 z 8 ", "z 8 z 8 z  ", " 8 z 8 z 8 "],
+        ],
+        # Sunflower grove
+        [" (*) (*) (*) ", " ||| ||| ||| ", " ||| ||| ||| ", "''|'''|'''|''"],
         # Picnic blanket
-        ["+-------+", "|[][][]|", "+-------+"],
+        ["+===========+", "|| [] [] [] ||", "||           ||", "+===========+"],
+        # Wooden fence row
+        ["|   |   |   |   |", "+---+   +---+   +"],
+        # Beehive on a post
+        ["  +---+  ", " /zzzzz\\ ", "|zzzzzz| ", " \\====/ ", "   ||   "],
     ],
     "Butterfly Garden": [
+        # === ANIMATED: Butterfly wings flutter - 2 frames ===
+        [
+            ["V W  V W  V", " W V  W V ", "V W  V W  V"],
+            ["W V  W V  W", " V W  V W ", "W V  W V  W"],
+        ],
+        # === ANIMATED: Chrysalis shudder - 3 frames ===
+        [
+            [" o   o   o ", " |   |   | ", " +   +   + "],
+            ["(o)  o  (o)", " |   |   | ", " +   +   + "],
+            [" o  (o)  o ", " |   |   | ", " +   +   + "],
+        ],
         # Glass conservatory frame
-        ["+==============+", "|  *  *  *  * |", "|  +  +  +  + |", "+==============+"],
-        # Trellis archway with vines
-        [" /+++++++\\ ", "|* * * * *|", "|  A A A  |", "++       ++"],
-        # Flutter of butterflies (V W shapes)
-        ["V W  V W  ", " W V  W V ", "V W  V W  "],
-        # Chrysalis row
-        [" o   o   o ", " |   |   | ", " +   +   + "],
-        # Nectar flower bed
-        ["* * * * * *", " + + + + + ", "-----------"],
-        # Resting platform
-        ["+-------+", "| V W  |", "+-------+"],
-        # Potted flowers
-        ["(*)  (*)", " |    | ", "[+]  [+]"],
+        ["+==================+", "|* * V * W * V * * |", "|* W * * * V * W * |",
+         "+==================+"],
+        # Trellis arch with climbing roses
+        [" /+++++++++++++\\ ", "|* * * * * * * |", "|  (*) (*) (*) |", "++           +++"],
+        # Potted flowers on a shelf
+        ["(*) (*) (*)", " |   |   | ", "[+] [+] [+]"],
     ],
     "Pebble Beach": [
-        # Skip ripples across water
-        ["    . ~ . ~ .    ", "   ~ . ~ . ~    ", "  . ~ . ~ . ~   "],
-        # Collection of skipping stones
-        [" o O o O o ", "O o O o O  ", " o O o O   "],
-        # Champion's flat stone
-        ["   +===+   ", " /BEST \\  ", "+========+ "],
-        # Driftwood log
-        ["  ========  ", " /%%%%%%%\\ "],
-        # Water's edge
-        ["~~~~~~~~~~~~~", "  ~~~~~~~~   ", "    ~~~~     "],
-        # Stone stack tower
-        ["    o    ", "   oo   ", "  ooo  ", " OOOO "],
-        # Shell collection
-        ["(@) (@) (@)", " @   @   @ "],
-        # Beach umbrella
-        ["   /====\\   ", "  /======\\  ", "     ||     "],
+        # === ANIMATED: Skip ripple rings expanding - 4 frames ===
+        [
+            ["    .    ", "   .o.   ", "    .    "],
+            ["   . .   ", "  .~o~.  ", "   . .   "],
+            ["  . ~ .  ", " .~.o.~. ", "  . ~ .  "],
+            [" . ~ ~ . ", ".~. o .~.", " . ~ ~ . "],
+        ],
+        # === ANIMATED: Wave foam retreating - 3 frames ===
+        [
+            ["~~~~~===========~~~~~"],
+            ["~~~~============~~~~~"],
+            ["~~~~~===========~~~~~"],
+        ],
+        # Champion stone stacking tower
+        ["     o     ", "    ooo    ", "   ooooo   ", "  ooooooo  ", " ooooooooo "],
+        # Driftwood seat
+        ["============", "/%%%%%XXX%%%\\"],
+        # Curated shell collection
+        ["(@) * (@) @ (@)", " @  (@)  *  @  "],
+        # Local skip score board
+        ["+===========+", "| BEST: 5sk |", "+===========+"],
     ],
     "Waterfall": [
-        # Grand waterfall with hidden cave
-        ["    +===+    ", "   /|||||\\   ", "  / ||||| \\  ", " /  |||||  \\ ", "[#] ||||| [#]", " ~~|||||~~  ", "  ~~~~~~~   "],
-        # Rainbow in mist
-        ["   *  *  *   ", "  *  *  *  * ", "   *  *  *   "],
-        # Mist cloud
-        ["* * * * * *", " * * * * * ", "* * * * * *"],
-        # Treasure glint behind falls
-        ["  [<><>]  ", "   <*>   "],
-        # Wet rocks
-        [" O  O  O ", "........."],
-        # Deep pool
-        ["~========~", " ======== "],
-        # Cliff face
-        ["###|||||###", "##|||||||##", "#|||||||||#"],
+        # === ANIMATED: Cascading waterfall - 4 frames ===
+        [
+            ["    +========+    ", "    |||||||||||||  ", "    |||||||||||||  ",
+             "    |||||||||||||  ", "  ~~|||||||||||||~~", "  ~~~~~~~~~~~~~~~~~"],
+            ["    +========+    ", "    |||||||||||||  ", "    |||||||||||||  ",
+             "    |||||||||||||  ", " ~~~|||||||||||||~~", "  ~~~~~~~~~~~~~~~~~"],
+            ["    +========+    ", "    |||||||||||||  ", "    |||||||||||||  ",
+             "    |||||||||||||  ", "  ~~|||||||||||||~~", "  ~~~~~~~~~~~~~~~~~~"],
+            ["    +========+    ", "    |||||||||||||  ", "    |||||||||||||  ",
+             "    |||||||||||||  ", "~~~~|||||||||||||~~", "  ~~~~~~~~~~~~~~~~~"],
+        ],
+        # === ANIMATED: Mist slowly billowing - 3 frames ===
+        [
+            ["* * * * * * *", " * * * * * * ", "* * * * * * *"],
+            [" * * * * * * ", "* * * * * * *", " * * * * * * "],
+            ["* * * * * * *", " * * * * * * ", "* * * * * * *"],
+        ],
+        # Hidden cave entrance behind the falls
+        [" [#######] ", " |       | ", " |  ???  | ", " [#######] "],
+        # Wet rocks in the pool
+        [" O  O  O  O ", "............"],
+        # Rainbow in the mist spray
+        ["   *  *  *   ", "  * * * * *  ", "   *  *  *   "],
     ],
     "Vegetable Patch": [
+        # === ANIMATED: Scarecrow waving in wind - 2 frames ===
+        [
+            ["      +       ", "    / | \\     ", "   /  |  \\    ", "      |       ",
+             "     /|\\      "],
+            ["      +       ", "    \\ | /     ", "   \\  |  /    ", "      |       ",
+             "     /|\\      "],
+        ],
+        # === ANIMATED: Irrigation channel trickle - 3 frames ===
+        [
+            [" ~~~~~~~~~ ", "[  ~~~~~  ]"],
+            [" ~~~~~~~~~ ", "[  ~~~~   ]"],
+            [" ~~~~~~~~~ ", "[  ~~~~~  ]"],
+        ],
         # Cabbage row
-        [" @  @  @  @  @ ", "++++++++++++++++"],
-        # Tomato stakes with ripe tomatoes
+        ["@ @ @ @ @ @ @", "+++++++++++++++"],
+        # Tomato trellis stakes
         [" o   o   o   o ", " Y   Y   Y   Y ", " |   |   |   | "],
-        # Carrot tops peeking out
-        [" ^^ ^^ ^^ ^^ ", "............."],
         # Bean poles with climbing vines
-        ["  +   +   +  ", " /|  /|  /|  ", "+ |  + |  + | "],
-        # Squash patch
-        [" @  @  @ ", "~~~~~~~~~"],
-        # Irrigation channel
-        [" ~~~~~~~~~ ", "[  ~~~  ]"],
-        # Herb spiral
-        ["  +++  ", " +++++ ", "+++++++", " +++++ "],
-        # Scarecrow
-        ["   +   ", "  /|\\  ", "   |   ", "  / \\  "],
-        # Garden plot grid
-        ["+--+--+--+", "|^^|@@|()|", "+--+--+--+"],
+        ["  +   +   +  ", " /|  /|  /|  ", "+ |  + |  + |"],
+        # Herb spiral garden feature
+        ["    +++    ", "  +[*]*+   ", " +*[+]+*+  ", "  +[*]*+   ", "    +++    "],
     ],
     "Tool Shed": [
+        # === ANIMATED: Corner cobweb swaying - 2 frames ===
+        [
+            ["=====  ", "  \\/   ", " \\ \\  ", "  = =  "],
+            ["=====  ", "  \\/   ", " / /  ", "  = =  "],
+        ],
         # Main shed building
-        ["   /========\\   ", "  |   +==+   |  ", " |    |  |    | ", " |    +==+    | ", " +============+ "],
-        # Wall of hanging tools
-        [" T / \\ T / ", " | | | | | ", " | | | | | "],
+        ["   /=========\\   ", "  |  +-----+  |  ", " |   |     |   | ",
+         " |   +-----+   | ", " +===========+ "],
+        # Pegboard tool wall
+        ["T  /  \\  T  /  \\ ", "   |  |     |  |  ", "   |  |     |  |  "],
         # Cluttered workbench
-        ["+----------+", "| []= # [] |", "|  ||  ||  |", "+----------+"],
-        # Watering can collection
-        [" O   O   O ", " |   |   | "],
-        # Cobwebby corner
-        ["=====  ", "  \\/   ", " \\ \\  ", "  = =  "],
-        # Stacked pots
-        ["  []  ", " [][] ", "[][][]"],
-        # Seed packets on shelf
-        ["+------+", "|*+*+*+|", "+------+"],
-        # Wheelbarrow
-        ["  +===+  ", " /     \\ ", " \\O===O/ "],
+        ["+==================+", "|| []=  # []  =  [] ||", "||  ||  =====  ||   ||",
+         "+==================+"],
+        # Loaded wheelbarrow
+        ["  +========+  ", "  |@@^o^@@@|  ", " \\          // ", "  [O]====[O]  "],
+        # Stacked clay pots
+        ["    []    ", "   [][]   ", "  [][][]  "],
     ],
     "Foothills": [
-        # Majestic mountain range
-        ["       /\\       ", "      /  \\      ", "     /    \\     ", "    /      \\    ", "   /        \\   "],
-        # Snow-capped peaks
-        ["    ***    ", "   /^^^^\\   ", "  /      \\  "],
-        # Alpine pines
-        ["    A    ", "   AAA   ", "  AAAAA  ", "    |    "],
-        # Soaring eagle
-        ["  \\   /  ", "   ***   "],
-        # Mountain stream
-        ["=========", " ======= "],
-        # Rocky outcrop
-        [" O O O ", "OOOOOO"],
-        # Edelweiss flowers
-        [" * * * ", " + + + "],
-        # Trail markers
-        [" | ", " |^|", " | "],
-        # Goat silhouette
-        ["  /\\ ", " |==|", " || ||"],
+        # === ANIMATED: Alpine pine sway - 2 frames ===
+        [
+            ["    A    ", "   AAA   ", "  AAAAA  ", "    |    "],
+            ["   A     ", "   AAA   ", "  AAAAA  ", "    |    "],
+        ],
+        # === ANIMATED: Peak mist rolling - 3 frames ===
+        [
+            ["    ***    ", "   /^^^^\\  ", "  /      \\ "],
+            ["    **+    ", "   /^^^^\\  ", "  /      \\ "],
+            ["    ***    ", "   /^^^^\\  ", "  /      \\ "],
+        ],
+        # Mountain range backdrop
+        ["       /\\  /\\     /\\     ", "      /  \\/  \\   /  \\    ",
+         "     / ***  *.\\/***.*\\   ", "    /               \\    "],
+        # Rocky outcrop with cave mouth
+        [" O  O  O  O  O ", "OOOOOOOOOOOOOOO", "OOO [   ] OOOO"],
+        # Alpine snowmelt stream
+        ["=========~===~===", " =======~=~=====  "],
+        # Edelweiss patch
+        ["* * * * * *", "+ + + + + +"],
     ],
     "Crystal Cave": [
-        # Massive geode formation
-        ["    /\\    ", "   /<>\\   ", "  /<><>\\  ", " |<>*<>| ", " |<><><>| ", "  \\____/  "],
-        # Stalactite and stalagmite
-        ["  V  V  V  ", "  |  |  |  ", "         ", "  |  |  |  ", "  A  A  A  "],
-        # Light refraction rainbows
-        ["  * * * *  ", " * * * * * ", "  * * * *  "],
-        # Underground crystal pool
-        ["~*~*~*~*~", "*~*~*~*~*", "~~~~~~~~"],
-        # Amethyst cluster
-        ["  <><>  ", " <><><> ", "<><><><>"],
-        # Cave entrance
-        ["  +===+  ", " /.....\\", "/.......\\ "],
-        # Glowing moss patches
-        [" *.*.* ", ".*.*.*." ],
+        # === ANIMATED: Crystal facet shimmer - 4 frames ===
+        [
+            ["  <><><>  ", " <><><><> ", "<><><><><>"],
+            ["  <><><>  ", " <>*<><>  ", "<><><><><>"],
+            ["  <>*<>   ", " <><><><> ", "<><><>*<><>"],
+            ["  <><><>  ", " <><><><> ", "<>*<><><><>"],
+        ],
+        # === ANIMATED: Stalactite drip falling - 4 frames ===
+        [
+            ["V  V  V  V  V", "|  |  |  |  |", "             ",
+             "|  |  |  |  |", "A  A  A  A  A"],
+            ["V  V  V  V  V", "|  ;  |  |  |", "             ",
+             "|  |  |  |  |", "A  A  A  A  A"],
+            ["V  V  V  V  V", "|  .  |  |  |", "  .          ",
+             "|  |  |  |  |", "A  A  A  A  A"],
+            ["V  V  V  V  V", "|     |  |  |", "  *          ",
+             "|  |  |  |  |", "A  A  A  A  A"],
+        ],
+        # Cathedral geode formation
+        ["         /\\         ", "        /<>\\        ", "       /<><>\\       ",
+         "      /<><><>\\      ", "     |<>*<>*<>|     ", "     |<><><><>|     ",
+         "      \\______/      "],
+        # Glowing underground lake
+        ["~*~*~*~*~*~*~*~*~*~", "*~*~*~*~*~*~*~*~*~*", "~*~*~*~*~*~*~*~*~*~"],
         # Crystal column
-        ["  /\\  ", " /  \\ ", "|<><>|", " \\  / ", "  \\/  "],
+        ["   /\\   ", "  /  \\  ", " |<><>| ", " |<><>| ", "  \\  /  ", "   \\/   "],
     ],
     "Sandy Shore": [
-        # Palm tree
-        ["   \\|/   ", "    |    ", "    |    ", "    |    ", "   ===   "],
-        # Gentle tropical waves
-        ["~~~~~======~~~~~", " ~~~========~~~ ", "  ~~========~~  "],
-        # Shell collection
-        [" @ (@) * @ (@) ", "(@) @ * (@) @  "],
-        # Crab with claw
-        ["  __C__  ", " /|||||\\  "],
-        # Starfish
-        ["   *   ", "  *+*  ", "   *   "],
-        # Sandy castle
-        [" +---+ ", " |[o]| ", "+-----+", "......."],
-        # Coconut
-        [" (...) "],
-        # Sun reflection on water
-        ["*   *   *"],
-        # Beach chair
-        [" /===\\ ", "/     \\", "+-----+"],
+        # === ANIMATED: Palm tree fronds swaying - 3 frames ===
+        [
+            ["   \\|/   ", "    |    ", "    |    ", "    |    ", "   ===   "],
+            ["    \\|   ", "    |    ", "    |    ", "    |    ", "   ===   "],
+            ["   \\|/   ", "    |    ", "    |    ", "    |    ", "   ===   "],
+        ],
+        # === ANIMATED: Wave rolling in - 4 frames ===
+        [
+            ["~~~~~===========~~~~~"],
+            [" ~~~~============~~~~"],
+            ["  ~~~=============~~~"],
+            [" ~~~~============~~~~"],
+        ],
+        # Sandcastle with flag
+        ["  +--+--+--+  ", " /|  |[o]|  \\ ", "| |  |   |  | |", "++==========++",
+         ".............."],
+        # Rock pool with starfish inside
+        ["  o  o  o ", " o ~~~~~~ o", "o ~*(*)~ o ", " o ~~~~~~ o", "  o  o  o "],
+        # Resident crab
+        ["  __C__  ", " / ||| \\ ", "(_/   \\_)"],
     ],
     "Shipwreck Cove": [
-        # Wrecked pirate ship
-        ["       /\\      ", "      /# \\     ", "     /====\\    ", "   /========\\  ", "  /##########\\  ", " |############| ", " +============+ "],
-        # Broken mast with torn sail
-        ["   #   ", "  /|\\  ", " / | \\ ", "   |   ", "   |   "],
-        # Treasure chest (half buried)
-        ["  +===+  ", " |$<>$| ", " +===+  ", "...... "],
-        # Rusty anchor
-        ["   [+]   ", "  /|\\ ", " / | \\", "   |   "],
-        # Scattered cargo
-        [" O  O  O ", "  ==== "],
+        # === ANIMATED: Jolly Roger flag fluttering - 4 frames ===
+        [
+            ["+--+", "|XX|", "|X  |", " || "],
+            ["+--+", "| XX|", "| XX|", " || "],
+            ["+--+", "|XX |", "|  X|", " || "],
+            ["+--+", "|XX|", "| XX|", " || "],
+        ],
+        # === ANIMATED: Wave crash burst - 3 frames ===
+        [
+            ["~~~~~~~", " ~~~~~ ", "  ~~~  "],
+            ["~~~*~~~", " ~~~~~ ", "  ~~~  "],
+            ["~~~~~~~", " ~~~~~ ", "  ~~~  "],
+        ],
+        # Wrecked hull dominating the cove
+        ["     /\\      ", "    /#\\      ", "   /###\\     ", "  /=====\\    ",
+         " |#######|   ", " |#######|   ", "  \\=====/    "],
+        # Half-buried treasure chest
+        [" +======+ ", "|$<>*<>$| ", "+======+  ", ".......... "],
+        # Scattered barrels
+        ["(O)(O) (O) ", " (O) (O)   "],
         # Barnacle-covered rocks
-        [" O.O.O ", ".O.O.O"],
-        # Wave crash
-        ["~~~~~~~", " ~~~~~ ", "  ~~~  "],
-        # Pirate flag
-        ["  +--+  ", "  |XX|  ", "  +--+  ", "   ||   "],
+        ["O.O.O.O.O  ", ".O.O.O.O.  "],
     ],
-    # Swamp scenery
     "Misty Marsh": [
-        # Fog bank
-        ["  . . . .  ", " . . . . . "],
-        # Firefly cluster
-        [" * . * ", ". * . *"],
-        # Murky pool
-        ["  =====  ", " ~=====~ "],
-        # Dead tree
-        ["   /\\   ", "  /  \\  ", "    |    "],
-        # Cattail cluster
-        ["Y Y Y Y", "| | | |", "| | | |"],
-        # Frog on lily pad
-        ["  (@)  ", " ~O O~ "],
-        # Gnarled roots
-        ["/\\/\\/\\", "\\/\\/\\/"],
+        # === ANIMATED: Firefly blink (independent) - 4 frames ===
+        [
+            [" *       *      ", "   *   *   *    ", "     *       *  "],
+            ["   *   *        ", " *       *   *  ", "   *   *        "],
+            ["*       *   *   ", "   *       *    ", " *   *       *  "],
+            ["   *   *        ", "*       *   *   ", "   *       *    "],
+        ],
+        # === ANIMATED: Fog bank drifting - 2 frames ===
+        [
+            [". . . . . . . . .", " . . . . . . . . "],
+            [" . . . . . . . . ", ". . . . . . . . ."],
+        ],
+        # Dead tree stark silhouette
+        ["    /\\    ", "   /  \\   ", "  /    \\  ", "    ||    ", "    ||    ",
+         "    ||    "],
+        # Dark bog pool
+        ["  ==========  ", " ~============ ", "~~============~~"],
+        # Frog on floating log
+        ["========", "|  (@)  |", "~~~~~~~~~"],
+        # Will-o-wisp orb
+        ["  (*)  ", " (*.*) ", "  (*)  "],
     ],
     "Cypress Hollow": [
-        # Twisted cypress tree
-        ["  ====  ", " /|||\\", "  |||  ", "  |||  "],
-        # Spanish moss
-        ["= = = =", " = = = "],
-        # Hollow log
-        ["+=====+", "| *** |", "+=====+"],
-        # Firefly lanterns
-        ["  *   *  ", " * * * * "],
-        # Swamp boat
-        ["  +===+  ", " /     \\ ", " \\=====/ "],
-        # Cypress knees
-        ["  /\\  /\\  /\\  ", " /  \\/  \\/  \\ "],
+        # === ANIMATED: Spanish moss curtain sway - 3 frames ===
+        [
+            ["= = = = = = = =", " = = = = = = = "],
+            [" = = = = = = = ", "  = = = = = = ="],
+            ["= = = = = = = =", " = = = = = = = "],
+        ],
+        # Wide ancient cypress trunk
+        ["   /====\\   ", "  /||||||\\ ", " | |||||| | ", " | |||||| | ",
+         " | |||||| | "],
+        # Hollow log with fireflies inside
+        ["+==========+", "|| * * * * ||", "+==========+"],
+        # Dugout swamp boat
+        ["  /========\\  ", " /          \\ ", "/============\\"],
+        # Cypress knee cluster
+        [" /\\ /\\ /\\ /\\ ", "/  \\/  \\/  \\ "],
+        # Hunting heron silhouette
+        ["  /  ", " /   ", " |   ", " |   ", "/ \\  "],
     ],
     "Sunken Ruins": [
-        # Broken column
-        ["  +=+  ", "  |.|  ", "  +=+  ", " . . . "],
-        # Submerged arch
+        # === ANIMATED: Rune glow moving between columns - 3 frames ===
+        [
+            ["|     |     |     |", "|     |     |     |", "|     |     |     |",
+             "+=====+=====+=====+"],
+            ["|  .  |     |     |", "|     |     |     |", "|     |     |     |",
+             "+=====+=====+=====+"],
+            ["|     |  .  |     |", "|     |     |  .  |", "|     |     |     |",
+             "+=====+=====+=====+"],
+        ],
+        # Submerged archway
         ["+=====+", "| ~~~ |", "+     +"],
-        # Ancient stones
-        [" . # . ", "# . # ."],
-        # Sunken statue
-        ["  +==+  ", " |(OO)|", " | || |", "  +==+  "],
-        # Treasure pile
-        [" $ <> $ ", "  $$$  "],
-        # Ancient pillar row
-        ["|   |   |", "|   |   |", "+===+===+"],
+        # Eroded ancient statue
+        ["  +===+  ", " |(OO) | ", " | ||  | ", "  +===+  ", " . . . . "],
+        # Ancient artifact pile glinting
+        ["  O  <>  O  ", " <> * $ <> ", "  O  <>  O  "],
+        # Broken toppled pillar
+        [" +=+ ", " |.| ", " |.| ", "====="],
     ],
-    # Urban scenery
     "Park Fountain": [
-        # Grand city fountain
-        ["    +===+    ", "   /~~~~~\\   ", "  |~~~~~~~|  ", "  | ~ ~ ~ |  ", " +=========+ ", " |  o o o  | ", " +=========+ "],
-        # Ornamental park bench
-        ["+=========+", "|         |", "|         |", "++-------++"],
-        # Wishing coins at bottom
-        [" o <> o <> o ", "<> o * o <> "],
-        # Flower bed with tulips
-        ["* * * * * *", "| | | | | |", "==========="],
+        # === ANIMATED: Fountain water arc - 4 frames ===
+        [
+            ["       +===+       ", "      /~~~~~\\      ", "     |~~~~~~~|     ",
+             "     | ~ ~ ~ |     ", "    +=========+    ", "   |  o  *  o  |   ",
+             "    +=========+    "],
+            ["       +===+       ", "      /~~~~~\\      ", "     |~~.~~~~|     ",
+             "     | ~ ~ ~ |     ", "    +=========+    ", "   |  o  *  o  |   ",
+             "    +=========+    "],
+            ["       +===+       ", "      /~~~~~\\      ", "     |~~~~~~~|     ",
+             "     | ~.~ ~ |     ", "    +=========+    ", "   |  *  o  *  |   ",
+             "    +=========+    "],
+            ["       +===+       ", "      /~~~~~\\      ", "     |~~~~~~~|     ",
+             "     | ~ ~.~ |     ", "    +=========+    ", "   |  o  *  o  |   ",
+             "    +=========+    "],
+        ],
+        # === ANIMATED: Pigeon flock shuffling - 2 frames ===
+        [
+            [" v  v     v ", "   v    v   "],
+            [" v     v    ", "   v  v   v "],
+        ],
         # Victorian lamp post
-        ["  [O]  ", "   |   ", "   |   ", " +=|=+ "],
-        # Hedge sculpture (duck shape!)
-        ["  ++++  ", " ++>+++", "  ++++  "],
-        # Pigeon flock
-        [" v v v ", "  v v  "],
+        ["  (O)  ", "   |   ", "   |   ", "   |   ", " +=|=+ "],
+        # Ornamental park bench
+        ["+===========+", "|           |", "|           |", "++=========++"],
+        # Topiary duck (secret easter egg)
+        ["  ++++  ", " +>++++", "  ++++  ", "  +  +  "],
     ],
     "Rooftop Garden": [
-        # Raised vegetable beds
-        ["+------+  +------+", "| ++++ |  | ^^^^ |", "| ++++ |  | ^^^^ |", "+------+  +------+"],
-        # Tomato trellis
-        [" o  o  o ", " Y  Y  Y ", " |  |  | ", "+------+"],
-        # Beehive for urban bees
-        ["  +---+  ", " /zzz\\ ", "|zzzzz| ", " \\===/ "],
-        # Potted herb collection
-        [" [+] [+] [+] ", "  |   |   |  "],
-        # City skyline view
-        ["##  ###  ##", " ##   ##  ", "  # # #  "],
-        # Rainwater barrel
-        ["  +===+  ", " | == | ", " | == | ", "  +===+  "],
-        # Compost bin
-        ["+---+", "|+++|", "+---+"],
-        # Solar panel
-        ["/=======\\", "|[=][=][=]|", "\\=======/"],
+        # === ANIMATED: Solar panel sun track glint - 4 frames ===
+        [
+            ["/=========\\", "||[=][=][=]||", "||[=][=][=]||", "\\=========/"],
+            ["/=========\\", "||[.][=][=]||", "||[=][=][=]||", "\\=========/"],
+            ["/=========\\", "||[=][.][=]||", "||[=][=][=]||", "\\=========/"],
+            ["/=========\\", "||[=][=][.]||", "||[=][=][=]||", "\\=========/"],
+        ],
+        # Raised vegetable beds (side by side)
+        ["+------+  +------+", "| ++++ |  | ^^^^ |", "| ++++ |  | ^^^^ |",
+         "+------+  +------+"],
+        # Urban beehive
+        ["  +---+  ", " /zzzzz\\ ", "|zzzBzzz| ", " \\=====/ "],
+        # City skyline backdrop
+        ["## ##   ### ##   ##", "## ## # ### ## # ##", "###########  ######"],
+        # Rainwater collection barrel
+        ["  +===+  ", " | ~ ~ | ", " | ~ ~ | ", "  +===+  "],
     ],
     "Storm Drain": [
-        # Iron grate entrance with light
-        [" +=+=+=+=+ ", " | | | | | ", " | | | | | ", " +=+=+=+=+ "],
+        # === ANIMATED: Light shafts through grate shifting - 3 frames ===
+        [
+            ["+=+=+=+=+=+=+=+", "| | | | | | | |", "| | | | | | | |", "+=+=+=+=+=+=+=+"],
+            ["+=+=+=+=+=+=+=+", "| |.| | | | | |", "| | | | |.| | |", "+=+=+=+=+=+=+=+"],
+            ["+=+=+=+=+=+=+=+", "| | | |.| | | |", "| |.| | | | |. ", "+=+=+=+=+=+=+=+"],
+        ],
+        # === ANIMATED: Stalactite drip drops falling - 4 frames ===
+        [
+            ["V  V * V * V", "|  |   |   |", "             "],
+            ["V  V * V * V", "|  ;   |   |", "             "],
+            ["V  V * V * V", "|  .   |   |", "  .          "],
+            ["V  V * V * V", "|      |   |", "  *          "],
+        ],
         # Dark tunnel stretching back
-        ["+=========+", "|##%###%##|", "|##%###%##|", "+=========+"],
-        # Underground waterfall
-        ["    |||    ", "   ~|||~   ", "  ~~~~~  "],
+        ["+===========+", "|##%###%###%#|", "|##%###%###%#|", "|##% . #%###%|",
+         "+===========+"],
         # Lost treasure pile
-        [" O  <>  O ", "  *  *  ", " . . . "],
-        # Dripping stalactites
-        [" V * V * V ", "  .   .   "],
-        # Mysterious glowing
-        ["  [###]  ", "   [#]   "],
-        # Echoing puddle
-        [" ~~~~~~~~ ", "  ~~~~~~  "],
-        # Rat silhouette
-        ["  (@)~~ ", " /|\\    "],
+        ["  O  *  <>  ", "<> * O * <> ", "  * <> *    "],
+        # Glowing drain fungus
+        ["*.*.*.*.  ", ".*.*.*.*  "],
+        # Resident rat (not hostile, he lives here)
+        ["  (@)~~  ", " / | \\   ", "   o     "],
     ],
 }
+
 
 
 # ============================================================================
@@ -906,161 +995,344 @@ def generate_location_decorations(location: str, width: int, height: int,
     return placements
 
 
-def generate_location_scenery(location: str, width: int, height: int) -> List[Tuple[int, int, List[str]]]:
+def generate_location_scenery(location: str, width: int, height: int) -> List[Tuple[int, int, List]]:
     """Generate large scenery placements for a location.
-    
-    Returns: List of (x, y, art_lines) tuples
+
+    Returns: List of (x, y, piece) tuples where piece is either List[str]
+    (static) or List[List[str]] (animated frames).
     """
     scenery_pieces = get_scenery(location)
     if not scenery_pieces:
         return []
-    
-    placements = []
-    
-    # Special handling for specific locations
+
+    # Special layout generators
     if location == "Forest Edge":
-        # Always place a winding river and multiple trees
         return _generate_forest_edge_scenery(scenery_pieces, width, height)
     elif location == "Home Pond":
-        # Cozy arrangement with lily pads center, reeds on sides
         return _generate_home_pond_scenery(scenery_pieces, width, height)
-    
-    # Default: Place 1-3 scenery pieces
-    num_pieces = random.randint(1, min(3, len(scenery_pieces)))
+    elif location == "Ancient Oak":
+        return _generate_ancient_oak_scenery(scenery_pieces, width, height)
+    elif location == "Crystal Cave":
+        return _generate_crystal_cave_scenery(scenery_pieces, width, height)
+    elif location == "Misty Marsh":
+        return _generate_misty_marsh_scenery(scenery_pieces, width, height)
+    elif location == "Shipwreck Cove":
+        return _generate_shipwreck_cove_scenery(scenery_pieces, width, height)
+
+    # Default: place 2-4 pieces spread across the world
+    num_pieces = random.randint(2, min(4, len(scenery_pieces)))
     used_positions = set()
-    
+    placements = []
+
     for piece in random.sample(scenery_pieces, num_pieces):
-        piece_width = max(len(line) for line in piece)
-        piece_height = len(piece)
-        
-        # Find a position that doesn't overlap
-        attempts = 0
-        while attempts < 10:
+        frame0 = _first_frame(piece)
+        piece_width = max(len(line) for line in frame0) if frame0 else 4
+        piece_height = len(frame0) if frame0 else 2
+
+        for _ in range(12):
             x = random.randint(1, max(1, width - piece_width - 2))
             y = random.randint(1, max(1, height - piece_height - 2))
-            
-            # Check for overlap
-            overlap = False
-            for px, py in used_positions:
-                if abs(x - px) < piece_width + 2 and abs(y - py) < piece_height + 2:
-                    overlap = True
-                    break
-            
+            overlap = any(
+                abs(x - px) < piece_width + 3 and abs(y - py) < piece_height + 2
+                for px, py in used_positions
+            )
             if not overlap:
                 placements.append((x, y, piece))
                 used_positions.add((x, y))
                 break
-            
-            attempts += 1
-    
+
     return placements
 
 
-def _generate_forest_edge_scenery(scenery_pieces: List[List[str]], 
-                                   width: int, height: int) -> List[Tuple[int, int, List[str]]]:
-    """Generate Forest Edge with lots of trees and a winding river."""
+def _first_frame(piece) -> List[str]:
+    """Return the first frame lines for filtering/sizing animated or static pieces."""
+    if piece and isinstance(piece[0], list):
+        return piece[0]  # animated: first frame is List[str]
+    return piece          # static: piece itself is List[str]
+
+
+def _generate_forest_edge_scenery(scenery_pieces, width: int, height: int):
+    """Forest Edge: animated treeline top, animated river across the floor, landmarks."""
     placements = []
-    
-    # Find river pieces
-    river_pieces = [p for p in scenery_pieces if any('=' in line or '~' in line for line in p)]
-    tree_pieces = [p for p in scenery_pieces if any('A' in line for line in p)]
-    bush_pieces = [p for p in scenery_pieces if any('+' in line for line in p) and not any('A' in line for line in p)]
-    
-    # Place a long river across the middle-bottom area
-    if river_pieces:
-        # Find the longest river piece
-        long_rivers = [p for p in river_pieces if max(len(line) for line in p) > 10]
-        if long_rivers:
-            river = random.choice(long_rivers)
-            river_y = height - len(river) - 2  # Near bottom
-            river_x = random.randint(0, max(0, width - max(len(line) for line in river)))
-            placements.append((river_x, river_y, river))
-        
-        # Add a river bend
-        bends = [p for p in river_pieces if len(p) > 2]  # Multi-line river bends
-        if bends:
-            bend = random.choice(bends)
-            bend_x = random.randint(0, max(0, width // 2))
-            bend_y = max(0, height - len(bend) - 4)
-            placements.append((bend_x, bend_y, bend))
-    
-    # Place multiple trees along the top area (forest edge)
-    if tree_pieces:
-        # Place 3-5 tree clusters
-        for i in range(random.randint(3, 5)):
-            tree = random.choice(tree_pieces)
-            tree_width = max(len(line) for line in tree)
-            tree_x = random.randint(0, max(0, width - tree_width - 1))
-            tree_y = random.randint(0, max(0, min(3, height // 3)))  # Upper area
-            placements.append((tree_x, tree_y, tree))
-    
-    # Add some bushes scattered around
-    if bush_pieces:
-        for i in range(random.randint(1, 3)):
-            bush = random.choice(bush_pieces)
-            bush_width = max(len(line) for line in bush)
-            bush_x = random.randint(0, max(0, width - bush_width))
-            bush_y = random.randint(height // 3, max(height // 3, height - 3))
-            placements.append((bush_x, bush_y, bush))
-    
+
+    def has_char(piece, ch):
+        return any(ch in line for line in _first_frame(piece))
+
+    animated_river = [p for p in scenery_pieces if isinstance(p[0], list) and
+                      any('=' in line or '~' in line for line in p[0])]
+    animated_trees = [p for p in scenery_pieces if isinstance(p[0], list) and
+                      any('A' in line for line in p[0])]
+    static_river   = [p for p in scenery_pieces if not isinstance(p[0], list) and
+                      any('=' in line or '~' in line for line in p)]
+    static_trees   = [p for p in scenery_pieces if not isinstance(p[0], list) and
+                      any('A' in line for line in p)]
+    static_other   = [p for p in scenery_pieces if not isinstance(p[0], list) and
+                      not any('A' in line for line in p) and
+                      not any('=' in line or '~' in line for line in p)]
+
+    # Place animated treeline across the top
+    if animated_trees:
+        tree = animated_trees[0]
+        frame0 = _first_frame(tree)
+        tw = max(len(l) for l in frame0)
+        placements.append((random.randint(0, max(0, width - tw)), 0, tree))
+
+    # Place animated river near the bottom
+    if animated_river:
+        river = animated_river[0]
+        frame0 = _first_frame(river)
+        rw = max(len(l) for l in frame0)
+        rh = len(frame0)
+        placements.append((random.randint(0, max(0, width - rw)), height - rh - 2, river))
+
+    # Add 2-3 static pieces (bridge, log, signpost)
+    for piece in random.sample(static_other + static_river, min(3, len(static_other + static_river))):
+        frame0 = _first_frame(piece)
+        pw = max(len(l) for l in frame0)
+        ph = len(frame0)
+        x = random.randint(1, max(1, width - pw - 2))
+        y = random.randint(2, max(2, height - ph - 3))
+        placements.append((x, y, piece))
+
     return placements
 
 
-def _generate_home_pond_scenery(scenery_pieces: List[List[str]],
-                                 width: int, height: int) -> List[Tuple[int, int, List[str]]]:
-    """Generate Home Pond with cozy pond-focused arrangement."""
+def _generate_home_pond_scenery(scenery_pieces, width: int, height: int):
+    """Home Pond: animated water center, animated reeds flanking, dock top-right."""
     placements = []
 
-    # Categorize scenery pieces by content (using ASCII chars)
-    water_pieces = [p for p in scenery_pieces if any('~' in line and len(line) > 8 for line in p)]
-    lily_pieces = [p for p in scenery_pieces if any('O' in line and '~' in line for line in p)]
-    reed_pieces = [p for p in scenery_pieces if any('|' in line or 'Y' in line for line in p) and not any('O' in line for line in p) and not any('+' in line for line in p)]
-    # Dock: has = on one line and + on another
-    dock_pieces = [p for p in scenery_pieces if any('=' in line for line in p) and any('+' in line for line in p)]
-    shore_pieces = [p for p in scenery_pieces if any("'" in line or ('.' in line and ' ' in line) for line in p) and not any('~' in line for line in p)]
+    animated_water = [p for p in scenery_pieces if isinstance(p[0], list) and
+                      any('~' in line for line in p[0])]
+    animated_reeds = [p for p in scenery_pieces if isinstance(p[0], list) and
+                      any('|' in line or 'Y' in line for line in p[0])]
+    static_lily    = [p for p in scenery_pieces if not isinstance(p[0], list) and
+                      any('O' in line and '~' in line for line in p)]
+    static_dock    = [p for p in scenery_pieces if not isinstance(p[0], list) and
+                      any('=' in line for line in p) and any('+' in line for line in p)]
+    static_shore   = [p for p in scenery_pieces if not isinstance(p[0], list) and
+                      any('.' in line for line in p) and
+                      not any('~' in line or 'O' in line for line in p)]
 
-    # Always place main water area in center (this is the pond!)
-    if water_pieces:
-        water = water_pieces[0]  # Use the big water block
-        water_width = max(len(line) for line in water)
-        water_x = (width - water_width) // 2
-        water_y = (height - len(water)) // 2
-        placements.append((water_x, water_y, water))
+    # Animated water surface - centered
+    if animated_water:
+        w = animated_water[0]
+        f = _first_frame(w)
+        ww = max(len(l) for l in f)
+        wh = len(f)
+        placements.append(((width - ww) // 2, (height - wh) // 2, w))
 
-    # Place lily pads on the water
-    if lily_pieces:
-        lily = lily_pieces[0]
-        lily_width = max(len(line) for line in lily)
-        lily_x = (width - lily_width) // 2
-        lily_y = (height - len(lily)) // 2 - 1  # Slightly above center
-        placements.append((lily_x, lily_y, lily))
+    # Animated reed sway - left edge
+    if animated_reeds:
+        r = animated_reeds[0]
+        f = _first_frame(r)
+        rh = len(f)
+        placements.append((1, height - rh - 1, r))
 
-    # Reeds on the left edge
-    if reed_pieces:
-        reed = reed_pieces[0]
-        placements.append((1, height - len(reed) - 1, reed))
+    # Animated reed sway - right edge
+    if len(animated_reeds) > 0:
+        r = animated_reeds[0]
+        f = _first_frame(r)
+        rw = max(len(l) for l in f)
+        rh = len(f)
+        placements.append((width - rw - 2, height - rh - 1, r))
 
-    # Reeds on the right edge too
-    if len(reed_pieces) > 1:
-        reed = reed_pieces[1]
-        reed_width = max(len(line) for line in reed)
-        placements.append((width - reed_width - 2, height - len(reed) - 1, reed))
-    elif reed_pieces:
-        reed = reed_pieces[0]
-        reed_width = max(len(line) for line in reed)
-        placements.append((width - reed_width - 2, height - len(reed), reed))
+    # Lily pads on water
+    if static_lily:
+        lily = static_lily[0]
+        lw = max(len(l) for l in lily)
+        lh = len(lily)
+        placements.append(((width - lw) // 2, (height - lh) // 2 - 1, lily))
 
-    # Dock in corner
-    if dock_pieces:
-        dock = dock_pieces[0]
-        dock_width = max(len(line) for line in dock)
-        placements.append((width - dock_width - 1, 0, dock))
+    # Dock - top right corner
+    if static_dock:
+        dock = static_dock[0]
+        dw = max(len(l) for l in dock)
+        placements.append((width - dw - 1, 0, dock))
 
-    # Shore/pebbles at bottom
-    if shore_pieces:
-        shore = shore_pieces[0]
-        shore_width = max(len(line) for line in shore)
-        placements.append(((width - shore_width) // 2, height - len(shore), shore))
+    # Shore pebbles - bottom center
+    if static_shore:
+        shore = static_shore[0]
+        sw = max(len(l) for l in shore)
+        sh = len(shore)
+        placements.append(((width - sw) // 2, height - sh, shore))
+
+    return placements
+
+
+def _generate_ancient_oak_scenery(scenery_pieces, width: int, height: int):
+    """Ancient Oak: animated canopy dominates top-center, creatures scattered below."""
+    placements = []
+
+    animated_canopy  = [p for p in scenery_pieces if isinstance(p[0], list) and
+                        any('A' in line for line in p[0])]
+    animated_owl     = [p for p in scenery_pieces if isinstance(p[0], list) and
+                        any('O' in line and '+' in line for line in p[0])]
+    static_roots     = [p for p in scenery_pieces if not isinstance(p[0], list) and
+                        any('\\/' in line or '/\\' in line for line in p)]
+    static_rest      = [p for p in scenery_pieces if not isinstance(p[0], list) and
+                        not any('A' in line for line in p)]
+
+    # Animated canopy - centered top
+    if animated_canopy:
+        c = animated_canopy[0]
+        f = _first_frame(c)
+        cw = max(len(l) for l in f)
+        placements.append(((width - cw) // 2, 0, c))
+
+    # Animated owl knothole - slightly left of center, mid-height
+    if animated_owl:
+        o = animated_owl[0]
+        f = _first_frame(o)
+        ow = max(len(l) for l in f)
+        oh = len(f)
+        placements.append(((width - ow) // 2 - 4, height // 2 - oh // 2, o))
+
+    # Roots at ground level
+    if static_roots:
+        r = static_roots[0]
+        rw = max(len(l) for l in r)
+        rh = len(r)
+        placements.append(((width - rw) // 2, height - rh, r))
+
+    # Scatter remaining static pieces
+    for piece in random.sample(static_rest, min(3, len(static_rest))):
+        f = _first_frame(piece)
+        pw = max(len(l) for l in f)
+        ph = len(f)
+        x = random.randint(2, max(2, width - pw - 2))
+        y = random.randint(height // 3, max(height // 3, height - ph - 1))
+        placements.append((x, y, piece))
+
+    return placements
+
+
+def _generate_crystal_cave_scenery(scenery_pieces, width: int, height: int):
+    """Crystal Cave: animated crystals and drips flanking a central geode."""
+    placements = []
+
+    animated_shimmer = [p for p in scenery_pieces if isinstance(p[0], list) and
+                        any('<' in line for line in p[0])]
+    animated_drip    = [p for p in scenery_pieces if isinstance(p[0], list) and
+                        any('V' in line for line in p[0])]
+    static_geode     = [p for p in scenery_pieces if not isinstance(p[0], list) and
+                        any('/' in line and '\\' in line for line in p)]
+    static_lake      = [p for p in scenery_pieces if not isinstance(p[0], list) and
+                        any('*' in line and '~' in line for line in p)]
+    static_rest      = [p for p in scenery_pieces if not isinstance(p[0], list) and
+                        p not in static_geode and p not in static_lake]
+
+    # Central geode
+    if static_geode:
+        g = static_geode[0]
+        gw = max(len(l) for l in g)
+        gh = len(g)
+        placements.append(((width - gw) // 2, (height - gh) // 2, g))
+
+    # Animated crystal shimmer - left cluster
+    if animated_shimmer:
+        s = animated_shimmer[0]
+        f = _first_frame(s)
+        sw = max(len(l) for l in f)
+        placements.append((2, height // 3, s))
+        placements.append((width - sw - 3, height // 3, s))
+
+    # Animated stalactite drip - top area
+    if animated_drip:
+        d = animated_drip[0]
+        f = _first_frame(d)
+        dw = max(len(l) for l in f)
+        placements.append(((width - dw) // 2, 0, d))
+
+    # Glowing lake near bottom
+    if static_lake:
+        lake = static_lake[0]
+        lw = max(len(l) for l in lake)
+        lh = len(lake)
+        placements.append(((width - lw) // 2, height - lh - 1, lake))
+
+    return placements
+
+
+def _generate_misty_marsh_scenery(scenery_pieces, width: int, height: int):
+    """Misty Marsh: animated fireflies fill the space, fog at top, landmarks scattered."""
+    placements = []
+
+    animated_firefly = [p for p in scenery_pieces if isinstance(p[0], list) and
+                        any('*' in line for line in p[0])]
+    animated_fog     = [p for p in scenery_pieces if isinstance(p[0], list) and
+                        any('.' in line for line in p[0])]
+    static_pieces    = [p for p in scenery_pieces if not isinstance(p[0], list)]
+
+    # Fog drifting at the top
+    if animated_fog:
+        placements.append((0, 0, animated_fog[0]))
+
+    # Fireflies clustered in two patches
+    if animated_firefly:
+        ff = animated_firefly[0]
+        f = _first_frame(ff)
+        fw = max(len(l) for l in f)
+        fh = len(f)
+        placements.append((width // 5, height // 3, ff))
+        placements.append((width * 3 // 5, height // 2, ff))
+
+    # Scatter static landmarks
+    for piece in random.sample(static_pieces, min(4, len(static_pieces))):
+        f = _first_frame(piece)
+        pw = max(len(l) for l in f)
+        ph = len(f)
+        x = random.randint(2, max(2, width - pw - 2))
+        y = random.randint(2, max(2, height - ph - 2))
+        placements.append((x, y, piece))
+
+    return placements
+
+
+def _generate_shipwreck_cove_scenery(scenery_pieces, width: int, height: int):
+    """Shipwreck Cove: hull dominates right side, flag flies above, waves and debris left."""
+    placements = []
+
+    animated_flag  = [p for p in scenery_pieces if isinstance(p[0], list) and
+                      any('X' in line for line in p[0])]
+    animated_wave  = [p for p in scenery_pieces if isinstance(p[0], list) and
+                      any('~' in line for line in p[0])]
+    static_hull    = [p for p in scenery_pieces if not isinstance(p[0], list) and
+                      any('#' in line for line in p) and len(p) > 4]
+    static_rest    = [p for p in scenery_pieces if not isinstance(p[0], list) and
+                      p not in static_hull]
+
+    # Hull - right-center
+    if static_hull:
+        h = static_hull[0]
+        hw = max(len(l) for l in h)
+        hh = len(h)
+        hx = width - hw - 3
+        hy = (height - hh) // 2
+        placements.append((hx, hy, h))
+
+        # Flag above the hull mast
+        if animated_flag:
+            ff = animated_flag[0]
+            f = _first_frame(ff)
+            fw = max(len(l) for l in f)
+            placements.append((hx + hw // 2 - fw // 2, max(0, hy - len(f)), ff))
+
+    # Animated waves - left side
+    if animated_wave:
+        wv = animated_wave[0]
+        f = _first_frame(wv)
+        wh = len(f)
+        placements.append((2, height - wh - 2, wv))
+        placements.append((width // 3, height - wh - 2, wv))
+
+    # Scatter debris
+    for piece in random.sample(static_rest, min(3, len(static_rest))):
+        f = _first_frame(piece)
+        pw = max(len(l) for l in f)
+        ph = len(f)
+        x = random.randint(2, max(2, width // 2 - pw))
+        y = random.randint(2, max(2, height - ph - 2))
+        placements.append((x, y, piece))
 
     return placements
 

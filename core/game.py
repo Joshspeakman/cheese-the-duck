@@ -1258,6 +1258,13 @@ class Game:
         if action == "stop":
             sound_engine.stop_radio()
             self.renderer.show_message("Nook Radio off")
+            # Immediately resume background music
+            weather_str = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+            time_of_day_obj = self.day_night.get_time_of_day() if hasattr(self.day_night, 'get_time_of_day') else None
+            time_of_day = time_of_day_obj.value if time_of_day_obj and hasattr(time_of_day_obj, 'value') else "day"
+            duck_state = self.duck.get_mood().state.value if self.duck else "neutral"
+            music_context = get_music_context(weather=weather_str, time_of_day=time_of_day, duck_mood=duck_state)
+            sound_engine.update_music(music_context, force=True)
             return
 
         # Only Nook Radio is available
@@ -1293,6 +1300,13 @@ class Game:
             # Clear the muted-radio memory so 'm' doesn't restore it
             sound_engine._radio_was_playing = None
             self.renderer.show_message("Nook Radio off")
+            # Immediately resume background music
+            weather_str = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+            time_of_day_obj = self.day_night.get_time_of_day() if hasattr(self.day_night, 'get_time_of_day') else None
+            time_of_day = time_of_day_obj.value if time_of_day_obj and hasattr(time_of_day_obj, 'value') else "day"
+            duck_state = self.duck.get_mood().state.value if self.duck else "neutral"
+            music_context = get_music_context(weather=weather_str, time_of_day=time_of_day, duck_mood=duck_state)
+            sound_engine.update_music(music_context, force=True)
         else:
             # Turn on Nook Radio — auto-stops background music
             if self._boombox_playing:
@@ -1331,6 +1345,13 @@ class Game:
             # Duck turns radio off — had enough
             sound_engine.stop_radio()
             sound_engine._radio_was_playing = None
+            # Resume background music after duck turns off radio
+            weather_str = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+            time_of_day_obj = self.day_night.get_time_of_day() if hasattr(self.day_night, 'get_time_of_day') else None
+            time_of_day = time_of_day_obj.value if time_of_day_obj and hasattr(time_of_day_obj, 'value') else "day"
+            duck_state = self.duck.get_mood().state.value if self.duck else "neutral"
+            music_context = get_music_context(weather=weather_str, time_of_day=time_of_day, duck_mood=duck_state)
+            sound_engine.update_music(music_context, force=True)
             off_reactions = {
                 "ecstatic": "*turns off radio* Silence. Also acceptable.",
                 "happy": "*clicks radio off* Enough music. Back to existing.",
@@ -3423,6 +3444,9 @@ class Game:
         # Update event animations (butterfly, bird, etc.)
         self._update_event_animations()
 
+        # Check whether duck has walked to a world edge (triggers biome transition)
+        self._check_biome_edge(current_time)
+
         # Update sound effects (cleanup expired sounds)
         self.sound_effects.update(current_time)
 
@@ -3896,11 +3920,15 @@ class Game:
 
             # Only provide structures and items when at Home Pond
             if is_at_home:
+                world_w = self.renderer.duck_pos.field_width
+                world_h = self.renderer.duck_pos.field_height
                 for structure in self.building.structures:
                     if structure.status.value == "complete":
                         available_structures.add(structure.blueprint_id)
-                        # Get playfield position for this structure
-                        pos = self.building.get_structure_position(structure.blueprint_id)
+                        # Compute world-space position using same formula as renderer
+                        pos = self.building.get_structure_position(
+                            structure.blueprint_id, world_w, world_h
+                        )
                         if pos:
                             structure_positions[structure.blueprint_id] = pos
                 placed_items = self.habitat.placed_items
@@ -7258,6 +7286,90 @@ class Game:
             show_numbers=False,
             footer="[^/v] Navigate | [Enter] Travel | [Bksp] Close"
         )
+
+    def _check_biome_edge(self, current_time: float) -> None:
+        """Trigger a biome transition when duck walks to the edge of the world."""
+        if not self.duck or self._duck_traveling or self._duck_exploring:
+            return
+
+        # Respect cooldown to avoid repeated triggers while duck lingers at edge
+        if current_time - getattr(self, '_biome_edge_cooldown_until', 0) < 0:
+            return
+
+        dp = self.renderer.duck_pos
+        world_w = dp.field_width   # == WORLD_WIDTH
+        world_h = dp.field_height  # == WORLD_HEIGHT
+        margin = 3
+
+        direction: str | None = None
+        if dp.x < margin:
+            direction = "west"
+        elif dp.x >= world_w - margin:
+            direction = "east"
+        elif dp.y < margin:
+            direction = "north"
+        elif dp.y >= world_h - margin:
+            direction = "south"
+
+        if direction:
+            self._handle_biome_edge(direction)
+            self._biome_edge_cooldown_until = current_time + 5.0
+
+    def _handle_biome_edge(self, direction: str) -> None:
+        """Transition to the adjacent biome in the given direction."""
+        if not self.exploration or not self.exploration.current_area:
+            return
+
+        from world.exploration import get_adjacent_biome, AREAS
+        current_biome = self.exploration.current_area.biome
+        target_biome = get_adjacent_biome(current_biome, direction)
+        if not target_biome:
+            return
+
+        # Find a discovered (or default) area in the target biome
+        target_area = None
+        for area in self.exploration.discovered_areas.values():
+            if area.biome == target_biome:
+                target_area = area
+                break
+
+        # Fall back to the first defined area for that biome even if undiscovered
+        if not target_area:
+            candidates = AREAS.get(target_biome, [])
+            if candidates:
+                target_area = candidates[0]
+                # Auto-discover it on edge-walk
+                self.exploration.discovered_areas[target_area.name] = target_area
+                target_area.is_discovered = True
+
+        if not target_area:
+            return
+
+        # Reset duck to the opposite edge so the transition feels continuous
+        dp = self.renderer.duck_pos
+        world_w = dp.field_width
+        world_h = dp.field_height
+        opposite = {"west": "east", "east": "west", "north": "south", "south": "north"}
+        opp = opposite[direction]
+        margin = 5
+        if opp == "east":
+            dp.x = world_w - margin
+            dp.target_x = dp.x
+        elif opp == "west":
+            dp.x = margin
+            dp.target_x = dp.x
+        elif opp == "south":
+            dp.y = world_h - margin
+            dp.target_y = dp.y
+        elif opp == "north":
+            dp.y = margin
+            dp.target_y = dp.y
+
+        # Reset camera to follow new duck position
+        self.renderer._camera_x = max(0, dp.x - self.renderer._viewport_width // 2)
+        self.renderer._camera_y = max(0, dp.y - self.renderer._viewport_height // 2)
+
+        self._start_travel_to_area(target_area)
 
     def _travel_to_area(self, area_name: str):
         """Travel to an area by name (from menu action)."""
