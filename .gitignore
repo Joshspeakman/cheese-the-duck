@@ -140,6 +140,12 @@ data/*.dat
 *.swo
 *~
 
+# Claude Code / AI tooling
+.claude/
+
+# FUSE temporary files
+.fuse_hidden*
+
 # OS
 .DS_Store
 Thumbs.db
