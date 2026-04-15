@@ -8,6 +8,7 @@ Uses multiple approaches:
 3. /dev/console for frequency control (if available)
 4. Fallback to silent operation
 """
+import os
 import sys
 import time
 import threading
@@ -288,6 +289,16 @@ class SoundEngine:
 
     def _detect_capabilities(self):
         """Detect what sound methods are available."""
+        # Ensure SDL uses the system audio server (PipeWire or PulseAudio) so
+        # that audio goes to the user's OS-configured default output device
+        # instead of SDL picking a raw ALSA device (e.g. a gamepad audio jack).
+        if 'SDL_AUDIODRIVER' not in os.environ:
+            for driver in ('pipewire', 'pulseaudio'):
+                if Path(f"/run/user/{os.getuid()}/{driver}-0").exists():
+                    os.environ['SDL_AUDIODRIVER'] = driver
+                    logger.debug("Set SDL_AUDIODRIVER=%s", driver)
+                    break
+
         # Try to initialize pygame mixer for WAV playback
         try:
             import pygame
@@ -299,8 +310,8 @@ class SoundEngine:
             logger.debug("pygame not available: %s", e)
             self._pygame_available = False
 
-        # Check for WAV players
-        for player in ['paplay', 'aplay', 'ffplay']:
+        # Check for WAV players (prefer PipeWire native, then PulseAudio)
+        for player in ['pw-play', 'paplay', 'aplay', 'ffplay']:
             if _which_cached(player):
                 self._wav_player = player
                 break
@@ -884,7 +895,14 @@ class SoundEngine:
 
         def play():
             try:
-                if self._wav_player == 'paplay':
+                if self._wav_player == 'pw-play':
+                    pw_vol = max(0.0, min(1.0, vol))
+                    subprocess.run(
+                        ['pw-play', '--volume', str(pw_vol), str(wav_path)],
+                        capture_output=True,
+                        timeout=10
+                    )
+                elif self._wav_player == 'paplay':
                     # PulseAudio volume is 0-65536
                     pa_volume = int(vol * 65536)
                     subprocess.run(
@@ -948,7 +966,16 @@ class SoundEngine:
         def play_loop():
             while self._music_playing:
                 try:
-                    if self._wav_player == 'paplay':
+                    if self._wav_player == 'pw-play':
+                        pw_vol = max(0.0, min(1.0, music_vol))
+                        self._music_process = subprocess.Popen(
+                            ['pw-play', '--volume', str(pw_vol), str(wav_path)],
+                            stdin=subprocess.DEVNULL,
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL
+                        )
+                        self._music_process.wait()
+                    elif self._wav_player == 'paplay':
                         # PulseAudio volume: 65536 = 100%, scale by music_volume
                         pa_volume = int(music_vol * 65536)
                         self._music_process = subprocess.Popen(
