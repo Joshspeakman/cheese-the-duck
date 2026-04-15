@@ -475,6 +475,103 @@ class ConfirmationDialog:
         return lines
 
 
+class ErrorDialog:
+    """
+    Error dialog with a copyable error code.
+
+    Shows an error message and a short error code. The user can press
+    [C] to copy the full error details to the clipboard, or [Esc] to dismiss.
+    """
+
+    def __init__(self, title: str, message: str, error_code: str,
+                 on_dismiss: Optional[Callable[[], None]] = None):
+        self.title = title
+        self.message = message
+        self.error_code = error_code
+        self.on_dismiss = on_dismiss
+        self._is_open = False
+        self._copied = False
+
+    @property
+    def is_open(self) -> bool:
+        return self._is_open
+
+    @is_open.setter
+    def is_open(self, value: bool):
+        self._is_open = value
+        self._copied = False
+
+    def handle_input(self, key) -> MenuResult:
+        """Handle input for the error dialog."""
+        if not self._is_open:
+            return MenuResult.NONE
+
+        key_str = str(key).lower() if not getattr(key, 'is_sequence', False) else ""
+        key_name = getattr(key, 'name', "") or ""
+
+        if key_name == "KEY_ESCAPE" or key_str == "q":
+            self._is_open = False
+            if self.on_dismiss:
+                self.on_dismiss()
+            return MenuResult.CANCELLED
+
+        if key_str == "c":
+            self._copy_to_clipboard()
+            return MenuResult.NONE
+
+        return MenuResult.NONE
+
+    def _copy_to_clipboard(self):
+        """Copy the error code to the system clipboard."""
+        import subprocess as _sp
+        text = f"{self.title}\n{self.message}\nCode: {self.error_code}"
+        for cmd in (['xclip', '-selection', 'clipboard'],
+                    ['xsel', '--clipboard', '--input'],
+                    ['wl-copy'],
+                    ['pbcopy']):
+            try:
+                proc = _sp.Popen(cmd, stdin=_sp.PIPE, stderr=_sp.DEVNULL)
+                proc.communicate(input=text.encode(), timeout=3)
+                if proc.returncode == 0:
+                    self._copied = True
+                    return
+            except (FileNotFoundError, OSError, _sp.TimeoutExpired):
+                continue
+        self._copied = False
+
+    def get_display_lines(self, width: int = 54) -> List[str]:
+        """Generate display lines for the error dialog."""
+        lines = []
+        lines.append("═" * width)
+        lines.append(f"  ✗ {self.title}")
+        lines.append("═" * width)
+        lines.append("")
+
+        words = self.message.split()
+        current_line = "  "
+        for word in words:
+            if len(current_line) + len(word) + 1 > width - 2:
+                lines.append(current_line)
+                current_line = "  " + word
+            else:
+                current_line += " " + word if current_line.strip() else "  " + word
+        if current_line.strip():
+            lines.append(current_line)
+
+        lines.append("")
+        lines.append(f"  Error code: {self.error_code}")
+        lines.append("")
+
+        if self._copied:
+            lines.append("  ✓ Copied to clipboard!")
+        else:
+            lines.append("  [C] Copy error   [Esc] Dismiss")
+
+        lines.append("")
+        lines.append("═" * width)
+        return lines
+
+
 class NotificationManager:
     """
     Manages on-screen notifications with different types.
