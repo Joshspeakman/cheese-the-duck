@@ -115,7 +115,7 @@ from ui.menu_structure import build_master_menu_tree, MENU_ACTIONS
 
 # Settings and menu systems
 from core.settings import settings_manager, get_settings, load_settings, save_settings
-from core.menu_controller import MenuController, ConfirmationDialog, notification_manager
+from core.menu_controller import MenuController, ConfirmationDialog, ErrorDialog, notification_manager
 from ui.settings_menu import SettingsMenu, settings_menu
 
 # ── New subsystem managers (refactor phase 1 — additive only) ────────
@@ -330,6 +330,9 @@ class Game:
         
         # Confirmation dialog
         self._confirmation_dialog = None  # Active confirmation dialog
+        
+        # Error dialog
+        self._error_dialog = None  # Active error dialog
         
         # Hidden debug menu (accessed with backtick `)
         self._debug_menu_selected = 0
@@ -721,15 +724,24 @@ class Game:
             while self._running:
                 loop_start = time.time()
 
-                # Process input
-                self._process_input()
+                try:
+                    # Process input
+                    self._process_input()
 
-                # Update game state
-                if self._state == "playing" and self.duck:
-                    self._update()
+                    # Update game state
+                    if self._state == "playing" and self.duck:
+                        self._update()
 
-                # Render
-                self._render()
+                    # Render
+                    self._render()
+                except KeyboardInterrupt:
+                    raise
+                except Exception as e:
+                    # Show error dialog instead of crashing
+                    try:
+                        self._show_error_dialog(e, "Game loop error")
+                    except Exception:
+                        pass  # If the dialog itself fails, keep running
 
                 # Cap frame rate with adaptive sleep for CachyOS/Arch compatibility
                 elapsed = time.time() - loop_start
@@ -782,6 +794,11 @@ class Game:
         # Confirmation dialog (not yet migrated to dispatcher)
         if self._confirmation_dialog and self._confirmation_dialog.is_open:
             self._handle_confirmation_input(key)
+            return
+
+        # Error dialog
+        if self._error_dialog and self._error_dialog.is_open:
+            self._handle_error_dialog_input(key)
             return
 
         # Handle inventory item selection and pagination
@@ -11241,6 +11258,56 @@ Core Systems Tested: {report.total_tests}
         if not self._confirmation_dialog:
             return
         lines = self._confirmation_dialog.get_display_lines()
+        self.renderer.show_overlay("\n".join(lines), duration=0)
+
+    # ==================== ERROR DIALOG ====================
+
+    def _show_error_dialog(self, error: Exception, context: str = ""):
+        """Show an error popup with a copyable error code."""
+        import hashlib
+        import traceback as _tb
+        tb_text = "".join(_tb.format_exception(type(error), error, error.__traceback__))
+        code_hash = hashlib.sha256(tb_text.encode()).hexdigest()[:8].upper()
+        error_code = f"CTD-{code_hash}"
+
+        summary = str(error) or type(error).__name__
+        title = "Something went wrong"
+        if context:
+            message = f"{context}: {summary}"
+        else:
+            message = summary
+
+        try:
+            logger.log_exception(error, context or "Error dialog shown")
+        except Exception:
+            pass
+
+        self._error_dialog = ErrorDialog(
+            title=title,
+            message=message,
+            error_code=error_code,
+            on_dismiss=lambda: setattr(self, '_error_dialog', None),
+        )
+        self._error_dialog.is_open = True
+        self._render_error_dialog()
+
+    def _handle_error_dialog_input(self, key):
+        """Handle input for the error dialog."""
+        if not self._error_dialog:
+            return
+        from core.menu_controller import MenuResult
+        self._error_dialog.handle_input(key)
+        if self._error_dialog.is_open:
+            self._render_error_dialog()
+        else:
+            self._error_dialog = None
+            self.renderer.dismiss_message()
+
+    def _render_error_dialog(self):
+        """Render the error dialog overlay."""
+        if not self._error_dialog:
+            return
+        lines = self._error_dialog.get_display_lines()
         self.renderer.show_overlay("\n".join(lines), duration=0)
 
     # ==================== SCRAPBOOK SYSTEM ====================

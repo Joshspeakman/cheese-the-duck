@@ -659,7 +659,10 @@ class SoundEngine:
 
         track = MUSIC_TRACKS.get(new_context)
         if not track:
-            return
+            # Unknown context – fall back to DEFAULT track
+            track = MUSIC_TRACKS.get(MusicContext.DEFAULT)
+            if not track:
+                return
 
         # Find the audio file to play
         audio_file = None
@@ -672,7 +675,16 @@ class SoundEngine:
                 self._available_music[track.audio_file] = audio_path
                 audio_file = track.audio_file
 
-        # If no audio file, use synthesized ambient fallback
+        # Fallback: pick any available music file (excluding 'title')
+        if not audio_file and self._available_music:
+            fallback_candidates = [
+                k for k in self._available_music
+                if k != 'title'
+            ]
+            if fallback_candidates:
+                audio_file = random.choice(fallback_candidates)
+
+        # If still no audio file, use synthesized ambient fallback
         if not audio_file:
             self._play_fallback_ambient(new_context)
             return
