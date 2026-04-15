@@ -176,25 +176,41 @@ def check_dependencies():
             else:
                 missing_optional.append((mod_name, pip_name))
 
-    # ── System tools (informational only) ─────────────────────────
+    # ── System tools (context-aware) ──────────────────────────────
+    # Detect display server so we only flag the relevant clipboard tool
+    _is_wayland = os.environ.get("XDG_SESSION_TYPE") == "wayland" or os.environ.get("WAYLAND_DISPLAY")
+
     _TOOLS = [
-        ("mpv",     "Radio streaming"),
-        ("xclip",   "Clipboard copy (X11)"),
-        ("xsel",    "Clipboard copy (X11 fallback)"),
-        ("wl-copy", "Clipboard copy (Wayland)"),
-        ("git",     "In-game updates"),
+        ("mpv",  "Radio streaming", True),   # always relevant
+        ("git",  "In-game updates", True),   # always relevant
     ]
+    # Only check the clipboard tool that matches the display server
+    if _is_wayland:
+        _TOOLS.append(("wl-copy", "Clipboard copy", True))
+    else:
+        _TOOLS.append(("xclip", "Clipboard copy", True))
 
     missing_tools = []
-    for tool, purpose in _TOOLS:
+    for tool, purpose, _always in _TOOLS:
         if not shutil.which(tool):
             missing_tools.append((tool, purpose))
 
-    # ── Nothing missing ───────────────────────────────────────────
+    # ── Nothing missing → silent return ───────────────────────────
     if not missing_required and not missing_optional and not missing_tools:
         return True
 
-    # ── Report ────────────────────────────────────────────────────
+    # If only optional items are missing (no required packages),
+    # don't block startup — just log it silently and continue.
+    if not missing_required and not missing_optional:
+        try:
+            logger = get_logger()
+            for tool, purpose in missing_tools:
+                logger.info("Optional system tool missing: %s (%s)", tool, purpose)
+        except Exception:
+            pass
+        return True
+
+    # ── Report (only shown when packages need installing) ─────────
     print()
     print("=" * 60)
     print("  SYSTEM REQUIREMENTS CHECK")
@@ -208,7 +224,7 @@ def check_dependencies():
 
     if missing_optional:
         print()
-        print("  Missing optional packages:")
+        print("  Missing optional packages (game works without these):")
         for mod, pip_name in missing_optional:
             print(f"    - {pip_name}")
 
@@ -258,9 +274,10 @@ def check_dependencies():
                 print(f"\n  ✗ Install failed: {e}")
 
     if missing_tools:
+        _pm = "sudo pacman -S" if shutil.which("pacman") else "sudo apt install"
+        tool_names = " ".join(t for t, _ in missing_tools)
         print()
-        print("  Tip: install missing system tools with your package manager")
-        print("  e.g. sudo pacman -S mpv xclip git")
+        print(f"  Tip: {_pm} {tool_names}")
 
     print()
     print("=" * 60)
