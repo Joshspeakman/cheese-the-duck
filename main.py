@@ -139,19 +139,140 @@ def _check_and_download_model():
 
 
 def check_dependencies():
-    """Check that required dependencies are installed."""
-    try:
-        import blessed
-        return True
-    except ImportError:
-        print("Missing required dependency: blessed")
-        print("")
-        print("Install it with:")
-        print("  pip install blessed")
-        print("")
-        print("Or install all requirements:")
-        print("  pip install -r requirements.txt")
+    """Check system requirements and offer to install missing packages.
+
+    Returns True if all *required* dependencies are met (after any
+    auto-install), False if the game cannot start.
+    """
+    import shutil
+    import importlib
+    import subprocess
+
+    # ── Python version ────────────────────────────────────────────
+    py_ver = sys.version_info
+    if py_ver < (3, 9):
+        print(f"\n  Python 3.9+ required (you have {py_ver.major}.{py_ver.minor})")
+        print("  Please upgrade Python and try again.\n")
         return False
+
+    # ── Python packages ───────────────────────────────────────────
+    # (module_name, pip_name, required?)
+    _PACKAGES = [
+        ("blessed",         "blessed",          True),
+        ("pygame",          "pygame",           True),
+        ("markovify",       "markovify",        False),
+        ("llama_cpp",       "llama-cpp-python", False),
+    ]
+
+    missing_required = []
+    missing_optional = []
+
+    for mod_name, pip_name, required in _PACKAGES:
+        try:
+            importlib.import_module(mod_name)
+        except ImportError:
+            if required:
+                missing_required.append((mod_name, pip_name))
+            else:
+                missing_optional.append((mod_name, pip_name))
+
+    # ── System tools (informational only) ─────────────────────────
+    _TOOLS = [
+        ("mpv",     "Radio streaming"),
+        ("xclip",   "Clipboard copy (X11)"),
+        ("xsel",    "Clipboard copy (X11 fallback)"),
+        ("wl-copy", "Clipboard copy (Wayland)"),
+        ("git",     "In-game updates"),
+    ]
+
+    missing_tools = []
+    for tool, purpose in _TOOLS:
+        if not shutil.which(tool):
+            missing_tools.append((tool, purpose))
+
+    # ── Nothing missing ───────────────────────────────────────────
+    if not missing_required and not missing_optional and not missing_tools:
+        return True
+
+    # ── Report ────────────────────────────────────────────────────
+    print()
+    print("=" * 60)
+    print("  SYSTEM REQUIREMENTS CHECK")
+    print("=" * 60)
+
+    if missing_required:
+        print()
+        print("  Missing REQUIRED packages:")
+        for mod, pip_name in missing_required:
+            print(f"    ✗ {pip_name}")
+
+    if missing_optional:
+        print()
+        print("  Missing optional packages:")
+        for mod, pip_name in missing_optional:
+            print(f"    - {pip_name}")
+
+    if missing_tools:
+        print()
+        print("  Missing optional system tools:")
+        for tool, purpose in missing_tools:
+            print(f"    - {tool}  ({purpose})")
+
+    # ── Offer to install Python packages ──────────────────────────
+    all_missing_pip = missing_required + missing_optional
+    if all_missing_pip:
+        pip_list = " ".join(p for _, p in all_missing_pip)
+        print()
+        print(f"  Install missing Python packages? ({pip_list})")
+        print()
+        try:
+            answer = input("  [Y] Yes  [N] No  > ").strip().lower()
+        except (EOFError, KeyboardInterrupt):
+            answer = "n"
+
+        if answer in ("y", "yes", ""):
+            print()
+            pip_cmd = [sys.executable, "-m", "pip", "install"] + [p for _, p in all_missing_pip]
+            print(f"  Running: {' '.join(pip_cmd)}")
+            print()
+            try:
+                result = subprocess.run(pip_cmd, timeout=300)
+                if result.returncode == 0:
+                    print()
+                    print("  ✓ Packages installed successfully!")
+                    # Re-check required packages after install
+                    for mod_name, pip_name in missing_required:
+                        try:
+                            importlib.import_module(mod_name)
+                        except ImportError:
+                            print(f"\n  ✗ {pip_name} still not importable after install.")
+                            print("    Try manually: pip install " + pip_name)
+                            print()
+                            return False
+                    missing_required = []
+                else:
+                    print(f"\n  ✗ pip exited with code {result.returncode}")
+            except subprocess.TimeoutExpired:
+                print("\n  ✗ Install timed out")
+            except Exception as e:
+                print(f"\n  ✗ Install failed: {e}")
+
+    if missing_tools:
+        print()
+        print("  Tip: install missing system tools with your package manager")
+        print("  e.g. sudo pacman -S mpv xclip git")
+
+    print()
+    print("=" * 60)
+    print()
+
+    if missing_required:
+        print("  Cannot start — required packages are missing.")
+        print("  Run:  pip install " + " ".join(p for _, p in missing_required))
+        print()
+        return False
+
+    return True
 
 
 def main():
