@@ -10,6 +10,8 @@ Run with: python main.py
 import sys
 import os
 
+os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
+
 # Get the directory where main.py lives
 GAME_DIR = os.path.dirname(os.path.abspath(__file__))
 

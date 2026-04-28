@@ -15,6 +15,16 @@ from core.settings import (
 from core.menu_controller import MenuController, MenuConfig, MenuResult, MenuAction
 
 
+def _is_escape_or_backspace(key, key_str: str = "", key_name: str = "") -> bool:
+    """Return True for terminal Escape/Backspace variants."""
+    if not key_name:
+        key_name = getattr(key, 'name', '') or ''
+    if key_str == "":
+        key_str = str(key)
+
+    return key_name in ("KEY_ESCAPE", "KEY_BACKSPACE") or key_str in ("\x1b", "\x7f", "\b", "KEY_ESCAPE", "KEY_BACKSPACE", "key_escape", "key_backspace")
+
+
 class SettingsCategory(Enum):
     """Settings menu categories."""
     AUDIO = "audio"
@@ -282,7 +292,7 @@ class SettingsMenu:
             return self._handle_value_edit(key, key_str, key_name)
         
         # Close menu
-        if key_name == "KEY_ESCAPE":
+        if _is_escape_or_backspace(key, key_str, key_name):
             self.close()
             return MenuResult.CANCELLED
         
@@ -364,8 +374,8 @@ class SettingsMenu:
             self._editing_value = False
             return MenuResult.SELECTED
         
-        # Cancel with Escape
-        if key_name == "KEY_ESCAPE":
+        # Cancel with Escape or Backspace
+        if _is_escape_or_backspace(key, key_str, key_name):
             self._editing_value = False
             self._load_category_items()  # Reload to reset
             return MenuResult.CANCELLED
@@ -390,8 +400,8 @@ class SettingsMenu:
     
     def _handle_key_capture(self, key, key_str: str, key_name: str) -> MenuResult:
         """Handle key binding capture."""
-        # Cancel with Escape
-        if key_name == "KEY_ESCAPE":
+        # Cancel with Escape or Backspace
+        if _is_escape_or_backspace(key, key_str, key_name):
             self._editing_key = False
             self._pending_key_action = None
             return MenuResult.CANCELLED
@@ -518,11 +528,11 @@ class SettingsMenu:
         # Controls hint
         lines.append("╠" + "═" * (width - 2) + "╣")
         if self._editing_key:
-            hint = "Press any key to bind, ESC to cancel"
+            hint = "Press any key to bind, Esc/Bksp to cancel"
         elif self._editing_value:
             hint = "←/→ to adjust, ENTER to confirm"
         else:
-            hint = "←/→ Category  ↑/↓ Navigate  ENTER Edit  ESC Close"
+            hint = "←/→ Category  ↑/↓ Navigate  ENTER Edit  Esc/Bksp Close"
         hint_padding = (width - 2 - len(hint)) // 2
         lines.append("║" + " " * hint_padding + hint + " " * (width - 2 - hint_padding - len(hint)) + "║")
         lines.append("╚" + "═" * (width - 2) + "╝")
