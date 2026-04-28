@@ -233,7 +233,7 @@ class LLMWorker(threading.Thread):
         """Main worker loop."""
         # Lazy import to avoid circular imports
         from dialogue.llm_chat import get_llm_chat
-        self._llm = get_llm_chat()
+        self._llm = get_llm_chat(background=True)
         
         while self._running:
             try:
@@ -351,7 +351,9 @@ class LLMBehaviorController:
     def is_available(self) -> bool:
         """Check if LLM behavior is available."""
         from dialogue.llm_chat import get_llm_chat
-        return _get_config('LLM_ENABLED', True) and _get_config('LLM_BEHAVIOR_ENABLED', True) and get_llm_chat().is_available()
+        llm = get_llm_chat(background=True)
+        is_ready = llm.is_ready_for_inference() if hasattr(llm, "is_ready_for_inference") else llm.is_available()
+        return _get_config('LLM_ENABLED', True) and _get_config('LLM_BEHAVIOR_ENABLED', True) and is_ready
     
     def register_fallback_templates(self, action: str, templates: List[str]):
         """Register fallback templates for an action type."""
@@ -682,11 +684,12 @@ class LLMBehaviorController:
     def get_status(self) -> Dict[str, Any]:
         """Get current controller status."""
         from dialogue.llm_chat import get_llm_chat
-        llm = get_llm_chat()
+        llm = get_llm_chat(background=True)
+        is_ready = llm.is_ready_for_inference() if hasattr(llm, "is_ready_for_inference") else llm.is_available()
         
         return {
             "enabled": _get_config('LLM_ENABLED', True) and _get_config('LLM_BEHAVIOR_ENABLED', True),
-            "llm_available": llm.is_available() if llm else False,
+            "llm_available": is_ready if llm else False,
             "model_name": llm.get_model_name() if llm else "None",
             "gpu_layers": llm.get_gpu_layers() if llm else 0,
             "queue_size": self._worker.queue_size(),

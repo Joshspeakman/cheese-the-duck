@@ -35,7 +35,8 @@ try:
     from config import (
         LLM_ENABLED, LLM_LOCAL_ONLY, LLM_MODEL_DIR, LLM_GPU_LAYERS,
         LLM_CONTEXT_SIZE, LLM_MAX_TOKENS, LLM_MAX_TOKENS_CHAT,
-        LLM_TEMPERATURE, LLM_MAX_HISTORY
+        LLM_TEMPERATURE, LLM_MAX_HISTORY, LLM_MAX_THREADS,
+        LLM_LOAD_NICE,
     )
 except ImportError:
     # Fallback defaults if config not available
@@ -48,6 +49,8 @@ except ImportError:
     LLM_MAX_TOKENS_CHAT = 150
     LLM_TEMPERATURE = 0.8
     LLM_MAX_HISTORY = 6
+    LLM_MAX_THREADS = 4
+    LLM_LOAD_NICE = 8
 
 
 def _detect_gpu_layers() -> int:
@@ -93,6 +96,15 @@ def _detect_gpu_layers() -> int:
     
     # No GPU detected or detection failed - use CPU
     return 0
+
+
+def _llm_enabled_config() -> bool:
+    """Read the live LLM setting instead of the import-time fallback."""
+    try:
+        import config as _cfg
+        return bool(_cfg.LLM_ENABLED)
+    except Exception:
+        return bool(LLM_ENABLED)
 
 
 # Persistent thread pool for LLM calls (avoid recreating per-call overhead)
@@ -150,6 +162,16 @@ def _llm_subprocess_worker(model_path, n_ctx, n_threads, n_gpu_layers,
     # Prevent thread-pool conflicts between OpenBLAS/MKL and GGML OpenMP
     os.environ["OPENBLAS_NUM_THREADS"] = "1"
     os.environ["MKL_NUM_THREADS"] = "1"
+    os.environ["OMP_NUM_THREADS"] = str(max(1, n_threads))
+    os.environ["NUMEXPR_NUM_THREADS"] = "1"
+
+    # Keep local model work from preempting the terminal game loop.
+    # os.nice is POSIX-only; unsupported-platform failures are harmless.
+    try:
+        if LLM_LOAD_NICE > 0 and hasattr(os, "nice"):
+            os.nice(LLM_LOAD_NICE)
+    except Exception:
+        pass
 
     try:
         from llama_cpp import Llama
@@ -329,7 +351,7 @@ class LLMChat:
         self._load_thread = None
         self._disabled = False         # Runtime toggle from settings
         
-        if LLM_ENABLED:
+        if _llm_enabled_config():
             if background:
                 self._loading = True
                 self._load_thread = threading.Thread(
@@ -341,7 +363,7 @@ class LLMChat:
 
     def _check_availability(self):
         """Check for local GGUF model (local only, no external fallback)."""
-        if not LLM_ENABLED:
+        if not _llm_enabled_config():
             self._last_error = "LLM disabled in config"
             return
             
@@ -397,8 +419,11 @@ class LLMChat:
         self._gpu_layers = _detect_gpu_layers()
 
         try:
-            # Cap threads to avoid oversubscription with GGML OpenMP workers
-            n_threads = max(2, min(8, (os.cpu_count() or 4) - 1))
+            # Cap threads to avoid oversubscription with GGML/OpenMP workers.
+            # LLM output is optional flavor; the terminal UI should stay responsive.
+            cpu_count = os.cpu_count() or 4
+            configured_cap = max(1, int(LLM_MAX_THREADS or 1))
+            n_threads = max(1, min(configured_cap, max(1, cpu_count - 1)))
             proxy = _LLMProxy(
                 model_path=str(model_path),
                 n_ctx=LLM_CONTEXT_SIZE,
@@ -431,6 +456,16 @@ class LLMChat:
             logger.error("LLM subprocess died — disabling LLM for this session")
             return False
         return self._available
+
+    def is_ready_for_inference(self) -> bool:
+        """Return True only when the model is loaded and usable right now."""
+        if self._loading:
+            return False
+        if self._disabled:
+            return False
+        if not self._llama:
+            return False
+        return self.is_available()
 
     def set_enabled(self, enabled: bool):
         """Enable or disable LLM at runtime (settings toggle)."""
@@ -916,6 +951,11 @@ Be unique to your personality. Don't be generic.
 # Global instance - initialized lazily with thread safety
 _llm_chat_instance = None
 _llm_chat_lock = threading.Lock()
+
+
+def get_existing_llm_chat() -> Optional[LLMChat]:
+    """Return the current LLMChat singleton without creating/loading one."""
+    return _llm_chat_instance
 
 
 def get_llm_chat(background: bool = False) -> LLMChat:

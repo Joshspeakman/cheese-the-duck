@@ -831,6 +831,25 @@ class ConversationSystem:
         """Update the cached player name for response personalization."""
         self._player_name = name
 
+    def needs_memory_context(self) -> bool:
+        """
+        Return True only when the active pipeline has a direct LLM response source.
+
+        The default chat path uses fast keyword/template responses now and lets
+        LLM enrich future ambient lines in the background, so building the full
+        game-state context on every first chat is usually wasted work.
+        """
+        pipeline = self._pipeline
+        if pipeline is None:
+            return False
+        try:
+            return any(
+                name == "llm" and enabled
+                for _priority, name, enabled in pipeline.get_sources()
+            )
+        except Exception:
+            return False
+
     def _personalize_response(self, response: str) -> str:
         """
         Substitute {player_name} placeholders and occasionally
@@ -1066,7 +1085,7 @@ class ConversationSystem:
                 from dialogue.learning_engine import get_learning_engine
                 from config import LEARNING_ENGINE_ENABLED
                 if LEARNING_ENGINE_ENABLED:
-                    engine = get_learning_engine()
+                    engine = get_learning_engine(start_seed=False)
                     result = engine.get_response(player_input, confidence_threshold=0.55)
                     if result:
                         response = result[0]
@@ -1107,7 +1126,7 @@ class ConversationSystem:
                 from dialogue.learning_engine import get_learning_engine
                 from config import LEARNING_ENGINE_ENABLED
                 if LEARNING_ENGINE_ENABLED:
-                    get_learning_engine().learn(player_input, response, source=source)
+                    get_learning_engine(start_seed=False).learn(player_input, response, source=source)
             except Exception:
                 logger.debug("Learning engine feedback failed", exc_info=True)
 

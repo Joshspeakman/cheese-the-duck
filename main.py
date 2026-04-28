@@ -38,9 +38,6 @@ def _ensure_venv():
     os.execv(venv_python, [venv_python] + sys.argv)
 
 
-# Ensure we're using the venv for AI support
-_ensure_venv()
-
 # Import logger
 from game_logger import get_logger, shutdown_logger
 
@@ -138,6 +135,16 @@ def _check_and_download_model():
         return False
 
 
+def _should_prepare_ai_model():
+    """Return True when the user's settings have AI features enabled."""
+    try:
+        from core.settings import get_settings, load_settings
+        load_settings()
+        return bool(get_settings().gameplay.ai_enabled)
+    except Exception:
+        return False
+
+
 def check_dependencies():
     """Check system requirements and offer to install missing packages.
 
@@ -157,12 +164,14 @@ def check_dependencies():
 
     # ── Python packages ───────────────────────────────────────────
     # (module_name, pip_name, required?)
+    ai_enabled = _should_prepare_ai_model()
     _PACKAGES = [
         ("blessed",         "blessed",          True),
         ("pygame",          "pygame",           True),
         ("markovify",       "markovify",        False),
-        ("llama_cpp",       "llama-cpp-python", False),
     ]
+    if ai_enabled:
+        _PACKAGES.append(("llama_cpp", "llama-cpp-python", False))
 
     missing_required = []
     missing_optional = []
@@ -308,8 +317,11 @@ def main():
             logger.error("Missing dependencies")
             sys.exit(1)
 
-        # Check for AI model, download if missing
-        _check_and_download_model()
+        # Check for AI model only when AI features are enabled.
+        if _should_prepare_ai_model():
+            _check_and_download_model()
+        else:
+            logger.info("Skipping AI model check/download because AI is disabled in settings")
 
         from core.game import Game
 
@@ -360,4 +372,6 @@ def main():
 
 
 if __name__ == "__main__":
+    # Ensure we're using the venv for AI support when launching the game.
+    _ensure_venv()
     main()

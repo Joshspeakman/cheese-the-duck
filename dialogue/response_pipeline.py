@@ -106,11 +106,11 @@ class LLMResponseSource(ResponseSource):
             return True
 
     def _get_llm(self):
-        """Lazy-load the LLMChat singleton."""
+        """Lazy-load the LLMChat singleton in the background."""
         if self._llm is None and not self._import_failed:
             try:
                 from dialogue.llm_chat import get_llm_chat
-                self._llm = get_llm_chat()
+                self._llm = get_llm_chat(background=True)
             except Exception as exc:
                 logger.debug("LLM import failed: %s", exc)
                 self._import_failed = True
@@ -126,6 +126,8 @@ class LLMResponseSource(ResponseSource):
         llm = self._get_llm()
         if llm is None:
             return False
+        if hasattr(llm, "is_ready_for_inference"):
+            return llm.is_ready_for_inference()
         return llm.is_available()
 
     def generate(
@@ -322,7 +324,7 @@ class LearningResponseSource(ResponseSource):
         if self._engine is None and not self._import_failed:
             try:
                 from dialogue.learning_engine import get_learning_engine
-                self._engine = get_learning_engine()
+                self._engine = get_learning_engine(start_seed=False)
             except Exception as exc:
                 logger.debug("Learning engine import failed: %s", exc)
                 self._import_failed = True

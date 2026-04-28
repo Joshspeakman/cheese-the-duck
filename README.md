@@ -2,7 +2,7 @@
 ### A Terminal Virtual Pet Game
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
 ![Version](https://img.shields.io/badge/version-2.0.0-green.svg)
 
 ---
@@ -71,8 +71,14 @@ source .venv/bin/activate
 # Install Python packages
 pip install -r requirements.txt
 
+# Optional: install test tooling
+pip install -r requirements-dev.txt
+
 # Run the game
 python main.py
+
+# Run tests
+pytest -q
 ```
 
 **Create a launcher script:**

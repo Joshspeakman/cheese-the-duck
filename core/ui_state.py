@@ -112,7 +112,10 @@ class UIStateManager:
             overlay: The overlay to activate.
             data:    Arbitrary data dict attached to this overlay session.
         """
-        if self._state.active_overlay != UIOverlay.NONE:
+        if (
+            self._state.active_overlay != UIOverlay.NONE
+            and self._state.active_overlay != overlay
+        ):
             self._state.overlay_stack.append(self._state.active_overlay)
         self._state.active_overlay = overlay
         self._state.selected_index = 0

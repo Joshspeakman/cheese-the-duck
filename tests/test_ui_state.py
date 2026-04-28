@@ -47,6 +47,16 @@ def test_overlay_stack():
     assert mgr.get_active() == UIOverlay.NONE
 
 
+def test_open_same_overlay_is_idempotent():
+    mgr = UIStateManager()
+    mgr.open_overlay(UIOverlay.CRAFTING)
+    mgr.open_overlay(UIOverlay.CRAFTING)
+    assert mgr.get_active() == UIOverlay.CRAFTING
+
+    mgr.close_overlay()
+    assert mgr.get_active() == UIOverlay.NONE
+
+
 def test_navigate():
     mgr = UIStateManager()
     mgr.open_overlay(UIOverlay.INVENTORY)

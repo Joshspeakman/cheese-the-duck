@@ -6,6 +6,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from dialogue.dialogue_core import DialogueContext, DialogueResponse, DialogueState
 from dialogue.response_pipeline import ResponsePipeline, ResponseSource
+from dialogue.conversation import ConversationSystem
 
 
 def _make_context():
@@ -44,6 +45,11 @@ class BrokenSource(ResponseSource):
     def can_handle(self, context, state): return True
     def generate(self, context, state): raise RuntimeError("boom")
     def is_enabled(self): return True
+
+
+class DirectLLMSource(AlwaysSource):
+    @property
+    def name(self): return "llm"
 
 
 def test_empty_pipeline_returns_fallback():
@@ -98,3 +104,12 @@ def test_priority_ordering():
     pipe.register_source(TrackingSource("high"), priority=10)
     pipe.generate_response(_make_context(), DialogueState())
     assert order[0] == "high"  # Lower priority number = tried first
+
+
+def test_conversation_only_needs_memory_context_for_direct_llm_source():
+    conv = ConversationSystem()
+    assert conv.needs_memory_context() is False
+
+    conv._pipeline = ResponsePipeline()
+    conv._pipeline.register_source(DirectLLMSource(), priority=10)
+    assert conv.needs_memory_context() is True

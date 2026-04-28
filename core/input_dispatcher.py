@@ -153,7 +153,7 @@ class InputDispatcher:
                     return True
             except Exception:
                 # Never let a broken handler crash the game loop.
-                pass
+                logger.debug("Global input handler failed", exc_info=True)
 
         # 2. Overlay-specific handlers
         if active_overlay and active_overlay in self._overlay_handlers:

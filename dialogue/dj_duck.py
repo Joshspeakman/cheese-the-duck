@@ -175,10 +175,14 @@ class DJDuckCommentary:
         if not self._llm_chat:
             try:
                 from dialogue.llm_chat import get_llm_chat
-                self._llm_chat = get_llm_chat()
+                self._llm_chat = get_llm_chat(background=True)
             except Exception:
                 return False
-        return self._llm_chat is not None and self._llm_chat.is_available()
+        if self._llm_chat is None:
+            return False
+        if hasattr(self._llm_chat, "is_ready_for_inference"):
+            return self._llm_chat.is_ready_for_inference()
+        return self._llm_chat.is_available()
 
     def get_intro(self) -> str:
         """Get a show intro line."""
@@ -232,7 +236,7 @@ class DJDuckCommentary:
         duck_mood: Optional[str] = None
     ) -> str:
         """Generate commentary using LLM."""
-        if not self._llm_chat or not self._llm_chat.is_available():
+        if not self._llm_chat or not self._ensure_llm():
             return self._get_fallback(line_type)
         
         prompts = {

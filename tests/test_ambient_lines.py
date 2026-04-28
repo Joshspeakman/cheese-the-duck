@@ -380,6 +380,14 @@ class TestBuildPrompt:
 # ── Request gating ───────────────────────────────────────────────────
 
 class TestRequestGating:
+    def test_default_cooldown_starts_in_cooldown(self, tmp_path):
+        with patch("dialogue.ambient_lines.DB_PATH", tmp_path / "test_brain.db"):
+            gen = AmbientLineGenerator(llm_chat=None, cooldown=120)
+        try:
+            assert time.time() - gen._last_generation_time < 1
+        finally:
+            gen.shutdown()
+
     def test_no_llm_drops_request(self, tmp_path):
         gen = _make_gen(tmp_path)
         gen._llm_chat = None

@@ -669,3 +669,31 @@ VEHICLES = {
         "frame_2": [" /\\    ", "/  \\   ", "\\  /   ", " \\/    ", "  \\    ", "   \\   "],
     },
 }
+
+
+def _normalize_sprite_frames(category):
+    """Pad every frame in each sprite to a consistent rectangle."""
+    for frames in category.values():
+        if not isinstance(frames, dict) or not frames:
+            continue
+
+        max_height = max(len(lines) for lines in frames.values())
+        max_width = max(
+            (len(line) for lines in frames.values() for line in lines),
+            default=0,
+        )
+
+        if max_width == 0:
+            continue
+
+        blank = " " * max_width
+        for frame_name, lines in list(frames.items()):
+            padded = [line.ljust(max_width) for line in lines]
+            padded.extend([blank] * (max_height - len(padded)))
+            frames[frame_name] = padded
+
+
+for _category in (CREATURES, FOOD, OBJECTS, HUMANS, CELESTIAL, PROPS, VEHICLES):
+    _normalize_sprite_frames(_category)
+
+del _category

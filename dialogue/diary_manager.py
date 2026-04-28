@@ -713,8 +713,12 @@ class DiaryManager:
         """Attempt LLM-based diary entry generation."""
         try:
             from dialogue.llm_chat import get_llm_chat
-            llm = get_llm_chat()
-            if not llm or not getattr(llm, '_available', False):
+            llm = get_llm_chat(background=True)
+            if not llm:
+                return None
+            if hasattr(llm, "is_ready_for_inference") and not llm.is_ready_for_inference():
+                return None
+            if not hasattr(llm, "is_ready_for_inference") and not getattr(llm, '_available', False):
                 return None
             if not getattr(llm, '_llama', None):
                 return None

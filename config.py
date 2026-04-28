@@ -227,6 +227,8 @@ LLM_CACHE_SIZE = 100            # Max cached responses
 LLM_CACHE_TTL = 300             # Seconds before cache entry expires (5 min)
 LLM_MAX_QUEUE_DEPTH = 3         # Max pending LLM requests before fallback
 LLM_WORKER_TIMEOUT = 8.0        # Max seconds to wait for LLM response
+LLM_MAX_THREADS = 4             # Cap local model worker threads so chat doesn't monopolize the CPU
+LLM_LOAD_NICE = 8               # Lower OS priority for the local model subprocess on Unix
 
 # Conversation Memory
 LLM_MAX_HISTORY = 10            # Messages to keep in conversation history

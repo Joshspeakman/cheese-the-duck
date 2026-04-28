@@ -461,23 +461,35 @@ _instance: Optional[LearningEngine] = None
 _seed_thread: Optional[threading.Thread] = None
 
 
-def get_learning_engine() -> LearningEngine:
-    """Get or create the singleton LearningEngine instance."""
+def _start_seed_thread() -> None:
+    """Start template seeding in the background if it is not already running."""
     global _instance, _seed_thread
+    if _instance is None or _instance.is_seeded:
+        return
+    if _seed_thread is not None and _seed_thread.is_alive():
+        return
+
+    def _seed():
+        try:
+            corpus = extract_corpus()
+            if corpus and _instance is not None:
+                _instance.seed_corpus(corpus, source="template")
+        except Exception as e:
+            logger.error(f"Failed to seed learning engine: {e}")
+
+    _seed_thread = threading.Thread(target=_seed, daemon=True)
+    _seed_thread.start()
+
+
+def get_learning_engine(start_seed: bool = True) -> LearningEngine:
+    """Get or create the singleton LearningEngine instance."""
+    global _instance
     if _instance is None:
         _instance = LearningEngine()
 
-        # Seed in background on first run (like LLM loading pattern)
-        if not _instance.is_seeded:
-            def _seed():
-                try:
-                    corpus = extract_corpus()
-                    if corpus:
-                        _instance.seed_corpus(corpus, source="template")
-                except Exception as e:
-                    logger.error(f"Failed to seed learning engine: {e}")
-
-            _seed_thread = threading.Thread(target=_seed, daemon=True)
-            _seed_thread.start()
+    # Chat paths can opt out so the first submitted message does not kick off
+    # corpus extraction and SQLite writes on the hot path.
+    if start_seed:
+        _start_seed_thread()
 
     return _instance
