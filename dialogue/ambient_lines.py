@@ -61,7 +61,9 @@ class AmbientLineGenerator:
         self._llm_chat = llm_chat
         self._cooldown = cooldown
         self._max_stored = max_stored
-        self._last_generation_time = 0.0
+        # Respect the cooldown after startup so the first chat does not
+        # immediately launch another LLM job for future-line enrichment.
+        self._last_generation_time = time.time() if cooldown > 0 else 0.0
         self._worker = concurrent.futures.ThreadPoolExecutor(max_workers=1)
         self._busy = False  # Simple flag — no lock needed for a bool check
         self._lock = threading.Lock()

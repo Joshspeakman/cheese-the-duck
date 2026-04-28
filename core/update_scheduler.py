@@ -18,8 +18,11 @@ Usage from game.py::
 from __future__ import annotations
 
 import time
+import logging
 from dataclasses import dataclass, field
 from typing import Any, Callable, Dict, Optional
+
+logger = logging.getLogger(__name__)
 
 
 # ── Common interval constants (seconds) ──────────────────────────────
@@ -128,10 +131,9 @@ class UpdateScheduler:
             try:
                 sys.callback()
             except Exception:
-                # Subsystems must not crash the game loop.
-                # In a production game you'd log this; for now swallow silently
-                # just as the existing ``try/except: pass`` blocks do in game.py.
-                pass
+                # Subsystems must not crash the game loop, but failures should
+                # still be visible in debug logs during audits and QA runs.
+                logger.debug("Scheduled system %s failed", sys.system_name, exc_info=True)
             elapsed = time.monotonic() - t0
 
             sys.last_update = current_time

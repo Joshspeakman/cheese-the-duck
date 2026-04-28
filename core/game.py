@@ -586,6 +586,8 @@ class Game:
         ``_process_input()`` tries the dispatcher first; only talk mode,
         shop mode, and confirmation dialogs still use the legacy path.
         """
+        self.input_dispatcher = InputDispatcher()
+
         self.input_dispatcher.register_global_handler(
             GlobalInputHandler(game=self), priority=100
         )
@@ -690,8 +692,13 @@ class Game:
         _cfg.LLM_ENABLED = enabled
         _cfg.LLM_BEHAVIOR_ENABLED = enabled
         try:
-            from dialogue.llm_chat import get_llm_chat
-            llm = get_llm_chat()
+            if enabled:
+                from dialogue.llm_chat import get_llm_chat
+                llm = get_llm_chat(background=True)
+            else:
+                import sys
+                llm_module = sys.modules.get("dialogue.llm_chat")
+                llm = llm_module.get_existing_llm_chat() if llm_module else None
             if llm:
                 llm.set_enabled(enabled)
         except Exception:
@@ -749,9 +756,9 @@ class Game:
                 if remaining > 0.002:  # Only sleep if >2ms remaining
                     # Sleep slightly less to avoid overshooting on systems with coarse timers
                     time.sleep(remaining * 0.9)
-                # Spin-wait for the final milliseconds for precise timing
+                # Sleep out the final milliseconds instead of busy-spinning.
                 while time.time() - loop_start < frame_time:
-                    pass
+                    time.sleep(0.001)
 
     def _process_input(self):
         """Process keyboard input."""
@@ -1729,20 +1736,14 @@ class Game:
         import random as _rnd
         self.renderer.show_message(_rnd.choice(thinking_messages), duration=15.0, category="duck")
 
-        # Get memory context for enhanced dialogue
-        memory_context = self._get_memory_context_for_dialogue()
-        
         # Submit LLM request asynchronously so the UI doesn't freeze
         import concurrent.futures
         if not hasattr(self, '_talk_executor'):
             self._talk_executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
         self._pending_talk_message = message
         self._pending_talk_future = self._talk_executor.submit(
-            self.conversation.process_player_input,
-            self.duck, 
+            self._generate_talk_response,
             message,
-            True,  # use_llm
-            memory_context
         )
 
         # Record in memory immediately (don't wait for response)
@@ -1754,6 +1755,22 @@ class Game:
 
         # Check goals
         self._handle_goal_completions(self.goals.update_progress("talk", 1))
+
+    def _generate_talk_response(self, message: str) -> str:
+        """Generate a talk response off the main loop."""
+        memory_context = ""
+        try:
+            if self.conversation and self.conversation.needs_memory_context():
+                memory_context = self._get_memory_context_for_dialogue()
+        except Exception:
+            memory_context = ""
+
+        return self.conversation.process_player_input(
+            self.duck,
+            message,
+            True,  # use_llm for ambient enrichment when available
+            memory_context,
+        )
 
     def _check_pending_talk(self):
         """Check if an async LLM talk response is ready."""
@@ -6772,7 +6789,7 @@ class Game:
             return
 
         # Try to explore
-        result = self.exploration.explore(self.duck)
+        result = self.exploration.explore(self.duck, self.progression.level)
 
         if not result["success"]:
             self.renderer.show_message(result["message"], duration=3.0)
@@ -6872,11 +6889,6 @@ class Game:
             else:
                 self.renderer.show_message("Crafting in progress...", duration=0)
             self.ui_state.open_overlay(UIOverlay.CRAFTING)
-            try:
-                if hasattr(self, 'ui_state'):
-                    self.ui_state.open_overlay(UIOverlay.CRAFTING)
-            except Exception:
-                pass
             return
 
         # Build menu items - show all recipes, let MenuSelector handle pagination
@@ -6898,11 +6910,6 @@ class Game:
         ])
         self._crafting_menu.open()
         self.ui_state.open_overlay(UIOverlay.CRAFTING)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.open_overlay(UIOverlay.CRAFTING)
-        except Exception:
-            pass
         self._update_crafting_menu_display()
 
     def _craft_item(self, recipe_id: str):
@@ -6943,11 +6950,6 @@ class Game:
             else:
                 self.renderer.show_message("Building in progress...", duration=0)
             self.ui_state.open_overlay(UIOverlay.BUILDING)
-            try:
-                if hasattr(self, 'ui_state'):
-                    self.ui_state.open_overlay(UIOverlay.BUILDING)
-            except Exception:
-                pass
             return
 
         # Build menu items - show all blueprints with upgrade info
@@ -6988,11 +6990,6 @@ class Game:
         ])
         self._building_menu.open()
         self.ui_state.open_overlay(UIOverlay.BUILDING)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.open_overlay(UIOverlay.BUILDING)
-        except Exception:
-            pass
         self._update_building_menu_display()
 
     def _start_building(self, blueprint_id: str):
@@ -7029,11 +7026,6 @@ class Game:
                 duration=0
             )
             self.ui_state.open_overlay(UIOverlay.AREAS)
-            try:
-                if hasattr(self, 'ui_state'):
-                    self.ui_state.open_overlay(UIOverlay.AREAS)
-            except Exception:
-                pass
             return
 
         # Build menu items
@@ -7056,11 +7048,6 @@ class Game:
         ])
         self._areas_menu.open()
         self.ui_state.open_overlay(UIOverlay.AREAS)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.open_overlay(UIOverlay.AREAS)
-        except Exception:
-            pass
         self._update_areas_menu_display()
 
     def _handle_crafting_input(self, key_str: str, key_name: str = "", key=None) -> bool:
@@ -7233,7 +7220,7 @@ class Game:
             return False
 
         # If no areas available, just handle close
-        available = self.exploration.get_available_areas()
+        available = self.exploration.get_available_areas(self.progression.level)
         if not available:
             if key.name == 'KEY_ESCAPE' or key_str == 'a':
                 self._notify_overlay_closed(UIOverlay.AREAS)
@@ -7685,11 +7672,6 @@ class Game:
         self._use_menu.open()
         self._use_menu_selected = 0
         self.ui_state.open_overlay(UIOverlay.USE_ITEM)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.open_overlay(UIOverlay.USE_ITEM)
-        except Exception:
-            pass
         self._update_use_menu_display()
 
     def _update_use_menu_display(self):
@@ -7815,11 +7797,6 @@ class Game:
         ])
         self._minigames_menu.open()
         self.ui_state.open_overlay(UIOverlay.MINIGAME)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.open_overlay(UIOverlay.MINIGAME)
-        except Exception:
-            pass
         self._minigames_menu_selected = 0
         self._update_minigames_menu_display()
 
@@ -8425,11 +8402,6 @@ class Game:
 
         self._quests_menu.set_items(items)
         self.ui_state.open_overlay(UIOverlay.QUESTS)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.open_overlay(UIOverlay.QUESTS)
-        except Exception:
-            pass
         self._update_quests_menu_display()
 
     def _update_quests_menu_display(self):
@@ -8469,11 +8441,6 @@ class Game:
         if not self.duck:
             return
         self.ui_state.open_overlay(UIOverlay.TRADING)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.open_overlay(UIOverlay.TRADING)
-        except Exception:
-            pass
         self._trading_state = "selection"
         self._trading_selected = 0
         self._render_trading_menu()
@@ -8672,11 +8639,6 @@ class Game:
         
         # Show menu
         self.ui_state.open_overlay(UIOverlay.WEATHER)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.open_overlay(UIOverlay.WEATHER)
-        except Exception:
-            pass
         self._update_weather_menu_display(weather)
 
     def _update_weather_menu_display(self, weather: str = None):
@@ -8812,11 +8774,6 @@ class Game:
             return
         
         self.ui_state.open_overlay(UIOverlay.TREASURE)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.open_overlay(UIOverlay.TREASURE)
-        except Exception:
-            pass
         self._treasure_menu_selected = 0
         self._update_treasure_menu_display()
 
@@ -9054,11 +9011,6 @@ class Game:
             return
         
         self.ui_state.open_overlay(UIOverlay.FESTIVAL)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.open_overlay(UIOverlay.FESTIVAL)
-        except Exception:
-            pass
         self._festival_menu_selected = 0
         self._update_festival_menu_display()
 
@@ -11170,11 +11122,6 @@ Core Systems Tested: {report.total_tests}
     def _open_settings_menu(self):
         """Open the settings menu."""
         self.ui_state.open_overlay(UIOverlay.SETTINGS)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.open_overlay(UIOverlay.SETTINGS)
-        except Exception:
-            pass
         self._settings_menu = settings_menu  # Use global instance
         self._settings_menu.reset_selection()
         self._render_settings_menu()
@@ -11318,11 +11265,6 @@ Core Systems Tested: {report.total_tests}
             return
 
         self.ui_state.open_overlay(UIOverlay.SCRAPBOOK)
-        try:
-            if hasattr(self, 'ui_state'):
-                self.ui_state.open_overlay(UIOverlay.SCRAPBOOK)
-        except Exception:
-            pass
         self._render_scrapbook()
     
     def _render_scrapbook(self):
