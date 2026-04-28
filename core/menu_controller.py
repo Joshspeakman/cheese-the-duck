@@ -8,6 +8,32 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 
 
+def _is_escape_or_backspace(key, key_str: str = "", key_name: str = "") -> bool:
+    """Return True for terminal Escape/Backspace variants."""
+    if not key_name:
+        key_name = getattr(key, 'name', '') or ''
+    if key_str == "":
+        key_str = str(key)
+
+    return key_name in ("KEY_ESCAPE", "KEY_BACKSPACE") or key_str in ("\x1b", "\x7f", "\b", "KEY_ESCAPE", "KEY_BACKSPACE", "key_escape", "key_backspace")
+
+
+def _is_escape(key, key_str: str = "", key_name: str = "") -> bool:
+    if not key_name:
+        key_name = getattr(key, 'name', '') or ''
+    if key_str == "":
+        key_str = str(key)
+    return key_name == "KEY_ESCAPE" or key_str in ("\x1b", "KEY_ESCAPE", "key_escape")
+
+
+def _is_backspace(key, key_str: str = "", key_name: str = "") -> bool:
+    if not key_name:
+        key_name = getattr(key, 'name', '') or ''
+    if key_str == "":
+        key_str = str(key)
+    return key_name == "KEY_BACKSPACE" or key_str in ("\x7f", "\b", "KEY_BACKSPACE", "key_backspace")
+
+
 class MenuResult(Enum):
     """Result of menu input handling."""
     NONE = auto()           # No action taken
@@ -30,7 +56,7 @@ class MenuAction:
 class MenuConfig:
     """Configuration for a menu."""
     title: str
-    close_keys: List[str] = field(default_factory=lambda: ["KEY_ESCAPE"])
+    close_keys: List[str] = field(default_factory=lambda: ["KEY_ESCAPE", "KEY_BACKSPACE"])
     select_keys: List[str] = field(default_factory=lambda: ["KEY_ENTER", " "])
     wrap_navigation: bool = True      # Wrap around at ends
     page_size: int = 0                # 0 = no pagination
@@ -158,7 +184,7 @@ class MenuController:
         
         # Check for close/cancel
         for close_key in self.config.close_keys:
-            if key_name == close_key or key_str == close_key.lower():
+            if key_name == close_key or key_str == close_key.lower() or _is_escape_or_backspace(key, key_str, key_name):
                 self._is_open = False
                 if self._on_cancel:
                     self._on_cancel()
@@ -401,8 +427,8 @@ class ConfirmationDialog:
         key_str = str(key).lower() if not getattr(key, 'is_sequence', False) else ""
         key_name = getattr(key, 'name', "") or ""
         
-        # Always allow escape to cancel
-        if key_name == "KEY_ESCAPE":
+        # Always allow escape to cancel; Backspace cancels non-text confirmations.
+        if _is_escape(key, key_str, key_name) or (_is_backspace(key, key_str, key_name) and not self.dangerous):
             self._is_open = False
             self._cancelled = True
             if self.on_cancel:
@@ -411,7 +437,7 @@ class ConfirmationDialog:
         
         if self.dangerous:
             # Require typing "yes" for dangerous actions
-            if key_name == "KEY_BACKSPACE":
+            if _is_backspace(key, key_str, key_name):
                 self._input_buffer = self._input_buffer[:-1]
                 return MenuResult.NONE
             elif key_name == "KEY_ENTER":
@@ -480,7 +506,7 @@ class ErrorDialog:
     Error dialog with a copyable error code.
 
     Shows an error message and a short error code. The user can press
-    [C] to copy the full error details to the clipboard, or [Esc] to dismiss.
+    [C] to copy the full error details to the clipboard, or [Esc/Bksp] to dismiss.
     """
 
     def __init__(self, title: str, message: str, error_code: str,
@@ -509,7 +535,7 @@ class ErrorDialog:
         key_str = str(key).lower() if not getattr(key, 'is_sequence', False) else ""
         key_name = getattr(key, 'name', "") or ""
 
-        if key_name == "KEY_ESCAPE" or key_str == "q":
+        if _is_escape_or_backspace(key, key_str, key_name) or key_str == "q":
             self._is_open = False
             if self.on_dismiss:
                 self.on_dismiss()
@@ -565,7 +591,7 @@ class ErrorDialog:
         if self._copied:
             lines.append("  ✓ Copied to clipboard!")
         else:
-            lines.append("  [C] Copy error   [Esc] Dismiss")
+            lines.append("  [C] Copy error   [Esc/Bksp] Dismiss")
 
         lines.append("")
         lines.append("═" * width)

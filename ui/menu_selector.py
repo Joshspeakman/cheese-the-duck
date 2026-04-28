@@ -5,6 +5,11 @@ from typing import List, Optional, Callable, Any, Dict
 from dataclasses import dataclass
 
 
+def _is_escape_or_backspace(key_str: str = "", key_name: str = "") -> bool:
+    """Return True for terminal Escape/Backspace variants."""
+    return key_name in ('KEY_ESCAPE', 'KEY_BACKSPACE') or key_str in ('\x1b', '\x7f', '\b', 'KEY_ESCAPE', 'KEY_BACKSPACE', 'key_escape', 'key_backspace')
+
+
 @dataclass
 class MenuItem:
     """A single menu item."""
@@ -43,7 +48,7 @@ class MenuSelector:
             items_per_page: Max items to show per page (0 = no pagination)
         """
         self.title = title
-        self.close_keys = close_keys or ['KEY_ESCAPE']
+        self.close_keys = close_keys or ['KEY_ESCAPE', 'KEY_BACKSPACE']
         self.items_per_page = items_per_page
         self._items: List[MenuItem] = []
         self._selected_index = 0
@@ -108,7 +113,7 @@ class MenuSelector:
         self._was_cancelled = False
 
         # Check close keys
-        if key_name in self.close_keys or key_str in self.close_keys:
+        if key_name in self.close_keys or key_str in self.close_keys or _is_escape_or_backspace(key_str, key_name):
             self._was_cancelled = True
             self._is_open = False
             return True
@@ -272,9 +277,9 @@ class MenuSelector:
 
         lines.append("")
         if use_pagination:
-            lines.append("[^v] Navigate  [Enter] Select  [ESC] Close")
+            lines.append("[^v] Navigate  [Enter] Select  [Esc/Bksp] Close")
         else:
-            lines.append("[^v] Navigate  [Enter] Select  [ESC] Close")
+            lines.append("[^v] Navigate  [Enter] Select  [Esc/Bksp] Close")
 
         return lines
 
@@ -363,8 +368,8 @@ class HierarchicalMenuSelector:
         self._selected_action = None
         self._was_cancelled = False
         
-        # Escape: go back one level or close
-        if key_name == 'KEY_ESCAPE' or key_str == '\x1b':
+        # Escape/Backspace: go back one level or close
+        if _is_escape_or_backspace(key_str, key_name):
             if self._current_level > 0:
                 self._current_level -= 1
                 self._item_index = 0
@@ -508,9 +513,9 @@ class HierarchicalMenuSelector:
         
         # Navigation hints
         if self._current_level == 0:
-            lines.append("  [^v] Navigate  [Enter/->] Open  [TAB] Close")
+            lines.append("  [^v] Navigate  [Enter/->] Open  [Esc/Bksp/TAB] Close")
         else:
-            lines.append("  [^v] Navigate  [Enter] Select  [<-/ESC] Back")
+            lines.append("  [^v] Navigate  [Enter] Select  [<-/Esc/Bksp] Back")
         
         lines.append("+" + "=" * (width - 2) + "+")
         
@@ -834,7 +839,7 @@ class MasterMenuPanel:
             return None
         elif key_name == 'KEY_RIGHT' or key_name == 'KEY_ENTER':
             return self.select()
-        elif key_name == 'KEY_LEFT' or key_name == 'KEY_BACKSPACE':
+        elif key_name in ('KEY_LEFT', 'KEY_BACKSPACE', 'KEY_ESCAPE'):
             self.back()
             return None
             

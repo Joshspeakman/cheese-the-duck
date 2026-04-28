@@ -59,7 +59,7 @@ class MenuDefinition:
     columns: int = 1                    # future: multi-column layout
     show_back: bool = True              # show a "Back" entry at the bottom
     page_size: int = 0                  # 0 = no pagination
-    close_keys: List[str] = field(default_factory=lambda: ["KEY_ESCAPE"])
+    close_keys: List[str] = field(default_factory=lambda: ["KEY_ESCAPE", "KEY_BACKSPACE"])
     select_keys: List[str] = field(default_factory=lambda: ["KEY_ENTER", " "])
     wrap_navigation: bool = True
 

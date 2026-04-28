@@ -83,6 +83,20 @@ def _visible_truncate(s: str, width: int) -> str:
     return _visible_slice(s, 0, width)
 
 
+def _visible_marquee(s: str, width: int, speed: float = 6.0) -> str:
+    """Scroll long single-line text so every character becomes visible."""
+    if width <= 0:
+        return ""
+    if _visible_len(s) <= width:
+        return _visible_ljust(s, width)
+
+    spacer = "   "
+    scroll_text = s + spacer
+    scroll_width = _visible_len(scroll_text)
+    offset = int(time.time() * speed) % scroll_width
+    return _visible_slice(scroll_text + scroll_text, offset, offset + width)
+
+
 from config import COLORS
 from ui.ascii_art import get_duck_art, get_emotion_closeup, create_box, BORDER, get_mini_duck, PLAYFIELD_OBJECTS
 from ui.input_handler import get_help_text
@@ -1444,27 +1458,8 @@ class Renderer:
             pad_len = available
             line1 = left_side + " " * pad_len + right_side
         else:
-            # Not enough room — truncate mood description to fit with separator
-            # Minimum: left | right_essentials (status, trust, age, coins)
-            essential_parts = []
-            if status_tag:
-                essential_parts.append(status_tag)
-            essential_parts.append(trust_display)
-            essential_parts.extend([age_part, coin_part])
-            essential_right = f"{' '.join(essential_parts)} "
-            essential_len = _visible_len(essential_right)
-            # Space for mood = total - left - essential - mood_ind - spaces - min_pad
-            mood_ind_len = _visible_len(mood_ind)
-            mood_budget = inner_width - left_len - essential_len - mood_ind_len - 3
-            if mood_budget > 5:
-                truncated_mood = _visible_truncate(mood_desc, mood_budget - 2) + ".."
-                right_side = f"{truncated_mood} {mood_ind} {' '.join(essential_parts)} "
-            else:
-                # Really tight — drop mood text entirely, keep indicator
-                right_side = f"{mood_ind} {' '.join(essential_parts)} "
-            right_len = _visible_len(right_side)
-            pad_len = max(1, inner_width - left_len - right_len)
-            line1 = left_side + " " * pad_len + right_side
+            full_line = f"{left_side} | {right_side.strip()} "
+            line1 = _visible_marquee(full_line, inner_width)
 
         # Ensure line fits
         line1 = _visible_ljust(line1, inner_width)
@@ -2580,7 +2575,7 @@ class Renderer:
         inner_width = max(width - 2, 20)  # Ensure minimum width
 
         # Compact controls hint - updated for master menu navigation
-        controls = "[Arrows] Nav | [Enter] Select | [Bksp] Back | [M]usic [N] Sound | [H]elp"
+        controls = "[Arrows] Nav | [Enter] Select | [Esc/Bksp] Back | [B] Buy | [I] Items | [H]elp"
 
         # Pad or truncate to exact width
         if len(controls) < inner_width:
@@ -2955,8 +2950,8 @@ class Renderer:
             "[M] Music  [N] Sound  [+]/[-] Volume",
             "[Q] Save & Quit  [/] Save Slots  [H] Help",
             "",
-            "[Arrow Keys] Navigate | [Enter] Select | [Bksp] Back",
-            "Press [H] to close",
+            "[Arrow Keys] Navigate | [Enter] Select | [Esc/Bksp] Back",
+            "Press [H/Esc/Bksp] to close",
         ]
 
         return self._overlay_box(base_output, help_text, "HELP", width)
@@ -3069,7 +3064,7 @@ class Renderer:
             nav_hints.append("[^] Up")
         if self._stats_scroll_offset < max_scroll:
             nav_hints.append("[v] Down")
-        nav_hints.append("[ESC] Close")
+        nav_hints.append("[Esc/Bksp] Close")
         
         visible_stats.append("")
         visible_stats.append("  " + " | ".join(nav_hints))
@@ -3127,7 +3122,7 @@ class Renderer:
         fish_text.append(f"  Spot: {fishing.current_spot.value if fishing.current_spot else 'Unknown'}")
         fish_text.append(f"  Fish Caught: {fishing.total_catches}")
         fish_text.append("")
-        fish_text.append("  [Q] or [ESC] to stop fishing")
+        fish_text.append("  [Q] or [Esc/Bksp] to stop fishing")
         
         return self._overlay_box(base_output, fish_text, "FISHING", width)
 
@@ -3201,7 +3196,7 @@ class Renderer:
 
         inv_text.extend([
             "",
-            "[\u2191/\u2193] Select | [Enter] Use | [</>] Page | [Bksp] Close",
+            "[\u2191/\u2193] Select | [Enter] Use | [</>] Page | [Esc/Bksp] Close",
         ])
 
         # Store unique items list for key handling (current page only) and total count for pagination
@@ -3525,7 +3520,7 @@ class Renderer:
                 content.append(action_hint)
         
         content.append("")
-        content.append("[</> ] Category | [^/v] Select | [Enter] Buy | [T]oggle | [Bksp] Close")
+        content.append("[</> ] Category | [^/v] Select | [Enter] Buy | [T]oggle | [Esc/Bksp] Close")
         
         return self._overlay_box(base_output, content, "[SHOP]", width)
 
@@ -3652,7 +3647,7 @@ class Renderer:
         self._chat_scroll_offset = max(0, self._chat_scroll_offset - self._chat_log_visible_lines)
 
     def show_menu(self, title: str, items: List[Dict], selected_index: int = 0,
-                  show_numbers: bool = True, footer: str = "[^v] Navigate  [Enter] Select  [ESC] Close",
+                  show_numbers: bool = True, footer: str = "[^v] Navigate  [Enter] Select  [Esc/Bksp] Close",
                   max_visible: int = 12):
         """
         Show a menu with arrow-key selection highlighting and pagination.

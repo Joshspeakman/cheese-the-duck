@@ -222,13 +222,13 @@ class Game:
         self._reset_confirmation = False  # Flag for reset game confirmation
 
         # Arrow-key menu selectors with pagination
-        self._crafting_menu = MenuSelector("CRAFTING", close_keys=['KEY_ESCAPE', 'c'], items_per_page=8)
-        self._building_menu = MenuSelector("BUILDING", close_keys=['KEY_ESCAPE', 'r'], items_per_page=8)
-        self._areas_menu = MenuSelector("AREAS", close_keys=['KEY_ESCAPE', 'a'], items_per_page=8)
-        self._use_menu = MenuSelector("USE ITEM", close_keys=['KEY_ESCAPE', 'u'], items_per_page=8)
-        self._minigames_menu = MenuSelector("MINI-GAMES", close_keys=['KEY_ESCAPE', 'j'], items_per_page=8)
-        self._quests_menu = MenuSelector("QUESTS", close_keys=['KEY_ESCAPE', 'o'], items_per_page=8)
-        self._weather_menu = MenuSelector("WEATHER ACTIVITIES", close_keys=['KEY_ESCAPE', 'w'], items_per_page=8)
+        self._crafting_menu = MenuSelector("CRAFTING", close_keys=['KEY_ESCAPE', 'KEY_BACKSPACE', 'c'], items_per_page=8)
+        self._building_menu = MenuSelector("BUILDING", close_keys=['KEY_ESCAPE', 'KEY_BACKSPACE', 'r'], items_per_page=8)
+        self._areas_menu = MenuSelector("AREAS", close_keys=['KEY_ESCAPE', 'KEY_BACKSPACE', 'a'], items_per_page=8)
+        self._use_menu = MenuSelector("USE ITEM", close_keys=['KEY_ESCAPE', 'KEY_BACKSPACE', 'u'], items_per_page=8)
+        self._minigames_menu = MenuSelector("MINI-GAMES", close_keys=['KEY_ESCAPE', 'KEY_BACKSPACE', 'j'], items_per_page=8)
+        self._quests_menu = MenuSelector("QUESTS", close_keys=['KEY_ESCAPE', 'KEY_BACKSPACE', 'o'], items_per_page=8)
+        self._weather_menu = MenuSelector("WEATHER ACTIVITIES", close_keys=['KEY_ESCAPE', 'KEY_BACKSPACE', 'w'], items_per_page=8)
 
         # Master menu panel (always visible in side panel)
         self.master_menu = MasterMenuPanel(self)
@@ -639,13 +639,13 @@ class Game:
         from core.menu_system import MenuDefinition
 
         menus = {
-            "crafting":   MenuDefinition(title="CRAFTING", close_keys=["KEY_ESCAPE", "c"], page_size=8),
-            "building":   MenuDefinition(title="BUILDING", close_keys=["KEY_ESCAPE", "r"], page_size=8),
-            "areas":      MenuDefinition(title="AREAS", close_keys=["KEY_ESCAPE", "a"], page_size=8),
-            "use_item":   MenuDefinition(title="USE ITEM", close_keys=["KEY_ESCAPE", "u"], page_size=8),
-            "minigames":  MenuDefinition(title="MINI-GAMES", close_keys=["KEY_ESCAPE", "j"], page_size=8),
-            "quests":     MenuDefinition(title="QUESTS", close_keys=["KEY_ESCAPE", "o"], page_size=8),
-            "weather":    MenuDefinition(title="WEATHER ACTIVITIES", close_keys=["KEY_ESCAPE", "w"], page_size=8),
+            "crafting":   MenuDefinition(title="CRAFTING", close_keys=["KEY_ESCAPE", "KEY_BACKSPACE", "c"], page_size=8),
+            "building":   MenuDefinition(title="BUILDING", close_keys=["KEY_ESCAPE", "KEY_BACKSPACE", "r"], page_size=8),
+            "areas":      MenuDefinition(title="AREAS", close_keys=["KEY_ESCAPE", "KEY_BACKSPACE", "a"], page_size=8),
+            "use_item":   MenuDefinition(title="USE ITEM", close_keys=["KEY_ESCAPE", "KEY_BACKSPACE", "u"], page_size=8),
+            "minigames":  MenuDefinition(title="MINI-GAMES", close_keys=["KEY_ESCAPE", "KEY_BACKSPACE", "j"], page_size=8),
+            "quests":     MenuDefinition(title="QUESTS", close_keys=["KEY_ESCAPE", "KEY_BACKSPACE", "o"], page_size=8),
+            "weather":    MenuDefinition(title="WEATHER ACTIVITIES", close_keys=["KEY_ESCAPE", "KEY_BACKSPACE", "w"], page_size=8),
         }
 
         for menu_id, defn in menus.items():
@@ -813,7 +813,7 @@ class Game:
             key_str = str(key)
             key_name = getattr(key, 'name', '') or ''
             # Close inventory with backspace or ESC
-            if key_name == 'KEY_BACKSPACE' or key_name == 'KEY_ESCAPE':
+            if self._is_escape_or_backspace(key, key_str, key_name):
                 self.renderer.toggle_inventory()
                 return
             # Arrow key navigation
@@ -855,7 +855,7 @@ class Game:
         # Only when no other overlay/menu is open
         if self._state == "playing" and not self._has_open_overlay():
             key_name = getattr(key, 'name', '') or ''
-            if key_name in ('KEY_UP', 'KEY_DOWN', 'KEY_LEFT', 'KEY_RIGHT', 'KEY_ENTER', 'KEY_BACKSPACE'):
+            if key_name in ('KEY_UP', 'KEY_DOWN', 'KEY_LEFT', 'KEY_RIGHT', 'KEY_ENTER', 'KEY_BACKSPACE', 'KEY_ESCAPE'):
                 action_id = self.master_menu.handle_key(key)
                 if action_id:
                     self._execute_menu_action(action_id)
@@ -866,12 +866,15 @@ class Game:
 
     def _handle_talk_input(self, key):
         """Handle input while in talk mode."""
+        key_str = str(key)
+        key_name = getattr(key, 'name', '') or ''
+
         # ESC closes talk mode (Backspace is used for text editing)
-        if key.name == "KEY_ESCAPE":
+        if key_name == "KEY_ESCAPE" or key_str == '\x1b':
             self.renderer.toggle_talk()
             return
 
-        if key.name == "KEY_ENTER":
+        if key_name == "KEY_ENTER":
             # Block new messages while LLM is still processing
             pending = getattr(self, '_pending_talk_future', None)
             if pending is not None and not pending.done():
@@ -889,20 +892,20 @@ class Game:
                 self.renderer.show_message("*stares expectantly* ...Well? I'm listening.", duration=3.0, category="duck")
             return
 
-        if key.name == "KEY_BACKSPACE":
+        if key_name == "KEY_BACKSPACE" or key_str in ('\x7f', '\b'):
             self.renderer.backspace_talk()
             return
 
         # Add printable character
-        if key and not key.is_sequence and len(str(key)) == 1:
-            self.renderer.add_talk_char(str(key))
+        if key and not key.is_sequence and len(key_str) == 1:
+            self.renderer.add_talk_char(key_str)
 
     def _handle_shop_input(self, key):
         """Handle input while in shop mode."""
         key_str = str(key).lower()
 
         # Close shop with ESC, Backspace, or B
-        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'b':
+        if self._is_escape_or_backspace(key, key_str) or key_str == 'b':
             self.renderer.toggle_shop()
             return
 
@@ -966,7 +969,7 @@ class Game:
                 self.renderer.show_message(result["message"], duration=3.0, category="action")
             return
         # Close with ESC, Backspace, or C
-        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'c':
+        if self._is_escape_or_backspace(key, key_str) or key_str == 'c':
             self._notify_overlay_closed(UIOverlay.CRAFTING)
             self.renderer.dismiss_message()
             return
@@ -999,7 +1002,7 @@ class Game:
                 else:
                     self.renderer.show_message(result["message"], duration=3.0, category="action")
             return
-        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'r':
+        if self._is_escape_or_backspace(key, key_str) or key_str == 'r':
             self._notify_overlay_closed(UIOverlay.BUILDING)
             self.renderer.dismiss_message()
             return
@@ -1029,7 +1032,7 @@ class Game:
                 self.renderer.dismiss_message()
                 self._start_travel_to_area(area)
             return
-        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'a':
+        if self._is_escape_or_backspace(key, key_str) or key_str == 'a':
             self._notify_overlay_closed(UIOverlay.AREAS)
             self.renderer.dismiss_message()
             return
@@ -1059,7 +1062,7 @@ class Game:
                 self.renderer.dismiss_message()
                 self._execute_item_interaction(item_id)
             return
-        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'u':
+        if self._is_escape_or_backspace(key, key_str) or key_str == 'u':
             self._notify_overlay_closed(UIOverlay.USE_ITEM)
             self.renderer.dismiss_message()
             return
@@ -1088,7 +1091,7 @@ class Game:
                 self.renderer.dismiss_message()
                 self._start_minigame(selected.data["id"])
             return
-        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'j':
+        if self._is_escape_or_backspace(key, key_str) or key_str == 'j':
             self._notify_overlay_closed(UIOverlay.MINIGAME)
             self.renderer.dismiss_message()
             return
@@ -1119,7 +1122,7 @@ class Game:
                     self.renderer.dismiss_message()
                     self._start_selected_quest(quest_id)
             return
-        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str == 'o':
+        if self._is_escape_or_backspace(key, key_str) or key_str == 'o':
             self._notify_overlay_closed(UIOverlay.QUESTS)
             self.renderer.dismiss_message()
             return
@@ -2233,8 +2236,8 @@ class Game:
             key_str = key_raw.lower()
             key_name = getattr(key, 'name', '') or ''
 
-            # Handle ESC to close any overlay
-            if key_name == 'KEY_ESCAPE':
+            # Handle ESC/Backspace to close any overlay
+            if self._is_escape_or_backspace(key, key_str, key_name):
                 self._close_all_overlays()
                 return
 
@@ -2384,11 +2387,11 @@ class Game:
                     self._close_all_overlays()
                     return
                 else:
-                    self._quit()
+                    self._quit("q key")
                     return
 
             # Universal ESC and Backspace to close any overlay
-            if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE":
+            if self._is_escape_or_backspace(key, key_str, getattr(key, 'name', '') or ''):
                 # Check if any overlay is open and close it
                 if self.renderer._show_stats:
                     self.renderer._stats_scroll_offset = 0
@@ -2719,7 +2722,7 @@ class Game:
             "",
             f"Achievements: {unlocked}/{total_ach} unlocked",
             "",
-            "[G] Close" + (" | [</> ] Page" if total_pages > 1 else ""),
+            "[G/Esc/Bksp] Close" + (" | [</> ] Page" if total_pages > 1 else ""),
         ])
 
         self.renderer.show_overlay("\n".join(lines), duration=0)
@@ -5502,7 +5505,7 @@ class Game:
                     self._title_confirm_new_game = False
                     self._title_update_status = ""
                     self._start_new_game()
-                elif key_str == 'n' or (key.name and key.name == 'KEY_ESCAPE'):
+                elif key_str == 'n' or self._is_escape_or_backspace(key, key_str, getattr(key, 'name', '') or ''):
                     # Cancelled
                     self._title_confirm_new_game = False
                     self._title_update_status = ""
@@ -5562,6 +5565,7 @@ class Game:
                     self._check_for_updates_async()
                 elif self._title_menu_index == 3:
                     # Quit
+                    self._log_quit_reason("title menu quit")
                     self._stop_all_audio()
                     self._running = False
             else:
@@ -5574,6 +5578,7 @@ class Game:
                     self._check_for_updates_async()
                 elif self._title_menu_index == 2:
                     # Quit
+                    self._log_quit_reason("title menu quit")
                     self._stop_all_audio()
                     self._running = False
             return
@@ -6582,9 +6587,26 @@ class Game:
         self.renderer.dismiss_overlay()
         self._debug_submenu = None
 
+    def _is_escape_or_backspace(self, key, key_str: str = "", key_name: str = "") -> bool:
+        """Return True for terminal Escape/Backspace variants."""
+        if not key_name:
+            key_name = getattr(key, 'name', '') or ''
+        if key_str == "":
+            key_str = str(key)
+
+        return key_name in ('KEY_ESCAPE', 'KEY_BACKSPACE') or key_str in ('\x1b', '\x7f', '\b', 'KEY_ESCAPE', 'KEY_BACKSPACE', 'key_escape', 'key_backspace')
+
+    def _close_weather_menu(self) -> None:
+        """Close the weather activities menu and clear its renderer overlay."""
+        self._notify_overlay_closed(UIOverlay.WEATHER)
+        self._weather_menu.close()
+        self.renderer.dismiss_message()
+        self.renderer.dismiss_overlay()
+
     def _notify_overlay_closed(self, overlay: UIOverlay) -> None:
-        """Close the active overlay in UIStateManager."""
+        """Close the active UI overlay and clear the renderer menu overlay."""
         self.ui_state.close_overlay()
+        self.renderer.dismiss_overlay()
 
     def _stop_all_audio(self):
         """Stop all audio — radio, music, mixer. Call before quit or title return."""
@@ -6593,8 +6615,17 @@ class Game:
         sound_engine.stop_music()
         sound_engine.shutdown()
 
-    def _quit(self):
+    def _log_quit_reason(self, reason: str) -> None:
+        """Record why the main loop is ending."""
+        try:
+            from game_logger import get_logger
+            get_logger().info(f"Quit requested: {reason}")
+        except Exception:
+            pass
+
+    def _quit(self, reason: str = "quit action"):
         """Quit the game."""
+        self._log_quit_reason(reason)
         if self.duck:
             # End DuckBrain session before saving
             if self.duck_brain:
@@ -6883,7 +6914,7 @@ class Game:
             if recipe:
                 pct = int(progress.get_progress() * 100)
                 self.renderer.show_message(
-                    f"# Crafting: {recipe.name} ({pct}%)\n\n[Press ESC or C to close]",
+                    f"# Crafting: {recipe.name} ({pct}%)\n\n[Press Esc/Bksp or C to close]",
                     duration=0
                 )
             else:
@@ -6944,7 +6975,7 @@ class Game:
                 current_stage = stage_names[min(structure.current_stage, 4)]
                 pct = int((structure.current_stage / bp.stages) * 100)
                 self.renderer.show_message(
-                    f"# Building: {bp.name}\nStage: {current_stage} ({pct}%)\n\n[Press ESC or R to close]",
+                    f"# Building: {bp.name}\nStage: {current_stage} ({pct}%)\n\n[Press Esc/Bksp or R to close]",
                     duration=0
                 )
             else:
@@ -7022,7 +7053,7 @@ class Game:
             self.renderer.show_message(
                 f"=== AREAS ===\n\nCurrent: {current_name}\n\n"
                 "No other areas discovered yet.\nKeep exploring [E] to find new biomes!\n\n"
-                f"Gathering skill: Lv.{self.exploration.gathering_skill}\n\n[Bksp] Close",
+                f"Gathering skill: Lv.{self.exploration.gathering_skill}\n\n[Esc/Bksp] Close",
                 duration=0
             )
             self.ui_state.open_overlay(UIOverlay.AREAS)
@@ -7057,7 +7088,7 @@ class Game:
 
         # If crafting in progress, just handle close
         if self.crafting._current_craft:
-            if key.name == 'KEY_ESCAPE' or key_str == 'c':
+            if self._is_escape_or_backspace(key, key_str, key_name) or key_str == 'c':
                 self._notify_overlay_closed(UIOverlay.CRAFTING)
                 self._crafting_menu.close()
                 self.renderer.dismiss_message()
@@ -7086,8 +7117,8 @@ class Game:
                 self.renderer.show_message(result["message"], duration=3.0)
             return True
 
-        # Close on ESC or C
-        if key.name == 'KEY_ESCAPE' or key_str == 'c':
+        # Close on ESC, Backspace, or C
+        if self._is_escape_or_backspace(key, key_str, key_name) or key_str == 'c':
             self._notify_overlay_closed(UIOverlay.CRAFTING)
             self.renderer.dismiss_message()
             return True
@@ -7102,7 +7133,7 @@ class Game:
             "CRAFTING",
             items,
             self._crafting_menu.get_selected_index(),
-            footer="[^/v] Navigate | [Enter] Craft | [Bksp] Close"
+            footer="[^/v] Navigate | [Enter] Craft | [Esc/Bksp] Close"
         )
 
     def _handle_building_input(self, key_str: str, key_name: str = "", key=None) -> bool:
@@ -7112,7 +7143,7 @@ class Game:
 
         # If building in progress, just handle close
         if self.building._current_build:
-            if key.name == 'KEY_ESCAPE' or key_str == 'r':
+            if self._is_escape_or_backspace(key, key_str, key_name) or key_str == 'r':
                 self._notify_overlay_closed(UIOverlay.BUILDING)
                 self._building_menu.close()
                 self.renderer.dismiss_message()
@@ -7144,8 +7175,8 @@ class Game:
                     self.renderer.show_message(result["message"], duration=3.0)
             return True
 
-        # Close on ESC or R
-        if key.name == 'KEY_ESCAPE' or key_str == 'r':
+        # Close on ESC, Backspace, or R
+        if self._is_escape_or_backspace(key, key_str, key_name) or key_str == 'r':
             self._notify_overlay_closed(UIOverlay.BUILDING)
             self.renderer.dismiss_message()
             return True
@@ -7160,7 +7191,7 @@ class Game:
             "BUILDING",
             items,
             self._building_menu.get_selected_index(),
-            footer="[^/v] Navigate | [Enter] Build | [Bksp] Close"
+            footer="[^/v] Navigate | [Enter] Build | [Esc/Bksp] Close"
         )
 
     def _start_building_animation(self, blueprint):
@@ -7222,7 +7253,7 @@ class Game:
         # If no areas available, just handle close
         available = self.exploration.get_available_areas(self.progression.level)
         if not available:
-            if key.name == 'KEY_ESCAPE' or key_str == 'a':
+            if self._is_escape_or_backspace(key, key_str, key_name) or key_str == 'a':
                 self._notify_overlay_closed(UIOverlay.AREAS)
                 self._areas_menu.close()
                 self.renderer.dismiss_message()
@@ -7251,8 +7282,8 @@ class Game:
                 self._start_travel_to_area(area)
             return True
 
-        # Close on ESC or A
-        if key.name == 'KEY_ESCAPE' or key_str == 'a':
+        # Close on ESC, Backspace, or A
+        if self._is_escape_or_backspace(key, key_str, key_name) or key_str == 'a':
             self._notify_overlay_closed(UIOverlay.AREAS)
             self.renderer.dismiss_message()
             return True
@@ -7288,7 +7319,7 @@ class Game:
             items,
             self._areas_menu.get_selected_index(),
             show_numbers=False,
-            footer="[^/v] Navigate | [Enter] Travel | [Bksp] Close"
+            footer="[^/v] Navigate | [Enter] Travel | [Esc/Bksp] Close"
         )
 
     def _check_biome_edge(self, current_time: float) -> None:
@@ -7682,7 +7713,7 @@ class Game:
             "USE ITEM",
             items,
             self._use_menu.get_selected_index(),
-            footer="[^/v] Navigate | [Enter] Use | [Bksp] Close"
+            footer="[^/v] Navigate | [Enter] Use | [Esc/Bksp] Close"
         )
 
     def _handle_use_input(self, key_str: str, key_name: str = "", key=None) -> bool:
@@ -7713,8 +7744,8 @@ class Game:
                 self._execute_item_interaction(item_id)
             return True
 
-        # Close on ESC or U
-        if key.name == 'KEY_ESCAPE' or key_str == 'u':
+        # Close on ESC, Backspace, or U
+        if self._is_escape_or_backspace(key, key_str, key_name) or key_str == 'u':
             self._notify_overlay_closed(UIOverlay.USE_ITEM)
             self.renderer.dismiss_message()
             return True
@@ -7805,7 +7836,7 @@ class Game:
         items = [{'label': item.label, 'description': item.description, 'enabled': item.enabled}
                  for item in self._minigames_menu.get_items()]
 
-        footer = f"Coins: {self.minigames.total_coins_earned} | [^/v] Navigate | [Enter] Play | [Bksp] Close"
+        footer = f"Coins: {self.minigames.total_coins_earned} | [^/v] Navigate | [Enter] Play | [Esc/Bksp] Close"
         self.renderer.show_menu(
             "MINI-GAMES",
             items,
@@ -7838,8 +7869,8 @@ class Game:
                 self._start_minigame(selected.data["id"])
             return True
 
-        # Close on ESC or J
-        if key.name == 'KEY_ESCAPE' or key_str == 'j':
+        # Close on ESC, Backspace, or J
+        if self._is_escape_or_backspace(key, key_str, key_name) or key_str == 'j':
             self._notify_overlay_closed(UIOverlay.MINIGAME)
             self.renderer.dismiss_message()
             return True
@@ -7918,7 +7949,7 @@ class Game:
         game = self._active_minigame
 
         # Quit game with Q, ESC, or Backspace
-        if key_str == 'q' or key_name in ('KEY_ESCAPE', 'KEY_BACKSPACE'):
+        if key_str == 'q' or self._is_escape_or_backspace(None, key_str, key_name):
             self._end_minigame(abandoned=True)
             return True
 
@@ -7957,7 +7988,7 @@ class Game:
             return False
 
         # Cancel fishing with Q, Escape, or Backspace
-        if key_str == 'q' or key_name in ('KEY_ESCAPE', 'KEY_BACKSPACE'):
+        if key_str == 'q' or self._is_escape_or_backspace(key, key_str, key_name):
             self.fishing.cancel_fishing()
             self.renderer.show_message("Stopped fishing.", duration=2.0)
             return True
@@ -8418,7 +8449,7 @@ class Game:
                 lines.append(f"    {item.description}")
 
         lines.append("")
-        lines.append("[^/v] Navigate | [Enter] Start | [Bksp] Close")
+        lines.append("[^/v] Navigate | [Enter] Start | [Esc/Bksp] Close")
 
         self.renderer.show_overlay("\n".join(lines), duration=0)
 
@@ -8476,7 +8507,7 @@ class Game:
                     line = "|  " + marker + line[6:]
                     trader_row += 1
                 modified.append(line)
-            modified.append("[^/v] Select | [Enter] Visit | [Bksp] Close")
+            modified.append("[^/v] Select | [Enter] Visit | [Esc/Bksp] Close")
             self.renderer.show_overlay("\n".join(modified), duration=0)
 
     def _handle_trading_input(self, key):
@@ -8485,7 +8516,7 @@ class Game:
         key_name = getattr(key, 'name', None) or ''
 
         # Global close
-        if key_name == "KEY_ESCAPE":
+        if self._is_escape_or_backspace(key, key_str, key_name):
             self._notify_overlay_closed(UIOverlay.TRADING)
             self._trading_state = "selection"
             self.renderer.dismiss_overlay()
@@ -8493,7 +8524,7 @@ class Game:
 
         if self._trading_state == "offers":
             # Back to selection
-            if key_name == "KEY_BACKSPACE" or key_str == 'b':
+            if self._is_escape_or_backspace(key, key_str, key_name) or key_str == 'b':
                 self._trading_state = "selection"
                 self._trading_selected = 0
                 self._render_trading_menu()
@@ -8524,7 +8555,7 @@ class Game:
 
         else:
             # Trader selection mode
-            if key_name == "KEY_BACKSPACE":
+            if self._is_escape_or_backspace(key, key_str, key_name):
                 self._notify_overlay_closed(UIOverlay.TRADING)
                 self.renderer.dismiss_overlay()
                 return
@@ -8652,21 +8683,27 @@ class Game:
             f"WEATHER ACTIVITIES ({weather.upper()})",
             items,
             self._weather_menu.get_selected_index(),
-            footer="[^/v] Navigate | [Enter] Start | [Bksp] Close"
+            footer="[^/v] Navigate | [Enter] Start | [Esc/Bksp] Close"
         )
 
     def _handle_weather_input_direct(self, key):
         """Handle input while in weather activities menu."""
-        key_str = str(key).lower() if not key.is_sequence else str(key)
+        key_str = str(key).lower() if not getattr(key, 'is_sequence', False) else str(key)
+        key_name = getattr(key, 'name', '') or ''
+
+        # Close first so raw Escape/Backspace sequences do not get swallowed by the overlay dispatcher.
+        if self._is_escape_or_backspace(key, key_str, key_name) or key_str in ('w', 'b'):
+            self._close_weather_menu()
+            return
         
         # Arrow key navigation
-        if key.name == "KEY_UP":
+        if key_name == "KEY_UP":
             idx = self._weather_menu.get_selected_index()
             if idx > 0:
                 self._weather_menu.set_selected_index(idx - 1)
                 self._update_weather_menu_display()
             return
-        if key.name == "KEY_DOWN":
+        if key_name == "KEY_DOWN":
             idx = self._weather_menu.get_selected_index()
             items = self._weather_menu.get_items()
             if idx < len(items) - 1:
@@ -8675,25 +8712,18 @@ class Game:
             return
         
         # Select with Enter
-        if key.name == "KEY_ENTER" or key_str == ' ':
+        if key_name == "KEY_ENTER" or key_str == ' ':
             selected = self._weather_menu.get_selected_item()
             if selected and selected.data and selected.enabled:
                 activity = selected.data
                 weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
                 result = self.weather_activities.start_activity(activity.id, weather)
                 
-                self._notify_overlay_closed(UIOverlay.WEATHER)
-                self.renderer.dismiss_message()
+                self._close_weather_menu()
                 if result:
                     self.renderer.show_message(f"Started: {result.name}\n{result.description}\nDuration: {result.duration_seconds}s", duration=3)
                 else:
                     self.renderer.show_message("Couldn't start activity - already busy!", duration=2)
-            return
-
-        # Close with ESC, Backspace, W, or B
-        if key.name == "KEY_ESCAPE" or key.name == "KEY_BACKSPACE" or key_str in ('w', 'b'):
-            self._notify_overlay_closed(UIOverlay.WEATHER)
-            self.renderer.dismiss_message()
             return
         
         # Also support number key selection for backwards compatibility
@@ -8709,8 +8739,7 @@ class Game:
                     weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
                     result = self.weather_activities.start_activity(activity.id, weather)
                     
-                    self._notify_overlay_closed(UIOverlay.WEATHER)
-                    self.renderer.dismiss_message()
+                    self._close_weather_menu()
                     if result:
                         self.renderer.show_message(f"Started: {result.name}\n{result.description}\nDuration: {result.duration_seconds}s", duration=3)
                     else:
@@ -8831,7 +8860,7 @@ class Game:
         lines.extend([
             "",
             "+==========================================+",
-            "| [^/v] Navigate | [Enter] Select | [Bksp] Close |",
+            "| [^/v] Navigate | [Enter] Select | [Esc/Bksp] Close |",
             "+==========================================+",
         ])
         
@@ -8874,7 +8903,7 @@ class Game:
             return
         
         # Close with ESC, Backspace, or B
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE" or key_str == 'b':
+        if self._is_escape_or_backspace(key, key_str, key_name) or key_str == 'b':
             self._notify_overlay_closed(UIOverlay.TREASURE)
             self.renderer.dismiss_message()
             return
@@ -8993,7 +9022,7 @@ class Game:
             lines.append(f"      Hint: {tmap.hint}")
             lines.append("")
         
-        lines.append("[1-5] Use map | [Bksp] Back")
+        lines.append("[1-5] Use map | [Esc/Bksp] Back")
         self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _show_treasure_collection(self):
@@ -9038,7 +9067,7 @@ class Game:
                 "  - Winter Wonder (Dec 21-Jan 4)",
                 "",
                 "+==========================================+",
-                "|            [Bksp] Close                  |",
+                "|          [Esc/Bksp] Close                |",
                 "+==========================================+",
             ]
             self.renderer.show_overlay("\n".join(lines), duration=0)
@@ -9109,7 +9138,7 @@ class Game:
         lines.extend([
             "",
             "+==========================================+",
-            "| [^/v] Navigate | [Enter] Do | [Bksp] Close  |",
+            "| [^/v] Navigate | [Enter] Do | [Esc/Bksp] Close |",
             "+==========================================+",
         ])
         
@@ -9147,7 +9176,7 @@ class Game:
             return
         
         # Close with ESC, Backspace, or B
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE" or key_str == 'b':
+        if self._is_escape_or_backspace(key, key_str, key_name) or key_str == 'b':
             self._notify_overlay_closed(UIOverlay.FESTIVAL)
             self.renderer.dismiss_message()
             return
@@ -9229,7 +9258,7 @@ class Game:
         key_name = key.name if hasattr(key, 'name') else ''
         
         # Close with ESC, Backspace, or backtick
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE" or key_str in ('`', '~'):
+        if self._is_escape_or_backspace(key, key_str, key_name) or key_str in ('`', '~'):
             if self._debug_submenu:
                 self._debug_submenu = None
                 self._debug_submenu_selected = 0
@@ -11046,7 +11075,7 @@ Core Systems Tested: {report.total_tests}
         lines.extend([
             "+===================================+",
             "|  [^/v] Navigate | [Enter] Select  |",
-            "|  [</> ] Page | [Bksp] Close        |",
+            "|  [</> ] Page | [Esc/Bksp] Close    |",
             "+===================================+",
         ])
         
@@ -11061,7 +11090,7 @@ Core Systems Tested: {report.total_tests}
         key_name = key.name if hasattr(key, 'name') else ''
         
         # Close with ESC or Backspace
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+        if self._is_escape_or_backspace(key, key_str, key_name):
             # Check for unsaved changes
             if self._settings_menu.has_unsaved_changes():
                 self._show_save_settings_prompt()
@@ -11281,7 +11310,7 @@ Core Systems Tested: {report.total_tests}
         lines.append(f"Page {self._scrapbook_page + 1}/{total_pages}")
         lines.append("")
         lines.append("[</> ] Page | [F] Toggle Favorite")
-        lines.append("[Bksp] Close")
+        lines.append("[Esc/Bksp] Close")
         
         scrapbook_text = "\n".join(lines)
         self.renderer.show_overlay(scrapbook_text)
@@ -11292,7 +11321,7 @@ Core Systems Tested: {report.total_tests}
         key_name = key.name if hasattr(key, 'name') else ''
         
         # Close with ESC or Backspace
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+        if self._is_escape_or_backspace(key, key_str, key_name):
             self._notify_overlay_closed(UIOverlay.SCRAPBOOK)
             self.renderer.dismiss_overlay()
             return
@@ -11347,7 +11376,7 @@ Core Systems Tested: {report.total_tests}
         key_name = getattr(key, 'name', None) or ''
         key_str = str(key).lower()
 
-        if key_name in ("KEY_ESCAPE", "KEY_BACKSPACE"):
+        if self._is_escape_or_backspace(key, key_str, key_name):
             self._notify_overlay_closed(UIOverlay.BADGES)
             self.renderer.dismiss_overlay()
             return
@@ -11399,16 +11428,17 @@ Core Systems Tested: {report.total_tests}
         
         lines.append("+=============================================+")
         lines.append("")
-        lines.append("[</> ] Page | [Bksp] Close")
+        lines.append("[</> ] Page | [Esc/Bksp] Close")
         
         self.renderer.show_overlay("\n".join(lines))
 
     def _handle_secrets_input(self, key):
         """Handle input for secrets book menu."""
         key_name = getattr(key, 'name', None) or ''
+        key_str = str(key).lower()
         
         # Close with ESC or Backspace
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+        if self._is_escape_or_backspace(key, key_str, key_name):
             self._notify_overlay_closed(UIOverlay.SECRETS)
             self.renderer.dismiss_overlay()
             return
@@ -11460,7 +11490,7 @@ Core Systems Tested: {report.total_tests}
             lines.append(f"  Prestige: {prestige_msg}")
         
         lines.append("")
-        lines.append("[P] Prestige | [T] Title | [Bksp] Close")
+        lines.append("[P] Prestige | [T] Title | [Esc/Bksp] Close")
         
         prestige_text = "\n".join(lines)
         self.renderer.show_overlay(prestige_text)
@@ -11471,7 +11501,7 @@ Core Systems Tested: {report.total_tests}
         key_name = getattr(key, 'name', None) or ''
         
         # Close with ESC or Backspace
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+        if self._is_escape_or_backspace(key, key_str, key_name):
             self._notify_overlay_closed(UIOverlay.PRESTIGE)
             self.renderer.dismiss_overlay()
             return
@@ -11681,7 +11711,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("+=============================================+")
         lines.append("")
         lines.append("[^/v] Select Plot | [P] Plant | [W] Water | [H] Harvest")
-        lines.append("[Bksp] Close")
+        lines.append("[Esc/Bksp] Close")
         
         self.renderer.show_overlay("\n".join(lines), duration=0)
 
@@ -11691,7 +11721,7 @@ Core Systems Tested: {report.total_tests}
         key_name = getattr(key, 'name', None) or ''
         
         # Close with ESC or Backspace
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+        if self._is_escape_or_backspace(key, key_str, key_name):
             self._notify_overlay_closed(UIOverlay.GARDEN)
             self.renderer.dismiss_message()
             return
@@ -11994,7 +12024,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("+===============================================+")
         lines.append("")
         lines.append("[^/v] Select | [T] Train | [P] Perform")
-        lines.append("[</> ] Page  | [Bksp] Close")
+        lines.append("[</> ] Page  | [Esc/Bksp] Close")
         
         tricks_text = "\n".join(lines)
         self.renderer.show_overlay(tricks_text)
@@ -12005,7 +12035,7 @@ Core Systems Tested: {report.total_tests}
         key_name = key.name if hasattr(key, 'name') else ''
         
         # Close with ESC or Backspace
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+        if self._is_escape_or_backspace(key, key_str, key_name):
             self._notify_overlay_closed(UIOverlay.TRICKS)
             self.renderer.dismiss_overlay()
             return
@@ -12275,7 +12305,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("+===============================================+")
         lines.append("")
         lines.append("[^/v] Select | [Enter] Equip | [</> ] Page")
-        lines.append("[N] Nickname | [Bksp] Close")
+        lines.append("[N] Nickname | [Esc/Bksp] Close")
         
         titles_text = "\n".join(lines)
         self.renderer.show_overlay(titles_text)
@@ -12286,7 +12316,7 @@ Core Systems Tested: {report.total_tests}
         key_name = key.name if hasattr(key, 'name') else ''
         
         # Close with ESC or Backspace
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+        if self._is_escape_or_backspace(key, key_str, key_name):
             self._notify_overlay_closed(UIOverlay.TITLES)
             self.renderer.dismiss_overlay()
             return
@@ -13038,7 +13068,7 @@ Core Systems Tested: {report.total_tests}
             self._render_diary_life(lines, width, items_per_page)
         
         lines.append("+" + "-" * (width - 2) + "+")
-        lines.append("| [<-][->] Tabs  [^/v] Page  [Bksp] Close |")
+        lines.append("| [<-][->] Tabs  [^/v] Page  [Esc/Bksp] Close |")
         lines.append("+" + "=" * (width - 2) + "+")
         
         self.renderer.show_overlay("\n".join(lines), duration=0)
@@ -13212,7 +13242,7 @@ Core Systems Tested: {report.total_tests}
         key_str = str(key).lower()
         
         # Close with ESC or Backspace
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+        if self._is_escape_or_backspace(key, key_str, key_name):
             self._notify_overlay_closed(UIOverlay.ENHANCED_DIARY)
             self.renderer.dismiss_message()
             return
@@ -13420,7 +13450,7 @@ Core Systems Tested: {report.total_tests}
         lines.append(f"Packs Available: {stats.get('packs_available', 0)}")
         lines.append("")
         lines.append("[^/v] Select | [Enter] View Set | [</> ] Page")
-        lines.append("[O] Open Pack | [Bksp] Close")
+        lines.append("[O] Open Pack | [Esc/Bksp] Close")
         
         album_text = "\n".join(lines)
         self.renderer.show_overlay(album_text)
@@ -13431,7 +13461,7 @@ Core Systems Tested: {report.total_tests}
         key_name = key.name if hasattr(key, 'name') else ''
         
         # Close with ESC or Backspace
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+        if self._is_escape_or_backspace(key, key_str, key_name):
             self._notify_overlay_closed(UIOverlay.COLLECTIBLES)
             self.renderer.dismiss_overlay()
             return
@@ -13592,7 +13622,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("+===============================================+")
         lines.append("")
         lines.append("[^/v] Select | [Enter] Place | [</> ] Page")
-        lines.append("[1-5] Room | [R] Remove | [Bksp] Close")
+        lines.append("[1-5] Room | [R] Remove | [Esc/Bksp] Close")
         
         self.renderer.show_overlay("\n".join(lines), duration=0)
     
@@ -13602,7 +13632,7 @@ Core Systems Tested: {report.total_tests}
         key_name = key.name if hasattr(key, 'name') else ''
         
         # Close with ESC or Backspace
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+        if self._is_escape_or_backspace(key, key_str, key_name):
             self._notify_overlay_closed(UIOverlay.DECORATIONS)
             self.renderer.dismiss_message()
             return
@@ -13699,7 +13729,7 @@ Core Systems Tested: {report.total_tests}
         lines.extend([
             "|                                               |",
             "+===============================================+",
-            "|  [1-4] Pick room | [Bksp] Cancel              |",
+            "|  [1-4] Pick room | [Esc/Bksp] Cancel          |",
             "+===============================================+",
         ])
         self.renderer.show_overlay("\n".join(lines), duration=0)
@@ -13709,7 +13739,7 @@ Core Systems Tested: {report.total_tests}
         key_str = str(key).lower()
         key_name = getattr(key, 'name', '') or ''
 
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+        if self._is_escape_or_backspace(key, key_str, key_name):
             self._notify_overlay_closed(UIOverlay.DECORATION_ROOM)
             self.renderer.dismiss_overlay()
             # Reopen decorations menu
@@ -13773,7 +13803,7 @@ Core Systems Tested: {report.total_tests}
         lines.append(f"  Current: Slot {self.save_slots.current_slot}")
         lines.append("")
         lines.append("[^/v] Select | [Enter] Switch | [N] New | [D] Delete")
-        lines.append("[Bksp] Close")
+        lines.append("[Esc/Bksp] Close")
         
         self.renderer.show_overlay("\n".join(lines), duration=0)
 
@@ -13783,7 +13813,7 @@ Core Systems Tested: {report.total_tests}
         key_name = getattr(key, 'name', None) or ''
         
         # Close with ESC or Backspace
-        if key_name == "KEY_ESCAPE" or key_name == "KEY_BACKSPACE":
+        if self._is_escape_or_backspace(key, key_str, key_name):
             self._notify_overlay_closed(UIOverlay.SAVE_SLOTS)
             self.renderer.dismiss_message()
             return

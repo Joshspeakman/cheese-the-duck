@@ -5,6 +5,22 @@ from typing import Optional, Callable, Dict, Any
 from enum import Enum, auto
 
 
+def _is_escape(key, key_str: str = "", key_name: str = "") -> bool:
+    if not key_name:
+        key_name = getattr(key, 'name', '') or ''
+    if key_str == "":
+        key_str = str(key)
+    return key_name == "KEY_ESCAPE" or key_str in ("\x1b", "KEY_ESCAPE", "key_escape")
+
+
+def _is_backspace(key, key_str: str = "", key_name: str = "") -> bool:
+    if not key_name:
+        key_name = getattr(key, 'name', '') or ''
+    if key_str == "":
+        key_str = str(key)
+    return key_name == "KEY_BACKSPACE" or key_str in ("\x7f", "\b", "KEY_BACKSPACE", "key_backspace")
+
+
 class GameAction(Enum):
     """Actions that can be triggered by input."""
     NONE = auto()
@@ -101,10 +117,11 @@ class InputHandler:
             return self._handle_text_input(key)
 
         # Safely get key name (handles both blessed Key objects and strings)
-        key_name = getattr(key, 'name', None)
+        key_name = getattr(key, 'name', None) or ""
+        key_str = str(key) if not key_name else key_name
 
-        # Handle escape key
-        if key_name == "KEY_ESCAPE":
+        # Handle cancel keys
+        if _is_escape(key, key_str, key_name) or _is_backspace(key, key_str, key_name):
             return GameAction.CANCEL
 
         # Handle enter key
@@ -112,7 +129,6 @@ class InputHandler:
             return GameAction.CONFIRM
 
         # Look up key binding
-        key_str = str(key) if not key_name else key_name
         action = KEY_BINDINGS.get(key_str, GameAction.NONE)
 
         # Execute callback if registered
@@ -124,9 +140,10 @@ class InputHandler:
     def _handle_text_input(self, key) -> GameAction:
         """Handle input in text entry mode."""
         # Safely get key name (handles both blessed Key objects and strings)
-        key_name = getattr(key, 'name', None)
+        key_name = getattr(key, 'name', None) or ""
+        key_str = str(key) if not key_name else key_name
         
-        if key_name == "KEY_ESCAPE":
+        if _is_escape(key, key_str, key_name):
             self._input_mode = "normal"
             self._text_buffer = ""
             return GameAction.CANCEL
@@ -140,7 +157,7 @@ class InputHandler:
             self._text_buffer = ""
             return GameAction.CONFIRM
 
-        if key_name == "KEY_BACKSPACE":
+        if _is_backspace(key, key_str, key_name):
             self._text_buffer = self._text_buffer[:-1]
             return GameAction.NONE
 

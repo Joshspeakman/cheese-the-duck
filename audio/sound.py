@@ -22,6 +22,8 @@ from enum import Enum
 from pathlib import Path
 import random
 
+os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
+
 from core.event_bus import event_bus, ActionPerformedEvent, ItemUsedEvent, AchievementUnlockedEvent
 
 # Configure logging for sound system
