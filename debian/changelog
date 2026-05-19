@@ -1,3 +1,10 @@
+cheese-the-duck (2.29.1-1) unstable; urgency=medium
+
+  * Removed sexual joke wording from handwritten weather dialogue
+  * Added a content-tone regression test for sexual joke terms
+
+ -- Cheese the Duck Team <cheese@example.com>  Tue, 19 May 2026 13:00:00 +0000
+
 cheese-the-duck (2.29.0-1) unstable; urgency=medium
 
   * Added Life & Agenda screen with visible daily plans and long-term arc
