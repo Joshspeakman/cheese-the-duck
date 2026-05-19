@@ -329,13 +329,20 @@ install_game() {
     source .venv/bin/activate
     pip install --upgrade pip -q
     pip install -r requirements.txt -q
+    if [ "${INSTALL_AI:-0}" = "1" ]; then
+        pip install -r requirements-ai.txt -q
+    fi
     deactivate
     print_success "Dependencies installed"
     
-    # Download AI model
-    print_step "Downloading AI model (this may take a while)..."
-    cd "$INSTALL_DIR"
-    .venv/bin/python download_model.py --auto
+    # Download AI model only when optional local AI support is requested.
+    if [ "${INSTALL_AI:-0}" = "1" ]; then
+        print_step "Downloading AI model (this may take a while)..."
+        cd "$INSTALL_DIR"
+        .venv/bin/python download_model.py --auto
+    else
+        print_step "Skipping optional AI model download (set INSTALL_AI=1 to enable)."
+    fi
     
     # Create icons from ICO
     create_linux_icons "$INSTALL_DIR"

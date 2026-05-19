@@ -17,15 +17,15 @@ FPS = 60
 TICK_RATE = 1.0  # Seconds between game ticks
 TIME_MULTIPLIER = 1.0  # Speed up time for testing (1.0 = real time)
 
-# Need decay rates (per real minute)
-# Designed for ~8 hour decay from full to empty
-# 100% / rate = minutes to empty
+# Need decay rates (per real minute, before difficulty/stage/weather modifiers)
+# Normal difficulty should visibly move bars during a play session without forcing
+# constant upkeep.
 NEED_DECAY_RATES = {
-    "hunger": 0.21,     # ~8 hours to empty from full (100/0.21 = 476 min)
-    "energy": 0.12,     # ~14 hours to empty from full  
-    "fun": 0.21,        # ~8 hours to empty from full
-    "cleanliness": 0.08, # ~21 hours to empty (stays clean longest)
-    "social": 0.21,     # ~8 hours to empty from full
+    "hunger": 0.95,      # ~105 minutes to empty from full
+    "energy": 0.55,      # ~3 hours to empty from full
+    "fun": 0.90,         # ~110 minutes to empty from full
+    "cleanliness": 0.35, # ~5 hours to empty from full
+    "social": 0.75,      # ~2.2 hours to empty from full
 }
 
 # Exponential decay: when a need drops below this threshold, decay accelerates.

@@ -72,7 +72,9 @@ def build_main_menu_categories() -> list:
             items=[
                 MenuItem("talk", "Talk [T]", "Have a conversation"),
                 MenuItem("stats", "View Stats [S]", "See detailed statistics"),
+                MenuItem("life_story", "Life & Agenda", "Daily plan, memories, and the big arc"),
                 MenuItem("goals", "Goals [G]", "View your objectives"),
+                MenuItem("challenges", "Challenges", "Claim daily and weekly rewards"),
                 MenuItem("scrapbook", "Scrapbook [Y]", "Memory album"),
                 MenuItem("titles", "Titles [!]", "Manage duck titles"),
                 MenuItem("facts", "Duck Fact [K]", "Learn about ducks"),
@@ -146,7 +148,9 @@ MENU_ACTIONS = {
     # My Duck
     "talk": "_start_talk_mode",
     "stats": "_toggle_stats",
+    "life_story": "_show_life_story_menu",
     "goals": "_toggle_goals",
+    "challenges": "_show_challenges_menu",
     "scrapbook": "_show_scrapbook",
     "titles": "_show_titles_menu",
     "facts": "_show_duck_fact",
@@ -736,6 +740,7 @@ def build_master_menu_tree():
             children=[
                 MasterMenuItem(id="talk", label="Talk [T]", action="talk"),
                 MasterMenuItem(id="stats", label="View Stats [S]", action="stats"),
+                MasterMenuItem(id="life_story", label="Life & Agenda", action="life_story"),
                 MasterMenuItem(id="goals", label="Goals [G]", action="goals"),
                 MasterMenuItem(id="scrapbook", label="Scrapbook [Y]", action="scrapbook"),
                 MasterMenuItem(id="titles", label="Titles [!]", children=_get_titles_items),

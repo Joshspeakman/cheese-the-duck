@@ -57,6 +57,7 @@ class UIOverlay(Enum):
     TRADING = auto()
     ENHANCED_DIARY = auto()
     GOALS = auto()
+    LIFE_STORY = auto()
     CONFIRMATION = auto()
 
 

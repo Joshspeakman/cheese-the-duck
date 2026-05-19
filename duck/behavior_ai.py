@@ -835,6 +835,7 @@ class BehaviorAI:
         # Set action on duck for display (message lasts for the action duration)
         # Store action end time on duck so it can auto-clear
         duck.current_action = result.action.value
+        duck.action_start_time = current_time
         duck._action_end_time = self._action_end_time
         duck.set_action_message(result.message, duration=result.duration)
 
@@ -1149,6 +1150,8 @@ class BehaviorAI:
         
         # Set action on duck
         duck.current_action = result.action.value
+        duck.action_start_time = current_time
+        duck._action_end_time = self._action_end_time
         duck.set_action_message(result.message, duration=result.duration)
         
         return result

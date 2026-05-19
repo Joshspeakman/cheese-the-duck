@@ -25,6 +25,15 @@ def test_update_fires_callback():
     assert len(results) == 1
 
 
+def test_positive_interval_does_not_fire_immediately():
+    results = []
+    sched = UpdateScheduler()
+    now = time.time()
+    sched.register("counter", lambda: results.append(1), 5.0, enabled=True)
+    sched.update(now)
+    assert len(results) == 0
+
+
 def test_disabled_system_does_not_fire():
     results = []
     sched = UpdateScheduler()

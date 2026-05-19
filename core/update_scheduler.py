@@ -87,7 +87,7 @@ class UpdateScheduler:
             system_name=name,
             callback=callback,
             interval=interval,
-            last_update=0.0,
+            last_update=time.time(),
             enabled=enabled,
         )
 

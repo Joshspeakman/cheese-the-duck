@@ -1072,6 +1072,52 @@ class Renderer:
         """Clear the terminal."""
         print(self.term.home + self.term.clear)
 
+    def render_loading_screen(self, title: str, message: str = "",
+                              started_at: Optional[float] = None,
+                              footer: str = ""):
+        """Render a simple animated loading screen."""
+        width = min(max(self.term.width, 60), 96)
+        inner = min(58, width - 8)
+        if inner < 40:
+            inner = max(24, width - 8)
+
+        elapsed = max(0.0, time.time() - started_at) if started_at else 0.0
+        spinner = ["|", "/", "-", "\\"][int(time.time() * 8) % 4]
+        dots = "." * ((int(time.time() * 2) % 3) + 1)
+        progress_width = max(12, inner - 12)
+        sweep = int(time.time() * 10) % progress_width
+        bar = [" "] * progress_width
+        for offset in range(4):
+            bar[(sweep + offset) % progress_width] = "="
+
+        title_line = _visible_center(title[:inner], inner)
+        message_line = _visible_center((message or f"Loading{dots}")[:inner], inner)
+        elapsed_line = _visible_center(f"{spinner} {elapsed:0.1f}s", inner)
+        footer_line = _visible_center(footer[:inner], inner) if footer else ""
+
+        lines = [
+            "",
+            "+" + "=" * (inner + 2) + "+",
+            "| " + title_line + " |",
+            "+" + "-" * (inner + 2) + "+",
+            "| " + message_line + " |",
+            "| " + elapsed_line + " |",
+            "| " + "".join(bar)[:inner].ljust(inner) + " |",
+        ]
+        if footer_line:
+            lines.extend([
+                "+" + "-" * (inner + 2) + "+",
+                "| " + footer_line + " |",
+            ])
+        lines.append("+" + "=" * (inner + 2) + "+")
+
+        print(self.term.home + self.term.clear, end="")
+        top_pad = max(0, (max(self.term.height, 20) - len(lines)) // 2)
+        for _ in range(top_pad):
+            print("")
+        for line in lines:
+            print(self.term.center(line) + self.term.clear_eol)
+
     def render_frame(self, game: "Game"):
         """
         Render a complete frame with side panel layout.
@@ -1273,16 +1319,78 @@ class Renderer:
     def render_frame_from_context(self, ctx: "RenderContext"):
         """Render a frame using a pre-built RenderContext.
 
-        Phase 5 status: ``build_render_context()`` is called every frame
-        inside ``render_frame()`` and the snapshot is stored on
-        ``self._current_context``. The next step (Phase 6) is to
-        migrate ``render_frame()`` internals to read from the stored
-        context rather than the live ``game`` reference.
+        This path intentionally renders only from the plain-data context, so
+        callers can validate the renderer without passing the live ``Game``
+        object back into the UI layer.
 
         Args:
             ctx: A :class:`RenderContext` snapshot.
         """
         self._current_context = ctx
+        width = max(60, int(ctx.terminal_width or self.term.width or 80))
+        height = max(20, int(ctx.terminal_height or self.term.height or 24))
+        playfield_width = max(30, width - 28)
+        playfield_height = max(8, height - 8)
+        inner_width = playfield_width - 2
+
+        output: List[str] = []
+        title = f" {ctx.duck_name} | {ctx.duck_mood} | {ctx.weather_type or 'clear'} | {ctx.season} "
+        pad = max(0, (width - len(title)) // 2)
+        output.append(("=" * pad + title + "=" * max(0, width - pad - len(title)))[:width])
+
+        field = [[" " for _ in range(inner_width)] for _ in range(playfield_height)]
+        duck_art = get_mini_duck(
+            ctx.duck_growth_stage,
+            ctx.duck_state,
+            ctx.duck_facing_right,
+            ctx.duck_animation_frame,
+        )
+        duck_x = max(0, min(inner_width - 1, int(ctx.duck_x)))
+        duck_y = max(0, min(playfield_height - 1, int(ctx.duck_y)))
+        for ay, art_line in enumerate(duck_art):
+            py = duck_y + ay
+            if not 0 <= py < playfield_height:
+                continue
+            for ax, char in enumerate(art_line):
+                px = duck_x + ax
+                if char != " " and 0 <= px < inner_width:
+                    field[py][px] = char
+
+        for item in ctx.habitat_items:
+            px = int(item.get("x", 0)) % inner_width
+            py = int(item.get("y", 0)) % playfield_height
+            marker = (item.get("id") or item.get("name") or "?")[0].upper()
+            field[py][px] = marker
+
+        for visitor in ctx.visitors:
+            px = int(visitor.get("x", inner_width - 6)) % inner_width
+            py = int(visitor.get("y", playfield_height // 2)) % playfield_height
+            field[py][px] = "V"
+
+        for row in field:
+            output.append("|" + "".join(row) + "|")
+
+        needs = []
+        for name, value in ctx.duck_needs.items():
+            display_value = value * 100 if value <= 1.0 else value
+            needs.append(f"{name[:3]}:{int(display_value):02d}")
+        output.append(f"Coins: {ctx.coins}  Level: {ctx.level}  XP: {int(ctx.xp_progress * 100)}%")
+        output.append("Needs: " + " ".join(needs))
+        if ctx.action_message:
+            output.append(ctx.action_message)
+        for role, message in ctx.chat_messages[-3:]:
+            output.append(f"{role}: {message}")
+
+        parts: list[str] = []
+        max_lines = min(len(output), height - 1)
+        for i in range(max_lines):
+            line = _visible_truncate(output[i], width)
+            parts.append(self.term.move(i, 0) + _visible_ljust(line, width) + self.term.normal)
+        frame_str = self.term.home + "".join(parts)
+        if frame_str != self._last_frame_output:
+            sys.stdout.write(frame_str)
+            sys.stdout.flush()
+            self._last_frame_output = frame_str
 
     def _render_header_bar(self, duck: "Duck", width: int, currency: int = 0, weather=None, time_info=None, season_info=None) -> List[str]:
         """Render the top header bar with weather, season, and time info."""
@@ -1664,6 +1772,22 @@ class Renderer:
             # Pad to inner_width
             while len(row) < inner_width:
                 row.append((' ', None))
+
+            # Add time-of-day sky fill and celestial markers as a background
+            # layer. Scenery, weather, items, and characters draw over this.
+            sky_rows = max(2, field_height // 3)
+            if y < sky_rows:
+                for sx, (char, color_func) in enumerate(row):
+                    if char == ' ' and sky_char:
+                        row[sx] = (sky_char, color_func)
+                celestial_y = 1 if sky_rows > 1 else 0
+                if y == celestial_y:
+                    for celestial_x, celestial_text in celestials:
+                        celestial_color = self.term.bright_yellow if "-*-" in celestial_text else self.term.white
+                        for dx, char in enumerate(celestial_text):
+                            px = int(celestial_x) + dx
+                            if char != ' ' and 0 <= px < inner_width:
+                                row[px] = (char, celestial_color)
 
             # Add location-specific scenery (large multi-line elements) - render first (background)
             for scene_x, scene_y, scene_art in self._location_scenery:
@@ -2958,7 +3082,7 @@ class Renderer:
 
     def _overlay_stats(self, base_output: List[str], duck: "Duck", game: "Game", width: int) -> List[str]:
         """Overlay statistics screen with pagination."""
-        stats = game._statistics
+        stats_system = getattr(game, "statistics", None)
         memory = duck.memory
         prog = game.progression
 
@@ -3010,6 +3134,22 @@ class Renderer:
         building = game.building
         struct_count = len([s for s in building._structures if s.status.value == "complete"])
 
+        session_lines = []
+        if stats_system:
+            session_lines = [
+                f"  Playtime: {stats_system.format_playtime(stats_system.total_playtime_minutes)}",
+                f"  Sessions: {stats_system.session_count}",
+                f"  Best Login Streak: {stats_system.best_login_streak} days",
+                f"  Most Coins Held: {stats_system.most_coins_held}",
+            ]
+            total_care_actions = (
+                stats_system.times_fed.all_time_total +
+                stats_system.times_played.all_time_total +
+                stats_system.times_cleaned.all_time_total +
+                stats_system.times_petted.all_time_total +
+                stats_system.times_put_to_sleep.all_time_total
+            )
+
         # All stats content
         all_stats = [
             f"[d] {duck.name} - {duck.get_growth_stage_display()}",
@@ -3037,12 +3177,13 @@ class Renderer:
             f"+======================================+",
             "",
             f"+============== LIFETIME ==============+",
+            *session_lines,
             f"  Days Played: {prog.days_played}",
             f"  Total Care Actions: {total_care_actions}",
-            f"  - Feeds: {total_stats.get('total_feeds', 0)}",
-            f"  - Plays: {total_stats.get('total_plays', 0)}",
-            f"  - Cleans: {total_stats.get('total_cleans', 0)}",
-            f"  - Pets: {total_stats.get('total_pets', 0)}",
+            f"  - Feeds: {stats_system.times_fed.all_time_total if stats_system else total_stats.get('total_feeds', 0)}",
+            f"  - Plays: {stats_system.times_played.all_time_total if stats_system else total_stats.get('total_plays', 0)}",
+            f"  - Cleans: {stats_system.times_cleaned.all_time_total if stats_system else total_stats.get('total_cleans', 0)}",
+            f"  - Pets: {stats_system.times_petted.all_time_total if stats_system else total_stats.get('total_pets', 0)}",
             f"  Collectibles: {coll_owned}/{coll_total}",
             f"+======================================+",
         ]

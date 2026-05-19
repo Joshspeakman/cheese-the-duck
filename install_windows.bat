@@ -64,12 +64,20 @@ if not exist ".venv" (
 call .venv\Scripts\activate.bat
 python -m pip install --upgrade pip -q
 pip install -r requirements.txt -q
+if "%INSTALL_AI%"=="1" (
+    pip install -r requirements-ai.txt -q
+)
 echo   √ Dependencies installed
 
-REM Download AI model
-echo.
-echo Downloading AI model...
-python download_model.py --auto
+REM Download AI model only when optional local AI support is requested.
+if "%INSTALL_AI%"=="1" (
+    echo.
+    echo Downloading AI model...
+    python download_model.py --auto
+) else (
+    echo.
+    echo Skipping optional AI model download. Set INSTALL_AI=1 to enable it.
+)
 
 REM Create launcher batch file
 echo.

@@ -1,3 +1,13 @@
+cheese-the-duck (2.29.0-1) unstable; urgency=medium
+
+  * Added Life & Agenda screen with visible daily plans and long-term arc
+  * Fixed autonomous sleep energy recovery
+  * Added AI startup loading screen to avoid first-chat stalls
+  * Improved need decay, growth, update, release, and package wiring
+  * Expanded tests for AI loading, sleep recovery, and life story persistence
+
+ -- Cheese the Duck Team <cheese@example.com>  Tue, 19 May 2026 12:00:00 +0000
+
 cheese-the-duck (1.5.6-1) unstable; urgency=medium
 
   * Comprehensive bug audit and fixes

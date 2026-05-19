@@ -3,7 +3,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
-![Version](https://img.shields.io/badge/version-2.0.0-green.svg)
+![Version](https://img.shields.io/badge/version-2.29.0-green.svg)
 
 ---
 
@@ -31,7 +31,7 @@ This will:
 - ✅ Download and install Python if needed
 - ✅ Install all dependencies automatically
 - ✅ Create Desktop and Start Menu shortcuts
-- ✅ Download the AI model
+- ✅ Optionally install/download local AI support with `INSTALL_AI=1`
 
 After install, double-click **"Cheese the Duck"** on your Desktop!
 
@@ -206,19 +206,12 @@ Thousands of handcrafted dialogue lines across dozens of systems. Cheese has a s
 
 ## 🤖 AI Conversations
 
-The game includes a bundled **Llama 3.2** AI model for dynamic conversations. Installers download this automatically.
-
-### Alternative: Use Ollama (Larger Models)
-
-For better performance with larger models:
+The game can use a local **Llama 3.2 GGUF** model for dynamic conversations. Installs run without local AI by default and use handcrafted dialogue fallbacks. To enable the bundled local model path, install the optional AI dependency and download a model:
 
 ```bash
-# Install Ollama from https://ollama.ai
-ollama pull llama3.2
-ollama serve
+pip install -r requirements-ai.txt
+python download_model.py --auto
 ```
-
-The game uses Ollama if available, otherwise falls back to the bundled model.
 
 ---
 
@@ -240,6 +233,9 @@ source .venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Optional local LLM support
+pip install -r requirements-ai.txt
 
 # Run
 python main.py
@@ -316,7 +312,7 @@ MIT License - see LICENSE file.
 - Inspired by Tamagotchi, Animal Crossing, and [Seaman](https://en.wikipedia.org/wiki/Seaman_(video_game))
 - Built with [blessed](https://github.com/jquast/blessed) for terminal UI
 - Audio powered by [pygame](https://www.pygame.org/)
-- LLM support via [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) and [Ollama](https://ollama.ai/)
+- Optional local LLM support via [llama-cpp-python](https://github.com/abetlen/llama-cpp-python)
 
 ### Radio Streaming
 

@@ -25,7 +25,7 @@ from config import GAME_DIR, SAVE_DIR
 
 
 # Game version - Update this when releasing new versions
-GAME_VERSION = "2.28.0"
+GAME_VERSION = "2.29.0"
 
 # GitHub repository info
 GITHUB_OWNER = "Joshspeakman"
@@ -282,24 +282,49 @@ class GameUpdater:
             )
 
     def _update_via_git(self) -> UpdateStatus:
-        """Update the game using git pull (for git clone installs)."""
+        """Update a git-clone install without discarding local work."""
         try:
+            status = subprocess.run(
+                ['git', 'status', '--porcelain'],
+                cwd=str(GAME_DIR),
+                capture_output=True, timeout=30
+            )
+            if status.returncode != 0:
+                self._last_check_error = f"git status failed: {status.stderr.decode(errors='replace')[:100]}"
+                return UpdateStatus.UPDATE_FAILED
+            if status.stdout.strip():
+                self._last_check_error = "Local changes detected; update aborted to avoid overwriting work."
+                return UpdateStatus.UPDATE_FAILED
+
+            branch = subprocess.run(
+                ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+                cwd=str(GAME_DIR),
+                capture_output=True, timeout=30
+            )
+            if branch.returncode != 0:
+                self._last_check_error = f"git branch check failed: {branch.stderr.decode(errors='replace')[:100]}"
+                return UpdateStatus.UPDATE_FAILED
+            branch_name = branch.stdout.decode(errors='replace').strip()
+            if not branch_name or branch_name == "HEAD":
+                self._last_check_error = "Detached HEAD; update aborted because no branch is checked out."
+                return UpdateStatus.UPDATE_FAILED
+
             result = subprocess.run(
                 ['git', 'fetch', 'origin'],
                 cwd=str(GAME_DIR),
                 capture_output=True, timeout=30
             )
             if result.returncode != 0:
-                self._last_check_error = f"git fetch failed: {result.stderr.decode()[:100]}"
+                self._last_check_error = f"git fetch failed: {result.stderr.decode(errors='replace')[:100]}"
                 return UpdateStatus.UPDATE_FAILED
 
             result = subprocess.run(
-                ['git', 'reset', '--hard', 'origin/main'],
+                ['git', 'merge', '--ff-only', f'origin/{branch_name}'],
                 cwd=str(GAME_DIR),
                 capture_output=True, timeout=30
             )
             if result.returncode != 0:
-                self._last_check_error = f"git reset failed: {result.stderr.decode()[:100]}"
+                self._last_check_error = f"git fast-forward failed: {result.stderr.decode(errors='replace')[:100]}"
                 return UpdateStatus.UPDATE_FAILED
 
             # Ensure venv dependencies are up to date
@@ -374,9 +399,12 @@ class GameUpdater:
                 # Extract the zip
                 with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                     # Validate no path traversal in zip members
+                    extract_root = extract_path.resolve()
                     for member in zip_ref.namelist():
                         member_path = (extract_path / member).resolve()
-                        if not str(member_path).startswith(str(extract_path.resolve())):
+                        try:
+                            member_path.relative_to(extract_root)
+                        except ValueError:
                             raise ValueError(f"Unsafe path in zip archive: {member}")
                     zip_ref.extractall(extract_path)
                 
@@ -398,58 +426,80 @@ class GameUpdater:
                     'data', 'logs', 'models', '.pyc'
                 }
                 
-                # Copy new files to game directory
-                for item in source_dir.iterdir():
-                    dest = GAME_DIR / item.name
-                    
-                    # Skip excluded items
-                    if any(exc in str(item) for exc in exclude_patterns):
-                        continue
-                    
-                    # Backup existing file/folder
-                    if dest.exists():
-                        backup_dest = backup_dir / item.name
-                        if dest.is_dir():
-                            shutil.copytree(dest, backup_dest)
-                        else:
-                            shutil.copy2(dest, backup_dest)
-                    
-                    # Copy new version
-                    if item.is_dir():
+                applied_paths = []
+
+                try:
+                    # Copy new files to game directory
+                    for item in source_dir.iterdir():
+                        dest = GAME_DIR / item.name
+
+                        # Skip excluded items
+                        if any(exc in str(item) for exc in exclude_patterns):
+                            continue
+
+                        # Backup existing file/folder
                         if dest.exists():
-                            # Try to remove existing directory, handling locked files
-                            try:
-                                shutil.rmtree(dest, ignore_errors=False)
-                            except OSError:
-                                # If rmtree fails, try removing with ignore_errors
-                                # then manually remove any remaining files
+                            backup_dest = backup_dir / item.name
+                            if dest.is_dir():
+                                shutil.copytree(dest, backup_dest)
+                            else:
+                                shutil.copy2(dest, backup_dest)
+
+                        applied_paths.append(dest)
+
+                        # Copy new version
+                        if item.is_dir():
+                            if dest.exists():
+                                # Try to remove existing directory, handling locked files
+                                try:
+                                    shutil.rmtree(dest, ignore_errors=False)
+                                except OSError:
+                                    # If rmtree fails, try removing with ignore_errors
+                                    # then manually remove any remaining files
+                                    shutil.rmtree(dest, ignore_errors=True)
+                                    if dest.exists():
+                                        # Force remove any remaining items
+                                        for root, dirs, files in os.walk(dest, topdown=False):
+                                            for name in files:
+                                                try:
+                                                    os.remove(os.path.join(root, name))
+                                                except OSError:
+                                                    pass
+                                            for name in dirs:
+                                                try:
+                                                    os.rmdir(os.path.join(root, name))
+                                                except OSError:
+                                                    pass
+                                        try:
+                                            os.rmdir(dest)
+                                        except OSError:
+                                            pass
+                            shutil.copytree(item, dest, dirs_exist_ok=True)
+                        else:
+                            shutil.copy2(item, dest)
+
+                    # Save data is preserved automatically since it's in ~/.cheese_the_duck
+                    # and we never touch that directory
+
+                    # Ensure venv dependencies are intact after file replacement
+                    self._ensure_venv_deps()
+                except Exception:
+                    for dest in reversed(applied_paths):
+                        backup_dest = backup_dir / dest.name
+                        try:
+                            if dest.is_dir():
                                 shutil.rmtree(dest, ignore_errors=True)
-                                if dest.exists():
-                                    # Force remove any remaining items
-                                    for root, dirs, files in os.walk(dest, topdown=False):
-                                        for name in files:
-                                            try:
-                                                os.remove(os.path.join(root, name))
-                                            except OSError:
-                                                pass
-                                        for name in dirs:
-                                            try:
-                                                os.rmdir(os.path.join(root, name))
-                                            except OSError:
-                                                pass
-                                    try:
-                                        os.rmdir(dest)
-                                    except OSError:
-                                        pass
-                        shutil.copytree(item, dest, dirs_exist_ok=True)
-                    else:
-                        shutil.copy2(item, dest)
-                
-                # Save data is preserved automatically since it's in ~/.cheese_the_duck
-                # and we never touch that directory
-                
-                # Ensure venv dependencies are intact after file replacement
-                self._ensure_venv_deps()
+                            elif dest.exists():
+                                dest.unlink()
+
+                            if backup_dest.exists():
+                                if backup_dest.is_dir():
+                                    shutil.copytree(backup_dest, dest)
+                                else:
+                                    shutil.copy2(backup_dest, dest)
+                        except Exception:
+                            pass
+                    raise
                 
                 return UpdateStatus.UPDATE_COMPLETE
 
@@ -500,9 +550,12 @@ class GameUpdater:
                 extract_path = temp_path / "extracted"
                 with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                     # Validate no path traversal in zip members
+                    extract_root = extract_path.resolve()
                     for member in zip_ref.namelist():
                         member_path = (extract_path / member).resolve()
-                        if not str(member_path).startswith(str(extract_path.resolve())):
+                        try:
+                            member_path.relative_to(extract_root)
+                        except ValueError:
                             raise ValueError(f"Unsafe path in zip archive: {member}")
                     zip_ref.extractall(extract_path)
                 

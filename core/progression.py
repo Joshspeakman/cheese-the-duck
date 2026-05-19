@@ -1035,12 +1035,12 @@ class ProgressionSystem:
         Returns (message, bonus_xp) or None.
         """
         roll = random.random()
-        if roll < 0.1:  # 10% chance for small bonus
-            return ("Nice! +5 bonus XP!", 5)
-        elif roll < 0.03:  # 3% chance for medium bonus
-            return ("Great! +15 bonus XP!", 15)
-        elif roll < 0.005:  # 0.5% chance for jackpot
+        if roll < 0.005:  # 0.5% chance for jackpot
             return ("[#] JACKPOT! +50 bonus XP! [#]", 50)
+        elif roll < 0.035:  # 3% chance for medium bonus
+            return ("Great! +15 bonus XP!", 15)
+        elif roll < 0.135:  # 10% chance for small bonus
+            return ("Nice! +5 bonus XP!", 5)
         return None
 
     def get_time_greeting(self) -> str:

@@ -47,7 +47,7 @@ class ActiveChallenge:
     challenge_id: str
     started_at: str
     expires_at: str
-    current_progress: int
+    current_progress: float
     goal_amount: int
     completed: bool = False
     claimed: bool = False
@@ -312,7 +312,7 @@ class ChallengeSystem:
         self.weekly_refresh_date = week_key
         return True
     
-    def update_progress(self, goal_type: str, amount: int = 1) -> List[Tuple[str, bool]]:
+    def update_progress(self, goal_type: str, amount: float = 1) -> List[Tuple[str, bool]]:
         """Update progress on challenges matching the goal type."""
         updates = []
         
@@ -478,7 +478,8 @@ class ChallengeSystem:
         for challenge in self.active_daily:
             definition = self._get_definition(challenge.challenge_id)
             if definition:
-                status = "[x]" if challenge.completed else f"{challenge.current_progress}/{challenge.goal_amount}"
+                shown_progress = int(challenge.current_progress) if challenge.current_progress == int(challenge.current_progress) else round(challenge.current_progress, 1)
+                status = "[x]" if challenge.completed else f"{shown_progress}/{challenge.goal_amount}"
                 claimed = " [+]" if challenge.claimed else ""
                 lines.append(f"|   {status} {definition.name[:20]:20}{claimed}    |")
         
@@ -488,7 +489,8 @@ class ChallengeSystem:
         for challenge in self.active_weekly:
             definition = self._get_definition(challenge.challenge_id)
             if definition:
-                status = "[x]" if challenge.completed else f"{challenge.current_progress}/{challenge.goal_amount}"
+                shown_progress = int(challenge.current_progress) if challenge.current_progress == int(challenge.current_progress) else round(challenge.current_progress, 1)
+                status = "[x]" if challenge.completed else f"{shown_progress}/{challenge.goal_amount}"
                 claimed = " [+]" if challenge.claimed else ""
                 lines.append(f"|   {status} {definition.name[:20]:20}{claimed}    |")
         
@@ -498,7 +500,8 @@ class ChallengeSystem:
             for challenge in self.active_special:
                 definition = self._get_definition(challenge.challenge_id)
                 if definition:
-                    status = "[x]" if challenge.completed else f"{challenge.current_progress}/{challenge.goal_amount}"
+                    shown_progress = int(challenge.current_progress) if challenge.current_progress == int(challenge.current_progress) else round(challenge.current_progress, 1)
+                    status = "[x]" if challenge.completed else f"{shown_progress}/{challenge.goal_amount}"
                     lines.append(f"|   {status} {definition.name[:20]:20}        |")
         
         lines.append("+===============================================+")

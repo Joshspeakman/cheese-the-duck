@@ -1,0 +1,2 @@
+# Optional AI conversations using a local GGUF model.
+llama-cpp-python>=0.2.0

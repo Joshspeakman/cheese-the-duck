@@ -23,6 +23,11 @@ class SaveManager:
         self.save_path = save_path or SAVE_FILE
         self._ensure_save_dir()
 
+    def set_save_path(self, save_path: Path) -> None:
+        """Switch the active save file path used for subsequent load/save calls."""
+        self.save_path = Path(save_path).expanduser()
+        self._ensure_save_dir()
+
     def _ensure_save_dir(self):
         """Create save directory if it doesn't exist."""
         self.save_path.parent.mkdir(parents=True, exist_ok=True)

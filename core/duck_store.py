@@ -401,6 +401,23 @@ class DuckStore:
         self._record_change("is_hiding", old, is_hiding, "", "consequence")
         self._emit_hiding_event(is_hiding)
 
+    def set_hiding_coax_visits(self, visits: int, reason: str = "coax") -> None:
+        """Persist how many separate coax attempts have been made."""
+        visits = max(0, int(visits))
+        old = self._hiding_coax_visits
+        if old == visits:
+            return
+        self._hiding_coax_visits = visits
+        self._record_change("hiding_coax_visits", old, visits, reason, "consequence")
+
+    def set_cooldown_until(self, cooldown_until: Optional[float], reason: str = "consequence") -> None:
+        """Persist cold-shoulder cooldown state."""
+        old = self._cooldown_until
+        if old == cooldown_until:
+            return
+        self._cooldown_until = cooldown_until
+        self._record_change("cooldown_until", old, cooldown_until, reason, "consequence")
+
     @property
     def is_sick(self) -> bool:
         """Whether the duck is currently sick."""

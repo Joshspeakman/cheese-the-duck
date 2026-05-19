@@ -666,11 +666,23 @@ class DecorationsSystem:
         # Create room grid
         grid_width = min(room.size[0] * 4, 40)
         grid_height = min(room.size[1], 8)
-        
-        # Simple room floor
-        floor = "." * grid_width
-        for _ in range(grid_height):
-            lines.append(f"|  {floor:40}   |")
+        grid = [["." for _ in range(grid_width)] for _ in range(grid_height)]
+
+        for placed in room.decorations:
+            decoration = DECORATIONS.get(placed.decoration_id)
+            if not decoration:
+                continue
+            marker = (decoration.name[:1] or "?").upper()
+            x0 = max(0, min(grid_width - 1, placed.position[0] * 4))
+            y0 = max(0, min(grid_height - 1, placed.position[1]))
+            width = max(1, min(decoration.size[0] * 4, grid_width - x0))
+            height = max(1, min(decoration.size[1], grid_height - y0))
+            for y in range(y0, y0 + height):
+                for x in range(x0, x0 + width):
+                    grid[y][x] = marker
+
+        for row in grid:
+            lines.append(f"|  {''.join(row):40}   |")
         
         lines.append("+===============================================+")
         lines.append(f"|  Decorations: {len(room.decorations):3}  |  Mood: +{room.mood_modifier:3}       |")

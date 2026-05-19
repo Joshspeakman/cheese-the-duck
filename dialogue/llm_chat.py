@@ -353,11 +353,7 @@ class LLMChat:
         
         if _llm_enabled_config():
             if background:
-                self._loading = True
-                self._load_thread = threading.Thread(
-                    target=self._background_load, daemon=True
-                )
-                self._load_thread.start()
+                self.start_background_loading()
             else:
                 self._check_availability()
 
@@ -385,6 +381,20 @@ class LLMChat:
             self._last_error = f"Background load failed: {e}"
         finally:
             self._loading = False
+
+    def start_background_loading(self) -> bool:
+        """Start loading the local model in the background if needed."""
+        if self._disabled or not _llm_enabled_config():
+            return False
+        if self._available or self._loading:
+            return True
+        self._loading = True
+        self._last_error = None
+        self._load_thread = threading.Thread(
+            target=self._background_load, daemon=True
+        )
+        self._load_thread.start()
+        return True
 
     def _warmup(self):
         """Warmup is handled by the subprocess worker during initialization."""
@@ -470,6 +480,8 @@ class LLMChat:
     def set_enabled(self, enabled: bool):
         """Enable or disable LLM at runtime (settings toggle)."""
         self._disabled = not enabled
+        if enabled:
+            self.start_background_loading()
 
     def get_model_name(self) -> str:
         """Get the current model name with backend info."""
@@ -568,10 +580,10 @@ Rules: Use at most ONE action per response. Only when contextually appropriate. 
             player_input: What the player said
             memory_context: Optional context from duck's memory (favorites, relationships, etc.)
         """
-        if not self._available:
-            self._check_availability()
-            if not self._available:
-                return None
+        if not self.is_ready_for_inference():
+            if not self._loading and not self._last_error:
+                self.start_background_loading()
+            return None
 
         # If we have DuckBrain, get context (but DuckBrain handles context via build_llm_prompt)
         # memory_context is not overwritten - DuckBrain context is used via _build_system_prompt

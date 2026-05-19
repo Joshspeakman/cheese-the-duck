@@ -22,7 +22,7 @@ sys.path.insert(0, GAME_DIR)
 def _ensure_venv():
     """Re-execute with venv python if not already using it.
 
-    This ensures llama-cpp-python is available for AI conversations.
+    This keeps installed core and optional AI dependencies available.
     """
     venv_python = os.path.join(GAME_DIR, ".venv", "bin", "python")
 
