@@ -386,7 +386,7 @@ WEATHER_COMMENTS: Dict[str, List[ContextComment]] = {
         ContextComment("Sun AND clouds. The sky is multitasking."),
         ContextComment("Can't decide if it's good weather or not. Very me."),
         ContextComment("*watching clouds pass sun* Now you see me, now you don't."),
-        ContextComment("The sky is doing a striptease with clouds. Awkward."),
+        ContextComment("The sky is playing peekaboo with clouds. Still awkward."),
         ContextComment("Partly cloudy. Partly sunny. Fully indecisive."),
         ContextComment("*basking, then shade, then basking* Pick a mood, sky."),
         ContextComment("The clouds and sun are taking turns. Very polite of them."),
