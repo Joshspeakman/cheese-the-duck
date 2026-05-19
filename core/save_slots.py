@@ -4,7 +4,7 @@ Allows players to have multiple save files with different ducks.
 """
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 from pathlib import Path
 import json
 import os
@@ -106,11 +106,13 @@ class SaveSlotsSystem:
         progression_data = data.get("progression", {})
         prestige_data = data.get("prestige", {})
         achievements_data = data.get("achievements", {})
-        stats_data = data.get("statistics", {})
+        stats_data = data.get("statistics_system") or data.get("statistics", {})
+        habitat_data = data.get("habitat", {})
         
-        # Get duck mood for preview
-        mood_data = duck_data.get("mood", {})
-        current_mood = mood_data.get("current_mood", "happy")
+        current_mood = "happy"
+        mood_history = duck_data.get("mood_history") or []
+        if mood_history:
+            current_mood = str(mood_history[-1])
         
         # Create preview ASCII based on level/prestige
         level = progression_data.get("level", 1)
@@ -124,9 +126,9 @@ class SaveSlotsSystem:
             duck_name=duck_data.get("name", "Cheese"),
             level=level,
             playtime_minutes=stats_data.get("total_playtime_minutes", 0),
-            coins=progression_data.get("coins", 0),
-            created_at=stats_data.get("first_played", "Unknown"),
-            last_played=stats_data.get("last_played", "Unknown"),
+            coins=habitat_data.get("currency", progression_data.get("coins", 0)),
+            created_at=stats_data.get("first_played") or duck_data.get("created_at", "Unknown"),
+            last_played=stats_data.get("last_played") or data.get("last_played", "Unknown"),
             prestige_level=prestige,
             achievements_count=len(achievements_data.get("unlocked", [])),
             mood=current_mood,
@@ -202,6 +204,14 @@ class SaveSlotsSystem:
                 return json.load(f)
         except (json.JSONDecodeError, IOError):
             return None
+
+    def switch_slot(self, slot_id: int) -> bool:
+        """Set the active slot without loading or saving game state."""
+        if slot_id not in range(1, self.MAX_SLOTS + 1):
+            return False
+        self.current_slot = slot_id
+        self.refresh_slot(slot_id)
+        return True
     
     def save_to_slot(self, slot_id: int, data: dict) -> bool:
         """Save data to a slot."""
@@ -216,12 +226,18 @@ class SaveSlotsSystem:
             if save_path.exists():
                 shutil.copy2(save_path, backup_path)
             
-            # Save new data
+            temp_path = save_path.with_suffix(".tmp")
+            if temp_path.exists():
+                temp_path.unlink()
+
             try:
-                with open(save_path, 'w') as f:
-                    json.dump(data, f, indent=2)
+                with open(temp_path, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, indent=2, ensure_ascii=False)
+                temp_path.replace(save_path)
             except Exception:
                 # Restore from backup on write failure
+                if temp_path.exists():
+                    temp_path.unlink()
                 if backup_path.exists():
                     shutil.copy2(backup_path, save_path)
                 elif save_path.exists():
@@ -289,8 +305,10 @@ class SaveSlotsSystem:
             return False
         
         try:
-            with open(export_path, 'w') as f:
-                json.dump(data, f, indent=2)
+            export_file = Path(export_path).expanduser()
+            export_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(export_file, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
             return True
         except IOError:
             return False
@@ -298,7 +316,7 @@ class SaveSlotsSystem:
     def import_slot(self, slot_id: int, import_path: str) -> bool:
         """Import a save file into a slot."""
         try:
-            with open(import_path, 'r') as f:
+            with open(import_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             return self.save_to_slot(slot_id, data)
         except (json.JSONDecodeError, IOError):

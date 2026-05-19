@@ -35,7 +35,7 @@ from world.area_events import (
 )
 from world.items import Inventory, get_random_item, get_item_info
 from world.goals import GoalSystem, goal_system
-from world.achievements import AchievementSystem, achievement_system
+from world.achievements import AchievementSystem, achievement_system, ACHIEVEMENTS
 from world.home import DuckHome, duck_home
 from world.atmosphere import AtmosphereManager, atmosphere, WeatherType, get_weather_need_modifiers
 from world.exploration import ExplorationSystem, exploration, BiomeType
@@ -73,6 +73,7 @@ from world.quests import QuestSystem, quest_system, QUESTS
 from world.festivals import FestivalSystem, festival_system
 from world.collectibles import CollectiblesSystem, collectibles_system
 from world.decorations import DecorationsSystem, decorations_system
+from world.life_story import LifeStorySystem
 from world.secrets import SecretsSystem, secrets_system
 from world.weather_activities import WeatherActivitiesSystem, weather_activities_system
 from world.trading import TradingSystem, trading_system
@@ -81,7 +82,7 @@ from world.fortune import FortuneSystem, fortune_system
 from duck.outfits import OutfitManager, outfit_manager
 from duck.tricks import TricksSystem, tricks_system
 from duck.titles import TitlesSystem, titles_system
-from duck.aging import AgingSystem, aging_system, get_consequence_modifiers
+from duck.aging import AgingSystem, aging_system, get_consequence_modifiers, get_detailed_stage
 from duck.personality_extended import ExtendedPersonalitySystem, extended_personality
 from duck.seasonal_clothing import SeasonalClothingSystem, seasonal_clothing
 
@@ -108,7 +109,7 @@ from ui.event_animations import (
     EventAnimator, create_event_animator, ANIMATED_EVENTS,
     EventAnimationState, BreezeAnimator
 )
-from ui.badges import BadgesSystem, badges_system
+from ui.badges import BadgesSystem, badges_system, BADGES
 from ui.reactions import DuckReactionController, init_reaction_controller
 from ui.menu_selector import MasterMenuPanel
 from ui.menu_structure import build_master_menu_tree, MENU_ACTIONS
@@ -209,6 +210,7 @@ class Game:
         self._last_sick_msg_time = 0.0            # Throttle sickness messages
         self._session_start = time.time()
         self._session_feeds = 0  # Track for bread_obsessed secret
+        self._session_good_day_awarded = False
         self._ecstatic_start = None  # Track for zen_master secret
         self._perfect_care_start = None  # Track for perfectionist secret
         self._weather_seen = set()  # Track for weather_watcher secret
@@ -288,17 +290,28 @@ class Game:
 
         # Decoration room-selection sub-menu
         self._decoration_room_select_decor_id = ""
+        self._decoration_room_view_id = ""
         
         # Enhanced diary menu
         self._enhanced_diary_tab = "overview"   # Current tab: overview, journal, emotions, photos, dreams, life
         self._enhanced_diary_page = 0           # Current page within tab
         self._last_diary_flush: float = 0.0     # Last time diary_manager.flush_pending was called
+
+        # Life story / agenda layer
+        self.life_story: LifeStorySystem = LifeStorySystem()
         
         # Title screen menu state
         self._title_menu_index = 0        # Currently selected title menu option
         self._title_update_status = ""    # Update status message for title screen
         self._title_checking_updates = False  # Currently checking for updates
         self._title_confirm_new_game = False  # Confirming new game over existing save
+
+        # Game-entry loading state
+        self._ai_loading_llm = None
+        self._ai_loading_target_state = "playing"
+        self._ai_loading_started = 0.0
+        self._ai_loading_status = ""
+        self._ai_loading_timeout = 90.0
         
         # Game updater
         from core.updater import game_updater, GAME_VERSION, UpdateStatus
@@ -417,6 +430,7 @@ class Game:
         
         # Save Management
         self.save_slots: SaveSlotsSystem = save_slots_system
+        self._sync_save_manager_to_slot()
         # ============== END NEW FEATURE SYSTEMS ==============
         
         # Animated interaction state machine
@@ -528,6 +542,43 @@ class Game:
         for need in ("hunger", "energy", "fun", "cleanliness", "social"):
             self._set_need(need, value, reason)
 
+    def _get_active_sleep_action(self, current_time: Optional[float] = None) -> Optional[str]:
+        """Return the active sleep-like action, if the duck is currently resting."""
+        if self._dream_active:
+            return "sleep"
+
+        sleep_actions = {"nap", "nap_in_nest", "sleep"}
+
+        if self.behavior_ai:
+            active_action = self.behavior_ai.get_current_action()
+            action_value = getattr(getattr(active_action, "action", None), "value", None)
+            if action_value in sleep_actions:
+                return action_value
+
+        duck_action = getattr(self.duck, "current_action", None) if self.duck else None
+        if duck_action in {"nap", "nap_in_nest"}:
+            if current_time is None:
+                current_time = time.time()
+            action_end = getattr(self.duck, "_action_end_time", 0.0)
+            if not action_end or current_time < action_end:
+                return duck_action
+
+        return None
+
+    def _apply_sleep_energy_regen(self, sleep_action: str, delta_seconds: float, energy_before: float) -> None:
+        """Restore energy during an active sleep action without clearing action state."""
+        regen_rate = 2.5 if sleep_action == "nap_in_nest" else 2.0
+        new_energy = min(100.0, energy_before + regen_rate * delta_seconds)
+
+        if self.duck_store:
+            # The action may have been set directly on Duck by BehaviorAI. Pull it
+            # into DuckStore before syncing back so regen does not erase the nap.
+            self.duck_store.sync_from_duck(self.duck)
+            self.duck_store.set_need("energy", new_energy, "sleeping_regen")
+            self.duck_store.sync_to_duck(self.duck)
+        else:
+            self._set_need("energy", new_energy, "sleeping_regen")
+
     def _setup_update_scheduler(self):
         """
         Register periodic subsystems with the UpdateScheduler.
@@ -568,7 +619,7 @@ class Game:
         sched.register("craft_check",         lambda: self._update_crafting_progress(), CRAFT_CHECK_INTERVAL, enabled=True)
 
         # Building progress
-        sched.register("build_check",         lambda: self._update_building_progress(), BUILD_CHECK_INTERVAL, enabled=True)
+        sched.register("build_check",         lambda: self._update_building_progress(BUILD_CHECK_INTERVAL), BUILD_CHECK_INTERVAL, enabled=True)
 
         # Structure weather damage
         sched.register("weather_damage",      lambda: self._apply_weather_damage_to_structures(), WEATHER_DAMAGE_INTERVAL, enabled=True)
@@ -600,6 +651,7 @@ class Game:
             "USE_ITEM":        lambda k: self._handle_use_input_direct(k),
             "MINIGAME":        lambda k: self._handle_minigames_input_direct(k),
             "QUESTS":          lambda k: self._handle_quests_input_direct(k),
+            "CHALLENGES":      lambda k: self._handle_challenges_input(k),
             "WEATHER":         lambda k: self._handle_weather_input_direct(k),
             "TREASURE":        lambda k: self._handle_treasure_input(k),
             "SCRAPBOOK":       lambda k: self._handle_scrapbook_input(k),
@@ -615,6 +667,7 @@ class Game:
             "SAVE_SLOTS":      lambda k: self._handle_save_slots_input(k),
             "TRADING":         lambda k: self._handle_trading_input(k),
             "ENHANCED_DIARY":  lambda k: self._handle_enhanced_diary_input(k),
+            "LIFE_STORY":      lambda k: self._handle_life_story_input(k),
             "FESTIVAL":        lambda k: self._handle_festival_input(k),
             "DEBUG_MENU":      lambda k: self._handle_debug_input(k),
             "SETTINGS":        lambda k: self._handle_settings_input(k),
@@ -683,18 +736,23 @@ class Game:
         if hasattr(self.renderer, 'set_show_particles'):
             self.renderer.set_show_particles(settings.display.show_particles)
         
-        # Apply AI setting
-        self._apply_ai_setting(settings.gameplay.ai_enabled)
+        # Apply AI setting without starting the model at title boot. The local
+        # model is warmed on game entry where a loading screen can explain it.
+        self._apply_ai_setting(settings.gameplay.ai_enabled, warmup=False)
 
-    def _apply_ai_setting(self, enabled: bool):
+    def _apply_ai_setting(self, enabled: bool, warmup: bool = True):
         """Toggle AI/LLM features on or off at runtime."""
         import config as _cfg
         _cfg.LLM_ENABLED = enabled
         _cfg.LLM_BEHAVIOR_ENABLED = enabled
         try:
             if enabled:
+                if not warmup:
+                    return
                 from dialogue.llm_chat import get_llm_chat
                 llm = get_llm_chat(background=True)
+                if hasattr(llm, "start_background_loading"):
+                    llm.start_background_loading()
             else:
                 import sys
                 llm_module = sys.modules.get("dialogue.llm_chat")
@@ -713,7 +771,7 @@ class Game:
         if key.startswith("audio."):
             self._apply_settings()
         elif key == "gameplay.ai_enabled":
-            self._apply_ai_setting(value)
+            self._apply_ai_setting(value, warmup=(self._state != "title"))
 
     def _start_title_music(self):
         """Start playing title screen music."""
@@ -736,7 +794,9 @@ class Game:
                     self._process_input()
 
                     # Update game state
-                    if self._state == "playing" and self.duck:
+                    if self._state == "ai_loading":
+                        self._update_ai_loading()
+                    elif self._state == "playing" and self.duck:
                         self._update()
 
                     # Render
@@ -768,6 +828,13 @@ class Game:
         if not key:
             return
 
+        if self._state == "ai_loading":
+            key_str = str(key).lower()
+            key_name = getattr(key, 'name', '') or ''
+            if key_str == 'q' or key_name == "KEY_ESCAPE":
+                self._running = False
+            return
+
         # Dismiss offline summary on ANY key press
         if self._state == "offline_summary":
             self._state = "playing"
@@ -778,6 +845,16 @@ class Game:
             duck_mood = self.duck.get_mood().state.value if self.duck else "content"
             music_context = get_music_context(weather=weather_str, duck_mood=duck_mood)
             sound_engine.update_music(music_context, force=True)
+            return
+
+        # Confirmation dialog (not yet migrated to dispatcher)
+        if self._confirmation_dialog and self._confirmation_dialog.is_open:
+            self._handle_confirmation_input(key)
+            return
+
+        # Error dialog
+        if self._error_dialog and self._error_dialog.is_open:
+            self._handle_error_dialog_input(key)
             return
 
         # Try InputDispatcher first (sole authority for registered overlays)
@@ -796,16 +873,6 @@ class Game:
         # Handle shop navigation
         if self.renderer.is_shop_open():
             self._handle_shop_input(key)
-            return
-
-        # Confirmation dialog (not yet migrated to dispatcher)
-        if self._confirmation_dialog and self._confirmation_dialog.is_open:
-            self._handle_confirmation_input(key)
-            return
-
-        # Error dialog
-        if self._error_dialog and self._error_dialog.is_open:
-            self._handle_error_dialog_input(key)
             return
 
         # Handle inventory item selection and pagination
@@ -1419,6 +1486,30 @@ class Game:
             wanted.append("Nook Radio")
         return wanted
 
+    def _refresh_life_story_from_game(self, announce_day: bool = False, show: bool = False) -> List[str]:
+        """Sync passive story milestones from live systems."""
+        if not hasattr(self, "life_story") or self.life_story is None:
+            self.life_story = LifeStorySystem()
+        try:
+            messages = self.life_story.sync_from_game(self, announce_day=announce_day)
+        except Exception:
+            return []
+
+        if show and messages and getattr(self, "_state", "") == "playing":
+            try:
+                message = next((m for m in messages if m.startswith("Life note:")), messages[-1])
+                self._show_message_if_no_menu(message, duration=4.0, category="event")
+            except Exception:
+                pass
+        return messages
+
+    def _life_story_suffix(self, messages: List[str]) -> str:
+        """Return a compact suffix for result popups when life-story changed."""
+        clean = [m for m in messages if m]
+        if not clean:
+            return ""
+        return f"\n\nLife: {clean[-1]}"
+
     def _on_item_purchased(self, item_name: str):
         """Notify duck desires when an item is purchased."""
         if not hasattr(self.duck, '_desires'):
@@ -1433,6 +1524,10 @@ class Game:
                 self.duck.desires._goals_satisfied_today += 1
                 try:
                     self.diary_manager.on_goal_satisfied(goal.goal_type.value)
+                except Exception:
+                    pass
+                try:
+                    self._refresh_life_story_from_game()
                 except Exception:
                     pass
 
@@ -1472,12 +1567,21 @@ class Game:
                 self.renderer.show_message(f"Need ${item.cost - self.habitat.currency} more!")
             return
 
+        if hasattr(self, "statistics") and self.statistics:
+            self.statistics.increment_stat("coins_spent", item.cost)
+            self.statistics.items_bought += 1
+
         # Award XP for shopping (both paths)
-        new_level = self.progression.add_xp(5)
+        new_level = self._award_xp(5, "shopping")
         if new_level:
             self._on_level_up(new_level)
         # Satisfy any ACQUIRE goal for this item
         self._on_item_purchased(item.name)
+        try:
+            self.life_story.record_activity("shopping", item.name)
+            self._refresh_life_story_from_game()
+        except Exception:
+            pass
 
     def _toggle_selected_item_visibility(self):
         """Toggle the visibility of the currently selected shop item."""
@@ -1755,9 +1859,18 @@ class Game:
 
         # Update statistics
         self._statistics["conversations"] = self._statistics.get("conversations", 0) + 1
+        if hasattr(self, "statistics") and self.statistics:
+            self.statistics.increment_stat("times_talked")
 
         # Check goals
         self._handle_goal_completions(self.goals.update_progress("talk", 1))
+        self.challenges.update_progress("talk", 1)
+        self.challenges.update_progress("activity_variety", 1)
+        try:
+            self.life_story.record_talk(message)
+            self._refresh_life_story_from_game()
+        except Exception:
+            pass
 
     def _generate_talk_response(self, message: str) -> str:
         """Generate a talk response off the main loop."""
@@ -2732,7 +2845,7 @@ class Game:
         for goal in completed_goals:
             # Grant reward item to inventory
             if goal.reward_item:
-                self.inventory.add_item(goal.reward_item)
+                self._grant_item_or_material(goal.reward_item, 1)
 
             # Show notification
             if goal.goal_type == "secret":
@@ -2947,6 +3060,17 @@ class Game:
         stat_key = stat_keys.get(interaction)
         if stat_key:
             self._statistics[stat_key] = self._statistics.get(stat_key, 0) + 1
+        if hasattr(self, "statistics") and self.statistics:
+            stats_system_key = {
+                "feed": "times_fed",
+                "play": "times_played",
+                "clean": "times_cleaned",
+                "pet": "times_petted",
+                "sleep": "times_put_to_sleep",
+            }.get(interaction)
+            if stats_system_key:
+                self.statistics.increment_stat(stats_system_key)
+            self.statistics.record_mood(mood.state.value if hasattr(mood.state, "value") else str(mood.state))
 
         # Track for bread_obsessed secret (10 feeds in one session)
         if interaction == "feed":
@@ -3010,7 +3134,7 @@ class Game:
 
         # Award currency for interaction
         currency_reward = 5
-        self.habitat.add_currency(currency_reward)
+        self._award_currency(currency_reward, interaction)
 
         # Random collectible chance on interactions
         collectible = self.progression.random_collectible_drop(0.03)
@@ -3038,7 +3162,9 @@ class Game:
         bonus = self.progression.roll_interaction_bonus()
         if bonus:
             bonus_msg, bonus_xp = bonus
-            self.progression.add_xp(bonus_xp, "bonus")
+            new_bonus_level = self._award_xp(bonus_xp, "bonus")
+            if new_bonus_level:
+                self._on_level_up(new_bonus_level)
             # Jackpot gets celebration
             if bonus_xp >= 50:
                 self.renderer.show_celebration("jackpot", bonus_msg, duration=3.0)
@@ -3047,7 +3173,7 @@ class Game:
                 self.renderer.show_message(bonus_msg, duration=2.0)
 
         # Check for level up
-        new_level = self.progression.add_xp(5, interaction)
+        new_level = self._award_xp(5, interaction)
         if new_level:
             self._on_level_up(new_level)
 
@@ -3067,12 +3193,13 @@ class Game:
 
         # Update challenge progress for this interaction type
         challenge_updates = self.challenges.update_progress(interaction, 1)
+        self.challenges.update_progress("activity_variety", 1)
         for challenge_id, completed in challenge_updates:
             if completed:
                 self.renderer.show_message(f"[#] Challenge Complete: {challenge_id}!", duration=3.0)
 
         # Update quest progress for this interaction type
-        self._process_quest_updates("interact", interaction, 1)
+        self._process_quest_updates(interaction, "any", 1)
 
         # Update personality traits based on interaction
         personality_trait_map = {
@@ -3094,6 +3221,13 @@ class Game:
         if interaction in hidden_trait_map:
             trait_id, progress = hidden_trait_map[interaction]
             self.extended_personality.update_hidden_trait_progress(trait_id, progress)
+
+        life_messages = []
+        try:
+            life_messages.extend(self.life_story.record_interaction(interaction, self.duck))
+            life_messages.extend(self._refresh_life_story_from_game())
+        except Exception:
+            life_messages = []
 
         # Play sound
         sound_map = {
@@ -3124,6 +3258,7 @@ class Game:
             response = mood_line.text
         else:
             response = self.conversation.get_interaction_response(self.duck, interaction)
+        response += self._life_story_suffix(life_messages)
         self.renderer.show_message(response)
 
         # Show effect and closeup
@@ -3163,15 +3298,39 @@ class Game:
         if not self.duck:
             return
 
-        # Check interaction count achievements
-        count = self._statistics.get(f"times_{interaction}ed" if interaction == "play" else f"times_{interaction}", 0)
+        stat_keys = {
+            "feed": "times_fed",
+            "play": "times_played",
+            "pet": "times_petted",
+            "clean": "times_cleaned",
+            "sleep": "times_slept",
+        }
+        count = self._statistics.get(stat_keys.get(interaction, ""), 0)
+        suffix_map = {
+            "feed": "feeds",
+            "play": "plays",
+            "pet": "pets",
+            "clean": "cleans",
+            "sleep": "sleeps",
+        }
+        suffix = suffix_map.get(interaction, f"{interaction}s")
+
+        first_id = f"first_{interaction}"
+        if count == 1 and first_id in ACHIEVEMENTS:
+            self._unlock_achievement(first_id)
 
         if count == 10:
-            self._unlock_achievement(f"10_{interaction}s")
+            achievement_id = f"10_{suffix}"
+            if achievement_id in ACHIEVEMENTS:
+                self._unlock_achievement(achievement_id)
         elif count == 50:
-            self._unlock_achievement(f"50_{interaction}s")
+            achievement_id = f"50_{suffix}"
+            if achievement_id in ACHIEVEMENTS:
+                self._unlock_achievement(achievement_id)
         elif count == 100:
-            self._unlock_achievement(f"100_{interaction}s")
+            achievement_id = f"100_{suffix}"
+            if achievement_id in ACHIEVEMENTS:
+                self._unlock_achievement(achievement_id)
 
         # Check mood-based achievements
         mood = self.duck.get_mood()
@@ -3217,6 +3376,13 @@ class Game:
         
         # Log to enhanced diary life chapter
         self.enhanced_diary.add_chapter_event(f"Reached level {new_level}!")
+        try:
+            self.diary_manager.on_milestone("level", level=new_level)
+        except Exception:
+            pass
+        for threshold in (10, 25, 50, 100):
+            if new_level >= threshold and hasattr(self.badges, "award_badge"):
+                self.badges.award_badge(f"level_{threshold}")
 
         # Check for new title
         if self.progression.title:
@@ -3275,25 +3441,34 @@ class Game:
         for quest_id, reward in completed_quests:
             quest = QUESTS.get(quest_id)
             quest_name = quest.name if quest else quest_id.replace("_", " ").title()
+            quest_complete = quest_id not in getattr(self.quests, "active_quests", {})
             
             # Apply coin reward
             if reward.coins > 0:
-                self.habitat.add_currency(reward.coins)
+                self._award_currency(reward.coins, "quest")
             
             # Apply XP reward
             if reward.xp > 0:
-                new_level = self.progression.add_xp(reward.xp, "quest")
+                new_level = self._award_xp(reward.xp, "quest")
                 if new_level:
                     self._on_level_up(new_level)
+                if hasattr(self, "statistics") and self.statistics:
+                    self.statistics.increment_stat("treasures_found")
             
             # Apply item rewards
             for item_id in reward.items:
-                self.inventory.add_item(item_id)
+                self._grant_item_or_material(item_id, 1)
             
             # Apply unlocks (achievements, features, etc.)
             for unlock in reward.unlocks:
                 if unlock.startswith("achievement:"):
                     self._unlock_achievement(unlock[12:])
+
+            if reward.achievement:
+                self._unlock_achievement(reward.achievement)
+
+            if reward.title and reward.title not in self.progression.unlocked_titles:
+                self.progression.unlocked_titles.append(reward.title)
             
             # Show completion celebration
             duck_sounds.level_up()
@@ -3310,15 +3485,22 @@ class Game:
             if reward.title:
                 reward_lines.append(f"Title: {reward.title}")
             
-            reward_text = " | ".join(reward_lines) if reward_lines else "Quest Complete!"
+            reward_text = " | ".join(reward_lines) if reward_lines else ("Quest Complete!" if quest_complete else "Step Complete!")
             self.renderer.show_celebration(
-                "quest_complete",
-                f"Quest Complete: {quest_name}!\n{reward_text}",
+                "quest_complete" if quest_complete else "quest_step",
+                f"{'Quest Complete' if quest_complete else 'Quest Step Complete'}: {quest_name}!\n{reward_text}",
                 duration=5.0
             )
+            if quest_complete and hasattr(self, "statistics") and self.statistics:
+                self.statistics.quests_completed += 1
             
             # Update statistics
             self.progression.stats["quests_completed"] = self.progression.stats.get("quests_completed", 0) + 1
+            try:
+                self.life_story.record_activity("quest", quest_name)
+                self._refresh_life_story_from_game()
+            except Exception:
+                pass
 
     def _show_collectible_found(self, collectible_id: str):
         """Show notification for finding a collectible."""
@@ -3371,18 +3553,131 @@ class Game:
         # Apply reward
         self._apply_reward(reward)
 
+    def _normalize_reward_id(self, name: str) -> str:
+        """Convert a display reward name into the repo's snake_case item IDs."""
+        import re
+        return re.sub(r"[^a-z0-9]+", "_", str(name).strip().lower()).strip("_")
+
+    def _grant_habitat_item(self, item_id: str) -> bool:
+        """Grant a shop/habitat item without charging coins."""
+        from world.shop import get_item, ItemCategory
+        item = get_item(item_id)
+        if not item:
+            return False
+        if item_id not in self.habitat.owned_items:
+            self.habitat.owned_items.append(item_id)
+        if item.category == ItemCategory.COSMETIC:
+            self.habitat.equip_cosmetic(item_id)
+        elif not any(placed.item_id == item_id for placed in self.habitat.placed_items):
+            self.habitat._auto_place_item(item_id)
+        return True
+
+    def _grant_item_or_material(self, item_id: str, amount: int = 1) -> bool:
+        """Grant an item ID to the correct backing inventory."""
+        if not item_id or amount <= 0:
+            return False
+
+        from world.items import ITEMS
+        if item_id in ITEMS:
+            granted = 0
+            for _ in range(amount):
+                if self.inventory.add_item(item_id):
+                    granted += 1
+            return granted > 0
+
+        if item_id in MATERIALS:
+            added, _ = self.materials.add_material(item_id, amount)
+            return added > 0
+
+        return self._grant_habitat_item(item_id)
+
+    def _grant_named_reward(self, reward_name: str, reward_type: str = "item", amount: int = 1) -> bool:
+        """Grant a display-name reward without dropping unknown festival/activity items."""
+        item_id = self._normalize_reward_id(reward_name)
+        reward_type = (reward_type or "item").lower()
+
+        if reward_type == "achievement":
+            if item_id in ACHIEVEMENTS:
+                self._unlock_achievement(item_id)
+                return True
+            return self._grant_item_or_material(item_id, amount)
+
+        if reward_type == "decoration":
+            try:
+                from world.decorations import DECORATIONS
+                if item_id in DECORATIONS:
+                    self.decorations.owned_decorations[item_id] = (
+                        self.decorations.owned_decorations.get(item_id, 0) + amount
+                    )
+                    return True
+            except Exception:
+                pass
+
+        if reward_type == "cosmetic":
+            try:
+                from duck.outfits import OUTFIT_ITEMS
+                if item_id in OUTFIT_ITEMS and item_id not in self.outfits.owned_items:
+                    self.outfits.owned_items.append(item_id)
+                    return True
+            except Exception:
+                pass
+            try:
+                from duck.seasonal_clothing import ALL_SEASONAL_ITEMS
+                if item_id in ALL_SEASONAL_ITEMS:
+                    return self.seasonal_clothing.add_item(item_id)
+            except Exception:
+                pass
+
+        return self._grant_item_or_material(item_id, amount)
+
+    def _scale_growth_reward(self, amount: int, modifier_name: str) -> int:
+        """Apply current growth-stage reward modifiers without dropping positive rewards to zero."""
+        amount = int(amount)
+        if amount <= 0:
+            return 0
+        try:
+            multiplier = float(self._get_current_aging_modifiers().get(modifier_name, 1.0))
+        except Exception:
+            multiplier = 1.0
+        return max(1, int(round(amount * multiplier)))
+
+    def _award_currency(self, amount: int, source: str = "reward") -> int:
+        """Award coins through the growth/statistics-aware path."""
+        final_amount = self._scale_growth_reward(amount, "coin_gain")
+        if final_amount <= 0:
+            return 0
+        self.habitat.add_currency(final_amount)
+        if hasattr(self, "statistics") and self.statistics:
+            self.statistics.increment_stat("coins_earned", final_amount)
+            self.statistics.most_coins_held = max(self.statistics.most_coins_held, self.habitat.currency)
+        return final_amount
+
+    def _award_xp(self, amount: int, source: str = "reward") -> Optional[int]:
+        """Award XP through the growth/statistics-aware path."""
+        final_amount = self._scale_growth_reward(amount, "xp_gain")
+        if final_amount <= 0:
+            return None
+        old_level = self.progression.level
+        new_level = self.progression.add_xp(final_amount, source)
+        if hasattr(self, "statistics") and self.statistics:
+            self.statistics.increment_stat("xp_earned", final_amount)
+            self.statistics.current_level = self.progression.level
+            self.statistics.highest_level = max(self.statistics.highest_level, self.progression.level)
+            if self.progression.level > old_level:
+                self.statistics.levels_gained += self.progression.level - old_level
+        return new_level
+
     def _apply_reward(self, reward: Reward):
         """Apply a reward to the player."""
         if reward.reward_type == RewardType.ITEM:
-            for _ in range(reward.amount):
-                self.inventory.add_item(reward.value)
+            self._grant_item_or_material(reward.value, reward.amount)
             item = get_item_info(reward.value)
             name = item.name if item else reward.value
             self.renderer.show_message(f"Received: {name} x{reward.amount}!", duration=2.0, category="action")
 
         elif reward.reward_type == RewardType.XP:
             xp = int(reward.value)
-            new_level = self.progression.add_xp(xp, "reward")
+            new_level = self._award_xp(xp, "reward")
             self.renderer.show_message(f"+{xp} XP!", duration=2.0, category="action")
             if new_level:
                 self._on_level_up(new_level)
@@ -3402,6 +3697,15 @@ class Game:
         days_away = self.progression.calculate_days_away()
 
         is_new_day, rewards, special_message = self.progression.check_login()
+
+        if is_new_day:
+            self._refresh_active_challenges()
+            self.challenges.update_progress("login", 1)
+            try:
+                mood_summary = self.duck.get_mood().state.value if self.duck else "unknown"
+                self.diary_manager.on_end_of_day(mood_summary, 0, "logged in for a new day")
+            except Exception:
+                pass
 
         if is_new_day and rewards:
             # Generate daily challenges
@@ -3524,15 +3828,6 @@ class Game:
             if current_time - self._exploring_start_time >= self._exploring_duration:
                 self._complete_exploring()
 
-        # Check for building completion (real-time progress)
-        if self._duck_building and self.building.current_build:
-            build_result = self.building.update_building(self.materials, 0.1)
-            if build_result.get("completed"):
-                self._complete_building(build_result)
-            elif build_result.get("stage_completed"):
-                self._show_message_if_no_menu(build_result.get("message", "Stage complete!"), duration=2.0, category="action")
-                duck_sounds.play()  # Hammering sound
-
         # Update at tick rate
         if current_time - self._last_tick >= TICK_RATE:
             delta_seconds = current_time - self._last_tick
@@ -3559,28 +3854,28 @@ class Game:
             
             # Check if duck is currently sleeping (autonomous nap or player dream)
             # If so, pause energy decay and regenerate energy instead
-            is_napping = self.duck.current_action in ("nap", "nap_in_nest", "sleep")
-            is_dreaming = self._dream_active
-            duck_is_sleeping = is_napping or is_dreaming
+            sleep_action = self._get_active_sleep_action(current_time)
+            duck_is_sleeping = sleep_action is not None
 
             if duck_is_sleeping:
                 # Pause energy decay by saving energy before update and restoring after
                 energy_before = self.duck.needs.energy
-                self.duck.update(delta_minutes, weather_modifiers=weather_mods)
-                # Regenerate energy while sleeping
-                # Rate: ~2 points per real second (at 1× game speed)
-                # NAP (25s) → ~50 energy, NAP_IN_NEST (30s) → ~60, dream (~15s) → ~30
-                regen_rate = 2.0  # per real second
-                if is_napping and self.duck.current_action == "nap_in_nest":
-                    regen_rate = 2.5  # Nest is comfier
-                regen = regen_rate * delta_seconds
-                if hasattr(self, 'duck_store') and self.duck_store:
-                    self.duck_store.set_need("energy", energy_before + regen, "sleeping_regen")
-                    self.duck_store.sync_to_duck(self.duck)
-                else:
-                    self._set_need("energy", min(100, energy_before + regen), "sleeping_regen")
+                self.duck.update(
+                    delta_minutes,
+                    aging_modifiers=self._get_current_aging_modifiers(),
+                    weather_modifiers=weather_mods,
+                    decay_multiplier=self._get_need_decay_multiplier(),
+                )
+                # Regenerate energy while sleeping.
+                # NAP (25s) -> ~50 energy, NAP_IN_NEST (30s) -> ~75, dream (~15s) -> ~30.
+                self._apply_sleep_energy_regen(sleep_action, delta_seconds, energy_before)
             else:
-                self.duck.update(delta_minutes, weather_modifiers=weather_mods)
+                self.duck.update(
+                    delta_minutes,
+                    aging_modifiers=self._get_current_aging_modifiers(),
+                    weather_modifiers=weather_mods,
+                    decay_multiplier=self._get_need_decay_multiplier(),
+                )
 
             # Sync decayed needs back into DuckStore so derived state (mood, motivation) stays valid
             if self.duck_store:
@@ -3683,13 +3978,11 @@ class Game:
             delta_hours = delta_minutes / 60.0
             self.garden.update_plants(delta_hours)
 
-            # Update duck aging system
-            new_stage = self.aging.update_stage()
-            if new_stage:
-                self._show_message_if_no_menu(f"# Your duck has grown to {new_stage.value}!", duration=5.0, category="event")
+            # Keep detailed age display/modifiers aligned with the live growth stage.
+            self._sync_aging_to_duck_stage()
 
             # Check secret goals for session/mood-based achievements
-            self._check_secret_achievements()
+            self._check_secret_achievements(delta_minutes)
 
             # ── Diary manager trigger evaluation ─────────────────────
             try:
@@ -3719,6 +4012,7 @@ class Game:
                         wanted_items=self._get_duck_wanted_items(),
                     )
                     desires.reset_session_timer()
+                    self._refresh_life_story_from_game(announce_day=True, show=True)
 
             self._last_tick = current_time
 
@@ -3752,6 +4046,7 @@ class Game:
 
                 # Check for rainbow secret
                 if self.atmosphere.current_weather.weather_type == WeatherType.RAINBOW:
+                    self.challenges.update_progress("see_rainbow", 1)
                     secret = self.goals.check_secret_goal("saw_rainbow")
                     if secret:
                         self._handle_goal_completions([secret])
@@ -3792,6 +4087,10 @@ class Game:
                         from world.friends import visitor_animator
                         friend = self.friends.get_friend_by_id(self.friends.current_visit.friend_id)
                         if friend:
+                            try:
+                                self.diary_manager.on_visitor(friend.name)
+                            except Exception:
+                                pass
                             personality = friend.personality.value if hasattr(friend.personality, 'value') else str(friend.personality)
                             friendship_level = friend.friendship_level.value if hasattr(friend.friendship_level, 'value') else str(friend.friendship_level)
                             unlocked_topics = set(friend.unlocked_dialogue) if hasattr(friend, 'unlocked_dialogue') else set()
@@ -3898,7 +4197,7 @@ class Game:
 
         # Check for random events (every 30 seconds)
         # Skip events during active guest conversations so they don't overlap
-        _in_guest_convo = bool(getattr(self, '_active_guest_conversation', None)) or bool(self._pending_visitor_comment)
+        _in_guest_convo = self._is_guest_dialogue_active()
         if current_time - self._last_event_check >= 30:
             if not _in_guest_convo:
                 # Scheduler fires _check_events()
@@ -4069,6 +4368,7 @@ class Game:
                             self.diary_manager.on_goal_all_satisfied()
                     except Exception:
                         pass
+                    self._refresh_life_story_from_game(show=True)
 
                     # Check if this action needs movement (behavior_ai will set pending)
                     if self.behavior_ai.has_pending_movement():
@@ -4381,7 +4681,7 @@ class Game:
                 duration=4.0
             )
             sound_engine.play_sound("craft_complete")
-            new_level = self.progression.add_xp(15, "crafting")
+            new_level = self._award_xp(15, "crafting")
             if new_level:
                 self._on_level_up(new_level)
 
@@ -4407,59 +4707,28 @@ class Game:
             # Update challenge and quest progress for crafting
             self.challenges.update_progress("craft", 1)
             self._process_quest_updates("craft", item_id, 1)
+            try:
+                self.life_story.record_activity("craft", item_id)
+                self._refresh_life_story_from_game()
+            except Exception:
+                pass
 
-    def _update_building_progress(self):
+    def _update_building_progress(self, delta_time: float = 1.0):
         """Update building progress if actively building."""
         if not self.building._current_build:
             return
 
-        result = self.building.update_building(self.materials)
+        result = self.building.update_building(self.materials, delta_time)
 
         if result.get("completed"):
-            bp_id = result.get("blueprint_id")
-            bp = BLUEPRINTS.get(bp_id)
-            name = bp.name if bp else bp_id.replace("_", " ").title()
-
-            self.renderer.show_message(
-                f"[=] Building Complete! [=]\n\n"
-                f"Built: {name}\n"
-                f"Check [R] menu to see your structures!",
-                duration=5.0
-            )
-            sound_engine.play_sound("build_complete")
-            new_level = self.progression.add_xp(50, "building")
-            if new_level:
-                self._on_level_up(new_level)
-
-            # Building achievements
-            self._unlock_achievement("first_build")
-            
-            # Check structure type
-            from world.building import StructureType
-            if bp:
-                if bp.structure_type == StructureType.NEST:
-                    self._unlock_achievement("build_nest")
-                elif bp.structure_type == StructureType.HOUSE:
-                    self._unlock_achievement("build_house")
-            
-            # Check building milestones
-            if self.building.structures_built >= 5:
-                self._unlock_achievement("build_5")
-            
-            # Check for building master
-            if self.building.building_skill >= 5:
-                self._unlock_achievement("building_master")
-
-
-            # Update challenge and quest progress for building
-            self.challenges.update_progress("build", 1)
-            self._process_quest_updates("build", bp_id, 1)
+            self._complete_building(result)
 
         elif result.get("stage_completed"):
             stage = result.get("current_stage", 0)
             stage_names = ["Foundation", "Frame", "Walls", "Roof", "Finishing"]
             name = stage_names[min(stage, 4)]
-            self.renderer.show_message(f"# {name} complete! Continue building...", duration=2.0)
+            self._show_message_if_no_menu(f"# {name} complete! Continue building...", duration=2.0)
+            duck_sounds.play()
 
     def _flush_diary(self):
         """Trigger a random diary musing and flush pending entries."""
@@ -4561,7 +4830,7 @@ class Game:
         from world.interaction_controller import InteractionSource
         self._execute_item_interaction(item.item_id, source=InteractionSource.PROXIMITY)
 
-    def _check_secret_achievements(self):
+    def _check_secret_achievements(self, delta_minutes: float = 0.0):
         """Check for session-based and mood-based secret achievements."""
         if not self.duck:
             return
@@ -4596,11 +4865,15 @@ class Game:
         else:
             self._ecstatic_start = None
 
+        if mood.state.value in ("happy", "ecstatic"):
+            self.challenges.update_progress("happy_time", max(0.0, delta_minutes))
+
         # Check perfectionist (all needs above 80 for 10 minutes)
         all_high = (needs.hunger >= 80 and needs.energy >= 80 and
                    needs.fun >= 80 and needs.cleanliness >= 80 and
                    needs.social >= 80)
         if all_high:
+            self.challenges.update_progress("perfect_care", max(0.0, delta_minutes))
             if self._perfect_care_start is None:
                 self._perfect_care_start = current_time
             elif current_time - self._perfect_care_start >= 600:  # 10 minutes
@@ -4655,10 +4928,10 @@ class Game:
             f"  {secret.unlock_message}",
         ]
         if secret.coins_reward:
-            self.habitat.add_currency(secret.coins_reward)
+            self._award_currency(secret.coins_reward, "secret")
             msg_lines.append(f"  +{secret.coins_reward} coins!")
         if secret.xp_reward:
-            self.progression.add_xp(secret.xp_reward, "secret")
+            self._award_xp(secret.xp_reward, "secret")
             msg_lines.append(f"  +{secret.xp_reward} XP!")
         duck_sounds.level_up()
         self.renderer.show_celebration("secret", "\n".join(msg_lines), duration=5.0)
@@ -4666,6 +4939,8 @@ class Game:
     def _check_events(self):
         """Check for random events."""
         if not self.duck:
+            return
+        if self._is_guest_dialogue_active() or self._is_any_menu_open():
             return
 
         # ── Check encounter timeout (player didn't help in time) ─────
@@ -4782,7 +5057,7 @@ class Game:
             return
 
         # Don't fire during travel, exploration, or menus
-        if self._duck_traveling or self._duck_exploring or self._is_any_menu_open():
+        if self._duck_traveling or self._duck_exploring or self._is_any_menu_open() or self._is_guest_dialogue_active():
             return
 
         # Don't fire if an encounter is active
@@ -4848,7 +5123,7 @@ class Game:
             return
 
         # Don't trigger during travel, exploration, menus, or encounters
-        if self._duck_traveling or self._duck_exploring or self._is_any_menu_open():
+        if self._duck_traveling or self._duck_exploring or self._is_any_menu_open() or self._is_guest_dialogue_active():
             return
         if self.events.has_active_encounter():
             return
@@ -5073,9 +5348,10 @@ class Game:
 
     def _start_event_animation(self, event_id: str):
         """Start an event animation."""
-        # Get playfield dimensions from renderer
-        playfield_width = 60  # Default, will be updated
-        playfield_height = 15
+        # Event animators operate in viewport coordinates; the renderer owns
+        # camera offsets for converting the duck's world position to screen.
+        playfield_width = max(1, getattr(self.renderer, "_viewport_width", 60))
+        playfield_height = max(1, getattr(self.renderer, "_viewport_height", 15))
         
         # Create the animator
         animator = create_event_animator(event_id, playfield_width, playfield_height)
@@ -5137,7 +5413,7 @@ class Game:
             return
         
         # Don't interrupt open menus or overlays
-        if self._is_any_menu_open():
+        if self._is_any_menu_open() or self._is_guest_dialogue_active():
             return
         
         comment = None
@@ -5322,9 +5598,11 @@ class Game:
         if not self._event_animators:
             return
             
-        # Get duck position for interaction targeting
-        duck_x = self.renderer.duck_pos.x
-        duck_y = self.renderer.duck_pos.y
+        # Animators render in viewport coordinates, while duck_pos is world-space.
+        cam_x = getattr(self.renderer, "_camera_x", 0)
+        cam_y = getattr(self.renderer, "_camera_y", 0)
+        duck_x = self.renderer.duck_pos.x - cam_x
+        duck_y = self.renderer.duck_pos.y - cam_y
         
         # Update each animator and remove finished ones
         still_running = []
@@ -5346,7 +5624,7 @@ class Game:
                         if distance > 5 and distance < 20:
                             # ~0.1% per frame at 60 FPS = ~6% chance per second
                             if random.random() < 0.001:
-                                self._duck_approach_event(event_x, event_y, animator.event_id)
+                                self._duck_approach_event(event_x + cam_x, event_y + cam_y, animator.event_id)
                 
         self._event_animators = still_running
 
@@ -5407,6 +5685,10 @@ class Game:
 
         # Notify diary manager of growth stage change
         self.diary_manager.on_growth_stage(new_stage)
+        try:
+            self.diary_manager.on_milestone("growth", stage=new_stage)
+        except Exception:
+            pass
 
         # Unlock achievement
         self._unlock_achievement(f"reach_{new_stage}")
@@ -5426,6 +5708,13 @@ class Game:
                 version=self._game_version,
                 terminal_options=self._terminal_options,
                 terminal_index=self._terminal_selection_index
+            )
+        elif self._state == "ai_loading":
+            self.renderer.render_loading_screen(
+                title="Warming up Cheese's brain",
+                message=self._ai_loading_status or "Starting local AI...",
+                started_at=self._ai_loading_started,
+                footer="Local AI runs on this machine. First load can take a moment.",
             )
         elif self._state == "offline_summary" and self._pending_offline_summary:
             summary = self._pending_offline_summary
@@ -5452,6 +5741,8 @@ class Game:
             self._render_secrets_menu()
         elif self.ui_state.is_open(UIOverlay.GARDEN):
             self._render_garden_menu()
+        elif self.ui_state.is_open(UIOverlay.CHALLENGES):
+            self._render_challenges_menu()
         elif self.ui_state.is_open(UIOverlay.PRESTIGE):
             self._render_prestige_menu()
         elif self.ui_state.is_open(UIOverlay.SAVE_SLOTS):
@@ -5459,7 +5750,10 @@ class Game:
         elif self.ui_state.is_open(UIOverlay.TRADING):
             self._render_trading_menu()
         elif self.ui_state.is_open(UIOverlay.DECORATION_ROOM):
-            self._render_decoration_room_select(self._decoration_room_select_decor_id)
+            if self._decoration_room_select_decor_id:
+                self._render_decoration_room_select(self._decoration_room_select_decor_id)
+            else:
+                self._render_decoration_room_view(self._decoration_room_view_id)
         elif self.ui_state.is_open(UIOverlay.BADGES):
             self._render_badges_menu()
         elif self.ui_state.is_open(UIOverlay.DECORATIONS):
@@ -5468,6 +5762,8 @@ class Game:
             self._render_scrapbook()
         elif self.ui_state.is_open(UIOverlay.ENHANCED_DIARY):
             self._render_enhanced_diary()
+        elif self.ui_state.is_open(UIOverlay.LIFE_STORY):
+            self._render_life_story_menu()
         elif self.ui_state.is_open(UIOverlay.CRAFTING):
             self._update_crafting_menu_display()
         elif self.ui_state.is_open(UIOverlay.BUILDING):
@@ -5732,8 +6028,10 @@ class Game:
         self.trading = TradingSystem()
         self.fortune = FortuneSystem()
         self.aging = AgingSystem()
+        self._initialize_aging_for_duck()
         self.extended_personality = ExtendedPersonalitySystem()
         self.statistics = StatisticsSystem()
+        self.statistics.start_session()
         self.day_night = DayNightSystem()
         self.badges = BadgesSystem()
         self.enhanced_diary = EnhancedDiarySystem()
@@ -5743,6 +6041,7 @@ class Game:
         self.events = EventSystem()
         self.area_events = AreaEventSystem()
         self.spontaneous_travel = SpontaneousTravelSystem()
+        self.life_story = LifeStorySystem()
 
         # Clear ambient lines and learned pairs from previous duck
         try:
@@ -5774,6 +6073,7 @@ class Game:
         }
         self._weather_seen = set()
         self._session_feeds = 0
+        self._session_good_day_awarded = False
         self._last_random_comment_time = 0.0
         self._pending_visitor_comment = None
         self._state = "playing"
@@ -5808,6 +6108,19 @@ class Game:
 
         # Generate daily challenges
         self.progression.generate_daily_challenges()
+        self._refresh_active_challenges(force=True)
+
+        # Generate Cheese's first agenda immediately so the life screen is not
+        # born empty and pretending that is mystique.
+        unlocked_locs = [
+            area.name for area in self.exploration.discovered_areas.values()
+            if getattr(area, "is_discovered", False)
+        ]
+        self.duck.desires.generate_daily_agenda(
+            self.duck,
+            unlocked_locs or None,
+            wanted_items=self._get_duck_wanted_items(),
+        )
         
         # Start first life chapter in enhanced diary
         self.enhanced_diary.start_life_chapter(
@@ -5842,11 +6155,15 @@ class Game:
         self._setup_update_scheduler()
         self._setup_input_dispatcher()
         self._setup_menu_system()
+        self._refresh_life_story_from_game(announce_day=True, show=True)
 
         self._save_game()
+        self._enter_ai_loading_if_needed(target_state="playing")
 
     def _load_game(self):
         """Load an existing save."""
+        active_slot = getattr(self.save_slots, 'current_slot', 1)
+        self._sync_save_manager_to_slot()
         data = self.save_manager.load()
         if not data:
             self._state = "title"
@@ -5858,6 +6175,7 @@ class Game:
         self.duck = Duck.from_dict(duck_data)
         self.behavior_ai = BehaviorAI()
         self._statistics = data.get("statistics", {})
+        self._session_good_day_awarded = False
 
         # Sync DuckStore from loaded duck
         try:
@@ -6018,6 +6336,7 @@ class Game:
             self.challenges = ChallengeSystem.from_dict(data["challenges"])
         else:
             self.challenges = ChallengeSystem()
+        self._refresh_active_challenges()
 
         # Load friendship system
         if "friends" in data:
@@ -6109,6 +6428,7 @@ class Game:
             self.aging = AgingSystem.from_dict(data["aging"])
         else:
             self.aging = AgingSystem()
+        self._initialize_aging_for_duck()
 
         # Load extended personality system
         if "extended_personality" in data:
@@ -6121,6 +6441,7 @@ class Game:
             self.statistics = StatisticsSystem.from_dict(data["statistics_system"])
         else:
             self.statistics = StatisticsSystem()
+        self.statistics.start_session()
 
         # Load day/night system
         if "day_night" in data:
@@ -6169,6 +6490,8 @@ class Game:
             self.save_slots = SaveSlotsSystem.from_dict(data["save_slots"])
         else:
             self.save_slots = SaveSlotsSystem()
+        self.save_slots.current_slot = active_slot
+        self._sync_save_manager_to_slot()
         
         # Load DuckBrain - Seaman-style persistent memory system
         if "duck_brain" in data and data["duck_brain"]:
@@ -6231,6 +6554,11 @@ class Game:
                 wanted_items=self._get_duck_wanted_items(),
             )
 
+        if "life_story" in data:
+            self.life_story = LifeStorySystem.from_dict(data["life_story"])
+        else:
+            self.life_story = LifeStorySystem()
+
         # ============== END LOAD NEW FEATURE SYSTEMS ==============
 
         # Load weather history for secret goal
@@ -6290,7 +6618,14 @@ class Game:
 
                 need_hours = min(offline["hours"], MAX_OFFLINE_NEED_HOURS)
                 offline_minutes = (need_hours * 60) * offline["decay_multiplier"]
-                self.duck.update(offline_minutes)
+                self.duck.update(
+                    offline_minutes,
+                    aging_modifiers=self._get_current_aging_modifiers(),
+                    decay_multiplier=self._get_need_decay_multiplier(),
+                )
+                self._sync_aging_to_duck_stage()
+                if hasattr(self, 'duck_store') and self.duck_store:
+                    self.duck_store.sync_from_duck(self.duck)
 
                 new_needs = self.duck.needs.to_dict()
 
@@ -6317,6 +6652,11 @@ class Game:
                     cooldown_days = min(days_away * 0.3, 5)
                     cooldown_seconds = cooldown_days * 24 * 3600
                     self.duck.cooldown_until = time.time() + cooldown_seconds
+                    if hasattr(self, 'duck_store') and self.duck_store and hasattr(self.duck_store, "set_cooldown_until"):
+                        self.duck_store.set_cooldown_until(self.duck.cooldown_until, "offline_absence")
+
+                if hasattr(self, 'duck_store') and self.duck_store:
+                    self.duck_store.sync_from_duck(self.duck)
 
                 # Tick-based offline world simulation
                 offline_events = self._simulate_offline_world(offline["hours"])
@@ -6362,6 +6702,7 @@ class Game:
         self._setup_update_scheduler()
         self._setup_input_dispatcher()
         self._setup_menu_system()
+        self._refresh_life_story_from_game(announce_day=True, show=True)
 
         # Show welcome back - use cold shoulder or DuckBrain greeting
         welcome_msg = None
@@ -6375,14 +6716,17 @@ class Game:
         else:
             notification_manager.show(f"Welcome back to care for {self.duck.name}!", "success", 2.5)
 
-    def _connect_duck_brain_to_llm(self):
+        self._enter_ai_loading_if_needed(target_state=self._state)
+
+    def _connect_duck_brain_to_llm(self, llm_chat=None):
         """Connect DuckBrain to the LLM chat system for enhanced context.
         
         Loads the model in a background thread so game startup isn't blocked.
         """
         try:
-            from dialogue.llm_chat import get_llm_chat
-            llm_chat = get_llm_chat(background=True)
+            if llm_chat is None:
+                from dialogue.llm_chat import get_llm_chat
+                llm_chat = get_llm_chat(background=True)
             if llm_chat and self.duck_brain:
                 llm_chat.set_duck_brain(self.duck_brain)
                 self.duck_brain.set_llm_chat(llm_chat)
@@ -6393,10 +6737,94 @@ class Game:
                     role = "user" if msg.get("role") == "player" else "assistant"
                     history.append({"role": role, "content": msg.get("content", "")})
                 llm_chat.set_conversation_history(history)
+            return llm_chat
         except Exception as e:
             # Log but don't crash if LLM chat isn't available
             from game_logger import get_logger
             get_logger().debug(f"Could not connect DuckBrain to LLM: {e}")
+            return None
+
+    def _enter_ai_loading_if_needed(self, target_state: Optional[str] = None) -> bool:
+        """Hold game entry on a loading screen until local AI is ready or unavailable."""
+        try:
+            if not get_settings().gameplay.ai_enabled:
+                return False
+        except Exception:
+            return False
+
+        try:
+            from dialogue.llm_chat import get_llm_chat
+            llm_chat = get_llm_chat(background=True)
+            if hasattr(llm_chat, "start_background_loading"):
+                llm_chat.start_background_loading()
+            self._connect_duck_brain_to_llm(llm_chat)
+
+            is_ready = (
+                llm_chat.is_ready_for_inference()
+                if hasattr(llm_chat, "is_ready_for_inference")
+                else llm_chat.is_available()
+            )
+            if is_ready:
+                return False
+
+            is_loading = llm_chat.is_loading() if hasattr(llm_chat, "is_loading") else False
+            if not is_loading and llm_chat.get_last_error():
+                return False
+
+            self._ai_loading_llm = llm_chat
+            self._ai_loading_target_state = target_state or self._state or "playing"
+            self._ai_loading_started = time.time()
+            self._ai_loading_status = "Loading local AI model..."
+            self._state = "ai_loading"
+            return True
+        except Exception:
+            return False
+
+    def _update_ai_loading(self) -> None:
+        """Advance the AI loading screen and release to gameplay when ready."""
+        llm_chat = self._ai_loading_llm
+        if llm_chat is None:
+            self._finish_ai_loading()
+            return
+
+        elapsed = time.time() - self._ai_loading_started
+        try:
+            is_ready = (
+                llm_chat.is_ready_for_inference()
+                if hasattr(llm_chat, "is_ready_for_inference")
+                else llm_chat.is_available()
+            )
+            if is_ready:
+                self._ai_loading_status = "AI ready."
+                self._finish_ai_loading("AI ready.")
+                return
+
+            is_loading = llm_chat.is_loading() if hasattr(llm_chat, "is_loading") else False
+            last_error = llm_chat.get_last_error() if hasattr(llm_chat, "get_last_error") else None
+            if not is_loading and last_error:
+                self._finish_ai_loading(f"AI unavailable: {last_error[:60]}")
+                return
+
+            if elapsed >= self._ai_loading_timeout:
+                self._finish_ai_loading("AI is still loading in the background.")
+                return
+
+            dots = "." * ((int(elapsed * 2) % 3) + 1)
+            self._ai_loading_status = f"Loading local AI model{dots}"
+        except Exception:
+            self._finish_ai_loading("AI warmup skipped.")
+
+    def _finish_ai_loading(self, notice: Optional[str] = None) -> None:
+        """Leave the AI loading screen and resume the intended game state."""
+        target_state = self._ai_loading_target_state or "playing"
+        self._state = target_state
+        self._ai_loading_llm = None
+        self._ai_loading_status = ""
+        if notice and self._state == "playing":
+            try:
+                notification_manager.show(notice, "info", 2.0)
+            except Exception:
+                pass
 
     def _save_game(self):
         """Save the current game state."""
@@ -6410,10 +6838,7 @@ class Game:
         except Exception:
             pass
 
-        # ── End-of-session trust bonus: all needs > 40 = "good day" ──
-        needs = self.duck.needs
-        if all(getattr(needs, n) > 40 for n in ["hunger", "energy", "fun", "cleanliness", "social"]):
-            apply_trust_gain(self.duck, "good_day", duck_store=self.duck_store)
+        self._sync_statistics_snapshot()
 
         save_data = {
             "duck": self.duck.to_dict(),
@@ -6475,6 +6900,7 @@ class Game:
             "cheese_away_friend": self._cheese_away_friend,
             # Duck desires / daily goals
             "desires": self.duck.desires.to_dict() if hasattr(self.duck, '_desires') else {},
+            "life_story": self.life_story.to_dict() if hasattr(self, "life_story") and self.life_story else {},
             # ============== END NEW FEATURE SYSTEMS ==============
         }
 
@@ -6504,7 +6930,10 @@ class Game:
             # End DuckBrain session before saving
             if self.duck_brain:
                 self.duck_brain.end_session()
-            
+            if hasattr(self, "statistics") and self.statistics:
+                self.statistics.end_session()
+
+            self._apply_end_session_rewards()
             self._save_game()
             notification_manager.show("Saving...", "info", 0.5)
             time.sleep(0.5)
@@ -6538,6 +6967,12 @@ class Game:
             self.renderer._show_stats or
             self.renderer._show_inventory or
             self.renderer._show_help
+        )
+
+    def _is_guest_dialogue_active(self) -> bool:
+        """Return True when a visiting-friend conversation owns the message lane."""
+        return bool(getattr(self, "_active_guest_conversation", None)) or bool(
+            getattr(self, "_pending_visitor_comment", None)
         )
 
     def _show_message_if_no_menu(self, message: str, duration: float = 5.0, category: str = "system"):
@@ -6608,6 +7043,40 @@ class Game:
         self.ui_state.close_overlay()
         self.renderer.dismiss_overlay()
 
+    def _apply_end_session_rewards(self) -> None:
+        """Apply one-shot session-close rewards without mutating state during autosave."""
+        if self._session_good_day_awarded or not self.duck:
+            return
+        needs = self.duck.needs
+        if all(getattr(needs, n) > 40 for n in ["hunger", "energy", "fun", "cleanliness", "social"]):
+            apply_trust_gain(self.duck, "good_day", duck_store=self.duck_store)
+            self._session_good_day_awarded = True
+
+    def _sync_statistics_snapshot(self) -> None:
+        """Keep the rich statistics system aligned with live game state before saving."""
+        if not hasattr(self, "statistics") or not self.statistics:
+            return
+        try:
+            if self.progression:
+                self.statistics.current_level = self.progression.level
+                self.statistics.highest_level = max(self.statistics.highest_level, self.progression.level)
+                self.statistics.current_login_streak = getattr(self.progression, "current_streak", self.statistics.current_login_streak)
+                self.statistics.best_login_streak = max(
+                    self.statistics.best_login_streak,
+                    getattr(self.progression, "longest_streak", self.statistics.best_login_streak),
+                )
+            if self.duck:
+                self.statistics.duck_age_days = int(self.duck.get_age_days())
+                mood = self.duck.get_mood().state
+                self.statistics.record_mood(mood.value if hasattr(mood, "value") else str(mood))
+            if self.habitat:
+                self.statistics.most_coins_held = max(self.statistics.most_coins_held, self.habitat.currency)
+            if self.achievements:
+                unlocked = [getattr(achievement, "id", str(achievement)) for achievement in self.achievements.get_unlocked()]
+                self.statistics.milestones_reached = list({*self.statistics.milestones_reached, *unlocked})
+        except Exception:
+            pass
+
     def _stop_all_audio(self):
         """Stop all audio — radio, music, mixer. Call before quit or title return."""
         sound_engine.stop_radio()
@@ -6630,7 +7099,10 @@ class Game:
             # End DuckBrain session before saving
             if self.duck_brain:
                 self.duck_brain.end_session()
-            
+            if hasattr(self, "statistics") and self.statistics:
+                self.statistics.end_session()
+
+            self._apply_end_session_rewards()
             self._save_game()
             self.renderer.show_message("Saving and quitting...")
             time.sleep(0.5)
@@ -6756,6 +7228,7 @@ class Game:
         self.events = EventSystem()
         self.area_events = AreaEventSystem()
         self.spontaneous_travel = SpontaneousTravelSystem()
+        self.life_story = LifeStorySystem()
 
         # Clear ambient lines and learned pairs from previous duck
         try:
@@ -6834,19 +7307,28 @@ class Game:
                     mat = MATERIALS[material_id]
                     resources_found.append(f"{mat.name} x{quantity}")
 
+        area_name = self.exploration.current_area.name if self.exploration.current_area else None
+        life_messages = []
+        try:
+            life_messages.extend(self.life_story.record_exploration(result, area_name=area_name))
+            life_messages.extend(self._refresh_life_story_from_game())
+        except Exception:
+            life_messages = []
+
         # Handle rare discoveries
         if result.get("rare_discovery"):
             item_id = result["rare_discovery"]
-            self.inventory.add_item(item_id)
+            self._grant_item_or_material(item_id, 1)
             sound_engine.play_sound("discovery")
             # Rare discoveries give bonus coins
             coins_earned = 25
-            self.habitat.add_currency(coins_earned)
+            self._award_currency(coins_earned, "exploration")
             self.renderer.show_message(
                 f"* RARE DISCOVERY! *\n\n"
                 f"You found: {item_id.replace('_', ' ').title()}!\n"
                 f"Resources: {', '.join(resources_found) if resources_found else 'None'}\n"
-                f"+{coins_earned} Coins",
+                f"+{coins_earned} Coins"
+                f"{self._life_story_suffix(life_messages)}",
                 duration=5.0
             )
             # Achievement for rare finds
@@ -6867,7 +7349,7 @@ class Game:
         # Normal exploration result - award coins based on resources found
         coins_earned = 5 if resources_found else 2  # Base coins for exploring
         coins_earned += len(resources_found) * 3  # Bonus per resource type found
-        self.habitat.add_currency(coins_earned)
+        self._award_currency(coins_earned, "exploration")
         
         biome_name = result.get("biome", "area").replace("_", " ").title()
         if resources_found:
@@ -6879,11 +7361,12 @@ class Game:
                     self._unlock_achievement("gathering_master")
         else:
             msg = f"~ Explored {biome_name} ~\n\nNothing found this time.\n+{coins_earned} Coins"
+        msg += self._life_story_suffix(life_messages)
 
         self.renderer.show_message(msg, duration=3.0)
 
         # Award some XP for exploring
-        new_level = self.progression.add_xp(5, "exploration")
+        new_level = self._award_xp(5, "exploration")
         if new_level:
             self._on_level_up(new_level)
 
@@ -7223,6 +7706,15 @@ class Game:
                 duration=4.0
             )
             duck_sounds.level_up()
+            sound_engine.play_sound("build_complete")
+            new_level = self._award_xp(50, "building")
+            if new_level:
+                self._on_level_up(new_level)
+            self.challenges.update_progress("build", 1)
+            self._process_quest_updates("build", blueprint_id, 1)
+            self._refresh_life_story_from_game(show=True)
+            if hasattr(self, "statistics") and self.statistics:
+                self.statistics.increment_stat("xp_earned", 50)
             
             # Check building achievements
             self._check_building_achievements()
@@ -7232,18 +7724,20 @@ class Game:
     def _check_building_achievements(self):
         """Check for building-related achievements."""
         if self.building.structures_built >= 1:
-            self.achievements.unlock("first_builder")
+            self._unlock_achievement("first_build")
         if self.building.structures_built >= 5:
-            self.achievements.unlock("builder_5")
+            self._unlock_achievement("build_5")
+        if self.building.building_skill >= 5:
+            self._unlock_achievement("building_master")
         if self.building.structures_built >= 15:
-            self.achievements.unlock("master_builder")
+            self._unlock_achievement("building_master")
         
         # Check for nest/house construction
         for structure in self.building.structures:
             if structure.blueprint_id in ["basic_nest", "cozy_nest", "deluxe_nest"]:
-                self.achievements.unlock("nest_builder")
+                self._unlock_achievement("build_nest")
             if structure.blueprint_id in ["mud_hut", "wooden_cottage", "stone_house"]:
-                self.achievements.unlock("house_builder")
+                self._unlock_achievement("build_house")
 
     def _handle_areas_input(self, key_str: str, key_name: str = "", key=None) -> bool:
         """Handle input while areas menu is open. Returns True if handled."""
@@ -7490,16 +7984,26 @@ class Game:
         if result.get("success"):
             # Switch atmosphere to this biome's independent weather
             self.atmosphere.set_current_biome(area.biome.value)
+            life_messages = []
+            try:
+                life_messages.extend(
+                    self.life_story.record_travel(area.name, area.biome.value, self.duck)
+                )
+                life_messages.extend(self._refresh_life_story_from_game())
+            except Exception:
+                life_messages = []
 
             # Show area art and description
             from world.exploration import get_area_art
             art_lines = get_area_art(area.name)
             art_display = "\n".join(art_lines)
+            life_suffix = self._life_story_suffix(life_messages)
 
             arrival_msg = (
                 f"=== {area.name} ===\n\n"
                 f"{art_display}\n\n"
-                f"{area.description}\n\n"
+                f"{area.description}"
+                f"{life_suffix}\n\n"
                 f"[Press any key to explore]"
             )
             self.renderer.show_message(arrival_msg, duration=0)
@@ -7602,20 +8106,36 @@ class Game:
         
         # Award XP
         if result.get("xp_gained"):
-            new_level = self.progression.add_xp(result["xp_gained"])
+            new_level = self._award_xp(result["xp_gained"], "exploration")
             if new_level:
                 self._on_level_up(new_level)
         
         # Show results
         message = result.get("message", "Exploration complete!")
+        area_name = self.exploration.current_area.name if self.exploration.current_area else None
+        life_messages = []
+        try:
+            life_messages.extend(self.life_story.record_exploration(result, area_name=area_name))
+            life_messages.extend(self._refresh_life_story_from_game())
+        except Exception:
+            life_messages = []
+        life_suffix = self._life_story_suffix(life_messages)
         if result.get("new_area_discovered"):
-            self.renderer.show_celebration("discovery", f"[?] Discovered: {result['new_area_discovered']}!", duration=3.0)
+            self.renderer.show_celebration(
+                "discovery",
+                f"[?] Discovered: {result['new_area_discovered']}!{life_suffix}",
+                duration=3.0,
+            )
             duck_sounds.level_up()
         elif result.get("rare_discovery"):
-            self.renderer.show_celebration("rare_find", f"* Found: {result['rare_discovery']}!", duration=3.0)
+            self.renderer.show_celebration(
+                "rare_find",
+                f"* Found: {result['rare_discovery']}!{life_suffix}",
+                duration=3.0,
+            )
             duck_sounds.level_up()
         else:
-            self.renderer.show_message(message, duration=4.0)
+            self.renderer.show_message(message + life_suffix, duration=4.0)
         
         # Check achievements
         self._check_exploration_achievements()
@@ -7634,6 +8154,7 @@ class Game:
                 crarity = found.rarity.value if hasattr(found, 'rarity') and hasattr(found.rarity, 'value') else "rare"
                 duck_sounds.level_up()
                 self.renderer.show_message(f"* Found collectible: {cname} [{crarity}]!", duration=4.0)
+                self._refresh_life_story_from_game(show=True)
 
         # Update challenge and quest progress for exploration
         self.challenges.update_progress("explore", 1)
@@ -7646,19 +8167,19 @@ class Game:
     def _check_exploration_achievements(self):
         """Check for exploration-related achievements."""
         if len(self.exploration.discovered_areas) >= 3:
-            self.achievements.unlock("explorer_3_areas")
+            self._unlock_achievement("explorer_3_areas")
         if len(self.exploration.discovered_areas) >= 7:
-            self.achievements.unlock("explorer_7_areas")
+            self._unlock_achievement("explorer_7_areas")
         if len(self.exploration.discovered_areas) >= 15:
-            self.achievements.unlock("explorer_15_areas")
+            self._unlock_achievement("explorer_15_areas")
         if self.exploration.total_resources_gathered >= 100:
-            self.achievements.unlock("gatherer_100")
+            self._unlock_achievement("gatherer_100")
         if self.exploration.total_resources_gathered >= 500:
-            self.achievements.unlock("gatherer_500")
+            self._unlock_achievement("gatherer_500")
         if len(self.exploration.rare_items_found) >= 1:
-            self.achievements.unlock("first_rare_find")
+            self._unlock_achievement("first_rare_find")
         if len(self.exploration.rare_items_found) >= 10:
-            self.achievements.unlock("treasure_hunter")
+            self._unlock_achievement("treasure_hunter")
 
     def _show_use_menu(self):
         """Show the use/interact menu for owned items."""
@@ -8011,11 +8532,34 @@ class Game:
                     duck_sounds.quack("happy")
 
                     # Award XP
-                    self.progression.add_xp(20, "fishing")
+                    new_level = self._award_xp(20, "fishing")
+                    if new_level:
+                        self._on_level_up(new_level)
 
                     # Update challenges and quests
                     self.challenges.update_progress("fish", 1)
-                    self._process_quest_updates("catch", caught_fish.fish_id, 1)
+                    self.challenges.update_progress("activity_variety", 1)
+                    self._process_quest_updates("fish", "any", 1)
+                    try:
+                        from world.fishing import FISH_DATABASE, FishRarity
+                        fish_def = FISH_DATABASE.get(caught_fish.fish_id)
+                        if fish_def and fish_def.rarity in (FishRarity.RARE, FishRarity.EPIC, FishRarity.LEGENDARY, FishRarity.MYTHICAL):
+                            self._process_quest_updates("fish", "rare", 1)
+                            if hasattr(self, "statistics") and self.statistics:
+                                self.statistics.rare_fish_caught += 1
+                        if fish_def and fish_def.rarity in (FishRarity.LEGENDARY, FishRarity.MYTHICAL):
+                            self.challenges.update_progress("catch_legendary_fish", 1)
+                            if hasattr(self, "statistics") and self.statistics:
+                                self.statistics.legendary_fish_caught += 1
+                    except Exception:
+                        pass
+                    if hasattr(self, "statistics") and self.statistics:
+                        self.statistics.increment_stat("fish_caught")
+                    try:
+                        self.life_story.record_activity("fish", fish_name)
+                        self._refresh_life_story_from_game()
+                    except Exception:
+                        pass
 
                     # Update personality
                     self.extended_personality.adjust_trait("patience", 1, "Caught a fish")
@@ -8023,11 +8567,11 @@ class Game:
                     # Check achievements
                     total_fish = self.fishing.total_catches
                     if total_fish == 1:
-                        self.achievements.unlock("first_fish")
+                        self._unlock_achievement("first_fish")
                     elif total_fish >= 10:
-                        self.achievements.unlock("fish_10")
+                        self._unlock_achievement("fish_10")
                     elif total_fish >= 50:
-                        self.achievements.unlock("fish_master")
+                        self._unlock_achievement("fish_master")
 
                     # Rare collectible drop when fishing (8% chance)
                     if random.random() < 0.08:
@@ -8037,6 +8581,7 @@ class Game:
                             crarity = found.rarity.value if hasattr(found, 'rarity') and hasattr(found.rarity, 'value') else "rare"
                             duck_sounds.level_up()
                             self.renderer.show_message(f"* Found collectible: {cname} [{crarity}]!", duration=4.0)
+                            self._refresh_life_story_from_game(show=True)
                 else:
                     self.renderer.show_message(message, duration=2.0)
                     duck_sounds.quack("sad")
@@ -8133,11 +8678,19 @@ class Game:
             result = self.minigames.finish_game(game_type, score, is_time_based)
 
             # Apply rewards
-            self.habitat.add_currency(result.coins_earned)
-            self.progression.add_xp(result.xp_earned, "minigame")
+            self._award_currency(result.coins_earned, "minigame")
+            new_level = self._award_xp(result.xp_earned, "minigame")
+            if new_level:
+                self._on_level_up(new_level)
+            self.challenges.update_progress("minigame", 1)
+            self.challenges.update_progress("activity_variety", 1)
+            if hasattr(self, "statistics") and self.statistics:
+                self.statistics.increment_stat("minigames_played")
+                if result.coins_earned > 0 or result.xp_earned > 0:
+                    self.statistics.increment_stat("minigames_won")
 
             for item_id in result.items_earned:
-                self.inventory.add_item(item_id)
+                self._grant_item_or_material(item_id, 1)
 
             # Show results
             lines = ["=== GAME OVER ===", ""]
@@ -8151,6 +8704,14 @@ class Game:
                 lines.append("")
                 lines.append("* NEW HIGH SCORE! *")
                 duck_sounds.level_up()
+            try:
+                life_messages = self.life_story.record_activity("minigame", game_type or "")
+                life_messages.extend(self._refresh_life_story_from_game())
+                suffix = self._life_story_suffix(life_messages)
+                if suffix:
+                    lines.append(suffix.strip())
+            except Exception:
+                pass
 
             self.renderer.show_message("\n".join(lines), duration=4.0)
 
@@ -8166,24 +8727,24 @@ class Game:
         total_played = sum(self.minigames.games_played.values())
 
         if total_played >= 1:
-            self.achievements.unlock("first_minigame")
+            self._unlock_achievement("first_minigame")
         if total_played >= 10:
-            self.achievements.unlock("minigame_fan")
+            self._unlock_achievement("minigame_fan")
         if total_played >= 50:
-            self.achievements.unlock("minigame_master")
+            self._unlock_achievement("minigame_master")
 
         if is_high_score:
-            self.achievements.unlock("high_scorer")
+            self._unlock_achievement("high_scorer")
 
         # Game-specific achievements
         if game_type == "bread_catch" and score >= 500:
-            self.achievements.unlock("bread_master")
+            self._unlock_achievement("bread_master")
         if game_type == "bug_chase" and score >= 1000:
-            self.achievements.unlock("bug_hunter")
+            self._unlock_achievement("bug_hunter")
         if game_type == "memory_match" and score <= 16:
-            self.achievements.unlock("perfect_memory")
+            self._unlock_achievement("perfect_memory")
         if game_type == "duck_race" and score <= 10:
-            self.achievements.unlock("speed_demon")
+            self._unlock_achievement("speed_demon")
 
     def _render_minigame(self) -> List[str]:
         """Render the current minigame."""
@@ -8280,10 +8841,16 @@ class Game:
             return
 
         result = self._dream_result
+        dream_title = getattr(result.dream, "title", "A strange dream") if getattr(result, "dream", None) else "A strange dream"
+        dream_description = " ".join(getattr(result, "scenes_shown", []) or []) or dream_title
 
         # Wake up the duck - clear sleeping visuals
         self.renderer.set_duck_state("idle", duration=0)
         self.renderer.show_closeup("confused", duration=2.0)  # Show groggy wake-up closeup
+        if getattr(self.duck, "current_action", None) == "sleep":
+            self.duck.clear_action()
+            if self.duck_store:
+                self.duck_store.sync_from_duck(self.duck)
 
         # Apply mood effect
         if result.mood_effect != 0:
@@ -8291,11 +8858,13 @@ class Game:
 
         # Apply XP
         if result.xp_earned > 0:
-            self.progression.add_xp(result.xp_earned, "dream")
+            new_level = self._award_xp(result.xp_earned, "dream")
+            if new_level:
+                self._on_level_up(new_level)
 
         # Apply special reward
         if result.special_reward:
-            self.inventory.add_item(result.special_reward)
+            self._grant_item_or_material(result.special_reward, 1)
             self.renderer.show_message(
                 f"*wakes up* What a dream! Found: {result.special_reward}!",
                 duration=3.0
@@ -8313,6 +8882,10 @@ class Game:
 
         # Check dream achievements
         self._check_dream_achievements()
+        try:
+            self.diary_manager.on_dream(dream_title, dream_description)
+        except Exception:
+            pass
 
         # Clean up
         self._dream_active = False
@@ -8324,20 +8897,20 @@ class Game:
         stats = self.dreams.get_dream_stats()
 
         if stats["total_dreams"] >= 1:
-            self.achievements.unlock("first_dream")
+            self._unlock_achievement("first_dream")
         if stats["total_dreams"] >= 10:
-            self.achievements.unlock("dreamer")
+            self._unlock_achievement("dreamer")
         if stats["total_dreams"] >= 50:
-            self.achievements.unlock("dream_master")
+            self._unlock_achievement("dream_master")
 
         if len(stats["special_rewards"]) >= 1:
-            self.achievements.unlock("dream_treasure")
+            self._unlock_achievement("dream_treasure")
         if len(stats["special_rewards"]) >= 5:
-            self.achievements.unlock("dream_collector")
+            self._unlock_achievement("dream_collector")
 
         # Check for dream variety (all dream types experienced)
         if len(stats["dream_types"]) >= 8:
-            self.achievements.unlock("dream_explorer")
+            self._unlock_achievement("dream_explorer")
 
     # ==================== BIRTHDAY & FACTS SYSTEM ====================
 
@@ -8353,11 +8926,11 @@ class Game:
             msg = get_birthday_message(self.duck.name, birthday_info.age_days)
             self.renderer.show_celebration("birthday", msg, duration=5.0)
             duck_sounds.level_up()
-            self.achievements.unlock("happy_birthday")
+            self._unlock_achievement("happy_birthday")
 
             # Birthday bonus - extra coins!
             bonus_coins = birthday_info.age_days * 5
-            self.habitat.add_currency(bonus_coins)
+            self._award_currency(bonus_coins, "birthday")
             self.renderer.show_message(f"Birthday bonus: +{bonus_coins} coins!", duration=3.0, category="event")
 
         # Check for milestone
@@ -8367,13 +8940,13 @@ class Game:
 
             # Milestone bonuses
             if birthday_info.age_days >= 365:
-                self.achievements.unlock("year_together")
+                self._unlock_achievement("year_together")
             elif birthday_info.age_days >= 100:
-                self.achievements.unlock("century_of_love")
+                self._unlock_achievement("century_of_love")
             elif birthday_info.age_days >= 30:
-                self.achievements.unlock("month_together")
+                self._unlock_achievement("month_together")
             elif birthday_info.age_days >= 7:
-                self.achievements.unlock("week_together")
+                self._unlock_achievement("week_together")
 
     def _show_duck_fact(self):
         """Show a random duck fact."""
@@ -8384,9 +8957,9 @@ class Game:
         self._statistics["facts_shown"] = self._statistics.get("facts_shown", 0) + 1
 
         if self._statistics["facts_shown"] >= 10:
-            self.achievements.unlock("duck_scholar")
+            self._unlock_achievement("duck_scholar")
         if self._statistics["facts_shown"] >= 50:
-            self.achievements.unlock("duck_professor")
+            self._unlock_achievement("duck_professor")
     # ==================== QUESTS SYSTEM ====================
 
     def _show_quests_menu(self):
@@ -8614,13 +9187,12 @@ class Game:
         msg_lines = ["[=] Trade Complete! [=]", ""]
         for recv_item in items_received:
             if recv_item.item_id == "coins":
-                self.habitat.add_currency(recv_item.quantity)
+                self._award_currency(recv_item.quantity, "trade")
                 # Check coin secret
                 self.secrets.check_coin_secret(self.habitat.currency)
                 msg_lines.append(f"  + {recv_item.quantity} coins")
             else:
-                for _ in range(recv_item.quantity):
-                    self.inventory.add_item(recv_item.item_id)
+                self._grant_item_or_material(recv_item.item_id, recv_item.quantity)
                 msg_lines.append(f"  + {recv_item.item_name} x{recv_item.quantity}")
 
         if was_lucky:
@@ -8676,6 +9248,14 @@ class Game:
         """Update the weather activities menu display with current selection."""
         if weather is None:
             weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+
+        if self.weather_activities.current_activity:
+            lines = self.weather_activities.render_activity_progress()
+            if not lines:
+                lines = ["Weather activity in progress..."]
+            lines.extend(["", "[Esc/Bksp] Close"])
+            self.renderer.show_overlay("\n".join(lines), duration=0)
+            return
         
         items = [{'label': item.label, 'description': item.description, 'enabled': item.enabled}
                  for item in self._weather_menu.get_items()]
@@ -8719,9 +9299,8 @@ class Game:
                 weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
                 result = self.weather_activities.start_activity(activity.id, weather)
                 
-                self._close_weather_menu()
                 if result:
-                    self.renderer.show_message(f"Started: {result.name}\n{result.description}\nDuration: {result.duration_seconds}s", duration=3)
+                    self._update_weather_menu_display(weather)
                 else:
                     self.renderer.show_message("Couldn't start activity - already busy!", duration=2)
             return
@@ -8739,9 +9318,8 @@ class Game:
                     weather = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
                     result = self.weather_activities.start_activity(activity.id, weather)
                     
-                    self._close_weather_menu()
                     if result:
-                        self.renderer.show_message(f"Started: {result.name}\n{result.description}\nDuration: {result.duration_seconds}s", duration=3)
+                        self._update_weather_menu_display(weather)
                     else:
                         self.renderer.show_message("Couldn't start activity - already busy!", duration=2)
             return
@@ -8758,14 +9336,18 @@ class Game:
             return
         
         activity, rewards = result
+
+        if self.ui_state.is_open(UIOverlay.WEATHER):
+            self._notify_overlay_closed(UIOverlay.WEATHER)
+            self.renderer.dismiss_overlay()
         
         # Apply rewards
         if self.duck:
             # Add coins
-            self.habitat.add_currency(rewards["coins"])
+            self._award_currency(rewards["coins"], "weather_activity")
             
             # Add XP
-            new_level = self.progression.add_xp(rewards["xp"])
+            new_level = self._award_xp(rewards["xp"], "weather_activity")
             if new_level:
                 self._on_level_up(new_level)
             
@@ -8774,7 +9356,7 @@ class Game:
 
             # Handle special drops
             if rewards["special_drop"]:
-                self.inventory.add_item(rewards["special_drop"])
+                self._grant_item_or_material(rewards["special_drop"], 1)
         
         # Show completion message with animation
         lines = activity.ascii_animation if activity.ascii_animation else []
@@ -8790,10 +9372,11 @@ class Game:
         duck_sounds.quack("happy")
         
         # Check for achievements
+        self.challenges.update_progress("activity_variety", 1)
         if self.weather_activities.total_activities_done >= 10:
-            self.achievements.unlock("weather_watcher")
+            self._unlock_achievement("weather_watcher")
         if self.weather_activities.total_activities_done >= 50:
-            self.achievements.unlock("weather_master")
+            self._unlock_achievement("weather_master")
 
     # ==================== TREASURE HUNTING INTERACTIVE ====================
 
@@ -8951,8 +9534,8 @@ class Game:
             treasure = TREASURES.get(found.treasure_id)
             if treasure:
                 # Add rewards
-                self.habitat.add_currency(treasure.coin_value)
-                new_level = self.progression.add_xp(treasure.xp_value)
+                self._award_currency(treasure.coin_value, "treasure")
+                new_level = self._award_xp(treasure.xp_value, "treasure")
                 if new_level:
                     self._on_level_up(new_level)
                 
@@ -8981,9 +9564,9 @@ class Game:
                 
                 # Achievements
                 if self.treasure.total_treasures_found >= 10:
-                    self.achievements.unlock("treasure_hunter")
+                    self._unlock_achievement("treasure_hunter")
                 if self.treasure.total_treasures_found >= 50:
-                    self.achievements.unlock("treasure_master")
+                    self._unlock_achievement("treasure_master")
         else:
             # Still digging
             progress = self.treasure.hunt_progress
@@ -9166,6 +9749,12 @@ class Game:
         if key_name == "KEY_ENTER" or key_str == ' ':
             self._festival_select_current()
             return
+
+        # Explicit join shortcut for the festival screen.
+        if key_str == 'j':
+            self._join_active_festival(show_message=True)
+            self._update_festival_menu_display()
+            return
         
         # Number keys
         if key_str.isdigit() and key_str != '0':
@@ -9180,6 +9769,46 @@ class Game:
             self._notify_overlay_closed(UIOverlay.FESTIVAL)
             self.renderer.dismiss_message()
             return
+
+    def _join_active_festival(self, show_message: bool = False) -> bool:
+        """Join the currently active festival so activities and rewards are live."""
+        active = self.festivals.check_active_festival()
+        if not active:
+            if show_message:
+                self.renderer.show_message("No festival is active right now.", duration=2)
+            return False
+
+        progress = self.festivals.current_festival_progress
+        if (
+            progress
+            and progress.festival_id == active.id
+            and progress.year == datetime.now().year
+        ):
+            return True
+
+        success, msg = self.festivals.start_festival_participation(active)
+        if not success:
+            if show_message:
+                self.renderer.show_message(msg, duration=2)
+            return False
+
+        if hasattr(self, "statistics") and self.statistics:
+            self.statistics.festivals_participated += 1
+
+        festival_badges = {
+            "spring_bloom": "spring_spirit",
+            "summer_splash": "summer_sun",
+            "autumn_harvest": "autumn_leaf",
+            "winter_wonder": "winter_wonder",
+        }
+        badge_id = festival_badges.get(active.id)
+        if badge_id in BADGES and hasattr(self.badges, "award_badge"):
+            self.badges.award_badge(badge_id)
+
+        if show_message:
+            self.renderer.show_message(msg, duration=3)
+            duck_sounds.quack("happy")
+        return True
 
     def _festival_select_current(self):
         """Execute the current festival menu selection."""
@@ -9199,9 +9828,10 @@ class Game:
             if success:
                 if reward:
                     # Add to inventory if applicable
-                    if reward.item_type == "cosmetic":
-                        self.inventory.add_item(reward.name.lower().replace(" ", "_"))
-                    new_level = self.progression.add_xp(reward.xp_value)
+                    self._grant_named_reward(reward.name, reward.item_type)
+                    if hasattr(self, "statistics") and self.statistics:
+                        self.statistics.festival_rewards_earned += 1
+                    new_level = self._award_xp(reward.xp_value, "festival")
                     if new_level:
                         self._on_level_up(new_level)
                 self.renderer.show_message(msg, duration=3)
@@ -9211,6 +9841,9 @@ class Game:
             self._update_festival_menu_display()
         else:
             # Do activity
+            if not self._join_active_festival(show_message=True):
+                self._update_festival_menu_display()
+                return
             success, msg, reward = self.festivals.do_festival_activity(item_id)
             if success:
                 # Show activity completion
@@ -9225,9 +9858,10 @@ class Game:
                 ]
                 if reward:
                     lines.append(f"  Got: {reward.name}!")
-                    if reward.item_type in ("consumable", "material"):
-                        self.inventory.add_item(reward.name.lower().replace(" ", "_"))
-                    new_level = self.progression.add_xp(reward.xp_value)
+                    self._grant_named_reward(reward.name, reward.item_type)
+                    if hasattr(self, "statistics") and self.statistics:
+                        self.statistics.festival_rewards_earned += 1
+                    new_level = self._award_xp(reward.xp_value, "festival")
                     if new_level:
                         self._on_level_up(new_level)
                 
@@ -9242,9 +9876,9 @@ class Game:
                 if self.festivals.current_festival_progress:
                     total_done = sum(self.festivals.current_festival_progress.activities_completed.values())
                     if total_done >= 10:
-                        self.achievements.unlock("festival_goer")
+                        self._unlock_achievement("festival_goer")
                     if total_done >= 50:
-                        self.achievements.unlock("festival_master")
+                        self._unlock_achievement("festival_master")
             else:
                 self.renderer.show_message(msg, duration=2)
             
@@ -10766,9 +11400,10 @@ Core Systems Tested: {report.total_tests}
         # ── Diary ─────────────────────────────────────────────────
         elif action == "diary_generate":
             if hasattr(self, 'diary_manager') and self.diary_manager:
-                entry = self.diary_manager.generate_entry(self.duck) if self.duck else None
-                if entry:
-                    text = getattr(entry, 'text', getattr(entry, 'content', str(entry)))
+                self.diary_manager.trigger_random_musing()
+                entries = self.diary_manager.flush_pending()
+                if entries:
+                    text = entries[-1].get("content", str(entries[-1])) if isinstance(entries[-1], dict) else str(entries[-1])
                     msg = f"# DEBUG: Diary Entry Generated\n  {text[:100]}"
                 else:
                     msg = "# DEBUG: Could not generate diary entry"
@@ -10901,17 +11536,19 @@ Core Systems Tested: {report.total_tests}
             if hasattr(self, 'festivals') and self.festivals:
                 active = self.festivals.check_active_festival() if hasattr(self.festivals, 'check_active_festival') else None
                 if active:
-                    msg = f"# DEBUG: Festival already active: {getattr(active, 'name', active)}"
+                    success, start_msg = self.festivals.start_festival_participation(active)
+                    if success and hasattr(self, "statistics") and self.statistics:
+                        self.statistics.festivals_participated += 1
+                    msg = f"# DEBUG: Festival {'started' if success else 'not started'}: {getattr(active, 'name', active)}\n  {start_msg}"
                 else:
-                    result = self.festivals.start_festival_participation() if hasattr(self.festivals, 'start_festival_participation') else None
-                    msg = f"# DEBUG: Festival started!\n  {result if result else 'No festival available today'}"
+                    msg = "# DEBUG: No festival available today"
             else:
                 msg = "# DEBUG: Festival system not available"
 
         elif action == "festival_stats":
             if hasattr(self, 'festivals') and self.festivals:
                 active = self.festivals.check_active_festival() if hasattr(self.festivals, 'check_active_festival') else None
-                participated = getattr(self.festivals, 'festivals_participated', 0)
+                participated = getattr(self.festivals, 'total_festivals_participated', 0)
                 msg = (f"# DEBUG: Festival Stats\n"
                        f"  Active: {getattr(active, 'name', 'none') if active else 'none'}\n"
                        f"  Participated: {participated}")
@@ -11286,6 +11923,38 @@ Core Systems Tested: {report.total_tests}
         lines = self._error_dialog.get_display_lines()
         self.renderer.show_overlay("\n".join(lines), duration=0)
 
+    # ==================== LIFE STORY / AGENDA ====================
+
+    def _show_life_story_menu(self):
+        """Show Cheese's visible agenda, memories, and long-term arc."""
+        if not self.duck:
+            return
+        self.ui_state.open_overlay(UIOverlay.LIFE_STORY)
+        self._render_life_story_menu()
+
+    def _render_life_story_menu(self):
+        """Render the connected life-story screen."""
+        if not self.duck:
+            return
+        self._refresh_life_story_from_game()
+        lines = self.life_story.render_life_screen(self)
+        self.renderer.show_overlay("\n".join(lines), duration=0)
+
+    def _handle_life_story_input(self, key):
+        """Handle input for the life-story screen."""
+        key_name = getattr(key, 'name', None) or ''
+        key_str = str(key).lower()
+
+        if self._is_escape_or_backspace(key, key_str, key_name):
+            self._notify_overlay_closed(UIOverlay.LIFE_STORY)
+            self.renderer.dismiss_overlay()
+            return
+
+        if key_str == "r":
+            self._refresh_life_story_from_game()
+            self._render_life_story_menu()
+            return
+
     # ==================== SCRAPBOOK SYSTEM ====================
 
     def _show_scrapbook(self):
@@ -11351,6 +12020,93 @@ Core Systems Tested: {report.total_tests}
                 status = "favorited" if is_fav else "unfavorited"
                 self.renderer.show_message(f"Photo {status}!", duration=1.5)
             return
+
+    # ==================== CHALLENGES MENU ====================
+
+    def _show_challenges_menu(self):
+        """Show the daily/weekly challenges menu."""
+        self.ui_state.open_overlay(UIOverlay.CHALLENGES)
+        self._refresh_active_challenges()
+        self._render_challenges_menu()
+
+    def _render_challenges_menu(self):
+        """Render active challenges and claim controls."""
+        lines = self.challenges.render_challenges()
+        lines.extend([
+            "",
+            "[C] Claim completed rewards | [Esc/Bksp] Close",
+        ])
+        self.renderer.show_overlay("\n".join(lines), duration=0)
+
+    def _handle_challenges_input(self, key):
+        """Handle challenges menu input."""
+        key_str = str(key).lower()
+        key_name = getattr(key, 'name', '') or ''
+        if self._is_escape_or_backspace(key, key_str, key_name):
+            self._notify_overlay_closed(UIOverlay.CHALLENGES)
+            self.renderer.dismiss_overlay()
+            return
+        if key_str == 'c':
+            claimed = self._claim_completed_challenges()
+            self._render_challenges_menu()
+            if claimed:
+                self.renderer.show_message(f"Claimed {claimed} challenge reward(s).", duration=3.0)
+            else:
+                self.renderer.show_message("No completed challenge rewards to claim.", duration=2.0)
+
+    def _claim_completed_challenges(self) -> int:
+        """Claim every completed unclaimed challenge and apply rewards."""
+        self._refresh_active_challenges()
+        claimed = 0
+        active = (
+            list(getattr(self.challenges, 'active_daily', [])) +
+            list(getattr(self.challenges, 'active_weekly', [])) +
+            list(getattr(self.challenges, 'active_special', []))
+        )
+        for challenge in active:
+            if not getattr(challenge, 'completed', False) or getattr(challenge, 'claimed', False):
+                continue
+            success, _msg, rewards = self.challenges.claim_reward(challenge.challenge_id)
+            if not success:
+                continue
+            if rewards.get("coins"):
+                self._award_currency(int(rewards["coins"]), "challenge")
+            if rewards.get("xp"):
+                new_level = self._award_xp(int(rewards["xp"]), "challenge")
+                if new_level:
+                    self._on_level_up(new_level)
+            item_id = rewards.get("item")
+            if item_id:
+                self._grant_item_or_material(item_id, 1)
+            if str(challenge.challenge_id).startswith("weekly_") and challenge.challenge_id != "weekly_master":
+                self.challenges.update_progress("complete_weekly", 1)
+            if hasattr(self, "statistics") and self.statistics:
+                if str(challenge.challenge_id).startswith("weekly_"):
+                    self.statistics.weekly_challenges_completed += 1
+                else:
+                    self.statistics.daily_challenges_completed += 1
+                self.statistics.challenge_streak_best = max(
+                    self.statistics.challenge_streak_best,
+                    getattr(self.challenges, "challenge_streak", 0),
+                )
+            claimed += 1
+        return claimed
+
+    def _refresh_active_challenges(self, force: bool = False) -> None:
+        """Ensure daily and weekly challenge lists exist and refresh on schedule."""
+        if not getattr(self, "challenges", None):
+            return
+        try:
+            self.challenges.refresh_daily_challenges(force=force or not self.challenges.active_daily)
+            self.challenges.refresh_weekly_challenges(force=force or not self.challenges.active_weekly)
+            from world.challenges import SPECIAL_CHALLENGES
+            active_special = {c.challenge_id for c in getattr(self.challenges, "active_special", [])}
+            completed_special = set(getattr(self.challenges, "completed_challenges", {}).keys())
+            for challenge_id in SPECIAL_CHALLENGES:
+                if challenge_id not in active_special and challenge_id not in completed_special:
+                    self.challenges.add_special_challenge(challenge_id, duration_hours=24 * 365)
+        except Exception:
+            pass
 
     # ==================== BADGES MENU ====================
 
@@ -11623,6 +12379,7 @@ Core Systems Tested: {report.total_tests}
         self.diary = DuckDiary()
         self.badges = BadgesSystem()
         self.minigames = MiniGameSystem()
+        self.life_story = LifeStorySystem()
         
         # UI systems (stateless but reset for cleanliness)
         self.statistics = StatisticsSystem()
@@ -11645,6 +12402,8 @@ Core Systems Tested: {report.total_tests}
         self._weather_seen = set()
         self._last_random_comment_time = 0.0
         self._pending_visitor_comment = None
+        self._decoration_room_select_decor_id = ""
+        self._decoration_room_view_id = ""
         
         # Restore prestige if keeping
         if prestige_data:
@@ -11676,18 +12435,22 @@ Core Systems Tested: {report.total_tests}
             "+=============================================+",
         ]
         
-        # Get plots
-        plots = list(self.garden.plots.items()) if hasattr(self.garden, 'plots') else []
-        num_plots = len(plots) if plots else 4  # Default 4 plots
+        plot_ids = self._garden_plot_ids()
+        num_plots = len(plot_ids) if plot_ids else 4  # Default 4 plots
         
         # Show each plot with selection indicator
-        for i in range(num_plots):
-            plot_id = i + 1
+        for i, plot_id in enumerate(plot_ids):
             plot = self.garden.plots.get(plot_id) if hasattr(self.garden, 'plots') else None
             selected = "[>]" if i == self._garden_selected_plot else "   "
             
-            if plot and plot.plant:
-                status = f"{plot.plant.name} ({plot.plant.growth_stage})"
+            if plot and not plot.is_unlocked:
+                status = "Locked plot"
+            elif plot and plot.plant:
+                from world.garden import PLANTS
+                plant_def = PLANTS.get(plot.plant.plant_id)
+                plant_name = plant_def.name if plant_def else plot.plant.plant_id.replace("_", " ").title()
+                stage = plot.plant.growth_stage.value if hasattr(plot.plant.growth_stage, "value") else str(plot.plant.growth_stage)
+                status = f"{plant_name} ({stage})"
                 if plot.needs_water:
                     status += " [THIRSTY]"
                 if plot.is_ready_to_harvest:
@@ -11695,7 +12458,7 @@ Core Systems Tested: {report.total_tests}
             else:
                 status = "Empty plot"
             
-            lines.append(f"| {selected} Plot {plot_id}: {status[:30]:30} |")
+            lines.append(f"| {selected} Plot {plot_id + 1}: {status[:30]:30} |")
         
         lines.append("+=============================================+")
         
@@ -11727,7 +12490,8 @@ Core Systems Tested: {report.total_tests}
             return
 
         # Navigate plots
-        num_plots = len(self.garden.plots) if hasattr(self.garden, 'plots') else 4
+        plot_ids = self._garden_plot_ids()
+        num_plots = len(plot_ids) if plot_ids else 4
         
         if key_name == "KEY_UP":
             if self._garden_selected_plot > 0:
@@ -11742,7 +12506,7 @@ Core Systems Tested: {report.total_tests}
             return
         
         # Actions on selected plot
-        plot_id = self._garden_selected_plot + 1
+        plot_id = plot_ids[self._garden_selected_plot] if plot_ids else self._garden_selected_plot
         
         if key_str == 'p':
             # Plant - use first available seed
@@ -11753,6 +12517,39 @@ Core Systems Tested: {report.total_tests}
             else:
                 self.renderer.show_message("No seeds to plant!", duration=2.0)
             return
+
+    def _garden_plot_ids(self) -> List[int]:
+        """Return plot IDs in UI order."""
+        if hasattr(self.garden, 'plots') and self.garden.plots:
+            return sorted(self.garden.plots.keys())
+        return list(range(4))
+
+    def _garden_harvest_capacity_ok(self, plot_id: int) -> Tuple[bool, str]:
+        """Check that a ready harvest can fit before clearing the plot."""
+        try:
+            from world.garden import PLANTS
+            plot = self.garden.plots.get(plot_id)
+            if not plot or not plot.plant:
+                return True, ""
+            plant_def = PLANTS.get(plot.plant.plant_id)
+            if not plant_def:
+                return True, ""
+            max_amount = int(plant_def.harvest_amount[1])
+            if plot.plant.times_watered >= plant_def.water_needs * 2:
+                max_amount += 1
+            material = MATERIALS.get(plant_def.harvest_item)
+            if not material:
+                return True, ""
+            stack_room = 0
+            for stack in self.materials.stacks:
+                if stack.material_id == plant_def.harvest_item:
+                    stack_room += max(0, material.stack_size - stack.quantity)
+            free_room = self.materials.get_slots_free() * material.stack_size
+            if stack_room + free_room < max_amount:
+                return False, f"Not enough material inventory room for {plant_def.name}. Clear space first."
+            return True, ""
+        except Exception:
+            return True, ""
         
         if key_str == 'w':
             self._garden_water(plot_id)
@@ -11788,7 +12585,10 @@ Core Systems Tested: {report.total_tests}
         self.renderer.show_message(msg, duration=3.0)
 
         if success:
-            self.progression.add_xp(5, "gardening")
+            new_level = self._award_xp(5, "gardening")
+            if new_level:
+                self._on_level_up(new_level)
+            self._process_quest_updates("garden", "plant", 1)
             duck_sounds.play()
 
     def _garden_water(self, plot_id: int):
@@ -11797,32 +12597,35 @@ Core Systems Tested: {report.total_tests}
         self.renderer.show_message(msg, duration=2.0)
         
         if success:
-            self.challenges.update_progress("garden_water", 1)
+            self.challenges.update_progress("activity_variety", 1)
+            self._process_quest_updates("garden", "water", 1)
             duck_sounds.play()
 
     def _garden_harvest(self, plot_id: int):
         """Harvest a plant from a garden plot."""
+        capacity_ok, capacity_msg = self._garden_harvest_capacity_ok(plot_id)
+        if not capacity_ok:
+            self.renderer.show_message(capacity_msg, duration=3.0)
+            return
+
         success, msg, rewards = self.garden.harvest_plant(plot_id)
         
         if success:
             # Add rewards to inventory
-            for item_id, amount in rewards.items():
-                self.materials.add_material(item_id, amount)
+            harvest_item = rewards.get("item")
+            harvest_amount = int(rewards.get("amount", 0))
+            if harvest_item and harvest_amount > 0:
+                added, add_msg = self.materials.add_material(harvest_item, harvest_amount)
+                if added < harvest_amount:
+                    msg = f"{msg} {add_msg}"
+            if rewards.get("coins"):
+                self._award_currency(int(rewards["coins"]), "harvest")
             
-            xp = self.progression.add_xp(20, "harvest")
+            xp = self._award_xp(int(rewards.get("xp", 20)), "harvest")
             if xp:
                 self._on_level_up(xp)
             
-            self.challenges.update_progress("harvest", 1)
-            self._process_quest_updates("harvest", "any", 1)
-            self.achievements.unlock("first_harvest")
-            
-            # Check for garden achievements
-            stats = self.garden.get_garden_stats()
-            if stats["total_harvests"] >= 10:
-                self.achievements.unlock("harvest_10")
-            if stats["total_harvests"] >= 50:
-                self.achievements.unlock("green_thumb")
+            self._record_garden_harvest(rewards)
             
             sound_engine.play_sound("collect")
             duck_sounds.quack("happy")
@@ -11859,22 +12662,58 @@ Core Systems Tested: {report.total_tests}
             return
         
         harvested = 0
+        total_xp = 0
+        skipped_full = 0
         for plot_id, plot in self.garden.plots.items():
             if plot and plot.plant and plot.is_ready_to_harvest:
+                capacity_ok, _capacity_msg = self._garden_harvest_capacity_ok(plot_id)
+                if not capacity_ok:
+                    skipped_full += 1
+                    continue
                 success, msg, rewards = self.garden.harvest_plant(plot_id)
                 if success:
                     harvested += 1
-                    for item_id, amount in rewards.items():
-                        self.materials.add_material(item_id, amount)
+                    harvest_item = rewards.get("item")
+                    harvest_amount = int(rewards.get("amount", 0))
+                    if harvest_item and harvest_amount > 0:
+                        self.materials.add_material(harvest_item, harvest_amount)
+                    if rewards.get("coins"):
+                        self._award_currency(int(rewards["coins"]), "harvest")
+                    total_xp += int(rewards.get("xp", 20))
+                    self._record_garden_harvest(rewards)
         
         if harvested > 0:
-            xp = self.progression.add_xp(20 * harvested, "harvest")
+            xp = self._award_xp(total_xp, "harvest")
             if xp:
                 self._on_level_up(xp)
             self.renderer.show_message(f"Harvested {harvested} plant(s)!", duration=2.0, category="action")
             sound_engine.play_sound("collect")
+        elif skipped_full:
+            self.renderer.show_message("Material inventory is full. Clear space before harvesting.", duration=3.0)
         else:
             self.renderer.show_message("No plants ready to harvest.", duration=2.0)
+
+    def _record_garden_harvest(self, rewards: Dict) -> None:
+        """Update systems that depend on successful garden harvests."""
+        self.challenges.update_progress("activity_variety", 1)
+        self._process_quest_updates("garden", "harvest", 1)
+        if rewards.get("item") == "golden_petal":
+            self.challenges.update_progress("grow_golden_flower", 1)
+        if hasattr(self, "statistics") and self.statistics:
+            self.statistics.increment_stat("plants_harvested")
+            self.statistics.increment_stat("plants_grown")
+        self._unlock_achievement("first_harvest")
+
+        stats = self.garden.get_garden_stats()
+        if stats["total_harvests"] >= 10:
+            self._unlock_achievement("harvest_10")
+        if stats["total_harvests"] >= 50:
+            self._unlock_achievement("green_thumb")
+        try:
+            self.life_story.record_garden_harvest(rewards)
+            self._refresh_life_story_from_game()
+        except Exception:
+            pass
 
     # ==================== FESTIVAL SYSTEM ====================
 
@@ -12148,7 +12987,9 @@ Core Systems Tested: {report.total_tests}
             if attempt_lines:
                 msg = random.choice(attempt_lines)
             self.renderer.show_message(msg, duration=3.0)
-            self.progression.add_xp(10, "training")
+            new_level = self._award_xp(10, "training")
+            if new_level:
+                self._on_level_up(new_level)
             duck_sounds.quack("happy")
         else:
             # Continue training session
@@ -12160,7 +13001,9 @@ Core Systems Tested: {report.total_tests}
                     msg = random.choice(mastery_lines)
                 self.renderer.show_message(f"* Learned: {learned_trick.name}! *\n{msg}", duration=4.0)
                 duck_sounds.level_up()
-                self.progression.add_xp(25, "training")
+                new_level = self._award_xp(25, "training")
+                if new_level:
+                    self._on_level_up(new_level)
                 # Notify diary manager of trick learned
                 self.diary_manager.on_trick_learned(learned_trick.name)
             else:
@@ -12171,7 +13014,9 @@ Core Systems Tested: {report.total_tests}
                     attempt_msg = random.choice(attempt_lines)
                     msg = f"{attempt_msg}\n{msg}"
                 self.renderer.show_message(msg, duration=3.0)
-                self.progression.add_xp(10, "training")
+                new_level = self._award_xp(10, "training")
+                if new_level:
+                    self._on_level_up(new_level)
             duck_sounds.quack("happy")
 
     def _perform_trick(self, trick_id: str):
@@ -12202,25 +13047,30 @@ Core Systems Tested: {report.total_tests}
             mood_bonus = result.get("mood_bonus", 0)
             
             if xp_gain:
-                new_level = self.progression.add_xp(xp_gain, "tricks")
+                new_level = self._award_xp(xp_gain, "tricks")
                 if new_level:
                     self._on_level_up(new_level)
             
             if coin_gain:
-                self.habitat.add_currency(coin_gain)
+                self._award_currency(coin_gain, "tricks")
             
             if mood_bonus and self.duck:
                 self._change_need("fun", mood_bonus, "trick_performance")
 
             # Check achievements
             if result.get("perfect"):
-                self.achievements.unlock("perfect_trick")
+                self._unlock_achievement("perfect_trick")
+                if hasattr(self, "statistics") and self.statistics:
+                    self.statistics.perfect_performances += 1
             
+            if hasattr(self, "statistics") and self.statistics:
+                self.statistics.increment_stat("tricks_performed")
+
             if self.tricks.total_performances >= 10:
-                self.achievements.unlock("trick_performer")
+                self._unlock_achievement("trick_performer")
             
             if len(self.tricks.learned_tricks) >= 5:
-                self.achievements.unlock("trick_master")
+                self._unlock_achievement("trick_master")
             
             sound_engine.play_sound("success")
             duck_sounds.quack("ecstatic")
@@ -12993,37 +13843,32 @@ Core Systems Tested: {report.total_tests}
         result = self.achievements.unlock(achievement_id)
         if result:  # Only award badge if newly unlocked
             self._award_badge_for_achievement(achievement_id)
+            try:
+                self.diary_manager.on_milestone("achievement", achievement=achievement_id)
+            except Exception:
+                pass
         return result
 
     def _award_badge_for_achievement(self, achievement_id: str):
         """Award a badge when an achievement is unlocked."""
-        # Map achievements to badges
         badge_mapping = {
-            "first_feed": "caretaker",
-            "feed_10": "feeder",
-            "feed_100": "master_feeder",
-            "first_play": "playful",
-            "play_100": "entertainer",
+            "first_feed": "first_feeding",
+            "100_feeds": "dedicated_feeder",
+            "100_pets": "petting_pro",
+            "best_friends": "best_friend",
+            "first_minigame": "first_game",
+            "minigame_master": "game_master",
             "first_explore": "explorer",
-            "explore_all": "world_traveler",
-            "first_craft": "crafter",
-            "craft_10": "artisan",
-            "first_build": "builder",
-            "build_5": "architect",
-            "first_fish": "angler",
-            "fish_50": "master_angler",
-            "first_harvest": "farmer",
-            "green_thumb": "botanist",
-            "perfect_trick": "performer",
-            "trick_master": "star",
-            "level_10": "dedicated",
-            "level_25": "veteran",
-            "level_50": "legendary",
-            "prestige_1": "legacy",
+            "discover_5_areas": "explorer",
+            "explorer_15_areas": "world_traveler",
+            "treasure_hunter": "treasure_hunter",
+            "fish_master": "angler",
+            "green_thumb": "green_thumb",
+            "trick_master": "trick_master",
         }
         
         badge_id = badge_mapping.get(achievement_id)
-        if badge_id and hasattr(self.badges, 'award_badge'):
+        if badge_id in BADGES and hasattr(self.badges, 'award_badge'):
             self.badges.award_badge(badge_id)
     # ==================== ENHANCED DIARY ====================
 
@@ -13310,6 +14155,10 @@ Core Systems Tested: {report.total_tests}
         
         # Record the dream
         dream = self.enhanced_diary.record_dream(title, description, recurring)
+        try:
+            self.diary_manager.on_dream(title, description)
+        except Exception:
+            pass
         
         if dream:
             # Show brief dream notification
@@ -13354,7 +14203,16 @@ Core Systems Tested: {report.total_tests}
         )
         
         if photo:
-            self.renderer.show_message(f"[#] Photo saved to scrapbook!", duration=3.0)
+            life_messages = []
+            try:
+                life_messages.extend(self.life_story.record_photo(photo.title))
+                life_messages.extend(self._refresh_life_story_from_game())
+            except Exception:
+                life_messages = []
+            self.renderer.show_message(
+                f"[#] Photo saved to scrapbook!{self._life_story_suffix(life_messages)}",
+                duration=3.0,
+            )
             duck_sounds.play()
         else:
             self.renderer.show_message("Could not take photo", duration=2.0)
@@ -13622,7 +14480,7 @@ Core Systems Tested: {report.total_tests}
         lines.append("+===============================================+")
         lines.append("")
         lines.append("[^/v] Select | [Enter] Place | [</> ] Page")
-        lines.append("[1-5] Room | [R] Remove | [Esc/Bksp] Close")
+        lines.append("[1-4] View Room | [R] Remove | [Esc/Bksp] Close")
         
         self.renderer.show_overlay("\n".join(lines), duration=0)
     
@@ -13669,6 +14527,15 @@ Core Systems Tested: {report.total_tests}
             self._decorations_menu_selected = min(max(0, page_count - 1), self._decorations_menu_selected + 1)
             self._render_decorations_menu()
             return
+
+        # Number keys show a rendered room preview.
+        if key_str.isdigit() and key_str != '0':
+            rooms = list(self.decorations.rooms.keys())
+            idx = int(key_str) - 1
+            if 0 <= idx < len(rooms):
+                self._notify_overlay_closed(UIOverlay.DECORATIONS)
+                self._show_decoration_room_view(rooms[idx])
+            return
         
         # Enter places the currently selected decoration
         if key_name == "KEY_ENTER":
@@ -13706,7 +14573,23 @@ Core Systems Tested: {report.total_tests}
             self._notify_overlay_closed(UIOverlay.DECORATIONS)
             self.ui_state.open_overlay(UIOverlay.DECORATION_ROOM)
             self._decoration_room_select_decor_id = decor_id
+            self._decoration_room_view_id = ""
             self._render_decoration_room_select(decor_id)
+
+    def _show_decoration_room_view(self, room_id: str):
+        """Open a read-only rendered room preview."""
+        self.ui_state.open_overlay(UIOverlay.DECORATION_ROOM)
+        self._decoration_room_select_decor_id = ""
+        self._decoration_room_view_id = room_id
+        self._render_decoration_room_view(room_id)
+
+    def _render_decoration_room_view(self, room_id: str):
+        """Render a room and its placed decorations."""
+        if not room_id:
+            room_id = next(iter(self.decorations.rooms.keys()), "")
+        lines = self.decorations.render_room(room_id)
+        lines.extend(["", "[Esc/Bksp] Back"])
+        self.renderer.show_overlay("\n".join(lines), duration=0)
 
     def _render_decoration_room_select(self, decor_id: str):
         """Show a room selection overlay for placing a decoration."""
@@ -13743,7 +14626,12 @@ Core Systems Tested: {report.total_tests}
             self._notify_overlay_closed(UIOverlay.DECORATION_ROOM)
             self.renderer.dismiss_overlay()
             # Reopen decorations menu
+            self._decoration_room_select_decor_id = ""
+            self._decoration_room_view_id = ""
             self._show_decorations_menu()
+            return
+
+        if not self._decoration_room_select_decor_id:
             return
 
         rooms = list(self.decorations.rooms.keys())
@@ -13756,25 +14644,118 @@ Core Systems Tested: {report.total_tests}
                 self._place_decoration_in_room(decor_id, room_id)
                 return
 
-    def _place_decoration_in_room(self, decoration_id: str, room_type: str, position: Tuple[int, int] = (0, 0)):
+    def _place_decoration_in_room(self, decoration_id: str, room_type: str, position: Optional[Tuple[int, int]] = None):
         """Place a decoration in a room."""
+        if position is None:
+            position = self._find_decoration_position(decoration_id, room_type)
+            if position is None:
+                self.renderer.show_message("No open space in that room.", duration=2.0)
+                return False
+
         success, msg = self.decorations.place_decoration(decoration_id, room_type, position)
 
         if success:
-            self.renderer.show_message(f"* {msg}", duration=3.0)
+            life_messages = self._refresh_life_story_from_game()
+            self.renderer.show_message(f"* {msg}{self._life_story_suffix(life_messages)}", duration=3.0)
             sound_engine.play_sound("build")
+            if hasattr(self, "statistics") and self.statistics:
+                self.statistics.decorations_placed += 1
         else:
             self.renderer.show_message(msg, duration=2.0)
 
         return success
+
+    def _find_decoration_position(self, decoration_id: str, room_type: str) -> Optional[Tuple[int, int]]:
+        """Find the first open grid position for a decoration in a room."""
+        from world.decorations import DECORATIONS
+        decoration = DECORATIONS.get(decoration_id)
+        room = self.decorations.rooms.get(room_type)
+        if not decoration or not room:
+            return None
+        if decoration.allowed_rooms and room.room_type not in decoration.allowed_rooms:
+            return None
+        for y in range(0, max(0, room.size[1] - decoration.size[1]) + 1):
+            for x in range(0, max(0, room.size[0] - decoration.size[0]) + 1):
+                position = (x, y)
+                blocked = False
+                for placed in room.decorations:
+                    existing = DECORATIONS.get(placed.decoration_id)
+                    if existing and self.decorations._check_overlap(position, decoration.size, placed.position, existing.size):
+                        blocked = True
+                        break
+                if not blocked:
+                    return position
+        return None
 
     # ==================== SAVE SLOTS SYSTEM ====================
 
     def _show_save_slots_menu(self):
         """Show the save slots management menu."""
         self.ui_state.open_overlay(UIOverlay.SAVE_SLOTS)
-        self._save_slots_selected = 0
+        self._save_slots_selected = max(0, min(
+            SaveSlotsSystem.MAX_SLOTS - 1,
+            getattr(self.save_slots, 'current_slot', 1) - 1
+        ))
         self._render_save_slots_menu()
+
+    def _sync_save_manager_to_slot(self) -> None:
+        """Keep SaveManager pointed at the currently selected save slot."""
+        if not getattr(self, 'save_slots', None) or not getattr(self, 'save_manager', None):
+            return
+        slot_id = max(1, min(SaveSlotsSystem.MAX_SLOTS, self.save_slots.current_slot))
+        self.save_slots.current_slot = slot_id
+        self.save_manager.set_save_path(self.save_slots.get_save_path(slot_id))
+
+    def _activate_save_slot(self, slot_id: int) -> bool:
+        """Switch the active slot and bind all future load/save calls to it."""
+        if not self.save_slots.switch_slot(slot_id):
+            return False
+        self._sync_save_manager_to_slot()
+        return True
+
+    def _initialize_aging_for_duck(self) -> None:
+        """Initialize the detailed aging system from the live duck."""
+        if not getattr(self, 'duck', None):
+            return
+        if not getattr(self, 'aging', None):
+            self.aging = AgingSystem()
+        if not self.aging.birth_date:
+            created_at = getattr(self.duck, 'created_at', None) or datetime.now().isoformat()
+            try:
+                birth_date = datetime.fromisoformat(created_at).date().isoformat()
+            except (TypeError, ValueError):
+                birth_date = datetime.now().date().isoformat()
+            self.aging.initialize(birth_date)
+        self._sync_aging_to_duck_stage()
+
+    def _sync_aging_to_duck_stage(self) -> None:
+        """Make AgingSystem reflect the live duck growth stage instead of competing with it."""
+        if not getattr(self, 'duck', None) or not getattr(self, 'aging', None):
+            return
+        stage_value = self.duck.growth_stage.value if hasattr(self.duck.growth_stage, 'value') else str(self.duck.growth_stage)
+        detailed_stage = get_detailed_stage(stage_value)
+        if self.aging.current_stage != detailed_stage:
+            self.aging.current_stage = detailed_stage
+            self.aging.growth_milestones.setdefault(detailed_stage.value, datetime.now().isoformat())
+
+    def _get_current_aging_modifiers(self) -> Dict[str, float]:
+        """Return age-based need/progression modifiers for the current live stage."""
+        self._initialize_aging_for_duck()
+        if not getattr(self, 'aging', None):
+            return {}
+        return {
+            "hunger_rate": self.aging.get_stat_modifier("hunger_rate"),
+            "energy_rate": self.aging.get_stat_modifier("energy_rate"),
+            "xp_gain": self.aging.get_stat_modifier("xp_gain"),
+            "coin_gain": self.aging.get_stat_modifier("coin_gain"),
+        }
+
+    def _get_need_decay_multiplier(self) -> float:
+        """Global need decay multiplier from gameplay difficulty settings."""
+        try:
+            return settings_manager.settings.get_difficulty_multiplier()
+        except Exception:
+            return 1.0
 
     def _render_save_slots_menu(self):
         """Render the save slots menu with selection."""
@@ -13803,6 +14784,7 @@ Core Systems Tested: {report.total_tests}
         lines.append(f"  Current: Slot {self.save_slots.current_slot}")
         lines.append("")
         lines.append("[^/v] Select | [Enter] Switch | [N] New | [D] Delete")
+        lines.append("[C] Copy to empty | [R] Restore | [E] Export | [I] Import")
         lines.append("[Esc/Bksp] Close")
         
         self.renderer.show_overlay("\n".join(lines), duration=0)
@@ -13839,7 +14821,8 @@ Core Systems Tested: {report.total_tests}
         if key_name == "KEY_ENTER":
             slot = self.save_slots.slots.get(slot_id)
             if slot and not slot.is_empty:
-                self.save_slots.switch_slot(slot_id)
+                self._flush_active_slot()
+                self._activate_save_slot(slot_id)
                 self._notify_overlay_closed(UIOverlay.SAVE_SLOTS)
                 self.renderer.dismiss_message()
                 self._load_game()
@@ -13854,9 +14837,10 @@ Core Systems Tested: {report.total_tests}
         
         # New game in selected slot
         if key_str == 'n':
+            self._flush_active_slot()
             self._notify_overlay_closed(UIOverlay.SAVE_SLOTS)
             self.renderer.dismiss_message()
-            self.save_slots.switch_slot(slot_id)
+            self._activate_save_slot(slot_id)
             self._start_new_game()
             return
         
@@ -13864,10 +14848,90 @@ Core Systems Tested: {report.total_tests}
         if key_str == 'd':
             slot = self.save_slots.slots.get(slot_id)
             if slot and not slot.is_empty:
+                if slot_id == self.save_slots.current_slot:
+                    self.renderer.show_message("Cannot delete the active slot while it is loaded.", duration=2.0)
+                    return
                 self.save_slots.delete_slot(slot_id)
                 self._render_save_slots_menu()
                 self.renderer.show_message(f"Deleted slot {slot_id}", duration=2.0)
             return
+
+        if key_str == 'c':
+            self._flush_slot_if_active(slot_id)
+            slot = self.save_slots.slots.get(slot_id)
+            if not slot or slot.is_empty:
+                self.renderer.show_message("Nothing to copy from this slot.", duration=2.0)
+                return
+            target_id = None
+            for candidate in range(1, SaveSlotsSystem.MAX_SLOTS + 1):
+                candidate_slot = self.save_slots.slots.get(candidate)
+                if candidate != slot_id and (candidate_slot is None or candidate_slot.is_empty):
+                    target_id = candidate
+                    break
+            if target_id is None:
+                self.renderer.show_message("No empty slot available for copy.", duration=2.0)
+                return
+            if self.save_slots.copy_slot(slot_id, target_id):
+                self._render_save_slots_menu()
+                self.renderer.show_message(f"Copied slot {slot_id} to slot {target_id}.", duration=2.0)
+            else:
+                self.renderer.show_message("Copy failed.", duration=2.0)
+            return
+
+        if key_str == 'r':
+            if self.save_slots.restore_backup(slot_id):
+                if slot_id == self.save_slots.current_slot:
+                    self._notify_overlay_closed(UIOverlay.SAVE_SLOTS)
+                    self.renderer.dismiss_message()
+                    self._load_game()
+                    self.renderer.show_message(f"Restored and reloaded slot {slot_id}.", duration=2.0)
+                else:
+                    self._render_save_slots_menu()
+                    self.renderer.show_message(f"Restored backup for slot {slot_id}.", duration=2.0)
+            else:
+                self.renderer.show_message("No backup available for this slot.", duration=2.0)
+            return
+
+        if key_str == 'e':
+            self._flush_slot_if_active(slot_id)
+            slot = self.save_slots.slots.get(slot_id)
+            if not slot or slot.is_empty:
+                self.renderer.show_message("Nothing to export from this slot.", duration=2.0)
+                return
+            export_dir = self.save_slots.save_dir / "exports"
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            export_path = export_dir / f"slot_{slot_id}_{timestamp}.json"
+            if self.save_slots.export_slot(slot_id, str(export_path)):
+                self.renderer.show_message(f"Exported slot {slot_id} to {export_path}", duration=4.0)
+            else:
+                self.renderer.show_message("Export failed.", duration=2.0)
+            return
+
+        if key_str == 'i':
+            import_path = self.save_slots.save_dir / f"import_slot_{slot_id}.json"
+            if self.save_slots.import_slot(slot_id, str(import_path)):
+                if slot_id == self.save_slots.current_slot:
+                    self._notify_overlay_closed(UIOverlay.SAVE_SLOTS)
+                    self.renderer.dismiss_message()
+                    self._load_game()
+                    self.renderer.show_message(f"Imported and reloaded {import_path.name}.", duration=3.0)
+                else:
+                    self._render_save_slots_menu()
+                    self.renderer.show_message(f"Imported {import_path.name} into slot {slot_id}.", duration=3.0)
+            else:
+                self.renderer.show_message(f"Place import_slot_{slot_id}.json in {self.save_slots.save_dir} first.", duration=4.0)
+            return
+
+    def _flush_active_slot(self) -> None:
+        """Persist the currently loaded slot before file-level slot operations."""
+        if self.duck:
+            self._save_game()
+            self.save_slots.refresh_slots()
+
+    def _flush_slot_if_active(self, slot_id: int) -> None:
+        """Flush live state when an operation reads the active slot file."""
+        if slot_id == self.save_slots.current_slot:
+            self._flush_active_slot()
 
     def _get_room_decoration_bonus(self) -> Dict[str, int]:
         """Get the total decoration bonuses affecting the duck."""

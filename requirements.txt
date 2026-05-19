@@ -1,8 +1,8 @@
 blessed>=1.20.0
 pygame>=2.5.0  # For background music and sound effects
 
-# AI conversations using bundled local model
-llama-cpp-python>=0.2.0
-
 # Markov chain voice generation for Cheese's evolving dialogue
 markovify>=0.9.4
+
+# Optional local LLM support lives in requirements-ai.txt. The game has
+# handcrafted fallbacks and runs without llama-cpp-python installed.

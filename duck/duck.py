@@ -163,7 +163,8 @@ class Duck:
         """Get a description of the duck's personality."""
         return self._personality_system.get_personality_summary()
 
-    def update(self, delta_minutes: float, aging_modifiers: Optional[dict] = None, weather_modifiers: Optional[dict] = None):
+    def update(self, delta_minutes: float, aging_modifiers: Optional[dict] = None,
+               weather_modifiers: Optional[dict] = None, decay_multiplier: float = 1.0):
         """
         Update the duck's state based on time passed.
 
@@ -185,10 +186,14 @@ class Duck:
             cascade_modifiers=cascade_mods,
             sickness_multiplier=sickness_mult,
             weather_modifiers=weather_modifiers,
+            decay_multiplier=decay_multiplier,
         )
 
         # Update growth progress
         self._update_growth(delta_minutes)
+
+        # Clear short-lived display/action states once their duration has passed.
+        self._clear_expired_action()
 
     def _update_growth(self, delta_minutes: float):
         """Update growth stage progress."""
@@ -242,7 +247,17 @@ class Duck:
         mood = self.get_mood()
 
         # Set current action briefly for animation
+        now = time.time()
+        action_durations = {
+            "feed": 4.0,
+            "play": 3.0,
+            "clean": 3.5,
+            "pet": 2.5,
+            "sleep": 20.0,
+        }
         self.current_action = interaction
+        self.action_start_time = now
+        self._action_end_time = now + action_durations.get(interaction, 3.0)
 
         return {
             "interaction": interaction,
@@ -328,3 +343,9 @@ class Duck:
         """Clear the current action."""
         self.current_action = None
         self.action_start_time = None
+        self._action_end_time = 0.0
+
+    def _clear_expired_action(self):
+        """Clear current_action when its tracked duration has elapsed."""
+        if self.current_action and self._action_end_time and time.time() >= self._action_end_time:
+            self.clear_action()

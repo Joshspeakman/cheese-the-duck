@@ -718,6 +718,8 @@ class QuestSystem:
         # Step complete!
         if current_step.next_step_id:
             active.current_step = current_step.next_step_id
+            if current_step.rewards:
+                return (quest_id, current_step.rewards)
             return None
         else:
             # Quest complete!

@@ -363,6 +363,8 @@ def attempt_coax(duck, duck_store: "Optional[DuckStore]" = None) -> Tuple[bool, 
         return False, ""
     
     duck.hiding_coax_visits += 1
+    if duck_store and hasattr(duck_store, "set_hiding_coax_visits"):
+        duck_store.set_hiding_coax_visits(duck.hiding_coax_visits, "coax_progress")
     remaining = COAX_VISITS_NEEDED - duck.hiding_coax_visits
     
     if remaining <= 0:
@@ -1038,4 +1040,3 @@ def _check_threshold_crossing(trait: str, old_val, new_val) -> Optional[str]:
         if old_val < threshold <= new_val or old_val > threshold >= new_val:
             return line
     return None
-

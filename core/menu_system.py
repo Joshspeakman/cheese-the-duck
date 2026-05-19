@@ -101,6 +101,7 @@ class MenuSystem:
         "trading":      UIOverlay.TRADING,
         "diary":        UIOverlay.DIARY,
         "enhanced_diary": UIOverlay.ENHANCED_DIARY,
+        "life_story":  UIOverlay.LIFE_STORY,
         "festival":     UIOverlay.FESTIVAL,
         "inventory":    UIOverlay.INVENTORY,
         "shop":         UIOverlay.SHOP,

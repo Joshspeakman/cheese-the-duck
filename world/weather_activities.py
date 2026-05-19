@@ -1104,8 +1104,50 @@ class WeatherActivitiesSystem:
     
     def get_available_activities(self, weather: str) -> List[WeatherActivity]:
         """Get activities available for current weather."""
+        weather_aliases = {
+            "partly_cloudy": "cloudy",
+            "overcast": "cloudy",
+            "misty": "foggy",
+            "drizzle": "rainy",
+            "heavy_rain": "rainy",
+            "spring_showers": "rainy",
+            "thunderstorm": "stormy",
+            "summer_storm": "stormy",
+            "hail": "stormy",
+            "ice_storm": "stormy",
+            "light_snow": "snowy",
+            "heavy_snow": "snowy",
+            "snow_flurries": "snowy",
+            "blizzard": "snowy",
+            "sleet": "snowy",
+            "frost": "cold",
+            "first_frost": "cold",
+            "bitter_cold": "cold",
+            "freezing": "cold",
+            "clear_cold": "cold",
+            "winter_sun": "cold",
+            "breezy": "windy",
+            "warm_breeze": "windy",
+            "leaf_storm": "windy",
+            "scorching": "hot",
+            "humid": "hot",
+            "heat_wave": "hot",
+            "muggy": "hot",
+            "rainbow": "sunny",
+            "double_rainbow": "sunny",
+            "aurora": "cold",
+            "meteor_shower": "sunny",
+            "perfect_day": "sunny",
+            "golden_hour": "sunny",
+            "dewy_morning": "rainy",
+            "pollen_drift": "windy",
+            "crisp": "windy",
+            "autumnal": "windy",
+            "harvest_moon": "sunny",
+        }
+        weather = weather_aliases.get(str(weather).lower(), str(weather).lower())
         try:
-            weather_type = WeatherType(weather.lower())
+            weather_type = WeatherType(weather)
         except ValueError:
             weather_type = WeatherType.CLOUDY  # Default
         
@@ -1273,6 +1315,12 @@ class WeatherActivitiesSystem:
         """Convert to dictionary for saving."""
         return {
             "activity_cooldowns": self.activity_cooldowns,
+            "current_activity": {
+                "activity_id": self.current_activity.activity_id,
+                "started_at": self.current_activity.started_at,
+                "duration_seconds": self.current_activity.duration_seconds,
+                "completed": self.current_activity.completed,
+            } if self.current_activity else None,
             "completed_activities": self.completed_activities,
             "total_activities_done": self.total_activities_done,
             "items_collected": self.items_collected[-50:],  # Keep last 50
@@ -1283,6 +1331,14 @@ class WeatherActivitiesSystem:
         """Create from dictionary."""
         system = cls()
         system.activity_cooldowns = data.get("activity_cooldowns", {})
+        current = data.get("current_activity")
+        if current:
+            system.current_activity = ActivityProgress(
+                activity_id=current.get("activity_id", ""),
+                started_at=current.get("started_at", datetime.now().isoformat()),
+                duration_seconds=int(current.get("duration_seconds", 0)),
+                completed=bool(current.get("completed", False)),
+            )
         system.completed_activities = data.get("completed_activities", {})
         system.total_activities_done = data.get("total_activities_done", 0)
         system.items_collected = data.get("items_collected", [])

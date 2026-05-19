@@ -65,7 +65,8 @@ class Needs:
                aging_modifiers: Optional[dict] = None,
                cascade_modifiers: Optional[Dict[str, float]] = None,
                sickness_multiplier: float = 1.0,
-               weather_modifiers: Optional[Dict[str, float]] = None):
+               weather_modifiers: Optional[Dict[str, float]] = None,
+               decay_multiplier: float = 1.0):
         """
         Update needs based on time passed.
 
@@ -78,6 +79,7 @@ class Needs:
             sickness_multiplier: Decay rate multiplier when duck is sick (default 1.0)
             weather_modifiers: Optional weather multipliers per need
                                (e.g. hot weather → energy decays 1.3× faster)
+            decay_multiplier: Global gameplay difficulty multiplier
         """
         # Get decay modifiers from personality
         modifiers = self._get_personality_modifiers(personality or {})
@@ -99,26 +101,31 @@ class Needs:
                        * modifiers.get("hunger", 1.0) * hunger_rate 
                        * cascade.get("hunger", 1.0) * sickness_multiplier
                        * weather.get("hunger", 1.0)
+                       * decay_multiplier
                        * self._accel_multiplier(self.hunger))
         self.energy -= (NEED_DECAY_RATES["energy"] * delta_minutes 
                        * modifiers.get("energy", 1.0) * energy_rate 
                        * cascade.get("energy", 1.0) * sickness_multiplier
                        * weather.get("energy", 1.0)
+                       * decay_multiplier
                        * self._accel_multiplier(self.energy))
         self.fun -= (NEED_DECAY_RATES["fun"] * delta_minutes 
                     * modifiers.get("fun", 1.0) 
                     * cascade.get("fun", 1.0) * sickness_multiplier
                     * weather.get("fun", 1.0)
+                    * decay_multiplier
                     * self._accel_multiplier(self.fun))
         self.cleanliness -= (NEED_DECAY_RATES["cleanliness"] * delta_minutes 
                             * modifiers.get("cleanliness", 1.0) 
                             * cascade.get("cleanliness", 1.0) * sickness_multiplier
                             * weather.get("cleanliness", 1.0)
+                            * decay_multiplier
                             * self._accel_multiplier(self.cleanliness))
         self.social -= (NEED_DECAY_RATES["social"] * delta_minutes 
                        * modifiers.get("social", 1.0) 
                        * cascade.get("social", 1.0) * sickness_multiplier
                        * weather.get("social", 1.0)
+                       * decay_multiplier
                        * self._accel_multiplier(self.social))
 
         self._clamp_all()

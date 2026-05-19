@@ -340,19 +340,26 @@ function Install-CheeseTheDuck {
         $pipPath = Join-Path $installDir ".venv\Scripts\pip.exe"
         & $pipPath install --upgrade pip -q 2>&1 | Out-Null
         & $pipPath install -r requirements.txt -q 2>&1 | Out-Null
+        if ($env:INSTALL_AI -eq "1") {
+            & $pipPath install -r requirements-ai.txt -q 2>&1 | Out-Null
+        }
         Write-Success "Dependencies installed"
     } finally {
         Pop-Location
     }
     
-    # Download AI model
-    Write-Step "Downloading AI model (this may take a while)..."
-    Push-Location $installDir
-    try {
-        $venvPython = Join-Path $installDir ".venv\Scripts\python.exe"
-        & $venvPython download_model.py --auto
-    } finally {
-        Pop-Location
+    # Download AI model only when optional local AI support is requested.
+    if ($env:INSTALL_AI -eq "1") {
+        Write-Step "Downloading AI model (this may take a while)..."
+        Push-Location $installDir
+        try {
+            $venvPython = Join-Path $installDir ".venv\Scripts\python.exe"
+            & $venvPython download_model.py --auto
+        } finally {
+            Pop-Location
+        }
+    } else {
+        Write-Step "Skipping optional AI model download (set INSTALL_AI=1 to enable)."
     }
     
     # Create launcher batch file

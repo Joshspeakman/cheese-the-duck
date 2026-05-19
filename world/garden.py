@@ -346,6 +346,16 @@ class GardenPlot:
     soil_quality: int = 100  # Affects growth speed
     decorations: List[str] = field(default_factory=list)
 
+    @property
+    def needs_water(self) -> bool:
+        """Whether this plot has a living plant that should be watered."""
+        return bool(self.plant and not self.plant.is_withered and self.plant.water_level < 60)
+
+    @property
+    def is_ready_to_harvest(self) -> bool:
+        """Whether this plot's plant can be harvested."""
+        return bool(self.plant and self.plant.growth_stage == GrowthStage.HARVESTABLE)
+
 
 class Garden:
     """

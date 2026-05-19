@@ -11,6 +11,7 @@ HABITAT_ITEM_ART: Dict[str, List[str]] = {
     "toy_ball": ["  O"],
     "toy_blocks": [" ▄▀▄", " ▀▄▀"],
     "toy_trumpet": [" #)═"],
+    "toy_boombox": [" ╔════╗", " ║♪oo♪║", " ╚════╝"],
     "toy_skateboard": ["══╗═╔══"],
     "toy_piano": [" ┌─┬─┐", " │█│█│", " └─┴─┘"],
     "toy_trampoline": [" ╱╲╱╲╱╲", "│BOUNCE│", " ╲╱╲╱╲╱"],
@@ -363,6 +364,7 @@ ITEM_COLORS = {
     "toy_ball": _term.bright_red,
     "toy_blocks": _term.bright_yellow,
     "toy_trumpet": _term.color(220),  # Gold
+    "toy_boombox": _term.bright_cyan,
     "toy_skateboard": _term.color(130),  # Brown
     "toy_piano": _term.bright_white,
     "toy_trampoline": _term.bright_magenta,
