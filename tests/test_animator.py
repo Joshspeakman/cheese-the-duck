@@ -37,12 +37,15 @@ def test_move_to_and_update():
     d = DuckAnimator(x=5, y=5, play_width=40, play_height=12)
     d.move_to(8, 5)
     assert d._is_directed_movement
-    # After enough updates, should have moved toward target
+    # The duck must leave the start position at some point; it may
+    # legitimately wander back to (5, 5) afterwards, so check during the
+    # loop rather than only the final position (was flaky in CI).
+    moved = False
     for _ in range(50):
         d.update(0.15)
-    # Duck should have reached target and then may wander further
-    # Just verify it moved from the start position
-    assert d.x != 5 or d.y != 5
+        if d.x != 5 or d.y != 5:
+            moved = True
+    assert moved
 
 
 def test_cancel_movement():
