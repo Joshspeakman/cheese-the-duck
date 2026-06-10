@@ -271,32 +271,25 @@ class DuckDesires:
         if getattr(duck, 'is_sick', False):
             motivation *= 0.3
 
-        # Personality overrides
-        personality = duck.personality
+        # Personality floors: traits guarantee a minimum motivation after all
+        # multiplicative penalties. Collected first, then applied in a single
+        # max() so the result can't depend on evaluation order.
+        ext = {}
+        if hasattr(duck, '_personality_system') and duck._personality_system:
+            ext = getattr(duck._personality_system, '_extended_traits', {})
+
+        floors = [0.0]
         # Independent ducks don't let social need tank motivation
-        independence = 0
-        if hasattr(duck, '_personality_system') and duck._personality_system:
-            ext = getattr(duck._personality_system, '_extended_traits', {})
-            independence = ext.get('independence', 0)
-        if independence > 30 and duck.needs.social < 20:
-            motivation = max(motivation, 0.35)
-
+        if ext.get('independence', 0) > 30 and duck.needs.social < 20:
+            floors.append(0.35)
         # Optimistic ducks recover motivation faster (floor is higher)
-        optimism = 0
-        if hasattr(duck, '_personality_system') and duck._personality_system:
-            ext = getattr(duck._personality_system, '_extended_traits', {})
-            optimism = ext.get('optimism', 0)
-        if optimism > 30:
-            motivation = max(motivation, 0.25)
-
+        if ext.get('optimism', 0) > 30:
+            floors.append(0.25)
         # Stubborn ducks maintain minimum motivation for their own goals
-        stubbornness = 0
-        if hasattr(duck, '_personality_system') and duck._personality_system:
-            ext = getattr(duck._personality_system, '_extended_traits', {})
-            stubbornness = ext.get('stubbornness', 0)
-        if stubbornness > 40:
-            motivation = max(motivation, 0.2)
+        if ext.get('stubbornness', 0) > 40:
+            floors.append(0.2)
 
+        motivation = max(motivation, *floors)
         return max(0.0, min(1.0, motivation))
 
     @staticmethod

@@ -137,7 +137,7 @@ class MusicTrack:
 
 
 # Music track definitions
-# Available audio files: Bell Breeze Loop.wav, sunny_day1.wav, sunny_day2.wav, Main.mp3
+# Available audio files: Bell Breeze Loop.ogg, sunny_day1.ogg, sunny_day2.ogg, Main.mp3
 # Keys match what _scan_audio_assets registers (lowercase stem).
 MUSIC_TRACKS = {
     # Contexts returned by get_music_context()

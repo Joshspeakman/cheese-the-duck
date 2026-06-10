@@ -123,7 +123,7 @@ for %%f in (main.py config.py game_logger.py download_model.py cheese.ico) do (
 )
 
 REM Copy audio files
-for %%f in ("%SCRIPT_DIR%*.wav" "%SCRIPT_DIR%*.mp3") do (
+for %%f in ("%SCRIPT_DIR%*.wav" "%SCRIPT_DIR%*.mp3" "%SCRIPT_DIR%*.ogg") do (
     if exist "%%f" (
         copy "%%f" "%OUTPUT_DIR%\" >nul
     )

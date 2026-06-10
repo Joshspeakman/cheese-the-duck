@@ -36,6 +36,7 @@ DATA_FILES = [
     "cheese.ico",
     "*.wav",
     "*.mp3",
+    "*.ogg",
 ]
 
 

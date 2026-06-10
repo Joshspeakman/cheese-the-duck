@@ -74,15 +74,15 @@ install_apt_dependencies() {
     
     local deps_needed=()
     
-    # Check for Python 3.8+
+    # Check for Python 3.9+
     if ! command_exists python3; then
         deps_needed+=("python3")
     else
         local py_version=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
         local py_major=$(echo "$py_version" | cut -d. -f1)
         local py_minor=$(echo "$py_version" | cut -d. -f2)
-        if [ "$py_major" -lt 3 ] || { [ "$py_major" -eq 3 ] && [ "$py_minor" -lt 8 ]; }; then
-            print_error "Python 3.8+ required, found $py_version"
+        if [ "$py_major" -lt 3 ] || { [ "$py_major" -eq 3 ] && [ "$py_minor" -lt 9 ]; }; then
+            print_error "Python 3.9+ required, found $py_version"
             deps_needed+=("python3")
         fi
     fi

@@ -390,8 +390,13 @@ class SettingsManager:
         for callback in self._change_callbacks:
             try:
                 callback(key, value)
-            except Exception:
-                pass  # Don't let callback errors break settings
+            except Exception as exc:
+                # Don't let callback errors break settings, but log them
+                try:
+                    from game_logger import get_logger
+                    get_logger().error(f"Settings callback failed for {key!r}: {exc}")
+                except Exception:
+                    pass
     
     def mark_tutorial_complete(self):
         """Mark the tutorial as completed."""

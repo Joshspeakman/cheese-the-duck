@@ -21,6 +21,8 @@ override_dh_auto_install:
 	# Copy game files
 	cp -r audio core dialogue duck ui world debian/cheese-the-duck/opt/cheese-the-duck/
 	cp -r assets data models debian/cheese-the-duck/opt/cheese-the-duck/ 2>/dev/null || true
+	# Root-level music/SFX files (the sound engine scans the game root)
+	cp *.wav *.mp3 *.ogg debian/cheese-the-duck/opt/cheese-the-duck/ 2>/dev/null || true
 	cp main.py config.py game_logger.py requirements.txt debian/cheese-the-duck/opt/cheese-the-duck/
 	cp download_model.py debian/cheese-the-duck/opt/cheese-the-duck/ 2>/dev/null || true
 	cp cheese.ico debian/cheese-the-duck/opt/cheese-the-duck/ 2>/dev/null || true
@@ -37,7 +39,7 @@ override_dh_auto_install:
 	
 	# Create desktop entry
 	echo '[Desktop Entry]' > debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
-	echo 'Version=1.2.0' >> debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
+	echo 'Version=1.0' >> debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
 	echo 'Type=Application' >> debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
 	echo 'Name=Cheese the Duck' >> debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop
 	echo 'Comment=A terminal-based virtual pet game' >> debian/cheese-the-duck/usr/share/applications/cheese-the-duck.desktop

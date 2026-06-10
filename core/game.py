@@ -222,6 +222,7 @@ class Game:
         self._last_visitor_dialogue = None  # Last visitor dialogue for LLM context
         self._sound_enabled = True
         self._reset_confirmation = False  # Flag for reset game confirmation
+        self._quest_choice_quest_id = None  # Quest awaiting a player decision (digit-key prompt)
 
         # Arrow-key menu selectors with pagination
         self._crafting_menu = MenuSelector("CRAFTING", close_keys=['KEY_ESCAPE', 'KEY_BACKSPACE', 'c'], items_per_page=8)
@@ -732,9 +733,10 @@ class Game:
         if hasattr(sound_engine, 'set_music_enabled'):
             sound_engine.set_music_enabled(settings.audio.music_enabled)
         
-        # Apply display settings to renderer (if available)
-        if hasattr(self.renderer, 'set_show_particles'):
-            self.renderer.set_show_particles(settings.display.show_particles)
+        # Apply display settings to renderer
+        self.renderer.set_show_particles(settings.display.show_particles)
+        self.renderer.set_show_animations(settings.display.show_animations)
+        self.renderer.set_show_weather_effects(settings.display.show_weather_effects)
         
         # Apply AI setting without starting the model at title boot. The local
         # model is warmed on game entry where a loading screen can explain it.
@@ -768,7 +770,7 @@ class Game:
 
     def _on_setting_changed(self, key: str, value):
         """Handle real-time setting changes."""
-        if key.startswith("audio."):
+        if key.startswith("audio.") or key.startswith("display."):
             self._apply_settings()
         elif key == "gameplay.ai_enabled":
             self._apply_ai_setting(value, warmup=(self._state != "title"))
@@ -1187,7 +1189,10 @@ class Game:
                 if quest_id:
                     self._notify_overlay_closed(UIOverlay.QUESTS)
                     self.renderer.dismiss_message()
-                    self._start_selected_quest(quest_id)
+                    if selected.data.get("active"):
+                        self._show_quest_choice_prompt(quest_id)
+                    else:
+                        self._start_selected_quest(quest_id)
             return
         if self._is_escape_or_backspace(key, key_str) or key_str == 'o':
             self._notify_overlay_closed(UIOverlay.QUESTS)
@@ -1832,6 +1837,12 @@ class Game:
         if text_secret:
             self._notify_secret_found(text_secret)
 
+        # Credit talk-based quest objectives. While the guardian step of the
+        # mysterious stranger quest is active, talking communes with the
+        # guardian; "any"-target talk objectives match either way.
+        talk_target = "guardian" if self.quests.has_active_objective("talk", "guardian") else "any"
+        self._process_quest_updates("talk", talk_target, 1)
+
         # Show a thinking indicator immediately so the player knows Cheese heard them
         thinking_messages = [
             "*tilts head* ...",
@@ -2332,6 +2343,11 @@ class Game:
             if self._handle_minigame_input(key_str, key_name):
                 return
 
+        # Handle quest choice prompt (digit keys pick an option)
+        if self._quest_choice_quest_id and key:
+            self._handle_quest_choice_input(key)
+            return
+
         # Handle reset confirmation dialog
         if self._reset_confirmation and key:
             key_str = str(key).lower()
@@ -2617,8 +2633,8 @@ class Game:
                 self.renderer.show_message(f"Sound: {status}")
                 return
 
-            # Volume up [+] or [=]
-            if key_str in ['+', '=']:
+            # Volume up [+] ('=' is reserved for the diary, see below)
+            if key_str == '+':
                 new_vol = sound_engine.volume_up()
                 vol_bar = sound_engine.get_volume_display()
                 self.renderer.show_message(f"Volume: {vol_bar} {int(new_vol * 100)}%")
@@ -3501,6 +3517,33 @@ class Game:
                 self._refresh_life_story_from_game()
             except Exception:
                 pass
+
+    # Quest discovery tables: activity source -> possible finds.
+    # Each entry is (objective_type, item_id, chance per attempt).
+    _QUEST_DISCOVERIES = {
+        "fishing": [("find", "water_token", 0.25), ("collect", "shiny_object", 0.35)],
+        "digging": [("find", "earth_token", 0.25), ("collect", "shiny_object", 0.35)],
+        "weather": [("find", "sky_token", 0.25)],
+    }
+
+    def _check_quest_discovery(self, source: str):
+        """Roll for COLLECT/FIND quest item discoveries tied to an activity.
+
+        Quest steps like the magpie's shiny object or the three ancient
+        tokens are only discoverable while their objective is active, so
+        these items never clutter normal play."""
+        for objective_type, item_id, chance in self._QUEST_DISCOVERIES.get(source, []):
+            if not self.quests.has_active_objective(objective_type, item_id):
+                continue
+            if random.random() >= chance:
+                continue
+            from world.items import ITEMS
+            item = ITEMS.get(item_id)
+            name = item.name if item else item_id.replace("_", " ").title()
+            self._grant_item_or_material(item_id, 1)
+            duck_sounds.quack("excited")
+            self.renderer.show_message(f"* Quest discovery: {name}! *", duration=4.0)
+            self._process_quest_updates(objective_type, item_id, 1)
 
     def _show_collectible_found(self, collectible_id: str):
         """Show notification for finding a collectible."""
@@ -4672,8 +4715,12 @@ class Game:
             elif item_id in MATERIALS:
                 self.materials.add_material(item_id, quantity)
             else:
-                # It's a tool or other item - add to tool list
-                pass
+                # Tools are registered by CraftingSystem._add_tool() during
+                # check_crafting(); anything else reaching here is a recipe
+                # result missing from ITEMS/MATERIALS — log so it isn't lost.
+                if item_id not in self.crafting.tools:
+                    from game_logger import get_logger
+                    get_logger().warning(f"Crafted item '{item_id}' has no inventory registry; result dropped")
 
             self.renderer.show_message(
                 f"* Crafting Complete! *\n\n"
@@ -8156,9 +8203,18 @@ class Game:
                 self.renderer.show_message(f"* Found collectible: {cname} [{crarity}]!", duration=4.0)
                 self._refresh_life_story_from_game(show=True)
 
-        # Update challenge and quest progress for exploration
+        # Update challenge and quest progress for exploration.
+        # Emit the biome so targeted objectives ("explore the pond") match;
+        # "any"-target objectives match regardless of the emitted target.
+        biome_value = self.exploration.current_area.biome.value if self.exploration.current_area else "any"
         self.challenges.update_progress("explore", 1)
-        self._process_quest_updates("explore", "any", 1)
+        self._process_quest_updates("explore", biome_value, 1)
+
+        # Sky token quest hint says treasures fall during special weather —
+        # exploring in anything other than clear skies can turn one up.
+        weather_str = self.atmosphere.current_weather.weather_type.value if self.atmosphere.current_weather else "sunny"
+        if weather_str not in ("sunny", "clear"):
+            self._check_quest_discovery("weather")
 
         # Update personality for exploration
         self.extended_personality.adjust_trait("curiosity", 2, "Exploring")
@@ -8540,6 +8596,7 @@ class Game:
                     self.challenges.update_progress("fish", 1)
                     self.challenges.update_progress("activity_variety", 1)
                     self._process_quest_updates("fish", "any", 1)
+                    self._check_quest_discovery("fishing")
                     try:
                         from world.fishing import FISH_DATABASE, FishRarity
                         fish_def = FISH_DATABASE.get(caught_fish.fish_id)
@@ -8979,13 +9036,16 @@ class Game:
             from world.quests import QUESTS
             quest = QUESTS.get(aq.quest_id)
             if quest:
-                step = quest.steps[aq.current_step] if aq.current_step < len(quest.steps) else None
-                progress = f"Step {aq.current_step + 1}/{len(quest.steps)}"
+                progress = f"Step {aq.current_step}/{len(quest.steps)}"
+                has_choice = bool(self.quests.get_pending_choices(aq.quest_id))
+                label = f"[Active] {quest.name}"
+                if has_choice:
+                    label += " (decision needed!)"
                 items.append(MenuItem(
                     id=aq.quest_id,
-                    label=f"[Active] {quest.name}",
+                    label=label,
                     description=progress,
-                    enabled=False,  # Can't start an active quest
+                    enabled=has_choice,  # Selectable only to make a pending decision
                     data={"quest_id": aq.quest_id, "active": True}
                 ))
 
@@ -9035,8 +9095,62 @@ class Game:
                 # Show first dialogue if available
                 for line in dialogue[:3]:
                     self.renderer.show_message(line, duration=3.0)
+            # Some quests open with a decision (e.g. the mysterious stranger)
+            if self.quests.get_pending_choices(quest_id):
+                self._show_quest_choice_prompt(quest_id)
         else:
             self.renderer.show_message(message, duration=3.0)
+
+    def _show_quest_choice_prompt(self, quest_id: str):
+        """Show a numbered decision prompt for the quest's current step."""
+        from world.quests import QUESTS
+        choices = self.quests.get_pending_choices(quest_id)
+        if not choices:
+            return
+        quest = QUESTS.get(quest_id)
+        quest_name = quest.name if quest else quest_id.replace("_", " ").title()
+
+        self._quest_choice_quest_id = quest_id
+        lines = [f"=== {quest_name.upper()} ===", "", "What do you do?", ""]
+        for i, choice in enumerate(choices, start=1):
+            lines.append(f"  [{i}] {choice}")
+        lines.append("")
+        lines.append("[1-{}] Decide | [Esc] Decide later".format(len(choices)))
+        self.renderer.show_overlay("\n".join(lines), duration=0)
+
+    def _handle_quest_choice_input(self, key):
+        """Handle input while a quest decision prompt is open."""
+        quest_id = self._quest_choice_quest_id
+        choices = self.quests.get_pending_choices(quest_id) if quest_id else None
+        key_str = str(key).lower() if not key.is_sequence else ""
+
+        if not choices:
+            self._quest_choice_quest_id = None
+            self.renderer.dismiss_overlay()
+            return
+
+        if self._is_escape_or_backspace(key, key_str):
+            # Defer the decision; it can be reopened from the quests menu
+            self._quest_choice_quest_id = None
+            self.renderer.dismiss_overlay()
+            return
+
+        if key_str.isdigit() and 1 <= int(key_str) <= len(choices):
+            choice = choices[int(key_str) - 1]
+            self._quest_choice_quest_id = None
+            self.renderer.dismiss_overlay()
+            success, message, next_step = self.quests.make_choice(quest_id, choice)
+            self.renderer.show_message(message, duration=3.0)
+            if success and next_step:
+                from world.quests import QUESTS
+                quest = QUESTS.get(quest_id)
+                step = next((s for s in quest.steps if s.step_id == next_step), None) if quest else None
+                if step:
+                    for line in step.dialogue[:3]:
+                        self.renderer.show_message(line, duration=3.0)
+                # Chained decisions (a choice can lead straight to another)
+                if self.quests.get_pending_choices(quest_id):
+                    self._show_quest_choice_prompt(quest_id)
 
     # ==================== TRADING SYSTEM ====================
 
@@ -9526,8 +9640,11 @@ class Game:
 
     def _do_treasure_dig(self):
         """Perform a treasure dig."""
+        attempted = self.treasure.current_hunt_location is not None
         success, message, found = self.treasure.dig()
-        
+        if attempted:
+            self._check_quest_discovery("digging")
+
         if found:
             # Found treasure!
             from world.treasure import TREASURES

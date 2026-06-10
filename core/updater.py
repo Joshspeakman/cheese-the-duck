@@ -497,8 +497,17 @@ class GameUpdater:
                                     shutil.copytree(backup_dest, dest)
                                 else:
                                     shutil.copy2(backup_dest, dest)
-                        except Exception:
-                            pass
+                        except Exception as rollback_exc:
+                            # A failed restore can leave a partial install;
+                            # log it so the user can recover from the backup.
+                            try:
+                                from game_logger import get_logger
+                                get_logger().error(
+                                    f"Update rollback failed for {dest}: {rollback_exc} "
+                                    f"(backup retained at {backup_dir})"
+                                )
+                            except Exception:
+                                pass
                     raise
                 
                 return UpdateStatus.UPDATE_COMPLETE
@@ -718,7 +727,7 @@ fi
                 # Create desktop entry (uses desktop launcher, Terminal=false)
                 desktop_entry = pkg_dir / "usr" / "share" / "applications" / "cheese-the-duck.desktop"
                 desktop_entry.write_text(f'''[Desktop Entry]
-Version={version}
+Version=1.0
 Type=Application
 Name=Cheese the Duck
 Comment=A terminal-based virtual pet game

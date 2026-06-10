@@ -193,55 +193,81 @@ class InputHandler:
         self._text_callback = None
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Single source of truth for player-facing key documentation.
+#
+# Interaction keys (F/P/L/D/Z + 1-5, H, Q) are dispatched through KEY_BINDINGS
+# above; every other key is handled directly in game.py's key handler. When
+# adding or changing a key in game.py, update KEY_REFERENCE so the in-game
+# help stays accurate — get_help_text() is generated from this table.
+# ─────────────────────────────────────────────────────────────────────────────
+KEY_REFERENCE = [
+    ("DUCK CARE", [
+        ("F]/[1", "Feed"), ("P]/[2", "Play"),
+        ("L]/[3", "Clean"), ("D]/[4", "Pet"),
+        ("Z]/[5", "Sleep"),
+    ]),
+    ("MENUS", [
+        ("S", "Stats"), ("I", "Inventory"),
+        ("G", "Goals"), ("T", "Talk"),
+        ("B", "Shop"), ("U", "Use Items"),
+        ("O", "Quests"),
+    ]),
+    ("WORLD", [
+        ("E", "Explore"), ("A", "Areas"),
+        ("C", "Craft"), ("R", "Build"),
+        ("V", "Decorate"), ("<", "Trading"),
+    ]),
+    ("ACTIVITIES", [
+        ("J", "Mini-games"), ("7", "Tricks"),
+        ("9", "Garden"), ("0", "Festivals"),
+        ("=", "Diary"), (";", "Photo"),
+        ("K", "Duck Fact"), ("W", "Weather"),
+    ]),
+    ("COLLECTIONS", [
+        ("'", "Collectibles"), ("8", "Prestige"),
+        ("!", "Titles"), ("Y", "Scrapbook"),
+        ("\\", "Secrets"), ("6", "Treasure"),
+    ]),
+    ("AUDIO", [
+        ("M", "Music"), ("N", "Sound"), ("+/-", "Vol"),
+    ]),
+    ("SYSTEM", [
+        ("H", "Help"), ("Q", "Save & Quit"),
+        ("/", "Save Slots"),
+    ]),
+    ("MENU NAVIGATION", [
+        ("Arrow Keys", "Navigate menus"),
+        ("Enter", "Select/Confirm"),
+        ("Backspace/ESC", "Close/Back"),
+    ]),
+]
+
+
 def get_help_text() -> str:
-    """Get the help text for controls."""
-    return """
-DUCK CARE
----------
-[F]/[1] Feed    [P]/[2] Play
-[L]/[3] Clean   [D]/[4] Pet
-[Z]/[5] Sleep
-
-MENUS
------
-[S] Stats       [I] Inventory
-[G] Goals       [T] Talk
-[B] Shop        [U] Use Items
-
-WORLD
------
-[E] Explore     [A] Areas
-[C] Craft       [R] Build
-[V] Decorate    [<] Trading
-
-ACTIVITIES
-----------
-[J] Mini-games  [7] Tricks
-[9] Garden      [0] Festivals
-[=] Diary       [;] Photo
-[K] Duck Fact   [W] Weather
-
-COLLECTIONS
------------
-['] Collectibles [8] Prestige
-[!] Titles       [Y] Scrapbook
-[\\] Secrets      [6] Treasure
-
-AUDIO
------
-[M] Music  [N] Sound  [+/-] Vol
-
-SYSTEM
-------
-[H] Help   [Q] Save & Quit
-[/] Save Slots
-
-MENU NAVIGATION
----------------
-[Arrow Keys] Navigate menus
-[Enter] Select/Confirm
-[Backspace/ESC] Close/Back
-"""
+    """Get the help text for controls, generated from KEY_REFERENCE."""
+    lines = [""]
+    for section, keys in KEY_REFERENCE:
+        lines.append(section)
+        lines.append("-" * len(section))
+        # Lay out two entries per row (long entries get their own row)
+        row = []
+        for key, label in keys:
+            entry = f"[{key}] {label}"
+            if len(entry) > 15:
+                if row:
+                    lines.append("  ".join(row))
+                    row = []
+                lines.append(entry)
+                continue
+            row.append(f"{entry:<15}" if len(row) == 0 else entry)
+            if len(row) == 2:
+                lines.append("  ".join(row))
+                row = []
+        if row:
+            lines.append(row[0].rstrip())
+        lines.append("")
+    return "\n".join(lines)
 
 
 def get_interaction_name(action: GameAction) -> str:
