@@ -1,3 +1,21 @@
+cheese-the-duck (2.30.0-1) unstable; urgency=medium
+
+  * Made all quests completable: collect/find/talk objective progress now
+    emitted, quest decision prompt added, prerequisite-free quests offered
+  * Quest items discoverable via fishing, digging, and special weather
+  * Crafted items no longer vanish: 16 recipe results plus quest tokens
+    and quest rewards added to the item registry
+  * Wired particle, animation, and weather effect settings to the renderer
+  * Fixed '=' diary key being shadowed by volume-up; help generated from
+    a single key reference table
+  * Debian packages now include root-level music files (installs were silent)
+  * Converted music WAVs to OGG (59MB to 5.2MB)
+  * Pinned AI model download URLs with fallback; added GitHub Actions CI
+  * Logged previously swallowed event bus, updater, and settings errors
+  * Standardized Python 3.9 minimum across installers and packaging
+
+ -- Cheese the Duck Team <cheese@example.com>  Wed, 10 Jun 2026 01:37:00 +0000
+
 cheese-the-duck (2.29.1-1) unstable; urgency=medium
 
   * Removed sexual joke wording from handwritten weather dialogue
