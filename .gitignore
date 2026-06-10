@@ -165,3 +165,6 @@ StupidDuckCS/**/*.user
 StupidDuckCS/**/*.suo
 StupidDuckCS/**/.vs/
 *.deb
+
+# Created by install_linux.sh in local installs; must not block git updates
+uninstall.sh

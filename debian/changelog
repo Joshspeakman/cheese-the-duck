@@ -1,3 +1,12 @@
+cheese-the-duck (2.30.1-1) unstable; urgency=medium
+
+  * Fixed git-based local installs never being able to self-update: the
+    untracked uninstall.sh created by the installer was misread as local
+    changes and aborted every update
+  * Added regression tests covering the git update path
+
+ -- Cheese the Duck Team <cheese@example.com>  Wed, 10 Jun 2026 01:50:00 +0000
+
 cheese-the-duck (2.30.0-1) unstable; urgency=medium
 
   * Made all quests completable: collect/find/talk objective progress now
