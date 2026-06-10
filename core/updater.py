@@ -25,7 +25,7 @@ from config import GAME_DIR, SAVE_DIR
 
 
 # Game version - Update this when releasing new versions
-GAME_VERSION = "2.30.0"
+GAME_VERSION = "2.30.1"
 
 # GitHub repository info
 GITHUB_OWNER = "Joshspeakman"
@@ -284,8 +284,11 @@ class GameUpdater:
     def _update_via_git(self) -> UpdateStatus:
         """Update a git-clone install without discarding local work."""
         try:
+            # Untracked files (e.g. uninstall.sh dropped by the installer)
+            # survive a fast-forward merge untouched, so only tracked
+            # modifications should block the update.
             status = subprocess.run(
-                ['git', 'status', '--porcelain'],
+                ['git', 'status', '--porcelain', '--untracked-files=no'],
                 cwd=str(GAME_DIR),
                 capture_output=True, timeout=30
             )
