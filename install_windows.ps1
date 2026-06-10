@@ -20,7 +20,7 @@ $ErrorActionPreference = "Stop"
 $AppName = "Cheese the Duck"
 $AppExeName = "CheeseTheDuck"
 $DefaultInstallDir = "$env:LOCALAPPDATA\CheeseTheDuck"
-$PythonMinVersion = [version]"3.8.0"
+$PythonMinVersion = [version]"3.9.0"
 $PythonDownloadUrl = "https://www.python.org/ftp/python/3.12.0/python-3.12.0-amd64.exe"
 $RepoUrl = "https://github.com/Joshspeakman/cheese-the-duck/archive/refs/heads/main.zip"
 $RepoName = "cheese-the-duck-main"
@@ -260,11 +260,11 @@ function Install-CheeseTheDuck {
     if (-not $pythonInfo.Found) {
         if (-not $Silent) {
             Write-Host ""
-            $downloadPython = Read-Host "Python 3.8+ not found. Download and install? (Y/n)"
+            $downloadPython = Read-Host "Python 3.9+ not found. Download and install? (Y/n)"
             if ($downloadPython -ne "n" -and $downloadPython -ne "N") {
                 $pythonInfo = Install-Python
             } else {
-                Write-Error "Python is required. Please install Python 3.8+ from https://python.org"
+                Write-Error "Python is required. Please install Python 3.9+ from https://python.org"
                 return
             }
         } else {

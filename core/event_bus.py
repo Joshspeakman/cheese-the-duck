@@ -285,11 +285,17 @@ class EventBus:
             for _priority, _sid, handler in handlers:
                 try:
                     handler(event)
-                except Exception:
+                except Exception as exc:
                     # Swallow handler exceptions so one broken listener cannot
-                    # break the emitter.  In a production build this would go
-                    # through the game logger.
-                    pass
+                    # break the emitter, but log them so field bugs surface.
+                    try:
+                        from game_logger import get_logger
+                        get_logger().error(
+                            f"Event handler {getattr(handler, '__qualname__', handler)!r} "
+                            f"failed for {type(event).__name__}: {exc}"
+                        )
+                    except Exception:
+                        pass
         finally:
             self._depth -= 1
 

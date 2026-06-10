@@ -524,8 +524,15 @@ class QuestSystem:
     def get_available_quests(self, player_level: int = 1) -> List[Quest]:
         """Get list of quests available to start."""
         available = []
-        
-        for quest_id in self.unlocked_quests:
+
+        # Quests with no prerequisites are always unlocked; without this,
+        # only the tutorial and explicit chain unlocks would ever appear.
+        candidates = list(self.unlocked_quests)
+        for quest_id, quest in QUESTS.items():
+            if not quest.prerequisite_quests and quest_id not in candidates:
+                candidates.append(quest_id)
+
+        for quest_id in candidates:
             if quest_id in self.active_quests:
                 continue  # Already active
             
@@ -574,6 +581,44 @@ class QuestSystem:
         
         return True, f"[=] Quest Started: {quest.name}", dialogue
     
+    def get_pending_choices(self, quest_id: str) -> Optional[List[str]]:
+        """Return the choice labels for the quest's current step, if any.
+        Used by the quest menu to offer the decision UI."""
+        active = self.active_quests.get(quest_id)
+        quest = QUESTS.get(quest_id)
+        if not active or not quest or active.completed:
+            return None
+        step = next((s for s in quest.steps if s.step_id == active.current_step), None)
+        if step and step.choices:
+            return list(step.choices.keys())
+        return None
+
+    def has_active_objective(self, objective_type: str, target: str) -> bool:
+        """Check whether any active quest step has an incomplete objective
+        matching the given type and target. Used by discovery hooks (fishing,
+        digging, weather) to know when to roll for quest item finds."""
+        for quest_id, active in self.active_quests.items():
+            if active.completed:
+                continue
+            quest = QUESTS.get(quest_id)
+            if not quest:
+                continue
+            current_step = next(
+                (s for s in quest.steps if s.step_id == active.current_step),
+                None
+            )
+            if not current_step:
+                continue
+            for objective in current_step.objectives:
+                if objective.objective_type.value != objective_type:
+                    continue
+                if objective.target != "any" and objective.target != target:
+                    continue
+                obj_key = f"{quest_id}_{objective.id}"
+                if active.step_progress.get(obj_key, 0) < objective.required_amount:
+                    return True
+        return False
+
     def update_progress(self, objective_type: str, target: str, amount: int = 1) -> Tuple[List[Tuple[str, str, bool]], List[Tuple[str, QuestReward]]]:
         """Update progress on quest objectives.
         Returns: (objective_updates, completed_quests_with_rewards)

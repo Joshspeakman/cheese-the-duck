@@ -282,6 +282,12 @@ class Renderer:
         self._weather_particles: List[Tuple[float, float, str]] = []  # (x, y, char)
         self._weather_frame = 0
         self._current_weather_type: Optional[str] = None
+
+        # Display-setting gates, driven by core settings via the set_show_*
+        # methods (see Game._apply_settings)
+        self._show_particles = True
+        self._show_animations = True
+        self._show_weather_effects = True
         
         # Biome ambient particles (fireflies, falling leaves, mist, etc.)
         self._ambient_particles: List[Tuple[float, float, str, Tuple[int, int, int]]] = []  # (x, y, char, rgb)
@@ -537,12 +543,18 @@ class Renderer:
     def _update_weather_particles(self, width: int, height: int, weather_type: Optional[str],
                                    weather_intensity: float = 0.0):
         """Update animated weather particles."""
+        if not self._show_weather_effects:
+            weather_type = None  # render as clear skies
+
         # Update unified ParticleSystem with weather config
         try:
             if self._particle_system is not None:
                 self._particle_system.set_bounds(width, height)
                 self._particle_system.configure_weather(weather_type, weather_intensity)
-                self._particle_system.update(0.033)  # ~30fps delta
+                if self._show_particles:
+                    self._particle_system.update(0.033)  # ~30fps delta
+                else:
+                    self._particle_system.clear()
         except Exception:
             pass
 
@@ -805,8 +817,8 @@ class Renderer:
                                    biome: str, time_of_day: str, season: str,
                                    weather_intensity: float = 0.0):
         """Update biome-specific ambient particles (fireflies, falling leaves, mist, etc.)."""
-        # Suppress during heavy weather to avoid visual clutter
-        if weather_intensity > 0.7 or not biome:
+        # Suppress when disabled in settings, or during heavy weather to avoid visual clutter
+        if not self._show_particles or weather_intensity > 0.7 or not biome:
             self._ambient_particles = []
             return
 
@@ -1846,7 +1858,7 @@ class Renderer:
                             row[px] = (char, color_func)
 
             # Add event animations (butterfly, bird, etc.) - render before duck so duck is on top
-            if event_animators:
+            if event_animators and self._show_animations:
                 for animator in event_animators:
                     from ui.event_animations import EventAnimationState, BreezeAnimator
                     
@@ -3871,8 +3883,31 @@ class Renderer:
         # Use show_overlay instead of show_message to prevent menu content from appearing in chat
         self.show_overlay("\n".join(lines), duration=0)
 
+    def set_show_particles(self, enabled: bool):
+        """Wire the display.show_particles setting (ambient/unified particles)."""
+        self._show_particles = bool(enabled)
+        if not self._show_particles:
+            self._ambient_particles = []
+            try:
+                if self._particle_system is not None:
+                    self._particle_system.clear()
+            except Exception:
+                pass
+
+    def set_show_animations(self, enabled: bool):
+        """Wire the display.show_animations setting (effects, event animations)."""
+        self._show_animations = bool(enabled)
+
+    def set_show_weather_effects(self, enabled: bool):
+        """Wire the display.show_weather_effects setting (rain/snow visuals)."""
+        self._show_weather_effects = bool(enabled)
+        if not self._show_weather_effects:
+            self._weather_particles = []
+
     def show_effect(self, effect_name: str, duration: float = 1.0):
         """Show a visual effect."""
+        if not self._show_animations:
+            return
         animation_controller.play_effect(effect_name, duration)
 
     def show_closeup(self, action: Optional[str] = None, duration: float = 2.0):

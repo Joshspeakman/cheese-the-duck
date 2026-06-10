@@ -9,7 +9,7 @@ Rules-Requires-Root: no
 
 Package: cheese-the-duck
 Architecture: all
-Depends: python3 (>= 3.8), python3-venv, python3-pip, libsdl2-2.0-0, libsdl2-mixer-2.0-0, ${misc:Depends}
+Depends: python3 (>= 3.9), python3-venv, python3-pip, libsdl2-2.0-0, libsdl2-mixer-2.0-0, ${misc:Depends}
 Recommends: imagemagick
 Description: A terminal-based virtual pet duck game
  Cheese the Duck is an interactive terminal game where you care for

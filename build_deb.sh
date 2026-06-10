@@ -121,6 +121,11 @@ cp -r "$SOURCE_DIR/world" "$PACKAGE_DIR/opt/cheese-the-duck/"
 [ -d "$SOURCE_DIR/data" ] && cp -r "$SOURCE_DIR/data" "$PACKAGE_DIR/opt/cheese-the-duck/"
 [ -d "$SOURCE_DIR/models" ] && mkdir -p "$PACKAGE_DIR/opt/cheese-the-duck/models"
 
+# Copy root-level music/SFX files (the sound engine scans the game root)
+for audio_file in "$SOURCE_DIR"/*.wav "$SOURCE_DIR"/*.mp3 "$SOURCE_DIR"/*.ogg; do
+    [ -f "$audio_file" ] && cp "$audio_file" "$PACKAGE_DIR/opt/cheese-the-duck/"
+done
+
 # Copy main files
 cp "$SOURCE_DIR/main.py" "$PACKAGE_DIR/opt/cheese-the-duck/"
 cp "$SOURCE_DIR/config.py" "$PACKAGE_DIR/opt/cheese-the-duck/"
@@ -297,7 +302,7 @@ echo -e "${GREEN}✓${NC} Desktop launcher created"
 echo -e "${YELLOW}→${NC} Creating desktop entry..."
 cat > "$PACKAGE_DIR/usr/share/applications/cheese-the-duck.desktop" << EOF
 [Desktop Entry]
-Version=${VERSION}
+Version=1.0
 Type=Application
 Name=Cheese the Duck
 Comment=A terminal-based virtual pet game

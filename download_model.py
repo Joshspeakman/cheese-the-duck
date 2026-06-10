@@ -40,31 +40,38 @@ MODEL_DIR = _get_model_dir()
 # Default model (required for LLM features)
 DEFAULT_MODEL = "tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf"
 
+# URLs are pinned to specific repo revisions so upstream reorganisation can't
+# break downloads; "fallback_url" tracks main as a safety net if a pinned
+# revision ever disappears. (SHAs verified 2026-06-09.)
 MODELS = {
     "llama": {
         "name": "Llama 3.2 3B (Best Quality - ~2GB)",
-        "url": "https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF/resolve/main/Llama-3.2-3B-Instruct-Q4_K_M.gguf",
+        "url": "https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF/resolve/5ab33fa94d1d04e903623ae72c95d1696f09f9e8/Llama-3.2-3B-Instruct-Q4_K_M.gguf",
+        "fallback_url": "https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF/resolve/main/Llama-3.2-3B-Instruct-Q4_K_M.gguf",
         "filename": "Llama-3.2-3B-Instruct-Q4_K_M.gguf",
         "size_mb": 2000,
         "recommended_vram": 4000,  # 4GB VRAM recommended
     },
     "phi": {
         "name": "Phi-3 Mini 3.8B (~2.3GB)",
-        "url": "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf",
+        "url": "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/a64113399c2f6b8ad3e11c394733a2ddadaa7f33/Phi-3-mini-4k-instruct-q4.gguf",
+        "fallback_url": "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf",
         "filename": "Phi-3-mini-4k-instruct-q4.gguf",
         "size_mb": 2300,
         "recommended_vram": 4000,
     },
     "qwen": {
         "name": "Qwen2.5 3B (~2GB)",
-        "url": "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/resolve/main/qwen2.5-3b-instruct-q4_k_m.gguf",
+        "url": "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/resolve/7dabda4d13d513e3e842b20f0d435c732f172cbe/qwen2.5-3b-instruct-q4_k_m.gguf",
+        "fallback_url": "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/resolve/main/qwen2.5-3b-instruct-q4_k_m.gguf",
         "filename": "qwen2.5-3b-instruct-q4_k_m.gguf",
         "size_mb": 2000,
         "recommended_vram": 4000,
     },
     "tiny": {
         "name": "TinyLlama 1.1B (Lightweight - ~700MB) ⭐ Default",
-        "url": "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf",
+        "url": "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/52e7645ba7c309695bec7ac98f4f005b139cf465/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf",
+        "fallback_url": "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf",
         "filename": "tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf",
         "size_mb": 700,
         "recommended_vram": 2000,  # Runs well even on 2GB VRAM or CPU
@@ -382,8 +389,13 @@ def main(auto_mode: bool = False):
     print()
     print(f"🦆 Selected: {model['name']}")
     
-    # Download
-    if download_with_progress(model["url"], filepath, model["size_mb"]):
+    # Download (pinned revision first, then track main as a fallback)
+    downloaded = download_with_progress(model["url"], filepath, model["size_mb"])
+    if not downloaded and model.get("fallback_url"):
+        print()
+        print("   Pinned download failed — retrying from the latest revision...")
+        downloaded = download_with_progress(model["fallback_url"], filepath, model["size_mb"])
+    if downloaded:
         print()
         print("╔════════════════════════════════════════════════════════════╗")
         print("║              🎉 AI BRAIN INSTALLED! 🎉                     ║")
