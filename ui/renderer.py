@@ -1082,7 +1082,10 @@ class Renderer:
 
     def clear(self):
         """Clear the terminal."""
-        print(self.term.home + self.term.clear)
+        if hasattr(self, "present"):
+            self.present([])
+        else:
+            print(self.term.home + self.term.clear)
 
     def render_loading_screen(self, title: str, message: str = "",
                               started_at: Optional[float] = None,
@@ -1123,8 +1126,11 @@ class Renderer:
             ])
         lines.append("+" + "=" * (inner + 2) + "+")
 
-        print(self.term.home + self.term.clear, end="")
         top_pad = max(0, (max(self.term.height, 20) - len(lines)) // 2)
+        if hasattr(self, "present"):
+            self.present([""] * top_pad + [self.term.center(line) for line in lines])
+            return
+        print(self.term.home + self.term.clear, end="")
         for _ in range(top_pad):
             print("")
         for line in lines:
@@ -1160,8 +1166,8 @@ class Renderer:
         self._last_render_time = time.time()
 
         # Get terminal size - cap to reasonable maximum for consistent gameplay
-        MAX_WIDTH = 116   # Maximum game width
-        MAX_HEIGHT = 35   # Maximum game height
+        MAX_WIDTH = getattr(self, "max_width", 116)   # Maximum game width
+        MAX_HEIGHT = getattr(self, "max_height", 35)   # Maximum game height
         
         term_width = max(self.term.width, 60)
         term_height = max(self.term.height, 20)
@@ -1306,6 +1312,10 @@ class Renderer:
             output = self._overlay_menu(output, width)
         elif self._show_message_overlay and not getattr(self, '_message_rendered_inline', False):
             output = self._overlay_message(output, width)
+
+        if hasattr(self, "present"):
+            self.present(output)
+            return
 
         # Build batched frame string — one sys.stdout.write() instead of ~35 print() calls
         max_lines = min(len(output), self.term.height - 1)
@@ -1784,6 +1794,9 @@ class Renderer:
             # Pad to inner_width
             while len(row) < inner_width:
                 row.append((' ', None))
+
+            if hasattr(self, "detail_row"):
+                self.detail_row(row, cam_x, world_y, biome, season)
 
             # Add time-of-day sky fill and celestial markers as a background
             # layer. Scenery, weather, items, and characters draw over this.
@@ -2765,6 +2778,10 @@ class Renderer:
         output.append("")
         output.append("[Q] Quit Game".center(width))
 
+        if hasattr(self, "present"):
+            self.present(output)
+            return
+
         # Print everything
         print(self.term.home + self.term.clear, end="")
         for line in output:
@@ -3048,6 +3065,10 @@ class Renderer:
             "    +======================================================+    ",
             "",
         ])
+
+        if hasattr(self, "present"):
+            self.present([self.term.center(line) for line in title_art])
+            return
 
         # Use home only (no clear) to prevent flicker - overwrite in place
         print(self.term.home)
@@ -4068,6 +4089,9 @@ class Renderer:
             "",
         ])
 
+        if hasattr(self, "present"):
+            self.present([self.term.center(line) for line in lines])
+            return
         print(self.term.home + self.term.clear)
         print("\n".join(lines))
 

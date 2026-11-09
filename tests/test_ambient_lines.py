@@ -270,15 +270,14 @@ class TestFilterLines:
         result = gen._filter_lines(lines)
         assert len(result) == 2
 
-    def test_unsafe_lines_removed(self, tmp_path):
+    def test_uncensored_lines_preserved(self, tmp_path):
         gen = _make_gen(tmp_path)
         lines = [
             ("greeting", "Hello there."),
             ("idle", "what the fuck"),
         ]
         result = gen._filter_lines(lines)
-        assert len(result) == 1
-        assert result[0][0] == "greeting"
+        assert result == lines
 
 
 # ── Pick contexts ───────────────────────────────────────────────────

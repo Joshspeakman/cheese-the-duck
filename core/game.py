@@ -151,9 +151,9 @@ class Game:
     between duck, UI, and persistence systems.
     """
 
-    def __init__(self):
-        self.terminal = Terminal()
-        self.renderer = Renderer(self.terminal)
+    def __init__(self, terminal=None, renderer_factory=Renderer):
+        self.terminal = terminal if terminal is not None else Terminal()
+        self.renderer = renderer_factory(self.terminal)
         self.input_handler = InputHandler(self.terminal)
         self.reaction_controller = init_reaction_controller(self.renderer)
         self.clock = game_clock
@@ -6209,6 +6209,7 @@ class Game:
 
     def _load_game(self):
         """Load an existing save."""
+        self._flush_pending_save()
         active_slot = getattr(self.save_slots, 'current_slot', 1)
         self._sync_save_manager_to_slot()
         data = self.save_manager.load()
@@ -6968,8 +6969,16 @@ class Game:
             self._save_executor = concurrent.futures.ThreadPoolExecutor(
                 max_workers=1, thread_name_prefix="save"
             )
-        self._save_executor.submit(self.save_manager.save, save_copy)
+        # Bind the slot now; a later slot switch must not redirect queued writes.
+        writer = SaveManager(self.save_manager.save_path)
+        self._save_future = self._save_executor.submit(writer.save, save_copy)
         notification_manager.show("Game saved!", "success", 1.5)
+
+    def _flush_pending_save(self):
+        """Finish queued writes before loading, switching sessions or closing."""
+        future = getattr(self, '_save_future', None)
+        if future is not None and not future.result(timeout=15):
+            raise IOError("Could not save Cheese's progress; see the game log")
 
     def _return_to_title(self):
         """Save the game and return to title screen."""
@@ -6982,6 +6991,7 @@ class Game:
 
             self._apply_end_session_rewards()
             self._save_game()
+            self._flush_pending_save()
             notification_manager.show("Saving...", "info", 0.5)
             time.sleep(0.5)
         
@@ -7151,6 +7161,7 @@ class Game:
 
             self._apply_end_session_rewards()
             self._save_game()
+            self._flush_pending_save()
             self.renderer.show_message("Saving and quitting...")
             time.sleep(0.5)
 
@@ -14041,7 +14052,7 @@ Core Systems Tested: {report.total_tests}
         analysis = ed.get_emotion_analysis(7)
         dominant = analysis.get("dominant", "calm")
         
-        lines.append("|" + f" Emotions: {len(ed.emotion_logs):3}  Photos: {ed.photos_taken:3}"[:width-2].ljust(width - 2) + "|")
+        lines.append("|" + f" Emotions: {len(ed.emotion_logs):3}  Photos: {self.scrapbook.total_photos_taken:3}"[:width-2].ljust(width - 2) + "|")
         lines.append("|" + f" Dreams: {ed.dreams_recorded:3}    Chapters: {len(ed.life_chapters):3}"[:width-2].ljust(width - 2) + "|")
         lines.append("|" + f" This Week: {dominant} mood"[:width-2].ljust(width - 2) + "|")
         if ed.current_chapter:
@@ -14126,7 +14137,7 @@ Core Systems Tested: {report.total_tests}
     def _render_diary_photos(self, lines: list, width: int, items_per_page: int):
         """Render photos tab with pagination (compact)."""
         ed = self.enhanced_diary
-        photos = list(reversed(ed.photos))
+        photos = list(reversed(list(self.scrapbook.photos.values())))
         total = len(photos)
         total_pages = max(1, (total + items_per_page - 1) // items_per_page)
         page = min(self._enhanced_diary_page, total_pages - 1)
@@ -14143,7 +14154,7 @@ Core Systems Tested: {report.total_tests}
             for photo in page_items:
                 dt = photo.date_taken[5:10] if photo.date_taken else "?"
                 loc = (photo.location or "?")[:12]
-                cap = photo.caption[:18]
+                cap = photo.title[:18]
                 line = f" {dt} {cap} @{loc}"
                 lines.append("|" + line[:width-2].ljust(width - 2) + "|")
 

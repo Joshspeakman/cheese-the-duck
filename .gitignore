@@ -175,3 +175,11 @@ desktop/build/
 desktop/node_modules/
 .claude/settings.local.json
 .claude/worktrees/
+
+# Isolated ASCII engine build/runtime
+engine/node_modules/
+engine/.runtime/
+engine/dist/
+engine/build/
+engine/artifacts/
+.venv/
