@@ -15,11 +15,17 @@ for (const [key, label] of actionKeys) {
   icon.className='action-icon';icon.setAttribute('aria-hidden','true');icon.textContent=icons[$('actions').children.length];
   kbd.textContent = key === 'Escape' ? 'Esc' : key.toUpperCase(); button.append(icon,kbd, label);
   button.addEventListener('click', () => { window.cheese.input(actionIDs[key] ? { type: 'action', action: actionIDs[key] } : { type: 'key', key }); $('world').focus(); }); $('actions').append(button);
+  if(key==='Escape')button.onclick=()=>{ if(last?.scene&&!last.ui?.modal&&(!renderer.interface.panelsOpen||last.ui.menu.depth===0))togglePanels(); };
 }
 function size(frame) {
+  const full=renderer.mode==='ultra'&&Boolean(frame.scene&&frame.ui);
+  document.body.dataset.layout=full?'world':'framed';
   const view = $('viewport'), fit = Math.min((view.clientWidth - 24) / (frame.cols * CELL_W), (view.clientHeight - 16) / (frame.rows * CELL_H));
-  renderer.resize(frame.cols, frame.rows, sizes[zoom] || fit);
+  const uiScale=Math.min(Math.min(view.clientWidth/1440,view.clientHeight/1000,1)*[1,1.1,1.2,1.3][zoom],view.clientWidth/1100,view.clientHeight/850);
+  renderer.resize(frame.cols, frame.rows, sizes[zoom] || fit,full?{width:view.clientWidth,height:view.clientHeight,uiScale}:null);
 }
+function togglePanels(){renderer.interface.panelsOpen=!renderer.interface.panelsOpen;syncPanels();if(last){renderer.draw(last);window.interfaceTargets=renderer.interface.hits;}}
+function syncPanels(){$('panels').textContent=renderer.interface.panelsOpen?'Hide panels':'Care & menu';$('panels').setAttribute('aria-pressed',renderer.interface.panelsOpen);}
 window.cheese.frames(frame => { pending = frame; });
 window.cheese.errors(message => { $('error').hidden = false; $('error').textContent = message; $('loading').hidden = true; });
 function animate(now) {
@@ -28,10 +34,11 @@ function animate(now) {
     size(frame); renderer.draw(frame, now); lastDraw = now; window.cheese.ack(); $('loading').hidden = true;
     $('place').textContent = frame.meta.location || 'Cheese the Duck';
     for (const b of $('actions').children) b.disabled = frame.meta.state !== 'playing';
+    $('panels').disabled=Boolean(frame.ui?.modal);syncPanels();
     $('hint').textContent = frame.meta.talking ? 'Type to talk · Enter to send · Esc to return' : 'Arrow keys + Enter to choose · PgUp/PgDn chat · Esc menu';
     const plain = (frame.ui?.modal?.lines || frame.lines).map(line => line.map(run => run[0]).join('')).join('\n');
     if (plain !== lastAnnouncement && now - lastPaint > 1000) { $('announcement').textContent = plain; lastAnnouncement = plain; lastPaint = now; }
-    window.engineStats = { frames: renderer.frames, glyphs: renderer.atlas.size, state: frame.meta.state, cols: frame.cols, rows: frame.rows, mode: renderer.mode, ultraFrames: renderer.scene.frames, renderMs: renderer.cost, peakMs: renderer.peak };
+    window.engineStats = { frames: renderer.frames, glyphs: renderer.atlas.size, state: frame.meta.state, cols: frame.cols, rows: frame.rows, viewWidth:renderer.interface.width, viewHeight:renderer.interface.height, mode: renderer.mode, ultraFrames: renderer.scene.frames, renderMs: renderer.cost, peakMs: renderer.peak };
     window.interfaceTargets = renderer.mode === 'ultra' ? renderer.interface.hits : [];
     $('performance').textContent = renderer.mode === 'ultra' ? 'ULTRA ASCII' : `CLASSIC · ${frame.cols} × ${frame.rows}`;
   }
@@ -44,17 +51,22 @@ document.addEventListener('keydown', event => {
   if (event.key === 'F11') { event.preventDefault(); window.cheese.fullscreen(); return; }
   if (event.target.tagName === 'BUTTON' && ['Enter', ' '].includes(event.key)) return;
   if (event.key.length === 1 || ['Enter','Escape','Backspace','Tab','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','PageUp','PageDown','Home','End','Delete'].includes(event.key)) {
+    if(renderer.mode==='ultra'&&last?.scene&&!last.ui?.modal){
+      if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(event.key)){renderer.interface.panelsOpen=true;syncPanels();}
+      else if(event.key==='Escape'&&(!renderer.interface.panelsOpen||last.ui.menu.depth===0))togglePanels();
+    }
     event.preventDefault(); window.cheese.input({ type: 'key', key: event.key });
   }
 });
 document.addEventListener('paste', event => { if (!last?.meta.talking) return; event.preventDefault(); window.cheese.input({ type: 'text', text: event.clipboardData.getData('text') }); });
-$('graphics').onclick = () => { renderer.mode = renderer.mode === 'ultra' ? 'classic' : 'ultra'; localStorage.setItem('cheese.graphics',renderer.mode); graphicsLabel(); if(last)renderer.draw(last); $('world').focus(); };
+$('graphics').onclick = () => { renderer.mode = renderer.mode === 'ultra' ? 'classic' : 'ultra'; localStorage.setItem('cheese.graphics',renderer.mode); graphicsLabel(); if(last){size(last);renderer.draw(last);} $('world').focus(); };
 $('zoom').onclick = () => { zoom = (zoom + 1) % sizes.length; $('zoom').textContent = `Text: ${zoom ? ['','large','larger','largest'][zoom] : 'fit'}`; if (last) { size(last); renderer.draw(last); } };
 $('motion').onclick = () => { const on = $('world').classList.toggle('glow'); $('motion').textContent = `Soft glow: ${on ? 'on' : 'off'}`; $('motion').setAttribute('aria-pressed', on); };
 $('capture').onclick = async () => { $('hint').textContent = `Photo saved: ${await window.cheese.capture()}`; };
 $('fullscreen').onclick = () => window.cheese.fullscreen();
-function point(event){const r=$('world').getBoundingClientRect();return [(event.clientX-r.left)/r.width*last.cols*10,(event.clientY-r.top)/r.height*last.rows*18];}
-$('world').addEventListener('click',event=>{if(!last||renderer.mode!=='ultra')return;const command=renderer.interface.hit(...point(event));if(command)window.cheese.input(command);$('world').focus();});
+$('panels').onclick=()=>{togglePanels();$('world').focus();};
+function point(event){const r=$('world').getBoundingClientRect();return [(event.clientX-r.left)/r.width*renderer.interface.width,(event.clientY-r.top)/r.height*renderer.interface.height];}
+$('world').addEventListener('click',event=>{if(!last||renderer.mode!=='ultra')return;const command=renderer.interface.hit(...point(event));if(command?.type==='panels')togglePanels();else if(command)window.cheese.input(command);$('world').focus();});
 $('world').addEventListener('mousemove',event=>{$('world').style.cursor=last&&renderer.mode==='ultra'&&renderer.interface.hit(...point(event))?'pointer':'default';});
 $('world').addEventListener('wheel',event=>{if(renderer.mode==='ultra'&&renderer.interface.wheel(event.deltaY)){event.preventDefault();renderer.draw(last);}}, {passive:false});
 requestAnimationFrame(animate); window.cheese.ready(); $('world').focus();

@@ -102,16 +102,24 @@ async function smoke() {
     const hit=window.interfaceTargets?.find(h=>h.command.target===${JSON.stringify(target)} && (${JSON.stringify(id)}===null || h.command.id===${JSON.stringify(id)}));
     if(!hit)throw new Error('Missing clickable menu choice');
     const canvas=document.getElementById('world'),r=canvas.getBoundingClientRect(),s=window.engineStats;
-    canvas.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:r.left+(hit.x+hit.w/2)/(s.cols*10)*r.width,clientY:r.top+(hit.y+hit.h/2)/(s.rows*18)*r.height}));
+    canvas.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:r.left+(hit.x+hit.w/2)/s.viewWidth*r.width,clientY:r.top+(hit.y+hit.h/2)/s.viewHeight*r.height}));
   })()`);
   await clickChoice('title');
   await waitFor(() => latest?.meta.state === 'playing', 'new game'); await pause(4200);
   input({ type: 'key', key: 'Escape' }); await pause(300);
   fs.writeFileSync(path.join(out, 'pond.png'), (await win.webContents.capturePage()).toPNG());
+  await win.webContents.executeJavaScript("if(document.getElementById('panels').getAttribute('aria-pressed')!=='true')document.getElementById('panels').click()");
+  await pause(100);
   await clickChoice('menu','care');
   await waitFor(()=>latest?.ui?.menu.depth===1,'mouse opens care submenu');
   input({type:'key',key:'Escape'});
   await waitFor(()=>latest?.ui?.menu.depth===0,'keyboard returns from care submenu');
+  // The canvas must cover the actual client window, including after resize.
+  for(const [width,height] of [[920,640],[1700,960],[1500,1020]]){
+    win.setSize(width,height);await pause(350);
+    const bounds=await win.webContents.executeJavaScript(`(() => {const r=document.getElementById('world').getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,width:innerWidth,height:innerHeight,layout:document.body.dataset.layout}})()`);
+    if(bounds.layout!=='world'||Math.abs(bounds.x)>1||Math.abs(bounds.y)>1||Math.abs(bounds.w-bounds.width)>1||Math.abs(bounds.h-bounds.height)>1)throw new Error('Playfield does not fill the window: '+JSON.stringify(bounds));
+  }
   await win.webContents.executeJavaScript("document.getElementById('graphics').click()");
   await pause(300);
   fs.writeFileSync(path.join(out, 'classic.png'), (await win.webContents.capturePage()).toPNG());

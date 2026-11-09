@@ -62,6 +62,25 @@ window.checkInterface=frames=>{
   display.draw(frozen,2000);const before=new Uint8ClampedArray(pixels(canvas));display.draw(frozen,8000);
   assert(equal(before,pixels(canvas)),'reduced motion animated UI');
   images.gallery=contact.toDataURL('image/png');
+  // World composition fills every aspect ratio; menu hit boxes follow its UI scale.
+  for(const [width,height] of [[920,613],[1500,993],[1920,1080],[1800,760]]){
+    const frame=structuredClone(frames.pond),uiScale=Math.min(width/1440,height/1000,1);
+    display.resize(frame.cols,frame.rows,.8,{width,height,uiScale});
+    display.interface.panelsOpen=false;display.draw(frame,2000);
+    assert(display.scene.canvas.width===canvas.width&&display.scene.canvas.height===canvas.height,'world does not fill canvas');
+    assert(canvas.style.width===`${width}px`&&canvas.style.height===`${height}px`,'viewport dimensions changed');
+    assert(!display.interface.hits.some(hit=>hit.command.target==='menu'),'compact view reserved a menu');
+    images[`window-${width}`]=canvas.toDataURL('image/png');
+    display.interface.panelsOpen=true;display.draw(frame,2000);
+    const hit=display.interface.hits.find(hit=>hit.command.target==='menu');
+    assert(hit&&display.interface.hit(hit.x+hit.w/2,hit.y+hit.h/2).id==='care','floating menu click target moved');
+    for(const hit of display.interface.hits)assert(hit.x>=0&&hit.y>=0&&hit.x+hit.w<=display.interface.width&&hit.y+hit.h<=display.interface.height,'floating control clipped');
+    for(const name of ['help','settings-audio','long-talk']){
+      display.draw(frames[name],2000);const d=display.interface.visibleDocument;
+      assert(d.y>=78&&d.y+d.h<=display.interface.height-145,'menu overlaps app controls');
+      assert(d.rows.every(row=>row.cells.length*(d.rows.length>32?17:19)*.61<=d.w-80),'menu text clipped at this aspect ratio');
+    }
+  }
   const emotions=document.createElement('canvas');emotions.width=1200;emotions.height=690;
   const ec=emotions.getContext('2d');ec.fillStyle='#13282b';ec.fillRect(0,0,1200,690);
   ['ecstatic','happy','content','grumpy','sad','miserable','dramatic','petty','eating','sleeping','petting','talking'].forEach((mood,i)=>{
