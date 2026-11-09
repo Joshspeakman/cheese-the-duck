@@ -298,7 +298,7 @@ export class LivingWorld {
     }
     if(s.visitor){const [x,y]=this.project(s,s.visitor.x,s.visitor.y);actors.push({y,draw:()=>this.actor(s,t+2,x,y,{...s.visitor,stage:'adult',state:'idle',facing:false},true)});}
     const target=this.project(s,s.duck.x,s.duck.y);
-    if(!this.duckPosition||s.location!==this.lastLocation)this.duckPosition=target;
+    if(s.motion===false||!this.duckPosition||s.location!==this.lastLocation)this.duckPosition=target;
     else this.duckPosition=this.duckPosition.map((v,i)=>lerp(v,target[i],clamp(dt*12,0,1)));
     const [x,y]=this.duckPosition;
     let state=s.duck.state;

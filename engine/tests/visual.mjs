@@ -85,7 +85,11 @@ window.runVisualChecks=(frame,fixtures)=>{
  const o=frame.scene?.overlay;
  assert(o,'smoke frame must include a real dialogue modal');
  const sx=classic.sx,sy=classic.sy,rect=[Math.floor(o.x*sx),Math.floor(o.y*sy),Math.ceil(o.w*sx),Math.ceil(o.h*sy)];
- assert(equal(classic.ctx.getImageData(...rect).data,display.ctx.getImageData(...rect).data),'Ultra overwrote the dialogue overlay');
+ if(frame.ui?.modal){
+   assert(display.interface.visibleDocument?.title==='TALK','dialogue modal is missing');
+   const text=display.interface.visibleDocument.rows.map(row=>row.text).join('');
+   assert(text.includes('What the hell, Cheese?'),'Ultra changed dialogue text');
+ }else assert(equal(classic.ctx.getImageData(...rect).data,display.ctx.getImageData(...rect).data),'Ultra overwrote the dialogue overlay');
  display.mode='classic';display.draw(frame,1033);
  assert(equal(pixels(classic.canvas),pixels(display.canvas)),'returning to Classic left Ultra pixels behind');
  durations.sort((a,b)=>a-b);

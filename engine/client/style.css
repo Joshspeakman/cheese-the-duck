@@ -1,1 +1,24 @@
 :root{color-scheme:dark;font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;background:#101b19;color:#e3dfc9}*{box-sizing:border-box}body{margin:0;height:100vh;display:flex;flex-direction:column;overflow:hidden}header{display:flex;align-items:center;justify-content:space-between;padding:15px 24px;background:#14211d;border-bottom:1px solid #34483b;gap:12px}strong{color:#f0ce83;letter-spacing:3px;font-size:16px}strong span{color:#c0cab0;font-size:12px}small{display:block;font-size:10px;color:#879c87;margin-top:6px;letter-spacing:1px}nav{display:flex;gap:7px}button{font:inherit;color:#bbcaaf;background:#1a2a23;border:1px solid #3b5040;border-radius:4px;padding:8px 10px;cursor:pointer;font-size:11px}button:hover,button:focus-visible{color:#ffe1a0;border-color:#d3b879;background:#304232;outline:none}button[aria-pressed=true]{border-color:#e0c07b}button:disabled{opacity:.4;cursor:default}main{position:relative;flex:1;min-height:0;overflow:auto;display:grid;place-items:center;background:#101b19}canvas{display:block;outline:none;flex-shrink:0}canvas.glow{filter:drop-shadow(0 0 2px #889b6640)}#loading{position:absolute;color:#e7cd8e}#error{position:absolute;inset:20px;overflow:auto;white-space:pre-wrap;background:#291f1c;color:#f4b99a;border:1px solid #a96a49;padding:24px;z-index:3}footer{border-top:1px solid #34483b;padding:10px 20px 9px;background:#14211d}#actions{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}kbd{color:#f1ce82;font:inherit;margin-right:6px}.status{display:flex;justify-content:space-between;gap:12px;color:#7f9785;font-size:10px;margin-top:10px;line-height:1.4}#place{color:#b5c4a4}#announcement{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}@media(max-width:1000px){header{padding:10px 12px}small{display:none}nav button{padding:6px}.status{font-size:9px}footer{padding:8px}#actions{gap:3px}#actions button{padding:6px}}
+.brand{display:flex;align-items:center;gap:16px}.brand-mark{white-space:pre;font-size:17px;line-height:1.05;color:#f4ce82}.action-icon{display:none}
+body[data-graphics=ultra]{background:#08181c;color:#ebe6cf}
+body[data-graphics=ultra] header{background:#102429;border-bottom:1px dashed #40605a;padding:12px 22px;box-shadow:0 4px 0 #081719}
+body[data-graphics=ultra] strong{color:#f4ce82;letter-spacing:4px}
+body[data-graphics=ultra] strong span{color:#a2b6a2;letter-spacing:2px}
+body[data-graphics=ultra] small{color:#9aafa1;letter-spacing:1.25px}
+body[data-graphics=ultra] button{background:#193238;border:1px solid #385a59;border-radius:2px;transition:background .12s,color .12s,border-color .12s}
+body[data-graphics=ultra] button:hover,body[data-graphics=ultra] button:focus-visible{background:#314c45;color:#ffe4a1;border-color:#e6c57f;box-shadow:inset 0 -2px #a78c56}
+body[data-graphics=ultra] button:focus-visible{outline:2px solid #f4ce82;outline-offset:3px}
+body[data-graphics=ultra] main{background:#091a1e}
+body[data-graphics=ultra] footer{background:#102429;border-top:1px dashed #40605a;padding:10px 20px}
+body[data-graphics=ultra] #actions{gap:7px}
+body[data-graphics=ultra] #actions button{position:relative;min-width:73px;padding:7px 10px 8px;font-size:11px}
+body[data-graphics=ultra] .action-icon{display:block;font-size:19px;color:#d8c28b;height:25px;letter-spacing:1px}
+body[data-graphics=ultra] #actions button:nth-child(n+7):nth-child(-n+10) .action-icon{color:#9bd9b9}
+body[data-graphics=ultra] #actions button:nth-child(n+11) .action-icon{color:#97cdd8}
+body[data-graphics=ultra] #actions button:nth-child(6),body[data-graphics=ultra] #actions button:nth-child(10){margin-right:9px}
+body[data-graphics=ultra] kbd{color:#9aafa1;font-size:9px;border:1px solid #385a59;padding:1px 3px}
+body[data-graphics=ultra] .status{color:#9aafa1;letter-spacing:.3px}
+body[data-graphics=ultra] #place{color:#9bd9b9}
+body[data-graphics=classic] .brand-mark{display:none}
+@media(max-width:1100px){body[data-graphics=ultra] #actions{gap:4px}body[data-graphics=ultra] #actions button{min-width:57px;padding:5px 6px}body[data-graphics=ultra] .action-icon{font-size:15px;height:20px}body[data-graphics=ultra] #actions button:nth-child(6),body[data-graphics=ultra] #actions button:nth-child(10){margin-right:3px}.brand-mark{display:none}}
+@media(prefers-reduced-motion:reduce){body[data-graphics=ultra] button{transition:none}}
