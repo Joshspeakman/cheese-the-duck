@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cheese — 10 character options</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#08181c;color:#efe5c9;font-family:system-ui,sans-serif}main{max-width:1280px;margin:auto;padding:36px 28px 70px}header{display:flex;justify-content:space-between;align-items:center;gap:28px}h1{font-size:34px;margin:0 0 10px}p{color:#b1c4be;line-height:1.5;margin:0 0 22px}.original{display:flex;align-items:center;gap:16px;color:#b1c4be;font-size:13px;white-space:nowrap}pre{font:700 18px/1.2 Menlo,monospace;color:#f0d28e;margin:0}.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px}button{font:inherit;color:inherit;border:1px solid #365350;background:#142b2e;border-radius:6px;padding:10px 14px;cursor:pointer}button:hover,button[aria-pressed=true]{background:#31504b;border-color:#e2c27d}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card{width:100%;padding:0;overflow:hidden;text-align:left;background:#0c1c21}.card canvas{width:100%;display:block}.card:focus-visible{outline:3px solid #f5d38e;outline-offset:4px}.stage{margin-bottom:30px;background:#0c1c21;border:1px solid #365350;border-radius:10px;overflow:hidden}.stage canvas{display:block;width:100%}.stage-title{padding:16px 20px 0;font-size:20px;font-weight:650}.stage p{padding:0 20px 12px;margin:6px 0 0;font-size:14px}#selection{color:#f3d28b}@media(max-width:650px){main{padding:24px 14px}header{display:block}.original{margin:20px 0}.grid{grid-template-columns:1fr}h1{font-size:28px}}
+</style></head><body><main>
+<header><div><h1>Ten ways to draw Cheese</h1><p>Choose a silhouette. Click any card to see it in the world.</p></div><div class="original"><span>Original<br>reference</span><pre> ___ 
+(o__)&gt;
+/'__\</pre></div></header>
+<div class="controls" aria-label="Preview controls">
+<button id="play" aria-pressed="true">Pause animation</button>
+<button class="pose" data-pose="idle" aria-pressed="true">Idle</button>
+<button class="pose" data-pose="happy" aria-pressed="false">Happy</button>
+<button class="pose" data-pose="angry" aria-pressed="false">Angry</button>
+<button class="pose" data-pose="walking" aria-pressed="false">Waddle</button>
+<button class="pose" data-pose="sleeping" aria-pressed="false">Sleep</button>
+</div>
+<section class="stage" aria-label="Selected character in the world"><div class="stage-title" id="selection"></div><p id="description"></p><canvas id="world" width="1200" height="560"></canvas></section>
+<div class="grid" id="options" aria-label="Ten character designs"></div>
+</main><!-- GALLERY_SCRIPT --></body></html>
