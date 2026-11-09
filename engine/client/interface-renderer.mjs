@@ -24,7 +24,7 @@ const LOGO=[
 const friendly=value=>String(value||'').replaceAll('_',' ');
 
 export class InterfaceRenderer {
-  constructor(){this.hits=[];this.scroll=0;this.docKey='';this.selectedLine=-1;this.visibleDocument=null;this.cache=new Map();}
+  constructor(){this.hits=[];this.scroll=0;this.docKey='';this.selectedLine=-1;this.visibleDocument=null;this.cache=new Map();this.panelsOpen=false;}
   text(ctx,text,x,y,size=16,color=C.ink,align='left',weight=400){
     ctx.font=`${weight} ${size}px Menlo, monospace`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillStyle=color;ctx.fillText(String(text),x,y);
   }
@@ -49,14 +49,17 @@ export class InterfaceRenderer {
     this.text(ctx,selected?'<':']',x+w-22,y+h/2,18,selected?C.gold:C.dim);
     if(command)this.hits.push({x,y,w,h,command});
   }
-  begin(ctx,canvas,frame){
-    this.hits=[];this.visibleDocument=null;this.width=frame.cols*10;this.height=frame.rows*18;
+  begin(ctx,canvas,frame,viewport){
+    this.hits=[];this.visibleDocument=null;
+    this.width=viewport?viewport.width/viewport.uiScale:frame.cols*10;
+    this.height=viewport?viewport.height/viewport.uiScale:frame.rows*18;
+    this.worldFill=Boolean(frame.scene);
     ctx.save();ctx.scale(canvas.width/this.width,canvas.height/this.height);
   }
-  draw(ctx,canvas,frame,time){
+  draw(ctx,canvas,frame,time,viewport=null){
     if(!frame.ui)return;
     Object.assign(C,BASE_COLORS,frame.ui.highContrast?{ink:'#fffbea',muted:'#d4dfcd',dim:'#a7c5bb',line:'#789b95',panel:'#061619'}:{});
-    this.begin(ctx,canvas,frame);
+    this.begin(ctx,canvas,frame,viewport);
     const ui=frame.ui,clock=ui.motion===false?0:time/1000;
     if(ui.state==='title')this.title(ctx,frame,clock);
     else if(frame.scene){
@@ -102,40 +105,34 @@ export class InterfaceRenderer {
     lines.slice(0,maxRows).forEach((row,i)=>this.text(ctx,row,x,y+i*size*1.45,size,color));
   }
   hud(ctx,frame,time){
-    const {ui,scene:s}=frame,W=this.width,H=this.height,r=s.rect;
-    const right=(r.x+r.w+1)*10+5,sw=W-right-8,worldBottom=(r.y+r.h)*18;
-    ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,r.y*18);ctx.fillRect(right-5,54,W-right+5,H-54);
-    ctx.fillRect(0,r.y*18,r.x*10,worldBottom-r.y*18);
-    ctx.fillRect((r.x+r.w)*10,r.y*18,right-(r.x+r.w)*10,worldBottom-r.y*18);
-    ctx.fillRect(0,worldBottom,right,H-worldBottom);
-    this.text(ctx,ui.name.toUpperCase(),24,26,24,C.gold,'left',700);
-    this.text(ctx,'/  '+s.location,190,27,18,C.ink);
-    this.text(ctx,`${friendly(s.season)}  /  ${friendly(s.weather)}  /  ${String(Math.floor(s.hour)).padStart(2,'0')}:${String(Math.floor(s.hour%1*60)).padStart(2,'0')}`,W-230,27,15,C.muted,'right');
-    this.text(ctx,`$ ${ui.currency}`,W-28,27,20,C.gold,'right',700);
-    this.rule(ctx,14,55,right-32,C.line,'=');
-    this.text(ctx,` ${s.location.toUpperCase()} `,34,55,12,C.mint);
-    // Quiet glyph frame around the world; the authored scenery stays intact.
-    for(let y=82;y<worldBottom;y+=18){this.text(ctx,':',2,y,12,C.dim);this.text(ctx,':',right-11,y,12,C.dim);}
+    const {ui,scene:s}=frame,W=this.width,H=this.height;
+    const right=W-346,sw=328;
+    // The world extends behind every panel. No space is reserved for a sidebar.
+    this.panel(ctx,18,78,Math.min(570,right-36),78,C.line,'#102429e8');
+    this.text(ctx,s.location.toUpperCase(),36,102,18,C.gold,'left',700);
+    this.text(ctx,`$ ${ui.currency}`,Math.min(570,right-36),102,17,C.gold,'right');
+    this.fitText(ctx,`${friendly(s.season)} / ${friendly(s.weather)} / ${String(Math.floor(s.hour)).padStart(2,'0')}:${String(Math.floor(s.hour%1*60)).padStart(2,'0')}  ·  ${ui.activity}`,36,133,Math.min(530,right-76),13,C.muted);
     const x=right+18,w=sw-36;
-    this.panel(ctx,right,64,sw,228,C.line);
-    this.text(ctx,'// EMOTIONS',x,89,13,C.gold);
-    this.text(ctx,ui.age<1?`${Math.floor(ui.age*24)}h old`:`${Math.floor(ui.age)} days`,right+sw-22,89,12,C.muted,'right');
+    this.panel(ctx,right,78,sw,228,C.line,'#102429ef');
+    this.text(ctx,'// EMOTIONS',x,103,13,C.gold);
+    this.text(ctx,ui.age<1?`${Math.floor(ui.age*24)}h old`:`${Math.floor(ui.age)} days`,right+sw-22,103,12,C.muted,'right');
     const closeup=emotionPortrait(s.duck,ui.emotion,time),faceCell=Math.min((w-8)/closeup.width,150/(closeup.art.length*1.5));
-    drawCharacter(ctx,{...closeup,x:(right+sw/2)/faceCell,y:250/faceCell},faceCell,faceCell,C.panel);
-    this.fitText(ctx,ui.mood,x,267,w,14,C.muted);
-    this.panel(ctx,right,299,sw,216,C.line);
-    this.text(ctx,'CARE & CONNECTION',x,321,13,C.mint);
+    drawCharacter(ctx,{...closeup,x:(right+sw/2)/faceCell,y:264/faceCell},faceCell,faceCell,C.panel);
+    this.fitText(ctx,ui.mood,x,281,w,14,C.muted);
+    if(this.panelsOpen){
+    this.panel(ctx,right,313,sw,216,C.line,'#102429ef');
+    this.text(ctx,'CARE & CONNECTION',x,335,13,C.mint);
     const needs=[['Hunger',ui.needs.hunger],['Energy',ui.needs.energy],['Fun',ui.needs.fun],['Clean',ui.needs.cleanliness],['Social',ui.needs.social],['Trust',ui.trust]];
     needs.forEach(([label,value],i)=>{
-      const y=350+i*25,low=value<20,color=low?C.rose:i===5?C.gold:C.mint;
+      const y=364+i*25,low=value<20,color=low?C.rose:i===5?C.gold:C.mint;
       this.text(ctx,label,x,y,14,low?C.rose:C.ink);
       const bars=11,filled=Math.round(clamp(value,0,100)/100*bars);
       this.text(ctx,'['+'='.repeat(filled)+'.'.repeat(bars-filled)+']',x+81,y,13,color);
       this.text(ctx,`${Math.floor(value)}%`,right+sw-20,y,13,color,'right');
     });
-    if(ui.attention||ui.trust<20||ui.cold)this.text(ctx,ui.attention?'! NEEDS ATTENTION':ui.cold?'[COLD SHOULDER]':'[DISTANT]',x,500,11,C.rose);
-    const my=523,mh=H-154-my;
-    this.panel(ctx,right,my,sw,mh,C.line);
+    if(ui.attention||ui.trust<20||ui.cold)this.text(ctx,ui.attention?'! NEEDS ATTENTION':ui.cold?'[COLD SHOULDER]':'[DISTANT]',x,514,11,C.rose);
+    const my=537,mh=H-155-my;
+    this.panel(ctx,right,my,sw,mh,C.line,'#102429ef');
     this.fitText(ctx,(ui.menu.depth?' / ':'// ')+ui.menu.title.toUpperCase(),x,my+24,w,14,C.gold);
     const count=Math.max(3,Math.floor((mh-72)/32)),window=menuWindow(ui.menu,count);
     window.items.forEach((item,i)=>{
@@ -147,24 +144,21 @@ export class InterfaceRenderer {
       if(item.enabled&&!ui.modal&&!ui.minigame)this.hits.push({x:x-4,y:y-13,w:w+8,h:29,command:{type:'choose',target:'menu',id:item.id,context:ui.menu.items.map(v=>v.id).join('|')}});
     });
     this.text(ctx,`${window.start+1}-${window.start+window.items.length} / ${ui.menu.items.length}   [ESC] Back`,x,my+mh-20,11,C.muted);
-    const statusY=H-146;
-    this.panel(ctx,right,statusY,sw,88,C.line);
-    this.fitText(ctx,ui.activity,x,statusY+27,w,13,C.mint);
-    this.wrapText(ctx,ui.action,x,statusY+51,w,12,C.ink,2);
+    }else{
+      this.button(ctx,ui.attention?'! Care & menu':'Care & menu',right,314,sw,34,false,ui.modal?null:{type:'panels'});
+      this.panel(ctx,right,355,sw,57,C.line,'#102429d9');
+      this.wrapText(ctx,ui.action,x,377,w,12,C.ink,2);
+    }
     // Transcript remains the original game's visible, scrollable, styled text.
-    const chatHeight=H-worldBottom-65;
-    this.panel(ctx,5,worldBottom+4,right-15,chatHeight,C.line);
-    this.text(ctx,'POND CHAT',24,worldBottom+24,12,C.mint);
-    this.text(ctx,'[PGUP / PGDN] History',right-32,worldBottom+24,11,C.muted,'right');
-    const chat=documentRows(ui.chat,109).filter(row=>row.kind!=='rule');
-    const room=chatHeight-42,rowH=Math.min(18,room/Math.max(chat.length,1));
-    chat.forEach((row,i)=>this.row(ctx,row,24,worldBottom+47+i*rowH,Math.min(14,rowH*.82),right-55));
-    ctx.fillStyle=C.bg;ctx.fillRect(0,H-54,W,54);
-    this.rule(ctx,14,H-48,W-28);
-    this.text(ctx,`LEVEL ${ui.level}`,24,H-24,14,C.gold);
-    this.text(ctx,`[${'='.repeat(Math.floor(clamp(ui.xpPercent,0,100)/10))}${'.'.repeat(10-Math.floor(clamp(ui.xpPercent,0,100)/10))}] ${ui.xp} / ${ui.xpNeeded} XP`,125,H-24,13,C.muted);
-    this.text(ctx,`${ui.stage}  /  ${Math.floor(ui.growth)}% growth`,W/2,H-24,13,C.mint,'center');
-    this.text(ctx,`GOALS ${ui.goals[0]} / ${ui.goals[1]}    [ARROWS] Navigate  [ENTER] Select`,W-24,H-24,12,C.muted,'right');
+    const chatW=Math.min(920,right-36),chatY=H-324,chatH=169;
+    this.panel(ctx,18,chatY,chatW,chatH,C.line,'#102429df');
+    this.text(ctx,'POND CHAT',36,chatY+22,12,C.mint);
+    this.text(ctx,'[PGUP / PGDN] History',chatW+2,chatY+22,11,C.muted,'right');
+    const chat=documentRows(ui.chat,Math.floor((chatW-36)/(12*.61))).filter(row=>row.kind!=='rule');
+    const rowH=Math.min(17,104/Math.max(chat.length,1));
+    chat.forEach((row,i)=>this.row(ctx,row,36,chatY+44+i*rowH,Math.min(12,rowH*.82),chatW-36));
+    this.rule(ctx,36,chatY+chatH-28,chatW-36);
+    this.fitText(ctx,`LV ${ui.level}  ${ui.xp}/${ui.xpNeeded} XP  /  ${ui.stage} ${Math.floor(ui.growth)}%  /  GOALS ${ui.goals[0]}/${ui.goals[1]}`,36,chatY+chatH-14,chatW-36,11,C.muted);
   }
   row(ctx,row,x,y,size,width){
     const cw=size*.61;
@@ -185,14 +179,16 @@ export class InterfaceRenderer {
   document(ctx,modal,ui={},full=false){
     const W=this.width,H=this.height,title=documentTitle(modal);
     const theme=THEMES[ui.dangerous?'warning':themeFor(title)];
-    const cacheKey=JSON.stringify(modal);
+    const columns=Math.min(108,Math.max(40,Math.floor((W-192)/(19*.61))));
+    const cacheKey=columns+JSON.stringify(modal);
     let rows=this.cache.get(cacheKey);
-    if(!rows){rows=documentRows(modal.lines,108,modal.preserveArt);if(this.cache.size>24)this.cache.clear();this.cache.set(cacheKey,rows);}
+    if(!rows){rows=documentRows(modal.lines,columns,modal.preserveArt);if(this.cache.size>24)this.cache.clear();this.cache.set(cacheKey,rows);}
     const size=rows.length>32?17:19,cw=size*.61;
     const maxCols=Math.max(40,...rows.map(row=>row.cells.length));
     const w=clamp(maxCols*cw+92,690,W-96),x=(W-w)/2;
-    const rowH=size*1.48,maxRows=Math.max(4,Math.floor((H-226)/rowH));
-    const count=Math.min(rows.length,maxRows),h=count*rowH+170,y=(H-h)/2;
+    const top=this.worldFill?78:0,bottom=this.worldFill?145:0,available=H-top-bottom;
+    const rowH=size*1.48,maxRows=Math.max(4,Math.floor((available-194)/rowH));
+    const count=Math.min(rows.length,maxRows),h=count*rowH+170,y=top+(available-h)/2;
     const key=ui.state+':'+ui.overlay+':'+title;
     const selected=rows.findIndex(row=>row.kind==='selected');
     if(key!==this.docKey){this.scroll=0;this.selectedLine=-1;this.docKey=key;}

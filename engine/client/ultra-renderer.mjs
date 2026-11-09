@@ -57,18 +57,22 @@ export class DisplayRenderer {
     this.mode='ultra';this.frames=0;this.lastTime=0;this.cost=0;this.peak=0;
   }
   get atlas(){return this.classic.atlas;}
-  resize(cols,rows,scale){
+  resize(cols,rows,scale,viewport=null){
     this.classic.resize(cols,rows,scale);
+    this.viewport=viewport;
     const c=this.classic.canvas;
-    this.canvas.style.width=c.style.width;this.canvas.style.height=c.style.height;
-    if(this.canvas.width!==c.width||this.canvas.height!==c.height){this.canvas.width=c.width;this.canvas.height=c.height;}
+    const dpr=window.devicePixelRatio||1;
+    const width=viewport?Math.round(viewport.width*dpr):c.width,height=viewport?Math.round(viewport.height*dpr):c.height;
+    this.canvas.style.width=viewport?`${viewport.width}px`:c.style.width;this.canvas.style.height=viewport?`${viewport.height}px`:c.style.height;
+    if(this.canvas.width!==width||this.canvas.height!==height){this.canvas.width=width;this.canvas.height=height;}
   }
   draw(frame,time=performance.now()){
     const begin=performance.now();this.classic.draw(frame);
     this.ctx.drawImage(this.classic.canvas,0,0);
     if(this.mode==='ultra'&&frame.scene){
       const s=frame.scene,r=s.rect,sx=this.classic.sx,sy=this.classic.sy;
-      const x=Math.round(r.x*sx),y=Math.round(r.y*sy),w=Math.round(r.w*sx),h=Math.round(r.h*sy);
+      const full=Boolean(frame.ui);
+      const x=full?0:Math.round(r.x*sx),y=full?0:Math.round(r.y*sy),w=full?this.canvas.width:Math.round(r.w*sx),h=full?this.canvas.height:Math.round(r.h*sy);
       this.scene.resize(w,h);this.scene.draw(s,time/1000,Math.min(.1,(time-this.lastTime)/1000||1/30));
       this.ctx.drawImage(this.scene.canvas,x,y,w,h);
       // Redraw the complete original modal, including blank cells. No game UI is
@@ -84,7 +88,7 @@ export class DisplayRenderer {
         this.scene.draw({...TITLE_SCENE,motion:frame.ui.motion},time/1000,Math.min(.1,(time-this.lastTime)/1000||1/30));
         this.ctx.drawImage(this.scene.canvas,0,0);
       }
-      this.interface.draw(this.ctx,this.canvas,frame,time);
+      this.interface.draw(this.ctx,this.canvas,frame,time,this.viewport);
     }
     this.lastTime=time;this.frames++;
     this.cost=performance.now()-begin;this.peak=Math.max(this.peak,this.cost);
