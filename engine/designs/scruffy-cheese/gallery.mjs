@@ -14,7 +14,7 @@ function wrap(ctx,line,x,y,width,size=18){
 }
 function figure(ctx,v,s,a,t,x,ground,cell=14,dir=true){
   const sprite=scruffySprite(v,s,a,t,dir);
-  drawCharacter(ctx,{...sprite,scale:cell,x:x+sprite.offsetX*cell,y:ground+3.5*cell*1.5+sprite.offsetY*cell},1,1,BG);
+  drawCharacter(ctx,{...sprite,scale:cell,x,y:ground,groundRow:21.5},1,1,BG);
 }
 function variantCard(ctx,v,s='adult',a='idle',t=0,dir=true){
   ctx.fillStyle=BG;ctx.fillRect(0,0,580,430);text(ctx,v.id,24,38,27,'#edb66b');text(ctx,v.name,66,38,24);

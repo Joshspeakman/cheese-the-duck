@@ -1,4 +1,5 @@
-import { cheeseDrawing,visitorDrawing } from './character-art.mjs';
+import { visitorDrawing } from './character-art.mjs';
+import { bedheadDrawing } from './bedhead-character.mjs';
 
 // Original idle sprites used as the expression/accessory reference in previews.
 // Live snapshots supply the original animated pose to the expanded drawings.
@@ -23,17 +24,18 @@ const COLORS = {
   athletic:['#c5a480','#f1d8b8','#f4b777'],
 };
 export function characterSprite(duck,time,visitor=false) {
-  const model=visitor?visitorDrawing(duck,time):cheeseDrawing(duck,time);
+  const model=visitor?visitorDrawing(duck,time):bedheadDrawing(duck,time);
   const [body,face,accent]=visitor?COLORS[duck.personality]||COLORS.adventurous:
-    ['#efce80','#ffe9ad','#f5ab58'];
+    [model.body,model.face,model.accent];
   return {...model,width:Math.max(1,...model.art.map(row=>row.length)),
-    name:visitor?duck.name||'Friend':'',body,face,accent,shade:visitor?'#9da8a6':'#c49e59',visitor};
+    name:visitor?duck.name||'Friend':'',body,face,accent,shade:visitor?'#9da8a6':model.shade,visitor};
 }
 
 export function drawCharacter(ctx,sprite,sx,sy,background) {
   const {art,scale,width}=sprite;
   const cw=sx*scale,ch=cw*1.5;
-  const left=Math.round(sprite.x*sx-(sprite.anchorX??width/2)*cw),top=Math.round(sprite.y*sy-art.length*ch);
+  const left=Math.round(sprite.x*sx-(sprite.anchorX??width/2)*cw+(sprite.offsetX||0)*cw);
+  const top=Math.round(sprite.y*sy-(sprite.groundRow??art.length)*ch+(sprite.offsetY||0)*cw);
   ctx.save();
   ctx.font=`bold ${ch}px Menlo, monospace`;
   ctx.textBaseline='middle';ctx.textAlign='center';ctx.lineJoin='round';
