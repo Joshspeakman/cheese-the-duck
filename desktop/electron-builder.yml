@@ -1,0 +1,23 @@
+appId: com.joshspeakman.cheese-the-duck
+productName: Cheese the Duck
+directories:
+  output: dist
+asar: false
+files:
+  - main.js
+  - preload.js
+  - launcher.html
+  - node_modules/@xterm/**
+  - node_modules/node-pty/**
+extraResources:
+  - from: game
+    to: game
+mac:
+  target:
+    - target: dir
+      arch: [arm64]
+  category: public.app-category.games
+  icon: build/icon.png
+  identity: '-'
+  hardenedRuntime: false
+npmRebuild: false
