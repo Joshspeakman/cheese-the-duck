@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional
 from pathlib import Path
+from config import SAVE_DIR
 import json
 import os
 import shutil
@@ -35,7 +36,7 @@ class SaveSlotsSystem:
     
     MAX_SLOTS = 5
     
-    def __init__(self, save_dir: str = "~/.cheese_the_duck"):
+    def __init__(self, save_dir: str = str(SAVE_DIR)):
         self.save_dir = Path(save_dir).expanduser()
         self.save_dir.mkdir(parents=True, exist_ok=True)
         
@@ -445,7 +446,7 @@ class SaveSlotsSystem:
         }
     
     @classmethod
-    def from_dict(cls, data: dict, save_dir: str = "~/.cheese_the_duck") -> "SaveSlotsSystem":
+    def from_dict(cls, data: dict, save_dir: str = str(SAVE_DIR)) -> "SaveSlotsSystem":
         """Create from dictionary."""
         system = cls(save_dir)
         system.current_slot = data.get("current_slot", 1)

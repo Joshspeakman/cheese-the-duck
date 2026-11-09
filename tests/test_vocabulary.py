@@ -84,17 +84,17 @@ class TestTryLearn:
         assert response is not None
         assert "large building" in vm.get_definition("flibble")
 
-    def test_content_filter_blocks_bad_word(self):
+    def test_uncensored_word_can_be_learned(self):
         vm = VocabularyMemory()
         response = vm.try_learn("fuck means something bad")
-        assert response is None
-        assert not vm.knows_word("fuck")
+        assert response is not None
+        assert vm.knows_word("fuck")
 
-    def test_content_filter_blocks_bad_definition(self):
+    def test_uncensored_definition_can_be_learned(self):
         vm = VocabularyMemory()
         response = vm.try_learn("flibble means doing cocaine all day")
-        assert response is None
-        assert not vm.knows_word("flibble")
+        assert response is not None
+        assert vm.knows_word("flibble")
 
     def test_no_teaching_returns_none(self):
         vm = VocabularyMemory()

@@ -2,11 +2,12 @@
 Game configuration and constants for Cheese the Duck.
 """
 from pathlib import Path
+import os
 
 # Paths
 GAME_DIR = Path(__file__).parent
 DATA_DIR = GAME_DIR / "data"
-SAVE_DIR = Path.home() / ".cheese_the_duck"
+SAVE_DIR = Path(os.environ.get("CHEESE_SAVE_DIR", str(Path.home() / ".cheese_the_duck"))).expanduser()
 SAVE_FILE = SAVE_DIR / "save.json"
 
 # Default duck name

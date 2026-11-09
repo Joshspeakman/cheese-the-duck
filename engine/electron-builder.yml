@@ -1,0 +1,22 @@
+appId: com.joshspeakman.cheese-the-duck.ascii-engine
+productName: Cheese the Duck ASCII Engine
+directories:
+  output: dist
+asar: true
+files:
+  - main.cjs
+  - preload.cjs
+  - client/**
+  - package.json
+extraResources:
+  - from: build/simulation/cheese-simulation
+    to: simulation
+mac:
+  target:
+    - target: dir
+      arch: [arm64]
+  category: public.app-category.games
+  icon: build/icon.png
+  identity: '-'
+  hardenedRuntime: false
+npmRebuild: false

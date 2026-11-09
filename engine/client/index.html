@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:">
+<title>Cheese the Duck</title><link rel="stylesheet" href="style.css"></head>
+<body><header><div><strong>CHEESE <span>THE DUCK</span></strong><small>A small duck. A very large world.</small></div>
+<nav aria-label="Display"><button id="zoom">Text: fit</button><button id="motion" aria-pressed="false">Soft glow: off</button><button id="capture">Photo</button><button id="fullscreen">Full screen</button></nav></header>
+<main id="viewport"><canvas id="world" tabindex="0" aria-label="Cheese the Duck game. Press H for help."></canvas><p id="loading">Waking up the pond...</p><pre id="error" hidden></pre></main>
+<footer><div id="actions" aria-label="Game actions"></div><div class="status"><span id="place">Cheese the Duck</span><span id="hint">Arrow keys + Enter to choose · Esc to return</span><span id="performance"></span></div></footer>
+<div id="announcement" role="status" aria-live="polite"></div><script type="module" src="app.mjs"></script></body></html>

@@ -1,0 +1,126 @@
+const { app, BrowserWindow, Menu, ipcMain } = require('electron');
+const { spawn } = require('node:child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+const readline = require('node:readline');
+const os = require('node:os');
+const SMOKE = process.argv.includes('--smoke');
+const root = path.resolve(__dirname, '..');
+const runtime = SMOKE ? fs.mkdtempSync(path.join(os.tmpdir(), 'cheese-ascii-smoke-')) :
+  (app.isPackaged ? path.join(app.getPath('appData'), 'Cheese the Duck ASCII Engine') : path.join(__dirname, '.runtime'));
+app.setPath('userData', path.join(runtime, 'window'));
+app.setName('Cheese the Duck ASCII Engine');
+let win, child, closing = false, latest, queued, awaitingFrame = false, errorTail = '', closeTimer;
+const send = (channel, data) => { if (win && !win.isDestroyed()) win.webContents.send(channel, data); };
+function input(command) {
+  if (child && child.stdin.writable) child.stdin.write(JSON.stringify(command) + '\n');
+}
+function deliver(frame) {
+  latest = frame;
+  if (awaitingFrame) { queued = frame; return; }
+  awaitingFrame = true; send('engine:frame', frame);
+}
+function start() {
+  fs.mkdirSync(runtime, { recursive: true });
+  const saveDir = path.join(runtime, 'saves');
+  // Copy once; the installed game's saves are never opened for writing.
+  if (!SMOKE && !fs.existsSync(saveDir)) {
+    const legacy = path.join(os.homedir(), '.cheese_the_duck');
+    if (fs.existsSync(legacy)) fs.cpSync(legacy, saveDir, { recursive: true });
+  }
+  fs.mkdirSync(saveDir, { recursive: true });
+  const executable = app.isPackaged ? path.join(process.resourcesPath, 'simulation', 'cheese-simulation') : path.join(root, '.venv', 'bin', 'python');
+  const args = app.isPackaged ? [] : ['-u', path.join(__dirname, 'host.py')];
+  const env = { ...process.env, CHEESE_SAVE_DIR: saveDir, PYTHONDONTWRITEBYTECODE: '1',
+    PYTHONUNBUFFERED: '1', PYGAME_HIDE_SUPPORT_PROMPT: '1', TERM: 'xterm-256color' };
+  if (SMOKE) env.SDL_AUDIODRIVER = 'dummy';
+  child = spawn(executable, args, { cwd: runtime, env, stdio: ['pipe', 'pipe', 'pipe'] });
+  const log = fs.createWriteStream(path.join(runtime, 'engine.log'), { flags: 'a' });
+  child.stderr.on('data', d => { log.write(d); errorTail = (errorTail + d).slice(-6000); });
+  child.stdin.on('error', () => {});
+  child.on('error', err => send('engine:error', `Cannot start Cheese: ${err.message}. See engine/README.md for setup.`));
+  readline.createInterface({ input: child.stdout }).on('line', line => {
+    try {
+      const message = JSON.parse(line);
+      if (message.type === 'frame') deliver(message);
+      else if (message.type === 'error') send('engine:error', message.message);
+    } catch (err) { send('engine:error', `Invalid simulation frame: ${err.message}`); }
+  });
+  child.on('exit', code => {
+    child = null; log.end();
+    if (SMOKE) return;
+    if (closing) { clearTimeout(closeTimer); win.destroy(); app.quit(); }
+    else if (code !== 0) send('engine:error', `Cheese stopped (${code}). ${errorTail}`);
+    else { closing = true; win.close(); }
+  });
+}
+function shutdown() {
+  if (closing) return;
+  closing = true;
+  if (!child) { win.destroy(); app.quit(); return; }
+  input({ type: 'shutdown' });
+  closeTimer = setTimeout(() => {
+    closing = false;
+    send('engine:error', 'Saving is taking longer than expected. The window is staying open; see engine.log for details.');
+  }, 15000);
+}
+ipcMain.on('engine:ready', () => { if (!child) start(); });
+ipcMain.on('engine:ack', () => { awaitingFrame = false; if (queued) { const frame = queued; queued = null; deliver(frame); } });
+ipcMain.on('engine:input', (_e, command) => {
+  if (!command || closing) return;
+  if (command.type === 'action' && typeof command.action === 'string' && command.action.length < 32) input(command);
+  if (command.type === 'key' && typeof command.key === 'string' && command.key.length < 32) input(command);
+  if (command.type === 'text' && typeof command.text === 'string') input({ type: 'text', text: command.text.slice(0, 1000) });
+});
+ipcMain.handle('engine:fullscreen', () => { win.setFullScreen(!win.isFullScreen()); });
+ipcMain.handle('engine:capture', async () => {
+  const dir = path.join(runtime, 'screenshots'); fs.mkdirSync(dir, { recursive: true });
+  const file = path.join(dir, `cheese-${Date.now()}.png`);
+  fs.writeFileSync(file, (await win.webContents.capturePage()).toPNG()); return file;
+});
+const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
+async function waitFor(predicate, label, ms = 30000) {
+  const deadline = Date.now() + ms;
+  while (Date.now() < deadline) { if (predicate()) return; await pause(100); }
+  throw new Error(`Timed out: ${label}\n${errorTail}`);
+}
+async function smoke() {
+  const out = process.env.CHEESE_ARTIFACTS || path.join(__dirname, 'artifacts'); fs.mkdirSync(out, { recursive: true });
+  await waitFor(() => latest?.meta.state === 'title', 'title screen'); await pause(300);
+  fs.writeFileSync(path.join(out, 'title.png'), (await win.webContents.capturePage()).toPNG());
+  input({ type: 'key', key: 'Enter' });
+  await waitFor(() => latest?.meta.state === 'playing', 'new game'); await pause(4200);
+  input({ type: 'key', key: 'Escape' }); await pause(300);
+  fs.writeFileSync(path.join(out, 'pond.png'), (await win.webContents.capturePage()).toPNG());
+  // Exercise the actual DOM toolbar -> preload -> IPC -> simulation path.
+  for (const index of [11, 12, 7, 12, 5]) {
+    await win.webContents.executeJavaScript(`document.querySelectorAll('#actions button')[${index}].click()`);
+    await pause(300);
+  }
+  await waitFor(() => latest?.meta.talking, 'talk toolbar action');
+  input({ type: 'text', text: 'What the hell, Cheese?' }); await pause(500);
+  await waitFor(() => latest?.lines.some(row => row.some(run => run[0].includes('What the hell, Cheese?'))), 'literal dialogue input');
+  fs.writeFileSync(path.join(out, 'talk.png'), (await win.webContents.capturePage()).toPNG());
+  input({ type: 'key', key: 'Enter' }); await pause(800);
+  fs.writeFileSync(path.join(out, 'frame.json'), JSON.stringify(latest));
+  const stats = await win.webContents.executeJavaScript('window.engineStats');
+  if (!stats || stats.frames < 10) throw new Error('Canvas did not draw enough frames');
+  input({ type: 'shutdown' }); await waitFor(() => !child, 'graceful shutdown');
+  JSON.parse(fs.readFileSync(path.join(runtime, 'saves', 'save.json'), 'utf8'));
+  console.log(JSON.stringify({ result: 'PASS', stats, runtime, out }));
+}
+app.whenReady().then(async () => {
+  win = new BrowserWindow({ title: 'Cheese the Duck - ASCII Engine', width: 1500, height: 1020,
+    minWidth: 920, minHeight: 640, backgroundColor: '#101b19',
+    webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, sandbox: true } });
+  Menu.setApplicationMenu(Menu.buildFromTemplate([{ role: 'appMenu' }, { role: 'editMenu' }, { label: 'View', submenu: [{ role: 'togglefullscreen' }] }]));
+  win.on('close', event => { if (child) { event.preventDefault(); shutdown(); } });
+  await win.loadFile(path.join(__dirname, 'client', 'index.html'));
+  if (SMOKE) {
+    try { await smoke(); } catch (err) { console.error(err); process.exitCode = 1; }
+    if (child) { input({ type: 'shutdown' }); await waitFor(() => !child, 'shutdown after failure').catch(() => child?.kill()); }
+    app.exit(process.exitCode || 0);
+  }
+});
+app.on('before-quit', event => { if (child) { event.preventDefault(); shutdown(); } });
+app.on('window-all-closed', () => app.quit());
