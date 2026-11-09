@@ -251,6 +251,12 @@ class SoundEngine:
     _sound_executor: Optional[concurrent.futures.ThreadPoolExecutor] = None
 
     def __init__(self):
+        # Registration and shutdown share a lock: no worker may slip in after
+        # shutdown takes its snapshot. SDL must outlive every Sound/Channel use.
+        self._audio_workers = set()
+        self._worker_lock = threading.RLock()
+        self._shutdown_lock = threading.Lock()
+        self._audio_stopping = threading.Event()
         self.enabled = True
         self.volume = 0.5
         self.music_volume = 0.15  # Music is quieter than SFX
@@ -279,6 +285,24 @@ class SoundEngine:
         self._radio = None
         self._radio_was_playing = None
         self._detect_capabilities()
+
+    def _start_audio_worker(self, target):
+        """Start a mixer user that shutdown will cancel and join before quitting SDL."""
+        def run():
+            try:
+                if not self._audio_stopping.is_set():
+                    target()
+            finally:
+                with self._worker_lock:
+                    self._audio_workers.discard(threading.current_thread())
+
+        with self._worker_lock:
+            if self._audio_stopping.is_set():
+                return None
+            thread = threading.Thread(target=run, daemon=True, name="cheese-audio")
+            self._audio_workers.add(thread)
+            thread.start()
+            return thread
 
     @classmethod
     def _get_executor(cls) -> concurrent.futures.ThreadPoolExecutor:
@@ -424,9 +448,12 @@ class SoundEngine:
         if self._pygame_available:
             try:
                 import pygame
-                pygame.mixer.music.load(str(music_path))
-                pygame.mixer.music.set_volume(self.music_volume)
-                pygame.mixer.music.play(-1)  # Loop indefinitely
+                with self._worker_lock:
+                    if self._audio_stopping.is_set():
+                        return
+                    pygame.mixer.music.load(str(music_path))
+                    pygame.mixer.music.set_volume(self.music_volume)
+                    pygame.mixer.music.play(-1)  # Loop indefinitely
                 self._music_playing = True
                 logger.debug("Playing music: %s", track_name)
                 return
@@ -443,7 +470,10 @@ class SoundEngine:
         if self._pygame_available:
             try:
                 import pygame
-                pygame.mixer.music.stop()
+                with self._worker_lock:
+                    if self._audio_stopping.is_set():
+                        return
+                    pygame.mixer.music.stop()
             except Exception:
                 pass
         self.stop_music()
@@ -463,19 +493,22 @@ class SoundEngine:
     def set_music_volume(self, volume: float):
         """Set music volume (0.0 to 1.0). Recommended to keep low (0.1-0.2)."""
         self.music_volume = max(0.0, min(1.0, volume))
-        # Update Sound object volume if playing
-        if self._music_sound:
-            try:
-                self._music_sound.set_volume(self.music_volume)
-            except Exception:
-                pass
-        # Update pygame streaming music volume if playing
-        if self._pygame_available:
-            try:
-                import pygame
-                pygame.mixer.music.set_volume(self.music_volume)
-            except Exception:
-                pass
+        with self._worker_lock:
+            if self._audio_stopping.is_set():
+                return
+            # Update Sound object volume if playing
+            if self._music_sound:
+                try:
+                    self._music_sound.set_volume(self.music_volume)
+                except Exception:
+                    pass
+            # Update pygame streaming music volume if playing
+            if self._pygame_available:
+                try:
+                    import pygame
+                    pygame.mixer.music.set_volume(self.music_volume)
+                except Exception:
+                    pass
 
     # ============== RADIO INTEGRATION ==============
 
@@ -727,7 +760,8 @@ class SoundEngine:
                                 self._music_sound.set_volume(vol)
                             except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                                 break
-                            time.sleep(step_duration)
+                            if self._audio_stopping.wait(step_duration):
+                                return
                         try:
                             self._music_sound.stop()
                         except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
@@ -757,7 +791,9 @@ class SoundEngine:
                                     new_sound.set_volume(vol)
                                 except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
                                     break
-                                time.sleep(step_duration)
+                                if self._audio_stopping.wait(step_duration):
+                                    new_sound.stop()
+                                    return
 
                             # Update state
                             self._music_sound = new_sound
@@ -766,10 +802,10 @@ class SoundEngine:
 
                             # Wait for track to finish, then set cooldown
                             while new_channel and new_channel.get_busy():
-                                if self.music_muted or self.is_radio_playing():
+                                if self._audio_stopping.is_set() or self.music_muted or self.is_radio_playing():
                                     new_sound.stop()
                                     break
-                                time.sleep(0.5)
+                                self._audio_stopping.wait(0.5)
 
                             # Set cooldown: 2-5 minutes before playing again
                             self._music_cooldown_until = time.time() + random.uniform(120, 300)
@@ -783,9 +819,7 @@ class SoundEngine:
                 finally:
                     self._crossfading = False
 
-            self._crossfade_thread = threading.Thread(target=do_crossfade)
-            self._crossfade_thread.daemon = True
-            self._crossfade_thread.start()
+            self._crossfade_thread = self._start_audio_worker(do_crossfade)
         else:
             # No pygame, just switch directly
             self.stop_background_music()
@@ -837,7 +871,7 @@ class SoundEngine:
                 import math
                 sample_rate = 44100
                 for freq, duration in tones:
-                    if self.is_radio_playing() or self.music_muted:
+                    if self._audio_stopping.is_set() or self.is_radio_playing() or self.music_muted:
                         return  # radio started or muted — abort
                     n_samples = int(sample_rate * duration)
                     fade_len = min(int(n_samples * 0.15), 400)
@@ -854,12 +888,11 @@ class SoundEngine:
                         buf.append(sample)
                     sound = pygame.mixer.Sound(buffer=buf)
                     sound.play()
-                    pygame.time.wait(int(duration * 1000))
+                    self._audio_stopping.wait(duration)
             except Exception:
                 pass
 
-        thread = threading.Thread(target=_play, daemon=True)
-        thread.start()
+        self._start_audio_worker(_play)
 
     def get_current_context(self) -> Optional[MusicContext]:
         """Get the current music context."""
@@ -886,9 +919,7 @@ class SoundEngine:
                     sound.play()
                 except Exception:
                     pass
-            thread = threading.Thread(target=play_pygame)
-            thread.daemon = True
-            thread.start()
+            self._start_audio_worker(play_pygame)
             return
 
         # Fallback to system player
@@ -951,10 +982,13 @@ class SoundEngine:
         if self._pygame_available:
             try:
                 import pygame
-                pygame.mixer.music.load(str(wav_path))
-                pygame.mixer.music.set_volume(self.music_volume)
-                loops = -1 if loop else 0
-                pygame.mixer.music.play(loops)
+                with self._worker_lock:
+                    if self._audio_stopping.is_set():
+                        return
+                    pygame.mixer.music.load(str(wav_path))
+                    pygame.mixer.music.set_volume(self.music_volume)
+                    loops = -1 if loop else 0
+                    pygame.mixer.music.play(loops)
                 logger.debug("Playing WAV music via pygame: %s", wav_name)
                 return
             except Exception as e:
@@ -1100,6 +1134,8 @@ class SoundEngine:
                     import math
                     sample_rate = 44100
                     for freq, duration in effects:
+                        if self._audio_stopping.is_set():
+                            return
                         n_samples = int(sample_rate * duration)
                         fade_len = min(int(n_samples * 0.1), 200)
                         buf = array.array('h')  # signed short
@@ -1117,12 +1153,11 @@ class SoundEngine:
                             buf.append(sample)  # right
                         sound = pygame.mixer.Sound(buffer=buf)
                         sound.play()
-                        pygame.time.wait(int(duration * 1000))
+                        self._audio_stopping.wait(duration)
                 except Exception:
                     pass
 
-            thread = threading.Thread(target=_play_tones, daemon=True)
-            thread.start()
+            self._start_audio_worker(_play_tones)
             return
 
         # Fallback to beep/bell methods
@@ -1208,25 +1243,34 @@ class SoundEngine:
             self.stop_music()
 
     def shutdown(self):
-        """Clean up all audio resources. Call on game exit."""
-        # Stop radio subprocess first
-        try:
-            self.stop_radio()
-        except Exception:
-            pass
-        self.stop_music()
-        # Shutdown the shared thread pool executor
-        if SoundEngine._sound_executor is not None:
-            SoundEngine._sound_executor.shutdown(wait=False)
-            SoundEngine._sound_executor = None
-        # Quit pygame mixer if it was initialized
-        if self._pygame_available:
+        """Cancel producers, drain mixer users, then release SDL (idempotent)."""
+        with self._shutdown_lock:
+            with self._worker_lock:
+                if self._audio_stopping.is_set():
+                    return
+                self._audio_stopping.set()
+                self.enabled = False
+                self.music_muted = True
+                self._crossfading = False
+                workers = tuple(self._audio_workers)
             try:
-                import pygame
-                pygame.mixer.quit()
+                self.stop_radio()
             except Exception:
                 pass
-            self._pygame_available = False
+            self.stop_music()
+            # Never quit the native mixer under a Python worker. A timed join
+            # would reintroduce the crash if a slow worker outlived that timeout.
+            for worker in workers:
+                worker.join()
+            if SoundEngine._sound_executor is not None:
+                SoundEngine._sound_executor.shutdown(wait=True)
+                SoundEngine._sound_executor = None
+            self._music_sound = None
+            self._music_channel = None
+            if self._pygame_available:
+                import pygame
+                pygame.mixer.quit()
+                self._pygame_available = False
 
 
 def count_syllables(text: str) -> int:

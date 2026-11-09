@@ -10,6 +10,7 @@ const runtime = SMOKE ? fs.mkdtempSync(path.join(os.tmpdir(), 'cheese-ascii-smok
   (app.isPackaged ? path.join(app.getPath('appData'), 'Cheese the Duck ASCII Engine') : path.join(__dirname, '.runtime'));
 app.setPath('userData', path.join(runtime, 'window'));
 app.setName('Cheese the Duck ASCII Engine');
+let simulationExit = null;
 let win, child, closing = false, latest, queued, awaitingFrame = false, errorTail = '', closeTimer;
 const send = (channel, data) => { if (win && !win.isDestroyed()) win.webContents.send(channel, data); };
 function input(command) {
@@ -21,6 +22,7 @@ function deliver(frame) {
   awaitingFrame = true; send('engine:frame', frame);
 }
 function start() {
+  simulationExit = null; errorTail = '';
   fs.mkdirSync(runtime, { recursive: true });
   const saveDir = path.join(runtime, 'saves');
   // Copy once; the installed game's saves are never opened for writing.
@@ -33,7 +35,7 @@ function start() {
   const args = app.isPackaged ? [] : ['-u', path.join(__dirname, 'host.py')];
   const env = { ...process.env, CHEESE_SAVE_DIR: saveDir, PYTHONDONTWRITEBYTECODE: '1',
     PYTHONUNBUFFERED: '1', PYGAME_HIDE_SUPPORT_PROMPT: '1', TERM: 'xterm-256color' };
-  if (SMOKE) env.SDL_AUDIODRIVER = 'dummy';
+  if (SMOKE && process.env.CHEESE_SMOKE_AUDIO !== 'system') env.SDL_AUDIODRIVER = 'dummy';
   child = spawn(executable, args, { cwd: runtime, env, stdio: ['pipe', 'pipe', 'pipe'] });
   const log = fs.createWriteStream(path.join(runtime, 'engine.log'), { flags: 'a' });
   child.stderr.on('data', d => { log.write(d); errorTail = (errorTail + d).slice(-6000); });
@@ -46,11 +48,12 @@ function start() {
       else if (message.type === 'error') send('engine:error', message.message);
     } catch (err) { send('engine:error', `Invalid simulation frame: ${err.message}`); }
   });
-  child.on('exit', code => {
+  child.on('exit', (code, signal) => {
+    simulationExit = { code, signal };
     child = null; log.end();
     if (SMOKE) return;
-    if (closing) { clearTimeout(closeTimer); win.destroy(); app.quit(); }
-    else if (code !== 0) send('engine:error', `Cheese stopped (${code}). ${errorTail}`);
+    if (closing && code === 0 && !signal) { clearTimeout(closeTimer); win.destroy(); app.quit(); }
+    else if (code !== 0 || signal) { closing = false; clearTimeout(closeTimer); send('engine:error', `Cheese stopped (${signal || code}). ${errorTail}`); }
     else { closing = true; win.close(); }
   });
 }
@@ -64,7 +67,13 @@ function shutdown() {
     send('engine:error', 'Saving is taking longer than expected. The window is staying open; see engine.log for details.');
   }, 15000);
 }
-ipcMain.on('engine:ready', () => { if (!child) start(); });
+ipcMain.on('engine:ready', () => {
+  // A reload discards in-flight ACKs. Seed the new renderer with the latest
+  // frame and reset backpressure instead of waiting on the old page forever.
+  awaitingFrame = false; queued = null;
+  if (!child) start();
+  else if (latest) deliver(latest);
+});
 ipcMain.on('engine:ack', () => { awaitingFrame = false; if (queued) { const frame = queued; queued = null; deliver(frame); } });
 ipcMain.on('engine:input', (_e, command) => {
   if (!command || closing) return;
@@ -92,6 +101,20 @@ async function smoke() {
   await waitFor(() => latest?.meta.state === 'playing', 'new game'); await pause(4200);
   input({ type: 'key', key: 'Escape' }); await pause(300);
   fs.writeFileSync(path.join(out, 'pond.png'), (await win.webContents.capturePage()).toPNG());
+  await win.webContents.executeJavaScript("document.getElementById('graphics').click()");
+  await pause(300);
+  fs.writeFileSync(path.join(out, 'classic.png'), (await win.webContents.capturePage()).toPNG());
+  if (await win.webContents.executeJavaScript("localStorage.getItem('cheese.graphics')") !== 'classic') throw new Error('Classic preference was not saved');
+  await new Promise(resolve => { win.webContents.once('did-finish-load', resolve); win.webContents.reload(); });
+  await win.webContents.executeJavaScript(`new Promise((resolve, reject) => {
+    const deadline = Date.now() + 5000;
+    const poll = () => { if (window.engineStats?.frames > 0) resolve();
+      else if (Date.now() > deadline) reject(new Error('Renderer did not resume after reload'));
+      else setTimeout(poll, 50); }; poll();
+  })`);
+  if (await win.webContents.executeJavaScript("window.engineStats?.mode") !== 'classic') throw new Error('Classic preference did not survive reload');
+  await win.webContents.executeJavaScript("document.getElementById('graphics').click()");
+  await pause(300);
   // Exercise the actual DOM toolbar -> preload -> IPC -> simulation path.
   for (const index of [11, 12, 7, 12, 5]) {
     await win.webContents.executeJavaScript(`document.querySelectorAll('#actions button')[${index}].click()`);
@@ -101,11 +124,13 @@ async function smoke() {
   input({ type: 'text', text: 'What the hell, Cheese?' }); await pause(500);
   await waitFor(() => latest?.lines.some(row => row.some(run => run[0].includes('What the hell, Cheese?'))), 'literal dialogue input');
   fs.writeFileSync(path.join(out, 'talk.png'), (await win.webContents.capturePage()).toPNG());
+  fs.writeFileSync(path.join(out, 'talk-frame.json'), JSON.stringify(latest));
   input({ type: 'key', key: 'Enter' }); await pause(800);
   fs.writeFileSync(path.join(out, 'frame.json'), JSON.stringify(latest));
   const stats = await win.webContents.executeJavaScript('window.engineStats');
   if (!stats || stats.frames < 10) throw new Error('Canvas did not draw enough frames');
   input({ type: 'shutdown' }); await waitFor(() => !child, 'graceful shutdown');
+  if (simulationExit?.code !== 0 || simulationExit?.signal) throw new Error(`Simulation shutdown failed: ${JSON.stringify(simulationExit)}\n${errorTail}`);
   JSON.parse(fs.readFileSync(path.join(runtime, 'saves', 'save.json'), 'utf8'));
   console.log(JSON.stringify({ result: 'PASS', stats, runtime, out }));
 }

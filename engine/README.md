@@ -8,7 +8,9 @@ Open **Play Cheese ASCII.command** in the repository root, or **engine/dist/mac-
 
 All original gameplay code and data remain: needs and care, growth, personality, trust and consequences, autonomous behavior, conversation and memory, learning, quests, friends, exploration, crafting, building, inventory and shop, fishing, gardening, weather, festivals, collectibles, decorations, tricks, titles, achievements, prestige, diaries, scrapbook, save slots and minigames. Cheese's authored dialogue, duck sprites, expressions, movement and interaction animations are preserved. The former content gate now passes text through unchanged, including profanity, in dialogue learning and memory.
 
-The new renderer adds world-space terrain, animated water and grass, clouds, willows, pines, docks, ruins, flowers and boats across nine biomes. Original location scenery, items, actors, visitors and weather draw above this layer. It uses a larger character viewport, high-DPI glyph caching, changed-cell repainting, and a bounded latest-frame transport. It retains the original extended ASCII/Unicode borders and symbols.
+The **Graphics: Ultra / Classic** button switches instantly and remembers your choice. **Classic** is the original engine presentation, preserved pixel for pixel. **Ultra** is the default: a 240 × 112 ASCII world (26,880 character cells), with layered landscapes, etched tree canopies, willow fronds, water reflections, ripples, lily pads, fish, clouds, birds, butterflies, fireflies, seasonal foliage and animated weather. Daylight and moonlight change the palette. Landmarks distinguish the nine biomes and 21 locations: waterfalls, palms, windmills, flower arches, vegetable rows, cabins, ruins, crystal caverns, a fountain and underground storm-drain arches.
+
+Cheese has hand-drawn ASCII feather shading, blinking eyes, mood expressions, walking feet, wing flaps, swimming wakes, feeding crumbs, bubbles, hearts and sleep lettering. Growth, facing, movement, cosmetics, placed objects and visitors come from the live simulation. The original HUD, dialogue, menus and minigames stay in their original glyph compositor; Ultra is a visual layer over the same game. Reduced Motion, animation, particle and weather preferences are respected. Worlds use printable ASCII; the original UI retains its extended ASCII/Unicode symbols. High-DPI glyph caching, changed-cell repainting and bounded frame transport keep drawing responsive.
 
 Keyboard controls are unchanged. The lower action bar supports mouse input. Arrow keys and Enter navigate the complete game menu. Escape goes back; T opens conversation; Page Up/Down scroll conversation history. Display controls provide fullscreen, larger text with scrolling, optional glow and PNG screenshots. Every dialogue string is drawn as literal glyphs.
 
@@ -45,11 +47,16 @@ CHEESE_SAVE_DIR="$PWD/engine/artifacts/test-saves" SDL_AUDIODRIVER=dummy .venv/b
 .venv/bin/python engine/check_game.py
 npm --prefix engine test
 npm --prefix engine run smoke
+npm --prefix engine run visual
 CHEESE_ARTIFACTS="$PWD/engine/artifacts/packaged" \
   'engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app/Contents/MacOS/Cheese the Duck ASCII Engine' --smoke
 ```
 
 The parity harness checks 42 static menu actions, 21 locations, six diary tabs, four minigame lifecycles, uncensored keyboard editing, mouse-action routing, and save/reload of the complete 59-section save. It uses real game handlers and the new frame compositor. The Electron smoke tests exercise startup, a new game, input, drawing, screenshots, graceful shutdown and persisted JSON, in both source and frozen app builds. These checks do not simulate months of progression or every random event.
+
+The visual harness checks nine animated biomes, pixel-identical Classic rendering, opaque dialogue preservation and switching back from Ultra. It writes a gallery and individual world captures under `engine/artifacts/ultra/`. JavaScript tests exercise all seasons, weather, 28 expression/action states, growth, cosmetic/visitor visibility and reduced motion. The integration harness checks that all 21 real locations produce serializable live scene snapshots.
+
+The November 9 native audio crash was caused by a sound worker using `pygame.Sound.play()` while the main thread closed the SDL mixer. Shutdown now blocks new mixer workers, cancels their waits, joins them, then closes SDL. Tests force that exact overlap and run 20 repeated shutdowns during SFX, WAV playback and crossfades. The desktop smoke test now fails on a nonzero subprocess exit or a termination signal, and checks that graphics preferences survive a renderer reload. Reload also resets frame acknowledgements and resends the current frame so transport cannot stall on an acknowledgement from the old page. Set `CHEESE_SMOKE_AUDIO=system` to exercise the system audio driver instead of the default silent dummy driver.
 
 Testing also exposed and fixed the original diary's stale references to photos (now read from the scrapbook) and a load-versus-background-save race. Regression tests cover these fixes.
 

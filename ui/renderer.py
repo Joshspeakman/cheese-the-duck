@@ -1290,6 +1290,9 @@ class Renderer:
         # Check for expired celebration
         self._check_celebration_expired()
 
+        if hasattr(self, "capture_scene_base"):
+            self.capture_scene_base(output)
+
         # Overlays (help, stats, inventory, celebration, item interaction, fishing)
         if self._show_celebration:
             output = self._overlay_celebration(output, width)

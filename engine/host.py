@@ -28,6 +28,7 @@ sys.stdout = sys.stderr  # Libraries/logs never share the frame protocol.
 from blessed import Terminal
 from engine.frame import line_runs
 from engine.scenery import Landscape
+from engine.scene import snapshot, overlay_bounds
 from ui.renderer import Renderer
 from core.game import Game
 
@@ -114,6 +115,20 @@ class CanvasRenderer(Renderer):
         self.last_sent = 0
         self.game = None
         self.sequence = 0
+        self.scene_base = None
+        self.scene_rect = None
+        self.header_rows = 3
+    def _render_header_bar(self, *args, **kwargs):
+        lines = super()._render_header_bar(*args, **kwargs)
+        self.header_rows = len(lines)
+        return lines
+    def _render_playfield(self, duck, width, height=None, *args, **kwargs):
+        lines = super()._render_playfield(duck, width, height, *args, **kwargs)
+        self.scene_rect = {'x': 1, 'y': self.header_rows + 1, 'w': width - 2,
+                           'h': height or self._viewport_height}
+        return lines
+    def capture_scene_base(self, lines):
+        self.scene_base = list(lines)
     def _generate_ground_pattern(self, location=None):
         super()._generate_ground_pattern(location)
         # The new terrain layer owns ground detail. Preserve original landmarks.
@@ -134,8 +149,13 @@ class CanvasRenderer(Renderer):
                             location=game.exploration.current_area.name if game.exploration.current_area else 'Home Pond')
         # Grow the frame when a tall original menu needs more rows; never cut off actions.
         rows = max(ROWS, len(lines))
+        scene = None
+        if state == 'playing' and game.duck and not game._active_minigame and self.scene_rect:
+            scene = snapshot(game, self)
+            scene['rect'] = self.scene_rect
+            scene['overlay'] = overlay_bounds(self.scene_base or lines, lines)
         send({'type': 'frame', 'seq': self.sequence, 'cols': COLS, 'rows': rows,
-              'lines': [line_runs(line) for line in lines], 'meta': metadata})
+              'lines': [line_runs(line) for line in lines], 'meta': metadata, 'scene': scene})
 
 class DesktopGame(Game):
     def _check_for_updates_async(self):
