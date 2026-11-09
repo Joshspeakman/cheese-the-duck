@@ -168,3 +168,10 @@ StupidDuckCS/**/.vs/
 
 # Created by install_linux.sh in local installs; must not block git updates
 uninstall.sh
+
+desktop/game/
+desktop/dist/
+desktop/build/
+desktop/node_modules/
+.claude/settings.local.json
+.claude/worktrees/

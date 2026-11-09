@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'">
+<title>Cheese the Duck</title>
+<link rel="stylesheet" href="node_modules/@xterm/xterm/css/xterm.css">
+<style>
+  :root { --bg:#14120c; --cheese:#f5c542; --ink:#f2ead6; --muted:#a79a7d; --bill:#ef8f2f; --red:#ff6b57; }
+  * { box-sizing:border-box; } html,body { height:100%; margin:0; background:var(--bg); }
+  body { color:var(--ink); font-family:ui-monospace,Menlo,Consolas,monospace; overflow:hidden; user-select:none; }
+  #home { height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px; }
+  pre.duck { color:var(--cheese); font-size:21px; line-height:1.12; margin:0 0 14px; }
+  .bill { color:var(--bill); }
+  h1 { margin:0; font-size:42px; color:var(--cheese); letter-spacing:.02em; }
+  .tag { color:var(--muted); margin:8px 0 28px; font-size:15px; }
+  button { font:inherit; cursor:pointer; }
+  #play { background:var(--cheese); color:#1a1608; border:0; border-radius:6px; font-size:21px; font-weight:700; padding:13px 58px; box-shadow:0 4px 0 #8f6e14; }
+  #play:hover,#play:focus-visible { filter:brightness(1.1); outline:none; } #play:active { transform:translateY(3px); box-shadow:0 1px 0 #8f6e14; } #play[disabled] { opacity:.6; cursor:wait; }
+  #msg { min-height:22px; margin-top:18px; color:var(--muted); font-size:14px; max-width:680px; user-select:text; } #msg.err { color:var(--red); }
+  footer { display:flex; gap:24px; align-items:center; margin-top:14px; color:var(--muted); font-size:13px; }
+  footer button { background:none; border:0; color:var(--muted); text-decoration:underline; padding:0; } footer button:hover { color:var(--cheese); }
+  label { display:flex; gap:6px; align-items:center; cursor:pointer; }
+  #term { display:none; position:fixed; inset:0; padding:8px; background:#000; } #term.on { display:block; }
+</style>
+</head>
+<body>
+<section id="home">
+<pre class="duck" aria-hidden="true">    __
+<span class="bill">___</span>( o)&gt;
+\ &lt;_. )
+ `---'</pre>
+  <h1>Cheese the Duck</h1>
+  <p class="tag">He has moods, a diary, and opinions about you.</p>
+  <button id="play">Play</button>
+  <div id="msg" role="status"></div>
+  <footer>
+    <label><input type="checkbox" id="fs"> Full screen</label>
+    <span id="ver"></span>
+    <button id="quit">Quit</button>
+  </footer>
+</section>
+<div id="term"></div>
+<script src="node_modules/@xterm/xterm/lib/xterm.js"></script>
+<script src="node_modules/@xterm/addon-fit/lib/addon-fit.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const say = (t, err) => { $('msg').textContent = t || ''; $('msg').className = err ? 'err' : ''; };
+  const term = new Terminal({ fontFamily: 'Menlo, ui-monospace, monospace', fontSize: 15, cursorBlink: false, allowProposedApi: true, theme: { background: '#000000' } });
+  const fit = new FitAddon.FitAddon(); term.loadAddon(fit); let opened = false;
+  term.onData((d) => cheese.input(d));
+  term.onResize(({ cols, rows }) => cheese.resize(cols, rows));
+  cheese.onOutput((d) => term.write(d));
+  cheese.onSetup((t) => say(t));
+  cheese.onExit(() => { $('term').classList.remove('on'); $('home').style.display = 'flex'; $('play').disabled = false; say('Cheese will remember that you left.'); });
+  window.addEventListener('resize', () => { if ($('term').classList.contains('on')) fit.fit(); });
+  $('play').onclick = async () => {
+    $('play').disabled = true; say('');
+    $('term').classList.add('on'); $('term').style.visibility = 'hidden';
+    if (!opened) { term.open($('term')); opened = true; } else term.reset();
+    fit.fit();
+    const r = await cheese.play(term.cols, term.rows);
+    $('term').style.visibility = '';
+    if (r && r.error) { $('term').classList.remove('on'); $('play').disabled = false; say(r.error, true); return; }
+    $('home').style.display = 'none'; term.focus();
+  };
+  $('quit').onclick = () => cheese.quit();
+  $('fs').onchange = (e) => cheese.fullscreen(e.target.checked);
+  cheese.info().then((i) => { $('ver').textContent = `v${i.version}`; $('fs').checked = i.fullscreen; });
+</script>
+</body>
+</html>
