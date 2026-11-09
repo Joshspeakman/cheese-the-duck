@@ -1,17 +1,19 @@
 import { GlyphRenderer } from './renderer.mjs';
 import { LivingWorld } from './ultra-world.mjs';
+import { drawCharacter } from './ultra-characters.mjs';
 import { W,H } from './ultra-grid.mjs';
 
 export class SceneCanvas {
   constructor(){
     this.canvas=document.createElement('canvas');this.ctx=this.canvas.getContext('2d',{alpha:false});
+    this.terrain=document.createElement('canvas');this.terrainCtx=this.terrain.getContext('2d',{alpha:false});
     this.world=new LivingWorld();this.atlas=new Map();this.previousChars=new Uint8Array(W*H);this.previousColors=new Uint8Array(W*H);
     this.paletteKey='';this.frames=0;
   }
   resize(width,height){
     width=Math.round(width);height=Math.round(height);
     if(this.canvas.width===width&&this.canvas.height===height)return;
-    this.canvas.width=width;this.canvas.height=height;this.sx=width/W;this.sy=height/H;
+    this.canvas.width=width;this.canvas.height=height;this.terrain.width=width;this.terrain.height=height;this.sx=width/W;this.sy=height/H;
     this.previousChars.fill(0);this.atlas.clear();this.paletteKey='';
   }
   tile(char,color){
@@ -25,9 +27,9 @@ export class SceneCanvas {
     this.atlas.set(key,tile);return tile;
   }
   draw(scene,time,dt){
-    const {grid,palette}=this.world.render(scene,time,dt),key=palette.join('');
+    const {grid,palette,characters}=this.world.render(scene,time,dt),key=palette.join('');
     if(key!==this.paletteKey){this.previousChars.fill(0);this.paletteKey=key;this.atlas.clear();}
-    const ctx=this.ctx;
+    const ctx=this.terrainCtx;
     for(let i=0;i<W*H;i++){
       const char=grid.chars[i],color=grid.colors[i];
       if(char===this.previousChars[i]&&color===this.previousColors[i])continue;
@@ -36,7 +38,11 @@ export class SceneCanvas {
       ctx.fillStyle=palette[0];ctx.fillRect(left,top,width,height);
       if(char!==32)ctx.drawImage(this.tile(char,palette[color]),left,top,width,height);
     }
-    this.previousChars.set(grid.chars);this.previousColors.set(grid.colors);this.frames++;
+    this.previousChars.set(grid.chars);this.previousColors.set(grid.colors);
+    // Copy the cached terrain every frame so walking/hidden actors leave no trail.
+    this.ctx.drawImage(this.terrain,0,0);
+    for(const character of characters)drawCharacter(this.ctx,character,this.sx,this.sy,palette[0]);
+    this.frames++;
   }
 }
 export class DisplayRenderer {

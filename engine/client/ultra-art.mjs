@@ -1,30 +1,8 @@
-// Hand-drawn ASCII silhouettes. No raster artwork: even highlights and feathers
-// are characters. Cheese keeps his rounded head, > bill and scruffy little tail.
-export const DUCK = String.raw`
-                  _..---.._
-                .'  .  .   '.
-               /  .     .    \
-              |    o    .     |__
-              |       __..---'===\
-        __     \    .'       .===>
-     .-'  '\____'-.  '----..--'
-   .'  .  .  .  .  '---.    |
-  /  .  .  .  .  .     \   /
- (  .   .  .--~~~~--.  . | /
-  \   .   (  .___.  )   /'
-   '._  .  '------'  _.-'
-      '---..____..---'
-           /_\  /_\
-`.slice(1, -1).split('\n');
-export const EGG = String.raw`
-      .---.
-    .' .   '.
-   / .   .   \
-  |   .   .  |
-  | .   .    |
-   \   .   ./
-    '-----'
-`.slice(1, -1).split('\n');
+// The landscape stays finely etched; characters use compact, larger glyphs.
+// These fallbacks follow Cheese's original three-line silhouette. Live gameplay
+// supplies the authored animation frames through the scene snapshot.
+export const DUCK = [' ___  ', '(o__)>', "/'__\\ "];
+export const EGG = [' .-. ', '(   )', " 'o' "];
 export const NEST = String.raw`
        __..--------..__
     .-'//,//,\\,\\,\\'-. 
@@ -143,8 +121,11 @@ export function mirror(lines) {
   return lines.map(line => [...line.padEnd(width)].reverse().map(c => pairs[c] || c).join(''));
 }
 export function duckArt(state, time, facing = true, stage = 'adult') {
-  if (stage === 'egg') return EGG;
-  const art = DUCK.slice(), phase = Math.floor(time * 8) % 4;
+  if (stage === 'egg') return EGG.slice();
+  const baby = ['hatchling','duckling'].includes(stage);
+  const teen = ['teen','juvenile'].includes(stage);
+  const elder = ['elder','mature','legendary'].includes(stage);
+  const phase = Math.floor(time * 5) % 2;
   let eye = 'o';
   if (/sleep|napping|bored/.test(state)) eye = '-';
   else if (/happy|love|petting|playing|proud|danc|excited/.test(state)) eye = '^';
@@ -153,21 +134,15 @@ export function duckArt(state, time, facing = true, stage = 'adult') {
   else if (/angry/.test(state)) eye = '>';
   else if (/dizzy/.test(state)) eye = '@';
   else if (time % 6.1 > 5.9) eye = '-';
-  art[3] = art[3].replace('o', eye);
-  if (/eating|pecking|hungry/.test(state) && phase % 2 === 0) {
-    art[4] = '              |       __..---.===/';
-    art[5] = "        __     \\    .'     '.__>  .";
-  }
-  if (/walk|waddle|danc|playing|excited/.test(state)) {
-    art[13] = phase % 2 ? '           /_>   __' : '           __   <_\\';
-    art[9] = phase % 2 ? ' (  .   .   /~~~~~~/.  . | /' : art[9];
-  }
-  if (/flap|wav|stretch|danc/.test(state)) {
-    art[8] = phase < 2 ? '/\\\\ .  .  .  .  .     \\   /' : art[8];
-    art[9] = phase < 2 ? ' \\\\\\ . .  . . . . . . | /' : ' (  .   .  /~~~~~~/.   . | /';
-  }
-  if (/swim|float|splash|diving/.test(state)) art[13] = '     ~~~--~~~~--~~~~--~~~';
-  if (/preen/.test(state)) art[3] = '              |    <    .     |__';
+  const art = baby ? [' __ ', `(${eye}>)`, "/'\\)"] :
+    teen ? [' _~_ ', `(${eye}_>)`, "/''\\_"] :
+    elder ? [' ~___ ', `(${eye}==)>`, "/'==\\ "] : [' ___  ', `(${eye}__)>`, "/'__\\ "];
+  if (/eating|pecking|hungry/.test(state) && phase === 0) art[1] = art[1].replace(')>','>.').replace('>)','>.');
+  if (/walk|waddle|danc|playing|excited/.test(state)) art[2] = phase ? ' /__ ' : ' __\\ ';
+  if (/flap|wav|stretch|danc/.test(state)) art[0] = phase ? '\\___/' : ' ___/';
+  if (/swim|float|splash|diving/.test(state)) art[2] = baby ? '~~~~' : '~~~~~~';
+  if (/sleep|napping/.test(state)) art[0] += phase ? 'z' : 'Z';
+  if (/preen/.test(state)) art[1] = baby ? '(o<)' : '(o<_)>';
   return facing ? art : mirror(art);
 }
 

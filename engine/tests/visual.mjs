@@ -1,10 +1,11 @@
 import { SceneCanvas,DisplayRenderer } from '../client/ultra-renderer.mjs';
+import { characterSprite,drawCharacter } from '../client/ultra-characters.mjs';
 import { GlyphRenderer } from '../client/renderer.mjs';
 import { scene,BIOMES,LOCATIONS } from './scenes.mjs';
 const assert=(x,label)=>{if(!x)throw new Error(label);};
 const equal=(a,b)=>a.length===b.length&&a.every((v,i)=>v===b[i]);
 const pixels=canvas=>canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
-window.runVisualChecks=frame=>{
+window.runVisualChecks=(frame,fixtures)=>{
  const images={},durations=[];
  const sheet=document.createElement('canvas');sheet.width=1800;sheet.height=1104;
  const ctx=sheet.getContext('2d');ctx.fillStyle='#0c1c21';ctx.fillRect(0,0,1800,1104);
@@ -22,6 +23,35 @@ window.runVisualChecks=frame=>{
   ctx.drawImage(canvas.canvas,x,y+40,600,280);
  }
  images.gallery=sheet.toDataURL('image/png');
+ // Readability sheet uses the actual authored game frames, including all eight NPCs.
+ const roster=document.createElement('canvas');roster.width=1280;roster.height=1000;
+ const rc=roster.getContext('2d');rc.fillStyle='#0c1c21';rc.fillRect(0,0,roster.width,roster.height);
+ const cast=[...Object.entries(fixtures.cheese).map(([state,art])=>({name:'Cheese / '+state,state,art,visitor:false})),
+   ...Object.entries(fixtures.visitors).map(([personality,art])=>({name:personality,personality,art,visitor:true}))];
+ cast.forEach((duck,i)=>{
+   const col=i%4,row=Math.floor(i/4),sprite=characterSprite(duck,2,duck.visitor);
+   rc.save();rc.translate(col*320,row*250);
+   drawCharacter(rc,{...sprite,name:'',x:20,y:23},8,8,'#0c1c21');
+   rc.fillStyle='#b7c9b8';rc.font='16px Menlo';rc.textAlign='center';rc.fillText(duck.name,160,225);rc.restore();
+ });
+ images.characters=roster.toDataURL('image/png');
+ const pairCanvas=new SceneCanvas();pairCanvas.resize(1440,672);
+ const pair=scene();pair.duck={...pair.duck,x:47,art:fixtures.cheese.idle};
+ pair.visitor={name:'Professor Waddles',personality:'scholarly',x:85,y:24,art:fixtures.visitors.scholarly};
+ pairCanvas.draw(pair,2,1/30);images['characters-in-world']=pairCanvas.canvas.toDataURL('image/png');
+ // A frozen background must be restored exactly when actors leave or move.
+ const empty=scene({motion:false});empty.duck={...empty.duck,hidden:true};
+ const ghost=new SceneCanvas();ghost.resize(720,336);ghost.draw(empty,0,1/30);
+ const clean=new Uint8ClampedArray(pixels(ghost.canvas));
+ ghost.draw({...empty,duck:{...empty.duck,hidden:false}},0,1/30);
+ assert(!equal(clean,pixels(ghost.canvas)),'character did not draw over terrain');
+ ghost.draw(empty,0,1/30);
+ assert(equal(clean,pixels(ghost.canvas)),'character left a trail on the terrain');
+ // Native-size game capture for inspection, with live art in the original UI.
+ const game=new DisplayRenderer(document.createElement('canvas'));
+ game.resize(frame.cols,frame.rows,.8);
+ game.draw({...frame,scene:{...frame.scene,overlay:null,duck:{...frame.scene.duck,art:fixtures.cheese.idle},visitor:pair.visitor}},2000);
+ images['characters-game']=game.canvas.toDataURL('image/png');
  const classic=new GlyphRenderer(document.createElement('canvas')),display=new DisplayRenderer(document.createElement('canvas'));
  classic.resize(frame.cols,frame.rows,1);classic.draw(frame);
  display.resize(frame.cols,frame.rows,1);display.mode='classic';display.draw(frame,1000);
@@ -34,5 +64,5 @@ window.runVisualChecks=frame=>{
  display.mode='classic';display.draw(frame,1033);
  assert(equal(pixels(classic.canvas),pixels(display.canvas)),'returning to Classic left Ultra pixels behind');
  durations.sort((a,b)=>a-b);
- return {images,checks:['nine animated biomes','Classic pixel parity','opaque dialogue preservation','return to Classic'],medianMs:durations[Math.floor(durations.length*.5)],p95Ms:durations[Math.floor(durations.length*.95)]};
+ return {images,checks:['nine animated biomes','Classic pixel parity','opaque dialogue preservation','return to Classic','eight distinct NPCs with authored art','actor removal restores terrain'],medianMs:durations[Math.floor(durations.length*.5)],p95Ms:durations[Math.floor(durations.length*.95)]};
 };

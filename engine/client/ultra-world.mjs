@@ -1,5 +1,7 @@
 import { Grid,W,H,C,hash,seedOf,clamp,lerp,palette } from './ultra-grid.mjs';
-import { duckArt,NEST,DOCK,CABIN,RUIN,BOAT,LANTERN,MUSHROOM,CRYSTAL,FLOWERS,BENCH,WELL,ARCH,CLOCKTOWER,MILL } from './ultra-art.mjs';
+import { NEST,DOCK,CABIN,RUIN,BOAT,LANTERN,MUSHROOM,CRYSTAL,FLOWERS,BENCH,WELL,ARCH,CLOCKTOWER,MILL } from './ultra-art.mjs';
+
+import { characterSprite } from './ultra-characters.mjs';
 
 const WATER_BIOMES=new Set(['pond','riverside','beach','swamp']);
 const choice=(s,n)=>s[Math.floor(n*s.length)%s.length];
@@ -277,62 +279,13 @@ export class LivingWorld {
     }
   }
   actor(s,t,x,y,duck,visitor=false){
-    const g=this.grid,state=duck.state||'idle',stage=duck.stage||'adult';
     if(duck.away||duck.hidden)return;
-    const swimming=/swim|float|splash|diving/.test(state);
-    const jump=/jump|excited|danc/.test(state)?Math.abs(Math.sin(t*6))*3:0;
-    const bob=/sleep|napping/.test(state)?Math.sin(t*1.4)*.25:Math.sin(t*4)*.4;
-    let art=duckArt(state,t,duck.facing!==false,stage);
-    const small=['hatchling','duckling','juvenile','teen'].includes(stage);
-    // Hatchlings keep the same expressive shape with a visibly smaller body.
-    if(small)art=art.filter((_,i)=>![1,8,10].includes(i));
-    const width=Math.max(...art.map(l=>l.length)),left=Math.round(x-width/2),top=Math.round(y-art.length-jump+bob);
-    g.ellipse(x,y+1,width*.4,1.5,'.',C.shadow);
-    if(swimming)this.ripples(x,y,t);
-    // Opaque feathered silhouettes: the landscape never shows through Cheese.
-    // All shading is ASCII hatching, with a lit crown and a darker belly.
-    for(let j=0;j<art.length-1;j++){
-      const row=art[j],start=row.search(/\S/),end=row.trimEnd().length;
-      for(let i=start;i<end;i++){
-        if(i<0 || (j===5 && i>9 && i<15 && duck.facing!==false))continue;
-        g.put(left+i,top+j,' ',C.bg);
-        if(row[i]===' '){
-          const feather=hash(duck.facing===false?width-i:i,j,18);
-          g.put(left+i,top+j,choice(j<6?' .:':' .:;=',feather),
-            visitor?C.cloud:j<5?C.goldLight:j>9?C.goldDark:C.gold);
-        }
-      }
-    }
-    g.art(left,top,art,(ch,ix,iy)=>{
-      if(stage==='egg')return ch==='.'?C.goldDark:C.goldLight;
-      if(iy===3&&'oO^-;@>'.includes(ch))return C.white;
-      if((duck.facing===false?ix<width*.3:ix>width*.7)&&iy>=3&&iy<=5)return C.orange;
-      if(iy===art.length-1)return C.orange;
-      if(ch==='.')return visitor?C.cloud:C.gold;
-      if('()/_\\-\''.includes(ch))return visitor?C.ice:C.goldLight;
-      return visitor?C.cloud:C.gold;
-    });
-    const cosmetics=Object.values(duck.cosmetics||{}).join(' ');
-    const headX=duck.facing===false?left+6:left+21;
-    if(/hat|crown|cap/.test(cosmetics)){
-      const hat=/crown/.test(cosmetics)?['|V|V|','[===]']:/party|wizard/.test(cosmetics)?['  *  ',' /:^\\','/____\\']:/chef/.test(cosmetics)?[' .-.-.','(_____)',' |___|']:['.----.','|####|','======='];
-      g.art(headX-3,top-hat.length+1,hat,/red/.test(cosmetics)?C.berry:/blue/.test(cosmetics)?C.ice:C.lamp);
-    }
-    if(/glass|sunglass/.test(cosmetics))g.text(headX-3,top+3,'[o]-[o]',C.ice);
-    if(/scarf|bow|tie/.test(cosmetics))g.text(headX-3,top+7,'><==',C.berry);
-    if(/sleep|napping/.test(state))for(let n=0;n<3;n++)g.text(x+13+n*3,top-2-((t*2+n*3)%9),n%2?'Z':'z',C.cloud);
-    if(/love|petting/.test(state))for(let n=0;n<3;n++)g.text(x-12+n*12,top-2-((t*3+n*2)%7),'<3',C.flower);
-    if(/think|curious|confused/.test(state))g.text(headX,top-3-Math.sin(t*2),'?',C.goldLight);
-    if(/sing|quack|yawn/.test(state))g.text(left+width+1,top+4,Math.sin(t*8)>.2?'! !':'~ ~',C.goldLight);
-    if(/eating|pecking|hungry/.test(state))for(let n=0;n<7;n++)g.put(left+width-2+hash(n,1)*8,y-3+Math.sin(t*6+n)*2,',',C.barkLight);
-    if(/clean|shak|splash/.test(state))for(let n=0;n<13;n++){
-      const a=n*.9+t*.6,r=6+(t*12+n*3)%14;
-      g.put(x+Math.cos(a)*r,y-5+Math.sin(a)*r*.5,n%3?'o':'.',C.waterLight);
-    }
-    if(/cold|sick/.test(state))g.text(x-4,top-2,'*  *',C.ice);
-    if(/angry/.test(state))g.text(x+8,top-2,'#!',C.orange);
-    if(stage==='elder')g.text(headX-4,top,'~ , ~',C.white);
-    if(visitor)g.text(x-Math.floor((duck.name||'Friend').length/2),top-2,duck.name||'Friend',C.ice);
+    const state=duck.state||'idle';
+    const jump=/jump|excited|danc/.test(state)?Math.abs(Math.sin(t*6))*1.8:0;
+    const bob=Math.sin(t*(/sleep|napping/.test(state)?1.4:4))*.2;
+    if(/swim|float|splash|diving/.test(state))this.ripples(x,y,t);
+    const sprite=characterSprite(duck,t,visitor);
+    this.characters.push({...sprite,x,y:y-jump+bob});
   }
   actors(s,t,dt){
     const g=this.grid,actors=[];
@@ -432,12 +385,12 @@ export class LivingWorld {
   render(scene,time,dt=1/30){
     const s={hour:12,season:'spring',weather:'sunny',biome:'pond',location:'Home Pond',...scene};
     const t=s.motion===false?0:time,seed=seedOf(s.location);
-    this.grid.clear();
+    this.grid.clear();this.characters=[];
     if(this.underground(s))this.cavern(s,t,seed);
     else {this.sky(s,t,seed);this.hills(s,t,seed);}
     this.terrain(s,t,seed);
     this.landmarks(s,t,seed);this.actors(s,t,dt);this.foreground(s,t,seed);if(!this.underground(s))this.weather(s,t,seed);
     this.lastLocation=s.location;this.lastTime=t;
-    return {grid:this.grid,palette:palette(s)};
+    return {grid:this.grid,palette:palette(s),characters:this.characters};
   }
 }
