@@ -1,5 +1,6 @@
 // Standalone renderer verification: no simulation, network or player saves.
 const { app,BrowserWindow }=require('electron');
+const {execFileSync}=require('node:child_process');
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os');
 app.setPath('userData',fs.mkdtempSync(path.join(os.tmpdir(),'cheese-visual-')));
 app.whenReady().then(async()=>{
@@ -7,7 +8,9 @@ app.whenReady().then(async()=>{
  try{
   await win.loadFile(path.join(__dirname,'tests','visual.html'));
   const frame=JSON.parse(fs.readFileSync(path.join(__dirname,'artifacts','talk-frame.json')));
-  const result=await win.webContents.executeJavaScript(`(() => { try { return window.runVisualChecks(${JSON.stringify(frame)}); } catch(e) { return {error:e.stack}; } })()`);
+  const fixtures=JSON.parse(execFileSync(path.join(__dirname,'../.venv/bin/python'),['-c',
+    "import json; from ui.ascii_art import get_mini_duck; from world.friends import VISITOR_ASCII_ART; print(json.dumps({'cheese': {s: get_mini_duck('adult',s,True,0) for s in ['idle','happy','sleeping','eating','swimming','dancing','angry','scared']}, 'visitors': {p:a['idle'] for p,a in VISITOR_ASCII_ART.items()}}))"],{cwd:path.join(__dirname,'..')}).toString());
+  const result=await win.webContents.executeJavaScript(`(() => { try { return window.runVisualChecks(${JSON.stringify(frame)},${JSON.stringify(fixtures)}); } catch(e) { return {error:e.stack}; } })()`);
   if(result.error)throw new Error(result.error);
   const dir=path.join(__dirname,'artifacts','ultra');fs.mkdirSync(dir,{recursive:true});
   for(const [name,data] of Object.entries(result.images))fs.writeFileSync(path.join(dir,name+'.png'),Buffer.from(data.split(',')[1],'base64'));
