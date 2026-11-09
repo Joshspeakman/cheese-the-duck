@@ -19,7 +19,7 @@ app.whenReady().then(async()=>{
       canvas.draw(s,2,1/30);return canvas.canvas.toDataURL('image/png');
     })()`);
     const template=fs.readFileSync(path.join(__dirname,'template.html'),'utf8');
-    const sprites=fs.readFileSync(path.join(__dirname,'sprites.mjs'),'utf8').replace(/^export /gm,'');
+    const sprites=fs.readFileSync(path.join(engine,'client','scruffy-sprites.mjs'),'utf8').replace(/^export /gm,'');
     const draw=fs.readFileSync(path.join(engine,'client','ultra-characters.mjs'),'utf8').split('export function drawCharacter')[1];
     const gallery=fs.readFileSync(path.join(__dirname,'gallery.mjs'),'utf8').replace(/^import .*;\n/gm,'');
     const script=`(async()=>{const SCENE=${JSON.stringify(background)};\n${sprites}\nfunction drawCharacter${draw}\n${gallery}\n})();`;

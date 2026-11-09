@@ -58,7 +58,7 @@ test('placed objects and visitors remain tied to simulation coordinates',()=>{
 test('enhanced drawings retain original faces and accessories with more contour detail',()=>{
  const body=characterSprite(scene().duck,1);
  assert.ok(body.art.length>=7);assert.ok(body.width>=12);assert.ok(body.scale>1);
- assert.ok(body.art.join('').includes('o'));assert.ok(body.art.join('').includes('>'));
+ assert.equal(body.design,'bedhead-bandit');assert.ok(body.art.join('').includes('>'));
  const faces=new Set();
  for(const [personality,art] of Object.entries(VISITOR_ART)){
   const sprite=characterSprite({name:personality,personality,art},1,true);

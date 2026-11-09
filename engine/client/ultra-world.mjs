@@ -285,7 +285,7 @@ export class LivingWorld {
     const bob=Math.sin(t*(/sleep|napping/.test(state)?1.4:4))*.2;
     if(/swim|float|splash|diving/.test(state))this.ripples(x,y,t);
     const sprite=characterSprite(duck,t,visitor);
-    this.characters.push({...sprite,x,y:y-jump+bob});
+    this.characters.push({...sprite,x,y:visitor?y-jump+bob:y});
   }
   actors(s,t,dt){
     const g=this.grid,actors=[];
