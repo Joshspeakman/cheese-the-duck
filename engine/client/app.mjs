@@ -1,6 +1,11 @@
-import { GlyphRenderer, CELL_W, CELL_H } from './renderer.mjs';
-const $ = id => document.getElementById(id), renderer = new GlyphRenderer($('world'));
+import { CELL_W, CELL_H } from './renderer.mjs';
+import { DisplayRenderer } from './ultra-renderer.mjs';
+const $ = id => document.getElementById(id), renderer = new DisplayRenderer($('world'));
 let pending, last, zoom = 0, lastPaint = 0, lastAnnouncement = '';
+renderer.mode = localStorage.getItem('cheese.graphics') === 'classic' ? 'classic' : 'ultra';
+function graphicsLabel(){ const label = renderer.mode === 'ultra' ? 'Ultra' : 'Classic'; $('graphics').textContent = `Graphics: ${label}`; $('graphics').setAttribute('aria-label', `Graphics mode: ${label}`); }
+graphicsLabel();
+let lastDraw = 0;
 const sizes = [0, .9, 1.15, 1.4];
 const actionIDs = { f:'feed', p:'play', l:'clean', d:'pet', z:'sleep', t:'talk', e:'explore', b:'shop', c:'craft', r:'build', i:'inventory', h:'help' };
 const actionKeys = [['f','Feed'],['p','Play'],['l','Clean'],['d','Pet'],['z','Sleep'],['t','Talk'],['e','Explore'],['b','Shop'],['c','Craft'],['r','Build'],['i','Items'],['h','Help'],['Escape','Menu']];
@@ -17,15 +22,16 @@ window.cheese.errors(message => { $('error').hidden = false; $('error').textCont
 function animate(now) {
   if (pending) {
     const frame = pending; pending = null; last = frame;
-    size(frame); renderer.draw(frame); window.cheese.ack(); $('loading').hidden = true;
+    size(frame); renderer.draw(frame, now); lastDraw = now; window.cheese.ack(); $('loading').hidden = true;
     $('place').textContent = frame.meta.location || 'Cheese the Duck';
     for (const b of $('actions').children) b.disabled = frame.meta.state !== 'playing';
     $('hint').textContent = frame.meta.talking ? 'Type to talk · Enter to send · Esc to return' : 'Arrow keys + Enter to choose · PgUp/PgDn chat · Esc menu';
     const plain = frame.lines.map(line => line.map(run => run[0]).join('')).join('\n');
     if (plain !== lastAnnouncement && now - lastPaint > 1000) { $('announcement').textContent = plain; lastAnnouncement = plain; lastPaint = now; }
-    window.engineStats = { frames: renderer.frames, glyphs: renderer.atlas.size, state: frame.meta.state, cols: frame.cols, rows: frame.rows };
-    $('performance').textContent = `${frame.cols} × ${frame.rows} ASCII`;
+    window.engineStats = { frames: renderer.frames, glyphs: renderer.atlas.size, state: frame.meta.state, cols: frame.cols, rows: frame.rows, mode: renderer.mode, ultraFrames: renderer.scene.frames, renderMs: renderer.cost, peakMs: renderer.peak };
+    $('performance').textContent = renderer.mode === 'ultra' && frame.scene ? 'ULTRA · 240 × 112 world' : `CLASSIC · ${frame.cols} × ${frame.rows}`;
   }
+  if (!pending && last?.scene && renderer.mode === 'ultra' && now-lastDraw >= 1000/30) { renderer.draw(last, now); lastDraw=now; }
   requestAnimationFrame(animate);
 }
 new ResizeObserver(() => { if (last) { size(last); renderer.draw(last); } }).observe($('viewport'));
@@ -38,6 +44,7 @@ document.addEventListener('keydown', event => {
   }
 });
 document.addEventListener('paste', event => { if (!last?.meta.talking) return; event.preventDefault(); window.cheese.input({ type: 'text', text: event.clipboardData.getData('text') }); });
+$('graphics').onclick = () => { renderer.mode = renderer.mode === 'ultra' ? 'classic' : 'ultra'; localStorage.setItem('cheese.graphics',renderer.mode); graphicsLabel(); if(last)renderer.draw(last); $('world').focus(); };
 $('zoom').onclick = () => { zoom = (zoom + 1) % sizes.length; $('zoom').textContent = `Text: ${zoom ? ['','large','larger','largest'][zoom] : 'fit'}`; if (last) { size(last); renderer.draw(last); } };
 $('motion').onclick = () => { const on = $('world').classList.toggle('glow'); $('motion').textContent = `Soft glow: ${on ? 'on' : 'off'}`; $('motion').setAttribute('aria-pressed', on); };
 $('capture').onclick = async () => { $('hint').textContent = `Photo saved: ${await window.cheese.capture()}`; };

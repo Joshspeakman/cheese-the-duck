@@ -14,6 +14,7 @@ from engine import host
 from ui.menu_structure import MENU_ACTIONS
 from world.exploration import AREAS
 from engine.frame import line_runs
+from engine.scene import snapshot
 from audio.sound import sound_engine
 sys.stdout = host.WIRE
 
@@ -68,6 +69,11 @@ try:
             game.exploration.current_area = area
             game.renderer.render_frame(game)
             assert len(frames[-1]) > 20
+            scene = snapshot(game, game.renderer)
+            assert scene['location'] == area.name
+            assert scene['biome'] == area.biome.value
+            assert scene['duck']['name'] == 'Cheese'
+            json.dumps(scene)  # scene transport must remain JSON serializable
             checks.append('location:' + area.name)
     game.exploration.current_area = AREAS[next(iter(AREAS))][0]
     # Exercise the actual four minigame update/render/input lifecycles.
