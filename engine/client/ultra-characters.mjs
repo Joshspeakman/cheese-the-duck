@@ -1,7 +1,7 @@
-import { duckArt } from './ultra-art.mjs';
+import { cheeseDrawing,visitorDrawing } from './character-art.mjs';
 
-// Visitors retain their own authored faces, hats and props. These idle fallbacks
-// are only needed by previews/older snapshots; the simulation supplies live art.
+// Original idle sprites used as the expression/accessory reference in previews.
+// Live snapshots supply the original animated pose to the expanded drawings.
 export const VISITOR_ART = {
   adventurous: ['   /^\\', '  (o.o)', '  /)_)\\>', '   " "'],
   scholarly:   ['  .--.', ' (O.O)', '  |__|>', "   ''"],
@@ -12,57 +12,30 @@ export const VISITOR_ART = {
   foodie:      ['  _|=|_', '  (o.o)', '  /)_)\\>', "   ''"],
   athletic:    ['  ===', ' (o.o)', ' /)_)\\>', '  / \\'],
 };
-const ACCENTS = {
-  adventurous:'#eac386', scholarly:'#95d9ee', artistic:'#e5b9ec', playful:'#ffabbd',
-  mysterious:'#bdb6ff', generous:'#f4bad4', foodie:'#ffbb80', athletic:'#b4dfa0',
+const COLORS = {
+  adventurous:['#e6c69a','#fff1d4','#a9cf8a'],
+  scholarly:['#c7d0dc','#f1f2df','#9dcde9'],
+  artistic:['#e7e2dc','#fff5e4','#d9a6e8'],
+  playful:['#f3db8d','#fff1c1','#ee9eaa'],
+  mysterious:['#aaa8ce','#dedcf0','#b9a0e8'],
+  generous:['#ebcd8e','#fff1c2','#ebaecb'],
+  foodie:['#efbd86','#ffe5c1','#f6eddb'],
+  athletic:['#c5a480','#f1d8b8','#f4b777'],
 };
-const printable = line => [...line].map(c => c === '°' ? 'O' :
-  c.charCodeAt(0) >= 32 && c.charCodeAt(0) <= 126 ? c : '*').join('');
-
 export function characterSprite(duck,time,visitor=false) {
-  const stage=duck.stage||'adult', state=duck.state||'idle';
-  let art=(duck.art?.length ? duck.art : visitor ?
-    VISITOR_ART[duck.personality]||VISITOR_ART.adventurous :
-    duckArt(state,time,duck.facing!==false,stage)).map(printable);
-  // Trim only shared padding, keeping the relative positions of every feature.
-  const indents=art.filter(l=>l.trim()).map(l=>l.search(/\S/));
-  const indent=indents.length?Math.min(...indents):0;
-  art=art.map(l=>l.slice(indent).trimEnd());
-  let faceRow=art.findIndex(l=>l.includes('('));
-  if(!visitor&&stage!=='egg'&&faceRow>=0){
-    const expression=state==='idle'?duck.mood||state:state;
-    const eye=/happy|love|petting|playing|proud|danc|excited/.test(expression)?'^':
-      /sleep|napping|bored/.test(expression)?'-':/sad|sick|cold/.test(expression)?';':
-      /scared|surpris|quack|sing|yawn/.test(expression)?'O':/angry/.test(expression)?'>':
-      /dizzy/.test(expression)?'@':null;
-    if(eye)art[faceRow]=art[faceRow].replace(/[oO^;@]/,eye);
-    else if(state==='idle'&&time%6.1>5.9)art[faceRow]=art[faceRow].replace('o','-');
-  }
-  const cosmetics=Object.values(duck.cosmetics||{}).join(' ');
-  if(!visitor&&stage!=='egg'){
-    if(/glass/.test(cosmetics)&&faceRow>=0)art[faceRow]=art[faceRow].replace(/[oO^;-]/,'@');
-    if(/scarf|bow|tie/.test(cosmetics)&&art.length>2)art[2]=art[2].replace('__','><');
-    if(/hat|crown|cap|beret/.test(cosmetics)){
-      const hat=/crown/.test(cosmetics)?'\\V/V/':/party|wizard/.test(cosmetics)?' /^\\':
-        /chef/.test(cosmetics)?' (___)':/beret/.test(cosmetics)?' ~@_':' _|_|_';
-      art.unshift(hat);faceRow++;
-    }
-  }
-  const width=Math.max(1,...art.map(l=>l.length));
-  return {art,width,faceRow,name:visitor?duck.name||'Friend':'',
-    scale:visitor?2.65:['hatchling','duckling'].includes(stage)?3.4:3.2,
-    body:visitor?ACCENTS[duck.personality]||'#b8dee0':'#ffe29a',
-    face:visitor?'#f4efdb':'#fff0b6',
-    accent:visitor?ACCENTS[duck.personality]||'#b8dee0':'#ffba63',
-    visitor,egg:stage==='egg',hat:!visitor&&/hat|crown|cap|beret/.test(cosmetics)};
+  const model=visitor?visitorDrawing(duck,time):cheeseDrawing(duck,time);
+  const [body,face,accent]=visitor?COLORS[duck.personality]||COLORS.adventurous:
+    ['#efce80','#ffe9ad','#f5ab58'];
+  return {...model,width:Math.max(1,...model.art.map(row=>row.length)),
+    name:visitor?duck.name||'Friend':'',body,face,accent,shade:visitor?'#9da8a6':'#c49e59',visitor};
 }
 
 export function drawCharacter(ctx,sprite,sx,sy,background) {
-  const {art,scale,width,faceRow}=sprite;
-  const cw=sx*scale,ch=cw*1.6;
-  const left=Math.round(sprite.x*sx-width*cw/2),top=Math.round(sprite.y*sy-art.length*ch);
+  const {art,scale,width}=sprite;
+  const cw=sx*scale,ch=cw*1.5;
+  const left=Math.round(sprite.x*sx-(sprite.anchorX??width/2)*cw),top=Math.round(sprite.y*sy-art.length*ch);
   ctx.save();
-  ctx.font=`bold ${ch*.94}px Menlo, monospace`;
+  ctx.font=`bold ${ch}px Menlo, monospace`;
   ctx.textBaseline='middle';ctx.textAlign='center';ctx.lineJoin='round';
   // A quiet silhouette and a narrow outline keep tiny scenery/weather glyphs
   // out of the face. Blank space stays blank: no feather stippling or hatching.
@@ -77,12 +50,12 @@ export function drawCharacter(ctx,sprite,sx,sy,background) {
     const px=left+(col+.5)*cw,py=top+(row+.5)*ch;
     ctx.strokeStyle=background;ctx.lineWidth=Math.max(2,cw*.17);
     ctx.strokeText(char,px,py,cw*1.12);
-    ctx.fillStyle=row===faceRow?sprite.face:sprite.body;
-    if((row===faceRow&&'<>'.includes(char))||row===art.length-1||(sprite.hat&&row===0))ctx.fillStyle=sprite.accent;
+    const tone=sprite.tones?.[row]?.[col];
+    ctx.fillStyle=tone==='a'?sprite.accent:tone==='f'?sprite.face:tone==='s'?sprite.shade:tone==='w'?'#8dc6cc':sprite.body;
     ctx.fillText(char,px,py,cw*1.12);
   }
   if(sprite.name){
-    const size=cw*.7,cy=top-size*.9;
+    const size=Math.max(cw*.95,sx*1.6),cy=top-size*.9;
     ctx.font=`bold ${size}px Menlo, monospace`;
     const nameWidth=ctx.measureText(sprite.name).width;
     ctx.fillStyle=background;ctx.fillRect(sprite.x*sx-nameWidth/2-4,cy-size*.6,nameWidth+8,size*1.2);

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { LivingWorld } from '../client/ultra-world.mjs';
 import { W,H,palette } from '../client/ultra-grid.mjs';
-import { duckArt,mirror } from '../client/ultra-art.mjs';
+import { mirror } from '../client/ultra-art.mjs';
 import { characterSprite,VISITOR_ART } from '../client/ultra-characters.mjs';
 import { BIOMES,LOCATIONS,scene } from './scenes.mjs';
 const pixels = (world,s,t=2) => {const {grid,characters}=world.render(s,t);return Buffer.concat([Buffer.from(grid.chars),Buffer.from(grid.colors),Buffer.from(JSON.stringify(characters))]);};
@@ -40,7 +40,9 @@ test('night lighting, seasons and accessibility effect flags alter the scene',()
  assert.notDeepEqual(pixels(new LivingWorld(),{...s,weather:'stormy'}),pixels(new LivingWorld(),{...s,weather:'stormy',weatherEffects:false}));
 });
 test('Cheese retains expressions, directional mirroring, growth and visible cosmetics',()=>{
- const a=duckArt('idle',1);assert.notDeepEqual(a,duckArt('sleeping',1));assert.notDeepEqual(a,duckArt('eating',0));
+ const a=characterSprite(scene().duck,1).art;
+ assert.notDeepEqual(a,characterSprite({...scene().duck,state:'sleeping'},1).art);
+ assert.notDeepEqual(a,characterSprite({...scene().duck,state:'eating'},0).art);
  assert.deepEqual(mirror(mirror(a)),a.map(l=>l.padEnd(Math.max(...a.map(l=>l.length)))));
  const s=scene(),base=pixels(new LivingWorld(),s);
  for(const stage of ['egg','duckling','teen','elder'])assert.notDeepEqual(base,pixels(new LivingWorld(),{...s,duck:{...s.duck,stage}}));
@@ -53,18 +55,32 @@ test('placed objects and visitors remain tied to simulation coordinates',()=>{
  const world=new LivingWorld();assert.notDeepEqual(world.project(s,40,10),world.project({...s,camera:{...s.camera,x:10}},40,10));
 });
 
-test("characters use large sparse glyphs and preserve each visitor's authored features",()=>{
+test('enhanced drawings retain original faces and accessories with more contour detail',()=>{
  const body=characterSprite(scene().duck,1);
- assert.ok(body.art.length<=4);assert.ok(body.width<=8);assert.ok(body.scale>=3);
- assert.ok(body.art.join('').replace(/ /g,'').length<25);
+ assert.ok(body.art.length>=7);assert.ok(body.width>=12);assert.ok(body.scale>1);
+ assert.ok(body.art.join('').includes('o'));assert.ok(body.art.join('').includes('>'));
  const faces=new Set();
  for(const [personality,art] of Object.entries(VISITOR_ART)){
   const sprite=characterSprite({name:personality,personality,art},1,true);
-  // Shared left padding can be removed, but not the faces, accessories or props.
-  assert.deepEqual(sprite.art.map(l=>l.trim()),art.map(l=>l.trim()));
-  assert.ok(sprite.scale>2);faces.add(sprite.art.join('\n'));
+  assert.ok(sprite.art.length>art.length);assert.ok(sprite.scale>1);
+  assert.ok(sprite.art.every((row,i)=>row.length===sprite.tones[i].length));
+  faces.add(sprite.art.join('\n'));
  }
  assert.equal(faces.size,8);
- const gift=[' /^\\ ', '(o.o)[#]', '/)_)\\>', ' " "'];
- assert.deepEqual(characterSprite({art:gift},1,true).art,gift.map(l=>l.trimEnd()));
+ const scholar=characterSprite({personality:'scholarly',art:VISITOR_ART.scholarly},1,true);
+ assert.ok(scholar.art.some(row=>row.includes('[O]-[O]')),'scholar keeps glasses');
+ const mystery=characterSprite({personality:'mysterious',art:VISITOR_ART.mysterious},1,true);
+ assert.ok(mystery.art.some(row=>row.includes('? _ ?')),'masked eyes stay recognizable');
+ const gift=characterSprite({personality:'generous',art:['(o.o)[#]']},1,true);
+ assert.ok(gift.art.some(row=>row.includes('#')),'gift action retains its prop');
+ const happy=characterSprite({personality:'adventurous',art:['(^.^)']},1,true);
+ assert.ok(happy.art.some(row=>row.includes('^ . ^')),'original expression drives the redraw');
+});
+test('enhanced character animation includes wing, step, swim and prop frames',()=>{
+ for(const state of ['walking','dancing','flapping','swimming','eating','sleeping']){
+  const duck={...scene().duck,state};
+  assert.notDeepEqual(characterSprite(duck,.05),characterSprite(duck,.55),state);
+ }
+ const scholar={personality:'scholarly',art:VISITOR_ART.scholarly};
+ assert.notDeepEqual(characterSprite(scholar,.05,true),characterSprite(scholar,.55,true));
 });
