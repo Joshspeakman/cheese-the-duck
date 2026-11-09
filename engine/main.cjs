@@ -138,11 +138,18 @@ app.whenReady().then(async () => {
   win = new BrowserWindow({ title: 'Cheese the Duck - ASCII Engine', width: 1500, height: 1020,
     minWidth: 920, minHeight: 640, backgroundColor: '#101b19',
     webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, sandbox: true } });
+  if (SMOKE) win.webContents.on('console-message', ({ level, message, lineNumber, sourceId }) =>
+    console.error('Renderer console:', JSON.stringify({ level, message, lineNumber, sourceId })));
   Menu.setApplicationMenu(Menu.buildFromTemplate([{ role: 'appMenu' }, { role: 'editMenu' }, { label: 'View', submenu: [{ role: 'togglefullscreen' }] }]));
   win.on('close', event => { if (child) { event.preventDefault(); shutdown(); } });
   await win.loadFile(path.join(__dirname, 'client', 'index.html'));
   if (SMOKE) {
-    try { await smoke(); } catch (err) { console.error(err); process.exitCode = 1; }
+    try { await smoke(); } catch (err) {
+      console.error(err);
+      console.error(JSON.stringify({runtime, focused:win.isFocused(), visible:win.isVisible(), awaitingFrame, queued:queued?.seq, latest:latest?.seq}));
+      console.error(await win.webContents.executeJavaScript("JSON.stringify({visibility:document.visibilityState,readyState:document.readyState,mode:document.getElementById('graphics')?.textContent,error:document.getElementById('error')?.textContent,stats:window.engineStats})").catch(String));
+      process.exitCode = 1;
+    }
     if (child) { input({ type: 'shutdown' }); await waitFor(() => !child, 'shutdown after failure').catch(() => child?.kill()); }
     app.exit(process.exitCode || 0);
   }

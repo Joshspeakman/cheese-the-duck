@@ -24,17 +24,31 @@ window.runVisualChecks=(frame,fixtures)=>{
  }
  images.gallery=sheet.toDataURL('image/png');
  // Readability sheet uses the actual authored game frames, including all eight NPCs.
- const roster=document.createElement('canvas');roster.width=1280;roster.height=1000;
+ const roster=document.createElement('canvas');roster.width=1280;roster.height=1280;
  const rc=roster.getContext('2d');rc.fillStyle='#0c1c21';rc.fillRect(0,0,roster.width,roster.height);
  const cast=[...Object.entries(fixtures.cheese).map(([state,art])=>({name:'Cheese / '+state,state,art,visitor:false})),
    ...Object.entries(fixtures.visitors).map(([personality,art])=>({name:personality,personality,art,visitor:true}))];
  cast.forEach((duck,i)=>{
    const col=i%4,row=Math.floor(i/4),sprite=characterSprite(duck,2,duck.visitor);
-   rc.save();rc.translate(col*320,row*250);
-   drawCharacter(rc,{...sprite,name:'',x:20,y:23},8,8,'#0c1c21');
-   rc.fillStyle='#b7c9b8';rc.font='16px Menlo';rc.textAlign='center';rc.fillText(duck.name,160,225);rc.restore();
+   rc.save();rc.translate(col*320,row*320);
+   drawCharacter(rc,{...sprite,name:'',x:20,y:34},8,8,'#0c1c21');
+   rc.fillStyle='#b7c9b8';rc.font='16px Menlo';rc.textAlign='center';rc.fillText(duck.name,160,308);rc.restore();
  });
  images.characters=roster.toDataURL('image/png');
+ const compare=document.createElement('canvas');compare.width=1800;compare.height=1080;
+ const cc=compare.getContext('2d');cc.fillStyle='#0c1c21';cc.fillRect(0,0,1800,1080);
+ [cast[0],...cast.slice(8)].forEach((duck,i)=>{
+   const model=characterSprite(duck,2,duck.visitor),col=i%3,row=Math.floor(i/3);
+   cc.save();cc.translate(col*600,row*360);
+   cc.fillStyle='#e4dfc9';cc.font='18px Menlo';cc.textAlign='center';cc.fillText(duck.name,300,30);
+   const original=duck.art.map(l=>l.trimEnd()),width=Math.max(...original.map(l=>l.length));
+   drawCharacter(cc,{...model,art:original,tones:null,anchorX:width/2,width,scale:2.5,name:'',x:13,y:32},8,8,'#0c1c21');
+   drawCharacter(cc,{...model,name:'',x:50,y:32},8,8,'#0c1c21');
+   cc.fillStyle='#b7c9b8';cc.font='14px Menlo';cc.fillText('Original',104,315);cc.fillText('Enhanced',400,315);
+   cc.restore();
+ });
+ images['original-comparison']=compare.toDataURL('image/png');
+
  const pairCanvas=new SceneCanvas();pairCanvas.resize(1440,672);
  const pair=scene();pair.duck={...pair.duck,x:47,art:fixtures.cheese.idle};
  pair.visitor={name:'Professor Waddles',personality:'scholarly',x:85,y:24,art:fixtures.visitors.scholarly};
@@ -64,5 +78,5 @@ window.runVisualChecks=(frame,fixtures)=>{
  display.mode='classic';display.draw(frame,1033);
  assert(equal(pixels(classic.canvas),pixels(display.canvas)),'returning to Classic left Ultra pixels behind');
  durations.sort((a,b)=>a-b);
- return {images,checks:['nine animated biomes','Classic pixel parity','opaque dialogue preservation','return to Classic','eight distinct NPCs with authored art','actor removal restores terrain'],medianMs:durations[Math.floor(durations.length*.5)],p95Ms:durations[Math.floor(durations.length*.95)]};
+ return {images,checks:['nine animated biomes','Classic pixel parity','opaque dialogue preservation','return to Classic','eight enhanced NPCs based on original sprites','actor removal restores terrain'],medianMs:durations[Math.floor(durations.length*.5)],p95Ms:durations[Math.floor(durations.length*.95)]};
 };
