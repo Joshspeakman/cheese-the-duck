@@ -2,6 +2,10 @@ import { GlyphRenderer } from './renderer.mjs';
 import { LivingWorld } from './ultra-world.mjs';
 import { drawCharacter } from './ultra-characters.mjs';
 import { W,H } from './ultra-grid.mjs';
+import { InterfaceRenderer } from './interface-renderer.mjs';
+
+const TITLE_SCENE={biome:'pond',location:'Home Pond',season:'spring',hour:17,weather:'sunny',intensity:.5,motion:true,particles:true,weatherEffects:true,
+  camera:{x:0,y:0,w:132,h:42},duck:{name:'Cheese',x:65,y:24,hidden:true,stage:'adult',state:'idle',cosmetics:{}},items:[],structures:[],visitor:null,interaction:null};
 
 export class SceneCanvas {
   constructor(){
@@ -49,6 +53,7 @@ export class DisplayRenderer {
   constructor(canvas){
     this.canvas=canvas;this.ctx=canvas.getContext('2d',{alpha:false});
     this.classic=new GlyphRenderer(document.createElement('canvas'));this.scene=new SceneCanvas();
+    this.interface=new InterfaceRenderer();
     this.mode='ultra';this.frames=0;this.lastTime=0;this.cost=0;this.peak=0;
   }
   get atlas(){return this.classic.atlas;}
@@ -68,10 +73,18 @@ export class DisplayRenderer {
       this.ctx.drawImage(this.scene.canvas,x,y,w,h);
       // Redraw the complete original modal, including blank cells. No game UI is
       // inferred or replaced: this preserves every menu and minigame action.
-      if(s.overlay){
+      if(s.overlay&&!frame.ui){
         const o=s.overlay,left=Math.floor(o.x*sx),top=Math.floor(o.y*sy),ow=Math.ceil(o.w*sx),oh=Math.ceil(o.h*sy);
         this.ctx.drawImage(this.classic.canvas,left,top,ow,oh,left,top,ow,oh);
       }
+    }
+    if(this.mode==='ultra'&&frame.ui){
+      if(frame.ui.state==='title'){
+        this.scene.resize(this.canvas.width,this.canvas.height);
+        this.scene.draw({...TITLE_SCENE,motion:frame.ui.motion},time/1000,Math.min(.1,(time-this.lastTime)/1000||1/30));
+        this.ctx.drawImage(this.scene.canvas,0,0);
+      }
+      this.interface.draw(this.ctx,this.canvas,frame,time);
     }
     this.lastTime=time;this.frames++;
     this.cost=performance.now()-begin;this.peak=Math.max(this.peak,this.cost);

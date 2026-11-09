@@ -80,6 +80,7 @@ ipcMain.on('engine:input', (_e, command) => {
   if (command.type === 'action' && typeof command.action === 'string' && command.action.length < 32) input(command);
   if (command.type === 'key' && typeof command.key === 'string' && command.key.length < 32) input(command);
   if (command.type === 'text' && typeof command.text === 'string') input({ type: 'text', text: command.text.slice(0, 1000) });
+  if (command.type === 'choose' && ['title','menu'].includes(command.target) && typeof command.context === 'string' && command.context.length < 8192) input(command);
 });
 ipcMain.handle('engine:fullscreen', () => { win.setFullScreen(!win.isFullScreen()); });
 ipcMain.handle('engine:capture', async () => {
@@ -97,10 +98,20 @@ async function smoke() {
   const out = process.env.CHEESE_ARTIFACTS || path.join(__dirname, 'artifacts'); fs.mkdirSync(out, { recursive: true });
   await waitFor(() => latest?.meta.state === 'title', 'title screen'); await pause(300);
   fs.writeFileSync(path.join(out, 'title.png'), (await win.webContents.capturePage()).toPNG());
-  input({ type: 'key', key: 'Enter' });
+  const clickChoice = async (target,id=null) => win.webContents.executeJavaScript(`(() => {
+    const hit=window.interfaceTargets?.find(h=>h.command.target===${JSON.stringify(target)} && (${JSON.stringify(id)}===null || h.command.id===${JSON.stringify(id)}));
+    if(!hit)throw new Error('Missing clickable menu choice');
+    const canvas=document.getElementById('world'),r=canvas.getBoundingClientRect(),s=window.engineStats;
+    canvas.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:r.left+(hit.x+hit.w/2)/(s.cols*10)*r.width,clientY:r.top+(hit.y+hit.h/2)/(s.rows*18)*r.height}));
+  })()`);
+  await clickChoice('title');
   await waitFor(() => latest?.meta.state === 'playing', 'new game'); await pause(4200);
   input({ type: 'key', key: 'Escape' }); await pause(300);
   fs.writeFileSync(path.join(out, 'pond.png'), (await win.webContents.capturePage()).toPNG());
+  await clickChoice('menu','care');
+  await waitFor(()=>latest?.ui?.menu.depth===1,'mouse opens care submenu');
+  input({type:'key',key:'Escape'});
+  await waitFor(()=>latest?.ui?.menu.depth===0,'keyboard returns from care submenu');
   await win.webContents.executeJavaScript("document.getElementById('graphics').click()");
   await pause(300);
   fs.writeFileSync(path.join(out, 'classic.png'), (await win.webContents.capturePage()).toPNG());

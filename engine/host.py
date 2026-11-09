@@ -29,6 +29,7 @@ from blessed import Terminal
 from engine.frame import line_runs
 from engine.scenery import Landscape
 from engine.scene import snapshot, overlay_bounds
+from engine.interface import snapshot as interface_snapshot, composed_modal
 from ui.renderer import Renderer
 from core.game import Game
 
@@ -75,6 +76,8 @@ class DesktopInput(Terminal):
             if self.game:
                 self.game.renderer.dismiss_celebration()
                 if isinstance(key, dict):
+                    if key.get('type') == 'choose':
+                        return self.choose(key)
                     if self.game._state == 'playing' and not (self.game._confirmation_dialog and self.game._confirmation_dialog.is_open):
                         self.game._close_all_menus()
                         self.game.renderer.hide_overlays()
@@ -82,6 +85,28 @@ class DesktopInput(Terminal):
                     return Key()
             return key
         except queue.Empty: return Key()
+    def choose(self, command):
+        """Resolve clicks against the current menu on the game thread, then use Enter."""
+        game = self.game
+        if command.get('target') == 'title' and game._state == 'title':
+            title = game.renderer.interface_title
+            if not title or getattr(game, '_title_confirm_new_game', False): return Key()
+            index = command.get('index')
+            if command.get('context') == '|'.join(title['options']) and type(index) is int and 0 <= index < len(title['options']):
+                game._title_menu_index = index
+                return Key(*KEYS['Enter'])
+        elif command.get('target') == 'menu' and game._state == 'playing':
+            renderer = game.renderer
+            if (renderer.interface_modal or game._active_minigame or
+                    (game._confirmation_dialog and game._confirmation_dialog.is_open)):
+                return Key()
+            items = game.master_menu._get_current_items()
+            if command.get('context') != '|'.join(item.id for item in items): return Key()
+            for index, item in enumerate(items):
+                if item.id == command.get('id') and item.enabled:
+                    game.master_menu._selected_index = index
+                    return Key(*KEYS['Enter'])
+        return Key()
     def read_commands(self):
         try:
             for raw in sys.stdin:
@@ -95,6 +120,8 @@ class DesktopInput(Terminal):
                         elif isinstance(key, str) and len(key) == 1: self.commands.put_nowait(Key(key))
                     elif kind == 'action' and command.get('action') in ACTIONS:
                         self.commands.put_nowait({'action': command['action']})
+                    elif kind == 'choose' and command.get('target') in ('title', 'menu'):
+                        self.commands.put_nowait(command)
                     elif kind == 'text':
                         for char in str(command.get('text', ''))[:1000]:
                             if char.isprintable(): self.commands.put_nowait(Key(char))
@@ -118,6 +145,27 @@ class CanvasRenderer(Renderer):
         self.scene_base = None
         self.scene_rect = None
         self.header_rows = 3
+        self.interface_modal = None
+        self.interface_title = None
+        self.interface_chat = []
+    def render_frame(self, game):
+        self.interface_modal = None
+        # Persistent menus refresh each tick; keep their confirmation in front.
+        for dialog in (game._confirmation_dialog, game._error_dialog):
+            if dialog and dialog.is_open:
+                self.show_overlay('\n'.join(dialog.get_display_lines()))
+                break
+        return super().render_frame(game)
+    def _render_title_screen(self, menu_index=0, has_save=False, **kwargs):
+        self.interface_modal = None
+        self.interface_title = {'selected': menu_index, 'hasSave': has_save,
+                                'options': (['Continue'] if has_save else []) + ['New Game', 'Check for Updates', 'Quit'],
+                                'status': kwargs.get('update_status', '')}
+        return super()._render_title_screen(menu_index=menu_index, has_save=has_save, **kwargs)
+    def _overlay_box(self, base_output, content, title, width):
+        # Capture before the terminal compositor's 60-column/height truncation.
+        self.interface_modal = {'title': title, 'lines': [line_runs(line) for line in content]}
+        return super()._overlay_box(base_output, content, title, width)
     def _render_header_bar(self, *args, **kwargs):
         lines = super()._render_header_bar(*args, **kwargs)
         self.header_rows = len(lines)
@@ -126,6 +174,7 @@ class CanvasRenderer(Renderer):
         lines = super()._render_playfield(duck, width, height, *args, **kwargs)
         self.scene_rect = {'x': 1, 'y': self.header_rows + 1, 'w': width - 2,
                            'h': height or self._viewport_height}
+        self.interface_chat = lines[1 + self.scene_rect['h']:]
         return lines
     def capture_scene_base(self, lines):
         self.scene_base = list(lines)
@@ -154,8 +203,11 @@ class CanvasRenderer(Renderer):
             scene = snapshot(game, self)
             scene['rect'] = self.scene_rect
             scene['overlay'] = overlay_bounds(self.scene_base or lines, lines)
+            if scene['overlay'] and not self.interface_modal:
+                self.interface_modal = composed_modal(lines, scene['overlay'])
         send({'type': 'frame', 'seq': self.sequence, 'cols': COLS, 'rows': rows,
-              'lines': [line_runs(line) for line in lines], 'meta': metadata, 'scene': scene})
+              'lines': [line_runs(line) for line in lines], 'meta': metadata, 'scene': scene,
+              'ui': interface_snapshot(game, self) if game else None})
 
 class DesktopGame(Game):
     def _check_for_updates_async(self):
