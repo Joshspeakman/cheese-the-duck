@@ -1,7 +1,7 @@
 {
   "name": "cheese-ascii-engine",
   "productName": "Cheese the Duck ASCII Engine",
-  "version": "2.34.0",
+  "version": "2.35.0",
   "description": "Cheese the Duck with a custom ASCII canvas engine",
   "author": "Joshspeakman",
   "license": "MIT",
@@ -17,7 +17,10 @@
     "test:living": "../.venv/bin/python check_living.py",
     "visual:living": "electron overhaul-check.cjs",
     "test:hud": "electron hud-check.cjs",
-    "test:stories": "electron story-check.cjs"
+    "test:stories": "electron story-check.cjs",
+    "test:brains": "../.venv/bin/python check_brains.py",
+    "visual:brains": "electron brains-check.cjs",
+    "setup:voice": "../.venv/bin/python setup_voice.py"
   },
   "devDependencies": {
     "electron": "44.6.0",

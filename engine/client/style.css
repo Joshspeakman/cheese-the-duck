@@ -187,3 +187,22 @@ body .pond-journal>nav button[aria-current=page]{background:#e7d9b0;color:#2c422
 @media(max-width:1000px){.pond-journal[open]{grid-template-columns:138px minmax(0,1fr)}.pond-journal h1{font-size:23px}.pond-journal>.pond-body{padding:12px 16px 28px}.pond-journal>nav{padding:12px 6px}.pond-journal>nav button{font-size:11px!important}.kit-heading h2{font-size:23px}}
 @media(max-width:1100px){body[data-layout=world] #game-header .brand-mark{display:none}body[data-layout=world]>header#game-header{gap:4px;padding:4px 10px}.pond-cards{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){#pond-tools-panel button{transition:none}}
+
+/* A resident's page feels like a well-thumbed conversation notebook. */
+.resident-picker { grid-column: 1 / -1; }
+.resident-picker .pond-action { margin: .25rem; }
+.resident-picker [aria-pressed=true] { background: #d3b26e; color: #182b24; border-color: #edcd86; }
+.resident-conversation { grid-column: auto; }
+.resident-thread { min-height: 130px; max-height: 300px; overflow-y: auto; padding: 8px 14px; border-left: 2px solid #b59b64; background: #eee3c380; }
+.resident-thread p { line-height: 1.6; }
+.pond-card .resident-player { color: #66724a; }
+.pond-card .resident-reply { color: #324d36; font-weight: 600; }
+.resident-form { display: flex; gap: 10px; align-items: end; margin-top: 14px; }
+.resident-form textarea { flex: 1; min-width: 0; resize: vertical; border: 1px solid #799682; border-radius: 10px; padding: 12px; background: #f2e7c8; color: #30442e; font: inherit; line-height: 1.5; }
+.resident-form textarea:focus { outline: 2px solid #d7ba75; outline-offset: 3px; }
+.pond-card .resident-pending { min-height: 1.5em; color: #76582d; }
+.resident-voice,.resident-caption { color: #5f704c; }
+.resident-growth { display: block; margin: -4px 0 10px; color: #766035; }
+.resident-bond { padding-top: 10px; border-top: 1px solid #81937244; margin-top: 14px; }
+.resident-keepsake { padding: 12px; border: 1px solid #bba46888; border-radius: 5px 14px 12px 5px; background: #8d77451c; }
+@media(max-width:900px) { .resident-conversation { grid-column: auto; } .resident-form { flex-direction: column; align-items: stretch; } }

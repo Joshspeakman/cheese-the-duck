@@ -80,6 +80,8 @@ class GuestMotion:
             self.rest_until = self.reaction_until = now
             self.reaction_seen = getattr(game.atmosphere, 'visitor_interacted_at', 0)
         a = self.actor
+        mind = game.living_pond.minds.motion(visitor.id) if getattr(game, 'living_pond', None) else {}
+        pace = p['pace'] * mind.get('pace', 1)
         self.target = point(*self.target)
         # Camera movement is not a teleport: walk back into the current viewport.
         reaction = getattr(game.atmosphere, 'visitor_interacted_at', 0)
@@ -100,7 +102,7 @@ class GuestMotion:
             self.target = point(bounds[1], a['y'])
             self.rest_until = now
         if now < self.rest_until:
-            a.update(state='signature', activity='signature')
+            a.update(state=mind.get('gesture', 'signature'), activity=mind.get('gesture', 'signature'))
             return
         dx, dy = self.target[0] - a['x'], self.target[1] - a['y']
         distance = math.hypot(dx, dy * 2)
@@ -108,11 +110,11 @@ class GuestMotion:
             if leaving:
                 a.update(state='leaving', activity='leaving', facing=True)
                 return
-            self.rest_until = now + max(2.2, 7 - p['pace'])
-            self.target = roaming_target(self.rng, bounds, (a['x'], a['y']), (pos.x, pos.y), p['social'])
+            self.rest_until = now + max(2.2, 7 - pace) * mind.get('rest', 1)
+            self.target = roaming_target(self.rng, bounds, (a['x'], a['y']), (pos.x, pos.y), mind.get('social', p['social']))
             a.update(state='signature', activity='signature')
         else:
-            speed = p['pace'] * (.9 if leaving else .72)
+            speed = pace * (.9 if leaving else .72)
             step = min(1.0, speed * dt / distance)
             a['x'] += dx * step
             a['y'] += dy * step

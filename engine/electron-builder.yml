@@ -5,12 +5,21 @@ directories:
 asar: true
 files:
   - main.cjs
+  - local-speech.cjs
   - preload.cjs
   - client/**
   - package.json
+  - licenses/**
 extraResources:
   - from: build/simulation/cheese-simulation
     to: simulation
+  - from: build/local-ai/runtime/llama-b12255
+    to: local-ai
+    filter:
+      - llama-server
+      - "*.dylib"
+      - "*.metal"
+      - "LICENSE*"
 mac:
   target:
     - target: dir

@@ -230,6 +230,8 @@ class DesktopGame(Game):
 
     def _restore_living_pond(self, data):
         from engine.living_world import LivingPond
+        if self.living_pond:self.living_pond.minds.close()
+        self._pending_talk_future = None
         self.living_pond = LivingPond(data)
         self._pond_duck = None
 
@@ -244,6 +246,8 @@ class DesktopGame(Game):
             self._pond_duck = self.duck
 
     def _start_new_game(self):
+        if self.living_pond:self.living_pond.minds.close()
+        self._pending_talk_future = None
         self.living_pond = None
         self._pond_duck = None
         super()._start_new_game()
@@ -265,11 +269,20 @@ class DesktopGame(Game):
         if self.duck:
             self.guest_motion.tick(self)
         self.story_motion.tick(self)
+        if self.living_pond and self._state == 'playing' and self.duck.growth_stage != 'egg':
+            self.living_pond.minds.tick()
+            if self.friends.current_visit:
+                visitor_animator._mind_motion = self.living_pond.minds.motion(self.friends.current_visit.friend_id)
+            else:visitor_animator._mind_motion = {}
 
     def _perform_interaction(self, interaction):
         if self.living_pond and self.living_pond.busy:
             self.living_pond.cancel()
+        before = self.living_pond.minds.before(interaction) if self.living_pond and self.duck else None
+        accepted_at = self._last_interaction_time.get(interaction, 0)
         super()._perform_interaction(interaction)
+        if before and self._last_interaction_time.get(interaction, 0) != accepted_at:
+            self.living_pond.minds.completed(interaction, 'You made time to '+interaction+' with Cheese.', before)
         if self.living_pond and self.duck and self.duck.growth_stage != 'egg':
             self.living_pond.remember('care', 'You made time to '+interaction+' with Cheese.', .55)
 
@@ -284,16 +297,42 @@ class DesktopGame(Game):
                 obj['last_use'] = self.living_pond.state['elapsed']
 
     def _generate_talk_response(self, message):
-        # Snapshot context on the simulation thread before the asynchronous chat
-        # request; the response worker never reads or mutates pond state.
-        memory = getattr(self, '_pond_chat_context', '')
-        if self.conversation and self.conversation.needs_memory_context():
-            memory = self._get_memory_context_for_dialogue() + memory
-        return self.conversation.process_player_input(self.duck, message, True, memory)
+        from engine.local_speech import speak
+        messages, fallback = self._pond_speech_request
+        result = speak(messages, fallback)
+        class SpeechLine(str):
+            pass
+        line = SpeechLine(result['text'])
+        line.speech_result = result
+        return line
 
-    def _process_talk(self, *args, **kwargs):
-        self._pond_chat_context = self.living_pond.dialogue_context() if self.living_pond else ''
-        return super()._process_talk(*args, **kwargs)
+    def _process_talk(self, message):
+        if not self.duck or not self.living_pond:return
+        minds=self.living_pond.minds
+        if minds.pending or getattr(self, '_pending_talk_future', None):
+            self.renderer.show_message('One thought at a time. This beak has a queue.', duration=3, category='duck')
+            return
+        minds.sync()
+        self._pond_speech_request=(minds.prompt('cheese',message),minds.fallback('cheese',message))
+        super()._process_talk(message)
+        if getattr(self, '_pending_talk_future', None):
+            minds.model.heard_player('cheese',message,minds.context(),minds.now)
+
+    def _check_pending_talk(self):
+        future=getattr(self, '_pending_talk_future', None)
+        if future and future.done() and self.living_pond:
+            try:
+                line=future.result()
+                result=getattr(line, 'speech_result', {'text':str(line),'source':'authored','detail':'Learning is active.'})
+                self.living_pond.minds.exchange('cheese','player',getattr(self,'_pending_talk_message',''),result)
+            except Exception:
+                pass
+        return super()._check_pending_talk()
+
+    def _parse_llm_actions(self, response):
+        # Local speech is expressive, never an inventory/action authority.
+        from engine.local_speech import clean_speech
+        return [], clean_speech(response)
 
     def _check_for_updates_async(self):
         # A source updater must not replace this separate engine branch.
@@ -320,6 +359,7 @@ def main():
         send({'type': 'error', 'message': traceback.format_exc()})
         return 1
     finally:
+        if game and game.living_pond:game.living_pond.minds.close()
         if game and hasattr(game, '_save_executor'):
             game._save_executor.shutdown(wait=True)
         from audio.sound import sound_engine

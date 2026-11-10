@@ -11,6 +11,7 @@ const runtime = SMOKE ? fs.mkdtempSync(path.join(os.tmpdir(), 'cheese-ascii-smok
 app.setPath('userData', path.join(runtime, 'window'));
 app.setName('Cheese the Duck ASCII Engine');
 let simulationExit = null;
+let voice = {env:{},stop(){}}, starting = false;
 let win, child, closing = false, latest, queued, awaitingFrame = false, errorTail = '', closeTimer;
 const send = (channel, data) => { if (win && !win.isDestroyed()) win.webContents.send(channel, data); };
 function input(command) {
@@ -21,7 +22,9 @@ function deliver(frame) {
   if (awaitingFrame) { queued = frame; return; }
   awaitingFrame = true; send('engine:frame', frame);
 }
-function start() {
+async function start() {
+  if(starting || child)return;
+  starting=true;
   simulationExit = null; errorTail = '';
   fs.mkdirSync(runtime, { recursive: true });
   const saveDir = path.join(runtime, 'saves');
@@ -36,7 +39,11 @@ function start() {
   const env = { ...process.env, CHEESE_SAVE_DIR: saveDir, PYTHONDONTWRITEBYTECODE: '1',
     PYTHONUNBUFFERED: '1', PYGAME_HIDE_SUPPORT_PROMPT: '1', TERM: 'xterm-256color' };
   if (SMOKE && process.env.CHEESE_SMOKE_AUDIO !== 'system') env.SDL_AUDIODRIVER = 'dummy';
+  voice = await require('./local-speech.cjs').startVoice({packaged:app.isPackaged,resources:process.resourcesPath,engine:__dirname,runtime,enabled:!SMOKE || process.env.CHEESE_SMOKE_AI==='1'}).catch(()=>({env:{},stop(){}}));
+  Object.assign(env,voice.env);
+  if(closing){voice.stop();starting=false;return;}
   child = spawn(executable, args, { cwd: runtime, env, stdio: ['pipe', 'pipe', 'pipe'] });
+  starting=false;
   const log = fs.createWriteStream(path.join(runtime, 'engine.log'), { flags: 'a' });
   child.stderr.on('data', d => { log.write(d); errorTail = (errorTail + d).slice(-6000); });
   child.stdin.on('error', () => {});
@@ -50,6 +57,7 @@ function start() {
   });
   child.on('exit', (code, signal) => {
     simulationExit = { code, signal };
+    voice.stop();
     child = null; log.end();
     if (SMOKE) return;
     if (closing && code === 0 && !signal) { clearTimeout(closeTimer); win.destroy(); app.quit(); }
@@ -61,6 +69,7 @@ function shutdown() {
   if (closing) return;
   closing = true;
   if (!child) { win.destroy(); app.quit(); return; }
+  voice.stop();
   input({ type: 'shutdown' });
   closeTimer = setTimeout(() => {
     closing = false;
@@ -77,7 +86,7 @@ ipcMain.on('engine:ready', () => {
 ipcMain.on('engine:ack', () => { awaitingFrame = false; if (queued) { const frame = queued; queued = null; deliver(frame); } });
 ipcMain.on('engine:input', (_e, command) => {
   if (!command || closing) return;
-  if (command.type === 'pond' && typeof command.action === 'string' && command.action.length < 32 && (!command.target || typeof command.target === 'string' && command.target.length <= 128)) input({type:'pond',action:command.action,target:command.target||''});
+  if (command.type === 'pond' && typeof command.action === 'string' && command.action.length < 32 && (!command.target || typeof command.target === 'string' && command.target.length <= 128)) input({type:'pond',action:command.action,target:command.target||'',text:typeof command.text==='string'?command.text.slice(0,1000):''});
   if (command.type === 'action' && typeof command.action === 'string' && command.action.length < 32) input(command);
   if (command.type === 'key' && typeof command.key === 'string' && command.key.length < 32) input(command);
   if (command.type === 'text' && typeof command.text === 'string') input({ type: 'text', text: command.text.slice(0, 1000) });
@@ -189,6 +198,20 @@ async function smoke() {
   fs.writeFileSync(path.join(out, 'talk.png'), (await win.webContents.capturePage()).toPNG());
   fs.writeFileSync(path.join(out, 'talk-frame.json'), JSON.stringify(latest));
   input({ type: 'key', key: 'Enter' }); await pause(800);
+  if(process.env.CHEESE_SMOKE_AI==='1'){
+    await waitFor(()=>latest?.scene?.living?.minds?.exchanges.some(e=>e.speaker==='cheese'&&e.source==='local'),'actual local model answers Cheese',40000);
+    const previous=latest.scene.living.minds.exchanges.at(-1).id;
+    await win.webContents.executeJavaScript(`(() => {
+      document.getElementById('pond').click();document.querySelector('[data-tab=personalities]').click();
+      const input=document.querySelector('.resident-form textarea');input.value='My favorite flower is lavender. Remember that, Cheese.';
+      document.querySelector('.resident-form').requestSubmit();
+    })()`);
+    await waitFor(()=>latest?.scene?.living?.minds?.exchanges.some(e=>e.id>previous&&e.source==='local'&&e.listener==='player'),'notebook chat reaches genuine local inference',40000);
+    if(!latest.scene.living.minds.residents.find(r=>r.id==='cheese').facts.some(f=>f.text.includes('lavender')))throw Error('Player preference was not learned');
+    fs.writeFileSync(path.join(out,'local-conversation.png'),(await win.webContents.capturePage()).toPNG());
+    fs.writeFileSync(path.join(out,'local-conversation.json'),JSON.stringify(latest.scene.living.minds,null,2));
+    await win.webContents.executeJavaScript("document.getElementById('pond-journal').close()");
+  }
   fs.writeFileSync(path.join(out, 'frame.json'), JSON.stringify(latest));
   const stats = await win.webContents.executeJavaScript('window.engineStats');
   if (!stats || stats.frames < 10) throw new Error('Canvas did not draw enough frames');
@@ -196,7 +219,8 @@ async function smoke() {
   if (simulationExit?.code !== 0 || simulationExit?.signal) throw new Error(`Simulation shutdown failed: ${JSON.stringify(simulationExit)}\n${errorTail}`);
   const saved = JSON.parse(fs.readFileSync(path.join(runtime, 'saves', 'save.json'), 'utf8'));
   if(saved.living_pond?.policy!=='curious')throw Error('Living pond state was not saved');
-  console.log(JSON.stringify({ result: 'PASS', stats, runtime, out }));
+  if(process.env.CHEESE_SMOKE_AI==='1'&&!saved.living_pond?.minds?.residents?.cheese?.facts.some(f=>f.text.includes('lavender')))throw Error('Learned preference did not survive shutdown save');
+  console.log(JSON.stringify({ result: 'PASS', stats, runtime, out,localAI:process.env.CHEESE_SMOKE_AI==='1' }));
 }
 app.whenReady().then(async () => {
   win = new BrowserWindow({ title: 'Cheese the Duck - ASCII Engine', width: 1500, height: 1020,
@@ -220,3 +244,6 @@ app.whenReady().then(async () => {
 });
 app.on('before-quit', event => { if (child) { event.preventDefault(); shutdown(); } });
 app.on('window-all-closed', () => app.quit());
+
+app.on('will-quit',()=>voice.stop());
+process.on('exit',()=>voice.stop());

@@ -774,7 +774,8 @@ class VisitorAnimator:
         
         # Update position (move toward target)
         profile = guest_profile(self._friend_name)
-        pace = profile['pace'] if profile else 4.0
+        mind = getattr(self, '_mind_motion', {})
+        pace = (profile['pace'] if profile else 4.0) * mind.get('pace', 1)
         move_interval = .15 if profile else VISITOR_MOVE_INTERVAL
         if current_time - self._last_move_time >= move_interval:
             move_elapsed = min(.5, max(0, current_time - self._last_move_time))
@@ -839,8 +840,8 @@ class VisitorAnimator:
                     self._target_y = max(top, min(self._target_y, bottom))
                     # Pause to perform the named occupation between destinations.
                     # Energetic guests pause less; quiet guests stay and observe.
-                    self._rest_until = current_time + max(1.5, 7.0 - pace)
-                    self._current_state = 'signature'
+                    self._rest_until = current_time + max(1.5, 7.0 - pace) * mind.get('rest', 1)
+                    self._current_state = mind.get('gesture', 'signature')
         
         return frame_changed, dialogue
     
