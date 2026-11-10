@@ -222,7 +222,7 @@ export function optionSprite(option,t=0,action='idle',facing=true){
   }
   const anchor=(Math.min(...option.feet)+Math.max(...option.feet))/2+6;
   return {art:cells.map(r=>(facing?r:[...r].reverse().map(mirror)).join('')),tones:tones.map(r=>(facing?r:[...r].reverse()).join('')),
-    inks:{b:option.tints[0],g:option.tints[1],j:'#65a58d',h:'#b1dcc4',s:'#937152',a:'#efc46a',w:'#dbbfa0',c:'#f0ead2',p:option.tints[2],e:'#172b25'},width,anchorX:facing?anchor:width-anchor,groundRow:fy+.8,cell:option.height/(original.length*1.5),offsetY:action==='idle'?Math.sin(t*2)*.1:0};
+    inks:{b:option.tints[0],g:option.tints[1],j:'#65a58d',h:'#b1dcc4',s:'#937152',a:'#efc46a',w:'#dbbfa0',c:'#f0ead2',p:option.tints[2],e:'#172b25',...option.inkOverrides},width,anchorX:facing?anchor:width-anchor,groundRow:fy+.8,cell:option.height/(original.length*1.5),offsetY:action==='idle'?Math.sin(t*2)*.1:0};
 }
 
 export function drawStudy(ctx,option,t,action,x,ground,cell,facing=true,lighting='day'){
