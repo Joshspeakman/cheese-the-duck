@@ -67,6 +67,12 @@ try:
         close()
         game._execute_menu_action(action)
         capture(action)
+        if action == 'shop':
+            for index, category in enumerate(game.renderer._shop_categories):
+                game.renderer._shop_category_index = index
+                game.renderer._shop_item_index = 0
+                capture('shop-' + category.lower())
+            game.renderer._shop_category_index = 0
     close()
     game._execute_menu_action('settings')
     for category in game._settings_menu._categories:

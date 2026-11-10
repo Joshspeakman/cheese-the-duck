@@ -120,6 +120,19 @@ async function smoke() {
     const bounds=await win.webContents.executeJavaScript(`(() => {const r=document.getElementById('world').getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,width:innerWidth,height:innerHeight,layout:document.body.dataset.layout}})()`);
     if(bounds.layout!=='world'||Math.abs(bounds.x)>1||Math.abs(bounds.y)>1||Math.abs(bounds.w-bounds.width)>1||Math.abs(bounds.h-bounds.height)>1)throw new Error('Playfield does not fill the window: '+JSON.stringify(bounds));
   }
+  await win.webContents.executeJavaScript(`(() => {
+    document.getElementById('item-art').click();
+    const dialog=document.getElementById('item-gallery');
+    if(!dialog.open)throw Error('Item catalog did not open');
+    const search=dialog.querySelector('input[type=search]');search.value='portal';search.dispatchEvent(new Event('input'));
+    if(![...dialog.querySelectorAll('h3')].some(h=>h.textContent.toLowerCase().includes('portal')))throw Error('Item catalog search failed');
+    search.dispatchEvent(new KeyboardEvent('keydown',{key:'b',bubbles:true}));
+  })()`);
+  await pause(250);
+  if(latest?.ui?.modal?.title==='SHOP')throw Error('Catalog typing leaked into gameplay');
+  fs.writeFileSync(path.join(out,'item-catalog.png'),(await win.webContents.capturePage()).toPNG());
+  await win.webContents.executeJavaScript("document.querySelector('.gallery-close').click();document.getElementById('motion').click()");
+  if(await win.webContents.executeJavaScript("localStorage.getItem('cheese.effects')")!=='subtle')throw Error('Effects preference was not saved');
   await win.webContents.executeJavaScript("document.getElementById('graphics').click()");
   await pause(300);
   fs.writeFileSync(path.join(out, 'classic.png'), (await win.webContents.capturePage()).toPNG());
@@ -131,6 +144,8 @@ async function smoke() {
       else if (Date.now() > deadline) reject(new Error('Renderer did not resume after reload'));
       else setTimeout(poll, 50); }; poll();
   })`);
+  if(await win.webContents.executeJavaScript("document.getElementById('motion').textContent")!=='Effects: subtle')throw Error('Effects preference did not survive reload');
+  await win.webContents.executeJavaScript("document.getElementById('motion').click();document.getElementById('motion').click()");
   if (await win.webContents.executeJavaScript("window.engineStats?.mode") !== 'classic') throw new Error('Classic preference did not survive reload');
   await win.webContents.executeJavaScript("document.getElementById('graphics').click()");
   await pause(300);

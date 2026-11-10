@@ -5,7 +5,7 @@ import { W,H,palette } from '../client/ultra-grid.mjs';
 import { mirror } from '../client/ultra-art.mjs';
 import { characterSprite,VISITOR_ART } from '../client/ultra-characters.mjs';
 import { BIOMES,LOCATIONS,scene } from './scenes.mjs';
-const pixels = (world,s,t=2) => {const {grid,characters}=world.render(s,t);return Buffer.concat([Buffer.from(grid.chars),Buffer.from(grid.colors),Buffer.from(JSON.stringify(characters))]);};
+const pixels = (world,s,t=2) => {const {grid,characters,objects}=world.render(s,t);return Buffer.concat([Buffer.from(grid.chars),Buffer.from(grid.colors),Buffer.from(JSON.stringify({characters,objects}))]);};
 test('every biome, season, weather and expression renders printable ASCII with valid palette indices',()=>{
  const world=new LivingWorld();
  const states=['idle','walking','sleeping','eating','playing','quack','happy','sad','cleaning','petting','swimming','diving','stretching','yawning','jumping','scared','thinking','dancing','singing','pecking','flapping','preening','napping','curious','waddle_fast','dizzy','proud','sneaking'];
