@@ -26,6 +26,72 @@ Ultra includes an animated pond title screen, an ASCII logo, an expression-only 
 
 Keyboard controls are unchanged. The title choices, hierarchical side menu, lower action bar and panel navigation controls support mouse input. Stale clicks and clicks behind confirmations are rejected on the game thread; a click uses the same Enter handler as keyboard selection. Arrow keys and Enter navigate the complete game menu. Escape goes back; T opens conversation; Page Up/Down scroll conversation history. Display controls provide fullscreen, larger text with scrolling, Vivid/Subtle/Off scene effects, a searchable item art catalog and PNG screenshots. Every dialogue string is drawn as literal glyphs.
 
+## Local voices and learning residents (2.35.0)
+
+Open **Pond kit → Pond journal → Personalities**, choose Cheese or a visitor,
+and talk in the notebook. Friends also have a **Talk & get to know** button.
+**T** still uses Cheese's original talk controls, quests and memories. Both
+routes now use the local voice model. Enter sends; Shift+Enter adds a line.
+The notebook preserves unfinished drafts while the simulation runs.
+
+Every met resident has an independent persistent contextual action model,
+core temperament, gradually changing traits, interests, personal intentions,
+episodic memories, remembered player statements and directional relationships.
+Actual care, completed activities, conversation, shared time and kept/missed
+promises supply experiences. The small models update normalized linear weights
+online; those predictions affect Cheese's utility planner and visitor routines.
+Temperament also influences guests' pace and pauses while they roam freely.
+**I liked that / Try a different approach** gives bounded feedback about the
+most recent experience. It does not directly award friendship or currency.
+
+Nearby residents can initiate and answer one another, remember the exchange,
+and develop relationships. Lingering over a shared interest can teach both
+participants; leaving cancels an unfinished shared activity. Familiarity and
+feelings influence whom they approach conversationally. Each keeps separate
+memories, so telling one character something does not magically tell everyone.
+Direct visitor conversations advance the original friendship system once per
+visit, without rolling gifts. The notebook shows memories, interests, goals,
+relationship changes and the experiences behind gradual personality growth.
+
+One shared **Qwen3-4B Q4_K_M** language model generates their speech using their
+individual state and authored voices. Its neural weights are fixed; the small
+behavior models, preferences and memories learn as you play. Inference runs on
+this Mac through the bundled ARM64/Metal llama.cpp runtime. There is no cloud
+API or ongoing model download. Generated speech cannot execute game commands,
+change inventory, grant rewards, or become an authoritative game fact. Original
+uncensored dialogue remains available if inference is unavailable; that state is
+shown in the notebook. New memories live under the optional `living_pond.minds`
+save section, preserving original save compatibility. Offline catch-up never
+fabricates conversations or trains these models on invented encounters.
+
+For a fresh development machine, run `npm --prefix engine run setup:voice`
+before building. This explicit setup downloads and verifies the pinned assets:
+
+- Model: [official Qwen3-4B GGUF](https://huggingface.co/Qwen/Qwen3-4B-GGUF),
+  revision `bc640142c66e1fdd12af0bd68f40445458f3869b`, Apache 2.0.
+- Runtime: [llama.cpp b12255](https://github.com/ggml-org/llama.cpp/releases/tag/b12255),
+  official macOS ARM64 release, MIT.
+- Weights: `~/Library/Application Support/Cheese the Duck ASCII Engine/local-ai/`
+  (2.50 GB decimal), retained across application updates.
+- Runtime build assets: ignored `engine/build/local-ai/`; the executable and
+  libraries are copied into the signed app. License texts are in `engine/licenses`.
+
+`setup_voice.py` pins both SHA-256 checksums, verifies existing downloads, and
+extracts native code atomically to fresh files. It does not replace running
+signed executables in place. The application starts an authenticated loopback
+server on an ephemeral port and stops it with the simulation. One inference
+request per character conversation is outstanding; stale replies are discarded.
+Long responses are bounded and all output is rendered as literal text.
+
+Validation: `npm --prefix engine run test:brains` exercises learning differences,
+actual care and plan completion, neighbor exchanges, individual memory, original
+friendship credit, anti-farming guards, save/reload and unavailable-model fallback.
+`engine/brains-check.cjs` checks the actual notebook, draft preservation, keyboard
+isolation, target IDs, literal output, feedback and resize. `CHEESE_SMOKE_AI=1`
+extends the regular packaged smoke test with genuine local inference through
+both talk controls, learned preference persistence, and clean shutdown. Test
+saves and evidence are isolated under temporary directories / `engine/artifacts`.
+
 ## Independent visitors and shaped clothes (2.34.0)
 
 The duckling in **A very small visitor** now uses the detailed, articulated guest

@@ -1,3 +1,4 @@
+import {renderMinds,refreshConversation} from './minds-notebook.mjs';
 import {catalog,itemSprite,itemProfile,itemFamily,ItemPainter} from './ultra-items.mjs';
 import {characterSprite,drawCharacter} from './ultra-characters.mjs';
 import {eventModel,EVENT_ASSETS} from './event-art.mjs';
@@ -14,20 +15,20 @@ export class PondJournal{
   const head=el('header');head.append(el('div','CHEESE’S FIELD NOTEBOOK','pond-eyebrow'),el('h1','Notes from the pond.'));
   this.closeButton=el('button','Close ×');this.closeButton.onclick=()=>this.dialog.close();head.append(this.closeButton);
   this.nav=el('nav');this.nav.setAttribute('aria-label','Journal sections');
-  for(const [id,label] of [['pond','The pond'],['mind','Cheese’s plans'],['belongings','Belongings'],['friends','Friends'],['weather','Weather'],['projects','Projects'],['field','Field notes'],['memories','Memories']]){
+  for(const [id,label] of [['pond','The pond'],['mind','Cheese’s plans'],['personalities','Personalities'],['belongings','Belongings'],['friends','Friends'],['weather','Weather'],['projects','Projects'],['field','Field notes'],['memories','Memories']]){
    const b=el('button',label);b.dataset.tab=id;b.onclick=()=>{this.tab=id;this.selected=null;this.render(true);};this.nav.append(b);
   }
   this.body=el('div',undefined,'pond-body');this.status=el('div',undefined,'pond-live-status');this.status.setAttribute('role','status');
   this.dialog.append(head,this.nav,this.status,this.body);document.body.append(this.dialog);
   this.dialog.addEventListener('close',()=>document.getElementById('world').focus());
   this.dialog.addEventListener('keydown',e=>e.stopPropagation());
-  const animate=t=>{if(this.open){this.paint(t/1000);if(t-this.last>1000){this.updateDynamic();if(t-this.lastRender>5000&&!['INPUT','SELECT'].includes(document.activeElement.tagName))this.render();this.last=t;}}requestAnimationFrame(animate);};requestAnimationFrame(animate);
+  const animate=t=>{if(this.open){this.paint(t/1000);if(t-this.last>1000){this.updateDynamic();if(t-this.lastRender>5000&&!['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))this.render();this.last=t;}}requestAnimationFrame(animate);};requestAnimationFrame(animate);
  }
  get open(){return this.dialog.open;}
  show(tab='pond',selected=null){this.tab=tab;this.selected=selected;if(!this.open)this.dialog.showModal();this.render(true);this.closeButton.focus();}
  update(frame){this.frame=frame;if(this.open)this.updateDynamic();}
  get world(){return this.frame?.scene?.living;}
- command(action,target=''){window.cheese.input({type:'pond',action,target});this.status.textContent='Cheese is considering that…';setTimeout(()=>{if(this.open)this.render();},350);}
+ command(action,target=''){window.cheese.input({type:'pond',action,target});this.status.textContent='Cheese is considering that…';setTimeout(()=>{if(this.open&&!['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))this.render();},350);}
  button(text,action,target,disabled=false){const b=el('button',text,'pond-action');b.disabled=disabled;b.onclick=()=>this.command(action,target);return b;}
  legacy(text,action){const b=el('button',text,'pond-action');b.onclick=()=>{this.dialog.close();window.cheese.input({type:'action',action});};return b;}
  card(title,description){const c=el('section',undefined,'pond-card');c.append(el('h2',title));if(description)c.append(el('p',description));return c;}
@@ -35,11 +36,12 @@ export class PondJournal{
  preview(parent,kind,id,large=false){const canvas=el('canvas',undefined,large?'pond-preview large':'pond-preview');canvas.width=large?720:360;canvas.height=large?390:220;canvas.dataset.kind=kind;canvas.dataset.id=id;canvas.setAttribute('aria-label',names.get(id)?.name||pretty(id));parent.append(canvas);}
  updateDynamic(){
   const w=this.world;if(!w)return;
+  refreshConversation(this);
   const p=w.plan;this.status.textContent=p?`${p.label} · ${p.paused?'paused':pretty(p.phase)} · ${Math.round(p.progress*100)}%`:'Cheese is free to choose what comes next.';
   for(const bar of this.body.querySelectorAll('[data-progress]'))bar.value=p?.progress||0;
   // Keep focused controls and scroll position stable as live frames arrive.
   const signature=[p?.kind,p?.paused,...w.projects.map(p=>p.stage),Object.keys(w.objects).length,w.friends.length,w.rare_guest?.id,w.rare_guest?.last_line,w.story?.id,w.story?.step,w.garden.map(p=>p.plant+':'+p.stage).join(',')].join('|');
-  if(this.signature&&signature!==this.signature)this.render();this.signature=signature;
+  if(this.signature&&signature!==this.signature&&!['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))this.render();this.signature=signature;
  }
  render(reset=false){
   this.lastRender=performance.now();
@@ -47,7 +49,8 @@ export class PondJournal{
   this.body.replaceChildren();for(const b of this.nav.children)b.setAttribute('aria-current',b.dataset.tab===this.tab?'page':'false');
   if(!w){this.body.append(el('p','Start or continue a game to open Cheese’s living journal.'));return;}
   const grid=el('div',undefined,'pond-cards');this.body.append(grid);const busy=Boolean(w.plan);
-  if(this.tab==='pond'){
+  if(this.tab==='personalities'){renderMinds(this,grid);
+  }else if(this.tab==='pond'){
    if(w.story){const story=w.story,c=this.card(story.title,story.text);c.classList.add('pond-story');this.preview(c,'story',story.id);c.append(el('small',`Chapter ${story.step+1} of ${story.total}`));
     for(const choice of story.choices){const row=el('div',undefined,'pond-choice');row.append(this.button(choice.label,'story_choice',`${story.id}:${story.step}:${choice.id}`,!choice.available));const cost=Object.entries(choice.cost||{}).map(([id,n])=>`${n} ${pretty(id)}`).join(', ');if(cost)row.append(el('p','Uses '+cost));const impact=Object.entries(choice.effect).map(([id,n])=>`${id==='warmth'?'community warmth':pretty(id)} +${n<1?Math.round(n*100)+'%':n}`).join(' · ');row.append(el('small',impact));c.append(row);}grid.append(c);
    }
@@ -67,6 +70,7 @@ export class PondJournal{
   }else if(this.tab==='mind'){
    const c=this.card('What Cheese is doing',w.plan?.label||'Taking in the world.');this.preview(c,'cheese','Cheese');
    if(w.plan){const progress=el('progress');progress.max=1;progress.value=w.plan.progress;progress.dataset.progress='plan';c.append(progress,el('p',`${w.plan.automatic?'Cheese chose this.':'You suggested this.'} ${pretty(w.plan.phase)}${w.plan.paused?' · paused':''}`));if(w.plan.paused)c.append(this.button('Resume','resume'));c.append(this.button('Set this aside','cancel'));}grid.append(c);
+   const meet=el('button','Talk, memories & personality','pond-action');meet.onclick=()=>this.show('personalities','cheese');c.append(meet);
    const intent=this.card('A nudge, not a script','Cheese weighs needs, weather, habits, favorite possessions and who is visiting. Urgent needs still come first.');
    for(const policy of ['balanced','curious','social','homebody']){const b=this.button((policy===w.policy?'✓ ':'')+pretty(policy),'policy',policy);b.setAttribute('aria-pressed',policy===w.policy);intent.append(b);}
    intent.append(this.button(w.auto?'Pause extended routines':'Enable extended routines','autonomy'));for(const d of w.decision)intent.append(el('p',`${pretty(d.kind)} — ${d.reason}.`));grid.append(intent);
@@ -82,11 +86,13 @@ export class PondJournal{
   }else if(this.tab==='friends'){
    if(w.rare_guest){const guest=w.rare_guest,c=this.card(guest.name,guest.bio);this.preview(c,'friend',guest.id);c.append(el('p',guest.habit),el('p',pretty(guest.relationship)));
     if(guest.last_line)c.append(el('p',guest.last_line,'pond-note'));
+    const meet=el('button','Talk with '+guest.name,'pond-action');meet.onclick=()=>this.show('personalities',guest.id);c.append(meet);
     c.append(this.button('Say hello','guest_chat',guest.id),this.button('Ask about their adventures','guest_hobby',guest.id),this.button('Keep them company','guest_company',guest.id));grid.append(c);}
    const community=this.card('A welcoming pond','Kindness to visitors and passing strangers is remembered here. A warmer community eases loneliness between visits and makes shared time more restorative.');this.meter(community,'Community warmth',w.community?.warmth||0);community.append(el('p',`${w.community?.gatherings||0} shared gatherings`));grid.append(community);
    if(!w.friends.length)grid.append(this.card('Room for friends','Visitors arrive as you play. Once you meet someone, their routines, memories and shared plans appear here.'));
    for(const friend of w.friends){const identity=guestProfile(friend),c=this.card(friend.name,identity.bio);this.preview(c,'friend',friend.id);c.append(el('p',identity.habit),el('p',`${pretty(friend.personality)} · ${pretty(friend.relationship)} · ${friend.activity} at ${friend.location}`));for(const [key,label] of [['trust','Trust'],['warmth','Warmth'],['reliability','Reliability']])this.meter(c,label,friend[key]);c.append(el('p',`Would enjoy: ${friend.want}.`),this.button('Invite over','invite',friend.id),this.button('Make a promise','promise',friend.id),this.button('Share their favorite activity','share',friend.id,busy));
     for(const promise of w.promises.filter(p=>p.friend===friend.id).slice(-2))c.append(el('p',`${pretty(promise.activity)} · ${promise.status}${promise.status==='promised'?' · '+Math.max(0,Math.ceil((promise.deadline-w.elapsed)/60))+' minutes left':''}`,'pond-note'));
+    const meet=el('button','Talk & get to know '+friend.name,'pond-action');meet.onclick=()=>this.show('personalities',friend.id);c.append(meet);
     for(const memory of friend.memories.slice(-2))c.append(el('p',`Remembered ${memory.activity} together in ${pretty(memory.weather)}.`));grid.append(c);}
   }else if(this.tab==='weather'){
    const c=this.card(pretty(w.weather.type).toUpperCase(),'Fronts travel through the seasons. Conditions accumulate: rain soaks objects and gardens, snow settles, water freezes, and sunlight dries surfaces.');

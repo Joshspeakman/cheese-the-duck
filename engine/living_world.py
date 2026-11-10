@@ -68,7 +68,7 @@ def fresh(seed=1):
                         'wetness': .25, 'snow': 0., 'ice': 0., 'temperature': 17., 'wind': .2},
             'offline': '', 'sequence': 0, 'auto': True, 'stories': {}, 'story': None, 'next_story': 90.,
             'protection': 0., 'legacy': {}, 'biomes': {},
-            'community': {'warmth': .2, 'gatherings': 0}}
+            'community': {'warmth': .2, 'gatherings': 0}, 'minds': {}}
 
 
 class LivingPond:
@@ -92,6 +92,8 @@ class LivingPond:
             self.state['plan']['paused'] = True
         self.state['journal'] = self.state['journal'][-120:]
         self.state['promises'] = self.state['promises'][-24:]
+        from engine.mind_garden import MindGarden
+        self.minds = MindGarden(self)
 
     @property
     def busy(self):
@@ -100,6 +102,7 @@ class LivingPond:
     def attach(self, game, offline=True):
         self.game = game
         self.sync()
+        self.minds.sync()
         if offline:
             elapsed = clamp(time.time() - self.state['last_wall'], 0, 48 * 3600)
             if elapsed >= 60:
@@ -329,6 +332,7 @@ class LivingPond:
                 promise['status'] = 'missed'
                 friend = s['friends'].get(promise['friend'])
                 if friend: friend['reliability'] = clamp(friend['reliability']-.06)
+                if not offline:self.minds.promise(promise['friend'], False)
                 self.remember('promise', f"The promised {promise['activity']} had to be postponed. You can make it up to your friend.", .8)
 
     def available(self):
@@ -397,7 +401,8 @@ class LivingPond:
         if kind == 'repair_item' and self.location == 'Home Pond' and self.completed('workshop'):
             duration *= .8
         s['plan'] = {'kind': kind, 'target': target, 'label': label, 'elapsed': 0., 'duration': duration,
-                     'phase': 'approach', 'automatic': automatic, 'paused': False, 'location': self.location}
+                     'phase': 'approach', 'automatic': automatic, 'paused': False, 'location': self.location,
+                     'learning_before': self.minds.before(kind)}
         self.game.behavior_ai.cancel_pending_movement()
         self.game.behavior_ai.clear_action()
         pos = self.game.renderer.duck_pos
@@ -536,6 +541,7 @@ class LivingPond:
             for promise in s['promises']:
                 if promise['friend']==target and promise['status']=='promised':
                     promise['status']='kept';record['reliability']=clamp(record['reliability']+.1)
+                    self.minds.promise(target, True)
             skill='care'
         elif kind == 'project':
             project=PROJECTS[target];state=s['projects'][target]
@@ -550,6 +556,7 @@ class LivingPond:
         if kind in ('rest','practice','wander','garden','forage','share'):
             action={'rest':'nap','practice':'play','wander':'explore','garden':'clean','forage':'explore','share':'pet'}[kind]
             g.duck.desires.on_action_performed(action,self.location)
+        self.minds.completed(kind, plan['label']+'. '+message, plan.get('learning_before'), target if kind=='share' else '')
         self.gain(skill,2 if plan['automatic'] else 4)
         hour=str(int(self.hour));s['habits'][kind+':'+hour]=min(30,s['habits'].get(kind+':'+hour,0)+1)
         self.remember('shared' if kind=='share' else 'project' if kind=='project' else 'activity', plan['label']+'. '+message,.8 if kind in ('share','project') else .4,target)
@@ -583,7 +590,9 @@ class LivingPond:
             if s['elapsed'] < s['cooldowns'].get(kind+':'+target,0):continue
             habit=s['habits'].get(kind+':'+str(int(self.hour)),0)*.2
             bias=12 if (s['policy']=='curious' and kind in ('observe','wander','forage')) or (s['policy']=='social' and kind in ('share','practice')) or (s['policy']=='homebody' and kind in ('rest','garden','item','restore')) else 0
-            score+=habit+bias+(stable((int(s['elapsed']/30),kind,target))%7)
+            learned=self.minds.model.value('cheese',kind,self.minds.context())*24
+            score+=habit+bias+learned+(stable((int(s['elapsed']/30),kind,target))%7)
+            if learned>5:reason+='; past experiences make this appealing'
             if any(k in self.weather_type for k in ('storm','blizzard')) and kind=='rest':score+=35;reason='the weather calls for shelter'
             ranked.append({'kind':kind,'target':target,'score':round(score,1),'reason':reason})
         s['decision']=sorted(ranked,key=lambda c:c['score'],reverse=True)[:5]
@@ -603,6 +612,8 @@ class LivingPond:
         action=command.get('action');target=command.get('target','')
         if not isinstance(target,str) or len(target)>128:return
         self.sync();s=self.state
+        if action in ('mind_chat','mind_encourage','mind_redirect'):
+            return self.minds.command(command)
         if action in ('guest_chat', 'guest_hobby', 'guest_company'):
             visit = self.game.atmosphere.current_visitor
             if not visit or visit[0].id != target:
@@ -803,7 +814,7 @@ class LivingPond:
                     'stage':plant.growth_stage.value if plant else 'empty','water':plant.water_level/100 if plant else 0,
                     'health':plant.health/100 if plant else 1,'soil':plot.soil_quality/100})
         self._cache={'garden':garden,'seeds':dict(self.game.garden.seed_inventory) if self.game else {},
-            'community':dict(s['community']),
+            'community':dict(s['community']), 'minds':self.minds.snapshot(),
             'story':self.story_snapshot(),'stories':copy.deepcopy(s['stories']),'protection':s['protection'],
             'elapsed':s['elapsed'],'plan':plan,'policy':s['policy'],'auto':s['auto'],
             'ecology':copy.deepcopy(s['ecology']),'weather':copy.deepcopy(s['weather'].get(getattr(self,'biome','pond'),{})),
