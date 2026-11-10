@@ -119,8 +119,8 @@ export function selectedItem(ui,rows=[]){
 // every placed object on every frame. Animation frames are quantized at 3 fps.
 export class ItemPainter {
   constructor(){this.cache=new Map();}
-  image(model,cw){
-    const unit=Math.max(2,Math.round(cw*2)/2),key=[model.id,unit,model.art.join('\n')].join('|');
+  image(model,cw,surface='#102023ee',outline='#0c2024'){
+    const unit=Math.max(2,Math.round(cw*2)/2),key=[model.id,unit,model.art.join('\n'),surface,outline].join('|');
     if(this.cache.has(key))return this.cache.get(key);
     const ch=unit*1.5,canvas=document.createElement('canvas');canvas.width=Math.ceil((model.width+2)*unit);canvas.height=Math.ceil((model.art.length+2)*ch);
     const ctx=canvas.getContext('2d');ctx.font=`600 ${ch}px Menlo, monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
@@ -129,21 +129,21 @@ export class ItemPainter {
     model.art.forEach((line,y)=>{
       const a=line.search(/\S/),b=line.trimEnd().length;if(a<0)return;
       if(!['motes','aurora','lights','chimes','reed','fern','sprinkler'].includes(model.family)){
-        ctx.fillStyle='#102023ee';ctx.fillRect((a+.8)*unit,(y+1)*ch,(b-a+.4)*unit,ch);
+        ctx.fillStyle=surface;ctx.fillRect((a+.8)*unit,(y+1)*ch,(b-a+.4)*unit,ch);
       }
     });
     model.art.forEach((line,y)=>[...line].forEach((c,x)=>{
       if(c===' ')return;
       const tone=model.tones[y][x],px=(x+1.5)*unit,py=(y+1.5)*ch;
-      ctx.strokeStyle='#0c2024';ctx.lineWidth=Math.max(1.3,unit*.23);ctx.strokeText(c,px,py,unit*1.15);
+      ctx.strokeStyle=outline;ctx.lineWidth=Math.max(1.3,unit*.23);ctx.strokeText(c,px,py,unit*1.15);
       ctx.fillStyle=tone==='a'?model.accent:tone==='f'?model.face:tone==='s'?model.shade:tone==='w'?'#8cdeed':model.body;
       ctx.fillText(c,px,py,unit*1.15);
     }));
     if(this.cache.size>=384)this.cache.delete(this.cache.keys().next().value);
     const result={canvas,unit,ch};this.cache.set(key,result);return result;
   }
-  draw(ctx,model,x,y,cw,{shadow=true}={}){
-    const {canvas,unit,ch}=this.image(model,cw),width=(model.width+2)*cw,height=(model.art.length+2)*cw*1.5;
+  draw(ctx,model,x,y,cw,{shadow=true,surface,outline}={}){
+    const {canvas,unit,ch}=this.image(model,cw,surface,outline),width=(model.width+2)*cw,height=(model.art.length+2)*cw*1.5;
     ctx.save();ctx.translate(x,y-model.lift*cw*1.5);
     if(shadow){ctx.fillStyle='#05171965';ctx.beginPath();ctx.ellipse(0,0,width*.4,Math.max(2,cw*.55),0,0,Math.PI*2);ctx.fill();}
     ctx.transform(1,0,model.sway,1,0,0);

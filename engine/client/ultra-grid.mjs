@@ -1,3 +1,4 @@
+import { sceneLight,mixColor } from './scene-lighting.mjs';
 export const W = 240, H = 112;
 export const C = Object.freeze({bg:0,sky:1,cloud:2,far:3,hill:4,leafDark:5,leaf:6,leafLight:7,
   barkDark:8,bark:9,barkLight:10,groundDark:11,ground:12,grass:13,waterDark:14,water:15,
@@ -49,16 +50,24 @@ export function palette(scene) {
   if(b==='urban'){p[11]='#3c4546';p[12]='#697a72';p[13]='#a6b29b';}
   if(scene.season==='fall'){p[6]='#966d43';p[7]='#d8aa66';p[13]='#a89762';}
   if(scene.season==='winter'){p[6]='#688c8d';p[7]='#c7d8d1';p[12]='#7f9e9e';p[13]='#cedbd5';}
+  const light=sceneLight(scene),day=p.slice();
+  Object.assign(day,{0:light.groundNear,1:'#4c91a9',2:'#f1f6dd',3:'#659092',4:'#4d7559',
+    11:'#46613b',12:'#9bad6c',13:'#e0e2a5',14:'#286677',15:'#acd8ce',16:'#e0f2d8',17:'#fff7c7'});
+  if(scene.biome==='beach'){day[11]='#a29061';day[12]='#f1dba1';day[13]='#fff0ca';}
+  if(scene.season==='winter'){day[11]='#709b9a';day[12]='#e7eddd';day[13]='#fbffe9';}
   const hour=scene.hour??12;
-  const daylight=clamp(Math.sin((hour-6)*Math.PI/12)*1.5,0,1);
-  const dusk=(hour>=17&&hour<=20)||(hour>=5&&hour<8);
+  const daylight=light.sun;
+  const dusk=light.twilight>0;
   if(dusk){p[1]='#423440';p[2]='#bd937c';p[3]='#665168';p[17]='#efbf8b';}
   if(daylight<.1){p[0]='#080f1d';p[1]='#162336';p[2]='#536079';p[17]='#859ebc';}
-  // Quantized daylight keeps the atlas bounded; Cheese remains legible at night.
-  const shade=Math.round((.5+.5*daylight)*8)/8;
+  // Keep night legible, with luminous daylight ink over the lit sky and terrain.
+  const shade=Math.round((.7+.3*daylight)*8)/8;
   return p.map((hex,i)=>{
-    if([0,1,2,17,19,20,21,22,24,26,28,30].includes(i))return hex;
-    const a=hex.slice(1).match(/../g).map(v=>parseInt(v,16));
-    return '#'+a.map((v,j)=>Math.round(v*shade+(1-shade)*(j===2?9:0)).toString(16).padStart(2,'0')).join('');
+    let shaded=hex;
+    if(![0,1,2,17,19,20,21,22,24,26,28,30].includes(i)){
+      const a=hex.slice(1).match(/../g).map(v=>parseInt(v,16));
+      shaded='#'+a.map((v,j)=>Math.round(v*shade+(1-shade)*(j===2?9:0)).toString(16).padStart(2,'0')).join('');
+    }
+    return mixColor(shaded,day[i],daylight);
   });
 }
