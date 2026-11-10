@@ -1,65 +1,59 @@
 {
-  "installed_at": "2026-11-10T14:35:42.671638-07:00",
-  "version": "2.35.0",
-  "change": "Local Qwen speech, individual contextual learning models, persistent personalities and memories, mutual conversations, and resident notebook",
-  "source_commit": "1ef9b6616a87b1e20239dcd7b741bace3d63fe8c",
+  "installed_at": "2026-11-10T16:30:57.544760-07:00",
+  "version": "2.36.0",
+  "change": "In-world chat, natural dialogue, whispers, channel tabs, scrollback, draggable and resizable chat, immediate follow-up conversations",
+  "source_commit": "20c1bc93848568a340485004867008bf3472b8c8",
   "branch": "codex/ascii-engine-port",
   "app": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app",
   "desktop_shortcut": "/Users/joshuaspeakman/Desktop/Cheese the Duck ASCII Engine.app",
-  "save_backup": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/artifacts/before-learning-brains-saves-20261110-143542",
-  "previous_app": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/previous-before-learning-brains-20261110-143542/Cheese the Duck ASCII Engine.app",
-  "source_save_sha256": "88874784e7e3eccca3b04ac38b33b3ac770154e77c7c80abf210227ae80323e9",
-  "app_asar_sha256": "728361ff95801e187e0590f622b29fd1d9677f46b6850718c5e2641e2cf65e0e",
-  "signature": "verified",
-  "renderer_tests": 50,
-  "learning_checks": 48,
-  "personality_ui_checks": 13,
-  "guest_and_story_simulation_checks": 17985,
-  "living_world_checks": 694,
-  "gameplay_parity_checks": 76,
-  "packaged_smoke_with_system_audio": "PASS",
-  "packaged_local_model_conversations": "PASS",
-  "packaged_smoke_artifacts": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/artifacts/brains/packaged-smoke",
-  "local_model": {
-    "model": "Qwen/Qwen3-4B-GGUF",
-    "revision": "bc640142c66e1fdd12af0bd68f40445458f3869b",
-    "quantization": "Q4_K_M",
-    "sha256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
-    "runtime": "llama.cpp b12255",
-    "runtime_archive_sha256": "56074dd37cd369d4c73658d7ce3b1198ec359fb501ad8f2278b4f8fb36178a48"
+  "save_backup": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/artifacts/before-pond-chat-saves-20261110-163057",
+  "previous_app": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/previous-before-pond-chat-20261110-163057/Cheese the Duck ASCII Engine.app",
+  "save_files_verified": 6,
+  "source_save_sha256": "731d75b30cce6ac02079e4ce177704f07db1bf9a39765ef71f32e678827913ee",
+  "app_asar_sha256": "34d2fdbb77bedde72e7c91f1425bc67ac2d97b7c155d928ccdb9e20e596de5ed",
+  "validation": {
+    "javascript_tests": 54,
+    "chat_host_checks": 22,
+    "chat_ui_checks": 32,
+    "hud_checks": 31,
+    "brain_regression_checks": 44,
+    "game_regression_checks": 76,
+    "packaged_local_model_system_audio_smoke": "PASS"
   },
-  "launch": "verified: desktop shortcut target starts 2.35.0, its bundled simulation, and the bundled local voice runtime",
-  "verified_at": "2026-11-10T14:39:15-0700",
-  "verified_processes": [
+  "launch_verified": true,
+  "processes": [
     {
-      "pid": 19550,
+      "pid": 31590,
       "parent": 1,
       "binary": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app/Contents/MacOS/Cheese the Duck ASCII Engine"
     },
     {
-      "pid": 19551,
-      "parent": 19550,
+      "pid": 31612,
+      "parent": 31590,
       "binary": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app/Contents/Frameworks/Cheese the Duck ASCII Engine Helper.app/Contents/MacOS/Cheese the Duck ASCII Engine Helper"
     },
     {
-      "pid": 19552,
-      "parent": 19550,
+      "pid": 31613,
+      "parent": 31590,
       "binary": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app/Contents/Frameworks/Cheese the Duck ASCII Engine Helper.app/Contents/MacOS/Cheese the Duck ASCII Engine Helper"
     },
     {
-      "pid": 19553,
-      "parent": 19550,
+      "pid": 31616,
+      "parent": 31590,
       "binary": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app/Contents/Frameworks/Cheese the Duck ASCII Engine Helper (Renderer).app/Contents/MacOS/Cheese the Duck ASCII Engine Helper (Renderer)"
     },
     {
-      "pid": 19555,
-      "parent": 19550,
+      "pid": 31618,
+      "parent": 31590,
       "binary": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app/Contents/Resources/local-ai/llama-server"
     },
     {
-      "pid": 19556,
-      "parent": 19550,
+      "pid": 31619,
+      "parent": 31590,
       "binary": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app/Contents/Resources/simulation/cheese-simulation"
     }
-  ]
+  ],
+  "local_voice_listening": true,
+  "saves_preserved_during_install": true,
+  "verified_at": "2026-11-10T16:33:03.424884-07:00"
 }
