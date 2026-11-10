@@ -87,5 +87,6 @@ def snapshot(game, renderer):
                    'completed': bool(item.completed(game) if callable(item.completed) else item.completed)}
                   for item in items]},
         chat=[line_runs(line) for line in renderer.interface_chat],
+        chatStream=renderer.chat.snapshot(game.living_pond.minds if game.living_pond else None),
     )
     return result

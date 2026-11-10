@@ -71,7 +71,7 @@ export class HudController{
   const i=this.renderer.interface,active=this.world&&!this.frame.ui.modal;
   this.layer.hidden=!this.world;this.layer.classList.toggle('modal-handles',Boolean(this.frame.ui.modal));
   const shown=new Set();
-  if(active)for(const [order,r] of i.hudRects.entries()){const n=this.handle(r.id,HUD_PANELS[r.id].name);this.position(n,r);n.style.zIndex=String(order);n.hidden=false;shown.add(r.id);}
+  if(active)for(const [order,r] of i.hudRects.entries()){if(r.id==='chat'&&i.chatExternal)continue;const n=this.handle(r.id,HUD_PANELS[r.id].name);this.position(n,r);n.style.zIndex=String(order);n.hidden=false;shown.add(r.id);}
   const doc=i.visibleDocument;
   if(this.world&&this.frame.ui.modal&&doc?.movable){const n=this.handle('document','Move '+doc.title);this.position(n,doc);n.hidden=false;shown.add('document');}
   for(const [id,n] of this.nodes)n.hidden=!shown.has(id);

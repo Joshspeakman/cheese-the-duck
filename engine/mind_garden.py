@@ -24,9 +24,10 @@ class MindGarden:
         self.pond=pond
         self.model=Minds(pond.state['minds'])
         self.present={};self.presence_tokens={};self.tasks={};self.pending=None;self.executor=None
+        self.reply_channels={}
         self.next_tick=0.;self.last_at=pond.state['elapsed'];self.feedback=''
         self.voice={'source':'starting','detail':'Local voice warms up on this Mac. Personalities and memories are always active.'}
-        self.utterances={};self.pair_cooldowns=self.model.state.setdefault('pair_cooldowns',{});self._last_chat=-1000.
+        self.utterances={};self.pair_cooldowns=self.model.state.setdefault('pair_cooldowns',{});self._last_chat=-1000.;self._last_chat_signature=None
         self.coactivities={}
         self._cheese_traits=None
 
@@ -139,10 +140,15 @@ class MindGarden:
         self.voice={k:result[k] for k in ('source','detail')}
         line=result['text'];r=self.model.residents[key]
         self.model.state['serial']+=1
-        row=dict(id=self.model.state['serial'],speaker=key,name=r['name'],listener=listener,
+        channel=self.reply_channels.pop(key,'say' if key=='cheese' else 'whisper') if listener=='player' else 'neighbors'
+        from datetime import datetime
+        stamp=datetime.now().strftime('%H:%M')
+        row=dict(channel=channel,time=stamp,id=self.model.state['serial'],speaker=key,name=r['name'],listener=listener,
                  heard=heard[:1000],text=line,at=self.now,source=result['source'])
         self.model.state['exchanges']=(self.model.state['exchanges']+[row])[-60:]
         self.model.remember(key,'conversation','To '+('you' if listener=='player' else self.model.residents[listener]['name'])+': '+line,self.now,.5,listener)
+        if hasattr(self.game.renderer,'chat'):
+            self.game.renderer.chat.reply(key,r['name'],listener,line,channel,result['source'],stamp)
         self.utterances[key]={'text':line,'until':self.now+9}
         self.pond._cache=None
         return row
@@ -153,12 +159,16 @@ class MindGarden:
         if key not in self.present:return False,'They are away just now. Invite a friend over to talk.'
         if self.game.duck.growth_stage=='egg':return False,'Let Cheese hatch before starting a conversation.'
         if self.pending or getattr(self.game,'_pending_talk_future',None):return False,'Let the current conversation finish first.'
-        if self.now-self._last_chat<3:return False,'Give them a moment to answer.'
-        self._last_chat=self.now
+        # A completed answer can be answered immediately. Only accidental
+        # repeats are throttled; pending inference already serializes speech.
+        if self.now-self._last_chat<3 and self._last_chat_signature==(key,message):return False,'They just heard that. Try a new thought.'
+        self._last_chat=self.now;self._last_chat_signature=(key,message)
         if key=='cheese':
-            self.game._process_talk(message)
+            self.game._process_talk(message, allow_item_commands=False)
             return True,'Cheese is considering that…'
         self.model.heard_player(key,message,self.context(key),self.now)
+        channel=getattr(self,'_requested_channel','whisper');self.reply_channels[key]=channel
+        if hasattr(self.game.renderer,'chat'):self.game.renderer.chat.player(message,key,channel)
         if not self.executor:self.executor=ThreadPoolExecutor(max_workers=1,thread_name_prefix='pond-speech')
         future=self.executor.submit(speak,self.prompt(key,message),self.fallback(key,message))
         self.pending={'future':future,'key':key,'listener':'player','heard':message,'pair':None,'token':self.presence_tokens.get(key)}

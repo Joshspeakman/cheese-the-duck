@@ -1,5 +1,6 @@
 import {PondJournal} from './pond-journal.mjs';
 import {HudController} from './hud-controller.mjs';
+import {PondChat} from './pond-chat.mjs';
 import { sceneLight } from './scene-lighting.mjs';
 import { ItemGallery } from './item-gallery.mjs';
 import { CELL_W, CELL_H } from './renderer.mjs';
@@ -16,11 +17,13 @@ const effectLevels=['vivid','subtle','off'];
 renderer.scene.effects.level=effectLevels.includes(localStorage.getItem('cheese.effects'))?localStorage.getItem('cheese.effects'):'vivid';
 function effectsLabel(){const value=renderer.scene.effects.level;$('motion').textContent=`Effects: ${value}`;$('motion').setAttribute('aria-label',`Scene effects: ${value}`);}
 effectsLabel();
+let chat;
 const hud=new HudController(renderer,{
- redraw:()=>{if(last){renderer.draw(last);window.interfaceTargets=renderer.interface.hits;}},
- onEscape:()=>window.cheese.input({type:'key',key:'Escape'}),blocked:()=>gallery.open||pond.open,
+ redraw:()=>{if(last){renderer.draw(last);chat?.sync();window.interfaceTargets=renderer.interface.hits;}},
+ onEscape:()=>window.cheese.input({type:'key',key:'Escape'}),blocked:()=>gallery.open||pond.open||chat?.active,
 });
 window.pondHUD=hud;
+chat=new PondChat(renderer,hud);window.pondChat=chat;
 // Retire the previous forced-time preference; the environment follows game time.
 localStorage.removeItem('cheese.lighting');
 function lightingLabel(frame){const hour=frame.scene?.hour??frame.ui?.hour??12;$('lighting').textContent=sceneLight({hour}).phase;$('lighting').title='Lighting follows the game clock';}
@@ -33,7 +36,7 @@ for (const [key, label] of actionKeys) {
   const icons=['(=)','*o*','~*~','<3','zZ','...','/\\','$','/T','|^|','[+]','(?)',':::'];
   icon.className='action-icon';icon.setAttribute('aria-hidden','true');icon.textContent=icons[$('actions').children.length];
   kbd.textContent = key === 'Escape' ? 'Esc' : key.toUpperCase(); button.append(icon,kbd, label);
-  button.addEventListener('click', () => { window.cheese.input(actionIDs[key] ? { type: 'action', action: actionIDs[key] } : { type: 'key', key }); $('world').focus(); }); $('actions').append(button);
+  button.addEventListener('click', () => { if(key==='t'&&chat.open())return;window.cheese.input(actionIDs[key] ? { type: 'action', action: actionIDs[key] } : { type: 'key', key }); $('world').focus(); }); $('actions').append(button);
   if(key==='Escape')button.onclick=()=>{ if(last?.scene&&!last.ui?.modal&&(!renderer.interface.panelsOpen||last.ui.menu.depth===0))togglePanels(); };
 }
 function size(frame) {
@@ -50,11 +53,11 @@ window.cheese.errors(message => { hud.wake();$('error').hidden = false; $('error
 function animate(now) {
   if (pending) {
     const frame = pending; pending = null; last = frame; pond.update(frame);
-    size(frame);hud.update(frame,now);renderer.draw(frame, now);hud.sync();lightingLabel(frame); lastDraw = now; window.cheese.ack(); $('loading').hidden = true;
+    size(frame);hud.update(frame,now);renderer.draw(frame, now);hud.sync();chat.update(frame);lightingLabel(frame); lastDraw = now; window.cheese.ack(); $('loading').hidden = true;
     $('place').textContent = frame.meta.location || 'Cheese the Duck';
     for (const b of $('actions').children) b.disabled = frame.meta.state !== 'playing';
     $('panels').disabled=Boolean(frame.ui?.modal);syncPanels();
-    $('hint').textContent = frame.meta.talking ? 'Type to talk · Enter to send · Esc to return' : 'Arrow keys + Enter to choose · PgUp/PgDn chat · Esc menu';
+    $('hint').textContent = frame.meta.talking ? 'Type to talk · Enter to send · Esc to return' : renderer.mode==='ultra'?'Enter / T to chat · PgUp/PgDn history · Esc menu':'Arrow keys + Enter to choose · PgUp/PgDn chat · Esc menu';
     const plain = (frame.ui?.modal?.lines || frame.lines).map(line => line.map(run => run[0]).join('')).join('\n');
     if (plain !== lastAnnouncement && now - lastPaint > 1000) { $('announcement').textContent = plain; lastAnnouncement = plain; lastPaint = now; }
     window.engineStats = { frames: renderer.frames, glyphs: renderer.atlas.size, state: frame.meta.state, cols: frame.cols, rows: frame.rows, viewWidth:renderer.interface.width, viewHeight:renderer.interface.height, mode: renderer.mode, worldHour:renderer.scene.light?.hour, portraitHour:renderer.interface.emotionHour, ultraFrames: renderer.scene.frames, renderMs: renderer.cost, peakMs: renderer.peak };
@@ -62,10 +65,10 @@ function animate(now) {
     $('performance').textContent = renderer.mode === 'ultra' ? 'ULTRA ASCII' : `CLASSIC · ${frame.cols} × ${frame.rows}`;
   }
   hud.update(last,now);
-  if (!pending && (last?.scene || last?.ui?.state==='title') && renderer.mode === 'ultra' && now-lastDraw >= 1000/30) { renderer.draw(last, now);hud.sync();window.interfaceTargets=renderer.interface.hits; lastDraw=now; }
+  if (!pending && (last?.scene || last?.ui?.state==='title') && renderer.mode === 'ultra' && now-lastDraw >= 1000/30) { renderer.draw(last, now);hud.sync();chat.sync();window.interfaceTargets=renderer.interface.hits; lastDraw=now; }
   requestAnimationFrame(animate);
 }
-new ResizeObserver(() => { if (last) { size(last); renderer.draw(last); } }).observe($('viewport'));
+new ResizeObserver(() => { if (last) { size(last); renderer.draw(last);hud.sync();chat.sync(); } }).observe($('viewport'));
 document.addEventListener('keydown', event => {
   if(event.defaultPrevented||hud.open||event.target.closest('[data-hud-ui],dialog'))return;
   if(gallery.open||pond.open)return;
@@ -73,6 +76,12 @@ document.addEventListener('keydown', event => {
   if(event.key.toLowerCase()==='j'&&!last?.meta.talking&&!last?.ui?.modal){event.preventDefault();pond.show();return;}
   if (event.key === 'F11') { event.preventDefault(); window.cheese.fullscreen(); return; }
   if (event.target.tagName === 'BUTTON' && ['Enter', ' '].includes(event.key)) return;
+  if(chat.available){
+    if(event.key.toLowerCase()==='t'||event.key==='/'||(event.key==='Enter'&&!renderer.interface.panelsOpen)){
+      event.preventDefault();chat.open(event.key==='/'?'/':null);return;
+    }
+    if(['PageUp','PageDown'].includes(event.key)&&hud.layout.visible('chat')){event.preventDefault();chat.page(event.key==='PageUp'?-1:1);return;}
+  }
   if (event.key.length === 1 || ['Enter','Escape','Backspace','Tab','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','PageUp','PageDown','Home','End','Delete'].includes(event.key)) {
     if(renderer.mode==='ultra'&&last?.scene&&!last.ui?.modal){
       if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(event.key)){renderer.interface.panelsOpen=true;syncPanels();hud.changed();}
@@ -82,14 +91,14 @@ document.addEventListener('keydown', event => {
   }
 });
 document.addEventListener('paste', event => { if (gallery.open||pond.open||!last?.meta.talking) return; event.preventDefault(); window.cheese.input({ type: 'text', text: event.clipboardData.getData('text') }); });
-$('graphics').onclick = () => { renderer.mode = renderer.mode === 'ultra' ? 'classic' : 'ultra'; localStorage.setItem('cheese.graphics',renderer.mode); graphicsLabel(); if(last){size(last);hud.update(last);renderer.draw(last);hud.sync();} $('world').focus(); };
+$('graphics').onclick = () => { renderer.mode = renderer.mode === 'ultra' ? 'classic' : 'ultra'; localStorage.setItem('cheese.graphics',renderer.mode); graphicsLabel(); if(last){size(last);hud.update(last);renderer.draw(last);hud.sync();chat.sync();} $('world').focus(); };
 $('zoom').onclick = () => { zoom = (zoom + 1) % sizes.length; $('zoom').textContent = `Text: ${zoom ? ['','large','larger','largest'][zoom] : 'fit'}`; if (last) { size(last); renderer.draw(last); } };
 $('motion').onclick=()=>{renderer.scene.effects.level=effectLevels[(effectLevels.indexOf(renderer.scene.effects.level)+1)%effectLevels.length];localStorage.setItem('cheese.effects',renderer.scene.effects.level);effectsLabel();if(last)renderer.draw(last);$('world').focus();};
 $('capture').onclick = async () => { $('hint').textContent = `Photo saved: ${await window.cheese.capture()}`; };
 $('fullscreen').onclick = () => window.cheese.fullscreen();
 $('panels').onclick=()=>{togglePanels();$('world').focus();};
 function point(event){const r=$('world').getBoundingClientRect();return [(event.clientX-r.left)/r.width*renderer.interface.width,(event.clientY-r.top)/r.height*renderer.interface.height];}
-$('world').addEventListener('click',event=>{if(!last||renderer.mode!=='ultra')return;const command=renderer.interface.hit(...point(event));if(command?.type==='panels')togglePanels();else if(command)window.cheese.input(command);else if(!hud.blocks(event)&&!last.ui?.modal&&!pond.open){const r=$('world').getBoundingClientRect(),x=(event.clientX-r.left)/r.width,y=(event.clientY-r.top)/r.height;const hit=renderer.scene.hit(x,y);if(hit)pond.show(hit.kind==='story'?'pond':hit.kind==='friend'?'friends':'belongings',hit.id);}if(!pond.open)$('world').focus();});
+$('world').addEventListener('click',event=>{if(!last||renderer.mode!=='ultra')return;const command=renderer.interface.hit(...point(event));if(command?.type==='panels')togglePanels();else if(command?.type==='choose'&&command.target==='menu'&&command.id==='talk'&&chat.open())return;else if(command)window.cheese.input(command);else if(!hud.blocks(event)&&!last.ui?.modal&&!pond.open){const r=$('world').getBoundingClientRect(),x=(event.clientX-r.left)/r.width,y=(event.clientY-r.top)/r.height;const hit=renderer.scene.hit(x,y);if(hit)pond.show(hit.kind==='story'?'pond':hit.kind==='friend'?'friends':'belongings',hit.id);}if(!pond.open)$('world').focus();});
 $('world').addEventListener('mousemove',event=>{$('world').style.cursor=last&&renderer.mode==='ultra'&&renderer.interface.hit(...point(event))?'pointer':'default';});
 $('world').addEventListener('wheel',event=>{if(renderer.mode==='ultra'&&renderer.interface.wheel(event.deltaY)){event.preventDefault();renderer.draw(last);}}, {passive:false});
 requestAnimationFrame(animate); window.cheese.ready(); $('world').focus();
