@@ -86,6 +86,7 @@ ipcMain.on('engine:ready', () => {
 ipcMain.on('engine:ack', () => { awaitingFrame = false; if (queued) { const frame = queued; queued = null; deliver(frame); } });
 ipcMain.on('engine:input', (_e, command) => {
   if (!command || closing) return;
+  if(command.type==='chat' && typeof command.id==='string' && command.id.length<=80 && typeof command.text==='string' && command.text.length<=1000 && typeof command.session==='string' && command.session.length<=80 && typeof command.target==='string' && command.target.length<=128 && ['say','whisper'].includes(command.channel)) input({type:'chat',id:command.id,session:command.session,text:command.text,target:command.target,channel:command.channel});
   if (command.type === 'pond' && typeof command.action === 'string' && command.action.length < 32 && (!command.target || typeof command.target === 'string' && command.target.length <= 128)) input({type:'pond',action:command.action,target:command.target||'',text:typeof command.text==='string'?command.text.slice(0,1000):''});
   if (command.type === 'action' && typeof command.action === 'string' && command.action.length < 32) input(command);
   if (command.type === 'key' && typeof command.key === 'string' && command.key.length < 32) input(command);
@@ -192,25 +193,29 @@ async function smoke() {
     await win.webContents.executeJavaScript(`document.querySelectorAll('#actions button')[${index}].click()`);
     await pause(300);
   }
-  await waitFor(() => latest?.meta.talking, 'talk toolbar action');
-  input({ type: 'text', text: 'What the hell, Cheese?' }); await pause(500);
-  await waitFor(() => latest?.lines.some(row => row.some(run => run[0].includes('What the hell, Cheese?'))), 'literal dialogue input');
+  await waitFor(() => latest?.ui?.chatStream, 'structured chat stream');
+  if(!await win.webContents.executeJavaScript("document.activeElement.id==='pond-chat-input'"))throw Error('Talk did not focus inline chat');
+  await win.webContents.executeJavaScript("document.getElementById('pond-chat-input').value='What the hell, Cheese?';document.getElementById('pond-chat-input').dispatchEvent(new Event('input'))");
   fs.writeFileSync(path.join(out, 'talk.png'), (await win.webContents.capturePage()).toPNG());
   fs.writeFileSync(path.join(out, 'talk-frame.json'), JSON.stringify(latest));
-  input({ type: 'key', key: 'Enter' }); await pause(800);
+  await win.webContents.executeJavaScript("document.querySelector('.chat-composer').requestSubmit()");
+  await waitFor(()=>latest?.ui?.chatStream?.entries.some(e=>e.speaker==='player'&&e.text==='What the hell, Cheese?'),'inline chat reaches the simulation');
+  await waitFor(()=>latest?.ui?.chatStream?.receipts.some(r=>r.accepted),'host acknowledges chat');
   if(process.env.CHEESE_SMOKE_AI==='1'){
-    await waitFor(()=>latest?.scene?.living?.minds?.exchanges.some(e=>e.speaker==='cheese'&&e.source==='local'),'actual local model answers Cheese',40000);
+    await waitFor(()=>latest?.scene?.living?.minds?.exchanges.some(e=>e.speaker==='cheese'&&e.source==='local'),'actual local model answers in-world chat',40000);
     const previous=latest.scene.living.minds.exchanges.at(-1).id;
     await win.webContents.executeJavaScript(`(() => {
-      document.getElementById('pond').click();document.querySelector('[data-tab=personalities]').click();
-      const input=document.querySelector('.resident-form textarea');input.value='My favorite flower is lavender. Remember that, Cheese.';
-      document.querySelector('.resident-form').requestSubmit();
+      window.pondChat.open();const input=document.getElementById('pond-chat-input');
+      input.value='My favorite flower is lavender. Remember that, Cheese.';
+      document.querySelector('.chat-composer').requestSubmit();
     })()`);
-    await waitFor(()=>latest?.scene?.living?.minds?.exchanges.some(e=>e.id>previous&&e.source==='local'&&e.listener==='player'),'notebook chat reaches genuine local inference',40000);
+    await waitFor(()=>latest?.scene?.living?.minds?.exchanges.some(e=>e.id>previous&&e.source==='local'&&e.listener==='player'),'second inline conversation reaches genuine local inference',40000);
     if(!latest.scene.living.minds.residents.find(r=>r.id==='cheese').facts.some(f=>f.text.includes('lavender')))throw Error('Player preference was not learned');
+    const answer=latest.scene.living.minds.exchanges.at(-1);
+    if(latest.ui.chatStream.entries.filter(e=>e.text===answer.text&&e.speaker==='cheese').length!==1)throw Error('Reply missing or duplicated in chat');
+    if(!await win.webContents.executeJavaScript("document.querySelector('.chat-scroll').textContent.includes('lavender')"))throw Error('Live conversation missing from chat UI');
     fs.writeFileSync(path.join(out,'local-conversation.png'),(await win.webContents.capturePage()).toPNG());
     fs.writeFileSync(path.join(out,'local-conversation.json'),JSON.stringify(latest.scene.living.minds,null,2));
-    await win.webContents.executeJavaScript("document.getElementById('pond-journal').close()");
   }
   fs.writeFileSync(path.join(out, 'frame.json'), JSON.stringify(latest));
   const stats = await win.webContents.executeJavaScript('window.engineStats');

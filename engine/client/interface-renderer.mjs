@@ -167,7 +167,8 @@ export class InterfaceRenderer {
       });
       this.text(ctx,(view.start+1)+'–'+(view.start+view.items.length)+' of '+ui.menu.items.length+'   ·   Esc to go back',r.x+18,r.y+r.h-15,10,C.muted);
     }
-    r=this.hudWindow(ctx,'chat','Around the pond');
+    if(this.chatExternal&&this.layout.visible('chat'))this.hudRects.push({id:'chat',...this.layout.rect('chat',this.width,this.height)});
+    r=this.chatExternal?null:this.hudWindow(ctx,'chat','Around the pond');
     if(r){
       const chat=documentRows(ui.chat,Math.floor((r.w-36)/(12*.61))).filter(row=>row.kind!=='rule');
       const rowH=Math.min(18,106/Math.max(chat.length,1));

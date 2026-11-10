@@ -206,3 +206,40 @@ body .pond-journal>nav button[aria-current=page]{background:#e7d9b0;color:#2c422
 .resident-bond { padding-top: 10px; border-top: 1px solid #81937244; margin-top: 14px; }
 .resident-keepsake { padding: 12px; border: 1px solid #bba46888; border-radius: 5px 14px 12px 5px; background: #8d77451c; }
 @media(max-width:900px) { .resident-conversation { grid-column: auto; } .resident-form { flex-direction: column; align-items: stretch; } }
+
+/* In-world chat: quiet borders, strong speech contrast, and room for the pond. */
+#pond-chat{position:fixed;z-index:7;display:flex;flex-direction:column;box-sizing:border-box;padding:0 10px 4px;border:1px solid #b8a26955;border-radius:5px;background:linear-gradient(100deg,#101d1cef,#102521c9);box-shadow:0 2px 12px #0005;opacity:var(--hud-opacity,1);color:#e4dcc1;font:clamp(12px,calc(14px * var(--panel-scale,1)),16px)/1.45 'Avenir Next',sans-serif;isolation:isolate;user-select:text}
+#pond-chat:hover,#pond-chat.composing{border-color:#c7ad72aa;background:linear-gradient(100deg,#101d1cf7,#102521eb)}
+body[data-hud-asleep=true] #pond-chat{pointer-events:none}
+#pond-chat button{font:inherit;letter-spacing:0;text-transform:none;min-width:0;min-height:0;box-shadow:none;border-radius:0;cursor:pointer}
+#pond-chat button:focus-visible{outline:2px solid #e7c77f;outline-offset:-2px}
+#pond-chat .chat-heading{display:flex;align-items:center;flex:none;gap:4px;border-bottom:1px solid #c5b17a35}
+#pond-chat .chat-tabs{display:flex;align-items:center;gap:4px;flex:1;min-width:0}
+#pond-chat .chat-tab{border:0;border-bottom:2px solid transparent;padding:5px 6px 3px;background:none;color:#aab6a3;font-size:.91em;white-space:nowrap}
+#pond-chat .chat-tab[aria-selected=true]{border-bottom-color:#dab96c;color:#f1ce81;background:linear-gradient(transparent,#ab965522)}
+#pond-chat .chat-grip,#pond-chat .chat-close{background:none;border:0;padding:2px 5px;color:#a8ae8e;font-size:17px}
+#pond-chat .chat-grip{cursor:grab;touch-action:none}
+#pond-chat .chat-scroll{flex:1;min-height:0;overflow:auto;padding:7px 1px 6px;scrollbar-width:thin;scrollbar-color:#9d9c7277 transparent;overscroll-behavior:contain;overflow-anchor:none}
+#pond-chat .chat-line{margin:0 0 4px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.45;color:#dfc78b;text-shadow:0 1px 1px #000}
+#pond-chat .chat-line[data-channel=say]{color:#f3ead2}
+#pond-chat .chat-line[data-channel=whisper]{color:#ecb2e5}
+#pond-chat .chat-line[data-channel=neighbors]{color:#c7c6ef}
+#pond-chat .chat-line[data-channel=loot]{color:#a8d7ae}
+#pond-chat .chat-time{color:#9ca89a;font-size:.86em;font-variant-numeric:tabular-nums}
+#pond-chat .chat-channel{opacity:.8;font-size:.9em}
+#pond-chat .chat-speaker{display:inline;padding:0;border:0;background:none;color:inherit;font-weight:650;line-height:inherit;vertical-align:baseline}
+#pond-chat button.chat-speaker:hover{text-decoration:underline;color:#fff0b7}
+#pond-chat .chat-empty{color:#aab9a6;font-style:italic}
+#pond-chat .chat-composer{display:flex;align-items:center;gap:6px;flex:none;margin:0;border:1px solid #a58f5a66;border-radius:3px;padding:3px 7px;background:#06130f70;color:#d5bd80}
+#pond-chat.composing .chat-composer{border-color:#e9c781;box-shadow:0 0 7px #c1a65b18}
+#pond-chat[data-channel=whisper] .chat-composer{color:#ecb2e5}
+#pond-chat .chat-to{font-size:.9em;white-space:nowrap;max-width:44%;overflow:hidden;text-overflow:ellipsis}
+#pond-chat .chat-input{flex:1;width:0;min-width:0;border:0;background:none;color:#fff1d6;padding:2px 0;outline:0;font:inherit;line-height:1.5;user-select:text}
+#pond-chat .chat-input::placeholder{color:#a0af9b}
+#pond-chat .chat-send{background:none;border:0;color:#efd191;font-size:19px;padding:0 3px}
+#pond-chat .chat-send:disabled{opacity:.3;cursor:default}
+#pond-chat .chat-status{flex:none;min-height:1.4em;padding-top:3px;padding-right:16px;font-size:.83em;color:#b4c0a9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pond-chat .chat-latest{position:absolute;bottom:57px;right:27px;border:1px solid #d6bc73aa;border-radius:4px;background:#173027;color:#eed398;font-size:.85em;padding:2px 8px}
+#pond-chat .chat-resize{position:absolute;bottom:1px;right:1px;background:none;border:0;color:#b4a37099;cursor:nwse-resize;touch-action:none;padding:0 3px;font-size:16px}
+#pond-chat.high-contrast{background:#061619;border-color:#c9b980}
+#pond-chat.high-contrast .chat-time,#pond-chat.high-contrast .chat-status{color:#d4dfcd}

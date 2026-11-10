@@ -25,7 +25,7 @@ app.whenReady().then(async()=>{
  try{
   await win.loadFile(path.join(__dirname,'client/index.html'));await wait('window.engineStats?.state==="playing"','HUD did not start');
   await screenshot('cozy');
-  check(await js("document.querySelectorAll('.hud-handle:not([hidden])').length===4"),'four compact HUD windows');
+  check(await js("document.querySelectorAll('.hud-handle:not([hidden])').length===3&&!document.getElementById('pond-chat').hidden"),'four compact HUD windows');
   const before=await js("window.pondHUD.layout.rect('emotion',window.engineStats.viewWidth,window.engineStats.viewHeight)");
   const count=inputs.length;await drag('[data-panel="emotion"] .hud-grip',-220,120);
   const after=await js("window.pondHUD.layout.rect('emotion',window.engineStats.viewWidth,window.engineStats.viewHeight)");

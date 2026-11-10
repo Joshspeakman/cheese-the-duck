@@ -1818,14 +1818,14 @@ class Game:
         if item.rarity == "legendary":
             self._unlock_achievement("used_legendary")
 
-    def _process_talk(self, message: str):
+    def _process_talk(self, message: str, allow_item_commands: bool = True):
         """Process a talk message and get duck response."""
         if not self.duck:
             return
 
         # Check for item interaction commands first
         owned_items = self.habitat.owned_items
-        matching_item = find_matching_item(message, owned_items)
+        matching_item = find_matching_item(message, owned_items) if allow_item_commands else None
         
         if matching_item:
             # This is an item interaction command!

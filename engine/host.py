@@ -76,6 +76,9 @@ class DesktopInput(Terminal):
             if self.game:
                 self.game.renderer.dismiss_celebration()
                 if isinstance(key, dict):
+                    if key.get('type') == 'chat':
+                        self.game._submit_chat(key)
+                        return Key()
                     if key.get('type') == 'pond':
                         if self.game._state == 'playing' and self.game.living_pond and not (self.game._confirmation_dialog and self.game._confirmation_dialog.is_open):
                             self.game.living_pond.command(key)
@@ -122,6 +125,8 @@ class DesktopInput(Terminal):
                         key = command.get('key', '')
                         if key in KEYS: self.commands.put_nowait(Key(*KEYS[key]))
                         elif isinstance(key, str) and len(key) == 1: self.commands.put_nowait(Key(key))
+                    elif kind == 'chat':
+                        self.commands.put_nowait(command)
                     elif kind == 'pond' and isinstance(command.get('action'), str):
                         self.commands.put_nowait(command)
                     elif kind == 'action' and command.get('action') in ACTIONS:
@@ -144,6 +149,9 @@ class CanvasRenderer(Renderer):
     max_width, max_height = COLS, ROWS - 4
     def __init__(self, terminal):
         super().__init__(terminal)
+        from engine.chat_stream import ChatStream, ChatMirror
+        self.chat = ChatStream()
+        self._chat_log = ChatMirror(self.chat.raw, self._chat_log)
         # The legacy renderer hard-coded six tabs, hiding four live registries.
         # Navigation and buying still use the original shop handlers.
         from world.shop import ItemCategory
@@ -233,6 +241,7 @@ class DesktopGame(Game):
         if self.living_pond:self.living_pond.minds.close()
         self._pending_talk_future = None
         self.living_pond = LivingPond(data)
+        self.renderer.chat.restore(self.living_pond.minds.model.state['exchanges'])
         self._pond_duck = None
 
     def _ensure_living_pond(self, offline=False):
@@ -246,6 +255,7 @@ class DesktopGame(Game):
             self._pond_duck = self.duck
 
     def _start_new_game(self):
+        self.renderer.chat.reset()
         if self.living_pond:self.living_pond.minds.close()
         self._pending_talk_future = None
         self.living_pond = None
@@ -255,6 +265,7 @@ class DesktopGame(Game):
         self._save_game()
 
     def _load_game(self):
+        self.renderer.chat.reset()
         super()._load_game()
         self._ensure_living_pond(offline=True)
 
@@ -306,7 +317,7 @@ class DesktopGame(Game):
         line.speech_result = result
         return line
 
-    def _process_talk(self, message):
+    def _process_talk(self, message, allow_item_commands=True):
         if not self.duck or not self.living_pond:return
         minds=self.living_pond.minds
         if minds.pending or getattr(self, '_pending_talk_future', None):
@@ -314,9 +325,34 @@ class DesktopGame(Game):
             return
         minds.sync()
         self._pond_speech_request=(minds.prompt('cheese',message),minds.fallback('cheese',message))
-        super()._process_talk(message)
+        super()._process_talk(message, allow_item_commands=allow_item_commands)
         if getattr(self, '_pending_talk_future', None):
             minds.model.heard_player('cheese',message,minds.context(),minds.now)
+            channel=getattr(minds,'_requested_channel','say')
+            minds.reply_channels['cheese']=channel
+            self.renderer.chat.player(message,'cheese',channel)
+
+    def _submit_chat(self, command):
+        stream=self.renderer.chat
+        request=command.get('id');text=command.get('text');target=command.get('target','cheese')
+        if not isinstance(request,str) or not 1<=len(request)<=80:return
+        if request in stream.receipts:return
+        if command.get('session')!=stream.session:
+            return stream.receipt(request,False,'The pond changed. Send your message again.')
+        if not isinstance(text,str) or not text.strip() or len(text)>1000:
+            return stream.receipt(request,False,'Write a message of up to 1,000 characters.')
+        if not isinstance(target,str) or len(target)>128 or command.get('channel') not in ('say','whisper'):
+            return stream.receipt(request,False,'Choose Cheese or a friend who is here.')
+        if (self._state!='playing' or not self.duck or not self.living_pond or
+                self.renderer.interface_modal or self._active_minigame or
+                (self._confirmation_dialog and self._confirmation_dialog.is_open)):
+            return stream.receipt(request,False,'Finish the current screen before chatting.')
+        minds=self.living_pond.minds
+        minds._requested_channel=command['channel']
+        try:accepted,message=minds.ask(target,text)
+        finally:
+            if hasattr(minds,'_requested_channel'):del minds._requested_channel
+        stream.receipt(request,accepted,message)
 
     def _check_pending_talk(self):
         future=getattr(self, '_pending_talk_future', None)

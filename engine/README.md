@@ -24,14 +24,48 @@ During play, Ultra fills the entire client window with the living ASCII world, w
 
 Ultra includes an animated pond title screen, an ASCII logo, an expression-only emotion panel with animated eyes, brows, a duck bill and reaction marks for eight moods and care actions, care and trust meters, a scroll-following hierarchy, a persistent transcript, and experience/growth/goal readouts. The top-right panel has no head contour, crest, neck or clothing. It follows the original emotion action priority and keeps the time-of-day background. Shop, workshop, settings, exploration, journal, conversation, activity and warning panels have distinct ASCII illustrations and accents. Full menu text is captured before the terminal compositor truncates it, wrapped without losing characters, and wheel-scrollable when needed. Minigames retain their authored playfields inside the new arcade frame. Reduced Motion freezes portrait effects and High Contrast brightens UI labels and frames.
 
-Keyboard controls are unchanged. The title choices, hierarchical side menu, lower action bar and panel navigation controls support mouse input. Stale clicks and clicks behind confirmations are rejected on the game thread; a click uses the same Enter handler as keyboard selection. Arrow keys and Enter navigate the complete game menu. Escape goes back; T opens conversation; Page Up/Down scroll conversation history. Display controls provide fullscreen, larger text with scrolling, Vivid/Subtle/Off scene effects, a searchable item art catalog and PNG screenshots. Every dialogue string is drawn as literal glyphs.
+Classic keyboard controls are unchanged. In Ultra, Enter starts in-world chat when the game menu is collapsed. The title choices, hierarchical side menu, lower action bar and panel navigation controls support mouse input. Stale clicks and clicks behind confirmations are rejected on the game thread; a click uses the same Enter handler as keyboard selection. Arrow keys and Enter navigate the complete game menu. Escape goes back; T opens conversation; Page Up/Down scroll conversation history. Display controls provide fullscreen, larger text with scrolling, Vivid/Subtle/Off scene effects, a searchable item art catalog and PNG screenshots. Every dialogue string is drawn as literal glyphs.
+
+## In-world pond chat (2.36.0)
+
+Ultra's bottom-left log is now a live chat window. Press **Enter** while the game
+menu is collapsed, **T**, or **Talk** to compose. **Enter** sends; **Escape** returns
+to the pond and keeps an unfinished draft. Typing, selecting, pasting and using
+clipboard shortcuts never trigger care/menu hotkeys. The simulation keeps running.
+
+**General**, **Conversations** and **World** tabs separate the log without losing
+messages. Names, timestamps and channel colors distinguish Cheese, your words,
+visitors, nearby conversations and discoveries. Click a speaker's name to whisper.
+Use `/s message` for Cheese, `/w Name message` for a present friend, `/r message`
+for the last incoming whisper, and `/help` for reminders. `/clear` clears this view,
+not saved memories. `//` begins a literal slash. Up/Down recall sent messages.
+
+Scroll or use Page Up/Down to read history; new messages leave your place intact,
+with **Latest** to return. The live stream keeps 240 entries; recent saved resident
+conversations return on load. The grip moves the panel, its lower-right corner
+resizes it, and both support arrow keys when focused. Layout persists. Close with
+× and recover with Enter or Pond kit. Idle fading waits while you compose.
+
+Host acknowledgments clear only accepted drafts. Busy/absent residents keep the
+message editable, duplicate requests do not repeat learning, and a stale session
+cannot send into a newly loaded world. Ordinary dialogue (including notebook
+chat) never runs item commands merely because an item is mentioned. Replies use
+the existing local language model and persistent resident memories; all text,
+including profanity, is rendered literally.
+
+Validation: `npm --prefix engine run test:chat` tests real game routing, memory,
+whispers, duplicate rejection, Classic mirroring and save/reload. `npm --prefix
+engine run visual:chat` checks real keyboard/pointer input, scrollback, drafts,
+channel tabs, drag/resize, idle fade and Classic behavior. Packaged smoke exercises
+the inline form through IPC, actual local inference and shutdown saving.
 
 ## Local voices and learning residents (2.35.0)
 
 Open **Pond kit → Pond journal → Personalities**, choose Cheese or a visitor,
 and talk in the notebook. Friends also have a **Talk & get to know** button.
-**T** still uses Cheese's original talk controls, quests and memories. Both
-routes now use the local voice model. Enter sends; Shift+Enter adds a line.
+**T** opens the in-world chat in Ultra; Classic retains the original talk screen.
+Both use the local voice model and Cheese's original quest/memory hooks.
+Enter sends; the notebook additionally supports Shift+Enter for a new line.
 The notebook preserves unfinished drafts while the simulation runs.
 
 Every met resident has an independent persistent contextual action model,
