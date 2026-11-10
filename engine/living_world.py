@@ -19,9 +19,9 @@ SKILLS = ('gardening', 'stewardship', 'cooking', 'care', 'building', 'engineerin
 PROJECTS = {
  'reed_beds': {'name': 'Living reed beds', 'description': 'Filter runoff, shelter frogs, and hold water through dry spells.', 'effect': 'water', 'stages': [('Survey the bank', {'reed': 2, 'pebble': 2}), ('Weave the root baskets', {'reed': 6, 'twig': 4}), ('Restore the shallows', {'pond_clay': 4, 'moss': 3})]},
  'orchard': {'name': 'Community orchard', 'description': 'A shady food grove with flowers for pollinators and fruit to forage.', 'effect': 'plants', 'stages': [('Mark a sunny plot', {'twig': 3, 'pebble': 2}), ('Prepare rich soil', {'leaf': 8, 'pond_clay': 3}), ('Plant the grove', {'seed': 5, 'acorn': 3})]},
- 'observatory': {'name': 'Little sky observatory', 'description': 'Read approaching fronts and record migrating wildlife.', 'effect': 'knowledge', 'stages': [('Find the horizon', {'pebble': 4, 'twig': 3}), ('Build the platform', {'wooden_plank': 4, 'string': 3}), ('Fit the weather instruments', {'iron_ore': 3, 'crystal': 2})]},
- 'clubhouse': {'name': 'Friends’ clubhouse', 'description': 'A sheltered gathering place for stories, music and shared meals.', 'effect': 'community', 'stages': [('Lay the gathering circle', {'rock': 5, 'twig': 4}), ('Raise the shelter', {'wooden_plank': 6, 'thatch': 3}), ('Make everyone welcome', {'fabric_scrap': 4, 'wildflower': 5})]},
- 'workshop': {'name': 'Repair workshop', 'description': 'Care for well-loved possessions and learn precision craftsmanship.', 'effect': 'craft', 'stages': [('Sort the work area', {'pebble': 3, 'twig': 5}), ('Build a sturdy bench', {'wooden_plank': 5, 'iron_ore': 2}), ('Stock the tool wall', {'string': 4, 'smooth_stone': 3})]},
+ 'observatory': {'name': 'Little sky observatory', 'description': 'Forecast five weather fronts and record two field notes per observation instead of one.', 'effect': 'knowledge', 'stages': [('Find the horizon', {'pebble': 4, 'twig': 3}), ('Build the platform', {'wooden_plank': 4, 'string': 3}), ('Fit the weather instruments', {'iron_ore': 3, 'crystal': 2})]},
+ 'clubhouse': {'name': 'Friends’ clubhouse', 'description': 'Shared time at home restores more social energy and builds warmer relationships.', 'effect': 'community', 'stages': [('Lay the gathering circle', {'rock': 5, 'twig': 4}), ('Raise the shelter', {'wooden_plank': 6, 'thatch': 3}), ('Make everyone welcome', {'fabric_scrap': 4, 'wildflower': 5})]},
+ 'workshop': {'name': 'Repair workshop', 'description': 'Repairs at home take 20% less time and restore 40 tool durability instead of 25, using the same materials.', 'effect': 'craft', 'stages': [('Sort the work area', {'pebble': 3, 'twig': 5}), ('Build a sturdy bench', {'wooden_plank': 5, 'iron_ore': 2}), ('Stock the tool wall', {'string': 4, 'smooth_stone': 3})]},
  'trail': {'name': 'Waterside nature trail', 'description': 'Safe wildlife corridors link the meadow, grove and pond.', 'effect': 'wildlife', 'stages': [('Map the old paths', {'twig': 4, 'leaf': 5}), ('Protect the nesting places', {'reed': 4, 'grass_blade': 8}), ('Build the footbridges', {'wooden_plank': 4, 'rope': 2})]},
 }
 PLANS = {
@@ -66,7 +66,8 @@ def fresh(seed=1):
                         'insects': .48, 'fish': .52, 'birds': .45, 'litter': .12,
                         'wetness': .25, 'snow': 0., 'ice': 0., 'temperature': 17., 'wind': .2},
             'offline': '', 'sequence': 0, 'auto': True, 'stories': {}, 'story': None, 'next_story': 90.,
-            'protection': 0., 'legacy': {}, 'biomes': {}}
+            'protection': 0., 'legacy': {}, 'biomes': {},
+            'community': {'warmth': .2, 'gatherings': 0}}
 
 
 class LivingPond:
@@ -171,6 +172,9 @@ class LivingPond:
         # Skill XP belongs to the expansion, not a second source of currency.
         self.state['skills'][skill] = min(10000, self.state['skills'].get(skill, 0) + amount)
 
+    def completed(self, project):
+        return self.state['projects'].get(project, {}).get('stage', 0) >= 3
+
     def change_need(self, need, amount):
         g = self.game
         if g and g.duck:
@@ -217,7 +221,8 @@ class LivingPond:
         if not w:
             w.update(type=getattr(self, 'weather_type', 'sunny'), until=s['elapsed'] + 360,
                      forecast=[], front=0)
-        if not w['forecast']:
+        horizon = 5 if self.completed('observatory') else 3
+        if len(w['forecast']) < horizon:
             from world.atmosphere import WEATHER_DATA, BIOME_WEATHER_MODIFIERS
             season = getattr(self, 'season', 'spring')
             weighted = []
@@ -228,8 +233,8 @@ class LivingPond:
                     # seasonal probabilities still govern which weather is legal.
                     related = any(x in weather.value and x in w['type'] for x in ('rain', 'snow', 'cloud', 'storm'))
                     weighted.extend([weather.value] * max(1, int(weight * (150 if related else 80))))
-            for n in range(3):
-                seed = stable((s['seed'], w['front'], n, getattr(self, 'biome', 'pond')))
+            for n in range(len(w['forecast']), horizon):
+                seed = stable((s['seed'], w['front'] + n, getattr(self, 'biome', 'pond')))
                 w['forecast'].append({'type': weighted[seed % len(weighted)] if weighted else 'sunny', 'duration': 300 + seed % 420, 'intensity': .35 + (seed % 60)/100})
         if s['elapsed'] >= w['until']:
             next_front = w['forecast'].pop(0)
@@ -314,7 +319,9 @@ class LivingPond:
             friend['activity'] = 'sleeping' if asleep else 'sheltering' if storm else activity
             friend['location'] = 'nest' if asleep or storm else biome
             friend['energy'] = clamp(friend['energy'] + dt/3600*(.25 if asleep else -.05))
-            friend['social'] = clamp(friend['social'] - dt/3600*.04)
+            # A welcoming home makes time apart less lonely. This persistent
+            # benefit also gives kindness toward passing strangers a real effect.
+            friend['social'] = clamp(friend['social'] - dt/3600*(.04-.02*s['community']['warmth']))
             friend['want'] = 'rest' if friend['energy'] < .3 else 'company' if friend['social'] < .55 else activity
         for promise in s['promises']:
             if promise['status'] == 'promised' and s['elapsed'] > promise['deadline']:
@@ -386,6 +393,8 @@ class LivingPond:
             return False, 'Cheese needs a little variety before doing that again.'
         skill = ITEMS.get(target, {}).get('skill', PLANS.get(kind, ('','','care'))[2])
         duration *= max(.75, 1-math.sqrt(s['skills'].get(skill,0)/12)*.015)
+        if kind == 'repair_item' and self.location == 'Home Pond' and self.completed('workshop'):
+            duration *= .8
         s['plan'] = {'kind': kind, 'target': target, 'label': label, 'elapsed': 0., 'duration': duration,
                      'phase': 'approach', 'automatic': automatic, 'paused': False, 'location': self.location}
         self.game.behavior_ai.cancel_pending_movement()
@@ -468,9 +477,10 @@ class LivingPond:
                 if not g.materials.has_materials({'twig':1}):
                     self.notice('A twig is needed for the repair brace. Nothing was consumed.');return
                 g.materials.remove_material('twig',1)
-                obj['condition'] = clamp(obj['condition']+.25)
+                repair = .4 if self.location == 'Home Pond' and self.completed('workshop') else .25
+                obj['condition'] = clamp(obj['condition']+repair)
                 if target in g.crafting.tools:
-                    tool=g.crafting.tools[target];tool.durability=min(tool.max_durability,tool.durability+25)
+                    tool=g.crafting.tools[target];tool.durability=min(tool.max_durability,tool.durability+round(repair*100))
                 message = 'A careful repair gave it more life.'
             else:
                 obj['uses'] += 1; obj['last_use'] = s['elapsed']
@@ -505,7 +515,7 @@ class LivingPond:
             message=f'Tended {count} thirsty garden plots.' if count else 'Checked the soil and leaves. Nothing needs watering yet.'
         elif kind == 'observe':
             e=s['ecology']; species='frog' if e['water']>.6 and e['insects']>.35 else 'butterfly' if e['flowers']>.5 else 'robin'
-            s['knowledge'][species]=s['knowledge'].get(species,0)+1
+            s['knowledge'][species]=s['knowledge'].get(species,0)+(2 if self.completed('observatory') else 1)
             message=f"Recorded {species} behavior. {'Rich shallows support a food web.' if species=='frog' else 'Quiet observation reveals more than chasing.'}"
         elif kind == 'practice':
             self.change_need('fun',3);message='The rhythm is getting steadier. Practice becomes part of who Cheese is.'
@@ -516,9 +526,12 @@ class LivingPond:
             if not friend or not g.friends.current_visit or g.friends.current_visit.friend_id!=target:return
             ok,message,_=g.friends.interact_with_visitor(friend.favorite_activity)
             if not ok:return
-            record=s['friends'][target];record['trust']=clamp(record['trust']+.04);record['warmth']=clamp(record['warmth']+.06);record['social']=clamp(record['social']+.2);record['last_shared']=s['elapsed']
+            sheltered = self.location == 'Home Pond' and self.completed('clubhouse')
+            record=s['friends'][target];record['trust']=clamp(record['trust']+.04);record['warmth']=clamp(record['warmth']+(.1 if sheltered else .06));record['social']=clamp(record['social']+(.3 if sheltered else .2));record['last_shared']=s['elapsed']
             record['memories']=(record['memories']+[{'activity':friend.favorite_activity,'weather':self.weather_type,'at':s['elapsed']}])[-12:]
-            self.change_need('social',5)
+            s['community']['warmth']=clamp(s['community']['warmth']+.01)
+            s['community']['gatherings']+=1
+            self.change_need('social',(8 if sheltered else 5)+2*s['community']['warmth'])
             for promise in s['promises']:
                 if promise['friend']==target and promise['status']=='promised':
                     promise['status']='kept';record['reliability']=clamp(record['reliability']+.1)
@@ -681,6 +694,7 @@ class LivingPond:
             elif key=='repair':
                 for obj in s['objects'].values():obj['condition']=clamp(obj['condition']+amount)
             elif key=='warmth':
+                s['community']['warmth']=clamp(s['community']['warmth']+amount)
                 visit=g.friends.current_visit
                 if visit and visit.friend_id in s['friends']:
                     friend=s['friends'][visit.friend_id];friend['warmth']=clamp(friend['warmth']+amount)
@@ -754,6 +768,7 @@ class LivingPond:
                     'stage':plant.growth_stage.value if plant else 'empty','water':plant.water_level/100 if plant else 0,
                     'health':plant.health/100 if plant else 1,'soil':plot.soil_quality/100})
         self._cache={'garden':garden,'seeds':dict(self.game.garden.seed_inventory) if self.game else {},
+            'community':dict(s['community']),
             'story':self.story_snapshot(),'stories':copy.deepcopy(s['stories']),'protection':s['protection'],
             'elapsed':s['elapsed'],'plan':plan,'policy':s['policy'],'auto':s['auto'],
             'ecology':copy.deepcopy(s['ecology']),'weather':copy.deepcopy(s['weather'].get(getattr(self,'biome','pond'),{})),

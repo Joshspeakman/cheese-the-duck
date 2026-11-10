@@ -31,7 +31,7 @@
     },
     {
       "name": "Signed build, save backup, desktop installation and verification",
-      "status": "verified; installation pending"
+      "status": "building final verified source"
     }
   ],
   "constraints": [
@@ -55,13 +55,14 @@
     "project_stages": 18,
     "practice_skills": 13,
     "journal_sections": 8,
-    "simulation_checks": 639,
+    "simulation_checks": 694,
     "long_run_hours": 72,
     "original_gameplay_checks": 76,
     "python_regression_tests": 20,
     "javascript_tests": 39,
     "packaged_audio_smoke": "PASS",
     "visual_harness": "PASS",
-    "ad_hoc_signature": "verified"
+    "ad_hoc_signature": "verified",
+    "completed_project_benefits_verified": 6
   }
 }
