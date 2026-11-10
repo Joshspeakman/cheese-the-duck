@@ -71,7 +71,7 @@ export class ItemGallery {
         }
         const model=itemSprite(item.id,time/1000,{motion}),cw=Math.min(16,440/(model.width+2),235/((model.art.length+2)*1.5));
         if(model.emissive){const gradient=ctx.createRadialGradient(250,170,0,250,170,150);gradient.addColorStop(0,model.accent+'25');gradient.addColorStop(1,model.accent+'00');ctx.fillStyle=gradient;ctx.fillRect(0,0,500,340);}
-        this.painter.draw(ctx,model,250,285,cw);card.querySelector('small').style.color=model.rarity;
+        this.painter.draw(ctx,model,250,285,cw/(model.detailScale||1));card.querySelector('small').style.color=model.rarity;
       }this.lastTime=time;
     }
     this.raf=requestAnimationFrame(t=>this.tick(t));

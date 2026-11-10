@@ -45,3 +45,40 @@ body[data-graphics=classic] #lighting{display:none}
 
 #lighting{display:flex;align-items:center;padding:0 8px;color:#dfc58f;font-size:11px;border-left:1px solid #476261;white-space:nowrap}
 .gallery-fit[hidden]{display:none}
+/* The living journal uses the game's materials and real simulation snapshots. */
+.pond-journal{width:min(1220px,96vw);height:min(900px,94vh);max-width:96vw;max-height:94vh;padding:0;border:1px solid #8aaa74;border-radius:15px;background:#14251f;color:#e5e4cf;box-shadow:0 24px 90px #000b;font:14px/1.55 Menlo,monospace;overflow:hidden}
+.pond-journal::backdrop{background:#07120caa}
+.pond-journal>header{display:block;padding:22px 28px 15px;background:linear-gradient(110deg,#2f4631,#172b26);border-bottom:1px solid #6a7853;position:relative;height:auto}
+.pond-journal h1{font-size:22px;line-height:1.3;margin:6px 100px 0 0;color:#f2d59a;letter-spacing:-.7px}
+.pond-eyebrow{letter-spacing:3px;font-size:10px;color:#b5c49b}
+.pond-journal>header>button{position:absolute;right:20px;top:20px}
+.pond-journal nav{display:flex;flex-wrap:wrap;gap:6px;padding:12px 22px;background:#10231f}
+.pond-journal button{font:12px Menlo,monospace;line-height:1.4;padding:9px 12px;white-space:normal;color:#dde4ce;background:#294336;border:1px solid #506d50;border-radius:5px;cursor:pointer}
+.pond-journal button:hover:not(:disabled),.pond-journal button[aria-current=page],.pond-journal button[aria-pressed=true]{color:#fff0c7;background:#496348;border-color:#d2bb81}
+.pond-journal button:disabled{opacity:.42;cursor:default}
+.pond-journal button:focus-visible,.pond-journal input:focus-visible{outline:3px solid #e5c37b;outline-offset:3px}
+.pond-live-status{padding:9px 26px;background:#273d2d;color:#d7c78c;border-block:1px solid #3d543c;min-height:24px;font-size:12px}
+.pond-body{height:calc(100% - 205px);overflow:auto;padding:22px 24px 60px;box-sizing:border-box}
+.pond-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(330px,100%),1fr));gap:20px;align-items:start}
+.pond-card{padding:20px;background:linear-gradient(145deg,#233a2e,#1a2d27);border:1px solid #486047;border-radius:8px;min-width:0;box-shadow:inset 0 1px #7e8e6133}
+.pond-card h2{font:600 18px/1.3 Menlo,monospace;color:#e9cc91;margin:0 0 12px}
+.pond-card h3{font-size:14px;color:#e2d8b7}
+.pond-card p{color:#becbb5;font-size:12px;line-height:1.75;margin:10px 0}
+.pond-card .pond-action{display:inline-block;margin:5px 6px 3px 0}
+.pond-meter{display:grid;grid-template-columns:115px 1fr 40px;align-items:center;gap:8px;font-size:11px;margin:13px 0;color:#c5d0bb}
+.pond-meter meter{width:100%;height:12px;accent-color:#a1c08a}
+.pond-preview{width:100%;height:190px;object-fit:contain;border-block:1px solid #405b44;background:#132721;margin:8px 0}
+.pond-preview.large{height:265px}
+.pond-card progress{width:100%;accent-color:#d7bd7f;height:15px}
+.pond-item-list{display:grid;gap:6px;max-height:500px;overflow:auto;padding-right:7px;margin-top:14px}
+.pond-item-list button{text-align:left}
+.pond-card input{width:100%;box-sizing:border-box;padding:10px;color:#eee8d3;border:1px solid #6c815e;border-radius:5px;background:#11231b;font:13px Menlo,monospace}
+.pond-card .pond-note{border-left:2px solid #adac76;padding-left:12px;color:#d0d7b1}
+.pond-card .pond-missing{color:#e3a895}.pond-card .pond-enough{color:#aed2a2}
+.pond-forecast{padding:4px 0;border-bottom:1px dashed #526346}
+@media(max-height:700px){.pond-journal>header{padding:12px 22px}.pond-journal h1{font-size:17px}.pond-body{height:calc(100% - 175px)}}
+.pond-story{border-color:#d3b66e;background:linear-gradient(145deg,#39422d,#23372b)}
+.pond-choice{margin:12px 0;padding:10px;border-top:1px dashed #71835c}.pond-choice small{font-size:10px;color:#b2c3a3}
+.pond-card select{max-width:100%;background:#14291f;color:#e4d9b3;border:1px solid #71805b;padding:8px;margin:4px;font:12px Menlo,monospace}
+
+.pond-journal[open]{display:flex;flex-direction:column}.pond-journal>.pond-body{flex:1;min-height:0;height:auto}.pond-journal>header,.pond-journal>nav,.pond-live-status{flex-shrink:0}

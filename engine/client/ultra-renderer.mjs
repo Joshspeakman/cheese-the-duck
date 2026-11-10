@@ -70,10 +70,15 @@ export class SceneCanvas {
     for(const actor of [...objects,...characters].sort((a,b)=>(a.floor?-1000:a.y)-(b.floor?-1000:b.y))){
       const surface=this.backdropAt(actor.x*this.sx,actor.y*this.sy);
       if(actor.item)this.items.draw(this.ctx,actor,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{surface,outline:light.outline});
-      else drawCharacter(this.ctx,{...actor,outline:light.outline,backdrop:(x,y)=>this.backdropAt(x,y)},this.sx,this.sy,surface);
+      else drawCharacter(this.ctx,{...actor,sun:light.sun,outline:light.outline,backdrop:(x,y)=>this.backdropAt(x,y)},this.sx,this.sy,surface);
     }
+    this.hits=[...objects,...characters].filter(a=>a.item||a.visitor).map(a=>{
+      const unit=this.sx*a.scale*(a.detailScale||1),width=a.width*unit,height=a.art.length*unit*1.5;
+      return {id:a.id||scene.visitor?.id,kind:a.visitor?'friend':'item',x:a.x*this.sx-width/2,y:a.y*this.sy-height,w:width,h:height};
+    });
     this.frames++;
   }
+  hit(nx,ny){const x=nx*this.canvas.width,y=ny*this.canvas.height;return [...(this.hits||[])].reverse().find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h);}
   surfaceAt(i){
     const material=this.world.grid.materials[i];
     return material===M.foliage?'foliage':material===M.wood?'wood':this.world.water[i]?'water':'land';

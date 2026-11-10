@@ -4285,7 +4285,7 @@ class Game:
 
         # Autonomous behavior (skip if duck is busy traveling/exploring/building/dreaming/egg)
         is_egg = self.duck and self.duck.growth_stage == "egg"
-        if self.behavior_ai and not self._duck_traveling and not self._duck_exploring and not self._duck_building and not self._dream_active and not is_egg:
+        if self.behavior_ai and not self._duck_traveling and not self._duck_exploring and not self._duck_building and not self._dream_active and not is_egg and not (getattr(self, 'living_pond', None) and self.living_pond.busy):
             # Check current location - structures and items only exist at Home Pond
             current_location = None
             if hasattr(self, 'exploration') and self.exploration and self.exploration.current_area:
@@ -6218,6 +6218,9 @@ class Game:
             self._start_title_music()
             return
 
+        if hasattr(self, '_restore_living_pond'):
+            self._restore_living_pond(data.get('living_pond'))
+
         # Load duck
         duck_data = data.get("duck", {})
         self.duck = Duck.from_dict(duck_data)
@@ -6959,6 +6962,9 @@ class Game:
         except Exception:
             from game_logger import get_logger
             get_logger().debug("Failed to serialize duck_store for save")
+
+        if getattr(self, 'living_pond', None) is not None:
+            save_data['living_pond'] = self.living_pond.save()
 
         # Deep-copy and write to disk on a background thread so the main
         # loop never blocks on JSON serialization + file I/O.

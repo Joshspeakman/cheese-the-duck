@@ -1,3 +1,5 @@
+import {detailItem,itemProfile} from './item-detail.mjs';
+export {itemProfile};
 import { ART } from './item-art.mjs';
 import { ITEM_CATALOG } from './item-catalog.mjs';
 
@@ -57,7 +59,7 @@ export function itemPalette(id,family=itemFamily(id)){
   const face='#'+body.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.6+255*.4).toString(16).padStart(2,'0')).join('');
   return {body,accent,face,shade:'#738f8c',rarity:rarityColor(item?.rarity)};
 }
-export function itemSprite(id,time=0,{motion=true,originalArt=null}={}){
+export function itemSprite(id,time=0,{motion=true,originalArt=null,state={},interaction=null}={}){
   const item=ITEM_CATALOG[id],family=itemFamily(id),seed=hash(id),t=motion?time:0,phase=Math.floor(t*3+seed%7);
   let lines=(ART[family]||originalArt||['[ item ]']).slice();
   if(family==='card'){
@@ -92,11 +94,12 @@ export function itemSprite(id,time=0,{motion=true,originalArt=null}={}){
     if(/[=#]/.test(c))return 's';
     return y<2||x<width*.3?'f':'b';
   }).join(''));
-  return {...colors,id,family,art:lines,tones,width,anchorX:width/2,groundRow:lines.length,scale:1,
+  const base={...colors,id,family,art:lines,tones,width,anchorX:width/2,groundRow:lines.length,scale:1,
     emissive,animated,floor:FLOOR.has(family),name:'',
     // Slow physical movement where appropriate, kept much smaller than a cell.
     sway:(PLANTS.has(family)||['chimes','kite','swing'].includes(family))&&motion?Math.sin(t*1.3+seed)*.025:0,
     lift:/balloon|ufo|orb|motes|fish|worm/.test(family)&&motion?Math.sin(t*1.4+seed)*.25:0};
+  return detailItem(base,item,family,t,{motion,state,interaction});
 }
 export function itemWorldScale(id){
   const item=ITEM_CATALOG[id],family=itemFamily(id);
@@ -126,9 +129,10 @@ export class ItemPainter {
     const ctx=canvas.getContext('2d');ctx.font=`600 ${ch}px Menlo, monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
     // Preserve the hand-built outline while keeping the busy terrain out of solid
     // furniture. No rectangular tile backgrounds and no blur on the ASCII ink.
+    for(const fill of model.fills||[]){ctx.fillStyle=model.body+'38';ctx.fillRect((fill.x+1)*unit,(fill.y+1)*ch,fill.w*unit,ch+.5);}
     model.art.forEach((line,y)=>{
       const a=line.search(/\S/),b=line.trimEnd().length;if(a<0)return;
-      if(!['motes','aurora','lights','chimes','reed','fern','sprinkler'].includes(model.family)){
+      if(!model.fills&&!['motes','aurora','lights','chimes','reed','fern','sprinkler'].includes(model.family)){
         ctx.fillStyle=surface;ctx.fillRect((a+.8)*unit,(y+1)*ch,(b-a+.4)*unit,ch);
       }
     });
@@ -143,6 +147,7 @@ export class ItemPainter {
     const result={canvas,unit,ch};this.cache.set(key,result);return result;
   }
   draw(ctx,model,x,y,cw,{shadow=true,surface,outline}={}){
+    cw*=model.detailScale||1;
     const {canvas,unit,ch}=this.image(model,cw,surface,outline),width=(model.width+2)*cw,height=(model.art.length+2)*cw*1.5;
     ctx.save();ctx.translate(x,y-model.lift*cw*1.5);
     if(shadow){ctx.fillStyle='#05171965';ctx.beginPath();ctx.ellipse(0,0,width*.4,Math.max(2,cw*.55),0,0,Math.PI*2);ctx.fill();}
