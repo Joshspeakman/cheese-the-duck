@@ -14,10 +14,11 @@ export function sceneLight(scene){
   const twilight=indoor?0:Math.round(Math.max(smooth(4.75,6.5,hour)*(1-smooth(7.25,9,hour)),smooth(16.5,18.5,hour)*(1-smooth(20,21.5,hour)))*32)/32;
   const storm=/storm/.test(scene.weather),cloudy=/cloud|rain|fog|snow|drizzle/.test(scene.weather);
   // Saturated midtones carry warm, luminous ASCII ink. No pale screen-wide wash.
-  let groundFar='#77763f',groundNear='#4b552a',waterFar='#1d647e',waterNear='#123b59',foliage='#153c2c';
-  if(scene.season==='fall'||scene.season==='autumn'){groundFar='#827348';groundNear='#5c522e';foliage='#4d2d22';}
-  if(scene.biome==='forest'){groundFar='#657044';groundNear='#46572f';}
-  if(scene.biome==='swamp'){groundFar='#737345';groundNear='#4e552c';waterFar='#205c67';waterNear='#133b4e';}
+  const grassy=!['beach','mountains','urban'].includes(scene.biome)&&scene.season!=='winter';
+  let groundFar='#354c32',groundNear='#2d432e',waterFar='#1d647e',waterNear='#123b59',foliage='#153c2c';
+  if(scene.season==='fall'||scene.season==='autumn'){groundFar='#3c4c32';groundNear='#30412b';foliage='#4d2d22';}
+  if(scene.biome==='forest'){groundFar='#3c5438';groundNear='#2d422e';}
+  if(scene.biome==='swamp'){groundFar='#405239';groundNear='#2e4432';waterFar='#205c67';waterNear='#133b4e';}
   if(scene.biome==='beach'){groundFar='#a09061';groundNear='#736741';waterFar='#216f8c';waterNear='#124568';}
   if(scene.biome==='mountains'){groundFar='#7d8273';groundNear='#555d51';}
   if(scene.biome==='urban'){groundFar='#7d7758';groundNear='#57533d';}
@@ -27,9 +28,9 @@ export function sceneLight(scene){
     if(cloudy||storm)value=mixColor(value,overcast,sun*(storm?.3:.16));
     return value;
   };
-  return {hour,phase,night,sun,twilight,indoor,sunX:night?183:43+(hour-6)*10,
+  return {hour,phase,night,sun,twilight,indoor,grassy,sunX:night?183:43+(hour-6)*10,
     skyTop:tone('#10172f','#3e7cae','#70536d','#647f99'),skyHorizon:tone('#253852','#8bb9c3','#c19170','#8098a5'),
-    groundFar:tone('#353421',groundFar,'#74633d','#626047'),groundNear:tone('#22281b',groundNear,'#51482b','#4e5336'),
+    groundFar:tone('#353421',groundFar,grassy?'#4e5639':'#74633d',grassy?'#344638':'#626047'),groundNear:tone('#22281b',groundNear,grassy?'#354832':'#51482b',grassy?'#304230':'#4e5336'),
     waterFar:tone('#073148',waterFar,'#254b68','#244f69'),waterNear:tone('#08263e',waterNear,'#17374f','#1b3d59'),
     foliage:tone('#10231c',foliage,'#38301e','#294134'),wood:tone('#211912','#3b281e','#38251c','#47372d'),
     outline:mixColor('#08131f','#172e28',sun)};
@@ -73,7 +74,7 @@ export function lightBand(light,x,y){
 }
 export function ambientSwatches(light,rows){
   const colors={};
-  const sunlight={land:'#b3a86d',water:'#5c9ab5',foliage:'#507143',wood:'#88613e'};
+  const sunlight={land:light.grassy?'#697b49':'#b3a86d',water:'#5c9ab5',foliage:'#507143',wood:'#88613e'};
   for(const surface of Object.keys(rows))colors[surface]=Array.from({length:5},(_,band)=>rows[surface].map(color=>{
     if(band<2)return mixColor(color,light.outline,(2-band)*.075*light.sun);
     return mixColor(color,sunlight[surface],(band-2)*.055*light.sun);

@@ -39,7 +39,8 @@ export function drawCharacter(ctx,sprite,sx,sy,background) {
   ctx.font=`600 ${ch}px Menlo, monospace`;
   ctx.textBaseline='middle';ctx.textAlign='center';ctx.lineJoin='round';
   // Golden down can disappear into sunlit grass. Give the youngest silhouettes
-  // a close dark edge and deeper interiors, fading the treatment out at night.
+  // a close dark edge, fading the treatment out at night. Feather colors keep
+  // their original brightness; daylight separation comes from the darker grass.
   // Work from the posed feather spans, never a rectangular character backdrop.
   const young=({hatchling:1,duckling:.9,juvenile:.5}[sprite.rig?.stage]||0)*Math.min(1,Math.max(0,((sprite.sun??.7)-.12)/.65));
   const outline=sprite.outline||background;
@@ -63,7 +64,7 @@ export function drawCharacter(ctx,sprite,sx,sy,background) {
   // Sunlight changes the material gently; the ASCII detail keeps its contrast.
   const shade=(hex,f)=>'#'+hex.slice(1,7).match(/../g).map(v=>Math.round(parseInt(v,16)*f).toString(16).padStart(2,'0')).join('');
   for(const fill of sprite.fills||[]){
-    ctx.fillStyle=shade(sprite.inks[fill.tone]||sprite.body,(.50+.14*(1-fill.y/art.length))*(.62+.38*(sprite.sun??.7))*(1-young*.24));
+    ctx.fillStyle=shade(sprite.inks[fill.tone]||sprite.body,(.50+.14*(1-fill.y/art.length))*(.62+.38*(sprite.sun??.7)));
     ctx.fillRect(left+fill.x*cw,top+fill.y*ch,fill.w*cw,ch+.25);
   }
   for(let row=0;row<art.length;row++)for(let col=0;col<art[row].length;col++){

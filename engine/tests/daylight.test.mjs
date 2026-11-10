@@ -3,10 +3,13 @@ import assert from 'node:assert/strict';
 import { sceneLight,ambientRows,lightBand,ambientSwatches,readableInk,contrastRatio } from '../client/scene-lighting.mjs';
 const luma=hex=>{const [r,g,b]=hex.slice(1).match(/../g).map(v=>parseInt(v,16)/255);return .2126*r+.7152*g+.0722*b;};
 const pond={location:'Home Pond',biome:'pond',season:'spring',weather:'sunny',hour:12};
-test('daylight has rich midtones rather than pale flat fills or night darkness',()=>{
+test('daylight keeps bright sky and water above a darker grass plane',()=>{
   const day=ambientRows(sceneLight(pond)),night=ambientRows(sceneLight({...pond,hour:23}));
   assert(luma(day.land[15])>.32&&luma(day.land[15])<.6);assert(luma(day.land[85])>.22&&luma(day.land[85])<.5);assert(luma(day.water[85])>.24&&luma(day.water[85])<.5);
-  for(const [surface,row] of [['land',15],['land',85],['water',85]])assert(luma(day[surface][row])>luma(night[surface][row])*1.8);
+  for(const [surface,row] of [['land',15],['water',85]])assert(luma(day[surface][row])>luma(night[surface][row])*1.8);
+  // Grass deliberately stays subdued so golden down has visual priority.
+  assert(luma(day.land[85])>luma(night.land[85])*1.4);
+  assert(luma(day.land[85])<.28);
 });
 test('overcast daytime stays readable, sunsets are distinct, caves stay sheltered',()=>{
   const noon=sceneLight(pond),dusk=sceneLight({...pond,hour:18.5}),rain=sceneLight({...pond,weather:'rainy'});

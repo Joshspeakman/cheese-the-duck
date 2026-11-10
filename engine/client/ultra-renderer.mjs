@@ -1,4 +1,4 @@
-import { sceneLight,ambientRows,ambientSwatches,lightBand,readableInk } from './scene-lighting.mjs';
+import { sceneLight,ambientRows,ambientSwatches,lightBand,readableInk,mixColor } from './scene-lighting.mjs';
 import { GlyphRenderer } from './renderer.mjs';
 import { LivingWorld } from './ultra-world.mjs';
 import { drawCharacter } from './ultra-characters.mjs';
@@ -43,11 +43,18 @@ export class SceneCanvas {
     if(key!==this.paletteKey){
       this.previousChars.fill(0);this.paletteKey=key;this.atlas.clear();this.ambient=ambientRows(light,H);
       const highlights=new Set([C.cloud,C.glint,C.waterLight,C.lamp,C.star,C.goldLight,C.white]);
+      const grassInk=new Set([C.groundDark,C.ground,C.grass]);
       this.swatches=ambientSwatches(light,this.ambient);this.ink={};this.outlines={};
       this.bands=Uint8Array.from({length:W*H},(_,i)=>lightBand(light,i%W,(i/W)|0));
       for(const surface of Object.keys(this.swatches)){
         const rows=this.swatches[surface];
-        this.ink[surface]=rows.map(band=>Array.from({length:Math.ceil(H/8)},(_,y)=>palette.map((ink,i)=>highlights.has(i)?ink:readableInk(ink,band[Math.min(H-1,y*8+4)],i===C.sky?1.55:i===C.far||i===C.hill?2:1.6+light.sun*1.65))));
+        this.ink[surface]=rows.map(band=>Array.from({length:Math.ceil(H/8)},(_,y)=>palette.map((ink,i)=>{
+          const background=band[Math.min(H-1,y*8+4)];
+          // Decorative grass texture should not receive the contrast boost used
+          // for readable foreground ink: that turned whole fields cream-white.
+          if(surface==='land'&&light.grassy&&grassInk.has(i))return mixColor(readableInk(ink,background,1.6),ink,Math.min(1,light.sun*1.5));
+          return highlights.has(i)?ink:readableInk(ink,background,i===C.sky?1.55:i===C.far||i===C.hill?2:1.6+light.sun*1.65);
+        })));
         this.outlines[surface]=rows.map(band=>Array.from({length:Math.ceil(H/8)},(_,y)=>palette.map((ink,i)=>highlights.has(i)?readableInk(light.outline,band[Math.min(H-1,y*8+4)],3.5):null)));
       }
     }

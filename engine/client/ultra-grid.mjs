@@ -57,6 +57,14 @@ export function palette(scene) {
   if(scene.biome==='beach'){day[11]='#a29061';day[12]='#f1dba1';day[13]='#fff0ca';}
   if(scene.season==='fall'||scene.season==='autumn'){day[5]='#96562d';day[6]='#dd9146';day[7]='#f7c074';day[12]='#c3b177';}
   if(scene.season==='winter'){day[11]='#709b9a';day[12]='#e7eddd';day[13]='#fbffe9';}
+  // Grass is a quiet, detailed ground plane. Keep the brighter cream and gold
+  // values for characters, flowers and the occasional sun-catching blade.
+  if(light.grassy){
+    day[C.groundDark]='#405d37';day[C.ground]='#637d4f';day[C.grass]='#8c9e66';
+    if(scene.season==='fall'||scene.season==='autumn'){
+      day[C.groundDark]='#3f5636';day[C.ground]='#627348';day[C.grass]='#88965c';
+    }
+  }
   const daylight=light.sun;
   const dusk=light.twilight>0;
   if(dusk){p[1]='#423440';p[2]='#bd937c';p[3]='#665168';p[17]='#efbf8b';}
