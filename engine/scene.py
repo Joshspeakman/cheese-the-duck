@@ -9,6 +9,26 @@ def plain_cells(line):
     return [(char, fg, bg, flags) for text, fg, bg, flags in line_runs(line) for char in text]
 
 
+def equipped_wearables(game):
+    """Expose all saved wardrobe systems without equipping or granting anything.
+
+    Shop selections come last so a newly equipped shop item wins a visual slot
+    conflict with an older seasonal/outfit selection.
+    """
+    result = {}
+    wardrobe = getattr(getattr(game, 'seasonal_clothing', None), 'wardrobe', None)
+    for slot, item in getattr(wardrobe, 'equipped', {}).items():
+        if item:
+            result['seasonal:' + slot] = item
+    outfit = getattr(getattr(game, 'outfits', None), 'current_outfit', None)
+    for slot in ('hat', 'face', 'neck', 'body', 'wings', 'feet', 'held', 'special'):
+        item = getattr(outfit, slot, None)
+        if item:
+            result['outfit:' + slot] = item
+    result.update(game.habitat.equipped_cosmetics)
+    return result
+
+
 def overlay_bounds(base, final):
     """Bounds of a composed modal, including its blank interior and borders."""
     xs, ys = [], []
@@ -70,7 +90,7 @@ def snapshot(game, renderer):
                  'stage': duck.growth_stage, 'mood': duck.get_mood().state.value,
                  'name': duck.name, 'away': renderer._cheese_away,
                  'hidden': renderer.interaction_animator.should_hide_duck(),
-                 'cosmetics': game.habitat.equipped_cosmetics,
+                 'cosmetics': equipped_wearables(game),
                  'art': get_mini_duck(duck.growth_stage, pos.get_state(), pos.facing_right, pos.get_animation_frame())},
         'items': items, 'structures': structures, 'visitor': visitor, 'interaction': active,
     }
