@@ -28,5 +28,38 @@
     "runtime": "llama.cpp b12255",
     "runtime_archive_sha256": "56074dd37cd369d4c73658d7ce3b1198ec359fb501ad8f2278b4f8fb36178a48"
   },
-  "launch": "pending verification"
+  "launch": "verified: desktop shortcut target starts 2.35.0, its bundled simulation, and the bundled local voice runtime",
+  "verified_at": "2026-11-10T14:39:15-0700",
+  "verified_processes": [
+    {
+      "pid": 19550,
+      "parent": 1,
+      "binary": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app/Contents/MacOS/Cheese the Duck ASCII Engine"
+    },
+    {
+      "pid": 19551,
+      "parent": 19550,
+      "binary": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app/Contents/Frameworks/Cheese the Duck ASCII Engine Helper.app/Contents/MacOS/Cheese the Duck ASCII Engine Helper"
+    },
+    {
+      "pid": 19552,
+      "parent": 19550,
+      "binary": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app/Contents/Frameworks/Cheese the Duck ASCII Engine Helper.app/Contents/MacOS/Cheese the Duck ASCII Engine Helper"
+    },
+    {
+      "pid": 19553,
+      "parent": 19550,
+      "binary": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app/Contents/Frameworks/Cheese the Duck ASCII Engine Helper (Renderer).app/Contents/MacOS/Cheese the Duck ASCII Engine Helper (Renderer)"
+    },
+    {
+      "pid": 19555,
+      "parent": 19550,
+      "binary": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app/Contents/Resources/local-ai/llama-server"
+    },
+    {
+      "pid": 19556,
+      "parent": 19550,
+      "binary": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app/Contents/Resources/simulation/cheese-simulation"
+    }
+  ]
 }
