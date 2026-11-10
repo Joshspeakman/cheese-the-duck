@@ -1,0 +1,17 @@
+{
+  "installed_at": "2026-11-10T00:05:17.194265-07:00",
+  "version": "2.31.0",
+  "source_commit": "197ea305ac22b17deda75c641e7f927bd6439d38",
+  "branch": "codex/ascii-engine-port",
+  "app": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app",
+  "desktop_shortcut": "/Users/joshuaspeakman/Desktop/Cheese the Duck ASCII Engine.app",
+  "save_backup": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/artifacts/before-living-pond-saves-20261110-000514",
+  "previous_app": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/previous-before-living-pond-20261110-000514/Cheese the Duck ASCII Engine.app",
+  "source_save_sha256": "6b4cb3463b945c891e01719ffb0603b85bb6c189fd28cb4a313ec08e92fa2e2c",
+  "app_asar_sha256": "b829a84092627af5305a8222c6db580937c5c9bfa6f2092247c828ecfa970258",
+  "signature": "verified",
+  "packaged_smoke_with_system_audio": "PASS",
+  "existing_save_copy_migration": "PASS",
+  "launch": "verified: desktop shortcut starts the installed app and bundled simulation",
+  "verified_at": "2026-11-10T00:06:15.634515-07:00"
+}
