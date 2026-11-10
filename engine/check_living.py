@@ -110,6 +110,50 @@ try:
             p.choose_story(token);before=json.dumps(p.state,sort_keys=True)
             p.choose_story(token);check(json.dumps(p.state,sort_keys=True)==before,'stale choice rejected '+token)
         check(story_id in p.state['stories'],'story completes '+story_id)
+    # A stranger's kindness must have a persistent payoff without an active friend.
+    visit=g.friends.current_visit;g.friends.current_visit=None
+    p.state['community']['warmth']=.2
+    p.state['story']={'id':'lost_duckling','step':0,'choices':[]}
+    p.choose_story('lost_duckling:0:comfort')
+    check(abs(p.state['community']['warmth']-.26)<1e-8,'stranger encounter builds persistent community warmth')
+    g.friends.current_visit=visit;p.state['story']=None
+    # Complete every project, including the final costs and its actual benefit.
+    for key,definition in PROJECTS.items():
+        for stage in (1,2):
+            p.state['cooldowns'].pop('project:'+key,None)
+            cost=definition['stages'][stage][1]
+            for material,amount in cost.items():g.materials.add_material(material,amount)
+            before=g.materials.get_all_materials().copy()
+            check(p.start('project',key)[0],'later project stage starts '+key+str(stage))
+            p.advance(100)
+            check(p.state['projects'][key]['stage']==stage+1,'later project stage completes '+key+str(stage))
+            check(all(g.materials.get_count(m)==before[m]-n for m,n in cost.items()),'later project costs applied once '+key+str(stage))
+        check(not p.start('project',key)[0],'completed project cannot consume more materials '+key)
+    for key,metric in [('reed_beds','clarity'),('orchard','soil'),('trail','birds')]:
+        readings=[]
+        for completed in (False,True):
+            sim=LivingPond(p.save());sim.attach(g,offline=False)
+            for value in sim.state['projects'].values():value['stage']=0
+            if completed:sim.state['projects'][key]['stage']=3
+            for metric_key in ('clarity','soil','birds'):sim.state['ecology'][metric_key]=.5
+            sim._environment(60,offline=True);readings.append(sim.state['ecology'][metric])
+        check(readings[1]>readings[0],'completed project changes ecology '+key)
+    p.advance(1)
+    check(len(p.state['weather'][p.biome]['forecast'])==5,'observatory extends the actual forecast')
+    knowledge=sum(p.state['knowledge'].values())
+    check(p.start('observe')[0],'observatory field study starts')
+    if p.state['plan'].get('destination'):g.renderer.duck_pos.x,g.renderer.duck_pos.y=p.state['plan']['destination']
+    p.advance(30)
+    check(sum(p.state['knowledge'].values())==knowledge+2,'observatory doubles field notes')
+    g.crafting.tools['stone_hammer'].durability=30;g.materials.add_material('twig',1);p._legacy_links(1)
+    check(p.start('repair_item','stone_hammer')[0],'workshop repair starts')
+    check(p.state['plan']['duration']<=16,'workshop speeds physical repairs')
+    p.advance(30)
+    check(g.crafting.tools['stone_hammer'].durability==70,'workshop improves real tool repair')
+    g.duck_store.set_need('social',40);g.duck_store.sync_to_duck(g.duck)
+    check(p.start('share',friend.id)[0],'clubhouse gathering starts')
+    p.advance(35)
+    check(g.duck.needs.social>=48,'clubhouse improves social recovery')
     # Forced event transport includes the original event animator and camera.
     g._start_event_animation('butterfly');g.renderer.render_frame(g)
     frame=snapshot(g,g.renderer)
@@ -120,6 +164,7 @@ try:
     data=json.loads(path.read_text());check('living_pond' in data and len(data)>=60,'full atomic save retains original sections')
     g._load_game();check(g.living_pond.state['stories']==p.state['stories'],'stories survive real save/load')
     check(g.living_pond.state['objects']['toy_ball']['uses']==1,'object history survives real save/load')
+    check(g.living_pond.state['community']==p.state['community'],'community warmth and gatherings survive real save/load')
     # Simulate migration by removing only the optional extension.
     data.pop('living_pond');g.save_manager.save(data);g._load_game()
     check(g.living_pond and not g.living_pond.state['stories'],'old saves gain fresh optional state')
