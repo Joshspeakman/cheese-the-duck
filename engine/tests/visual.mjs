@@ -72,6 +72,14 @@ window.runVisualChecks=(frame,fixtures)=>{
  assert(!equal(clean,pixels(ghost.canvas)),'character did not draw over terrain');
  ghost.draw(empty,0,1/30);
  assert(equal(clean,pixels(ghost.canvas)),'character left a trail on the terrain');
+ // Panning moves tree silhouettes over sky, land and water. The material cache
+ // must restore all vacated cells, including spaces inside the old trunks.
+ const panned={...empty,camera:{...empty.camera,x:25}};
+ ghost.draw(panned,0,1/30);
+ const fresh=new SceneCanvas();fresh.resize(720,336);fresh.draw(panned,0,1/30);
+ assert(equal(pixels(ghost.canvas),pixels(fresh.canvas)),'panning left stale tree shading');
+ ghost.draw(empty,0,1/30);
+ assert(equal(clean,pixels(ghost.canvas)),'returning the camera left tree silhouettes behind');
  // Native-size game capture for inspection, with live art in the original UI.
  const game=new DisplayRenderer(document.createElement('canvas'));
  game.resize(frame.cols,frame.rows,.8);
@@ -93,5 +101,5 @@ window.runVisualChecks=(frame,fixtures)=>{
  display.mode='classic';display.draw(frame,1033);
  assert(equal(pixels(classic.canvas),pixels(display.canvas)),'returning to Classic left Ultra pixels behind');
  durations.sort((a,b)=>a-b);
- return {images,checks:['nine animated biomes','Classic pixel parity','opaque dialogue preservation','return to Classic','eight enhanced NPCs based on original sprites','actor removal restores terrain'],medianMs:durations[Math.floor(durations.length*.5)],p95Ms:durations[Math.floor(durations.length*.95)]};
+ return {images,checks:['nine animated biomes','Classic pixel parity','opaque dialogue preservation','return to Classic','eight enhanced NPCs based on original sprites','actor removal restores terrain','tree shading restores after camera movement'],medianMs:durations[Math.floor(durations.length*.5)],p95Ms:durations[Math.floor(durations.length*.95)]};
 };

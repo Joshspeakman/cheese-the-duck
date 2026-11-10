@@ -4,7 +4,7 @@ import { LivingWorld } from './ultra-world.mjs';
 import { drawCharacter } from './ultra-characters.mjs';
 import { ItemPainter } from './ultra-items.mjs';
 import { SceneEffects,luminousPalette } from './scene-effects.mjs';
-import { W,H,C } from './ultra-grid.mjs';
+import { W,H,C,M } from './ultra-grid.mjs';
 import { InterfaceRenderer } from './interface-renderer.mjs';
 
 const TITLE_SCENE={biome:'pond',location:'Home Pond',season:'spring',hour:12,weather:'sunny',intensity:.5,motion:true,particles:true,weatherEffects:true,
@@ -15,6 +15,7 @@ export class SceneCanvas {
     this.canvas=document.createElement('canvas');this.ctx=this.canvas.getContext('2d',{alpha:false});
     this.terrain=document.createElement('canvas');this.terrainCtx=this.terrain.getContext('2d',{alpha:false});
     this.world=new LivingWorld();this.atlas=new Map();this.previousChars=new Uint8Array(W*H);this.previousColors=new Uint8Array(W*H);this.previousWater=new Uint8Array(W*H);
+    this.previousMaterials=new Uint8Array(W*H);
     this.paletteKey='';this.frames=0;this.items=new ItemPainter();this.effects=new SceneEffects();
   }
   resize(width,height){
@@ -44,7 +45,7 @@ export class SceneCanvas {
       const highlights=new Set([C.cloud,C.glint,C.waterLight,C.lamp,C.star,C.goldLight,C.white]);
       this.swatches=ambientSwatches(light,this.ambient);this.ink={};this.outlines={};
       this.bands=Uint8Array.from({length:W*H},(_,i)=>lightBand(light,i%W,(i/W)|0));
-      for(const surface of ['land','water']){
+      for(const surface of Object.keys(this.swatches)){
         const rows=this.swatches[surface];
         this.ink[surface]=rows.map(band=>Array.from({length:Math.ceil(H/8)},(_,y)=>palette.map((ink,i)=>highlights.has(i)?ink:readableInk(ink,band[Math.min(H-1,y*8+4)],i===C.sky?1.55:i===C.far||i===C.hill?2:1.6+light.sun*1.65))));
         this.outlines[surface]=rows.map(band=>Array.from({length:Math.ceil(H/8)},(_,y)=>palette.map((ink,i)=>highlights.has(i)?readableInk(light.outline,band[Math.min(H-1,y*8+4)],3.5):null)));
@@ -53,14 +54,15 @@ export class SceneCanvas {
     const ctx=this.terrainCtx;
     for(let i=0;i<W*H;i++){
       const char=grid.chars[i],color=grid.colors[i];
-      if(char===this.previousChars[i]&&color===this.previousColors[i]&&this.world.water[i]===this.previousWater[i])continue;
+      if(char===this.previousChars[i]&&color===this.previousColors[i]&&this.world.water[i]===this.previousWater[i]&&grid.materials[i]===this.previousMaterials[i])continue;
       const x=i%W,y=(i/W)|0,left=Math.round(x*this.sx),top=Math.round(y*this.sy);
       const width=Math.round((x+1)*this.sx)-left,height=Math.round((y+1)*this.sy)-top;
-      const surface=this.world.water[i]?'water':'land',band=this.bands[i],inkRow=y>>3;
+      const surface=this.surfaceAt(i),band=this.bands[i],inkRow=y>>3;
       ctx.fillStyle=this.swatches[surface][band][y];ctx.fillRect(left,top,width,height);
       if(char!==32)ctx.drawImage(this.tile(char,this.ink[surface][band][inkRow][color],this.outlines[surface][band][inkRow][color]),left,top,width,height);
     }
     this.previousChars.set(grid.chars);this.previousColors.set(grid.colors);this.previousWater.set(this.world.water);
+    this.previousMaterials.set(grid.materials);
     // Copy the cached terrain every frame so walking/hidden actors leave no trail.
     this.ctx.drawImage(this.terrain,0,0);
     this.effects.draw(this.ctx,this.world,scene,time,this.sx,this.sy,objects);
@@ -72,9 +74,13 @@ export class SceneCanvas {
     }
     this.frames++;
   }
+  surfaceAt(i){
+    const material=this.world.grid.materials[i];
+    return material===M.foliage?'foliage':material===M.wood?'wood':this.world.water[i]?'water':'land';
+  }
   backdropAt(px,py){
     const x=Math.max(0,Math.min(W-1,Math.floor(px/this.sx))),y=Math.max(0,Math.min(H-1,Math.floor(py/this.sy))),i=y*W+x;
-    return this.swatches[this.world.water[i]?'water':'land'][this.bands[i]][y];
+    return this.swatches[this.surfaceAt(i)][this.bands[i]][y];
   }
 }
 export class DisplayRenderer {

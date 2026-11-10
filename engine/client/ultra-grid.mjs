@@ -1,5 +1,6 @@
 import { sceneLight,mixColor } from './scene-lighting.mjs';
 export const W = 240, H = 112;
+export const M = Object.freeze({ambient:0,foliage:1,wood:2});
 export const C = Object.freeze({bg:0,sky:1,cloud:2,far:3,hill:4,leafDark:5,leaf:6,leafLight:7,
   barkDark:8,bark:9,barkLight:10,groundDark:11,ground:12,grass:13,waterDark:14,water:15,
   waterLight:16,glint:17,flower:18,goldDark:19,gold:20,goldLight:21,orange:22,ink:23,
@@ -13,23 +14,23 @@ export function hash(x,y=0,seed=0) {
 }
 export function seedOf(str) { let n = 0; for (const c of str) n = Math.imul(n,31) + c.charCodeAt(0) | 0; return n; }
 export class Grid {
-  constructor(w=W,h=H) { this.w=w;this.h=h;this.chars=new Uint8Array(w*h);this.colors=new Uint8Array(w*h); }
-  clear() {this.chars.fill(32);this.colors.fill(0);}
-  put(x,y,ch,color) {
+  constructor(w=W,h=H) { this.w=w;this.h=h;this.chars=new Uint8Array(w*h);this.colors=new Uint8Array(w*h);this.materials=new Uint8Array(w*h); }
+  clear() {this.chars.fill(32);this.colors.fill(0);this.materials.fill(M.ambient);}
+  put(x,y,ch,color,material=M.ambient) {
     x=Math.round(x);y=Math.round(y);
     if (x<0||y<0||x>=this.w||y>=this.h) return;
     const c=typeof ch==='number'?ch:ch.charCodeAt(0);
-    this.chars[y*this.w+x]=c>=32&&c<=126?c:63;this.colors[y*this.w+x]=color;
+    this.chars[y*this.w+x]=c>=32&&c<=126?c:63;this.colors[y*this.w+x]=color;this.materials[y*this.w+x]=material;
   }
-  text(x,y,str,color) { for(let i=0;i<str.length;i++)this.put(x+i,y,str[i],color); }
+  text(x,y,str,color,material=M.ambient) { for(let i=0;i<str.length;i++)this.put(x+i,y,str[i],color,material); }
   art(x,y,lines,color,flip=false) {
     for(let j=0;j<lines.length;j++)for(let i=0;i<lines[j].length;i++) {
       const ch=lines[j][i]; if(ch!==' ')this.put(x+i,y+j,ch,typeof color==='function'?color(ch,i,j):color);
     }
   }
-  line(x1,y1,x2,y2,char,color) {
+  line(x1,y1,x2,y2,char,color,material=M.ambient) {
     const n=Math.ceil(Math.max(Math.abs(x2-x1),Math.abs(y2-y1)));
-    for(let i=0;i<=n;i++) this.put(lerp(x1,x2,i/Math.max(1,n)),lerp(y1,y2,i/Math.max(1,n)),char,color);
+    for(let i=0;i<=n;i++) this.put(lerp(x1,x2,i/Math.max(1,n)),lerp(y1,y2,i/Math.max(1,n)),char,color,material);
   }
   ellipse(cx,cy,rx,ry,char,color,fill=true) {
     for(let y=Math.floor(cy-ry);y<=cy+ry;y++)for(let x=Math.floor(cx-rx);x<=cx+rx;x++) {
@@ -51,10 +52,10 @@ export function palette(scene) {
   if(scene.season==='fall'){p[6]='#966d43';p[7]='#d8aa66';p[13]='#a89762';}
   if(scene.season==='winter'){p[6]='#688c8d';p[7]='#c7d8d1';p[12]='#7f9e9e';p[13]='#cedbd5';}
   const light=sceneLight(scene),day=p.slice();
-  Object.assign(day,{0:light.groundNear,1:'#759b9d',2:'#d8e6cf',3:'#7b9c8f',4:'#92a27c',5:'#42654a',6:'#8ba76c',7:'#cad68b',
-    8:'#4b4931',9:'#ac9563',10:'#e4c688',11:'#718257',12:'#b2b779',13:'#dfd394',14:'#497f8b',15:'#90c1b5',16:'#d1e4c1',17:'#f4df9d'});
+  Object.assign(day,{0:light.groundNear,1:'#7fa8c4',2:'#e3e8da',3:'#597687',4:'#48685c',5:'#3e7045',6:'#76a852',7:'#b6d97e',
+    8:'#775237',9:'#c29561',10:'#edc189',11:'#939052',12:'#c3ba78',13:'#e2cf87',14:'#437f9a',15:'#75b6d1',16:'#c3e4ee',17:'#f4df9d'});
   if(scene.biome==='beach'){day[11]='#a29061';day[12]='#f1dba1';day[13]='#fff0ca';}
-  if(scene.season==='fall'||scene.season==='autumn'){day[6]='#c2995a';day[7]='#ecc780';day[12]='#c3b177';}
+  if(scene.season==='fall'||scene.season==='autumn'){day[5]='#96562d';day[6]='#dd9146';day[7]='#f7c074';day[12]='#c3b177';}
   if(scene.season==='winter'){day[11]='#709b9a';day[12]='#e7eddd';day[13]='#fbffe9';}
   const daylight=light.sun;
   const dusk=light.twilight>0;

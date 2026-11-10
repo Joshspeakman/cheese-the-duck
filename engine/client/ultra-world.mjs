@@ -1,5 +1,5 @@
 import { sceneLight } from './scene-lighting.mjs';
-import { Grid,W,H,C,hash,seedOf,clamp,lerp,palette } from './ultra-grid.mjs';
+import { Grid,W,H,C,M,hash,seedOf,clamp,lerp,palette } from './ultra-grid.mjs';
 import { NEST,DOCK,CABIN,RUIN,BOAT,LANTERN,MUSHROOM,CRYSTAL,FLOWERS,BENCH,WELL,ARCH,CLOCKTOWER,MILL } from './ultra-art.mjs';
 
 import { itemSprite,itemWorldScale } from './ultra-items.mjs';
@@ -81,13 +81,14 @@ export class LivingWorld {
           const glitter=wave>1.45&&r>.38;
           g.put(x,y,glitter?'=':wave>.2?'~':r>.75?'-':'.',glitter?C.waterLight:wave>.2?C.water:C.waterDark);
           if(Math.abs(x-(45+(s.hour-6)*10))<5+(y-bank)*.4&&r>.52)g.put(x,y,'-',C.glint);
-          if(y===Math.ceil(bank))g.put(x,y,'~',C.grass);
+          if(y===Math.ceil(bank))g.put(x,y,'~',C.waterLight);
         }else{
           const path=(b==='garden'||b==='urban')&&Math.abs(x-(W/2+Math.sin(y*.08)*12))<5+depth*19;
           const ch=path?choice(' .:_',r):choice(depth>.5?' .,:;\'`':' .,:',r);
           g.put(x,y,ch,path?C.bark:r2>.65?C.ground:C.groundDark);
           if(r>.96&&!path){const breeze=Math.sin(t*1.5+x*.1+y*.03);g.put(x,y,b==='beach'?'.':b==='mountains'?'^':breeze>.2?'/':breeze<-.2?'\\':'|',C.grass);}
           if(r>.997&&b!=='mountains'&&b!=='urban')g.put(x,y,'*',s.season==='winter'?C.white:C.flower);
+          if(WATER_BIOMES.has(b)&&y===Math.floor(bank))g.put(x,y,'_',C.barkLight);
         }
       }
     }
@@ -98,18 +99,18 @@ export class LivingWorld {
     // Tapered trunks with roots, knotholes, branching and bark hatching.
     for(let y=top+height*.3;y<=base;y++){
       const trunk=2+(y-top)/height*2;
-      for(let dx=-trunk;dx<=trunk;dx++)g.put(x+dx,y,choice('|:;/ ',hash(dx,y,seed)),dx<0?bark:C.barkDark);
+      for(let dx=-trunk;dx<=trunk;dx++)g.put(x+dx,y,choice('|:;/ ',hash(dx,y,seed)),dx<0?bark:C.barkDark,M.wood);
     }
     for(let n=0;n<5;n++){
       const bx=x+(n-2)*wide*.5,by=top+height*(.3+hash(n,6,seed)*.28);
-      g.line(x,base-height*.25,bx,by,n<2?'/':'\\',bark);
-      g.line(x,base-2,x+(n-2)*5,base+2,'_',bark);
+      g.line(x,base-height*.25,bx,by,n<2?'/':'\\',bark,M.wood);
+      g.line(x,base-2,x+(n-2)*5,base+2,'_',bark,M.wood);
     }
-    g.text(x-1,base-height*.25,'(@)',bark);
+    g.text(x-1,base-height*.25,'(@)',bark,M.wood);
     if(kind==='pine'){
       for(let y=0;y<height*.76;y++){
         const w=2+y*.34+(y%8)*.25;
-        for(let dx=-w;dx<=w;dx++)if(hash(dx,y,seed)>.14)g.put(x+dx,top+y,choice('/\\;:^',hash(dx,y,seed)),dx<0?C.leaf:leaf);
+        for(let dx=-w;dx<=w;dx++)if(hash(dx,y,seed)>.14)g.put(x+dx,top+y,choice('/\\;:^',hash(dx,y,seed)),dx<0?C.leaf:leaf,M.foliage);
       }
     }else{
       // Overlapping lobes produce a broad, hand-etched canopy silhouette.
@@ -121,14 +122,14 @@ export class LivingWorld {
           const d=(dx/rx)**2+(dy/ry)**2,r=hash(dx+n*27,dy,seed);
           if(d<1&&r>.1){
             const color=r>.83&&dy<0?C.leafLight:r>.45?C.leaf:leaf;
-            g.put(cx+dx+sway,cy+dy,choice('.,:;o*',r),color);
+            g.put(cx+dx+sway,cy+dy,choice('.,:;o*',r),color,M.foliage);
           }
         }
       }
       if(kind==='willow')for(let n=0;n<29;n++){
         const u=(n/28-.5)*wide*1.9,bend=Math.sin(t*.75+n*.3)*1.4;
         const start=top+height*.3, length=height*(.2+hash(n,8,seed)*.42);
-        for(let j=0;j<length;j++)g.put(x+u+bend*(j/length),start+j,j%3===0?';':j%3===1?'|':',',j>length-3?C.leafLight:leaf);
+        for(let j=0;j<length;j++)g.put(x+u+bend*(j/length),start+j,j%3===0?';':j%3===1?'|':',',j>length-3?C.leafLight:leaf,M.foliage);
       }
     }
   }
@@ -146,18 +147,18 @@ export class LivingWorld {
     const g=this.grid,top=base-height;
     for(let y=0;y<height;y++){
       const lean=Math.sin(y/height*1.5)*7;
-      g.text(x+lean,base-y,y%3===0?'[==]':'|::|',y%3===0?C.barkLight:C.bark);
+      g.text(x+lean,base-y,y%3===0?'[==]':'|::|',y%3===0?C.barkLight:C.bark,M.wood);
     }
     const crown=x+7;
     for(let n=0;n<9;n++){
       const side=n%2?-1:1,reach=13+hash(n,1,seed)*15,drop=-7+hash(n,2,seed)*20;
       for(let j=0;j<reach;j++){
         const u=j/reach,px=crown+side*j,py=top+drop*u-9*Math.sin(u*2.2)+Math.sin(t*.7+n)*u;
-        g.put(px,py,side<0?'/':'\\',C.leafLight);
-        if(j%2===0){g.put(px,py+1,'|',C.leaf);g.put(px-side,py+2,side<0?'\\':'/',C.leaf);}
+        g.put(px,py,side<0?'/':'\\',C.leafLight,M.foliage);
+        if(j%2===0){g.put(px,py+1,'|',C.leaf,M.foliage);g.put(px-side,py+2,side<0?'\\':'/',C.leaf,M.foliage);}
       }
     }
-    g.text(crown-2,top+1,'(o)(o)',C.barkLight);
+    g.text(crown-2,top+1,'(o)(o)',C.barkLight,M.wood);
   }
   waterfall(x,y,height,t){
     const g=this.grid;
