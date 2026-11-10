@@ -134,6 +134,18 @@ async function smoke() {
   await pause(250);
   if(latest?.ui?.modal?.title==='SHOP')throw Error('Catalog typing leaked into gameplay');
   fs.writeFileSync(path.join(out,'item-catalog.png'),(await win.webContents.capturePage()).toPNG());
+  const wardrobeBefore=JSON.stringify(latest.scene.duck.cosmetics);
+  await win.webContents.executeJavaScript(`(() => {
+    const dialog=document.getElementById('item-gallery'),mode=dialog.querySelector('.gallery-mode'),search=dialog.querySelector('input[type=search]');
+    search.value='scarf';mode.value='wear';mode.dispatchEvent(new Event('change'));
+    const age=dialog.querySelector('.gallery-age'),action=dialog.querySelector('.gallery-action');age.value='hatchling';action.value='walking';
+    if(!dialog.querySelector('canvas')?.getAttribute('aria-label').includes('fitted on Cheese'))throw Error('Fitted try-on preview missing');
+    if([...dialog.querySelectorAll('.gallery-fit')].some(label=>label.hidden))throw Error('Try-on controls hidden');
+    search.dispatchEvent(new KeyboardEvent('keydown',{key:'b',bubbles:true}));
+  })()`);
+  await pause(350);
+  if(JSON.stringify(latest.scene.duck.cosmetics)!==wardrobeBefore)throw Error('Try-on preview changed equipped inventory');
+  fs.writeFileSync(path.join(out,'wearable-try-on.png'),(await win.webContents.capturePage()).toPNG());
   await win.webContents.executeJavaScript("document.querySelector('.gallery-close').click();document.getElementById('motion').click()");
   if(await win.webContents.executeJavaScript("localStorage.getItem('cheese.effects')")!=='subtle')throw Error('Effects preference was not saved');
   await win.webContents.executeJavaScript("document.getElementById('graphics').click()");

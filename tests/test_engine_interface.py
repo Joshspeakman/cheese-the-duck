@@ -89,3 +89,27 @@ def test_ultra_item_catalog_tracks_all_live_registries():
     text = (Path(__file__).resolve().parents[1] / 'engine/client/item-catalog.mjs').read_text()
     exported = json.loads(text.split('export const ITEM_CATALOG = ', 1)[1].rstrip(';\n'))
     assert exported == json.loads(json.dumps(catalog()))
+
+
+def test_wearable_catalog_tracks_shop_outfits_and_seasonal_clothes():
+    import json
+    from pathlib import Path
+    from engine.export_wearables import catalog
+    text = (Path(__file__).resolve().parents[1] / 'engine/client/wearable-catalog.mjs').read_text()
+    exported = json.loads(text.split('export const WEARABLE_CATALOG = ', 1)[1].rstrip(';\n'))
+    assert exported == catalog()
+
+
+def test_scene_exposes_all_equipped_wardrobes_without_changing_them():
+    from engine.scene import equipped_wearables
+    shop = {'head': 'hat_blue', 'neck': 'scarf_red'}
+    seasonal = {'head': 'winter_santa_hat', 'feet': 'winter_snow_boots'}
+    outfit = NS(hat='hat_red', body='sweater_cozy')
+    game = NS(habitat=NS(equipped_cosmetics=shop), outfits=NS(current_outfit=outfit),
+              seasonal_clothing=NS(wardrobe=NS(equipped=seasonal)))
+    result = equipped_wearables(game)
+    assert list(result.values()) == ['winter_santa_hat', 'winter_snow_boots', 'hat_red', 'sweater_cozy', 'hat_blue', 'scarf_red']
+    result['head'] = 'hat_chef'
+    assert shop == {'head': 'hat_blue', 'neck': 'scarf_red'}
+    assert seasonal == {'head': 'winter_santa_hat', 'feet': 'winter_snow_boots'}
+    assert outfit.hat == 'hat_red'

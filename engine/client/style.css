@@ -44,3 +44,4 @@ body[data-graphics=classic] #item-art{display:none}
 body[data-graphics=classic] #lighting{display:none}
 
 #lighting{display:flex;align-items:center;padding:0 8px;color:#dfc58f;font-size:11px;border-left:1px solid #476261;white-space:nowrap}
+.gallery-fit[hidden]{display:none}
