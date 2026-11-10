@@ -1,20 +1,21 @@
+import { sceneLight,ambientRows,lightingScene,readableInk,mixColor } from './scene-lighting.mjs';
 import { GlyphRenderer } from './renderer.mjs';
 import { LivingWorld } from './ultra-world.mjs';
 import { drawCharacter } from './ultra-characters.mjs';
 import { ItemPainter } from './ultra-items.mjs';
 import { SceneEffects,luminousPalette } from './scene-effects.mjs';
-import { W,H } from './ultra-grid.mjs';
+import { W,H,C } from './ultra-grid.mjs';
 import { InterfaceRenderer } from './interface-renderer.mjs';
 
-const TITLE_SCENE={biome:'pond',location:'Home Pond',season:'spring',hour:17,weather:'sunny',intensity:.5,motion:true,particles:true,weatherEffects:true,
+const TITLE_SCENE={biome:'pond',location:'Home Pond',season:'spring',hour:12,weather:'sunny',intensity:.5,motion:true,particles:true,weatherEffects:true,
   camera:{x:0,y:0,w:132,h:42},duck:{name:'Cheese',x:65,y:24,hidden:true,stage:'adult',state:'idle',cosmetics:{}},items:[],structures:[],visitor:null,interaction:null};
 
 export class SceneCanvas {
   constructor(){
     this.canvas=document.createElement('canvas');this.ctx=this.canvas.getContext('2d',{alpha:false});
     this.terrain=document.createElement('canvas');this.terrainCtx=this.terrain.getContext('2d',{alpha:false});
-    this.world=new LivingWorld();this.atlas=new Map();this.previousChars=new Uint8Array(W*H);this.previousColors=new Uint8Array(W*H);
-    this.paletteKey='';this.frames=0;this.items=new ItemPainter();this.effects=new SceneEffects();
+    this.world=new LivingWorld();this.atlas=new Map();this.previousChars=new Uint8Array(W*H);this.previousColors=new Uint8Array(W*H);this.previousWater=new Uint8Array(W*H);
+    this.paletteKey='';this.frames=0;this.lightingMode='auto';this.items=new ItemPainter();this.effects=new SceneEffects();
   }
   resize(width,height){
     width=Math.round(width);height=Math.round(height);
@@ -22,37 +23,54 @@ export class SceneCanvas {
     this.canvas.width=width;this.canvas.height=height;this.terrain.width=width;this.terrain.height=height;this.sx=width/W;this.sy=height/H;
     this.previousChars.fill(0);this.atlas.clear();this.paletteKey='';
   }
-  tile(char,color){
-    const key=char+':'+color;
+  tile(char,color,outline=null){
+    const key=char+':'+color+':'+outline;
     if(this.atlas.has(key))return this.atlas.get(key);
     const tile=document.createElement('canvas');tile.width=Math.ceil(this.sx);tile.height=Math.ceil(this.sy);
     const ctx=tile.getContext('2d');ctx.fillStyle=color;
     ctx.font=`600 ${Math.max(6,this.sy*1.14)}px Menlo, monospace`;
     ctx.textBaseline='middle';ctx.textAlign='center';
+    if(outline){ctx.strokeStyle=outline;ctx.lineWidth=Math.max(.9,this.sy*.095);ctx.strokeText(String.fromCharCode(char),tile.width/2,tile.height*.52,tile.width);}
     ctx.fillText(String.fromCharCode(char),tile.width/2,tile.height*.52,tile.width);
+    if(this.atlas.size>=4096)this.atlas.delete(this.atlas.keys().next().value);
     this.atlas.set(key,tile);return tile;
   }
   draw(scene,time,dt){
+    scene=lightingScene(scene,this.lightingMode);
+    const light=sceneLight(scene);
     const result=this.world.render(scene,time,dt),{grid,characters,objects}=result;
-    const palette=luminousPalette(result.palette,this.effects.level),key=palette.join('');
-    if(key!==this.paletteKey){this.previousChars.fill(0);this.paletteKey=key;this.atlas.clear();}
+    const palette=luminousPalette(result.palette,this.effects.level),key=palette.join('')+JSON.stringify(light);
+    if(key!==this.paletteKey){
+      this.previousChars.fill(0);this.paletteKey=key;this.atlas.clear();this.ambient=ambientRows(light,H);
+      const highlights=new Set([C.cloud,C.glint,C.waterLight,C.lamp,C.star,C.goldLight,C.white]);
+      this.ink={};this.outlines={};
+      for(const surface of ['land','water']){
+        this.ink[surface]=this.ambient[surface].map(bg=>palette.map((ink,i)=>highlights.has(i)?ink:readableInk(ink,bg,i===C.sky?1.55:i===C.far||i===C.hill?2:1.6+light.sun*1.65)));
+        this.outlines[surface]=this.ambient[surface].map(bg=>palette.map((ink,i)=>highlights.has(i)?readableInk(light.outline,bg,3.5):null));
+      }
+    }
     const ctx=this.terrainCtx;
     for(let i=0;i<W*H;i++){
       const char=grid.chars[i],color=grid.colors[i];
-      if(char===this.previousChars[i]&&color===this.previousColors[i])continue;
+      if(char===this.previousChars[i]&&color===this.previousColors[i]&&this.world.water[i]===this.previousWater[i])continue;
       const x=i%W,y=(i/W)|0,left=Math.round(x*this.sx),top=Math.round(y*this.sy);
       const width=Math.round((x+1)*this.sx)-left,height=Math.round((y+1)*this.sy)-top;
-      ctx.fillStyle=palette[0];ctx.fillRect(left,top,width,height);
-      if(char!==32)ctx.drawImage(this.tile(char,palette[color]),left,top,width,height);
+      const surface=this.world.water[i]?'water':'land';
+      ctx.fillStyle=this.ambient[surface][y];ctx.fillRect(left,top,width,height);
+      if(char!==32)ctx.drawImage(this.tile(char,this.ink[surface][y][color],this.outlines[surface][y][color]),left,top,width,height);
     }
-    this.previousChars.set(grid.chars);this.previousColors.set(grid.colors);
+    this.previousChars.set(grid.chars);this.previousColors.set(grid.colors);this.previousWater.set(this.world.water);
     // Copy the cached terrain every frame so walking/hidden actors leave no trail.
     this.ctx.drawImage(this.terrain,0,0);
     this.effects.draw(this.ctx,this.world,scene,time,this.sx,this.sy,objects);
     // Rugs stay under everything; other props and characters share depth order.
     for(const actor of [...objects,...characters].sort((a,b)=>(a.floor?-1000:a.y)-(b.floor?-1000:b.y))){
-      if(actor.item)this.items.draw(this.ctx,actor,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale);
-      else drawCharacter(this.ctx,actor,this.sx,this.sy,palette[0]);
+      const row=Math.max(0,Math.min(H-1,Math.round(actor.y))),col=Math.max(0,Math.min(W-1,Math.round(actor.x)));
+      const ambient=this.world.water[row*W+col]?this.ambient.water[row]:this.ambient.land[row];
+      // Keep a quiet, shaded silhouette behind the bright character ink.
+      const surface=mixColor(ambient,light.propSurface,.7*light.sun);
+      if(actor.item)this.items.draw(this.ctx,actor,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{surface,outline:light.outline});
+      else drawCharacter(this.ctx,{...actor,outline:light.outline},this.sx,this.sy,surface);
     }
     this.frames++;
   }

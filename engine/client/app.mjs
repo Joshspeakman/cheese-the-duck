@@ -1,3 +1,4 @@
+import { LIGHTING_MODES } from './scene-lighting.mjs';
 import { ItemGallery } from './item-gallery.mjs';
 import { CELL_W, CELL_H } from './renderer.mjs';
 import { DisplayRenderer } from './ultra-renderer.mjs';
@@ -12,6 +13,10 @@ const effectLevels=['vivid','subtle','off'];
 renderer.scene.effects.level=effectLevels.includes(localStorage.getItem('cheese.effects'))?localStorage.getItem('cheese.effects'):'vivid';
 function effectsLabel(){const value=renderer.scene.effects.level;$('motion').textContent=`Effects: ${value}`;$('motion').setAttribute('aria-label',`Scene effects: ${value}`);}
 effectsLabel();
+renderer.scene.lightingMode=LIGHTING_MODES.includes(localStorage.getItem('cheese.lighting'))?localStorage.getItem('cheese.lighting'):'auto';
+function lightingLabel(){const value=renderer.scene.lightingMode;$('lighting').textContent=`Lighting: ${value[0].toUpperCase()+value.slice(1)}`;$('lighting').title='Visual lighting only. Auto follows the game clock.';}
+lightingLabel();
+$('lighting').onclick=()=>{renderer.scene.lightingMode=LIGHTING_MODES[(LIGHTING_MODES.indexOf(renderer.scene.lightingMode)+1)%LIGHTING_MODES.length];localStorage.setItem('cheese.lighting',renderer.scene.lightingMode);lightingLabel();if(last)renderer.draw(last);$('world').focus();};
 let lastDraw = 0;
 const sizes = [0, .9, 1.15, 1.4];
 const actionIDs = { f:'feed', p:'play', l:'clean', d:'pet', z:'sleep', t:'talk', e:'explore', b:'shop', c:'craft', r:'build', i:'inventory', h:'help' };

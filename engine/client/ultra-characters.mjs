@@ -50,7 +50,7 @@ export function drawCharacter(ctx,sprite,sx,sy,background) {
   for(let row=0;row<art.length;row++)for(let col=0;col<art[row].length;col++){
     const char=art[row][col];if(char===' ')continue;
     const px=left+(col+.5)*cw,py=top+(row+.5)*ch;
-    ctx.strokeStyle=background;ctx.lineWidth=Math.max(2,cw*.17);
+    ctx.strokeStyle=sprite.outline||background;ctx.lineWidth=Math.max(2,cw*.17);
     ctx.strokeText(char,px,py,cw*1.12);
     const tone=sprite.tones?.[row]?.[col];
     ctx.fillStyle=tone==='c'?sprite.cosmetic||sprite.accent:tone==='a'?sprite.accent:tone==='f'?sprite.face:tone==='s'?sprite.shade:tone==='w'?'#8dc6cc':sprite.body;

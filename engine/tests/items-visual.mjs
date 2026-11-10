@@ -21,7 +21,7 @@ window.checkItems=frames=>{
   s.scene.structures=[{id:'wooden_cottage',x:107,y:16}];
   s.scene.duck.x=62;s.scene.duck.y=30;s.ui.modal=null;
   display.resize(s.cols,s.rows,.8,{width:1500,height:993,uiScale:.993});
-  for(const [label,hour,weather] of [['day',15,'sunny'],['night',22,'sunny'],['rain',16,'rainy']]){
+  for(const [label,hour,weather] of [['day',12,'sunny'],['dusk',18.5,'sunny'],['night',23,'sunny'],['rain',16,'rainy']]){
     s.scene.hour=hour;s.scene.weather=weather;display.scene.effects.level='vivid';display.draw(s,2000);images['world-'+label]=canvas.toDataURL();
   }
   s.scene.motion=false;s.ui.motion=false;display.draw(s,1000);const first=pixels(canvas);display.draw(s,9000);assert(eq(first,pixels(canvas)),'reduced motion changed props or light');
@@ -39,10 +39,24 @@ window.checkItems=frames=>{
       if(width===1500)images['menu-'+name]=canvas.toDataURL();previewChecks.push([name,width,d.preview]);
     }
   }
+  const actualHour=s.scene.hour;s.scene.motion=false;s.ui.motion=false;
+  s.scene.hour=23;const snapshot=JSON.stringify(s);
+  display.scene.lightingMode='day';display.draw(s,2000);
+  const daylight=pixels(display.scene.canvas);
+  assert(JSON.stringify(s)===snapshot,'lighting override changed the game clock or snapshot');
+  display.scene.lightingMode='night';display.draw(s,2000);
+  const nightlight=pixels(display.scene.canvas);
+  const luminance=data=>{let total=0;for(let i=0;i<data.length;i+=4)total+=.2126*data[i]+.7152*data[i+1]+.0722*data[i+2];return total/(data.length/4);};
+  const dayBrightness=luminance(daylight),nightBrightness=luminance(nightlight);
+  assert(dayBrightness>nightBrightness*2.1,'daytime still reads like night');
+  let clipped=0;for(let i=0;i<daylight.length;i+=4)if(daylight[i]>248&&daylight[i+1]>248&&daylight[i+2]>248)clipped++;
+  assert(clipped/(daylight.length/4)<.01,'daylight blows out the scene highlights');
+  assert(display.scene.atlas.size<=4096,'contrast-adjusted glyph cache unbounded');
+  display.scene.lightingMode='auto';s.scene.hour=actualHour;
   // Full catalog in one scene stresses sorting and bounded caches without saving.
   s.scene.items=catalog.slice(0,100).map((item,i)=>({id:item.id,x:(i%20)*6,y:8+Math.floor(i/20)*6}));
   display.resize(s.cols,s.rows,.8,{width:1500,height:993,uiScale:.993});
   const times=[];for(let n=0;n<30;n++){const t=performance.now();display.draw(s,1000+n*33);times.push(performance.now()-t);}times.sort((a,b)=>a-b);
   assert(display.scene.items.cache.size<=384,'sprite cache unbounded');
-  return {images,items:catalog.length,previewChecks,median100PropsMs:times[15],p95Ms:times[28]};
+  return {images,items:catalog.length,previewChecks,dayBrightness,nightBrightness,median100PropsMs:times[15],p95Ms:times[28]};
 };

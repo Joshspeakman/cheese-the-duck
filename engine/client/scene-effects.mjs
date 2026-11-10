@@ -15,7 +15,7 @@ export class SceneEffects {
   constructor(){this.level='vivid';this.light=document.createElement('canvas');this.light.width=480;this.light.height=224;this.lc=this.light.getContext('2d');}
   draw(ctx,world,scene,time,sx,sy,objects=[]){
     const strength=effectStrength(this.level);if(!strength)return;
-    const t=scene.motion===false?0:time,night=scene.hour<6||scene.hour>=19;
+    const t=scene.motion===false?0:time,night=scene.hour<6||scene.hour>=20;
     const underground=world.underground(scene),wet=/rain|storm|drizzle/.test(scene.weather)&&scene.weatherEffects!==false;
     const lc=this.lc;lc.clearRect(0,0,480,224);
     const glow=(x,y,r,color,power)=>{
@@ -25,9 +25,9 @@ export class SceneEffects {
     };
     if(!underground){
       const sunX=night?183:43+(scene.hour-6)*10;
-      glow(sunX,13,night?36:52,night?'#8bd7ed':'#ffd197',wet?.13:.3);
+      glow(sunX,13,night?36:52,night?'#8bd7ed':'#ffd197',wet?.1:night?.3:.17);
       // Soft shafts are illumination underneath the sharp character ink.
-      lc.save();lc.globalAlpha=(wet?.025:.045)*strength;lc.fillStyle=night?'#87cadd':'#ffe4a3';
+      lc.save();lc.globalAlpha=(wet?.015:night?.045:.022)*strength;lc.fillStyle=night?'#87cadd':'#ffe4a3';
       for(let i=0;i<4;i++){
         const drift=Math.sin(t*.12+i)*3,x=sunX+i*9;
         lc.beginPath();lc.moveTo(x*2,16);lc.lineTo((x-45+drift)*2,216);lc.lineTo((x-24+drift)*2,216);lc.lineTo((x+2)*2,16);lc.closePath();lc.fill();
