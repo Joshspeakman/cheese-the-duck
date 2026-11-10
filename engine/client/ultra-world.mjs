@@ -1,3 +1,4 @@
+import { sceneLight } from './scene-lighting.mjs';
 import { Grid,W,H,C,hash,seedOf,clamp,lerp,palette } from './ultra-grid.mjs';
 import { NEST,DOCK,CABIN,RUIN,BOAT,LANTERN,MUSHROOM,CRYSTAL,FLOWERS,BENCH,WELL,ARCH,CLOCKTOWER,MILL } from './ultra-art.mjs';
 
@@ -10,13 +11,13 @@ export class LivingWorld {
   constructor(){this.grid=new Grid();this.water=new Uint8Array(W*H);this.shore=new Int16Array(W);this.duckPosition=null;this.lastLocation='';this.lastTime=0;}
   project(scene,x,y){const c=scene.camera||{x:0,y:0,w:132,h:42};return [24+(x-c.x)/c.w*(W-48),46+(y-c.y)/c.h*47];}
   sky(s,t,seed){
-    const g=this.grid, night=s.hour<6||s.hour>=20, dusk=s.hour>=17&&s.hour<20;
+    const g=this.grid,light=sceneLight(s),night=light.night;
     for(let y=0;y<45;y++)for(let x=0;x<W;x++){
       const r=hash(x,y,seed);
       if(r<.025+y*.0018)g.put(x,y,choice('.`:',r*31),C.sky);
       if(night&&y<30&&r>.997)g.put(x,y,Math.sin(t*1.8+x)>0?'+':'.',C.star);
     }
-    const sunX=night?183:43+(s.hour-6)*10;
+    const sunX=light.sunX;
     if(!/storm|rain|fog/.test(s.weather)){
       g.ellipse(sunX,13,9,5,night?'.':'*',night?C.cloud:C.goldDark);
       g.ellipse(sunX-1,12,7,4,night?'o':'#',night?C.white:C.goldLight);
@@ -315,7 +316,7 @@ export class LivingWorld {
       for(let j=0;j<h;j++)g.put(x+sway*(j/h),y-j,j===h-1?'!':j%4===0?'/':'|',n%3?C.leafDark:C.leaf);
     }
     if(s.particles===false)return;
-    const night=s.hour<6||s.hour>=19;
+    const night=sceneLight(s).night;
     if(night||s.biome==='swamp'||/cave/i.test(s.location))for(let n=0;n<22;n++){
       const x=(hash(n,9,seed)*W+Math.sin(t*.7+n)*7),y=45+hash(n,10,seed)*53+Math.sin(t+n)*3;
       const bright=Math.sin(t*2+n*2)>.4;

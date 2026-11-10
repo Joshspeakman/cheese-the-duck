@@ -1,3 +1,4 @@
+import { sceneLight } from './scene-lighting.mjs';
 import { W,H,C,hash } from './ultra-grid.mjs';
 
 export const EFFECT_LEVELS=['vivid','subtle','off'];
@@ -15,7 +16,7 @@ export class SceneEffects {
   constructor(){this.level='vivid';this.light=document.createElement('canvas');this.light.width=480;this.light.height=224;this.lc=this.light.getContext('2d');}
   draw(ctx,world,scene,time,sx,sy,objects=[]){
     const strength=effectStrength(this.level);if(!strength)return;
-    const t=scene.motion===false?0:time,night=scene.hour<6||scene.hour>=20;
+    const t=scene.motion===false?0:time,night=sceneLight(scene).night;
     const underground=world.underground(scene),wet=/rain|storm|drizzle/.test(scene.weather)&&scene.weatherEffects!==false;
     const lc=this.lc;lc.clearRect(0,0,480,224);
     const glow=(x,y,r,color,power)=>{

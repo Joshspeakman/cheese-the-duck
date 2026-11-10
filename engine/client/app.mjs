@@ -1,4 +1,4 @@
-import { LIGHTING_MODES } from './scene-lighting.mjs';
+import { sceneLight } from './scene-lighting.mjs';
 import { ItemGallery } from './item-gallery.mjs';
 import { CELL_W, CELL_H } from './renderer.mjs';
 import { DisplayRenderer } from './ultra-renderer.mjs';
@@ -13,10 +13,9 @@ const effectLevels=['vivid','subtle','off'];
 renderer.scene.effects.level=effectLevels.includes(localStorage.getItem('cheese.effects'))?localStorage.getItem('cheese.effects'):'vivid';
 function effectsLabel(){const value=renderer.scene.effects.level;$('motion').textContent=`Effects: ${value}`;$('motion').setAttribute('aria-label',`Scene effects: ${value}`);}
 effectsLabel();
-renderer.scene.lightingMode=LIGHTING_MODES.includes(localStorage.getItem('cheese.lighting'))?localStorage.getItem('cheese.lighting'):'auto';
-function lightingLabel(){const value=renderer.scene.lightingMode;$('lighting').textContent=`Lighting: ${value[0].toUpperCase()+value.slice(1)}`;$('lighting').title='Visual lighting only. Auto follows the game clock.';}
-lightingLabel();
-$('lighting').onclick=()=>{renderer.scene.lightingMode=LIGHTING_MODES[(LIGHTING_MODES.indexOf(renderer.scene.lightingMode)+1)%LIGHTING_MODES.length];localStorage.setItem('cheese.lighting',renderer.scene.lightingMode);lightingLabel();if(last)renderer.draw(last);$('world').focus();};
+// Retire the previous forced-time preference; the environment follows game time.
+localStorage.removeItem('cheese.lighting');
+function lightingLabel(frame){const hour=frame.scene?.hour??frame.ui?.hour??12;$('lighting').textContent=sceneLight({hour}).phase;$('lighting').title='Lighting follows the game clock';}
 let lastDraw = 0;
 const sizes = [0, .9, 1.15, 1.4];
 const actionIDs = { f:'feed', p:'play', l:'clean', d:'pet', z:'sleep', t:'talk', e:'explore', b:'shop', c:'craft', r:'build', i:'inventory', h:'help' };
@@ -43,14 +42,14 @@ window.cheese.errors(message => { $('error').hidden = false; $('error').textCont
 function animate(now) {
   if (pending) {
     const frame = pending; pending = null; last = frame;
-    size(frame); renderer.draw(frame, now); lastDraw = now; window.cheese.ack(); $('loading').hidden = true;
+    size(frame); renderer.draw(frame, now);lightingLabel(frame); lastDraw = now; window.cheese.ack(); $('loading').hidden = true;
     $('place').textContent = frame.meta.location || 'Cheese the Duck';
     for (const b of $('actions').children) b.disabled = frame.meta.state !== 'playing';
     $('panels').disabled=Boolean(frame.ui?.modal);syncPanels();
     $('hint').textContent = frame.meta.talking ? 'Type to talk · Enter to send · Esc to return' : 'Arrow keys + Enter to choose · PgUp/PgDn chat · Esc menu';
     const plain = (frame.ui?.modal?.lines || frame.lines).map(line => line.map(run => run[0]).join('')).join('\n');
     if (plain !== lastAnnouncement && now - lastPaint > 1000) { $('announcement').textContent = plain; lastAnnouncement = plain; lastPaint = now; }
-    window.engineStats = { frames: renderer.frames, glyphs: renderer.atlas.size, state: frame.meta.state, cols: frame.cols, rows: frame.rows, viewWidth:renderer.interface.width, viewHeight:renderer.interface.height, mode: renderer.mode, ultraFrames: renderer.scene.frames, renderMs: renderer.cost, peakMs: renderer.peak };
+    window.engineStats = { frames: renderer.frames, glyphs: renderer.atlas.size, state: frame.meta.state, cols: frame.cols, rows: frame.rows, viewWidth:renderer.interface.width, viewHeight:renderer.interface.height, mode: renderer.mode, worldHour:renderer.scene.light?.hour, portraitHour:renderer.interface.emotionHour, ultraFrames: renderer.scene.frames, renderMs: renderer.cost, peakMs: renderer.peak };
     window.interfaceTargets = renderer.mode === 'ultra' ? renderer.interface.hits : [];
     $('performance').textContent = renderer.mode === 'ultra' ? 'ULTRA ASCII' : `CLASSIC · ${frame.cols} × ${frame.rows}`;
   }
