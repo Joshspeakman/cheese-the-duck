@@ -10,6 +10,7 @@ import random
 import time
 
 from core.event_bus import event_bus, VisitorArrivedEvent, VisitorDepartedEvent
+from world.guest_cast import guest_profile, guest_line
 
 
 class FriendshipLevel(Enum):
@@ -260,6 +261,8 @@ VISITOR_ASCII_ART = {
 
 # Visitor animation states by mood/activity
 VISITOR_ANIMATION_STATES = {
+    "walking": ["waddle", "idle", "waddle"],
+    "signature": ["idle", "happy", "idle"],
     "arriving": ["waddle", "waddle", "idle"],
     "chatting": ["idle", "happy", "idle", "happy"],
     "playing": ["happy", "bounce", "waddle", "happy"],
@@ -676,6 +679,7 @@ class VisitorAnimator:
         self._last_player_message: str = ""  # Most recent T key message
         self._last_cheese_response: str = ""  # What Cheese said in response
         self._pending_visitor_reaction: str = ""  # Queued visitor response to player chat
+        self._rest_until = 0.0
     
     def set_visitor(self, personality: str, friend_name: str = "Friend", 
                      friendship_level: str = "stranger", visit_number: int = 1,
@@ -699,6 +703,7 @@ class VisitorAnimator:
         self._last_move_time = time.time()
         self._following_duck = False  # Whether currently following the duck
         self._wander_timer = 0  # Time since last wander decision
+        self._rest_until = 0.0
         
         # LLM integration references
         self._duck_ref = duck_ref
@@ -768,12 +773,26 @@ class VisitorAnimator:
             frame_changed = True
         
         # Update position (move toward target)
-        if current_time - self._last_move_time >= VISITOR_MOVE_INTERVAL:
+        profile = guest_profile(self._friend_name)
+        pace = profile['pace'] if profile else 4.0
+        move_interval = .15 if profile else VISITOR_MOVE_INTERVAL
+        if current_time - self._last_move_time >= move_interval:
+            move_elapsed = min(.5, max(0, current_time - self._last_move_time))
             self._last_move_time = current_time
             self._wander_timer += 1
             
             # Move toward target position (can move 1-2 units for more dynamic movement)
-            move_speed = 2 if self._is_leaving else 1
+            move_speed = move_elapsed * pace * (.9 if self._is_leaving else .7) if profile else (2 if self._is_leaving else 1)
+            if current_time < self._rest_until and not self._is_leaving:
+                self._near_duck = abs(self._position_x - duck_x) + abs(self._position_y - duck_y) < 15
+                self._current_state = 'signature'
+                return True, dialogue
+            moving = self._position_x != self._target_x or self._position_y != self._target_y
+            if moving and not self._is_leaving:
+                self._current_state = 'walking'
+            if moving:
+                self._facing_right = self._target_x >= self._position_x
+                frame_changed = True
             
             if self._position_x < self._target_x:
                 self._position_x = min(self._position_x + move_speed, self._target_x)
@@ -781,9 +800,9 @@ class VisitorAnimator:
                 self._position_x = max(self._position_x - move_speed, self._target_x)
             
             if self._position_y < self._target_y:
-                self._position_y += 1
+                self._position_y = min(self._position_y + move_speed * .4, self._target_y)
             elif self._position_y > self._target_y:
-                self._position_y -= 1
+                self._position_y = max(self._position_y - move_speed * .4, self._target_y)
             
             # Check if near duck
             dist_to_duck = abs(self._position_x - duck_x) + abs(self._position_y - duck_y)
@@ -795,9 +814,11 @@ class VisitorAnimator:
                 if self._position_x == self._target_x and self._position_y == self._target_y:
                     behavior = random.random()
                     
-                    if behavior < 0.4:  # 40% chance: Follow the duck
+                    social = profile['social'] if profile else .4
+                    radius = profile['radius'] if profile else 12
+                    if behavior < social:
                         # Move toward where the duck is
-                        offset_x = random.randint(-8, 8)
+                        offset_x = random.randint(-min(radius, 8), min(radius, 8))
                         offset_y = random.randint(-2, 2)
                         self._target_x = duck_x + offset_x
                         self._target_y = duck_y + offset_y
@@ -805,9 +826,9 @@ class VisitorAnimator:
                         if random.random() < 0.3:
                             self._current_state = "chatting"
                     
-                    elif behavior < 0.7:  # 30% chance: Wander around exploring
+                    elif behavior < social + (1 - social) * .7:
                         # Pick a random spot on the screen
-                        self._target_x = random.randint(5, 55)
+                        self._target_x = self._position_x + random.randint(-radius, radius)
                         self._target_y = random.randint(1, 7)
                         self._following_duck = False
                         if random.random() < 0.3:
@@ -825,12 +846,16 @@ class VisitorAnimator:
                     # Keep in screen bounds
                     self._target_x = max(2, min(self._target_x, 58))
                     self._target_y = max(0, min(self._target_y, 8))
+                    # Pause to perform the named occupation between destinations.
+                    # Energetic guests pause less; quiet guests stay and observe.
+                    self._rest_until = current_time + max(1.5, 7.0 - pace)
+                    self._current_state = 'signature'
         
         return frame_changed, dialogue
     
     def get_position(self) -> Tuple[int, int]:
         """Get current visitor position offset."""
-        return self._position_x, self._position_y
+        return round(self._position_x), round(self._position_y)
     
     def is_near_duck(self) -> bool:
         """Check if visitor is near the duck."""
@@ -1437,6 +1462,9 @@ class FriendsSystem:
             if self.on_friendship_level_up:
                 self.on_friendship_level_up(friend, old_level, new_level)
         
+        line = guest_line(friend.name, 'activity')
+        if line:
+            message += f"\n{friend.name}: {line}"
         return True, message, base_points
     
     def give_gift_to_visitor(self, item: str) -> Tuple[bool, str, int]:
@@ -1472,6 +1500,9 @@ class FriendsSystem:
         if len(friend.gifts_exchanged_history) > 10:
             friend.gifts_exchanged_history = friend.gifts_exchanged_history[-10:]
         
+        line = guest_line(friend.name, 'gift')
+        if line:
+            reaction += f"\n{friend.name}: {line}"
         return True, f"{reaction} +{points} friendship points!", points
     
     def receive_gift(self) -> Tuple[bool, str, Optional[str]]:

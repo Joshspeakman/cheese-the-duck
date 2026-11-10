@@ -70,7 +70,7 @@ app.whenReady().then(async()=>{
       a.selectTab('visitors');$('filter').value='Rare visitors';$('filter').dispatchEvent(new Event('change'));assert(document.querySelectorAll('.card').length===8,'Rare filter');
       $('filter').value='all';$('search').value='wise_owl';$('search').dispatchEvent(new Event('input'));assert(document.querySelectorAll('.card').length===1,'Search');
       a.selectTab('visitors');const first=document.querySelector('.open-card').dataset.uid;$('next').click();assert(document.querySelector('.open-card').dataset.uid!==first,'Pagination');$('prev').click();
-      a.open('visitors:wise_owl');assert($('pose').disabled,'Rare visitor should not offer invented walking');assert($('detail').open,'Detail dialog');
+      a.open('visitors:wise_owl');assert(!$('pose').disabled,'Rare visitor supports its own movement rig');assert($('detail').open,'Detail dialog');
       for(const mode of ['studio','day','dusk','night']){$('backdrop').value=mode;$('backdrop').dispatchEvent(new Event('change'));}
       a.open(a.records.find(r=>r.kind==='visitors'&&r.subtype==='Regular duck friends').uid);
       assert(!$('pose').disabled,'Friend animation controls');$('pose').value='walking';$('pose').dispatchEvent(new Event('change'));a.setTime(.7);const before=$('large').toDataURL();$('facing').click();assert(before!==$('large').toDataURL(),'Facing control');
@@ -83,7 +83,7 @@ app.whenReady().then(async()=>{
       a.selectTab('items');$('filter').value='wearables';$('filter').dispatchEvent(new Event('change'));assert($('count').textContent.startsWith('42 '),'Item / wardrobe overlap');
       a.selectTab('wearables');assert($('count').textContent.startsWith('109 '),'All fitted wearables');
       $('detail').close();a.selectTab('visitors');$('filter').value='Rare visitors';$('filter').dispatchEvent(new Event('change'));$('backdrop').value='studio';$('backdrop').dispatchEvent(new Event('change'));
-      return {counts:a.counts,renderedFrames:rendered,textOnlyEvents:textOnly,wearables:109,ages:9,checks:['all entries render','text-only events stay text-only','search','filters','pagination','detail dialog','rare guest movement labels','friend poses and facing','all-age try-on','day/dusk/night','frame scrub','offline startup']};
+      return {counts:a.counts,renderedFrames:rendered,textOnlyEvents:textOnly,wearables:109,ages:9,checks:['all entries render','text-only events stay text-only','search','filters','pagination','detail dialog','rare guest movement and signature poses','friend poses and facing','all-age try-on','day/dusk/night','frame scrub','offline startup']};
     })()`);
     if(errors.length)throw Error(errors.join('\n'));if(external.length)throw Error('Atlas attempted external requests');
     const settle=()=>win.webContents.executeJavaScript('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
@@ -94,6 +94,21 @@ app.whenReady().then(async()=>{
     await win.webContents.executeJavaScript(`window.atlas.open('wearables:santa_hat');document.getElementById('age').value='adult';document.getElementById('age').dispatchEvent(new Event('change'));`);
     await settle();
     fs.writeFileSync(path.join(out,'wearable.png'),(await win.webContents.capturePage()).toPNG());
+    const castSheets=await win.webContents.executeJavaScript(`(()=>{
+      const a=window.atlas,cast=a.records.filter(r=>r.kind==='visitors'),sheets={};
+      document.getElementById('pose').value='signature';
+      for(let page=0;page<6;page++){
+        const sheet=document.createElement('canvas');sheet.width=1600;sheet.height=1320;
+        const ctx=sheet.getContext('2d');ctx.fillStyle='#0d191c';ctx.fillRect(0,0,1600,1320);
+        for(const [n,r] of cast.slice(page*8,page*8+8).entries()){
+          const c=document.createElement('canvas');c.width=770;c.height=245;a.drawFitted(c,r,1.2,true);
+          const x=(n%2)*800+15,y=Math.floor(n/2)*330;ctx.drawImage(c,x,y);
+          ctx.fillStyle='#edc879';ctx.font='22px Menlo,monospace';ctx.fillText(r.name,x+10,y+274);
+          ctx.fillStyle='#abc7ba';ctx.font='13px Menlo,monospace';ctx.fillText(r.identity.habit,x+10,y+300,740);
+        }sheets['cast-'+page]=sheet.toDataURL();
+      }return sheets;
+    })()`);
+    for(const [name,data] of Object.entries(castSheets))fs.writeFileSync(path.join(out,name+'.png'),Buffer.from(data.split(',')[1],'base64'));
     const result={result:'PASS',build,...checks,externalRequests:external.length,bytes:fs.statSync(file).size,file,sources};
     fs.writeFileSync(path.join(out,'checks.json'),JSON.stringify(result,null,2));console.log(JSON.stringify({...result,sources:Object.keys(sources).length}));app.exit(0);
   }catch(error){console.error(error.stack||error);app.exit(1);}

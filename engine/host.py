@@ -221,6 +221,8 @@ class CanvasRenderer(Renderer):
 
 class DesktopGame(Game):
     def __init__(self, *args, **kwargs):
+        from engine.guest_motion import GuestMotion
+        self.guest_motion = GuestMotion()
         self.living_pond = None
         self._pond_duck = None
         super().__init__(*args, **kwargs)
@@ -256,6 +258,8 @@ class DesktopGame(Game):
         super()._update()
         if self.living_pond:
             self.living_pond.tick()
+        if self.duck:
+            self.guest_motion.tick(self)
 
     def _perform_interaction(self, interaction):
         if self.living_pond and self.living_pond.busy:

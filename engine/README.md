@@ -26,6 +26,36 @@ Ultra includes an animated pond title screen, an ASCII logo, an expression-only 
 
 Keyboard controls are unchanged. The title choices, hierarchical side menu, lower action bar and panel navigation controls support mouse input. Stale clicks and clicks behind confirmations are rejected on the game thread; a click uses the same Enter handler as keyboard selection. Arrow keys and Enter navigate the complete game menu. Escape goes back; T opens conversation; Page Up/Down scroll conversation history. Display controls provide fullscreen, larger text with scrolling, Vivid/Subtle/Off scene effects, a searchable item art catalog and PNG screenshots. Every dialogue string is drawn as literal glyphs.
 
+## The named guest cast (2.32.0)
+
+All 40 regular friends and eight rare visitors have individual Ultra silhouettes,
+plumage, proportions, fitted belongings, signature props and animated habits.
+Named ducks use eleven head shapes and seven body constructions in individually
+chosen combinations. Gerald, Professor Hoot, Corvus, Flutter and Grumble have
+species-specific articulated rigs; Pip, the merchant and Sir Quackington have
+their own duck designs. Rare visitors no longer use small event-sprite fallbacks.
+
+The shared cast registry in `world/guest_cast.py` contains 432 authored lines:
+greetings, returning greetings, topics, stories, personal confidences, activity
+responses, gift responses and farewells. Existing conversation trees, friendship
+gates, memories and rewards continue alongside the named voices. Run that module
+to regenerate `client/guest-cast.mjs`; body/prop art is in `guest-shapes.mjs` and
+animation is in `visitor-rig.mjs`. Cheese's approved D10 art and speech are unchanged.
+
+Friends walk at individual speeds and pause for their habits. Rare guests wander
+independently, face Cheese when acknowledged and walk away before departure.
+Click a rare guest, or open Pond journal → Friends, to say hello, ask about their
+adventures or keep them company. These use the existing friendship ledger, with
+an eight-second interaction cooldown and no repeat gift rolls. Movement staging
+is transient; friendship progress uses the original save system.
+
+Validation: `npm test`, `../.venv/bin/python check_guests.py`,
+`electron guests-visual.cjs`, the existing simulation parity/living-world checks,
+and `npm run smoke`. The guest checks use disposable saves; visual checks exercise
+all eight guest hit targets and journal actions against real simulation snapshots.
+The complete offline review atlas can be rebuilt using
+`electron designs/art-atlas/export.cjs`.
+
 ## Isolation and saves
 
 - Worktree: `/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine`

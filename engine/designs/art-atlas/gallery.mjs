@@ -6,6 +6,7 @@ import { wearableSpec, wearableCatalog } from '../../client/wearables.mjs';
 import { eventModel, EVENT_ASSETS } from '../../client/event-art.mjs';
 import { WILDLIFE } from '../../client/wildlife.mjs';
 import { sceneLight } from '../../client/scene-lighting.mjs';
+import { guestProfile } from '../../client/visitor-rig.mjs';
 import { DATA } from './data.mjs';
 
 const $=id=>document.getElementById(id), title=s=>String(s||'').replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase());
@@ -33,14 +34,20 @@ const records=[
   ...Object.entries(DATA.stories).map(([id,r])=>({...r,id,name:r.title,kind:'stories',subtype:'Living pond stories',
     description:r.scenes[0].text,representation:'Story actor',movement:'Story actor is placed beside Cheese (+14, +0); no independent path.'})),
 ];
-for(const r of records){r.uid=`${r.kind}:${r.id}`;r.search=JSON.stringify(r).toLowerCase();}
+for(const r of records){
+  if(r.kind==='visitors'){
+    r.identity=guestProfile(r);r.description=r.identity.bio;r.representation='Named character rig';
+    r.movement=`Independent movement with ${r.identity.pace<3?'unhurried':r.identity.pace>4.5?'energetic':'steady'} steps and occupation pauses. ${r.identity.habit}`;
+  }
+  r.uid=`${r.kind}:${r.id}`;r.search=JSON.stringify(r).toLowerCase();
+}
 const byUID=new Map(records.map(r=>[r.uid,r])), counts=Object.fromEntries(['visitors','events','items','wearables','sprites','stories'].map(k=>[k,records.filter(r=>r.kind===k).length]));
 const familyCounts={};for(const r of records.filter(r=>r.kind==='items'))familyCounts[r.family]=(familyCounts[r.family]||0)+1;
 const eventCounts={};for(const r of records.filter(r=>r.kind==='events'&&r.animated)){const key=eventModel({id:r.animation,family:r.animator,art:r.original},0).asset||'fallback';eventCounts[key]=(eventCounts[key]||0)+1;}
 
 function model(r,t,detail=false){
   const state=detail?$('pose').value:'idle',age=detail?$('age').value:'adult',right=detail?facing:true;
-  if(r.kind==='visitors'&&r.personality)return characterSprite({...r,state:r.subtype==='Rare visitors'?'idle':state,stage:'adult',facing:right},t,true);
+  if(r.kind==='visitors')return characterSprite({...r,state,stage:'adult',facing:right},t,true);
   if(r.kind==='wearables')return characterSprite({stage:age,state,facing:right,cosmetics:{preview:r.id}},t);
   if(r.kind==='items'){
     if(detail&&$('use').value==='worn'&&r.wearable)return characterSprite({stage:age,state,facing:right,cosmetics:{preview:r.id}},t);
@@ -127,9 +134,9 @@ function renderGrid(){
     const card=node('article',undefined,'card'),b=node('button',undefined,'open-card');b.setAttribute('aria-label',`Inspect ${r.name}`);b.dataset.uid=r.uid;
     const canvas=document.createElement('canvas');canvas.width=440;canvas.height=266;canvas.setAttribute('aria-hidden','true');
     const body=node('div',undefined,'card-text');body.append(node('h2',r.name),badge(r.kind==='items'?title(r.subtype):r.kind==='events'?r.representation:r.subtype));
-    if(r.kind==='visitors')body.append(badge(r.representation,!r.personality));
+    if(r.kind==='visitors')body.append(badge(title(r.identity.species)));
     if(r.wearable)body.append(badge('Try it on'));
-    body.append(node('p',r.kind==='items'?`${title(r.family)} design · ${familyCounts[r.family]} items share this family`:r.kind==='wearables'?`${title(r.family)} · fitted on Cheese`:r.kind==='visitors'?r.subtype==='Rare visitors'?'Fixed beside Cheese; no roaming':title(r.personality)+' · roams / follows':r.kind==='events'?title(r.source)+' · '+title(r.group):r.representation));
+    body.append(node('p',r.kind==='items'?`${title(r.family)} design · ${familyCounts[r.family]} items share this family`:r.kind==='wearables'?`${title(r.family)} · fitted on Cheese`:r.kind==='visitors'?r.identity.habit:r.kind==='events'?title(r.source)+' · '+title(r.group):r.representation));
     body.append(node('div',r.id,'id'));b.append(canvas,body);card.append(b);$('grid').append(card);b.onclick=()=>openDetail(r);observer.observe(card);card.dataset.visible='true';cards.push({r,canvas,card});drawFitted(canvas,r,time);
   }
   if(!slice.length)$('grid').append(node('div','No matches. Try another name, ID or category.','empty'));
@@ -140,23 +147,26 @@ function field(dl,label,value){if(value===undefined||value===null||value==='')re
 function fold(parent,label,value){if(!value)return;const d=node('details'),pre=node('pre',typeof value==='string'?value:JSON.stringify(value,null,2));d.append(node('summary',label),pre);parent.append(d);return d;}
 function openDetail(r){
   selected=r;$('pose').value='idle';$('use').value='idle';facing=true;$('facing').textContent='Face left';
-  const duck=Boolean(r.personality)||r.kind==='wearables',wearable=Boolean(r.wearable);$('pose').disabled=!duck||r.subtype==='Rare visitors';$('facing').disabled=!duck;$('use-label').hidden=r.kind!=='items';$('use').options[2].disabled=!wearable;
+  const duck=r.kind==='visitors'||r.kind==='wearables',wearable=Boolean(r.wearable);$('pose').disabled=!duck;$('facing').disabled=!duck;$('use-label').hidden=r.kind!=='items';$('use').options[2].disabled=!wearable;
+  for(const option of $('pose').options)option.disabled=r.kind==='visitors'&&!['duck','duckling'].includes(r.identity.species)&&['swimming','preening','dancing','eating'].includes(option.value);
   $('detail-title').textContent=r.name;$('detail-id').textContent=r.uid;
   const info=$('info');info.replaceChildren();info.append(badge(r.representation,r.kind==='events'&&r.animated===false),node('p',r.description||'Current production artwork.'));
-  const dl=node('dl'),m=model(r,0,true);field(dl,'Artwork',r.kind==='items'?`${r.family} family (${familyCounts[r.family]} catalog entries)`:r.kind==='wearables'?`${r.family} fitted to the D10 rig`:r.personality?`${title(r.personality)} D10 visitor rig`:m?m.asset||r.asset:'No separate sprite');
+  const dl=node('dl'),m=model(r,0,true);field(dl,'Artwork',r.kind==='items'?`${r.family} family (${familyCounts[r.family]} catalog entries)`:r.kind==='wearables'?`${r.family} fitted to the D10 rig`:r.kind==='visitors'?`${title(r.identity.species)} · ${r.identity.shape} silhouette · ${title(r.identity.prop)}`:m?m.asset||r.asset:'No separate sprite');
   if(r.kind==='events'&&m)field(dl,'Shared artwork',`${eventCounts[m.asset||'fallback']} event records resolve to this asset (${m.asset||'fallback'})`);
   field(dl,'Movement',r.movement||(r.kind==='events'&&r.animated?`${r.animator}. This view previews the sprite, not its path or particle emitter.`:undefined));
-  if(r.kind==='visitors')field(dl,'Live pose',r.subtype==='Rare visitors'?'Always idle; local sprite frames may blink or bob.':'The friend animator chooses the live pose. Use the pose menu to inspect supported rig animations.');
+  if(r.kind==='visitors'){field(dl,'Signature habit',r.identity.habit);field(dl,'Live pose','Movement and interaction choose the live pose. Select Signature habit to see the occupation loop.');}
   if(r.kind==='items'){const p=itemProfile(r,r.family);field(dl,'Interaction',`${p.verb} · ${p.kind} · ${p.material}`);field(dl,'Rarity / sources',`${r.rarity} / ${(r.sources||[]).join(', ')}`);if(r.wearable)field(dl,'Fitted wearable',`${r.wearable.slot} · ${r.wearable.family}`);}
   if(r.kind==='wearables'){field(dl,'Attachment / animation',`${r.wearable.slot} · ${r.wearable.motion}`);field(dl,'Catalog overlap',catalog.some(i=>i.id===r.id)?'Also listed in Items; this view shows its fitted appearance.':'Wardrobe-only definition, outside the main item catalog.');}
   field(dl,'Animation recipe',r.animator);field(dl,'Source',r.source||r.subtype);info.append(dl);
-  if(r.greeting)info.append(node('div','Greeting','section-label'),node('p',r.greeting,'quote'));
+  if(r.identity)info.append(node('div','In their own words','section-label'),node('p',r.identity.voice.greeting,'quote'),node('p',r.identity.voice.main,'quote'));
+  else if(r.greeting)info.append(node('div','Greeting','section-label'),node('p',r.greeting,'quote'));
+  if(r.identity)fold(info,'Named voice, stories and friendship dialogue',r.identity.voice);
   if(r.kind==='stories')for(const [i,s] of r.scenes.entries()){
     const d=node('details');d.append(node('summary',`Scene ${i+1}`),node('p',s.text,'quote'));
     for(const choice of s.choices)d.append(node('p',choice.label),node('p',choice.reply,'quote'));info.append(d);
   }
   fold(info,'Original / legacy artwork',r.original);const frame=fold(info,'Current ASCII frame (copyable)',m?.art.join('\n'));if(frame)frame.querySelector('pre').id='current-frame';
-  if(r.kind==='visitors'&&r.subtype==='Rare visitors')fold(info,'All current visitor dialogue',{greeting:r.greeting,farewell:r.farewell,conversations:r.conversations,return_greetings:r.return_greetings,friend_greetings:r.friend_greetings,best_friend_greetings:r.best_friend_greetings,secrets:r.secrets});
+  if(r.kind==='visitors'&&r.subtype==='Rare visitors')fold(info,'Additional original dialogue & friendship secrets',{greeting:r.greeting,farewell:r.farewell,conversations:r.conversations,return_greetings:r.return_greetings,friend_greetings:r.friend_greetings,best_friend_greetings:r.best_friend_greetings,secrets:r.secrets});
   fold(info,'Definition / metadata',r.definition||(r.kind==='items'?catalog.find(i=>i.id===r.id):r.kind==='wearables'?r.wearable:r.kind==='stories'?DATA.stories[r.id]:undefined));
   info.append(node('div','Review notes','section-label'));const note=node('textarea',undefined,'review');note.id='review-note';note.setAttribute('aria-label','Review notes for '+r.name);note.placeholder='What should change about this artwork?';note.value=notes[r.uid]?.text||'';
   const status=node('p','Notes are only for this atlas; they do not change the game.','note');

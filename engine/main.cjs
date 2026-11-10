@@ -201,7 +201,7 @@ async function smoke() {
 app.whenReady().then(async () => {
   win = new BrowserWindow({ title: 'Cheese the Duck - ASCII Engine', width: 1500, height: 1020,
     minWidth: 920, minHeight: 640, backgroundColor: '#101b19',
-    webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, sandbox: true } });
+    webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, sandbox: true, backgroundThrottling: !SMOKE } });
   if (SMOKE) win.webContents.on('console-message', ({ level, message, lineNumber, sourceId }) =>
     console.error('Renderer console:', JSON.stringify({ level, message, lineNumber, sourceId })));
   Menu.setApplicationMenu(Menu.buildFromTemplate([{ role: 'appMenu' }, { role: 'editMenu' }, { label: 'View', submenu: [{ role: 'togglefullscreen' }] }]));

@@ -20,10 +20,13 @@ Current shared item families and shared event assets are labeled explicitly.
 The wardrobe overlaps the item catalog by 42 IDs; 67 wardrobe definitions live
 outside that catalog and appear in the separate Wearables section.
 
-Rare visitors currently remain at a fixed offset from Cheese. Six use the event
-renderer; the merchant and celebrity use the visitor duck rig. Regular friends
-use the friend movement animator. The atlas preserves these distinctions and
-previews only sprite animation, not scene trajectories or particle emitters.
+All 48 visitors have named Ultra character rigs, including all eight rare guests.
+The atlas shows each guest's silhouette, palette, fitted belongings, signature
+gesture, biography and nine authored dialogue lines. The Signature habit pose
+previews their occupation. Six contact sheets (`cast-0.png` through `cast-5.png`)
+accompany the HTML. In the game, regular friends use the friend animator and rare
+guests have independent wandering, pauses, attention reactions and departures.
+The atlas previews sprite animation, not scene trajectories or particle emitters.
 The detail view includes a game-scale comparison, all nine ages for wearable
 try-on, original ASCII references, current dialogue and exportable review notes.
 
@@ -31,3 +34,5 @@ The atlas is a snapshot of the source at export time. It makes no gameplay edits
 Keep `pond-cast/catalog.mjs` synchronized with the underlying registries when
 adding/removing definitions; the exporter reads event flags, rare visitors and
 stories directly from their Python definitions each time.
+`world/guest_cast.py` owns the named identities; run it to regenerate the shared
+`engine/client/guest-cast.mjs` module after editing names, art direction or voices.
