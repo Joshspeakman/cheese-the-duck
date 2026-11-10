@@ -2,16 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { characterSprite } from '../client/ultra-characters.mjs';
 import { STAGES,ACTIONS,scruffySprite } from '../client/scruffy-sprites.mjs';
+import {DUCK_AGES,duckRig} from '../client/duck-rig.mjs';
 import { mirror } from '../client/ultra-art.mjs';
 import { LivingWorld } from '../client/ultra-world.mjs';
 import { scene } from './scenes.mjs';
 
-test('live Cheese uses approved Bedhead Bandit art at every canonical age',()=>{
+test('live Cheese uses approved compact D10 art at every canonical age',()=>{
   const distinct=new Set();
   for(const stage of STAGES){
     const live=characterSprite({stage:stage.id,state:'idle'},0);
-    assert.deepEqual(live.art,scruffySprite('B',stage.id,'idle',0).art,stage.id);
-    assert.equal(live.design,'bedhead-bandit');assert.equal(live.groundRow,21.5);
+    assert.deepEqual(live.art,duckRig({stage:stage.id,state:'idle'},0).art,stage.id);
+    assert.equal(live.design,'d10');assert.equal(live.groundRow,39.5);
     distinct.add(live.art.join('\n'));
   }
   assert.equal(distinct.size,9);
@@ -27,7 +28,7 @@ test('real care, movement and custom states drive the selected animation cycles'
   assert.notDeepEqual(characterSprite({state:'waddle_fast'},.3).art,characterSprite({state:'walking'},.3).art);
   assert.notDeepEqual(characterSprite({state:'diving'},.7).art,characterSprite({state:'swimming'},.7).art);
 });
-test('mood, love and cosmetics stay visible on the moving Bedhead character',()=>{
+test('mood, love and cosmetics stay visible on the moving D10 character',()=>{
   const base={stage:'adult',state:'idle'},neutral=characterSprite(base,0).art;
   for(const mood of ['happy','sad','miserable','dramatic'])assert.notDeepEqual(characterSprite({...base,mood},0).art,neutral,mood);
   assert.ok(characterSprite({...base,state:'petting'},0).art.join('').includes('<3'));

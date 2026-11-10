@@ -1,5 +1,5 @@
-import { visitorDrawing } from './character-art.mjs';
-import { bedheadDrawing } from './bedhead-character.mjs';
+import { duckRig } from './duck-rig.mjs';
+import { visitorRig } from './visitor-rig.mjs';
 
 // Original idle sprites used as the expression/accessory reference in previews.
 // Live snapshots supply the original animated pose to the expanded drawings.
@@ -24,11 +24,9 @@ const COLORS = {
   athletic:['#c5a480','#f1d8b8','#f4b777'],
 };
 export function characterSprite(duck,time,visitor=false) {
-  const model=visitor?visitorDrawing(duck,time):bedheadDrawing(duck,time);
-  const [body,face,accent]=visitor?COLORS[duck.personality]||COLORS.adventurous:
-    [model.body,model.face,model.accent];
+  const model=visitor?visitorRig(duck,time):duckRig(duck,time);
   return {...model,width:Math.max(1,...model.art.map(row=>row.length)),
-    name:visitor?duck.name||'Friend':'',body,face,accent,shade:visitor?'#9da8a6':model.shade,visitor};
+    name:visitor?duck.name||'Friend':'',visitor};
 }
 
 export function drawCharacter(ctx,sprite,sx,sy,background) {
@@ -37,11 +35,11 @@ export function drawCharacter(ctx,sprite,sx,sy,background) {
   const left=Math.round(sprite.x*sx-(sprite.anchorX??width/2)*cw+(sprite.offsetX||0)*cw);
   const top=Math.round(sprite.y*sy-(sprite.groundRow??art.length)*ch+(sprite.offsetY||0)*cw);
   ctx.save();
-  ctx.font=`bold ${ch}px Menlo, monospace`;
+  ctx.font=`600 ${ch}px Menlo, monospace`;
   ctx.textBaseline='middle';ctx.textAlign='center';ctx.lineJoin='round';
   // A quiet silhouette and a narrow outline keep tiny scenery/weather glyphs
   // out of the face. Blank space stays blank: no feather stippling or hatching.
-  for(let row=0;row<art.length;row++){
+  for(let row=0;!sprite.fills&&row<art.length;row++){
     const line=art[row],start=line.search(/\S/),end=line.trimEnd().length;
     if(start<0)continue;
     if(sprite.backdrop){
@@ -50,17 +48,25 @@ export function drawCharacter(ctx,sprite,sx,sy,background) {
       ctx.fillStyle=background;ctx.fillRect(left+start*cw-cw*.08,top+row*ch+ch*.1,(end-start+.16)*cw,ch*.85);
     }
   }
+  // Colored feather interiors make the compact silhouette read at world scale.
+  // Sunlight changes the material gently; the ASCII detail keeps its contrast.
+  const shade=(hex,f)=>'#'+hex.slice(1,7).match(/../g).map(v=>Math.round(parseInt(v,16)*f).toString(16).padStart(2,'0')).join('');
+  for(const fill of sprite.fills||[]){
+    ctx.fillStyle=shade(sprite.inks[fill.tone]||sprite.body,(.50+.14*(1-fill.y/art.length))*(.62+.38*(sprite.sun??.7)));
+    ctx.fillRect(left+fill.x*cw,top+fill.y*ch,fill.w*cw,ch+.25);
+  }
   for(let row=0;row<art.length;row++)for(let col=0;col<art[row].length;col++){
     const char=art[row][col];if(char===' ')continue;
     const px=left+(col+.5)*cw,py=top+(row+.5)*ch;
-    ctx.strokeStyle=sprite.outline||background;ctx.lineWidth=Math.max(2,cw*.17);
+    ctx.strokeStyle=sprite.outline||background;ctx.lineWidth=sprite.material==='feathers'?Math.max(.5,cw*.13):Math.max(1,cw*.17);
     ctx.strokeText(char,px,py,cw*1.12);
     const tone=sprite.tones?.[row]?.[col];
     ctx.fillStyle=sprite.inks?.[tone]||(tone==='c'?sprite.cosmetic||sprite.accent:tone==='a'?sprite.accent:tone==='f'?sprite.face:tone==='s'?sprite.shade:tone==='w'?'#8dc6cc':sprite.body);
     ctx.fillText(char,px,py,cw*1.12);
+    if(tone==='e'&&char==='O'){ctx.font=`600 ${ch*.5}px Menlo,monospace`;ctx.fillStyle='#f3f1da';ctx.fillText('.',px-cw*.1,py-ch*.16);ctx.font=`600 ${ch}px Menlo,monospace`;}
   }
   if(sprite.name){
-    const size=Math.max(cw*.95,sx*1.6),cy=top-size*.9;
+    const size=Math.max(cw*.95,sx*1.6),cy=top+Math.max(0,art.findIndex(r=>r.trim()))*ch-size*.9;
     ctx.font=`bold ${size}px Menlo, monospace`;
     const nameWidth=ctx.measureText(sprite.name).width;
     ctx.fillStyle=background;ctx.fillRect(sprite.x*sx-nameWidth/2-4,cy-size*.6,nameWidth+8,size*1.2);

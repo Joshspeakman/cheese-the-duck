@@ -1,0 +1,67 @@
+{
+  "objective": "End-to-end living-world overhaul, retaining the original content, uncensored dialogue, Classic graphics, saves, and isolated branch",
+  "approved_character": "D10, all nine ages approved",
+  "stages": [
+    {
+      "name": "Cast, visitors and all event visuals",
+      "status": "complete",
+      "inventory": {
+        "named_friends": 40,
+        "personalities": 8,
+        "event_sprite_assets": 131,
+        "event_records": 774,
+        "animator_families": 40
+      }
+    },
+    {
+      "name": "Detailed item art, physical interactions and per-item state",
+      "status": "complete"
+    },
+    {
+      "name": "Persistent autonomous lives, memories, relationships and meaningful player agency",
+      "status": "complete"
+    },
+    {
+      "name": "Connected weather, ecology, habitat, economy, skills, exploration, crafting and projects",
+      "status": "complete"
+    },
+    {
+      "name": "Integrated interface, save migration, regression and long-run simulation tests",
+      "status": "complete"
+    },
+    {
+      "name": "Signed build, save backup, desktop installation and verification",
+      "status": "verified; installation pending"
+    }
+  ],
+  "constraints": [
+    "Keep original repository untouched",
+    "No sub-agents authorized",
+    "Do not censor dialogue",
+    "Keep Classic available",
+    "No changes to real saves during tests",
+    "No final handoff until installed and tested"
+  ],
+  "evidence": {
+    "items": 542,
+    "wearables": 109,
+    "approved_ages": 9,
+    "visitor_personalities": 8,
+    "event_records": 774,
+    "animation_recipes": 737,
+    "original_event_assets": 131,
+    "authored_wildlife_humans_vehicles": 60,
+    "branching_stories": 8,
+    "project_stages": 18,
+    "practice_skills": 13,
+    "journal_sections": 8,
+    "simulation_checks": 639,
+    "long_run_hours": 72,
+    "original_gameplay_checks": 76,
+    "python_regression_tests": 20,
+    "javascript_tests": 39,
+    "packaged_audio_smoke": "PASS",
+    "visual_harness": "PASS",
+    "ad_hoc_signature": "verified"
+  }
+}

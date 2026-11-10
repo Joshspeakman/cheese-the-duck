@@ -421,7 +421,7 @@ class FishingMinigame:
         self.animation_frame = (self.animation_frame + 1) % 4
         
         if self.waiting_for_bite:
-            self.bite_timer -= delta_time
+            self.bite_timer -= delta_time * getattr(self, 'habitat_activity', 1.0)
             
             if self.bite_timer <= 0:
                 # A fish bites!

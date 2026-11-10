@@ -77,6 +77,7 @@ ipcMain.on('engine:ready', () => {
 ipcMain.on('engine:ack', () => { awaitingFrame = false; if (queued) { const frame = queued; queued = null; deliver(frame); } });
 ipcMain.on('engine:input', (_e, command) => {
   if (!command || closing) return;
+  if (command.type === 'pond' && typeof command.action === 'string' && command.action.length < 32 && (!command.target || typeof command.target === 'string' && command.target.length <= 128)) input({type:'pond',action:command.action,target:command.target||''});
   if (command.type === 'action' && typeof command.action === 'string' && command.action.length < 32) input(command);
   if (command.type === 'key' && typeof command.key === 'string' && command.key.length < 32) input(command);
   if (command.type === 'text' && typeof command.text === 'string') input({ type: 'text', text: command.text.slice(0, 1000) });
@@ -165,6 +166,18 @@ async function smoke() {
   if (await win.webContents.executeJavaScript("window.engineStats?.mode") !== 'classic') throw new Error('Classic preference did not survive reload');
   await win.webContents.executeJavaScript("document.getElementById('graphics').click()");
   await pause(300);
+  // New journal -> preload -> host -> persistent decision policy.
+  await win.webContents.executeJavaScript(`(() => {
+    document.getElementById('pond').click();
+    const dialog=document.getElementById('pond-journal');
+    if(!dialog.open)throw Error('Pond journal did not open');
+    dialog.querySelector('[data-tab=mind]').click();
+    const button=[...dialog.querySelectorAll('button')].find(b=>b.textContent==='curious');
+    if(!button)throw Error('Missing autonomy preference');button.click();
+  })()`);
+  await waitFor(()=>latest?.scene?.living?.policy==='curious','journal changes the real simulation');
+  fs.writeFileSync(path.join(out,'living-journal.png'),(await win.webContents.capturePage()).toPNG());
+  await win.webContents.executeJavaScript("document.getElementById('pond-journal').close()");
   // Exercise the actual DOM toolbar -> preload -> IPC -> simulation path.
   for (const index of [11, 12, 7, 12, 5]) {
     await win.webContents.executeJavaScript(`document.querySelectorAll('#actions button')[${index}].click()`);
@@ -181,7 +194,8 @@ async function smoke() {
   if (!stats || stats.frames < 10) throw new Error('Canvas did not draw enough frames');
   input({ type: 'shutdown' }); await waitFor(() => !child, 'graceful shutdown');
   if (simulationExit?.code !== 0 || simulationExit?.signal) throw new Error(`Simulation shutdown failed: ${JSON.stringify(simulationExit)}\n${errorTail}`);
-  JSON.parse(fs.readFileSync(path.join(runtime, 'saves', 'save.json'), 'utf8'));
+  const saved = JSON.parse(fs.readFileSync(path.join(runtime, 'saves', 'save.json'), 'utf8'));
+  if(saved.living_pond?.policy!=='curious')throw Error('Living pond state was not saved');
   console.log(JSON.stringify({ result: 'PASS', stats, runtime, out }));
 }
 app.whenReady().then(async () => {

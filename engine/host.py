@@ -76,6 +76,10 @@ class DesktopInput(Terminal):
             if self.game:
                 self.game.renderer.dismiss_celebration()
                 if isinstance(key, dict):
+                    if key.get('type') == 'pond':
+                        if self.game._state == 'playing' and self.game.living_pond and not (self.game._confirmation_dialog and self.game._confirmation_dialog.is_open):
+                            self.game.living_pond.command(key)
+                        return Key()
                     if key.get('type') == 'choose':
                         return self.choose(key)
                     if self.game._state == 'playing' and not (self.game._confirmation_dialog and self.game._confirmation_dialog.is_open):
@@ -118,6 +122,8 @@ class DesktopInput(Terminal):
                         key = command.get('key', '')
                         if key in KEYS: self.commands.put_nowait(Key(*KEYS[key]))
                         elif isinstance(key, str) and len(key) == 1: self.commands.put_nowait(Key(key))
+                    elif kind == 'pond' and isinstance(command.get('action'), str):
+                        self.commands.put_nowait(command)
                     elif kind == 'action' and command.get('action') in ACTIONS:
                         self.commands.put_nowait({'action': command['action']})
                     elif kind == 'choose' and command.get('target') in ('title', 'menu'):
@@ -214,6 +220,72 @@ class CanvasRenderer(Renderer):
               'ui': interface_snapshot(game, self) if game else None})
 
 class DesktopGame(Game):
+    def __init__(self, *args, **kwargs):
+        self.living_pond = None
+        self._pond_duck = None
+        super().__init__(*args, **kwargs)
+
+    def _restore_living_pond(self, data):
+        from engine.living_world import LivingPond
+        self.living_pond = LivingPond(data)
+        self._pond_duck = None
+
+    def _ensure_living_pond(self, offline=False):
+        if not self.duck:
+            return
+        if self.living_pond is None:
+            from engine.living_world import LivingPond, stable
+            self.living_pond = LivingPond(seed=stable(self.duck.created_at))
+        if self._pond_duck is not self.duck:
+            self.living_pond.attach(self, offline=offline)
+            self._pond_duck = self.duck
+
+    def _start_new_game(self):
+        self.living_pond = None
+        self._pond_duck = None
+        super()._start_new_game()
+        self._ensure_living_pond()
+        self._save_game()
+
+    def _load_game(self):
+        super()._load_game()
+        self._ensure_living_pond(offline=True)
+
+    def _update(self):
+        self._ensure_living_pond()
+        super()._update()
+        if self.living_pond:
+            self.living_pond.tick()
+
+    def _perform_interaction(self, interaction):
+        if self.living_pond and self.living_pond.busy:
+            self.living_pond.cancel()
+        super()._perform_interaction(interaction)
+        if self.living_pond and self.duck and self.duck.growth_stage != 'egg':
+            self.living_pond.remember('care', 'You made time to '+interaction+' with Cheese.', .55)
+
+    def _on_interaction_effects_applied(self, item_id, result):
+        super()._on_interaction_effects_applied(item_id, result)
+        if self.living_pond and result:
+            self.living_pond.sync()
+            obj = self.living_pond.state['objects'].get(item_id)
+            if obj:
+                obj['uses'] += 1
+                obj['bond'] = min(1, obj['bond'] + .02)
+                obj['last_use'] = self.living_pond.state['elapsed']
+
+    def _generate_talk_response(self, message):
+        # Snapshot context on the simulation thread before the asynchronous chat
+        # request; the response worker never reads or mutates pond state.
+        memory = getattr(self, '_pond_chat_context', '')
+        if self.conversation and self.conversation.needs_memory_context():
+            memory = self._get_memory_context_for_dialogue() + memory
+        return self.conversation.process_player_input(self.duck, message, True, memory)
+
+    def _process_talk(self, *args, **kwargs):
+        self._pond_chat_context = self.living_pond.dialogue_context() if self.living_pond else ''
+        return super()._process_talk(*args, **kwargs)
+
     def _check_for_updates_async(self):
         # A source updater must not replace this separate engine branch.
         self._title_update_status = 'ASCII Engine edition - updates stay on this branch.'

@@ -1,3 +1,4 @@
+import { eventModel } from './event-art.mjs';
 import { sceneLight } from './scene-lighting.mjs';
 import { Grid,W,H,C,M,hash,seedOf,clamp,lerp,palette } from './ultra-grid.mjs';
 import { NEST,DOCK,CABIN,RUIN,BOAT,LANTERN,MUSHROOM,CRYSTAL,FLOWERS,BENCH,WELL,ARCH,CLOCKTOWER,MILL } from './ultra-art.mjs';
@@ -295,16 +296,36 @@ export class LivingWorld {
     for(const item of [...(s.structures||[]),...(s.items||[])]){
       const [x,y]=this.project(s,item.x,item.y);
       actors.push({y,draw:()=>{
-        this.objects.push({...itemSprite(item.id,t,{motion:s.motion!==false,originalArt:item.art}),item:true,x,y,scale:itemWorldScale(item.id)});
+        this.objects.push({...itemSprite(item.id,t,{motion:s.motion!==false,originalArt:item.art,state:s.living?.objects?.[item.id],interaction:s.living?.plan?.target===item.id?s.living.plan:null}),item:true,x,y,scale:itemWorldScale(item.id)});
       }});
     }
-    if(s.visitor){const [x,y]=this.project(s,s.visitor.x,s.visitor.y);actors.push({y,draw:()=>this.actor(s,t+2,x,y,{...s.visitor,stage:'adult',state:'idle',facing:false},true)});}
+    if(s.visitor){const [x,y]=this.project(s,s.visitor.x,s.visitor.y);actors.push({y,draw:()=>this.actor(s,t+2,x,y,{stage:'adult',state:'idle',facing:false,...s.visitor},true)});}
+    for(const event of s.events||[]){
+      const [x,y]=this.project(s,event.x,event.y);
+      if(event.art?.length)this.characters.push({...eventModel(event,t,s.motion!==false),x,y});
+      for(const [px,py,char] of event.particles||[]){const [xx,yy]=this.project(s,px,py);g.put(xx,yy,/[\x20-\x7e]/.test(char)?char:'*',C.goldLight);}
+    }
+    if(s.rareVisitor){const visitor=s.rareVisitor,[x,y]=this.project(s,visitor.x,visitor.y);this.characters.push({...visitor.personality?characterSprite({...visitor,stage:'adult',state:'idle'},t,true):eventModel(visitor,t,s.motion!==false),x,y,name:visitor.name});}
+    const living=s.living;
+    if(living&&s.location==='Home Pond'){
+      const species=living.ecology.insects>.6?'dragonfly':living.ecology.birds>.55?'robin':living.ecology.fish>.65?'fish':null;
+      if(species){const x=30+Math.sin(t*.1)*8,y=species==='fish'?78:68;this.characters.push({...eventModel({id:species,asset:species},t,s.motion!==false),x,y,scale:.55});}
+      const scenery={reed_beds:['reed',56,79],orchard:['tree_oak',197,71],observatory:['telescope',193,54],clubhouse:['wooden_cottage',208,86],workshop:['workbench',27,84],trail:['bridge',122,80]};
+      for(const project of living.projects||[]){if(!project.stage)continue;const [id,x,y]=scenery[project.id];this.objects.push({...itemSprite(id,t,{motion:s.motion!==false,state:{active:project.stage===3}}),item:true,x,y,scale:.8,floor:false,project:project.id});if(project.stage<3)g.art(x-5,y+1,['[ '+project.stage+' / 3 ]'],C.woodLight);}
+      for(const plot of living.garden||[]){const x=30+plot.id*22,y=88;g.art(x-6,y,['.------------.','/ : . : . : /',"'----------'"],C.woodLight);if(plot.plant)this.objects.push({...itemSprite(plot.plant,t,{motion:s.motion!==false,state:{wetness:plot.water,growth:plot.health}}),item:true,x,y:y-1,scale:/seed|sprout/.test(plot.stage)?.35:.65});}
+      if(living.story){const [x,y]=this.project(s,s.duck.x+14,s.duck.y);this.characters.push({...eventModel({id:living.story.id,asset:living.story.asset},t,s.motion!==false),x,y});g.put(x,y-13,'!',C.goldLight);}
+    }
     const target=this.project(s,s.duck.x,s.duck.y);
     if(s.motion===false||!this.duckPosition||s.location!==this.lastLocation)this.duckPosition=target;
     else this.duckPosition=this.duckPosition.map((v,i)=>lerp(v,target[i],clamp(dt*12,0,1)));
     const [x,y]=this.duckPosition;
     let state=s.duck.state;
+    const plan=s.living?.plan;
+    if(plan&&!plan.paused&&plan.phase==='act'){const poses={rest:'sleeping',forage:'eating',practice:'dancing',restore:'preening',garden:'preening',observe:'idle',project:'preening',share:'quacking'};state=poses[plan.kind]||state;}
     if(Math.abs(x-target[0])+Math.abs(y-target[1])>.7&&state==='idle')state='walking';
+    if(plan&&!plan.paused&&plan.phase==='act'&&plan.kind==='item'&&!(s.items||[]).some(i=>i.id===plan.target)){
+      this.objects.push({...itemSprite(plan.target,t,{motion:s.motion!==false,state:s.living.objects[plan.target],interaction:plan}),item:true,x:x+7,y,scale:.65});
+    }
     actors.push({y,draw:()=>this.actor(s,t,x,y,{...s.duck,state})});
     actors.sort((a,b)=>a.y-b.y).forEach(a=>a.draw());
     if(s.interaction){const [ix,iy]=this.project(s,s.interaction.x,s.interaction.y);g.art(ix-6,iy-s.interaction.art.length,s.interaction.art,C.goldLight);}

@@ -135,7 +135,7 @@ export function fitWearables(rig,cosmetics={},time=0){
    case 'sweater':case 'shirt':case 'tuxedo':case 'robe':case 'santa_suit':case 'raincoat':case 'coat':case 'pumpkin':case 'ghost':case 'elf':{
     const width=Math.max(5,b.w-1),inner=width-2;
     let motif={sweater:p<2?'v':'^',shirt:p<2?'*':'+',tuxedo:' ',robe:p<2?'.':'*',santa_suit:'=',raincoat:p<2?':':"'",coat:p<2?'=':'-',pumpkin:p<2?'v':'V',ghost:' ',elf:p<2?'v':'^'}[item.family];
-    const rows=['/'+fill('_',inner)+'\\','('+fill(motif,inner)+')',"'"+fill(item.family==='ghost'?(p<2?'~':'v'):'_',inner)+"'"];
+    const rows=['/'+fill('_',inner)+'\\',...Array.from({length:Math.max(1,b.h-2)},(_,j)=>'('+Array.from({length:inner},(_,x)=>x%5===0?'|':(x+j)%3===0?motif:'.').join('')+')'),"'"+fill(item.family==='ghost'?(p<2?'~':'v'):'_',inner)+"'"];
     if(item.family==='tuxedo')rows[1]='('+fill(' ',Math.max(0,Math.floor(inner/2)-1))+'V'+fill(' ',Math.max(0,inner-Math.floor(inner/2)))+')';
     add(rows.slice(0,b.h),b.x+1,b.y,{clear:true,protectHead:true});
     add(item.family==='pumpkin'?'o_o':item.family==='santa_suit'?'[+]':item.family==='tuxedo'?':':'o',b.x+Math.floor(width/2),b.y+1,{tone:trim,protectHead:true});break;
@@ -178,7 +178,7 @@ export function paintWearables(cells,tones,rig,plan){
    const x=layer.x+col,y=layer.y+row;
    if(char===' '&&!layer.clear)continue;
    if(x<0||x>=W||y<0||y>=H){if(char!==' ')clipped=true;continue;}
-   if(layer.protectHead&&inside(x,y,rig.faceBounds||rig.head))continue;
+   if((layer.protectHead||plan.items.find(i=>i.id===layer.id)?.slot==='neck')&&inside(x,y,rig.faceBounds||rig.head))continue;
    if(layer.rear&&(inside(x,y,rig.body)||inside(x,y,rig.faceBounds||rig.head)||cells[y][x]!==' '))continue;
    cells[y][x]=char;tones[y][x]=layer.tone;
   }

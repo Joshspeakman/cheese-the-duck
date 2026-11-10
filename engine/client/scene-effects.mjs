@@ -70,6 +70,17 @@ export class SceneEffects {
       ctx.globalAlpha=(.16+.34*(.5+.5*Math.sin(t*1.4+i)))*strength;
       ctx.fillText(night?(i%4?'*':'+'):/fall|autumn/.test(scene.season)?"'":'.',x*sx,y*sy);
     }
+    const eco=scene.living?.ecology;
+    if(eco&&scene.weatherEffects!==false){
+      // Accumulated wetness/snow/ice persists after the weather itself passes.
+      for(let i=0;i<90;i++){
+        const x=Math.floor(hash(i,81)*W),y=Math.floor(60+hash(i,82)*46),water=world.water[y*W+x];
+        if(water&&eco.ice>.08){ctx.fillStyle='#bddbe1';ctx.globalAlpha=eco.ice*.5;ctx.fillText(i%2?'_/_':'--+',x*sx,y*sy);}
+        else if(!water&&eco.snow>.08){ctx.fillStyle='#d6e0d8';ctx.globalAlpha=eco.snow*.7;ctx.fillText(i%3?'_.._':'*',x*sx,y*sy);}
+        else if(!water&&eco.wetness>.35&&hash(i,83)<eco.wetness*.3){ctx.fillStyle='#8fc1c4';ctx.globalAlpha=.22;ctx.fillText('~._.~',x*sx,y*sy);}
+      }
+      if(eco.wind>.25)for(let i=0;i<18;i++){const x=(hash(i,85)*W+t*eco.wind*13)%W,y=48+hash(i,86)*50;ctx.globalAlpha=.25*strength;ctx.fillStyle='#d0bb81';ctx.fillText(i%2?"'":'~',x*sx,y*sy);}
+    }
     // A short wake keeps Cheese grounded in water without hiding his silhouette.
     const duck=world.duckPosition;
     if(duck&&!scene.duck.hidden&&!scene.duck.away&&/swim|splash|float/.test(scene.duck.state||'')){

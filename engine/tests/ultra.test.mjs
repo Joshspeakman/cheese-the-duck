@@ -57,24 +57,24 @@ test('placed objects and visitors remain tied to simulation coordinates',()=>{
 
 test('enhanced drawings retain original faces and accessories with more contour detail',()=>{
  const body=characterSprite(scene().duck,1);
- assert.ok(body.art.length>=7);assert.ok(body.width>=12);assert.ok(body.scale>1);
- assert.equal(body.design,'bedhead-bandit');assert.ok(body.art.join('').includes('>'));
+ assert.ok(body.art.length>=7);assert.ok(body.width>=12);assert.ok(body.scale<1&&body.scale>.4);
+ assert.equal(body.design,'d10');assert.ok(body.art.join('').includes('>'));
  const faces=new Set();
  for(const [personality,art] of Object.entries(VISITOR_ART)){
   const sprite=characterSprite({name:personality,personality,art},1,true);
-  assert.ok(sprite.art.length>art.length);assert.ok(sprite.scale>1);
+  assert.ok(sprite.art.length>art.length);assert.ok(sprite.scale<1&&sprite.scale>.4);
   assert.ok(sprite.art.every((row,i)=>row.length===sprite.tones[i].length));
   faces.add(sprite.art.join('\n'));
  }
  assert.equal(faces.size,8);
  const scholar=characterSprite({personality:'scholarly',art:VISITOR_ART.scholarly},1,true);
- assert.ok(scholar.art.some(row=>row.includes('[O]-[O]')),'scholar keeps glasses');
+ assert.ok(scholar.wearables.includes('glasses_nerd'),'scholar keeps fitted glasses');
  const mystery=characterSprite({personality:'mysterious',art:VISITOR_ART.mysterious},1,true);
- assert.ok(mystery.art.some(row=>row.includes('? _ ?')),'masked eyes stay recognizable');
- const gift=characterSprite({personality:'generous',art:['(o.o)[#]']},1,true);
- assert.ok(gift.art.some(row=>row.includes('#')),'gift action retains its prop');
- const happy=characterSprite({personality:'adventurous',art:['(^.^)']},1,true);
- assert.ok(happy.art.some(row=>row.includes('^ . ^')),'original expression drives the redraw');
+ assert.ok(mystery.wearables.includes('masquerade_mask'),'mystery keeps fitted mask');
+ const gift=characterSprite({personality:'generous',state:'giving_gift'},1,true);
+ assert.ok(gift.art.some(row=>row.includes('|+ +|')),'gift action retains its prop');
+ const happy=characterSprite({personality:'adventurous',mood:'happy'},1,true);
+ assert.equal(happy.rig.eye.char,'^','visitor mood drives expression');
 });
 test('enhanced character animation includes wing, step, swim and prop frames',()=>{
  for(const state of ['walking','dancing','flapping','swimming','eating','sleeping']){

@@ -1,3 +1,4 @@
+import {PondJournal} from './pond-journal.mjs';
 import { sceneLight } from './scene-lighting.mjs';
 import { ItemGallery } from './item-gallery.mjs';
 import { CELL_W, CELL_H } from './renderer.mjs';
@@ -6,6 +7,7 @@ const $ = id => document.getElementById(id), renderer = new DisplayRenderer($('w
 let pending, last, zoom = 0, lastPaint = 0, lastAnnouncement = '';
 const gallery=new ItemGallery(()=>last?.ui?.motion!==false);
 $('item-art').onclick=()=>gallery.show();
+const pond=new PondJournal();$('pond').onclick=()=>pond.show();
 renderer.mode = localStorage.getItem('cheese.graphics') === 'classic' ? 'classic' : 'ultra';
 function graphicsLabel(){ const label = renderer.mode === 'ultra' ? 'Ultra' : 'Classic'; document.body.dataset.graphics=renderer.mode; $('graphics').textContent = `Graphics: ${label}`; $('graphics').setAttribute('aria-label', `Graphics mode: ${label}`); }
 graphicsLabel();
@@ -41,7 +43,7 @@ window.cheese.frames(frame => { pending = frame; });
 window.cheese.errors(message => { $('error').hidden = false; $('error').textContent = message; $('loading').hidden = true; });
 function animate(now) {
   if (pending) {
-    const frame = pending; pending = null; last = frame;
+    const frame = pending; pending = null; last = frame; pond.update(frame);
     size(frame); renderer.draw(frame, now);lightingLabel(frame); lastDraw = now; window.cheese.ack(); $('loading').hidden = true;
     $('place').textContent = frame.meta.location || 'Cheese the Duck';
     for (const b of $('actions').children) b.disabled = frame.meta.state !== 'playing';
@@ -58,8 +60,9 @@ function animate(now) {
 }
 new ResizeObserver(() => { if (last) { size(last); renderer.draw(last); } }).observe($('viewport'));
 document.addEventListener('keydown', event => {
-  if(gallery.open)return;
+  if(gallery.open||pond.open)return;
   if (event.metaKey || event.ctrlKey || event.altKey) return;
+  if(event.key.toLowerCase()==='j'&&!last?.meta.talking&&!last?.ui?.modal){event.preventDefault();pond.show();return;}
   if (event.key === 'F11') { event.preventDefault(); window.cheese.fullscreen(); return; }
   if (event.target.tagName === 'BUTTON' && ['Enter', ' '].includes(event.key)) return;
   if (event.key.length === 1 || ['Enter','Escape','Backspace','Tab','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','PageUp','PageDown','Home','End','Delete'].includes(event.key)) {
@@ -70,7 +73,7 @@ document.addEventListener('keydown', event => {
     event.preventDefault(); window.cheese.input({ type: 'key', key: event.key });
   }
 });
-document.addEventListener('paste', event => { if (gallery.open||!last?.meta.talking) return; event.preventDefault(); window.cheese.input({ type: 'text', text: event.clipboardData.getData('text') }); });
+document.addEventListener('paste', event => { if (gallery.open||pond.open||!last?.meta.talking) return; event.preventDefault(); window.cheese.input({ type: 'text', text: event.clipboardData.getData('text') }); });
 $('graphics').onclick = () => { renderer.mode = renderer.mode === 'ultra' ? 'classic' : 'ultra'; localStorage.setItem('cheese.graphics',renderer.mode); graphicsLabel(); if(last){size(last);renderer.draw(last);} $('world').focus(); };
 $('zoom').onclick = () => { zoom = (zoom + 1) % sizes.length; $('zoom').textContent = `Text: ${zoom ? ['','large','larger','largest'][zoom] : 'fit'}`; if (last) { size(last); renderer.draw(last); } };
 $('motion').onclick=()=>{renderer.scene.effects.level=effectLevels[(effectLevels.indexOf(renderer.scene.effects.level)+1)%effectLevels.length];localStorage.setItem('cheese.effects',renderer.scene.effects.level);effectsLabel();if(last)renderer.draw(last);$('world').focus();};
@@ -78,7 +81,7 @@ $('capture').onclick = async () => { $('hint').textContent = `Photo saved: ${awa
 $('fullscreen').onclick = () => window.cheese.fullscreen();
 $('panels').onclick=()=>{togglePanels();$('world').focus();};
 function point(event){const r=$('world').getBoundingClientRect();return [(event.clientX-r.left)/r.width*renderer.interface.width,(event.clientY-r.top)/r.height*renderer.interface.height];}
-$('world').addEventListener('click',event=>{if(!last||renderer.mode!=='ultra')return;const command=renderer.interface.hit(...point(event));if(command?.type==='panels')togglePanels();else if(command)window.cheese.input(command);$('world').focus();});
+$('world').addEventListener('click',event=>{if(!last||renderer.mode!=='ultra')return;const command=renderer.interface.hit(...point(event));if(command?.type==='panels')togglePanels();else if(command)window.cheese.input(command);else if(!last.ui?.modal&&!pond.open){const r=$('world').getBoundingClientRect(),x=(event.clientX-r.left)/r.width,y=(event.clientY-r.top)/r.height;const hit=renderer.scene.hit(x,y);if(hit)pond.show(hit.kind==='friend'?'friends':'belongings',hit.id);}if(!pond.open)$('world').focus();});
 $('world').addEventListener('mousemove',event=>{$('world').style.cursor=last&&renderer.mode==='ultra'&&renderer.interface.hit(...point(event))?'pointer':'default';});
 $('world').addEventListener('wheel',event=>{if(renderer.mode==='ultra'&&renderer.interface.wheel(event.deltaY)){event.preventDefault();renderer.draw(last);}}, {passive:false});
 requestAnimationFrame(animate); window.cheese.ready(); $('world').focus();

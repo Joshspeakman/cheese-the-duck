@@ -1,5 +1,6 @@
 """Read-only scene snapshots for Ultra. Classic composition is kept unchanged."""
 from engine.frame import line_runs
+from engine.placements import outdoor_decorations
 from core.settings import get_settings
 from ui.ascii_art import get_mini_duck
 from ui.habitat_art import get_item_art, get_structure_art
@@ -56,6 +57,8 @@ def snapshot(game, renderer):
             x, y = item.get_display_position()
             items.append({'id': item.item_id, 'x': x * 132 / 20, 'y': y * 42 / 12,
                           'art': get_item_art(item.item_id)})
+        for decoration in outdoor_decorations(game):
+            items.append({'id':decoration.item_id,'x':decoration.x,'y':decoration.y,'art':get_item_art(decoration.item_id)})
         for i, structure in enumerate(game.building.structures):
             if structure.status.value != 'complete':
                 continue
@@ -68,14 +71,38 @@ def snapshot(game, renderer):
         if friend:
             from world.friends import visitor_animator
             x, y = visitor_animator.get_position()
-            visitor = {'name': friend.name, 'x': x + renderer._camera_x, 'y': y + renderer._camera_y,
+            visitor = {'id': friend.id, 'state': visitor_animator._current_state,
+                       'facing': x < pos.x - renderer._camera_x,
+                       'activity': visitor_animator._current_state, 'name': friend.name, 'x': x + renderer._camera_x, 'y': y + renderer._camera_y,
                        'personality': friend.personality.value, 'art': visitor_animator.get_current_art()}
+    rare = None
+    if game.atmosphere.current_visitor:
+        definition, _ = game.atmosphere.current_visitor
+        species = {'friendly_goose':'goose','wise_owl':'owl','lost_duckling':'baby_duck',
+                   'traveling_merchant':'baby_duck','celebrity_duck':'baby_duck',
+                   'mysterious_crow':'crow','butterfly_fairy':'butterfly','grumpy_toad':'toad'}
+        rare = {'personality': {'traveling_merchant':'adventurous','celebrity_duck':'generous'}.get(definition.id), 'id':definition.id,'name':definition.name,'asset':species.get(definition.id,'bird_flying'),
+                'art':definition.ascii_art,'x':pos.x+17,'y':pos.y+2}
     interaction = renderer.interaction_animator.get_render_data()
     active = None
     if interaction:
         lines, position, visible, _ = interaction
         active = {'art': lines, 'x': position[0], 'y': position[1], 'showDuck': visible}
+    events = []
+    for animator in getattr(game, '_event_animators', []):
+        state = getattr(animator.state, 'value', str(animator.state))
+        if state in ('waiting', 'finished'):
+            continue
+        x, y = animator.get_position()
+        particles = animator.get_particles() if hasattr(animator, 'get_particles') else []
+        events.append({'id': animator.event_id, 'family': type(animator).__name__,
+                       'state': state, 'x': x + renderer._camera_x, 'y': y + renderer._camera_y,
+                       'art': animator.get_sprite(),
+                       'particles': [[px + renderer._camera_x, py + renderer._camera_y, c]
+                                     for px, py, c in particles[:100]]})
     return {
+        'events': events, 'rareVisitor':rare,
+        'living': game.living_pond.snapshot() if getattr(game, 'living_pond', None) else None,
         'location': area.name if area else 'Home Pond', 'biome': area.biome.value if area else 'pond',
         'season': game.atmosphere.current_season.value,
         'hour': game.day_night.get_current_hour() + game.day_night.get_current_minute() / 60,
