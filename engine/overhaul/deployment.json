@@ -1,19 +1,19 @@
 {
-  "installed_at": "2026-11-10T08:00:01.667870-07:00",
-  "version": "2.31.1",
-  "change": "Daylight contrast for hatchling, duckling and juvenile Cheese",
-  "source_commit": "26976df28cf26fa16a733b7f255adf34b2ad2795",
+  "installed_at": "2026-11-10T08:12:55.252511-07:00",
+  "version": "2.31.2",
+  "change": "Darker daylight grass, subdued ground texture, and restored young Cheese feather brightness",
+  "source_commit": "e973f41285109c359a24dc339755fc0de4e60456",
   "branch": "codex/ascii-engine-port",
   "app": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/mac-arm64/Cheese the Duck ASCII Engine.app",
   "desktop_shortcut": "/Users/joshuaspeakman/Desktop/Cheese the Duck ASCII Engine.app",
-  "save_backup": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/artifacts/before-young-contrast-saves-20261110-080001",
-  "previous_app": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/previous-before-young-contrast-20261110-080001/Cheese the Duck ASCII Engine.app",
-  "source_save_sha256": "d4724319869228ac4563c6a92148697c1013db9f7a1f9f47a883a0a1a0a22ecb",
-  "app_asar_sha256": "b4a72c4d3fd0bdafc00b2dee9419fc2c47c0a3c8cea8d40d3b54aab26b8ed844",
+  "save_backup": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/artifacts/before-grass-contrast-saves-20261110-081254",
+  "previous_app": "/Volumes/Expansion Pak/Projects/cheese-the-duck-ascii-engine/engine/dist/previous-before-grass-contrast-20261110-081254/Cheese the Duck ASCII Engine.app",
+  "source_save_sha256": "8de9af5c032b14496715781f32262715a2f9316b482f4756cd23f784a7512b9f",
+  "app_asar_sha256": "279eab8d6a9a7ba0def594ccf19b44717556c81033b08d931b1f89f9bc99ccaa",
   "signature": "verified",
   "renderer_tests": 39,
   "visual_checks": "three young ages across morning storms, meadow noon, winter noon, beach noon and night",
   "packaged_smoke_with_system_audio": "PASS",
   "launch": "verified: desktop shortcut starts updated app and bundled simulation",
-  "verified_at": "2026-11-10T08:00:21.155424-07:00"
+  "verified_at": "2026-11-10T08:13:44.301175-07:00"
 }
