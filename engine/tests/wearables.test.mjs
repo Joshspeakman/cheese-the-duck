@@ -44,3 +44,19 @@ test('cloth, wings, hats and held objects animate while their attachment stays o
   for(const foot of m.rig.feet)assert(foot.y-(m.rig.body.y+m.rig.body.h-1)<=1,stage+' legs are too long');
  }
 });
+
+test('shirts and knits follow feather contours while leaving eyes, wings and feet visible',()=>{
+ for(const id of ['sweater_cozy','autumn_cozy_sweater','hawaiian_shirt','summer_hawaiian_shirt'])
+ for(const {id:stage} of STAGES.slice(1))for(const state of ['idle','walking','eating','sleeping','swimming','flapping']){
+  const bare=characterSprite({stage,state},.45),worn=characterSprite({stage,state,cosmetics:{item:id}},.45),rig=bare.rig;
+  const plan=fitWearables(rig,{item:id},.45),fills=plan.fills;
+  assert(fills.length>0,id+'/'+stage);
+  for(const f of fills)for(let x=f.x;x<f.x+f.w;x++){
+   assert(rig.torso.some(r=>r.y===f.y&&x>=r.x&&x<r.x+r.w),'fabric outside feather silhouette');
+   const h=rig.faceBounds;assert(!(x>=h.x&&x<h.x+h.w&&f.y>=h.y&&f.y<h.y+h.h),'fabric over face');
+  }
+  assert.equal(worn.art[rig.eye.y][rig.eye.x],bare.art[rig.eye.y][rig.eye.x]);
+  for(const f of rig.feet)assert.equal(worn.art[f.y].slice(f.x,f.x+2),bare.art[f.y].slice(f.x,f.x+2));
+  if(rig.wing){const w=rig.wing,y=w.y+Math.floor(w.h/2);assert.equal(worn.art[y].slice(w.x,w.x+w.w),bare.art[y].slice(w.x,w.x+w.w),'wing lost under clothing');}
+ }
+});

@@ -79,9 +79,9 @@ export class SceneCanvas {
       if(actor.item)this.items.draw(this.ctx,actor,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{surface,outline:light.outline});
       else drawCharacter(this.ctx,{...actor,sun:light.sun,outline:light.outline,backdrop:(x,y)=>this.backdropAt(x,y)},this.sx,this.sy,surface);
     }
-    this.hits=[...objects,...characters].filter(a=>a.item||a.visitor).map(a=>{
+    this.hits=[...objects,...characters].filter(a=>a.item||a.visitor||a.story).map(a=>{
       const unit=this.sx*a.scale*(a.detailScale||1),width=a.width*unit,height=a.art.length*unit*1.5;
-      return {id:a.id||scene.visitor?.id,kind:a.visitor?'friend':'item',x:a.x*this.sx-width/2,y:a.y*this.sy-height,w:width,h:height};
+      return {id:a.id||scene.visitor?.id,kind:a.story?'story':a.visitor?'friend':'item',x:a.x*this.sx-width/2,y:a.y*this.sy-height,w:width,h:height};
     });
     this.frames++;
   }

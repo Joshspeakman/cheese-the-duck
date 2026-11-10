@@ -14,6 +14,24 @@ def clamp(value, low, high):
     return max(low, min(value, max(low, high)))
 
 
+def roaming_target(rng, bounds, position, cheese, social=0):
+    """Choose a destination once, then walk there independently of Cheese."""
+    left, right, top, bottom = bounds
+    if rng.random() < min(.15, social * .25):
+        return (clamp(cheese[0] + rng.choice((-1, 1)) * rng.uniform(6, 12), left, right),
+                clamp(cheese[1] + rng.uniform(-4, 4), top, bottom))
+    # Most outings cross the habitat; short local investigations add variety.
+    for _ in range(12):
+        if rng.random() < .3:
+            x, y = position[0] + rng.uniform(-18, 18), position[1] + rng.uniform(-8, 8)
+        else:
+            x, y = rng.uniform(left, right), rng.uniform(top, bottom)
+        target = (clamp(x, left, right), clamp(y, top, bottom))
+        if math.hypot(target[0] - position[0], (target[1] - position[1]) * 2) > 8:
+            return target
+    return ((left + right) / 2, (top + bottom) / 2)
+
+
 class GuestMotion:
     def __init__(self):
         self.token = None
@@ -82,7 +100,7 @@ class GuestMotion:
             self.target = point(bounds[1], a['y'])
             self.rest_until = now
         if now < self.rest_until:
-            a.update(state='signature', activity='signature', facing=pos.x > a['x'])
+            a.update(state='signature', activity='signature')
             return
         dx, dy = self.target[0] - a['x'], self.target[1] - a['y']
         distance = math.hypot(dx, dy * 2)
@@ -91,18 +109,80 @@ class GuestMotion:
                 a.update(state='leaving', activity='leaving', facing=True)
                 return
             self.rest_until = now + max(2.2, 7 - p['pace'])
-            radius = p['radius']
-            if p['species'] == 'duckling' or self.rng.random() < p['social']:
-                self.target = point(pos.x + self.rng.choice((-1, 1)) * self.rng.uniform(4, 9), pos.y + self.rng.uniform(-2, 1))
-            else:
-                self.target = point(pos.x + self.rng.uniform(-radius, radius), pos.y + self.rng.uniform(-5, 3))
-            a.update(state='signature', activity='signature', facing=pos.x > a['x'])
+            self.target = roaming_target(self.rng, bounds, (a['x'], a['y']), (pos.x, pos.y), p['social'])
+            a.update(state='signature', activity='signature')
         else:
             speed = p['pace'] * (.9 if leaving else .72)
             step = min(1.0, speed * dt / distance)
             a['x'] += dx * step
             a['y'] += dy * step
             a.update(state='leaving' if leaving else 'walking', activity='leaving' if leaving else 'walking', facing=dx >= 0)
+
+    def snapshot(self):
+        return dict(self.actor) if self.actor else None
+
+
+class StoryMotion:
+    """Story participants have their own world positions, not a duck offset.
+
+    Props stay where the encounter began; living actors explore between habits.
+    Staging is transient and never advances story choices or awards rewards.
+    """
+    MOBILE = {'lost_duckling': 3.5, 'frog_choir': 2.4, 'migration': 4.8, 'night_lights': 2.5}
+
+    def __init__(self):
+        self.token = self.actor = self.target = None
+        self.last = None
+        self.rest_until = 0
+        self.step = None
+        self.rng = random.Random(0)
+
+    def tick(self, game, now=None):
+        now = time.monotonic() if now is None else now
+        dt = min(.25, max(0, now - self.last)) if self.last is not None else 0
+        self.last = now
+        pond = getattr(game, 'living_pond', None)
+        story = pond.state.get('story') if pond else None
+        area = getattr(game.exploration, 'current_area', None)
+        if not game.duck or not story or (area and area.name != 'Home Pond'):
+            self.token = self.actor = self.target = None
+            return
+        if game._state != 'playing':
+            self.rest_until += dt
+            return
+        r, pos = game.renderer, game.renderer.duck_pos
+        cx, cy = getattr(r, '_camera_x', 0), getattr(r, '_camera_y', 0)
+        w, h = getattr(r, '_viewport_width', 132), getattr(r, '_viewport_height', 42)
+        bounds = (cx + 8, cx + max(16, w - 9), cy + 4, cy + max(8, h - 5))
+        token = (id(game.duck), id(story), story['id'])
+        if token != self.token:
+            self.token = token
+            self.rng.seed(str(pond.state['seed']) + ':' + story['id'])
+            x, y = roaming_target(self.rng, bounds, (pos.x, pos.y), (pos.x, pos.y))
+            self.actor = dict(id='story:' + story['id'], storyId=story['id'], x=x, y=y,
+                              state='signature', activity='signature', facing=True)
+            self.target = (x, y)
+            self.rest_until = now + 2.5
+            self.step = story['step']
+        a = self.actor
+        if self.step != story['step']:
+            self.step = story['step']
+            self.rest_until = now + 3
+            a.update(state='quacking', activity='quacking', facing=pos.x > a['x'])
+        speed = self.MOBILE.get(story['id'], 0)
+        if now < self.rest_until or not speed:
+            return
+        dx, dy = self.target[0] - a['x'], self.target[1] - a['y']
+        distance = math.hypot(dx, dy * 2)
+        if distance < .3:
+            self.target = roaming_target(self.rng, bounds, (a['x'], a['y']), (pos.x, pos.y))
+            self.rest_until = now + self.rng.uniform(2.2, 5.5)
+            a.update(state='signature', activity='signature')
+        else:
+            step = min(1, speed * dt / distance)
+            a['x'] += dx * step
+            a['y'] += dy * step
+            a.update(state='walking', activity='walking', facing=dx >= 0)
 
     def snapshot(self):
         return dict(self.actor) if self.actor else None

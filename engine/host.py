@@ -221,8 +221,9 @@ class CanvasRenderer(Renderer):
 
 class DesktopGame(Game):
     def __init__(self, *args, **kwargs):
-        from engine.guest_motion import GuestMotion
+        from engine.guest_motion import GuestMotion, StoryMotion
         self.guest_motion = GuestMotion()
+        self.story_motion = StoryMotion()
         self.living_pond = None
         self._pond_duck = None
         super().__init__(*args, **kwargs)
@@ -255,11 +256,15 @@ class DesktopGame(Game):
 
     def _update(self):
         self._ensure_living_pond()
+        from world.friends import visitor_animator
+        visitor_animator._roam_bounds = (2, max(12, self.renderer._viewport_width - 12),
+                                         1, max(5, self.renderer._viewport_height - 6))
         super()._update()
         if self.living_pond:
             self.living_pond.tick()
         if self.duck:
             self.guest_motion.tick(self)
+        self.story_motion.tick(self)
 
     def _perform_interaction(self, interaction):
         if self.living_pond and self.living_pond.busy:

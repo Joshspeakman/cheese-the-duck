@@ -26,6 +26,27 @@ Ultra includes an animated pond title screen, an ASCII logo, an expression-only 
 
 Keyboard controls are unchanged. The title choices, hierarchical side menu, lower action bar and panel navigation controls support mouse input. Stale clicks and clicks behind confirmations are rejected on the game thread; a click uses the same Enter handler as keyboard selection. Arrow keys and Enter navigate the complete game menu. Escape goes back; T opens conversation; Page Up/Down scroll conversation history. Display controls provide fullscreen, larger text with scrolling, Vivid/Subtle/Off scene effects, a searchable item art catalog and PNG screenshots. Every dialogue string is drawn as literal glyphs.
 
+## Independent visitors and shaped clothes (2.34.0)
+
+The duckling in **A very small visitor** now uses the detailed, articulated guest
+rig, with fitted scarf and toy, in both the world and the journal. Click the story
+participant to open its encounter. Story actors have simulation-owned world
+positions: living participants explore and pause; objects stay at their encounter
+sites. Moving Cheese no longer drags the encounter along. Regular and rare guests
+choose routes across the habitat, with occasional social stops. Unfinished story
+chapters now restore correctly after loading.
+
+The two sweaters and two Hawaiian shirts follow each age's posed torso contours.
+Fabric has its own color and shading, shaped necklines and hems, knit or floral
+details, and exposed wings. The cut follows walking, pecking, swimming, sleeping
+and flapping; raised feet remain visible instead of disappearing under the hem.
+
+`../.venv/bin/python check_guests.py` exercises independent movement, story staging,
+removal and actual save/load, then exports disposable scenes for `npm run test:stories`.
+The latter checks world click targets, story portraits and original choice commands.
+`electron wearables-check.cjs` includes a focused shirt/knit sheet alongside the
+complete wardrobe, motion and restoration checks.
+
 ## A quieter, movable interface (2.33.0)
 
 After 60 seconds without mouse or keyboard activity, Ultra's controls fade over

@@ -2,6 +2,7 @@ import {catalog,itemSprite,itemProfile,itemFamily,ItemPainter} from './ultra-ite
 import {characterSprite,drawCharacter} from './ultra-characters.mjs';
 import {eventModel,EVENT_ASSETS} from './event-art.mjs';
 import {guestProfile} from './visitor-rig.mjs';
+import {storyModel} from './story-art.mjs';
 const names=new Map(catalog.map(i=>[i.id,i]));
 const pretty=s=>String(s||'').replaceAll('_',' ');
 const percent=n=>`${Math.round((n||0)*100)}%`;
@@ -47,7 +48,7 @@ export class PondJournal{
   if(!w){this.body.append(el('p','Start or continue a game to open Cheese’s living journal.'));return;}
   const grid=el('div',undefined,'pond-cards');this.body.append(grid);const busy=Boolean(w.plan);
   if(this.tab==='pond'){
-   if(w.story){const story=w.story,c=this.card(story.title,story.text);c.classList.add('pond-story');this.preview(c,'wildlife',story.asset);c.append(el('small',`Chapter ${story.step+1} of ${story.total}`));
+   if(w.story){const story=w.story,c=this.card(story.title,story.text);c.classList.add('pond-story');this.preview(c,'story',story.id);c.append(el('small',`Chapter ${story.step+1} of ${story.total}`));
     for(const choice of story.choices){const row=el('div',undefined,'pond-choice');row.append(this.button(choice.label,'story_choice',`${story.id}:${story.step}:${choice.id}`,!choice.available));const cost=Object.entries(choice.cost||{}).map(([id,n])=>`${n} ${pretty(id)}`).join(', ');if(cost)row.append(el('p','Uses '+cost));const impact=Object.entries(choice.effect).map(([id,n])=>`${id==='warmth'?'community warmth':pretty(id)} +${n<1?Math.round(n*100)+'%':n}`).join(' · ');row.append(el('small',impact));c.append(row);}grid.append(c);
    }
    const garden=this.card('A growing garden','The real garden plots share the weather. Rain waters them; hot, dry conditions stress thirsty plants.');
@@ -116,8 +117,8 @@ export class PondJournal{
     const cw=Math.min((canvas.width-30)/(model.width+2),(canvas.height-45)/((model.art.length+2)*1.5))/(model.detailScale||1);
     this.painter.draw(ctx,model,canvas.width/2,canvas.height-22,cw,{surface:'#142a22',outline:'#091d18'});
    }else{
-    let model;if(kind==='wildlife'){model=eventModel({id,asset:id,family:'',art:EVENT_ASSETS[id]?.frames?.idle},time,motion);}else if(kind==='friend'){const friend=w.friends.find(f=>f.id===id)||(w.rare_guest?.id===id?w.rare_guest:null);if(!friend)continue;model=characterSprite({...friend,state:'signature',activity:'signature',stage:'adult'},time,true);model.name='';}else model=characterSprite({...this.frame.scene.duck,state:w.plan?.kind==='rest'?'sleeping':this.frame.scene.duck.state},time);
-    const sx=kind==='wildlife'?5:6,sy=5;drawCharacter(ctx,{...model,x:canvas.width/2/sx,y:(canvas.height-22)/sy,sun:.7},sx,sy,'#132721');
+    let model;if(kind==='story'){if(!w.story||w.story.id!==id)continue;model=storyModel(w.story,{state:'signature'},time,motion);model.name='';}else if(kind==='wildlife'){model=eventModel({id,asset:id,family:'',art:EVENT_ASSETS[id]?.frames?.idle},time,motion);}else if(kind==='friend'){const friend=w.friends.find(f=>f.id===id)||(w.rare_guest?.id===id?w.rare_guest:null);if(!friend)continue;model=characterSprite({...friend,state:'signature',activity:'signature',stage:'adult'},time,true);model.name='';}else model=characterSprite({...this.frame.scene.duck,state:w.plan?.kind==='rest'?'sleeping':this.frame.scene.duck.state},time);
+    const sx=kind==='story'&&model.profileId==='lost_duckling'?12:kind==='wildlife'?5:6,sy=5;drawCharacter(ctx,{...model,x:canvas.width/2/sx,y:(canvas.height-22)/sy,sun:.7},sx,sy,'#132721');
    }
   }
  }

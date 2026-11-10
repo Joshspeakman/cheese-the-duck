@@ -52,7 +52,7 @@ export function wornItems(cosmetics={}){
 // Rig coordinates are already posed. Art is built in character cells, so hats
 // fit the age's head width and footwear follows the two actual foot contacts.
 export function fitWearables(rig,cosmetics={},time=0){
- const layers=[],items=wornItems(cosmetics),inks={};
+ const layers=[],fills=[],items=wornItems(cosmetics),inks={};
  const h=rig.head,b=rig.body,n=rig.neck,e=rig.eye;
  const sleeping=rig.action==='sleeping',wet=rig.action==='swimming';
  const moving=/walking|dancing|hopping|flapping/.test(rig.action),small=rig.small;
@@ -132,7 +132,41 @@ export function fitWearables(rig,cosmetics={},time=0){
    case 'halo':add(p<2?'(=*=)':'(*==)',Math.round(center)-2,h.y-4-(phase===3?1:0),{tone:main});break;
    case 'horns':add('/^',h.x,h.y-1);add('^\\',h.x+w-2,h.y-1);add(glint,h.x+w-1,h.y-2,{tone:trim});break;
    case 'headphones':add('.'+fill('-')+'.',h.x,h.y-1);add(p%2?'[#]':'[=]',h.x-3,h.y+1);add(']',h.x+w,h.y);break;
-   case 'sweater':case 'shirt':case 'tuxedo':case 'robe':case 'santa_suit':case 'raincoat':case 'coat':case 'pumpkin':case 'ghost':case 'elf':{
+   case 'sweater':case 'shirt':{
+    // Cut each row to the actual posed feather silhouette: narrow shoulders,
+    // curved breast, tucked belly and a feathered tail outside the garment.
+    const knit=item.family==='sweater',torso=rig.torso||[],wing=rig.wing,face=rig.faceBounds||h;
+    const color=(hex,f)=>'#'+hex.slice(1).match(/../g).map(c=>Math.min(255,Math.round(parseInt(c,16)*f)).toString(16).padStart(2,'0')).join('');
+    inks[shade]=color(item.color,.62);inks[trim]=knit?color(item.color,1.15):'#f3dcb2';
+    const inside=(x,y,r)=>r&&x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h;
+    for(const [j,span] of torso.entries()){
+     const last=j===torso.length-1,first=j===0;
+     const left=span.x+(span.w>10?2:0),right=span.x+span.w-1;
+     let run=null;
+     for(let x=left;x<=right;x++){
+      const wingInset=wing&&span.y!==wing.y+1&&wing.h>1?1:0;
+      const opening=wing?{...wing,x:wing.x+wingInset,w:wing.w-wingInset*2}:null;
+      const foot=rig.feet.some(f=>span.y===f.y&&x>=f.x&&x<f.x+2);
+      if(foot||inside(x,span.y,face)||inside(x,span.y,opening)){run=null;continue;}
+      const q=x-left,edge=x===left||x===right;
+      let ch=' ',tone=main;
+      if(first){ch=knit?(q===0?'(':x===right?')':'='):(q===0?'\\':x===right?'/':q===Math.floor((right-left)/2)?'v':' ');tone=trim;}
+      else if(last){ch=x===left?"'":x===right?"'":knit?'=':'_';tone=trim;}
+      else if(edge){ch=x===left?(j<torso.length/2?'/':'\\'):(j<torso.length/2?'\\':'/');tone=shade;}
+      else if(knit){ch=(q+j)%4===0?'v':q%4===0?':':' ';tone=(q+j)%4===0?trim:main;}
+      else if((q+2*j)%7===1){ch='*';tone=trim;}
+      else if((q+2*j)%7===2){ch='/';tone=shade;}
+      // A stitched front/placket sits beside the wing, not across its feathers.
+      if(!first&&!last&&x===right-2){ch=knit?':':j%2?'o':':';tone=knit?shade:trim;}
+      if(!first&&!last&&!edge&&x===left+2&&j===Math.min(2,torso.length-2)){ch=moving?(p<2?'/':'~'):sleeping?'~':p===2?':':'/';tone=shade;}
+      add(ch,x,span.y,{tone,clear:true,protectHead:true});
+      // Cloth gets its own shaded fill; feather wings and faces stay exposed.
+      if(!run||run.x+run.w!==x){run={id:item.id,x,y:span.y,w:1,tone:main};fills.push(run);}else run.w++;
+     }
+    }
+    break;
+   }
+   case 'tuxedo':case 'robe':case 'santa_suit':case 'raincoat':case 'coat':case 'pumpkin':case 'ghost':case 'elf':{
     const width=Math.max(5,b.w-1),inner=width-2;
     let motif={sweater:p<2?'v':'^',shirt:p<2?'*':'+',tuxedo:' ',robe:p<2?'.':'*',santa_suit:'=',raincoat:p<2?':':"'",coat:p<2?'=':'-',pumpkin:p<2?'v':'V',ghost:' ',elf:p<2?'v':'^'}[item.family];
     const rows=['/'+fill('_',inner)+'\\',...Array.from({length:Math.max(1,b.h-2)},(_,j)=>'('+Array.from({length:inner},(_,x)=>x%5===0?'|':(x+j)%3===0?motif:'.').join('')+')'),"'"+fill(item.family==='ghost'?(p<2?'~':'v'):'_',inner)+"'"];
@@ -166,7 +200,7 @@ export function fitWearables(rig,cosmetics={},time=0){
    case 'ring':add('('+fill('=',b.w)+')',b.x-1,b.y+b.h-1);add(p<2?'o':'*',b.x+b.w,b.y+b.h-1,{tone:trim});break;
   }
  }
- return {layers,inks,items};
+ return {layers,fills,inks,items};
 }
 
 export function paintWearables(cells,tones,rig,plan){

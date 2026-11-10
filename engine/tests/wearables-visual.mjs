@@ -30,6 +30,13 @@ window.checkWearables=frames=>{
   duck(ctx,{stage:'adult',state,cosmetics},col*220+110,row*245+205,7,.45);
   ctx.font='12px Menlo';ctx.textAlign='center';ctx.fillStyle='#cdd5bd';ctx.fillText(state,col*220+110,row*245+232);
  }));images['outfits-in-motion']=animation.toDataURL();
+ const clothes=sheet(1800,1160),cl=clothes.getContext('2d');
+ ['sweater_cozy','autumn_cozy_sweater','hawaiian_shirt','summer_hawaiian_shirt'].forEach((id,row)=>
+  [['hatchling','idle'],['duckling','walking'],['adult','idle'],['adult','eating'],['adult','sleeping'],['adult','flapping']].forEach(([stage,state],col)=>{
+   duck(cl,{stage,state,cosmetics:{body:id}},col*300+150,row*290+220,8.5,.6);
+   cl.font='13px Menlo';cl.textAlign='center';cl.fillStyle=wearableSpec(id).color;cl.fillText(wearableSpec(id).name,col*300+150,row*290+246,285);
+   cl.fillStyle='#cdd5bd';cl.fillText(stage+' · '+state,col*300+150,row*290+267);
+  }));images['shaped-shirts-and-knits']=clothes.toDataURL();
  const ages=sheet(1440,960),ac=ages.getContext('2d');
  STAGES.forEach(({id,name},i)=>{
   duck(ac,{stage:id,state:'idle',cosmetics:{head:'hat_red',neck:'scarf_red',back:'backpack_tiny'}},i%3*480+240,Math.floor(i/3)*320+258,12,0);

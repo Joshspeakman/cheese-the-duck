@@ -814,38 +814,29 @@ class VisitorAnimator:
                 if self._position_x == self._target_x and self._position_y == self._target_y:
                     behavior = random.random()
                     
-                    social = profile['social'] if profile else .4
-                    radius = profile['radius'] if profile else 12
+                    social = min(.15, (profile['social'] if profile else .4) * .25)
+                    left, right, top, bottom = getattr(self, '_roam_bounds', (2, 58, 0, 8))
                     if behavior < social:
-                        # Move toward where the duck is
-                        offset_x = random.randint(-min(radius, 8), min(radius, 8))
-                        offset_y = random.randint(-2, 2)
+                        # An occasional social stop, not a permanent escort.
+                        offset_x = random.choice((-1, 1)) * random.uniform(6, 12)
+                        offset_y = random.uniform(-3, 3)
                         self._target_x = duck_x + offset_x
                         self._target_y = duck_y + offset_y
                         self._following_duck = True
                         if random.random() < 0.3:
                             self._current_state = "chatting"
                     
-                    elif behavior < social + (1 - social) * .7:
-                        # Pick a random spot on the screen
-                        self._target_x = self._position_x + random.randint(-radius, radius)
-                        self._target_y = random.randint(1, 7)
+                    else:
+                        # Explore the whole habitat, independently of Cheese.
+                        self._target_x = random.uniform(left, right)
+                        self._target_y = random.uniform(top, bottom)
                         self._following_duck = False
                         if random.random() < 0.3:
                             self._current_state = "playing"
                     
-                    else:  # 30% chance: Stay near duck
-                        # Stay close to the duck
-                        self._target_x = duck_x + random.randint(3, 10)
-                        self._target_y = duck_y + random.randint(-1, 1)
-                        self._following_duck = True
-                        if random.random() < 0.5:
-                            states = ["idle", "chatting", "happy"]
-                            self._current_state = random.choice(states)
-                    
                     # Keep in screen bounds
-                    self._target_x = max(2, min(self._target_x, 58))
-                    self._target_y = max(0, min(self._target_y, 8))
+                    self._target_x = max(left, min(self._target_x, right))
+                    self._target_y = max(top, min(self._target_y, bottom))
                     # Pause to perform the named occupation between destinations.
                     # Energetic guests pause less; quiet guests stay and observe.
                     self._rest_until = current_time + max(1.5, 7.0 - pace)
