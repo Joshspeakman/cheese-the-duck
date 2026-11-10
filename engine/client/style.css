@@ -82,3 +82,108 @@ body[data-graphics=classic] #lighting{display:none}
 .pond-card select{max-width:100%;background:#14291f;color:#e4d9b3;border:1px solid #71805b;padding:8px;margin:4px;font:12px Menlo,monospace}
 
 .pond-journal[open]{display:flex;flex-direction:column}.pond-journal>.pond-body{flex:1;min-height:0;height:auto}.pond-journal>header,.pond-journal>nav,.pond-live-status{flex-shrink:0}
+
+/* The pond's furniture: small keepsakes and a tool belt, rather than page chrome. */
+[hidden]{display:none!important}
+:root{--hud-opacity:1}
+body>header#game-header{position:relative;gap:18px;flex-shrink:0}
+#pond-kit{white-space:nowrap;border-radius:18px;padding:9px 16px;color:#f1d69a;background:#354934}
+#pond-kit span{margin-left:8px}
+#pond-tools-panel{position:fixed;z-index:40;right:16px;top:16px;width:min(420px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;padding:24px;background:linear-gradient(130deg,#e6d9b6,#cbbd97);color:#283a2f;border:5px solid #56492e;border-radius:18px;box-shadow:0 15px 65px #0009,inset 0 0 0 1px #f5ebc7;font:13px/1.5 'Avenir Next',sans-serif}
+.kit-heading{display:flex;justify-content:space-between;gap:12px;align-items:start}
+.kit-heading h2{font:600 26px/1.15 Georgia,serif;letter-spacing:-.5px;margin:5px 0 10px;color:#293e30}
+.kit-heading small{font:9px 'Avenir Next',sans-serif;letter-spacing:1.7px;color:#66654b;display:block}
+#pond-tools-panel p{margin:8px 0 16px;color:#4e5a43}
+#pond-tools-panel button{font:600 12px 'Avenir Next',sans-serif;background:#344c37;color:#f2e7c5;border:1px solid #66714e;border-radius:9px;padding:9px 11px;box-shadow:0 2px 0 #22382a}
+#pond-tools-panel button:hover,#pond-tools-panel button:focus-visible{background:#536649;outline:2px solid #9f8043;outline-offset:2px}
+#kit-close{font-size:20px!important;box-shadow:none!important;border:0!important;background:transparent!important;color:#344635!important;padding:0 4px!important}
+#panel-switches{display:grid;grid-template-columns:1fr 1fr;gap:7px 12px;margin:18px 0}
+#panel-switches label,.kit-fade{display:flex;gap:8px;align-items:center;cursor:pointer}
+#panel-switches input,.kit-fade input{accent-color:#496841;width:16px;height:16px;flex-shrink:0}
+.kit-presets{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.kit-note{font-size:11px!important;line-height:1.6}
+.kit-divider{font-size:10px;font-weight:700;letter-spacing:2px;border-top:1px solid #988c66;padding:14px 0 10px}
+#pond-tools-panel nav{display:flex;flex-wrap:wrap;gap:8px}
+#pond-tools-panel #lighting{color:#655c3e;border:0;order:-1;width:100%;padding:0 0 4px}
+#kit-recall{position:fixed;z-index:12;top:14px;left:14px;width:42px;height:42px;border-radius:50%!important;background:#314737!important;border:1px solid #b3a06d!important;color:#f3d491;box-shadow:0 3px 16px #0006;opacity:var(--hud-opacity);font-size:22px}
+body:not([data-layout=world]) #kit-recall{display:none}
+body[data-layout=world]>header#game-header{position:fixed;bottom:auto;right:auto;padding:5px 12px;border:1px solid #8b805850;border-radius:26px;background:linear-gradient(100deg,#172f25ed,#233a2bd9);box-shadow:0 4px 20px #0004;pointer-events:auto;opacity:var(--hud-opacity);z-index:8;cursor:grab}
+body[data-layout=world] #game-header .brand{gap:8px;min-width:0;pointer-events:none}
+body[data-layout=world] #game-header .brand-mark{display:block;font-size:12px;color:#d7c89d}
+body[data-layout=world] #game-header strong{font:600 clamp(11px,1.2vw,15px) Georgia,serif;letter-spacing:1px}
+body[data-layout=world] #game-header strong span{display:none}
+body[data-layout=world] #pond-kit{font:600 clamp(10px,1vw,12px) 'Avenir Next',sans-serif;padding:5px 8px;background:transparent;border:0;box-shadow:none;white-space:nowrap}
+body[data-layout=world]>footer#action-belt{position:fixed;bottom:auto;right:auto;padding:0 7px 5px;border:1px solid #9a845967;border-radius:18px;background:linear-gradient(#34402cee,#1c3028ee);box-shadow:0 6px 28px #0007,inset 0 -4px #10221a;pointer-events:auto;opacity:var(--hud-opacity);z-index:8}
+.belt-handle{display:none}
+body[data-layout=world] .belt-handle{display:flex;align-items:center;height:15px;margin:0 2px;gap:3px}
+body[data-layout=world] #belt-grip,body[data-layout=world] #belt-close{padding:0!important;background:none!important;border:0!important;box-shadow:none!important;color:#c4b78b;line-height:12px;font-size:17px;min-width:20px}
+#belt-grip{flex:1;cursor:grab}
+body[data-layout=world] #actions{height:calc(100% - 15px);flex-wrap:nowrap;gap:2px;align-items:stretch}
+body[data-layout=world] #actions button{flex:1;min-width:0!important;margin:0!important;padding:2px 1px!important;border:0;background:transparent;font:500 clamp(9px,.85vw,12px) 'Avenir Next',sans-serif;border-radius:9px;white-space:nowrap;box-shadow:none}
+body[data-layout=world] #actions button:hover,body[data-layout=world] #actions button:focus-visible{background:#d6c18b22;box-shadow:inset 0 -2px #c6b47a;color:#ffdf99}
+body[data-layout=world] .action-icon{font:600 clamp(13px,1.4vw,20px) Menlo,monospace;height:clamp(15px,1.8vw,26px)}
+body[data-layout=world] #actions kbd{font:8px 'Avenir Next',sans-serif;border:0;padding:0;margin-right:3px;opacity:.65}
+body[data-layout=world] #action-belt .status{display:none}
+body[data-hud-asleep=true] #game-header,body[data-hud-asleep=true] #action-belt,body[data-hud-asleep=true] #hud-handles,body[data-hud-asleep=true] #kit-recall{pointer-events:none!important}
+body[data-hud-asleep=true] #hud-handles button{pointer-events:none!important}
+#hud-handles{position:fixed;inset:0;z-index:6;pointer-events:none;opacity:var(--hud-opacity)}
+#hud-handles.modal-handles{opacity:1;z-index:7}
+.hud-handle{position:fixed;pointer-events:none;border-radius:14px;outline:1px solid transparent}
+.hud-handle button{position:absolute!important;pointer-events:auto!important;box-shadow:none!important;border:0!important;background:transparent!important;padding:0!important}
+.hud-grip{left:0;top:0;width:calc(100% - 29px);height:calc(35px * var(--panel-scale,1));min-height:22px;cursor:grab;border-radius:14px 0 0 0!important}
+.hud-grip:after{content:'⠿';position:absolute;right:7px;top:50%;transform:translateY(-50%);font-size:12px;color:#cbbd8e;opacity:.25}
+.hud-close{right:4px;top:3px;width:24px;height:calc(30px * var(--panel-scale,1));min-height:22px;color:#d5c79b!important;font:18px 'Avenir Next',sans-serif!important;opacity:.4;border-radius:50%!important}
+.hud-handle[data-panel=document] .hud-grip{height:calc(95px * var(--panel-scale,1))}
+.hud-handle[data-panel=document] .hud-close{top:10px;right:10px}
+.hud-handle:hover .hud-close,.hud-handle:focus-within .hud-close,.hud-handle:hover .hud-grip:after,.hud-handle:focus-within .hud-grip:after{opacity:1}
+.hud-handle button:focus-visible{outline:2px solid #f4ce82!important;outline-offset:1px}
+body[data-arranging=true] .hud-handle{outline:1px dashed #e3ca8ccc;background:#d5b5660a}
+body[data-arranging=true] .hud-close,body[data-arranging=true] .hud-grip:after{opacity:1}
+body[data-arranging=true] #game-header,body[data-arranging=true] #action-belt{outline:1px dashed #e3ca8c}
+.movable-grip:active,.dialog-grip:active{cursor:grabbing!important}
+
+/* A field notebook and a cabinet of curiosities. Original text and ASCII stay literal. */
+.pond-journal[open]{display:grid;grid-template-columns:165px minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr);width:min(1120px,94vw);height:min(830px,91vh);background:#d9cfad;color:#2b3b2d;border:6px solid #574c33;border-radius:16px;box-shadow:0 20px 85px #000a,inset 0 0 0 2px #eee2bd;font:14px/1.5 'Avenir Next',sans-serif;color-scheme:light}
+body .pond-journal>header{grid-column:1/-1;position:relative;inset:auto;padding:20px 28px 18px;background:linear-gradient(110deg,#eadfbd,#d2c39c);border:0;border-bottom:1px solid #a2956e;box-shadow:none;pointer-events:auto;cursor:grab;display:block}
+.pond-journal h1{font:600 28px/1.2 Georgia,serif;letter-spacing:-.5px;color:#35432e;margin:5px 100px 0 0}
+.pond-eyebrow{font:10px 'Avenir Next',sans-serif;letter-spacing:2px;color:#776d4c}
+.pond-journal>nav{grid-column:1;grid-row:2/4;display:flex;flex-direction:column;flex-wrap:nowrap;padding:18px 10px;gap:7px;background:linear-gradient(90deg,#beb38f,#cbbf99);border-right:1px solid #a59a74;overflow:auto}
+body .pond-journal button{font:600 12px 'Avenir Next',sans-serif;background:#3b5139;color:#f0e7c9;border:1px solid #6c7b55;border-radius:8px;padding:9px 12px;box-shadow:0 2px 0 #263c2d}
+body .pond-journal button:hover:not(:disabled),body .pond-journal button[aria-current=page],body .pond-journal button[aria-pressed=true]{background:#5b704a;color:#fff1c5;border-color:#82764e}
+body .pond-journal>nav button{text-align:left;background:transparent;border:0;color:#4c5339;border-radius:5px;box-shadow:none}
+body .pond-journal>nav button[aria-current=page]{background:#e7d9b0;color:#2c422e;box-shadow:-4px 0 #718253,0 2px 4px #463a261a}
+.pond-live-status{grid-column:2;background:#d6cba5;color:#59623e;font:12px 'Avenir Next',sans-serif;border:0;border-bottom:1px solid #b8ac85;padding:11px 24px}
+.pond-journal>.pond-body{grid-column:2;grid-row:3;height:auto;min-height:0;padding:18px 24px 40px;background:repeating-linear-gradient(0deg,transparent 0 29px,#927c4a08 29px 30px)}
+.pond-cards{gap:24px 32px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.pond-card{background:transparent;border:0;border-bottom:1px solid #ab9e76;border-radius:0;padding:12px 4px 22px;box-shadow:none}
+.pond-card h2{font:600 23px/1.25 Georgia,serif;color:#3c4b30;margin:0 0 12px}
+.pond-card h3{color:#435236}
+.pond-card p{font:13px/1.65 'Avenir Next',sans-serif;color:#596044}
+.pond-meter{color:#4c5c40;grid-template-columns:95px 1fr 36px;font:12px 'Avenir Next',sans-serif}
+.pond-meter meter::-webkit-meter-bar{background:#b0b28c;border:0;border-radius:8px}
+.pond-meter meter::-webkit-meter-optimum-value{background:linear-gradient(90deg,#83965c,#526e43);border-radius:8px}
+.pond-card .pond-note{color:#4b5737;border-left:3px solid #8b945e;font-style:italic}
+.pond-preview{border:5px solid #b3a47d;border-radius:8px;box-shadow:0 1px 0 #f2e8c5;height:180px}
+.pond-preview.large{height:240px}
+.pond-card input,.pond-card select{background:#eee2bd;color:#34442e;border:1px solid #a79b74;border-radius:7px;font:13px 'Avenir Next',sans-serif}
+.pond-card .pond-missing{color:#8b4937}.pond-card .pond-enough{color:#416b3f}
+.pond-card small{color:#6e7552;font:11px 'Avenir Next',sans-serif;letter-spacing:0}
+.pond-story{border-left:3px solid #9b8552;padding-left:16px}
+.pond-forecast{border-color:#aa9d75}
+.pond-choice{border-color:#aa9d75}
+.dialog-grip{cursor:grab}.dialog-grip:focus-visible{outline:2px dashed #9b7e3f;outline-offset:-6px}
+#item-gallery{width:min(1230px,94vw);height:90vh;max-height:90vh;background:linear-gradient(140deg,#303d2d,#182c26);border:5px solid #66563a;border-radius:15px;padding:22px;color:#eee1bd;box-shadow:0 24px 80px #000a}
+.gallery-head h1,.gallery-head h2{font:600 29px Georgia,serif;color:#e5cf92;letter-spacing:0}
+.gallery-head strong{font:600 27px Georgia,serif!important;color:#e5cf92!important;letter-spacing:0!important;text-transform:none}
+.gallery-head p{font:13px 'Avenir Next',sans-serif;color:#bfbc99}
+.gallery-filters,.gallery-pages{font:12px 'Avenir Next',sans-serif}
+.gallery-filters{flex-wrap:wrap}
+.gallery-filters input,.gallery-filters select{background:#d7cba4;color:#35442f;border:1px solid #a29870;border-radius:7px}
+.gallery-grid{gap:20px 14px}
+.gallery-grid article{background:linear-gradient(#21362b,#2e3d2b);border:0;border-bottom:7px solid #615437;border-radius:10px;padding:12px;box-shadow:0 4px 6px #07171066}
+.gallery-grid h3{font:600 17px Georgia,serif;color:#f0d99c}
+.gallery-grid p{font:12px/1.5 'Avenir Next',sans-serif;color:#c7c8a9}
+.gallery-grid small{color:#a5bb95}
+@media(max-width:1000px){.pond-journal[open]{grid-template-columns:138px minmax(0,1fr)}.pond-journal h1{font-size:23px}.pond-journal>.pond-body{padding:12px 16px 28px}.pond-journal>nav{padding:12px 6px}.pond-journal>nav button{font-size:11px!important}.kit-heading h2{font-size:23px}}
+@media(max-width:1100px){body[data-layout=world] #game-header .brand-mark{display:none}body[data-layout=world]>header#game-header{gap:4px;padding:4px 10px}.pond-cards{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){#pond-tools-panel button{transition:none}}

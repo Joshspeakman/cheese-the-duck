@@ -2,8 +2,17 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:">
 <title>Cheese the Duck</title><link rel="stylesheet" href="style.css"></head>
-<body><header><div class="brand"><span class="brand-mark" aria-hidden="true">\\|/<br>(o.o)&gt;</span><div><strong>CHEESE <span>THE DUCK</span></strong><small>A small duck. A very large world.</small></div></div>
-<nav aria-label="Display"><button id="panels" aria-pressed="false">Care &amp; menu</button><button id="graphics" aria-label="Graphics mode: Ultra">Graphics: Ultra</button><button id="zoom">Text: fit</button><span id="lighting" aria-label="Time of day">Pond time</span><button id="motion">Effects: vivid</button><button id="pond">Pond journal</button><button id="item-art">Item art</button><button id="capture">Photo</button><button id="fullscreen">Full screen</button></nav></header>
+<body><header id="game-header" data-hud-ui><div class="brand"><span class="brand-mark" aria-hidden="true">\\|/<br>(o.o)&gt;</span><div><strong>CHEESE <span>THE DUCK</span></strong><small>A small duck. A very large world.</small></div></div>
+<button id="pond-kit" aria-expanded="false" aria-controls="pond-tools-panel" title="Pond kit · F2">Pond kit <span aria-hidden="true">✦</span></button></header>
+<aside id="pond-tools-panel" hidden data-hud-ui role="dialog" aria-label="Pond kit">
+<div class="kit-heading"><div><small>YOUR LITTLE CORNER OF THE WORLD</small><h2>Make yourself at home.</h2></div><button id="kit-close" aria-label="Close pond kit">×</button></div>
+<p>Drag a panel by its name. Close what you don’t need; bring it back here.</p>
+<div id="panel-switches" aria-label="Visible panels"></div>
+<div class="kit-presets"><button id="arrange" aria-pressed="false">Arrange panels</button><button data-layout-preset="quiet">Quiet pond</button><button data-layout-preset="cozy">Reset layout</button><button data-layout-preset="all">Show everything</button></div>
+<label class="kit-fade"><input id="idle-fade" type="checkbox" checked> Fade controls after one quiet minute</label>
+<p class="kit-note">Move the mouse or press a key to wake the controls. F2 always opens this kit. Focus a panel’s handle and use arrow keys to move it.</p>
+<div class="kit-divider">POND TOOLS</div><nav aria-label="Display"><button id="panels" aria-pressed="false">Care &amp; menu</button><button id="graphics" aria-label="Graphics mode: Ultra">Graphics: Ultra</button><button id="zoom">Text: fit</button><span id="lighting" aria-label="Time of day">Pond time</span><button id="motion">Effects: vivid</button><button id="pond">Pond journal</button><button id="item-art">Item art</button><button id="capture">Photo</button><button id="fullscreen">Full screen</button></nav></aside>
+<button id="kit-recall" data-hud-ui title="Pond kit · F2" aria-label="Open pond kit">✦</button>
 <main id="viewport"><canvas id="world" tabindex="0" aria-label="Cheese the Duck game. Press H for help."></canvas><p id="loading">Waking up the pond...</p><pre id="error" hidden></pre></main>
-<footer><div id="actions" aria-label="Game actions"></div><div class="status"><span id="place">Cheese the Duck</span><span id="hint">Arrow keys + Enter to choose · Esc to return</span><span id="performance"></span></div></footer>
+<footer id="action-belt" data-hud-ui><div class="belt-handle"><button id="belt-grip" aria-label="Move action belt">···</button><button id="belt-close" aria-label="Close action belt">×</button></div><div id="actions" aria-label="Game actions"></div><div class="status"><span id="place">Cheese the Duck</span><span id="hint">Arrow keys + Enter to choose · Esc to return</span><span id="performance"></span></div></footer>
 <div id="announcement" role="status" aria-live="polite"></div><script type="module" src="app.mjs"></script></body></html>

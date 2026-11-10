@@ -10,7 +10,7 @@ export class PondJournal{
  constructor(){
   this.tab='pond';this.selected=null;this.frame=null;this.painter=new ItemPainter();this.last=0;this.lastRender=0;this.searchQuery='';
   this.dialog=el('dialog',undefined,'pond-journal');this.dialog.id='pond-journal';this.dialog.setAttribute('aria-label','Living pond journal');
-  const head=el('header');head.append(el('div','THE POND JOURNAL','pond-eyebrow'),el('h1','A little world with a life of its own.'));
+  const head=el('header');head.append(el('div','CHEESE’S FIELD NOTEBOOK','pond-eyebrow'),el('h1','Notes from the pond.'));
   this.closeButton=el('button','Close ×');this.closeButton.onclick=()=>this.dialog.close();head.append(this.closeButton);
   this.nav=el('nav');this.nav.setAttribute('aria-label','Journal sections');
   for(const [id,label] of [['pond','The pond'],['mind','Cheese’s plans'],['belongings','Belongings'],['friends','Friends'],['weather','Weather'],['projects','Projects'],['field','Field notes'],['memories','Memories']]){

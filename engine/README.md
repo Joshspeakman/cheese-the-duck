@@ -20,11 +20,38 @@ Ultra has presentation art for **all 542 unique items across 11 live registries*
 
 **Effects: vivid / subtle / off** controls warm sun shafts, moonlight, selective bloom around emissive glyphs and items, water caustics, rain rings, motes and swimming wakes. Light is drawn before characters and UI so the ASCII ink stays sharp. The preference persists across relaunches. Reduced Motion freezes all effects, props and previews; particle and weather toggles remain respected. A small lighting buffer and bounded sprite caches keep effects inexpensive at Retina resolution.
 
-During play, Ultra fills the entire client window with the living ASCII world, with no letterboxing or reserved sidebar. The emotion close-up and transcript float over the pond. Care meters and the hierarchy expand with **Care & menu**, the lower **Menu** button, or arrow-key navigation; Escape backs out and then collapses them. Window resizing and fullscreen keep the playfield edge to edge, while Text zoom changes the overlay scale.
+During play, Ultra fills the entire client window with the living ASCII world, with no letterboxing or reserved sidebar. Floating pine-and-brass panels, a compact **Pond kit**, and an action belt keep the pond in view. Care meters and the hierarchy expand with **Care & menu**, the lower **Menu** button, or arrow-key navigation; Escape backs out and then collapses them. Window resizing and fullscreen keep the playfield edge to edge, while Text zoom changes the overlay scale.
 
 Ultra includes an animated pond title screen, an ASCII logo, an expression-only emotion panel with animated eyes, brows, a duck bill and reaction marks for eight moods and care actions, care and trust meters, a scroll-following hierarchy, a persistent transcript, and experience/growth/goal readouts. The top-right panel has no head contour, crest, neck or clothing. It follows the original emotion action priority and keeps the time-of-day background. Shop, workshop, settings, exploration, journal, conversation, activity and warning panels have distinct ASCII illustrations and accents. Full menu text is captured before the terminal compositor truncates it, wrapped without losing characters, and wheel-scrollable when needed. Minigames retain their authored playfields inside the new arcade frame. Reduced Motion freezes portrait effects and High Contrast brightens UI labels and frames.
 
 Keyboard controls are unchanged. The title choices, hierarchical side menu, lower action bar and panel navigation controls support mouse input. Stale clicks and clicks behind confirmations are rejected on the game thread; a click uses the same Enter handler as keyboard selection. Arrow keys and Enter navigate the complete game menu. Escape goes back; T opens conversation; Page Up/Down scroll conversation history. Display controls provide fullscreen, larger text with scrolling, Vivid/Subtle/Off scene effects, a searchable item art catalog and PNG screenshots. Every dialogue string is drawn as literal glyphs.
+
+## A quieter, movable interface (2.33.0)
+
+After 60 seconds without mouse or keyboard activity, Ultra's controls fade over
+1.8 seconds while the pond keeps running and animating. Move the mouse or press a
+key to bring them back; a waking click or key is consumed so it cannot activate a
+hidden action. Conversations, confirmations, minigames, open journals and artwork
+catalogs remain visible. Reduced Motion makes the transition instant.
+
+Drag panel titles to move them, and use their **×** to close individual sections.
+The action belt has a grip at its top; the small Cheese heading moves the Pond kit.
+**Pond kit**, or **F2**, opens switches for all eight sections, layout presets and
+the idle-fade preference. A small recovery button remains available if the kit
+itself is closed. **Reset layout** restores the starting arrangement. Positions
+and visibility survive relaunches, with positions clamped inside resized windows.
+Focused drag handles also support arrow keys; Shift increases the movement step.
+
+Game windows, the parchment field notebook and the item-art cabinet can be moved
+by their headings. Original keyboard navigation, gameplay commands and literal
+dialogue are preserved. Classic retains its original rendering.
+
+The HUD harness runs the real frontend against disposable simulation snapshots:
+`npm run test:hud` (after `../.venv/bin/python capture_interface.py`). It checks
+dragging, independent visibility, reopening, layout persistence, resizing,
+overlapping hit targets, dialog input protection, wake handling, continued world
+animation and an actual one-minute idle interval. Reports and screenshots are in
+`artifacts/hud/`.
 
 ## The named guest cast (2.32.0)
 

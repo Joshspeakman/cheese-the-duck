@@ -4,6 +4,7 @@ import { characterSprite, drawCharacter } from './ultra-characters.mjs';
 import { itemSprite,ItemPainter,selectedItem,rarityColor } from './ultra-items.mjs';
 import { emotionPortrait } from './emotion-portrait.mjs';
 import { documentRows, documentTitle, themeFor, menuWindow, clamp, plain, cropDocument } from './interface-model.mjs';
+import { HudLayout } from './hud-layout.mjs';
 
 const C={ink:'#ebe6cf',muted:'#a2b6a2',dim:'#5e7e73',gold:'#f4ce82',mint:'#9bd9b9',blue:'#97cdd8',rose:'#efa997',bg:'#0d1e21',panel:'#13282b',line:'#345654'};
 const BASE_COLORS={...C};
@@ -27,33 +28,37 @@ const LOGO=[
 const friendly=value=>String(value||'').replaceAll('_',' ');
 
 export class InterfaceRenderer {
-  constructor(){this.hits=[];this.scroll=0;this.docKey='';this.selectedLine=-1;this.visibleDocument=null;this.cache=new Map();this.panelsOpen=false;this.itemPainter=new ItemPainter();}
-  text(ctx,text,x,y,size=16,color=C.ink,align='left',weight=400){
-    ctx.font=`${weight} ${size}px Menlo, monospace`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillStyle=color;ctx.fillText(String(text),x,y);
+  constructor(){this.hits=[];this.scroll=0;this.docKey='';this.selectedLine=-1;this.visibleDocument=null;this.cache=new Map();this.layout=new HudLayout();this.hudOpacity=1;this.hudRects=[];this.itemPainter=new ItemPainter();}
+  get panelsOpen(){return this.layout.visible('menu');}
+  set panelsOpen(value){this.layout.show('menu',value);this.layout.show('care',value);}
+  text(ctx,text,x,y,size=16,color=C.ink,align='left',weight=400,font='"Avenir Next", sans-serif'){
+    ctx.font=`${weight} ${size}px ${font}`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillStyle=color;ctx.fillText(String(text),x,y);
   }
   fitText(ctx,text,x,y,width,size=16,color=C.ink){
     const length=Array.from(String(text)).length;
     this.text(ctx,text,x,y,Math.min(size,width/Math.max(1,length)*1.62),color);
   }
   rule(ctx,x,y,w,color=C.line,char='-'){
-    const n=Math.max(2,Math.floor(w/9));this.text(ctx,char.repeat(n),x,y,14,color);
+    ctx.save();ctx.strokeStyle=color;ctx.lineWidth=char==='='?2:1;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+w,y);ctx.stroke();ctx.restore();
   }
   panel(ctx,x,y,w,h,color=C.line,fill=C.panel){
-    ctx.fillStyle=fill;ctx.fillRect(x,y,w,h);
-    this.rule(ctx,x+8,y+8,w-16,color);this.rule(ctx,x+8,y+h-8,w-16,color);
-    for(let py=y+23;py<y+h-14;py+=16){this.text(ctx,':',x+5,py,14,color);this.text(ctx,':',x+w-7,py,14,color);}
-    for(const px of [x+5,x+w-7])for(const py of [y+8,y+h-8])this.text(ctx,'+',px,py,14,color);
+    ctx.save();ctx.shadowColor='#020e12a0';ctx.shadowBlur=18;ctx.shadowOffsetY=5;
+    ctx.fillStyle=fill;ctx.beginPath();ctx.roundRect(x,y,w,h,14);ctx.fill();ctx.shadowColor='transparent';
+    ctx.strokeStyle=color;ctx.lineWidth=1;ctx.stroke();
+    ctx.strokeStyle='#e6ce9625';ctx.beginPath();ctx.roundRect(x+4,y+4,w-8,h-8,10);ctx.stroke();
+    ctx.fillStyle='#e7cc9320';for(const px of [x+11,x+w-11]){ctx.beginPath();ctx.arc(px,y+12,1.5,0,Math.PI*2);ctx.fill();}
+    ctx.restore();
   }
-  art(ctx,lines,x,y,size,color){lines.forEach((line,i)=>this.text(ctx,line,x,y+i*size*1.15,size,color));}
+  art(ctx,lines,x,y,size,color){lines.forEach((line,i)=>this.text(ctx,line,x,y+i*size*1.15,size,color,'left',400,'Menlo, monospace'));}
   button(ctx,label,x,y,w,h,selected=false,command=null){
-    ctx.fillStyle=selected?'#355247':'#1b3435';ctx.fillRect(x,y,w,h);
-    this.text(ctx,selected?'>':'[',x+12,y+h/2,18,selected?C.gold:C.dim);
+    ctx.fillStyle=selected?'#405943':'#203933';ctx.beginPath();ctx.roundRect(x,y,w,h,9);ctx.fill();
+    this.text(ctx,selected?'◆':'·',x+12,y+h/2,15,selected?C.gold:C.dim);
     this.fitText(ctx,label,x+34,y+h/2,w-64,17,selected?C.gold:C.ink);
-    this.text(ctx,selected?'<':']',x+w-22,y+h/2,18,selected?C.gold:C.dim);
+    if(selected)this.text(ctx,'›',x+w-22,y+h/2,22,C.gold);
     if(command)this.hits.push({x,y,w,h,command});
   }
   begin(ctx,canvas,frame,viewport){
-    this.hits=[];this.visibleDocument=null;
+    this.hits=[];this.hudRects=[];this.visibleDocument=null;
     this.width=viewport?viewport.width/viewport.uiScale:frame.cols*10;
     this.height=viewport?viewport.height/viewport.uiScale:frame.rows*18;
     this.worldFill=Boolean(frame.scene);
@@ -66,7 +71,10 @@ export class InterfaceRenderer {
     const ui=frame.ui,clock=ui.motion===false?0:time/1000;this.time=clock;
     if(ui.state==='title')this.title(ctx,frame,clock);
     else if(frame.scene){
+      ctx.save();ctx.globalAlpha*=this.hudOpacity;
       this.hud(ctx,frame,clock);
+      ctx.restore();
+      if(this.hudOpacity<.15||ui.modal)this.hits=[];
       if(ui.modal)this.document(ctx,ui.modal,ui);
     }else this.fullScreen(ctx,frame,clock);
     ctx.restore();
@@ -108,64 +116,70 @@ export class InterfaceRenderer {
     for(const word of words){if(line.length+word.length+1>limit){lines.push(line);line='';}line+=(line?' ':'')+word;}if(line)lines.push(line);
     lines.slice(0,maxRows).forEach((row,i)=>this.text(ctx,row,x,y+i*size*1.45,size,color));
   }
+  hudWindow(ctx,id,title){
+    if(!this.layout.visible(id))return null;
+    const r=this.layout.rect(id,this.width,this.height);this.hudRects.push({id,...r});
+    this.panel(ctx,r.x,r.y,r.w,r.h,'#667259','#142a25ee');
+    this.fitText(ctx,title,r.x+18,r.y+20,r.w-68,14,C.gold);
+    this.rule(ctx,r.x+16,r.y+35,r.w-32,'#60705255');
+    return r;
+  }
   hud(ctx,frame,time){
-    const {ui,scene:s}=frame,W=this.width,H=this.height;
-    const right=W-346,sw=328;
-    // The world extends behind every panel. No space is reserved for a sidebar.
-    this.panel(ctx,18,78,Math.min(570,right-36),78,C.line,'#102429e8');
-    this.text(ctx,s.location.toUpperCase(),36,102,18,C.gold,'left',700);
-    this.text(ctx,`$ ${ui.currency}`,Math.min(570,right-36),102,17,C.gold,'right');
-    this.fitText(ctx,`${friendly(s.season)} / ${friendly(s.weather)} / ${String(Math.floor(s.hour)).padStart(2,'0')}:${String(Math.floor(s.hour%1*60)).padStart(2,'0')}  ·  ${ui.activity}`,36,133,Math.min(530,right-76),13,C.muted);
-    const x=right+18,w=sw-36;
-    const emotionLight=sceneLight(s);this.emotionHour=emotionLight.hour;
-    const emotionPanel=mixColor(emotionLight.groundNear,'#102429',.45);
-    this.panel(ctx,right,78,sw,228,C.line,emotionPanel);
-    this.text(ctx,'// EMOTIONS',x,103,13,C.gold);
-    this.text(ctx,ui.age<1?`${Math.floor(ui.age*24)}h old`:`${Math.floor(ui.age)} days`,right+sw-22,103,12,C.muted,'right');
-    const closeup=emotionPortrait(s.duck,ui.emotion,time),faceCell=Math.min((w-8)/closeup.width,150/(closeup.art.length*1.5));
-    const environment=portraitEnvironment(ctx,s,right+12,117,sw-24,149,time);
-    drawCharacter(ctx,{...closeup,x:(right+sw/2)/faceCell,y:264/faceCell,backdrop:environment.background,outline:environment.light.outline},faceCell,faceCell,emotionPanel);
-    this.fitText(ctx,ui.mood,x,281,w,14,C.muted);
-    if(this.panelsOpen){
-    this.panel(ctx,right,313,sw,216,C.line,'#102429ef');
-    this.text(ctx,'CARE & CONNECTION',x,335,13,C.mint);
-    const needs=[['Hunger',ui.needs.hunger],['Energy',ui.needs.energy],['Fun',ui.needs.fun],['Clean',ui.needs.cleanliness],['Social',ui.needs.social],['Trust',ui.trust]];
-    needs.forEach(([label,value],i)=>{
-      const y=364+i*25,low=value<20,color=low?C.rose:i===5?C.gold:C.mint;
-      this.text(ctx,label,x,y,14,low?C.rose:C.ink);
-      const bars=11,filled=Math.round(clamp(value,0,100)/100*bars);
-      this.text(ctx,'['+'='.repeat(filled)+'.'.repeat(bars-filled)+']',x+81,y,13,color);
-      this.text(ctx,`${Math.floor(value)}%`,right+sw-20,y,13,color,'right');
-    });
-    if(ui.attention||ui.trust<20||ui.cold)this.text(ctx,ui.attention?'! NEEDS ATTENTION':ui.cold?'[COLD SHOULDER]':'[DISTANT]',x,514,11,C.rose);
-    const my=537,mh=H-155-my;
-    this.panel(ctx,right,my,sw,mh,C.line,'#102429ef');
-    this.fitText(ctx,(ui.menu.depth?' / ':'// ')+ui.menu.title.toUpperCase(),x,my+24,w,14,C.gold);
-    const count=Math.max(3,Math.floor((mh-72)/32)),window=menuWindow(ui.menu,count);
-    window.items.forEach((item,i)=>{
-      const index=window.start+i,y=my+48+i*32,selected=index===ui.menu.selected;
-      if(selected){ctx.fillStyle='#355247';ctx.fillRect(x-4,y-13,w+8,29);}
-      this.text(ctx,selected?'>':item.completed?'*':'.',x+3,y+1,15,selected?C.gold:C.dim);
-      this.fitText(ctx,item.label,x+24,y+1,w-43,14,!item.enabled?C.dim:selected?C.gold:C.ink);
-      if(item.children)this.text(ctx,'>',x+w-10,y+1,14,C.mint);
-      if(item.enabled&&!ui.modal&&!ui.minigame)this.hits.push({x:x-4,y:y-13,w:w+8,h:29,command:{type:'choose',target:'menu',id:item.id,context:ui.menu.items.map(v=>v.id).join('|')}});
-    });
-    this.text(ctx,`${window.start+1}-${window.start+window.items.length} / ${ui.menu.items.length}   [ESC] Back`,x,my+mh-20,11,C.muted);
-    }else{
-      this.button(ctx,ui.attention?'! Care & menu':'Care & menu',right,314,sw,34,false,ui.modal?null:{type:'panels'});
-      this.panel(ctx,right,355,sw,57,C.line,'#102429d9');
-      this.wrapText(ctx,ui.action,x,377,w,12,C.ink,2);
+    const {ui,scene:s}=frame;
+    let r=this.hudWindow(ctx,'pond',s.location);
+    if(r){
+      const clock=String(Math.floor(s.hour)).padStart(2,'0')+':'+String(Math.floor(s.hour%1*60)).padStart(2,'0');
+      this.text(ctx,clock+'  ·  '+friendly(s.season)+'  ·  '+friendly(s.weather),r.x+18,r.y+52,13,C.ink);
+      this.fitText(ctx,ui.activity,r.x+18,r.y+71,r.w-110,12,C.muted);
+      this.text(ctx,'$ '+ui.currency,r.x+r.w-18,r.y+70,14,C.gold,'right',600);
     }
-    // Transcript remains the original game's visible, scrollable, styled text.
-    const chatW=Math.min(920,right-36),chatY=H-324,chatH=169;
-    this.panel(ctx,18,chatY,chatW,chatH,C.line,'#102429df');
-    this.text(ctx,'POND CHAT',36,chatY+22,12,C.mint);
-    this.text(ctx,'[PGUP / PGDN] History',chatW+2,chatY+22,11,C.muted,'right');
-    const chat=documentRows(ui.chat,Math.floor((chatW-36)/(12*.61))).filter(row=>row.kind!=='rule');
-    const rowH=Math.min(17,104/Math.max(chat.length,1));
-    chat.forEach((row,i)=>this.row(ctx,row,36,chatY+44+i*rowH,Math.min(12,rowH*.82),chatW-36));
-    this.rule(ctx,36,chatY+chatH-28,chatW-36);
-    this.fitText(ctx,`LV ${ui.level}  ${ui.xp}/${ui.xpNeeded} XP  /  ${ui.stage} ${Math.floor(ui.growth)}%  /  GOALS ${ui.goals[0]}/${ui.goals[1]}`,36,chatY+chatH-14,chatW-36,11,C.muted);
+    const light=sceneLight(s);this.emotionHour=light.hour;
+    r=this.hudWindow(ctx,'emotion','Cheese');
+    if(r){
+      const closeup=emotionPortrait(s.duck,ui.emotion,time),cw=Math.min((r.w-32)/closeup.width,126/(closeup.art.length*1.5));
+      const environment=portraitEnvironment(ctx,s,r.x+12,r.y+42,r.w-24,126,time);
+      drawCharacter(ctx,{...closeup,x:(r.x+r.w/2)/cw,y:(r.y+168)/cw,backdrop:environment.background,outline:environment.light.outline},cw,cw,'#142a25');
+      this.fitText(ctx,ui.mood,r.x+18,r.y+184,r.w-36,12,C.ink);
+      this.text(ctx,ui.age<1?Math.floor(ui.age*24)+' hours old':Math.floor(ui.age)+' days together',r.x+18,r.y+201,10,C.muted);
+    }
+    r=this.hudWindow(ctx,'care','Care & connection');
+    if(r){
+      const needs=[['Hunger',ui.needs.hunger],['Energy',ui.needs.energy],['Fun',ui.needs.fun],['Clean',ui.needs.cleanliness],['Social',ui.needs.social],['Trust',ui.trust]];
+      needs.forEach(([label,value],i)=>{
+        const y=r.y+54+i*25,color=value<20?C.rose:i===5?C.gold:C.mint;
+        this.text(ctx,label,r.x+18,y,13,C.ink);
+        const x=r.x+93,w=r.w-150;ctx.fillStyle='#091b18';ctx.beginPath();ctx.roundRect(x,y-5,w,10,5);ctx.fill();
+        ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(x,y-5,Math.max(2,w*clamp(value,0,100)/100),10,5);ctx.fill();
+        this.text(ctx,Math.floor(value)+'%',r.x+r.w-17,y,12,color,'right');
+      });
+      if(ui.attention||ui.trust<20||ui.cold)this.text(ctx,ui.attention?'Cheese needs a little care':ui.cold?'Giving you the cold shoulder':'A little distant today',r.x+18,r.y+r.h-16,11,C.rose);
+    }
+    r=this.hudWindow(ctx,'menu',ui.menu.depth?ui.menu.title:'What shall we do?');
+    if(r){
+      const count=Math.max(3,Math.floor((r.h-70)/30)),view=menuWindow(ui.menu,count);
+      view.items.forEach((item,i)=>{
+        const y=r.y+46+i*30,selected=view.start+i===ui.menu.selected;
+        if(selected){ctx.fillStyle='#43583d';ctx.beginPath();ctx.roundRect(r.x+10,y-3,r.w-20,28,7);ctx.fill();}
+        this.text(ctx,selected?'◆':item.completed?'✓':'·',r.x+19,y+11,12,selected?C.gold:C.dim);
+        this.fitText(ctx,item.label,r.x+39,y+11,r.w-70,14,!item.enabled?C.dim:selected?C.gold:C.ink);
+        if(item.children)this.text(ctx,'›',r.x+r.w-24,y+11,18,C.mint);
+        if(item.enabled&&!ui.modal&&!ui.minigame)this.hits.push({panel:'menu',x:r.x+10,y:y-3,w:r.w-20,h:28,command:{type:'choose',target:'menu',id:item.id,context:ui.menu.items.map(v=>v.id).join('|')}});
+      });
+      this.text(ctx,(view.start+1)+'–'+(view.start+view.items.length)+' of '+ui.menu.items.length+'   ·   Esc to go back',r.x+18,r.y+r.h-15,10,C.muted);
+    }
+    r=this.hudWindow(ctx,'chat','Around the pond');
+    if(r){
+      const chat=documentRows(ui.chat,Math.floor((r.w-36)/(12*.61))).filter(row=>row.kind!=='rule');
+      const rowH=Math.min(18,106/Math.max(chat.length,1));
+      chat.forEach((row,i)=>this.row(ctx,row,r.x+18,r.y+51+i*rowH,Math.min(12,rowH*.82),r.w-36));
+      this.text(ctx,'PgUp / PgDn to revisit the conversation',r.x+18,r.y+r.h-13,10,C.muted);
+    }
+    r=this.hudWindow(ctx,'progress','A little more grown');
+    if(r){
+      this.fitText(ctx,'Level '+ui.level+'  ·  '+ui.xp+'/'+ui.xpNeeded+' XP  ·  '+ui.stage,r.x+18,r.y+49,r.w-36,12,C.muted);
+      this.text(ctx,Math.floor(ui.growth)+'% grown  ·  '+ui.goals[0]+'/'+ui.goals[1]+' goals',r.x+18,r.y+67,11,C.muted);
+      const x=r.x+165,w=r.w-218;ctx.fillStyle='#0b1e1a';ctx.fillRect(x,r.y+18,w,4);ctx.fillStyle=C.gold;ctx.fillRect(x,r.y+18,w*clamp(ui.xp/Math.max(1,ui.xpNeeded),0,1),4);
+    }
   }
   row(ctx,row,x,y,size,width){
     const cw=size*.61;
@@ -179,7 +193,7 @@ export class InterfaceRenderer {
       if(color==='#e2dfca'||color==='#dfded0')color=C.ink;
       if(/^[─═│║┌┐└┘╔╗╚╝╠╣┤├]$/u.test(cell.char))color=C.dim;
       if(cell.flags&4){ctx.fillStyle=C.gold;ctx.fillRect(x+offset,y-size*.65,cw,size*1.3);color=C.bg;}
-      this.text(ctx,cell.char,x+offset,y,size,color,'left',selected||cell.flags&1?700:400);
+      this.text(ctx,cell.char,x+offset,y,size,color,'left',selected||cell.flags&1?700:400,'Menlo, monospace');
       offset+=cw;
     }
   }
@@ -193,11 +207,13 @@ export class InterfaceRenderer {
     if(!rows){rows=documentRows(modal.lines,columns,modal.preserveArt);if(this.cache.size>24)this.cache.clear();this.cache.set(cacheKey,rows);}
     const size=rows.length>32?17:19,cw=size*.61;
     const maxCols=Math.max(40,...rows.map(row=>row.cells.length));
-    const w=clamp(maxCols*cw+92+previewWidth,preview?990:690,W-96),x=(W-w)/2;
+    const w=clamp(maxCols*cw+92+previewWidth,preview?990:690,W-96);
     const top=this.worldFill?78:0,bottom=this.worldFill?145:0,available=H-top-bottom;
     const rowH=size*1.48,maxRows=Math.max(4,Math.floor((available-194)/rowH));
-    const count=Math.min(rows.length,maxRows),h=count*rowH+170,y=top+(available-h)/2;
+    const count=Math.min(rows.length,maxRows),h=count*rowH+170;
     const key=ui.state+':'+ui.overlay+':'+title;
+    const position=full?{x:(W-w)/2,y:top+(available-h)/2}:this.layout.dialogRect(key,{x:(W-w)/2,y:top+(available-h)/2,w,h},W,H);
+    const {x,y}=position;
     const selected=rows.findIndex(row=>row.kind==='selected');
     if(key!==this.docKey){this.scroll=0;this.selectedLine=-1;this.docKey=key;}
     if(selected!==this.selectedLine){
@@ -205,7 +221,7 @@ export class InterfaceRenderer {
       this.selectedLine=selected;
     }
     this.scroll=clamp(this.scroll,0,Math.max(0,rows.length-count));
-    this.visibleDocument={x,y,w,h,total:rows.length,count,scroll:this.scroll,rows,title,preview:preview?.id,textWidth:w-80-previewWidth};
+    this.visibleDocument={id:key,movable:!full,x,y,w,h,total:rows.length,count,scroll:this.scroll,rows,title,preview:preview?.id,textWidth:w-80-previewWidth};
     ctx.fillStyle=full?'#0c1d21':'#051316cf';ctx.fillRect(0,0,W,H);
     // Offset ink shadow and a double ASCII border give every menu a tactile frame.
     this.panel(ctx,x+9,y+10,w,h,'#152b2c','#061417');
@@ -255,6 +271,10 @@ export class InterfaceRenderer {
     const title=names[frame.ui.state]||(heading?.replace(/^[\s=]+|[\s=]+$/g,'') || 'Pond arcade');
     this.document(ctx,{title,lines,preserveArt:frame.ui.minigame},frame.ui,true);
   }
-  hit(x,y){return this.hits.find(hit=>x>=hit.x&&y>=hit.y&&x<hit.x+hit.w&&y<hit.y+hit.h)?.command;}
+  hit(x,y){
+    const inside=r=>x>=r.x&&y>=r.y&&x<r.x+r.w&&y<r.y+r.h;
+    const hit=[...this.hits].reverse().find(inside),top=[...this.hudRects].reverse().find(inside);
+    return hit?.panel&&top?.id!==hit.panel?null:hit?.command;
+  }
   wheel(delta){if(!this.visibleDocument||this.visibleDocument.total<=this.visibleDocument.count)return false;this.scroll=clamp(this.scroll+Math.sign(delta)*3,0,this.visibleDocument.total-this.visibleDocument.count);return true;}
 }
