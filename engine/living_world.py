@@ -12,6 +12,7 @@ from datetime import datetime
 from engine.item_profiles import ITEMS
 from engine.pond_stories import STORIES
 from engine.placements import outdoor_decorations, complete_structures
+from world.guest_cast import guest_profile, guest_line
 
 NEEDS = ('hunger', 'energy', 'fun', 'cleanliness', 'social')
 SKILLS = ('gardening', 'stewardship', 'cooking', 'care', 'building', 'engineering',
@@ -602,6 +603,30 @@ class LivingPond:
         action=command.get('action');target=command.get('target','')
         if not isinstance(target,str) or len(target)>128:return
         self.sync();s=self.state
+        if action in ('guest_chat', 'guest_hobby', 'guest_company'):
+            visit = self.game.atmosphere.current_visitor
+            if not visit or visit[0].id != target:
+                return self.notice('That guest has already headed home. Catch them next time.')
+            now = time.monotonic()
+            if now - getattr(self, '_guest_chat_at', -100) < 8:
+                return self.notice('Give your guest a moment to finish their thought.')
+            profile = guest_profile(target)
+            if not profile:
+                return
+            self._guest_chat_at = now
+            # A social chat cannot repeatedly roll gifts or duplicate inventory.
+            result = self.game.atmosphere.interact_with_visitor(allow_gift=False)
+            message = result[0]
+            if action == 'guest_hobby':
+                message = profile['name'] + ': ' + guest_line(target, 'story', self.game.duck.name)
+            elif action == 'guest_company':
+                friendship = self.game.atmosphere.get_visitor_friendship(target)
+                close = friendship and friendship.level.value in ('friend', 'good_friend', 'best_friend')
+                message = profile['name'] + ': ' + guest_line(target, 'personal' if close else 'activity', self.game.duck.name)
+            self._guest_note = {'id':target, 'text':message}
+            self.change_need('social', 2)
+            self.remember('friend', message, .65, target)
+            return self.notice(message)
         if action=='story_choice':return self.choose_story(target)
         if action=='garden_water' and target.isdigit():
             plot=self.game.garden.plots.get(int(target))
@@ -749,7 +774,17 @@ class LivingPond:
         plan=copy.deepcopy(s['plan'])
         if plan:plan['progress']=clamp(plan['elapsed']/plan['duration'])
         friends=[]
+        rare_guest = None
         if self.game:
+            visit = self.game.atmosphere.current_visitor
+            if visit:
+                profile = guest_profile(visit[0].id)
+                friendship = self.game.atmosphere.get_visitor_friendship(visit[0].id)
+                if profile:
+                    note = getattr(self, '_guest_note', {})
+                    rare_guest = {'id':profile['id'], 'name':profile['name'], 'bio':profile['bio'], 'habit':profile['habit'],
+                                  'relationship':friendship.level.value if friendship else 'stranger',
+                                  'last_line':note.get('text','') if note.get('id')==profile['id'] else ''}
             for key,record in s['friends'].items():
                 friend=self.game.friends.get_friend_by_id(key)
                 if friend:friends.append({'id':key,'name':friend.name,'personality':friend.personality.value,'relationship':friend.friendship_level.value,'points':friend.friendship_points,**record})
@@ -773,7 +808,7 @@ class LivingPond:
             'elapsed':s['elapsed'],'plan':plan,'policy':s['policy'],'auto':s['auto'],
             'ecology':copy.deepcopy(s['ecology']),'weather':copy.deepcopy(s['weather'].get(getattr(self,'biome','pond'),{})),
             'objects':{k:dict(v) for k,v in s['objects'].items() if k in getattr(self,'owned',set())},
-            'placed':list(getattr(self,'placed',{})),'friends':friends,'projects':projects,
+            'placed':list(getattr(self,'placed',{})),'friends':friends,'rare_guest':rare_guest,'projects':projects,
             'skills':dict(s['skills']),'knowledge':dict(s['knowledge']),'decision':copy.deepcopy(s['decision']),
             'journal':copy.deepcopy(s['journal'][-35:]),'promises':copy.deepcopy(s['promises']),
             'stocks':{k.split(':')[1]:round(v,1) for k,v in s['stocks'].items() if k.startswith(getattr(self,'biome','pond')+':')},

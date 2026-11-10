@@ -55,7 +55,7 @@ function animate(now) {
     window.interfaceTargets = renderer.mode === 'ultra' ? renderer.interface.hits : [];
     $('performance').textContent = renderer.mode === 'ultra' ? 'ULTRA ASCII' : `CLASSIC · ${frame.cols} × ${frame.rows}`;
   }
-  if (!pending && (last?.scene || last?.ui?.state==='title') && renderer.mode === 'ultra' && now-lastDraw >= 1000/30) { renderer.draw(last, now); lastDraw=now; }
+  if (!pending && (last?.scene || last?.ui?.state==='title') && renderer.mode === 'ultra' && now-lastDraw >= 1000/30) { renderer.draw(last, now); window.interfaceTargets=renderer.interface.hits; lastDraw=now; }
   requestAnimationFrame(animate);
 }
 new ResizeObserver(() => { if (last) { size(last); renderer.draw(last); } }).observe($('viewport'));

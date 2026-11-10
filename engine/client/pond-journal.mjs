@@ -1,6 +1,7 @@
 import {catalog,itemSprite,itemProfile,itemFamily,ItemPainter} from './ultra-items.mjs';
 import {characterSprite,drawCharacter} from './ultra-characters.mjs';
 import {eventModel,EVENT_ASSETS} from './event-art.mjs';
+import {guestProfile} from './visitor-rig.mjs';
 const names=new Map(catalog.map(i=>[i.id,i]));
 const pretty=s=>String(s||'').replaceAll('_',' ');
 const percent=n=>`${Math.round((n||0)*100)}%`;
@@ -36,7 +37,7 @@ export class PondJournal{
   const p=w.plan;this.status.textContent=p?`${p.label} · ${p.paused?'paused':pretty(p.phase)} · ${Math.round(p.progress*100)}%`:'Cheese is free to choose what comes next.';
   for(const bar of this.body.querySelectorAll('[data-progress]'))bar.value=p?.progress||0;
   // Keep focused controls and scroll position stable as live frames arrive.
-  const signature=[p?.kind,p?.paused,...w.projects.map(p=>p.stage),Object.keys(w.objects).length,w.friends.length,w.story?.id,w.story?.step,w.garden.map(p=>p.plant+':'+p.stage).join(',')].join('|');
+  const signature=[p?.kind,p?.paused,...w.projects.map(p=>p.stage),Object.keys(w.objects).length,w.friends.length,w.rare_guest?.id,w.rare_guest?.last_line,w.story?.id,w.story?.step,w.garden.map(p=>p.plant+':'+p.stage).join(',')].join('|');
   if(this.signature&&signature!==this.signature)this.render();this.signature=signature;
  }
  render(reset=false){
@@ -78,9 +79,12 @@ export class PondJournal{
     detail.append(this.button(p.verb,'item',id,busy||['food','wearable'].includes(p.kind)),this.button('Brush & polish','clean_item',id,busy||state.dirt<.05),this.button('Repair · 1 twig','repair_item',id,busy||state.condition>=.95));if(['food','wearable'].includes(p.kind))detail.append(this.legacy(p.kind==='food'?'Eat through inventory':'Open wardrobe & items','inventory'));grid.append(detail);
    }else grid.append(this.card('Make a collection','Find resources, craft things or visit the shop. New belongings appear here as you acquire them.'));
   }else if(this.tab==='friends'){
+   if(w.rare_guest){const guest=w.rare_guest,c=this.card(guest.name,guest.bio);this.preview(c,'friend',guest.id);c.append(el('p',guest.habit),el('p',pretty(guest.relationship)));
+    if(guest.last_line)c.append(el('p',guest.last_line,'pond-note'));
+    c.append(this.button('Say hello','guest_chat',guest.id),this.button('Ask about their adventures','guest_hobby',guest.id),this.button('Keep them company','guest_company',guest.id));grid.append(c);}
    const community=this.card('A welcoming pond','Kindness to visitors and passing strangers is remembered here. A warmer community eases loneliness between visits and makes shared time more restorative.');this.meter(community,'Community warmth',w.community?.warmth||0);community.append(el('p',`${w.community?.gatherings||0} shared gatherings`));grid.append(community);
    if(!w.friends.length)grid.append(this.card('Room for friends','Visitors arrive as you play. Once you meet someone, their routines, memories and shared plans appear here.'));
-   for(const friend of w.friends){const c=this.card(friend.name,`${pretty(friend.personality)} · ${pretty(friend.relationship)} · ${friend.activity} at ${friend.location}`);this.preview(c,'friend',friend.id);for(const [key,label] of [['trust','Trust'],['warmth','Warmth'],['reliability','Reliability']])this.meter(c,label,friend[key]);c.append(el('p',`Would enjoy: ${friend.want}.`),this.button('Invite over','invite',friend.id),this.button('Make a promise','promise',friend.id),this.button('Share their favorite activity','share',friend.id,busy));
+   for(const friend of w.friends){const identity=guestProfile(friend),c=this.card(friend.name,identity.bio);this.preview(c,'friend',friend.id);c.append(el('p',identity.habit),el('p',`${pretty(friend.personality)} · ${pretty(friend.relationship)} · ${friend.activity} at ${friend.location}`));for(const [key,label] of [['trust','Trust'],['warmth','Warmth'],['reliability','Reliability']])this.meter(c,label,friend[key]);c.append(el('p',`Would enjoy: ${friend.want}.`),this.button('Invite over','invite',friend.id),this.button('Make a promise','promise',friend.id),this.button('Share their favorite activity','share',friend.id,busy));
     for(const promise of w.promises.filter(p=>p.friend===friend.id).slice(-2))c.append(el('p',`${pretty(promise.activity)} · ${promise.status}${promise.status==='promised'?' · '+Math.max(0,Math.ceil((promise.deadline-w.elapsed)/60))+' minutes left':''}`,'pond-note'));
     for(const memory of friend.memories.slice(-2))c.append(el('p',`Remembered ${memory.activity} together in ${pretty(memory.weather)}.`));grid.append(c);}
   }else if(this.tab==='weather'){
@@ -112,7 +116,7 @@ export class PondJournal{
     const cw=Math.min((canvas.width-30)/(model.width+2),(canvas.height-45)/((model.art.length+2)*1.5))/(model.detailScale||1);
     this.painter.draw(ctx,model,canvas.width/2,canvas.height-22,cw,{surface:'#142a22',outline:'#091d18'});
    }else{
-    let model;if(kind==='wildlife'){model=eventModel({id,asset:id,family:'',art:EVENT_ASSETS[id]?.frames?.idle},time,motion);}else if(kind==='friend'){const friend=w.friends.find(f=>f.id===id);if(!friend)continue;model=characterSprite({...friend,state:friend.activity,stage:'adult'},time,true);model.name='';}else model=characterSprite({...this.frame.scene.duck,state:w.plan?.kind==='rest'?'sleeping':this.frame.scene.duck.state},time);
+    let model;if(kind==='wildlife'){model=eventModel({id,asset:id,family:'',art:EVENT_ASSETS[id]?.frames?.idle},time,motion);}else if(kind==='friend'){const friend=w.friends.find(f=>f.id===id)||(w.rare_guest?.id===id?w.rare_guest:null);if(!friend)continue;model=characterSprite({...friend,state:'signature',activity:'signature',stage:'adult'},time,true);model.name='';}else model=characterSprite({...this.frame.scene.duck,state:w.plan?.kind==='rest'?'sleeping':this.frame.scene.duck.state},time);
     const sx=kind==='wildlife'?5:6,sy=5;drawCharacter(ctx,{...model,x:canvas.width/2/sx,y:(canvas.height-22)/sy,sun:.7},sx,sy,'#132721');
    }
   }

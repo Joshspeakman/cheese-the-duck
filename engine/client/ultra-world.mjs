@@ -285,11 +285,9 @@ export class LivingWorld {
   actor(s,t,x,y,duck,visitor=false){
     if(duck.away||duck.hidden)return;
     const state=duck.state||'idle';
-    const jump=/jump|excited|danc/.test(state)?Math.abs(Math.sin(t*6))*1.8:0;
-    const bob=Math.sin(t*(/sleep|napping/.test(state)?1.4:4))*.2;
     if(/swim|float|splash|diving/.test(state))this.ripples(x,y,t);
     const sprite=characterSprite(duck,t,visitor);
-    this.characters.push({...sprite,x,y:visitor?y-jump+bob:y});
+    this.characters.push({...sprite,x,y});
   }
   actors(s,t,dt){
     const g=this.grid,actors=[];
@@ -305,7 +303,7 @@ export class LivingWorld {
       if(event.art?.length)this.characters.push({...eventModel(event,t,s.motion!==false),x,y});
       for(const [px,py,char] of event.particles||[]){const [xx,yy]=this.project(s,px,py);g.put(xx,yy,/[\x20-\x7e]/.test(char)?char:'*',C.goldLight);}
     }
-    if(s.rareVisitor){const visitor=s.rareVisitor,[x,y]=this.project(s,visitor.x,visitor.y);this.characters.push({...visitor.personality?characterSprite({...visitor,stage:'adult',state:'idle'},t,true):eventModel(visitor,t,s.motion!==false),x,y,name:visitor.name});}
+    if(s.rareVisitor){const visitor=s.rareVisitor,[x,y]=this.project(s,visitor.x,visitor.y);this.characters.push({...characterSprite({stage:'adult',state:'idle',...visitor},t,true),x,y,name:visitor.name});}
     const living=s.living;
     if(living&&s.location==='Home Pond'){
       const species=living.ecology.insects>.6?'dragonfly':living.ecology.birds>.55?'robin':living.ecology.fish>.65?'fish':null;

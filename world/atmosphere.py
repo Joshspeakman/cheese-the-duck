@@ -3,12 +3,14 @@ Atmosphere system - Weather, Seasons, Lucky Days, and Rare Visitors.
 Creates dynamic, engaging world that changes over time (Animal Crossing style).
 """
 import random
+import time
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 
 from core.event_bus import event_bus, WeatherChangedEvent
+from world.guest_cast import guest_profile, guest_line
 
 
 # =============================================================================
@@ -1545,6 +1547,8 @@ class AtmosphereManager:
         self.visitor_history: List[str] = []  # Track who has visited
         self.weather_history: List[str] = []  # Recent weather
         self.visitor_friendships: Dict[str, VisitorFriendship] = {}  # Track friendships
+        self.visitor_interacted_at = 0.0
+        self._cast_interactions = {}
 
         # Generate initial weather for every known biome
         for biome in _ALL_BIOMES:
@@ -1789,7 +1793,7 @@ class AtmosphereManager:
                 elapsed = (datetime.now() - arrival_time).total_seconds() / 3600
                 if elapsed >= visitor.stay_duration_hours:
                     self.current_visitor = None
-                    return visitor.farewell
+                    return guest_line(visitor.id, 'farewell') or visitor.farewell
             except (ValueError, TypeError, AttributeError):
                 self.current_visitor = None
 
@@ -1848,6 +1852,10 @@ class AtmosphereManager:
 
     def _get_visitor_greeting(self, visitor: Visitor, visitor_id: str) -> str:
         """Get appropriate greeting based on friendship level."""
+        profile = guest_profile(visitor_id)
+        if profile:
+            friendship = self.visitor_friendships.get(visitor_id)
+            return guest_line(visitor_id, 'returning' if friendship and friendship.visit_count > 1 else 'greeting')
         if visitor_id not in self.visitor_friendships:
             return visitor.greeting
 
@@ -1925,7 +1933,7 @@ class AtmosphereManager:
 
         return mood
 
-    def interact_with_visitor(self) -> Optional[Tuple[str, Optional[str]]]:
+    def interact_with_visitor(self, allow_gift: bool = True) -> Optional[Tuple[str, Optional[str]]]:
         """
         Interact with current visitor.
         Returns (message, gift_item_id) or None if no visitor.
@@ -1935,6 +1943,7 @@ class AtmosphereManager:
 
         visitor, _ = self.current_visitor
         visitor_id = visitor.id
+        self.visitor_interacted_at = time.monotonic()
 
         # Add friendship points for interaction
         if visitor_id in self.visitor_friendships:
@@ -1955,7 +1964,7 @@ class AtmosphereManager:
         elif level == FriendshipLevel.FRIEND:
             gift_chance = min(1.0, gift_chance + 0.1)
 
-        if random.random() < gift_chance:
+        if allow_gift and random.random() < gift_chance:
             # Best friends get special gifts
             if level == FriendshipLevel.BEST_FRIEND and visitor.special_gifts:
                 gift = random.choice(visitor.special_gifts)
@@ -1986,6 +1995,30 @@ class AtmosphereManager:
                     f"{visitor.name}: *nods approvingly* You take good care of Cheese!",
                 ]
                 message = random.choice(responses)
+
+        # Each rare visitor speaks in their own voice. Older conversations and
+        # friendship secrets remain in the rotation; gifts/rewards are unchanged.
+        profile = guest_profile(visitor_id)
+        if profile:
+            index = self._cast_interactions.get(visitor_id, 0)
+            self._cast_interactions[visitor_id] = index + 1
+            if gift:
+                offerings = {
+                    'friendly_goose': 'Gerald saw this and honked your name. A gift was inevitable.',
+                    'wise_owl': 'For your collection. I have included an entirely verbal footnote.',
+                    'lost_duckling': 'Captain Ribbit and I picked this. We both voted for you.',
+                    'traveling_merchant': 'No charge. Do not spread that around. I have a reputation.',
+                    'celebrity_duck': 'For you. Unsigned, unless that would somehow improve it.',
+                    'mysterious_crow': 'Found this. Thought of you. That is all the explanation available.',
+                    'butterfly_fairy': 'A little extravagance. You can never have enough of those.',
+                    'grumpy_toad': 'Take it. It was cluttering up my extremely important dampness.',
+                }
+                message = f"{visitor.name}: {offerings[visitor_id]} *offers a gift*"
+            elif index % 3 != 2 and '*whispers*' not in message:
+                sections = ['opening', 'main', 'story', 'activity']
+                if level in (FriendshipLevel.FRIEND, FriendshipLevel.GOOD_FRIEND, FriendshipLevel.BEST_FRIEND):
+                    sections.append('personal')
+                message = f"{visitor.name}: {guest_line(visitor_id, sections[index % len(sections)])}"
 
         # Track gift if received
         if gift and friendship:

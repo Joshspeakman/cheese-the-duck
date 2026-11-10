@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 from enum import Enum
 import random
+from world.guest_cast import guest_profile, guest_line
 
 
 # =============================================================================
@@ -506,6 +507,7 @@ class VisitorDialogueManager:
         self.conversation_topics: List[str] = []  # What we've discussed before
         self.shared_experiences: List[str] = []  # What we've done together
         self.last_conversation_summary: str = ""  # What we talked about last time
+        self._cast_phases = set()
         
     def start_visit(self, personality: str, friendship_level: str, 
                     friend_name: str, visit_number: int, unlocked_topics: set = None,
@@ -524,10 +526,25 @@ class VisitorDialogueManager:
         self.conversation_topics = conversation_topics or []
         self.shared_experiences = shared_experiences or []
         self.last_conversation_summary = last_conversation_summary
+        self._cast_phases = set()
         
     def get_next_dialogue(self, duck_name: str = "friend") -> Optional[str]:
         """Get the next line of dialogue based on current state."""
         dialogue_tree = DIALOGUE_TREES.get(self.personality, {})
+
+        # Named characters lead each topic in their own voice. Existing topic
+        # unlocks, memory, friendship gates and archetype conversation continue
+        # afterward, so this does not discard progression or older dialogue.
+        profile = guest_profile(self.friend_name)
+        phase = self.state.phase.value
+        section = 'returning' if phase == 'greeting' and self.visit_number > 1 else phase
+        line = guest_line(self.friend_name, section, duck_name) if profile else ''
+        if line and phase not in self._cast_phases:
+            self._cast_phases.add(phase)
+            self.state.lines_said.append(line)
+            if self.state.phase == ConversationPhase.GREETING:
+                self.state.phase = ConversationPhase.OPENING
+            return f"{self.friend_name}: {line}"
 
         # Special handling for greetings when we've met before
         # Only try returning greeting if we haven't said ANY lines yet (first call)

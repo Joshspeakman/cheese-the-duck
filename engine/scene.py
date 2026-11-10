@@ -70,9 +70,9 @@ def snapshot(game, renderer):
         friend = game.friends.get_friend_by_id(game.friends.current_visit.friend_id)
         if friend:
             from world.friends import visitor_animator
-            x, y = visitor_animator.get_position()
+            x, y = visitor_animator._position_x, visitor_animator._position_y
             visitor = {'id': friend.id, 'state': visitor_animator._current_state,
-                       'facing': x < pos.x - renderer._camera_x,
+                       'facing': x < pos.x - renderer._camera_x if visitor_animator._current_state == 'signature' else getattr(visitor_animator, '_facing_right', True),
                        'activity': visitor_animator._current_state, 'name': friend.name, 'x': x + renderer._camera_x, 'y': y + renderer._camera_y,
                        'personality': friend.personality.value, 'art': visitor_animator.get_current_art()}
     rare = None
@@ -83,6 +83,10 @@ def snapshot(game, renderer):
                    'mysterious_crow':'crow','butterfly_fairy':'butterfly','grumpy_toad':'toad'}
         rare = {'personality': {'traveling_merchant':'adventurous','celebrity_duck':'generous'}.get(definition.id), 'id':definition.id,'name':definition.name,'asset':species.get(definition.id,'bird_flying'),
                 'art':definition.ascii_art,'x':pos.x+17,'y':pos.y+2}
+        motion = getattr(game, 'guest_motion', None)
+        actor = motion.snapshot() if motion else None
+        if actor and actor['id'] == definition.id:
+            rare.update(actor)
     interaction = renderer.interaction_animator.get_render_data()
     active = None
     if interaction:
