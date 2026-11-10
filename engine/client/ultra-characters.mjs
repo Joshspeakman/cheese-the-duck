@@ -1,5 +1,6 @@
 import { duckRig } from './duck-rig.mjs';
 import { visitorRig } from './visitor-rig.mjs';
+import { mixColor } from './scene-lighting.mjs';
 
 // Original idle sprites used as the expression/accessory reference in previews.
 // Live snapshots supply the original animated pose to the expanded drawings.
@@ -37,6 +38,16 @@ export function drawCharacter(ctx,sprite,sx,sy,background) {
   ctx.save();
   ctx.font=`600 ${ch}px Menlo, monospace`;
   ctx.textBaseline='middle';ctx.textAlign='center';ctx.lineJoin='round';
+  // Golden down can disappear into sunlit grass. Give the youngest silhouettes
+  // a close dark edge and deeper interiors, fading the treatment out at night.
+  // Work from the posed feather spans, never a rectangular character backdrop.
+  const young=({hatchling:1,duckling:.9,juvenile:.5}[sprite.rig?.stage]||0)*Math.min(1,Math.max(0,((sprite.sun??.7)-.12)/.65));
+  const outline=sprite.outline||background;
+  if(young&&sprite.fills){
+    const edge=Math.max(.8,cw*.24)*young;
+    ctx.fillStyle=outline;
+    for(const fill of sprite.fills)ctx.fillRect(left+fill.x*cw-edge,top+fill.y*ch-edge,fill.w*cw+edge*2,ch+edge*2);
+  }
   // A quiet silhouette and a narrow outline keep tiny scenery/weather glyphs
   // out of the face. Blank space stays blank: no feather stippling or hatching.
   for(let row=0;!sprite.fills&&row<art.length;row++){
@@ -52,15 +63,16 @@ export function drawCharacter(ctx,sprite,sx,sy,background) {
   // Sunlight changes the material gently; the ASCII detail keeps its contrast.
   const shade=(hex,f)=>'#'+hex.slice(1,7).match(/../g).map(v=>Math.round(parseInt(v,16)*f).toString(16).padStart(2,'0')).join('');
   for(const fill of sprite.fills||[]){
-    ctx.fillStyle=shade(sprite.inks[fill.tone]||sprite.body,(.50+.14*(1-fill.y/art.length))*(.62+.38*(sprite.sun??.7)));
+    ctx.fillStyle=shade(sprite.inks[fill.tone]||sprite.body,(.50+.14*(1-fill.y/art.length))*(.62+.38*(sprite.sun??.7))*(1-young*.24));
     ctx.fillRect(left+fill.x*cw,top+fill.y*ch,fill.w*cw,ch+.25);
   }
   for(let row=0;row<art.length;row++)for(let col=0;col<art[row].length;col++){
     const char=art[row][col];if(char===' ')continue;
     const px=left+(col+.5)*cw,py=top+(row+.5)*ch;
-    ctx.strokeStyle=sprite.outline||background;ctx.lineWidth=sprite.material==='feathers'?Math.max(.5,cw*.13):Math.max(1,cw*.17);
-    ctx.strokeText(char,px,py,cw*1.12);
     const tone=sprite.tones?.[row]?.[col];
+    ctx.strokeStyle=tone==='e'&&young?mixColor(outline,'#f4e6b9',young):outline;
+    ctx.lineWidth=sprite.material==='feathers'?Math.max(.5,cw*(.13+young*.14)):Math.max(1,cw*.17);
+    ctx.strokeText(char,px,py,cw*1.12);
     ctx.fillStyle=sprite.inks?.[tone]||(tone==='c'?sprite.cosmetic||sprite.accent:tone==='a'?sprite.accent:tone==='f'?sprite.face:tone==='s'?sprite.shade:tone==='w'?'#8dc6cc':sprite.body);
     ctx.fillText(char,px,py,cw*1.12);
     if(tone==='e'&&char==='O'){ctx.font=`600 ${ch*.5}px Menlo,monospace`;ctx.fillStyle='#f3f1da';ctx.fillText('.',px-cw*.1,py-ch*.16);ctx.font=`600 ${ch}px Menlo,monospace`;}
