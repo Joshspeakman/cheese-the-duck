@@ -46,6 +46,7 @@ def snapshot(game, renderer):
     settings = get_settings()
     result = {
         'state': game._state,
+        'hour': game.day_night.get_current_hour() + game.day_night.get_current_minute() / 60,
         'motion': renderer._show_animations and not settings.accessibility.reduced_motion,
         'highContrast': settings.accessibility.high_contrast,
         'modal': renderer.interface_modal,

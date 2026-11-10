@@ -44,8 +44,11 @@ export function drawCharacter(ctx,sprite,sx,sy,background) {
   for(let row=0;row<art.length;row++){
     const line=art[row],start=line.search(/\S/),end=line.trimEnd().length;
     if(start<0)continue;
-    ctx.fillStyle=background;
-    ctx.fillRect(left+start*cw-cw*.08,top+row*ch+ch*.1,(end-start+.16)*cw,ch*.85);
+    if(sprite.backdrop){
+      for(let col=start;col<end;col++){ctx.fillStyle=sprite.backdrop(left+(col+.5)*cw,top+(row+.5)*ch);ctx.fillRect(left+col*cw,top+row*ch,cw+.5,ch+.5);}
+    }else{
+      ctx.fillStyle=background;ctx.fillRect(left+start*cw-cw*.08,top+row*ch+ch*.1,(end-start+.16)*cw,ch*.85);
+    }
   }
   for(let row=0;row<art.length;row++)for(let col=0;col<art[row].length;col++){
     const char=art[row][col];if(char===' ')continue;

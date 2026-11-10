@@ -51,11 +51,11 @@ export function palette(scene) {
   if(scene.season==='fall'){p[6]='#966d43';p[7]='#d8aa66';p[13]='#a89762';}
   if(scene.season==='winter'){p[6]='#688c8d';p[7]='#c7d8d1';p[12]='#7f9e9e';p[13]='#cedbd5';}
   const light=sceneLight(scene),day=p.slice();
-  Object.assign(day,{0:light.groundNear,1:'#4c91a9',2:'#f1f6dd',3:'#659092',4:'#4d7559',
-    11:'#46613b',12:'#9bad6c',13:'#e0e2a5',14:'#286677',15:'#acd8ce',16:'#e0f2d8',17:'#fff7c7'});
+  Object.assign(day,{0:light.groundNear,1:'#759b9d',2:'#d8e6cf',3:'#7b9c8f',4:'#92a27c',5:'#42654a',6:'#8ba76c',7:'#cad68b',
+    8:'#4b4931',9:'#ac9563',10:'#e4c688',11:'#718257',12:'#b2b779',13:'#dfd394',14:'#497f8b',15:'#90c1b5',16:'#d1e4c1',17:'#f4df9d'});
   if(scene.biome==='beach'){day[11]='#a29061';day[12]='#f1dba1';day[13]='#fff0ca';}
+  if(scene.season==='fall'||scene.season==='autumn'){day[6]='#c2995a';day[7]='#ecc780';day[12]='#c3b177';}
   if(scene.season==='winter'){day[11]='#709b9a';day[12]='#e7eddd';day[13]='#fbffe9';}
-  const hour=scene.hour??12;
   const daylight=light.sun;
   const dusk=light.twilight>0;
   if(dusk){p[1]='#423440';p[2]='#bd937c';p[3]='#665168';p[17]='#efbf8b';}

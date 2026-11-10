@@ -120,10 +120,9 @@ async function smoke() {
     const bounds=await win.webContents.executeJavaScript(`(() => {const r=document.getElementById('world').getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,width:innerWidth,height:innerHeight,layout:document.body.dataset.layout}})()`);
     if(bounds.layout!=='world'||Math.abs(bounds.x)>1||Math.abs(bounds.y)>1||Math.abs(bounds.w-bounds.width)>1||Math.abs(bounds.h-bounds.height)>1)throw new Error('Playfield does not fill the window: '+JSON.stringify(bounds));
   }
-  await win.webContents.executeJavaScript("document.getElementById('lighting').click()");
-  if(await win.webContents.executeJavaScript("localStorage.getItem('cheese.lighting')")!=='day')throw Error('Day lighting preference was not saved');
-  await pause(150);
-  fs.writeFileSync(path.join(out,'daylight.png'),(await win.webContents.capturePage()).toPNG());
+  const lighting=await win.webContents.executeJavaScript('window.engineStats');
+  if(lighting.worldHour!==latest.scene.hour||lighting.portraitHour!==latest.scene.hour)throw Error('World and portrait must follow the game clock');
+  await win.webContents.executeJavaScript("localStorage.setItem('cheese.lighting','day')");
   await win.webContents.executeJavaScript(`(() => {
     document.getElementById('item-art').click();
     const dialog=document.getElementById('item-gallery');
@@ -148,7 +147,7 @@ async function smoke() {
       else if (Date.now() > deadline) reject(new Error('Renderer did not resume after reload'));
       else setTimeout(poll, 50); }; poll();
   })`);
-  if(await win.webContents.executeJavaScript("document.getElementById('lighting').textContent")!=='Lighting: Day')throw Error('Lighting preference did not survive reload');
+  if(await win.webContents.executeJavaScript("localStorage.getItem('cheese.lighting')")!==null)throw Error('Retired forced-time preference was not removed');
   if(await win.webContents.executeJavaScript("document.getElementById('motion').textContent")!=='Effects: subtle')throw Error('Effects preference did not survive reload');
   await win.webContents.executeJavaScript("document.getElementById('motion').click();document.getElementById('motion').click()");
   if (await win.webContents.executeJavaScript("window.engineStats?.mode") !== 'classic') throw new Error('Classic preference did not survive reload');

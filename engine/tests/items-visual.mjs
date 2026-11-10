@@ -21,9 +21,16 @@ window.checkItems=frames=>{
   s.scene.structures=[{id:'wooden_cottage',x:107,y:16}];
   s.scene.duck.x=62;s.scene.duck.y=30;s.ui.modal=null;
   display.resize(s.cols,s.rows,.8,{width:1500,height:993,uiScale:.993});
-  for(const [label,hour,weather] of [['day',12,'sunny'],['dusk',18.5,'sunny'],['night',23,'sunny'],['rain',16,'rainy']]){
+  const portraits={};
+  for(const [label,hour,weather] of [['dawn',6,'sunny'],['day',12,'sunny'],['dusk',18.5,'sunny'],['night',23,'sunny'],['rain',16,'rainy']]){
     s.scene.hour=hour;s.scene.weather=weather;display.scene.effects.level='vivid';display.draw(s,2000);images['world-'+label]=canvas.toDataURL();
+    assert(display.scene.light.hour===hour&&display.interface.emotionHour===hour,`${label} world/portrait time does not match the simulation`);
+    const portrait=document.createElement('canvas');portrait.width=608;portrait.height=298;
+    const ux=canvas.width/display.interface.width,uy=canvas.height/display.interface.height;
+    portrait.getContext('2d').drawImage(canvas,(display.interface.width-334)*ux,117*uy,304*ux,149*uy,0,0,608,298);
+    portraits[label]=pixels(portrait);images['portrait-'+label]=portrait.toDataURL();
   }
+  assert(!eq(portraits.day,portraits.night)&&!eq(portraits.day,portraits.dusk)&&!eq(portraits.day,portraits.dawn),'emotion portrait background did not change with the game clock');
   s.scene.motion=false;s.ui.motion=false;display.draw(s,1000);const first=pixels(canvas);display.draw(s,9000);assert(eq(first,pixels(canvas)),'reduced motion changed props or light');
   display.scene.effects.level='off';display.draw(s,1000);assert(!eq(first,pixels(canvas)),'effects switch did not change output');images['world-effects-off']=canvas.toDataURL();
   const withItems=pixels(canvas);s.scene.items=[];s.scene.structures=[];display.draw(s,1000);assert(!eq(withItems,pixels(canvas)),'placed items did not render');
@@ -40,11 +47,12 @@ window.checkItems=frames=>{
     }
   }
   const actualHour=s.scene.hour;s.scene.motion=false;s.ui.motion=false;
-  s.scene.hour=23;const snapshot=JSON.stringify(s);
-  display.scene.lightingMode='day';display.draw(s,2000);
+  s.scene.hour=12;const snapshot=JSON.stringify(s);display.draw(s,2000);
   const daylight=pixels(display.scene.canvas);
-  assert(JSON.stringify(s)===snapshot,'lighting override changed the game clock or snapshot');
-  display.scene.lightingMode='night';display.draw(s,2000);
+  assert(JSON.stringify(s)===snapshot,'rendering changed the game clock or snapshot');
+  assert(display.interface.emotionHour===12&&display.scene.light.hour===12,'portrait and world clocks differ at noon');
+  s.scene.hour=23;display.draw(s,2000);
+  assert(display.interface.emotionHour===23&&display.scene.light.hour===23,'portrait and world clocks differ at night');
   const nightlight=pixels(display.scene.canvas);
   const luminance=data=>{let total=0;for(let i=0;i<data.length;i+=4)total+=.2126*data[i]+.7152*data[i+1]+.0722*data[i+2];return total/(data.length/4);};
   const dayBrightness=luminance(daylight),nightBrightness=luminance(nightlight);
@@ -52,7 +60,7 @@ window.checkItems=frames=>{
   let clipped=0;for(let i=0;i<daylight.length;i+=4)if(daylight[i]>248&&daylight[i+1]>248&&daylight[i+2]>248)clipped++;
   assert(clipped/(daylight.length/4)<.01,'daylight blows out the scene highlights');
   assert(display.scene.atlas.size<=4096,'contrast-adjusted glyph cache unbounded');
-  display.scene.lightingMode='auto';s.scene.hour=actualHour;
+  s.scene.hour=actualHour;
   // Full catalog in one scene stresses sorting and bounded caches without saving.
   s.scene.items=catalog.slice(0,100).map((item,i)=>({id:item.id,x:(i%20)*6,y:8+Math.floor(i/20)*6}));
   display.resize(s.cols,s.rows,.8,{width:1500,height:993,uiScale:.993});

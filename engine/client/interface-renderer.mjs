@@ -1,3 +1,5 @@
+import { portraitEnvironment } from './portrait-environment.mjs';
+import { sceneLight,mixColor } from './scene-lighting.mjs';
 import { characterSprite, drawCharacter } from './ultra-characters.mjs';
 import { itemSprite,ItemPainter,selectedItem,rarityColor } from './ultra-items.mjs';
 import { emotionPortrait } from './emotion-portrait.mjs';
@@ -69,9 +71,9 @@ export class InterfaceRenderer {
     }else this.fullScreen(ctx,frame,clock);
     ctx.restore();
   }
-  portrait(ctx,duck,x,y,size,time){
+  portrait(ctx,duck,x,y,size,time,environment=null){
     const sprite=characterSprite(duck,time);const scale=size/(sprite.width*1.8);
-    drawCharacter(ctx,{...sprite,x:x/scale,y:y/scale},scale,scale,C.panel);
+    drawCharacter(ctx,{...sprite,x:x/scale,y:y/scale,backdrop:environment?.background,outline:environment?.light.outline},scale,scale,C.panel);
   }
   title(ctx,frame,time){
     const {ui}=frame,W=this.width,H=this.height;
@@ -89,7 +91,8 @@ export class InterfaceRenderer {
       {type:'choose',target:'title',index:i,context:title.options.join('|')}));
     this.panel(ctx,785,150,515,H-340,C.line,'#13282be8');
     this.text(ctx,'// RESIDENT TROUBLEMAKER',820,186,14,C.muted);
-    this.portrait(ctx,{stage:'adult',state:'idle',facing:true},1040,H*.54,500,time);
+    const environment=portraitEnvironment(ctx,{hour:ui.hour??12,season:'spring',weather:'sunny',motion:ui.motion},805,213,475,H*.34,time);
+    this.portrait(ctx,{stage:'adult',state:'idle',facing:true},1040,H*.54,450,time,environment);
     this.text(ctx,'CHEESE',1040,H*.59,24,C.gold,'center',700);
     this.text(ctx,'A DUCK WITH OPINIONS.',1040,H*.59+33,14,C.muted,'center');
     this.rule(ctx,820,H*.59+66,438);
@@ -114,11 +117,14 @@ export class InterfaceRenderer {
     this.text(ctx,`$ ${ui.currency}`,Math.min(570,right-36),102,17,C.gold,'right');
     this.fitText(ctx,`${friendly(s.season)} / ${friendly(s.weather)} / ${String(Math.floor(s.hour)).padStart(2,'0')}:${String(Math.floor(s.hour%1*60)).padStart(2,'0')}  ·  ${ui.activity}`,36,133,Math.min(530,right-76),13,C.muted);
     const x=right+18,w=sw-36;
-    this.panel(ctx,right,78,sw,228,C.line,'#102429ef');
+    const emotionLight=sceneLight(s);this.emotionHour=emotionLight.hour;
+    const emotionPanel=mixColor(emotionLight.groundNear,'#102429',.45);
+    this.panel(ctx,right,78,sw,228,C.line,emotionPanel);
     this.text(ctx,'// EMOTIONS',x,103,13,C.gold);
     this.text(ctx,ui.age<1?`${Math.floor(ui.age*24)}h old`:`${Math.floor(ui.age)} days`,right+sw-22,103,12,C.muted,'right');
     const closeup=emotionPortrait(s.duck,ui.emotion,time),faceCell=Math.min((w-8)/closeup.width,150/(closeup.art.length*1.5));
-    drawCharacter(ctx,{...closeup,x:(right+sw/2)/faceCell,y:264/faceCell},faceCell,faceCell,C.panel);
+    const environment=portraitEnvironment(ctx,s,right+12,117,sw-24,149,time);
+    drawCharacter(ctx,{...closeup,x:(right+sw/2)/faceCell,y:264/faceCell,backdrop:environment.background,outline:environment.light.outline},faceCell,faceCell,emotionPanel);
     this.fitText(ctx,ui.mood,x,281,w,14,C.muted);
     if(this.panelsOpen){
     this.panel(ctx,right,313,sw,216,C.line,'#102429ef');
