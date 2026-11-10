@@ -79,7 +79,7 @@ class LivingPond:
                 if key in data and key not in ('version',):
                     if isinstance(self.state[key], dict) and isinstance(data[key], dict):
                         self.state[key].update(copy.deepcopy(data[key]))
-                    elif isinstance(data[key], type(self.state[key])) or key == 'plan':
+                    elif isinstance(data[key], type(self.state[key])) or key == 'plan' or (key == 'story' and isinstance(data[key], dict)):
                         self.state[key] = copy.deepcopy(data[key])
         self.game = None
         self._last_tick = time.monotonic()

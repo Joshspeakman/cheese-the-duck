@@ -38,7 +38,7 @@ export function duckRig(duck,t=0,design=null){
   if(action==='swimming'){bodyDY=headDY=1;}
   if(action==='dancing'){eye='^';bodyDY--;headDY--;}
   if(cycle%5.3>5||action==='sleeping')eye='-';
-  let eyePos=null,headBounds=null,bodyBounds=null;
+  let eyePos=null,headBounds=null,bodyBounds=null,wingBounds=null;
   function extend(bounds,x,y,w){return bounds?{x:Math.min(bounds.x,x),y:Math.min(bounds.y,y),w:Math.max(bounds.x+bounds.w,x+w)-Math.min(bounds.x,x),h:Math.max(bounds.y+bounds.h,y+1)-Math.min(bounds.y,y)}:{x,y,w,h:1};}
   // Torso first, then face: a peck or preen can overlap the folded wing.
   const rows=[...Array(L-1).keys()].sort((a,b)=>(a<spec.collar)-(b<spec.collar));
@@ -51,6 +51,8 @@ export function duckRig(duck,t=0,design=null){
    if(!crest){fills.push({x:x0+first,y:y0,w:end-first,tone:head?'g':'b'});if(head)headBounds=extend(headBounds,x0+first,y0,end-first);else bodyBounds=extend(bodyBounds,x0+first,y0,end-first);}
    const beak=row.indexOf(')==')>=0?row.indexOf(')==')+1:row.indexOf(')>')>=0?row.indexOf(')>')+1:100;
    const wing=row.indexOf('['),wingEnd=row.indexOf(']');
+   if(!head&&wing>=0)wingBounds={x:x0+wing-1,y:y0-1,w:wingEnd-wing+3,h:3};
+   else if(!head&&!wingBounds&&row.includes('(vv)'))wingBounds={x:x0+row.indexOf('(vv)'),y:y0,w:4,h:1};
    for(let x=0;x<row.length;x++){
     let c=row[x];if(c===' ')continue;
     const isEye=head&&'oO'.includes(c);let tone=head?'g':'b';
@@ -72,6 +74,7 @@ export function duckRig(duck,t=0,design=null){
   }
   const h=headBounds||{x:CX,y:baseY+2,w:8,h:4},b=bodyBounds||{x:CX-8,y:FLOOR-6,w:16,h:6},e=eyePos||{x:h.x+2,y:h.y+1,char:eye};
   rig={small,stage,action,phase,head:{...h,w:Math.max(4,h.w-4)},faceBounds:h,eye:e,crest:{x:h.x,y:baseY+headDY,w:h.w},neck:{x:Math.round(baseX+spec.art[spec.collar].search(/\S/)),y:baseY+spec.collar+bodyDY,w:small?2:3},body:b,feet:footPositions};
+  rig.torso=fills.filter(f=>f.tone==='b').map(f=>({...f}));rig.wing=wingBounds;
   if(['flapping','dancing'].includes(action)){
    const open=phase>=2&&phase<=5,wing=open?['  /)/)',' / / /','/ / /','\\__/']:['  /)',' / /',' \\/'];
    group(wing,b.x-2,b.y-(open?3:0),'w');if(open)group(wing.map(r=>[...r].reverse().map(mirrorGlyph).join('')),b.x+b.w-2,b.y-2,'w');
@@ -82,6 +85,7 @@ export function duckRig(duck,t=0,design=null){
   if(action==='quacking'&&phase>=2&&phase<=5)put('!',h.x+h.w+3,h.y,'a');
   if(action==='swimming')put(phase%2?'~~~   ~~~~   ~~~':' ~~~~  ~~~~  ~~~',CX-9,FLOOR+1,'p');
   plan=fitWearables(rig,duck.cosmetics,t);clipped=paintWearables(cells,tones,rig,plan)||clipped;
+  fills.push(...(plan.fills||[]));
   put(e.char,e.x,e.y,'e');
   if(duck.state==='diving'&&phase>=2&&phase<=5){cells.forEach(r=>r.fill(' '));fills.length=0;group([' \\ /','  /\\',' (__)'],CX-2,FLOOR-3,'a');put('~~~  ~~~~~',CX-5,FLOOR+1,'p');}
  }

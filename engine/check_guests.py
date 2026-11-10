@@ -13,7 +13,8 @@ import time
 from datetime import datetime, timedelta
 from unittest.mock import patch
 from engine import host
-from engine.guest_motion import GuestMotion
+from engine.guest_motion import GuestMotion, StoryMotion
+from engine.pond_stories import STORIES
 from engine.scene import snapshot
 from world.guest_cast import PROFILES, guest_line
 from world.atmosphere import VISITORS, VisitorFriendship
@@ -59,6 +60,18 @@ try:
         animator.update(start+3, 25, 4)
         check(animator._current_state == 'signature', name+' pauses for signature habit')
     check(distances[1] > distances[0], 'active pilot walks faster than leisurely traveler')
+    for name in ('Vasco', 'Amelia', 'Charity'):
+        animator = VisitorAnimator(); animator.set_visitor('adventurous', name)
+        animator._roam_bounds = (2, 120, 1, 36)
+        destinations = []
+        for i in range(100):
+            animator._position_x, animator._position_y = animator._target_x, animator._target_y
+            animator._rest_until = 0
+            animator.update(animator._last_move_time + 2, 65, 24)
+            destinations.append((animator._target_x, animator._target_y))
+        check(max(x for x,y in destinations)-min(x for x,y in destinations)>75, name+' explores full pond width')
+        check(max(y for x,y in destinations)-min(y for x,y in destinations)>20, name+' explores full pond depth')
+        check(sum(abs(x-65)>15 for x,y in destinations)>45, name+' chooses independent destinations most of the time')
 
     check(set(VISITORS) == {p['id'] for p in PROFILES.values() if p['rare']}, 'every rare visitor has a named rig')
     out = ROOT/'engine/artifacts/guests'; out.mkdir(parents=True, exist_ok=True)
@@ -76,6 +89,11 @@ try:
                 check(abs(actor['x']-previous['x']) < 1 and abs(actor['y']-previous['y']) < 1, key+' bounded movement')
             previous = actor
         check(len(positions)>40 and {'walking','signature'}<=states, key+' wanders and performs habit')
+        check(max(x for x,y in positions)-min(x for x,y in positions)>25, key+' explores beyond Cheese')
+        before = motion.snapshot(); g.renderer.duck_pos.x, g.renderer.duck_pos.y = 10, 5
+        motion.tick(g, 119.9)
+        check((before['x'],before['y'])==(motion.actor['x'],motion.actor['y']), key+' Cheese movement cannot teleport guest')
+        g.renderer.duck_pos.x, g.renderer.duck_pos.y = 65, 24
         before = motion.snapshot(); g._state = 'menu'; motion.tick(g, 120)
         check(before == motion.snapshot(), key+' motion pauses in menus'); g._state='playing'
         frozen = motion.snapshot(); frozen['x'] = -900
@@ -110,10 +128,38 @@ try:
         g.atmosphere.current_visitor=None; motion.tick(g,122)
         check(motion.snapshot() is None, key+' departure removes actor')
     check(g.duck.needs.social > 20, 'social interaction affects actual Cheese needs')
+    story_fixtures = []
+    for key in STORIES:
+        p.state['story']={'id':key,'step':0,'choices':[]}; p._cache=None
+        motion=StoryMotion(); g.story_motion=motion; positions=[]; states=set()
+        for i in range(1000):
+            motion.tick(g,i*.2); actor=motion.snapshot(); states.add(actor['state'])
+            if positions:
+                check(abs(actor['x']-positions[-1][0])<1 and abs(actor['y']-positions[-1][1])<1,key+' story movement is continuous')
+            positions.append((actor['x'],actor['y']))
+        if key in StoryMotion.MOBILE:
+            check(max(x for x,y in positions)-min(x for x,y in positions)>30,key+' story participant explores independently')
+            check({'walking','signature'}<=states,key+' story participant walks and pauses')
+        else:
+            check(len(set(positions))==1,key+' story prop stays at its encounter site')
+        before=motion.snapshot();g.renderer.duck_pos.x=15;motion.tick(g,199.8)
+        check((before['x'],before['y'])==(motion.actor['x'],motion.actor['y']),key+' story actor is not attached to Cheese')
+        g._state='menu';motion.tick(g,200)
+        check(before==motion.snapshot(),key+' story staging pauses in menus');g._state='playing'
+        p.state['story']['step']=1;motion.tick(g,200.2)
+        check(motion.actor['state']=='quacking',key+' responds to story choice without teleporting')
+        p._cache=None;frame=snapshot(g,g.renderer)
+        check(frame['storyActor']==motion.snapshot(),key+' story position reaches scene')
+        story_fixtures.append(frame)
+        p.state['story']=None;motion.tick(g,200.4)
+        check(motion.snapshot() is None,key+' completed story removes actor')
+    p.state['story']={'id':'lost_duckling','step':1,'choices':['comfort']};p._cache=None
     friendships = {k:v.friendship_points for k,v in g.atmosphere.visitor_friendships.items()}
     g._save_game(); g._flush_pending_save(); g._load_game()
     check({k:v.friendship_points for k,v in g.atmosphere.visitor_friendships.items()}==friendships, 'guest friendships survive actual save/load')
+    check(g.living_pond.state['story']=={'id':'lost_duckling','step':1,'choices':['comfort']},'unfinished encounter survives actual save/load')
     (out/'scenes.json').write_text(json.dumps(fixtures))
+    (out/'story-scenes.json').write_text(json.dumps(story_fixtures))
     report={'result':'PASS','guests':len(PROFILES),'rare':len(VISITORS),'checks':len(checks),'save_dir':os.environ['CHEESE_SAVE_DIR']}
     (out/'simulation-checks.json').write_text(json.dumps(report,indent=2))
     print(json.dumps(report))

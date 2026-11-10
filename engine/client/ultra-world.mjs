@@ -1,4 +1,5 @@
 import { eventModel } from './event-art.mjs';
+import { storyModel } from './story-art.mjs';
 import { sceneLight } from './scene-lighting.mjs';
 import { Grid,W,H,C,M,hash,seedOf,clamp,lerp,palette } from './ultra-grid.mjs';
 import { NEST,DOCK,CABIN,RUIN,BOAT,LANTERN,MUSHROOM,CRYSTAL,FLOWERS,BENCH,WELL,ARCH,CLOCKTOWER,MILL } from './ultra-art.mjs';
@@ -311,7 +312,12 @@ export class LivingWorld {
       const scenery={reed_beds:['reed',56,79],orchard:['tree_oak',197,71],observatory:['telescope',193,54],clubhouse:['wooden_cottage',208,86],workshop:['workbench',27,84],trail:['bridge',122,80]};
       for(const project of living.projects||[]){if(!project.stage)continue;const [id,x,y]=scenery[project.id];this.objects.push({...itemSprite(id,t,{motion:s.motion!==false,state:{active:project.stage===3}}),item:true,x,y,scale:.8,floor:false,project:project.id});if(project.stage<3)g.art(x-5,y+1,['[ '+project.stage+' / 3 ]'],C.woodLight);}
       for(const plot of living.garden||[]){const x=30+plot.id*22,y=88;g.art(x-6,y,['.------------.','/ : . : . : /',"'----------'"],C.woodLight);if(plot.plant)this.objects.push({...itemSprite(plot.plant,t,{motion:s.motion!==false,state:{wetness:plot.water,growth:plot.health}}),item:true,x,y:y-1,scale:/seed|sprout/.test(plot.stage)?.35:.65});}
-      if(living.story){const [x,y]=this.project(s,s.duck.x+14,s.duck.y);this.characters.push({...eventModel({id:living.story.id,asset:living.story.asset},t,s.motion!==false),x,y});g.put(x,y-13,'!',C.goldLight);}
+      if(living.story){
+        const actor=s.storyActor?.storyId===living.story.id?s.storyActor:{x:48,y:24,state:'signature'};
+        const [x,y]=this.project(s,actor.x,actor.y),model=storyModel(living.story,actor,t,s.motion!==false);
+        this.characters.push({...model,x,y});
+        g.put(x,y-13,'!',C.goldLight);
+      }
     }
     const target=this.project(s,s.duck.x,s.duck.y);
     if(s.motion===false||!this.duckPosition||s.location!==this.lastLocation)this.duckPosition=target;

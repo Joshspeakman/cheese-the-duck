@@ -106,6 +106,7 @@ def snapshot(game, renderer):
                                      for px, py, c in particles[:100]]})
     return {
         'events': events, 'rareVisitor':rare,
+        'storyActor': game.story_motion.snapshot() if getattr(game, 'story_motion', None) else None,
         'living': game.living_pond.snapshot() if getattr(game, 'living_pond', None) else None,
         'location': area.name if area else 'Home Pond', 'biome': area.biome.value if area else 'pond',
         'season': game.atmosphere.current_season.value,
