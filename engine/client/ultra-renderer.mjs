@@ -1,6 +1,8 @@
 import { GlyphRenderer } from './renderer.mjs';
 import { LivingWorld } from './ultra-world.mjs';
 import { drawCharacter } from './ultra-characters.mjs';
+import { ItemPainter } from './ultra-items.mjs';
+import { SceneEffects,luminousPalette } from './scene-effects.mjs';
 import { W,H } from './ultra-grid.mjs';
 import { InterfaceRenderer } from './interface-renderer.mjs';
 
@@ -12,7 +14,7 @@ export class SceneCanvas {
     this.canvas=document.createElement('canvas');this.ctx=this.canvas.getContext('2d',{alpha:false});
     this.terrain=document.createElement('canvas');this.terrainCtx=this.terrain.getContext('2d',{alpha:false});
     this.world=new LivingWorld();this.atlas=new Map();this.previousChars=new Uint8Array(W*H);this.previousColors=new Uint8Array(W*H);
-    this.paletteKey='';this.frames=0;
+    this.paletteKey='';this.frames=0;this.items=new ItemPainter();this.effects=new SceneEffects();
   }
   resize(width,height){
     width=Math.round(width);height=Math.round(height);
@@ -31,7 +33,8 @@ export class SceneCanvas {
     this.atlas.set(key,tile);return tile;
   }
   draw(scene,time,dt){
-    const {grid,palette,characters}=this.world.render(scene,time,dt),key=palette.join('');
+    const result=this.world.render(scene,time,dt),{grid,characters,objects}=result;
+    const palette=luminousPalette(result.palette,this.effects.level),key=palette.join('');
     if(key!==this.paletteKey){this.previousChars.fill(0);this.paletteKey=key;this.atlas.clear();}
     const ctx=this.terrainCtx;
     for(let i=0;i<W*H;i++){
@@ -45,7 +48,12 @@ export class SceneCanvas {
     this.previousChars.set(grid.chars);this.previousColors.set(grid.colors);
     // Copy the cached terrain every frame so walking/hidden actors leave no trail.
     this.ctx.drawImage(this.terrain,0,0);
-    for(const character of characters)drawCharacter(this.ctx,character,this.sx,this.sy,palette[0]);
+    this.effects.draw(this.ctx,this.world,scene,time,this.sx,this.sy,objects);
+    // Rugs stay under everything; other props and characters share depth order.
+    for(const actor of [...objects,...characters].sort((a,b)=>(a.floor?-1000:a.y)-(b.floor?-1000:b.y))){
+      if(actor.item)this.items.draw(this.ctx,actor,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale);
+      else drawCharacter(this.ctx,actor,this.sx,this.sy,palette[0]);
+    }
     this.frames++;
   }
 }

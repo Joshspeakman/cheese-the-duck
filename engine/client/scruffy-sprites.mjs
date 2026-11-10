@@ -1,3 +1,4 @@
+import { itemPalette } from './ultra-items.mjs';
 // Shared ASCII rig. The live game selects approved variant B, Bedhead Bandit.
 // A fixed character grid gives every animation a stable ground and head anchor.
 export const STAGES = [
@@ -226,14 +227,21 @@ export function scruffySprite(variantId='A',stage='adult',action='idle',time=0,f
       const hatX=headX+headDx+(baby?2:4)-Math.floor(Math.max(...hat.map(r=>r.length))/2);
       const crestY=headY-1;
       for(let x=headX+2+crestDx;x<headX+2+crestDx+crest.length;x++)if(x>=0&&x<W)cells[crestY][x]=' ';
-      group(hat,hatX,headY-hat.length,'a');
+      group(hat,hatX,headY-hat.length,'c');
     }
     if(/glass/.test(equipped)){
       const eyeIndex=head[1].indexOf(eye);
-      if(eyeIndex>=0)put('['+eye+']',headX+headDx+eyeIndex-1,headY+1,'a');
+      if(eyeIndex>=0)put('['+eye+']',headX+headDx+eyeIndex-1,headY+1,'c');
     }
-    if(/scarf|bow|tie/.test(equipped))put(/scarf/.test(equipped)?'==~':'><',headX+headDx+1,headY+head.length-1,'a');
-    if(/cape/.test(equipped))group(['/|','/ |',"'~'"],bodyX-2,bodyY,'a');
+    if(/scarf|bow|tie/.test(equipped))put(/scarf/.test(equipped)?'==~':'><',headX+headDx+1,headY+head.length-1,'c');
+    if(/cape/.test(equipped))group(['/|','/ |',"'~'"],bodyX-2,bodyY,'c');
+    if(/halo/.test(equipped))put('(====)',headX+headDx,headY-3,'c');
+    if(/devil_horns/.test(equipped)){put('/^',headX+headDx,headY-1,'c');put('^\\',headX+headDx+4,headY-1,'c');}
+    if(/headphones/.test(equipped)){put('.---.',headX+headDx,headY-1,'c');put('[#]',headX+headDx,headY+1,'c');}
+    if(/monocle/.test(equipped)){const eyeIndex=head[1].indexOf(eye);if(eyeIndex>=0){put('('+eye+')',headX+headDx+eyeIndex-1,headY+1,'c');put(':',headX+headDx+eyeIndex+1,headY+2,'c');}}
+    if(/bandana/.test(equipped))put('==v',headX+headDx+1,headY+head.length-1,'c');
+    if(/backpack/.test(equipped))group(['.---.','|[o]|','|___|'],bodyX-2,bodyY,'c');
+    if(/wings_fairy/.test(equipped))group(['/| /|','|/|/|',"'---'"],bodyX-3,bodyY-1,'c');
     if(appearance.emote)put(appearance.emote,headX+headDx+head[0].length+2,headY-1,'a');
     const bill=head[1].match(/(==>|>)[ ]*$/);
     if(bill){
@@ -262,6 +270,7 @@ export function scruffySprite(variantId='A',stage='adult',action='idle',time=0,f
   }
   if(!facing){for(let y=0;y<H;y++){cells[y]=cells[y].reverse().map(mirrorChar);colors[y].reverse();}offsetX=-offsetX;}
   return {art:cells.map(row=>row.join('')),tones:colors.map(row=>row.join('')),width:W,anchorX:facing?CX:W-1-CX,
+    cosmetic:itemPalette(Object.values(appearance.cosmetics||{}).find(v=>typeof v==='string')||'hat_red').body,
     scale:1,body:stage==='hatchling'?'#f7da83':'#e9c67d',face:stageIndex>=6?'#f3eed4':'#ffe6a7',accent:'#f1a751',shade:'#7a8f83',
     name:'',offsetX,offsetY,phase,frames:animation.frames,cycle,clipped};
 }

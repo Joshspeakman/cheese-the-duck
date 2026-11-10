@@ -1,4 +1,5 @@
 import { characterSprite, drawCharacter } from './ultra-characters.mjs';
+import { itemSprite,ItemPainter,selectedItem,rarityColor } from './ultra-items.mjs';
 import { emotionPortrait } from './emotion-portrait.mjs';
 import { documentRows, documentTitle, themeFor, menuWindow, clamp, plain, cropDocument } from './interface-model.mjs';
 
@@ -24,7 +25,7 @@ const LOGO=[
 const friendly=value=>String(value||'').replaceAll('_',' ');
 
 export class InterfaceRenderer {
-  constructor(){this.hits=[];this.scroll=0;this.docKey='';this.selectedLine=-1;this.visibleDocument=null;this.cache=new Map();this.panelsOpen=false;}
+  constructor(){this.hits=[];this.scroll=0;this.docKey='';this.selectedLine=-1;this.visibleDocument=null;this.cache=new Map();this.panelsOpen=false;this.itemPainter=new ItemPainter();}
   text(ctx,text,x,y,size=16,color=C.ink,align='left',weight=400){
     ctx.font=`${weight} ${size}px Menlo, monospace`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillStyle=color;ctx.fillText(String(text),x,y);
   }
@@ -60,7 +61,7 @@ export class InterfaceRenderer {
     if(!frame.ui)return;
     Object.assign(C,BASE_COLORS,frame.ui.highContrast?{ink:'#fffbea',muted:'#d4dfcd',dim:'#a7c5bb',line:'#789b95',panel:'#061619'}:{});
     this.begin(ctx,canvas,frame,viewport);
-    const ui=frame.ui,clock=ui.motion===false?0:time/1000;
+    const ui=frame.ui,clock=ui.motion===false?0:time/1000;this.time=clock;
     if(ui.state==='title')this.title(ctx,frame,clock);
     else if(frame.scene){
       this.hud(ctx,frame,clock);
@@ -89,8 +90,8 @@ export class InterfaceRenderer {
     this.panel(ctx,785,150,515,H-340,C.line,'#13282be8');
     this.text(ctx,'// RESIDENT TROUBLEMAKER',820,186,14,C.muted);
     this.portrait(ctx,{stage:'adult',state:'idle',facing:true},1040,H*.54,500,time);
-    this.text(ctx,'BEDHEAD BANDIT',1040,H*.59,21,C.gold,'center',700);
-    this.text(ctx,'CHEESE',1040,H*.59+33,14,C.muted,'center');
+    this.text(ctx,'CHEESE',1040,H*.59,24,C.gold,'center',700);
+    this.text(ctx,'A DUCK WITH OPINIONS.',1040,H*.59+33,14,C.muted,'center');
     this.rule(ctx,820,H*.59+66,438);
     this.text(ctx,'POND NOTES',820,H*.59+97,13,C.mint);
     this.wrapText(ctx,ui.fact||'There is always something happening at the pond.',820,H*.59+126,435,16,C.ink,5);
@@ -179,13 +180,14 @@ export class InterfaceRenderer {
   document(ctx,modal,ui={},full=false){
     const W=this.width,H=this.height,title=documentTitle(modal);
     const theme=THEMES[ui.dangerous?'warning':themeFor(title)];
-    const columns=Math.min(108,Math.max(40,Math.floor((W-192)/(19*.61))));
+    const preview=selectedItem(ui,documentRows(modal.lines,108)),previewWidth=preview?300:0;
+    const columns=Math.min(108,Math.max(40,Math.floor((W-192-previewWidth)/(19*.61))));
     const cacheKey=columns+JSON.stringify(modal);
     let rows=this.cache.get(cacheKey);
     if(!rows){rows=documentRows(modal.lines,columns,modal.preserveArt);if(this.cache.size>24)this.cache.clear();this.cache.set(cacheKey,rows);}
     const size=rows.length>32?17:19,cw=size*.61;
     const maxCols=Math.max(40,...rows.map(row=>row.cells.length));
-    const w=clamp(maxCols*cw+92,690,W-96),x=(W-w)/2;
+    const w=clamp(maxCols*cw+92+previewWidth,preview?990:690,W-96),x=(W-w)/2;
     const top=this.worldFill?78:0,bottom=this.worldFill?145:0,available=H-top-bottom;
     const rowH=size*1.48,maxRows=Math.max(4,Math.floor((available-194)/rowH));
     const count=Math.min(rows.length,maxRows),h=count*rowH+170,y=top+(available-h)/2;
@@ -197,7 +199,7 @@ export class InterfaceRenderer {
       this.selectedLine=selected;
     }
     this.scroll=clamp(this.scroll,0,Math.max(0,rows.length-count));
-    this.visibleDocument={x,y,w,h,total:rows.length,count,scroll:this.scroll,rows,title};
+    this.visibleDocument={x,y,w,h,total:rows.length,count,scroll:this.scroll,rows,title,preview:preview?.id,textWidth:w-80-previewWidth};
     ctx.fillStyle=full?'#0c1d21':'#051316cf';ctx.fillRect(0,0,W,H);
     // Offset ink shadow and a double ASCII border give every menu a tactile frame.
     this.panel(ctx,x+9,y+10,w,h,'#152b2c','#061417');
@@ -206,7 +208,8 @@ export class InterfaceRenderer {
     this.text(ctx,theme.label,x+150,y+31,11,C.muted);
     this.fitText(ctx,title,x+150,y+65,w-180,25,theme.color);
     this.rule(ctx,x+24,y+101,w-48,theme.color,'=');
-    rows.slice(this.scroll,this.scroll+count).forEach((row,i)=>this.row(ctx,row,x+40,y+128+i*rowH,size,w-80));
+    rows.slice(this.scroll,this.scroll+count).forEach((row,i)=>this.row(ctx,row,x+40,y+128+i*rowH,size,w-80-previewWidth));
+    if(preview)this.itemPreview(ctx,preview,x+w-previewWidth+2,y+115,previewWidth-24,h-167,ui.motion!==false);
     this.rule(ctx,x+24,y+h-43,w-48);
     if(rows.length>count){
       this.text(ctx,`SCROLL ${this.scroll+1}-${this.scroll+count} / ${rows.length}`,x+30,y+h-24,11,C.muted);
@@ -220,6 +223,21 @@ export class InterfaceRenderer {
       this.text(ctx,label,bx+bw/2,y+h-23,11,C.muted,'center');
       this.hits.push({x:bx,y:y+h-35,w:bw,h:24,command:{type:'key',key}});bx+=bw+5;
     }
+  }
+  itemPreview(ctx,item,x,y,w,h,motion){
+    const color=rarityColor(item.rarity),model=itemSprite(item.id,this.time,{motion});
+    this.panel(ctx,x,y,w,h,C.line,'#0c2025');
+    this.text(ctx,'// '+String(item.rarity).toUpperCase(),x+17,y+24,11,color);
+    const artHeight=Math.min(182,h*.43),artTop=y+43;
+    const cw=Math.min((w-38)/(model.width+2),artHeight/((model.art.length+2)*1.5));
+    ctx.save();ctx.beginPath();ctx.rect(x+12,y+36,w-24,artHeight+10);ctx.clip();
+    if(model.emissive){const light=ctx.createRadialGradient(x+w/2,artTop+artHeight/2,0,x+w/2,artTop+artHeight/2,w*.42);light.addColorStop(0,model.accent+'25');light.addColorStop(1,model.accent+'00');ctx.fillStyle=light;ctx.fillRect(x+12,artTop,w-24,artHeight);}
+    this.itemPainter.draw(ctx,model,x+w/2,artTop+artHeight,cw);ctx.restore();
+    const nameY=artTop+artHeight+23;
+    this.wrapText(ctx,item.name,x+18,nameY,w-36,16,C.gold,2);
+    const descY=nameY+48,rows=Math.max(0,Math.floor((y+h-40-descY)/18));
+    this.wrapText(ctx,item.description,x+18,descY,w-36,12,C.muted,rows);
+    this.text(ctx,String(item.category).toUpperCase(),x+18,y+h-22,10,C.mint);
   }
   fullScreen(ctx,frame,time){
     const W=this.width,H=this.height;

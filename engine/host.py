@@ -138,6 +138,10 @@ class CanvasRenderer(Renderer):
     max_width, max_height = COLS, ROWS - 4
     def __init__(self, terminal):
         super().__init__(terminal)
+        # The legacy renderer hard-coded six tabs, hiding four live registries.
+        # Navigation and buying still use the original shop handlers.
+        from world.shop import ItemCategory
+        self._shop_categories = [category.name for category in ItemCategory]
         self.landscape = Landscape(terminal)
         self.last_sent = 0
         self.game = None

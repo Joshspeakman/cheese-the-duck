@@ -1,10 +1,17 @@
+import { ItemGallery } from './item-gallery.mjs';
 import { CELL_W, CELL_H } from './renderer.mjs';
 import { DisplayRenderer } from './ultra-renderer.mjs';
 const $ = id => document.getElementById(id), renderer = new DisplayRenderer($('world'));
 let pending, last, zoom = 0, lastPaint = 0, lastAnnouncement = '';
+const gallery=new ItemGallery(()=>last?.ui?.motion!==false);
+$('item-art').onclick=()=>gallery.show();
 renderer.mode = localStorage.getItem('cheese.graphics') === 'classic' ? 'classic' : 'ultra';
 function graphicsLabel(){ const label = renderer.mode === 'ultra' ? 'Ultra' : 'Classic'; document.body.dataset.graphics=renderer.mode; $('graphics').textContent = `Graphics: ${label}`; $('graphics').setAttribute('aria-label', `Graphics mode: ${label}`); }
 graphicsLabel();
+const effectLevels=['vivid','subtle','off'];
+renderer.scene.effects.level=effectLevels.includes(localStorage.getItem('cheese.effects'))?localStorage.getItem('cheese.effects'):'vivid';
+function effectsLabel(){const value=renderer.scene.effects.level;$('motion').textContent=`Effects: ${value}`;$('motion').setAttribute('aria-label',`Scene effects: ${value}`);}
+effectsLabel();
 let lastDraw = 0;
 const sizes = [0, .9, 1.15, 1.4];
 const actionIDs = { f:'feed', p:'play', l:'clean', d:'pet', z:'sleep', t:'talk', e:'explore', b:'shop', c:'craft', r:'build', i:'inventory', h:'help' };
@@ -47,6 +54,7 @@ function animate(now) {
 }
 new ResizeObserver(() => { if (last) { size(last); renderer.draw(last); } }).observe($('viewport'));
 document.addEventListener('keydown', event => {
+  if(gallery.open)return;
   if (event.metaKey || event.ctrlKey || event.altKey) return;
   if (event.key === 'F11') { event.preventDefault(); window.cheese.fullscreen(); return; }
   if (event.target.tagName === 'BUTTON' && ['Enter', ' '].includes(event.key)) return;
@@ -58,10 +66,10 @@ document.addEventListener('keydown', event => {
     event.preventDefault(); window.cheese.input({ type: 'key', key: event.key });
   }
 });
-document.addEventListener('paste', event => { if (!last?.meta.talking) return; event.preventDefault(); window.cheese.input({ type: 'text', text: event.clipboardData.getData('text') }); });
+document.addEventListener('paste', event => { if (gallery.open||!last?.meta.talking) return; event.preventDefault(); window.cheese.input({ type: 'text', text: event.clipboardData.getData('text') }); });
 $('graphics').onclick = () => { renderer.mode = renderer.mode === 'ultra' ? 'classic' : 'ultra'; localStorage.setItem('cheese.graphics',renderer.mode); graphicsLabel(); if(last){size(last);renderer.draw(last);} $('world').focus(); };
 $('zoom').onclick = () => { zoom = (zoom + 1) % sizes.length; $('zoom').textContent = `Text: ${zoom ? ['','large','larger','largest'][zoom] : 'fit'}`; if (last) { size(last); renderer.draw(last); } };
-$('motion').onclick = () => { const on = $('world').classList.toggle('glow'); $('motion').textContent = `Soft glow: ${on ? 'on' : 'off'}`; $('motion').setAttribute('aria-pressed', on); };
+$('motion').onclick=()=>{renderer.scene.effects.level=effectLevels[(effectLevels.indexOf(renderer.scene.effects.level)+1)%effectLevels.length];localStorage.setItem('cheese.effects',renderer.scene.effects.level);effectsLabel();if(last)renderer.draw(last);$('world').focus();};
 $('capture').onclick = async () => { $('hint').textContent = `Photo saved: ${await window.cheese.capture()}`; };
 $('fullscreen').onclick = () => window.cheese.fullscreen();
 $('panels').onclick=()=>{togglePanels();$('world').focus();};

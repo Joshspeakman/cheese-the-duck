@@ -5,6 +5,25 @@ import time
 import re
 
 
+def selected_item_id(game, renderer, overlay):
+    """Read the original selection; previewing never buys, uses or grants items."""
+    overlay = overlay.lower()
+    if overlay == 'shop':
+        item = renderer.get_selected_shop_item()
+        return item.id if item else None
+    if overlay == 'inventory':
+        items = getattr(renderer, '_inventory_items', [])
+        index = getattr(renderer, '_inventory_selected', 0)
+        return items[index] if 0 <= index < len(items) else None
+    selector = {'crafting': '_crafting_menu', 'building': '_building_menu',
+                'use_item': '_use_menu'}.get(overlay)
+    if selector:
+        selected = getattr(game, selector).get_selected_item()
+        data = selected.data if selected else None
+        return data if isinstance(data, str) else getattr(data, 'id', None)
+    return None
+
+
 def composed_modal(lines, rect):
     """Preserve custom celebration/interaction compositors as upgraded panels too."""
     def crop(line, start, count):
@@ -43,6 +62,7 @@ def snapshot(game, renderer):
     dialog = game._confirmation_dialog
     result.update(
         overlay=active.value,
+        itemPreview=selected_item_id(game, renderer, active.name),
         dangerous=bool(dialog and dialog.is_open and dialog.dangerous),
         minigame=bool(game._active_minigame),
         name=duck.name, stage=duck.get_growth_stage_display(), age=duck.get_age_days(),

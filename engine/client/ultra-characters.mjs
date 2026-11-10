@@ -53,7 +53,7 @@ export function drawCharacter(ctx,sprite,sx,sy,background) {
     ctx.strokeStyle=background;ctx.lineWidth=Math.max(2,cw*.17);
     ctx.strokeText(char,px,py,cw*1.12);
     const tone=sprite.tones?.[row]?.[col];
-    ctx.fillStyle=tone==='a'?sprite.accent:tone==='f'?sprite.face:tone==='s'?sprite.shade:tone==='w'?'#8dc6cc':sprite.body;
+    ctx.fillStyle=tone==='c'?sprite.cosmetic||sprite.accent:tone==='a'?sprite.accent:tone==='f'?sprite.face:tone==='s'?sprite.shade:tone==='w'?'#8dc6cc':sprite.body;
     ctx.fillText(char,px,py,cw*1.12);
   }
   if(sprite.name){

@@ -51,3 +51,41 @@ def test_custom_overlay_keeps_its_literal_content_and_colors():
     assert result['title'] == 'INTERACTING'
     assert ''.join(run[0] for run in result['lines'][0]).startswith('What the fuck!')
     assert result['lines'][0][0][1] != '#e2dfca'
+
+
+def test_item_preview_uses_the_original_selection_without_executing_it():
+    from engine.interface import selected_item_id
+    renderer = NS(get_selected_shop_item=lambda: NS(id='hat_blue'),
+                  _inventory_items=['bread', 'medicine'], _inventory_selected=1)
+    selector = NS(get_selected_item=lambda: NS(data=NS(id='stone_hammer')))
+    game = NS(_crafting_menu=selector, _building_menu=selector)
+    assert selected_item_id(game, renderer, 'SHOP') == 'hat_blue'
+    assert selected_item_id(game, renderer, 'INVENTORY') == 'medicine'
+    assert selected_item_id(game, renderer, 'CRAFTING') == 'stone_hammer'
+    renderer._inventory_selected = 2
+    assert selected_item_id(game, renderer, 'INVENTORY') is None
+    assert selected_item_id(game, renderer, 'NONE') is None
+
+
+def test_all_live_shop_categories_are_reachable_in_desktop_renderer():
+    from engine.host import CanvasRenderer
+    from world.shop import ItemCategory, SHOP_ITEMS, get_items_by_category
+    renderer = CanvasRenderer(DesktopInput())
+    assert renderer._shop_categories == [category.name for category in ItemCategory]
+    reached = set()
+    for index, category in enumerate(ItemCategory):
+        renderer._shop_category_index = index
+        for item_index, item in enumerate(get_items_by_category(category)):
+            renderer._shop_item_index = item_index
+            assert renderer.get_selected_shop_item().id == item.id
+            reached.add(item.id)
+    assert reached == set(SHOP_ITEMS)
+
+
+def test_ultra_item_catalog_tracks_all_live_registries():
+    import json
+    from pathlib import Path
+    from engine.export_items import catalog
+    text = (Path(__file__).resolve().parents[1] / 'engine/client/item-catalog.mjs').read_text()
+    exported = json.loads(text.split('export const ITEM_CATALOG = ', 1)[1].rstrip(';\n'))
+    assert exported == json.loads(json.dumps(catalog()))

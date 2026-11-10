@@ -1,6 +1,7 @@
 import { Grid,W,H,C,hash,seedOf,clamp,lerp,palette } from './ultra-grid.mjs';
 import { NEST,DOCK,CABIN,RUIN,BOAT,LANTERN,MUSHROOM,CRYSTAL,FLOWERS,BENCH,WELL,ARCH,CLOCKTOWER,MILL } from './ultra-art.mjs';
 
+import { itemSprite,itemWorldScale } from './ultra-items.mjs';
 import { characterSprite } from './ultra-characters.mjs';
 
 const WATER_BIOMES=new Set(['pond','riverside','beach','swamp']);
@@ -292,8 +293,7 @@ export class LivingWorld {
     for(const item of [...(s.structures||[]),...(s.items||[])]){
       const [x,y]=this.project(s,item.x,item.y);
       actors.push({y,draw:()=>{
-        if(/nest/.test(item.id))g.art(x-11,y-4,NEST,C.barkLight);
-        else g.art(x-4,y-(item.art?.length||0),item.art||['[?]'],/ball|toy/.test(item.id)?C.flower:C.barkLight);
+        this.objects.push({...itemSprite(item.id,t,{motion:s.motion!==false,originalArt:item.art}),item:true,x,y,scale:itemWorldScale(item.id)});
       }});
     }
     if(s.visitor){const [x,y]=this.project(s,s.visitor.x,s.visitor.y);actors.push({y,draw:()=>this.actor(s,t+2,x,y,{...s.visitor,stage:'adult',state:'idle',facing:false},true)});}
@@ -385,12 +385,12 @@ export class LivingWorld {
   render(scene,time,dt=1/30){
     const s={hour:12,season:'spring',weather:'sunny',biome:'pond',location:'Home Pond',...scene};
     const t=s.motion===false?0:time,seed=seedOf(s.location);
-    this.grid.clear();this.characters=[];
+    this.grid.clear();this.characters=[];this.objects=[];
     if(this.underground(s))this.cavern(s,t,seed);
     else {this.sky(s,t,seed);this.hills(s,t,seed);}
     this.terrain(s,t,seed);
     this.landmarks(s,t,seed);this.actors(s,t,dt);this.foreground(s,t,seed);if(!this.underground(s))this.weather(s,t,seed);
     this.lastLocation=s.location;this.lastTime=t;
-    return {grid:this.grid,palette:palette(s),characters:this.characters};
+    return {grid:this.grid,palette:palette(s),characters:this.characters,objects:this.objects};
   }
 }
