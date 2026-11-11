@@ -1,0 +1,76 @@
+{
+  "mode": "Astra Medium production with Astra Extra High advisor",
+  "authorization": "User explicitly requested this split and model/effort selection; root model is selected by the user.",
+  "scopePreserved": true,
+  "commitPolicy": "Parent reviews and commits each bounded batch; no worker edits shared integration files or player saves.",
+  "tasks": [
+    {
+      "id": "footwear",
+      "owner": "root",
+      "status": "verified_pending_commit",
+      "effort": "existing work finalized",
+      "deliverables": [
+        "7 constructed footwear pairs",
+        "12 native two-foot care cores",
+        "separate saved shoe state",
+        "terrain and contact validation"
+      ]
+    },
+    {
+      "id": "food_art",
+      "owner": "medium_food_art",
+      "model": "gpt-6-astra",
+      "reasoning": "medium",
+      "status": "in_progress",
+      "objects": 23,
+      "files": [
+        "engine/client/food-workshop.mjs",
+        "engine/client/animation/foods.json",
+        "engine/tests/foods.test.mjs"
+      ],
+      "boundary": "Art and read-only projection; no invented consumption or sequence-completion claims."
+    },
+    {
+      "id": "specimen_art",
+      "owner": "medium_specimen_art",
+      "model": "gpt-6-astra",
+      "reasoning": "medium",
+      "status": "in_progress",
+      "objects": 33,
+      "files": [
+        "engine/client/specimen-workshop.mjs",
+        "engine/client/animation/specimens.json",
+        "engine/tests/specimens.test.mjs"
+      ],
+      "boundary": "Art and read-only projection; no invented collection or sequence-completion claims."
+    },
+    {
+      "id": "hard_systems_advice",
+      "owner": "milestone_advisor",
+      "model": "gpt-6-astra",
+      "reasoning": "xhigh",
+      "status": "in_progress",
+      "files": [
+        "engine/overhaul/animation-milestone/extra-high-advice.md"
+      ],
+      "boundary": "Read-only architecture/coverage review plus advice file; no production edits."
+    }
+  ],
+  "mediumQueue": [
+    "remaining bounded art constructions",
+    "preview/contact-sheet tooling",
+    "established renderer routing",
+    "measured footprints and terrain regression checks",
+    "small UI integrations using existing native APIs",
+    "documentation and honest evidence bookkeeping"
+  ],
+  "extraHighQueue": [
+    "full per-object bespoke repertoire design and certification",
+    "visitor-to-visitor activity ownership and synchronization",
+    "species and age physical-contact design",
+    "physical pickup/put-away and dressing lifecycle",
+    "cross-system saves/cancellation/reward invariants",
+    "final scope/completion audit"
+  ],
+  "installation": "Deferred until full authorized milestone is proven complete."
+}

@@ -2,6 +2,7 @@ import { WEARABLE_CATALOG } from './wearable-catalog.mjs';
 import {HEADWEAR_BLUEPRINTS,fittedHat} from './headwear-workshop.mjs';
 import {ACCESSORY_BLUEPRINTS,fittedAccessory,accessoryColors} from './accessory-workshop.mjs';
 import {GARMENT_BLUEPRINTS,fittedGarment,garmentColors} from './garment-workshop.mjs';
+import {FOOTWEAR_BLUEPRINTS,fittedFootwear,footwearColors} from './footwear-workshop.mjs';
 
 // Each family has its own fitted construction and motion. Slots describe where
 // art attaches, independently of the three original wardrobe systems.
@@ -88,10 +89,10 @@ export function fitWearables(rig,cosmetics={},time=0,apparel={}){
    hat.art.forEach((row,j)=>{for(let i=0;i<row.length;i++)if(row[i]!==' ')add(row[i],hat.x+i,hat.y+j,{tone:tones[hat.tones[j][i]]||tones.b});});
    continue;
   }
-  if(ACCESSORY_BLUEPRINTS[item.id]||GARMENT_BLUEPRINTS[item.id]){
-   const garment=GARMENT_BLUEPRINTS[item.id],material=apparel[item.id]||{},piece=(garment?fittedGarment:fittedAccessory)(rig,item.id,{material,phase:rig.motion===false?0:Number.isFinite(material.phase)?material.phase:time*(moving?4:1.2)});
+  if(ACCESSORY_BLUEPRINTS[item.id]||GARMENT_BLUEPRINTS[item.id]||FOOTWEAR_BLUEPRINTS[item.id]){
+   const garment=GARMENT_BLUEPRINTS[item.id],shoe=FOOTWEAR_BLUEPRINTS[item.id],material=apparel[item.id]||{},piece=(shoe?fittedFootwear:garment?fittedGarment:fittedAccessory)(rig,item.id,{material,phase:rig.motion===false?0:Number.isFinite(material.phase)?material.phase:time*(moving?4:1.2)});
    contacts[item.id]=piece.contacts;
-   const tones=Object.fromEntries(Object.entries(garment?garmentColors(garment,material):accessoryColors(ACCESSORY_BLUEPRINTS[item.id])).map(([tone,color],i)=>{const code=String.fromCharCode(512+index*12+i);inks[code]=color;return [tone,code];}));
+   const tones=Object.fromEntries(Object.entries(shoe?footwearColors(shoe):garment?garmentColors(garment,material):accessoryColors(ACCESSORY_BLUEPRINTS[item.id])).map(([tone,color],i)=>{const code=String.fromCharCode(512+index*12+i);inks[code]=color;return [tone,code];}));
    const inside=(x,y,r)=>r&&x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h;
    const underFeathers=(x,y)=>(rig.occlusion||rig.torso)?.some(f=>f.y===y&&x>=f.x&&x<f.x+f.w)??inside(x,y,b);
    for(const [model,rear]of [[piece.back,true],[piece.front,false]]){

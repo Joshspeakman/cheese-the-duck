@@ -2,6 +2,7 @@
 import copy,json,math
 from pathlib import Path
 from engine.excursions import clamp,finite
+from engine import footwear
 BLUEPRINTS=json.loads((Path(__file__).parent/'client/animation/headwear.json').read_text())
 CARE=json.loads((Path(__file__).parent/'client/animation/headwear-care.json').read_text())
 ACCESSORIES=json.loads((Path(__file__).parent/'client/animation/accessories.json').read_text())
@@ -9,9 +10,9 @@ ACCESSORY_CARE=json.loads((Path(__file__).parent/'client/animation/accessory-car
 GARMENTS=json.loads((Path(__file__).parent/'client/animation/garments.json').read_text())
 GARMENT_CARE=json.loads((Path(__file__).parent/'client/animation/garment-care.json').read_text())
 SLOTS=json.loads((Path(__file__).parent/'client/animation/wearable-slots.json').read_text())
-PROFILES={**BLUEPRINTS,**ACCESSORIES,**GARMENTS}
+PROFILES={**BLUEPRINTS,**ACCESSORIES,**GARMENTS,**footwear.BLUEPRINTS}
 
-def care_for(item):return GARMENT_CARE if item in GARMENTS else ACCESSORY_CARE if item in ACCESSORIES else CARE
+def care_for(item):return footwear.CARE if item in footwear.BLUEPRINTS else GARMENT_CARE if item in GARMENTS else ACCESSORY_CARE if item in ACCESSORIES else CARE
 
 def selected_items(game):
     from engine.scene import equipped_wearables
@@ -37,6 +38,7 @@ def state(pond,item):
     if item in ACCESSORIES or item in GARMENTS:
         for key in ('soil','slack'):s[key]=clamp(s.get(key))
     if item in GARMENTS:s['crease']=clamp(s.get('crease'))
+    if item in footwear.BLUEPRINTS:footwear.normalize(s)
     s['phase']=finite(s.get('phase'))%math.tau
     return s
 
@@ -63,6 +65,7 @@ def update(pond,dt,weather,intensity,temperature,wind,offline=False):
         s['fog']=target+(s['fog']-target)*math.exp(-dt/40)
         s['wind']=clamp(wind) if exposure else 0
         if wearing:s['phase']=(s['phase']+dt*(.9+s['wind']*2))%math.tau
+        if item in footwear.BLUEPRINTS:footwear.update(pond,item,s,dt,wearing,exposure,wet,snow,intensity,temperature)
         if (item in ACCESSORIES or item in GARMENTS) and wearing:
             action=pond.game.renderer.duck_pos.get_state()
             moving=any(x in action for x in ('walk','waddle','hop','danc','flap'))
@@ -101,6 +104,7 @@ def options(pond,item):
         enough=finite(material.get(spec['material']))>=spec['threshold']
         ready=now>=finite(waits.get(item+':'+action))
         reason='Let Cheese finish what he is doing.' if active or not free(pond) else 'Give him a moment before repeating that.' if not ready else 'There is no '+{'wet':'water','snow':'snow','fog':'mist','wind':'strong gust','soil':'grime','slack':'looseness','crease':'creased cloth'}[spec['material']]+' to tend.' if not enough else ''
+        if item in footwear.BLUEPRINTS and not footwear.solid_footing(pond):reason='Cheese needs solid footing to tend his shoes.'
         result.append(dict(id=action,label=spec['label'],enabled=not reason,reason=reason))
     return result
 
@@ -129,10 +133,19 @@ def care_step(pond,dt,offline=False):
     if active:
         pos=pond.game.renderer.duck_pos;action=active.get('id');item=active.get('item')
         if (not suited(item,action) or item not in selected_items(pond.game) or not free(pond) or active.get('location')!=pond.location
+            or item in footwear.BLUEPRINTS and not footwear.solid_footing(pond)
             or abs(pos.x-finite(active.get('x')))+abs(pos.y-finite(active.get('y')))>1):
             cancel(pond);return
         spec=care_for(item)[action];active['elapsed']=min(spec['duration'],finite(active.get('elapsed'))+dt)
-        if active['elapsed']>=spec['contact'] and not active.get('applied'):
+        if item in footwear.BLUEPRINTS:
+            reached=active.setdefault('appliedFeet',[])
+            for index,at in enumerate(spec['contacts']):
+                if active['elapsed']>=at and index not in reached:
+                    footwear.contact(state(pond,item),spec,index);reached.append(index)
+                    if not isinstance(record.get('waits'),dict):record['waits']={}
+                    record['waits'][item+':'+action]=pond.state['elapsed']+spec['cooldown']
+            active['applied']=len(reached)==2
+        elif active['elapsed']>=spec['contact'] and not active.get('applied'):
             active['applied']=True;s=state(pond,item)
             if 'retained' in spec:s[spec['material']]*=spec['retained']
             # Holding the brim restrains its cloth, never the actual weather.
@@ -147,7 +160,7 @@ def care_step(pond,dt,offline=False):
     # Stop at the current spot for a short physical response. Snow/mist take
     # precedence; care is never performed merely because an animation is due.
     priorities=('brush_snow','wipe_visor','steady_brim','wipe_lenses','brush_collar_snow','wring_scarf','dry_frames','dab_earpads','shed_rain','dab_brim','dab_bow','settle_frames','retie_bow','settle_headband','settle_pendant','clean_frames','clean_pendant')
-    for action in (*priorities,*GARMENT_CARE):
+    for action in (*priorities,*GARMENT_CARE,*footwear.CARE):
         for item in selected_items(pond.game):
             option=next((o for o in options(pond,item) if o['id']==action and o['enabled']),None)
             if option:request(pond,item,action,True);return

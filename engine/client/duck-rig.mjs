@@ -91,7 +91,7 @@ export function duckRig(duck,t=0,design=null){
   }
   const footPositions=[];
   if(!performance?.seated&&!['swimming','sleeping'].includes(action))for(const [i,fx] of spec.feet.entries()){
-   const lift=performance?(i?performance.r:performance.l):action==='walking'&&((phase<4&&i===0)||(phase>=4&&i===1))?1:0;
+   const lift=hatCare?.footIndex===i?Math.round(hatCare.footLift||0):performance?(i?performance.r:performance.l):action==='walking'&&((phase<4&&i===0)||(phase>=4&&i===1))?1:0;
    const stride=action==='walking'?[0,i?-1:1,0,0,0,i?1:-1,0,0][phase]:0;
    const x=Math.round(baseX+fx+stride),y=FLOOR+jump-lift;
    put(i?'>_':'_>',x,y,'a');footPositions.push({x,y});
@@ -151,9 +151,10 @@ export function duckRig(duck,t=0,design=null){
      }
      put(')',tip.x,tip.y,'c');hatContact=tip;
     }
-    if(hatCare.debris!==null&&['brush_snow','shed_rain','brush_collar_snow','wring_scarf','dry_frames','dab_earpads','brush_garment_snow','wring_hem','shed_coat','shake_cape','dry_pocket'].includes(hatCare.id)){
+    if(hatCare.debris!==null&&(hatCare.footIndex!==undefined||['brush_snow','shed_rain','brush_collar_snow','wring_scarf','dry_frames','dab_earpads','brush_garment_snow','wring_hem','shed_coat','shake_cape','dry_pocket'].includes(hatCare.id))){
      const snow=hatCare.id.includes('snow'),d=hatCare.debris,xx=hatCare.id==='shed_rain'?h.x+h.w:target.x;
-     for(let i=0;i<3;i++)put(snow?'*':"'",xx+2+i+d*3,target.y+1+i+d*3,'c');
+     const mud=hatCare.footIndex!==undefined&&['scrape_soles','wipe_shoe_uppers','brush_slippers','clear_sandal_straps'].includes(hatCare.id);
+     for(let i=0;i<3;i++)put(snow?'*':mud?'.':"'",xx+2+i+d*3,Math.min(hatCare.footIndex!==undefined?FLOOR+1:H-1,target.y+1+i+d*3),mud?'s':'c');
     }
    }
   }

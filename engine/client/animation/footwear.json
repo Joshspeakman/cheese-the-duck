@@ -1,0 +1,93 @@
+{
+  "rain_boots": {
+    "shape": "boot",
+    "style": "rubber",
+    "slot": "feet",
+    "material": "rubber",
+    "color": "#c7a94c",
+    "trim": "#e5ce7c",
+    "absorbency": 0.25,
+    "w": 104,
+    "h": 76,
+    "scale": 0.54,
+    "detailScale": 0.7
+  },
+  "spring_rain_boots": {
+    "shape": "boot",
+    "style": "daisy",
+    "slot": "feet",
+    "material": "rubber",
+    "color": "#d4b65e",
+    "trim": "#9fba7c",
+    "absorbency": 0.25,
+    "w": 104,
+    "h": 76,
+    "scale": 0.54,
+    "detailScale": 0.7
+  },
+  "autumn_boots": {
+    "shape": "boot",
+    "style": "leather",
+    "slot": "feet",
+    "material": "leather",
+    "color": "#987457",
+    "trim": "#d4b88c",
+    "absorbency": 0.65,
+    "w": 104,
+    "h": 76,
+    "scale": 0.54,
+    "detailScale": 0.7
+  },
+  "winter_snow_boots": {
+    "shape": "boot",
+    "style": "quilt",
+    "slot": "feet",
+    "material": "nylon",
+    "color": "#8fa7b0",
+    "trim": "#e6dfc6",
+    "absorbency": 0.48,
+    "w": 104,
+    "h": 76,
+    "scale": 0.54,
+    "detailScale": 0.7
+  },
+  "bunny_slippers": {
+    "shape": "slipper",
+    "style": "bunny",
+    "slot": "feet",
+    "material": "fleece",
+    "color": "#d1a8a8",
+    "trim": "#ebd4c4",
+    "absorbency": 0.95,
+    "w": 104,
+    "h": 76,
+    "scale": 0.54,
+    "detailScale": 0.7
+  },
+  "ice_skates": {
+    "shape": "skate",
+    "style": "laced",
+    "slot": "feet",
+    "material": "leather",
+    "color": "#c9c8b7",
+    "trim": "#9ac1c9",
+    "absorbency": 0.55,
+    "w": 104,
+    "h": 76,
+    "scale": 0.54,
+    "detailScale": 0.7
+  },
+  "summer_flip_flops": {
+    "shape": "sandal",
+    "style": "woven",
+    "slot": "feet",
+    "material": "rubber",
+    "color": "#7eb4a3",
+    "trim": "#e2c47c",
+    "absorbency": 0.3,
+    "w": 104,
+    "h": 76,
+    "scale": 0.54,
+    "detailScale": 0.7
+  }
+}

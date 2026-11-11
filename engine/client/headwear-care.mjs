@@ -1,6 +1,8 @@
 import CARE from './animation/headwear-care.json' with {type:'json'};
 import ACCESSORY_CARE from './animation/accessory-care.json' with {type:'json'};
 import GARMENT_CARE from './animation/garment-care.json' with {type:'json'};
+import FOOTWEAR_CARE from './animation/footwear-care.json' with {type:'json'};
+export {FOOTWEAR_CARE};
 export {GARMENT_CARE};
 export {ACCESSORY_CARE};
 export {CARE as HAT_CARE};
@@ -10,6 +12,15 @@ const smooth=v=>{const t=clamp(v);return t*t*(3-2*t);};
 // Separate physical gestures, read solely from the native elapsed/contact state.
 // The wing follows the age's fitted hat anchor, not a fixed adult coordinate.
 export function hatCarePose(active,motion=true){
+ const shoe=FOOTWEAR_CARE[active?.id];
+ if(shoe&&motion){
+  const elapsed=Math.max(0,Math.min(shoe.duration,active.elapsed||0)),half=shoe.duration/2,footIndex=elapsed<half?0:1;
+  const t=clamp((elapsed-footIndex*half)/half),contact=(shoe.contacts[footIndex]-footIndex*half)/half;
+  const reach=smooth(t/.24)*(1-smooth((t-.78)/.22)),stroke=smooth((t-.25)/.25)*(1-smooth((t-.58)/.2));
+  const twist=['tie_skates','settle_boots','seat_sandal_straps','settle_slippers'].includes(active.id);
+  return {id:active.id,item:active.item,t,contact,anchor:shoe.anchor,x:-reach*.6,y:reach*1.2,wing:reach,sweep:Math.sin(t*Math.PI*(twist?4:6))*stroke*.5,hold:twist&&t>=contact&&t<.78,footIndex,footLift:reach*3,
+   debris:!twist&&active.appliedFeet?.includes(footIndex)&&t>=contact&&t<contact+.23?clamp((t-contact)/.23):null};
+ }
  const spec=CARE[active?.id]||ACCESSORY_CARE[active?.id]||GARMENT_CARE[active?.id];if(!spec||!motion)return null;
  const t=clamp(active.elapsed/spec.duration),contact=spec.contact/spec.duration;
  const reach=smooth(t/.24)*(1-smooth((t-.78)/.22));

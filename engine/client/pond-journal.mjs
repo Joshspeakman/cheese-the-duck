@@ -3,6 +3,7 @@ import {castleSummary,CASTLE_SCORES} from './castle-care.mjs';
 import {hatSummary,HEADWEAR_BLUEPRINTS} from './headwear-workshop.mjs';
 import {accessorySummary,ACCESSORY_BLUEPRINTS} from './accessory-workshop.mjs';
 import {garmentSummary,GARMENT_BLUEPRINTS} from './garment-workshop.mjs';
+import {footwearSummary,FOOTWEAR_BLUEPRINTS} from './footwear-workshop.mjs';
 import {WEARABLE_CATALOG} from './wearable-catalog.mjs';
 import {PLAYKIT_CHOICES,playkitSummary} from './playkit-state.mjs';
 import {playkitPose} from './playkit-routines.mjs';
@@ -29,7 +30,7 @@ import {keepsakePose} from './keepsake-routines.mjs';
 const names=new Map(catalog.map(i=>[i.id,i]));
 const pretty=s=>String(s||'').replaceAll('_',' ');
 const wardrobeName=id=>WEARABLE_CATALOG[id]?.name||names.get(id)?.name||pretty(id);
-const wardrobeSummary=(id,raw)=>GARMENT_BLUEPRINTS[id]?garmentSummary(raw):ACCESSORY_BLUEPRINTS[id]?accessorySummary(raw,id):hatSummary(raw);
+const wardrobeSummary=(id,raw)=>FOOTWEAR_BLUEPRINTS[id]?footwearSummary(raw):GARMENT_BLUEPRINTS[id]?garmentSummary(raw):ACCESSORY_BLUEPRINTS[id]?accessorySummary(raw,id):hatSummary(raw);
 const percent=n=>`${Math.round((n||0)*100)}%`;
 const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node;};
 export class PondJournal{
@@ -162,7 +163,7 @@ export class PondJournal{
    if(item&&state){const detail=this.card(item.name,item.description);this.preview(detail,'item',id,true,instance||'');
     if(copies.length>1){const picker=el('select');picker.setAttribute('aria-label','Choose a placed copy');copies.forEach((copy,i)=>{const option=el('option',`Copy ${i+1} · ${copy.x<44?'west side':copy.x>88?'east side':'middle of the pond'}`);option.value=copy.instance;picker.append(option);});picker.value=instance;picker.onchange=()=>{this.selectedInstance=picker.value;this.render();};detail.append(picker);}
 const p=itemProfile(item,itemFamily(id));
-    if(HEADWEAR_BLUEPRINTS[id]||ACCESSORY_BLUEPRINTS[id]||GARMENT_BLUEPRINTS[id])this.hatCare(detail,id);
+    if(HEADWEAR_BLUEPRINTS[id]||ACCESSORY_BLUEPRINTS[id]||GARMENT_BLUEPRINTS[id]||FOOTWEAR_BLUEPRINTS[id])this.hatCare(detail,id);
     else{
      detail.append(el('p',`${pretty(p.material)} · ${pretty(p.skill)} · ${state.uses} uses${instance?(outside?' · placed at home':' · put away'):w.placed.includes(id)?' · placed at home':''}`));for(const [key,label] of [['condition','Condition'],['wetness','Wetness'],['dirt','Dirt'],['bond','Familiarity']])this.meter(detail,label,state[key]);
      detail.append(this.button(p.verb,'item',id,busy||!outside||['food','wearable'].includes(p.kind),{instance}),this.button('Brush & polish','clean_item',id,busy||!outside||state.dirt<.05,{instance}),this.button('Repair · 1 twig','repair_item',id,busy||!outside||state.condition>=.95,{instance}));
