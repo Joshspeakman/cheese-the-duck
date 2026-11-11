@@ -1,3 +1,4 @@
+import {botanicalOccupants,BOTANICAL_ROUTINES} from './botanical-routines.mjs';
 import { eventModel } from './event-art.mjs';
 import { storyModel } from './story-art.mjs';
 import { sceneLight } from './scene-lighting.mjs';
@@ -388,6 +389,19 @@ export class LivingWorld {
       const performance={kind:'seating',routine:r.routine||{id:'perch_watch',elapsed:0},motion:s.motion!==false};
       const character={...characterSprite({...source,state:'idle',facing:r.slot===0,performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
       (home.sitters||=[]).push({character,inside,slot:r.slot,envelope:residentEnvelope(character,'seating')});
+      this.characters=this.characters.filter(c=>c!==original);
+    }
+    for(const r of botanicalOccupants(s)){
+      if(r.phase==='approach'||r.routine?.interrupted||!BOTANICAL_ROUTINES[r.routine?.id])continue;
+      const actorId=r.actor==='story:pip'?'story:lost_duckling':r.actor;
+      const original=this.characters.find(c=>r.actor==='cheese'?c.cheese:c.id===actorId);
+      const home=this.objects.find(o=>o.id===r.id&&o.construction==='botanical-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-r.destination?.[i])<1.1));
+      if(!original||!home?.anchors?.entry)continue;
+      const source=r.actor==='cheese'?s.duck:s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
+      const inside=r.phase==='inside'?1:r.phase==='enter'?clamp(r.elapsed/3,0,1):clamp(1-r.elapsed/3,0,1);
+      const performance={kind:'botanical',routine:r.routine,motion:s.motion!==false};
+      const character={...characterSprite({...source,state:'idle',facing:r.slot===0,performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
+      (home.gardeners||=[]).push({character,inside,slot:r.slot});
       this.characters=this.characters.filter(c=>c!==original);
     }
     const partnerId=plan?.company?.partner==='story:pip'?'story:lost_duckling':plan?.company?.partner;

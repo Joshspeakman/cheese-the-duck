@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: rebuilt 61 plant, garden and picked-ingredient drawings with distinct anatomy, larger measured footprints, seasonal foliage, opening flowers, drought posture and actual surface wear. Added persistent moisture/health/bloom for 24 rooted plants, real care arrival and cancellation, one-time water transfer, actual crop watering, safe storage and save/load checks. Natural chat reverified (22 native / 37 UI). Catalogue artwork remains in progress, 48 bespoke sequences per object remain unsatisfied, and no new package was installed.",
+  "previous_goal_turn": "Progress: connected 19 authored botanical care scores to real arrived Cheese and independent regular/rare/story visitors. Watering cans, brushes, rakes, probes and lenses attach to posed wings/forefeet; pours fall to actual soil and contacts follow leaf/rim/root anchors. Young residents use reachable tools and supported steps where needed, butterflies hover without tools. Completed care teaches gardening, and overlapping shared care is remembered only after both finish. Validated 78 native care checks, 103 JavaScript tests, 187 botanical lifecycle checks, 694 living checks/72 hours, 207 furniture checks, 70 playdates, 44 brains, 38 visitor shelters and 76 original gameplay checks. Whole catalogue and 48 bespoke sequences per object remain incomplete; installed 2.36.0 remains unchanged.",
   "items": [
     {
       "id": "hat_red",
@@ -443,49 +443,49 @@
       "family": "rose",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "flower_tulip",
       "family": "tulip",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "flower_sunflower",
       "family": "sunflower",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "tree_small",
       "family": "tree",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "tree_oak",
       "family": "tree",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "tree_cherry",
       "family": "cherry",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "bush_hedge",
       "family": "hedge",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "grass_patch",
@@ -498,14 +498,14 @@
       "family": "cactus",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "bamboo",
       "family": "bamboo",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "bow_tie_blue",
@@ -851,42 +851,42 @@
       "family": "bonsai",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "venus_flytrap",
       "family": "flytrap",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "herb_garden",
       "family": "garden",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "cherry_tree",
       "family": "cherry",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "willow_tree",
       "family": "willow",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "mushroom_patch",
       "family": "mushroom",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "topiary_duck",
@@ -899,21 +899,21 @@
       "family": "fern",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "lavender",
       "family": "flowerpot",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "hedge_maze",
       "family": "hedge",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "dog_house",
@@ -1132,7 +1132,7 @@
       "family": "cactus",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "stepping_stones",
@@ -1736,7 +1736,7 @@
       "family": "tree",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "cosmic_arch",
@@ -2231,7 +2231,7 @@
       "family": "garden",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "bird_bath",
@@ -2252,7 +2252,7 @@
       "family": "garden",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "stone_path",
@@ -3407,14 +3407,14 @@
       "family": "flowerpot",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "flower_pot",
       "family": "flowerpot",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
+      "animation": "Uses contextual members of 19 shared botanical care cores, with arrived Cheese/visitor tool contacts and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "lamp",
@@ -3751,7 +3751,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "botanical_construction_and_care",
+    "sourcePhase": "botanical_articulated_care_and_visitors",
     "fullyOverhauled": false,
     "constructedObjects": 154,
     "remainingArtwork": 388,
@@ -3827,10 +3827,20 @@
       "engine/artifacts/animation-milestone/botanical-furniture.log",
       "engine/artifacts/animation-milestone/botanical-game.log",
       "engine/artifacts/animation-milestone/botanical-live-day.png",
-      "engine/artifacts/animation-milestone/botanical-seasons.png"
+      "engine/artifacts/animation-milestone/botanical-seasons.png",
+      "engine/artifacts/animation-milestone/botanical-care-native.json",
+      "engine/artifacts/animation-milestone/botanical-care-render.json",
+      "engine/artifacts/animation-milestone/botanical-care-js-tests.log",
+      "engine/artifacts/animation-milestone/botanical-care-0.png",
+      "engine/artifacts/animation-milestone/botanical-care-1.png",
+      "engine/artifacts/animation-milestone/botanical-care-2.png",
+      "engine/artifacts/animation-milestone/botanical-care-company.png",
+      "engine/artifacts/animation-milestone/botanical-care-young.png",
+      "engine/artifacts/animation-milestone/botanical-care-targeted.log",
+      "engine/artifacts/animation-milestone/botanical-care-3.png"
     ],
     "next": [
-      "Build articulated botanical care with real tool/bill/wing contacts and actual flower/leaf/root anchors, including guest participation and appropriate age/species variants. Continue the remaining 388 item reconstructions and the complete 48 bespoke sequences per object; do not substitute ambient plant motion or labels for sequences.",
+      "Continue construction-specific plant repertoires, seasonal/mood/personality choreography, reciprocal gestures and physical tool handoffs. The 19 shared care scores and all-cast rig fit are foundations, not 48 bespoke sequences on each plant. Continue the remaining 388 item reconstructions and the full per-object animation milestone.",
       "Extend spatial arrangement to the separate building/decorating/project editors and consider additional habitat areas for larger collections; all 218 placeable shop objects now use measured footprints, dry-ground/water checks and truthful storage. Building and decoration objects reserve space against habitat purchases, but their own editors still use legacy placement rules.",
       "Deepen construction-specific nest/bed/house acting and each remaining item repertoire; the 51 shared nest scores do not by themselves satisfy 48 bespoke sequences per object.",
       "Add explicit nest body-facing transitions, construction-specific canopy/quilt/pillow/lining actions and species/age-specific climbing and doorway choreography.",
@@ -3838,10 +3848,11 @@
       "Expand guest-specific and age-specific behavior; eighteen shared tracks are not a complete bespoke catalogue.",
       "Extend invitations, prop handoffs and cooperative item use, with real arrival and completion evidence.",
       "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation.",
-      "Add physical reading, desk/workbench actions, cabinet/wardrobe/mirror use and construction-specific furniture routines; the 16 shared seating tracks do not satisfy the per-object 48-sequence target."
+      "Add physical reading, desk/workbench actions, cabinet/wardrobe/mirror use and construction-specific furniture routines; the 16 shared seating tracks do not satisfy the per-object 48-sequence target.",
+      "Audit persistent condition and plant biology for duplicate placed copies: physical reservations are per destination, while existing object state is still keyed by catalogue item. Separate per-copy state with a save migration before claiming complete independent object simulation."
     ],
     "checks": {
-      "javascript": 99,
+      "javascript": 103,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 22,
@@ -3849,7 +3860,7 @@
       "learningBrains": 44,
       "shelterLifecycle": 30,
       "pairedLifecycle": 16,
-      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Character-operated plant tools, plant-specific social routines and every-object 48-sequence coverage remain unfinished.",
+      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Initial character-operated tools are now reviewed separately below; plant-specific social routines and every-object 48-sequence coverage remain unfinished. Botanical care: 19 score illustrations on four sheets plus real native solo/company replay. Connected mirrored grips, fixed character scale, supported feet, age-sized tools, actual soil/rim/leaf contacts, downward pours, butterfly hovering, reduced motion and selectable visiting gardeners verified. Interrupted and incomplete shared work grant no shared memory; completed care teaches gardening. Tool pickup/put-away and individual-object/guest repertoires remain unfinished.",
       "nestLifecycle": 34,
       "nestReplay": {
         "nativeSceneFrames": 41,
@@ -3925,6 +3936,17 @@
         "botanicalObjects": 112,
         "medianMs": 9.800000011920929,
         "p95Ms": 13.100000023841858
+      },
+      "botanicalCareLifecycle": 78,
+      "botanicalCareRigCases": 8512,
+      "botanicalCarePourCases": 4800,
+      "botanicalCareReplay": {
+        "frames": 483,
+        "workers": 498,
+        "hits": 130,
+        "medianMs": 10.399999976158142,
+        "p95Ms": 18,
+        "note": "Development replay, not the final milestone performance audit."
       }
     },
     "limitations": [
@@ -3937,7 +3959,7 @@
       "Installed app remains the previously verified 2.36.0; this development milestone is not packaged or installed.",
       "Eight cooperative toy scenes currently cover seesaw, sandbox, ball and trampoline; full species-specific contact, NPC-to-NPC toy invitations and every-object repertoires remain unfinished. Habitat purchases now reserve enlarged drawing space; additional areas and the other legacy placement editors remain to be designed.",
       "Sixteen shared water scores are initial object/age-aware routines, not 48 bespoke sequences on each water object. Visitor bathing, species-specific water contacts and detailed ladder/entry choreography remain unfinished.",
-      "Plant care has native arrival/completion and real resource effects, but still uses the legacy character preening pose. It does not count as a bespoke animated sequence. Botanical species, age and visitor tool choreography remain unfinished."
+      "Rooted plants now have 19 shared articulated care scores with tool contacts, independent visitor arrivals and completed shared-care memories. These do not satisfy the 48 bespoke sequences per plant target. Plant-construction-specific acting, personality/mood choreography, explicit tool pickup/put-away and reciprocal tool handoffs remain unfinished. No per-object sequence completion is claimed."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -3945,6 +3967,7 @@
     "sharedToyScores": 8,
     "waterScores": 16,
     "seatingSoloTracks": 12,
-    "seatingSharedTracks": 4
+    "seatingSharedTracks": 4,
+    "botanicalCareCoreScores": 19
   }
 }

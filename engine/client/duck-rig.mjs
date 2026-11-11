@@ -15,7 +15,7 @@ export function actionFor(state='idle'){
 export function duckRig(duck,t=0,design=null){
  if(duck.performance?.kind==='nest')t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  if(duck.performance?.kind==='water')t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
- if(duck.performance?.kind==='seating')t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
+ if(['botanical','seating'].includes(duck.performance?.kind))t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  const requested=duck.stage==='teen'?'juvenile':duck.stage||'adult',spec=design||DUCK_AGES.find(a=>a.id===requested)||DUCK_AGES[5];
  const stage=design?'adult':spec.id,small=['hatchling','duckling'].includes(stage);
  const performance=performancePose(duck.performance,duck.performance?.young?'duckling':stage);
@@ -23,7 +23,7 @@ export function duckRig(duck,t=0,design=null){
  const rate=spec.pace/4.5,speed=duck.state==='waddle_fast'?1.6:duck.state==='sneaking'?.65:1;
  const cycle=t*rate*speed,phase=Math.floor(cycle*5)%8;
  const cells=Array.from({length:H},()=>Array(W).fill(' ')),tones=cells.map(r=>r.map(()=> 'b')),fills=[];
- let clipped=false,rig=null,bill=null,plan={items:[],inks:{}};
+ let clipped=false,rig=null,bill=null,grip=null,workGripRest=null,plan={items:[],inks:{}};
  const put=(str,x,y,tone='b')=>{x=Math.round(x);y=Math.round(y);for(let i=0;i<str.length;i++){if(str[i]===' ')continue;if(x+i<0||x+i>=W||y<0||y>=H){clipped=true;continue;}cells[y][x+i]=str[i];tones[y][x+i]=tone;}};
  const group=(rows,x,y,tone)=>rows.forEach((r,j)=>put(r,x,y+j,tone));
  const ink={b:spec.tints?.[0]||'#cba27c',g:spec.tints?.[1]||'#8fc5aa',j:'#65a58d',h:'#b1dcc4',s:'#937152',a:'#efc46a',w:'#dbbfa0',c:'#f0ead2',p:spec.tints?.[2]||'#94c6e4',e:'#172b25',...spec.inkOverrides};
@@ -98,7 +98,18 @@ export function duckRig(duck,t=0,design=null){
    const open=phase>=2&&phase<=5,wing=open?['  /)/)',' / / /','/ / /','\\__/']:['  /)',' / /',' \\/'];
    group(wing,b.x-2,b.y-(open?3:0),'w');if(open)group(wing.map(r=>[...r].reverse().map(mirrorGlyph).join('')),b.x+b.w-2,b.y-2,'w');
   }
-  if(performance?.w>.15){
+  if(performance?.botanical){
+   const shoulder={x:Math.round(b.x+b.w*.55),y:Math.round(b.y+b.h*.4)};
+   grip={x:Math.min(W-4,Math.round(b.x+b.w+2+performance.reach*2)),y:shoulder.y+1};
+   workGripRest={x:Math.round(b.x+b.w+2),y:shoulder.y+1-performance.b};
+   const steps=grip.x-shoulder.x;
+   for(let i=0;i<=steps;i++){
+    const u=i/Math.max(1,steps),x=shoulder.x+i,y=Math.round(shoulder.y+(grip.y-shoulder.y)*u);
+    put('=',x,y,'w');if(i<steps)put('~',x,y+1,'p');
+   }
+   put(')',grip.x,grip.y,'w');
+  }
+  if(!performance?.botanical&&performance?.w>.15){
    const reach=Math.round(performance.w*(small?3:6)),wy=b.y+Math.max(1,Math.round(b.h*.3));
    group(small?[' /)','/ /','\\_/']:['  /)/)',' / / /','/ / /','\\___/'],b.x+b.w-3+Math.round(reach/3),wy-Math.round(reach/2),'w');
   }
@@ -115,8 +126,8 @@ export function duckRig(duck,t=0,design=null){
   if(duck.state==='diving'&&phase>=2&&phase<=5){cells.forEach(r=>r.fill(' '));fills.length=0;group([' \\ /','  /\\',' (__)'],CX-2,FLOOR-3,'a');put('~~~  ~~~~~',CX-5,FLOOR+1,'p');}
  }
  const facing=duck.facing!==false;
- if(!facing){for(let y=0;y<H;y++){cells[y].reverse();cells[y]=cells[y].map(mirrorGlyph);tones[y].reverse();}for(const f of fills)f.x=W-f.x-f.w;if(bill)bill.x=W-1-bill.x;}
+ if(!facing){for(let y=0;y<H;y++){cells[y].reverse();cells[y]=cells[y].map(mirrorGlyph);tones[y].reverse();}for(const f of fills)f.x=W-f.x-f.w;if(bill)bill.x=W-1-bill.x;if(grip)grip.x=W-1-grip.x;if(workGripRest)workGripRest.x=W-1-workGripRest.x;}
  return {art:cells.map(r=>r.join('')),tones:tones.map(r=>r.join('')),fills,inks:{...ink,...plan.inks},width:W,anchorX:facing?CX:W-1-CX,groundRow:FLOOR+.5,
   scale:stage==='egg'?.66:spec.height/(spec.art.length*7.5),body:ink.b,face:ink.g,accent:ink.a,shade:ink.s,name:'',rig,wearables:plan.items.map(i=>i.id),
-  design:'d10',material:'feathers',phase,frames:8,cycle:phase/8,clipped,action,bill,seatContact:performance?.seated&&rig?rig.body.y+rig.body.h-.3:null,performance:duck.performance||null,offsetY:action==='idle'?Math.sin(cycle*2)*.1:0};
+  design:'d10',material:'feathers',phase,frames:8,cycle:phase/8,clipped,action,bill,grip,workGripRest,seatContact:performance?.seated&&rig?rig.body.y+rig.body.h-.3:null,performance:duck.performance||null,offsetY:action==='idle'?Math.sin(cycle*2)*.1:0};
 }

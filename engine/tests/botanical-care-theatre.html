@@ -1,0 +1,44 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Garden care</title>
+<style>body{background:#142b23;color:#eadfbe;font:18px Georgia}canvas{max-width:100%}</style>
+<script type="module">
+import {BOTANICAL_ROUTINES,botanicalGeometry,drawBotanicalTools} from '../client/botanical-routines.mjs';
+import {itemSprite,ItemPainter} from '../client/ultra-items.mjs';
+import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+const pairs={cap_brush:'mushroom_patch',root_ring:'bamboo',pot_slow_pour:'potted_plant',cactus_drops:'cactus',furrow_water:'garden_plot',little_water:'fern',leaf_dust:'flower_rose',pot_rim:'fern',root_rake:'tree_oak',spine_brush:'cactus',soil_probe:'fern',bark_lens:'tree_oak',petal_lens:'flower_rose',trap_watch:'venus_flytrap',winter_roots:'bamboo',night_buds:'flower_tulip',young_discovery:'fern',elder_soil:'bonsai',petal_hover:'flower_rose'};
+window.reviewCare=()=>{
+ const painter=new ItemPainter(),images={};
+ for(let page=0;page<Math.ceil(Object.keys(BOTANICAL_ROUTINES).length/6);page++){
+  const canvas=document.createElement('canvas');canvas.width=1800;canvas.height=1300;const ctx=canvas.getContext('2d');ctx.fillStyle='#142b23';ctx.fillRect(0,0,1800,1300);
+  Object.entries(BOTANICAL_ROUTINES).slice(page*6,page*6+6).forEach(([id,s],n)=>{
+   const x=n%3*600,y=Math.floor(n/3)*650;ctx.save();ctx.translate(x,y);ctx.fillStyle='#eadfbe';ctx.font='20px Menlo';ctx.fillText(id,15,28);
+   const home={...itemSprite(pairs[id],3,{context:{season:id==='winter_roots'?'winter':'spring',hour:id==='night_buds'?23:12},state:{growth:.8,botany:{moisture:.3,health:.9,bloom:.8}}}),x:65,y:62};
+   const age=id==='little_water'||id==='young_discovery'?'hatchling':id==='elder_soil'?'elder':'adult';
+   const visitor=id==='petal_hover'?{id:'butterfly_fairy',castId:'butterfly_fairy',name:'Flutter'}:id==='root_rake'?{id:'grumpy_toad',name:'Grumble'}:id==='bark_lens'?{id:'wise_owl',name:'Professor Hoot'}:null;
+   const c={...characterSprite({...visitor,stage:age,facing:true,state:'idle',performance:{kind:'botanical',routine:{id,elapsed:s.duration*.32}}},0,!!visitor),x:45,y:62};
+   const g=botanicalGeometry(home,{character:c,inside:1,slot:0},5,9);
+   painter.draw(ctx,home,home.x*5,home.y*9,home.scale*5,{surface:'#142b23',outline:'#0a1712'});
+   drawBotanicalTools(ctx,g,true);drawCharacter(ctx,g.character,5,9,'#142b23');drawBotanicalTools(ctx,g);
+   ctx.restore();
+  });images['botanical-care-'+page]=canvas.toDataURL();document.body.append(canvas);
+ }
+ return images;
+};
+window.replayCare=frames=>{
+ const view=new SceneCanvas();view.resize(1440,900);const images={},costs=[];let workers=0,hits=0;
+ for(const [i,s] of frames.entries()){
+  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
+  if(before!==JSON.stringify(s))throw Error('mutated snapshot');
+  const gardeners=view.world.objects.flatMap(o=>o.gardeners||[]);workers+=gardeners.length;
+  for(const w of gardeners)if(w.character.visitor||w.character.story){
+   if(!view.hits.some(h=>h.id===w.character.id&&h.kind===(w.character.story?'story':'friend')))throw Error('missing gardener hit '+w.character.id);
+   hits++;
+  }
+  if(gardeners.some(w=>w.character.cheese&&w.character.rig.stage==='hatchling'&&w.character.performance.routine.elapsed>8)&&!images['botanical-care-young'])images['botanical-care-young']=view.canvas.toDataURL();
+  if(!images['botanical-care-company']&&view.world.objects.some(o=>o.gardeners?.filter(w=>w.inside>.99).length>=2&&o.gardeners.some(w=>w.character.cheese)))images['botanical-care-company']=view.canvas.toDataURL();
+ }
+ if(!images['botanical-care-young']||!images['botanical-care-company'])throw Error('missing young or shared-work capture');
+ if(!workers||!hits)throw Error('no real gardener replay coverage');
+ costs.sort((a,b)=>a-b);return {frames:frames.length,workers,hits,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+</script>

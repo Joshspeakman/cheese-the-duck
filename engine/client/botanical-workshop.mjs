@@ -23,6 +23,7 @@ function oval(c,x,y,rx,ry,tone='g',char='~'){
  c.ellipse(x,y,rx,ry,char,tone,true);
 }
 function leaf(c,x,y,tx,ty,width=5,tone='g',serrated=false){
+ (c.leaves||=[]).push({x:(x+tx)/2,y:(y+ty)/2,dx:tx-x,dy:ty-y,width});
  const dx=tx-x,dy=ty-y,len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len,a=[],b=[];
  for(let i=0;i<=12;i++){
   const u=i/12,r=Math.sin(Math.PI*u)*width*(serrated&&i%2?.72:1);
@@ -342,7 +343,7 @@ function fungus(c,p,t,env){
   cap(c,30,28,18,27,'r');cap(c,68,20,21,34,'p');cap(c,82,43,13,15,'a');cap(c,16,48,10,10,'b');cap(c,49,42,15,16,'p');
   if(env.wetness>.4)for(const [x,y]of [[30,29],[68,21],[82,44]])c.put(x+4,y+(t*3)%8,"'",'w');
  }else{cap(c,p.w/2,23,23,24,'b');c.put(p.w/2-6,49,'=//==','s');}
- return {contact:{x:p.w/2,y:p.h-13},flower:{x:p.w/2,y:25},soil:{x:p.w/2,y:p.h-6},entry:{x:p.w/2,y:p.h-3}};
+ return {cap:p.shape==='patch'?{x:16,y:44}:{x:p.w/2,y:16},contact:{x:p.w/2,y:p.h-13},flower:{x:p.w/2,y:25},soil:{x:p.w/2,y:p.h-6},entry:{x:p.w/2,y:p.h-3}};
 }
 function hedgeBlock(c,x,y,w,h,env){
  polygon(c,[[x,y],[x+w,y],[x+w-3,y+h],[x+3,y+h]],'g');
@@ -553,6 +554,8 @@ export function botanicalSprite(base,item,time,{motion=true,state={},context={},
  env.breeze=motion?Math.sin(t*.75)*env.wind*2.3:0;env.droop=p.rooted?clamp((.35-moisture)*2+(1-health)*.5):0;
  const c=new ObjectCanvas(p.w,p.h);pot(c,p,moisture);
  const anchors=DRAW[p.type](c,p,t,env,context)||{};
+ anchors.leaf=c.leaves?.sort((a,b)=>b.y-a.y)[0]||anchors.contact;
+ anchors.rim={x:p.w/2-8,y:p.container==='pot'?p.h-16:p.container==='dish'?p.h-10:anchors.soil?.y??p.h-5};
  if(state.wetness>.35||state.dirt>.25||state.condition<.5)surfaceWeather(c,p,state);
  if(p.rooted&&moisture>.75)for(let i=0;i<3;i++)c.put(p.w*.4+i*7,p.h-9+i%2,"'",'w');
  if(p.rooted&&health<.45)c.put(p.w/2-12,p.h-7,'<;>','q');
