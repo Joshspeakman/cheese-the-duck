@@ -1,0 +1,1016 @@
+{
+  "unroll_edge": {
+    "label": "Steady the outer roll while Cheese opens the mat",
+    "preview": "mat_unroll",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "contact": 1,
+          "reach": 0.3,
+          "v": 0.9
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "b": 0.4,
+          "v": 0.65
+        }
+      ],
+      [
+        0.68,
+        {
+          "contact": 1,
+          "w": 0.3,
+          "v": 0.3
+        }
+      ],
+      [
+        0.86,
+        {
+          "contact": 1,
+          "b": 0.7,
+          "v": 0.35
+        }
+      ],
+      [
+        0.94,
+        {
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.86,
+        "smooth"
+      ]
+    ]
+  },
+  "fringe_pair": {
+    "label": "Untangle the far fringe while Cheese combs the near edge",
+    "preview": "fringe_comb",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.16,
+        {
+          "contact": 0.8,
+          "b": 0.5,
+          "v": 1
+        }
+      ],
+      [
+        0.34,
+        {
+          "contact": 1,
+          "reach": 0.6,
+          "v": 0.97
+        }
+      ],
+      [
+        0.53,
+        {
+          "contact": 0.5,
+          "w": 0.4,
+          "v": 0.94
+        }
+      ],
+      [
+        0.72,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "v": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "eye": "^",
+          "w": 0.3
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.34,
+        "comb"
+      ],
+      [
+        0.72,
+        "comb"
+      ]
+    ]
+  },
+  "brush_pair": {
+    "label": "Sweep loose lint toward Cheese and lift the last flecks",
+    "preview": "lint_brush",
+    "tool": "brush",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "contact": 1,
+          "b": 0.5,
+          "v": 0.6
+        }
+      ],
+      [
+        0.34,
+        {
+          "contact": 1,
+          "reach": 0.7,
+          "v": 0.73
+        }
+      ],
+      [
+        0.51,
+        {
+          "contact": 0.4,
+          "reach": 0.2,
+          "v": 0.9
+        }
+      ],
+      [
+        0.68,
+        {
+          "contact": 1,
+          "reach": 0.6,
+          "v": 0.63
+        }
+      ],
+      [
+        0.86,
+        {
+          "eye": "o",
+          "v": 0.9
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.34,
+        "clean"
+      ],
+      [
+        0.68,
+        "clean"
+      ]
+    ]
+  },
+  "corner_anchor": {
+    "label": "Hold one corner flat while Cheese smooths the other",
+    "preview": "corner_smooth",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 0.5,
+          "v": 0.95
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "b": 0.7,
+          "reach": 0.4,
+          "v": 0.93
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "b": 0.5,
+          "reach": 0.2,
+          "v": 0.9
+        }
+      ],
+      [
+        0.82,
+        {
+          "contact": 0.4,
+          "eye": "^",
+          "v": 0.95
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "smooth"
+      ]
+    ]
+  },
+  "quiet_pattern": {
+    "label": "Quietly point out the little knots between the rug medallions",
+    "preview": "medallion_trace",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "w": 0.15,
+          "eye": "o",
+          "v": 0.72
+        }
+      ],
+      [
+        0.38,
+        {
+          "w": 0.35,
+          "y": 1,
+          "mark": "?",
+          "v": 0.68
+        }
+      ],
+      [
+        0.6,
+        {
+          "w": 0.2,
+          "eye": "o",
+          "v": 0.75
+        }
+      ],
+      [
+        0.83,
+        {
+          "w": 0.4,
+          "eye": "^",
+          "v": 0.86
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "pattern_story": {
+    "label": "Turn the rug pattern into a very dramatic tiny expedition",
+    "preview": "medallion_trace",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.14,
+        {
+          "w": 0.6,
+          "eye": "o",
+          "v": 0.73
+        }
+      ],
+      [
+        0.31,
+        {
+          "w": 1,
+          "y": -1,
+          "mark": "!",
+          "v": 0.68
+        }
+      ],
+      [
+        0.54,
+        {
+          "w": 0.5,
+          "b": 0.6,
+          "eye": ">",
+          "v": 0.83
+        }
+      ],
+      [
+        0.76,
+        {
+          "w": 0.9,
+          "mark": "*",
+          "v": 0.76
+        }
+      ],
+      [
+        0.9,
+        {
+          "w": 0.2,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "patient_steps": {
+    "label": "Offer a patient wing while Cheese finds a comfortable spot",
+    "preview": "young_steps",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.14,
+        {
+          "w": 0.3,
+          "eye": "o",
+          "v": 0.85
+        }
+      ],
+      [
+        0.36,
+        {
+          "w": 0.55,
+          "b": 0.4,
+          "v": 0.8
+        }
+      ],
+      [
+        0.58,
+        {
+          "w": 0.25,
+          "eye": "^",
+          "v": 0.9
+        }
+      ],
+      [
+        0.79,
+        {
+          "w": 0.45,
+          "b": 0.2,
+          "v": 0.84
+        }
+      ],
+      [
+        0.93,
+        {
+          "w": 0.1,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "night_listen": {
+    "label": "Settle at the edge and listen to the pond together",
+    "preview": "night_listen",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "b": 0.5,
+          "eye": "-",
+          "v": 0.88
+        }
+      ],
+      [
+        0.39,
+        {
+          "b": 0.7,
+          "w": 0.1,
+          "eye": "-",
+          "v": 0.86
+        }
+      ],
+      [
+        0.62,
+        {
+          "b": 0.8,
+          "eye": "-",
+          "v": 0.87
+        }
+      ],
+      [
+        0.84,
+        {
+          "b": 0.5,
+          "eye": "o",
+          "w": 0.2,
+          "v": 0.9
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "moss_cushion": {
+    "label": "Pat a moss cushion back into shape beside Cheese",
+    "preview": "moss_pat",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "contact": 0.7,
+          "b": 0.7,
+          "v": 0.7
+        }
+      ],
+      [
+        0.36,
+        {
+          "contact": 1,
+          "b": 1,
+          "reach": 0.4,
+          "v": 0.68
+        }
+      ],
+      [
+        0.55,
+        {
+          "contact": 0.2,
+          "b": 0.3,
+          "eye": "o",
+          "v": 0.74
+        }
+      ],
+      [
+        0.73,
+        {
+          "contact": 1,
+          "b": 0.8,
+          "v": 0.78
+        }
+      ],
+      [
+        0.9,
+        {
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.36,
+        "smooth"
+      ],
+      [
+        0.73,
+        "smooth"
+      ]
+    ]
+  },
+  "dew_observer": {
+    "label": "Follow the dew beads without trampling their little stems",
+    "preview": "grass_dew",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "y": 1,
+          "eye": "o",
+          "v": 0.65
+        }
+      ],
+      [
+        0.33,
+        {
+          "y": 1.5,
+          "w": 0.2,
+          "mark": "o",
+          "v": 0.72
+        }
+      ],
+      [
+        0.56,
+        {
+          "y": 0.8,
+          "w": 0.35,
+          "eye": "o",
+          "v": 0.67
+        }
+      ],
+      [
+        0.79,
+        {
+          "y": 1,
+          "w": 0.1,
+          "eye": "^",
+          "v": 0.8
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "meadow_guide": {
+    "label": "Point out a path between the meadow flowers",
+    "preview": "grass_tracks",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "w": 0.45,
+          "v": 0.9
+        }
+      ],
+      [
+        0.35,
+        {
+          "w": 0.8,
+          "eye": "o",
+          "v": 0.8
+        }
+      ],
+      [
+        0.57,
+        {
+          "w": 0.4,
+          "mark": "*",
+          "v": 0.68
+        }
+      ],
+      [
+        0.78,
+        {
+          "w": 0.65,
+          "eye": "^",
+          "v": 0.75
+        }
+      ],
+      [
+        0.91,
+        {
+          "w": 0.2,
+          "v": 0.92
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "rubber_corner": {
+    "label": "Brace the rubber edge while Cheese tests the drainage grooves",
+    "preview": "rubber_drain",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "contact": 1,
+          "b": 0.5,
+          "v": 0.9
+        }
+      ],
+      [
+        0.36,
+        {
+          "contact": 1,
+          "reach": 0.5,
+          "b": 0.6,
+          "v": 0.85
+        }
+      ],
+      [
+        0.59,
+        {
+          "contact": 1,
+          "b": 0.3,
+          "eye": "o",
+          "v": 0.8
+        }
+      ],
+      [
+        0.78,
+        {
+          "contact": 0.6,
+          "w": 0.3,
+          "v": 0.92
+        }
+      ],
+      [
+        0.91,
+        {
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.59,
+        "smooth"
+      ]
+    ]
+  },
+  "welcome_greeting": {
+    "label": "Exchange an excessively formal little welcome at the door mat",
+    "preview": "welcome_wipe",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "w": 0.7,
+          "mark": "!",
+          "v": 0.85
+        }
+      ],
+      [
+        0.35,
+        {
+          "b": 1,
+          "w": 0.3,
+          "eye": "-",
+          "v": 0.9
+        }
+      ],
+      [
+        0.57,
+        {
+          "w": 0.6,
+          "eye": "^",
+          "mark": "<3",
+          "v": 0.86
+        }
+      ],
+      [
+        0.8,
+        {
+          "b": 0.5,
+          "w": 0.2,
+          "eye": "-",
+          "v": 0.9
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "reed_bundle": {
+    "label": "Keep the cut reed ends aligned while Cheese checks the binding",
+    "preview": "reed_sort",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.13,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "v": 0.72
+        }
+      ],
+      [
+        0.32,
+        {
+          "contact": 1,
+          "reach": 0.7,
+          "b": 0.4,
+          "v": 0.65
+        }
+      ],
+      [
+        0.51,
+        {
+          "contact": 0.6,
+          "eye": "o",
+          "v": 0.6
+        }
+      ],
+      [
+        0.74,
+        {
+          "contact": 1,
+          "b": 0.5,
+          "reach": 0.4,
+          "v": 0.7
+        }
+      ],
+      [
+        0.89,
+        {
+          "w": 0.2,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "batting_fluff": {
+    "label": "Lift the loose batting edge and pat its springy layers",
+    "preview": "batting_fluff",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.16,
+        {
+          "contact": 1,
+          "b": 0.4,
+          "v": 0.82
+        }
+      ],
+      [
+        0.37,
+        {
+          "contact": 0.7,
+          "y": -0.5,
+          "reach": 0.8,
+          "v": 0.66
+        }
+      ],
+      [
+        0.59,
+        {
+          "contact": 1,
+          "b": 0.8,
+          "v": 0.77
+        }
+      ],
+      [
+        0.81,
+        {
+          "contact": 0.3,
+          "eye": "^",
+          "v": 0.9
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.59,
+        "smooth"
+      ]
+    ]
+  },
+  "scrap_corner": {
+    "label": "Pin the opposite scrap corner while Cheese makes a crease",
+    "preview": "scrap_fold",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "contact": 1,
+          "b": 0.7,
+          "v": 0.8
+        }
+      ],
+      [
+        0.41,
+        {
+          "contact": 1,
+          "reach": 0.4,
+          "v": 0.7
+        }
+      ],
+      [
+        0.63,
+        {
+          "contact": 1,
+          "reach": 0.7,
+          "b": 0.4,
+          "v": 0.65
+        }
+      ],
+      [
+        0.85,
+        {
+          "contact": 0.1,
+          "w": 0.3,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.63,
+        "smooth"
+      ]
+    ]
+  },
+  "braid_ends": {
+    "label": "Separate the loose braid ends for Cheese to tighten",
+    "preview": "weave_tighten",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.14,
+        {
+          "contact": 0.7,
+          "v": 0.97
+        }
+      ],
+      [
+        0.32,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "b": 0.5,
+          "v": 0.91
+        }
+      ],
+      [
+        0.52,
+        {
+          "contact": 0.5,
+          "eye": "o",
+          "v": 0.96
+        }
+      ],
+      [
+        0.71,
+        {
+          "contact": 1,
+          "reach": 0.4,
+          "v": 0.99
+        }
+      ],
+      [
+        0.9,
+        {
+          "eye": "^",
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.32,
+        "comb"
+      ],
+      [
+        0.71,
+        "comb"
+      ]
+    ]
+  },
+  "hover_observer": {
+    "label": "Hover beside the weave and follow Cheese\u2019s careful movements",
+    "preview": "medallion_trace",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "y": -1,
+          "w": 0.4,
+          "v": 0.72
+        }
+      ],
+      [
+        0.37,
+        {
+          "y": -2,
+          "w": 0.8,
+          "mark": "*",
+          "v": 0.6
+        }
+      ],
+      [
+        0.58,
+        {
+          "y": -1,
+          "w": 0.5,
+          "v": 0.78
+        }
+      ],
+      [
+        0.81,
+        {
+          "y": -1.5,
+          "w": 0.7,
+          "eye": "^",
+          "v": 0.68
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  }
+}
