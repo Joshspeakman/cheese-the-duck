@@ -4,6 +4,7 @@ import { mkdirSync, readdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url)), root = path.dirname(here);
+execFileSync(process.execPath,[path.join(here,'build-footprints.mjs')],{cwd:root,stdio:'inherit'});
 mkdirSync(path.join(here, 'build'), { recursive: true });
 const python = path.join(root, '.venv/bin/python');
 const args = ['-m', 'PyInstaller', '--noconfirm', '--clean', '--onedir', '--name', 'cheese-simulation',

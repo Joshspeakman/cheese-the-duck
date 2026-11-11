@@ -11,6 +11,13 @@ class WorldPlacement:
         return self.x * 20 / 132, self.y * 12 / 42
 
 
+def habitat_placements(game):
+    # Classic's whole-prop bounce is presentation, not a moving destination.
+    # Ultra has its own articulated object animation at this fixed position.
+    return [WorldPlacement(p.item_id,p.x*132/20,p.y*42/12)
+            for p in game.habitat.get_visible_placed_items()]
+
+
 def outdoor_decorations(game):
     result=[]
     for room_id in ('garden','pond'):

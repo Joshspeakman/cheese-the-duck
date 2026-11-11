@@ -1564,7 +1564,8 @@ class Game:
                 self.habitat.currency += item.cost  # Refund
                 return
         elif self.habitat.purchase_item(item.id):
-            self.renderer.show_message(f"Purchased {item.name}! x")
+            stored=item.id in self.habitat.stored_items
+            self.renderer.show_message(f"Purchased {item.name}!"+(" Safely stored — open Arrange to make room." if stored else ""))
         else:
             if self.habitat.owns_item(item.id):
                 self.renderer.show_message("Already owned!")
@@ -1608,6 +1609,8 @@ class Game:
             self.renderer.show_message(f"{item.name} is now hidden!")
         elif result == 'cosmetic':
             self.renderer.show_message("Use [E] to equip/unequip cosmetics!")
+        elif result == 'no_room':
+            self.renderer.show_message("No clear space for the whole item. It is safely stored; open Arrange to make room.")
         else:
             self.renderer.show_message("Can't toggle this item!")
 

@@ -201,6 +201,14 @@ body .pond-journal>nav button[aria-current=page]{background:#e7d9b0;color:#2c422
 .resident-form textarea { flex: 1; min-width: 0; resize: vertical; border: 1px solid #799682; border-radius: 10px; padding: 12px; background: #f2e7c8; color: #30442e; font: inherit; line-height: 1.5; }
 .resident-form textarea:focus { outline: 2px solid #d7ba75; outline-offset: 3px; }
 .pond-card .resident-pending { min-height: 1.5em; color: #76582d; }
+.pond-arrangement{grid-column:1/-1}
+.arrange-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:12px 0}
+.arrange-toolbar select{width:min(440px,100%)}
+.arrange-preview{display:block;width:100%;height:auto;border:2px solid #697653;border-radius:12px;touch-action:none;cursor:crosshair;background:#14271e}
+.arrange-preview:focus-visible{outline:3px solid #9a692d;outline-offset:4px}
+.pond-card .arrange-description{min-height:2.5em;color:#435c36}
+.pond-card .arrange-description[data-valid=false]{color:#844530}
+.arrange-actions{display:flex;flex-wrap:wrap;gap:10px}
 .resident-voice,.resident-caption { color: #5f704c; }
 .resident-growth { display: block; margin: -4px 0 10px; color: #766035; }
 .resident-bond { padding-top: 10px; border-top: 1px solid #81937244; margin-top: 14px; }

@@ -1,0 +1,28 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Arrange</title>
+<link rel="stylesheet" href="../client/style.css">
+<canvas id="world" tabindex="0"></canvas>
+<script type="module">
+import {PondJournal} from '../client/pond-journal.mjs';
+import {layoutCheck} from '../client/pond-layout.mjs';
+const ipc=window.require('electron').ipcRenderer;
+window.commands=[];
+window.cheese={input:command=>{window.commands.push(command);ipc.send('layout-command',command);}};
+window.journal=new PondJournal();
+window.receive=frame=>{window.journal.update(frame);if(!window.journal.open)window.journal.show('arrange','couch');};
+window.compareCases=data=>data.cases.every(c=>layoutCheck(data.layout,c.id,c.x,c.y).ok===c.ok);
+window.geometryCheck=()=>{
+ const a=window.journal.arrangement,s=window.journal.frame.scene,result=[];
+ for(const [w,h] of [[2400,700],[1440,900],[800,1200]]){
+  a.renderer.resize(w,h);a.renderer.draw({...s,camera:{x:0,y:0,w:132,h:42}},3,.03);
+  const sx=w/240,sy=h/110;
+  for(const p of s.living.layout.placed){
+   const hit=a.renderer.hits.find(i=>i.kind==='item'&&i.id===p.id);
+   if(!hit)throw Error('Missing placed artwork '+p.id);
+   const b=p.box,x=(24+b.x*192/20)*sx,y=(46+b.y*47/12)*sy,right=(24+(b.x+b.w)*192/20)*sx,bottom=(46+(b.y+b.h)*47/12)*sy;
+   if(hit.x<x-.01||hit.x+hit.w>right+.01||hit.y<y-.01||hit.y+hit.h>bottom+.01)throw Error('Artwork exceeds reserved space: '+p.id+' at '+w+'x'+h);
+  }
+  result.push({width:w,height:h,placed:s.living.layout.placed.length});
+ }
+ return result;
+};
+</script>

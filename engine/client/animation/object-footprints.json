@@ -1,0 +1,3258 @@
+{
+  "version": 2,
+  "units": "render-grid-cells",
+  "items": {
+    "hat_red": {
+      "width": 19.41,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hat_blue": {
+      "width": 19.41,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hat_party": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hat_chef": {
+      "width": 16.8,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hat_wizard": {
+      "width": 18.41,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hat_crown": {
+      "width": 15.45,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hat_viking": {
+      "width": 19.05,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hat_pirate": {
+      "width": 18.06,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hat_cowboy": {
+      "width": 20.4,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hat_tophat": {
+      "width": 18.32,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hat_beret": {
+      "width": 16.8,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hat_beanie": {
+      "width": 13.2,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hat_sombrero": {
+      "width": 22.65,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "glasses_cool": {
+      "width": 21.48,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "glasses_nerd": {
+      "width": 21.48,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bowtie": {
+      "width": 15.63,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "scarf_red": {
+      "width": 14.81,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "cape": {
+      "width": 19.22,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "wings_fairy": {
+      "width": 20.4,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "halo": {
+      "width": 15.81,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "toy_ball": {
+      "width": 17.9,
+      "height": 12.76,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "toy_blocks": {
+      "width": 45.6,
+      "height": 27.07,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "toy_trumpet": {
+      "width": 20.13,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "toy_skateboard": {
+      "width": 36.62,
+      "height": 15.54,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "toy_piano": {
+      "width": 21.2,
+      "height": 11.27,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "toy_trampoline": {
+      "width": 62.85,
+      "height": 33.96,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "toy_slide": {
+      "width": 79.64,
+      "height": 51.44,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "toy_swing": {
+      "width": 81.41,
+      "height": 53.49,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "toy_seesaw": {
+      "width": 71.79,
+      "height": 29.94,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "toy_sandbox": {
+      "width": 69.07,
+      "height": 29.29,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "toy_boombox": {
+      "width": 20.04,
+      "height": 10.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "chair_wood": {
+      "width": 41.29,
+      "height": 32.15,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "chair_throne": {
+      "width": 61.15,
+      "height": 50.39,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "table_small": {
+      "width": 54.29,
+      "height": 27.44,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "bed_small": {
+      "width": 53.98,
+      "height": 26.44,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "bed_king": {
+      "width": 84.64,
+      "height": 39.47,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "couch": {
+      "width": 85.44,
+      "height": 43.87,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "bookshelf": {
+      "width": 66.47,
+      "height": 49.7,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "desk": {
+      "width": 66.43,
+      "height": 37.99,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "lamp_floor": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mirror": {
+      "width": 44.17,
+      "height": 42.55,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "pool_kiddie": {
+      "width": 58.65,
+      "height": 26.88,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "pool_large": {
+      "width": 89.23,
+      "height": 41.46,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "fountain_small": {
+      "width": 54.7,
+      "height": 35.25,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "fountain_grand": {
+      "width": 82.34,
+      "height": 60.78,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "pond": {
+      "width": 83.91,
+      "height": 36.04,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "sprinkler": {
+      "width": 57.26,
+      "height": 27.69,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "waterfall": {
+      "width": 87.41,
+      "height": 59.45,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "hot_tub": {
+      "width": 69.59,
+      "height": 37.46,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "birdbath": {
+      "width": 44.05,
+      "height": 27.9,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "water_slide": {
+      "width": 85.52,
+      "height": 53.49,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "flower_rose": {
+      "width": 12.74,
+      "height": 10.44,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "flower_tulip": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "flower_sunflower": {
+      "width": 14.83,
+      "height": 11.27,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tree_small": {
+      "width": 27.25,
+      "height": 15.24,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tree_oak": {
+      "width": 27.25,
+      "height": 15.24,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tree_cherry": {
+      "width": 22.91,
+      "height": 13.92,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bush_hedge": {
+      "width": 22.91,
+      "height": 9.14,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "grass_patch": {
+      "width": 22.65,
+      "height": 8.19,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "cactus": {
+      "width": 15.71,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bamboo": {
+      "width": 18.55,
+      "height": 11.27,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bow_tie_blue": {
+      "width": 15.63,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bow_tie_pink": {
+      "width": 15.63,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "cap_sports": {
+      "width": 19.41,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "beanie_striped": {
+      "width": 13.2,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bandana": {
+      "width": 15.63,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "headphones": {
+      "width": 16.8,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "sunglasses_aviator": {
+      "width": 21.48,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "scarf_winter": {
+      "width": 14.81,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "crown_golden": {
+      "width": 15.45,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "viking_helmet": {
+      "width": 19.05,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "wizard_hat": {
+      "width": 18.41,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pirate_hat": {
+      "width": 18.06,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "flower_crown": {
+      "width": 13.2,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "cape_superhero": {
+      "width": 19.22,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "backpack_tiny": {
+      "width": 14.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "monocle": {
+      "width": 14.27,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "halo_angel": {
+      "width": 15.81,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "devil_horns": {
+      "width": 17.61,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "party_hat": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "space_helmet": {
+      "width": 18.32,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "frisbee": {
+      "width": 22.38,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "toy_car": {
+      "width": 32.83,
+      "height": 18.24,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "jump_rope": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "yo_yo": {
+      "width": 12.47,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "kite": {
+      "width": 12.7,
+      "height": 11.27,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "skateboard": {
+      "width": 31.13,
+      "height": 13.92,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "trampoline": {
+      "width": 48.5,
+      "height": 24.89,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "telescope": {
+      "width": 18.77,
+      "height": 9.67,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "easel": {
+      "width": 16.95,
+      "height": 11.27,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "drums": {
+      "width": 21.47,
+      "height": 13.26,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bookshelf_wood": {
+      "width": 73.62,
+      "height": 57.02,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "dresser": {
+      "width": 64.18,
+      "height": 38.58,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "mirror_standing": {
+      "width": 54.95,
+      "height": 48.1,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "desk_writing": {
+      "width": 79.06,
+      "height": 49.46,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "piano": {
+      "width": 26.19,
+      "height": 13.92,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "wardrobe": {
+      "width": 83.14,
+      "height": 58.89,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "sofa_fancy": {
+      "width": 95.23,
+      "height": 49.78,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "coffee_table": {
+      "width": 63.62,
+      "height": 27.02,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "bar_cart": {
+      "width": 57.15,
+      "height": 36.36,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "grandfather_clock": {
+      "width": 55.51,
+      "height": 60.81,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "rocking_horse": {
+      "width": 58.15,
+      "height": 38.5,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "cabinet": {
+      "width": 73.45,
+      "height": 50.18,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "fireplace": {
+      "width": 88.35,
+      "height": 57.45,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "tv_stand": {
+      "width": 80.94,
+      "height": 48.71,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "bean_bag": {
+      "width": 56.06,
+      "height": 30.39,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "koi_pond": {
+      "width": 88.84,
+      "height": 39.46,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "waterfall_mini": {
+      "width": 62.15,
+      "height": 40.47,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "hot_tub_deluxe": {
+      "width": 85.18,
+      "height": 42.57,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "water_slide_mega": {
+      "width": 96.76,
+      "height": 61.35,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "sprinkler_system": {
+      "width": 77.38,
+      "height": 35.43,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "bonsai": {
+      "width": 17.06,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "venus_flytrap": {
+      "width": 12.11,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "herb_garden": {
+      "width": 25.14,
+      "height": 9.67,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "cherry_tree": {
+      "width": 22.91,
+      "height": 13.92,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "willow_tree": {
+      "width": 28.68,
+      "height": 15.24,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mushroom_patch": {
+      "width": 16.07,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "topiary_duck": {
+      "width": 18.97,
+      "height": 10.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fern": {
+      "width": 12.47,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "lavender": {
+      "width": 14.27,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hedge_maze": {
+      "width": 28.3,
+      "height": 11.29,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "dog_house": {
+      "width": 66.89,
+      "height": 38.26,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "picket_fence": {
+      "width": 22.91,
+      "height": 9.14,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "stone_wall": {
+      "width": 25.04,
+      "height": 9.14,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "archway": {
+      "width": 31.31,
+      "height": 13.26,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "gazebo": {
+      "width": 89.91,
+      "height": 43.25,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "bridge": {
+      "width": 34.86,
+      "height": 11.29,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tower": {
+      "width": 25.81,
+      "height": 15.24,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "windmill": {
+      "width": 26.09,
+      "height": 16.68,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "gate": {
+      "width": 20.89,
+      "height": 9.67,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pergola": {
+      "width": 25.81,
+      "height": 11.95,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "shed": {
+      "width": 81.75,
+      "height": 46.54,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "treehouse": {
+      "width": 99.56,
+      "height": 61.44,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "birdhouse": {
+      "width": 38.84,
+      "height": 29.66,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "mailbox": {
+      "width": 16.97,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "wishing_well": {
+      "width": 18.55,
+      "height": 11.27,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "trellis": {
+      "width": 20.89,
+      "height": 9.67,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "greenhouse": {
+      "width": 100.77,
+      "height": 50.68,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "castle_tower": {
+      "width": 25.81,
+      "height": 15.24,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "barn": {
+      "width": 101.42,
+      "height": 53.99,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "fence_section": {
+      "width": 22.91,
+      "height": 9.14,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "garden_gnome": {
+      "width": 10.76,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "duck_statue": {
+      "width": 18.97,
+      "height": 10.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fountain_statue": {
+      "width": 76.86,
+      "height": 56.98,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "wind_chimes": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "birdbath_garden": {
+      "width": 53.88,
+      "height": 34.49,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "sundial": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "weather_vane": {
+      "width": 18.44,
+      "height": 10.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "flag_pole": {
+      "width": 16.85,
+      "height": 10.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tire_swing": {
+      "width": 64.17,
+      "height": 50.68,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "hammock": {
+      "width": 90.91,
+      "height": 45.18,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "scarecrow": {
+      "width": 17.48,
+      "height": 11.27,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "totem_pole": {
+      "width": 22.91,
+      "height": 13.92,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "welcome_mat": {
+      "width": 22.65,
+      "height": 8.19,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "potted_cactus": {
+      "width": 15.71,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "stepping_stones": {
+      "width": 25.67,
+      "height": 9.67,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "garden_bench": {
+      "width": 87.26,
+      "height": 42.35,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "fountain_decorative": {
+      "width": 48.64,
+      "height": 32.47,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "zen_garden": {
+      "width": 26.73,
+      "height": 9.67,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "fairy_lights": {
+      "width": 25.04,
+      "height": 9.14,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pinwheel": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rain_barrel": {
+      "width": 15.62,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "wheelbarrow": {
+      "width": 16.8,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tiki_torch": {
+      "width": 10.76,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "ice_sculpture": {
+      "width": 18.97,
+      "height": 10.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "trophy_case": {
+      "width": 79.01,
+      "height": 51.91,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "compass_rose": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "sand_castle": {
+      "width": 25.81,
+      "height": 15.24,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "gong": {
+      "width": 21.1,
+      "height": 10.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bubble_machine": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "snow_globe": {
+      "width": 20.14,
+      "height": 11.27,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "table_lamp": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "floor_lamp": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "chandelier": {
+      "width": 19.5,
+      "height": 13.26,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "paper_lantern": {
+      "width": 12.47,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "lava_lamp": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "neon_sign": {
+      "width": 23.02,
+      "height": 9.67,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "disco_ball": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "candelabra": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fairy_lamp": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "spotlight": {
+      "width": 20.89,
+      "height": 9.67,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "street_lamp": {
+      "width": 14.3,
+      "height": 11.27,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "campfire": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "lighthouse": {
+      "width": 77.83,
+      "height": 68.89,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "firefly_swarm": {
+      "width": 20.89,
+      "height": 9.67,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "moon_lamp": {
+      "width": 14.1,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "star_projector": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "torches": {
+      "width": 10.76,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "glowsticks": {
+      "width": 21.21,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "aurora": {
+      "width": 19.83,
+      "height": 9.67,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "laser_lights": {
+      "width": 25.04,
+      "height": 9.14,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "grass_floor": {
+      "width": 26.73,
+      "height": 9.67,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "wooden_planks": {
+      "width": 23.77,
+      "height": 8.08,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "marble_tiles": {
+      "width": 26.63,
+      "height": 9.14,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "carpet_red": {
+      "width": 26.73,
+      "height": 9.67,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "tatami_mat": {
+      "width": 26.73,
+      "height": 9.67,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "sand_floor": {
+      "width": 23.97,
+      "height": 9.14,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "stone_tiles": {
+      "width": 25.67,
+      "height": 9.67,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "checkered_floor": {
+      "width": 26.63,
+      "height": 9.14,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "mosaic_tiles": {
+      "width": 26.63,
+      "height": 9.14,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "ice_floor": {
+      "width": 26.63,
+      "height": 9.14,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "cobblestone": {
+      "width": 25.67,
+      "height": 9.67,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "lava_floor": {
+      "width": 23.97,
+      "height": 9.14,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "cloud_floor": {
+      "width": 24.83,
+      "height": 8.08,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "persian_rug": {
+      "width": 26.73,
+      "height": 9.67,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "rainbow_path": {
+      "width": 26.73,
+      "height": 9.67,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "glass_floor": {
+      "width": 26.63,
+      "height": 9.14,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "rubber_mat": {
+      "width": 26.73,
+      "height": 9.67,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "autumn_leaves": {
+      "width": 17.38,
+      "height": 10.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "snow_floor": {
+      "width": 25.04,
+      "height": 9.14,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "galaxy_floor": {
+      "width": 23.97,
+      "height": 9.14,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "portal": {
+      "width": 26.85,
+      "height": 13.92,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "time_machine": {
+      "width": 24.88,
+      "height": 13.92,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rainbow_generator": {
+      "width": 26.73,
+      "height": 9.67,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "weather_machine": {
+      "width": 24.88,
+      "height": 13.92,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "black_hole": {
+      "width": 27.16,
+      "height": 9.14,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "volcano": {
+      "width": 22.78,
+      "height": 13.26,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "antigravity": {
+      "width": 26.33,
+      "height": 11.29,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tornado": {
+      "width": 23.22,
+      "height": 10.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "dragon_egg": {
+      "width": 17.38,
+      "height": 10.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "treasure_chest": {
+      "width": 21.63,
+      "height": 10.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "magic_carpet": {
+      "width": 22.91,
+      "height": 9.14,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "crystal_ball": {
+      "width": 15.62,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "wormhole": {
+      "width": 26.85,
+      "height": 13.92,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "force_field": {
+      "width": 22.78,
+      "height": 13.26,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "teleporter": {
+      "width": 21.73,
+      "height": 11.27,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "robot_butler": {
+      "width": 17.69,
+      "height": 12.33,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hologram": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "shrink_ray": {
+      "width": 19.41,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "growth_ray": {
+      "width": 19.41,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "cloning_machine": {
+      "width": 24.88,
+      "height": 13.92,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "ufo": {
+      "width": 31.06,
+      "height": 11.95,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rainbow_slide": {
+      "width": 89.76,
+      "height": 55.89,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "genie_lamp": {
+      "width": 21.47,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "infinity_pool": {
+      "width": 93.91,
+      "height": 42.98,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "bounce_house": {
+      "width": 28.69,
+      "height": 13.26,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "ferris_wheel": {
+      "width": 26.45,
+      "height": 15.23,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "carousel": {
+      "width": 21.6,
+      "height": 13.92,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "jetpack": {
+      "width": 12.47,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "submarine": {
+      "width": 29.61,
+      "height": 11.29,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "hot_air_balloon": {
+      "width": 24.88,
+      "height": 13.92,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rocket_ship": {
+      "width": 18.57,
+      "height": 15.23,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tardis": {
+      "width": 16.85,
+      "height": 10.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "invisible_cloak": {
+      "width": 19.22,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "transmogrifier": {
+      "width": 24.88,
+      "height": 13.92,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "money_printer": {
+      "width": 20.14,
+      "height": 11.27,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "perpetual_motion": {
+      "width": 21.32,
+      "height": 9.14,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "DNA_mixer": {
+      "width": 10.58,
+      "height": 11.27,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "dream_catcher": {
+      "width": 14.81,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "wish_fountain": {
+      "width": 81.61,
+      "height": 51.05,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "dimensional_door": {
+      "width": 26.85,
+      "height": 13.92,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "golden_throne": {
+      "width": 69.55,
+      "height": 55.81,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "world_tree": {
+      "width": 27.25,
+      "height": 15.24,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "cosmic_arch": {
+      "width": 31.31,
+      "height": 13.26,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "eternal_flame": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "philosophers_stone": {
+      "width": 14.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "nook_radio": {
+      "width": 16.97,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "breadcrumbs": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bread": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "seeds": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "lettuce": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "worm": {
+      "width": 20.13,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fancy_bread": {
+      "width": 21.3,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "golden_crumb": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rubber_duck": {
+      "width": 22.25,
+      "height": 14.84,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "ball": {
+      "width": 17.9,
+      "height": 12.76,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "feather": {
+      "width": 10.76,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "flower": {
+      "width": 14.27,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "shiny_pebble": {
+      "width": 16.71,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "lucky_clover": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "corn": {
+      "width": 12.11,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "peas": {
+      "width": 16.53,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "grapes": {
+      "width": 11.76,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "oats": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fish_treat": {
+      "width": 19.5,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mysterious_crumb": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rainbow_crumb": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "squeaky_toy": {
+      "width": 19.85,
+      "height": 13.55,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "tiny_boat": {
+      "width": 16.07,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "wind_up_duck": {
+      "width": 26.94,
+      "height": 17.25,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "bubble_wand": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "seashell": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "cool_stick": {
+      "width": 11.12,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bottle_cap": {
+      "width": 17.61,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "glitter_rock": {
+      "width": 14.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tiny_crown": {
+      "width": 15.45,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "golden_feather": {
+      "width": 10.76,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mystery_egg": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "ancient_bread": {
+      "width": 21.3,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "duck_photo": {
+      "width": 15.62,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "void_crumb": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "best_friend_badge": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "medicine": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "berry_salad": {
+      "width": 15.36,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "honey_bread": {
+      "width": 21.3,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "crystal_lamp": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "flower_wreath": {
+      "width": 13.2,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "moss_carpet": {
+      "width": 22.65,
+      "height": 8.19,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "pebble_path": {
+      "width": 21.75,
+      "height": 8.19,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "shell_mobile": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "storage_basket": {
+      "width": 15.62,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "torch": {
+      "width": 10.76,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "water_bowl": {
+      "width": 31.53,
+      "height": 14.89,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "lucky_charm": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "magic_wand": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "shiny_object": {
+      "width": 16.71,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "water_token": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "earth_token": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "sky_token": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "ancient_amulet": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "guardian_blessing": {
+      "width": 15.81,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "woven_grass": {
+      "width": 22.65,
+      "height": 8.19,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "rope": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "thatch": {
+      "width": 22.65,
+      "height": 8.19,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "clay_brick": {
+      "width": 17.61,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "wooden_plank": {
+      "width": 20.13,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "stone_block": {
+      "width": 17.61,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "insulation": {
+      "width": 22.65,
+      "height": 8.19,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "stone_hammer": {
+      "width": 16.07,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fishing_rod": {
+      "width": 15.62,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "gathering_bag": {
+      "width": 14.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "digging_stick": {
+      "width": 11.12,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "basic_nest": {
+      "width": 48.5,
+      "height": 26.03,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "cozy_nest": {
+      "width": 54.29,
+      "height": 29.14,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "deluxe_nest": {
+      "width": 59.25,
+      "height": 33.29,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "mud_hut": {
+      "width": 77.63,
+      "height": 42.4,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "wooden_cottage": {
+      "width": 92.65,
+      "height": 51.51,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "stone_house": {
+      "width": 90.84,
+      "height": 50.68,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "workbench": {
+      "width": 82.97,
+      "height": 48.58,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "storage_chest": {
+      "width": 18.32,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "garden_plot": {
+      "width": 21.3,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bird_bath": {
+      "width": 48.58,
+      "height": 24.2,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "watchtower": {
+      "width": 25.81,
+      "height": 15.24,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "flower_bed": {
+      "width": 21.3,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "stone_path": {
+      "width": 21.75,
+      "height": 8.19,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "pond_fountain": {
+      "width": 65.5,
+      "height": 42.01,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "leaf": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "grass_blade": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "wildflower": {
+      "width": 14.27,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "clover": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "dandelion": {
+      "width": 14.27,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "moss": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pine_needle": {
+      "width": 12.47,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mushroom": {
+      "width": 16.07,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pond_weed": {
+      "width": 12.47,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "lily_pad": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "garden_flower": {
+      "width": 14.27,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rainbow_flower": {
+      "width": 14.27,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "twig": {
+      "width": 11.12,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bark": {
+      "width": 11.12,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "acorn": {
+      "width": 11.85,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pine_cone": {
+      "width": 10.95,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "driftwood": {
+      "width": 11.12,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "driftwood_large": {
+      "width": 11.12,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pebble": {
+      "width": 16.71,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "smooth_stone": {
+      "width": 16.71,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rock": {
+      "width": 16.71,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "crystal": {
+      "width": 14.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "iron_ore": {
+      "width": 16.71,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "clay": {
+      "width": 16.71,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pond_clay": {
+      "width": 16.71,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "sand": {
+      "width": 16.71,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "shell": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "sea_shell": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "sea_glass": {
+      "width": 14.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "seaweed": {
+      "width": 12.47,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "river_pearl": {
+      "width": 18.15,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "sand_dollar": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "reed": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "string": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fabric_scrap": {
+      "width": 22.65,
+      "height": 8.19,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "eagle_feather": {
+      "width": 10.76,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "berry": {
+      "width": 11.76,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "seed": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "vegetable_seed": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "small_fish": {
+      "width": 19.5,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bread_crumb": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "honeycomb": {
+      "width": 12.3,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "sunflower_seeds": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tulip_bulb": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rose_petal": {
+      "width": 12.74,
+      "height": 10.44,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "carrot": {
+      "width": 10.67,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tomato": {
+      "width": 14.55,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pumpkin": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "strawberry": {
+      "width": 11.85,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "watermelon": {
+      "width": 17.43,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mint_leaves": {
+      "width": 12.47,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "golden_petal": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "crystal_shard": {
+      "width": 14.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "butterfly_wing": {
+      "width": 15.9,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "flower_petal": {
+      "width": 14.27,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "juicy_worm": {
+      "width": 20.13,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "giant_worm": {
+      "width": 20.13,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rainbow_feather": {
+      "width": 10.76,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "crystal_icicle": {
+      "width": 14.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "frozen_dewdrop": {
+      "width": 15.62,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "static_feather": {
+      "width": 10.76,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "golden_leaf": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "red_maple_leaf": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mist_crystal": {
+      "width": 14.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fog_essence": {
+      "width": 21.03,
+      "height": 6.84,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "dandelion_fluff": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mud_sculpture": {
+      "width": 16.07,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "snow_feather": {
+      "width": 10.76,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "storm_sketch": {
+      "width": 14.1,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "paper_plane_design": {
+      "width": 10.76,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fog_bell": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mystery_sound": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rare_bug_jar": {
+      "width": 12.3,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "memory_trophy": {
+      "width": 15.71,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "racing_medal": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "spring_petal": {
+      "width": 14.27,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fresh_apple": {
+      "width": 14.55,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "autumn_leaf": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "homemade_pie": {
+      "width": 18.06,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "snowball": {
+      "width": 15.27,
+      "height": 10.72,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "ice_crystal": {
+      "width": 14.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "warmth": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mystery_gift": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "friendship_card": {
+      "width": 14.1,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "heart_cookie": {
+      "width": 16.71,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "splash_trophy": {
+      "width": 15.71,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "sunset_photo": {
+      "width": 15.62,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "parade_flag": {
+      "width": 14.27,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "dance_medal": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "spring_duck_costume": {
+      "width": 18.15,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "cherry_blossom_hat": {
+      "width": 16.8,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "beach_duck_costume": {
+      "width": 18.15,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "surfboard": {
+      "width": 9.77,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "scarecrow_costume": {
+      "width": 18.15,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "autumn_wreath_hat": {
+      "width": 16.8,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "winter_coat_costume": {
+      "width": 18.15,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "snowflake_crown": {
+      "width": 15.45,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "duck_crown": {
+      "width": 15.45,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "heart_hat": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "golden_duck_trophy": {
+      "width": 15.71,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "spring_spirit_badge": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "summer_spirit_badge": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "harvest_spirit_badge": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "winter_spirit_badge": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "duck_day_champion_badge": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "love_spirit_badge": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "welcome_bread": {
+      "width": 21.3,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "duck_toy": {
+      "width": 24.79,
+      "height": 16.18,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "magpie_friendship_charm": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "better_bait": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "master_fishing_rod": {
+      "width": 15.62,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fish_trophy": {
+      "width": 15.71,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "dream_flower": {
+      "width": 14.27,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "enchanted_seeds": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rare_treat": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "weekly_chest": {
+      "width": 18.32,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "explorer_badge": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "master_trophy": {
+      "width": 15.71,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rainbow_charm": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "legendary_trophy": {
+      "width": 15.71,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "golden_badge": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "frog_spawn": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fairy_dust": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "dragon_scale": {
+      "width": 12.3,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mermaid_scale": {
+      "width": 12.3,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "magic_acorn": {
+      "width": 11.85,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "shiny_button": {
+      "width": 16.8,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "ancient_coin": {
+      "width": 16.8,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "message_bottle": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pirate_map": {
+      "width": 16.71,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "treasure_key": {
+      "width": 17.35,
+      "height": 6.39,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "sunflower": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tulip": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rose": {
+      "width": 12.74,
+      "height": 10.44,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mint": {
+      "width": 12.47,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "golden_flower": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "crystal_plant": {
+      "width": 14.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tulip_seeds": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "rose_seeds": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "carrot_seeds": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "tomato_seeds": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pumpkin_seeds": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "strawberry_seeds": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "watermelon_seeds": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mint_seeds": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "golden_seeds": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "crystal_seeds": {
+      "width": 13.37,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "portrait_cheese": {
+      "width": 23.09,
+      "height": 10.44,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "portrait_emperor": {
+      "width": 23.09,
+      "height": 10.44,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "portrait_scholar": {
+      "width": 23.09,
+      "height": 10.44,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "portrait_artist": {
+      "width": 23.09,
+      "height": 10.44,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "portrait_explorer": {
+      "width": 23.09,
+      "height": 10.44,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pond_frog": {
+      "width": 23.09,
+      "height": 10.44,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pond_lily": {
+      "width": 23.35,
+      "height": 11.79,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pond_dragonfly": {
+      "width": 22.91,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pond_fish": {
+      "width": 22.91,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "weather_sun": {
+      "width": 23.17,
+      "height": 10.89,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "weather_rain": {
+      "width": 24,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "weather_rainbow": {
+      "width": 25.61,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "weather_snow": {
+      "width": 23.17,
+      "height": 10.89,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "legend_phoenix": {
+      "width": 23.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "legend_dragon": {
+      "width": 23.09,
+      "height": 10.44,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "minnow": {
+      "width": 19.5,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "goldfish": {
+      "width": 19.5,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "carp": {
+      "width": 19.5,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "bass": {
+      "width": 19.5,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "catfish": {
+      "width": 19.5,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "trout": {
+      "width": 19.5,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "koi": {
+      "width": 19.5,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "salmon": {
+      "width": 19.5,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pufferfish": {
+      "width": 17.87,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "swordfish": {
+      "width": 25.35,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "sturgeon": {
+      "width": 19.5,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "golden_koi": {
+      "width": 19.5,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "ghost_fish": {
+      "width": 19.5,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "ancient_dragon_fish": {
+      "width": 22.65,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "cozy_bed": {
+      "width": 50.17,
+      "height": 23.96,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "nest_premium": {
+      "width": 61.43,
+      "height": 33.8,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "tiny_table": {
+      "width": 36.76,
+      "height": 18.19,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "cushion": {
+      "width": 36.48,
+      "height": 16.76,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "picture_frame": {
+      "width": 15.62,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "clock": {
+      "width": 39.28,
+      "height": 28.9,
+      "floor": false,
+      "construction": "furniture-v1"
+    },
+    "potted_plant": {
+      "width": 14.27,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "flower_pot": {
+      "width": 14.27,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "lamp": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "lantern": {
+      "width": 12.47,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "plushie": {
+      "width": 31.86,
+      "height": 22.12,
+      "floor": false,
+      "construction": "playground-v1"
+    },
+    "rug": {
+      "width": 22.65,
+      "height": 8.19,
+      "floor": true,
+      "construction": "legacy-detail"
+    },
+    "pond_mat": {
+      "width": 47.84,
+      "height": 21.02,
+      "floor": true,
+      "construction": "waterworks-v1"
+    },
+    "spring_wreath": {
+      "width": 13.2,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "snowglobe": {
+      "width": 17.06,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fountain": {
+      "width": 76.78,
+      "height": 50.72,
+      "floor": false,
+      "construction": "waterworks-v1"
+    },
+    "golden_nest": {
+      "width": 62.46,
+      "height": 33.8,
+      "floor": false,
+      "construction": "workshop-v1"
+    },
+    "old_coin": {
+      "width": 16.8,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pretty_shell": {
+      "width": 17.7,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "ancient_feather": {
+      "width": 10.76,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "glass_bottle": {
+      "width": 12.56,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "fossil": {
+      "width": 17.61,
+      "height": 7.74,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "ruby_gem": {
+      "width": 14.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "golden_acorn": {
+      "width": 11.85,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "pirate_compass": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "ancient_crown": {
+      "width": 15.45,
+      "height": 8.19,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "mystic_egg": {
+      "width": 14.72,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "star_fragment": {
+      "width": 14.36,
+      "height": 9.54,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "ancient_tome": {
+      "width": 19.67,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    },
+    "heart_of_pond": {
+      "width": 15.62,
+      "height": 9.09,
+      "floor": false,
+      "construction": "legacy-detail"
+    }
+  }
+}

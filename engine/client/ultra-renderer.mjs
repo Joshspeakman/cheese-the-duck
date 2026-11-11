@@ -44,6 +44,18 @@ export class SceneCanvas {
   draw(scene,time,dt){
     const light=sceneLight(scene);this.light=light;
     const result=this.world.render(scene,time,dt),{grid,characters,objects}=result;
+    // Keep native ASCII cells within the terrain cell height on wide windows.
+    // Measured placement bounds remain conservative across aspect ratios.
+    const nativeScale=Math.min(1,this.sy/(this.sx*1.5)),scaled=new Set();
+    const fit=model=>{if(model&&!scaled.has(model)){model.scale*=nativeScale;scaled.add(model);}};
+    for(const model of characters)fit(model);
+    for(const model of objects){
+      fit(model);
+      for(const member of [...(model.occupants||[]),...(model.riders||[]),...(model.sitters||[])])fit(member.character);
+      if(model.occupant)fit(model.occupant.character);
+      if(model.rider)fit(model.rider.character);
+      if(model.bather)fit(model.bather.character);
+    }
     const palette=luminousPalette(result.palette,this.effects.level),key=palette.join('')+JSON.stringify(light);
     if(key!==this.paletteKey){
       this.previousChars.fill(0);this.paletteKey=key;this.atlas.clear();this.ambient=ambientRows(light,H);
