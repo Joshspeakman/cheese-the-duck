@@ -1,6 +1,7 @@
 import {playkitSprite,PLAYKIT_BLUEPRINTS} from './playkit-workshop.mjs';
 import {headwearSprite,HEADWEAR_BLUEPRINTS} from './headwear-workshop.mjs';
 import {accessorySprite,ACCESSORY_BLUEPRINTS} from './accessory-workshop.mjs';
+import {garmentSprite,GARMENT_BLUEPRINTS} from './garment-workshop.mjs';
 import {excursionSprite,EXCURSION_BLUEPRINTS} from './excursion-workshop.mjs';
 import {architectureSprite,ARCHITECTURE_BLUEPRINTS} from './architecture-workshop.mjs';
 import {groundSprite,GROUND_BLUEPRINTS} from './ground-workshop.mjs';
@@ -118,9 +119,11 @@ export function itemSprite(id,time=0,{motion=true,originalArt=null,state={},inte
   const enriched={...base,...itemProfile(item||{},family)},options={motion,state,interaction,context,pose};
   if(HEADWEAR_BLUEPRINTS[id])return headwearSprite(enriched,item||{id},t,options);
   if(ACCESSORY_BLUEPRINTS[id])return accessorySprite(enriched,item||{id},t,options);
+  if(GARMENT_BLUEPRINTS[id])return garmentSprite(enriched,item||{id},t,options);
   return excursionSprite(enriched,item||{id},t,options)||playkitSprite(enriched,item||{id},t,options)||architectureSprite(enriched,item||{id},t,options)||groundSprite(enriched,item||{id},t,options)||textileSprite(enriched,item||{id},t,options)||creativeSprite(enriched,item||{id},t,options)||keepsakeSprite(enriched,item||{id},t,options)||lightingSprite(enriched,item||{id},t,options)||instrumentSprite(enriched,item||{id},t,options)||homeSprite(enriched,item||{id},t,options)||playgroundSprite(enriched,item||{id},t,options)||waterworksSprite(enriched,item||{id},t,options)||furnitureSprite(enriched,item||{id},t,options)||botanicalSprite(enriched,item||{id},t,options)||detailItem(base,item,family,t,{motion,state,interaction});
 }
 export function itemWorldScale(id){
+  if(GARMENT_BLUEPRINTS[id])return GARMENT_BLUEPRINTS[id].scale;
   if(HEADWEAR_BLUEPRINTS[id])return HEADWEAR_BLUEPRINTS[id].scale;
   if(ACCESSORY_BLUEPRINTS[id])return ACCESSORY_BLUEPRINTS[id].scale;
   if(EXCURSION_BLUEPRINTS[id])return EXCURSION_BLUEPRINTS[id].scale;

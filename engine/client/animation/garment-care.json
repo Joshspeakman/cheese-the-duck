@@ -1,0 +1,215 @@
+{
+  "brush_garment_snow": {
+    "label": "Brush snow from the shoulders",
+    "shapes": [
+      "knit",
+      "shirt",
+      "tuxedo",
+      "robe",
+      "suit",
+      "raincoat",
+      "coat",
+      "pumpkin",
+      "ghost",
+      "elf",
+      "cape",
+      "sash",
+      "bag"
+    ],
+    "material": "snow",
+    "threshold": 0.15,
+    "duration": 6.6,
+    "contact": 3.2,
+    "retained": 0.12,
+    "cooldown": 40,
+    "anchor": "shoulder"
+  },
+  "brush_cloth": {
+    "label": "Brush the cloth clean",
+    "shapes": [
+      "knit",
+      "shirt",
+      "tuxedo",
+      "robe",
+      "suit",
+      "raincoat",
+      "coat",
+      "pumpkin",
+      "ghost",
+      "elf"
+    ],
+    "material": "soil",
+    "threshold": 0.18,
+    "duration": 8.4,
+    "contact": 4.2,
+    "retained": 0.2,
+    "cooldown": 50,
+    "anchor": "seam"
+  },
+  "smooth_cloth": {
+    "label": "Smooth the rumpled cloth",
+    "shapes": [
+      "knit",
+      "shirt",
+      "robe",
+      "suit",
+      "raincoat",
+      "coat",
+      "pumpkin",
+      "ghost",
+      "elf"
+    ],
+    "material": "crease",
+    "threshold": 0.2,
+    "duration": 7.6,
+    "contact": 3.8,
+    "retained": 0.15,
+    "cooldown": 50,
+    "anchor": "front"
+  },
+  "wring_hem": {
+    "label": "Squeeze the damp hem",
+    "shapes": [
+      "knit",
+      "shirt",
+      "robe",
+      "suit",
+      "ghost",
+      "elf"
+    ],
+    "material": "wet",
+    "threshold": 0.35,
+    "duration": 8.8,
+    "contact": 4.6,
+    "retained": 0.4,
+    "cooldown": 60,
+    "anchor": "hem"
+  },
+  "shed_coat": {
+    "label": "Shake water from the coat",
+    "shapes": [
+      "raincoat",
+      "coat"
+    ],
+    "material": "wet",
+    "threshold": 0.2,
+    "duration": 6.2,
+    "contact": 3.1,
+    "retained": 0.25,
+    "cooldown": 45,
+    "anchor": "hem"
+  },
+  "settle_collar": {
+    "label": "Settle the collar",
+    "shapes": [
+      "knit",
+      "shirt",
+      "tuxedo",
+      "robe",
+      "suit",
+      "raincoat",
+      "coat",
+      "pumpkin",
+      "ghost",
+      "elf"
+    ],
+    "material": "slack",
+    "threshold": 0.18,
+    "duration": 5.6,
+    "contact": 2.8,
+    "retained": 0.1,
+    "cooldown": 40,
+    "anchor": "shoulder"
+  },
+  "straighten_lapels": {
+    "label": "Press the lapels flat",
+    "shapes": [
+      "tuxedo"
+    ],
+    "material": "crease",
+    "threshold": 0.2,
+    "duration": 7.8,
+    "contact": 3.9,
+    "retained": 0.12,
+    "cooldown": 50,
+    "anchor": "front"
+  },
+  "shake_cape": {
+    "label": "Shake out the wet cape",
+    "shapes": [
+      "cape"
+    ],
+    "material": "wet",
+    "threshold": 0.3,
+    "duration": 8,
+    "contact": 4,
+    "retained": 0.35,
+    "cooldown": 55,
+    "anchor": "hem"
+  },
+  "settle_clasp": {
+    "label": "Settle the shoulder clasp",
+    "shapes": [
+      "cape"
+    ],
+    "material": "slack",
+    "threshold": 0.18,
+    "duration": 6.2,
+    "contact": 3.1,
+    "retained": 0.1,
+    "cooldown": 45,
+    "anchor": "shoulder"
+  },
+  "brush_bag": {
+    "label": "Brush the canvas seams",
+    "shapes": [
+      "bag"
+    ],
+    "material": "soil",
+    "threshold": 0.18,
+    "duration": 8.6,
+    "contact": 4.3,
+    "retained": 0.2,
+    "cooldown": 50,
+    "anchor": "seam"
+  },
+  "dry_pocket": {
+    "label": "Squeeze the pocket seam dry",
+    "shapes": [
+      "bag"
+    ],
+    "material": "wet",
+    "threshold": 0.35,
+    "duration": 8,
+    "contact": 4,
+    "retained": 0.4,
+    "cooldown": 55,
+    "anchor": "pocket"
+  },
+  "tighten_straps": {
+    "label": "Tighten the shoulder strap",
+    "shapes": [
+      "bag"
+    ],
+    "material": "slack",
+    "threshold": 0.18,
+    "duration": 7.2,
+    "contact": 3.6,
+    "retained": 0.1,
+    "cooldown": 45,
+    "anchor": "shoulder"
+  },
+  "straighten_sash": {
+    "label": "Flatten the sash and rosette",
+    "shapes": [
+      "sash"
+    ],
+    "material": "crease",
+    "threshold": 0.18,
+    "duration": 6.4,
+    "contact": 3.2,
+    "retained": 0.1,
+    "cooldown": 45,
+    "anchor": "front"
+  }
+}
