@@ -48,6 +48,15 @@
         {
           "at": 1
         }
+      ],
+      "contacts": [
+        {
+          "at": 0.35,
+          "add": {
+            "hollow": 0.08,
+            "plump": -0.06
+          }
+        }
       ]
     },
     "circle_settle": {
@@ -110,6 +119,14 @@
         },
         {
           "at": 1
+        }
+      ],
+      "contacts": [
+        {
+          "at": 0.75,
+          "add": {
+            "hollow": 0.18
+          }
         }
       ]
     },
@@ -176,6 +193,14 @@
           0.25,
           0.61
         ]
+      ],
+      "contacts": [
+        {
+          "at": 0.7,
+          "set": {
+            "left": 1.0
+          }
+        }
       ]
     },
     "tuck_right_edge": {
@@ -241,13 +266,23 @@
           0.27,
           0.63
         ]
+      ],
+      "contacts": [
+        {
+          "at": 0.72,
+          "set": {
+            "right": 1.0
+          }
+        }
       ]
     },
     "lift_loose_twig": {
       "label": "Lifting a crooked twig out of the lining",
       "duration": 17,
       "prop": "twig",
-      "when": {},
+      "when": {
+        "material": "twig"
+      },
       "motive": "care",
       "effect": {
         "tidiness": 0.012
@@ -306,6 +341,14 @@
           0.26,
           0.64
         ]
+      ],
+      "contacts": [
+        {
+          "at": 0.68,
+          "set": {
+            "twig": 0.0
+          }
+        }
       ]
     },
     "crossbrace_twig": {
@@ -372,6 +415,14 @@
           0.22,
           0.55
         ]
+      ],
+      "contacts": [
+        {
+          "at": 0.8,
+          "set": {
+            "brace": 1.0
+          }
+        }
       ]
     },
     "weave_rim": {
@@ -452,6 +503,22 @@
           0.51,
           0.6
         ]
+      ],
+      "contacts": [
+        {
+          "at": 0.45,
+          "add": {
+            "right": 0.16,
+            "braid": 0.14
+          }
+        },
+        {
+          "at": 0.75,
+          "add": {
+            "left": 0.16,
+            "braid": 0.14
+          }
+        }
       ]
     },
     "tamp_floor": {
@@ -512,6 +579,29 @@
         },
         {
           "at": 1
+        }
+      ],
+      "contacts": [
+        {
+          "at": 0.25,
+          "add": {
+            "plump": -0.12,
+            "hollow": 0.08
+          }
+        },
+        {
+          "at": 0.55,
+          "add": {
+            "plump": -0.12,
+            "hollow": 0.08
+          }
+        },
+        {
+          "at": 0.82,
+          "add": {
+            "plump": -0.12,
+            "hollow": 0.08
+          }
         }
       ]
     },
@@ -574,13 +664,31 @@
         {
           "at": 1
         }
+      ],
+      "contacts": [
+        {
+          "at": 0.32,
+          "add": {
+            "plump": 0.22,
+            "hollow": -0.1
+          }
+        },
+        {
+          "at": 0.62,
+          "add": {
+            "plump": 0.22,
+            "hollow": -0.1
+          }
+        }
       ]
     },
     "pick_grit": {
       "label": "Picking an annoying pebble out of the bedding",
       "duration": 15,
       "prop": "pebble",
-      "when": {},
+      "when": {
+        "material": "grit"
+      },
       "motive": "care",
       "effect": {
         "tidiness": 0.015
@@ -644,13 +752,24 @@
           0.26,
           0.59
         ]
+      ],
+      "contacts": [
+        {
+          "at": 0.8,
+          "set": {
+            "grit": 0.0,
+            "pebble": 1.0
+          }
+        }
       ]
     },
     "sweep_crumbs": {
       "label": "Sweeping crumbs away from the sleeping hollow",
       "duration": 16,
       "prop": "crumbs",
-      "when": {},
+      "when": {
+        "material": "crumbs"
+      },
       "motive": "care",
       "effect": {
         "tidiness": 0.02
@@ -701,6 +820,14 @@
         },
         {
           "at": 1
+        }
+      ],
+      "contacts": [
+        {
+          "at": 0.65,
+          "set": {
+            "crumbs": 0.0
+          }
         }
       ]
     },
@@ -769,6 +896,14 @@
           0.26,
           0.62
         ]
+      ],
+      "contacts": [
+        {
+          "at": 0.84,
+          "set": {
+            "feather": 1.0
+          }
+        }
       ]
     },
     "leaf_underlay": {
@@ -835,6 +970,14 @@
           0.23,
           0.54
         ]
+      ],
+      "contacts": [
+        {
+          "at": 0.7,
+          "set": {
+            "leaf": 1.0
+          }
+        }
       ]
     },
     "mend_gap": {
@@ -911,6 +1054,14 @@
           0.51,
           0.73
         ]
+      ],
+      "contacts": [
+        {
+          "at": 0.78,
+          "set": {
+            "mend": 1.0
+          }
+        }
       ]
     },
     "widen_bowl": {
@@ -967,6 +1118,20 @@
         },
         {
           "at": 1
+        }
+      ],
+      "contacts": [
+        {
+          "at": 0.36,
+          "add": {
+            "width": 0.16
+          }
+        },
+        {
+          "at": 0.72,
+          "add": {
+            "width": 0.16
+          }
         }
       ]
     },
@@ -1035,6 +1200,14 @@
           0.25,
           0.65
         ]
+      ],
+      "contacts": [
+        {
+          "at": 0.7,
+          "add": {
+            "braid": 0.4
+          }
+        }
       ]
     },
     "curl_sleep": {
@@ -1093,6 +1266,15 @@
         },
         {
           "at": 1
+        }
+      ],
+      "contacts": [
+        {
+          "at": 0.3,
+          "add": {
+            "hollow": 0.08,
+            "plump": -0.04
+          }
         }
       ]
     },
@@ -1225,6 +1407,14 @@
         {
           "at": 1
         }
+      ],
+      "contacts": [
+        {
+          "at": 0.58,
+          "add": {
+            "hollow": 0.05
+          }
+        }
       ]
     },
     "startled_awake": {
@@ -1282,6 +1472,14 @@
         },
         {
           "at": 1
+        }
+      ],
+      "contacts": [
+        {
+          "at": 0.5,
+          "add": {
+            "plump": -0.08
+          }
         }
       ]
     },
@@ -1515,6 +1713,14 @@
         {
           "at": 1
         }
+      ],
+      "contacts": [
+        {
+          "at": 0.6,
+          "add": {
+            "hollow": 0.18
+          }
+        }
       ]
     },
     "chin_on_rim": {
@@ -1631,6 +1837,14 @@
         {
           "at": 1
         }
+      ],
+      "contacts": [
+        {
+          "at": 0.55,
+          "add": {
+            "hollow": 0.1
+          }
+        }
       ]
     },
     "grumpy_rearrange": {
@@ -1691,6 +1905,22 @@
         },
         {
           "at": 1
+        }
+      ],
+      "contacts": [
+        {
+          "at": 0.3,
+          "add": {
+            "left": -0.18,
+            "plump": 0.12
+          }
+        },
+        {
+          "at": 0.62,
+          "add": {
+            "right": -0.18,
+            "plump": 0.12
+          }
         }
       ]
     },
@@ -2106,6 +2336,15 @@
         {
           "at": 1
         }
+      ],
+      "contacts": [
+        {
+          "at": 0.7,
+          "add": {
+            "left": 0.22,
+            "right": 0.22
+          }
+        }
       ]
     },
     "cold_huddle": {
@@ -2168,6 +2407,14 @@
         },
         {
           "at": 1
+        }
+      ],
+      "contacts": [
+        {
+          "at": 0.32,
+          "add": {
+            "hollow": 0.12
+          }
         }
       ]
     },
@@ -2298,6 +2545,14 @@
           0.46,
           0.7
         ]
+      ],
+      "contacts": [
+        {
+          "at": 0.84,
+          "set": {
+            "feather": 1.0
+          }
+        }
       ]
     },
     "blossom_brush": {
@@ -2305,7 +2560,8 @@
       "duration": 16,
       "prop": "petals",
       "when": {
-        "season": "spring"
+        "season": "spring",
+        "material": "petals"
       },
       "motive": "care",
       "effect": {
@@ -2357,6 +2613,14 @@
         },
         {
           "at": 1
+        }
+      ],
+      "contacts": [
+        {
+          "at": 0.7,
+          "set": {
+            "petals": 0.0
+          }
         }
       ]
     },
@@ -2552,6 +2816,14 @@
           0.45,
           0.7
         ]
+      ],
+      "contacts": [
+        {
+          "at": 0.84,
+          "set": {
+            "leaf": 0.0
+          }
+        }
       ]
     },
     "acorn_roll": {
@@ -2559,7 +2831,8 @@
       "duration": 21,
       "prop": "acorn",
       "when": {
-        "season": "fall"
+        "season": "fall",
+        "material": "acorn"
       },
       "motive": "care",
       "effect": {
@@ -2618,6 +2891,14 @@
         {
           "at": 1
         }
+      ],
+      "contacts": [
+        {
+          "at": 0.82,
+          "set": {
+            "acorn": 0.0
+          }
+        }
       ]
     },
     "snow_shake": {
@@ -2626,7 +2907,8 @@
       "prop": "snow",
       "when": {
         "season": "winter",
-        "snow": true
+        "snow": true,
+        "material": "snow"
       },
       "motive": "care",
       "effect": {},
@@ -2683,6 +2965,20 @@
         {
           "at": 1
         }
+      ],
+      "contacts": [
+        {
+          "at": 0.3,
+          "multiply": {
+            "snow": 0.6
+          }
+        },
+        {
+          "at": 0.6,
+          "multiply": {
+            "snow": 0.4
+          }
+        }
       ]
     },
     "frost_peck": {
@@ -2691,7 +2987,8 @@
       "prop": "frost",
       "when": {
         "season": "winter",
-        "temperature": "cold"
+        "temperature": "cold",
+        "material": "frost"
       },
       "motive": "curiosity",
       "effect": {},
@@ -2745,6 +3042,14 @@
         },
         {
           "at": 1
+        }
+      ],
+      "contacts": [
+        {
+          "at": 0.45,
+          "multiply": {
+            "frost": 0.75
+          }
         }
       ]
     },
@@ -2970,6 +3275,16 @@
         {
           "at": 1
         }
+      ],
+      "contacts": [
+        {
+          "at": 0.67,
+          "add": {
+            "hollow": 0.1,
+            "left": 0.12,
+            "right": 0.12
+          }
+        }
       ]
     },
     "sniff_lining": {
@@ -3077,6 +3392,14 @@
         {
           "at": 1
         }
+      ],
+      "contacts": [
+        {
+          "at": 0.55,
+          "set": {
+            "groove": 1.0
+          }
+        }
       ]
     },
     "polish_pebble": {
@@ -3144,6 +3467,14 @@
           0.26,
           0.65
         ]
+      ],
+      "contacts": [
+        {
+          "at": 0.85,
+          "set": {
+            "pebble": 1.0
+          }
+        }
       ]
     }
   }

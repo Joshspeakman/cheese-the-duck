@@ -1,5 +1,6 @@
 import {ObjectCanvas} from './object-canvas.mjs';
 import {nestPose,nestForeground,NEST_MARGIN} from './nest-routines.mjs';
+import {nestMaterials,drawNestMaterials} from './nest-materials.mjs';
 import ROOMS from './animation/home-rooms.json' with {type:'json'};
 // Individual blueprints: roof structure, wall joinery, floor, glazing, entry and
 // furnishings belong to each object. These replace the old stretched silhouettes.
@@ -106,8 +107,9 @@ function quilt(c,x,y,w,h,pose,p){
  c.line(x,y+fold,x+w-1,y+fold,'~','f');
  for(let i=1;i<w;i+=3)c.put(x+i,y+h,"'",'f');
 }
-function nest(c,p,t,pose,ctx){
+function nest(c,p,t,pose,ctx,state){
  const W=p.w,H=p.h,cx=W/2,cy=H-12,rx=W*.42,ry=9,press=Math.round((pose.press||0)*1.5);
+ const material=nestMaterials(state),depth=Math.round(material.hollow*2),spread=Math.round((material.width-.5)*5);
  if(has(p,'canopy')){
   c.line(9,5,9,H-8,'|','f').line(W-10,5,W-10,H-8,'|','f');
   for(let y=3;y<11;y++){const inset=Math.abs(y-3)*1.4;c.line(8+inset,y,W-9-inset,y,y%3?'~':'=','q');}
@@ -118,15 +120,14 @@ function nest(c,p,t,pose,ctx){
   const r=rx-Math.abs(j)*.65;c.ellipse(cx,cy+j,r,Math.max(2,ry-Math.abs(j)*.7),'~',j>1?'s':'b',true);
   for(let x=Math.round(cx-r+3);x<cx+r-2;x+=3)c.put(x,cy+j,p.nest==='twig'?((x+j)%2?'/':'\\'):p.nest==='gold'?'(o)':p.nest==='wicker'?'#=':'><',j%3?'b':'f');
  }
- c.ellipse(cx,cy-4+press,rx-8,5-press*.4,'-', 'd',true);c.clear(cx-rx+9,cy-7+press,(rx-9)*2,6-press);
- for(let x=cx-rx+10;x<cx+rx-10;x+=4)c.put(x,cy-5+(Math.round(x)%3),p.lining==='grass'?'\\|/':p.lining==='velvet'?'.':':','q');
+ c.ellipse(cx,cy-4+press+depth,rx-8+spread,5-press*.4,'-', 'd',true);c.clear(cx-rx+9-spread,cy-7+press+depth,(rx-9+spread)*2,6-press);
+ for(let x=cx-rx+10-spread;x<cx+rx-10+spread;x+=4)c.put(x,cy-5+depth+(Math.round(x)%3)-Math.round((material.plump-.5)*3),p.lining==='grass'?'\\|/':p.lining==='velvet'?'.':':','q');
  if(has(p,'pillow')){const x=cx-17+Math.round((pose.pillow||0)*3);c.rows([' .---------------.','(  :       :      )'," '---------------'"],x,cy-11,'q');}
  if(has(p,'quilt'))quilt(c,cx-12,cy-5,25,8,pose,p);
  if(has(p,'jewels'))for(let x=14;x<W-12;x+=12)c.put(x,cy+3,'<o>','a');
- if(has(p,'leaf'))c.rows(['  .---.',' /; / /'," '---'"],W-16,cy-10,'g');
- if(has(p,'feather'))c.rows(['  /',' /:','//'],12,cy-9,'c');
  if(has(p,'lantern'))c.rows([' _','/o\\','|*|',"'-'"],W-13,11,'l');
  if(p.nest==='twig')for(const side of [-1,1])for(let j=0;j<3;j++)c.line(cx+side*(rx-5),cy+j*2,cx+side*(rx+2),cy-3+j*4,side<0?'/':'\\','f');
+ drawNestMaterials(c,p,material,pose,cx,cy,rx);
  if(pose.straw)for(let i=0;i<5;i++)c.put(cx-10+i*5,cy-2-Math.round(Math.sin(t*4+i)*pose.straw*4),'/','f');
  return {entry:{x:cx,y:cy-4},seat:{x:cx+(pose.u||0)*7,y:cy+press+(pose.v||0)*3},rim:cy+1,capacity:p.nest==='twig'?1:2};
 }
@@ -177,7 +178,7 @@ export function homeSprite(base,item,time,{motion=true,state={},interaction=null
   if(pose.straw===undefined)pose.straw=.5+.5*pulse;
  }
  let anchors;
- if(p.nest)anchors=nest(c,p,t,pose,context);
+ if(p.nest)anchors=nest(c,p,t,pose,context,state);
  else if(p.bed)anchors=bed(c,p,t,pose,context);
  else{
   const x=10,y=p.door[1]-3,w=p.w-20,h=p.door[3]+6;
@@ -233,7 +234,19 @@ export function homeSprite(base,item,time,{motion=true,state={},interaction=null
   anchors.seat.x=15+(p.w-30)*(slot+.5)/count+(pose.u||0)*3;
  }
  const loose=scored?nestForeground(p,scored,anchors):null,held=scored?.grip>0?{...loose,grip:scored.grip}:null;
- const foreground=held?null:loose;
+ let foreground=held?null:loose;
+ if(p.nest&&interaction?.nest_visitors?.length){
+  const layer=new ObjectCanvas(p.w+pad.x*2,p.h+pad.y);
+  const merge=model=>{if(model)for(let y=0;y<model.art.length;y++)for(let x=0;x<model.width;x++)if(model.art[y][x]!==' ')layer.put(x,y,model.art[y][x],model.tones[y][x]);};
+  merge(foreground);
+  for(const guest of interaction.nest_visitors){
+   const pose=nestPose(guest.routine,motion);if(!pose)continue;
+   const count=ROOMS[item.id]?.capacity||1;
+   const seat=interaction.shared?{x:15+(p.w-30)*(guest.slot+.5)/count,y:anchors.seat.y}:anchors.seat;
+   merge(nestForeground(p,interaction.shared?{...pose,px:pose.px*.5}:pose,{...anchors,seat}));
+  }
+  foreground=layer.finish();
+ }
  if(foreground)for(let y=0;y<foreground.art.length;y++)for(let x=0;x<foreground.width;x++)if(foreground.art[y][x]!==' ')surface.put(x,y,foreground.art[y][x],foreground.tones[y][x]);
  if(p.nest){for(const key of ['seat','entry'])anchors[key]={x:anchors[key].x+pad.x,y:anchors[key].y+pad.y};anchors.rim+=pad.y;}
  if(interaction?.shared){

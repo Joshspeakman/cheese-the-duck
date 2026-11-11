@@ -167,6 +167,9 @@ class MindGarden:
                 if routine and not routine.get('done'):
                     facts['current_activity']=routine['label']
                 from engine.nest_routines import ROUTINES
+                from engine.nest_materials import NESTS, facts as nest_facts
+                if plan['target'] in NESTS:
+                    facts['nest_materials']=nest_facts(self.pond.object_state(plan['target'],plan))
                 routine_history=(self.pond.object_state(plan['target'],plan) or {}).get('routines',{})
                 facts['familiar_nest_routines']=[ROUTINES[k]['label'] for k,n in sorted(routine_history.items(),key=lambda entry:entry[1],reverse=True) if k in ROUTINES and n>=2][:3]
         musician=self.musicians.get(key)
@@ -202,6 +205,10 @@ class MindGarden:
                 'activity':furniture_rests.ROUTINES[seated_company['id']]['label'],'status':'seated together now'}
         if housing:
             facts['current_activity']={'approach':'Walking to shelter','enter':'Settling under cover','inside':'Waiting out the weather','exit':'Heading back outside'}[housing['phase']]
+            if housing['phase']=='inside' and housing.get('routine') and not housing['routine'].get('done'):
+                facts['current_activity']=housing['routine']['label']
+                from engine.nest_materials import facts as nest_facts
+                facts['nest_materials']=nest_facts(self.pond.object_state(housing['id'],housing))
             facts['destination']=housing['id'].replace('_',' ')
             facts['under_cover']=housing['phase']=='inside'
         paired=self.encounter_for(key) or shelter_company.for_actor(self,key)

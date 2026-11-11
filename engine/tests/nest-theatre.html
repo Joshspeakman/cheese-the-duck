@@ -15,13 +15,13 @@ const painter=new ItemPainter(),cards=[],nest=document.querySelector('#nest'),ag
 for(const id of NEST_IDS)nest.add(new Option(id.replaceAll('_',' '),id));
 for(const a of DUCK_AGES)age.add(new Option(a.id.replaceAll('_',' '),a.id));
 nest.value='cozy_nest';age.value='adult';
-export function paintRoutine(canvas,id,stage,key,progress){
+export function paintRoutine(canvas,id,stage,key,progress,state={}){
  const c=canvas.getContext('2d'),sx=7,sy=10.5,x=canvas.width/(2*sx),y=(canvas.height-18)/sy;
  c.fillStyle='#172e25';c.fillRect(0,0,canvas.width,canvas.height);
  const routine={id:key,elapsed:NEST_ROUTINES[key].duration*progress};
  const interaction=stage==='egg'?null:{phase:'act',kind:'rest',progress:.7,residence:{routine}};
  const when=NEST_ROUTINES[key].when,context={hour:when.time==='night'?22:when.time==='dawn'?6:12,season:when.season||'summer',weather:when.weather==='rain'?'rainy':when.weather==='storm'?'thunderstorm':when.weather==='wind'?'windy':'sunny'};
- const home={...itemSprite(id,0,{interaction,context}),x,y,scale:itemWorldScale(id)};
+ const home={...itemSprite(id,0,{interaction,context,state}),x,y,scale:itemWorldScale(id)};
  const character={...duckRig({stage,performance:stage==='egg'?null:{kind:'nest',routine}},0),x,y};
  const occupied=occupiedGeometry(home,character,1,sx,sy);
  painter.draw(c,home,x*sx,y*sy,sx*home.scale,{surface:'#172e25',outline:'#0a1913'});
@@ -73,5 +73,34 @@ window.replayNests=frames=>{
  costs.sort((a,b)=>a-b);
  if(view.items.bytes>view.items.maxBytes)throw Error('Item cache exceeded its bound');
  return {frames:frames.length,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],cacheBytes:view.items.bytes,image};
+};
+window.replayMaterialNests=frames=>{
+ paused=true;const view=new SceneCanvas();view.resize(1440,900);const costs=[],images={};let actors=0;
+ for(const [i,frame]of frames.entries()){
+  const start=performance.now();view.draw(frame,i*.2,.2);costs.push(performance.now()-start);
+  const routines=(frame.living?.minds?.residences||[]).filter(r=>r.phase==='inside'&&r.routine&&!r.routine.done);
+  for(const r of routines){
+   const home=view.world.objects.find(o=>o.instance===r.instance&&o.id===r.id);
+   const occupant=home?.occupants?.find(o=>o.key===r.actor);
+   if(!occupant||occupant.character.performance?.routine.id!==r.routine.id)throw Error('Lost native guest routine at '+i);
+   if(occupant.character.clipped||home.clipped)throw Error('Clipped native routine at '+i);
+   actors++;
+   const key='guest-'+r.routine.id;
+   if(!images[key]&&r.routine.elapsed>4)images[key]=view.canvas.toDataURL('image/png');
+  }
+  const key=frame.living?.plan?.residence?.routine?.id;
+  if(key&&!images[key])images[key]=view.canvas.toDataURL('image/png');
+ }
+ costs.sort((a,b)=>a-b);
+ return {frames:frames.length,guestFrames:actors,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+window.reviewMaterialStates=states=>{
+ paused=true;const canvas=document.createElement('canvas');canvas.width=1680;canvas.height=states.length*340;
+ const c=canvas.getContext('2d');c.fillStyle='#10251e';c.fillRect(0,0,canvas.width,canvas.height);
+ states.forEach(({id,before,settled,snow},row)=>[before,settled,snow].forEach((state,col)=>{
+  const cell=document.createElement('canvas');cell.width=560;cell.height=310;
+  paintRoutine(cell,id,'hatchling','chin_on_rim',0,state);c.drawImage(cell,col*560,row*340+30);
+  c.fillStyle='#e7d7b4';c.font='16px Menlo';c.fillText(id+' · '+['before use','after physical care','after snowfall'][col],col*560+14,row*340+22);
+ }));return canvas.toDataURL('image/png');
 };window.ready=true;
 </script>

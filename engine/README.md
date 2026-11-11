@@ -251,6 +251,31 @@ replaced the installed game; the separate chat update is installed as 2.36.1. It
 been reconstructed, with 273 remaining. The full 48 bespoke sequences per object
 and all guest/age/context coverage remain unfinished.
 
+Nest routines now move saved physical bedding. Thirty-three of the existing
+51 shared nest scores have 40 authored contact points: tucking either edge,
+placing a brace, weaving the rim, flattening or fluffing the lining, moving a
+feather or leaf, removing grit, and leaving a toe groove. These changes belong
+to the exact placed nest and remain after the occupant leaves. Canceling after
+contact keeps the physical change without granting a completed visit. Wind
+loosens strands, actual snowfall accumulates less beneath a canopy, and warm
+weather melts deposits. Missing materials cannot immediately reappear for
+another cleaning routine.
+
+Sheltered visitors choose their own settling and observation routines from
+their energy, mood, temperament and the actual weather. Butterflies and toads
+have anatomy-appropriate choices. Quiet gaps let Cheese and a roommate take
+turns talking together; solo and shared performances cannot claim the same
+body at once. Completed visitor routines remember the nest, with learning
+capped per stay. Their positions remain tied to their own reserved seats.
+
+This is interaction depth for the existing nest constructions, not completion
+of the individual 48-sequence requirement. Validation includes
+`.venv/bin/python engine/check_nest_materials.py`,
+`node --test engine/tests/nest-materials.test.mjs`, and
+`engine/node_modules/.bin/electron engine/nest-materials-check.cjs`.
+The last command replays actual native frames and writes the material-state
+comparison and visitor screenshots to `artifacts/animation-milestone/`.
+
 The lighting work adds 27 distinct constructions, from pleated lanterns and
 glazed lamps to mirrored disco balls and carved crystal lights. Each placed copy
 keeps its own **At dusk / On / Off** setting. Click it, open Belongings, and choose

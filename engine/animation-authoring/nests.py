@@ -237,6 +237,52 @@ for key, intervals in {
 }.items():
     ROUTINES[key]['grips'] = intervals
 
+# Contacts are authored against the actual release, press or tuck keyframe.
+# They change the furnishing immediately, even if the visit is later canceled.
+# Routine/visit rewards still require the whole performance to finish.
+for key, contacts in {
+    'bowl_test':[dict(at=.35,add={'hollow':.08,'plump':-.06})],
+    'circle_settle':[dict(at=.75,add={'hollow':.18})],
+    'tuck_left_edge':[dict(at=.7,set={'left':1.})],
+    'tuck_right_edge':[dict(at=.72,set={'right':1.})],
+    'lift_loose_twig':[dict(at=.68,set={'twig':0.})],
+    'crossbrace_twig':[dict(at=.8,set={'brace':1.})],
+    'weave_rim':[dict(at=.45,add={'right':.16,'braid':.14}),dict(at=.75,add={'left':.16,'braid':.14})],
+    'tamp_floor':[dict(at=.25,add={'plump':-.12,'hollow':.08}),dict(at=.55,add={'plump':-.12,'hollow':.08}),dict(at=.82,add={'plump':-.12,'hollow':.08})],
+    'fluff_center':[dict(at=.32,add={'plump':.22,'hollow':-.1}),dict(at=.62,add={'plump':.22,'hollow':-.1})],
+    'pick_grit':[dict(at=.8,set={'grit':0.,'pebble':1.})],
+    'sweep_crumbs':[dict(at=.65,set={'crumbs':0.})],
+    'straighten_feather':[dict(at=.84,set={'feather':1.})],
+    'leaf_underlay':[dict(at=.7,set={'leaf':1.})],
+    'mend_gap':[dict(at=.78,set={'mend':1.})],
+    'widen_bowl':[dict(at=.36,add={'width':.16}),dict(at=.72,add={'width':.16})],
+    'tighten_braid':[dict(at=.7,add={'braid':.4})],
+    'curl_sleep':[dict(at=.3,add={'hollow':.08,'plump':-.04})],
+    'dream_paddle':[dict(at=.58,add={'hollow':.05})],
+    'startled_awake':[dict(at=.5,add={'plump':-.08})],
+    'tail_wriggle':[dict(at=.6,add={'hollow':.18})],
+    'satisfied_sigh':[dict(at=.55,add={'hollow':.1})],
+    'grumpy_rearrange':[dict(at=.3,add={'left':-.18,'plump':.12}),dict(at=.62,add={'right':-.18,'plump':.12})],
+    'wind_brace':[dict(at=.7,add={'left':.22,'right':.22})],
+    'cold_huddle':[dict(at=.32,add={'hollow':.12})],
+    'spring_feather':[dict(at=.84,set={'feather':1.})],
+    'blossom_brush':[dict(at=.7,set={'petals':0.})],
+    'fall_leaf_catch':[dict(at=.84,set={'leaf':0.})],
+    'acorn_roll':[dict(at=.82,set={'acorn':0.})],
+    'snow_shake':[dict(at=.3,multiply={'snow':.6}),dict(at=.6,multiply={'snow':.4})],
+    'frost_peck':[dict(at=.45,multiply={'frost':.75})],
+    'bedtime_tuck':[dict(at=.67,add={'hollow':.1,'left':.12,'right':.12})],
+    'toe_trace':[dict(at=.55,set={'groove':1.})],
+    'polish_pebble':[dict(at=.85,set={'pebble':1.})],
+}.items():ROUTINES[key]['contacts'] = contacts
+
+# These props must really exist. Weather accumulates the outdoor materials;
+# cleaning them away cannot immediately conjure another pile for the next take.
+for key, material in {'lift_loose_twig':'twig','pick_grit':'grit',
+        'sweep_crumbs':'crumbs','blossom_brush':'petals','acorn_roll':'acorn',
+        'snow_shake':'snow','frost_peck':'frost'}.items():
+    ROUTINES[key]['when']['material'] = material
+
 if __name__ == '__main__':
     target = Path(__file__).resolve().parents[1] / 'client/animation/nest-routines.json'
     target.write_text(json.dumps({'version':1, 'routines':ROUTINES}, indent=2) + '\n')
