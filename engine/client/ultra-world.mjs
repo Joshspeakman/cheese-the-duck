@@ -384,7 +384,7 @@ export class LivingWorld {
       const source=r.actor==='cheese'?s.duck:s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
       const inside=r.phase==='inside'?1:r.phase==='enter'?clamp(r.elapsed/3,0,1):clamp(1-r.elapsed/3,0,1);
       const performance={kind:'seating',routine:r.routine||{id:'perch_watch',elapsed:0},motion:s.motion!==false};
-      const character={...characterSprite({...source,state:'idle',facing:r.slot===0,performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese'};
+      const character={...characterSprite({...source,state:'idle',facing:r.slot===0,performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
       (home.sitters||=[]).push({character,inside,slot:r.slot,envelope:residentEnvelope(character,'seating')});
       this.characters=this.characters.filter(c=>c!==original);
     }
