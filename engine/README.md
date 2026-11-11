@@ -247,8 +247,8 @@ Resident speech uses the local Qwen3 model and llama.cpp runtime described above
 
 The next animation milestone is in development on this branch and has **not**
 replaced the installed game; the separate chat update is installed as 2.36.1. Its tracker is
-`overhaul/animation-milestone/requirements.json`: 202 of 542 object drawings have
-been reconstructed, with 340 remaining. The full 48 bespoke sequences per object
+`overhaul/animation-milestone/requirements.json`: 206 of 542 object drawings have
+been reconstructed, with 336 remaining. The full 48 bespoke sequences per object
 and all guest/age/context coverage remain unfinished.
 
 The lighting work adds 27 distinct constructions, from pleated lanterns and
@@ -307,6 +307,25 @@ Shared reading uses `.venv/bin/python engine/check_keepsake_company.py` and
 `engine/node_modules/.bin/electron engine/keepsake-company-check.cjs`, with
 actual regular, rare and story movement, all-cast pose sheets, native replays,
 selectable visitor bounds and interrupted/paused/cancelled sessions.
+
+The creative props now reconstruct the brass telescope, painting easel, stitched
+kite and actual paper-plane design. Twenty-seven native action cores handle
+focusing, cap checks, progressive painting, launch/low arcs/gusts/reel-in, tail
+care and paper creases. The easel accumulates twelve saved painting layers rather
+than looping a decorative animation. Each physical copy has its own controls and
+history; stopping midway keeps actual brush marks without a completion reward.
+A weather change brings an airborne kite down from its current height. Canvas and
+paper covers are removed by another physical action when dry weather returns.
+The paper-plane design stays the original material; practising never creates or
+consumes inventory. Belongings and natural chat receive the actual state.
+
+Creative work is still an initial repertoire, not 48 sequences per object.
+Independent visitor participation, stationary working platforms with explicit
+climbing, physical tool pickup/put-away and full age/personality/context coverage
+remain open. Tests use `.venv/bin/python engine/check_creative.py`,
+`engine/node_modules/.bin/electron engine/creative-check.cjs` and
+`engine/node_modules/.bin/electron engine/creative-ui-check.cjs`. The last routes
+actual notebook actions through the command validator into a disposable game.
 
 ## Validation
 

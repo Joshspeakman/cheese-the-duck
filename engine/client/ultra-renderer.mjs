@@ -1,6 +1,7 @@
 import {musicGeometry,drawMusicTools} from './music-performances.mjs';
 import {botanicalGeometry,drawBotanicalTools} from './botanical-routines.mjs';
 import {lightingGeometry,drawLightingTools} from './lighting-routines.mjs';
+import {creativeGeometry,drawCreativeTools} from './creative-routines.mjs';
 import {keepsakeGeometry,drawKeepsakeTools} from './keepsake-routines.mjs';
 import { sceneLight,ambientRows,ambientSwatches,lightBand,readableInk,mixColor } from './scene-lighting.mjs';
 import { GlyphRenderer } from './renderer.mjs';
@@ -55,7 +56,7 @@ export class SceneCanvas {
     for(const model of characters)fit(model);
     for(const model of objects){
       fit(model);
-      for(const member of [...(model.occupants||[]),...(model.riders||[]),...(model.sitters||[]),...(model.gardeners||[]),...(model.musicians||[]),...(model.lightWorkers||[]),...(model.keepers||[])])fit(member.character);
+      for(const member of [...(model.occupants||[]),...(model.riders||[]),...(model.sitters||[]),...(model.gardeners||[]),...(model.musicians||[]),...(model.lightWorkers||[]),...(model.keepers||[]),...(model.creators||[])])fit(member.character);
       if(model.occupant)fit(model.occupant.character);
       if(model.rider)fit(model.rider.character);
       if(model.bather)fit(model.bather.character);
@@ -122,6 +123,12 @@ export class SceneCanvas {
           const bath=waterGeometry(actor,actor.bather,this.sx,this.sy);
           drawCharacter(this.ctx,{...bath.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
           if(bath.front)this.items.draw(this.ctx,bath.front,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
+        }
+        for(const worker of actor.creators||[]){
+          const staged=creativeGeometry(actor,worker,this.sx,this.sy);
+          drawCreativeTools(this.ctx,staged,true);
+          drawCharacter(this.ctx,{...staged.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
+          drawCreativeTools(this.ctx,staged);
         }
         for(const worker of actor.keepers||[]){
           const staged=keepsakeGeometry(actor,worker,this.sx,this.sy);

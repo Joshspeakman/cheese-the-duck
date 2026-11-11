@@ -1,0 +1,45 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Creative workshop</title>
+<style>body{background:#142b23;color:#ecdbb3;font:20px Georgia;margin:24px}canvas{display:block;max-width:100%;margin:24px 0}</style>
+<h1>Creative workshop · current in-game construction</h1>
+<script type="module">
+import {CREATIVE_BLUEPRINTS} from '../client/creative-workshop.mjs';
+import {itemSprite,ItemPainter} from '../client/ultra-items.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';
+import {creativeGeometry,drawCreativeTools,creativePose,CREATIVE_ROUTINES,CREATIVE_CONTROLS} from '../client/creative-routines.mjs';
+const painter=new ItemPainter(),surface='#142b23';
+function sheet(w,h){const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.fillStyle=surface;ctx.fillRect(0,0,w,h);return [canvas,ctx];}
+window.reviewCreative=()=>{
+ const images={},ids=Object.keys(CREATIVE_BLUEPRINTS);
+ for(let page=0;page<2;page++){
+  const [canvas,c]=sheet(1600,1600);
+  ids.forEach((id,n)=>{
+   const pose={aim:.7,focus:.4,cap:page?0:1,fold:page,flight:page,wind:.5,seconds:3},m=itemSprite(id,0,{state:{creative:{strokes:page?12:0,motif:'night'}},pose:{creative:pose}}),x=n%2*800,y=Math.floor(n/2)*800;
+   c.fillStyle='#e5d8b4';c.font='23px Menlo';c.fillText(id+(page?' · in use':' · at rest'),x+20,y+32);
+   const unit=Math.min(5,730/m.width,690/(m.art.length*1.5));painter.draw(c,m,x+400,y+755,unit/m.detailScale,{surface,outline:'#0a1712'});
+  });images['creative-objects-'+page]=canvas.toDataURL('image/png');document.body.append(canvas);
+ }
+ for(const [item,id,at]of [['telescope','scope_first_peek',.62],['easel','paint_ducks',.61],['kite','kite_launch',.62],['paper_plane_design','fold_wings',.75]]){
+  const [canvas,ctx]=sheet(1800,1050);
+  ['hatchling','adult','elder'].forEach((stage,i)=>{
+   const routine={id,elapsed:CREATIVE_ROUTINES[id].duration*at,start:CREATIVE_CONTROLS,wind:.4},pose=creativePose(routine);
+   const home={...itemSprite(item,0,{state:{creative:{strokes:8}},pose:{creative:pose}}),item:true,x:55+i*100,y:112,scale:CREATIVE_BLUEPRINTS[item].scale};
+   const character={...characterSprite({stage,state:'idle',facing:true,performance:{kind:'creative',routine}},0),x:home.x,y:home.y};
+   painter.draw(ctx,home,home.x*6,home.y*8,6*home.scale,{surface});
+   const staged=creativeGeometry(home,{character,inside:1},6,8);drawCreativeTools(ctx,staged,true);drawCharacter(ctx,staged.character,6,8,surface);drawCreativeTools(ctx,staged);
+   ctx.fillStyle='#e5d8b4';ctx.font='24px Menlo';ctx.fillText(item+' · '+stage,i*600+20,35);
+  });images['creative-ages-'+item]=canvas.toDataURL('image/png');document.body.append(canvas);
+ }
+ return images;
+};
+window.replayCreative=frames=>{
+ const view=new SceneCanvas();view.resize(1500,950);const images={},costs=[];let drawn=0,workers=0;
+ for(const [i,s]of frames.entries()){
+  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
+  if(JSON.stringify(s)!==before)throw Error('Creative renderer changed native state');
+  for(const o of view.world.objects)if(o.construction==='creative-v1'){drawn++;if(o.clipped)throw Error('Clipped creative prop '+o.id);workers+=o.creators?.length||0;}
+  if(s.review)images['creative-live-'+s.review]=view.canvas.toDataURL('image/png');
+ }
+ costs.sort((a,b)=>a-b);return {frames:frames.length,drawn,workers,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+</script>

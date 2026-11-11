@@ -1,0 +1,1951 @@
+{
+  "scope_focus": {
+    "label": "Uncap the lens, focus on the far reeds, and follow their tips",
+    "type": "scope",
+    "duration": 32,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "anchor": "lens",
+          "contact": 1,
+          "cap": 1
+        }
+      ],
+      [
+        0.2,
+        {
+          "anchor": "lens",
+          "contact": 1,
+          "cap": 0
+        }
+      ],
+      [
+        0.3,
+        {
+          "anchor": "aim",
+          "contact": 1,
+          "cap": 0,
+          "aim": 0.12
+        }
+      ],
+      [
+        0.42,
+        {
+          "contact": 1,
+          "cap": 0,
+          "aim": 0.12,
+          "focus": 0.2
+        }
+      ],
+      [
+        0.54,
+        {
+          "contact": 1,
+          "cap": 0,
+          "aim": 0.12,
+          "focus": 0.75
+        }
+      ],
+      [
+        0.66,
+        {
+          "look": 1,
+          "cap": 0,
+          "aim": 0.12,
+          "focus": 0.55,
+          "eye": "o"
+        }
+      ],
+      [
+        0.79,
+        {
+          "look": 1,
+          "cap": 0,
+          "aim": 0.12,
+          "focus": 0.55
+        }
+      ],
+      [
+        0.88,
+        {
+          "anchor": "lens",
+          "contact": 1,
+          "cap": 0,
+          "aim": 0.12,
+          "focus": 0.55
+        }
+      ],
+      [
+        1,
+        {
+          "cap": 1,
+          "aim": 0.12,
+          "focus": 0.55
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.78,
+        "observe"
+      ]
+    ]
+  },
+  "scope_stars": {
+    "label": "Raise the tube, sharpen one star, then let the sky drift past",
+    "type": "scope",
+    "duration": 38,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "anchor": "lens",
+          "contact": 1
+        }
+      ],
+      [
+        0.2,
+        {
+          "anchor": "lens",
+          "contact": 1,
+          "cap": 0
+        }
+      ],
+      [
+        0.3,
+        {
+          "anchor": "aim",
+          "contact": 1,
+          "aim": 0.85,
+          "cap": 0
+        }
+      ],
+      [
+        0.42,
+        {
+          "contact": 1,
+          "aim": 0.85,
+          "focus": 0.9,
+          "cap": 0
+        }
+      ],
+      [
+        0.52,
+        {
+          "contact": 1,
+          "aim": 0.85,
+          "focus": 0.62,
+          "cap": 0
+        }
+      ],
+      [
+        0.62,
+        {
+          "look": 1,
+          "aim": 0.85,
+          "focus": 0.62,
+          "cap": 0,
+          "eye": "o"
+        }
+      ],
+      [
+        0.8,
+        {
+          "look": 1,
+          "aim": 0.85,
+          "focus": 0.62,
+          "cap": 0
+        }
+      ],
+      [
+        0.89,
+        {
+          "anchor": "lens",
+          "contact": 1,
+          "aim": 0.85,
+          "focus": 0.62,
+          "cap": 0
+        }
+      ],
+      [
+        1,
+        {
+          "aim": 0.85,
+          "focus": 0.62,
+          "cap": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.79,
+        "observe"
+      ]
+    ]
+  },
+  "scope_first_peek": {
+    "label": "Test the focuser, climb the viewing step, and take a first careful peek",
+    "type": "scope",
+    "duration": 30,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "anchor": "lens",
+          "contact": 1
+        }
+      ],
+      [
+        0.22,
+        {
+          "cap": 0,
+          "anchor": "lens",
+          "contact": 1
+        }
+      ],
+      [
+        0.34,
+        {
+          "cap": 0,
+          "contact": 1,
+          "focus": 0.35
+        }
+      ],
+      [
+        0.48,
+        {
+          "cap": 0,
+          "look": 0.5,
+          "l": 1,
+          "eye": "O"
+        }
+      ],
+      [
+        0.62,
+        {
+          "cap": 0,
+          "look": 1,
+          "focus": 0.5,
+          "eye": "o"
+        }
+      ],
+      [
+        0.73,
+        {
+          "cap": 0,
+          "look": 0.4,
+          "r": 1,
+          "mark": "!"
+        }
+      ],
+      [
+        0.86,
+        {
+          "cap": 0,
+          "anchor": "lens",
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "cap": 1,
+          "focus": 0.5
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.68,
+        "observe"
+      ]
+    ]
+  },
+  "scope_clouds": {
+    "label": "Check the clouded view, lower the tube, and close the lens cap",
+    "type": "scope",
+    "duration": 24,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "anchor": "lens",
+          "contact": 1,
+          "cap": 0
+        }
+      ],
+      [
+        0.35,
+        {
+          "look": 1,
+          "cap": 0,
+          "eye": "-"
+        }
+      ],
+      [
+        0.5,
+        {
+          "cap": 0,
+          "look": 0.4,
+          "mark": "?"
+        }
+      ],
+      [
+        0.7,
+        {
+          "anchor": "aim",
+          "contact": 1,
+          "aim": 0.1,
+          "cap": 0
+        }
+      ],
+      [
+        0.86,
+        {
+          "anchor": "lens",
+          "contact": 1,
+          "aim": 0.1,
+          "cap": 1
+        }
+      ],
+      [
+        1,
+        {
+          "aim": 0.1,
+          "cap": 1
+        }
+      ]
+    ],
+    "events": []
+  },
+  "scope_cover": {
+    "label": "Check the fitted lens cap and leave the wet telescope closed",
+    "type": "scope",
+    "duration": 22,
+    "tool": "cloth",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "lens",
+          "contact": 1,
+          "cap": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "anchor": "lens",
+          "contact": 1,
+          "cap": 1,
+          "x": 0.5
+        }
+      ],
+      [
+        0.6,
+        {
+          "anchor": "aim",
+          "contact": 1,
+          "cap": 1,
+          "y": 0.5
+        }
+      ],
+      [
+        0.8,
+        {
+          "cap": 1,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {
+          "cap": 1
+        }
+      ]
+    ],
+    "events": []
+  },
+  "scope_polish": {
+    "label": "Wipe the barrel and brass collar without rubbing the glass",
+    "type": "scope",
+    "duration": 26,
+    "tool": "cloth",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "aim",
+          "contact": 1,
+          "x": -0.5
+        }
+      ],
+      [
+        0.38,
+        {
+          "anchor": "aim",
+          "contact": 1,
+          "x": 0.7
+        }
+      ],
+      [
+        0.55,
+        {
+          "anchor": "contact",
+          "contact": 1,
+          "x": -0.5
+        }
+      ],
+      [
+        0.72,
+        {
+          "anchor": "contact",
+          "contact": 1,
+          "x": 0.6
+        }
+      ],
+      [
+        0.85,
+        {
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.72,
+        "clean"
+      ]
+    ]
+  },
+  "paint_sky": {
+    "label": "Mix a sky wash and lay in the horizon",
+    "type": "easel",
+    "duration": 36,
+    "tool": "brush",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "anchor": "clamp",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "anchor": "palette",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.3,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.1,
+          "cover": 0
+        }
+      ],
+      [
+        0.39,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.85,
+          "cover": 0
+        }
+      ],
+      [
+        0.45,
+        {
+          "anchor": "palette",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.52,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.2,
+          "cover": 0
+        }
+      ],
+      [
+        0.61,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.7,
+          "cover": 0
+        }
+      ],
+      [
+        0.67,
+        {
+          "anchor": "palette",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.74,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.35,
+          "cover": 0
+        }
+      ],
+      [
+        0.83,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.95,
+          "cover": 0
+        }
+      ],
+      [
+        0.92,
+        {
+          "anchor": "rinse",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        1,
+        {
+          "cover": 0,
+          "eye": "^"
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.39,
+        "stroke"
+      ],
+      [
+        0.61,
+        "stroke"
+      ],
+      [
+        0.83,
+        "stroke"
+      ]
+    ]
+  },
+  "paint_bank": {
+    "label": "Block in the distant bank and water",
+    "type": "easel",
+    "duration": 36,
+    "tool": "brush",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "anchor": "clamp",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "anchor": "palette",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.3,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.1,
+          "cover": 0
+        }
+      ],
+      [
+        0.39,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.85,
+          "cover": 0
+        }
+      ],
+      [
+        0.45,
+        {
+          "anchor": "palette",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.52,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.2,
+          "cover": 0
+        }
+      ],
+      [
+        0.61,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.7,
+          "cover": 0
+        }
+      ],
+      [
+        0.67,
+        {
+          "anchor": "palette",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.74,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.35,
+          "cover": 0
+        }
+      ],
+      [
+        0.83,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.95,
+          "cover": 0
+        }
+      ],
+      [
+        0.92,
+        {
+          "anchor": "rinse",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        1,
+        {
+          "cover": 0,
+          "eye": "^"
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.39,
+        "stroke"
+      ],
+      [
+        0.61,
+        "stroke"
+      ],
+      [
+        0.83,
+        "stroke"
+      ]
+    ]
+  },
+  "paint_ducks": {
+    "label": "Paint two small pond companions",
+    "type": "easel",
+    "duration": 36,
+    "tool": "brush",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "anchor": "clamp",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "anchor": "palette",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.3,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.1,
+          "cover": 0
+        }
+      ],
+      [
+        0.39,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.85,
+          "cover": 0
+        }
+      ],
+      [
+        0.45,
+        {
+          "anchor": "palette",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.52,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.2,
+          "cover": 0
+        }
+      ],
+      [
+        0.61,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.7,
+          "cover": 0
+        }
+      ],
+      [
+        0.67,
+        {
+          "anchor": "palette",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.74,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.35,
+          "cover": 0
+        }
+      ],
+      [
+        0.83,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.95,
+          "cover": 0
+        }
+      ],
+      [
+        0.92,
+        {
+          "anchor": "rinse",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        1,
+        {
+          "cover": 0,
+          "eye": "^"
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.39,
+        "stroke"
+      ],
+      [
+        0.61,
+        "stroke"
+      ],
+      [
+        0.83,
+        "stroke"
+      ]
+    ]
+  },
+  "paint_finish": {
+    "label": "Add weather marks, reflections, and a tiny signature",
+    "type": "easel",
+    "duration": 36,
+    "tool": "brush",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "anchor": "clamp",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "anchor": "palette",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.3,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.1,
+          "cover": 0
+        }
+      ],
+      [
+        0.39,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.85,
+          "cover": 0
+        }
+      ],
+      [
+        0.45,
+        {
+          "anchor": "palette",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.52,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.2,
+          "cover": 0
+        }
+      ],
+      [
+        0.61,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.7,
+          "cover": 0
+        }
+      ],
+      [
+        0.67,
+        {
+          "anchor": "palette",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.74,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.35,
+          "cover": 0
+        }
+      ],
+      [
+        0.83,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "stroke": 0.95,
+          "cover": 0
+        }
+      ],
+      [
+        0.92,
+        {
+          "anchor": "rinse",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        1,
+        {
+          "cover": 0,
+          "eye": "^"
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.39,
+        "stroke"
+      ],
+      [
+        0.61,
+        "stroke"
+      ],
+      [
+        0.83,
+        "stroke"
+      ]
+    ]
+  },
+  "paint_cover": {
+    "label": "Pull the canvas cover down before rain can spoil the paint",
+    "type": "easel",
+    "duration": 20,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "clamp",
+          "contact": 1
+        }
+      ],
+      [
+        0.45,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "cover": 0.5,
+          "stroke": 0.5
+        }
+      ],
+      [
+        0.7,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "cover": 1,
+          "stroke": 0.8
+        }
+      ],
+      [
+        0.9,
+        {
+          "cover": 1,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {
+          "cover": 1
+        }
+      ]
+    ],
+    "events": []
+  },
+  "paint_study": {
+    "label": "Step back, compare the pond with the finished painting, and admire one detail",
+    "type": "easel",
+    "duration": 28,
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "cover": 0,
+          "y": -0.6
+        }
+      ],
+      [
+        0.4,
+        {
+          "cover": 0,
+          "x": 0.8,
+          "eye": "o"
+        }
+      ],
+      [
+        0.6,
+        {
+          "cover": 0,
+          "x": -0.5,
+          "y": 0.5
+        }
+      ],
+      [
+        0.8,
+        {
+          "cover": 0,
+          "w": 0.6,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "cover": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "observe"
+      ]
+    ]
+  },
+  "paint_rinse": {
+    "label": "Swirl the brush in the rinse pot and rest it beside the palette",
+    "type": "easel",
+    "duration": 24,
+    "tool": "brush",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "rinse",
+          "contact": 1,
+          "stroke": 0.2
+        }
+      ],
+      [
+        0.4,
+        {
+          "anchor": "rinse",
+          "contact": 1,
+          "stroke": 0.8,
+          "x": 0.5
+        }
+      ],
+      [
+        0.6,
+        {
+          "anchor": "rinse",
+          "contact": 1,
+          "stroke": 0.2,
+          "x": -0.5
+        }
+      ],
+      [
+        0.8,
+        {
+          "anchor": "palette",
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "clean"
+      ]
+    ]
+  },
+  "kite_launch": {
+    "label": "Pay out the line, feel the pull, and reel the kite gently home",
+    "type": "kite",
+    "duration": 38,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "contact": 1,
+          "flight": 0.05,
+          "w": 0.5
+        }
+      ],
+      [
+        0.3,
+        {
+          "contact": 1,
+          "flight": 0.4,
+          "l": 1,
+          "y": -0.5
+        }
+      ],
+      [
+        0.46,
+        {
+          "contact": 1,
+          "flight": 0.9,
+          "y": -1
+        }
+      ],
+      [
+        0.62,
+        {
+          "contact": 1,
+          "flight": 1,
+          "b": 0.4,
+          "eye": "^"
+        }
+      ],
+      [
+        0.76,
+        {
+          "contact": 1,
+          "flight": 0.6,
+          "w": 0.8
+        }
+      ],
+      [
+        0.89,
+        {
+          "contact": 1,
+          "flight": 0.2,
+          "r": 1
+        }
+      ],
+      [
+        1,
+        {
+          "flight": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "fly"
+      ]
+    ]
+  },
+  "kite_low_arc": {
+    "label": "Keep the little kite on a short line and bring it down after one low arc",
+    "type": "kite",
+    "duration": 28,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "flight": 0.1,
+          "eye": "O"
+        }
+      ],
+      [
+        0.38,
+        {
+          "contact": 1,
+          "flight": 0.35,
+          "y": -0.6
+        }
+      ],
+      [
+        0.56,
+        {
+          "contact": 1,
+          "flight": 0.5,
+          "w": 0.7,
+          "eye": "^"
+        }
+      ],
+      [
+        0.72,
+        {
+          "contact": 1,
+          "flight": 0.3,
+          "b": 0.3
+        }
+      ],
+      [
+        0.88,
+        {
+          "contact": 1,
+          "flight": 0.1,
+          "r": 1
+        }
+      ],
+      [
+        1,
+        {
+          "flight": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.6,
+        "fly"
+      ]
+    ]
+  },
+  "kite_gust": {
+    "label": "Brace the spool against a gust, ease the line, then recover the slack",
+    "type": "kite",
+    "duration": 34,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.16,
+        {
+          "contact": 1,
+          "flight": 0.2
+        }
+      ],
+      [
+        0.3,
+        {
+          "contact": 1,
+          "flight": 0.7,
+          "l": 1,
+          "b": 0.4
+        }
+      ],
+      [
+        0.43,
+        {
+          "contact": 1,
+          "flight": 1,
+          "b": 0.7,
+          "x": -0.8,
+          "eye": "O"
+        }
+      ],
+      [
+        0.55,
+        {
+          "contact": 1,
+          "flight": 0.7,
+          "w": 1
+        }
+      ],
+      [
+        0.68,
+        {
+          "contact": 1,
+          "flight": 0.9,
+          "x": 0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        0.82,
+        {
+          "contact": 1,
+          "flight": 0.4,
+          "r": 1
+        }
+      ],
+      [
+        1,
+        {
+          "flight": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.7,
+        "fly"
+      ]
+    ]
+  },
+  "kite_calm": {
+    "label": "Lift the bridle, test the still air, and lay the kite back on its tail",
+    "type": "kite",
+    "duration": 24,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "bridle",
+          "contact": 1,
+          "flight": 0
+        }
+      ],
+      [
+        0.4,
+        {
+          "anchor": "bridle",
+          "contact": 1,
+          "flight": 0.08,
+          "y": -0.5
+        }
+      ],
+      [
+        0.6,
+        {
+          "anchor": "bridle",
+          "contact": 1,
+          "flight": 0,
+          "mark": "?"
+        }
+      ],
+      [
+        0.8,
+        {
+          "anchor": "tail",
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "flight": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "kite_tail": {
+    "label": "Straighten the ribbon tail and check the bridle knot before flying",
+    "type": "kite",
+    "duration": 26,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "anchor": "tail",
+          "contact": 1,
+          "y": 1
+        }
+      ],
+      [
+        0.36,
+        {
+          "anchor": "tail",
+          "contact": 1,
+          "x": -0.7
+        }
+      ],
+      [
+        0.54,
+        {
+          "anchor": "bridle",
+          "contact": 1
+        }
+      ],
+      [
+        0.72,
+        {
+          "anchor": "bridle",
+          "contact": 1,
+          "x": 0.5,
+          "eye": "o"
+        }
+      ],
+      [
+        0.88,
+        {
+          "anchor": "spool",
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "flight": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.75,
+        "clean"
+      ]
+    ]
+  },
+  "kite_reel": {
+    "label": "Keep the spool steady and bring the kite down as the weather turns",
+    "type": "kite",
+    "duration": 14,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {
+          "contact": 1,
+          "flight": 1
+        }
+      ],
+      [
+        0.25,
+        {
+          "contact": 1,
+          "flight": 0.75,
+          "b": 0.4
+        }
+      ],
+      [
+        0.5,
+        {
+          "contact": 1,
+          "flight": 0.4,
+          "r": 1
+        }
+      ],
+      [
+        0.8,
+        {
+          "contact": 1,
+          "flight": 0.08,
+          "y": 0.5
+        }
+      ],
+      [
+        1,
+        {
+          "flight": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "fold_nose": {
+    "label": "Read the diagram, bring the two corners together, and sharpen the nose",
+    "type": "fold",
+    "duration": 28,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "fold": 0
+        }
+      ],
+      [
+        0.36,
+        {
+          "anchor": "crease",
+          "contact": 1,
+          "fold": 0.18
+        }
+      ],
+      [
+        0.55,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "fold": 0.32
+        }
+      ],
+      [
+        0.74,
+        {
+          "anchor": "crease",
+          "contact": 1,
+          "fold": 0.45,
+          "y": 0.7
+        }
+      ],
+      [
+        0.88,
+        {
+          "fold": 0.45,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {
+          "fold": 0.45
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.74,
+        "fold"
+      ]
+    ]
+  },
+  "fold_wings": {
+    "label": "Press the spine flat, fold the wings evenly, and inspect the little plane",
+    "type": "fold",
+    "duration": 32,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "crease",
+          "contact": 1,
+          "fold": 0.5,
+          "y": 0.8
+        }
+      ],
+      [
+        0.4,
+        {
+          "anchor": "wing",
+          "contact": 1,
+          "fold": 0.72
+        }
+      ],
+      [
+        0.58,
+        {
+          "anchor": "crease",
+          "contact": 1,
+          "fold": 0.9
+        }
+      ],
+      [
+        0.75,
+        {
+          "anchor": "wing",
+          "contact": 1,
+          "fold": 1,
+          "x": 0.5
+        }
+      ],
+      [
+        0.9,
+        {
+          "fold": 1,
+          "w": 0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "fold": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.76,
+        "fold"
+      ]
+    ]
+  },
+  "fold_unfold": {
+    "label": "Open the practice plane and compare its creases with the original diagram",
+    "type": "fold",
+    "duration": 30,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "wing",
+          "contact": 1,
+          "fold": 0.8
+        }
+      ],
+      [
+        0.4,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "fold": 0.55
+        }
+      ],
+      [
+        0.6,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "fold": 0.2
+        }
+      ],
+      [
+        0.78,
+        {
+          "anchor": "crease",
+          "contact": 1,
+          "fold": 0
+        }
+      ],
+      [
+        1,
+        {
+          "fold": 0,
+          "eye": "o"
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.78,
+        "fold"
+      ]
+    ]
+  },
+  "fold_pin": {
+    "label": "Pin the windward corner and trace the folding diagram while it stays flat",
+    "type": "fold",
+    "duration": 24,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "fold": 0,
+          "w": 0.6
+        }
+      ],
+      [
+        0.4,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "fold": 0,
+          "y": 0.6
+        }
+      ],
+      [
+        0.6,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "fold": 0,
+          "eye": "O"
+        }
+      ],
+      [
+        0.8,
+        {
+          "anchor": "crease",
+          "contact": 1,
+          "fold": 0
+        }
+      ],
+      [
+        1,
+        {
+          "fold": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "fold_cover": {
+    "label": "Fold the design inward and cover the instructions from the rain",
+    "type": "fold",
+    "duration": 22,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.22,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "fold": 0.35
+        }
+      ],
+      [
+        0.45,
+        {
+          "anchor": "crease",
+          "contact": 1,
+          "fold": 0.7
+        }
+      ],
+      [
+        0.7,
+        {
+          "anchor": "wing",
+          "contact": 1,
+          "fold": 1,
+          "w": 0.8
+        }
+      ],
+      [
+        0.88,
+        {
+          "fold": 1,
+          "cover": 1
+        }
+      ],
+      [
+        1,
+        {
+          "fold": 1,
+          "cover": 1
+        }
+      ]
+    ],
+    "events": []
+  },
+  "fold_first": {
+    "label": "Follow the dashed line with a tiny wing before trying the first crease",
+    "type": "fold",
+    "duration": 28,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "crease",
+          "contact": 0.6,
+          "fold": 0,
+          "y": 0.7
+        }
+      ],
+      [
+        0.4,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "fold": 0.1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.6,
+        {
+          "anchor": "crease",
+          "contact": 1,
+          "fold": 0.22
+        }
+      ],
+      [
+        0.8,
+        {
+          "fold": 0.22,
+          "mark": "!",
+          "w": 0.5
+        }
+      ],
+      [
+        1,
+        {
+          "fold": 0.22
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "fold"
+      ]
+    ]
+  },
+  "paint_uncover": {
+    "label": "Unhook the dry canvas cover and fold it over the top clamp",
+    "type": "easel",
+    "duration": 22,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "canvas",
+          "contact": 1
+        }
+      ],
+      [
+        0.42,
+        {
+          "anchor": "canvas",
+          "contact": 1,
+          "cover": 0.5
+        }
+      ],
+      [
+        0.65,
+        {
+          "anchor": "clamp",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.82,
+        {
+          "cover": 0,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {
+          "cover": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "fold_unwrap": {
+    "label": "Lift the dry wrapping and smooth out the protected paper design",
+    "type": "fold",
+    "duration": 22,
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "corner",
+          "contact": 1
+        }
+      ],
+      [
+        0.45,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "cover": 0
+        }
+      ],
+      [
+        0.65,
+        {
+          "anchor": "crease",
+          "contact": 1,
+          "cover": 0,
+          "fold": 0.5
+        }
+      ],
+      [
+        0.85,
+        {
+          "anchor": "crease",
+          "contact": 1,
+          "cover": 0,
+          "fold": 0
+        }
+      ],
+      [
+        1,
+        {
+          "cover": 0,
+          "fold": 0
+        }
+      ]
+    ],
+    "events": []
+  }
+}
