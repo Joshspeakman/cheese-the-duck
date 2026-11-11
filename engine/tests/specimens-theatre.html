@@ -1,0 +1,26 @@
+<!doctype html><meta charset="utf-8"><title>Specimen cabinet · authored material studies</title>
+<style>body{margin:24px;background:#142725;color:#e6d8b5;font:15px system-ui}canvas{max-width:100%;height:auto}p{max-width:90ch}button{padding:8px;margin:0 8px 16px 0}</style>
+<h1>Specimen cabinet</h1><p>33 material studies. Crystal cleavage, shell ribs, wood grain and fossil chambers are authored geometry. These stationary objects have no idle motion. Surface buttons preview existing native condition, dirt and wetness; this page does not write game state or demonstrate interaction sequences.</p>
+<button id="dry">Dry specimens</button><button id="weathered">Wet / worn specimens</button><canvas id="sheet"></canvas>
+<script type="module">
+import {SPECIMEN_BLUEPRINTS,specimenSprite} from '../client/specimen-workshop.mjs';
+const canvas=document.querySelector('canvas');
+window.reviewSpecimens=(weathered=false)=>{
+ const ids=Object.keys(SPECIMEN_BLUEPRINTS),columns=4,tileW=340,tileH=295;
+ canvas.width=columns*tileW;canvas.height=Math.ceil(ids.length/columns)*tileH;
+ const ctx=canvas.getContext('2d');ctx.fillStyle='#142725';ctx.fillRect(0,0,canvas.width,canvas.height);
+ for(const [i,id]of ids.entries()){
+  const s=specimenSprite({},{id},0,{state:weathered?{condition:.2,dirt:.5,wetness:.8}:{},motion:false});
+  const x=(i%columns)*tileW,y=Math.floor(i/columns)*tileH;
+  ctx.strokeStyle='#3e5146';ctx.strokeRect(x+4,y+4,tileW-8,tileH-8);
+  ctx.fillStyle='#e6d8b5';ctx.font='13px monospace';ctx.fillText(id.replaceAll('_',' '),x+15,y+24);
+  const ox=x+16,oy=y+36,cw=4.8,ch=6.5;
+  for(const f of s.fills){ctx.fillStyle=s.panels[f.tone];ctx.fillRect(ox+f.x*cw,oy+f.y*ch,f.w*cw,ch);}
+  ctx.font='8px monospace';ctx.textBaseline='top';
+  for(let yy=0;yy<s.art.length;yy++)for(let xx=0;xx<s.width;xx++)if(s.art[yy][xx]!==' '){ctx.fillStyle=s.inks[s.tones[yy][xx]];ctx.fillText(s.art[yy][xx],ox+xx*cw,oy+yy*ch);}
+ }
+ return {count:ids.length,image:canvas.toDataURL('image/png')};
+};
+document.querySelector('#dry').onclick=()=>window.reviewSpecimens();document.querySelector('#weathered').onclick=()=>window.reviewSpecimens(true);
+window.reviewSpecimens();
+</script>

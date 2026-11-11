@@ -1,0 +1,38 @@
+{
+  "pausedAt": "2026-11-11T19:42:39.917375+00:00",
+  "reason": "User traveling, explicitly requested pause until told to resume.",
+  "lastIntegratedCommit": "a6a1c05",
+  "integratedArtwork": {
+    "main": 315,
+    "mainTotal": 542,
+    "supplemental": 55,
+    "unique": 370,
+    "uniqueTotal": 609
+  },
+  "fullSequenceCertification": 0,
+  "installedVersion": "2.36.1",
+  "workers": "All three agent tasks interrupted; no new work is authorized until resume.",
+  "unintegrated": {
+    "foods": {
+      "count": 23,
+      "status": "Direct tests3pass; Electron2sheets inspected by worker and parent. Production dispatch/world scales/footprints not integrated."
+    },
+    "specimens": {
+      "count": 33,
+      "status": "Direct tests3pass; Electron dry/weathered sheets inspected. Production dispatch/world scales/ground trim/footprints not integrated."
+    },
+    "seeds": {
+      "count": 19,
+      "status": "Source/test/preview files exist. Worker interrupted before handoff; treat as unreviewed until inspected."
+    }
+  },
+  "advisor": "extra-high-advice.md contains current architecture findings and ordered queue. Bounce-house candidate artifact not yet written.",
+  "nextOnResume": [
+    "Confirm explicit resume, mark tracker active, inspect worktree and worker state.",
+    "Integrate and review food/specimen art, choose sensible world scales and true ground anchors, regenerate footprints and check actual native layout/rendering.",
+    "Inspect/test interrupted seed/bait batch before integrating.",
+    "Resume bounded portable-company center fix; no edits were made before pause.",
+    "Resume Extra High advisory48-candidate bounce-house audit and evidence contract.",
+    "Continue full scope; do not package/install partial milestone or count art as complete object repertoire."
+  ]
+}

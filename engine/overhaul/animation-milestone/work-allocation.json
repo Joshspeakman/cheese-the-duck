@@ -7,7 +7,7 @@
     {
       "id": "footwear",
       "owner": "root",
-      "status": "verified_pending_commit",
+      "status": "committed_verified_a6a1c05",
       "effort": "existing work finalized",
       "deliverables": [
         "7 constructed footwear pairs",
@@ -21,7 +21,7 @@
       "owner": "medium_food_art",
       "model": "gpt-6-astra",
       "reasoning": "medium",
-      "status": "in_progress",
+      "status": "art_finished_unintegrated_checkpoint",
       "objects": 23,
       "files": [
         "engine/client/food-workshop.mjs",
@@ -35,7 +35,7 @@
       "owner": "medium_specimen_art",
       "model": "gpt-6-astra",
       "reasoning": "medium",
-      "status": "in_progress",
+      "status": "art_finished_unintegrated_checkpoint",
       "objects": 33,
       "files": [
         "engine/client/specimen-workshop.mjs",
@@ -49,7 +49,7 @@
       "owner": "milestone_advisor",
       "model": "gpt-6-astra",
       "reasoning": "xhigh",
-      "status": "in_progress",
+      "status": "advice_written_further_candidate_audit_interrupted",
       "files": [
         "engine/overhaul/animation-milestone/extra-high-advice.md"
       ],
@@ -72,5 +72,34 @@
     "cross-system saves/cancellation/reward invariants",
     "final scope/completion audit"
   ],
-  "installation": "Deferred until full authorized milestone is proven complete."
+  "installation": "Deferred until full authorized milestone is proven complete.",
+  "state": "paused_by_user",
+  "resumeRequires": "Explicit user instruction to resume; elapsed travel time is not authorization.",
+  "followups": [
+    {
+      "id": "seeds_and_bait_art",
+      "owner": "medium_food_art",
+      "status": "interrupted_unreviewed_checkpoint",
+      "objects": 19,
+      "files": [
+        "engine/client/animation/seeds.json",
+        "engine/client/seed-workshop.mjs",
+        "engine/tests/seeds.test.mjs",
+        "engine/tests/seeds-theatre.html",
+        "engine/seeds-check.cjs"
+      ]
+    },
+    {
+      "id": "portable_company_anchors",
+      "owner": "medium_specimen_art",
+      "status": "analysis_complete_no_production_edits",
+      "next": "Review proposed portable_ground.companion_spot helper and four-company center fix against existing native terrain/stance APIs."
+    },
+    {
+      "id": "bounce_house_candidates",
+      "owner": "milestone_advisor",
+      "status": "interrupted_before_artifact_written",
+      "next": "Review actual48 candidates and author executable candidate/evidence record; no verification credit."
+    }
+  ]
 }
