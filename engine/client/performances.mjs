@@ -1,3 +1,4 @@
+import {textilePose} from './textile-routines.mjs';
 import {musicPose} from './music-performances.mjs';
 import {botanicalPose} from './botanical-routines.mjs';
 import {lightingPose} from './lighting-routines.mjs';
@@ -45,6 +46,9 @@ export const ITEM_PERFORMANCES={
  dig:[K(0),K(.2,{x:1,y:1.6,b:.5,w:.4}),K(.4,{x:-.6,y:.7,w:.8,mark:'.'}),K(.6,{x:.8,y:1.4,b:.4}),K(.8,{y:-.3,w:.6,eye:'^'}),K(1)],
 };
 export function performancePose(performance,stage='adult'){
+ if(performance?.kind==='textile'){
+  const pose=textilePose(performance.routine,performance.motion!==false);return pose?scalePose(pose,stage):null;
+ }
  if(performance?.kind==='creative'){
   const pose=creativePose(performance.routine,performance.motion!==false);return pose?scalePose(pose,stage):null;
  }

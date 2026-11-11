@@ -351,10 +351,10 @@
       "construction": "botanical-v1"
     },
     "grass_patch": {
-      "width": 22.65,
-      "height": 8.19,
+      "width": 60.33,
+      "height": 28.61,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "textile-v1"
     },
     "cactus": {
       "width": 50.12,
@@ -921,10 +921,10 @@
       "construction": "legacy-detail"
     },
     "welcome_mat": {
-      "width": 22.65,
-      "height": 8.19,
+      "width": 60.73,
+      "height": 28.11,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "textile-v1"
     },
     "potted_cactus": {
       "width": 41.97,
@@ -1149,10 +1149,10 @@
       "construction": "lighting-v1"
     },
     "grass_floor": {
-      "width": 26.73,
-      "height": 9.67,
+      "width": 70.99,
+      "height": 30.09,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "textile-v1"
     },
     "wooden_planks": {
       "width": 23.77,
@@ -1167,16 +1167,16 @@
       "construction": "legacy-detail"
     },
     "carpet_red": {
-      "width": 26.73,
-      "height": 9.67,
+      "width": 75.11,
+      "height": 29.86,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "textile-v1"
     },
     "tatami_mat": {
-      "width": 26.73,
-      "height": 9.67,
+      "width": 68.17,
+      "height": 30.83,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "textile-v1"
     },
     "sand_floor": {
       "width": 23.97,
@@ -1227,10 +1227,10 @@
       "construction": "legacy-detail"
     },
     "persian_rug": {
-      "width": 26.73,
-      "height": 9.67,
+      "width": 72.83,
+      "height": 33.63,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "textile-v1"
     },
     "rainbow_path": {
       "width": 26.73,
@@ -1245,10 +1245,10 @@
       "construction": "legacy-detail"
     },
     "rubber_mat": {
-      "width": 26.73,
-      "height": 9.67,
+      "width": 62.33,
+      "height": 28.83,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "textile-v1"
     },
     "autumn_leaves": {
       "width": 66.74,
@@ -1785,10 +1785,10 @@
       "construction": "legacy-detail"
     },
     "moss_carpet": {
-      "width": 22.65,
-      "height": 8.19,
+      "width": 60.14,
+      "height": 28.83,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "textile-v1"
     },
     "pebble_path": {
       "width": 21.75,
@@ -1869,10 +1869,10 @@
       "construction": "legacy-detail"
     },
     "woven_grass": {
-      "width": 22.65,
-      "height": 8.19,
+      "width": 52.38,
+      "height": 23.96,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "textile-v1"
     },
     "rope": {
       "width": 17.7,
@@ -1881,10 +1881,10 @@
       "construction": "legacy-detail"
     },
     "thatch": {
-      "width": 22.65,
-      "height": 8.19,
-      "floor": true,
-      "construction": "legacy-detail"
+      "width": 53.88,
+      "height": 28.42,
+      "floor": false,
+      "construction": "textile-v1"
     },
     "clay_brick": {
       "width": 17.61,
@@ -1905,10 +1905,10 @@
       "construction": "legacy-detail"
     },
     "insulation": {
-      "width": 22.65,
-      "height": 8.19,
-      "floor": true,
-      "construction": "legacy-detail"
+      "width": 48.05,
+      "height": 25.96,
+      "floor": false,
+      "construction": "textile-v1"
     },
     "stone_hammer": {
       "width": 16.07,
@@ -2223,10 +2223,10 @@
       "construction": "legacy-detail"
     },
     "fabric_scrap": {
-      "width": 22.65,
-      "height": 8.19,
+      "width": 42.57,
+      "height": 22.08,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "textile-v1"
     },
     "eagle_feather": {
       "width": 10.76,
@@ -3141,10 +3141,10 @@
       "construction": "playground-v1"
     },
     "rug": {
-      "width": 22.65,
-      "height": 8.19,
+      "width": 66.98,
+      "height": 30.29,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "textile-v1"
     },
     "pond_mat": {
       "width": 47.84,
