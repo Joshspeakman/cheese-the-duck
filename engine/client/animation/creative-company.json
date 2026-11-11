@@ -1,0 +1,631 @@
+{
+  "scope_bank": {
+    "label": "Compare the far reeds while Cheese adjusts the telescope",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "x": -1,
+          "w": 0.3,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "x": 1,
+          "y": -1,
+          "w": 0.8,
+          "mark": "?"
+        }
+      ],
+      [
+        0.65,
+        {
+          "y": -1,
+          "w": 0.9,
+          "eye": "o"
+        }
+      ],
+      [
+        0.8,
+        {
+          "x": -1,
+          "w": 0.2,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  },
+  "scope_stars": {
+    "label": "Point out the clear patches of night sky while Cheese focuses",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.16,
+        {
+          "y": -1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.34,
+        {
+          "y": -2,
+          "w": 0.9,
+          "mark": "*"
+        }
+      ],
+      [
+        0.6,
+        {
+          "x": -1,
+          "y": -2,
+          "w": 0.6
+        }
+      ],
+      [
+        0.83,
+        {
+          "y": -1,
+          "w": 0.2,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  },
+  "scope_first": {
+    "label": "Encourage a little observer and follow their gaze",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "b": 1,
+          "x": -1,
+          "eye": "^"
+        }
+      ],
+      [
+        0.38,
+        {
+          "b": 2,
+          "x": -1,
+          "w": 0.2
+        }
+      ],
+      [
+        0.65,
+        {
+          "x": 1,
+          "y": -1,
+          "w": 0.7,
+          "mark": "!"
+        }
+      ],
+      [
+        0.85,
+        {
+          "w": 0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  },
+  "paint_proud": {
+    "label": "Strike a grand pose beside Cheese's painting",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "x": 1,
+          "b": -1,
+          "w": 0.8,
+          "eye": "^"
+        }
+      ],
+      [
+        0.38,
+        {
+          "x": -1,
+          "w": 1,
+          "l": 0.4,
+          "eye": "^"
+        }
+      ],
+      [
+        0.61,
+        {
+          "x": 1,
+          "w": 0.7,
+          "r": 0.4,
+          "mark": "!"
+        }
+      ],
+      [
+        0.82,
+        {
+          "x": 1,
+          "w": 0.3,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  },
+  "paint_shy": {
+    "label": "Try to hold a modest pose, then peek at Cheese's brushwork",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "b": 1,
+          "x": -1,
+          "w": 0.1
+        }
+      ],
+      [
+        0.38,
+        {
+          "b": 1,
+          "y": 1,
+          "eye": "-"
+        }
+      ],
+      [
+        0.59,
+        {
+          "x": -2,
+          "y": -1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.82,
+        {
+          "b": 1,
+          "w": 0.3,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  },
+  "paint_patient": {
+    "label": "Wait patiently beside the canvas and admire each new layer",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 1,
+          "eye": "-"
+        }
+      ],
+      [
+        0.41,
+        {
+          "b": 1,
+          "x": -1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.64,
+        {
+          "b": 1,
+          "w": 0.3,
+          "eye": "^"
+        }
+      ],
+      [
+        0.85,
+        {
+          "b": 1,
+          "x": 1,
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  },
+  "kite_tail_partner": {
+    "label": "Steady the kite's tail while Cheese checks its ties",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "anchor": "tail",
+          "contact": 0.4,
+          "reach": 0.4
+        }
+      ],
+      [
+        0.3,
+        {
+          "anchor": "tail",
+          "contact": 1,
+          "reach": 0.8
+        }
+      ],
+      [
+        0.55,
+        {
+          "anchor": "tail",
+          "contact": 1,
+          "reach": 0.5,
+          "x": -1
+        }
+      ],
+      [
+        0.72,
+        {
+          "anchor": "tail",
+          "contact": 0.7,
+          "w": 0.2
+        }
+      ],
+      [
+        0.88,
+        {
+          "w": 0.7,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  },
+  "kite_bridle": {
+    "label": "Steady the bridle, release for launch, then watch the flight",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.1,
+        {
+          "anchor": "bridle",
+          "contact": 1,
+          "reach": 0.8
+        }
+      ],
+      [
+        0.2,
+        {
+          "anchor": "bridle",
+          "contact": 1,
+          "reach": 0.6
+        }
+      ],
+      [
+        0.32,
+        {
+          "anchor": "bridle",
+          "contact": 0,
+          "w": 0.3
+        }
+      ],
+      [
+        0.55,
+        {
+          "y": -2,
+          "w": 0.6,
+          "eye": "o"
+        }
+      ],
+      [
+        0.8,
+        {
+          "y": -1,
+          "w": 0.8,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  },
+  "kite_low_companion": {
+    "label": "Watch a gentle kite attempt and encourage the little flyer",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "b": 1,
+          "x": -1,
+          "eye": "^"
+        }
+      ],
+      [
+        0.4,
+        {
+          "x": 1,
+          "y": -1,
+          "w": 0.5
+        }
+      ],
+      [
+        0.6,
+        {
+          "y": -1,
+          "w": 0.8,
+          "mark": "!"
+        }
+      ],
+      [
+        0.82,
+        {
+          "b": 1,
+          "w": 0.3,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  },
+  "fold_nose_partner": {
+    "label": "Hold the far paper corner while Cheese presses the nose fold",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "anchor": "corner",
+          "contact": 0.5,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.3,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "reach": 0.8,
+          "b": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "reach": 0.6,
+          "b": 1
+        }
+      ],
+      [
+        0.8,
+        {
+          "contact": 0,
+          "w": 0.4,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  },
+  "fold_wing_partner": {
+    "label": "Follow the wing crease, then lift away for the finished fold",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "anchor": "corner",
+          "contact": 0.5
+        }
+      ],
+      [
+        0.32,
+        {
+          "anchor": "wing",
+          "contact": 1,
+          "reach": 0.6
+        }
+      ],
+      [
+        0.57,
+        {
+          "anchor": "wing",
+          "contact": 1,
+          "reach": 0.8,
+          "b": 1
+        }
+      ],
+      [
+        0.74,
+        {
+          "contact": 0,
+          "w": 0.6,
+          "eye": "o"
+        }
+      ],
+      [
+        0.9,
+        {
+          "w": 0.2,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  },
+  "fold_pin_partner": {
+    "label": "Keep the far corner down while wind ruffles the paper",
+    "tool": "hand",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.1,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "reach": 0.8,
+          "b": 1
+        }
+      ],
+      [
+        0.33,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "reach": 0.8,
+          "b": 2,
+          "eye": "-"
+        }
+      ],
+      [
+        0.62,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "reach": 0.6,
+          "b": 1
+        }
+      ],
+      [
+        0.84,
+        {
+          "anchor": "corner",
+          "contact": 0.5,
+          "mark": "!"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  },
+  "hover_observer": {
+    "label": "Hover nearby and watch Cheese's creative work",
+    "tool": "none",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "x": 1,
+          "y": -1,
+          "w": 0.4
+        }
+      ],
+      [
+        0.34,
+        {
+          "x": -2,
+          "y": -2,
+          "w": 0.8
+        }
+      ],
+      [
+        0.56,
+        {
+          "x": 1,
+          "y": -1,
+          "w": 0.6,
+          "eye": "o"
+        }
+      ],
+      [
+        0.8,
+        {
+          "x": -1,
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  }
+}

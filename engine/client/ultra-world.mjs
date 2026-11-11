@@ -421,7 +421,7 @@ export class LivingWorld {
         const progress=plan.progress??plan.elapsed/plan.duration,inside=plan.phase==='act'?1:plan.phase==='prepare'?clamp((progress-.15)/.13,0,1):clamp(1-(progress-.9)/.1,0,1);
         const performance={kind:'creative',routine:plan.creative_work,motion:s.motion!==false};
         const character={...characterSprite({...s.duck,state:'idle',facing:true,performance},t),x:original.x,y:original.y,cheese:true};
-        home.creators=[{character,inside}];this.characters=this.characters.filter(c=>c!==original);
+        home.creators=[{character,inside,slot:0}];this.characters=this.characters.filter(c=>c!==original);
       }
     }
     if(plan?.keepsake_work&&!plan.keepsake_work.interrupted&&KEEPSAKE_ROUTINES[plan.keepsake_work.id]&&['prepare','act','settle'].includes(plan.phase)){
@@ -432,6 +432,16 @@ export class LivingWorld {
         const character={...characterSprite({...s.duck,state:'idle',facing:true,performance},t),x:original.x,y:original.y,cheese:true};
         home.keepers=[{character,inside,slot:0}];this.characters=this.characters.filter(c=>c!==original);
       }
+    }
+    for(const r of s.living?.minds?.creators||[]){
+      if(r.phase==='approach'||r.routine?.interrupted||!CREATIVE_ROUTINES[r.routine?.id])continue;
+      const actorId=r.actor==='story:pip'?'story:lost_duckling':r.actor,original=this.characters.find(c=>c.id===actorId);
+      const home=this.objects.find(o=>o.id===r.id&&sameInstance(o,r)&&o.construction==='creative-v1'&&(o.portable||o.worldPosition?.every((v,i)=>Math.abs(v-r.destination?.[i])<1.1)));
+      if(!original||!home)continue;
+      const source=s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
+      const inside=r.phase==='enter'?clamp(r.elapsed/2,0,1):r.phase==='exit'?clamp(1-r.elapsed/2,0,1):1,performance={kind:'creative',routine:r.routine,motion:s.motion!==false};
+      const character={...characterSprite({...source,state:'idle',facing:false,performance},t,true),x:original.x,y:original.y,story:original.story};
+      (home.creators||=[]).push({character,inside,slot:1});this.characters=this.characters.filter(c=>c!==original);
     }
     for(const r of s.living?.minds?.readers||[]){
       if(r.phase==='approach'||r.routine?.interrupted||!KEEPSAKE_ROUTINES[r.routine?.id])continue;

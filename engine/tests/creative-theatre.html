@@ -5,8 +5,9 @@
 import {CREATIVE_BLUEPRINTS} from '../client/creative-workshop.mjs';
 import {itemSprite,ItemPainter} from '../client/ultra-items.mjs';
 import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {GUEST_CAST} from '../client/guest-cast.mjs';
 import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';
-import {creativeGeometry,drawCreativeTools,creativePose,CREATIVE_ROUTINES,CREATIVE_CONTROLS} from '../client/creative-routines.mjs';
+import {creativeGeometry,drawCreativeTools,creativePose,CREATIVE_ROUTINES,CREATIVE_CONTROLS,CREATIVE_COMPANY} from '../client/creative-routines.mjs';
 const painter=new ItemPainter(),surface='#142b23';
 function sheet(w,h){const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.fillStyle=surface;ctx.fillRect(0,0,w,h);return [canvas,ctx];}
 window.reviewCreative=()=>{
@@ -32,14 +33,44 @@ window.reviewCreative=()=>{
  }
  return images;
 };
+window.reviewCreativeCompany=()=>{
+ const images={},entries=Object.entries(CREATIVE_COMPANY),casts=['friend:frida','friendly_goose','friend:ada','lost_duckling','rare_butterfly'];
+ for(let page=0;page<Math.ceil(entries.length/4);page++){
+  const [canvas,ctx]=sheet(1800,1400);
+  entries.slice(page*4,page*4+4).forEach(([id,shared],i)=>{
+   const item=id.startsWith('scope')?'telescope':id.startsWith('paint')?'easel':id.startsWith('kite')?'kite':'paper_plane_design';
+   const core={telescope:'scope_focus',easel:'paint_ducks',kite:'kite_launch',paper_plane_design:'fold_wings'}[item],f=item==='kite'?.18:.57;
+   const work={id:core,elapsed:CREATIVE_ROUTINES[core].duration*f,start:CREATIVE_CONTROLS,wind:.4};
+   const x=i%2*900,y=Math.floor(i/2)*700,home={...itemSprite(item,0,{state:{creative:{strokes:8}},pose:{creative:creativePose(work)}}),x:(x+450)/6,y:(y+630)/8,scale:CREATIVE_BLUEPRINTS[item].scale};
+   painter.draw(ctx,home,home.x*6,home.y*8,6*home.scale,{surface});
+   const profile=Object.values(GUEST_CAST).find(g=>g.id===casts[(page*4+i)%casts.length])||Object.values(GUEST_CAST)[0];
+   for(const slot of [0,1]){
+    const routine={...work,company:{id,role:slot?'b':'a'}},source=slot?{id:profile.id,castId:profile.id,name:profile.name}:{stage:page===0?'hatchling':page===2?'elder':'adult'};
+    const character={...characterSprite({...source,state:'idle',facing:!slot,performance:{kind:'creative',routine}},0,Boolean(slot)),x:home.x,y:home.y};
+    const staged=creativeGeometry(home,{character,inside:1,slot},6,8);drawCreativeTools(ctx,staged,true);drawCharacter(ctx,staged.character,6,8,surface);drawCreativeTools(ctx,staged);
+   }
+   ctx.fillStyle='#e5d8b4';ctx.font='20px Menlo';ctx.fillText(id+' / '+profile.name,x+20,y+35);
+  });images['creative-company-'+page]=canvas.toDataURL('image/png');document.body.append(canvas);
+ }
+ return images;
+};
 window.replayCreative=frames=>{
- const view=new SceneCanvas();view.resize(1500,950);const images={},costs=[];let drawn=0,workers=0;
+ const view=new SceneCanvas();view.resize(1500,950);const images={},costs=[];let drawn=0,workers=0,companions=0;
  for(const [i,s]of frames.entries()){
   const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
   if(JSON.stringify(s)!==before)throw Error('Creative renderer changed native state');
-  for(const o of view.world.objects)if(o.construction==='creative-v1'){drawn++;if(o.clipped)throw Error('Clipped creative prop '+o.id);workers+=o.creators?.length||0;}
+  for(const o of view.world.objects)if(o.construction==='creative-v1'){
+   drawn++;if(o.clipped)throw Error('Clipped creative prop '+o.id);workers+=o.creators?.length||0;
+   for(const r of o.creators||[])if(r.slot===1){
+    companions++;if(r.character.clipped)throw Error('Clipped creative companion');
+    const hit=view.hits.find(h=>h.id===r.character.id&&['friend','story'].includes(h.kind));
+    if(!hit||view.hit((hit.x+hit.w/2)/view.canvas.width,(hit.y+hit.h/2)/view.canvas.height)?.id!==r.character.id)throw Error('Creative companion is not selectable where drawn');
+    const name='creative-company-live-'+o.id;
+    if(!images[name]&&r.character.performance.routine.elapsed>12)images[name]=view.canvas.toDataURL();
+   }
+  }
   if(s.review)images['creative-live-'+s.review]=view.canvas.toDataURL('image/png');
  }
- costs.sort((a,b)=>a-b);return {frames:frames.length,drawn,workers,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+ costs.sort((a,b)=>a-b);return {frames:frames.length,drawn,workers,companions,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
 };
 </script>

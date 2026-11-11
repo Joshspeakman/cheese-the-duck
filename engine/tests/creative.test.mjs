@@ -59,3 +59,19 @@ test('placed copy selection and portable folding retain their physical origin',(
  s.living.plan.paused=true;s.duck.x+=30;world.render(s,99,.1);assert.equal(world.objects[0].x,paper.x);assert.deepEqual(world.objects[0].art,paper.art);
  s.living.plan=null;world.render(s,100,.1);assert(!world.objects.some(x=>x.id==='paper_plane_design'));
 });
+
+test('viewing stairs and painting decks remain stationary throughout acting and entry',()=>{
+ for(const stage of ages)for(const [id,s]of Object.entries(CREATIVE_ROUTINES).filter(([,s])=>s.type==='scope'||s.type==='easel'&&s.tool!=='none')){
+  let reference=null;
+  for(const f of [.1,.2,.4,.5,.6,.7,.8,.9]){
+   const routine={id,elapsed:s.duration*f,start:CREATIVE_CONTROLS},item=ids[s.type],pose=creativePose(routine);
+   const home={...itemSprite(item,0,{pose:{creative:pose}}),x:90,y:85,scale:itemWorldScale(item)};
+   const c={...characterSprite({stage,state:'idle',facing:true,performance:{kind:'creative',routine}},0),x:90,y:85};
+   for(const inside of [.1,.4,.7,1]){
+    const g=creativeGeometry(home,{character:c,inside},6,8),shape=JSON.stringify(g.supports);
+    if(reference===null)reference=shape;else assert.equal(shape,reference,stage+' '+id+' fixed support');
+    if(g.climbing&&s.type==='scope'&&inside===1)assert(g.character.y*8>=g.platform.y-1e-8&&g.character.y*8<=g.ground+1e-8);
+   }
+  }
+ }
+});
