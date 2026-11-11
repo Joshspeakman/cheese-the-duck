@@ -1,0 +1,12 @@
+{
+  "wheelbarrow": {"type":"barrow","w":132,"h":80,"scale":0.38,"material":"metal","motion":"still"},
+  "jetpack": {"type":"pack","w":94,"h":108,"scale":0.24,"material":"metal","motion":"still"},
+  "submarine": {"type":"sub","w":150,"h":94,"scale":0.64,"material":"metal","motion":"water"},
+  "rocket_ship": {"type":"rocket","w":112,"h":150,"scale":0.62,"material":"metal","motion":"still"},
+  "hot_air_balloon": {"type":"balloon","w":128,"h":154,"scale":0.62,"material":"fabric","motion":"envelope"},
+  "ufo": {"type":"saucer","w":148,"h":108,"scale":0.62,"material":"metal","motion":"scanner"},
+  "magic_carpet": {"type":"carpet","w":132,"h":76,"scale":0.50,"material":"fabric","motion":"cloth"},
+  "bounce_house": {"type":"inflatable","w":144,"h":118,"scale":0.66,"material":"fabric","motion":"inflation"},
+  "ferris_wheel": {"type":"wheel","w":164,"h":135,"scale":0.67,"material":"metal","motion":"motor"},
+  "carousel": {"type":"carousel","w":148,"h":128,"scale":0.66,"material":"wood","motion":"motor"}
+}

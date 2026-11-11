@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: added eleven complementary outside-nest companion scores with actual independent arrivals, shared native timing, bounded physical rim contact, fanning, tapping, inspection and quiet company. Young Cheese, low-energy or gloomy guests, Pip, toads and butterflies receive fitting roles. Added seven notebook requests bound to the exact crafted structure or outdoor decoration; corrected availability to use actual scene objects rather than the shop-only layout list. Arrival alone, cancellation, displacement, missing copies, direct care and weather interruption grant no completed shared memory; completed routines teach both residents once without duplicating the original rest use or item/material rewards. Rendered all eleven native sessions and checked all nine age rules and 48 visitor rigs. Remaining drawings, individual per-object 48-sequence audits and the full installation are still unfinished; no per-object verification counts were promoted.",
+  "previous_goal_turn": "Progress: reconstructed ten carnival/travel belongings with distinct material construction, usable anchors, larger reserved drawings and revised utility-object scale. Added saved native empty-ride/scanner phases, wind/fabric pressure and night lamps; adverse weather stops motors, stored copies freeze independently and home weather applies when Cheese is elsewhere. Original ownership and ordinary use still grant exactly one original reward. Verified 208 native assertions, 1200 art/mechanism states, 70 selectable native-frame objects, 180 continuous animation frames, 190 JavaScript tests, the 72-hour simulation, learning brains and a 99-frame source launch smoke. Reviewed five construction sheets, a weather sheet and thirty native captures. Full character riding/travel/contact and per-object repertoires remain unfinished; no verified sequence counts or final installation were promoted.",
   "items": [
     {
       "id": "hat_red",
@@ -1213,8 +1213,9 @@
     {
       "id": "wheelbarrow",
       "family": "wheelbarrow",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "restingMechanismPrototype": true
     },
     {
       "id": "tiki_torch",
@@ -1649,8 +1650,9 @@
     {
       "id": "magic_carpet",
       "family": "magic_carpet",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "restingMechanismPrototype": true
     },
     {
       "id": "crystal_ball",
@@ -1711,8 +1713,9 @@
     {
       "id": "ufo",
       "family": "ufo",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "restingMechanismPrototype": true
     },
     {
       "id": "rainbow_slide",
@@ -1738,44 +1741,51 @@
     {
       "id": "bounce_house",
       "family": "bouncehouse",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "restingMechanismPrototype": true
     },
     {
       "id": "ferris_wheel",
       "family": "wheel",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "restingMechanismPrototype": true
     },
     {
       "id": "carousel",
       "family": "carousel",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "restingMechanismPrototype": true
     },
     {
       "id": "jetpack",
       "family": "jetpack",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "restingMechanismPrototype": true
     },
     {
       "id": "submarine",
       "family": "submarine",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "restingMechanismPrototype": true
     },
     {
       "id": "hot_air_balloon",
       "family": "balloon",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "restingMechanismPrototype": true
     },
     {
       "id": "rocket_ship",
       "family": "rocket",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "restingMechanismPrototype": true
     },
     {
       "id": "tardis",
@@ -3939,8 +3949,8 @@
   "checkpoint": {
     "sourcePhase": "independent_nest_companions_and_player_requests",
     "fullyOverhauled": false,
-    "constructedObjects": 269,
-    "remainingArtwork": 273,
+    "constructedObjects": 279,
+    "remainingArtwork": 263,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -4341,9 +4351,9 @@
       "engine/artifacts/animation-milestone/nest-company-smoke.log",
       "engine/artifacts/animation-milestone/nest-company-footprints.log"
     ],
-    "next": "Continue the remaining 273 object constructions and individually authored contextual repertoires. All 542 per-object 48-sequence audits remain open; complete personal visitor acting, guest-to-guest sessions, egg observation and physical tool handling before final integration and installation.",
+    "next": "Continue the remaining 263 object constructions and individually authored contextual repertoires. All 542 per-object 48-sequence audits remain open; complete personal visitor acting, guest-to-guest sessions, egg observation, riding/entry and physical tool handling before final integration and installation.",
     "checks": {
-      "javascript": 185,
+      "javascript": 190,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4675,10 +4685,20 @@
         "p95Ms": 9.699999988079071,
         "cacheBytes": 66802464,
         "note": "Actual native regular, rare and story arrivals; all 11 outside-nest roles, every staged helper independently selectable. Reviewed wing contact, ordinary fanning, own ground/body scale and young/elder roles. Development replay, not final whole-milestone audit."
-      }
+      },
+      "excursionsNative": 208,
+      "excursionsRender": {
+        "frames": 70,
+        "selectableObjectFrames": 70,
+        "continuousFrames": 180,
+        "constructionStates": 1200,
+        "artSheets": 6,
+        "nativeCaptures": 30
+      },
+      "excursionsEvidence": "engine/artifacts/animation-milestone/excursions-native.json; engine/artifacts/animation-milestone/excursions-render.json"
     },
     "limitations": [
-      "258 of 542 object artworks reconstructed for review; 284 remain.",
+      "279 of 542 object artworks reconstructed for review; 263 remain.",
       "No object has yet passed the 48 bespoke sequence requirement.",
       "Five nests now use 51 authored core routines (three require a canopy). Individual nest-construction variants, guest participation and egg-specific interactions remain unfinished; no per-object completion is claimed.",
       "Paired tracks currently share a core movement vocabulary across the cast; personality-specific choreography and full guest item participation remain unfinished.",
@@ -4696,7 +4716,8 @@
       "Groundwork uses 32 initial solo cores and 27 complementary company roles across 18 objects; these are not 48 bespoke sequences per object. All 48 visitor rigs and eight hatched ages fit, and independent regular/rare/story arrivals, native shared contacts, marks and completed learning are checked. Guest-to-guest sessions, egg observation, full personal/contextual acting and physical tool pickup/put-away remain pending. Native simulation owns arrival, contact events and history.",
       "Twenty-one garden structures have 54 initial solo cores and 49 shared visitor roles. Eight new landmarks add carved/material detail, saved directional wind, real hour/season/sky-controlled sundial shadows, native flag hoists, low physical contacts and observation-based shared memories. These are initial core actions, not 48 bespoke sequences per item. Guest-to-guest sessions, egg observation, climbing, physical tool pickup/put-away and full personality/mood/season acting remain unfinished. No object sequence completion is claimed.",
       "Eight outdoor playthings have 42 initial solo cores and 25 complementary visitor roles. All eight hatched ages and all 48 visitor rigs fit, and all 48 native visitor identities plus Pip are tested through real arrival and shared learning. Egg observation, guest-to-guest games, physical pickup/put-away, full personal/mood/season repertoires and each object's 48 bespoke sequences remain unfinished. Boat and board practice stays on the bank; no voyage or surf travel is claimed.",
-      "Glass curios have twelve added core tracks and eight observing companion roles, with exact-copy controls and saved snow/forecast state. These are initial contextual foundations, not 48 unique sequences per object; no per-object repertoire audit is complete."
+      "Glass curios have twelve added core tracks and eight observing companion roles, with exact-copy controls and saved snow/forecast state. These are initial contextual foundations, not 48 unique sequences per object; no per-object repertoire audit is complete.",
+      "Ten carnival and travel belongings have reconstructed art and native resting mechanisms. Empty wheels, carousel mounts and the saucer scanner use saved per-copy phases; fabric responds to weather and storage freezes mechanisms. Riding, launch/travel, character control contacts, shared performances and each object's 48 bespoke sequences remain unfinished. No per-object sequence count was promoted."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -4747,9 +4768,9 @@
     },
     "sourceSmoke": {
       "result": "PASS",
-      "frames": 96,
+      "frames": 99,
       "localAI": false,
-      "evidence": "engine/artifacts/animation-milestone/glass-smoke/frame.json"
+      "evidence": "engine/artifacts/animation-milestone/excursions-smoke.log"
     },
     "chatRelease": {
       "branch": "codex/pond-chat-2.36.1",
@@ -4804,6 +4825,7 @@
     },
     "nestMaterialContactRoutines": 33,
     "nestPhysicalContactPoints": 40,
-    "visitorNestRoutinePool": 25
+    "visitorNestRoutinePool": 25,
+    "excursionObjects": 10
   }
 }

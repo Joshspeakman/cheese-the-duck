@@ -975,10 +975,10 @@
       "construction": "keepsake-v1"
     },
     "wheelbarrow": {
-      "width": 16.8,
-      "height": 8.19,
+      "width": 35.34,
+      "height": 19.61,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "excursion-v1"
     },
     "tiki_torch": {
       "width": 44.01,
@@ -1329,10 +1329,10 @@
       "construction": "keepsake-v1"
     },
     "magic_carpet": {
-      "width": 22.91,
-      "height": 9.14,
-      "floor": true,
-      "construction": "legacy-detail"
+      "width": 46.26,
+      "height": 24.56,
+      "floor": false,
+      "construction": "excursion-v1"
     },
     "crystal_ball": {
       "width": 66.06,
@@ -1389,10 +1389,10 @@
       "construction": "legacy-detail"
     },
     "ufo": {
-      "width": 31.06,
-      "height": 11.95,
+      "width": 65.91,
+      "height": 42.75,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "excursion-v1"
     },
     "rainbow_slide": {
       "width": 89.76,
@@ -1413,46 +1413,46 @@
       "construction": "waterworks-v1"
     },
     "bounce_house": {
-      "width": 28.69,
-      "height": 13.26,
+      "width": 69.32,
+      "height": 49.6,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "excursion-v1"
     },
     "ferris_wheel": {
-      "width": 26.45,
-      "height": 15.23,
+      "width": 80.06,
+      "height": 57.41,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "excursion-v1"
     },
     "carousel": {
-      "width": 21.6,
-      "height": 13.92,
+      "width": 71.76,
+      "height": 53.69,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "excursion-v1"
     },
     "jetpack": {
-      "width": 12.47,
-      "height": 9.09,
+      "width": 17.48,
+      "height": 16.55,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "excursion-v1"
     },
     "submarine": {
-      "width": 29.61,
-      "height": 11.29,
+      "width": 67.75,
+      "height": 38.57,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "excursion-v1"
     },
     "hot_air_balloon": {
-      "width": 24.88,
-      "height": 13.92,
+      "width": 61.67,
+      "height": 60.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "excursion-v1"
     },
     "rocket_ship": {
-      "width": 18.57,
-      "height": 15.23,
+      "width": 55.22,
+      "height": 58.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "excursion-v1"
     },
     "tardis": {
       "width": 16.85,
