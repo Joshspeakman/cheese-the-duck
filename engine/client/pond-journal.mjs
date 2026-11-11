@@ -1,6 +1,8 @@
 import {CARNIVAL_CHOICES} from './carnival-routines.mjs';
 import {castleSummary,CASTLE_SCORES} from './castle-care.mjs';
 import {hatSummary,HEADWEAR_BLUEPRINTS} from './headwear-workshop.mjs';
+import {accessorySummary,ACCESSORY_BLUEPRINTS} from './accessory-workshop.mjs';
+import {WEARABLE_CATALOG} from './wearable-catalog.mjs';
 import {PLAYKIT_CHOICES,playkitSummary} from './playkit-state.mjs';
 import {playkitPose} from './playkit-routines.mjs';
 import {NEST_IDS} from './nest-routines.mjs';
@@ -25,6 +27,8 @@ import {creativePose} from './creative-routines.mjs';
 import {keepsakePose} from './keepsake-routines.mjs';
 const names=new Map(catalog.map(i=>[i.id,i]));
 const pretty=s=>String(s||'').replaceAll('_',' ');
+const wardrobeName=id=>WEARABLE_CATALOG[id]?.name||names.get(id)?.name||pretty(id);
+const wardrobeSummary=(id,raw)=>ACCESSORY_BLUEPRINTS[id]?accessorySummary(raw,id):hatSummary(raw);
 const percent=n=>`${Math.round((n||0)*100)}%`;
 const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node;};
 export class PondJournal{
@@ -55,21 +59,22 @@ export class PondJournal{
  meter(parent,label,value){const row=el('label',undefined,'pond-meter');const text=el('span',label),m=el('meter');m.min=0;m.max=1;m.value=Math.max(0,Math.min(1,value||0));m.setAttribute('aria-label',label);row.append(text,m,el('span',percent(value)));parent.append(row);}
  preview(parent,kind,id,large=false,instance=''){const canvas=el('canvas',undefined,large?'pond-preview large':'pond-preview');canvas.width=large?720:360;canvas.height=large?390:220;canvas.dataset.kind=kind;canvas.dataset.id=id;canvas.dataset.instance=instance;canvas.setAttribute('aria-label',names.get(id)?.name||pretty(id));parent.append(canvas);}
  hatCare(parent,id){
-  const care=this.frame.scene.duck.hatCare,material=el('p',hatSummary(this.frame.scene.duck.apparel?.[id]));material.dataset.hatMaterial=id;parent.append(material);
-  if(care?.equipped!==id){parent.append(el('p','Equip this hat to tend it.'));return;}
-  const status=el('p',care.active?.label||'A little care for the hat he is wearing.');status.dataset.hatCare='';parent.append(status);
-  for(const o of care.options){const b=this.button(o.label,'hat_care',id,!o.enabled,{text:o.id});b.dataset.hatAction=o.id;b.dataset.hatItem=id;b.title=o.reason;parent.append(b);}
+  const care=this.frame.scene.duck.hatCare,material=el('p',wardrobeSummary(id,this.frame.scene.duck.apparel?.[id]));material.dataset.hatMaterial=id;parent.append(material);
+  const entry=care?.items?.find(i=>i.id===id)||(care?.equipped===id?{options:care.options}:null);
+  if(!entry){parent.append(el('p','Equip this accessory to tend it.'));return;}
+  const status=el('p',care.active?.item===id?care.active.label:'A little care for '+wardrobeName(id)+'.');status.dataset.hatCare=id;parent.append(status);
+  for(const o of entry.options){const b=this.button(o.label,'hat_care',id,!o.enabled,{text:o.id});b.dataset.hatAction=o.id;b.dataset.hatItem=id;b.title=o.reason;parent.append(b);}
  }
  updateDynamic(){
   const w=this.world;if(!w)return;
   if(this.tab==='arrange'){this.arrangement.update();return;}
   refreshConversation(this);
-  const p=w.plan;this.status.textContent=p?`${p.label} · ${p.paused?'paused':pretty(p.phase)} · ${Math.round(p.progress*100)}%`:'Cheese is free to choose what comes next.';
+  const p=w.plan;this.status.textContent=p?`${p.label} · ${p.paused?'paused':pretty(p.phase)} · ${Math.round(p.progress*100)}%`:this.frame.scene.duck.hatCare?.active?.label||'Cheese is free to choose what comes next.';
   for(const card of this.body.querySelectorAll('[data-nest-id]'))for(const button of card.querySelectorAll('[data-nest-choice]'))button.disabled=Boolean(w.plan)||![...(this.frame.scene.items||[]),...(this.frame.scene.structures||[])].some(p=>p.id===card.dataset.nestId&&p.instance===card.dataset.nestInstance);
   for(const bar of this.body.querySelectorAll('[data-progress]'))bar.value=p?.progress||0;
-  for(const label of this.body.querySelectorAll('[data-hat-material]'))label.textContent=hatSummary(this.frame.scene.duck.apparel?.[label.dataset.hatMaterial]);
-  for(const b of this.body.querySelectorAll('[data-hat-action]')){const c=this.frame.scene.duck.hatCare,o=c?.options?.find(o=>o.id===b.dataset.hatAction);b.disabled=c?.equipped!==b.dataset.hatItem||!o?.enabled;b.title=o?.reason||'';}
-  for(const label of this.body.querySelectorAll('[data-hat-care]'))label.textContent=this.frame.scene.duck.hatCare?.active?.label||'A little care for the hat he is wearing.';
+  for(const label of this.body.querySelectorAll('[data-hat-material]')){const id=label.dataset.hatMaterial;label.textContent=wardrobeSummary(id,this.frame.scene.duck.apparel?.[id]);}
+  for(const b of this.body.querySelectorAll('[data-hat-action]')){const c=this.frame.scene.duck.hatCare,entry=c?.items?.find(i=>i.id===b.dataset.hatItem)||(c?.equipped===b.dataset.hatItem?c:null),o=entry?.options?.find(o=>o.id===b.dataset.hatAction);b.disabled=!o?.enabled;b.title=o?.reason||'';}
+  for(const label of this.body.querySelectorAll('[data-hat-care]')){const active=this.frame.scene.duck.hatCare?.active;label.textContent=active?.item===label.dataset.hatCare?active.label:'A little care for '+wardrobeName(label.dataset.hatCare)+'.';}
   for(const card of this.body.querySelectorAll('[data-castle-instance]')){const instance=card.dataset.castleInstance,state=instance?w.instances?.[instance]:w.objects.bounce_house;if(state)card.querySelector('[data-castle-summary]').textContent=castleSummary(state);for(const button of card.querySelectorAll('[data-carnival-choice]'))button.disabled=Boolean(w.plan)||Boolean(instance&&!w.layout?.copies?.some(p=>p.instance===instance));}
   for(const card of this.body.querySelectorAll('[data-playkit-id]')){const id=card.dataset.playkitId,instance=card.dataset.playkitInstance,state=instance?w.instances?.[instance]:w.objects[id];if(state)card.querySelector('[data-playkit-summary]').textContent=playkitSummary(id,state);for(const button of card.querySelectorAll('[data-playkit-choice]'))button.disabled=Boolean(w.plan)||Boolean(instance&&!w.layout?.copies?.some(p=>p.instance===instance));}
   for(const card of this.body.querySelectorAll('[data-architecture-id]')){
@@ -136,7 +141,8 @@ export class PondJournal{
    for(const [label,action] of [['Explore & discover','explore'],['Crafting','craft'],['Building','build'],['Inventory & equipment','inventory'],['Shop','shop'],['Full menu & help','help']])systems.append(this.legacy(label,action));grid.append(systems);
   }else if(this.tab==='mind'){
    const c=this.card('What Cheese is doing',w.plan?.label||'Taking in the world.');this.preview(c,'cheese','Cheese');
-   if(this.frame.scene.duck.hatCare?.equipped)this.hatCare(c,this.frame.scene.duck.hatCare.equipped);
+   const care=this.frame.scene.duck.hatCare;
+   for(const item of care?.items||(care?.equipped?[{id:care.equipped}]:[]))this.hatCare(c,item.id);
    if(w.plan){const progress=el('progress');progress.max=1;progress.value=w.plan.progress;progress.dataset.progress='plan';c.append(progress,el('p',`${w.plan.automatic?'Cheese chose this.':'You suggested this.'} ${pretty(w.plan.phase)}${w.plan.paused?' · paused':''}`));if(w.plan.paused)c.append(this.button('Resume','resume'));c.append(this.button('Set this aside','cancel'));}grid.append(c);
    const meet=el('button','Talk, memories & personality','pond-action');meet.onclick=()=>this.show('personalities','cheese');c.append(meet);
    const intent=this.card('A nudge, not a script','Cheese weighs needs, weather, habits, favorite possessions and who is visiting. Urgent needs still come first.');
@@ -155,7 +161,7 @@ export class PondJournal{
    if(item&&state){const detail=this.card(item.name,item.description);this.preview(detail,'item',id,true,instance||'');
     if(copies.length>1){const picker=el('select');picker.setAttribute('aria-label','Choose a placed copy');copies.forEach((copy,i)=>{const option=el('option',`Copy ${i+1} · ${copy.x<44?'west side':copy.x>88?'east side':'middle of the pond'}`);option.value=copy.instance;picker.append(option);});picker.value=instance;picker.onchange=()=>{this.selectedInstance=picker.value;this.render();};detail.append(picker);}
 const p=itemProfile(item,itemFamily(id));
-    if(HEADWEAR_BLUEPRINTS[id])this.hatCare(detail,id);
+    if(HEADWEAR_BLUEPRINTS[id]||ACCESSORY_BLUEPRINTS[id])this.hatCare(detail,id);
     else{
      detail.append(el('p',`${pretty(p.material)} · ${pretty(p.skill)} · ${state.uses} uses${instance?(outside?' · placed at home':' · put away'):w.placed.includes(id)?' · placed at home':''}`));for(const [key,label] of [['condition','Condition'],['wetness','Wetness'],['dirt','Dirt'],['bond','Familiarity']])this.meter(detail,label,state[key]);
      detail.append(this.button(p.verb,'item',id,busy||!outside||['food','wearable'].includes(p.kind),{instance}),this.button('Brush & polish','clean_item',id,busy||!outside||state.dirt<.05,{instance}),this.button('Repair · 1 twig','repair_item',id,busy||!outside||state.condition>=.95,{instance}));

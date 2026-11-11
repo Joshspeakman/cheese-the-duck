@@ -8,7 +8,7 @@ import {LivingWorld} from '../client/ultra-world.mjs';
 import {scene} from './scenes.mjs';
 test('legacy item operations and all item weather states keep inputs immutable',()=>{
  for(const item of catalog){
-  if(itemSprite(item.id,0).construction==='headwear-v1'){
+  if(['headwear-v1','accessory-v1'].includes(itemSprite(item.id,0).construction)){
    // Worn material has its own saved wardrobe state, not a ground object's dirt
    // or generic interaction loop. Physical wing contacts are covered separately.
    const state={apparel:{wet:.9,snow:.7,phase:1,wind:.8,fog:.8}},before=JSON.stringify(state);
