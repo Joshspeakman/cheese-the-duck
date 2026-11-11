@@ -1,0 +1,77 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Nest choreography</title>
+<style>
+body{margin:0;background:#10251e;color:#e7d7b4;font:16px Georgia}header{padding:24px 32px;position:sticky;top:0;background:#10251ef5;z-index:1;border-bottom:1px solid #b4a57940}h1{margin:0 0 10px;font-size:26px}p{margin:8px 0;color:#abbfae;font:14px system-ui}label{margin-right:16px;font:14px system-ui}select,button,input{accent-color:#dfbf78;background:#24392f;color:#e7d7b4;border:1px solid #7c8760;border-radius:5px;padding:7px}#grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:16px;padding:24px}article{border:1px solid #b4a57940;background:#172e25;border-radius:10px;overflow:hidden}h2{font-size:18px;margin:18px 20px 8px}article p{margin:0 20px 8px}canvas{display:block;width:100%}
+</style>
+<header><h1>A comfortable spot, made his own</h1><p>Authored nest motions · development preview. Live gameplay chooses these from actual weather, season, time, needs and previous use.</p>
+<label>Nest <select id="nest"></select></label><label>Age <select id="age"></select></label><button id="pause">Pause</button><label>Moment <input id="moment" type="range" min="0" max="100" value="40"></label></header><div id="grid"></div>
+<script type="module">
+import {NEST_ROUTINES,NEST_IDS} from '../client/nest-routines.mjs';
+import {itemSprite,itemWorldScale,ItemPainter} from '../client/ultra-items.mjs';
+import {duckRig,DUCK_AGES} from '../client/duck-rig.mjs';
+import {drawCharacter} from '../client/ultra-characters.mjs';
+import {occupiedGeometry,heldNestGeometry} from '../client/residence-stage.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+const painter=new ItemPainter(),cards=[],nest=document.querySelector('#nest'),age=document.querySelector('#age');
+for(const id of NEST_IDS)nest.add(new Option(id.replaceAll('_',' '),id));
+for(const a of DUCK_AGES)age.add(new Option(a.id.replaceAll('_',' '),a.id));
+nest.value='cozy_nest';age.value='adult';
+export function paintRoutine(canvas,id,stage,key,progress){
+ const c=canvas.getContext('2d'),sx=7,sy=10.5,x=canvas.width/(2*sx),y=(canvas.height-18)/sy;
+ c.fillStyle='#172e25';c.fillRect(0,0,canvas.width,canvas.height);
+ const routine={id:key,elapsed:NEST_ROUTINES[key].duration*progress};
+ const interaction=stage==='egg'?null:{phase:'act',kind:'rest',progress:.7,residence:{routine}};
+ const when=NEST_ROUTINES[key].when,context={hour:when.time==='night'?22:when.time==='dawn'?6:12,season:when.season||'summer',weather:when.weather==='rain'?'rainy':when.weather==='storm'?'thunderstorm':when.weather==='wind'?'windy':'sunny'};
+ const home={...itemSprite(id,0,{interaction,context}),x,y,scale:itemWorldScale(id)};
+ const character={...duckRig({stage,performance:stage==='egg'?null:{kind:'nest',routine}},0),x,y};
+ const occupied=occupiedGeometry(home,character,1,sx,sy);
+ painter.draw(c,home,x*sx,y*sy,sx*home.scale,{surface:'#172e25',outline:'#0a1913'});
+ drawCharacter(c,{...occupied.character,sun:.8,outline:'#0a1913'},sx,sy,'#172e25');
+ painter.draw(c,occupied.front,x*sx,y*sy,sx*home.scale,{shadow:false,surface:'#172e25',outline:'#0a1913'});
+ const held=heldNestGeometry(home,occupied.character,sx,sy);
+ if(held)painter.draw(c,held.model,held.x,held.y,held.cw,{shadow:false,surface:'#172e25',outline:'#0a1913'});
+ if(home.clipped||character.clipped)throw Error('Clipped '+id+' '+stage+' '+key);
+ return {home,character,occupied};
+}
+const observer=new IntersectionObserver(entries=>{for(const e of entries)e.target.visible=e.isIntersecting;},{rootMargin:'200px'});
+for(const [key,spec]of Object.entries(NEST_ROUTINES)){
+ const article=document.createElement('article');article.innerHTML='<h2></h2><p></p><canvas width="560" height="370"></canvas>';
+ article.querySelector('h2').textContent=spec.label;article.querySelector('p').textContent=spec.duration+' seconds · '+(Object.entries(spec.when).map(([k,v])=>k+': '+v).join(' · ')||'everyday nest life');
+ document.querySelector('#grid').append(article);observer.observe(article);cards.push({key,article,canvas:article.querySelector('canvas')});
+}
+let paused=false,start=performance.now();document.querySelector('#pause').onclick=e=>{paused=!paused;e.target.textContent=paused?'Play':'Pause';};document.querySelector('#moment').oninput=()=>{paused=true;document.querySelector('#pause').textContent='Play';};
+function tick(now){for(const {key,article,canvas}of cards)if(article.visible)paintRoutine(canvas,nest.value,age.value,key,paused?Number(document.querySelector('#moment').value)/100:((now-start)/1000%NEST_ROUTINES[key].duration)/NEST_ROUTINES[key].duration);requestAnimationFrame(tick);}requestAnimationFrame(tick);
+window.reviewNests=()=>{
+ paused=true;const images={};
+ const keys=Object.keys(NEST_ROUTINES);
+ for(let page=0;page<Math.ceil(keys.length/6);page++){
+  const canvas=document.createElement('canvas');canvas.width=1680;canvas.height=2280;const c=canvas.getContext('2d');c.fillStyle='#10251e';c.fillRect(0,0,canvas.width,canvas.height);
+  keys.slice(page*6,page*6+6).forEach((key,row)=>[.25,.5,.75].forEach((p,col)=>{
+   const cell=document.createElement('canvas');cell.width=560;cell.height=345;paintRoutine(cell,NEST_ROUTINES[key].when.roof?'deluxe_nest':page%2?'basic_nest':'cozy_nest',page%3?'adult':'hatchling',key,p);
+   c.drawImage(cell,col*560,row*380+35);c.fillStyle='#e7d7b4';c.font='16px Menlo';c.fillText(key+' · '+Math.round(p*100)+'%',col*560+14,row*380+24);
+  }));images['nest-scores-'+page]=canvas.toDataURL('image/png');
+ }
+ for(const id of NEST_IDS){
+  const canvas=document.createElement('canvas');canvas.width=1680;canvas.height=1140;const c=canvas.getContext('2d');c.fillStyle='#10251e';c.fillRect(0,0,1680,1140);
+  DUCK_AGES.forEach((a,i)=>{const cell=document.createElement('canvas');cell.width=560;cell.height=345;paintRoutine(cell,id,a.id,'weave_rim',.5);c.drawImage(cell,(i%3)*560,Math.floor(i/3)*380+35);c.fillStyle='#e7d7b4';c.font='18px Menlo';c.fillText(a.id,(i%3)*560+14,Math.floor(i/3)*380+24);});
+  images['nest-ages-'+id]=canvas.toDataURL('image/png');
+ }
+ return images;
+};
+window.replayNests=frames=>{
+ paused=true;const view=new SceneCanvas();view.resize(1440,900);const costs=[];let image;
+ for(const [i,frame]of frames.entries()){
+  const started=performance.now();view.draw(frame,i*.6,.6);costs.push(performance.now()-started);
+  const routine=frame.living.plan?.residence?.routine;
+  if(routine&&!routine.done){
+   const actor=view.world.objects.find(o=>o.occupant);
+   if(!actor)throw Error('A real simulation occupant disappeared at '+i);
+   if(actor.x<0||actor.x>240||actor.y<0||actor.y>110)throw Error('The actual camera lost its resident at '+i);
+   if(actor.occupant.character.performance?.routine.id!==routine.id)throw Error('Wrong routine at '+i);
+   if(i===Math.floor(frames.length/2))image=view.canvas.toDataURL('image/png');
+  }
+ }
+ costs.sort((a,b)=>a-b);
+ if(view.items.bytes>view.items.maxBytes)throw Error('Item cache exceeded its bound');
+ return {frames:frames.length,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],cacheBytes:view.items.bytes,image};
+};window.ready=true;
+</script>

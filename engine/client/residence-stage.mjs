@@ -24,7 +24,27 @@ export function occupiedGeometry(home,character,inside,sx,sy){
  const y=(character.y*sy*(1-inside)+restingY*inside)/sy;
  const clip=opening&&inside>=.99?{x:left+(opening.x+1)*unit,y:top+(opening.y+1)*ch,w:(opening.w-2)*unit,h:(opening.h-1)*ch}:null;
  const rim=home.anchors.rim;
+ const foreground=home.foreground;
  const front=rim===undefined?null:{...home,id:home.id+':front',occupant:null,
-  art:home.art.map((r,y)=>y>=rim?r:' '.repeat(r.length)),fills:home.fills.filter(f=>f.y>=rim)};
+  art:home.art.map((r,y)=>[...r].map((c,x)=>foreground?.art[y][x]!==' '&&foreground?.art[y][x]!==undefined?foreground.art[y][x]:y>=rim?c:' ').join('')),
+  tones:home.tones.map((r,y)=>[...r].map((c,x)=>foreground?.art[y][x]!==' '&&foreground?.art[y][x]!==undefined?foreground.tones[y][x]:c).join('')),
+  fills:home.fills.filter(f=>f.y>=rim)};
  return {character:{...character,x,y,scale:character.scale+(scale-character.scale)*inside},clip,front};
+}
+
+export function heldNestGeometry(home,character,sx,sy){
+ const held=home.held,bill=character.bill;if(!held?.contact||!bill)return null;
+ const bodyUnit=sx*character.scale,bodyCh=bodyUnit*1.5;
+ const left=Math.round(character.x*sx-character.anchorX*bodyUnit+(character.offsetX||0)*bodyUnit);
+ const top=Math.round(character.y*sy-character.groundRow*bodyCh+(character.offsetY||0)*bodyUnit);
+ const grip=held.grip,unit=sx*home.scale*(home.detailScale||1),ch=unit*1.5;
+ const originX=home.x*sx-home.width*unit/2+(held.contact.x+.5)*unit;
+ const originY=home.y*sy-home.art.length*ch+(held.contact.y+.5)*ch;
+ const contactX=originX*(1-grip)+(left+(bill.x+.5)*bodyUnit)*grip;
+ const contactY=originY*(1-grip)+(top+(bill.y+.5)*bodyCh)*grip;
+ const size=1-(character.rig?.small?.3:0)*grip,heldUnit=unit*size;
+ const model={...home,...held,id:home.id+':held',occupant:null,held:null,foreground:null,fills:[]};
+ return {model,x:contactX+(model.width/2-held.contact.x-.5)*heldUnit,
+  y:contactY+(model.art.length-held.contact.y-.5)*heldUnit*1.5,cw:sx*home.scale*size,
+  contact:{x:contactX,y:contactY},bill:{x:left+(bill.x+.5)*bodyUnit,y:top+(bill.y+.5)*bodyCh}};
 }

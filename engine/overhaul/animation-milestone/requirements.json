@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Continued from the initial quiet-chat and home-art foundation; this checkpoint adds real shelters, paired rendezvous, playground artwork and rider staging. No blocker.",
+  "previous_goal_turn": "Progress: added 51 authored nest scores with synchronized articulated motion, bill contacts, context selection, persistent routine history, actual arrival/resumption, bounded shelter benefits, and live simulation replay. Full catalogue and per-object bespoke requirements remain open.",
   "items": [
     {
       "id": "hat_red",
@@ -2056,21 +2056,27 @@
       "family": "nest",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "operationPrototype": true
+      "operationPrototype": true,
+      "sharedNestScores": 51,
+      "animation": "shared_repertoire_integrated; individual construction-specific repertoire still pending"
     },
     {
       "id": "cozy_nest",
       "family": "nest",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "operationPrototype": true
+      "operationPrototype": true,
+      "sharedNestScores": 51,
+      "animation": "shared_repertoire_integrated; individual construction-specific repertoire still pending"
     },
     {
       "id": "deluxe_nest",
       "family": "nest",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "operationPrototype": true
+      "operationPrototype": true,
+      "sharedNestScores": 51,
+      "animation": "shared_repertoire_integrated; individual construction-specific repertoire still pending"
     },
     {
       "id": "mud_hut",
@@ -3211,7 +3217,9 @@
       "family": "nest",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "operationPrototype": true
+      "operationPrototype": true,
+      "sharedNestScores": 51,
+      "animation": "shared_repertoire_integrated; individual construction-specific repertoire still pending"
     },
     {
       "id": "tiny_table",
@@ -3303,7 +3311,9 @@
       "family": "nest",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "operationPrototype": true
+      "operationPrototype": true,
+      "sharedNestScores": 51,
+      "animation": "shared_repertoire_integrated; individual construction-specific repertoire still pending"
     },
     {
       "id": "old_coin",
@@ -3579,7 +3589,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "foundations_and_first_objects",
+    "sourcePhase": "nest_repertoire_and_live_contact",
     "fullyOverhauled": false,
     "constructedObjects": 42,
     "remainingArtwork": 500,
@@ -3593,17 +3603,24 @@
       "engine/artifacts/animation-milestone/js-suite.log",
       "engine/artifacts/animation-milestone/shelter-simulation.json",
       "engine/artifacts/animation-milestone/encounter-simulation.json",
-      "engine/artifacts/animation-milestone/residence-render.log"
+      "engine/artifacts/animation-milestone/residence-render.log",
+      "engine/artifacts/animation-milestone/nest-js-tests.log",
+      "engine/artifacts/animation-milestone/nest-simulation.json",
+      "engine/artifacts/animation-milestone/nest-render.json",
+      "engine/artifacts/animation-milestone/nest-live-world.png",
+      "engine/artifacts/animation-milestone/nest-living.log",
+      "engine/artifacts/animation-milestone/nest-brains.log"
     ],
     "next": [
-      "Validate and deepen each item-specific interaction; current mechanism loops do not meet the requested 48 bespoke sequences.",
+      "Deepen construction-specific nest/bed/house acting and each remaining item repertoire; the 51 shared nest scores do not by themselves satisfy 48 bespoke sequences per object.",
+      "Add explicit body-facing transitions and construction-specific canopy, quilt, pillow and lining actions; extend actual shelter occupancy to visitors.",
       "Reconstruct the remaining 500 objects with authored details and anchors.",
       "Expand guest-specific and age-specific behavior; twelve shared tracks are not a complete bespoke catalogue.",
       "Extend visitor sheltering, invitations, prop handoffs and cooperative item use.",
       "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation."
     ],
     "checks": {
-      "javascript": 68,
+      "javascript": 72,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 22,
@@ -3611,15 +3628,26 @@
       "learningBrains": 44,
       "shelterLifecycle": 30,
       "pairedLifecycle": 16,
-      "renderReview": "42 object constructions in three seasonal contexts; nine shelter ages; six rides at two ages; three paired cast/age samples; bounded image cache"
+      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks.",
+      "nestLifecycle": 34,
+      "nestReplay": {
+        "nativeSceneFrames": 41,
+        "medianMs": 10.1,
+        "p95Ms": 14.3,
+        "cacheBytes": 1906992,
+        "note": "Development replay, not the final full-milestone performance audit."
+      }
     },
     "limitations": [
       "Only 42 of 542 object artworks rebuilt so far.",
       "No object has yet passed the 48 bespoke sequence requirement.",
+      "Five nests now use 51 authored core routines (three require a canopy). Individual nest-construction variants, guest participation and egg-specific interactions remain unfinished; no per-object completion is claimed.",
       "Paired tracks currently share a core movement vocabulary across the cast; personality-specific choreography and full guest item participation remain unfinished.",
       "Resident shelter behavior currently applies to Cheese, not every visitor.",
       "Eight solo tracks and the current mechanical loops are foundations, not the completed object-animation catalogue.",
       "Installed app remains the previously verified 2.36.0; this development milestone is not packaged or installed."
-    ]
+    ],
+    "sharedNestScores": 51,
+    "nestObjectsUsingSharedScores": 5
   }
 }

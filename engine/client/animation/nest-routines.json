@@ -1,0 +1,3150 @@
+{
+  "version": 1,
+  "routines": {
+    "bowl_test": {
+      "label": "Testing the softness of the nest",
+      "duration": 11,
+      "prop": "fibres",
+      "when": {},
+      "motive": "comfort",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "y": 1,
+          "b": 0.4,
+          "l": 1,
+          "press": 0.2
+        },
+        {
+          "at": 0.35,
+          "y": 1.5,
+          "b": 0.8,
+          "press": 1,
+          "show": 1,
+          "py": 1
+        },
+        {
+          "at": 0.52,
+          "y": -0.3,
+          "b": -0.3,
+          "w": 0.25,
+          "press": 0.1
+        },
+        {
+          "at": 0.72,
+          "b": 0.6,
+          "r": 1,
+          "press": 0.7,
+          "show": 0.5
+        },
+        {
+          "at": 0.9,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "circle_settle": {
+      "label": "Turning a little hollow to settle into",
+      "duration": 16,
+      "prop": "tracks",
+      "when": {},
+      "motive": "comfort",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.13,
+          "u": -0.5,
+          "v": 0.1,
+          "l": 1,
+          "show": 1
+        },
+        {
+          "at": 0.28,
+          "u": -0.7,
+          "v": -0.25,
+          "r": 1,
+          "x": -0.6,
+          "turn": 1,
+          "show": 1
+        },
+        {
+          "at": 0.44,
+          "u": 0,
+          "v": -0.4,
+          "l": 1,
+          "show": 1,
+          "turn": 2
+        },
+        {
+          "at": 0.6,
+          "u": 0.7,
+          "v": -0.2,
+          "r": 1,
+          "show": 1,
+          "turn": 3
+        },
+        {
+          "at": 0.75,
+          "u": 0.4,
+          "v": 0.2,
+          "l": 1,
+          "press": 0.5,
+          "show": 1,
+          "turn": 4
+        },
+        {
+          "at": 0.9,
+          "b": 0.6,
+          "y": 0.8,
+          "press": 0.8
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "tuck_left_edge": {
+      "label": "Tucking a loose strand into the left rim",
+      "duration": 14,
+      "prop": "strand",
+      "when": {},
+      "motive": "comfort",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.17,
+          "u": -0.65,
+          "x": -0.7,
+          "y": 1,
+          "show": 1,
+          "px": -17,
+          "py": -2
+        },
+        {
+          "at": 0.32,
+          "u": -0.7,
+          "x": -1,
+          "y": 1.7,
+          "w": 0.3,
+          "show": 1,
+          "px": -16,
+          "py": -4,
+          "turn": -1
+        },
+        {
+          "at": 0.5,
+          "u": -0.45,
+          "x": 0.5,
+          "y": 0.8,
+          "show": 1,
+          "px": -9,
+          "py": -6,
+          "turn": 1
+        },
+        {
+          "at": 0.7,
+          "u": -0.25,
+          "y": 1.8,
+          "press": 0.5,
+          "show": 1,
+          "px": -7,
+          "py": 1
+        },
+        {
+          "at": 0.9,
+          "y": 0.6
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.25,
+          0.61
+        ]
+      ]
+    },
+    "tuck_right_edge": {
+      "label": "Folding the right edge back into place",
+      "duration": 13,
+      "prop": "strand",
+      "when": {},
+      "motive": "comfort",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "u": 0.5,
+          "x": 0.8,
+          "y": 0.8,
+          "show": 1,
+          "px": 18,
+          "py": 0
+        },
+        {
+          "at": 0.35,
+          "u": 0.7,
+          "x": 1,
+          "y": 1.7,
+          "w": 0.4,
+          "show": 1,
+          "px": 16,
+          "py": -3,
+          "turn": 1
+        },
+        {
+          "at": 0.53,
+          "u": 0.3,
+          "x": -0.5,
+          "y": 0.5,
+          "show": 1,
+          "px": 9,
+          "py": -5,
+          "turn": -1
+        },
+        {
+          "at": 0.72,
+          "y": 1.6,
+          "b": 0.4,
+          "show": 1,
+          "px": 5,
+          "py": 1,
+          "press": 0.8
+        },
+        {
+          "at": 0.9,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.27,
+          0.63
+        ]
+      ]
+    },
+    "lift_loose_twig": {
+      "label": "Lifting a crooked twig out of the lining",
+      "duration": 17,
+      "prop": "twig",
+      "when": {},
+      "motive": "care",
+      "effect": {
+        "tidiness": 0.012
+      },
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "x": 0.8,
+          "y": 1.4,
+          "show": 1,
+          "px": 10,
+          "py": 0
+        },
+        {
+          "at": 0.35,
+          "x": 1,
+          "y": 0.2,
+          "show": 1,
+          "px": 11,
+          "py": -7,
+          "turn": 1,
+          "gape": 0.4
+        },
+        {
+          "at": 0.5,
+          "x": -0.6,
+          "y": -0.5,
+          "show": 1,
+          "px": -2,
+          "py": -10,
+          "turn": 2
+        },
+        {
+          "at": 0.68,
+          "u": -0.4,
+          "y": 1.1,
+          "show": 1,
+          "px": -19,
+          "py": 2,
+          "turn": 1
+        },
+        {
+          "at": 0.85,
+          "y": 0.5,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.26,
+          0.64
+        ]
+      ]
+    },
+    "crossbrace_twig": {
+      "label": "Bracing a soft spot in the nest rim",
+      "duration": 18,
+      "prop": "twig",
+      "when": {},
+      "motive": "care",
+      "effect": {
+        "tidiness": 0.008
+      },
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "u": 0.5,
+          "y": 1.2,
+          "show": 1,
+          "px": 19,
+          "py": 2,
+          "turn": 1
+        },
+        {
+          "at": 0.35,
+          "x": 0.8,
+          "y": -0.2,
+          "show": 1,
+          "px": 10,
+          "py": -6
+        },
+        {
+          "at": 0.55,
+          "x": 1,
+          "y": 1.7,
+          "w": 0.4,
+          "show": 1,
+          "px": 7,
+          "py": -1
+        },
+        {
+          "at": 0.68,
+          "y": 0.5,
+          "show": 1,
+          "px": 6,
+          "py": 0
+        },
+        {
+          "at": 0.8,
+          "y": 1.8,
+          "b": 0.5,
+          "press": 0.6,
+          "show": 1,
+          "px": 6,
+          "py": 1
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.22,
+          0.55
+        ]
+      ]
+    },
+    "weave_rim": {
+      "label": "Weaving a strand over and under the rim",
+      "duration": 20,
+      "prop": "strand",
+      "when": {},
+      "motive": "care",
+      "effect": {
+        "tidiness": 0.01
+      },
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "u": 0.4,
+          "x": 0.7,
+          "y": 1.5,
+          "show": 1,
+          "px": 14,
+          "py": 0,
+          "turn": -1
+        },
+        {
+          "at": 0.3,
+          "y": 0.3,
+          "show": 1,
+          "px": 12,
+          "py": -4,
+          "turn": 1
+        },
+        {
+          "at": 0.45,
+          "y": 1.7,
+          "show": 1,
+          "px": 8,
+          "py": 1,
+          "turn": -1
+        },
+        {
+          "at": 0.6,
+          "y": 0.5,
+          "show": 1,
+          "px": 4,
+          "py": -3,
+          "turn": 1
+        },
+        {
+          "at": 0.75,
+          "y": 1.6,
+          "w": 0.3,
+          "show": 1,
+          "px": 0,
+          "py": 1,
+          "turn": -1
+        },
+        {
+          "at": 0.9,
+          "press": 0.6,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.18,
+          0.3
+        ],
+        [
+          0.36,
+          0.45
+        ],
+        [
+          0.51,
+          0.6
+        ]
+      ]
+    },
+    "tamp_floor": {
+      "label": "Patting the nest floor flat with both feet",
+      "duration": 13,
+      "prop": "fibres",
+      "when": {},
+      "motive": "comfort",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.12,
+          "l": 1,
+          "b": -0.2,
+          "show": 0.5
+        },
+        {
+          "at": 0.25,
+          "l": 0,
+          "b": 0.5,
+          "press": 0.8,
+          "show": 1,
+          "px": -5
+        },
+        {
+          "at": 0.4,
+          "r": 1,
+          "b": -0.2,
+          "press": 0.1
+        },
+        {
+          "at": 0.55,
+          "b": 0.5,
+          "press": 0.9,
+          "show": 1,
+          "px": 5
+        },
+        {
+          "at": 0.7,
+          "l": 1,
+          "r": 1,
+          "b": -0.5,
+          "w": 0.4
+        },
+        {
+          "at": 0.82,
+          "b": 0.8,
+          "press": 1,
+          "show": 1,
+          "py": 2
+        },
+        {
+          "at": 0.93,
+          "y": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "fluff_center": {
+      "label": "Fluffing the lining with a busy little wing",
+      "duration": 16,
+      "prop": "fibres",
+      "when": {},
+      "motive": "care",
+      "effect": {
+        "tidiness": 0.01
+      },
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.17,
+          "x": 0.5,
+          "y": 1.2,
+          "w": 0.3,
+          "show": 0.4
+        },
+        {
+          "at": 0.32,
+          "w": 1,
+          "y": 0.6,
+          "straw": 0.8,
+          "show": 1,
+          "py": -6,
+          "turn": 1
+        },
+        {
+          "at": 0.47,
+          "w": 0.2,
+          "y": 1.5,
+          "show": 0.3
+        },
+        {
+          "at": 0.62,
+          "w": 1.1,
+          "y": 0.4,
+          "straw": 1,
+          "show": 1,
+          "py": -9,
+          "turn": 2
+        },
+        {
+          "at": 0.8,
+          "w": 0.3,
+          "b": 0.5,
+          "press": 0.5,
+          "show": 0.6,
+          "py": -2
+        },
+        {
+          "at": 0.94,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "pick_grit": {
+      "label": "Picking an annoying pebble out of the bedding",
+      "duration": 15,
+      "prop": "pebble",
+      "when": {},
+      "motive": "care",
+      "effect": {
+        "tidiness": 0.015
+      },
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.17,
+          "x": 0.8,
+          "y": 1.7,
+          "show": 1,
+          "px": 8,
+          "py": 1
+        },
+        {
+          "at": 0.33,
+          "x": 1,
+          "y": 0.4,
+          "gape": 0.5,
+          "show": 1,
+          "px": 10,
+          "py": -6
+        },
+        {
+          "at": 0.5,
+          "x": -0.7,
+          "y": -0.3,
+          "show": 1,
+          "px": -3,
+          "py": -9
+        },
+        {
+          "at": 0.65,
+          "u": -0.5,
+          "x": -1,
+          "y": 0.8,
+          "show": 1,
+          "px": -23,
+          "py": -2
+        },
+        {
+          "at": 0.8,
+          "show": 1,
+          "px": -26,
+          "py": 3,
+          "eye": ">"
+        },
+        {
+          "at": 0.92,
+          "y": 0.8,
+          "press": 0.3
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.26,
+          0.59
+        ]
+      ]
+    },
+    "sweep_crumbs": {
+      "label": "Sweeping crumbs away from the sleeping hollow",
+      "duration": 16,
+      "prop": "crumbs",
+      "when": {},
+      "motive": "care",
+      "effect": {
+        "tidiness": 0.02
+      },
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "y": 1.2,
+          "show": 1,
+          "px": -3,
+          "py": 0
+        },
+        {
+          "at": 0.3,
+          "w": 0.3,
+          "x": -0.5,
+          "show": 1,
+          "px": 0,
+          "py": 0
+        },
+        {
+          "at": 0.48,
+          "w": 1.1,
+          "x": 0.6,
+          "show": 1,
+          "px": 12,
+          "py": 1,
+          "turn": 1
+        },
+        {
+          "at": 0.65,
+          "w": 0.4,
+          "show": 1,
+          "px": 22,
+          "py": 3,
+          "turn": 2
+        },
+        {
+          "at": 0.8,
+          "y": 1.4,
+          "eye": "^",
+          "show": 0.3,
+          "px": 25,
+          "py": 4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "straighten_feather": {
+      "label": "Laying a soft feather along the inner edge",
+      "duration": 18,
+      "prop": "feather",
+      "when": {},
+      "motive": "care",
+      "effect": {
+        "tidiness": 0.01
+      },
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "y": 1.2,
+          "x": 0.7,
+          "show": 1,
+          "px": 12,
+          "py": 0,
+          "turn": 2
+        },
+        {
+          "at": 0.34,
+          "y": 0.2,
+          "x": 1,
+          "show": 1,
+          "px": 10,
+          "py": -7,
+          "turn": 1
+        },
+        {
+          "at": 0.5,
+          "y": -0.3,
+          "x": -0.5,
+          "show": 1,
+          "px": 0,
+          "py": -9
+        },
+        {
+          "at": 0.67,
+          "y": 1.2,
+          "u": -0.25,
+          "show": 1,
+          "px": -10,
+          "py": -1
+        },
+        {
+          "at": 0.84,
+          "w": 0.4,
+          "press": 0.4,
+          "show": 1,
+          "px": -10,
+          "py": 1,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.26,
+          0.62
+        ]
+      ]
+    },
+    "leaf_underlay": {
+      "label": "Sliding a leaf underneath a prickly patch",
+      "duration": 19,
+      "prop": "leaf",
+      "when": {},
+      "motive": "care",
+      "effect": {
+        "tidiness": 0.01
+      },
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.16,
+          "u": 0.4,
+          "x": 0.5,
+          "y": 1.6,
+          "show": 1,
+          "px": 20,
+          "py": 1,
+          "turn": 1
+        },
+        {
+          "at": 0.34,
+          "x": 0.8,
+          "y": 0.2,
+          "show": 1,
+          "px": 11,
+          "py": -7
+        },
+        {
+          "at": 0.52,
+          "u": 0.2,
+          "b": -0.4,
+          "l": 1,
+          "show": 1,
+          "px": 5,
+          "py": -1,
+          "turn": -1
+        },
+        {
+          "at": 0.7,
+          "b": 0.7,
+          "y": 0.5,
+          "press": 0.9,
+          "show": 0.7,
+          "px": 0,
+          "py": 2
+        },
+        {
+          "at": 0.88,
+          "y": 1,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.23,
+          0.54
+        ]
+      ]
+    },
+    "mend_gap": {
+      "label": "Working two loose ends back into the rim",
+      "duration": 21,
+      "prop": "fork",
+      "when": {},
+      "motive": "care",
+      "effect": {
+        "tidiness": 0.012
+      },
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "u": -0.4,
+          "y": 1.4,
+          "show": 1,
+          "px": -15,
+          "py": 0
+        },
+        {
+          "at": 0.3,
+          "x": -0.8,
+          "y": 0.4,
+          "show": 1,
+          "px": -13,
+          "py": -5,
+          "turn": 1
+        },
+        {
+          "at": 0.45,
+          "x": 0.5,
+          "y": 1.4,
+          "show": 1,
+          "px": -6,
+          "py": 0
+        },
+        {
+          "at": 0.6,
+          "x": 1,
+          "y": 0.5,
+          "w": 0.5,
+          "show": 1,
+          "px": 6,
+          "py": -4,
+          "turn": -1
+        },
+        {
+          "at": 0.78,
+          "y": 1.6,
+          "b": 0.4,
+          "press": 0.7,
+          "show": 1,
+          "px": 0,
+          "py": 1
+        },
+        {
+          "at": 0.92,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.23,
+          0.43
+        ],
+        [
+          0.51,
+          0.73
+        ]
+      ]
+    },
+    "widen_bowl": {
+      "label": "Pushing the lining outward to make more room",
+      "duration": 17,
+      "prop": "fibres",
+      "when": {},
+      "motive": "comfort",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "b": 0.4,
+          "y": 0.7,
+          "press": 0.5
+        },
+        {
+          "at": 0.36,
+          "w": 1.2,
+          "b": 0.7,
+          "show": 1,
+          "px": 14,
+          "py": 0,
+          "turn": 1,
+          "press": 1
+        },
+        {
+          "at": 0.54,
+          "w": 0.4,
+          "x": -0.6,
+          "y": 1,
+          "show": 1,
+          "px": -10,
+          "turn": -1,
+          "press": 0.4
+        },
+        {
+          "at": 0.72,
+          "w": 1,
+          "b": 0.8,
+          "show": 1,
+          "px": -18,
+          "turn": 2,
+          "press": 1
+        },
+        {
+          "at": 0.9,
+          "b": 0.5,
+          "y": 1,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "tighten_braid": {
+      "label": "Giving a loose braid a careful tug",
+      "duration": 18,
+      "prop": "braid",
+      "when": {},
+      "motive": "care",
+      "effect": {
+        "tidiness": 0.01
+      },
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "x": 0.7,
+          "y": 1.6,
+          "show": 1,
+          "px": 14,
+          "py": 1
+        },
+        {
+          "at": 0.38,
+          "x": 1,
+          "y": 0.7,
+          "w": 0.3,
+          "show": 1,
+          "px": 12,
+          "py": -3,
+          "turn": 1
+        },
+        {
+          "at": 0.56,
+          "x": -0.8,
+          "y": 0.2,
+          "b": -0.3,
+          "show": 1,
+          "px": 5,
+          "py": -5,
+          "turn": 2
+        },
+        {
+          "at": 0.7,
+          "x": 0.5,
+          "y": 1.5,
+          "b": 0.5,
+          "press": 0.6,
+          "show": 1,
+          "px": 7,
+          "py": 1
+        },
+        {
+          "at": 0.88,
+          "y": 0.7,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.25,
+          0.65
+        ]
+      ]
+    },
+    "curl_sleep": {
+      "label": "Tucking his bill into his feathers for a nap",
+      "duration": 27,
+      "prop": "breath",
+      "when": {},
+      "motive": "rest",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.16,
+          "x": -0.4,
+          "y": 0.6,
+          "b": 0.3,
+          "press": 0.3
+        },
+        {
+          "at": 0.3,
+          "x": -1,
+          "y": 1.4,
+          "b": 0.7,
+          "eye": "-",
+          "press": 0.8
+        },
+        {
+          "at": 0.5,
+          "x": -1,
+          "y": 1.3,
+          "b": 0.5,
+          "eye": "-",
+          "press": 0.6,
+          "show": 0.5
+        },
+        {
+          "at": 0.7,
+          "x": -1,
+          "y": 1.4,
+          "b": 0.8,
+          "eye": "-",
+          "press": 0.9,
+          "show": 1,
+          "px": -4,
+          "py": -5
+        },
+        {
+          "at": 0.86,
+          "x": -0.7,
+          "y": 0.9,
+          "b": 0.5,
+          "eye": "-",
+          "press": 0.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "one_eye_guard": {
+      "label": "Dozing with one suspicious eye on the pond",
+      "duration": 24,
+      "prop": "breath",
+      "when": {},
+      "motive": "rest",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "x": -0.6,
+          "y": 1,
+          "b": 0.5,
+          "eye": "-",
+          "press": 0.5
+        },
+        {
+          "at": 0.34,
+          "x": -0.6,
+          "y": 1,
+          "b": 0.6,
+          "eye": "-",
+          "show": 0.5
+        },
+        {
+          "at": 0.43,
+          "x": 0.5,
+          "y": 0.2,
+          "eye": ">",
+          "show": 0
+        },
+        {
+          "at": 0.55,
+          "x": 0.8,
+          "y": -0.4,
+          "eye": ">"
+        },
+        {
+          "at": 0.68,
+          "x": -0.5,
+          "y": 1,
+          "b": 0.6,
+          "eye": "-",
+          "show": 0.6
+        },
+        {
+          "at": 0.87,
+          "x": -0.6,
+          "y": 1.2,
+          "b": 0.7,
+          "eye": "-",
+          "press": 0.7
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "dream_paddle": {
+      "label": "Dreaming of a very small swimming adventure",
+      "duration": 25,
+      "prop": "dream",
+      "when": {},
+      "motive": "rest",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "x": -0.7,
+          "y": 1.2,
+          "b": 0.6,
+          "eye": "-",
+          "press": 0.6
+        },
+        {
+          "at": 0.33,
+          "x": -0.7,
+          "y": 1.1,
+          "b": 0.5,
+          "l": 1,
+          "eye": "-",
+          "show": 0.4
+        },
+        {
+          "at": 0.46,
+          "x": -0.7,
+          "y": 1.3,
+          "b": 0.7,
+          "r": 1,
+          "eye": "-",
+          "show": 0.8,
+          "turn": 1
+        },
+        {
+          "at": 0.58,
+          "x": -0.6,
+          "y": 1.1,
+          "b": 0.5,
+          "l": 1,
+          "w": 0.25,
+          "eye": "-",
+          "show": 1,
+          "turn": 2
+        },
+        {
+          "at": 0.74,
+          "x": -0.7,
+          "y": 1.3,
+          "b": 0.7,
+          "r": 1,
+          "eye": "-",
+          "show": 0.5,
+          "turn": 3
+        },
+        {
+          "at": 0.9,
+          "x": -0.5,
+          "y": 1,
+          "eye": "-"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "startled_awake": {
+      "label": "Waking with a tiny undignified start",
+      "duration": 14,
+      "prop": "fibres",
+      "when": {},
+      "motive": "curiosity",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "x": -0.7,
+          "y": 1.2,
+          "b": 0.6,
+          "eye": "-",
+          "press": 0.7
+        },
+        {
+          "at": 0.37,
+          "b": -1,
+          "y": -0.7,
+          "w": 1,
+          "l": 1,
+          "r": 1,
+          "eye": "O",
+          "show": 1,
+          "py": -8,
+          "turn": 2,
+          "straw": 1
+        },
+        {
+          "at": 0.5,
+          "b": 0.7,
+          "y": 0.5,
+          "eye": "O",
+          "press": 1,
+          "show": 0.5,
+          "py": -1
+        },
+        {
+          "at": 0.65,
+          "x": -0.6,
+          "y": -0.3,
+          "eye": ">"
+        },
+        {
+          "at": 0.82,
+          "x": 0.5,
+          "eye": ">",
+          "w": 0.2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "long_yawn": {
+      "label": "Yawning far more dramatically than necessary",
+      "duration": 18,
+      "prop": "breath",
+      "when": {},
+      "motive": "rest",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "y": 0.5,
+          "b": 0.3,
+          "eye": "-"
+        },
+        {
+          "at": 0.35,
+          "y": -0.4,
+          "x": 0.4,
+          "gape": 0.6,
+          "eye": "-"
+        },
+        {
+          "at": 0.55,
+          "y": -1,
+          "x": 0.6,
+          "w": 0.5,
+          "gape": 1,
+          "eye": "-",
+          "show": 1,
+          "px": 10,
+          "py": -8
+        },
+        {
+          "at": 0.7,
+          "y": -0.5,
+          "gape": 0.6,
+          "w": 0.3,
+          "eye": "-"
+        },
+        {
+          "at": 0.86,
+          "y": 0.7,
+          "b": 0.4,
+          "eye": "-",
+          "press": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "stretch_wing": {
+      "label": "Stretching one wing out over the nest",
+      "duration": 17,
+      "prop": "feather",
+      "when": {},
+      "motive": "comfort",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "y": -0.5,
+          "b": -0.3,
+          "w": 0.3,
+          "show": 0.3,
+          "px": -6,
+          "py": -1
+        },
+        {
+          "at": 0.37,
+          "x": 0.4,
+          "y": -0.8,
+          "w": 1.25,
+          "l": 1,
+          "show": 1,
+          "px": 15,
+          "py": -9,
+          "turn": 1
+        },
+        {
+          "at": 0.58,
+          "w": 1.25,
+          "y": -0.6,
+          "eye": "^",
+          "show": 1,
+          "px": 20,
+          "py": -7,
+          "turn": 2
+        },
+        {
+          "at": 0.73,
+          "w": 0.5,
+          "b": 0.2,
+          "show": 0.7,
+          "px": 23,
+          "py": -2,
+          "turn": 3
+        },
+        {
+          "at": 0.9,
+          "y": 0.5,
+          "press": 0.4,
+          "show": 0.2,
+          "px": 21,
+          "py": 3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "foot_tuck": {
+      "label": "Warming one foot beneath his belly",
+      "duration": 21,
+      "prop": "breath",
+      "when": {
+        "temperature": "cold"
+      },
+      "motive": "rest",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "l": 1,
+          "x": -0.4,
+          "y": 1,
+          "press": 0.3
+        },
+        {
+          "at": 0.35,
+          "l": 1,
+          "b": 0.6,
+          "x": -0.5,
+          "y": 1.4,
+          "eye": "-",
+          "press": 0.8
+        },
+        {
+          "at": 0.55,
+          "l": 1,
+          "b": 0.5,
+          "x": -0.5,
+          "y": 1.2,
+          "eye": "-",
+          "show": 0.5
+        },
+        {
+          "at": 0.72,
+          "l": 1,
+          "b": 0.7,
+          "y": 1.4,
+          "eye": "-",
+          "show": 0.7,
+          "py": -3
+        },
+        {
+          "at": 0.88,
+          "y": 0.8,
+          "b": 0.3,
+          "press": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "tail_wriggle": {
+      "label": "Wriggling his tail until the hollow is just right",
+      "duration": 13,
+      "prop": "fibres",
+      "when": {},
+      "motive": "comfort",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "b": 0.4,
+          "tail": -1,
+          "press": 0.4,
+          "show": 0.3
+        },
+        {
+          "at": 0.3,
+          "b": 0.7,
+          "tail": 1,
+          "press": 0.9,
+          "show": 1,
+          "px": -7,
+          "turn": 1
+        },
+        {
+          "at": 0.45,
+          "b": 0.4,
+          "tail": -1,
+          "press": 0.4,
+          "show": 1,
+          "px": 7,
+          "turn": -1
+        },
+        {
+          "at": 0.6,
+          "b": 0.8,
+          "tail": 1,
+          "press": 1,
+          "show": 0.8,
+          "px": -5
+        },
+        {
+          "at": 0.78,
+          "b": 0.6,
+          "y": 0.8,
+          "tail": -0.5,
+          "press": 0.7,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "chin_on_rim": {
+      "label": "Resting his chin on the edge and watching",
+      "duration": 23,
+      "prop": "none",
+      "when": {},
+      "motive": "curiosity",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "u": 0.4,
+          "x": 0.8,
+          "y": 1,
+          "b": 0.3
+        },
+        {
+          "at": 0.35,
+          "u": 0.6,
+          "x": 1.2,
+          "y": 1.8,
+          "b": 0.4,
+          "press": 0.5
+        },
+        {
+          "at": 0.55,
+          "u": 0.6,
+          "x": 1.1,
+          "y": 1.7,
+          "b": 0.4,
+          "eye": "-",
+          "press": 0.5
+        },
+        {
+          "at": 0.7,
+          "u": 0.6,
+          "x": 1.1,
+          "y": 1.7,
+          "b": 0.4,
+          "eye": "O"
+        },
+        {
+          "at": 0.86,
+          "u": 0.3,
+          "x": 0.7,
+          "y": 0.8
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "satisfied_sigh": {
+      "label": "Sinking into the nest with a contented sigh",
+      "duration": 20,
+      "prop": "breath",
+      "when": {
+        "mood": "content"
+      },
+      "motive": "comfort",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "y": -0.5,
+          "b": -0.2,
+          "w": 0.3
+        },
+        {
+          "at": 0.38,
+          "y": 0.6,
+          "b": 0.7,
+          "press": 0.9,
+          "gape": 0.3,
+          "eye": "^",
+          "show": 0.4,
+          "px": 8,
+          "py": -3
+        },
+        {
+          "at": 0.55,
+          "x": -0.5,
+          "y": 1.1,
+          "b": 0.8,
+          "eye": "-",
+          "press": 1,
+          "show": 1,
+          "px": 13,
+          "py": -6
+        },
+        {
+          "at": 0.75,
+          "x": -0.7,
+          "y": 1.3,
+          "b": 0.6,
+          "eye": "-",
+          "press": 0.7,
+          "show": 0.4,
+          "px": 17,
+          "py": -9
+        },
+        {
+          "at": 0.9,
+          "x": -0.4,
+          "y": 0.7
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "grumpy_rearrange": {
+      "label": "Rearranging the nest with unnecessary force",
+      "duration": 15,
+      "prop": "fibres",
+      "when": {
+        "mood": "grumpy"
+      },
+      "motive": "care",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "y": 1.3,
+          "x": 0.6,
+          "eye": ">",
+          "show": 0.3
+        },
+        {
+          "at": 0.3,
+          "w": 1.2,
+          "x": -0.7,
+          "b": -0.3,
+          "eye": ">",
+          "show": 1,
+          "px": -15,
+          "py": -8,
+          "straw": 1
+        },
+        {
+          "at": 0.47,
+          "y": 1.7,
+          "b": 0.8,
+          "eye": ">",
+          "press": 1
+        },
+        {
+          "at": 0.62,
+          "w": 1.1,
+          "x": 0.8,
+          "eye": ">",
+          "show": 1,
+          "px": 18,
+          "py": -7,
+          "turn": 2,
+          "straw": 1
+        },
+        {
+          "at": 0.8,
+          "b": 0.8,
+          "y": 0.7,
+          "eye": ">",
+          "press": 1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "shy_hide": {
+      "label": "Peeking over the rim before sinking out of sight",
+      "duration": 20,
+      "prop": "none",
+      "when": {
+        "mood": "shy"
+      },
+      "motive": "comfort",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "x": -0.7,
+          "y": 0.6,
+          "b": 0.4,
+          "press": 0.5
+        },
+        {
+          "at": 0.35,
+          "y": 1.4,
+          "b": 1,
+          "v": 0.3,
+          "press": 1,
+          "eye": "-"
+        },
+        {
+          "at": 0.55,
+          "y": -0.6,
+          "b": -0.3,
+          "v": -0.2,
+          "eye": "O"
+        },
+        {
+          "at": 0.67,
+          "x": 0.8,
+          "y": -0.5,
+          "b": -0.2,
+          "v": -0.2
+        },
+        {
+          "at": 0.82,
+          "y": 1.5,
+          "b": 0.9,
+          "v": 0.3,
+          "press": 1,
+          "eye": "-"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "bored_twig_tap": {
+      "label": "Tapping a twig against the rim",
+      "duration": 18,
+      "prop": "twig",
+      "when": {
+        "mood": "bored"
+      },
+      "motive": "curiosity",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "y": 1.2,
+          "x": 0.6,
+          "show": 1,
+          "px": 13,
+          "py": 0
+        },
+        {
+          "at": 0.3,
+          "y": -0.3,
+          "x": 0.8,
+          "show": 1,
+          "px": 12,
+          "py": -7,
+          "turn": 1
+        },
+        {
+          "at": 0.43,
+          "y": 1.5,
+          "show": 1,
+          "px": 14,
+          "py": 0
+        },
+        {
+          "at": 0.56,
+          "y": -0.2,
+          "show": 1,
+          "px": 11,
+          "py": -7,
+          "turn": 1
+        },
+        {
+          "at": 0.69,
+          "y": 1.6,
+          "show": 1,
+          "px": 14,
+          "py": 0,
+          "eye": ">"
+        },
+        {
+          "at": 0.84,
+          "y": 0.5,
+          "show": 1,
+          "px": 19,
+          "py": 2
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.22,
+          0.74
+        ]
+      ]
+    },
+    "proud_inspect": {
+      "label": "Inspecting his nest as if he built a palace",
+      "duration": 19,
+      "prop": "none",
+      "when": {
+        "bond": 0.4
+      },
+      "motive": "curiosity",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "y": -0.6,
+          "b": -0.3
+        },
+        {
+          "at": 0.32,
+          "x": -1,
+          "y": 0.5,
+          "w": 0.3
+        },
+        {
+          "at": 0.5,
+          "x": 1,
+          "y": 0.7,
+          "w": 0.5
+        },
+        {
+          "at": 0.68,
+          "y": -0.8,
+          "b": -0.3,
+          "w": 0.8,
+          "eye": "^"
+        },
+        {
+          "at": 0.85,
+          "y": -0.3,
+          "x": 0.5,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "rain_listen": {
+      "label": "Listening to rain patter on the canopy",
+      "duration": 24,
+      "prop": "drops",
+      "when": {
+        "roof": true,
+        "weather": "rain"
+      },
+      "motive": "rest",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "x": -0.6,
+          "y": -0.7,
+          "show": 0.5,
+          "px": -18,
+          "py": -14
+        },
+        {
+          "at": 0.36,
+          "x": 0.8,
+          "y": -1,
+          "show": 1,
+          "px": 20,
+          "py": -10,
+          "turn": 1
+        },
+        {
+          "at": 0.52,
+          "x": 0.3,
+          "y": -0.6,
+          "eye": "-",
+          "show": 0.7,
+          "px": 17,
+          "py": -2,
+          "turn": 2
+        },
+        {
+          "at": 0.7,
+          "y": 0.8,
+          "b": 0.5,
+          "press": 0.6,
+          "show": 1,
+          "px": -21,
+          "py": -5
+        },
+        {
+          "at": 0.88,
+          "x": -0.5,
+          "y": 1,
+          "eye": "-",
+          "press": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "drip_watch": {
+      "label": "Following a drip down the canopy edge",
+      "duration": 20,
+      "prop": "drop",
+      "when": {
+        "roof": true,
+        "weather": "rain"
+      },
+      "motive": "curiosity",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "x": 0.8,
+          "y": -1,
+          "show": 1,
+          "px": 23,
+          "py": -17
+        },
+        {
+          "at": 0.34,
+          "x": 1,
+          "y": -0.5,
+          "show": 1,
+          "px": 23,
+          "py": -10
+        },
+        {
+          "at": 0.5,
+          "x": 1.1,
+          "y": 1.2,
+          "show": 1,
+          "px": 23,
+          "py": -2
+        },
+        {
+          "at": 0.65,
+          "x": 0.6,
+          "y": 1.8,
+          "show": 1,
+          "px": 23,
+          "py": 4,
+          "turn": 1
+        },
+        {
+          "at": 0.82,
+          "x": -0.5,
+          "y": -0.4,
+          "eye": "O"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "thunder_duck": {
+      "label": "Ducking low at a rumble of thunder",
+      "duration": 16,
+      "prop": "fibres",
+      "when": {
+        "roof": true,
+        "weather": "storm"
+      },
+      "motive": "comfort",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "x": 0.4,
+          "y": -0.7,
+          "eye": "O"
+        },
+        {
+          "at": 0.31,
+          "y": 1.5,
+          "b": 1,
+          "w": 0.7,
+          "v": 0.3,
+          "press": 1,
+          "show": 1,
+          "py": -2,
+          "straw": 0.8
+        },
+        {
+          "at": 0.55,
+          "y": 1.5,
+          "b": 0.9,
+          "eye": "-",
+          "v": 0.3,
+          "press": 0.9
+        },
+        {
+          "at": 0.73,
+          "x": 0.6,
+          "y": -0.3,
+          "b": 0.1,
+          "eye": "O"
+        },
+        {
+          "at": 0.88,
+          "x": -0.4,
+          "y": 0.5,
+          "b": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "wind_brace": {
+      "label": "Holding the nest lining down in a gust",
+      "duration": 19,
+      "prop": "strand",
+      "when": {
+        "weather": "wind"
+      },
+      "motive": "care",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.16,
+          "x": 0.7,
+          "y": -0.6,
+          "show": 1,
+          "px": -15,
+          "py": -5,
+          "turn": -1
+        },
+        {
+          "at": 0.32,
+          "b": 0.7,
+          "w": 0.9,
+          "y": 1,
+          "press": 1,
+          "show": 1,
+          "px": 5,
+          "py": -10,
+          "turn": 1
+        },
+        {
+          "at": 0.5,
+          "b": 0.8,
+          "w": 1,
+          "y": 1.5,
+          "press": 1,
+          "show": 1,
+          "px": 16,
+          "py": -4,
+          "turn": 2
+        },
+        {
+          "at": 0.7,
+          "y": 1.6,
+          "x": 0.7,
+          "show": 1,
+          "px": 12,
+          "py": 1,
+          "press": 0.8
+        },
+        {
+          "at": 0.88,
+          "b": 0.4,
+          "eye": ">"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "cold_huddle": {
+      "label": "Burrowing down into the warm lining",
+      "duration": 28,
+      "prop": "breath",
+      "when": {
+        "temperature": "cold"
+      },
+      "motive": "rest",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.16,
+          "x": -0.5,
+          "y": 0.8,
+          "b": 0.4,
+          "straw": 0.4
+        },
+        {
+          "at": 0.32,
+          "x": -0.9,
+          "y": 1.5,
+          "b": 1,
+          "press": 1,
+          "straw": 0.8,
+          "blanket": 0.2
+        },
+        {
+          "at": 0.5,
+          "x": -0.9,
+          "y": 1.3,
+          "b": 0.8,
+          "eye": "-",
+          "press": 0.9,
+          "show": 0.5,
+          "px": 6,
+          "py": -4
+        },
+        {
+          "at": 0.7,
+          "x": -1,
+          "y": 1.5,
+          "b": 1,
+          "eye": "-",
+          "press": 1,
+          "show": 1,
+          "px": 10,
+          "py": -7
+        },
+        {
+          "at": 0.9,
+          "x": -0.6,
+          "y": 0.9,
+          "b": 0.4,
+          "eye": "-"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "heat_fan": {
+      "label": "Fanning himself without giving up his comfortable spot",
+      "duration": 22,
+      "prop": "air",
+      "when": {
+        "temperature": "hot"
+      },
+      "motive": "comfort",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "y": -0.4,
+          "w": 0.3,
+          "gape": 0.3
+        },
+        {
+          "at": 0.29,
+          "w": 1.2,
+          "gape": 0.5,
+          "show": 1,
+          "px": 12,
+          "py": -6
+        },
+        {
+          "at": 0.43,
+          "w": 0.2,
+          "y": 0.3,
+          "gape": 0.4,
+          "show": 0.2
+        },
+        {
+          "at": 0.57,
+          "w": 1.2,
+          "y": -0.3,
+          "gape": 0.5,
+          "show": 1,
+          "px": 16,
+          "py": -5,
+          "turn": 1
+        },
+        {
+          "at": 0.72,
+          "w": 0.2,
+          "gape": 0.3
+        },
+        {
+          "at": 0.86,
+          "w": 0.9,
+          "show": 0.7,
+          "px": 19,
+          "py": -4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "spring_feather": {
+      "label": "Catching a loose spring feather before it escapes",
+      "duration": 19,
+      "prop": "feather",
+      "when": {
+        "season": "spring"
+      },
+      "motive": "curiosity",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "y": -0.6,
+          "x": -0.6,
+          "show": 1,
+          "px": -17,
+          "py": -13
+        },
+        {
+          "at": 0.32,
+          "y": -0.8,
+          "x": 0.5,
+          "w": 0.5,
+          "show": 1,
+          "px": 0,
+          "py": -17,
+          "turn": 1
+        },
+        {
+          "at": 0.48,
+          "x": 1,
+          "w": 1,
+          "show": 1,
+          "px": 18,
+          "py": -10,
+          "turn": 2
+        },
+        {
+          "at": 0.65,
+          "x": 0.5,
+          "y": 1.1,
+          "show": 1,
+          "px": 9,
+          "py": -2
+        },
+        {
+          "at": 0.84,
+          "y": 1.5,
+          "press": 0.4,
+          "show": 0.5,
+          "px": 0,
+          "py": 1,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.46,
+          0.7
+        ]
+      ]
+    },
+    "blossom_brush": {
+      "label": "Brushing spring petals out of the sleeping hollow",
+      "duration": 16,
+      "prop": "petals",
+      "when": {
+        "season": "spring"
+      },
+      "motive": "care",
+      "effect": {
+        "tidiness": 0.015
+      },
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.17,
+          "x": 0.6,
+          "y": 1.4,
+          "show": 1,
+          "px": 0,
+          "py": -2
+        },
+        {
+          "at": 0.35,
+          "w": 0.7,
+          "x": -0.6,
+          "show": 1,
+          "px": -9,
+          "py": -3,
+          "turn": 1
+        },
+        {
+          "at": 0.53,
+          "w": 1.1,
+          "x": 0.5,
+          "show": 1,
+          "px": 16,
+          "py": -4,
+          "turn": 2
+        },
+        {
+          "at": 0.7,
+          "w": 0.3,
+          "y": -0.5,
+          "show": 1,
+          "px": 24,
+          "py": 0,
+          "turn": 3
+        },
+        {
+          "at": 0.87,
+          "y": 0.7,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "summer_bug": {
+      "label": "Following a beetle around the nest rim",
+      "duration": 25,
+      "prop": "beetle",
+      "when": {
+        "season": "summer",
+        "time": "day"
+      },
+      "motive": "curiosity",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "u": -0.4,
+          "x": -0.5,
+          "y": 1.4,
+          "show": 1,
+          "px": -22,
+          "py": 1
+        },
+        {
+          "at": 0.32,
+          "u": -0.25,
+          "y": 1.7,
+          "show": 1,
+          "px": -8,
+          "py": 3
+        },
+        {
+          "at": 0.5,
+          "u": 0.4,
+          "x": 0.8,
+          "y": 1.5,
+          "show": 1,
+          "px": 12,
+          "py": 3
+        },
+        {
+          "at": 0.68,
+          "u": 0.6,
+          "x": 1,
+          "y": 0.3,
+          "show": 1,
+          "px": 24,
+          "py": -3
+        },
+        {
+          "at": 0.84,
+          "x": 0.7,
+          "y": -0.6,
+          "show": 1,
+          "px": 27,
+          "py": -9,
+          "eye": "O"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "dusk_firefly": {
+      "label": "Watching a firefly blink over the bedding",
+      "duration": 27,
+      "prop": "firefly",
+      "when": {
+        "season": "summer",
+        "time": "night"
+      },
+      "motive": "curiosity",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.16,
+          "x": -0.7,
+          "y": -0.8,
+          "show": 0.5,
+          "px": -22,
+          "py": -13
+        },
+        {
+          "at": 0.34,
+          "x": 0.3,
+          "y": -1.2,
+          "show": 1,
+          "px": -2,
+          "py": -20
+        },
+        {
+          "at": 0.49,
+          "x": 1,
+          "y": -0.6,
+          "show": 0.2,
+          "px": 22,
+          "py": -13
+        },
+        {
+          "at": 0.65,
+          "x": 0.7,
+          "y": 0.2,
+          "show": 1,
+          "px": 18,
+          "py": -5
+        },
+        {
+          "at": 0.82,
+          "x": -0.5,
+          "y": -0.6,
+          "w": 0.3,
+          "show": 0.6,
+          "px": -7,
+          "py": -16,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "fall_leaf_catch": {
+      "label": "Catching an autumn leaf on the rim",
+      "duration": 18,
+      "prop": "leaf",
+      "when": {
+        "season": "fall"
+      },
+      "motive": "curiosity",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "y": -0.6,
+          "x": -0.5,
+          "show": 1,
+          "px": -21,
+          "py": -16,
+          "turn": -1
+        },
+        {
+          "at": 0.32,
+          "y": -0.8,
+          "x": 0.7,
+          "w": 0.6,
+          "show": 1,
+          "px": 5,
+          "py": -19,
+          "turn": 1
+        },
+        {
+          "at": 0.48,
+          "x": 1,
+          "y": 0.6,
+          "w": 1,
+          "show": 1,
+          "px": 18,
+          "py": -6,
+          "turn": 2
+        },
+        {
+          "at": 0.66,
+          "x": 0.4,
+          "y": 1.6,
+          "show": 1,
+          "px": 8,
+          "py": 0,
+          "turn": 1
+        },
+        {
+          "at": 0.84,
+          "y": 0.3,
+          "eye": "^",
+          "show": 0.7,
+          "px": 6,
+          "py": 2
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.45,
+          0.7
+        ]
+      ]
+    },
+    "acorn_roll": {
+      "label": "Rolling an acorn away from the soft spot",
+      "duration": 21,
+      "prop": "acorn",
+      "when": {
+        "season": "fall"
+      },
+      "motive": "care",
+      "effect": {
+        "tidiness": 0.008
+      },
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "x": -0.6,
+          "y": 1.5,
+          "show": 1,
+          "px": -13,
+          "py": 2
+        },
+        {
+          "at": 0.34,
+          "x": 0.7,
+          "y": 1.7,
+          "show": 1,
+          "px": -2,
+          "py": 2,
+          "turn": 1
+        },
+        {
+          "at": 0.49,
+          "x": 0.2,
+          "y": 0.5,
+          "show": 1,
+          "px": 12,
+          "py": 3,
+          "turn": 2
+        },
+        {
+          "at": 0.65,
+          "u": 0.5,
+          "x": 1,
+          "y": 1.5,
+          "show": 1,
+          "px": 21,
+          "py": 3,
+          "turn": 3
+        },
+        {
+          "at": 0.82,
+          "x": 0.7,
+          "y": 0.7,
+          "show": 1,
+          "px": 27,
+          "py": 5,
+          "turn": 4,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "snow_shake": {
+      "label": "Shaking powdery snow off the outer rim",
+      "duration": 17,
+      "prop": "snow",
+      "when": {
+        "season": "winter",
+        "snow": true
+      },
+      "motive": "care",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.14,
+          "x": -0.5,
+          "y": 0.8,
+          "show": 1,
+          "px": -15,
+          "py": -2
+        },
+        {
+          "at": 0.3,
+          "x": 1,
+          "w": 1,
+          "tail": 1,
+          "show": 1,
+          "px": 9,
+          "py": -8,
+          "turn": 1,
+          "straw": 0.7
+        },
+        {
+          "at": 0.44,
+          "x": -1,
+          "w": 0.8,
+          "tail": -1,
+          "show": 1,
+          "px": -13,
+          "py": -7,
+          "turn": 2
+        },
+        {
+          "at": 0.6,
+          "x": 0.8,
+          "w": 0.6,
+          "tail": 1,
+          "show": 1,
+          "px": 21,
+          "py": 1,
+          "turn": 3
+        },
+        {
+          "at": 0.8,
+          "y": 0.6,
+          "b": 0.4,
+          "press": 0.5,
+          "eye": ">"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "frost_peck": {
+      "label": "Investigating the frost along the outer braid",
+      "duration": 20,
+      "prop": "frost",
+      "when": {
+        "season": "winter",
+        "temperature": "cold"
+      },
+      "motive": "curiosity",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "u": 0.5,
+          "x": 0.8,
+          "y": 1.1,
+          "show": 1,
+          "px": 20,
+          "py": 1
+        },
+        {
+          "at": 0.34,
+          "u": 0.6,
+          "x": 1,
+          "y": 1.8,
+          "show": 1,
+          "px": 20,
+          "py": 1,
+          "gape": 0.3
+        },
+        {
+          "at": 0.45,
+          "x": -0.7,
+          "y": -0.6,
+          "eye": "O",
+          "show": 1,
+          "px": 22,
+          "py": -3,
+          "turn": 1
+        },
+        {
+          "at": 0.63,
+          "x": 0.5,
+          "y": 0.8,
+          "show": 0.7,
+          "px": 20,
+          "py": 2
+        },
+        {
+          "at": 0.82,
+          "x": -0.4,
+          "y": 0.5,
+          "w": 0.4,
+          "eye": ">"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "dawn_lookout": {
+      "label": "Rising over the rim to greet the morning",
+      "duration": 23,
+      "prop": "none",
+      "when": {
+        "time": "dawn"
+      },
+      "motive": "curiosity",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "x": -0.6,
+          "y": 1.1,
+          "b": 0.6,
+          "eye": "-",
+          "press": 0.7
+        },
+        {
+          "at": 0.32,
+          "y": -0.7,
+          "b": -0.3,
+          "v": -0.15
+        },
+        {
+          "at": 0.5,
+          "x": -0.8,
+          "y": -0.8,
+          "b": -0.4,
+          "v": -0.2
+        },
+        {
+          "at": 0.66,
+          "x": 1,
+          "y": -0.7,
+          "w": 0.5,
+          "b": -0.3,
+          "v": -0.2
+        },
+        {
+          "at": 0.83,
+          "y": -0.4,
+          "w": 0.8,
+          "eye": "^",
+          "gape": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "noon_doze": {
+      "label": "Nodding off in the midday warmth",
+      "duration": 26,
+      "prop": "breath",
+      "when": {
+        "time": "noon"
+      },
+      "motive": "rest",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "y": 0.5,
+          "eye": "-"
+        },
+        {
+          "at": 0.3,
+          "y": 1.5,
+          "b": 0.5,
+          "eye": "-",
+          "press": 0.5
+        },
+        {
+          "at": 0.43,
+          "y": -0.6,
+          "b": -0.2,
+          "eye": "O"
+        },
+        {
+          "at": 0.58,
+          "y": 0.8,
+          "b": 0.5,
+          "eye": "-",
+          "press": 0.5
+        },
+        {
+          "at": 0.74,
+          "x": -0.7,
+          "y": 1.4,
+          "b": 0.7,
+          "eye": "-",
+          "show": 0.5,
+          "press": 0.8
+        },
+        {
+          "at": 0.91,
+          "x": -0.8,
+          "y": 1.3,
+          "b": 0.6,
+          "eye": "-",
+          "show": 0.8,
+          "py": -4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "moon_watch": {
+      "label": "Watching moonlight from his nest",
+      "duration": 28,
+      "prop": "none",
+      "when": {
+        "time": "night",
+        "weather": "clear"
+      },
+      "motive": "rest",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "y": -0.6,
+          "x": 0.3
+        },
+        {
+          "at": 0.36,
+          "y": -1.3,
+          "x": 0.8,
+          "w": 0.2
+        },
+        {
+          "at": 0.54,
+          "y": -1.1,
+          "x": -0.5,
+          "eye": "^"
+        },
+        {
+          "at": 0.72,
+          "y": -0.5,
+          "x": 0.3,
+          "w": 0.4
+        },
+        {
+          "at": 0.89,
+          "y": 0.7,
+          "b": 0.4,
+          "eye": "-",
+          "press": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "bedtime_tuck": {
+      "label": "Drawing the soft lining close for the night",
+      "duration": 25,
+      "prop": "fibres",
+      "when": {
+        "time": "night"
+      },
+      "motive": "rest",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.16,
+          "y": 1.3,
+          "x": -0.7,
+          "show": 0.4,
+          "px": -12
+        },
+        {
+          "at": 0.33,
+          "w": 0.7,
+          "y": 0.5,
+          "show": 1,
+          "px": -3,
+          "py": -4,
+          "straw": 0.6,
+          "blanket": 0.5
+        },
+        {
+          "at": 0.5,
+          "y": 1.4,
+          "x": 0.7,
+          "show": 0.7,
+          "px": 12,
+          "py": -1,
+          "blanket": 0.2
+        },
+        {
+          "at": 0.67,
+          "w": 0.5,
+          "b": 0.7,
+          "press": 0.8,
+          "straw": 0.7,
+          "blanket": 0
+        },
+        {
+          "at": 0.84,
+          "x": -0.8,
+          "y": 1.4,
+          "b": 0.7,
+          "eye": "-",
+          "press": 0.8
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "sniff_lining": {
+      "label": "Checking the nest lining with a skeptical little sniff",
+      "duration": 15,
+      "prop": "fibres",
+      "when": {},
+      "motive": "care",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "x": 0.7,
+          "y": 1.6,
+          "gape": 0.2,
+          "show": 0.3,
+          "px": 7,
+          "py": 0
+        },
+        {
+          "at": 0.38,
+          "x": 1,
+          "y": 1.4,
+          "show": 0.5,
+          "px": 8,
+          "py": -2
+        },
+        {
+          "at": 0.53,
+          "x": -0.8,
+          "y": -0.4,
+          "eye": ">"
+        },
+        {
+          "at": 0.7,
+          "w": 0.7,
+          "show": 1,
+          "px": 16,
+          "py": -6,
+          "turn": 1
+        },
+        {
+          "at": 0.88,
+          "y": 0.7,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "toe_trace": {
+      "label": "Tracing a tiny groove in the lining with one toe",
+      "duration": 18,
+      "prop": "groove",
+      "when": {},
+      "motive": "curiosity",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.18,
+          "l": 1,
+          "y": 1.5,
+          "show": 0.2,
+          "px": -7
+        },
+        {
+          "at": 0.36,
+          "l": 1,
+          "u": -0.25,
+          "y": 1.7,
+          "show": 0.6,
+          "px": -4,
+          "turn": 1
+        },
+        {
+          "at": 0.55,
+          "u": 0.25,
+          "r": 1,
+          "y": 1.7,
+          "show": 1,
+          "px": 4,
+          "turn": 2
+        },
+        {
+          "at": 0.73,
+          "y": 0.4,
+          "x": 0.4,
+          "show": 1,
+          "px": 7,
+          "turn": 3
+        },
+        {
+          "at": 0.88,
+          "y": -0.3,
+          "w": 0.3,
+          "eye": "^"
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    "polish_pebble": {
+      "label": "Turning a smooth pebble before setting it beside the nest",
+      "duration": 22,
+      "prop": "pebble",
+      "when": {},
+      "motive": "curiosity",
+      "effect": {},
+      "track": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.17,
+          "x": 0.7,
+          "y": 1.5,
+          "show": 1,
+          "px": 10,
+          "py": 1
+        },
+        {
+          "at": 0.35,
+          "x": 0.8,
+          "y": 0.4,
+          "w": 0.4,
+          "show": 1,
+          "px": 9,
+          "py": -6,
+          "turn": 1
+        },
+        {
+          "at": 0.52,
+          "x": 0.5,
+          "y": -0.4,
+          "w": 0.7,
+          "show": 1,
+          "px": 7,
+          "py": -8,
+          "turn": 2
+        },
+        {
+          "at": 0.69,
+          "u": 0.4,
+          "y": 1.2,
+          "show": 1,
+          "px": 21,
+          "py": 1,
+          "turn": 3
+        },
+        {
+          "at": 0.85,
+          "y": -0.2,
+          "eye": "^",
+          "show": 1,
+          "px": 24,
+          "py": 3
+        },
+        {
+          "at": 1
+        }
+      ],
+      "grips": [
+        [
+          0.26,
+          0.65
+        ]
+      ]
+    }
+  }
+}

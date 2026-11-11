@@ -13,13 +13,14 @@ export function actionFor(state='idle'){
  if(/walk|waddle|sneak|arriv|leav|exercise/.test(state))return 'walking';return 'idle';
 }
 export function duckRig(duck,t=0,design=null){
+ if(duck.performance?.kind==='nest')t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  const requested=duck.stage==='teen'?'juvenile':duck.stage||'adult',spec=design||DUCK_AGES.find(a=>a.id===requested)||DUCK_AGES[5];
  const stage=design?'adult':spec.id,small=['hatchling','duckling'].includes(stage),action=actionFor(duck.performance?'idle':duck.state);
  const performance=performancePose(duck.performance,duck.performance?.young?'duckling':stage);
  const rate=spec.pace/4.5,speed=duck.state==='waddle_fast'?1.6:duck.state==='sneaking'?.65:1;
  const cycle=t*rate*speed,phase=Math.floor(cycle*5)%8;
  const cells=Array.from({length:H},()=>Array(W).fill(' ')),tones=cells.map(r=>r.map(()=> 'b')),fills=[];
- let clipped=false,rig=null,plan={items:[],inks:{}};
+ let clipped=false,rig=null,bill=null,plan={items:[],inks:{}};
  const put=(str,x,y,tone='b')=>{x=Math.round(x);y=Math.round(y);for(let i=0;i<str.length;i++){if(str[i]===' ')continue;if(x+i<0||x+i>=W||y<0||y>=H){clipped=true;continue;}cells[y][x+i]=str[i];tones[y][x+i]=tone;}};
  const group=(rows,x,y,tone)=>rows.forEach((r,j)=>put(r,x,y+j,tone));
  const ink={b:spec.tints?.[0]||'#cba27c',g:spec.tints?.[1]||'#8fc5aa',j:'#65a58d',h:'#b1dcc4',s:'#937152',a:'#efc46a',w:'#dbbfa0',c:'#f0ead2',p:spec.tints?.[2]||'#94c6e4',e:'#172b25',...spec.inkOverrides};
@@ -41,6 +42,16 @@ export function duckRig(duck,t=0,design=null){
   if(action==='dancing'){eye='^';bodyDY--;headDY--;}
   if(cycle%5.3>5||action==='sleeping')eye='-';
   if(performance){headDX=performance.x;bodyDY=performance.b;headDY=performance.y+bodyDY;jump=Math.min(0,bodyDY);if(performance.eye)eye=performance.eye;}
+  // Raising or leaning the head must stretch the feathered neck, not detach it
+  // from the collar. Draw this small bridge behind the original D10 rows.
+  const headBase=spec.art[spec.collar-1],collar=spec.art[spec.collar];
+  const headEnd=baseY+spec.collar-1+headDY,neckEnd=baseY+spec.collar+bodyDY;
+  const hx=baseX+headDX+headBase.search(/\S/)+1,hw=Math.max(2,headBase.trim().length-2);
+  const nx=baseX+collar.search(/\S/),nw=Math.max(2,Math.min(hw,collar.trim().length));
+  for(let y=headEnd+1;y<neckEnd;y++){
+   const u=(y-headEnd)/(neckEnd-headEnd),x=Math.round(hx+(nx-hx)*u),w=Math.max(2,Math.round(hw+(nw-hw)*u));
+   fills.push({x,y,w,tone:'g'});put('|'+':'.repeat(Math.max(0,w-2))+'|',x,y,'g');
+  }
   let eyePos=null,headBounds=null,bodyBounds=null,wingBounds=null;
   function extend(bounds,x,y,w){return bounds?{x:Math.min(bounds.x,x),y:Math.min(bounds.y,y),w:Math.max(bounds.x+bounds.w,x+w)-Math.min(bounds.x,x),h:Math.max(bounds.y+bounds.h,y+1)-Math.min(bounds.y,y)}:{x,y,w,h:1};}
   // Torso first, then face: a peck or preen can overlap the folded wing.
@@ -53,6 +64,7 @@ export function duckRig(duck,t=0,design=null){
    if(action==='swimming'&&y>L-4)continue;
    if(!crest){fills.push({x:x0+first,y:y0,w:end-first,tone:head?'g':'b'});if(head)headBounds=extend(headBounds,x0+first,y0,end-first);else bodyBounds=extend(bodyBounds,x0+first,y0,end-first);}
    const beak=row.indexOf(')==')>=0?row.indexOf(')==')+1:row.indexOf(')>')>=0?row.indexOf(')>')+1:100;
+   if(head&&beak<100)bill={x:x0+end-1,y:y0};
    const wing=row.indexOf('['),wingEnd=row.indexOf(']');
    if(!head&&wing>=0)wingBounds={x:x0+wing-1,y:y0-1,w:wingEnd-wing+3,h:3};
    else if(!head&&!wingBounds&&row.includes('(vv)'))wingBounds={x:x0+row.indexOf('(vv)'),y:y0,w:4,h:1};
@@ -67,6 +79,7 @@ export function duckRig(duck,t=0,design=null){
     put(c,x0+x,y0,tone);
    }
    if(head&&beak<100&&['quacking','eating'].includes(action)&&phase>=2&&phase<=5)put('\\_',x0+beak,y0+1,'a');
+   if(head&&beak<100&&performance?.gape>.2)put('\\'+(performance.gape>.65?'__':'_'),x0+beak,y0+1+(performance.gape>.65?1:0),'a');
   }
   const footPositions=[];
   if(!['swimming','sleeping'].includes(action))for(const [i,fx] of spec.feet.entries()){
@@ -87,6 +100,7 @@ export function duckRig(duck,t=0,design=null){
    group(small?[' /)','/ /','\\_/']:['  /)/)',' / / /','/ / /','\\___/'],b.x+b.w-3+Math.round(reach/3),wy-Math.round(reach/2),'w');
   }
   if(performance?.mark)put(performance.mark,h.x+h.w+2,h.y-2,'a');
+  if(Math.abs(performance?.tail||0)>.2){const lift=Math.round(performance.tail*2);group(small?['\\',' >']:['\\\\',' \\_','  >'],b.x-2,b.y+Math.round(b.h*.5)+lift,'w');}
   if(duck.state==='petting')put('<3',h.x+h.w+2,h.y-1-Math.floor(phase/3),'a');
   if(action==='eating'&&phase>1&&phase<6)put(phase%2?'. :':'. .',h.x+h.w+2,h.y+h.h,'a');
   if(action==='sleeping')put(phase%2?'z':'Z',h.x+h.w+2,h.y-1-Math.floor(phase/3),'c');
@@ -98,8 +112,8 @@ export function duckRig(duck,t=0,design=null){
   if(duck.state==='diving'&&phase>=2&&phase<=5){cells.forEach(r=>r.fill(' '));fills.length=0;group([' \\ /','  /\\',' (__)'],CX-2,FLOOR-3,'a');put('~~~  ~~~~~',CX-5,FLOOR+1,'p');}
  }
  const facing=duck.facing!==false;
- if(!facing){for(let y=0;y<H;y++){cells[y].reverse();cells[y]=cells[y].map(mirrorGlyph);tones[y].reverse();}for(const f of fills)f.x=W-f.x-f.w;}
+ if(!facing){for(let y=0;y<H;y++){cells[y].reverse();cells[y]=cells[y].map(mirrorGlyph);tones[y].reverse();}for(const f of fills)f.x=W-f.x-f.w;if(bill)bill.x=W-1-bill.x;}
  return {art:cells.map(r=>r.join('')),tones:tones.map(r=>r.join('')),fills,inks:{...ink,...plan.inks},width:W,anchorX:facing?CX:W-1-CX,groundRow:FLOOR+.5,
   scale:stage==='egg'?.66:spec.height/(spec.art.length*7.5),body:ink.b,face:ink.g,accent:ink.a,shade:ink.s,name:'',rig,wearables:plan.items.map(i=>i.id),
-  design:'d10',material:'feathers',phase,frames:8,cycle:phase/8,clipped,action,performance:duck.performance||null,offsetY:action==='idle'?Math.sin(cycle*2)*.1:0};
+  design:'d10',material:'feathers',phase,frames:8,cycle:phase/8,clipped,action,bill,performance:duck.performance||null,offsetY:action==='idle'?Math.sin(cycle*2)*.1:0};
 }

@@ -121,6 +121,12 @@ class MindGarden:
             if residence.get('inside') and not plan.get('paused'):
                 facts['resting_place']=residence['id'].replace('_',' ')
                 facts['under_cover']=bool(residence['roof'])
+                routine=residence.get('routine')
+                if routine and not routine.get('done'):
+                    facts['current_activity']=routine['label']
+                from engine.nest_routines import ROUTINES
+                history=self.pond.state['objects'].get(plan['target'],{}).get('routines',{})
+                facts['familiar_nest_routines']=[ROUTINES[k]['label'] for k,n in sorted(history.items(),key=lambda entry:entry[1],reverse=True) if k in ROUTINES and n>=2][:3]
         paired=self.encounter_for(key)
         if paired:
             partner=paired['b'] if key==paired['a'] else paired['a']

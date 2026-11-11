@@ -1,4 +1,5 @@
 import {ObjectCanvas} from './object-canvas.mjs';
+import {nestPose,nestForeground,NEST_MARGIN} from './nest-routines.mjs';
 // Individual blueprints: roof structure, wall joinery, floor, glazing, entry and
 // furnishings belong to each object. These replace the old stretched silhouettes.
 export const HOME_BLUEPRINTS={
@@ -105,7 +106,7 @@ function quilt(c,x,y,w,h,pose,p){
  for(let i=1;i<w;i+=3)c.put(x+i,y+h,"'",'f');
 }
 function nest(c,p,t,pose,ctx){
- const W=p.w,H=p.h,cx=W/2,cy=H-12,rx=W*.42,ry=9;
+ const W=p.w,H=p.h,cx=W/2,cy=H-12,rx=W*.42,ry=9,press=Math.round((pose.press||0)*1.5);
  if(has(p,'canopy')){
   c.line(9,5,9,H-8,'|','f').line(W-10,5,W-10,H-8,'|','f');
   for(let y=3;y<11;y++){const inset=Math.abs(y-3)*1.4;c.line(8+inset,y,W-9-inset,y,y%3?'~':'=','q');}
@@ -116,7 +117,7 @@ function nest(c,p,t,pose,ctx){
   const r=rx-Math.abs(j)*.65;c.ellipse(cx,cy+j,r,Math.max(2,ry-Math.abs(j)*.7),'~',j>1?'s':'b',true);
   for(let x=Math.round(cx-r+3);x<cx+r-2;x+=3)c.put(x,cy+j,p.nest==='twig'?((x+j)%2?'/':'\\'):p.nest==='gold'?'(o)':p.nest==='wicker'?'#=':'><',j%3?'b':'f');
  }
- c.ellipse(cx,cy-4,rx-8,5,'-', 'd',true);c.clear(cx-rx+9,cy-7,(rx-9)*2,6);
+ c.ellipse(cx,cy-4+press,rx-8,5-press*.4,'-', 'd',true);c.clear(cx-rx+9,cy-7+press,(rx-9)*2,6-press);
  for(let x=cx-rx+10;x<cx+rx-10;x+=4)c.put(x,cy-5+(Math.round(x)%3),p.lining==='grass'?'\\|/':p.lining==='velvet'?'.':':','q');
  if(has(p,'pillow')){const x=cx-17+Math.round((pose.pillow||0)*3);c.rows([' .---------------.','(  :       :      )'," '---------------'"],x,cy-11,'q');}
  if(has(p,'quilt'))quilt(c,cx-12,cy-5,25,8,pose,p);
@@ -126,7 +127,7 @@ function nest(c,p,t,pose,ctx){
  if(has(p,'lantern'))c.rows([' _','/o\\','|*|',"'-'"],W-13,11,'l');
  if(p.nest==='twig')for(const side of [-1,1])for(let j=0;j<3;j++)c.line(cx+side*(rx-5),cy+j*2,cx+side*(rx+2),cy-3+j*4,side<0?'/':'\\','f');
  if(pose.straw)for(let i=0;i<5;i++)c.put(cx-10+i*5,cy-2-Math.round(Math.sin(t*4+i)*pose.straw*4),'/','f');
- return {entry:{x:cx,y:cy-4},seat:{x:cx,y:cy},rim:cy+1,capacity:p.nest==='twig'?1:2};
+ return {entry:{x:cx,y:cy-4},seat:{x:cx+(pose.u||0)*7,y:cy+press+(pose.v||0)*3},rim:cy+1,capacity:p.nest==='twig'?1:2};
 }
 function bed(c,p,t,pose,ctx){
  const W=p.w,H=p.h,x=8,y=H-18,w=W-16;
@@ -146,9 +147,12 @@ function bed(c,p,t,pose,ctx){
 }
 export function homeSprite(base,item,time,{motion=true,state={},interaction=null,context={},pose={}}={}){
  const p=HOME_BLUEPRINTS[item.id];if(!p)return null;
- const t=motion?time:0,c=new ObjectCanvas(p.w,p.h),night=(context.hour??12)<6||(context.hour??12)>=19;
+ const routine=interaction?.phase==='act'&&!interaction.paused?interaction.residence?.routine:null;
+ const scored=p.nest?nestPose(routine,motion):null;
+ const pad=p.nest?NEST_MARGIN:{x:0,y:0},surface=new ObjectCanvas(p.w+pad.x*2,p.h+pad.y),c=surface.view(pad.x,pad.y);
+ const t=motion?(scored?routine.elapsed:time):0,night=(context.hour??12)<6||(context.hour??12)>=19;
  const active=Boolean(interaction&&!interaction.paused&&['prepare','act','settle'].includes(interaction.phase||'act'));
- pose={...pose};const progress=interaction?.progress??((t%6)/6),pulse=motion?Math.sin(progress*Math.PI*2):0;
+ pose={...scored,...pose};const progress=interaction?.progress??((t%6)/6),pulse=motion?Math.sin(progress*Math.PI*2):0;
  if(active){
   if(pose.door===undefined)pose.door=interaction?.kind==='rest'?1:.6+.4*pulse;
   if(pose.blanket===undefined)pose.blanket=.45+.35*pulse;
@@ -206,7 +210,12 @@ export function homeSprite(base,item,time,{motion=true,state={},interaction=null
  if((state.dirt||0)>.3)for(let i=0;i<8;i++)c.put(9+(hash(item.id)+i*11)%(p.w-18),p.h-4-i%2,'.:','s');
  if((state.condition??1)<.5)c.rows(p.nest?['/ /'," ' "]:[' /','<',' \\'],Math.round(p.w*.27),p.nest?p.h-12:p.door?.[1]+4||p.h-12,'s');
  if((state.bond||0)>.6)c.put(p.w/2-2,p.h-3,'<3','a');
- const glyphs=c.finish(),body=p.nest==='gold'?'#d8b76a':p.wall==='stone'?'#adb3aa':p.wall==='clay'?'#bc9474':p.wall==='redboard'?'#c58c79':base.body;
+ const loose=scored?nestForeground(p,scored,anchors):null,held=scored?.grip>0?{...loose,grip:scored.grip}:null;
+ const foreground=held?null:loose;
+ if(foreground)for(let y=0;y<foreground.art.length;y++)for(let x=0;x<foreground.width;x++)if(foreground.art[y][x]!==' ')surface.put(x,y,foreground.art[y][x],foreground.tones[y][x]);
+ if(p.nest){for(const key of ['seat','entry'])anchors[key]={x:anchors[key].x+pad.x,y:anchors[key].y+pad.y};anchors.rim+=pad.y;}
+ const glyphs=c.finish();glyphs.clipped ||= loose?.clipped||false;
+ const body=p.nest==='gold'?'#d8b76a':p.wall==='stone'?'#adb3aa':p.wall==='clay'?'#bc9474':p.wall==='redboard'?'#c58c79':base.body;
  const inks={b:body,f:base.face,s:'#7e8e83',a:base.accent,w:'#a3d2dc',r:p.roofInk||body,q:p.lining==='velvet'?'#ac9dc0':'#c5b99a',d:'#718a83',g:'#8eb798',c:'#e6dfcc',k:'#a2b8b7',l:night?'#f5d98c':'#b2d7db'};
- return {...base,...glyphs,body,inks,panels:{b:'#342e25',r:'#30352e',d:'#112521',q:'#393731',s:'#26332c',w:'#203c3c',f:'#37382d'},detail:true,detailScale:.72,animated:true,active,phase:motion?Math.floor(t*8)%48:0,lift:0,sway:0,construction:'workshop-v1',anchors,shelter:p.shelter,blueprint:item.id,context:{season:context.season||'summer',night}};
+ return {...base,...glyphs,body,inks,panels:{b:'#342e25',r:'#30352e',d:'#112521',q:'#393731',s:'#26332c',w:'#203c3c',f:'#37382d'},detail:true,detailScale:.72,animated:true,active,phase:motion?Math.floor(t*8)%48:0,lift:0,sway:0,construction:'workshop-v1',anchors,foreground,held,shelter:p.shelter,blueprint:item.id,context:{season:context.season||'summer',night}};
 }

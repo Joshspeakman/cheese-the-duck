@@ -3,7 +3,7 @@ import { GlyphRenderer } from './renderer.mjs';
 import { LivingWorld } from './ultra-world.mjs';
 import { drawCharacter } from './ultra-characters.mjs';
 import { ItemPainter } from './ultra-items.mjs';
-import {occupiedGeometry} from './residence-stage.mjs';
+import {occupiedGeometry,heldNestGeometry} from './residence-stage.mjs';
 import {ridingGeometry} from './playground-stage.mjs';
 import { SceneEffects,luminousPalette } from './scene-effects.mjs';
 import { W,H,C,M } from './ultra-grid.mjs';
@@ -87,6 +87,8 @@ export class SceneCanvas {
           drawCharacter(this.ctx,{...staged.character,sun:light.sun*.7,outline:light.outline},this.sx,this.sy,'#112521');
           this.ctx.restore();
           if(staged.front)this.items.draw(this.ctx,staged.front,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
+          const held=heldNestGeometry(actor,staged.character,this.sx,this.sy);
+          if(held)this.items.draw(this.ctx,held.model,held.x,held.y,held.cw,{shadow:false,surface,outline:light.outline});
         }
         if(actor.rider){
           const rider=ridingGeometry(actor,actor.rider.character,actor.rider.seat,actor.rider.inside,this.sx,this.sy);
