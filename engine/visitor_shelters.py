@@ -6,7 +6,7 @@ No guest inherits a reservation from a previous visit or a loaded save.
 import copy
 import math
 from datetime import datetime
-from engine import shelters
+from engine import shelters, nest_routines
 from world.guest_cast import guest_profile
 
 def distance(a,b):return math.hypot(a[0]-b[0],(a[1]-b[1])*2)
@@ -65,6 +65,7 @@ def tick(minds,dt):
             gain=min(.08-r['recovered'],dt*.0005)
             if gain>0:resident['energy']=min(1.,resident['energy']+gain);r['recovered']+=gain
             if not bad:r.update(phase='exit',elapsed=0.)
+            else:nest_routines.visitor_advance(minds,key,r,dt)
         elif r['phase']=='exit':
             r['elapsed']+=dt
             if r['elapsed']>=3:
@@ -96,5 +97,5 @@ def motion(minds,key):
     return {'target':list(r['destination']), 'facing':facing,'phase':r['phase'],'gesture':gesture}
 
 def snapshot(minds):
-    return [{k:copy.deepcopy(r.get(k)) for k in ('actor','id','instance','destination','slot','capacity','phase','elapsed','waited')}
+    return [{k:copy.deepcopy(r.get(k)) for k in ('actor','id','instance','destination','slot','capacity','phase','elapsed','waited','routine')}
             for r in minds.housing.values()]

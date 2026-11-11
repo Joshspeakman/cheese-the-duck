@@ -8,7 +8,8 @@ SCORES=json.loads((Path(__file__).parent/'client/animation/home-company.json').r
 
 def residents(minds):
     if not minds.game:return {}
-    result={k:r for k,r in minds.housing.items() if r['phase']=='inside'}
+    result={k:r for k,r in minds.housing.items() if r['phase']=='inside' and
+            (not r.get('routine') or r['routine'].get('done'))}
     p=minds.pond;plan=p.state.get('plan')
     if plan and not plan.get('paused') and plan['phase']=='act' and plan.get('residence',{}).get('inside'):
         r=plan['residence'];routine=r.get('routine')

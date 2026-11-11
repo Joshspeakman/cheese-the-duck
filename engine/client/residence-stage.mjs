@@ -1,6 +1,7 @@
 import {sameInstance} from './physical-objects.mjs';
 // Presentation of a simulation-owned arrival. Never chooses or advances a plan.
 import {inkBounds,residentEnvelope} from './resident-envelope.mjs';
+import {nestPose,NEST_IDS} from './nest-routines.mjs';
 const clamp=n=>Math.max(0,Math.min(1,n));
 export function residenceStage(plan, objects, character){
  if(!plan?.residence||plan.paused||!['prepare','act','settle'].includes(plan.phase))return null;
@@ -15,8 +16,12 @@ export function occupiedGeometry(home,character,inside,sx,sy,slot=0){
  const unit=sx*home.scale*(home.detailScale||1),ch=unit*1.5;
  // ItemPainter has a one-cell padding around the same native glyph grid.
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*ch;
- const seat=home.anchors.slots?.[slot]||home.anchors.seat,opening=home.anchors.opening;
- const {left:minX,right:maxX,top:minY,bottom:maxY}=home.anchors.slots?residentEnvelope(character):inkBounds(character);
+ let seat=home.anchors.slots?.[slot]||home.anchors.seat;const opening=home.anchors.opening;
+ if(!character.cheese&&character.performance?.kind==='nest'){
+  const pose=nestPose(character.performance.routine,character.performance.motion!==false);
+  if(pose)seat={x:seat.x+pose.u*(home.anchors.slots?3:7),y:seat.y+pose.v*3+Math.round(pose.press*1.5)};
+ }
+ const {left:minX,right:maxX,top:minY,bottom:maxY}=home.anchors.slots?residentEnvelope(character,NEST_IDS.includes(home.blueprint||home.id)?'nest':'shelter'):inkBounds(character);
  let scale=character.scale;
  if(home.anchors.slotWidth)scale=Math.min(scale,home.anchors.slotWidth*unit/((maxX-minX+1)*sx));
  if(opening){

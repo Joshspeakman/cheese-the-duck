@@ -323,6 +323,7 @@ export class LivingWorld {
         let interaction=owned?plan:null;
         if(occupants.some(r=>r.phase!=='approach'))interaction=interaction||{phase:'act',kind:'rest'};
         if(interaction&&occupants.length+(owned&&plan.residence?1:0)>1)interaction={...interaction,shared:true};
+        if(interaction&&occupants.length)interaction={...interaction,nest_visitors:occupants.filter(r=>r.phase==='inside'&&r.routine&&!r.routine.done)};
         const sitters=seated.filter(r=>r.id===item.id&&sameInstance(item,r)&&matches(r.destination)&&r.phase!=='approach');
         if(sitters.length)interaction={...(interaction||{phase:'act'}),seat_occupants:sitters};
         const music=musicians.filter(r=>r.id===item.id&&sameInstance(item,r)&&matches(r.destination)&&r.phase==='inside').map(r=>{const p=musicPose(r.id,r.score,s.motion!==false);return p&&{...p,slot:r.slot};}).filter(Boolean);
@@ -393,12 +394,15 @@ export class LivingWorld {
     for(const r of living?.minds?.residences||[]){
       if(r.phase==='approach')continue;
       const actorId=r.actor==='story:pip'?'story:lost_duckling':r.actor;
-      const character=this.characters.find(c=>c.id===actorId);
+      const original=this.characters.find(c=>c.id===actorId);
       const home=this.objects.find(o=>o.id===r.id&&sameInstance(o,r)&&o.worldPosition?.every((n,i)=>Math.abs(n-r.destination[i])<1.1));
-      if(!home?.anchors||!character)continue;
+      if(!home?.anchors||!original)continue;
+      const source=s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
+      const routine=r.phase==='inside'&&!r.routine?.done?r.routine:null;
+      const character=routine?{...characterSprite({...source,state:'idle',facing:r.slot===0,performance:{kind:'nest',routine,motion:s.motion!==false}},t,true),x:original.x,y:original.y,story:original.story}:original;
       const inside=r.phase==='inside'?1:r.phase==='enter'?clamp(r.elapsed/3,0,1):clamp(1-r.elapsed/3,0,1);
       (home.occupants||=[]).push({character,inside,slot:r.slot,key:r.actor});
-      this.characters=this.characters.filter(c=>c!==character);
+      this.characters=this.characters.filter(c=>c!==original);
     }
     for(const r of seated){
       if(r.phase==='approach')continue;

@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: reconstructed the giant village snow globe, seasonal cottage snow globe and crystal ball. Added twelve native contact/observation cores and eight complementary visitor roles. Snow circulation integrates independently of frame rate and settles on the native clock; the crystal records the actual queued weather at physical contact and distinguishes changed/past readings in conversation. Low controls, all growth stages, 48 visitor rigs, independently arriving companions, truthful shared memories, original possessions, cancellation, weather interruption, copy identity, Reduced Motion and full save/reload were exercised. Validation: 177 JavaScript tests; 206 dedicated curio lifecycle checks; 118 keepsake lifecycle checks and 9393 pose-parity samples; 398 shared lifecycle checks; 5152 shared rig cases plus 1536 new observer cases; 26 native notebook checks; 1059 new native frames and 641 shared frames, including 552 selectable companion frames; all 47 weather symbols; 694 checks across 72 hours; 254 layout checks and 542 measured footprints; disposable source launch passed with 96 frames. Visual review corrected globe proportions, grounded miniature buildings and lowered controls to short wing reaches. Artwork progress is 269 reconstructed/273 pending. Every per-object 48-sequence audit remains unfinished; full milestone stays active and uninstalled. The desktop chat release remains separate at 2.36.1.",
+  "previous_goal_turn": "Progress: deepened all five nest constructions with native saved bedding and 40 physical contacts across 33 existing routines. Tucks, bracing, weaving, fluffing, grit removal, leaf and feather placement, snow and toe grooves persist on the exact copy after departure or cancellation. Actual weather changes exposed materials; missing materials cannot be repeatedly conjured. Visitors now select personal settling and weather-observation routines, with species restrictions, independent positions, bounded per-stay learning and quiet gaps for mutually exclusive shared shelter scenes. Validated actual walking, contacts, original possessions/rewards, save/load/resume, storage/removal, conversation truth, all nine Cheese ages and all 48 guest rigs. Individual per-object 48-sequence repertoire, remaining constructions and full installation are still unfinished; no per-object verification counts were promoted.",
   "items": [
     {
       "id": "hat_red",
@@ -2307,7 +2307,9 @@
       "verifiedSequences": 0,
       "operationPrototype": true,
       "sharedNestScores": 51,
-      "animation": "shared_repertoire_integrated; individual construction-specific repertoire still pending"
+      "animation": "shared repertoire with persistent physical contacts; individual construction-specific 48-sequence repertoire still pending",
+      "persistentNestMaterials": true,
+      "nativeMaterialContactRoutines": 33
     },
     {
       "id": "cozy_nest",
@@ -2316,7 +2318,9 @@
       "verifiedSequences": 0,
       "operationPrototype": true,
       "sharedNestScores": 51,
-      "animation": "shared_repertoire_integrated; individual construction-specific repertoire still pending"
+      "animation": "shared repertoire with persistent physical contacts; individual construction-specific 48-sequence repertoire still pending",
+      "persistentNestMaterials": true,
+      "nativeMaterialContactRoutines": 33
     },
     {
       "id": "deluxe_nest",
@@ -2325,7 +2329,9 @@
       "verifiedSequences": 0,
       "operationPrototype": true,
       "sharedNestScores": 51,
-      "animation": "shared_repertoire_integrated; individual construction-specific repertoire still pending"
+      "animation": "shared repertoire with persistent physical contacts; individual construction-specific 48-sequence repertoire still pending",
+      "persistentNestMaterials": true,
+      "nativeMaterialContactRoutines": 33
     },
     {
       "id": "mud_hut",
@@ -3526,7 +3532,9 @@
       "verifiedSequences": 0,
       "operationPrototype": true,
       "sharedNestScores": 51,
-      "animation": "shared_repertoire_integrated; individual construction-specific repertoire still pending"
+      "animation": "shared repertoire with persistent physical contacts; individual construction-specific 48-sequence repertoire still pending",
+      "persistentNestMaterials": true,
+      "nativeMaterialContactRoutines": 33
     },
     {
       "id": "tiny_table",
@@ -3639,7 +3647,9 @@
       "verifiedSequences": 0,
       "operationPrototype": true,
       "sharedNestScores": 51,
-      "animation": "shared_repertoire_integrated; individual construction-specific repertoire still pending"
+      "animation": "shared repertoire with persistent physical contacts; individual construction-specific 48-sequence repertoire still pending",
+      "persistentNestMaterials": true,
+      "nativeMaterialContactRoutines": 33
     },
     {
       "id": "old_coin",
@@ -3917,7 +3927,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "glass_curios_and_shared_observation",
+    "sourcePhase": "persistent_nest_materials_and_personal_shelter_routines",
     "fullyOverhauled": false,
     "constructedObjects": 269,
     "remainingArtwork": 273,
@@ -4303,7 +4313,14 @@
       "engine/artifacts/animation-milestone/keepsakes-5.png",
       "engine/artifacts/animation-milestone/reading-company-2.png",
       "engine/artifacts/animation-milestone/glass-weather-0.png",
-      "engine/artifacts/animation-milestone/keepsake-live-glass-snow_globe-globe_pump.png"
+      "engine/artifacts/animation-milestone/keepsake-live-glass-snow_globe-globe_pump.png",
+      "engine/artifacts/animation-milestone/nest-materials-simulation.json",
+      "engine/artifacts/animation-milestone/nest-materials-render.json",
+      "engine/artifacts/animation-milestone/nest-material-states.png",
+      "engine/artifacts/animation-milestone/nest-materials-js-suite.log",
+      "engine/artifacts/animation-milestone/nest-materials-living.log",
+      "engine/artifacts/animation-milestone/nest-materials-brains.log",
+      "engine/artifacts/animation-milestone/nest-materials-smoke.log"
     ],
     "next": "Continue the remaining 273 object constructions and individually authored contextual repertoires. All 542 per-object 48-sequence audits remain open; complete personal visitor acting, guest-to-guest sessions, egg observation and physical tool handling before final integration and installation.",
     "checks": {
@@ -4741,6 +4758,9 @@
       "convention": "vane points into the wind; precipitation and cloth travel away",
       "continuity": "incremental cosmetic drift; bounded resume step; location reset; reduced-motion freeze; outdoor gusts withheld in caves",
       "sequenceCoverageAdded": 0
-    }
+    },
+    "nestMaterialContactRoutines": 33,
+    "nestPhysicalContactPoints": 40,
+    "visitorNestRoutinePool": 25
   }
 }

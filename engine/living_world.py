@@ -13,7 +13,7 @@ from datetime import datetime
 from engine.item_profiles import ITEMS
 from engine.pond_stories import STORIES
 from engine.placements import outdoor_decorations, complete_structures,habitat_placements
-from engine import shelters, nest_routines, playdates, water_routines, furniture_rests,botany,botanical_care,instrument_sessions
+from engine import shelters, nest_routines, nest_materials, playdates, water_routines, furniture_rests,botany,botanical_care,instrument_sessions
 from world.guest_cast import guest_profile, guest_line
 
 NEEDS = ('hunger', 'energy', 'fun', 'cleanliness', 'social')
@@ -190,6 +190,7 @@ class LivingPond:
         self.weather_type = g.atmosphere.current_weather.weather_type.value if g.atmosphere.current_weather else 'sunny'
         self.intensity = g.atmosphere.current_weather.intensity if g.atmosphere.current_weather else .4
         for item,obj,_ in object_history.records(self):
+            if item in nest_materials.NESTS:nest_materials.state(obj)
             if item in pond_lighting.LIGHTS:pond_lighting.state(item,obj,self.hour,self.season)
             if item in keepsakes.ITEMS:keepsakes.state(item,obj)
             if item in creative_props.ITEMS:creative_props.state(item,obj)
@@ -347,6 +348,7 @@ class LivingPond:
         home_ecology=dict(e if getattr(self,'biome','pond')=='pond' else s['biomes'].get('pond',fresh()['ecology']))
         home_ecology['wind']=(.75 if any(w in home_type for w in ('wind','storm','breez','blizzard')) else .12)*home_intensity
         for key, obj, outdoors in object_history.records(self):
+            nest_materials.update(key,obj,dt,outdoors,home_type,home_temperature,home_ecology['wind'],home_intensity,self.season)
             pond_lighting.update(self,key,obj,dt,outdoors,home_wet,home_intensity)
             keepsakes.update(self,key,obj,dt,outdoors,home_wet,home_intensity,home_temperature)
             architecture.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type,home_ecology.get('wind_heading',s['weather'].get('pond',{}).get('wind_heading',.25)))

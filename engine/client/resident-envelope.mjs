@@ -2,6 +2,7 @@ import {duckRig} from './duck-rig.mjs';
 import {visitorRig} from './visitor-rig.mjs';
 import COMPANY from './animation/home-company.json' with {type:'json'};
 import SEATING from './animation/seating-routines.json' with {type:'json'};
+import {NEST_ROUTINES} from './nest-routines.mjs';
 
 const cache=new Map();
 export function inkBounds(character){
@@ -20,6 +21,10 @@ export function residentEnvelope(character,repertoire='shelter'){
  let bounds=inkBounds(character);
  function include(model){const b=inkBounds(model);bounds={left:Math.min(bounds.left,b.left),right:Math.max(bounds.right,b.right),top:Math.min(bounds.top,b.top),bottom:Math.max(bounds.bottom,b.bottom)};}
  for(let t=0;t<8;t++)include(rig({...source,state:'sleeping'},t));
+ if(repertoire==='nest')for(const [id,spec]of Object.entries(NEST_ROUTINES)){
+  const beats=spec.track.map(k=>k.at);
+  for(const p of [...beats,...beats.slice(1).map((b,i)=>(b+beats[i])/2)])include(rig({...source,performance:{kind:'nest',routine:{id,elapsed:p*spec.duration}}},0));
+ }
  for(const [kind,spec] of Object.entries(repertoire==='seating'?SEATING:COMPANY))for(const role of ['a','b']){
   const track=repertoire==='seating'?(role==='b'&&spec.reply?spec.reply:spec.track):spec[role];
   const beats=track.map(([at])=>at);
