@@ -14,9 +14,11 @@ export function actionFor(state='idle'){
 }
 export function duckRig(duck,t=0,design=null){
  if(duck.performance?.kind==='nest')t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
+ if(duck.performance?.kind==='water')t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  const requested=duck.stage==='teen'?'juvenile':duck.stage||'adult',spec=design||DUCK_AGES.find(a=>a.id===requested)||DUCK_AGES[5];
- const stage=design?'adult':spec.id,small=['hatchling','duckling'].includes(stage),action=actionFor(duck.performance?'idle':duck.state);
+ const stage=design?'adult':spec.id,small=['hatchling','duckling'].includes(stage);
  const performance=performancePose(duck.performance,duck.performance?.young?'duckling':stage);
+ const action=performance?.swimming?'swimming':actionFor(duck.performance?'idle':duck.state);
  const rate=spec.pace/4.5,speed=duck.state==='waddle_fast'?1.6:duck.state==='sneaking'?.65:1;
  const cycle=t*rate*speed,phase=Math.floor(cycle*5)%8;
  const cells=Array.from({length:H},()=>Array(W).fill(' ')),tones=cells.map(r=>r.map(()=> 'b')),fills=[];

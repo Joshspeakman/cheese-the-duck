@@ -5,6 +5,7 @@ import { drawCharacter } from './ultra-characters.mjs';
 import { ItemPainter } from './ultra-items.mjs';
 import {occupiedGeometry,heldNestGeometry} from './residence-stage.mjs';
 import {ridingGeometry} from './playground-stage.mjs';
+import {waterGeometry} from './water-routines.mjs';
 import { SceneEffects,luminousPalette } from './scene-effects.mjs';
 import { W,H,C,M } from './ultra-grid.mjs';
 import { InterfaceRenderer } from './interface-renderer.mjs';
@@ -97,6 +98,11 @@ export class SceneCanvas {
         for(const passenger of actor.riders||(actor.rider?[actor.rider]:[])){
           const rider=ridingGeometry(actor,passenger.character,passenger.seat,passenger.inside,this.sx,this.sy);
           drawCharacter(this.ctx,{...rider,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
+        }
+        if(actor.bather){
+          const bath=waterGeometry(actor,actor.bather,this.sx,this.sy);
+          drawCharacter(this.ctx,{...bath.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
+          if(bath.front)this.items.draw(this.ctx,bath.front,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
         }
       }
       else drawCharacter(this.ctx,{...actor,sun:light.sun,outline:light.outline,backdrop:(x,y)=>this.backdropAt(x,y)},this.sx,this.sy,surface);

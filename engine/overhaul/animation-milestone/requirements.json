@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: eight physically coordinated toy scenes use real independent arrivals, two seats/roles, age and body-mass limits, progressive persistent sandwork, and once-only shared learning. Cancellation releases both actors without granting any item or shared completion. Remaining catalogue and per-object bespoke requirements stay open.",
+  "previous_goal_turn": "Progress: completed cooperative toy arrival/interruption checks, then rebuilt 23 water-related objects with separate construction geometry, mechanisms, wear, freezing and heated water. Added sixteen simulation-owned bathing/swimming/observing routines, age/weather gates, saved completion history, current-activity chat facts, and native rendered replays. The full catalogue, 48 bespoke sequences per object, all visitor repertoires, placement layout and final installation remain unfinished.",
   "items": [
     {
       "id": "hat_red",
@@ -348,56 +348,74 @@
     {
       "id": "pool_kiddie",
       "family": "pool",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "pool_large",
       "family": "pool",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "fountain_small",
       "family": "fountain",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "fountain_grand",
       "family": "fountain",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "pond",
       "family": "pool",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "sprinkler",
       "family": "sprinkler",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "waterfall",
       "family": "waterfall",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "hot_tub",
       "family": "pool",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "birdbath",
       "family": "birdbath",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "water_slide",
@@ -743,20 +761,26 @@
     {
       "id": "koi_pond",
       "family": "pool",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "waterfall_mini",
       "family": "waterfall",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "hot_tub_deluxe",
       "family": "pool",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "water_slide_mega",
@@ -768,8 +792,10 @@
     {
       "id": "sprinkler_system",
       "family": "sprinkler",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "bonsai",
@@ -973,8 +999,10 @@
     {
       "id": "fountain_statue",
       "family": "fountain",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "wind_chimes",
@@ -985,8 +1013,10 @@
     {
       "id": "birdbath_garden",
       "family": "birdbath",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "sundial",
@@ -1058,8 +1088,10 @@
     {
       "id": "fountain_decorative",
       "family": "fountain",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "zen_garden",
@@ -1522,8 +1554,10 @@
     {
       "id": "infinity_pool",
       "family": "pool",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "bounce_house",
@@ -1612,8 +1646,10 @@
     {
       "id": "wish_fountain",
       "family": "fountain",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "dimensional_door",
@@ -1934,8 +1970,10 @@
     {
       "id": "water_bowl",
       "family": "bowl",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "lucky_charm",
@@ -2120,8 +2158,10 @@
     {
       "id": "bird_bath",
       "family": "birdbath",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "watchtower",
@@ -2144,8 +2184,10 @@
     {
       "id": "pond_fountain",
       "family": "fountain",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "leaf",
@@ -3285,8 +3327,9 @@
     {
       "id": "pond_mat",
       "family": "pool",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
     },
     {
       "id": "spring_wreath",
@@ -3303,8 +3346,10 @@
     {
       "id": "fountain",
       "family": "fountain",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Context-selected water routines integrated; individual object and guest repertoires still pending"
     },
     {
       "id": "golden_nest",
@@ -3589,10 +3634,10 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "cooperative_toy_play",
+    "sourcePhase": "cooperative_toys_and_waterworks",
     "fullyOverhauled": false,
-    "constructedObjects": 42,
-    "remainingArtwork": 500,
+    "constructedObjects": 65,
+    "remainingArtwork": 477,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -3624,18 +3669,34 @@
       "engine/artifacts/animation-milestone/playdate-scores-0.png",
       "engine/artifacts/animation-milestone/playdate-scores-1.png",
       "engine/artifacts/animation-milestone/playdate-living.log",
-      "engine/artifacts/animation-milestone/playdate-brains.log"
+      "engine/artifacts/animation-milestone/playdate-brains.log",
+      "engine/artifacts/animation-milestone/water-simulation.json",
+      "engine/artifacts/animation-milestone/water-render.json",
+      "engine/artifacts/animation-milestone/water-js-suite.log",
+      "engine/artifacts/animation-milestone/waterworks-0.png",
+      "engine/artifacts/animation-milestone/waterworks-1.png",
+      "engine/artifacts/animation-milestone/waterworks-2.png",
+      "engine/artifacts/animation-milestone/waterworks-3.png",
+      "engine/artifacts/animation-milestone/water-acting-0.png",
+      "engine/artifacts/animation-milestone/water-acting-1.png",
+      "engine/artifacts/animation-milestone/water-acting-2.png",
+      "engine/artifacts/animation-milestone/water-acting-3.png",
+      "engine/artifacts/animation-milestone/water-live-paddle_loop.png",
+      "engine/artifacts/animation-milestone/water-live-cascade_listen.png",
+      "engine/artifacts/animation-milestone/water-regression-living.log",
+      "engine/artifacts/animation-milestone/water-regression-brains.log",
+      "engine/artifacts/animation-milestone/water-regression-playdates.log"
     ],
     "next": [
       "Deepen construction-specific nest/bed/house acting and each remaining item repertoire; the 51 shared nest scores do not by themselves satisfy 48 bespoke sequences per object.",
       "Add explicit nest body-facing transitions, construction-specific canopy/quilt/pillow/lining actions and species/age-specific climbing and doorway choreography.",
-      "Reconstruct the remaining 500 objects with authored details and anchors; account for larger footprints in placement so neighboring objects do not overlap.",
+      "Reconstruct the remaining 477 objects with authored details and anchors; account for larger footprints in placement so neighboring objects do not overlap.",
       "Expand guest-specific and age-specific behavior; eighteen shared tracks are not a complete bespoke catalogue.",
       "Extend invitations, prop handoffs and cooperative item use, with real arrival and completion evidence.",
       "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation."
     ],
     "checks": {
-      "javascript": 81,
+      "javascript": 87,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 22,
@@ -3643,7 +3704,7 @@
       "learningBrains": 44,
       "shelterLifecycle": 30,
       "pairedLifecycle": 16,
-      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors.",
+      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects.",
       "nestLifecycle": 34,
       "nestReplay": {
         "nativeSceneFrames": 41,
@@ -3675,21 +3736,30 @@
         "paired": 178,
         "medianMs": 6.899999976158142,
         "p95Ms": 8.600000023841858
+      },
+      "waterLifecycle": 183,
+      "waterReplay": {
+        "frames": 495,
+        "bathing": 473,
+        "medianMs": 6.900000035762787,
+        "p95Ms": 9.699999988079071
       }
     },
     "limitations": [
-      "Only 42 of 542 object artworks rebuilt so far.",
+      "Only 65 of 542 object artworks rebuilt so far.",
       "No object has yet passed the 48 bespoke sequence requirement.",
       "Five nests now use 51 authored core routines (three require a canopy). Individual nest-construction variants, guest participation and egg-specific interactions remain unfinished; no per-object completion is claimed.",
       "Paired tracks currently share a core movement vocabulary across the cast; personality-specific choreography and full guest item participation remain unfinished.",
       "Thirteen solo tracks and the current mechanical loops are foundations, not the completed object-animation catalogue.",
       "Regular, rare and story visitors now use real shelter slots, shared rooms and six contextual company scores. Full species-specific climbing, doorway, object-contact and personal repertoires remain unfinished.",
       "Installed app remains the previously verified 2.36.0; this development milestone is not packaged or installed.",
-      "Eight cooperative toy scenes currently cover seesaw, sandbox, ball and trampoline; full species-specific contact, NPC-to-NPC toy invitations and every-object repertoires remain unfinished. Placement still needs to accommodate the enlarged constructions."
+      "Eight cooperative toy scenes currently cover seesaw, sandbox, ball and trampoline; full species-specific contact, NPC-to-NPC toy invitations and every-object repertoires remain unfinished. Placement still needs to accommodate the enlarged constructions.",
+      "Sixteen shared water scores are initial object/age-aware routines, not 48 bespoke sequences on each water object. Visitor bathing, species-specific water contacts and detailed ladder/entry choreography remain unfinished."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
     "sharedShelterScores": 6,
-    "sharedToyScores": 8
+    "sharedToyScores": 8,
+    "waterScores": 16
   }
 }
