@@ -32,13 +32,13 @@ test('same-position replacement cannot inherit Cheese or a visitor performance',
 
 test('layout preview excludes only the moved copy from collision checks',()=>{
  const footprint=footprints.items.fern;
- const layout={items:[{id:'fern',footprint}],placed:[{id:'fern',instance:'a',x:5,y:5,box:layoutBounds(footprint,5,5)},
-  {id:'fern',instance:'b',x:15,y:5,box:layoutBounds(footprint,15,5)}],obstacles:[]};
- assert(layoutCheck(layout,'fern',5,5,'a').ok);
- assert(!layoutCheck(layout,'fern',15,5,'a').ok,'same catalogue id still occupies space');
- assert(layoutCheck(layout,'fern',15,5,'b').ok);
+ const layout={items:[{id:'fern',footprint}],placed:[{id:'fern',instance:'a',x:5,y:3,box:layoutBounds(footprint,5,3)},
+  {id:'fern',instance:'b',x:15,y:3,box:layoutBounds(footprint,15,3)}],obstacles:[]};
+ assert(layoutCheck(layout,'fern',5,3,'a').ok);
+ assert(!layoutCheck(layout,'fern',15,3,'a').ok,'same catalogue id still occupies space');
+ assert(layoutCheck(layout,'fern',15,3,'b').ok);
  layout.copies=layout.placed.map(p=>({id:p.id,instance:p.instance,placed:true}));
- assert(!layoutCheck(layout,'fern',5,5,'gone').ok,'stale copy never substitutes an owned sibling');
+ assert(!layoutCheck(layout,'fern',5,3,'gone').ok,'stale copy never substitutes an owned sibling');
  const arrangement=Object.create(PondArrangement.prototype);
  arrangement.journal={world:{layout}};
  arrangement.select('fern','gone');

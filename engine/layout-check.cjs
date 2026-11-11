@@ -6,6 +6,7 @@ app.whenReady().then(async()=>{
  const checks=[],out=path.join(__dirname,'artifacts/animation-milestone');
  try{
   w=new BrowserWindow({show:false,width:1440,height:1000,webPreferences:{nodeIntegration:true,contextIsolation:false,backgroundThrottling:false}});
+  w.webContents.on('console-message',d=>{if(d.level==='error')console.error(d.message);});
   const js=source=>w.webContents.executeJavaScript(source);
   const until=async(source,label)=>{const start=Date.now();while(!await js(source)){if(Date.now()-start>12000)throw Error(label+' timed out '+stderr.slice(-500));await new Promise(r=>setTimeout(r,30));}checks.push(label);};
   await w.loadFile(path.join(__dirname,'tests/layout-theatre.html'));
@@ -21,14 +22,22 @@ app.whenReady().then(async()=>{
   const cases=fs.readFileSync(path.join(out,'layout-cases.json'),'utf8');
   if(!await js('window.compareCases('+cases+')'))throw Error('Client/native placement rules disagree');
   checks.push('480 native placement decisions agree with preview');
+  const grounds=fs.readFileSync(path.join(out,'grounds-cases.json'),'utf8');
+  if(!await js('window.compareCases('+grounds+')'))throw Error('Garden/building native placement rules disagree with preview');
+  checks.push('garden, project, building and decoration placement decisions agree with preview');
   await js("window.journal.arrangement.canvas.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}))");
   if(await js('window.commands.length')!==0)throw Error('Preview wrote to the simulation');
   checks.push('keyboard draft leaves actual habitat unchanged');
+  await js("window.journal.arrangement.canvas.scrollIntoView({block:'center'});new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))");
   const point=await js("(()=>{const a=window.journal.arrangement,r=a.canvas.getBoundingClientRect();return {x:Math.round(r.left+r.width*.55),y:Math.round(r.top+r.height*.6)}})()");
   const beforePointer=await js('JSON.stringify(window.journal.arrangement.draft)');
   await w.webContents.sendInputEvent({type:'mouseDown',button:'left',clickCount:1,...point});
   await w.webContents.sendInputEvent({type:'mouseUp',button:'left',clickCount:1,...point});
-  if(await js('window.commands.length')!==0||await js('JSON.stringify(window.journal.arrangement.draft)')===beforePointer)throw Error('Mouse must move the draft without changing actual placement');
+  await js('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+  if(await js('window.commands.length')!==0||await js('JSON.stringify(window.journal.arrangement.draft)')===beforePointer){
+   const debug=await js('(()=>{const e=document.elementFromPoint('+point.x+','+point.y+');return {hit:e?.tagName,cls:e?.className,after:window.journal.arrangement.draft,viewport:[innerWidth,innerHeight],rect:window.journal.arrangement.canvas.getBoundingClientRect().toJSON(),commands:window.commands.length}})()');
+   throw Error('Mouse must move the draft without changing actual placement '+JSON.stringify({beforePointer,point,...debug}));
+  }
   checks.push('real mouse positioning edits only the draft');
   await js('window.journal.arrangement.store.click()');
   await until("!window.journal.arrangement.pending && !window.journal.world.layout.placed.some(p=>p.id==='couch')",'storage reaches actual simulation and acknowledges');
@@ -45,7 +54,8 @@ app.whenReady().then(async()=>{
   await js('window.journal.update(window.journal.frame);window.journal.updateDynamic()');
   if(await js('JSON.stringify(window.journal.arrangement.draft)')!==draft)throw Error('Live frame erased the draft');
   checks.push('live updates preserve draft and focus');
-  const geometry=await js('window.geometryCheck()');
+  const geometry=await js('(()=>{try{return window.geometryCheck()}catch(e){return {error:e.stack}}})()');
+  if(geometry.error)throw Error(geometry.error);
   checks.push('actual item hit bounds fit reservations at wide, normal and tall aspect ratios');
   await js("window.journal.arrangement.select('couch');window.journal.arrangement.update();window.journal.arrangement.lastPaint=-Infinity;window.journal.paint(performance.now()/1000)");
   await new Promise(r=>setTimeout(r,150));

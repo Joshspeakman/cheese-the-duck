@@ -1,0 +1,47 @@
+<!doctype html><meta charset="utf-8"><title>Pond grounding review</title>
+<style>body{margin:0;background:#142820;color:#eee1b5;font:16px system-ui}h1,p{margin:16px}canvas{display:block;width:100%}</style>
+<h1>Ground contact and scenery depth</h1><p>Actual Ultra renderer · original owned copies · native placement</p>
+<script type="module">
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {scene} from './scenes.mjs';
+import {homeScenery} from '../client/habitat-ground.mjs';
+import {W,H} from '../client/ultra-grid.mjs';
+const renderer=new SceneCanvas();renderer.effects.level='quiet';document.body.append(renderer.canvas);
+window.review=frame=>{renderer.resize(1440,900);renderer.draw({...frame.scene,motion:false,particles:false,weatherEffects:false},0,0);};
+window.capture=()=>renderer.canvas.toDataURL('image/png').split(',')[1];
+window.depthCheck=()=>{
+ const results=[];
+ for(const [width,height] of [[1440,900],[2400,700],[800,1200]]){
+  renderer.resize(width,height);
+  const s=scene({motion:false,particles:false,weatherEffects:false,duck:{hidden:true,x:65,y:24,stage:'adult',cosmetics:{}}});
+  renderer.draw(s,0,0);
+  const background=renderer.ctx.getImageData(0,0,width,height).data;
+  const tree=homeScenery[0],[tx,ty]=renderer.world.project(s,tree.x*132/20,tree.y*42/12);
+  const layer=renderer.world.scenery.find(l=>l.id===tree.id);
+  const snapshot=behind=>{
+   const y=ty+(behind?-3:3),wy=(y-46)/47*42;
+   // Deliberately invalid overlaps exercise painter order independently of the
+   // placement rejection. Normal play cannot put a ball in these roots.
+   renderer.draw({...s,items:[{id:'toy_ball',instance:'depth-test',x:tree.x*132/20,y:wy}]},0,0);
+   const pixels=renderer.ctx.getImageData(0,0,width,height).data;
+   const hit=renderer.hits.find(h=>h.instance==='depth-test');
+   let covered=0,changed=0,hiddenHits=0;
+   for(const [i] of layer.cells){
+    const x=i%W,y=(i/W)|0;
+    const px=Math.round((x+.5)*width/W),py=Math.round((y+.5)*height/H);
+    if(px<hit.x||px>hit.x+hit.w||py<hit.y||py>hit.y+hit.h)continue;
+    covered++;
+    const off=(py*width+px)*4;
+    if(pixels[off]!==background[off]||pixels[off+1]!==background[off+1]||pixels[off+2]!==background[off+2])changed++;
+    if(renderer.hit(px/width,py/height)?.instance==='depth-test')hiddenHits++;
+   }
+   if(!covered)throw Error('No meaningful scenery overlap at '+width+'x'+height);
+   if(behind&&(changed||hiddenHits))throw Error('Tree failed to occlude ball or click target: '+JSON.stringify({width,height,covered,changed,hiddenHits}));
+   if(!behind&&(!changed||!hiddenHits))throw Error('Tree incorrectly covers a foreground ball');
+   return {behind,covered,changed,hiddenHits};
+  };
+  results.push({width,height,behind:snapshot(true),front:snapshot(false)});
+ }
+ return results;
+};
+</script>

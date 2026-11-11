@@ -1,9 +1,58 @@
 {
-  "version": 1,
+  "version": 3,
   "seed": -232039786,
   "bank": 82,
-  "waveA": [0.025, 6],
-  "waveB": [0.077, 2],
-  "waterItems": ["tiny_boat", "submarine", "lily_pad", "pond_fountain"],
-  "eitherItems": ["bridge", "stepping_stones", "stone_path"]
+  "waveA": [
+    0.025,
+    6
+  ],
+  "waveB": [
+    0.077,
+    2
+  ],
+  "waterItems": [
+    "tiny_boat",
+    "submarine",
+    "lily_pad",
+    "pond_fountain",
+    "pond_weed"
+  ],
+  "eitherItems": [
+    "bridge",
+    "stepping_stones",
+    "stone_path",
+    "rubber_duck"
+  ],
+  "scenery": [
+    {
+      "id": "west_willow",
+      "name": "Willow roots",
+      "kind": "willow",
+      "x": 0.10416666666666667,
+      "y": 5.617021276595745,
+      "height": 55,
+      "width": 2.3,
+      "depth": 1.3
+    },
+    {
+      "id": "east_willow",
+      "name": "Willow roots",
+      "kind": "willow",
+      "x": 20.104166666666668,
+      "y": 4.595744680851064,
+      "height": 47,
+      "width": 2.3,
+      "depth": 1.3
+    },
+    {
+      "id": "pond_dock",
+      "name": "Pond dock",
+      "kind": "dock",
+      "x": 16.666666666666668,
+      "shoreX": 15.625,
+      "shoreOffset": 0.7659574468085106,
+      "width": 3.9,
+      "depth": 2.1
+    }
+  ]
 }

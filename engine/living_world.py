@@ -72,7 +72,7 @@ def fresh(seed=1):
                         'wetness': .25, 'snow': 0., 'ice': 0., 'temperature': 17., 'wind': .2, 'wind_heading': .25},
             'offline': '', 'sequence': 0, 'auto': True, 'stories': {}, 'story': None, 'next_story': 90.,
             'protection': 0., 'legacy': {}, 'biomes': {}, 'apparel': {}, 'apparel_care': {},
-            'community': {'warmth': .2, 'gatherings': 0}, 'minds': {}, 'layout': {}}
+            'community': {'warmth': .2, 'gatherings': 0}, 'minds': {}, 'layout': {}, 'grounds': {}}
 
 
 class LivingPond:
@@ -116,7 +116,10 @@ class LivingPond:
     def attach(self, game, offline=True):
         self.game = game
         from engine.pond_layout import PondLayout,REVISION
-        self.layout=PondLayout(game.habitat,lambda:[(p.item_id,*p.get_display_position()) for p in [*outdoor_decorations(game),*complete_structures(game)]])
+        from engine.pond_grounds import PondGrounds
+        self.grounds=PondGrounds(self)
+        self.grounds.reconcile(force=True)
+        self.layout=PondLayout(game.habitat,lambda:list(self.grounds.obstacles()))
         self._layout_obstacles=tuple(self.layout.obstacles())
         game.habitat.placement_policy=self.layout
         if self.state['layout'].get('revision')!=REVISION:
@@ -148,6 +151,7 @@ class LivingPond:
         if not g or not g.duck:
             return
         if getattr(self,'layout',None):
+            if self.grounds.reconcile():self._cache=None
             obstacles=tuple(self.layout.obstacles())
             if obstacles!=self._layout_obstacles:
                 self._layout_obstacles=obstacles
@@ -169,7 +173,7 @@ class LivingPond:
         physical = object_history.sync(self)
         self.physical_belongings = physical
         previous_placements = [(p.item_id,p.instance,p.x,p.y) for p in getattr(self,'placements',[])]
-        self.placements = [*habitat_placements(g),*outdoor_decorations(g),*complete_structures(g)]
+        self.placements = [*habitat_placements(g),*outdoor_decorations(g,records=self.state['grounds']),*complete_structures(g,records=self.state['grounds'])]
         if previous_placements != [(p.item_id,p.instance,p.x,p.y) for p in self.placements]:self._cache=None
         self.placed = {i.item_id: i for i in self.placements}
         object_history.catalogue(self, physical)
@@ -609,6 +613,9 @@ class LivingPond:
             # through preparation so idle wandering cannot leave it behind.
             pos.cancel_movement()
             pos.set_state_by_name('thinking',0)
+        elif kind in ('garden','project') and any(p['instance']==('project:'+target) if kind=='project' else p['role']=='garden' for p in self.grounds.installations()):
+            destination=next(p for p in self.grounds.installations() if (p['instance']=='project:'+target if kind=='project' else p['role']=='garden'))
+            pos.move_to(destination['x'],destination['y'])
         elif kind in ('forage','observe','restore','garden','wander'):
             seed = stable((s['elapsed'], kind))
             pos.move_to(12+seed%100, 18+(seed//100)%18)
@@ -992,6 +999,8 @@ class LivingPond:
             return self.notice(message)
         if action in ('layout_place','layout_auto','layout_store'):
             if self.location!='Home Pond':ok,message=False,'Arrange the habitat when Cheese is back at Home Pond.'
+            elif self.grounds.handles(target,command.get('instance')):
+                ok,message=self.grounds.command(action,target,command.get('instance'),command.get('x'),command.get('y'))
             elif target not in self.game.habitat.owned_items:ok,message=False,'That item is not owned.'
             elif action=='layout_place':
                 ok,message=self.layout.put(target,command.get('x'),command.get('y'),command.get('instance'))
@@ -1266,8 +1275,8 @@ class LivingPond:
                 garden.append({'id':plot.plot_id,'plant':plant.plant_id if plant else None,
                     'stage':plant.growth_stage.value if plant else 'empty','water':plant.water_level/100 if plant else 0,
                     'health':plant.health/100 if plant else 1,'soil':plot.soil_quality/100})
-        self._cache={'layout':dict(self.layout.snapshot(),reply=s['layout'].get('reply')) if getattr(self,'layout',None) else None,
-            'garden':garden,'seeds':dict(self.game.garden.seed_inventory) if self.game else {},
+        self._cache={'layout':dict(self.grounds.snapshot(self.layout.snapshot()),reply=s['layout'].get('reply')) if getattr(self,'layout',None) else None,
+            'garden':garden,'installations':self.grounds.installations() if getattr(self,'grounds',None) else [],'seeds':dict(self.game.garden.seed_inventory) if self.game else {},
             'community':dict(s['community']), 'minds':self.minds.snapshot(),
             'story':self.story_snapshot(),'stories':copy.deepcopy(s['stories']),'protection':s['protection'],
             'elapsed':s['elapsed'],'plan':plan,'policy':s['policy'],'auto':s['auto'],
