@@ -3,6 +3,8 @@ import { GlyphRenderer } from './renderer.mjs';
 import { LivingWorld } from './ultra-world.mjs';
 import { drawCharacter } from './ultra-characters.mjs';
 import { ItemPainter } from './ultra-items.mjs';
+import {occupiedGeometry} from './residence-stage.mjs';
+import {ridingGeometry} from './playground-stage.mjs';
 import { SceneEffects,luminousPalette } from './scene-effects.mjs';
 import { W,H,C,M } from './ultra-grid.mjs';
 import { InterfaceRenderer } from './interface-renderer.mjs';
@@ -76,7 +78,21 @@ export class SceneCanvas {
     // Rugs stay under everything; other props and characters share depth order.
     for(const actor of [...objects,...characters].sort((a,b)=>(a.floor?-1000:a.y)-(b.floor?-1000:b.y))){
       const surface=this.backdropAt(actor.x*this.sx,actor.y*this.sy);
-      if(actor.item)this.items.draw(this.ctx,actor,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{surface,outline:light.outline});
+      if(actor.item){
+        this.items.draw(this.ctx,actor,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{surface,outline:light.outline});
+        if(actor.occupant){
+          const staged=occupiedGeometry(actor,actor.occupant.character,actor.occupant.inside,this.sx,this.sy);
+          this.ctx.save();
+          if(staged.clip){const r=staged.clip;this.ctx.beginPath();this.ctx.rect(r.x,r.y,r.w,r.h);this.ctx.clip();}
+          drawCharacter(this.ctx,{...staged.character,sun:light.sun*.7,outline:light.outline},this.sx,this.sy,'#112521');
+          this.ctx.restore();
+          if(staged.front)this.items.draw(this.ctx,staged.front,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
+        }
+        if(actor.rider){
+          const rider=ridingGeometry(actor,actor.rider.character,actor.rider.seat,actor.rider.inside,this.sx,this.sy);
+          drawCharacter(this.ctx,{...rider,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
+        }
+      }
       else drawCharacter(this.ctx,{...actor,sun:light.sun,outline:light.outline,backdrop:(x,y)=>this.backdropAt(x,y)},this.sx,this.sy,surface);
     }
     this.hits=[...objects,...characters].filter(a=>a.item||a.visitor||a.story).map(a=>{

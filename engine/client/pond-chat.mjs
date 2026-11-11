@@ -1,9 +1,10 @@
-import {CHAT_TABS,inTab,parseChat,channelLabel} from './chat-model.mjs';
+import {ChatFade} from './chat-fade.mjs';
+import {CHAT_TABS,inTab,parseChat,channelLabel,spoken} from './chat-model.mjs';
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 const HELP='Enter / T: chat · Enter: send · Esc: return · ↑ / ↓: sent history · /s: say to Cheese · /w Name: whisper · /r: reply · /clear: clear this view.';
 export class PondChat{
  constructor(renderer,hud){
-  this.renderer=renderer;this.hud=hud;renderer.interface.chatExternal=true;
+  this.renderer=renderer;this.hud=hud;renderer.interface.chatExternal=true;this.fade=new ChatFade(performance.now());this.hovered=false;
   this.stream=null;this.frame=null;this.editing=false;this.tab='general';this.target='cheese';this.channel='say';this.lastWhisper=null;
   this.rows=[];this.local=[];this.high=0;this.clearThrough=0;this.unread=0;this.badges={general:0,conversation:0,world:0};this.scrolls={};this.follow=true;
   this.sent=[];this.historyIndex=0;this.draft='';this.inflight=null;this.lastPending='';this.lastVoice='';
@@ -28,6 +29,11 @@ export class PondChat{
   this.input.onblur=()=>{this.editing=false;this.root.classList.remove('composing');this.input.placeholder='Press Enter to chat…';};
   this.input.oninput=()=>{this.draft=this.input.value;this.historyIndex=this.sent.length;this.status.textContent=this.stream?.pending?`${this.stream.pending} is thinking…`:'Enter to send · Esc to return';};
   this.root.addEventListener('wheel',e=>e.stopPropagation(),{passive:true});this.root.addEventListener('paste',e=>e.stopPropagation());
+  this.recall=el('button','Chat · Enter','chat-recall');this.recall.id='chat-recall';this.recall.dataset.hudUi='';this.recall.hidden=true;this.recall.setAttribute('aria-label','Open pond chat');this.recall.onclick=()=>this.open();document.body.append(this.recall);
+  this.root.addEventListener('pointerenter',()=>{this.hovered=true;this.fade.wake(performance.now());});
+  this.root.addEventListener('pointerleave',()=>{this.hovered=false;if(this.fade.opacity>.1)this.fade.wake(performance.now());});
+  this.root.addEventListener('keydown',()=>this.fade.wake(performance.now()));
+  this.root.addEventListener('wheel',()=>this.fade.wake(performance.now()),{passive:true});
   this.bindResize();
  }
  get active(){return this.editing||Boolean(this.resizeDrag);}
@@ -37,10 +43,11 @@ export class PondChat{
   if(data){
    let receiptError='';
    const changed=this.stream?.session!==data.session;
-   if(changed){this.stream=data;this.rows=[];this.local=[];this.high=0;this.clearThrough=0;this.unread=0;this.sent=[];this.historyIndex=0;this.target='cheese';this.channel='say';this.lastWhisper=null;this.badges={general:0,conversation:0,world:0};this.follow=true;this.log.replaceChildren();this.park();this.input.value='';this.input.readOnly=false;this.inflight=null;this.lastPending='';}
+   if(changed){this.fade.wake(performance.now());this.stream=data;this.rows=[];this.local=[];this.high=0;this.clearThrough=0;this.unread=0;this.sent=[];this.historyIndex=0;this.target='cheese';this.channel='say';this.lastWhisper=null;this.badges={general:0,conversation:0,world:0};this.follow=true;this.log.replaceChildren();this.park();this.input.value='';this.input.readOnly=false;this.inflight=null;this.lastPending='';}
    this.stream=data;
    const arrivals=data.entries.filter(r=>r.id>this.high);
    if(arrivals.length){
+    if(arrivals.some(spoken))this.fade.spoke(performance.now());
     for(const row of arrivals){
      if(row.channel==='whisper'&&row.speaker!=='player')this.lastWhisper=row.speaker;
      if(!changed)for(const [id] of CHAT_TABS)if(id!==this.tab&&inTab(row,id))this.badges[id]++;
@@ -66,12 +73,14 @@ export class PondChat{
  }
  sync(){
   const wasHidden=this.root.hidden,show=this.available&&this.hud.layout.visible('chat');this.root.hidden=!show;
-  if(!show&&this.editing)this.park();
-  if(show){const i=this.renderer.interface,h=this.log.clientHeight;this.hud.position(this.root,this.hud.layout.rect('chat',i.width,i.height));if(this.follow&&(wasHidden||h!==this.log.clientHeight))this.bottom();}
+  if(!show){this.hovered=false;if(this.editing)this.park();}
+  const i=this.renderer.interface,opacity=this.fade.update(performance.now(),{held:this.active||this.hovered||this.root.contains(document.activeElement)||Boolean(this.stream?.pending)||Boolean(this.inflight)||this.hud.editing,reducedMotion:this.frame?.ui?.motion===false});
+  const quiet=opacity<.1;this.root.style.setProperty('--chat-opacity',String(opacity));this.root.dataset.quiet=String(quiet);this.root.inert=quiet;i.chatQuiet=quiet;this.recall.hidden=!show||!quiet;
+  if(show){const h=this.log.clientHeight,r=this.hud.layout.rect('chat',i.width,i.height);this.hud.position(this.root,r);this.hud.position(this.recall,{x:r.x,y:r.y+r.h-27,w:120,h:27});if(this.follow&&(wasHidden||h!==this.log.clientHeight))this.bottom();}
  }
  open(prefill=null){
   if(!this.available)return false;
-  this.hud.closeKit();this.hud.layout.show('chat',true);this.hud.changed();this.sync();
+  this.fade.wake(performance.now());this.hud.closeKit();this.hud.layout.show('chat',true);this.hud.changed();this.sync();
   if(prefill!==null){this.input.value=prefill;this.draft=prefill;}
   this.input.focus();this.input.setSelectionRange(this.input.value.length,this.input.value.length);this.hud.wake();return true;
  }

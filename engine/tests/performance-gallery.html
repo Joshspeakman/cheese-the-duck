@@ -1,0 +1,23 @@
+<!doctype html><meta charset="utf-8"><title>Pond duets — animation review</title>
+<style>body{margin:0;background:#122821;color:#e2d4ac;font:16px Georgia}header{padding:24px}h1{margin:0 0 12px}label{display:inline-block;margin:8px 18px 8px 0}select,button{background:#263c30;color:inherit;border:1px solid #8b9060;padding:8px;font:inherit}#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:16px}article{border:1px solid #89966055;border-radius:10px;background:#1a3027;overflow:hidden}h2{font:18px Georgia;margin:14px}canvas{width:100%;display:block}</style>
+<header><h1>Two residents. One little moment.</h1><p>Live character rigs and shared timelines. Choose any guest and any age, then scrub through both sides of each performance.</p><label>Cheese <select id="age"></select></label><label>Company <select id="guest"></select></label><label>Moment <input id="moment" type="range" min="0" max="100" value="45"></label><button id="play">Play</button></header><main id="grid"></main>
+<script type="module">
+import {SceneCanvas} from '../client/ultra-renderer.mjs';import {DUCK_AGES} from '../client/duck-rig.mjs';import {GUEST_CAST} from '../client/guest-cast.mjs';import {PERFORMANCES} from '../client/performances.mjs';import {scene} from './scenes.mjs';
+const age=document.querySelector('#age'),guest=document.querySelector('#guest'),moment=document.querySelector('#moment');
+for(const a of DUCK_AGES)age.add(new Option(a.name||a.id,a.id));age.value='adult';
+for(const p of Object.values(GUEST_CAST))guest.add(new Option(p.name,p.id));
+const renderer=new SceneCanvas();renderer.resize(1440,900);const cards=[];
+for(const kind of Object.keys(PERFORMANCES)){const article=document.createElement('article'),h=document.createElement('h2'),canvas=document.createElement('canvas');canvas.width=600;canvas.height=360;h.textContent=kind.replaceAll('_',' ');article.append(h,canvas);document.querySelector('#grid').append(article);cards.push({kind,canvas});}
+window.paint=(progress=Number(moment.value)/100,profile=guest.value,stage=age.value)=>{
+ for(const {kind,canvas}of cards){
+  const def=PERFORMANCES[kind],p=GUEST_CAST[profile];
+  const performance={a:'cheese',b:'guest',phase:'act',performance:kind,elapsed:progress*def.duration,duration:def.duration,spots:{cheese:[60,24],guest:[70,24]}};
+  const s=scene({hour:kind==='stargaze'?22:15,weather:kind==='puddle_splash'?'rainy':kind==='snow_tracks'?'snowy':'sunny',season:kind==='snow_tracks'?'winter':kind==='leaf_chase'?'fall':'spring',
+   duck:{x:60,y:24,stage,state:'idle',facing:true},visitor:{id:'guest',castId:profile,name:p.name,x:70,y:24,state:'idle',facing:false},living:{ecology:{},minds:{performances:[performance]}}});
+  renderer.draw(s,1,.03);const c=canvas.getContext('2d');c.drawImage(renderer.canvas,480,370,470,260,0,0,600,360);
+ }
+ return true;
+};for(const control of [age,guest,moment])control.oninput=()=>window.paint();
+let playing=false,last=performance.now();document.querySelector('#play').onclick=e=>{playing=!playing;e.target.textContent=playing?'Pause':'Play';};
+function tick(now){if(playing&&now-last>120){moment.value=(Number(moment.value)+1)%101;window.paint();last=now;}requestAnimationFrame(tick);}requestAnimationFrame(tick);window.paint();window.ready=true;
+</script>

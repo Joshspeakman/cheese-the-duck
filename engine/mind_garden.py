@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from engine.social_brains import Minds, ACTIONS, LABELS, action_key, clamp, stable
 from engine.local_speech import speak
 from world.guest_cast import guest_profile
+from engine import encounters
 
 CHEESE_VOICE = {
  'bio': 'Cheese is a scruffy, opinionated little duck: dry wit, petty pond grievances, theatrical indignation and a tender streak he tries to hide. He is curious, not a helpful assistant.',
@@ -113,6 +114,19 @@ class MindGarden:
             age=self.game.duck.growth_stage if key=='cheese' else 'visitor',
             actually_here=[self.model.residents[k]['name'] for k in self.present],
             current_activity=self.tasks.get(key,{}).get('action','taking in the pond'),listener=other)
+        plan=self.pond.state['plan'] if key=='cheese' else None
+        if plan:
+            facts['current_activity']=('Paused: ' if plan.get('paused') else '')+plan['label']
+            residence=plan.get('residence',{})
+            if residence.get('inside') and not plan.get('paused'):
+                facts['resting_place']=residence['id'].replace('_',' ')
+                facts['under_cover']=bool(residence['roof'])
+        paired=self.encounter_for(key)
+        if paired:
+            partner=paired['b'] if key==paired['a'] else paired['a']
+            facts['shared_activity']={'with':self.model.residents[partner]['name'],
+                'activity':paired['performance'].replace('_',' '),
+                'status':'walking to meet' if paired['phase']=='approach' else 'doing this together now'}
         history=[]
         if occasion=='player':
             for exchange in self.model.state['exchanges'][-24:]:
@@ -249,9 +263,8 @@ class MindGarden:
         self.pair_cooldowns[pair]=self.now+180
         if len(self.pair_cooldowns)>64:
             oldest=min(self.pair_cooldowns,key=self.pair_cooldowns.get);self.pair_cooldowns.pop(oldest)
-        if shared!='share':
-            self.coactivities[pair]={'a':a,'b':b,'action':shared,'until':self.now+18,'reward':reward,
-                                     'contexts':{a:self.context(a),b:self.context(b)}}
+        scene=encounters.create(self,a,b,shared,reward)
+        if scene:self.coactivities[pair]=scene
         if not self.executor:self.executor=ThreadPoolExecutor(max_workers=1,thread_name_prefix='pond-speech')
         heard='You have stopped near '+rb['name']+'. Start a short conversation with them about '+LABELS[shared]+'. React to the actual weather or a shared memory if relevant.'
         self.pending={'future':self.executor.submit(speak,self.prompt(a,heard,b,'peer'),self.fallback(a,heard)),
@@ -268,6 +281,9 @@ class MindGarden:
             if key=='cheese':continue
             r=self.model.residents[key];r['energy']=clamp(r['energy']-dt/2400);r['social']=clamp(r['social']-dt/1800)
             task=self.tasks.get(key)
+            if self.encounter_for(key):
+                if task:task['until']+=dt
+                continue
             if task and self.now>=task['until']:
                 action=task['action'];before=r['energy']+r['social']+r['mood']
                 if action=='rest':r['energy']=clamp(r['energy']+.12)
@@ -289,17 +305,15 @@ class MindGarden:
                 record['want']=LABELS[r['goal']['action']]
         for pair,activity in list(self.coactivities.items()):
             a,b=activity['a'],activity['b']
-            if a not in self.present or b not in self.present:
-                self.coactivities.pop(pair);continue
-            pa,pb=self.present[a],self.present[b]
-            if math.hypot(pa[0]-pb[0],(pa[1]-pb[1])*2)>32:
-                self.coactivities.pop(pair);continue
-            if self.now>=activity['until']:
+            result=encounters.advance(self,activity,dt)
+            if result=='cancelled':
+                self.cancel_encounter(a);continue
+            if result=='completed':
                 label=LABELS[activity['action']]
                 note=self.model.residents[a]['name']+' and '+self.model.residents[b]['name']+' lingered together over '+label+'.'
                 for key,other in ((a,b),(b,a)):
                     self.model.learn(key,activity['action'],activity['contexts'][key],activity['reward'],self.now,note,other)
-                self.pond.remember('shared',note,.75,b);self.coactivities.pop(pair)
+                self.pond.remember('shared',note,.75,b);self.cancel_encounter(a)
         if self.now>=self.model.state['next_social']:
             self.model.state['next_social']=self.now+22
             self._encounter()
@@ -311,12 +325,31 @@ class MindGarden:
         if not r:return {}
         task=self.tasks.get(key,{})
         speaking=(self.pending and self.pending['key']==key) or self.utterances.get(key,{}).get('until',0)>self.now
-        return dict(pace=.8+.4*r['traits']['confidence'],social=.2+.6*r['traits']['sociability'],
+        result = dict(pace=.8+.4*r['traits']['confidence'],social=.2+.6*r['traits']['sociability'],
                     rest=1.8 if task.get('action')=='rest' else .85,
                     gesture='chatting' if speaking else GESTURE.get(task.get('action'),'signature'))
+        encounter=self.encounter_for(key)
+        if encounter:
+            other=encounter['b'] if key==encounter['a'] else encounter['a']
+            result['meeting']={'target':list(encounter['spots'][key]),'facing':encounter['spots'][other][0]>encounter['spots'][key][0],
+                               'phase':encounter['phase']}
+        return result
+
+    def encounter_for(self,key):
+        return next((s for s in self.coactivities.values() if key in (s['a'],s['b'])),None)
+
+    def cancel_encounter(self,key):
+        for pair,scene in list(self.coactivities.items()):
+            if key not in (scene['a'],scene['b']):continue
+            if 'cheese' in (scene['a'],scene['b']) and self.game:
+                self.game.renderer.duck_pos.cancel_movement()
+                self.game.renderer.duck_pos.set_state_by_name('idle',0)
+            self.coactivities.pop(pair)
+        self.pond._cache=None
 
     def snapshot(self):
         return {'residents':[self.model.snapshot(k,k in self.present) for k in self.model.residents],
+                'performances':[encounters.snapshot(s) for s in self.coactivities.values()],
                 'exchanges':copy.deepcopy(self.model.state['exchanges'][-30:]),'voice':dict(self.voice),
                 'pending':self.model.residents[self.pending['key']]['name'] if self.pending else ('Cheese' if getattr(self.game,'_pending_talk_future',None) else None),
                 'feedback':self.feedback}

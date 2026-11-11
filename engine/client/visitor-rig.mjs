@@ -1,6 +1,7 @@
 import {duckRig,mirrorGlyph} from './duck-rig.mjs';
 import {GUEST_CAST} from './guest-cast.mjs';
 import {guestDesign,propRows} from './guest-shapes.mjs';
+import {performancePose} from './performances.mjs';
 
 export const VISITOR_STYLES=Object.fromEntries(['adventurous','scholarly','artistic','playful','mysterious','generous','foodie','athletic'].map(kind=>{
  const p=Object.values(GUEST_CAST).find(p=>p.archetype===kind);return [kind,{...p,tints:p.palette,gear:kind==='mysterious'?[...p.gear,'masquerade_mask']:p.gear}];
@@ -50,13 +51,14 @@ function signature(c,p,t,x,y,active){
 
 function duckGuest(duck,p,t,requested,active){
  const state=active?WORK[p.prop]||'idle':requested,spec=guestDesign(p);
+ if(duck.performance)duck={...duck,performance:{...duck.performance,young:p.species==='duckling'}};
  const base=duckRig({...duck,facing:true,state,cosmetics:Object.fromEntries(p.gear.map((id,i)=>[i,id]))},t,spec),c=canvas(base),r=base.rig,b=r.body,h=r.head;
  const markings={champion:['\\ /','(o)'],frida:['---'],truffle:['..'],pepper:['/'],ada:['::'],charity:['[X]','|/|'],cookie:['. : .'],sprint:['///'],heart:['<3'],leonardo:['o=o']};
  const mark=markings[p.id.replace('friend:','')];if(mark)c.group(mark,b.x+3,b.y+3,'p');
  if(p.id==='friend:frida')c.put('---',r.eye.x-1,r.eye.y-1,'b');
  if(p.id==='traveling_merchant'){for(let y=b.y+2;y<b.y+b.h-1;y+=2)c.put('| : |',b.x+4,y,'p');c.group(['[o]','[+]'],b.x+1,b.y+3,'a');}
  if(p.id==='celebrity_duck')c.put('[*]',b.x+b.w-7,b.y+2,'a');
- if(!/walking|arriving|leaving|swimming|sleeping/.test(requested)){
+ if(!duck.performance&&!/walking|arriving|leaving|swimming|sleeping/.test(requested)){
    const rows=propRows(p,t,active);let x=Math.min(W-Math.max(...rows.map(r=>r.length))-7,b.x+b.w-3),y=Math.min(FLOOR-rows.length-1,b.y+Math.max(3,b.h*.35));
    if(active&&p.prop==='apple'&&Math.floor(t*5)%8<3){x=h.x+1;y=h.y-5;}
    signature(c,p,t,x,y,active);
@@ -78,8 +80,14 @@ const BUTTERFLY_WING=['  .----.',' / .:::.\\','/ .:(o):.\\','| :/\/\\: |','| .:(
 
 function speciesGuest(duck,p,t,state,active){
  const c=canvas(),phase=Math.floor(t*p.pace)%8,walking=/walk|arriv|leav|hopp/.test(state),asleep=/sleep/.test(state);
+ const performance=performancePose(duck.performance);
+ if(performance){
+  const group=c.group,put=c.put;
+  c.group=(rows,x,y,tone='b',solid=false,eyes=false)=>group(rows,x+(tone==='g'?performance.x:0),y+performance.b+(tone==='g'?performance.y:0),tone,solid,eyes);
+  c.put=(text,x,y,tone='b')=>put(text,x+(tone==='e'?performance.x:0),y+performance.b+(tone==='e'?performance.y:0),tone);
+ }
  const dy=walking?({goose:[0,0,-1,-1,0,0,-1,-1],crow:[0,-1,-3,-2,0,0,-2,-1],toad:[0,1,-2,-3,-1,0,0,0]}[p.species]||[0,0,-1,-1,0,0,-1,-1])[phase]:0;
- const blink=asleep||t%5.7>5.4,eye=blink?'-':duck.mood==='happy'?'^':'O',eyes=rows=>rows.map(r=>r.replaceAll('O',eye));
+ const blink=asleep||t%5.7>5.4,eye=performance?.eye||(blink?'-':duck.mood==='happy'?'^':'O'),eyes=rows=>rows.map(r=>r.replaceAll('O',eye));
  let top=12,head={x:30,y:17,w:18,h:8},body={x:20,y:29,w:28,h:9},feet=[25,38];
  if(p.species==='goose'){
    top=15;c.group(GOOSE_BODY,21,30+dy,'b',true);
@@ -116,8 +124,10 @@ function speciesGuest(duck,p,t,state,active){
    c.put(eye,35,21+lift,'e');c.put(eye,38,21+lift,'e');c.put(phase%2?'*':'.',23+phase,21+lift,'a');c.put(phase%2?'.':'*',47-phase%3,29+lift,'h');
    head={x:34,y:20+lift,w:7,h:4};body={x:35,y:24+lift,w:4,h:5};feet=[];
  }
- for(const [i,x] of feet.entries()){const lift=walking&&((phase<4)===(i===0))?1:0;c.put(p.species==='toad'?'_\\/_':i?'>_':'_>',x,FLOOR+dy-lift,'a');}
- if(p.species!=='butterfly'&&!walking&&!asleep){const x=p.species==='owl'?24:p.species==='toad'?43:p.species==='goose'?43:40;signature(c,p,t,x,p.species==='owl'?31:33,active);}
+ for(const [i,x] of feet.entries()){const lift=performance?(i?performance.r:performance.l):walking&&((phase<4)===(i===0))?1:0;c.put(p.species==='toad'?'_\\/_':i?'>_':'_>',x,FLOOR+dy-lift-(performance?Math.max(0,performance.b):0),'a');}
+ if(p.species!=='butterfly'&&!walking&&!asleep&&!performance){const x=p.species==='owl'?24:p.species==='toad'?43:p.species==='goose'?43:40;signature(c,p,t,x,p.species==='owl'?31:33,active);}
+ if(performance?.w>.2){const rows=p.species==='toad'?[' /','/_)']:p.species==='butterfly'?['\\',' \\']:[' /)/)','/ / /','\\__/'];c.group(rows,body.x+body.w-3,body.y-Math.round(performance.w*4),'w');}
+ if(performance?.mark)c.put(performance.mark,head.x+head.w+2,head.y-2,'a');
  if(asleep)c.put('z',head.x+head.w+2,head.y-1,'p');
  return {...c.finish(duck.facing),width:W,anchorX:duck.facing===false?39:36,groundRow:39.5,scale:p.height/((40-top)*7.5),body:p.palette[0],face:p.palette[1],accent:p.palette[2],shade:'#778b7b',
    inks:{b:p.palette[0],g:p.palette[1],p:p.palette[2],h:'#e8dfc7',s:'#7c8e81',a:'#e1b26e',w:p.palette[1],e:'#152c29'},rig:{stage:'adult',species:p.species,head,body},material:'feathers',action:state,phase,frames:8,profileId:p.id,design:'pond-cast',signature:active,habit:p.habit,name:'',offsetY:0};
@@ -126,7 +136,7 @@ function speciesGuest(duck,p,t,state,active){
 export function visitorRig(duck,time=0){
  const p=guestProfile(duck),seed=seedOf(p.id),t=time+seed%19*.17,raw=duck.activity||duck.state||'idle';
  const requested=/reading|painting|giving/.test(raw)?'signature':/bounce|happy|exercise/.test(raw)?'dancing':/chat|greet/.test(raw)?'quacking':raw;
- const active=requested==='signature'||requested==='working'||requested==='idle'&&(t%(10+seed%5))>5&&(t%(10+seed%5))<8.5,state=requested==='signature'||requested==='working'?'idle':requested;
+ const active=!duck.performance&&(requested==='signature'||requested==='working'||requested==='idle'&&(t%(10+seed%5))>5&&(t%(10+seed%5))<8.5),state=duck.performance?'idle':requested==='signature'||requested==='working'?'idle':requested;
  const model=['duck','duckling'].includes(p.species)?duckGuest(duck,p,t,state,active):speciesGuest(duck,p,t,state,active);
  return {...model,personality:p.archetype,profileId:p.id,identity:p,habit:p.habit};
 }
