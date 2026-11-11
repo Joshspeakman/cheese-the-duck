@@ -1,0 +1,48 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Textile workshop</title>
+<style>body{background:#142b23;color:#ecdbb3;font:20px Georgia;margin:24px}canvas{display:block;max-width:100%;margin:24px 0}</style>
+<h1>Textiles · current in-game construction</h1>
+<script type="module">
+import {TEXTILE_BLUEPRINTS} from '../client/textile-workshop.mjs';
+import {itemSprite,ItemPainter} from '../client/ultra-items.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';
+import {textileGeometry,drawTextileTools,textilePose,TEXTILE_ROUTINES,TEXTILE_CONTROLS} from '../client/textile-routines.mjs';
+const painter=new ItemPainter(),surface='#142b23';
+function sheet(w,h){const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.fillStyle=surface;ctx.fillRect(0,0,w,h);return [canvas,ctx];}
+window.reviewTextiles=()=>{
+ const images={},ids=Object.keys(TEXTILE_BLUEPRINTS);
+ for(let page=0;page<Math.ceil(ids.length/4);page++){
+  const [canvas,c]=sheet(1800,1400);
+  ids.slice(page*4,page*4+4).forEach((id,n)=>{
+   const m=itemSprite(id,0,{state:{textile:{...TEXTILE_CONTROLS,tracks:[]}}}),x=n%2*900,y=Math.floor(n/2)*700;
+   c.fillStyle='#e5d8b4';c.font='23px Menlo';c.fillText(id,x+20,y+35);
+   const unit=Math.min(5,840/m.width,610/(m.art.length*1.5));painter.draw(c,m,x+450,y+670,unit/m.detailScale,{surface,outline:'#0a1712'});
+  });images['textile-objects-'+page]=canvas.toDataURL();document.body.append(canvas);
+ }
+ for(const [item,id,at] of [['persian_rug','fringe_comb',.6],['tatami_mat','tatami_grain',.6],['welcome_mat','welcome_wipe',.6],['moss_carpet','moss_pat',.6],['thatch','reed_sort',.6],['carpet_red','mat_roll',.65]]){
+  const [canvas,ctx]=sheet(1800,850);
+  ['hatchling','adult','elder'].forEach((stage,i)=>{
+   const routine={id,elapsed:TEXTILE_ROUTINES[id].duration*at,start:TEXTILE_CONTROLS},pose=textilePose(routine);
+   const home={...itemSprite(item,0,{state:{textile:{...TEXTILE_CONTROLS}},pose:{textile:pose}}),x:50+i*100,y:96,scale:TEXTILE_BLUEPRINTS[item].scale};
+   const character={...characterSprite({stage,state:'idle',facing:true,performance:{kind:'textile',routine}},0),x:home.x,y:home.y};
+   painter.draw(ctx,home,home.x*6,home.y*8,6*home.scale,{surface});
+   const g=textileGeometry(home,{character,inside:1},6,8);drawCharacter(ctx,g.character,6,8,surface);drawTextileTools(ctx,g);
+   ctx.fillStyle='#e5d8b4';ctx.font='23px Menlo';ctx.fillText(item+' · '+stage,i*600+20,35);
+  });images['textile-ages-'+item]=canvas.toDataURL();document.body.append(canvas);
+ }
+ return images;
+};
+window.replayTextiles=frames=>{
+ const view=new SceneCanvas();view.resize(1500,950);const images={},costs=[];let drawn=0,workers=0;
+ for(const [i,s]of frames.entries()){
+  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
+  if(JSON.stringify(s)!==before)throw Error('Textile renderer changed native state');
+  for(const o of view.world.objects)if(o.construction==='textile-v1'){
+   drawn++;if(o.clipped)throw Error('Clipped textile '+o.id);workers+=o.textileUsers?.length||0;
+   for(const r of o.textileUsers||[])if(r.character.clipped)throw Error('Clipped textile user');
+  }
+  if(s.review)images['textile-live-'+s.review]=view.canvas.toDataURL();
+ }
+ costs.sort((a,b)=>a-b);return {frames:frames.length,drawn,workers,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+</script>

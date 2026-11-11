@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from engine.social_brains import Minds, ACTIONS, LABELS, action_key, clamp, stable, player_claim
 from engine.local_speech import speak
 from world.guest_cast import guest_profile
-from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests, botanical_care, instrument_sessions, keepsakes, keepsake_company, creative_props, creative_company
+from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests, botanical_care, instrument_sessions, keepsakes, keepsake_company, creative_props, creative_company, textiles
 from engine.instrument_audio import InstrumentAudio
 
 CHEESE_VOICE = {
@@ -146,6 +146,8 @@ class MindGarden:
                 if plan['phase']=='approach':facts['current_activity']=('Paused: ' if plan.get('paused') else '')+'Walking to inspect '+keepsake['object']
             creative=creative_props.conversation(self.pond,plan)
             if creative:facts['creative_work']=creative
+            textile=textiles.conversation(self.pond,plan)
+            if textile:facts['textile_work']=textile
             water=plan.get('water_routine')
             if water and not water.get('done'):
                 facts['current_activity']=('Paused: ' if plan.get('paused') else '')+water['label']
@@ -332,7 +334,7 @@ class MindGarden:
         for i,key in enumerate(keys):
             for other in keys[i+1:]:
                 if 'cheese' in (key,other) and self.pond.state.get('plan',{}):
-                    if self.pond.state['plan'].get('seating') or self.pond.state['plan'].get('plant_care') or self.pond.state['plan'].get('instrument') or self.pond.state['plan'].get('keepsake_work') or self.pond.state['plan'].get('creative_work'):continue
+                    if self.pond.state['plan'].get('seating') or self.pond.state['plan'].get('plant_care') or self.pond.state['plan'].get('instrument') or self.pond.state['plan'].get('keepsake_work') or self.pond.state['plan'].get('creative_work') or self.pond.state['plan'].get('textile_work'):continue
                 if creative_company.active(self,key) or creative_company.active(self,other):continue
                 if keepsake_company.active(self,key) or keepsake_company.active(self,other):continue
                 if key in self.housing or other in self.housing or key in self.furnishings or other in self.furnishings or key in self.gardening or other in self.gardening or key in self.musicians or other in self.musicians or playdates.active(self,key) or playdates.active(self,other):continue

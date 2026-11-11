@@ -1,0 +1,1804 @@
+{
+  "mat_unroll": {
+    "label": "Unroll the mat and flatten its two curled corners",
+    "types": [
+      "mat",
+      "scrap"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "roll": 1,
+          "contact": 1,
+          "u": 0.2,
+          "v": 0.9
+        }
+      ],
+      [
+        0.4,
+        {
+          "roll": 0.6,
+          "contact": 1,
+          "u": 0.5,
+          "v": 0.65,
+          "l": 1
+        }
+      ],
+      [
+        0.68,
+        {
+          "roll": 0.15,
+          "contact": 1,
+          "u": 0.75,
+          "v": 0.3,
+          "r": 1
+        }
+      ],
+      [
+        0.86,
+        {
+          "roll": 0,
+          "press": 1,
+          "u": 0.8,
+          "v": 0.3
+        }
+      ],
+      [
+        1,
+        {
+          "roll": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.88,
+        "smooth"
+      ]
+    ]
+  },
+  "mat_roll": {
+    "label": "Lift the far edge and roll the damp weave out from underfoot",
+    "types": [
+      "mat",
+      "scrap"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "roll": 0,
+          "contact": 1,
+          "u": 0.2,
+          "v": 0.3
+        }
+      ],
+      [
+        0.4,
+        {
+          "roll": 0.25,
+          "contact": 1,
+          "u": 0.4,
+          "v": 0.45,
+          "l": 1
+        }
+      ],
+      [
+        0.65,
+        {
+          "roll": 0.65,
+          "contact": 1,
+          "u": 0.7,
+          "v": 0.75,
+          "r": 1
+        }
+      ],
+      [
+        0.9,
+        {
+          "roll": 1,
+          "u": 0.85,
+          "v": 1.08
+        }
+      ],
+      [
+        1,
+        {
+          "roll": 1,
+          "u": 0.85,
+          "v": 1.08
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.9,
+        "roll"
+      ]
+    ]
+  },
+  "rolled_inspect": {
+    "label": "Check the exposed edges while waiting for dry weather",
+    "types": [
+      "mat",
+      "scrap",
+      "bundle"
+    ],
+    "tool": "none",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.15,
+          "v": 1.08,
+          "x": 1,
+          "y": 1
+        }
+      ],
+      [
+        0.5,
+        {
+          "u": 0.5,
+          "v": 1.08,
+          "eye": "-",
+          "mark": "?"
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.85,
+          "v": 1.08,
+          "r": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "corner_smooth": {
+    "label": "Lift a stubborn corner and press its curl back into the weave",
+    "types": [
+      "mat",
+      "scrap"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.85,
+          "v": 0.8,
+          "contact": 1,
+          "lift": 0.3
+        }
+      ],
+      [
+        0.45,
+        {
+          "u": 0.85,
+          "v": 0.8,
+          "contact": 1,
+          "lift": 0.8
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.85,
+          "v": 0.8,
+          "press": 1,
+          "contact": 1,
+          "lift": 0
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.65,
+          "v": 0.65,
+          "press": 0.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "smooth"
+      ]
+    ]
+  },
+  "fringe_comb": {
+    "label": "Separate the fringe knots with slow alternating wing strokes",
+    "types": [
+      "mat"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.1,
+          "v": 0.95,
+          "contact": 1,
+          "comb": 0.1
+        }
+      ],
+      [
+        0.35,
+        {
+          "u": 0.35,
+          "v": 0.95,
+          "contact": 1,
+          "comb": 0.7,
+          "l": 1
+        }
+      ],
+      [
+        0.55,
+        {
+          "u": 0.7,
+          "v": 0.95,
+          "contact": 1,
+          "comb": 0.2,
+          "r": 1
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.9,
+          "v": 0.95,
+          "contact": 1,
+          "comb": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "comb"
+      ],
+      [
+        0.8,
+        "comb"
+      ]
+    ]
+  },
+  "lint_brush": {
+    "label": "Brush loose grit toward the edge and flick it away",
+    "types": [
+      "mat",
+      "scrap",
+      "bundle"
+    ],
+    "tool": "brush",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "u": 0.25,
+          "v": 0.4,
+          "contact": 1,
+          "comb": 0.2
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.5,
+          "v": 0.65,
+          "contact": 1,
+          "comb": 0.7
+        }
+      ],
+      [
+        0.62,
+        {
+          "u": 0.75,
+          "v": 0.9,
+          "contact": 1,
+          "comb": 1
+        }
+      ],
+      [
+        0.82,
+        {
+          "u": 0.9,
+          "v": 1.05,
+          "w": 0.7,
+          "mark": "."
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.62,
+        "clean"
+      ]
+    ]
+  },
+  "edge_shake": {
+    "label": "Raise one edge and shake the grit out of its binding",
+    "types": [
+      "mat",
+      "scrap"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.15,
+          "v": 0.8,
+          "lift": 0.4,
+          "contact": 1
+        }
+      ],
+      [
+        0.38,
+        {
+          "u": 0.15,
+          "v": 0.8,
+          "lift": 0.9,
+          "contact": 1,
+          "w": 0.8
+        }
+      ],
+      [
+        0.5,
+        {
+          "u": 0.15,
+          "v": 0.8,
+          "lift": 0.2,
+          "contact": 1
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.15,
+          "v": 0.8,
+          "lift": 0.8,
+          "contact": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.15,
+          "v": 0.8,
+          "lift": 0,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "clean"
+      ]
+    ]
+  },
+  "soft_loaf": {
+    "label": "Circle the soft patch, settle low, then stretch before leaving",
+    "types": [
+      "mat",
+      "moss",
+      "turf"
+    ],
+    "tool": "none",
+    "duration": 38,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "u": 0.25,
+          "v": 0.5,
+          "l": 1
+        }
+      ],
+      [
+        0.3,
+        {
+          "u": 0.65,
+          "v": 0.45,
+          "r": 1,
+          "x": -1
+        }
+      ],
+      [
+        0.48,
+        {
+          "u": 0.5,
+          "v": 0.6,
+          "b": 1.5,
+          "eye": "-"
+        }
+      ],
+      [
+        0.78,
+        {
+          "u": 0.5,
+          "v": 0.6,
+          "b": 1.5,
+          "eye": "-",
+          "mark": "z"
+        }
+      ],
+      [
+        0.91,
+        {
+          "u": 0.5,
+          "v": 0.6,
+          "w": 0.9,
+          "y": -1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "rest"
+      ]
+    ]
+  },
+  "night_listen": {
+    "label": "Stand still on the quiet weave and turn toward each rustle",
+    "types": [
+      "mat",
+      "moss",
+      "turf"
+    ],
+    "tool": "none",
+    "duration": 32,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.4,
+          "v": 0.65,
+          "y": -1
+        }
+      ],
+      [
+        0.38,
+        {
+          "u": 0.45,
+          "v": 0.6,
+          "x": -2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.58,
+        {
+          "u": 0.55,
+          "v": 0.6,
+          "x": 2,
+          "mark": "?"
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.5,
+          "v": 0.6,
+          "x": -1,
+          "w": 0.3
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "young_steps": {
+    "label": "Try four small steps and test the texture beneath each foot",
+    "types": [
+      "mat",
+      "moss",
+      "turf",
+      "rubber"
+    ],
+    "tool": "none",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "u": 0.25,
+          "v": 0.75,
+          "l": 1,
+          "press": 0.7
+        }
+      ],
+      [
+        0.35,
+        {
+          "u": 0.4,
+          "v": 0.65,
+          "r": 1,
+          "press": 0.8
+        }
+      ],
+      [
+        0.55,
+        {
+          "u": 0.65,
+          "v": 0.6,
+          "l": 1,
+          "press": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.78,
+        {
+          "u": 0.75,
+          "v": 0.75,
+          "r": 1,
+          "press": 0.7,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.15,
+        "track"
+      ],
+      [
+        0.35,
+        "track"
+      ],
+      [
+        0.55,
+        "track"
+      ],
+      [
+        0.78,
+        "track"
+      ]
+    ]
+  },
+  "elder_settle": {
+    "label": "Test the edge, ease down slowly, and loosen stiff wings",
+    "types": [
+      "mat",
+      "moss",
+      "turf"
+    ],
+    "tool": "none",
+    "duration": 40,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.22,
+        {
+          "u": 0.25,
+          "v": 0.85,
+          "press": 0.5,
+          "l": 0.4
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.42,
+          "v": 0.7,
+          "b": 0.8,
+          "r": 0.4
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.5,
+          "v": 0.7,
+          "b": 1.2,
+          "eye": "-"
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.5,
+          "v": 0.7,
+          "w": 0.5,
+          "b": 0.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "rest"
+      ]
+    ]
+  },
+  "runner_parade": {
+    "label": "Take a ridiculous royal procession down the red carpet",
+    "types": [
+      "mat"
+    ],
+    "tool": "none",
+    "duration": 32,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "u": 0.15,
+          "v": 0.65,
+          "l": 1,
+          "w": 0.4
+        }
+      ],
+      [
+        0.35,
+        {
+          "u": 0.4,
+          "v": 0.65,
+          "r": 1,
+          "w": 0.7,
+          "y": -1
+        }
+      ],
+      [
+        0.6,
+        {
+          "u": 0.7,
+          "v": 0.65,
+          "l": 1,
+          "w": 1,
+          "eye": "^"
+        }
+      ],
+      [
+        0.82,
+        {
+          "u": 0.87,
+          "v": 0.65,
+          "r": 1,
+          "mark": "!"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "track"
+      ],
+      [
+        0.6,
+        "track"
+      ]
+    ]
+  },
+  "tatami_grain": {
+    "label": "Follow the reed rows without pulling at their woven ends",
+    "types": [
+      "mat"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "u": 0.2,
+          "v": 0.35,
+          "contact": 1,
+          "comb": 0.1
+        }
+      ],
+      [
+        0.38,
+        {
+          "u": 0.75,
+          "v": 0.35,
+          "contact": 1,
+          "comb": 0.5,
+          "l": 1
+        }
+      ],
+      [
+        0.56,
+        {
+          "u": 0.75,
+          "v": 0.65,
+          "contact": 1,
+          "comb": 0.8
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.2,
+          "v": 0.65,
+          "contact": 1,
+          "comb": 1,
+          "r": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "medallion_trace": {
+    "label": "Walk the knotted border and inspect the central flower medallion",
+    "types": [
+      "mat"
+    ],
+    "tool": "none",
+    "duration": 34,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.16,
+        {
+          "u": 0.15,
+          "v": 0.8,
+          "l": 1
+        }
+      ],
+      [
+        0.34,
+        {
+          "u": 0.25,
+          "v": 0.3,
+          "r": 1,
+          "y": 1
+        }
+      ],
+      [
+        0.54,
+        {
+          "u": 0.8,
+          "v": 0.3,
+          "l": 1
+        }
+      ],
+      [
+        0.72,
+        {
+          "u": 0.7,
+          "v": 0.75,
+          "r": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "u": 0.5,
+          "v": 0.5,
+          "x": 1,
+          "y": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.88,
+        "study"
+      ]
+    ]
+  },
+  "welcome_wipe": {
+    "label": "Wipe one muddy foot, then the other, across the coir loops",
+    "types": [
+      "mat",
+      "rubber"
+    ],
+    "tool": "none",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.45,
+          "v": 0.7,
+          "l": 1,
+          "press": 0.5
+        }
+      ],
+      [
+        0.35,
+        {
+          "u": 0.35,
+          "v": 0.65,
+          "l": 0,
+          "press": 1
+        }
+      ],
+      [
+        0.55,
+        {
+          "u": 0.6,
+          "v": 0.7,
+          "r": 1,
+          "press": 0.5
+        }
+      ],
+      [
+        0.72,
+        {
+          "u": 0.7,
+          "v": 0.65,
+          "r": 0,
+          "press": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "u": 0.6,
+          "v": 0.8,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "wipe"
+      ],
+      [
+        0.72,
+        "wipe"
+      ]
+    ]
+  },
+  "rubber_press": {
+    "label": "Press the drainage ribs and watch them spring back",
+    "types": [
+      "rubber"
+    ],
+    "tool": "none",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.35,
+          "v": 0.6,
+          "l": 1,
+          "press": 0.25
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.35,
+          "v": 0.6,
+          "b": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "u": 0.65,
+          "v": 0.6,
+          "r": 1,
+          "press": 0.3
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.65,
+          "v": 0.6,
+          "b": 1,
+          "press": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "track"
+      ],
+      [
+        0.8,
+        "track"
+      ]
+    ]
+  },
+  "rubber_drain": {
+    "label": "Tilt a wet corner so trapped water drains through the channels",
+    "types": [
+      "rubber"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "u": 0.1,
+          "v": 0.8,
+          "lift": 0.2,
+          "contact": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.1,
+          "v": 0.8,
+          "lift": 0.8,
+          "contact": 1
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.1,
+          "v": 0.8,
+          "lift": 0.8,
+          "contact": 1,
+          "mark": "."
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.1,
+          "v": 0.8,
+          "lift": 0,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "drain"
+      ]
+    ]
+  },
+  "rubber_bounce": {
+    "label": "Try a low springy hop, land with both feet, and regain balance",
+    "types": [
+      "rubber"
+    ],
+    "tool": "none",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.5,
+          "v": 0.6,
+          "b": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.38,
+        {
+          "u": 0.5,
+          "v": 0.6,
+          "b": -2,
+          "w": 0.7,
+          "l": 1,
+          "r": 1
+        }
+      ],
+      [
+        0.52,
+        {
+          "u": 0.5,
+          "v": 0.6,
+          "b": 1.2,
+          "press": 1
+        }
+      ],
+      [
+        0.7,
+        {
+          "u": 0.55,
+          "v": 0.6,
+          "w": 0.4
+        }
+      ],
+      [
+        0.87,
+        {
+          "u": 0.5,
+          "v": 0.6,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.52,
+        "track"
+      ]
+    ]
+  },
+  "grass_dew": {
+    "label": "Bend each way to examine dew caught between the grass blades",
+    "types": [
+      "turf"
+    ],
+    "tool": "none",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.25,
+          "v": 0.6,
+          "x": 1,
+          "y": 2
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.5,
+          "v": 0.4,
+          "x": -1,
+          "y": 2,
+          "l": 1
+        }
+      ],
+      [
+        0.67,
+        {
+          "u": 0.75,
+          "v": 0.6,
+          "x": 1,
+          "y": 1,
+          "r": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.5,
+          "v": 0.7,
+          "y": -1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "grass_tracks": {
+    "label": "Part the grass with a winding set of webbed footprints",
+    "types": [
+      "turf"
+    ],
+    "tool": "none",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "u": 0.2,
+          "v": 0.8,
+          "l": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "u": 0.4,
+          "v": 0.55,
+          "r": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.55,
+        {
+          "u": 0.6,
+          "v": 0.35,
+          "l": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.78,
+        {
+          "u": 0.8,
+          "v": 0.65,
+          "r": 1,
+          "press": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.15,
+        "track"
+      ],
+      [
+        0.35,
+        "track"
+      ],
+      [
+        0.55,
+        "track"
+      ],
+      [
+        0.78,
+        "track"
+      ]
+    ]
+  },
+  "frost_sweep": {
+    "label": "Brush frost away from a small footing and test the exposed fibres",
+    "types": [
+      "turf",
+      "moss",
+      "mat",
+      "rubber"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.3,
+          "v": 0.7,
+          "contact": 1,
+          "comb": 0.2
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.7,
+          "v": 0.7,
+          "contact": 1,
+          "comb": 0.9
+        }
+      ],
+      [
+        0.66,
+        {
+          "u": 0.5,
+          "v": 0.6,
+          "contact": 1,
+          "press": 0.8
+        }
+      ],
+      [
+        0.86,
+        {
+          "u": 0.5,
+          "v": 0.6,
+          "y": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.42,
+        "frost"
+      ]
+    ]
+  },
+  "moss_pat": {
+    "label": "Pat the soft moss cushions and watch their small stems recover",
+    "types": [
+      "moss"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.3,
+          "v": 0.6,
+          "contact": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.5,
+          "v": 0.4,
+          "contact": 1,
+          "press": 0.6
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.7,
+          "v": 0.65,
+          "contact": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.5,
+          "v": 0.7,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "smooth"
+      ]
+    ]
+  },
+  "moss_probe": {
+    "label": "Check the damp moss edge without pulling up its roots",
+    "types": [
+      "moss"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.15,
+          "v": 0.75,
+          "contact": 0.5,
+          "y": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.2,
+          "v": 0.65,
+          "contact": 1,
+          "press": 0.4
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.25,
+          "v": 0.7,
+          "contact": 0.3,
+          "eye": "o",
+          "mark": "?"
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.35,
+          "v": 0.8,
+          "y": -1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "study"
+      ]
+    ]
+  },
+  "weave_tighten": {
+    "label": "Tuck a loose braid end back through its neighboring loops",
+    "types": [
+      "mat"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.15,
+          "v": 0.7,
+          "contact": 1,
+          "comb": 0.1,
+          "lift": 0.2
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.2,
+          "v": 0.65,
+          "contact": 1,
+          "comb": 0.5
+        }
+      ],
+      [
+        0.64,
+        {
+          "u": 0.25,
+          "v": 0.75,
+          "contact": 1,
+          "comb": 0.9,
+          "press": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.4,
+          "v": 0.8,
+          "contact": 0
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.64,
+        "comb"
+      ]
+    ]
+  },
+  "batting_fluff": {
+    "label": "Separate the compressed batting, lift it, and let it settle softly",
+    "types": [
+      "bundle"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.25,
+          "v": 0.65,
+          "loft": 0.2,
+          "contact": 1
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.5,
+          "v": 0.5,
+          "loft": 0.8,
+          "lift": 0.5,
+          "contact": 1
+        }
+      ],
+      [
+        0.67,
+        {
+          "u": 0.65,
+          "v": 0.65,
+          "loft": 1,
+          "lift": 0.2,
+          "contact": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.5,
+          "v": 0.8,
+          "loft": 0.9
+        }
+      ],
+      [
+        1,
+        {
+          "loft": 0.9
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.85,
+        "smooth"
+      ]
+    ]
+  },
+  "reed_sort": {
+    "label": "Loosen the binding, fan the reeds, align their ends, and tie them again",
+    "types": [
+      "bundle"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.4,
+          "v": 0.55,
+          "tie": 0,
+          "contact": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.7,
+          "v": 0.45,
+          "tie": 0,
+          "spread": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.7,
+          "v": 0.8,
+          "tie": 0.2,
+          "spread": 0.4,
+          "contact": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.5,
+          "v": 0.6,
+          "tie": 1,
+          "spread": 0.2,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "tie": 1,
+          "spread": 0.2
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.85,
+        "sort"
+      ]
+    ]
+  },
+  "binding_check": {
+    "label": "Pull gently against the twine knot and tuck its loose end",
+    "types": [
+      "bundle"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.45,
+          "v": 0.5,
+          "tie": 0.6,
+          "contact": 1
+        }
+      ],
+      [
+        0.45,
+        {
+          "u": 0.4,
+          "v": 0.6,
+          "tie": 0.8,
+          "contact": 1,
+          "w": 0.3
+        }
+      ],
+      [
+        0.68,
+        {
+          "u": 0.55,
+          "v": 0.55,
+          "tie": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.6,
+          "v": 0.7,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "tie": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.68,
+        "sort"
+      ]
+    ]
+  },
+  "scrap_fold": {
+    "label": "Bring the frayed corner inward and crease the scrap into a tidy fold",
+    "types": [
+      "scrap"
+    ],
+    "tool": "hand",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "u": 0.8,
+          "v": 0.6,
+          "roll": 0,
+          "contact": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.6,
+          "v": 0.6,
+          "roll": 0.35,
+          "lift": 0.3,
+          "contact": 1
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.5,
+          "v": 0.65,
+          "roll": 0.7,
+          "press": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.5,
+          "v": 0.85,
+          "roll": 0.7
+        }
+      ],
+      [
+        1,
+        {
+          "roll": 0.7
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "smooth"
+      ]
+    ]
+  }
+}

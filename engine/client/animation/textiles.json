@@ -1,0 +1,145 @@
+{
+  "grass_patch": {
+    "type": "turf",
+    "style": "meadow",
+    "w": 146,
+    "h": 74,
+    "scale": 0.57,
+    "material": "leaf",
+    "portable": false,
+    "skill": "gardening",
+    "verb": "Tend"
+  },
+  "grass_floor": {
+    "type": "turf",
+    "style": "lawn",
+    "w": 174,
+    "h": 78,
+    "scale": 0.57,
+    "material": "leaf",
+    "portable": false,
+    "skill": "gardening",
+    "verb": "Tend"
+  },
+  "moss_carpet": {
+    "type": "moss",
+    "style": "cushions",
+    "w": 148,
+    "h": 76,
+    "scale": 0.56,
+    "material": "moss",
+    "portable": true,
+    "skill": "gardening",
+    "verb": "Tend"
+  },
+  "carpet_red": {
+    "type": "mat",
+    "style": "runner",
+    "w": 182,
+    "h": 76,
+    "scale": 0.58,
+    "material": "fabric",
+    "portable": false,
+    "skill": "care",
+    "verb": "Unfold and settle"
+  },
+  "tatami_mat": {
+    "type": "mat",
+    "style": "tatami",
+    "w": 166,
+    "h": 80,
+    "scale": 0.57,
+    "material": "straw",
+    "portable": false,
+    "skill": "care",
+    "verb": "Unfold and settle"
+  },
+  "persian_rug": {
+    "type": "mat",
+    "style": "medallion",
+    "w": 174,
+    "h": 86,
+    "scale": 0.58,
+    "material": "wool",
+    "portable": false,
+    "skill": "care",
+    "verb": "Unfold and settle"
+  },
+  "rubber_mat": {
+    "type": "rubber",
+    "style": "traction",
+    "w": 154,
+    "h": 76,
+    "scale": 0.56,
+    "material": "rubber",
+    "portable": false,
+    "skill": "care",
+    "verb": "Arrange"
+  },
+  "welcome_mat": {
+    "type": "mat",
+    "style": "coir",
+    "w": 150,
+    "h": 74,
+    "scale": 0.56,
+    "material": "coir",
+    "portable": false,
+    "skill": "care",
+    "verb": "Unfold and settle"
+  },
+  "rug": {
+    "type": "mat",
+    "style": "patchwork",
+    "w": 166,
+    "h": 80,
+    "scale": 0.56,
+    "material": "fabric",
+    "portable": false,
+    "skill": "care",
+    "verb": "Unfold and settle"
+  },
+  "woven_grass": {
+    "type": "mat",
+    "style": "braid",
+    "w": 148,
+    "h": 72,
+    "scale": 0.49,
+    "material": "straw",
+    "portable": true,
+    "skill": "care",
+    "verb": "Unfold and settle"
+  },
+  "insulation": {
+    "type": "bundle",
+    "style": "batting",
+    "w": 136,
+    "h": 80,
+    "scale": 0.48,
+    "material": "fabric",
+    "portable": true,
+    "skill": "care",
+    "verb": "Arrange"
+  },
+  "thatch": {
+    "type": "bundle",
+    "style": "reeds",
+    "w": 150,
+    "h": 86,
+    "scale": 0.49,
+    "material": "reed",
+    "portable": true,
+    "skill": "care",
+    "verb": "Arrange"
+  },
+  "fabric_scrap": {
+    "type": "scrap",
+    "style": "scrap",
+    "w": 132,
+    "h": 74,
+    "scale": 0.44,
+    "material": "fabric",
+    "portable": true,
+    "skill": "care",
+    "verb": "Arrange"
+  }
+}

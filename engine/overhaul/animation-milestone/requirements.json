@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: creative props now support independently arrived regular, rare and story companions with 13 complementary roles, shared native clocks, actual-observation memories, exact-copy ownership, selective conversation facts and cancellation/weather/save safeguards. Telescope steps and painting decks stay fixed while Cheese climbs without stretching his body. 289 company lifecycle checks, 2912 cast/age rig cases, 138 full JS tests, 184 solo creative checks, 14 notebook UI checks, 197 shared-reading checks, 34 chat checks, 694 simulation checks over 72 hours, two native visual replays and a clean 95-frame source smoke passed. Installed chat 2.36.1 matches verified chat modules and remains unchanged. Goal remains active: 206 reconstructed artworks, 336 pending; no object has passed its 48-sequence audit.",
+  "previous_goal_turn": "Progress: reconstructed 13 textile, living-ground and fibre objects and added 28 native action cores. Per-copy rolling, cleaning, footprints, moisture/frost, age/time/weather selection, original-material handling, paused saves and truthful conversation facts pass 286 native checks. 142 full JS tests, 896 age/rig cases, 2828 native/renderer pose samples, 17 notebook UI checks, 768-frame visual replay, 254 placement checks, 289 creative-company checks, 694 simulation checks over 72 hours and a clean 100-frame source smoke pass. Goal remains active: 219 reconstructed artworks, 323 pending; no object has passed its 48-sequence audit. Installed chat release 2.36.1 remains unchanged.",
   "items": [
     {
       "id": "hat_red",
@@ -498,8 +498,10 @@
     {
       "id": "grass_patch",
       "family": "rug",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "28 native action cores across 13 textile, living-ground and fibre objects. Actual per-copy folds, fringe care, dirt, footprints, frost, moisture, age/time/weather choice, fixed-scale contacts, cancellation, saves and original-material handling are verified foundations. Visitor participation, personal/material-specific choreography, tool pickup/put-away and all 48 meaningful sequences per object remain unfinished."
     },
     {
       "id": "cactus",
@@ -1144,8 +1146,10 @@
     {
       "id": "welcome_mat",
       "family": "rug",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "28 native action cores across 13 textile, living-ground and fibre objects. Actual per-copy folds, fringe care, dirt, footprints, frost, moisture, age/time/weather choice, fixed-scale contacts, cancellation, saves and original-material handling are verified foundations. Visitor participation, personal/material-specific choreography, tool pickup/put-away and all 48 meaningful sequences per object remain unfinished."
     },
     {
       "id": "potted_cactus",
@@ -1422,8 +1426,10 @@
     {
       "id": "grass_floor",
       "family": "rug",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "28 native action cores across 13 textile, living-ground and fibre objects. Actual per-copy folds, fringe care, dirt, footprints, frost, moisture, age/time/weather choice, fixed-scale contacts, cancellation, saves and original-material handling are verified foundations. Visitor participation, personal/material-specific choreography, tool pickup/put-away and all 48 meaningful sequences per object remain unfinished."
     },
     {
       "id": "wooden_planks",
@@ -1440,14 +1446,18 @@
     {
       "id": "carpet_red",
       "family": "rug",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "28 native action cores across 13 textile, living-ground and fibre objects. Actual per-copy folds, fringe care, dirt, footprints, frost, moisture, age/time/weather choice, fixed-scale contacts, cancellation, saves and original-material handling are verified foundations. Visitor participation, personal/material-specific choreography, tool pickup/put-away and all 48 meaningful sequences per object remain unfinished."
     },
     {
       "id": "tatami_mat",
       "family": "rug",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "28 native action cores across 13 textile, living-ground and fibre objects. Actual per-copy folds, fringe care, dirt, footprints, frost, moisture, age/time/weather choice, fixed-scale contacts, cancellation, saves and original-material handling are verified foundations. Visitor participation, personal/material-specific choreography, tool pickup/put-away and all 48 meaningful sequences per object remain unfinished."
     },
     {
       "id": "sand_floor",
@@ -1500,8 +1510,10 @@
     {
       "id": "persian_rug",
       "family": "rug",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "28 native action cores across 13 textile, living-ground and fibre objects. Actual per-copy folds, fringe care, dirt, footprints, frost, moisture, age/time/weather choice, fixed-scale contacts, cancellation, saves and original-material handling are verified foundations. Visitor participation, personal/material-specific choreography, tool pickup/put-away and all 48 meaningful sequences per object remain unfinished."
     },
     {
       "id": "rainbow_path",
@@ -1518,8 +1530,10 @@
     {
       "id": "rubber_mat",
       "family": "rug",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "28 native action cores across 13 textile, living-ground and fibre objects. Actual per-copy folds, fringe care, dirt, footprints, frost, moisture, age/time/weather choice, fixed-scale contacts, cancellation, saves and original-material handling are verified foundations. Visitor participation, personal/material-specific choreography, tool pickup/put-away and all 48 meaningful sequences per object remain unfinished."
     },
     {
       "id": "autumn_leaves",
@@ -2089,8 +2103,10 @@
     {
       "id": "moss_carpet",
       "family": "rug",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "28 native action cores across 13 textile, living-ground and fibre objects. Actual per-copy folds, fringe care, dirt, footprints, frost, moisture, age/time/weather choice, fixed-scale contacts, cancellation, saves and original-material handling are verified foundations. Visitor participation, personal/material-specific choreography, tool pickup/put-away and all 48 meaningful sequences per object remain unfinished."
     },
     {
       "id": "pebble_path",
@@ -2181,8 +2197,10 @@
     {
       "id": "woven_grass",
       "family": "rug",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "28 native action cores across 13 textile, living-ground and fibre objects. Actual per-copy folds, fringe care, dirt, footprints, frost, moisture, age/time/weather choice, fixed-scale contacts, cancellation, saves and original-material handling are verified foundations. Visitor participation, personal/material-specific choreography, tool pickup/put-away and all 48 meaningful sequences per object remain unfinished."
     },
     {
       "id": "rope",
@@ -2193,8 +2211,10 @@
     {
       "id": "thatch",
       "family": "rug",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "28 native action cores across 13 textile, living-ground and fibre objects. Actual per-copy folds, fringe care, dirt, footprints, frost, moisture, age/time/weather choice, fixed-scale contacts, cancellation, saves and original-material handling are verified foundations. Visitor participation, personal/material-specific choreography, tool pickup/put-away and all 48 meaningful sequences per object remain unfinished."
     },
     {
       "id": "clay_brick",
@@ -2217,8 +2237,10 @@
     {
       "id": "insulation",
       "family": "rug",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "28 native action cores across 13 textile, living-ground and fibre objects. Actual per-copy folds, fringe care, dirt, footprints, frost, moisture, age/time/weather choice, fixed-scale contacts, cancellation, saves and original-material handling are verified foundations. Visitor participation, personal/material-specific choreography, tool pickup/put-away and all 48 meaningful sequences per object remain unfinished."
     },
     {
       "id": "stone_hammer",
@@ -2571,8 +2593,10 @@
     {
       "id": "fabric_scrap",
       "family": "rug",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "28 native action cores across 13 textile, living-ground and fibre objects. Actual per-copy folds, fringe care, dirt, footprints, frost, moisture, age/time/weather choice, fixed-scale contacts, cancellation, saves and original-material handling are verified foundations. Visitor participation, personal/material-specific choreography, tool pickup/put-away and all 48 meaningful sequences per object remain unfinished."
     },
     {
       "id": "eagle_feather",
@@ -3540,8 +3564,10 @@
     {
       "id": "rug",
       "family": "rug",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "28 native action cores across 13 textile, living-ground and fibre objects. Actual per-copy folds, fringe care, dirt, footprints, frost, moisture, age/time/weather choice, fixed-scale contacts, cancellation, saves and original-material handling are verified foundations. Visitor participation, personal/material-specific choreography, tool pickup/put-away and all 48 meaningful sequences per object remain unfinished."
     },
     {
       "id": "pond_mat",
@@ -3855,10 +3881,10 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "creative_company_and_stationary_working_steps",
+    "sourcePhase": "textile_construction_and_native_material_handling",
     "fullyOverhauled": false,
-    "constructedObjects": 206,
-    "remainingArtwork": 336,
+    "constructedObjects": 219,
+    "remainingArtwork": 323,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -4060,26 +4086,41 @@
       "engine/artifacts/animation-milestone/creative-company-live-telescope.png",
       "engine/artifacts/animation-milestone/creative-company-live-easel.png",
       "engine/artifacts/animation-milestone/creative-company-live-kite.png",
-      "engine/artifacts/animation-milestone/creative-company-live-paper_plane_design.png"
+      "engine/artifacts/animation-milestone/creative-company-live-paper_plane_design.png",
+      "engine/client/animation/textiles.json",
+      "engine/client/animation/textile-routines.json",
+      "engine/textiles.py",
+      "engine/client/textile-workshop.mjs",
+      "engine/client/textile-routines.mjs",
+      "engine/client/textile-state.mjs",
+      "engine/check_textiles.py",
+      "engine/tests/textiles.test.mjs",
+      "engine/tests/textiles-theatre.html",
+      "engine/textiles-check.cjs",
+      "engine/textiles-ui-check.cjs",
+      "engine/artifacts/animation-milestone/textile-native.json",
+      "engine/artifacts/animation-milestone/textile-render.json",
+      "engine/artifacts/animation-milestone/textile-ui.json"
     ],
     "next": [
+      "Expand textile handling with independently arriving visitors, complementary roles, actual-observation memories, species-safe contact and full material/age/mood/season repertoires. The 13 reconstructions and 28 shared cores do not satisfy any per-object 48-sequence audit. Continue all 323 pending artworks and the entire milestone.",
       "Deepen the four creative props beyond 27 solo cores and 13 company roles: actual telescope handoffs, personal visitor choreography, guest-to-guest invitations, physical tool pickup/put-away and unfolded practice-paper handling. Independent arrivals, fixed work steps, actual observations and completed shared-session learning are implemented. Complete full mood/season/age/cast coverage and every-object 48-sequence audits; do not count this foundation as a completed repertoire.",
-      "Continue reconstruction of the remaining 336 object artworks and their native interactions; do not treat the 206 initial reconstructions or shared core counts as completion of the full object/age/guest/season/mood milestone.",
+      "Continue reconstruction of the remaining 323 object artworks and their native interactions; do not treat the 219 initial reconstructions or shared core counts as completion of the full object/age/guest/season/mood milestone.",
       "Deepen the 12 keepsakes beyond 19 solo cores and 15 shared scene cores: personal visitor variations, guest-to-guest reading, egg listening, physical tool pickup/put-away, portable physical-copy handling and individual 48-sequence repertoires. Their initial regular/rare/story company lifecycle and all-cast posed rigs are now implemented and checked.",
       "Expand 27 reconstructed lights beyond the ten initial control/observation cores: guest participation, contextual company, real tool pickup/put-away, surface-specific manipulation, expressive age/personality staging and each item\u2019s 48 meaningful sequences. Current controls and native state are verified foundations, not the completed milestone.",
-      "Expand instrument-specific and guest-specific performance repertoires beyond the 25 shared phrase cores, with explicit approach/climbing, stationary multi-level supports, instrument pickup/put-away, listening audiences and richer reciprocal musical gestures. Keep all per-object sequence counts unverified until the 48 meaningful sequence audit passes. Continue the remaining 336 artwork reconstructions and all other milestone requirements.",
-      "Continue construction-specific plant repertoires, seasonal/mood/personality choreography, reciprocal gestures and physical tool handoffs. The 19 shared care scores and all-cast rig fit are foundations, not 48 bespoke sequences on each plant. Continue the remaining 336 item reconstructions and the full per-object animation milestone.",
+      "Expand instrument-specific and guest-specific performance repertoires beyond the 25 shared phrase cores, with explicit approach/climbing, stationary multi-level supports, instrument pickup/put-away, listening audiences and richer reciprocal musical gestures. Keep all per-object sequence counts unverified until the 48 meaningful sequence audit passes. Continue the remaining 323 artwork reconstructions and all other milestone requirements.",
+      "Continue construction-specific plant repertoires, seasonal/mood/personality choreography, reciprocal gestures and physical tool handoffs. The 19 shared care scores and all-cast rig fit are foundations, not 48 bespoke sequences on each plant. Continue the remaining 323 item reconstructions and the full per-object animation milestone.",
       "Extend spatial arrangement to the separate building/decorating/project editors and consider additional habitat areas for larger collections; all 218 placeable shop objects now use measured footprints, dry-ground/water checks and truthful storage. Building and decoration objects reserve space against habitat purchases, but their own editors still use legacy placement rules.",
       "Deepen construction-specific nest/bed/house acting and each remaining item repertoire; the 51 shared nest scores do not by themselves satisfy 48 bespoke sequences per object.",
       "Add explicit nest body-facing transitions, construction-specific canopy/quilt/pillow/lining actions and species/age-specific climbing and doorway choreography.",
-      "Reconstruct the remaining 336 objects with authored details and anchors; regenerate measured placement bounds as artwork changes.",
+      "Reconstruct the remaining 323 objects with authored details and anchors; regenerate measured placement bounds as artwork changes.",
       "Expand guest-specific and age-specific behavior; eighteen shared tracks are not a complete bespoke catalogue.",
       "Extend invitations, prop handoffs and cooperative item use, with real arrival and completion evidence.",
       "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation.",
       "Add physical reading, desk/workbench actions, cabinet/wardrobe/mirror use and construction-specific furniture routines; the 16 shared seating tracks do not satisfy the per-object 48-sequence target."
     ],
     "checks": {
-      "javascript": 138,
+      "javascript": 142,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4087,7 +4128,7 @@
       "learningBrains": 44,
       "shelterLifecycle": 30,
       "pairedLifecycle": 16,
-      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Initial character-operated tools are now reviewed separately below; plant-specific social routines and every-object 48-sequence coverage remain unfinished. Botanical care: 19 score illustrations on four sheets plus real native solo/company replay. Connected mirrored grips, fixed character scale, supported feet, age-sized tools, actual soil/rim/leaf contacts, downward pours, butterfly hovering, reduced motion and selectable visiting gardeners verified. Interrupted and incomplete shared work grant no shared memory; completed care teaches gardening. Tool pickup/put-away and individual-object/guest repertoires remain unfinished. Music review: nine instrument constructions on three sheets, 25 phrases at three phases on seven sheets, plus real native solo/shared scenes. All eight hatched ages and 48 visitor rigs remain bounded with fixed body scale; mirrored grips, real bill contact, depressed keys/valves, ringing cymbals/chimes, radio knobs, fan brushes, supported feet and continuous note-to-note travel are checked. Actual regular, rare and story visitors reserve independent destinations, and visitor-to-visitor duets work without crediting Cheese. Shared native clocks emit each note once, skip missed-note bursts and grant learning/memories only upon completion. Muting, direct care, pauses, moved objects, storms, replaced visits and safe worker shutdown are verified. Physical entry/climbing and full individual object/guest repertoires remain unfinished. Physical-copy review: distinct healthy/thirsty fern state, exact click identities, copy-specific inspector and arrangement controls reviewed in Electron. Live UI commands target the selected copy; storing/restoring one retains its history and leaves its sibling outside. Same-position replacement cannot inherit a current musician or reward. Physical state snapshots are detached from saves. Lighting review: 27 distinct constructions across five sheets, three Cheese ages at a real control, and live day/night/contact captures. Local cloth glow, ceramic contrast, warm versus blue flame, larger duck hologram, fixed-scale grounded poses, exact held-tool contacts, reduced motion and paused poses verified. Live twin-lamp notebook mode changes, cancellation, storage and same-identity restoration tested through the production command validator. Ordinary and rare visitor light participation and individual-object repertoires remain pending. Keepsake review: twelve constructions, open/closed sheets, three reading ages and live book/barrel/card scenes; 70 native frames with 62 active workers. Fixed character scale, grounded feet, physical page/lid contacts, paused clocks and immutable snapshots pass. The real notebook operates the exact selected chest and exposes live page and water state. Reading words share one definition with the drawing and are supplied to natural chat only after arrival and opening. Full individual repertoires and visitor participation remain unfinished. Shared keepsakes: fifteen complementary company tracks, all 48 cast profiles and eight hatched Cheese ages, ten rendered sheets, and 197 actual native frames. Independent regular/rare/story arrivals, short bounded waits, shared clocks, physical-copy identity, fixed scale, supported feet or butterfly hover, directional pointers, step-in/out gestures, selectable visiting readers, pause, interruption and completed observed-text memories pass. These initial shared scenes do not satisfy any per-object 48-sequence audit. Creative props: four constructions, 27 native cores, telescope/easel/kite/folding age sheets and five real-world captures. Mechanical controls agree across 2727 native/JS samples; 864 hatched-age contact poses retain original body scale. Paint accumulates twelve persistent layers; separate copies, native weather reel-in, paper/canvas covers, pauses, ownership loss, save/reload and live notebook commands pass. Paper art is grounded and fitted at world scale. The initial support platforms still need stationary placement and explicit climbing; visitors and full individual repertoires are pending.",
+      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Initial character-operated tools are now reviewed separately below; plant-specific social routines and every-object 48-sequence coverage remain unfinished. Botanical care: 19 score illustrations on four sheets plus real native solo/company replay. Connected mirrored grips, fixed character scale, supported feet, age-sized tools, actual soil/rim/leaf contacts, downward pours, butterfly hovering, reduced motion and selectable visiting gardeners verified. Interrupted and incomplete shared work grant no shared memory; completed care teaches gardening. Tool pickup/put-away and individual-object/guest repertoires remain unfinished. Music review: nine instrument constructions on three sheets, 25 phrases at three phases on seven sheets, plus real native solo/shared scenes. All eight hatched ages and 48 visitor rigs remain bounded with fixed body scale; mirrored grips, real bill contact, depressed keys/valves, ringing cymbals/chimes, radio knobs, fan brushes, supported feet and continuous note-to-note travel are checked. Actual regular, rare and story visitors reserve independent destinations, and visitor-to-visitor duets work without crediting Cheese. Shared native clocks emit each note once, skip missed-note bursts and grant learning/memories only upon completion. Muting, direct care, pauses, moved objects, storms, replaced visits and safe worker shutdown are verified. Physical entry/climbing and full individual object/guest repertoires remain unfinished. Physical-copy review: distinct healthy/thirsty fern state, exact click identities, copy-specific inspector and arrangement controls reviewed in Electron. Live UI commands target the selected copy; storing/restoring one retains its history and leaves its sibling outside. Same-position replacement cannot inherit a current musician or reward. Physical state snapshots are detached from saves. Lighting review: 27 distinct constructions across five sheets, three Cheese ages at a real control, and live day/night/contact captures. Local cloth glow, ceramic contrast, warm versus blue flame, larger duck hologram, fixed-scale grounded poses, exact held-tool contacts, reduced motion and paused poses verified. Live twin-lamp notebook mode changes, cancellation, storage and same-identity restoration tested through the production command validator. Ordinary and rare visitor light participation and individual-object repertoires remain pending. Keepsake review: twelve constructions, open/closed sheets, three reading ages and live book/barrel/card scenes; 70 native frames with 62 active workers. Fixed character scale, grounded feet, physical page/lid contacts, paused clocks and immutable snapshots pass. The real notebook operates the exact selected chest and exposes live page and water state. Reading words share one definition with the drawing and are supplied to natural chat only after arrival and opening. Full individual repertoires and visitor participation remain unfinished. Shared keepsakes: fifteen complementary company tracks, all 48 cast profiles and eight hatched Cheese ages, ten rendered sheets, and 197 actual native frames. Independent regular/rare/story arrivals, short bounded waits, shared clocks, physical-copy identity, fixed scale, supported feet or butterfly hover, directional pointers, step-in/out gestures, selectable visiting readers, pause, interruption and completed observed-text memories pass. These initial shared scenes do not satisfy any per-object 48-sequence audit. Creative props: four constructions, 27 native cores, telescope/easel/kite/folding age sheets and five real-world captures. Mechanical controls agree across 2727 native/JS samples; 864 hatched-age contact poses retain original body scale. Paint accumulates twelve persistent layers; separate copies, native weather reel-in, paper/canvas covers, pauses, ownership loss, save/reload and live notebook commands pass. Paper art is grounded and fitted at world scale. The initial support platforms still need stationary placement and explicit climbing; visitors and full individual repertoires are pending. Textile review: thirteen constructions, six age/contact sheets and five native scenes. Dense grass and moss, knotted borders, tatami grain, rubber drainage, coir lettering, patchwork seams, layered insulation and tied reeds; 768 native frames, 634 workers, fixed body scale and bounded ASCII. Saved rolls, contact cleaning, footprints, moisture/frost and native pose parity verified. Notebook commands use real selected copies. Visitor participation and 48 bespoke sequences per object remain unfinished.",
       "nestLifecycle": 34,
       "nestReplay": {
         "nativeSceneFrames": 41,
@@ -4255,10 +4296,24 @@
         "p95Ms": 9,
         "sheets": 8,
         "note": "Development replay of actual native frames, including click targets for every staged visitor; not the final milestone performance audit."
+      },
+      "textileLifecycle": 286,
+      "textileUI": 17,
+      "textileRenderTests": 4,
+      "textileNativePoseParitySamples": 2828,
+      "textileRigCases": 896,
+      "textileReplay": {
+        "frames": 768,
+        "drawn": 746,
+        "workers": 634,
+        "medianMs": 5.699999988079071,
+        "p95Ms": 10.200000047683716,
+        "sheets": 15,
+        "note": "Development replay from actual native snapshots; not the final full-milestone performance audit."
       }
     },
     "limitations": [
-      "206 of 542 object artworks reconstructed for review; 336 remain.",
+      "219 of 542 object artworks reconstructed for review; 323 remain.",
       "No object has yet passed the 48 bespoke sequence requirement.",
       "Five nests now use 51 authored core routines (three require a canopy). Individual nest-construction variants, guest participation and egg-specific interactions remain unfinished; no per-object completion is claimed.",
       "Paired tracks currently share a core movement vocabulary across the cast; personality-specific choreography and full guest item participation remain unfinished.",
@@ -4271,7 +4326,8 @@
       "Nine music objects now have 25 shared phrase cores, articulated playing/listening, real synthesized notes, independently arrived visitors and synchronized duets. These are not 48 bespoke sequences per instrument. Construction-specific repertoires, richer expressive posing, explicit tool pickup/put-away, musician climbing and stationary multi-level supports, egg listening and personal visitor phrasing remain unfinished.",
       "Twenty-seven lighting objects now have per-copy modes, real Cheese control contact, warm/cold observation, dusk/weather response, preserved storage state and ten shared cores. Visitor participation, physical tool pickup/put-away and 48 individual meaningful sequences per light remain unfinished; no object sequence completion is claimed.",
       "Twelve keepsakes have 19 native action cores and 15 shared reading/inspection scenes. Regular, rare and story visitors arrive independently, use the same native clock, and learn only from sufficiently shared completed work. Personal visitor repertoires, guest-to-guest keepsake invitations, egg listening, portable physical-copy handling, tool pickup/put-away and every-item 48-sequence audits remain unfinished.",
-      "Four creative props have 27 native action cores and 13 complementary company roles. Regular, rare and story visitors arrive independently and share actual observations only after completed work. Fixed viewing steps and painting decks fit all eight hatched ages; eggs cannot operate tools. Personal visitor choreography, reciprocal eyepiece use, guest-to-guest invitations, tool pickup/put-away, unfolded practice-paper handling and full mood/season repertoires remain unfinished. No object has passed its 48-sequence audit."
+      "Four creative props have 27 native action cores and 13 complementary company roles. Regular, rare and story visitors arrive independently and share actual observations only after completed work. Fixed viewing steps and painting decks fit all eight hatched ages; eggs cannot operate tools. Personal visitor choreography, reciprocal eyepiece use, guest-to-guest invitations, tool pickup/put-away, unfolded practice-paper handling and full mood/season repertoires remain unfinished. No object has passed its 48-sequence audit.",
+      "Thirteen textile, living-ground and fibre objects have 28 shared native action cores, saved folds and contact marks, weather/age-aware selection and fixed-scale Cheese poses. Independent visitor participation, individual-material choreography, tool pickup/put-away, complete season/mood coverage and each object\u2019s 48 bespoke sequences remain unfinished. Eggs cannot perform handling actions."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -4322,10 +4378,10 @@
     },
     "sourceSmoke": {
       "result": "PASS",
-      "frames": 95,
+      "frames": 100,
       "localAI": false,
-      "evidence": "engine/artifacts/animation-milestone/creative-company-smoke/frame.json",
-      "note": "Source build with disposable saves and clean shutdown; installed 2.36.1 unchanged."
+      "evidence": "engine/artifacts/animation-milestone/textile-smoke/frame.json",
+      "note": "Source build with disposable saves and clean shutdown; installed chat 2.36.1 unchanged."
     },
     "chatRelease": {
       "branch": "codex/pond-chat-2.36.1",
@@ -4349,6 +4405,8 @@
     "keepsakeCompanyScores": 15,
     "creativeObjects": 4,
     "creativeRoutineCores": 27,
-    "creativeCompanyScores": 13
+    "creativeCompanyScores": 13,
+    "textileObjects": 13,
+    "textileRoutineCores": 28
   }
 }

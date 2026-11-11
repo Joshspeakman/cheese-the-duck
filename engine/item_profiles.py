@@ -21,3 +21,7 @@ for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/
 # Creative props expose the same physical controls in native gameplay and Ultra.
 for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/animation/creative-props.json').read_text()).items():
     ITEMS[_id].update(kind='toy' if _p['type']=='kite' else 'study',material=_p['material'],skill=_p['skill'],verb=_p['verb'],need='fun',duration=24)
+
+# Woven and living floor materials share their anatomy with the renderer.
+for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/animation/textiles.json').read_text()).items():
+    ITEMS[_id].update(kind='comfort' if _p['type'] not in ('bundle','scrap') else 'study',material=_p['material'],skill=_p['skill'],verb=_p['verb'],need='fun',duration=24)

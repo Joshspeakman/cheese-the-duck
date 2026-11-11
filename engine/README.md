@@ -247,8 +247,8 @@ Resident speech uses the local Qwen3 model and llama.cpp runtime described above
 
 The next animation milestone is in development on this branch and has **not**
 replaced the installed game; the separate chat update is installed as 2.36.1. Its tracker is
-`overhaul/animation-milestone/requirements.json`: 206 of 542 object drawings have
-been reconstructed, with 336 remaining. The full 48 bespoke sequences per object
+`overhaul/animation-milestone/requirements.json`: 219 of 542 object drawings have
+been reconstructed, with 323 remaining. The full 48 bespoke sequences per object
 and all guest/age/context coverage remain unfinished.
 
 The lighting work adds 27 distinct constructions, from pleated lanterns and
@@ -345,6 +345,30 @@ the individual sequence audits remain open. Tests use
 `engine/node_modules/.bin/electron engine/creative-company-check.cjs` and
 `engine/node_modules/.bin/electron engine/creative-ui-check.cjs`. The last routes
 actual notebook actions through the command validator into a disposable game.
+
+The textile work reconstructs thirteen mats, rugs, living ground patches and
+fibre materials. Knotted borders, tatami grain, coir loops, rubber drainage,
+patchwork seams, moss cushions, layered batting and tied reeds have separate
+ASCII constructions. Twenty-eight initial native action cores handle rolling,
+unfolding, fringe combing, brushing, stepping, resting, wiping feet, draining,
+checking frost and sorting fibres. Folds, impressions and contact changes are
+saved on the physical copy. Cancelling preserves work already done without
+awarding a completed use; rain protection starts from the actual rolled edge.
+
+Young Cheese takes small steps, elders settle gently, and darkness, moisture,
+frost and dirt affect what he chooses. Handling fabric or thatch keeps the
+original inventory and never claims a crafting or building repair occurred.
+Belongings updates the current material state while natural chat receives only
+what Cheese can actually inspect. Eggs cannot operate these materials.
+
+These are initial shared cores. Visitor participation, personal/material-specific
+choreography, physical tool pickup/put-away, all mood/season variants and the
+48-sequence audit for every object remain open. Textile checks use
+`.venv/bin/python engine/check_textiles.py`,
+`engine/node_modules/.bin/electron engine/textiles-check.cjs` and
+`engine/node_modules/.bin/electron engine/textiles-ui-check.cjs`. They exercise
+real game state and notebook commands with disposable saves, plus native-frame
+replays and fixed-scale contact poses across all eight hatched ages.
 
 ## Validation
 
