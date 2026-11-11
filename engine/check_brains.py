@@ -96,7 +96,8 @@ try:
  check(pair['speaker']!=pair['listener'],'conversation is between distinct brains')
  check(b.model.residents[pair['speaker']]['relationships'][pair['listener']]['meetings']>0,'mutual conversation updates the actual relationship')
  p.state['elapsed']+=20;b.tick()
- check(any(x['kind']=='shared' for x in p.state['journal']) or not b.coactivities,'shared encounters complete or safely cancel when participants leave')
+ check(all(s['phase']=='approach' and s['elapsed']==0 for s in b.coactivities.values()),'paired activities wait for actual arrival before their performance clock runs')
+ b.cancel_encounter(pair['speaker'])
  garden_module.speak=original_speak
  b.pending=None
  old=copy.deepcopy(b.model.state);offline=LivingPond(p.save());offline.attach(g,offline=False);offline.advance(20000,offline=True)

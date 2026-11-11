@@ -1,0 +1,3625 @@
+{
+  "status": "active",
+  "baseline": "2.36.0",
+  "scope": {
+    "items": 542,
+    "families": 221,
+    "guests": 48,
+    "cheeseAges": [
+      "egg",
+      "hatchling",
+      "duckling",
+      "juvenile",
+      "young_adult",
+      "adult",
+      "mature",
+      "elder",
+      "legendary"
+    ],
+    "bespokeSequencesPerObject": 48,
+    "contexts": [
+      "spring",
+      "summer",
+      "fall",
+      "winter",
+      "dawn",
+      "day",
+      "dusk",
+      "night",
+      "weather",
+      "mood",
+      "age",
+      "company"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "quiet-chat",
+      "description": "Chat fades independently when nobody is talking; speech, typing, reading and pending replies keep it available. Quiet hit boxes never block the world.",
+      "status": "implemented_and_verified"
+    },
+    {
+      "id": "object-art",
+      "description": "Reconstruct all catalogue items with substantially greater authored detail, larger useful world scale, readable materials, animated mechanical parts and physical contact anchors.",
+      "status": "in_progress"
+    },
+    {
+      "id": "object-animation",
+      "description": "48 meaningful, physically distinct bespoke sequences for each item. Palette swaps, random seeds, frame counts and labels do not count as separate sequences.",
+      "status": "in_progress"
+    },
+    {
+      "id": "character-animation",
+      "description": "Every one of 48 guests and Cheese at all nine ages participates with age/species/personality appropriate articulated motion and interaction variants.",
+      "status": "in_progress"
+    },
+    {
+      "id": "social-animation",
+      "description": "Coordinated shared activities and object play involve independently moving participants, invitations, turn taking, contact, reactions and graceful interruption.",
+      "status": "in_progress"
+    },
+    {
+      "id": "context",
+      "description": "Actual weather, season, time, needs, mood and relationships select sensible activities; rain sends residents to reachable owned shelter with correct entry, interior occupancy and exit.",
+      "status": "in_progress"
+    },
+    {
+      "id": "integration",
+      "description": "Use real gameplay state for objects, movement, ownership, quantities, rewards, saves and learning; no renderer-owned simulation or invented item grants.",
+      "status": "in_progress"
+    },
+    {
+      "id": "validation",
+      "description": "Exhaustive catalogue/age/guest/context coverage, distinct-sequence evidence, rendered contact sheets and playable real-simulation scenarios; test interruptions, save migration, long runs, performance and accessibility.",
+      "status": "in_progress"
+    },
+    {
+      "id": "install",
+      "description": "Package and test the complete milestone with actual local speech/system audio, preserve verified player saves, update desktop install and verify launch.",
+      "status": "not_started"
+    }
+  ],
+  "constraints": [
+    "Separate existing worktree and branch",
+    "Original ASCII spirit and approved D10 identities",
+    "Uncensored dialogue",
+    "Classic stays available",
+    "Disposable saves for tests",
+    "Do not mark completion from coverage metadata alone"
+  ],
+  "previous_goal_turn": "Continued from the initial quiet-chat and home-art foundation; this checkpoint adds real shelters, paired rendezvous, playground artwork and rider staging. No blocker.",
+  "items": [
+    {
+      "id": "hat_red",
+      "family": "cap",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hat_blue",
+      "family": "cap",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hat_party",
+      "family": "party",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hat_chef",
+      "family": "chef",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hat_wizard",
+      "family": "wizard",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hat_crown",
+      "family": "crown",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hat_viking",
+      "family": "viking",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hat_pirate",
+      "family": "pirate",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hat_cowboy",
+      "family": "cowboy",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hat_tophat",
+      "family": "tophat",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hat_beret",
+      "family": "beret",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hat_beanie",
+      "family": "beanie",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hat_sombrero",
+      "family": "sombrero",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "glasses_cool",
+      "family": "glasses",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "glasses_nerd",
+      "family": "glasses",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bowtie",
+      "family": "bow",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "scarf_red",
+      "family": "scarf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "cape",
+      "family": "cape",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "wings_fairy",
+      "family": "wings",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "halo",
+      "family": "halo",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "toy_ball",
+      "family": "ball",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "toy_blocks",
+      "family": "blocks",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "toy_trumpet",
+      "family": "trumpet",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "toy_skateboard",
+      "family": "skateboard",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "toy_piano",
+      "family": "piano",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "toy_trampoline",
+      "family": "trampoline",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "toy_slide",
+      "family": "slide",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "toy_swing",
+      "family": "swing",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "toy_seesaw",
+      "family": "seesaw",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "toy_sandbox",
+      "family": "sandbox",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "toy_boombox",
+      "family": "radio",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "chair_wood",
+      "family": "chair",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "chair_throne",
+      "family": "throne",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "table_small",
+      "family": "table",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bed_small",
+      "family": "bed",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "bed_king",
+      "family": "bed",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "couch",
+      "family": "sofa",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bookshelf",
+      "family": "shelf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "desk",
+      "family": "desk",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "lamp_floor",
+      "family": "lamp",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mirror",
+      "family": "mirror",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pool_kiddie",
+      "family": "pool",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pool_large",
+      "family": "pool",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fountain_small",
+      "family": "fountain",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fountain_grand",
+      "family": "fountain",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pond",
+      "family": "pool",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sprinkler",
+      "family": "sprinkler",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "waterfall",
+      "family": "waterfall",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hot_tub",
+      "family": "pool",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "birdbath",
+      "family": "birdbath",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "water_slide",
+      "family": "slide",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "flower_rose",
+      "family": "rose",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "flower_tulip",
+      "family": "tulip",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "flower_sunflower",
+      "family": "sunflower",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tree_small",
+      "family": "tree",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tree_oak",
+      "family": "tree",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tree_cherry",
+      "family": "cherry",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bush_hedge",
+      "family": "hedge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "grass_patch",
+      "family": "rug",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "cactus",
+      "family": "cactus",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bamboo",
+      "family": "bamboo",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bow_tie_blue",
+      "family": "bow",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bow_tie_pink",
+      "family": "bow",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "cap_sports",
+      "family": "cap",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "beanie_striped",
+      "family": "beanie",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bandana",
+      "family": "bow",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "headphones",
+      "family": "headphones",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sunglasses_aviator",
+      "family": "glasses",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "scarf_winter",
+      "family": "scarf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "crown_golden",
+      "family": "crown",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "viking_helmet",
+      "family": "viking",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "wizard_hat",
+      "family": "wizard",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pirate_hat",
+      "family": "pirate",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "flower_crown",
+      "family": "wreath",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "cape_superhero",
+      "family": "cape",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "backpack_tiny",
+      "family": "bag",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "monocle",
+      "family": "monocle",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "halo_angel",
+      "family": "halo",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "devil_horns",
+      "family": "horns",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "party_hat",
+      "family": "party",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "space_helmet",
+      "family": "helmet",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "frisbee",
+      "family": "disc",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "toy_car",
+      "family": "car",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "jump_rope",
+      "family": "rope",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "yo_yo",
+      "family": "yoyo",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "kite",
+      "family": "kite",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "skateboard",
+      "family": "skateboard",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "trampoline",
+      "family": "trampoline",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "telescope",
+      "family": "telescope",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "easel",
+      "family": "easel",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "drums",
+      "family": "drums",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bookshelf_wood",
+      "family": "shelf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "dresser",
+      "family": "cabinet",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mirror_standing",
+      "family": "mirror",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "desk_writing",
+      "family": "desk",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "piano",
+      "family": "piano",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "wardrobe",
+      "family": "cabinet",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sofa_fancy",
+      "family": "sofa",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "coffee_table",
+      "family": "table",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bar_cart",
+      "family": "table",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "grandfather_clock",
+      "family": "clock",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rocking_horse",
+      "family": "horse",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "cabinet",
+      "family": "cabinet",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fireplace",
+      "family": "fireplace",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tv_stand",
+      "family": "tv",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bean_bag",
+      "family": "cushion",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "koi_pond",
+      "family": "pool",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "waterfall_mini",
+      "family": "waterfall",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hot_tub_deluxe",
+      "family": "pool",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "water_slide_mega",
+      "family": "slide",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "sprinkler_system",
+      "family": "sprinkler",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bonsai",
+      "family": "bonsai",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "venus_flytrap",
+      "family": "flytrap",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "herb_garden",
+      "family": "garden",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "cherry_tree",
+      "family": "cherry",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "willow_tree",
+      "family": "willow",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mushroom_patch",
+      "family": "mushroom",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "topiary_duck",
+      "family": "duck",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fern",
+      "family": "fern",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "lavender",
+      "family": "flowerpot",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hedge_maze",
+      "family": "hedge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "dog_house",
+      "family": "house",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "picket_fence",
+      "family": "fence",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "stone_wall",
+      "family": "wall",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "archway",
+      "family": "arch",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "gazebo",
+      "family": "gazebo",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "bridge",
+      "family": "bridge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tower",
+      "family": "tower",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "windmill",
+      "family": "windmill",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "gate",
+      "family": "gate",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pergola",
+      "family": "pergola",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "shed",
+      "family": "house",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "treehouse",
+      "family": "treehouse",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "birdhouse",
+      "family": "birdhouse",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "mailbox",
+      "family": "mailbox",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "wishing_well",
+      "family": "well",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "trellis",
+      "family": "pergola",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "greenhouse",
+      "family": "greenhouse",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "castle_tower",
+      "family": "tower",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "barn",
+      "family": "barn",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "fence_section",
+      "family": "fence",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "garden_gnome",
+      "family": "gnome",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "duck_statue",
+      "family": "duck",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fountain_statue",
+      "family": "fountain",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "wind_chimes",
+      "family": "chimes",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "birdbath_garden",
+      "family": "birdbath",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sundial",
+      "family": "sundial",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "weather_vane",
+      "family": "vane",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "flag_pole",
+      "family": "flag",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tire_swing",
+      "family": "swing",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hammock",
+      "family": "hammock",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "scarecrow",
+      "family": "scarecrow",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "totem_pole",
+      "family": "totem",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "welcome_mat",
+      "family": "rug",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "potted_cactus",
+      "family": "cactus",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "stepping_stones",
+      "family": "path",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "garden_bench",
+      "family": "bench",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fountain_decorative",
+      "family": "fountain",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "zen_garden",
+      "family": "zen",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fairy_lights",
+      "family": "lights",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pinwheel",
+      "family": "pinwheel",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rain_barrel",
+      "family": "barrel",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "wheelbarrow",
+      "family": "wheelbarrow",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tiki_torch",
+      "family": "torch",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "ice_sculpture",
+      "family": "duck",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "trophy_case",
+      "family": "shelf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "compass_rose",
+      "family": "compass",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sand_castle",
+      "family": "tower",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "gong",
+      "family": "gong",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bubble_machine",
+      "family": "bubbles",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "snow_globe",
+      "family": "globe",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "table_lamp",
+      "family": "lamp",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "floor_lamp",
+      "family": "lamp",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "chandelier",
+      "family": "chandelier",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "paper_lantern",
+      "family": "lantern",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "lava_lamp",
+      "family": "lava_lamp",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "neon_sign",
+      "family": "neon",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "disco_ball",
+      "family": "disco",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "candelabra",
+      "family": "chandelier",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fairy_lamp",
+      "family": "lamp",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "spotlight",
+      "family": "spotlight",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "street_lamp",
+      "family": "streetlamp",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "campfire",
+      "family": "fire",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "lighthouse",
+      "family": "lighthouse",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "firefly_swarm",
+      "family": "motes",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "moon_lamp",
+      "family": "moon",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "star_projector",
+      "family": "projector",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "torches",
+      "family": "torch",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "glowsticks",
+      "family": "lights",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "aurora",
+      "family": "aurora",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "laser_lights",
+      "family": "lights",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "grass_floor",
+      "family": "rug",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "wooden_planks",
+      "family": "plank",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "marble_tiles",
+      "family": "tile",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "carpet_red",
+      "family": "rug",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tatami_mat",
+      "family": "rug",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sand_floor",
+      "family": "sandbox",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "stone_tiles",
+      "family": "path",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "checkered_floor",
+      "family": "tile",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mosaic_tiles",
+      "family": "tile",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "ice_floor",
+      "family": "tile",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "cobblestone",
+      "family": "path",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "lava_floor",
+      "family": "lava_tile",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "cloud_floor",
+      "family": "cloud",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "persian_rug",
+      "family": "rug",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rainbow_path",
+      "family": "rainbow",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "glass_floor",
+      "family": "tile",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rubber_mat",
+      "family": "rug",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "autumn_leaves",
+      "family": "leaf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "snow_floor",
+      "family": "snow",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "galaxy_floor",
+      "family": "galaxy_tile",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "portal",
+      "family": "portal",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "time_machine",
+      "family": "machine",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rainbow_generator",
+      "family": "rainbow",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "weather_machine",
+      "family": "machine",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "black_hole",
+      "family": "blackhole",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "volcano",
+      "family": "volcano",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "antigravity",
+      "family": "infinity",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tornado",
+      "family": "tornado",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "dragon_egg",
+      "family": "egg",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "treasure_chest",
+      "family": "chest",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "magic_carpet",
+      "family": "magic_carpet",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "crystal_ball",
+      "family": "orb",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "wormhole",
+      "family": "portal",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "force_field",
+      "family": "orb",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "teleporter",
+      "family": "portal",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "robot_butler",
+      "family": "robot",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hologram",
+      "family": "projector",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "shrink_ray",
+      "family": "ray",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "growth_ray",
+      "family": "ray",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "cloning_machine",
+      "family": "machine",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "ufo",
+      "family": "ufo",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rainbow_slide",
+      "family": "slide",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "genie_lamp",
+      "family": "genie",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "infinity_pool",
+      "family": "pool",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bounce_house",
+      "family": "bouncehouse",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "ferris_wheel",
+      "family": "wheel",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "carousel",
+      "family": "carousel",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "jetpack",
+      "family": "jetpack",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "submarine",
+      "family": "submarine",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "hot_air_balloon",
+      "family": "balloon",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rocket_ship",
+      "family": "rocket",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tardis",
+      "family": "door",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "invisible_cloak",
+      "family": "cape",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "transmogrifier",
+      "family": "machine",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "money_printer",
+      "family": "machine",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "perpetual_motion",
+      "family": "infinity",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "DNA_mixer",
+      "family": "dna",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "dream_catcher",
+      "family": "dreamcatcher",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "wish_fountain",
+      "family": "fountain",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "dimensional_door",
+      "family": "portal",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "golden_throne",
+      "family": "throne",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "world_tree",
+      "family": "tree",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "cosmic_arch",
+      "family": "arch",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "eternal_flame",
+      "family": "fire",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "philosophers_stone",
+      "family": "gem",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "nook_radio",
+      "family": "radio",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "breadcrumbs",
+      "family": "crumbs",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bread",
+      "family": "crumbs",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "seeds",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "lettuce",
+      "family": "leaf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "worm",
+      "family": "worm",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fancy_bread",
+      "family": "bread",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "golden_crumb",
+      "family": "crumbs",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rubber_duck",
+      "family": "duck",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "ball",
+      "family": "ball",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "feather",
+      "family": "feather",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "flower",
+      "family": "flowerpot",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "shiny_pebble",
+      "family": "rock",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "lucky_clover",
+      "family": "clover",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "corn",
+      "family": "corn",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "peas",
+      "family": "peas",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "grapes",
+      "family": "grapes",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "oats",
+      "family": "crumbs",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fish_treat",
+      "family": "fish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mysterious_crumb",
+      "family": "crumbs",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rainbow_crumb",
+      "family": "crumbs",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "squeaky_toy",
+      "family": "duck",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "tiny_boat",
+      "family": "boat",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "wind_up_duck",
+      "family": "duck",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "bubble_wand",
+      "family": "bubbles",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "seashell",
+      "family": "shell",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "cool_stick",
+      "family": "stick",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bottle_cap",
+      "family": "bottlecap",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "glitter_rock",
+      "family": "gem",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tiny_crown",
+      "family": "crown",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "golden_feather",
+      "family": "feather",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mystery_egg",
+      "family": "egg",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "ancient_bread",
+      "family": "bread",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "duck_photo",
+      "family": "frame",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "void_crumb",
+      "family": "crumbs",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "best_friend_badge",
+      "family": "badge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "medicine",
+      "family": "bottle",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "berry_salad",
+      "family": "salad",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "honey_bread",
+      "family": "bread",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "crystal_lamp",
+      "family": "lamp",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "flower_wreath",
+      "family": "wreath",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "moss_carpet",
+      "family": "rug",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pebble_path",
+      "family": "path",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "shell_mobile",
+      "family": "chimes",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "storage_basket",
+      "family": "basket",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "torch",
+      "family": "torch",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "water_bowl",
+      "family": "bowl",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "lucky_charm",
+      "family": "amulet",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "magic_wand",
+      "family": "wand",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "shiny_object",
+      "family": "rock",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "water_token",
+      "family": "amulet",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "earth_token",
+      "family": "amulet",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sky_token",
+      "family": "amulet",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "ancient_amulet",
+      "family": "amulet",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "guardian_blessing",
+      "family": "halo",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "woven_grass",
+      "family": "rug",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rope",
+      "family": "rope",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "thatch",
+      "family": "rug",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "clay_brick",
+      "family": "brick",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "wooden_plank",
+      "family": "plank",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "stone_block",
+      "family": "brick",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "insulation",
+      "family": "rug",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "stone_hammer",
+      "family": "hammer",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fishing_rod",
+      "family": "rod",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "gathering_bag",
+      "family": "bag",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "digging_stick",
+      "family": "stick",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "basic_nest",
+      "family": "nest",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "cozy_nest",
+      "family": "nest",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "deluxe_nest",
+      "family": "nest",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "mud_hut",
+      "family": "house",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "wooden_cottage",
+      "family": "house",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "stone_house",
+      "family": "house",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "workbench",
+      "family": "desk",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "storage_chest",
+      "family": "chest",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "garden_plot",
+      "family": "garden",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bird_bath",
+      "family": "birdbath",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "watchtower",
+      "family": "tower",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "flower_bed",
+      "family": "garden",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "stone_path",
+      "family": "path",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pond_fountain",
+      "family": "fountain",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "leaf",
+      "family": "leaf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "grass_blade",
+      "family": "leaf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "wildflower",
+      "family": "flowerpot",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "clover",
+      "family": "clover",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "dandelion",
+      "family": "flowerpot",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "moss",
+      "family": "leaf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pine_needle",
+      "family": "fern",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mushroom",
+      "family": "mushroom",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pond_weed",
+      "family": "fern",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "lily_pad",
+      "family": "leaf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "garden_flower",
+      "family": "flowerpot",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rainbow_flower",
+      "family": "flowerpot",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "twig",
+      "family": "stick",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bark",
+      "family": "stick",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "acorn",
+      "family": "acorn",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pine_cone",
+      "family": "pinecone",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "driftwood",
+      "family": "stick",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "driftwood_large",
+      "family": "stick",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pebble",
+      "family": "rock",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "smooth_stone",
+      "family": "rock",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rock",
+      "family": "rock",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "crystal",
+      "family": "gem",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "iron_ore",
+      "family": "rock",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "clay",
+      "family": "rock",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pond_clay",
+      "family": "rock",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sand",
+      "family": "rock",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "shell",
+      "family": "shell",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sea_shell",
+      "family": "shell",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sea_glass",
+      "family": "gem",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "seaweed",
+      "family": "fern",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "river_pearl",
+      "family": "pearl",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sand_dollar",
+      "family": "shell",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "reed",
+      "family": "reed",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "string",
+      "family": "rope",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fabric_scrap",
+      "family": "rug",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "eagle_feather",
+      "family": "feather",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "berry",
+      "family": "grapes",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "seed",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "vegetable_seed",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "small_fish",
+      "family": "fish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bread_crumb",
+      "family": "crumbs",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "honeycomb",
+      "family": "honey",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sunflower_seeds",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tulip_bulb",
+      "family": "tulip",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rose_petal",
+      "family": "rose",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "carrot",
+      "family": "carrot",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tomato",
+      "family": "tomato",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pumpkin",
+      "family": "pumpkin",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "strawberry",
+      "family": "strawberry",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "watermelon",
+      "family": "watermelon",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mint_leaves",
+      "family": "fern",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "golden_petal",
+      "family": "sunflower",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "crystal_shard",
+      "family": "gem",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "butterfly_wing",
+      "family": "wing",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "flower_petal",
+      "family": "flowerpot",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "juicy_worm",
+      "family": "worm",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "giant_worm",
+      "family": "worm",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rainbow_feather",
+      "family": "feather",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "crystal_icicle",
+      "family": "gem",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "frozen_dewdrop",
+      "family": "ball",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "static_feather",
+      "family": "feather",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "golden_leaf",
+      "family": "leaf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "red_maple_leaf",
+      "family": "leaf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mist_crystal",
+      "family": "gem",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fog_essence",
+      "family": "cloud",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "dandelion_fluff",
+      "family": "motes",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mud_sculpture",
+      "family": "duck",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "snow_feather",
+      "family": "feather",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "storm_sketch",
+      "family": "paper",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "paper_plane_design",
+      "family": "kite",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fog_bell",
+      "family": "chimes",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mystery_sound",
+      "family": "motes",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rare_bug_jar",
+      "family": "jar",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "memory_trophy",
+      "family": "trophy",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "racing_medal",
+      "family": "badge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "spring_petal",
+      "family": "flowerpot",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fresh_apple",
+      "family": "tomato",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "autumn_leaf",
+      "family": "leaf",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "homemade_pie",
+      "family": "pie",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "snowball",
+      "family": "ball",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "ice_crystal",
+      "family": "gem",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "warmth",
+      "family": "fire",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mystery_gift",
+      "family": "gift",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "friendship_card",
+      "family": "paper",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "heart_cookie",
+      "family": "cookie",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "splash_trophy",
+      "family": "trophy",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sunset_photo",
+      "family": "frame",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "parade_flag",
+      "family": "flag",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "dance_medal",
+      "family": "badge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "spring_duck_costume",
+      "family": "costume",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "cherry_blossom_hat",
+      "family": "beret",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "beach_duck_costume",
+      "family": "costume",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "surfboard",
+      "family": "surfboard",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "scarecrow_costume",
+      "family": "costume",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "autumn_wreath_hat",
+      "family": "beret",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "winter_coat_costume",
+      "family": "costume",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "snowflake_crown",
+      "family": "crown",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "duck_crown",
+      "family": "crown",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "heart_hat",
+      "family": "party",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "golden_duck_trophy",
+      "family": "trophy",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "spring_spirit_badge",
+      "family": "badge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "summer_spirit_badge",
+      "family": "badge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "harvest_spirit_badge",
+      "family": "badge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "winter_spirit_badge",
+      "family": "badge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "duck_day_champion_badge",
+      "family": "badge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "love_spirit_badge",
+      "family": "badge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "welcome_bread",
+      "family": "bread",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "duck_toy",
+      "family": "duck",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "magpie_friendship_charm",
+      "family": "amulet",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "better_bait",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "master_fishing_rod",
+      "family": "rod",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fish_trophy",
+      "family": "trophy",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "dream_flower",
+      "family": "flowerpot",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "enchanted_seeds",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rare_treat",
+      "family": "crumbs",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "weekly_chest",
+      "family": "chest",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "explorer_badge",
+      "family": "badge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "master_trophy",
+      "family": "trophy",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rainbow_charm",
+      "family": "amulet",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "legendary_trophy",
+      "family": "trophy",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "golden_badge",
+      "family": "badge",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "frog_spawn",
+      "family": "bubbles",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fairy_dust",
+      "family": "motes",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "dragon_scale",
+      "family": "scale",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mermaid_scale",
+      "family": "scale",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "magic_acorn",
+      "family": "acorn",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "shiny_button",
+      "family": "coin",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "ancient_coin",
+      "family": "coin",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "message_bottle",
+      "family": "bottle",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pirate_map",
+      "family": "map",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "treasure_key",
+      "family": "key",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sunflower",
+      "family": "sunflower",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tulip",
+      "family": "tulip",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rose",
+      "family": "rose",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mint",
+      "family": "fern",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "golden_flower",
+      "family": "sunflower",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "crystal_plant",
+      "family": "gem",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tulip_seeds",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "rose_seeds",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "carrot_seeds",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "tomato_seeds",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pumpkin_seeds",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "strawberry_seeds",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "watermelon_seeds",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mint_seeds",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "golden_seeds",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "crystal_seeds",
+      "family": "seeds",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "portrait_cheese",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "portrait_emperor",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "portrait_scholar",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "portrait_artist",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "portrait_explorer",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pond_frog",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pond_lily",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pond_dragonfly",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pond_fish",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "weather_sun",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "weather_rain",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "weather_rainbow",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "weather_snow",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "legend_phoenix",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "legend_dragon",
+      "family": "card",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "minnow",
+      "family": "fish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "goldfish",
+      "family": "goldfish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "carp",
+      "family": "fish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "bass",
+      "family": "fish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "catfish",
+      "family": "catfish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "trout",
+      "family": "fish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "koi",
+      "family": "fish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "salmon",
+      "family": "fish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pufferfish",
+      "family": "puffer",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "swordfish",
+      "family": "swordfish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "sturgeon",
+      "family": "fish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "golden_koi",
+      "family": "fish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "ghost_fish",
+      "family": "fish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "ancient_dragon_fish",
+      "family": "dragonfish",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "cozy_bed",
+      "family": "bed",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "nest_premium",
+      "family": "nest",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "tiny_table",
+      "family": "table",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "cushion",
+      "family": "cushion",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "picture_frame",
+      "family": "frame",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "clock",
+      "family": "clock",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "potted_plant",
+      "family": "flowerpot",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "flower_pot",
+      "family": "flowerpot",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "lamp",
+      "family": "lamp",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "lantern",
+      "family": "lantern",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "plushie",
+      "family": "plush",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "rug",
+      "family": "rug",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pond_mat",
+      "family": "pool",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "spring_wreath",
+      "family": "wreath",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "snowglobe",
+      "family": "globe",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fountain",
+      "family": "fountain",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "golden_nest",
+      "family": "nest",
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "old_coin",
+      "family": "coin",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pretty_shell",
+      "family": "shell",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "ancient_feather",
+      "family": "feather",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "glass_bottle",
+      "family": "bottle",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "fossil",
+      "family": "fossil",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "ruby_gem",
+      "family": "gem",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "golden_acorn",
+      "family": "acorn",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "pirate_compass",
+      "family": "compass",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "ancient_crown",
+      "family": "crown",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "mystic_egg",
+      "family": "egg",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "star_fragment",
+      "family": "gem",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "ancient_tome",
+      "family": "book",
+      "art": "pending",
+      "verifiedSequences": 0
+    },
+    {
+      "id": "heart_of_pond",
+      "family": "orb",
+      "art": "pending",
+      "verifiedSequences": 0
+    }
+  ],
+  "guests": [
+    {
+      "id": "friend:marco",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:amelia",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:columbus",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:vasco",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:marina",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:einstein",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:newton",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:ada",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:darwin",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:curie",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:picasso",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:frida",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:leonardo",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:monet",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:georgia",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:bubbles",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:giggles",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:zippy",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:bouncy",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:sunny",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:shadow",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:phantom",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:enigma",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:whisper",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:raven",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:charity",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:grace",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:blessing",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:angel",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:heart",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:cookie",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:biscuit",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:truffle",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:pepper",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:ginger",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:dash",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:sprint",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:champion",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:victor",
+      "animation": "pending"
+    },
+    {
+      "id": "friend:rocket",
+      "animation": "pending"
+    },
+    {
+      "id": "friendly_goose",
+      "animation": "pending"
+    },
+    {
+      "id": "wise_owl",
+      "animation": "pending"
+    },
+    {
+      "id": "lost_duckling",
+      "animation": "pending"
+    },
+    {
+      "id": "traveling_merchant",
+      "animation": "pending"
+    },
+    {
+      "id": "celebrity_duck",
+      "animation": "pending"
+    },
+    {
+      "id": "mysterious_crow",
+      "animation": "pending"
+    },
+    {
+      "id": "butterfly_fairy",
+      "animation": "pending"
+    },
+    {
+      "id": "grumpy_toad",
+      "animation": "pending"
+    }
+  ],
+  "checkpoint": {
+    "sourcePhase": "foundations_and_first_objects",
+    "fullyOverhauled": false,
+    "constructedObjects": 42,
+    "remainingArtwork": 500,
+    "pairedTracks": 12,
+    "soloItemTracks": 8,
+    "perObject48SequenceAudit": "not_satisfied",
+    "installedVersion": "2.36.0",
+    "installDeferredUntilFullMilestone": true,
+    "evidence": [
+      "engine/artifacts/animation-milestone/chat-ui.log",
+      "engine/artifacts/animation-milestone/js-suite.log",
+      "engine/artifacts/animation-milestone/shelter-simulation.json",
+      "engine/artifacts/animation-milestone/encounter-simulation.json",
+      "engine/artifacts/animation-milestone/residence-render.log"
+    ],
+    "next": [
+      "Validate and deepen each item-specific interaction; current mechanism loops do not meet the requested 48 bespoke sequences.",
+      "Reconstruct the remaining 500 objects with authored details and anchors.",
+      "Expand guest-specific and age-specific behavior; twelve shared tracks are not a complete bespoke catalogue.",
+      "Extend visitor sheltering, invitations, prop handoffs and cooperative item use.",
+      "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation."
+    ],
+    "checks": {
+      "javascript": 68,
+      "livingSimulation": 694,
+      "longRunHours": 72,
+      "chatHost": 22,
+      "chatUI": 37,
+      "learningBrains": 44,
+      "shelterLifecycle": 30,
+      "pairedLifecycle": 16,
+      "renderReview": "42 object constructions in three seasonal contexts; nine shelter ages; six rides at two ages; three paired cast/age samples; bounded image cache"
+    },
+    "limitations": [
+      "Only 42 of 542 object artworks rebuilt so far.",
+      "No object has yet passed the 48 bespoke sequence requirement.",
+      "Paired tracks currently share a core movement vocabulary across the cast; personality-specific choreography and full guest item participation remain unfinished.",
+      "Resident shelter behavior currently applies to Cheese, not every visitor.",
+      "Eight solo tracks and the current mechanical loops are foundations, not the completed object-animation catalogue.",
+      "Installed app remains the previously verified 2.36.0; this development milestone is not packaged or installed."
+    ]
+  }
+}

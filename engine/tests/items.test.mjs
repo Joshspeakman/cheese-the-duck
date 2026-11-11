@@ -14,7 +14,7 @@ test('every live item has readable authored ASCII with matching color masks',()=
     assert(itemFamily(item.id),item.id);assert(model.art.length>=3,item.id);
     assert(model.art.every((row,i)=>/^[ -~]*$/.test(row)&&row.length===model.tones[i].length),item.id);
     assert(!model.art.join('').includes('[?]'),item.id);
-    assert.equal(model.detail,true);assert(model.width>=5&&model.width<=80,item.id);
+    assert.equal(model.detail,true);assert(model.width>=5&&model.width<=128,item.id);
     assert.deepEqual(itemSprite(item.id,1,{motion:false}),itemSprite(item.id,83,{motion:false}),item.id);
   }
   assert(families.size>200);

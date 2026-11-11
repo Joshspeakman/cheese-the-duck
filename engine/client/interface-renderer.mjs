@@ -167,7 +167,7 @@ export class InterfaceRenderer {
       });
       this.text(ctx,(view.start+1)+'–'+(view.start+view.items.length)+' of '+ui.menu.items.length+'   ·   Esc to go back',r.x+18,r.y+r.h-15,10,C.muted);
     }
-    if(this.chatExternal&&this.layout.visible('chat'))this.hudRects.push({id:'chat',...this.layout.rect('chat',this.width,this.height)});
+    if(this.chatExternal&&!this.chatQuiet&&this.layout.visible('chat'))this.hudRects.push({id:'chat',...this.layout.rect('chat',this.width,this.height)});
     r=this.chatExternal?null:this.hudWindow(ctx,'chat','Around the pond');
     if(r){
       const chat=documentRows(ui.chat,Math.floor((r.w-36)/(12*.61))).filter(row=>row.kind!=='rule');

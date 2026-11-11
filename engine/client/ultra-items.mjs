@@ -1,3 +1,5 @@
+import {homeSprite} from './home-workshop.mjs';
+import {playgroundSprite,PLAY_BLUEPRINTS} from './playground-workshop.mjs';
 import {detailItem,itemProfile} from './item-detail.mjs';
 export {itemProfile};
 import { ART } from './item-art.mjs';
@@ -59,7 +61,7 @@ export function itemPalette(id,family=itemFamily(id)){
   const face='#'+body.slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*.6+255*.4).toString(16).padStart(2,'0')).join('');
   return {body,accent,face,shade:'#738f8c',rarity:rarityColor(item?.rarity)};
 }
-export function itemSprite(id,time=0,{motion=true,originalArt=null,state={},interaction=null}={}){
+export function itemSprite(id,time=0,{motion=true,originalArt=null,state={},interaction=null,context={},pose={}}={}){
   const item=ITEM_CATALOG[id],family=itemFamily(id),seed=hash(id),t=motion?time:0,phase=Math.floor(t*3+seed%7);
   let lines=(ART[family]||originalArt||['[ item ]']).slice();
   if(family==='card'){
@@ -99,9 +101,11 @@ export function itemSprite(id,time=0,{motion=true,originalArt=null,state={},inte
     // Slow physical movement where appropriate, kept much smaller than a cell.
     sway:(PLANTS.has(family)||['chimes','kite','swing'].includes(family))&&motion?Math.sin(t*1.3+seed)*.025:0,
     lift:/balloon|ufo|orb|motes|fish|worm/.test(family)&&motion?Math.sin(t*1.4+seed)*.25:0};
-  return detailItem(base,item,family,t,{motion,state,interaction});
+  const enriched={...base,...itemProfile(item||{},family)},options={motion,state,interaction,context,pose};
+  return homeSprite(enriched,item||{id},t,options)||playgroundSprite(enriched,item||{id},t,options)||detailItem(base,item,family,t,{motion,state,interaction});
 }
 export function itemWorldScale(id){
+  if(PLAY_BLUEPRINTS[id])return PLAY_BLUEPRINTS[id].scale;
   const item=ITEM_CATALOG[id],family=itemFamily(id);
   return ['house','barn','treehouse','greenhouse','tower','lighthouse','windmill','willow','tree'].includes(family)?1.15:
     item?.size==='large'?1.05:item?.size==='medium'?.85:.72;
@@ -121,15 +125,15 @@ export function selectedItem(ui,rows=[]){
 // Cached, tightly bounded sprites avoid hundreds of per-glyph canvas calls for
 // every placed object on every frame. Animation frames are quantized at 3 fps.
 export class ItemPainter {
-  constructor(){this.cache=new Map();}
+  constructor({maxBytes=64*1024*1024}={}){this.cache=new Map();this.bytes=0;this.maxBytes=maxBytes;}
   image(model,cw,surface='#102023ee',outline='#0c2024'){
-    const unit=Math.max(2,Math.round(cw*2)/2),key=[model.id,unit,model.art.join('\n'),surface,outline].join('|');
-    if(this.cache.has(key))return this.cache.get(key);
+    const unit=Math.max(2,Math.round(cw*2)/2),key=[model.id,unit,model.art.join('\n'),JSON.stringify(model.inks||{}),surface,outline].join('|');
+    if(this.cache.has(key)){const hit=this.cache.get(key);this.cache.delete(key);this.cache.set(key,hit);return hit;}
     const ch=unit*1.5,canvas=document.createElement('canvas');canvas.width=Math.ceil((model.width+2)*unit);canvas.height=Math.ceil((model.art.length+2)*ch);
     const ctx=canvas.getContext('2d');ctx.font=`600 ${ch}px Menlo, monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
     // Preserve the hand-built outline while keeping the busy terrain out of solid
     // furniture. No rectangular tile backgrounds and no blur on the ASCII ink.
-    for(const fill of model.fills||[]){ctx.fillStyle=model.body+'38';ctx.fillRect((fill.x+1)*unit,(fill.y+1)*ch,fill.w*unit,ch+.5);}
+    for(const fill of model.fills||[]){ctx.fillStyle=fill.opaque?(model.panels?.[fill.tone]||surface):model.body+'38';ctx.fillRect((fill.x+1)*unit,(fill.y+1)*ch,fill.w*unit,ch+.5);}
     model.art.forEach((line,y)=>{
       const a=line.search(/\S/),b=line.trimEnd().length;if(a<0)return;
       if(!model.fills&&!['motes','aurora','lights','chimes','reed','fern','sprinkler'].includes(model.family)){
@@ -140,11 +144,16 @@ export class ItemPainter {
       if(c===' ')return;
       const tone=model.tones[y][x],px=(x+1.5)*unit,py=(y+1.5)*ch;
       ctx.strokeStyle=outline;ctx.lineWidth=Math.max(1.3,unit*.23);ctx.strokeText(c,px,py,unit*1.15);
-      ctx.fillStyle=tone==='a'?model.accent:tone==='f'?model.face:tone==='s'?model.shade:tone==='w'?'#8cdeed':model.body;
+      ctx.fillStyle=model.inks?.[tone]||(tone==='a'?model.accent:tone==='f'?model.face:tone==='s'?model.shade:tone==='w'?'#8cdeed':model.body);
       ctx.fillText(c,px,py,unit*1.15);
     }));
-    if(this.cache.size>=384)this.cache.delete(this.cache.keys().next().value);
-    const result={canvas,unit,ch};this.cache.set(key,result);return result;
+    const bytes=canvas.width*canvas.height*4;
+    while(this.cache.size&&(this.cache.size>=384||this.bytes+bytes>this.maxBytes)){
+      const oldest=this.cache.keys().next().value;this.bytes-=this.cache.get(oldest).bytes;this.cache.delete(oldest);
+    }
+    const result={canvas,unit,ch,bytes};
+    if(bytes<=this.maxBytes){this.cache.set(key,result);this.bytes+=bytes;}
+    return result;
   }
   draw(ctx,model,x,y,cw,{shadow=true,surface,outline}={}){
     cw*=model.detailScale||1;

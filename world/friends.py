@@ -776,6 +776,10 @@ class VisitorAnimator:
         profile = guest_profile(self._friend_name)
         mind = getattr(self, '_mind_motion', {})
         pace = (profile['pace'] if profile else 4.0) * mind.get('pace', 1)
+        meeting=mind.get('meeting') if not self._is_leaving else None
+        if meeting:
+            self._target_x,self._target_y=meeting['target']
+            self._rest_until=0
         move_interval = .15 if profile else VISITOR_MOVE_INTERVAL
         if current_time - self._last_move_time >= move_interval:
             move_elapsed = min(.5, max(0, current_time - self._last_move_time))
@@ -811,6 +815,10 @@ class VisitorAnimator:
             
             # Decide behavior: follow duck, wander, or explore
             if not self._is_leaving:
+                if meeting:
+                    if abs(self._position_x-self._target_x)+abs(self._position_y-self._target_y)<.4:
+                        self._current_state='idle';self._facing_right=meeting['facing']
+                    return True,dialogue
                 # Every few updates, decide what to do
                 if self._position_x == self._target_x and self._position_y == self._target_y:
                     behavior = random.random()

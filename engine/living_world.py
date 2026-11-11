@@ -12,6 +12,7 @@ from datetime import datetime
 from engine.item_profiles import ITEMS
 from engine.pond_stories import STORIES
 from engine.placements import outdoor_decorations, complete_structures
+from engine import shelters
 from world.guest_cast import guest_profile, guest_line
 
 NEEDS = ('hunger', 'energy', 'fun', 'cleanliness', 'social')
@@ -97,7 +98,7 @@ class LivingPond:
 
     @property
     def busy(self):
-        return bool(self.state['plan'] and not self.state['plan'].get('paused'))
+        return bool((self.state['plan'] and not self.state['plan'].get('paused')) or self.minds.encounter_for('cheese'))
 
     def attach(self, game, offline=True):
         self.game = game
@@ -134,7 +135,8 @@ class LivingPond:
         owned |= set(g.treasure.found_treasures) | set(g.fishing.fish_caught)
         owned |= {s.blueprint_id for s in g.building.structures if s.status.value == 'complete'}
         self.owned = owned
-        self.placed = {i.item_id: i for i in [*g.habitat.placed_items,*outdoor_decorations(g),*complete_structures(g)]}
+        self.placements = [*g.habitat.placed_items,*outdoor_decorations(g),*complete_structures(g)]
+        self.placed = {i.item_id: i for i in self.placements}
         for key in owned:
             if key not in ITEMS:
                 continue
@@ -215,7 +217,7 @@ class LivingPond:
         self._stories()
         self._legacy_links(dt)
         s = self.state
-        if s['auto'] and s['elapsed'] >= s['next_decision'] and not s['plan']:
+        if s['auto'] and s['elapsed'] >= s['next_decision'] and not s['plan'] and not self.busy:
             s['next_decision'] = s['elapsed'] + 35
             self.decide()
 
@@ -344,12 +346,28 @@ class LivingPond:
 
     def start(self, kind, target='', automatic=False):
         s = self.state
+        if self.minds.encounter_for('cheese'):
+            if automatic:return False, 'Cheese is spending time with a friend.'
+        if kind == 'item' and target in shelters.HOMES:
+            kind = 'rest'
         if s['plan'] or not self.available():
             return False, 'Cheese is busy. Finish or cancel the current activity first.'
         if self.game.duck.needs.energy < 15 and kind not in ('rest', 'item'):
             return False, 'Cheese needs rest before taking that on.'
         duration = PLANS.get(kind, ('', '', '', 20))[3]
         label = PLANS.get(kind, (kind.replace('_',' ').title(),))[0]
+        residence = None
+        if kind == 'rest':
+            self.sync()
+            places = shelters.candidates(self, target)
+            if target and not places:
+                return False, 'That resting place is not reachable, suitable for Cheese, or sheltered from this weather.'
+            if places:
+                residence = places[0]
+                target = residence['id']
+                label = ('Wait out the weather in ' if shelters.adverse(self.weather_type) else 'Settle into ') + ITEMS[target]['name']
+            else:
+                label = 'Take a quiet rest nearby'
         if kind == 'item':
             self.sync()
             if target not in getattr(self, 'owned', set()) or target not in ITEMS:
@@ -357,9 +375,13 @@ class LivingPond:
             if target in self.placed and self.location != 'Home Pond':
                 return False, 'That item is back at Home Pond.'
             profile = ITEMS[target]
+            if profile['family'] in ('slide','swing','trampoline','seesaw','sandbox','horse') and target not in self.placed:
+                return False, 'Place '+profile['name']+' in the habitat before Cheese uses it.'
             if profile['kind'] in ('food','wearable'):
                 return False, 'Use the original inventory or wardrobe to eat or equip this item.'
             duration, label = profile['duration'], profile['verb']+' '+profile['name']
+            if profile['family'] in ('slide','swing','trampoline','seesaw','horse'):
+                label = ('Explore ' if self.game.duck.growth_stage in ('hatchling','duckling') else 'Ride ') + profile['name']
             if s['elapsed'] - s['objects'][target]['last_use'] < 60:
                 return False, 'Give that a moment. Cheese would enjoy some variety.'
         elif kind in ('clean_item', 'repair_item'):
@@ -400,13 +422,18 @@ class LivingPond:
         duration *= max(.75, 1-math.sqrt(s['skills'].get(skill,0)/12)*.015)
         if kind == 'repair_item' and self.location == 'Home Pond' and self.completed('workshop'):
             duration *= .8
+        self.minds.cancel_encounter('cheese')
         s['plan'] = {'kind': kind, 'target': target, 'label': label, 'elapsed': 0., 'duration': duration,
                      'phase': 'approach', 'automatic': automatic, 'paused': False, 'location': self.location,
                      'learning_before': self.minds.before(kind)}
+        if residence:
+            s['plan']['residence'] = residence
         self.game.behavior_ai.cancel_pending_movement()
         self.game.behavior_ai.clear_action()
         pos = self.game.renderer.duck_pos
-        if target in self.placed:
+        if residence:
+            pos.move_to(*residence['destination'])
+        elif target in self.placed:
             x,y = self.placed[target].get_display_position()
             pos.move_to(round(x*132/20), round(y*42/12))
         elif kind in ('forage','observe','restore','garden','wander'):
@@ -419,6 +446,10 @@ class LivingPond:
         return True, label+'.'
 
     def cancel(self):
+        if self.minds.encounter_for('cheese'):
+            self.minds.cancel_encounter('cheese')
+            self.state['next_decision']=self.state['elapsed']+30
+            return 'Cheese and his friend finish up and go their separate ways.'
         if self.state['plan']:
             target=self.state['plan']['target']
             if target in self.state['objects']:self.state['objects'][target]['active']=False
@@ -440,6 +471,11 @@ class LivingPond:
             return
         if g.duck.current_action in ('feed','play','clean','pet','sleep'):
             return
+        residence = plan.get('residence')
+        if residence and not shelters.still_placed(self, residence):
+            self.cancel()
+            self.notice('That resting place has moved. Cheese steps back out to find somewhere else.')
+            return
         destination=plan.get('destination')
         if destination and plan['phase']=='approach':
             pos=g.renderer.duck_pos
@@ -449,7 +485,23 @@ class LivingPond:
                 if plan['approach_time']>90:
                     self.cancel();self.notice('Cheese could not reach that spot. Try again after the path is clear.')
                 return
-        plan['elapsed'] += dt
+            if not plan.get('arrived'):
+                plan['arrived']=True
+                pos.cancel_movement()
+                pos.set_state_by_name('thinking',max(3,plan['duration']*.3))
+        # A roof is an actual place to wait, not a looping reward animation.
+        # Preserve the ordinary completion once; interrupting never grants it.
+        holding = bool(residence and residence['roof'] and shelters.adverse(self.weather_type)
+                       and plan['phase'] == 'act' and g.duck.needs.hunger > 15)
+        if residence:
+            residence['holding'] = holding
+            if holding:
+                residence['waited'] = residence.get('waited', 0.) + dt
+                previous = residence.get('restored', 0.)
+                restored = min(10., previous + dt * .035)
+                self.change_need('energy', restored-previous)
+                residence['restored'] = restored
+        plan['elapsed'] = min(plan['elapsed']+dt, plan['duration']*.7) if holding else plan['elapsed']+dt
         ratio = plan['elapsed']/plan['duration']
         phase = 'approach' if ratio < .15 else 'prepare' if ratio < .28 else 'act' if ratio < .9 else 'settle'
         plan['phase'] = phase
@@ -463,6 +515,8 @@ class LivingPond:
                 self._last_plan_visual = phase
         if target in s['objects']:
             s['objects'][target]['active'] = phase == 'act'
+        if residence:
+            residence['inside'] = phase == 'act'
         if ratio >= 1:
             s['plan'] = None  # Consume once before invoking callbacks.
             if target in s['objects']: s['objects'][target]['active'] = False
@@ -512,7 +566,18 @@ class LivingPond:
             e=s['ecology']; removed=min(.05,e['litter']);e['litter']-=removed;e['clarity']=clamp(e['clarity']+removed*.4)
             self.change_need('energy',-1);message='The shallows are cleaner; clear water helps fish and insects return.'
         elif kind == 'rest':
-            self.change_need('energy', 5);message='A quiet rest helped Cheese recharge.'
+            self.change_need('energy', 5)
+            if plan.get('residence'):
+                name = ITEMS[target]['name']
+                message = ('The weather eased. Cheese peeks out of ' + name + '.'
+                           if plan['residence'].get('waited') and not shelters.adverse(self.weather_type)
+                           else 'A quiet rest in ' + name + ' helped Cheese recharge.')
+                obj = s['objects'].get(target)
+                if obj:
+                    obj['uses'] += 1; obj['last_use'] = s['elapsed']
+                    obj['bond'] = clamp(obj['bond']+.02)
+            else:
+                message='A quiet rest helped Cheese recharge.'
         elif kind == 'garden':
             count=0
             for plot in g.garden.plots.values():
@@ -574,6 +639,10 @@ class LivingPond:
                  ('forage','',20,'a new patch may hold useful materials'),
                  ('practice','',(100-n.fun)*.55,'a little music would lift the mood'),
                  ('wander','',16,'a change of scenery sounds good')]
+        if shelters.adverse(self.weather_type):
+            places = shelters.candidates(self)
+            if places:
+                choices.append(('rest', places[0]['id'], 180, 'a reachable roof will keep Cheese dry'))
         if any(p.needs_water for p in g.garden.plots.values()):choices.append(('garden','',45,'the garden is thirsty'))
         if g.friends.current_visit:
             key=g.friends.current_visit.friend_id;record=s['friends'].get(key,{})
@@ -658,7 +727,7 @@ class LivingPond:
             if s['plan'] and self.available() and s['plan']['location']==self.location:
                 s['plan']['paused']=False;self._last_plan_visual=None
                 if s['plan'].get('destination') and s['plan']['phase']=='approach':
-                    self.game.renderer.duck_pos.move_to(*s['plan']['destination']);s['plan']['approach_time']=0
+                    self.game.renderer.duck_pos.move_to(*s['plan']['destination']);s['plan']['approach_time']=0;s['plan']['arrived']=False
                 return self.notice('Picking up where we left off.')
             return self.notice('Return to the activity’s location and finish any other interaction first.')
         if action=='policy' and target in ('balanced','curious','social','homebody'):

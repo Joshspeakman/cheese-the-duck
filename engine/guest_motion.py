@@ -95,6 +95,15 @@ class GuestMotion:
             leaving = remaining <= 6
         except (ValueError, TypeError):
             pass
+        meeting=mind.get('meeting')
+        if meeting and not leaving:
+            self.target=point(*meeting['target']);self.rest_until=now
+            dx,dy=self.target[0]-a['x'],self.target[1]-a['y'];distance=math.hypot(dx,dy*2)
+            step=min(1,pace*.72*dt/max(.001,distance))
+            a['x']+=dx*step;a['y']+=dy*step
+            moving=distance>.3
+            a.update(state='walking' if moving else 'idle',activity='walking' if moving else 'idle',facing=dx>=0 if moving else meeting['facing'])
+            return
         if now < self.reaction_until and not leaving:
             a.update(state='signature', activity='signature', facing=pos.x > a['x'])
             return
@@ -172,6 +181,13 @@ class StoryMotion:
             self.rest_until = now + 3
             a.update(state='quacking', activity='quacking', facing=pos.x > a['x'])
         speed = self.MOBILE.get(story['id'], 0)
+        meeting=pond.minds.motion('story:pip').get('meeting') if story['id']=='lost_duckling' else None
+        if meeting:
+            self.target=tuple(meeting['target']);self.rest_until=now
+            dx,dy=self.target[0]-a['x'],self.target[1]-a['y'];distance=math.hypot(dx,dy*2)
+            step=min(1,speed*dt/max(.001,distance));a['x']+=dx*step;a['y']+=dy*step
+            a.update(state='walking' if distance>.3 else 'idle',activity='walking' if distance>.3 else 'idle',facing=dx>=0 if distance>.3 else meeting['facing'])
+            return
         if now < self.rest_until or not speed:
             return
         dx, dy = self.target[0] - a['x'], self.target[1] - a['y']

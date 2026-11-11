@@ -1,0 +1,35 @@
+<!doctype html><meta charset="utf-8"><script type="module">
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {DUCK_AGES} from '../client/duck-rig.mjs';
+import {scene} from './scenes.mjs';
+import {itemSprite,ItemPainter} from '../client/ultra-items.mjs';
+window.checkResidence=()=>{
+ const images={},sceneCanvas=new SceneCanvas();sceneCanvas.resize(1440,900);
+ for(const id of ['wooden_cottage','cozy_nest','deluxe_nest','treehouse','bed_king']){
+  const sheet=document.createElement('canvas');sheet.width=1800;sheet.height=1140;const c=sheet.getContext('2d');c.fillStyle='#10251e';c.fillRect(0,0,1800,1140);
+  DUCK_AGES.forEach((age,i)=>{
+   const plan={kind:'rest',target:id,phase:'act',progress:.6,residence:{destination:[65,24]}};
+   const s=scene({weather:'rainy',hour:15,items:[{id,x:65,y:24}],living:{ecology:{},plan,objects:{},projects:[],garden:[]},duck:{x:65,y:24,stage:age.id,state:'sleeping',facing:true}});
+   sceneCanvas.draw(s,2,1/30);
+   if(!sceneCanvas.world.objects.some(o=>o.occupant))throw Error('Missing occupancy '+id+' '+age.id);
+   c.drawImage(sceneCanvas.canvas,420,190,600,550,i%3*600,Math.floor(i/3)*380+25,600,350);
+   c.fillStyle='#e8d3a8';c.font='18px Menlo';c.fillText(age.id,i%3*600+20,Math.floor(i/3)*380+22);
+  });images[id]=sheet.toDataURL('image/png');
+ }
+ const s=scene({weather:'rainy',items:[{id:'wooden_cottage',x:65,y:24}],living:{ecology:{},plan:{kind:'rest',target:'wooden_cottage',phase:'act',progress:.6,residence:{destination:[65,24]}},objects:{},projects:[],garden:[]}});
+ sceneCanvas.draw(s,2,1/30);images['shelter-live-world']=sceneCanvas.canvas.toDataURL('image/png');
+ for(const id of ['toy_slide','toy_trampoline','toy_swing','toy_seesaw','rocking_horse','toy_sandbox']){
+  for(const age of ['hatchling','adult']){
+   const plan={kind:'item',target:id,phase:'act',elapsed:13,progress:.55,duration:24,destination:[65,24]};
+   const ride=scene({items:[{id,x:65,y:24}],living:{ecology:{},plan,objects:{},projects:[],garden:[]},duck:{x:65,y:24,stage:age,state:'idle',facing:true}});
+   sceneCanvas.draw(ride,2,1/30);
+   if(!sceneCanvas.world.objects.some(o=>o.rider))throw Error('Missing rider '+id+' '+age);
+   images['ride-'+id+'-'+age]=sceneCanvas.canvas.toDataURL('image/png');
+  }
+ }
+ const painter=new ItemPainter({maxBytes:4*1024*1024});
+ for(let n=0;n<32;n++)painter.image(itemSprite(n%2?'toy_trampoline':'wooden_cottage',n/6,{interaction:{phase:'act'}}),5);
+ if(painter.bytes>painter.maxBytes||painter.cache.size>384)throw Error('Unbounded item image cache');
+ return images;
+};window.ready=true;
+</script>

@@ -1,5 +1,6 @@
 import {DUCK_AGES} from './duck-designs.mjs';
 import {fitWearables,paintWearables} from './wearables.mjs';
+import {performancePose} from './performances.mjs';
 export {DUCK_AGES};
 export const mirrorGlyph=c=>({'/':'\\','\\':'/','(' :')',')':'(','<':'>','>':'<','[':']',']':'['}[c]||c);
 const W=76,H=48,CX=36,FLOOR=39;
@@ -13,7 +14,8 @@ export function actionFor(state='idle'){
 }
 export function duckRig(duck,t=0,design=null){
  const requested=duck.stage==='teen'?'juvenile':duck.stage||'adult',spec=design||DUCK_AGES.find(a=>a.id===requested)||DUCK_AGES[5];
- const stage=design?'adult':spec.id,small=['hatchling','duckling'].includes(stage),action=actionFor(duck.state);
+ const stage=design?'adult':spec.id,small=['hatchling','duckling'].includes(stage),action=actionFor(duck.performance?'idle':duck.state);
+ const performance=performancePose(duck.performance,duck.performance?.young?'duckling':stage);
  const rate=spec.pace/4.5,speed=duck.state==='waddle_fast'?1.6:duck.state==='sneaking'?.65:1;
  const cycle=t*rate*speed,phase=Math.floor(cycle*5)%8;
  const cells=Array.from({length:H},()=>Array(W).fill(' ')),tones=cells.map(r=>r.map(()=> 'b')),fills=[];
@@ -38,6 +40,7 @@ export function duckRig(duck,t=0,design=null){
   if(action==='swimming'){bodyDY=headDY=1;}
   if(action==='dancing'){eye='^';bodyDY--;headDY--;}
   if(cycle%5.3>5||action==='sleeping')eye='-';
+  if(performance){headDX=performance.x;bodyDY=performance.b;headDY=performance.y+bodyDY;jump=Math.min(0,bodyDY);if(performance.eye)eye=performance.eye;}
   let eyePos=null,headBounds=null,bodyBounds=null,wingBounds=null;
   function extend(bounds,x,y,w){return bounds?{x:Math.min(bounds.x,x),y:Math.min(bounds.y,y),w:Math.max(bounds.x+bounds.w,x+w)-Math.min(bounds.x,x),h:Math.max(bounds.y+bounds.h,y+1)-Math.min(bounds.y,y)}:{x,y,w,h:1};}
   // Torso first, then face: a peck or preen can overlap the folded wing.
@@ -67,7 +70,7 @@ export function duckRig(duck,t=0,design=null){
   }
   const footPositions=[];
   if(!['swimming','sleeping'].includes(action))for(const [i,fx] of spec.feet.entries()){
-   const lift=action==='walking'&&((phase<4&&i===0)||(phase>=4&&i===1))?1:0;
+   const lift=performance?(i?performance.r:performance.l):action==='walking'&&((phase<4&&i===0)||(phase>=4&&i===1))?1:0;
    const stride=action==='walking'?[0,i?-1:1,0,0,0,i?1:-1,0,0][phase]:0;
    const x=Math.round(baseX+fx+stride),y=FLOOR+jump-lift;
    put(i?'>_':'_>',x,y,'a');footPositions.push({x,y});
@@ -79,6 +82,11 @@ export function duckRig(duck,t=0,design=null){
    const open=phase>=2&&phase<=5,wing=open?['  /)/)',' / / /','/ / /','\\__/']:['  /)',' / /',' \\/'];
    group(wing,b.x-2,b.y-(open?3:0),'w');if(open)group(wing.map(r=>[...r].reverse().map(mirrorGlyph).join('')),b.x+b.w-2,b.y-2,'w');
   }
+  if(performance?.w>.15){
+   const reach=Math.round(performance.w*(small?3:6)),wy=b.y+Math.max(1,Math.round(b.h*.3));
+   group(small?[' /)','/ /','\\_/']:['  /)/)',' / / /','/ / /','\\___/'],b.x+b.w-3+Math.round(reach/3),wy-Math.round(reach/2),'w');
+  }
+  if(performance?.mark)put(performance.mark,h.x+h.w+2,h.y-2,'a');
   if(duck.state==='petting')put('<3',h.x+h.w+2,h.y-1-Math.floor(phase/3),'a');
   if(action==='eating'&&phase>1&&phase<6)put(phase%2?'. :':'. .',h.x+h.w+2,h.y+h.h,'a');
   if(action==='sleeping')put(phase%2?'z':'Z',h.x+h.w+2,h.y-1-Math.floor(phase/3),'c');
@@ -93,5 +101,5 @@ export function duckRig(duck,t=0,design=null){
  if(!facing){for(let y=0;y<H;y++){cells[y].reverse();cells[y]=cells[y].map(mirrorGlyph);tones[y].reverse();}for(const f of fills)f.x=W-f.x-f.w;}
  return {art:cells.map(r=>r.join('')),tones:tones.map(r=>r.join('')),fills,inks:{...ink,...plan.inks},width:W,anchorX:facing?CX:W-1-CX,groundRow:FLOOR+.5,
   scale:stage==='egg'?.66:spec.height/(spec.art.length*7.5),body:ink.b,face:ink.g,accent:ink.a,shade:ink.s,name:'',rig,wearables:plan.items.map(i=>i.id),
-  design:'d10',material:'feathers',phase,frames:8,cycle:phase/8,clipped,action,offsetY:action==='idle'?Math.sin(cycle*2)*.1:0};
+  design:'d10',material:'feathers',phase,frames:8,cycle:phase/8,clipped,action,performance:duck.performance||null,offsetY:action==='idle'?Math.sin(cycle*2)*.1:0};
 }

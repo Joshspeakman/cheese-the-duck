@@ -284,6 +284,9 @@ class DesktopGame(Game):
             self.living_pond.minds.tick()
             if self.friends.current_visit:
                 visitor_animator._mind_motion = self.living_pond.minds.motion(self.friends.current_visit.friend_id)
+                meeting=visitor_animator._mind_motion.get('meeting')
+                if meeting:
+                    meeting['target']=[meeting['target'][0]-self.renderer._camera_x,meeting['target'][1]-self.renderer._camera_y]
             else:visitor_animator._mind_motion = {}
 
     def _perform_interaction(self, interaction):
