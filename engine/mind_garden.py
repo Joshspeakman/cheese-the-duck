@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from engine.social_brains import Minds, ACTIONS, LABELS, action_key, clamp, stable, player_claim
 from engine.local_speech import speak
 from world.guest_cast import guest_profile
-from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests, botanical_care, instrument_sessions, keepsakes, keepsake_company, creative_props, creative_company, textiles, textile_company, groundworks
+from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests, botanical_care, instrument_sessions, keepsakes, keepsake_company, creative_props, creative_company, textiles, textile_company, groundworks, ground_company
 from engine.instrument_audio import InstrumentAudio
 
 CHEESE_VOICE = {
@@ -39,6 +39,7 @@ class MindGarden:
         self.readers={};self.reading_retry={}
         self.creators={};self.creative_retry={}
         self.textile_helpers={};self.textile_retry={}
+        self.ground_helpers={};self.ground_retry={}
         self._cheese_traits=None
 
     @property
@@ -222,6 +223,12 @@ class MindGarden:
             if key!='cheese' and self.creators[key]['phase'] in ('inside','finished'):
                 facts['creative_work']=creative_props.conversation(self.pond,self.pond.state['plan'])
                 facts['current_activity']=creative['activity']
+        ground=ground_company.conversation(self,key)
+        if ground:
+            facts['shared_activity']={'with':ground['with_name'],'activity':ground['activity'],'status':ground['status']}
+            if key!='cheese' and self.ground_helpers[key]['phase'] in ('inside','finished'):
+                facts['ground_work']=groundworks.conversation(self.pond,self.pond.state['plan'])
+                facts['current_activity']=ground['activity']
         textile=textile_company.conversation(self,key)
         if textile:
             facts['shared_activity']={'with':textile['with_name'],'activity':textile['activity'],'status':textile['status']}
@@ -344,7 +351,7 @@ class MindGarden:
             for other in keys[i+1:]:
                 if 'cheese' in (key,other) and self.pond.state.get('plan',{}):
                     if self.pond.state['plan'].get('seating') or self.pond.state['plan'].get('plant_care') or self.pond.state['plan'].get('instrument') or self.pond.state['plan'].get('keepsake_work') or self.pond.state['plan'].get('creative_work') or self.pond.state['plan'].get('textile_work') or self.pond.state['plan'].get('ground_work'):continue
-                if creative_company.active(self,key) or creative_company.active(self,other) or textile_company.active(self,key) or textile_company.active(self,other):continue
+                if creative_company.active(self,key) or creative_company.active(self,other) or textile_company.active(self,key) or textile_company.active(self,other) or ground_company.active(self,key) or ground_company.active(self,other):continue
                 if keepsake_company.active(self,key) or keepsake_company.active(self,other):continue
                 if key in self.housing or other in self.housing or key in self.furnishings or other in self.furnishings or key in self.gardening or other in self.gardening or key in self.musicians or other in self.musicians or playdates.active(self,key) or playdates.active(self,other):continue
                 a,b=self.present[key],self.present[other];distance=math.hypot(a[0]-b[0],(a[1]-b[1])*2)
@@ -387,6 +394,7 @@ class MindGarden:
         instrument_sessions.tick(self,house_dt)
         keepsake_company.tick(self,house_dt)
         creative_company.tick(self,house_dt)
+        ground_company.tick(self,house_dt)
         textile_company.tick(self,house_dt)
         if self.now<self.next_tick:return
         dt=min(5,max(0,self.now-self.last_at));self.last_at=self.now;self.next_tick=self.now+1
@@ -397,13 +405,16 @@ class MindGarden:
             if key=='cheese':continue
             r=self.model.residents[key];r['energy']=clamp(r['energy']-dt/2400);r['social']=clamp(r['social']-dt/1800)
             task=self.tasks.get(key)
-            if self.encounter_for(key) or key in self.textile_helpers or key in self.creators or key in self.readers or key in self.housing or key in self.furnishings or key in self.gardening or key in self.musicians or playdates.active(self,key):
+            if self.encounter_for(key) or key in self.ground_helpers or key in self.textile_helpers or key in self.creators or key in self.readers or key in self.housing or key in self.furnishings or key in self.gardening or key in self.musicians or playdates.active(self,key):
                 if task:task['until']+=dt
                 if key in self.housing and key in self.pond.state['friends']:
                     self.pond.state['friends'][key].update(activity='sheltering' if self.housing[key]['phase']=='inside' else 'walking to shelter',location=self.pond.location)
                 elif playdates.active(self,key) and key in self.pond.state['friends']:
                     play=playdates.active(self,key)
                     self.pond.state['friends'][key].update(activity=('walking over to play' if play['phase']=='approach' else play['label']),location=self.pond.location)
+                elif key in self.ground_helpers and key in self.pond.state['friends']:
+                    r=self.ground_helpers[key]
+                    self.pond.state['friends'][key].update(activity='walking over to help' if r['phase']=='approach' else ground_company.SCORES[r['score']]['label'],location=self.pond.location)
                 elif key in self.textile_helpers and key in self.pond.state['friends']:
                     r=self.textile_helpers[key]
                     self.pond.state['friends'][key].update(activity='walking over to help' if r['phase']=='approach' else textile_company.SCORES[r['score']]['label'],location=self.pond.location)
@@ -484,6 +495,10 @@ class MindGarden:
         if musician:
             result['meeting']=musician
             return result
+        ground=ground_company.motion(self,key)
+        if ground:
+            result['meeting']=ground
+            return result
         textile=textile_company.motion(self,key)
         if textile:
             result['meeting']=textile
@@ -526,7 +541,7 @@ class MindGarden:
                 'gardeners':botanical_care.snapshot(self),
                 'musicians':instrument_sessions.snapshot(self),
                 'readers':keepsake_company.snapshot(self),
-                'creators':creative_company.snapshot(self),'textile_helpers':textile_company.snapshot(self),
+                'creators':creative_company.snapshot(self),'textile_helpers':textile_company.snapshot(self),'ground_helpers':ground_company.snapshot(self),
                 'exchanges':copy.deepcopy(self.model.state['exchanges'][-30:]),'voice':dict(self.voice),
                 'pending':self.model.residents[self.pending['key']]['name'] if self.pending else ('Cheese' if getattr(self.game,'_pending_talk_future',None) else None),
                 'feedback':self.feedback}

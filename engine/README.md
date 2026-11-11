@@ -408,15 +408,35 @@ consumes it or invents a repair. The notebook updates during real use, and speec
 receives nearby material facts only after arrival. Completed uses still go through
 the original inventory, needs and memory rules.
 
-These are initial constructions and cores. Visitor participation, egg listening,
-physical tool pickup/put-away, individual mood/season/personality acting and each
-object's 48 meaningful sequences remain open. Validation uses
+Twenty-seven initial companion roles let an independently arriving friend join
+the surface activity. They compare stone courses, answer board taps, rake separate
+sand lanes, leave species-specific footprints, follow the checker squares and
+watch glass, ice or molten ribbons. Butterflies hover and observe. Young, tired
+or low-mood visitors choose quieter company; patient visitors can linger over
+the star pattern. Wet or frozen footing takes priority over an invitation.
+
+Both characters share the native activity clock. Their footprint authors and
+separate rake paths persist on the selected copy; dialogue can name the marks
+actually made. Both brains learn only from a completed session with real time
+together. A missed arrival, departure, care action, moved object or replaced visit
+cannot award that memory. Save/load keeps the material and the drawing lane but
+discards the old visitor reservation. Native movement remains held through the
+exit gesture, even if a delayed frame outlasts the old animation timer.
+
+These are initial constructions and cores. Guest-to-guest sessions, egg listening,
+physical tool pickup/put-away, full individual mood/season/personality acting and
+each object's 48 meaningful sequences remain open. Validation uses
 `.venv/bin/python engine/check_groundworks.py`,
 `node --test engine/tests/groundworks.test.mjs`,
 `engine/node_modules/.bin/electron engine/groundworks-check.cjs` and
 `engine/node_modules/.bin/electron engine/groundworks-ui-check.cjs`.
 The checks use disposable saves, real notebook commands, full save/reload,
 exact-copy interruptions, native weather and gameplay-frame replays.
+Shared ground checks use `.venv/bin/python engine/check_ground_company.py`,
+`node --test engine/tests/ground-company.test.mjs` and
+`engine/node_modules/.bin/electron engine/ground-company-check.cjs`. They exercise
+regular, rare and story arrivals, all 48 visitor rigs, shared contact timing,
+saved marks, interruption and clickable visitors in actual simulation replays.
 
 ## Validation
 

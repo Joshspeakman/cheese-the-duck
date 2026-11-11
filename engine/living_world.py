@@ -4,7 +4,7 @@ The original registries remain authoritative for ownership, needs, inventory,
 friendship, recipes and rewards. This module owns new physical/ecological state,
 long-term intentions and bounded memories. Presentation snapshots never advance it.
 """
-from engine import object_history,pond_lighting,keepsakes,keepsake_company,creative_props,creative_company,textiles,textile_company,groundworks
+from engine import object_history,pond_lighting,keepsakes,keepsake_company,creative_props,creative_company,textiles,textile_company,groundworks,ground_company
 import copy
 import hashlib
 import math
@@ -686,7 +686,15 @@ class LivingPond:
         if phase in ('act','settle'):
             if phase != self._last_plan_visual:
                 g.renderer.duck_pos.cancel_movement()
-                g.renderer.duck_pos.set_state_by_name(state, duration=0 if residence or company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or creative_holding or textile_holding or ground_holding else max(1, plan['duration']-plan['elapsed']))
+                # Material routines own their position until native completion,
+                # including the exit gesture. A wall-clock animation timeout can
+                # expire during settling (or a slow frame), start idle wandering
+                # and invalidate an otherwise completed shared activity.
+                physical_work = residence or any(plan.get(key) for key in (
+                    'company','water_routine','seat_routine','care_routine',
+                    'music_score','light_work','keepsake_work','creative_work',
+                    'textile_work','ground_work'))
+                g.renderer.duck_pos.set_state_by_name(state, duration=0 if physical_work else max(1, plan['duration']-plan['elapsed']))
                 self._last_plan_visual = phase
         obj=self.object_state(target,plan)
         if obj is not None:obj['active'] = phase == 'act'
@@ -721,6 +729,7 @@ class LivingPond:
             keepsakes.complete(self,plan)
             creative_props.complete(self,plan)
             groundworks.complete(self,plan)
+            ground_company.complete(self.minds,plan)
             textiles.complete(self,plan)
             textile_company.complete(self.minds,plan)
             creative_company.complete(self.minds,plan)
@@ -1102,6 +1111,9 @@ class LivingPond:
             if plan.get('creative_work'):
                 if not creative_company.ready(self.minds):plan['paused']=True
                 plan['creative_work']=creative_company.work_view(self.minds,self.state['plan']['creative_work'])
+            if plan.get('ground_work'):
+                if not ground_company.ready(self.minds):plan['paused']=True
+                plan['ground_work']=ground_company.work_view(self.minds,self.state['plan']['ground_work'])
             if plan.get('textile_work'):
                 if not textile_company.ready(self.minds):plan['paused']=True
                 plan['textile_work']=textile_company.work_view(self.minds,self.state['plan']['textile_work'])
