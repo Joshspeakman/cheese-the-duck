@@ -1,3 +1,4 @@
+import {softCarpet,softCastle,surfaceState} from './soft-surfaces.mjs';
 import {ObjectCanvas} from './object-canvas.mjs';
 import BLUEPRINTS from './animation/excursions.json' with {type:'json'};
 export {BLUEPRINTS as EXCURSION_BLUEPRINTS};
@@ -177,52 +178,6 @@ function saucer(c,p,v){
  c.line(64,81,57,95,'/','m');c.line(85,81,92,95,'\\','m');for(let y=83;y<96;y+=3)c.line(63-(y-82)*.4,y,86+(y-82)*.4,y,'=','m');
  return {entry:{x:74,y:102},contact:{x:88,y:76},hatch:{x:74,y:75},dome:{x:74,y:43},scanner:{x:74,y:7}};
 }
-function carpet(c,p,v){
- const flutter=Math.sin(v.wind_phase)*v.wind*2,fold=v.cover*12;
- const pts=[[22,16+fold],[111,12+fold],[121,57],[12,64]];polygon(c,pts,'q');
- polygon(c,[[26,20+fold],[106,17+fold],[114,53],[20,58]],'a');
- polygon(c,[[31,24+fold],[102,21+fold],[107,49],[27,53]],'w');
- for(let y=25+fold;y<51;y+=2)for(let x=32;x<103;x+=4)c.put(x,y,'-','g');
- for(let x=28;x<109;x+=6){c.put(x,19+fold,'<>','q');c.put(x-2,56,'<>','q');}
- for(let y=28+fold;y<50;y+=5){c.put(22,y,'<>','g');c.put(109,y-1,'<>','g');}
- const cx=67,cy=38+fold*.3;
- polygon(c,[[cx,cy-13],[cx+24,cy],[cx,cy+12],[cx-24,cy]],'q');polygon(c,[[cx,cy-9],[cx+17,cy],[cx,cy+8],[cx-17,cy]],'a');
- c.rows(['  . /\\ .',' < (><) >','  \\_||_/','    \\/'],cx-5,cy-3,'k');
- for(const [x,y]of [[37,33],[94,31],[35,46],[96,44]]){c.put(x,y,'/\\','g');c.put(x,y+1,'\\/','g');}
- stitch(c,24,18+fold,109,14+fold,'q');stitch(c,16,62,119,55,'q');
- for(let n=0;n<16;n++){const u=n/15,x=22-u*10,y=16+fold+u*(48-fold);c.line(x,y,x-7,y+flutter,'~','a');c.put(x-8,y+flutter,'o','b');}
- for(let n=0;n<16;n++){const u=n/15,x=111+u*10,y=12+fold+u*(45-fold);c.line(x,y,x+6,y-flutter,'~','a');}
- c.line(14,66,119,60,'_','k');
- return {entry:{x:65,y:69},contact:{x:26,y:55},seat:{x:67,y:41},tassel:{x:12,y:47}};
-}
-function inflatable(c,p,v){
- const sink=(1-v.inflation)*28;
- panel(c,12,91,120,18,'a');
- for(let n=0;n<7;n++)c.ellipse(21+n*16,100,9,8,'_',['q','g','w'][n%3],true);
- polygon(c,[[23,52+sink],[122,52+sink],[126,90],[18,90]],'k');
- for(let x=26;x<118;x+=4)for(let row=0;row<(87-56-sink)/2;row++)c.put(x+(row%2)*2,56+sink+row*2,'/\\','s');
- for(const [x,tone]of [[18,'q'],[119,'g']]){
-  const top=22+sink;c.ellipse(x,top,13,12,'_','a',true);panel(c,x-13,top,27,72-sink,tone);c.ellipse(x,92,13,5,'_','a',true);
-  for(const dx of [-8,8])c.line(x+dx,top+4,x+dx,89,':','f');
-  c.rows(['|_|_|_|_|','| : : : |'],x-8,top-9,'a');c.put(x-6,top+18,'<><>','a');
-  for(let yy=top+27;yy<86;yy+=9){c.line(x-10,yy,x+10,yy,':','s');c.put(x-2,yy+3,'<o>','a');}
- }
- polygon(c,[[15,34+sink],[72,8+sink],[127,34+sink]],'q');
- for(let n=0;n<7;n++){const x=20+n*16;c.line(72,10+sink,x,34+sink,'/',['a','g','w'][n%3]);}
- panel(c,27,35+sink,92,11,'a');c.put(37,39+sink,'THE WOBBLY DUCK / BOUNCE CLUB','k');
- c.line(30,48+sink,114,48+sink,'~','q');
- stitch(c,20,33+sink,72,12+sink);stitch(c,72,12+sink,123,33+sink);
- for(const x of [48,91])c.line(x,48+sink,x,90,'|','g');
- const doorTop=75+Math.min(7,sink*.25);
- c.clear(63,doorTop+2,22,90-doorTop);
- c.line(61,91,63,doorTop+3,'/','g');c.line(63,doorTop+3,68,doorTop,'/','g');c.line(68,doorTop,80,doorTop,'_','g');
- c.line(80,doorTop,85,doorTop+3,'\\','g');c.line(85,doorTop+3,87,91,'\\','g');c.put(84,doorTop+4,'[o]','a');
- panel(c,59,99,28,12,'k');c.put(63,103,'SOFT LANDING','a');
- c.line(133,94,138,94,'~','m');panel(c,132,96,10,12,'m');c.put(134,100,'[o]','k');
- c.put(133,104,'||||||','s');
- pennant(c,72,1+sink,v.wind_phase,'g',v.wind);
- return {entry:{x:73,y:112},seat:{x:73,y:91},contact:{x:136,y:102},mesh:{x:43,y:69},blower:{x:136,y:102}};
-}
 function gondola(c,x,y,tone,lights,front=false){
  if(!front){
   c.line(x,y-7,x,y-2,'|','m');
@@ -292,7 +247,7 @@ function carousel(c,p,v){
  c.rows([' _________','/__/__/__/','|__|__|__|'],111,115,'m');
  return {entry:{x:121,y:126},contact:{x:121,y:115},seat:rides.at(-1).seat,pole:{x:74,y:77},rides,fronts,roof:roof.finish(),route:[{x:121,y:126},{x:118,y:114},{x:108,y:104}]};
 }
-const BUILDERS={barrow,pack,sub,rocket,balloon,saucer,carpet,inflatable,wheel:ferris,carousel};
+const BUILDERS={barrow,pack,sub,rocket,balloon,saucer,carpet:softCarpet,inflatable:softCastle,wheel:ferris,carousel};
 export function excursionSprite(base,item,time,{state={},motion=true,context={}}={}){
  const p=BLUEPRINTS[item.id];if(!p)return null;
  const saved=state.excursion||{},hour=finite(context.hour,12),weather=String(context.weather||'sunny').toLowerCase();
@@ -303,10 +258,11 @@ export function excursionSprite(base,item,time,{state={},motion=true,context={}}
  const v={phase:finite(saved.phase,t*.12),wind_phase:finite(saved.wind_phase,t*.7),wind,inflation:clamp(finite(saved.inflation,wet||quiet||wind>=.8?.35:1)),cover:clamp(finite(saved.cover,wet?1:0)),lights:clamp(finite(saved.lights,Number(!wet&&(hour>=18||hour<6))))};
  // Accessibility must not rewind a real wheel, cabin, cover or inflation state.
  if(!motion){v.wind_phase=0;v.wind=0;}
+ v.surface=surfaceState(saved.surface);
  const c=new ObjectCanvas(p.w,p.h),anchors=BUILDERS[p.type](c,p,v);
  const cells=[];for(let y=0;y<p.h;y++)for(let x=0;x<p.w;x++)if(c.art[y][x]!==' ')cells.push([x,y]);
  for(const [amount,glyph,tone,step]of [[clamp(state.wetness),"'",'w',37],[clamp(state.dirt),'.','s',59],[1-clamp(finite(state.condition,1)),'/', 'k',83]])if(amount>.2)for(let n=0;n<Math.ceil(amount*18);n++){const at=cells[(n*step+7)%cells.length];if(at)c.put(...at,glyph,tone);}
  const inks={b:'#cda879',m:'#b4c4c1',a:'#e7c578',f:'#e5dbc0',s:'#8b9d8c',k:'#344b42',w:'#8ac6d3',g:'#8cbaa0',q:'#d8949d',p:'#e4d9af',c:'#d9f0df'};
  const panels={b:'#4b3b2b',m:'#465c59',a:'#70572e',f:'#75694c',s:'#304139',k:'#10261f',w:'#214853',g:'#315943',q:'#754250',p:'#b5ad8d',c:'#a0b5aa'};
- return {...base,...c.finish(),construction:'excursion-v1',detail:true,detailScale:.62,blueprint:item.id,anchors,inks,panels,animated:p.motion!=='still',emissive:false,floor:false,sway:0,lift:0};
+ return {...base,...c.finish(),construction:'excursion-v1',detail:true,detailScale:.62,blueprint:item.id,anchors,surfaceState:v.surface,inks,panels,animated:p.motion!=='still',emissive:false,floor:false,sway:0,lift:0};
 }

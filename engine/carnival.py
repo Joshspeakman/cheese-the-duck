@@ -6,10 +6,12 @@ Reservations are transient and never resurrect a departed visitor after loading.
 """
 import copy,json,math
 from pathlib import Path
-from engine import excursions,shelters
+from engine import excursions,shelters,surface_play
 from engine.visitor_shelters import distance,departing,profile
 ROUTINES=json.loads((Path(__file__).parent/'client/animation/carnival-routines.json').read_text())
 ITEMS={'ferris_wheel','carousel'}
+ALL_ITEMS=ITEMS|surface_play.ITEMS
+PROGRAMS={**ROUTINES,**surface_play.ROUTINES}
 TAU=math.pi*2
 finite=excursions.finite
 clamp=excursions.clamp
@@ -21,6 +23,7 @@ def blocked(pond):
     return excursions.adverse(pond.weather_type) or finite(pond.state.get('ecology',{}).get('wind'))>=.8
 
 def choose(pond,item,plan):
+    if item in surface_play.ITEMS:return surface_play.choose(pond,item,plan)
     prefix='wheel' if item=='ferris_wheel' else 'carousel'
     age=pond.game.duck.growth_stage;needs=pond.game.duck.needs
     key=prefix+'_first'
@@ -36,12 +39,13 @@ def prepare(pond,plan):
     w=plan['carnival_work'];origin=plan['destination'];offset=18 if plan['target']=='ferris_wheel' else 13
     # Fixed spots by this exact copy, never a target relative to Cheese.
     w['queue_a']=[origin[0]+offset,origin[1]];w['queue_b']=[origin[0]+offset+5,origin[1]]
+    if plan['target'] in surface_play.ITEMS:w['queue_a']=[origin[0],origin[1]+2];w['queue_b']=[origin[0]+12,origin[1]+2]
     plan['approach_destination']=list(w['queue_a'])
     pond.game.renderer.duck_pos.move_to(*w['queue_a'])
 
 def valid(pond,plan):
     w=plan.get('carnival_work',{});key=w.get('id');item=plan.get('target')
-    return bool(item in ITEMS and key in ROUTINES and ROUTINES[key]['item']==item and plan.get('instance') and item in pond.owned
+    return bool(item in ALL_ITEMS and key in PROGRAMS and PROGRAMS[key]['item']==item and plan.get('instance') and item in pond.owned
         and shelters.still_placed(pond,dict(id=item,instance=plan['instance'],destination=plan.get('destination'))))
 
 def owns(pond,item,obj):
@@ -53,8 +57,14 @@ def release(minds,key):
     r=minds.carnival_guests.pop(key,None)
     if r:
         r['work'].pop('companion',None);minds.carnival_retry[key]=minds.now+100;minds.pond._cache=None
+        plan=minds.pond.state.get('plan')
+        if plan and plan.get('carnival_work') is r['work'] and plan.get('target') in surface_play.ITEMS:
+            r['work']['paired']=False
+            surface=excursions.state(plan['target'],minds.pond.object_state(plan['target'],plan))['surface']
+            surface['b'].update(jump=0.,press=0.,u=0.,v=0.,impact=0.)
 
 def cancel(minds):
+    surface_play.clear(minds.pond,minds.pond.state.get('plan'))
     for key in list(minds.carnival_guests):release(minds,key)
 
 def partner_valid(minds,r,plan=None):
@@ -115,6 +125,7 @@ def advance(pond,plan,dt):
         w.update(done=True,interrupted=True);cancel(pond.minds);return False
     s=excursions.state(plan['target'],pond.object_state(plan['target'],plan));r=active(pond.minds)
     if r and not partner_valid(pond.minds,r,plan):release(pond.minds,r['actor']);r=None
+    if plan['target'] in surface_play.ITEMS:return surface_play.advance(pond,plan,dt,r)
     needs=pond.game.duck.needs
     if (blocked(pond) or needs.hunger<15 or needs.energy<10 or finite(pond.object_state(plan['target'],plan).get('condition'),1.)<=.2) and not w.get('withdrawal'):
         w.update(withdrawal=True,withdrawal_at=w['elapsed']);plan['label']='Returning to the boarding platform'
@@ -179,8 +190,9 @@ def complete(pond,plan):
     history[w['id']]=min(9999,history.get(w['id'],0)+1)
     pond.remember('belongings',w['label']+'.',.5,plan['target'])
     r=active(pond.minds)
-    if r and partner_valid(pond.minds,r,plan) and r['overlap']>=ROUTINES[w['id']]['duration']*.8:
+    if r and partner_valid(pond.minds,r,plan) and r['overlap']>=PROGRAMS[w['id']]['duration']*.8:
         m=pond.minds;key=r['actor'];note=w['label']+(' together; boarded separately and returned to the platform.' if r['mode']=='ride' else '; watched from the platform and waved back.')
+        if plan['target'] in surface_play.ITEMS:note=w['label']+('; watched from beside the entry.' if r['mode']=='watch' else '; shared the surface and stepped off together.')
         for actor,other in (('cheese',key),(key,'cheese')):
             m.model.learn(actor,'share',r['contexts'][actor],.25,m.now,note,other);m.model.bond(actor,other,.18,m.now,note)
         counts=obj.setdefault('carnival_company',{});counts[key]=min(9999,counts.get(key,0)+1)
@@ -197,6 +209,10 @@ def restore(pond):
     plan=pond.state.get('plan')
     if not plan or not plan.get('carnival_work') or not valid(pond,plan) or pond.location!=plan['location']:return
     w=plan['carnival_work']
+    if plan['target'] in surface_play.ITEMS:
+        w['paired']=False
+        surface=excursions.state(plan['target'],pond.object_state(plan['target'],plan))['surface']
+        surface['b'].update(jump=0.,press=0.,u=0.,v=0.,impact=0.)
     if plan['phase']=='act' and w.get('stage') not in ('queue','align','done'):
         # The saved seat is the physical location; its ground projection must be
         # restored as well when a fresh process constructs a new position actor.
@@ -211,6 +227,7 @@ def conversation(pond,plan,key='cheese'):
     w=plan['carnival_work'];r=active(pond.minds)
     if r and not partner_valid(pond.minds,r,plan):r=None
     if key!='cheese' and (not r or key!=r['actor']):return None
+    if plan['target'] in surface_play.ITEMS:return surface_play.conversation(pond,plan,key,r)
     role='a' if key=='cheese' else 'b';watch=bool(role=='b' and r and r['mode']=='watch')
     aboard=w['stage'] in (('index_b','board_b','ride','weather_return','unload_b','return_a') if role=='a' else ('ride','weather_return')) and not watch
     status='watching from the platform' if watch else 'aboard' if aboard else 'boarding' if w['stage']=='board_'+role else 'getting off' if w['stage']=='unload_'+role else 'at the platform'
@@ -220,8 +237,8 @@ def conversation(pond,plan,key='cheese'):
       returning_for_weather=bool(w.get('withdrawal')))
 
 def request(pond,item,choice,instance=None):
-    if item not in ITEMS or not isinstance(choice,str) or choice not in ROUTINES or ROUTINES[choice]['item']!=item:return False,'Choose an activity for this ride.'
+    if item not in ALL_ITEMS or not isinstance(choice,str) or choice not in PROGRAMS or PROGRAMS[choice]['item']!=item:return False,'Choose an activity for this ride.'
     ok,message=pond.start('item',item,instance=instance)
     if not ok:return ok,message
-    p=pond.state['plan'];p['carnival_work'].update(id=choice,label=ROUTINES[choice]['label']);p['label']=ROUTINES[choice]['label']
+    p=pond.state['plan'];p['carnival_work'].update(id=choice,label=PROGRAMS[choice]['label']);p['label']=PROGRAMS[choice]['label']
     return True,p['label']+'.'

@@ -1,8 +1,10 @@
+import {SURFACE_ROUTINES,surfacePose,surfaceGeometry} from './surface-routines.mjs';
 import ROUTINES from './animation/carnival-routines.json' with {type:'json'};
 export {ROUTINES as CARNIVAL_ROUTINES};
+const PROGRAMS={...ROUTINES,...SURFACE_ROUTINES};
 const N={x:0,y:0,b:0,w:0,l:0,r:0,eye:null,mark:''};
 const clamp=v=>Math.max(0,Math.min(1,Number.isFinite(v)?v:0));
-export const CARNIVAL_CHOICES=Object.fromEntries(['ferris_wheel','carousel'].map(id=>[id,Object.entries(ROUTINES).filter(([,s])=>s.item===id).map(([key,s])=>[key,s.label])]));
+export const CARNIVAL_CHOICES=Object.fromEntries(['ferris_wheel','carousel','bounce_house','magic_carpet'].map(id=>[id,Object.entries(PROGRAMS).filter(([,s])=>s.item===id).map(([key,s])=>[key,s.label])]));
 export function boarding(work,role='a'){
  const name=work.stage,u=clamp(work.clock/6);
  if(name==='board_'+role)return u;
@@ -11,6 +13,7 @@ export function boarding(work,role='a'){
  return aboard.includes(name)?1:0;
 }
 export function carnivalPose(work,role='a',motion=true,watch=false){
+ if(SURFACE_ROUTINES[work?.id])return surfacePose(work,role,motion,watch);
  const spec=ROUTINES[work?.id];if(!spec)return null;
  const track=spec[role],p=clamp(work.ride_elapsed/spec.duration);let a=track[0],b=track.at(-1);
  for(let i=1;i<track.length;i++)if(p<=track[i][0]){a=track[i-1];b=track[i];break;}
@@ -26,12 +29,13 @@ export function carnivalPose(work,role='a',motion=true,watch=false){
 }
 export function carnivalOccupants(scene){
  const plan=scene.living?.plan,w=plan?.carnival_work;
- if(!w||w.interrupted||!ROUTINES[w.id]||!['prepare','act','settle'].includes(plan.phase))return [];
+ if(!w||w.interrupted||!PROGRAMS[w.id]||!['prepare','act','settle'].includes(plan.phase))return [];
  const records=[{actor:'cheese',role:'a',work:w}];
  if(w.companion?.ready)records.push({actor:w.companion.actor,role:'b',work:w,watch:w.companion.mode==='watch'});
  return records;
 }
 export function carnivalGeometry(home,member,sx,sy){
+ if(home.anchors.surface)return surfaceGeometry(home,member,sx,sy);
  const c=member.character,w=member.work,inside=member.watch?0:boarding(w,member.role),unit=sx*home.scale*home.detailScale,uh=unit*1.5,cw=c.scale*sx,ch=cw*1.5;
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*uh;
  const cabins=home.anchors.cabins||home.anchors.rides,seatIndex=w['seat_'+member.role]??0,seat=cabins.find(s=>s.index===seatIndex);

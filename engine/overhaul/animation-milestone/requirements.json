@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: widened the Ferris wheel to four passenger gondolas and rebuilt four carousel mounts. Added twelve initial two-person scores with native alignment, independent real visitor queue arrivals, boarding, seat indices, shared circuits and disembarking. Weather/need/damage returns, failed arrivals, direct care, pauses, departures, replacement copies and save/resume are bounded; only completed rides grant one original use and shared learning. All 48 visitor identities plus Pip and all hatched ages were exercised; eggs do not board and butterflies watch. Notebook controls cross the production command validator to a real game process. This adds no completed per-object repertoire audits; all 542 verified-sequence counts remain zero. Full milestone and final install remain unfinished.",
+  "previous_goal_turn": "Progress: rebuilt the bounce house and magic carpet at shared-play scale and added 28 initial two-person programs. Native inflation/entry, short age/species-scaled flights, local pressure, hovering/tilting, counted landings and separate exits now support actual independent regular/rare/story arrivals. Pauses, care, weather/need/damage landings, departure, storage/replacement and save/resume preserve physical ownership and prevent duplicate rewards or ghost weight. Chat describes actual body state, height and company. Notebook controls reach real game processes. This adds no completed per-object repertoire audits; all 542 verified-sequence counts remain zero. Full milestone and final install remain unfinished.",
   "items": [
     {
       "id": "hat_red",
@@ -3949,7 +3949,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "shared_carnival_boarding_and_rides",
+    "sourcePhase": "shared_spring_floor_and_carpet_play",
     "fullyOverhauled": false,
     "constructedObjects": 279,
     "remainingArtwork": 263,
@@ -4358,7 +4358,15 @@
       "engine/artifacts/animation-milestone/carnival-review.html",
       "engine/artifacts/animation-milestone/carnival-js-suite.log",
       "engine/artifacts/animation-milestone/carnival-targeted.log",
-      "engine/artifacts/animation-milestone/carnival-smoke.log"
+      "engine/artifacts/animation-milestone/carnival-smoke.log",
+      "engine/artifacts/animation-milestone/surface-play-native.json",
+      "engine/artifacts/animation-milestone/surface-play-render.json",
+      "engine/artifacts/animation-milestone/surface-play-ui.json",
+      "engine/artifacts/animation-milestone/surface-play-review.html",
+      "engine/artifacts/animation-milestone/surface-play-js-suite.log",
+      "engine/artifacts/animation-milestone/surface-play-living.log",
+      "engine/artifacts/animation-milestone/surface-play-brains.log",
+      "engine/artifacts/animation-milestone/surface-play-smoke.log"
     ],
     "next": "Continue the remaining 263 object constructions and individually authored contextual repertoires. All 542 per-object 48-sequence audits remain open; complete personal visitor acting, guest-to-guest sessions, egg observation, riding/entry and physical tool handling before final integration and installation.",
     "checks": {
@@ -4714,6 +4722,24 @@
         "contacts": 746,
         "p95Ms": 20.299999952316284,
         "medianMs": 14.299999952316284
+      },
+      "surfacePlayNative": 675,
+      "surfacePlayNativePoseParity": 605,
+      "surfacePlayNotebook": 19,
+      "surfacePlayRenderTests": 5,
+      "surfacePlayJavascriptSuite": 199,
+      "surfacePlayLivingRegression": 694,
+      "surfacePlayBrainRegression": 44,
+      "surfacePlayCarnivalRegression": 329,
+      "surfacePlayMechanismRegression": 208,
+      "surfacePlayRender": {
+        "frames": 1349,
+        "bodies": 2554,
+        "hits": 1251,
+        "contacts": 2042,
+        "flights": 63,
+        "p95Ms": 17.80000001192093,
+        "medianMs": 11.100000023841858
       }
     },
     "limitations": [
@@ -4736,7 +4762,7 @@
       "Twenty-one garden structures have 54 initial solo cores and 49 shared visitor roles. Eight new landmarks add carved/material detail, saved directional wind, real hour/season/sky-controlled sundial shadows, native flag hoists, low physical contacts and observation-based shared memories. These are initial core actions, not 48 bespoke sequences per item. Guest-to-guest sessions, egg observation, climbing, physical tool pickup/put-away and full personality/mood/season acting remain unfinished. No object sequence completion is claimed.",
       "Eight outdoor playthings have 42 initial solo cores and 25 complementary visitor roles. All eight hatched ages and all 48 visitor rigs fit, and all 48 native visitor identities plus Pip are tested through real arrival and shared learning. Egg observation, guest-to-guest games, physical pickup/put-away, full personal/mood/season repertoires and each object's 48 bespoke sequences remain unfinished. Boat and board practice stays on the bank; no voyage or surf travel is claimed.",
       "Glass curios have twelve added core tracks and eight observing companion roles, with exact-copy controls and saved snow/forecast state. These are initial contextual foundations, not 48 unique sequences per object; no per-object repertoire audit is complete.",
-      "Ten carnival/travel belongings have reconstructed art and saved mechanisms. The Ferris wheel and carousel now have twelve initial shared ride scores with real queue arrivals, boarding, native seat clocks and exits. Launch/travel and contact controls for the other eight props, personal visitor acting and all per-object 48-sequence audits remain unfinished."
+      "Ten carnival/travel belongings have reconstructed art and saved mechanisms. Ferris/carousel rides have twelve initial scores; the rebuilt bounce house and magic carpet have 28 initial shared-play programs. Physical tool/control contacts, the other six props' full interactive mechanisms, personal visitor acting, guest-to-guest play, egg observation and all per-object 48-sequence audits remain unfinished. None of these initial cores promotes a verified-sequence count."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -4787,9 +4813,9 @@
     },
     "sourceSmoke": {
       "result": "PASS",
-      "frames": 98,
+      "frames": 104,
       "localAI": false,
-      "evidence": "engine/artifacts/animation-milestone/carnival-smoke.log"
+      "evidence": "engine/artifacts/animation-milestone/surface-play-smoke.log"
     },
     "chatRelease": {
       "branch": "codex/pond-chat-2.36.1",
@@ -4868,6 +4894,30 @@
       "save": "native seat/clock/angle retained; paused after load; no resurrected visitor",
       "sequenceCoverageAdded": 0,
       "remaining": "Personal per-visitor repertoires, guest-to-guest rides, egg observation, physical control-panel contacts and each object\u2019s full 48-sequence audit"
+    },
+    "surfacePlayObjects": 2,
+    "surfacePlayRoutineCores": 28,
+    "surfacePlayControls": {
+      "status": "implemented_and_verified_foundation",
+      "nativeStages": [
+        "queue",
+        "inflate",
+        "spread",
+        "board_a",
+        "board_b",
+        "play",
+        "land",
+        "unload_b",
+        "unload_a",
+        "done"
+      ],
+      "physicalState": "per-role jump/pressure/impact/position, native carpet lift and tilt, local floor deformation, tracked landing events",
+      "ownership": "exact placed copy; one original use only after exit",
+      "partners": "actual independent regular/rare/story arrivals; age/species flight strength; butterflies observe; completion-only shared learning",
+      "save": "paused native height and clock; actual landing history; absent guest weight removed",
+      "conversation": "actual airborne/aboard/entry/exit/observer status, height, pressure, landing history and named company",
+      "sequenceCoverageAdded": 0,
+      "remaining": "Full per-object 48-sequence repertoires, personal visitor acting, guest-to-guest sessions, egg observation, physical blower/door/fringe controls and context-specific material work"
     }
   }
 }

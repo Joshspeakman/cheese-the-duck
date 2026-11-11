@@ -1329,8 +1329,8 @@
       "construction": "keepsake-v1"
     },
     "magic_carpet": {
-      "width": 46.26,
-      "height": 24.56,
+      "width": 70.17,
+      "height": 35.68,
       "floor": false,
       "construction": "excursion-v1"
     },
@@ -1413,8 +1413,8 @@
       "construction": "waterworks-v1"
     },
     "bounce_house": {
-      "width": 69.32,
-      "height": 49.6,
+      "width": 86.61,
+      "height": 62.69,
       "floor": false,
       "construction": "excursion-v1"
     },
