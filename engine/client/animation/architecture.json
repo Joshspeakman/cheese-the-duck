@@ -116,5 +116,79 @@
     "material": "metal",
     "skill": "observation",
     "verb": "Inspect scrollwork"
+  },
+  "garden_gnome": {
+    "type": "gnome",
+    "w": 112,
+    "h": 146,
+    "scale": 0.54,
+    "material": "ceramic",
+    "skill": "observation",
+    "verb": "Meet the gnome"
+  },
+  "duck_statue": {
+    "type": "statue",
+    "w": 152,
+    "h": 142,
+    "scale": 0.55,
+    "material": "metal",
+    "skill": "observation",
+    "verb": "Inspect the statue",
+    "inscription": "KEEP IT QUACK"
+  },
+  "scarecrow": {
+    "type": "scarecrow",
+    "w": 174,
+    "h": 166,
+    "scale": 0.53,
+    "material": "fabric",
+    "skill": "observation",
+    "verb": "Tend the scarecrow"
+  },
+  "totem_pole": {
+    "type": "totem",
+    "w": 138,
+    "h": 194,
+    "scale": 0.51,
+    "material": "wood",
+    "skill": "observation",
+    "verb": "Read the carvings",
+    "inscription": "POND / ROOT / SKY"
+  },
+  "sundial": {
+    "type": "sundial",
+    "w": 174,
+    "h": 102,
+    "scale": 0.55,
+    "material": "stone",
+    "skill": "observation",
+    "verb": "Read the shadow"
+  },
+  "weather_vane": {
+    "type": "vane",
+    "w": 148,
+    "h": 174,
+    "scale": 0.52,
+    "material": "metal",
+    "skill": "observation",
+    "verb": "Watch the wind"
+  },
+  "compass_rose": {
+    "type": "compass",
+    "w": 176,
+    "h": 106,
+    "scale": 0.54,
+    "material": "stone",
+    "skill": "observation",
+    "verb": "Trace the compass"
+  },
+  "flag_pole": {
+    "type": "flag",
+    "w": 156,
+    "h": 192,
+    "scale": 0.5,
+    "material": "fabric",
+    "skill": "observation",
+    "verb": "Tend the flag"
   }
 }

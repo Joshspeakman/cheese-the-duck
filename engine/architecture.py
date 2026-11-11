@@ -14,13 +14,25 @@ def state(item,obj):
     for key in CONTROLS:s[key]=clamp(s.get(key,0))
     for key in ('studies','adjustments','cleanings','taps'):s[key]=max(0,min(9999,int(finite(s.get(key)))))
     s['phase']=finite(s.get('phase'))%(math.pi*2);s['speed']=max(0.,min(2.,finite(s.get('speed'))));s['crank']=finite(s.get('crank'))%(math.pi*2)
+    for key in ('wind','sun','shadow_length'):s[key]=clamp(s.get(key,0))
+    for key in ('bearing','shadow_angle'):s[key]=finite(s.get(key))%(math.pi*2)
     if s.get('season') not in ('spring','summer','fall','winter'):s['season']='spring'
     return s
 def gusty(weather):return any(word in weather for word in ('storm','blizzard','hurricane','tornado','gale','thunder'))
-def update(pond,item,obj,dt,outdoors,wind=0.,weather='sunny'):
+def update(pond,item,obj,dt,outdoors,wind=0.,weather='sunny',wind_heading=None):
     if item not in ITEMS or not outdoors:return
     s=state(item,obj);s['season']=pond.season;dt=max(0.,finite(dt))
-    if ITEMS[item]['type']=='windmill':
+    kind=ITEMS[item]['type'];s['wind']=clamp(wind)
+    if kind in ('flag','scarecrow'):s['phase']=(s['phase']+dt*(.25+clamp(wind)*2))%(math.pi*2)
+    if kind=='vane' and wind_heading is not None and wind>.01:
+        target=(finite(wind_heading)*math.pi*2)%(math.pi*2);delta=(target-s['bearing']+math.pi)%(math.pi*2)-math.pi
+        s['bearing']=(s['bearing']+delta*(1-math.exp(-dt*.8)))%(math.pi*2)
+    if kind=='sundial':
+        hour=finite(pond.hour,12);day=6<hour<18
+        s['sun']=0. if not day or any(w in weather for w in ('rain','storm','snow','blizzard','fog','overcast')) else .35 if 'cloud' in weather else 1.
+        s['shadow_angle']=((hour-12)*math.pi/12)%(math.pi*2)
+        s['shadow_length']=clamp(.35+abs(hour-12)/9+(.15 if pond.season=='winter' else 0))
+    if kind=='windmill':
         # Exposed sails slow under the brake; storms feather them automatically.
         target=0. if gusty(weather) else max(0.,min(1.2,finite(wind)*2))*(1-s['brake'])
         rate=1.4;decay=math.exp(-rate*dt);old=s['speed']
@@ -38,7 +50,7 @@ def controls(work):
 def wet(pond):return pond.weather_type!='rainbow' and any(w in pond.weather_type for w in ('rain','storm','shower','drizzle','sleet','snow','blizzard','hail'))
 def choose(pond,item,ref):
     obj=pond.object_state(item,ref);s=state(item,obj);kind=ITEMS[item]['type'];age=pond.game.duck.growth_stage;n=obj.get('uses',0)
-    options={'picket':['picket_knots','picket_brush'],'wall':['wall_layers','wall_moss'],'arch':['arch_trace','arch_shadow'],'bridge':['bridge_cross','bridge_listen'],'watchtower':['watchtower_braces','watchtower_roof'],'windmill':['windmill_turn','windmill_brake' if s['brake']<.5 else 'windmill_release'],'gate':['gate_open' if s['open']<.5 else 'gate_close','gate_hinge'],'pergola':['pergola_shade','pergola_beams'],'mailbox':['mailbox_open' if s['panel']<.5 else 'mailbox_close','mailbox_flag' if s['flag']<.5 else 'mailbox_lower_flag'],'well':['well_lower' if s['bucket']<.5 else 'well_raise','well_echo'],'trellis':['trellis_flowers','trellis_ties'],'castle':['castle_arrowloop','castle_stones'],'ironfence':['iron_scroll','iron_brush']}[kind]
+    options={'picket':['picket_knots','picket_brush'],'wall':['wall_layers','wall_moss'],'arch':['arch_trace','arch_shadow'],'bridge':['bridge_cross','bridge_listen'],'watchtower':['watchtower_braces','watchtower_roof'],'windmill':['windmill_turn','windmill_brake' if s['brake']<.5 else 'windmill_release'],'gate':['gate_open' if s['open']<.5 else 'gate_close','gate_hinge'],'pergola':['pergola_shade','pergola_beams'],'mailbox':['mailbox_open' if s['panel']<.5 else 'mailbox_close','mailbox_flag' if s['flag']<.5 else 'mailbox_lower_flag'],'well':['well_lower' if s['bucket']<.5 else 'well_raise','well_echo'],'trellis':['trellis_flowers','trellis_ties'],'castle':['castle_arrowloop','castle_stones'],'ironfence':['iron_scroll','iron_brush'],'gnome':['gnome_greet','gnome_boots'],'statue':['statue_inscription','statue_polish'],'scarecrow':['scarecrow_straw','scarecrow_scarf'],'totem':['totem_faces','totem_grooves'],'sundial':['sundial_shadow' if s['sun']>.1 else 'sundial_cloud','sundial_marks'],'vane':['vane_direction','vane_foot'],'compass':['compass_points','compass_grout'],'flag':['flag_hoist' if s['flag']<.5 else 'flag_salute','flag_lower']}[kind]
     key=options[n%len(options)]
     if gusty(pond.weather_type):key='storm_stepback'
     elif wet(pond):key='rain_drips'
@@ -97,10 +109,14 @@ def conversation(pond,plan):
     if kind=='windmill':result.update(sail_speed=round(s['speed'],2),brake_applied=s['brake']>.5)
     if kind in ('trellis','pergola','arch'):result['vines']='bare winter stems' if s['season']=='winter' else 'autumn leaves' if s['season']=='fall' else 'climbing leaves and roses'
     if kind in ('watchtower','castle'):result['position']='Inspecting from the ground; no climb has occurred.'
-    if kind=='castle':result['inscription']=ITEMS[item]['inscription']
+    if kind in ('castle','statue','totem'):result['inscription']=ITEMS[item]['inscription']
+    if kind=='sundial':result.update(shadow_visible=s['sun']>.1,shadow_direction='left' if math.sin(s['shadow_angle'])<-.1 else 'right' if math.sin(s['shadow_angle'])>.1 else 'near the middle',clock='A decorative solar shadow; not an exact civil clock.')
+    if kind=='vane':result.update(wind_direction=['east','southeast','south','southwest','west','northwest','north','northeast'][round(s['bearing']/(math.pi/4))%8],wind_strength=round(s['wind'],2))
+    if kind=='flag':result['flag_height']=round(s['flag'],2)
+    if kind=='gnome':result['appearance']='Painted ceramic gnome, curled boots, red cap and a carved beard; not a living visitor.'
     return result
 
-CONTROL_CHOICES={'gate':('gate_open','gate_close'),'mailbox':('mailbox_open','mailbox_close','mailbox_flag','mailbox_lower_flag'),'well':('well_lower','well_raise'),'windmill':('windmill_brake','windmill_release')}
+CONTROL_CHOICES={'flag':('flag_hoist','flag_lower'),'gate':('gate_open','gate_close'),'mailbox':('mailbox_open','mailbox_close','mailbox_flag','mailbox_lower_flag'),'well':('well_lower','well_raise'),'windmill':('windmill_brake','windmill_release')}
 def request(pond,item,choice,instance=None):
     if item not in ITEMS or not isinstance(choice,str) or choice not in CONTROL_CHOICES.get(ITEMS[item]['type'],()):return False,'Choose a control on this structure.'
     if pond.game.duck.growth_stage in ('egg','hatchling','duckling'):return False,'Little Cheese studies the low details and leaves the heavy controls alone.'

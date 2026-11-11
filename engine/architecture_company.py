@@ -43,7 +43,7 @@ def choose(minds,plan,key):
         'gate_close':'gate_clear','gate_hinge':'hinge_brush','pergola_shade':'pergola_shade','pergola_beams':'pergola_vine',
         'mailbox_open':'mailbox_watch','mailbox_close':'mailbox_watch','mailbox_flag':'mailbox_flag','mailbox_lower_flag':'mailbox_flag',
         'well_lower':'bucket_watch','well_raise':'bucket_watch','well_echo':'well_echo','trellis_flowers':'trellis_petals','trellis_ties':'trellis_ties',
-        'castle_arrowloop':'tower_roof_watch','castle_stones':'castle_history','iron_scroll':'iron_scrolls','iron_brush':'iron_brushpair'}
+        'castle_arrowloop':'tower_roof_watch','castle_stones':'castle_history','iron_scroll':'iron_scrolls','iron_brush':'iron_brushpair','gnome_greet':'gnome_wait','gnome_boots':'gnome_otherboot','statue_inscription':'statue_compare','statue_polish':'statue_farplinth','scarecrow_straw':'scarecrow_othercuff','scarecrow_scarf':'scarecrow_wave','totem_faces':'totem_read','totem_grooves':'totem_othergroove','sundial_shadow':'dial_compare','sundial_cloud':'dial_sky','sundial_marks':'dial_far_marks','vane_direction':'vane_compare','vane_foot':'vane_otherbolt','compass_points':'compass_guide','compass_grout':'compass_east','flag_hoist':'flag_watch','flag_lower':'flag_lowerwatch','flag_salute':'flag_answer'}
     return direct.get(core)
 
 def controls(work,score):
@@ -70,6 +70,11 @@ def observations(minds,r):
     elif kind=='windmill':notes.append('Watched the sails '+('turning' if s['speed']>.05 else 'at rest')+' with the brake '+('applied' if s['brake']>.9 else 'released' if s['brake']<.1 else 'partly applied'))
     elif kind in ('pergola','trellis','arch'):notes.append('Compared '+('bare winter stems' if s['season']=='winter' else 'autumn climbing leaves' if s['season']=='fall' else 'climbing leaves and small roses'))
     elif kind=='castle' and r['score']=='castle_history':notes.append('Read the foundation carving: '+architecture.ITEMS[r['id']]['inscription'])
+    if kind in ('statue','totem'):notes.append('Read the low carving: '+architecture.ITEMS[r['id']]['inscription'])
+    if kind=='gnome':notes.append('The ceramic gnome kept its painted smile and said nothing')
+    if kind=='sundial':notes.append('Saw '+('a sunlight shadow on the dial' if s['sun']>.1 else 'no readable sunlight shadow'))
+    if kind=='flag':notes.append('Watched the pennant '+('raised' if s['flag']>.9 else 'lowered' if s['flag']<.1 else 'partway up'))
+    if kind=='vane':notes.append('Watched the copper arrow settle toward '+['east','southeast','south','southwest','west','northwest','north','northeast'][round(s['bearing']/(architecture.math.pi/4))%8])
     return notes
 
 def release(minds,key):

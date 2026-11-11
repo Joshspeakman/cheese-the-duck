@@ -26,7 +26,7 @@ export function architectureGeometry(home,worker,sx,sy){
  const c=worker.character,pose=architecturePose(c.performance.routine,c.performance.motion!==false),p=ARCHITECTURE_BLUEPRINTS[home.blueprint],unit=sx*home.scale*home.detailScale,uh=unit*1.5,cw=c.scale*sx,ch=cw*1.5;
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*uh,anchor=home.anchors[pose.anchor]||home.anchors.contact;
  const target={x:left+(anchor.x+.5)*unit,y:top+(anchor.y+.5)*uh},rest=c.workGripRest||c.grip||{x:c.anchorX+5,y:c.groundRow-6};
- const deck=pose.partner?{x:p.w*pose.actorU,y:p.h-3+pose.actorV*10}:p.type==='bridge'?bridgeDeck(p,pose.walk):home.anchors.entry,ground=top+deck.y*uh;
+ const deck=pose.partner?{x:p.w*pose.actorU,y:p.h-3+pose.actorV*10}:p.type==='bridge'?bridgeDeck(p,pose.walk):p.type==='compass'&&pose.tool==='none'?{x:p.w/2+Math.sin(pose.walk*Math.PI*2)*57,y:p.h-31-Math.cos(pose.walk*Math.PI*2)*18}:home.anchors.entry,ground=top+deck.y*uh;
  let x=pose.tool==='none'?left+deck.x*unit:target.x+(pose.partner?2:-2)*cw-(rest.x+.5-c.anchorX)*cw,y=ground;
  if(c.rig?.species==='butterfly')y-=5*ch;
  const character={...c,x:c.x+(x/sx-c.x)*worker.inside,y:c.y+(y/sy-c.y)*worker.inside,offsetY:0};

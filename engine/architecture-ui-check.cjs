@@ -26,7 +26,7 @@ app.whenReady().then(async()=>{
   await until("journal.world.plan?.architecture_work.id==='gate_close'",'close button acts on the same physical gate');
   send({type:'test_advance',until:'finish'});
   await until("!journal.world.plan&&journal.body.querySelector('[data-architecture-summary]').textContent.includes('closed')",'gate closes visibly in the notebook');
-  for(const [item,label,field]of [['mailbox','Raise flag','flag'],['wishing_well','Lower bucket','bucket'],['windmill','Apply brake','brake']]){
+  for(const [item,label,field]of [['mailbox','Raise flag','flag'],['wishing_well','Lower bucket','bucket'],['windmill','Apply brake','brake'],['flag_pole','Raise pennant','flag']]){
    send({type:'test_fixture',item});await until("frame.item==='"+item+"'",item+' fixture arrives');
    await js("journal.show('belongings',frame.item,frame.copies[0]);button('"+label+"').click()");
    await until("journal.world.plan?.target==='"+item+"'",label+' reaches native simulation');

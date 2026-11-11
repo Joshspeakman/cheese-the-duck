@@ -849,16 +849,16 @@
       "construction": "architecture-v1"
     },
     "garden_gnome": {
-      "width": 10.76,
-      "height": 9.54,
+      "width": 47.83,
+      "height": 49.96,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "duck_statue": {
-      "width": 18.97,
-      "height": 10.74,
+      "width": 62.09,
+      "height": 49.52,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "fountain_statue": {
       "width": 76.86,
@@ -879,22 +879,22 @@
       "construction": "waterworks-v1"
     },
     "sundial": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 66.94,
+      "height": 35.88,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "weather_vane": {
-      "width": 18.44,
-      "height": 10.74,
+      "width": 59.43,
+      "height": 57.13,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "flag_pole": {
-      "width": 16.85,
-      "height": 10.74,
+      "width": 60.71,
+      "height": 60.52,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "tire_swing": {
       "width": 64.17,
@@ -909,16 +909,16 @@
       "construction": "furniture-v1"
     },
     "scarecrow": {
-      "width": 17.48,
-      "height": 11.27,
+      "width": 68.6,
+      "height": 55.6,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "totem_pole": {
-      "width": 22.91,
-      "height": 13.92,
+      "width": 56.36,
+      "height": 62.36,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "welcome_mat": {
       "width": 60.73,
@@ -999,10 +999,10 @@
       "construction": "furniture-v1"
     },
     "compass_rose": {
-      "width": 14.72,
-      "height": 9.09,
-      "floor": false,
-      "construction": "legacy-detail"
+      "width": 66.65,
+      "height": 36.57,
+      "floor": true,
+      "construction": "architecture-v1"
     },
     "sand_castle": {
       "width": 25.81,

@@ -9,7 +9,7 @@ from engine.scene import snapshot
 from world.habitat import PlacedItem
 from world.atmosphere import Weather,WeatherType,Season
 from audio.sound import sound_engine
-sys.stdout=host.WIRE;checks=[];frames=[]
+sys.stdout=host.WIRE;checks=[];frames=[];weather_frames=[]
 def check(ok,label):
     assert ok,label
     checks.append(label)
@@ -53,6 +53,9 @@ try:
         raise AssertionError('never arrived')
     def facts():
         p.minds.sync();return json.loads(p.minds.prompt('cheese','What are you working on?')[0]['content'].split('CHARACTER AND VERIFIED GAME STATE:\n',1)[1])
+    def weather_frame(label,item,iid):
+        p._cache=None
+        weather_frames.append(dict(label=label,item=item,instance=iid,scene=snapshot(g,g.renderer)))
     for item in k.ITEMS:
         iid,obj=own(item);before=possessions();initial=copy.deepcopy(obj);ok,msg=p.start('item',item,instance=iid);check(ok,item+' starts: '+msg);plan=p.state['plan']
         p._activity(1);check(obj==initial and plan['architecture_work']['elapsed']==0,item+' cannot manipulate from a distance');finish(True)
@@ -100,7 +103,33 @@ try:
     k.update(p,'windmill',obj,10,True,.5);check(obj['architecture']['speed']>.9,'wind drives the exposed sails');obj['architecture']['brake']=1;k.update(p,'windmill',obj,10,True,.5);check(obj['architecture']['speed']<.01,'brake actually stops rotation')
     obj['architecture']['brake']=0;k.update(p,'windmill',obj,10,True,.5,'stormy');check(obj['architecture']['speed']<.01,'storm feathers the sails');before=copy.deepcopy(obj);k.update(p,'windmill',obj,500,False,1);check(obj==before,'stored windmill never rotates')
     iid,obj=own('trellis');weather(season=Season.WINTER);p._environment(5,False);check(obj['architecture']['season']=='winter','actual pond season controls climbing foliage')
-    out=ROOT/'engine/artifacts/animation-milestone';out.mkdir(parents=True,exist_ok=True);(out/'architecture-frames.json').write_text(json.dumps(frames));(out/'architecture-native.json').write_text(json.dumps(dict(result='PASS',checks=len(checks),assertions=checks,frames=len(frames)),indent=2));print(json.dumps(dict(result='PASS',checks=len(checks),frames=len(frames),cores=len(k.ROUTINES))))
+    # Landmark mechanisms use saved game weather/time, never renderer wall time.
+    iid,obj=own('weather_vane');weather();p.state['weather']={};p._last_weather=None
+    p._environment(1,False);heading=p.state['weather']['pond']['wind_heading'];check(0<=heading<1 and all('wind_heading' in f for f in p.state['weather']['pond']['forecast']),'weather fronts carry native directional wind')
+    p.state['ecology']['wind_heading']=.99;p.state['weather']['pond']['wind_heading']=.01;p._environment(2,False)
+    check(p.state['ecology']['wind_heading']>.99 or p.state['ecology']['wind_heading']<.01,'wind crosses northward wrap by the short route')
+    a=copy.deepcopy(obj);b=copy.deepcopy(obj);a['architecture']['bearing']=b['architecture']['bearing']=6.2;k.update(p,'weather_vane',a,1,True,.4,'sunny',.02)
+    for _ in range(10):k.update(p,'weather_vane',b,.1,True,.4,'sunny',.02)
+    check(abs(a['architecture']['bearing']-b['architecture']['bearing'])<1e-9,'copper arrow follows native wind with frame-independent damping')
+    saved=copy.deepcopy(a);k.update(p,'weather_vane',a,10,False,1,'stormy',.8);check(a==saved,'stored vane retains its last orientation')
+    for heading,label in [(0,'East'),(.25,'South'),(.5,'West'),(.75,'North')]:
+        p.state['ecology']['wind_heading']=heading;k.update(p,'weather_vane',obj,30,True,.4,'sunny',heading)
+        weather_frame('Vane / '+label+' wind','weather_vane',iid)
+    iid,obj=own('sundial')
+    for hour,sky,visible,side in [(8,'sunny',True,-1),(12,'sunny',True,0),(16,'sunny',True,1),(23,'sunny',False,0),(12,'overcast',False,0),(12,'rainy',False,0)]:
+        weather(WeatherType(sky),hour=hour);k.update(p,'sundial',obj,1,True,.2,sky,.3);a=obj['architecture'];check((a['sun']>.1)==visible,'sundial sunlight at '+str(hour)+' '+sky)
+        if visible:check(abs(k.math.sin(a['shadow_angle']))<1e-8 if not side else k.math.sin(a['shadow_angle'])*side>0,'sundial shadow follows the actual hour')
+        weather_frame('Sundial / '+str(hour)+':00 '+sky,'sundial',iid)
+    weather(season=Season.SUMMER);k.update(p,'sundial',obj,1,True,.2);summer=obj['architecture']['shadow_length'];weather_frame('Sundial / summer noon','sundial',iid)
+    weather(season=Season.WINTER);k.update(p,'sundial',obj,1,True,.2);check(obj['architecture']['shadow_length']>summer,'winter makes the stylized solar shadow longer');weather_frame('Sundial / winter noon','sundial',iid)
+    weather();iid,obj=own('flag_pole',True);other=p.object_state('flag_pole',g.habitat.placed_items[1].instance_id);uses=obj['uses'];check(k.request(p,'flag_pole','flag_hoist',iid)[0],'explicit pennant command starts real halyard work');arrived()
+    while obj['architecture']['flag']<.3:step(True)
+    value=obj['architecture']['flag'];check(0<value<1 and other['architecture']['flag']==0,'halyard moves only the selected flag')
+    plan=p.state['plan'];plan['paused']=True;before=copy.deepcopy(obj['architecture']);wind=copy.deepcopy(p.state['weather']);g._save_game();g._flush_pending_save();g._load_game();p=g.living_pond;p.sync();loaded=p.object_state('flag_pole',iid)
+    check(loaded['architecture']==before and p.state['weather']==wind and p.state['plan']['paused'],'save/load retains partial hoist and directional weather fronts');p.cancel();check(loaded['uses']==uses,'cancelled flag work adds no completed use')
+    weather();check(k.request(p,'flag_pole','flag_lower',iid)[0],'part-raised flag can be lowered from its saved height');finish(True);check(loaded['architecture']['flag']==0,'flag comes down through actual native contact')
+    iid,obj=own('scarecrow');k.update(p,'scarecrow',obj,2,True,.8);check(obj['architecture']['phase']>0 and obj['architecture']['wind']==.8,'scarecrow scarf uses native breeze and time');saved=copy.deepcopy(obj);k.update(p,'scarecrow',obj,50,False,.9);check(obj==saved,'stored scarf has no autonomous animation clock')
+    out=ROOT/'engine/artifacts/animation-milestone';out.mkdir(parents=True,exist_ok=True);(out/'architecture-frames.json').write_text(json.dumps(frames));(out/'landmark-weather-frames.json').write_text(json.dumps(weather_frames));(out/'architecture-native.json').write_text(json.dumps(dict(result='PASS',checks=len(checks),assertions=checks,frames=len(frames),weatherFrames=len(weather_frames)),indent=2));print(json.dumps(dict(result='PASS',checks=len(checks),frames=len(frames),cores=len(k.ROUTINES),weatherFrames=len(weather_frames))))
     if '--serve' in sys.argv:
         weather();g.duck.growth_stage='adult';item='gate';iid,obj=own(item,True)
         def emit():
