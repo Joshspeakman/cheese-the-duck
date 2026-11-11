@@ -62,7 +62,7 @@ function duckGuest(duck,p,t,requested,active){
    const rows=propRows(p,t,active);let x=Math.min(W-Math.max(...rows.map(r=>r.length))-7,b.x+b.w-3),y=Math.min(FLOOR-rows.length-1,b.y+Math.max(3,b.h*.35));
    if(active&&p.prop==='apple'&&Math.floor(t*5)%8<3){x=h.x+1;y=h.y-5;}
    signature(c,p,t,x,y,active);
- }else if(requested!=='sleeping'&&!['botanical','instrument','lighting','keepsake','creative','textile','ground'].includes(duck.performance?.kind))c.group(['.---.','| : |',"'---'"],b.x+1,b.y+Math.max(2,b.h*.4),'p',true);
+ }else if(requested!=='sleeping'&&!['botanical','instrument','lighting','keepsake','creative','textile','ground','architecture'].includes(duck.performance?.kind))c.group(['.---.','| : |',"'---'"],b.x+1,b.y+Math.max(2,b.h*.4),'p',true);
  if(/giving/.test(duck.activity||duck.state||''))c.group([' .-+- .',' |+ +|'," '---'"],Math.min(61,b.x+b.w),FLOOR-4,'p',true);
  c.put(r.eye.char,r.eye.x,r.eye.y,'e');
  return {...base,...c.finish(duck.facing),...Object.fromEntries(['bill','grip','workGripRest'].map(k=>[k,base[k]&&{...base[k],x:duck.facing===false?W-1-base[k].x:base[k].x}])),anchorX:duck.facing===false?W-1-base.anchorX:base.anchorX,action:state,profileId:p.id,design:'pond-cast',signature:active,habit:p.habit};
@@ -126,20 +126,20 @@ function speciesGuest(duck,p,t,state,active){
  }
  if(!performance?.seated)for(const [i,x] of feet.entries()){const lift=performance?(i?performance.r:performance.l):walking&&((phase<4)===(i===0))?1:0;c.put(p.species==='toad'?'_\\/_':i?'>_':'_>',x,FLOOR+dy-lift-(performance?Math.max(0,performance.b):0),'a');}
  if(p.species!=='butterfly'&&!walking&&!asleep&&!performance){const x=p.species==='owl'?24:p.species==='toad'?43:p.species==='goose'?43:40;signature(c,p,t,x,p.species==='owl'?31:33,active);}
- if((performance?.botanical||performance?.instrument||performance?.lighting||performance?.keepsake||performance?.creative||performance?.textile||performance?.ground||performance?.w>.2)&&p.species!=='butterfly'){
+ if((performance?.botanical||performance?.instrument||performance?.lighting||performance?.keepsake||performance?.creative||performance?.textile||performance?.architecture||performance?.ground||performance?.w>.2)&&p.species!=='butterfly'){
    // A gesture grows from the shoulder. The previous feather patch floated
    // above tall bodies when its upward motion exceeded its own height.
    const shoulderY=Math.round(body.y+body.h*.4),row=shoulderY+performance.b;
    const feathers=c.fills.filter(f=>f.tone==='b'&&f.y===row).sort((a,b)=>b.w-a.w)[0];
    const shoulder={x:Math.round(feathers?feathers.x+feathers.w*.6:body.x+body.w*.4),y:shoulderY};
-   const tip=(performance.botanical||performance.instrument||performance.lighting||performance.keepsake||performance.creative||performance.textile||performance.ground)?{x:Math.min(W-4,Math.round(body.x+body.w+2+performance.reach*2)),y:shoulder.y+1}:{x:shoulder.x+Math.round(4+performance.w*5),y:shoulder.y-Math.round(performance.w*5)};
-   if(performance.botanical||performance.instrument||performance.lighting||performance.keepsake||performance.creative||performance.textile||performance.ground){grip={x:tip.x,y:tip.y+performance.b};workGripRest={x:Math.round(body.x+body.w+2),y:tip.y};}
+   const tip=(performance.botanical||performance.instrument||performance.lighting||performance.keepsake||performance.creative||performance.textile||performance.architecture||performance.ground)?{x:Math.min(W-4,Math.round(body.x+body.w+2+performance.reach*2)),y:shoulder.y+1}:{x:shoulder.x+Math.round(4+performance.w*5),y:shoulder.y-Math.round(performance.w*5)};
+   if(performance.botanical||performance.instrument||performance.lighting||performance.keepsake||performance.creative||performance.textile||performance.architecture||performance.ground){grip={x:tip.x,y:tip.y+performance.b};workGripRest={x:Math.round(body.x+body.w+2),y:tip.y};}
    const n=Math.max(Math.abs(tip.x-shoulder.x),Math.abs(tip.y-shoulder.y));
    for(let i=0;i<=n;i++){
      const u=i/n,x=shoulder.x+(tip.x-shoulder.x)*u,y=shoulder.y+(tip.y-shoulder.y)*u;
      c.put('/',x,y,'w');if(p.species!=='toad')c.put('/',x+2,y+1,'w');
    }
-   if(performance.botanical||performance.instrument||performance.lighting||performance.keepsake||performance.creative||performance.textile||performance.ground)c.put(')',tip.x,tip.y,'w');
+   if(performance.botanical||performance.instrument||performance.lighting||performance.keepsake||performance.creative||performance.textile||performance.architecture||performance.ground)c.put(')',tip.x,tip.y,'w');
    else c.group(p.species==='toad'?[' /','/_)']:[' /)/)','/ / /','\\__/'],tip.x-1,tip.y-2,'w',true);
  }
  if(performance?.mark)c.put(performance.mark,head.x+head.w+2,head.y-2,'a');
@@ -154,7 +154,7 @@ function speciesGuest(duck,p,t,state,active){
 }
 
 export function visitorRig(duck,time=0){
- if(['botanical','seating','instrument','lighting','keepsake','creative','textile','ground'].includes(duck.performance?.kind))time=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
+ if(['botanical','seating','instrument','lighting','keepsake','creative','textile','ground','architecture'].includes(duck.performance?.kind))time=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  const p=guestProfile(duck),seed=seedOf(p.id),t=time+seed%19*.17,raw=duck.activity||duck.state||'idle';
  const requested=/reading|painting|giving/.test(raw)?'signature':/bounce|happy|exercise/.test(raw)?'dancing':/chat|greet/.test(raw)?'quacking':raw;
  const active=!duck.performance&&(requested==='signature'||requested==='working'||requested==='idle'&&(t%(10+seed%5))>5&&(t%(10+seed%5))<8.5),state=duck.performance?'idle':requested==='signature'||requested==='working'?'idle':requested;

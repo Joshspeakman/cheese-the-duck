@@ -1,3 +1,4 @@
+import {architecturePose,ARCHITECTURE_ROUTINES} from './architecture-routines.mjs';
 import {groundPose,GROUND_ROUTINES} from './ground-routines.mjs';
 import {textilePose,TEXTILE_ROUTINES} from './textile-routines.mjs';
 import {sameInstance,physicalState} from './physical-objects.mjs';
@@ -324,11 +325,12 @@ export class LivingWorld {
         if(sitters.length)interaction={...(interaction||{phase:'act'}),seat_occupants:sitters};
         const music=musicians.filter(r=>r.id===item.id&&sameInstance(item,r)&&matches(r.destination)&&r.phase==='inside').map(r=>{const p=musicPose(r.id,r.score,s.motion!==false);return p&&{...p,slot:r.slot};}).filter(Boolean);
         const light=owned&&plan.light_work?lightingPose(plan.light_work,s.motion!==false):null;
+        const architecture=owned&&plan.architecture_work&&plan.phase!=='approach'?architecturePose(plan.architecture_work,s.motion!==false):null;
         const ground=owned&&plan.ground_work&&plan.phase!=='approach'?groundPose(plan.ground_work,s.motion!==false):null;
         const textile=owned&&plan.textile_work&&plan.phase!=='approach'?textilePose(plan.textile_work,s.motion!==false):null;
         const creative=owned&&plan.creative_work&&plan.phase!=='approach'?creativePose(plan.creative_work,s.motion!==false):null;
         const keepsake=owned&&plan.keepsake_work?keepsakePose(plan.keepsake_work,s.motion!==false):null;
-        this.objects.push({...itemSprite(item.id,t,{pose:{music,light,keepsake,creative,textile,ground},motion:s.motion!==false,context:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,worldPosition:[item.x,item.y],scale:itemWorldScale(item.id)});
+        this.objects.push({...itemSprite(item.id,t,{pose:{music,light,keepsake,creative,textile,ground,architecture},motion:s.motion!==false,context:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,worldPosition:[item.x,item.y],scale:itemWorldScale(item.id)});
       }});
     }
     if(s.visitor){const [x,y]=this.project(s,s.visitor.x,s.visitor.y);actors.push({y,draw:()=>this.actor(s,t+2,x,y,{stage:'adult',state:'idle',facing:false,...s.visitor},true)});}
@@ -419,6 +421,15 @@ export class LivingWorld {
       const character={...characterSprite({...source,state:'idle',facing:r.slot===0,performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
       (home.gardeners||=[]).push({character,inside,slot:r.slot});
       this.characters=this.characters.filter(c=>c!==original);
+    }
+    if(plan?.architecture_work&&!plan.architecture_work.interrupted&&ARCHITECTURE_ROUTINES[plan.architecture_work.id]&&['prepare','act','settle'].includes(plan.phase)){
+      const original=this.characters.find(c=>c.cheese),home=this.objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.construction==='architecture-v1'&&(o.portable||o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination?.[i])<1.1)));
+      if(original&&home){
+        const progress=plan.progress??plan.elapsed/plan.duration,inside=plan.phase==='act'?1:plan.phase==='prepare'?clamp((progress-.15)/.13,0,1):clamp(1-(progress-.9)/.1,0,1);
+        const performance={kind:'architecture',routine:plan.architecture_work,motion:s.motion!==false};
+        const character={...characterSprite({...s.duck,state:'idle',facing:true,performance},t),x:original.x,y:original.y,cheese:true};
+        home.structureUsers=[{character,inside,slot:0}];this.characters=this.characters.filter(c=>c!==original);
+      }
     }
     if(plan?.ground_work&&!plan.ground_work.interrupted&&GROUND_ROUTINES[plan.ground_work.id]&&['prepare','act','settle'].includes(plan.phase)){
       const original=this.characters.find(c=>c.cheese),home=this.objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.construction==='ground-v1'&&(o.portable||o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination?.[i])<1.1)));

@@ -247,8 +247,8 @@ Resident speech uses the local Qwen3 model and llama.cpp runtime described above
 
 The next animation milestone is in development on this branch and has **not**
 replaced the installed game; the separate chat update is installed as 2.36.1. Its tracker is
-`overhaul/animation-milestone/requirements.json`: 237 of 542 object drawings have
-been reconstructed, with 305 remaining. The full 48 bespoke sequences per object
+`overhaul/animation-milestone/requirements.json`: 250 of 542 object drawings have
+been reconstructed, with 292 remaining. The full 48 bespoke sequences per object
 and all guest/age/context coverage remain unfinished.
 
 The lighting work adds 27 distinct constructions, from pleated lanterns and
@@ -437,6 +437,44 @@ Shared ground checks use `.venv/bin/python engine/check_ground_company.py`,
 `engine/node_modules/.bin/electron engine/ground-company-check.cjs`. They exercise
 regular, rare and story arrivals, all 48 visitor rigs, shared contact timing,
 saved marks, interruption and clickable visitors in actual simulation replays.
+
+### Garden structures in development
+
+Thirteen larger constructions replace the earlier fence, wall, arch, bridge,
+watchtower, windmill, gate, pergola, mailbox, wishing well, trellis, castle tower
+and iron fence. They use joined rails, stone courses, iron scrolls, exposed
+bracing, shingled roofs, seasonal climbing vines and separate bridge rails.
+Cheese keeps his approved body proportions. Low handles and pull loops put the
+working controls within reach; bridge feet follow the fixed deck behind its
+near rail.
+
+The 36 initial native routines inspect, cross, brush and operate these structures.
+Each physical copy saves its gate opening, mailbox door and flag, bucket depth,
+crank angle and windmill brake. Moving a control takes actual contact. Cancelling
+keeps the movement already made without recording a completed use; resuming the
+well starts from the saved handle angle. Wind drives the sails, the brake slows
+them, and storm gusts stop them. Stored copies retain their state and do not run.
+
+The notebook offers **Open/Close gate**, **Open/Close box**, **Raise/Lower flag**,
+**Lower/Raise bucket**, and **Apply/Release brake** on the selected copy. Its live
+summary follows native state. Hatchlings and ducklings inspect low details;
+older or tired Cheese takes quieter observation. Night, rain and storms choose
+sensible observation or withdrawal. Vines follow the pond's actual season.
+Chat can describe the mechanism only after Cheese arrives. The mailbox has an
+empty compartment, the well does not grant water or treasure, and tower visits
+currently stay on the ground.
+
+These are initial constructions and solo routines. Visitor participation, egg
+observation, climbing, physical tool pickup/put-away, full mood/season/personality
+acting and each object's 48 meaningful sequences remain unfinished. Validation
+uses `.venv/bin/python engine/check_architecture.py`,
+`node --test engine/tests/architecture.test.mjs`,
+`engine/node_modules/.bin/electron engine/architecture-check.cjs`, and
+`engine/node_modules/.bin/electron engine/architecture-ui-check.cjs`.
+Disposable-save checks exercise original rewards, independent copies, partial
+controls, cancellation, care, weather, movement, storage, full save/reload,
+1,152 hatched-age poses and 3,636 native/renderer control samples. The renderer
+replays actual game frames, and the notebook harness sends real commands.
 
 ## Validation
 
