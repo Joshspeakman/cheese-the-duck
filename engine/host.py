@@ -146,6 +146,14 @@ def send(payload):
     WIRE.flush()
 
 class CanvasRenderer(Renderer):
+    def _update_camera(self, viewport_w, viewport_h):
+        old_x,old_y=self._camera_x,self._camera_y
+        super()._update_camera(viewport_w,viewport_h)
+        # The original visitor animator stores screen coordinates. Preserve its
+        # world position and destination when this viewport scrolls.
+        from world.friends import visitor_animator
+        visitor_animator.shift_camera(self._camera_x-old_x,self._camera_y-old_y)
+
     max_width, max_height = COLS, ROWS - 4
     def __init__(self, terminal):
         super().__init__(terminal)
@@ -280,13 +288,14 @@ class DesktopGame(Game):
         if self.duck:
             self.guest_motion.tick(self)
         self.story_motion.tick(self)
-        if self.living_pond and self._state == 'playing' and self.duck.growth_stage != 'egg':
+        if self.living_pond and self._state == 'playing' and self.duck:
             self.living_pond.minds.tick()
             if self.friends.current_visit:
                 visitor_animator._mind_motion = self.living_pond.minds.motion(self.friends.current_visit.friend_id)
-                meeting=visitor_animator._mind_motion.get('meeting')
-                if meeting:
-                    meeting['target']=[meeting['target'][0]-self.renderer._camera_x,meeting['target'][1]-self.renderer._camera_y]
+                for kind in ('meeting','shelter'):
+                    meeting=visitor_animator._mind_motion.get(kind)
+                    if meeting:
+                        meeting['target']=[meeting['target'][0]-self.renderer._camera_x,meeting['target'][1]-self.renderer._camera_y]
             else:visitor_animator._mind_motion = {}
 
     def _perform_interaction(self, interaction):

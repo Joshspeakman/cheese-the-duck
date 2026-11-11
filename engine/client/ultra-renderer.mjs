@@ -80,16 +80,20 @@ export class SceneCanvas {
       const surface=this.backdropAt(actor.x*this.sx,actor.y*this.sy);
       if(actor.item){
         this.items.draw(this.ctx,actor,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{surface,outline:light.outline});
-        if(actor.occupant){
-          const staged=occupiedGeometry(actor,actor.occupant.character,actor.occupant.inside,this.sx,this.sy);
+        const occupants=actor.occupants||(actor.occupant?[actor.occupant]:[]);
+        let front=null,heldProps=[];
+        for(const occupant of occupants){
+          const staged=occupiedGeometry(actor,occupant.character,occupant.inside,this.sx,this.sy,occupant.slot);
           this.ctx.save();
           if(staged.clip){const r=staged.clip;this.ctx.beginPath();this.ctx.rect(r.x,r.y,r.w,r.h);this.ctx.clip();}
           drawCharacter(this.ctx,{...staged.character,sun:light.sun*.7,outline:light.outline},this.sx,this.sy,'#112521');
           this.ctx.restore();
-          if(staged.front)this.items.draw(this.ctx,staged.front,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
-          const held=heldNestGeometry(actor,staged.character,this.sx,this.sy);
-          if(held)this.items.draw(this.ctx,held.model,held.x,held.y,held.cw,{shadow:false,surface,outline:light.outline});
+          front=staged.front||front;
+          const held=occupant.character.cheese?heldNestGeometry(actor,staged.character,this.sx,this.sy):null;
+          if(held)heldProps.push(held);
         }
+        if(front)this.items.draw(this.ctx,front,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
+        for(const held of heldProps)this.items.draw(this.ctx,held.model,held.x,held.y,held.cw,{shadow:false,surface,outline:light.outline});
         if(actor.rider){
           const rider=ridingGeometry(actor,actor.rider.character,actor.rider.seat,actor.rider.inside,this.sx,this.sy);
           drawCharacter(this.ctx,{...rider,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);

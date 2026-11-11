@@ -1,4 +1,5 @@
 // Presentation of a simulation-owned arrival. Never chooses or advances a plan.
+import {inkBounds,residentEnvelope} from './resident-envelope.mjs';
 const clamp=n=>Math.max(0,Math.min(1,n));
 export function residenceStage(plan, objects, character){
  if(!plan?.residence||plan.paused||!['prepare','act','settle'].includes(plan.phase))return null;
@@ -9,16 +10,27 @@ export function residenceStage(plan, objects, character){
  const inside=plan.phase==='act'?1:plan.phase==='prepare'?clamp((progress-.15)/.13):clamp((1-progress)/.1);
  return {home,character,inside};
 }
-export function occupiedGeometry(home,character,inside,sx,sy){
+export function occupiedGeometry(home,character,inside,sx,sy,slot=0){
  const unit=sx*home.scale*(home.detailScale||1),ch=unit*1.5;
  // ItemPainter has a one-cell padding around the same native glyph grid.
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*ch;
- const seat=home.anchors.seat,opening=home.anchors.opening;
- const ink=character.art.flatMap((r,y)=>[...r].flatMap((c,x)=>c===' '?[]:[[x,y]]));
- const minX=Math.min(...ink.map(p=>p[0])),maxX=Math.max(...ink.map(p=>p[0]));
- const minY=Math.min(...ink.map(p=>p[1])),maxY=Math.max(...ink.map(p=>p[1]));
+ const seat=home.anchors.slots?.[slot]||home.anchors.seat,opening=home.anchors.opening;
+ const {left:minX,right:maxX,top:minY,bottom:maxY}=home.anchors.slots?residentEnvelope(character):inkBounds(character);
  let scale=character.scale;
- if(opening)scale=Math.min(scale,(opening.w-2)*unit/((maxX-minX+1)*sx),(opening.h-1)*ch/((maxY-minY+1)*sx*1.5));
+ if(home.anchors.slotWidth)scale=Math.min(scale,home.anchors.slotWidth*unit/((maxX-minX+1)*sx));
+ if(opening){
+  // Fit around the real foot/anchor, not merely the ink rectangle's height.
+  // Tall necks and asymmetric bills otherwise cross the ceiling or jamb.
+  const ax=character.anchorX??character.width/2,gy=character.groundRow??character.art.length;
+  const dx=home.anchors.slots?0:character.offsetX||0,dy=home.anchors.slots?0:(character.offsetY||0)/1.5;
+  const limits=[
+   [seat.x-opening.x-1,ax-minX-dx,unit/sx],
+   [opening.x+opening.w-1-seat.x,maxX+1-ax+dx,unit/sx],
+   [seat.y-opening.y-1,gy-minY-dy,ch/(sx*1.5)],
+   [opening.y+opening.h-seat.y,maxY+1-gy+dy,ch/(sx*1.5)],
+  ];
+  for(const [space,extent,factor]of limits)if(extent>0)scale=Math.min(scale,Math.max(.01,space)*factor/extent);
+ }
  const restingX=left+seat.x*unit,restingY=top+seat.y*ch;
  const x=(character.x*sx*(1-inside)+restingX*inside)/sx;
  const y=(character.y*sy*(1-inside)+restingY*inside)/sy;

@@ -1,5 +1,6 @@
 import {ObjectCanvas} from './object-canvas.mjs';
 import {nestPose,nestForeground,NEST_MARGIN} from './nest-routines.mjs';
+import ROOMS from './animation/home-rooms.json' with {type:'json'};
 // Individual blueprints: roof structure, wall joinery, floor, glazing, entry and
 // furnishings belong to each object. These replace the old stretched silhouettes.
 export const HOME_BLUEPRINTS={
@@ -145,6 +146,22 @@ function bed(c,p,t,pose,ctx){
  if(has(p,'book'))c.rows([' .----.','/ :  /|','+----+/',"'----'"],W-15,H-6,'f');
  return {entry:{x:W/2,y:y+6},seat:{x:W/2,y:y+3},rim:y+9,capacity:p.bed==='fourposter'?2:1};
 }
+function sharedInterior(c,p,room,night){
+ const x=p.wall==='tower'?21:12,y=p.door[1],w=p.wall==='tower'?p.w-42:p.w-24,h=p.door[3];
+ c.solid(x,y,w,h,'d');c.clear(x,y,w,h);c.rect(x,y,w,h,'f');
+ for(let yy=y+h-7;yy<y+h;yy+=2){c.line(x+1,yy,x+w-2,yy,'_','s');for(let xx=x+4;xx<x+w-3;xx+=11)c.put(xx,yy,'|','b');}
+ c.line(x+2,y+3,x+w-3,y+3,'=','b');
+ if(room==='workshop'){c.rows([' T /  T',' |/   |'],x+4,y+4,'k');c.rect(x+w-18,y+7,14,3,'b',true);c.put(x+w-16,y+6,'[]  [o]','a');}
+ if(room==='hearth'){c.rect(x+3,y+5,13,h-8,'s',true);c.rows([' /___\\',' |:::|',night?' |*^*|':' |:::|',' /===\\'],x+6,y+h-8,night?'l':'b');}
+ if(room==='sitting'){c.rows([' .------.',' |::  ::|',' |______|',' /__||__\\'],x+4,y+5,'q');c.put(x+w-16,y+6,'[O]','a');c.line(x+w-17,y+8,x+w-10,y+8,'=','b');}
+ if(room==='hayloft'){for(let i=0;i<3;i++)c.rows([' /|||||\\','[=======]',' \\|||||/'],x+4+i*15,y+5,'a');c.line(x+w-14,y+2,x+w-14,y+h-3,'|','b');for(let yy=y+4;yy<y+h-2;yy+=3)c.put(x+w-15,yy,'===','f');}
+ if(room==='potting'){c.rect(x+3,y+8,w-6,3,'b',true);for(let xx=x+6;xx<x+w-9;xx+=13)c.rows([' \\|/',' (v)','[___]'],xx,y+5,'g');}
+ if(room==='bench'){c.rect(x+3,y+6,w-6,4,'b',true);c.line(x+6,y+10,x+6,y+13,'|','f');c.line(x+w-7,y+10,x+w-7,y+13,'|','f');}
+ if(room==='lookout'){c.rows([' .-----.',' | . * |',' |__o__|'],x+4,y+4,'q');c.rows(['  ___',' (o=o)','   |','  / \\'],x+w-16,y+5,'k');}
+ if(room==='watch'){c.rows([' .----.',' |/\\ /|',' |__o_|'],x+4,y+4,'q');c.put(x+w-10,y+6,'(*)','l');}
+ c.line(x,y+h,x+w-1,y+h,'=','f');
+ return {x:x+1,y:y+1,w:w-2,h:h-1};
+}
 export function homeSprite(base,item,time,{motion=true,state={},interaction=null,context={},pose={}}={}){
  const p=HOME_BLUEPRINTS[item.id];if(!p)return null;
  const routine=interaction?.phase==='act'&&!interaction.paused?interaction.residence?.routine:null;
@@ -203,17 +220,28 @@ export function homeSprite(base,item,time,{motion=true,state={},interaction=null
   if(has(p,'rope')){const xx=p.w-19,yy=p.h-12;c.line(xx,yy-6,xx,yy,'|','a');c.ellipse(xx,yy+3,6,3,'~','a');c.ellipse(xx,yy+3,3,2,'~','a');}
   if(has(p,'step'))c.rect(p.door[0]-4,p.h-4,p.door[2]+8,3,'s',true);
   if(has(p,'mail'))c.rows([' /__\\',' |o |',' |__|'],p.w-8,p.h-8,'b');
-  anchors={entry:{x:p.door[0]+p.door[2]/2,y:p.door[1]+p.door[3]},seat:{x:p.door[0]+p.door[2]/2,y:p.door[1]+p.door[3]-2},opening:{x:p.door[0],y:p.door[1],w:p.door[2],h:p.door[3]},capacity:p.door[2]>30?3:2};
+  const opening=interaction?.shared?sharedInterior(c,p,ROOMS[item.id]?.room,night):{x:p.door[0],y:p.door[1],w:p.door[2],h:p.door[3]};
+  anchors={entry:{x:p.door[0]+p.door[2]/2,y:p.door[1]+p.door[3]},seat:{x:p.door[0]+p.door[2]/2,y:p.door[1]+p.door[3]-2},opening,capacity:ROOMS[item.id]?.capacity||1};
  }
  // Surface wear follows actual object state, with drip trails below the eaves.
  if((state.wetness||0)>.2){for(let i=0;i<6;i++){const x=8+(hash(item.id)+i*13)%(p.w-16),y=(p.nest||p.bed?p.h-12:p.door[1]-1)+Math.floor(t*7+i*3)%7;c.put(x,Math.min(p.h-2,y),"'",'w');}}
  if((state.dirt||0)>.3)for(let i=0;i<8;i++)c.put(9+(hash(item.id)+i*11)%(p.w-18),p.h-4-i%2,'.:','s');
  if((state.condition??1)<.5)c.rows(p.nest?['/ /'," ' "]:[' /','<',' \\'],Math.round(p.w*.27),p.nest?p.h-12:p.door?.[1]+4||p.h-12,'s');
  if((state.bond||0)>.6)c.put(p.w/2-2,p.h-3,'<3','a');
+ if(interaction?.shared&&p.nest&&scored){
+  const count=ROOMS[item.id]?.capacity||1,slot=interaction.residence?.slot||0;
+  anchors.seat.x=15+(p.w-30)*(slot+.5)/count+(pose.u||0)*3;
+ }
  const loose=scored?nestForeground(p,scored,anchors):null,held=scored?.grip>0?{...loose,grip:scored.grip}:null;
  const foreground=held?null:loose;
  if(foreground)for(let y=0;y<foreground.art.length;y++)for(let x=0;x<foreground.width;x++)if(foreground.art[y][x]!==' ')surface.put(x,y,foreground.art[y][x],foreground.tones[y][x]);
  if(p.nest){for(const key of ['seat','entry'])anchors[key]={x:anchors[key].x+pad.x,y:anchors[key].y+pad.y};anchors.rim+=pad.y;}
+ if(interaction?.shared){
+  const count=ROOMS[item.id]?.capacity||1,area=anchors.opening||{x:pad.x+15,w:p.w-30};
+  anchors.slots=Array.from({length:count},(_,i)=>({x:area.x+area.w*(i+.5)/count,y:anchors.seat.y}));
+  if(scored&&p.nest)anchors.slots[interaction.residence?.slot||0]={...anchors.seat};
+  anchors.slotWidth=area.w/count-2;
+ }
  const glyphs=c.finish();glyphs.clipped ||= loose?.clipped||false;
  const body=p.nest==='gold'?'#d8b76a':p.wall==='stone'?'#adb3aa':p.wall==='clay'?'#bc9474':p.wall==='redboard'?'#c58c79':base.body;
  const inks={b:body,f:base.face,s:'#7e8e83',a:base.accent,w:'#a3d2dc',r:p.roofInk||body,q:p.lining==='velvet'?'#ac9dc0':'#c5b99a',d:'#718a83',g:'#8eb798',c:'#e6dfcc',k:'#a2b8b7',l:night?'#f5d98c':'#b2d7db'};

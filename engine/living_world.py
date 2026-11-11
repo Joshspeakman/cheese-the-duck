@@ -876,7 +876,9 @@ class LivingPond:
         # Keep expensive ecology/catalogue data cached, while physical acting
         # clocks reach every frame. A previous snapshot remains unchanged.
         if self._cache is not None and s['elapsed']-self._cache_at<.5:
-            return {**self._cache, 'plan': self._plan_view()}
+            from engine.visitor_shelters import snapshot as shelter_snapshot
+            return {**self._cache, 'plan': self._plan_view(),
+                    'minds':{**self._cache['minds'],'residences':shelter_snapshot(self.minds),'performances':self.minds.performances()}}
         plan=self._plan_view()
         friends=[]
         rare_guest = None

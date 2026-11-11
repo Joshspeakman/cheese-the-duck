@@ -752,6 +752,15 @@ class VisitorAnimator:
         self._is_leaving = True
         self._current_state = "leaving"
         self._target_x = 70  # Move off screen right (absolute position)
+
+    def shift_camera(self, dx, dy):
+        self._position_x-=dx;self._position_y-=dy
+        self._target_x-=dx;self._target_y-=dy
+        # Reservations are passed in screen coordinates by the desktop host.
+        # A render-time camera change must translate that target as well.
+        for key in ('meeting','shelter'):
+            reservation=getattr(self,'_mind_motion',{}).get(key)
+            if reservation:reservation['target']=[reservation['target'][0]-dx,reservation['target'][1]-dy]
     
     def update(self, current_time: float, duck_x: int = 10, duck_y: int = 5) -> Tuple[bool, Optional[str]]:
         """Update animation frame and movement. Returns (frame_changed, dialogue_message)."""
@@ -776,7 +785,7 @@ class VisitorAnimator:
         profile = guest_profile(self._friend_name)
         mind = getattr(self, '_mind_motion', {})
         pace = (profile['pace'] if profile else 4.0) * mind.get('pace', 1)
-        meeting=mind.get('meeting') if not self._is_leaving else None
+        meeting=(mind.get('shelter') or mind.get('meeting')) if not self._is_leaving else None
         if meeting:
             self._target_x,self._target_y=meeting['target']
             self._rest_until=0
@@ -817,7 +826,7 @@ class VisitorAnimator:
             if not self._is_leaving:
                 if meeting:
                     if abs(self._position_x-self._target_x)+abs(self._position_y-self._target_y)<.4:
-                        self._current_state='idle';self._facing_right=meeting['facing']
+                        self._current_state=meeting.get('gesture','idle');self._facing_right=meeting['facing']
                     return True,dialogue
                 # Every few updates, decide what to do
                 if self._position_x == self._target_x and self._position_y == self._target_y:

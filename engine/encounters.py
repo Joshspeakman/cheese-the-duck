@@ -29,6 +29,7 @@ def performance(minds,a,b,action):
 
 def create(minds,a,b,action,reward):
     p=minds.pond
+    if a in minds.housing or b in minds.housing:return None
     if any(k in (c['a'],c['b']) for c in minds.coactivities.values() for k in (a,b)):
         return None
     if 'cheese' in (a,b) and (p.state['plan'] or not p.available()):return None

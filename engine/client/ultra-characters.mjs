@@ -26,7 +26,7 @@ const COLORS = {
 };
 export function characterSprite(duck,time,visitor=false) {
   const model=visitor?visitorRig(duck,time):duckRig(duck,time);
-  return {...model,width:Math.max(1,...model.art.map(row=>row.length)),
+  return {...model,facing:duck.facing!==false,performance:duck.performance||null,width:Math.max(1,...model.art.map(row=>row.length)),
     name:visitor?duck.name||'Friend':'',visitor,...(visitor?{id:duck.id||model.profileId}:{} )};
 }
 
