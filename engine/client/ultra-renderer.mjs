@@ -1,3 +1,4 @@
+import {musicGeometry,drawMusicTools} from './music-performances.mjs';
 import {botanicalGeometry,drawBotanicalTools} from './botanical-routines.mjs';
 import { sceneLight,ambientRows,ambientSwatches,lightBand,readableInk,mixColor } from './scene-lighting.mjs';
 import { GlyphRenderer } from './renderer.mjs';
@@ -52,7 +53,7 @@ export class SceneCanvas {
     for(const model of characters)fit(model);
     for(const model of objects){
       fit(model);
-      for(const member of [...(model.occupants||[]),...(model.riders||[]),...(model.sitters||[]),...(model.gardeners||[])])fit(member.character);
+      for(const member of [...(model.occupants||[]),...(model.riders||[]),...(model.sitters||[]),...(model.gardeners||[]),...(model.musicians||[])])fit(member.character);
       if(model.occupant)fit(model.occupant.character);
       if(model.rider)fit(model.rider.character);
       if(model.bather)fit(model.bather.character);
@@ -125,6 +126,13 @@ export class SceneCanvas {
           drawBotanicalTools(this.ctx,staged,true);
           drawCharacter(this.ctx,{...staged.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
           drawBotanicalTools(this.ctx,staged);
+          if(staged.character.visitor||staged.character.story)seatedHits.push(staged.character);
+        }
+        for(const worker of actor.musicians||[]){
+          const staged=musicGeometry(actor,worker,this.sx,this.sy);
+          drawMusicTools(this.ctx,staged,true);
+          drawCharacter(this.ctx,{...staged.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
+          drawMusicTools(this.ctx,staged);
           if(staged.character.visitor||staged.character.story)seatedHits.push(staged.character);
         }
         let seatFront=null,climbers=[];

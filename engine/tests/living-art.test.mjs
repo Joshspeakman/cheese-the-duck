@@ -11,8 +11,8 @@ test('legacy item operations and all item weather states keep inputs immutable',
   const state={condition:.3,dirt:.8,wetness:.8,bond:.8},before=JSON.stringify(state);
   const frames=new Set([.05,.23,.45,.7,1.05].map(time=>itemSprite(item.id,time,{state,interaction:{phase:'act',progress:time%1}}).art.join('\n')));
   // Rooted plants animate from weather; picked specimens and food may be still.
-  // Their full character-operated routines remain a separately tracked milestone.
-  if(itemSprite(item.id,0).construction!=='botanical-v1')assert(frames.size>1,item.id+' operation must visibly animate');
+  // Instrument mechanisms follow authoritative notes, never a wall-clock loop.
+  if(!['botanical-v1','instrument-v1'].includes(itemSprite(item.id,0).construction))assert(frames.size>1,item.id+' operation must visibly animate');
   assert.notDeepEqual(itemSprite(item.id,0).art,itemSprite(item.id,0,{state}).art,item.id+' shows wear');
   assert.deepEqual(itemSprite(item.id,1,{motion:false,state,interaction:{progress:.5}}),itemSprite(item.id,40,{motion:false,state,interaction:{progress:.5}}));
   assert.equal(JSON.stringify(state),before);

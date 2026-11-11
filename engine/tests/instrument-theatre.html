@@ -1,0 +1,70 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Pond music workshop</title>
+<style>body{background:#142b23;color:#eadfbe;font:18px Georgia}canvas{max-width:100%}</style>
+<script type="module">
+import {MUSIC_SCORES,musicPose,musicGeometry,drawMusicTools} from '../client/music-performances.mjs';
+import {INSTRUMENT_BLUEPRINTS as B} from '../client/instrument-workshop.mjs';
+import {itemSprite,itemWorldScale,ItemPainter} from '../client/ultra-items.mjs';
+import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+const samples={toy_piano:'first_keys',piano:'pond_waltz',drums:'drum_steps',toy_trumpet:'horn_breath',toy_boombox:'cassette_side_a',nook_radio:'evening_station',wind_chimes:'tube_taps',shell_mobile:'shell_ripple',fog_bell:'fog_answer'};
+window.reviewMusic=()=>{
+ const painter=new ItemPainter(),images={};
+ for(let page=0;page<3;page++){
+  const canvas=document.createElement('canvas');canvas.width=1800;canvas.height=1200;const ctx=canvas.getContext('2d');ctx.fillStyle='#142b23';ctx.fillRect(0,0,1800,1200);
+  Object.entries(B).slice(page*3,page*3+3).forEach(([item,spec],n)=>{
+   for(let row=0;row<2;row++){
+    const x=n*600,y=row*600;ctx.save();ctx.translate(x,y);ctx.fillStyle='#eadfbe';ctx.font='18px Menlo';ctx.fillText(item+(row?' · in use':' · construction'),15,28);
+    const routine={id:samples[item],elapsed:2.12};
+    const home={...itemSprite(item,2.12,{pose:{music:row?[musicPose(item,routine)]:[]}}),scale:itemWorldScale(item),x:62,y:60};
+    painter.draw(ctx,home,home.x*5,home.y*9,home.scale*5,{surface:'#142b23',outline:'#0a1712'});
+    if(row){
+     const c={...characterSprite({stage:item==='toy_piano'?'hatchling':'adult',facing:true,state:'idle',performance:{kind:'instrument',item,routine}},0),x:45,y:60};
+     const g=musicGeometry(home,{character:c,inside:1,slot:0},5,9);
+     drawMusicTools(ctx,g,true);drawCharacter(ctx,g.character,5,9,'#142b23');drawMusicTools(ctx,g);
+    }
+    ctx.restore();
+   }
+  });images['instruments-'+page]=canvas.toDataURL();document.body.append(canvas);
+ }
+ return images;
+};
+window.reviewPhrases=()=>{
+ const painter=new ItemPainter(),images={},entries=Object.entries(MUSIC_SCORES);
+ for(let page=0;page<Math.ceil(entries.length/4);page++){
+  const canvas=document.createElement('canvas');canvas.width=1800;canvas.height=2400;const ctx=canvas.getContext('2d');ctx.fillStyle='#142b23';ctx.fillRect(0,0,1800,2400);
+  entries.slice(page*4,page*4+4).forEach(([id,s],row)=>{
+   const item=s.types[0]==='piano'?(s.when.young?'toy_piano':'piano'):s.types[0]==='horn'?'toy_trumpet':s.types[0]==='drums'?'drums':s.types[0]==='radio'?(s.when.wooden?'nook_radio':'toy_boombox'):s.when.shells?'shell_mobile':s.when.bell?'fog_bell':'wind_chimes';
+   for(const [column,f]of [.06,.36,.72].entries()){
+    ctx.save();ctx.translate(column*600,row*600);ctx.fillStyle='#eadfbe';ctx.font='17px Menlo';ctx.fillText(id+' · '+Math.round(f*100)+'%',15,26);
+    const routines=(s.shared?['a','b']:['']).map(role=>({id,elapsed:s.duration*f,role}));
+    const home={...itemSprite(item,0,{pose:{music:routines.map((r,slot)=>({...musicPose(item,r),slot}))}}),scale:itemWorldScale(item),x:62,y:60};
+    painter.draw(ctx,home,home.x*5,home.y*9,home.scale*5,{surface:'#142b23',outline:'#0a1712'});
+    routines.forEach((routine,slot)=>{
+     const visitor=slot?{id:'wise_owl',castId:'wise_owl',name:'Professor Hoot'}:id==='rain_brushes'?{id:'grumpy_toad',castId:'grumpy_toad',name:'Grumble'}:null;
+     const c={...characterSprite({...visitor,stage:s.when.young?'hatchling':s.when.elder?'elder':'adult',facing:slot===0,state:'idle',performance:{kind:'instrument',item,routine}},0,!!visitor),x:45+slot*20,y:60};
+     const g=musicGeometry(home,{character:c,inside:1,slot},5,9);
+     drawMusicTools(ctx,g,true);drawCharacter(ctx,g.character,5,9,'#142b23');drawMusicTools(ctx,g);
+    });ctx.restore();
+   }
+  });images['music-phrases-'+page]=canvas.toDataURL();document.body.append(canvas);
+ }
+ return images;
+};
+window.replayMusic=frames=>{
+ const view=new SceneCanvas();view.resize(1440,900);const images={},costs=[];let players=0,hits=0;
+ for(const [i,s] of frames.entries()){
+  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.1,.1);costs.push(performance.now()-start);
+  if(before!==JSON.stringify(s))throw Error('mutated snapshot');
+  const musicians=view.world.objects.flatMap(o=>o.musicians||[]);players+=musicians.length;
+  for(const w of musicians)if(w.character.visitor||w.character.story){
+   if(!view.hits.some(h=>h.id===w.character.id&&h.kind===(w.character.story?'story':'friend')))throw Error('missing musician hit '+w.character.id);
+   hits++;
+  }
+  if(musicians.some(w=>w.character.cheese&&w.character.rig.stage==='hatchling'&&w.character.performance.routine.elapsed>4)&&!images['instrument-young'])images['instrument-young']=view.canvas.toDataURL();
+  if(!images['instrument-company']&&view.world.objects.some(o=>o.musicians?.filter(w=>w.inside>.99).length>=2&&o.musicians.some(w=>w.character.cheese)))images['instrument-company']=view.canvas.toDataURL();
+ }
+ if(!images['instrument-young']||!images['instrument-company'])throw Error('missing young or shared-work capture');
+ if(!players||!hits)throw Error('no real musician replay coverage');
+ costs.sort((a,b)=>a-b);return {frames:frames.length,players,hits,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+</script>

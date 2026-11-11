@@ -7,7 +7,8 @@ from concurrent.futures import ThreadPoolExecutor
 from engine.social_brains import Minds, ACTIONS, LABELS, action_key, clamp, stable
 from engine.local_speech import speak
 from world.guest_cast import guest_profile
-from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests, botanical_care
+from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests, botanical_care, instrument_sessions
+from engine.instrument_audio import InstrumentAudio
 
 CHEESE_VOICE = {
  'bio': 'Cheese is a scruffy, opinionated little duck: dry wit, petty pond grievances, theatrical indignation and a tender streak he tries to hide. He is curious, not a helpful assistant.',
@@ -34,6 +35,7 @@ class MindGarden:
         self.house_scenes={}
         self.furnishings={};self.seat_retry={};self.seat_scenes={}
         self.gardening={};self.garden_retry={};self.garden_scenes={}
+        self.musicians={};self.music_retry={};self.music_scenes={};self.instrument_audio=InstrumentAudio()
         self._cheese_traits=None
 
     @property
@@ -42,6 +44,7 @@ class MindGarden:
     def game(self):return self.pond.game
 
     def close(self):
+        self.instrument_audio.close()
         if self.executor:self.executor.shutdown(wait=False,cancel_futures=True)
         self.pending=None
 
@@ -134,6 +137,15 @@ class MindGarden:
                 from engine.nest_routines import ROUTINES
                 history=self.pond.state['objects'].get(plan['target'],{}).get('routines',{})
                 facts['familiar_nest_routines']=[ROUTINES[k]['label'] for k,n in sorted(history.items(),key=lambda entry:entry[1],reverse=True) if k in ROUTINES and n>=2][:3]
+        musician=self.musicians.get(key)
+        if musician:
+            facts['current_activity']={'inside':musician['score']['label'],'enter':'Getting ready to play','exit':'Finished playing; stepping away'}.get(musician['phase'],'Walking to play '+musician['id'].replace('_',' '))
+        if plan and plan.get('music_score'):
+            facts['current_activity']=('Paused: ' if plan.get('paused') or not instrument_sessions.cheese_ready(self) else '')+plan['music_score'].get('label',plan['label'])
+        duet=instrument_sessions.company_for(self,key)
+        if duet:
+            partner=duet['b'] if duet['a']==key else duet['a']
+            facts['shared_activity']={'with':self.model.residents[partner]['name'],'activity':duet['score']['label'],'status':'playing together now'}
         care=self.gardening.get(key)
         if care:
             facts['current_activity']=care['routine']['label'] if care['phase']=='inside' else 'Walking to tend '+care['id'].replace('_',' ')
@@ -285,8 +297,8 @@ class MindGarden:
         for i,key in enumerate(keys):
             for other in keys[i+1:]:
                 if 'cheese' in (key,other) and self.pond.state.get('plan',{}):
-                    if self.pond.state['plan'].get('seating') or self.pond.state['plan'].get('plant_care'):continue
-                if key in self.housing or other in self.housing or key in self.furnishings or other in self.furnishings or key in self.gardening or other in self.gardening or playdates.active(self,key) or playdates.active(self,other):continue
+                    if self.pond.state['plan'].get('seating') or self.pond.state['plan'].get('plant_care') or self.pond.state['plan'].get('instrument'):continue
+                if key in self.housing or other in self.housing or key in self.furnishings or other in self.furnishings or key in self.gardening or other in self.gardening or key in self.musicians or other in self.musicians or playdates.active(self,key) or playdates.active(self,other):continue
                 a,b=self.present[key],self.present[other];distance=math.hypot(a[0]-b[0],(a[1]-b[1])*2)
                 pair='|'.join(sorted((key,other)))
                 if distance<24 and self.now>self.pair_cooldowns.get(pair,0):
@@ -324,6 +336,7 @@ class MindGarden:
         shelter_company.tick(self,house_dt)
         furniture_rests.tick(self,house_dt)
         botanical_care.tick(self,house_dt)
+        instrument_sessions.tick(self,house_dt)
         if self.now<self.next_tick:return
         dt=min(5,max(0,self.now-self.last_at));self.last_at=self.now;self.next_tick=self.now+1
         # Absent residents do not accumulate invented interactions or rewards.
@@ -333,13 +346,16 @@ class MindGarden:
             if key=='cheese':continue
             r=self.model.residents[key];r['energy']=clamp(r['energy']-dt/2400);r['social']=clamp(r['social']-dt/1800)
             task=self.tasks.get(key)
-            if self.encounter_for(key) or key in self.housing or key in self.furnishings or key in self.gardening or playdates.active(self,key):
+            if self.encounter_for(key) or key in self.housing or key in self.furnishings or key in self.gardening or key in self.musicians or playdates.active(self,key):
                 if task:task['until']+=dt
                 if key in self.housing and key in self.pond.state['friends']:
                     self.pond.state['friends'][key].update(activity='sheltering' if self.housing[key]['phase']=='inside' else 'walking to shelter',location=self.pond.location)
                 elif playdates.active(self,key) and key in self.pond.state['friends']:
                     play=playdates.active(self,key)
                     self.pond.state['friends'][key].update(activity=('walking over to play' if play['phase']=='approach' else play['label']),location=self.pond.location)
+                elif key in self.musicians and key in self.pond.state['friends']:
+                    r=self.musicians[key]
+                    self.pond.state['friends'][key].update(activity={'inside':r['score']['label'],'enter':'getting ready to play','exit':'finished playing; stepping away'}.get(r['phase'],'walking to play music'),location=self.pond.location)
                 elif key in self.gardening and key in self.pond.state['friends']:
                     r=self.gardening[key]
                     self.pond.state['friends'][key].update(activity=r['routine']['label'] if r['phase']=='inside' else 'walking to tend a plant',location=self.pond.location)
@@ -404,6 +420,10 @@ class MindGarden:
         if care:
             result['meeting']=care
             return result
+        musician=instrument_sessions.motion(self,key)
+        if musician:
+            result['meeting']=musician
+            return result
         play=playdates.motion(self,key)
         if play:
             result['meeting']=play
@@ -432,6 +452,7 @@ class MindGarden:
                 'residences':visitor_shelters.snapshot(self),
                 'seats':furniture_rests.snapshot(self),
                 'gardeners':botanical_care.snapshot(self),
+                'musicians':instrument_sessions.snapshot(self),
                 'exchanges':copy.deepcopy(self.model.state['exchanges'][-30:]),'voice':dict(self.voice),
                 'pending':self.model.residents[self.pending['key']]['name'] if self.pending else ('Cheese' if getattr(self.game,'_pending_talk_future',None) else None),
                 'feedback':self.feedback}

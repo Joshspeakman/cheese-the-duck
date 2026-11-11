@@ -12,7 +12,7 @@ from datetime import datetime
 from engine.item_profiles import ITEMS
 from engine.pond_stories import STORIES
 from engine.placements import outdoor_decorations, complete_structures,habitat_placements
-from engine import shelters, nest_routines, playdates, water_routines, furniture_rests,botany,botanical_care
+from engine import shelters, nest_routines, playdates, water_routines, furniture_rests,botany,botanical_care,instrument_sessions
 from world.guest_cast import guest_profile, guest_line
 
 NEEDS = ('hunger', 'energy', 'fun', 'cleanliness', 'social')
@@ -381,6 +381,7 @@ class LivingPond:
         label = PLANS.get(kind, (kind.replace('_',' ').title(),))[0]
         residence = None
         seating = None
+        instrument = None
         if kind == 'rest':
             self.sync()
             places = shelters.candidates(self, target)
@@ -399,6 +400,12 @@ class LivingPond:
             if target in self.placed and self.location != 'Home Pond':
                 return False, 'That item is back at Home Pond.'
             profile = ITEMS[target]
+            if target in instrument_sessions.INSTRUMENTS:
+                self.minds.sync()
+                choices=instrument_sessions.candidates(self.minds,'cheese',target)
+                if not choices:
+                    return False, 'Place that instrument in a reachable spot with a free place, and wait for the storm to pass.'
+                instrument=choices[0]
             if target in furniture_rests.SEATS:
                 choices=furniture_rests.candidates(self,target)
                 if not choices:
@@ -474,6 +481,8 @@ class LivingPond:
             s['plan']['residence'] = residence
         if seating:
             s['plan']['seating'] = seating
+        if instrument:
+            s['plan']['instrument'] = instrument
         self.game.behavior_ai.cancel_pending_movement()
         self.game.behavior_ai.clear_action()
         pos = self.game.renderer.duck_pos
@@ -481,6 +490,8 @@ class LivingPond:
             pos.move_to(*residence['destination'])
         elif seating:
             pos.move_to(*seating['destination'])
+        elif instrument:
+            pos.move_to(*instrument['destination'])
         elif target in self.placed:
             x,y = self.placed[target].get_display_position()
             pos.move_to(round(x*132/20), round(y*42/12))
@@ -520,6 +531,8 @@ class LivingPond:
         if g.duck.current_action in ('feed','play','clean','pet','sleep'):
             return
         residence = plan.get('residence')
+        if plan.get('instrument') and (not instrument_sessions.valid(self,plan['instrument']) or plan.get('music_score') and plan['music_score'].get('id') not in instrument_sessions.SCORES):
+            self.cancel();return
         if plan.get('care_routine') and plan['care_routine'].get('id') not in botanical_care.ROUTINES:
             self.cancel();return
         if plan.get('plant_care') and (not plan.get('destination') or not shelters.still_placed(self,{'id':plan['target'],'destination':plan['destination']}) or any(w in self.weather_type for w in ('storm','blizzard'))):
@@ -554,7 +567,8 @@ class LivingPond:
         water_holding = water_routines.advance(self, plan, dt)
         seat_holding = furniture_rests.advance(self,plan,dt)
         care_holding = botanical_care.advance(self,plan,dt)
-        if plan.get('company', {}).get('phase') == 'cancelled' or plan.get('water_routine',{}).get('interrupted') or plan.get('seat_routine',{}).get('interrupted') or plan.get('care_routine',{}).get('interrupted'):
+        music_holding = instrument_sessions.advance(self,plan,dt)
+        if plan.get('company', {}).get('phase') == 'cancelled' or plan.get('water_routine',{}).get('interrupted') or plan.get('seat_routine',{}).get('interrupted') or plan.get('care_routine',{}).get('interrupted') or plan.get('music_score',{}).get('interrupted'):
             # An interrupted shared activity must not fall through to the normal
             # item completion either. Release both residents and leave use counts
             # and needs unchanged, even if the toy remains owned but is put away.
@@ -562,11 +576,11 @@ class LivingPond:
             return
         weather_holding = bool(residence and residence['roof'] and shelters.adverse(self.weather_type)
                        and plan['phase'] == 'act' and g.duck.needs.hunger > 15)
-        holding = weather_holding or routine_holding or company_holding or water_holding or seat_holding or care_holding
-        if company_holding or water_holding or seat_holding or care_holding:
+        holding = weather_holding or routine_holding or company_holding or water_holding or seat_holding or care_holding or music_holding
+        if company_holding or water_holding or seat_holding or care_holding or music_holding:
             g.renderer.duck_pos.cancel_movement()
             g.renderer.duck_pos.set_state_by_name('thinking',0)
-        elif plan.get('company',{}).get('done') or plan.get('water_routine',{}).get('done') or plan.get('seat_routine',{}).get('done') or plan.get('care_routine',{}).get('done'):
+        elif plan.get('company',{}).get('done') or plan.get('water_routine',{}).get('done') or plan.get('seat_routine',{}).get('done') or plan.get('care_routine',{}).get('done') or plan.get('music_score',{}).get('done'):
             plan['elapsed']=max(plan['elapsed'],plan['duration']*.9)
         if residence:
             residence['holding'] = weather_holding
@@ -586,7 +600,7 @@ class LivingPond:
         if phase in ('act','settle'):
             if phase != self._last_plan_visual:
                 g.renderer.duck_pos.cancel_movement()
-                g.renderer.duck_pos.set_state_by_name(state, duration=0 if residence or company_holding or water_holding or seat_holding or care_holding else max(1, plan['duration']-plan['elapsed']))
+                g.renderer.duck_pos.set_state_by_name(state, duration=0 if residence or company_holding or water_holding or seat_holding or care_holding or music_holding else max(1, plan['duration']-plan['elapsed']))
                 self._last_plan_visual = phase
         if target in s['objects']:
             s['objects'][target]['active'] = phase == 'act'
@@ -596,7 +610,7 @@ class LivingPond:
                 nest_routines.advance(self, plan, 0.)
         if ratio >= 1:
             s['plan'] = None  # Consume once before invoking callbacks.
-            if residence or plan.get('company') or plan.get('water_routine') or plan.get('seating') or plan.get('care_routine'):
+            if residence or plan.get('company') or plan.get('water_routine') or plan.get('seating') or plan.get('care_routine') or plan.get('instrument'):
                 g.renderer.duck_pos.cancel_movement()
                 g.renderer.duck_pos.set_state_by_name('idle',0)
             if target in s['objects']: s['objects'][target]['active'] = False
@@ -615,6 +629,7 @@ class LivingPond:
             water_mode=water_routines.complete(self,plan)
             furniture_rests.complete(self,plan)
             botanical_care.complete(self,plan)
+            instrument_sessions.complete(self,plan)
             if water_mode=='edge':skill='observation'
             if kind == 'clean_item': obj['dirt'] = 0; message = 'Every seam and corner looks cared for.'
             elif kind == 'repair_item':
@@ -709,7 +724,7 @@ class LivingPond:
         if kind in ('rest','practice','wander','garden','forage','share'):
             action={'rest':'nap','practice':'play','wander':'explore','garden':'clean','forage':'explore','share':'pet'}[kind]
             g.duck.desires.on_action_performed(action,self.location)
-        learning_kind='garden' if plan.get('care_routine',{}).get('done') else kind
+        learning_kind='practice' if plan.get('music_score',{}).get('done') else 'garden' if plan.get('care_routine',{}).get('done') else kind
         self.minds.completed(learning_kind, plan['label']+'. '+message, plan.get('learning_before'), target if kind=='share' else '')
         self.gain(skill,2 if plan['automatic'] else 4)
         hour=str(int(self.hour));s['habits'][kind+':'+hour]=min(30,s['habits'].get(kind+':'+hour,0)+1)
@@ -973,6 +988,10 @@ class LivingPond:
             if plan.get('seat_routine'):
                 plan['seat_routine']=furniture_rests.routine_view(self.minds,'cheese',plan['seat_routine'])
                 plan['label']=plan['seat_routine'].get('label',plan['label'])
+            if plan.get('music_score'):
+                if not instrument_sessions.cheese_ready(self.minds):plan['paused']=True
+                plan['music_score']=instrument_sessions.score_view(self.minds,'cheese',plan['music_score'])
+                plan['label']=plan['music_score'].get('label',plan['label'])
             if plan.get('care_routine'):
                 plan['label']=plan['care_routine'].get('label',plan['label'])
             if plan.get('company'):
@@ -990,7 +1009,7 @@ class LivingPond:
         if self._cache is not None and s['elapsed']-self._cache_at<.5:
             from engine.visitor_shelters import snapshot as shelter_snapshot
             return {**self._cache, 'plan': self._plan_view(),
-                    'minds':{**self._cache['minds'],'residences':shelter_snapshot(self.minds),'seats':furniture_rests.snapshot(self.minds),'gardeners':botanical_care.snapshot(self.minds),'performances':self.minds.performances()}}
+                    'minds':{**self._cache['minds'],'residences':shelter_snapshot(self.minds),'seats':furniture_rests.snapshot(self.minds),'gardeners':botanical_care.snapshot(self.minds),'musicians':instrument_sessions.snapshot(self.minds),'performances':self.minds.performances()}}
         plan=self._plan_view()
         friends=[]
         rare_guest = None

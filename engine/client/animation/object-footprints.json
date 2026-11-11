@@ -135,10 +135,10 @@
       "construction": "playground-v1"
     },
     "toy_trumpet": {
-      "width": 20.13,
-      "height": 6.84,
+      "width": 56.57,
+      "height": 31.13,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "instrument-v1"
     },
     "toy_skateboard": {
       "width": 36.62,
@@ -147,10 +147,10 @@
       "construction": "playground-v1"
     },
     "toy_piano": {
-      "width": 21.2,
-      "height": 11.27,
+      "width": 70.61,
+      "height": 43.76,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "instrument-v1"
     },
     "toy_trampoline": {
       "width": 62.85,
@@ -183,10 +183,10 @@
       "construction": "playground-v1"
     },
     "toy_boombox": {
-      "width": 20.04,
-      "height": 10.74,
+      "width": 72.52,
+      "height": 40.57,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "instrument-v1"
     },
     "chair_wood": {
       "width": 41.29,
@@ -543,10 +543,10 @@
       "construction": "legacy-detail"
     },
     "drums": {
-      "width": 21.47,
-      "height": 13.26,
+      "width": 74.32,
+      "height": 47.41,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "instrument-v1"
     },
     "bookshelf_wood": {
       "width": 73.62,
@@ -573,10 +573,10 @@
       "construction": "furniture-v1"
     },
     "piano": {
-      "width": 26.19,
-      "height": 13.92,
+      "width": 105.31,
+      "height": 70.19,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "instrument-v1"
     },
     "wardrobe": {
       "width": 83.14,
@@ -867,10 +867,10 @@
       "construction": "waterworks-v1"
     },
     "wind_chimes": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 64.54,
+      "height": 57.4,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "instrument-v1"
     },
     "birdbath_garden": {
       "width": 53.88,
@@ -1539,10 +1539,10 @@
       "construction": "legacy-detail"
     },
     "nook_radio": {
-      "width": 16.97,
-      "height": 9.09,
+      "width": 59.27,
+      "height": 45.91,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "instrument-v1"
     },
     "breadcrumbs": {
       "width": 17.7,
@@ -1797,10 +1797,10 @@
       "construction": "legacy-detail"
     },
     "shell_mobile": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 74.72,
+      "height": 57.59,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "instrument-v1"
     },
     "storage_basket": {
       "width": 15.62,
@@ -2439,10 +2439,10 @@
       "construction": "legacy-detail"
     },
     "fog_bell": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 71.72,
+      "height": 63.65,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "instrument-v1"
     },
     "mystery_sound": {
       "width": 17.7,
