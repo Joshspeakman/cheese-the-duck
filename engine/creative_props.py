@@ -97,6 +97,8 @@ def advance(pond,plan,dt):
         initial=controls(work)
         work.update(id=protect,start=initial,elapsed=0.,events=[],withdrawal=True,label=ROUTINES[protect]['label'])
         plan['label']=work['label']
+    from engine import creative_company
+    if not work.get('withdrawal') and creative_company.waiting(pond.minds):return True
     spec=ROUTINES[work['id']];work['wind']=w
     work['elapsed']=min(spec['duration'],work['elapsed']+max(0.,dt))
     obj=pond.object_state(plan['target'],plan);s=state(plan['target'],obj);v=controls(work)

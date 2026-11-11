@@ -319,11 +319,30 @@ paper covers are removed by another physical action when dry weather returns.
 The paper-plane design stays the original material; practising never creates or
 consumes inventory. Belongings and natural chat receive the actual state.
 
-Creative work is still an initial repertoire, not 48 sequences per object.
-Independent visitor participation, stationary working platforms with explicit
-climbing, physical tool pickup/put-away and full age/personality/context coverage
-remain open. Tests use `.venv/bin/python engine/check_creative.py`,
-`engine/node_modules/.bin/electron engine/creative-check.cjs` and
+Creative company now adds thirteen complementary tracks: a visitor walks to a
+fixed meeting point, then poses beside the easel, helps with a kite or paper
+fold, or watches the telescope session. Confidence, young/elder company, wind
+and night change their role. Butterfly visitors observe without handling tools.
+Cheese retains ownership of every physical control; a helper never duplicates
+inventory, rewards or item uses. Both brains remember only completed shared time
+and observations that actually occurred. Natural conversation reports whether
+the partner is still approaching, working, paused or finished. Cancellation,
+departure, replacement visits, moved objects and weather withdrawal release the
+visitor back to independent movement. Reservations do not survive save/load.
+
+Viewing stairs and painting decks are fixed to the prop and neutral body size.
+Cheese walks onto their actual treads; they no longer follow his current height
+or brush target. Bodies and short legs keep their original scale. Creative
+visitors remain independently selectable at their rendered position.
+
+These are initial repertoires, not 48 sequences per object. Personal visitor
+choreography, guest-to-guest invitations, telescope handoffs, physical tool
+pickup/put-away, unfolded practice-paper handling, full mood/season variants and
+the individual sequence audits remain open. Tests use
+`.venv/bin/python engine/check_creative.py`,
+`.venv/bin/python engine/check_creative_company.py`,
+`engine/node_modules/.bin/electron engine/creative-check.cjs`,
+`engine/node_modules/.bin/electron engine/creative-company-check.cjs` and
 `engine/node_modules/.bin/electron engine/creative-ui-check.cjs`. The last routes
 actual notebook actions through the command validator into a disposable game.
 

@@ -92,7 +92,7 @@ export function duckRig(duck,t=0,design=null){
    put(i?'>_':'_>',x,y,'a');footPositions.push({x,y});
   }
   const h=headBounds||{x:CX,y:baseY+2,w:8,h:4},b=bodyBounds||{x:CX-8,y:FLOOR-6,w:16,h:6},e=eyePos||{x:h.x+2,y:h.y+1,char:eye};
-  rig={small,stage,action,phase,head:{...h,w:Math.max(4,h.w-4)},faceBounds:h,eye:e,crest:{x:h.x,y:baseY+headDY,w:h.w},neck:{x:Math.round(baseX+spec.art[spec.collar].search(/\S/)),y:baseY+spec.collar+bodyDY,w:small?2:3},body:b,feet:footPositions};
+  rig={small,stage,action,phase,head:{...h,w:Math.max(4,h.w-4)},faceBounds:h,eye:e,restEye:{x:Math.round(e.x-headDX),y:Math.round(e.y-headDY)},crest:{x:h.x,y:baseY+headDY,w:h.w},neck:{x:Math.round(baseX+spec.art[spec.collar].search(/\S/)),y:baseY+spec.collar+bodyDY,w:small?2:3},body:b,feet:footPositions};
   rig.torso=fills.filter(f=>f.tone==='b').map(f=>({...f}));rig.wing=wingBounds;
   if(['flapping','dancing'].includes(action)){
    const open=phase>=2&&phase<=5,wing=open?['  /)/)',' / / /','/ / /','\\__/']:['  /)',' / /',' \\/'];

@@ -18,6 +18,10 @@ function timber(c,x0,y0,x1,y1,w=5){
  c.beam(x0,y0,x1,y1,w,'b');c.line(x0,y0,x1,y1,':','s');
  c.put(x0-1,y0+2,'(o)','a');c.put(x1-1,y1-2,'(o)','a');
 }
+export function scopeEyepiece(v){
+ const angle=-.08-clamp(v.aim)*.5,u=-48-clamp(v.focus)*7;
+ return {x:71+Math.cos(angle)*u,y:49+Math.sin(angle)*u};
+}
 function scope(c,p,v){
  const H=p.h,cx=71,cy=49,angle=-.08-clamp(v.aim)*.5,co=Math.cos(angle),si=Math.sin(angle);
  const point=(u,w=0)=>[cx+co*u-si*w,cy+si*u+co*w];

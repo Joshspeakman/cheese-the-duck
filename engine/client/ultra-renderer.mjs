@@ -129,6 +129,7 @@ export class SceneCanvas {
           drawCreativeTools(this.ctx,staged,true);
           drawCharacter(this.ctx,{...staged.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
           drawCreativeTools(this.ctx,staged);
+          if(staged.character.visitor||staged.character.story)seatedHits.push(staged.character);
         }
         for(const worker of actor.keepers||[]){
           const staged=keepsakeGeometry(actor,worker,this.sx,this.sy);

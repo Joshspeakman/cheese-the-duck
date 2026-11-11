@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: reconstructed telescope, easel, kite and paper_plane_design; integrated 27 physical action cores with native clocks, persistent controls and paint layers, exact-copy ownership, weather withdrawal, ground-positioned portable folding, age-fitted contact/support, notebook controls and truthful natural speech facts. All 27 cores complete through the real planner; full save/reload, cancellation, pauses and storm reel-in preserve inventory and reward invariants. Reviewed 11 visual sheets and 581 native frames; 184 lifecycle assertions, 14 UI checks, 134 JS tests, 72-hour simulation, placement/shared-reading/chat regressions and a clean source smoke passed. Full goal remains active: 206 artworks reconstructed for review, 336 pending, and zero passed per-object 48-sequence audits. Installed chat release 2.36.1 remains unchanged.",
+  "previous_goal_turn": "Progress: creative props now support independently arrived regular, rare and story companions with 13 complementary roles, shared native clocks, actual-observation memories, exact-copy ownership, selective conversation facts and cancellation/weather/save safeguards. Telescope steps and painting decks stay fixed while Cheese climbs without stretching his body. 289 company lifecycle checks, 2912 cast/age rig cases, 138 full JS tests, 184 solo creative checks, 14 notebook UI checks, 197 shared-reading checks, 34 chat checks, 694 simulation checks over 72 hours, two native visual replays and a clean 95-frame source smoke passed. Installed chat 2.36.1 matches verified chat modules and remains unchanged. Goal remains active: 206 reconstructed artworks, 336 pending; no object has passed its 48-sequence audit.",
   "items": [
     {
       "id": "hat_red",
@@ -666,7 +666,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "27 native creative action cores across four props: focusing/caps, progressive saved painting, wind-driven kite flight/reel-in and physical paper folds. Actual ownership, copy identity, contact, interruption, covers, notebook state and natural conversation are integrated. Guest participation, fixed staging/climbing, tool handling and each object’s 48-sequence repertoire remain unfinished."
+      "animation": "27 native creative action cores across four props plus 13 complementary company roles. Independent regular/rare/story arrival, native clocks, per-copy controls, actual-observation memories, truthful chat and fixed working steps are verified foundations. Physical tool handling, reciprocal telescope use, personal visitor and mood/season repertoires, and each object\u2019s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "skateboard",
@@ -688,7 +688,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "27 native creative action cores across four props: focusing/caps, progressive saved painting, wind-driven kite flight/reel-in and physical paper folds. Actual ownership, copy identity, contact, interruption, covers, notebook state and natural conversation are integrated. Guest participation, fixed staging/climbing, tool handling and each object’s 48-sequence repertoire remain unfinished."
+      "animation": "27 native creative action cores across four props plus 13 complementary company roles. Independent regular/rare/story arrival, native clocks, per-copy controls, actual-observation memories, truthful chat and fixed working steps are verified foundations. Physical tool handling, reciprocal telescope use, personal visitor and mood/season repertoires, and each object\u2019s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "easel",
@@ -696,7 +696,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "27 native creative action cores across four props: focusing/caps, progressive saved painting, wind-driven kite flight/reel-in and physical paper folds. Actual ownership, copy identity, contact, interruption, covers, notebook state and natural conversation are integrated. Guest participation, fixed staging/climbing, tool handling and each object’s 48-sequence repertoire remain unfinished."
+      "animation": "27 native creative action cores across four props plus 13 complementary company roles. Independent regular/rare/story arrival, native clocks, per-copy controls, actual-observation memories, truthful chat and fixed working steps are verified foundations. Physical tool handling, reciprocal telescope use, personal visitor and mood/season repertoires, and each object\u2019s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "drums",
@@ -2794,7 +2794,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "27 native creative action cores across four props: focusing/caps, progressive saved painting, wind-driven kite flight/reel-in and physical paper folds. Actual ownership, copy identity, contact, interruption, covers, notebook state and natural conversation are integrated. Guest participation, fixed staging/climbing, tool handling and each object’s 48-sequence repertoire remain unfinished."
+      "animation": "27 native creative action cores across four props plus 13 complementary company roles. Independent regular/rare/story arrival, native clocks, per-copy controls, actual-observation memories, truthful chat and fixed working steps are verified foundations. Physical tool handling, reciprocal telescope use, personal visitor and mood/season repertoires, and each object\u2019s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "fog_bell",
@@ -3855,7 +3855,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "creative_props_native_controls_and_saved_artwork",
+    "sourcePhase": "creative_company_and_stationary_working_steps",
     "fullyOverhauled": false,
     "constructedObjects": 206,
     "remainingArtwork": 336,
@@ -4046,13 +4046,27 @@
       "engine/artifacts/animation-milestone/creative-live-telescope-hatchling.png",
       "engine/artifacts/animation-milestone/creative-live-paper_plane_design-hatchling.png",
       "engine/artifacts/animation-milestone/creative-js.log",
-      "engine/artifacts/animation-milestone/creative-smoke/frame.json"
+      "engine/artifacts/animation-milestone/creative-smoke/frame.json",
+      "engine/artifacts/animation-milestone/creative-company-js.log",
+      "engine/artifacts/animation-milestone/creative-company-native.log",
+      "engine/artifacts/animation-milestone/creative-company-solo-regression.log",
+      "engine/artifacts/animation-milestone/creative-company-chat.log",
+      "engine/artifacts/animation-milestone/creative-company-reading.log",
+      "engine/artifacts/animation-milestone/creative-company-living.log",
+      "engine/artifacts/animation-milestone/creative-company-ui.log",
+      "engine/artifacts/animation-milestone/creative-company-smoke.log",
+      "engine/artifacts/animation-milestone/creative-company-native.json",
+      "engine/artifacts/animation-milestone/creative-company-render.json",
+      "engine/artifacts/animation-milestone/creative-company-live-telescope.png",
+      "engine/artifacts/animation-milestone/creative-company-live-easel.png",
+      "engine/artifacts/animation-milestone/creative-company-live-kite.png",
+      "engine/artifacts/animation-milestone/creative-company-live-paper_plane_design.png"
     ],
     "next": [
-      "Add independent visitor participation to the four reconstructed creative props: take turns at the eyepiece, model/help with painting, coordinate kite launches and compare paper folds. Preserve true arrival, physical copies, native clocks, weather withdrawal, actual observed content and completed-session learning. Replace the initial moving support platforms with stationary steps and explicit climbing/tool pickup; complete all object-specific 48-sequence repertoires and all ages/cast/context coverage.",
+      "Deepen the four creative props beyond 27 solo cores and 13 company roles: actual telescope handoffs, personal visitor choreography, guest-to-guest invitations, physical tool pickup/put-away and unfolded practice-paper handling. Independent arrivals, fixed work steps, actual observations and completed shared-session learning are implemented. Complete full mood/season/age/cast coverage and every-object 48-sequence audits; do not count this foundation as a completed repertoire.",
       "Continue reconstruction of the remaining 336 object artworks and their native interactions; do not treat the 206 initial reconstructions or shared core counts as completion of the full object/age/guest/season/mood milestone.",
       "Deepen the 12 keepsakes beyond 19 solo cores and 15 shared scene cores: personal visitor variations, guest-to-guest reading, egg listening, physical tool pickup/put-away, portable physical-copy handling and individual 48-sequence repertoires. Their initial regular/rare/story company lifecycle and all-cast posed rigs are now implemented and checked.",
-      "Expand 27 reconstructed lights beyond the ten initial control/observation cores: guest participation, contextual company, real tool pickup/put-away, surface-specific manipulation, expressive age/personality staging and each item’s 48 meaningful sequences. Current controls and native state are verified foundations, not the completed milestone.",
+      "Expand 27 reconstructed lights beyond the ten initial control/observation cores: guest participation, contextual company, real tool pickup/put-away, surface-specific manipulation, expressive age/personality staging and each item\u2019s 48 meaningful sequences. Current controls and native state are verified foundations, not the completed milestone.",
       "Expand instrument-specific and guest-specific performance repertoires beyond the 25 shared phrase cores, with explicit approach/climbing, stationary multi-level supports, instrument pickup/put-away, listening audiences and richer reciprocal musical gestures. Keep all per-object sequence counts unverified until the 48 meaningful sequence audit passes. Continue the remaining 336 artwork reconstructions and all other milestone requirements.",
       "Continue construction-specific plant repertoires, seasonal/mood/personality choreography, reciprocal gestures and physical tool handoffs. The 19 shared care scores and all-cast rig fit are foundations, not 48 bespoke sequences on each plant. Continue the remaining 336 item reconstructions and the full per-object animation milestone.",
       "Extend spatial arrangement to the separate building/decorating/project editors and consider additional habitat areas for larger collections; all 218 placeable shop objects now use measured footprints, dry-ground/water checks and truthful storage. Building and decoration objects reserve space against habitat purchases, but their own editors still use legacy placement rules.",
@@ -4065,7 +4079,7 @@
       "Add physical reading, desk/workbench actions, cabinet/wardrobe/mirror use and construction-specific furniture routines; the 16 shared seating tracks do not satisfy the per-object 48-sequence target."
     ],
     "checks": {
-      "javascript": 134,
+      "javascript": 138,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4216,17 +4230,31 @@
       },
       "creativeLifecycle": 184,
       "creativeUI": 14,
-      "creativeRenderTests": 5,
+      "creativeRenderTests": 6,
       "creativeNativePoseParitySamples": 2727,
       "creativeRigCases": 864,
       "creativeReplay": {
         "frames": 581,
         "drawn": 565,
         "workers": 483,
-        "medianMs": 5.099999964237213,
-        "p95Ms": 8.300000011920929,
+        "companions": 0,
+        "medianMs": 5.300000011920929,
+        "p95Ms": 8.699999988079071,
         "sheets": 11,
-        "note": "Development replay of 581 actual native snapshots; not the final full-milestone performance audit."
+        "note": "Development replay of actual native solo frames; not the final milestone performance audit."
+      },
+      "creativeCompanyLifecycle": 289,
+      "creativeCompanyRigCases": 2912,
+      "creativeCompanyRenderTests": 3,
+      "creativeCompanyReplay": {
+        "frames": 203,
+        "drawn": 200,
+        "workers": 322,
+        "companions": 155,
+        "medianMs": 6.400000035762787,
+        "p95Ms": 9,
+        "sheets": 8,
+        "note": "Development replay of actual native frames, including click targets for every staged visitor; not the final milestone performance audit."
       }
     },
     "limitations": [
@@ -4243,7 +4271,7 @@
       "Nine music objects now have 25 shared phrase cores, articulated playing/listening, real synthesized notes, independently arrived visitors and synchronized duets. These are not 48 bespoke sequences per instrument. Construction-specific repertoires, richer expressive posing, explicit tool pickup/put-away, musician climbing and stationary multi-level supports, egg listening and personal visitor phrasing remain unfinished.",
       "Twenty-seven lighting objects now have per-copy modes, real Cheese control contact, warm/cold observation, dusk/weather response, preserved storage state and ten shared cores. Visitor participation, physical tool pickup/put-away and 48 individual meaningful sequences per light remain unfinished; no object sequence completion is claimed.",
       "Twelve keepsakes have 19 native action cores and 15 shared reading/inspection scenes. Regular, rare and story visitors arrive independently, use the same native clock, and learn only from sufficiently shared completed work. Personal visitor repertoires, guest-to-guest keepsake invitations, egg listening, portable physical-copy handling, tool pickup/put-away and every-item 48-sequence audits remain unfinished.",
-      "Four creative props have 27 native action cores, persistent painting/control state, weather protection and notebook/chat integration. All eight hatched Cheese ages retain their scale and contact anchors, and eggs cannot operate tools. Guest participation, stationary work platforms and explicit climbing, tool pickup/put-away, unfolded practice-paper handling, full mood/season/personality variants and each object’s 48 meaningful sequences remain unfinished."
+      "Four creative props have 27 native action cores and 13 complementary company roles. Regular, rare and story visitors arrive independently and share actual observations only after completed work. Fixed viewing steps and painting decks fit all eight hatched ages; eggs cannot operate tools. Personal visitor choreography, reciprocal eyepiece use, guest-to-guest invitations, tool pickup/put-away, unfolded practice-paper handling and full mood/season repertoires remain unfinished. No object has passed its 48-sequence audit."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -4294,10 +4322,10 @@
     },
     "sourceSmoke": {
       "result": "PASS",
-      "frames": 89,
+      "frames": 95,
       "localAI": false,
-      "evidence": "engine/artifacts/animation-milestone/creative-smoke/frame.json",
-      "note": "Source build with disposable saves and clean simulation shutdown. Installed 2.36.1 unchanged."
+      "evidence": "engine/artifacts/animation-milestone/creative-company-smoke/frame.json",
+      "note": "Source build with disposable saves and clean shutdown; installed 2.36.1 unchanged."
     },
     "chatRelease": {
       "branch": "codex/pond-chat-2.36.1",
@@ -4320,6 +4348,7 @@
     "keepsakeRoutineCores": 19,
     "keepsakeCompanyScores": 15,
     "creativeObjects": 4,
-    "creativeRoutineCores": 27
+    "creativeRoutineCores": 27,
+    "creativeCompanyScores": 13
   }
 }
