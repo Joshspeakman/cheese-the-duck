@@ -1,5 +1,6 @@
 const {app,BrowserWindow,ipcMain}=require('electron'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
 const {spawn}=require('node:child_process'),{createInterface}=require('node:readline');
+const {pondCommand}=require('./pond-command.cjs');
 app.setPath('userData',fs.mkdtempSync(path.join(os.tmpdir(),'cheese-copy-ui-')));
 app.whenReady().then(async()=>{
  let child,stderr='';const checks=[],out=path.join(__dirname,'artifacts/animation-milestone');
@@ -9,7 +10,7 @@ app.whenReady().then(async()=>{
   const until=async(s,label)=>{const start=Date.now();while(!await js(s)){if(Date.now()-start>12000)throw Error(label+' timed out '+stderr);await new Promise(r=>setTimeout(r,30));}checks.push(label);};
   await w.loadFile(path.join(__dirname,'tests/physical-objects-theatre.html'));
   await until('Boolean(window.journal)','notebook initialized');
-  ipcMain.on('physical-command',(_,c)=>child.stdin.write(JSON.stringify(c)+'\n'));
+  ipcMain.on('physical-command',(_,c)=>{const command=pondCommand(c);if(command)child.stdin.write(JSON.stringify(command)+'\n');});
   child=spawn(path.join(__dirname,'../.venv/bin/python'),[path.join(__dirname,'check_physical_objects.py'),'--serve'],{cwd:path.dirname(__dirname),stdio:['pipe','pipe','pipe']});
   child.stderr.on('data',b=>stderr=(stderr+b).slice(-5000));
   createInterface({input:child.stdout}).on('line',line=>{try{const m=JSON.parse(line);if(m.type==='physical_frame')js('window.receive('+JSON.stringify(m.frame)+')');}catch{}});

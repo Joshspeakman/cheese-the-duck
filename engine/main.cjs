@@ -87,7 +87,7 @@ ipcMain.on('engine:ack', () => { awaitingFrame = false; if (queued) { const fram
 ipcMain.on('engine:input', (_e, command) => {
   if (!command || closing) return;
   if(command.type==='chat' && typeof command.id==='string' && command.id.length<=80 && typeof command.text==='string' && command.text.length<=1000 && typeof command.session==='string' && command.session.length<=80 && typeof command.target==='string' && command.target.length<=128 && ['say','whisper'].includes(command.channel)) input({type:'chat',id:command.id,session:command.session,text:command.text,target:command.target,channel:command.channel});
-  if (command.type === 'pond' && typeof command.action === 'string' && command.action.length < 32 && (!command.target || typeof command.target === 'string' && command.target.length <= 128)) input({type:'pond',action:command.action,target:command.target||'',text:typeof command.text==='string'?command.text.slice(0,1000):''});
+  if(command.type==='pond'){const pond=require('./pond-command.cjs').pondCommand(command);if(pond)input(pond);}
   if (command.type === 'action' && typeof command.action === 'string' && command.action.length < 32) input(command);
   if (command.type === 'key' && typeof command.key === 'string' && command.key.length < 32) input(command);
   if (command.type === 'text' && typeof command.text === 'string') input({ type: 'text', text: command.text.slice(0, 1000) });

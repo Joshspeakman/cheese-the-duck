@@ -235,7 +235,34 @@ npm --prefix engine start
 npm --prefix engine run dist
 ```
 
-Local LLM support is optional, as in the original game. There is no GGUF model in this repository or the bundled app. Handwritten dialogue and the existing fallbacks run without it. To build with local inference, install `requirements-ai.txt` in `.venv`, supply a model through the existing model setup, and rebuild; the bundler detects and collects `llama_cpp`. Local-model inference itself has not been tested in this port because no model is installed. Radio still requires its original external stream/tools.
+Resident speech uses the local Qwen3 model and llama.cpp runtime described above. On a fresh development machine, run `npm --prefix engine run setup:voice` before building. Model weights stay in Application Support across application updates; they are not committed to the repository. Actual local inference, conversation memory and shutdown saving have been exercised through the desktop chat. Authored dialogue remains available when the local model is unavailable. Radio still requires its original external stream/tools.
+
+The next animation milestone is in development on this branch and has **not**
+replaced the installed 2.36.0 app. Its tracker is
+`overhaul/animation-milestone/requirements.json`: 190 of 542 object drawings have
+been reconstructed, with 352 remaining. The full 48 bespoke sequences per object
+and all guest/age/context coverage remain unfinished.
+
+The lighting work adds 27 distinct constructions, from pleated lanterns and
+glazed lamps to mirrored disco balls and carved crystal lights. Each placed copy
+keeps its own **At dusk / On / Off** setting. Click it, open Belongings, and choose
+a mode; Cheese must walk over and work its control. Cancelling before contact
+leaves the switch alone. Cancelling after contact keeps the physical change but
+does not award a completed use. Storage preserves the setting. Fireflies follow
+their own dusk/season rhythm, the eternal flame stays lit, and rain dampens exposed
+flames. Young Cheese watches open flames without operating their controls.
+
+The ten initial light routines and fitted contact tools are foundations for the
+larger repertoire. Visitor light participation, physical tool pickup/put-away
+and the full per-object repertoire are still pending. Illumination follows the
+actual bulb locations underneath sharp ASCII; cloth warms locally without
+bleaching ceramic, wood or daytime terrain. The light meter updates during use.
+
+Lighting validation uses `.venv/bin/python engine/check_lighting.py`,
+`engine/node_modules/.bin/electron engine/lighting-check.cjs` and
+`engine/node_modules/.bin/electron engine/lighting-ui-check.cjs`. The UI check
+routes real notebook controls through the production command validator into an
+isolated game process, including duplicate selection, cancellation and storage.
 
 ## Validation
 
@@ -270,7 +297,7 @@ The wearable harness (`cd engine && ./node_modules/.bin/electron wearables-check
 
 ## Living pond overhaul
 
-Open **Pond journal** (or **J** while outside a conversation), or click a placed object to inspect it. The journal has eight sections: habitat, Cheese’s plans, belongings, friends, weather, projects, field notes and memories. Classic remains available, and all original menus and progression systems remain playable.
+Open **Pond journal** (or **J** while outside a conversation), or click a placed object to inspect it. The journal has ten sections: habitat, Cheese’s plans, personalities, belongings, arrangement, friends, weather, projects, field notes and memories. Classic remains available, and all original menus and progression systems remain playable.
 
 Every one of the 542 catalogue items now has denser character-space construction, material detail and operating animations. Owned possessions retain condition, dirt, wetness, familiarity and use history. Objects must be reached before use; operations have preparation, activity and settling phases. Repairs require a twig and restore real crafted-tool durability. Food consumption and equipment changes continue through the original inventory/wardrobe so quantities and equipment stay authoritative. The 109 fitted wearables follow the new rig, including its tucked sleeping head.
 

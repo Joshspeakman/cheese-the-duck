@@ -6,6 +6,7 @@ asar: true
 files:
   - main.cjs
   - local-speech.cjs
+  - pond-command.cjs
   - preload.cjs
   - client/**
   - package.json
