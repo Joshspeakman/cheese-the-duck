@@ -98,7 +98,7 @@ export function duckRig(duck,t=0,design=null){
    const open=phase>=2&&phase<=5,wing=open?['  /)/)',' / / /','/ / /','\\__/']:['  /)',' / /',' \\/'];
    group(wing,b.x-2,b.y-(open?3:0),'w');if(open)group(wing.map(r=>[...r].reverse().map(mirrorGlyph).join('')),b.x+b.w-2,b.y-2,'w');
   }
-  if(performance?.nestgrip||performance?.botanical||performance?.instrument||performance?.lighting||performance?.keepsake||performance?.creative||performance?.textile||performance?.playkit||performance?.architecture||performance?.ground){
+  if(performance?.nestgrip||performance?.botanical||performance?.instrument||performance?.lighting||performance?.keepsake||performance?.creative||performance?.textile||performance?.playkit||performance?.architecture||performance?.ground||performance?.surfaceWork){
    const shoulder={x:Math.round(b.x+b.w*.55),y:Math.round(b.y+b.h*.4)};
    grip={x:Math.min(W-4,Math.round(b.x+b.w+2+performance.reach*2)),y:shoulder.y+1};
    workGripRest={x:Math.round(b.x+b.w+2),y:shoulder.y+1-performance.b};
@@ -109,7 +109,7 @@ export function duckRig(duck,t=0,design=null){
    }
    put(')',grip.x,grip.y,'w');
   }
-  if(!performance?.nestgrip&&!performance?.botanical&&!performance?.instrument&&!performance?.lighting&&!performance?.keepsake&&!performance?.creative&&!performance?.textile&&!performance?.playkit&&!performance?.architecture&&!performance?.ground&&performance?.w>.15){
+  if(!performance?.nestgrip&&!performance?.botanical&&!performance?.instrument&&!performance?.lighting&&!performance?.keepsake&&!performance?.creative&&!performance?.textile&&!performance?.playkit&&!performance?.architecture&&!performance?.ground&&!performance?.surfaceWork&&performance?.w>.15){
    const reach=Math.round(performance.w*(small?3:6)),wy=b.y+Math.max(1,Math.round(b.h*.3));
    group(small?[' /)','/ /','\\_/']:['  /)/)',' / / /','/ / /','\\___/'],b.x+b.w-3+Math.round(reach/3),wy-Math.round(reach/2),'w');
   }

@@ -11,6 +11,9 @@ TAU=math.pi*2
 def finite(v,d=0.):return float(v) if isinstance(v,(int,float)) and not isinstance(v,bool) and math.isfinite(v) else d
 def clamp(v,a=0.,b=1.):return max(a,min(b,finite(v)))
 def state(item,obj):
+    if item=='bounce_house':
+        from engine import castle_work
+        castle_work.state(obj)
     if not isinstance(obj.get('excursion'),dict):obj['excursion']={}
     s=obj['excursion'];s['phase']=finite(s.get('phase'))%TAU;s['wind_phase']=finite(s.get('wind_phase'))%TAU
     for k,d in (('speed',0.),('wind',0.),('cover',0.),('inflation',1.),('lights',0.)):
@@ -31,6 +34,9 @@ def adverse(weather):
 def update(item,obj,dt,outdoors,weather,wind,hour,reserved=False):
     if item not in ITEMS:return
     s=state(item,obj);dt=max(0.,finite(dt));kind=ITEMS[item]['motion']
+    if item=='bounce_house':
+        from engine import castle_work
+        castle_work.update(obj,dt,outdoors,adverse(weather),clamp(wind),finite(hour,12)%24,reserved)
     if not outdoors:
         s.update(running=False,speed=0.,wind=0.,lights=0.);return
     hour=finite(hour,12.)%24
@@ -47,7 +53,7 @@ def update(item,obj,dt,outdoors,weather,wind,hour,reserved=False):
     s['wind']=wind;s['wind_phase']=(s['wind_phase']+dt*(.4+wind*.7))%TAU
     s['lights']=float(not wet and (hour<6 or hour>=18))
     cover=1. if wet else 0.
-    surface_owned=bool(reserved and item in ('bounce_house','magic_carpet'))
+    surface_owned=bool(reserved and reserved!='service' and item in ('bounce_house','magic_carpet'))
     if item in ('bounce_house','magic_carpet') and not reserved:
         floor=s['surface'];floor['active']=False
         for role in ('a','b'):
@@ -56,4 +62,7 @@ def update(item,obj,dt,outdoors,weather,wind,hour,reserved=False):
     if not surface_owned and kind in ('envelope','inflation','cloth'):s['cover']+= (cover-s['cover'])*(1-math.exp(-dt*.12))
     if not surface_owned and kind in ('envelope','inflation'):
         target_inflation=.35 if wet or night or wind>=.8 else 1.
+        if item=='bounce_house':
+            castle=obj['castle']
+            target_inflation=max(.15,(1. if castle['powered'] else .35 if wet or night else .15)*(1-castle['vent']*.85)*(1-castle['kink']*.6))
         s['inflation']+=(target_inflation-s['inflation'])*(1-math.exp(-dt*.08))

@@ -1,0 +1,102 @@
+{
+  "castle_open_day": {
+    "label": "Open the little castle",
+    "steps": [
+      "castle_hose_straight",
+      "castle_vent_close",
+      "castle_apron_flat",
+      "castle_unbuckle",
+      "castle_start"
+    ],
+    "note": "Uncoil the air supply, seal the valve, flatten the landing, release the mesh and finally start the blower."
+  },
+  "castle_close_night": {
+    "label": "Last bounce, lights out",
+    "steps": [
+      "castle_stop",
+      "castle_buckle",
+      "castle_flag_down"
+    ],
+    "note": "Stop the fan, lower and buckle the mesh, then bring the pennant down for the night."
+  },
+  "castle_rain_cover": {
+    "label": "Button up for rain",
+    "steps": [
+      "castle_stop",
+      "castle_door_close",
+      "castle_buckle",
+      "castle_apron_fold",
+      "castle_flag_down"
+    ],
+    "note": "Stop the blower before closing the doorway and rolling the apron out of the rain."
+  },
+  "castle_after_rain": {
+    "label": "Shake yesterday out",
+    "steps": [
+      "castle_roof_drain",
+      "castle_mesh_shake",
+      "castle_apron_clean"
+    ],
+    "note": "Drain stored roof water, shake droplets from the mesh and sweep real tracks from the landing."
+  },
+  "castle_winter_layup": {
+    "label": "Put the castle to bed",
+    "steps": [
+      "castle_hose_stow",
+      "castle_vent_open",
+      "castle_slack_left",
+      "castle_slack_right",
+      "castle_apron_fold"
+    ],
+    "note": "Coil the stopped blower hose, vent the chamber, loosen both ropes and fold the apron. This leaves the house closed for play."
+  },
+  "castle_spring_retension": {
+    "label": "Wake the guy ropes",
+    "steps": [
+      "castle_hose_straight",
+      "castle_tie_left",
+      "castle_tie_right",
+      "castle_seam_check"
+    ],
+    "note": "Lay out the hose, tighten both sides separately, and inspect the seam without pretending to repair it."
+  },
+  "castle_dust_service": {
+    "label": "Give the blower a breather",
+    "steps": [
+      "castle_grill_clean",
+      "castle_hose_straight",
+      "castle_start",
+      "castle_gauge_check"
+    ],
+    "note": "Switch off before sweeping the grille, straighten the air supply, restart and read the actual pressure."
+  },
+  "castle_guest_welcome": {
+    "label": "Make an entrance",
+    "steps": [
+      "castle_apron_clean",
+      "castle_door_open",
+      "castle_flag_up"
+    ],
+    "note": "Sweep the landing, unbuckle and roll the mesh, then hoist the welcome pennant."
+  },
+  "castle_pressure_check": {
+    "label": "Follow the escaping air",
+    "steps": [
+      "castle_gauge_check",
+      "castle_vent_close",
+      "castle_hose_straight",
+      "castle_gauge_check"
+    ],
+    "note": "Compare pressure before and after sealing the valve and straightening the hose. A reading is not a repair."
+  },
+  "castle_evening_air": {
+    "label": "Let the fabric breathe",
+    "steps": [
+      "castle_stop",
+      "castle_mesh_shake",
+      "castle_vent_open",
+      "castle_apron_flat"
+    ],
+    "note": "Stop the blower, shake the wet mesh, open the valve and leave the apron flat to dry. No invented puddle is removed."
+  }
+}

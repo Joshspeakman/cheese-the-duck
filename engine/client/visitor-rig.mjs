@@ -126,7 +126,7 @@ function speciesGuest(duck,p,t,state,active){
  }
  if(!performance?.seated)for(const [i,x] of feet.entries()){const lift=performance?(i?performance.r:performance.l):walking&&((phase<4)===(i===0))?1:0;c.put(p.species==='toad'?'_\\/_':i?'>_':'_>',x,FLOOR+dy-lift-(performance?Math.max(0,performance.b):0),'a');}
  if(p.species!=='butterfly'&&!walking&&!asleep&&!performance){const x=p.species==='owl'?24:p.species==='toad'?43:p.species==='goose'?43:40;signature(c,p,t,x,p.species==='owl'?31:33,active);}
- const workingWing=performance&&(performance.nestgrip||performance.botanical||performance.instrument||performance.lighting||performance.keepsake||performance.creative||performance.textile||performance.playkit||performance.architecture||performance.ground);
+ const workingWing=performance&&(performance.nestgrip||performance.botanical||performance.instrument||performance.lighting||performance.keepsake||performance.creative||performance.textile||performance.playkit||performance.architecture||performance.ground||performance.surfaceWork);
  if((workingWing||performance?.w>.2)&&p.species!=='butterfly'){
    // A gesture grows from the shoulder. The previous feather patch floated
    // above tall bodies when its upward motion exceeded its own height.

@@ -407,8 +407,11 @@ class LivingPond:
             and not g._duck_building and not g._dream_active and not g._cheese_away
             and not g.renderer._show_talk and not g.interaction_controller.is_interacting())
 
-    def start(self, kind, target='', automatic=False, instance=None):
+    def start(self, kind, target='', automatic=False, instance=None, carnival_choice=None):
         s = self.state
+        from engine import castle_work
+        if carnival_choice is not None and (kind!='item' or not isinstance(carnival_choice,str) or carnival_choice not in carnival.PROGRAMS or carnival.PROGRAMS[carnival_choice]['item']!=target):return False,'Choose an activity for that object.'
+        castle_care=carnival_choice in castle_work.ROUTINES if carnival_choice is not None else False
         if self.minds.encounter_for('cheese'):
             if automatic:return False, 'Cheese is spending time with a friend.'
         if kind == 'item' and target in shelters.HOMES:
@@ -421,6 +424,9 @@ class LivingPond:
         selected = next((p for p in self.placements if p.instance == instance and p.item_id == target), None) if instance else self.placed.get(target)
         if instance and selected is None:
             return False, 'That particular object has been put away or replaced.'
+        if automatic and kind=='item' and target=='bounce_house' and selected and carnival_choice is None:
+            upkeep=castle_work.next_work(self,self.object_state(target,selected.instance))
+            if upkeep:carnival_choice=upkeep[0];castle_care=True
         duration = PLANS.get(kind, ('', '', '', 20))[3]
         label = PLANS.get(kind, (kind.replace('_',' ').title(),))[0]
         residence = None
@@ -448,9 +454,13 @@ class LivingPond:
             profile = ITEMS[target]
             if target in carnival.ALL_ITEMS:
                 if not selected:return False,'Place that ride outside before boarding.'
-                if self.object_state(target,selected.instance).get('condition',1)<=.2:return False,'Repair that ride before boarding.'
-                if carnival.blocked(self):return False,'Cheese waits for drier, calmer weather before boarding.'
+                if not castle_care and self.object_state(target,selected.instance).get('condition',1)<=.2:return False,'Repair that ride before boarding.'
+                if carnival.blocked(self) and not (castle_care and castle_work.allowed(self,carnival_choice)):return False,'Cheese waits for drier, calmer weather before that activity.'
                 if self.game.duck.needs.energy<10 or self.game.duck.needs.hunger<15:return False,'Cheese needs care before going on a ride.'
+                if castle_care and castle_work.starts_blower(carnival_choice) and self.object_state(target,selected.instance).get('condition',1)<=.2:return False,'Repair the damaged house before starting its blower.'
+                if target=='bounce_house' and not castle_care:
+                    ready,reason=castle_work.ready(self.object_state(target,selected.instance))
+                    if not ready:return False,reason
             if target in keepsakes.ITEMS and not selected and (not keepsakes.ITEMS[target]['portable'] or self.object_state(target).get('_source')):
                 return False,'Place that belonging outside before using it.'
             if target in creative_props.ITEMS and not selected and (not creative_props.ITEMS[target]['portable'] or self.object_state(target).get('_source')):
@@ -555,7 +565,7 @@ class LivingPond:
             s['plan']['creative_work']=creative_props.choose(self,target,s['plan'])
             s['plan']['label']=s['plan']['creative_work']['label']
         if kind=='item' and target in carnival.ALL_ITEMS:
-            s['plan']['carnival_work']=carnival.choose(self,target,s['plan'])
+            s['plan']['carnival_work']=castle_work.make(self,s['plan'],carnival_choice) if castle_care else carnival.choose(self,target,s['plan'])
             s['plan']['label']=s['plan']['carnival_work']['label']
         if kind=='item' and target in playkit.ITEMS:
             s['plan']['playkit_work']=playkit.choose(self,target,s['plan'])
@@ -918,6 +928,10 @@ class LivingPond:
                 need='fun' if mode=='edge' else 'energy' if mode in ('sip','soak') else profile['need']
                 score=(100-getattr(n,need))*.6+(1-obj['bond'])*10+s['preferences'].get(key,.5)*8
                 reason='a useful possession can meet a need'
+                if key=='bounce_house':
+                    from engine import castle_work
+                    upkeep=castle_work.next_work(self,obj)
+                    if upkeep:reason=upkeep[1];score+=upkeep[2]
                 if key in botany.ROOTED and botany.care_mode(self,key,instance)=='water':
                     score+=35*(1-obj['botany']['moisture']);reason='this plant needs water at its roots'
                 choices.append(('item',key,score,reason,instance))

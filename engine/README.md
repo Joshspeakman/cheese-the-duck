@@ -795,8 +795,8 @@ landing before exit. Leaving visitors immediately lose their weight and pressure
 Loading retains Cheese's paused clock and height but drops transient companions.
 Stored and replaced copies cannot inherit another object's performance.
 
-The notebook offers fourteen named activities for each object through the normal
-command validator. Chat facts distinguish airborne, standing/seated, entering,
+The notebook offers fourteen named play activities for each object through the
+normal command validator. Bounce-house controls and care extend these below. Chat facts distinguish airborne, standing/seated, entering,
 leaving and observing residents, and identify actual company, height, pressure
 and landing history. No journey, repair, inventory grant or sleep reward is
 implied by these local activities. Context-specific art and acting, personal
@@ -813,3 +813,54 @@ Renderer checks use native snapshots to verify support, airborne height, unchang
 body scale, selectable visitors, paused poses and exact-copy attachment. The
 notebook checks use real game processes. `surface-play-review.html` and its
 captures are generated under `engine/artifacts/animation-milestone/`.
+
+
+### Bounce-house controls and fabric care in development
+
+The placed bounce house has a saved motor switch, air valve, roll-up mesh,
+buckle, two independently tensioned ropes, folding apron, halyard and blower
+hose. Native time advances the fan and pressure; the drawing reads those values.
+Rain accumulates in the mesh and roof. Dust gathers on the grille, and real
+boarding leaves footprints on the apron. Cleaning subtracts those quantities;
+empty fabric cannot produce an invented shower of droplets.
+
+Twenty-four low-control scores let Cheese and a nearby visitor press, pull,
+hold, sweep and inspect those parts from outside the empty house. Ten ordered
+procedures combine that work into opening, night closing, rain preparation,
+after-rain drying, winter layup, rope tensioning, blower servicing, welcoming a
+guest, pressure diagnosis and evening airing. Both residents walk between the
+actual components. A control changes only at the authored wing contact. The
+pressure diagnostic reads the gauge before and after work; it never grants a
+repair. Helpers retain normal body size and their own arrival, and butterflies
+observe without invented grasping limbs.
+
+There are now 48 selectable bounce-house source routines: 14 shared play tracks,
+24 control scores and 10 ordered procedures. This count is **not** a completed
+48-bespoke-sequence audit: individual guest acting, egg observation, every
+context and guest-to-guest work still need expansion and verification. The
+larger 542-object milestone and final installation remain unfinished.
+
+Autonomous care responds to the exact copy's material condition, weather and
+time. Residents can close up at night and reopen after the weather clears.
+An explicit player shutdown stays off. Storms favor shelter over outdoor chores.
+Pause and direct care freeze a worker's controls and contacts. Cancellation
+preserves already applied changes without completion credit. Saves retain the
+current component, consumed contacts and inspection history, pause Cheese, and
+drop transient helpers. A complete multi-part procedure earns one original
+item use and one eligible shared memory, regardless of the number of steps.
+
+Author the low-control motions in `client/animation/castle-controls.json` and
+ordered procedures in `client/animation/castle-procedures.json`; regenerate the
+shared native/renderer artifact with `node engine/build-castle-care.mjs` from
+the repository root. `--check` detects an out-of-date artifact. The object
+notebook groups play, direct controls and longer care procedures separately.
+
+Validation uses `.venv/bin/python engine/check_castle_work.py`,
+`node --test engine/tests/castle-care.test.mjs`,
+`engine/node_modules/.bin/electron engine/castle-care-check.cjs` and
+`engine/node_modules/.bin/electron engine/castle-care-ui-check.cjs`.
+These exercise disposable native saves, actual regular/rare/story arrivals,
+all hatched ages and all 48 visitor rigs, persistent settings, actual material
+removal, interruptions, separate copies, measured pressure, save/resume and
+one-time learning. The native-frame replay writes `castle-care-review.html`
+and its captures under `engine/artifacts/animation-milestone/`.

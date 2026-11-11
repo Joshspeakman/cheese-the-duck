@@ -9,7 +9,7 @@ const actors=[...ages.map(stage=>({stage})),...Object.values(GUEST_CAST).map(g=>
 const work=(id,t)=>({id,stage:'play',clock:t,ride_elapsed:t,factors:{a:.5,b:.75},paired:true});
 function home(id,w){return {...itemSprite(id,0,{state:{excursion:{inflation:1,cover:0,surface:{...surfaceControls(w),gate:1,active:true}}}}),x:100,y:80,scale:itemWorldScale(id)};}
 test('28 authored spring-floor and carpet programs have distinct two-person acting and physically brief flights',()=>{
- assert.equal(Object.keys(scores).length,28);assert.equal(CARNIVAL_CHOICES.bounce_house.length,14);assert.equal(CARNIVAL_CHOICES.magic_carpet.length,14);
+ assert.equal(Object.keys(scores).length,28);assert.equal(CARNIVAL_CHOICES.bounce_house.length,48);assert.equal(CARNIVAL_CHOICES.magic_carpet.length,14);
  for(const item of ['bounce_house','magic_carpet']){
   const a=new Set(),b=new Set();
   for(const [id,s]of Object.entries(scores).filter(([,s])=>s.item===item)){

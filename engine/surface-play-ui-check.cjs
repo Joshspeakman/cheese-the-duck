@@ -13,7 +13,7 @@ app.whenReady().then(async()=>{
    child.stderr.on('data',b=>stderr=(stderr+b).slice(-5000));
    createInterface({input:child.stdout}).on('line',line=>{try{const m=JSON.parse(line);if(m.type==='physical_frame')js('window.receive('+JSON.stringify(m.frame)+');journal.render()');}catch{}});
    await until('Boolean(window.frame)',item+' actual placed surface reaches notebook');
-   await until("journal.body.querySelectorAll('[data-carnival-choice]').length===14&&[...journal.body.querySelectorAll('[data-carnival-choice]')].every(b=>!b.disabled)",item+' fourteen authored choices available');
+   await until(`journal.body.querySelectorAll('[data-carnival-choice]').length===${item==='bounce_house'?48:14}&&[...journal.body.querySelectorAll('[data-carnival-choice]')].every(b=>!b.disabled)`,item+' authored choices available');
    await js("journal.body.querySelector('[data-carnival-choice="+choice+"]').click()");
    await until("journal.world.plan?.carnival_work?.id==='"+choice+"'&&journal.world.plan.instance===frame.copies[0]&&journal.world.plan.phase==='approach'",item+' choice crosses production validator into exact native copy');
    await until("[...journal.body.querySelectorAll('[data-carnival-choice]')].every(b=>b.disabled)",item+' controls become busy while approaching');

@@ -1,0 +1,43 @@
+const {app,BrowserWindow,ipcMain}=require('electron'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
+const {spawn}=require('node:child_process'),{createInterface}=require('node:readline'),{pondCommand}=require('./pond-command.cjs');
+app.setPath('userData',fs.mkdtempSync(path.join(os.tmpdir(),'cheese-castle-ui-')));
+app.whenReady().then(async()=>{
+ let child,stderr='';const checks=[],out=path.join(__dirname,'artifacts/animation-milestone');
+ try{
+  const w=new BrowserWindow({show:false,width:1440,height:1000,webPreferences:{nodeIntegration:true,contextIsolation:false,backgroundThrottling:false}}),js=s=>w.webContents.executeJavaScript(s);
+  const until=async(s,label)=>{const start=Date.now();while(!await js(s)){if(Date.now()-start>15000)throw Error(label+' timed out '+stderr);await new Promise(r=>setTimeout(r,30));}checks.push(label);};
+  await w.loadFile(path.join(__dirname,'tests/physical-objects-theatre.html'));await until('Boolean(window.journal)','notebook initializes');
+  ipcMain.on('physical-command',(_,raw)=>{const c=pondCommand(raw);if(c)child.stdin.write(JSON.stringify(c)+'\n');});
+  child=spawn(path.join(__dirname,'../.venv/bin/python'),[path.join(__dirname,'check_castle_work.py'),'--serve'],{cwd:path.dirname(__dirname),stdio:['pipe','pipe','pipe']});
+  child.stderr.on('data',b=>stderr=(stderr+b).slice(-5000));
+  createInterface({input:child.stdout}).on('line',line=>{try{const m=JSON.parse(line);if(m.type==='physical_frame')js('window.receive('+JSON.stringify(m.frame)+');journal.render()');}catch{}});
+  await until('Boolean(window.frame)','placed house reaches notebook');
+  await until("journal.body.querySelectorAll('[data-carnival-choice]').length===48&&[...journal.body.querySelectorAll('[data-carnival-choice]')].every(b=>!b.disabled)",'forty-eight play, control and care choices available');
+  await js("journal.body.querySelector('[data-carnival-choice=castle_start]').closest('details').open=true;journal.body.querySelector('[data-carnival-choice=castle_start]').click()");
+  await until("journal.world.plan?.carnival_work?.id==='castle_start'&&journal.world.plan.instance===frame.copies[0]&&journal.world.plan.phase==='approach'",'choice crosses production command validator to selected native house');
+  await until("[...journal.body.querySelectorAll('[data-carnival-choice]')].every(b=>b.disabled)",'house choices become busy during approach');
+  child.stdin.write('{"type":"test_advance","until":"service"}\n');
+  await until("journal.world.plan?.carnival_work?.stage==='service'&&journal.world.instances[frame.copies[0]].uses===0",'arrival starts native control work without early reward');
+  child.stdin.write('{"type":"test_advance","seconds":8}\n');
+  await until("journal.world.plan?.carnival_work?.clock>7.9&&journal.world.instances[frame.copies[0]].castle.motor==='off'",'approach and early reach leave the blower off');
+  child.stdin.write('{"type":"test_advance","seconds":5}\n');
+  await until("journal.world.instances[frame.copies[0]].castle.motor==='on'&&journal.world.instances[frame.copies[0]].castle.powered",'physical switch press starts the actual fan');
+  await until("journal.body.querySelector('[data-castle-summary]').textContent.includes('on')",'live notebook reports actual control state');
+  child.stdin.write('{"type":"test_advance","until":"finish"}\n');
+  await until("!journal.world.plan&&journal.world.instances[frame.copies[0]].uses===1&&journal.world.instances[frame.copies[0]].carnival_routines.castle_start===1",'completed switch work records one actual use');
+  await until("[...journal.body.querySelectorAll('[data-carnival-choice]')].every(b=>!b.disabled)",'notebook enables another choice after stepping away');
+  await js("for(const group of journal.body.querySelectorAll('details'))group.open=group.querySelector('summary').textContent==='Controls & fabric';journal.render()");
+  await until("journal.body.querySelector('[data-carnival-choice=castle_start]').closest('details').open&&!journal.body.querySelector('[data-carnival-choice=bounce_first]').closest('details').open",'expanded controls and folded play remain stable across live rerenders');
+  await js("journal.body.querySelector('[data-carnival-choice=castle_start]').scrollIntoView({block:'center'})");
+  await until("(()=>{const b=journal.body.querySelector('[data-carnival-choice=castle_start]'),r=b.getBoundingClientRect();return r.top>0&&r.bottom<innerHeight&&document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)===b})()",'expanded controls are visibly reachable in the scrolling notebook');
+  await js("journal.body.querySelector('[data-carnival-choice=castle_start]').closest('details').querySelector('summary').focus({preventScroll:true});journal.render()");
+  await until("document.activeElement.tagName==='SUMMARY'&&document.activeElement.textContent==='Controls & fabric'",'live refresh preserves keyboard focus on the section heading');
+  w.webContents.sendInputEvent({type:'keyDown',keyCode:'Space'});w.webContents.sendInputEvent({type:'keyUp',keyCode:'Space'});
+  await until("!journal.body.querySelector('[data-carnival-choice=castle_start]').closest('details').open",'native keyboard activation folds the control section');
+  w.webContents.sendInputEvent({type:'keyDown',keyCode:'Space'});w.webContents.sendInputEvent({type:'keyUp',keyCode:'Space'});
+  await until("journal.body.querySelector('[data-carnival-choice=castle_start]').closest('details').open",'native keyboard activation reopens the control section');
+  fs.writeFileSync(path.join(out,'castle-care-notebook.png'),(await w.webContents.capturePage()).toPNG());
+  const result={result:'PASS',checks,commands:await js('window.commands')};fs.writeFileSync(path.join(out,'castle-care-ui.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));
+  child.stdin.end('{"type":"quit"}\n');await new Promise((resolve,reject)=>{child.once('exit',code=>code===0?resolve():reject(Error('Native exit '+code+' '+stderr)));setTimeout(()=>reject(Error('Shutdown timed out')),5000).unref();});app.exit(0);
+ }catch(e){console.error(e);if(child)child.stdin.end('{"type":"quit"}\n');app.exit(1);}
+});

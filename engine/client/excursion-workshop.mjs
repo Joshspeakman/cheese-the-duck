@@ -1,4 +1,5 @@
 import {softCarpet,softCastle,surfaceState} from './soft-surfaces.mjs';
+import {castleState} from './castle-care.mjs';
 import {ObjectCanvas} from './object-canvas.mjs';
 import BLUEPRINTS from './animation/excursions.json' with {type:'json'};
 export {BLUEPRINTS as EXCURSION_BLUEPRINTS};
@@ -259,6 +260,7 @@ export function excursionSprite(base,item,time,{state={},motion=true,context={}}
  // Accessibility must not rewind a real wheel, cabin, cover or inflation state.
  if(!motion){v.wind_phase=0;v.wind=0;}
  v.surface=surfaceState(saved.surface);
+ v.castle=castleState(state.castle);
  const c=new ObjectCanvas(p.w,p.h),anchors=BUILDERS[p.type](c,p,v);
  const cells=[];for(let y=0;y<p.h;y++)for(let x=0;x<p.w;x++)if(c.art[y][x]!==' ')cells.push([x,y]);
  for(const [amount,glyph,tone,step]of [[clamp(state.wetness),"'",'w',37],[clamp(state.dirt),'.','s',59],[1-clamp(finite(state.condition,1)),'/', 'k',83]])if(amount>.2)for(let n=0;n<Math.ceil(amount*18);n++){const at=cells[(n*step+7)%cells.length];if(at)c.put(...at,glyph,tone);}

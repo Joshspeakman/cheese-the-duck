@@ -113,10 +113,16 @@ def advance(pond,plan,dt,r):
         if w['clock']<duration:break
         if name in ('inflate','spread'):carnival.stage(w,'board_a',4)
         elif name=='board_a':
+            if plan['target']=='bounce_house':
+                from engine import castle_work
+                material=castle_work.state(obj);material['prints']=clamp(material['prints']+.04+.06*clamp(obj.get('wetness')))
             if w.get('withdrawal'):carnival.stage(w,'unload_a',4)
             elif w['paired'] and r:carnival.stage(w,'board_b',4)
             else:w['paired']=False;carnival.stage(w,'play',ROUTINES[w['id']]['duration'])
         elif name=='board_b':
+            if plan['target']=='bounce_house' and r:
+                from engine import castle_work
+                material=castle_work.state(obj);material['prints']=clamp(material['prints']+.04+.06*clamp(obj.get('wetness')))
             if w.get('withdrawal'):carnival.stage(w,'unload_b',4)
             else:carnival.stage(w,'play',ROUTINES[w['id']]['duration'])
         elif name=='play':

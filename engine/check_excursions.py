@@ -42,6 +42,13 @@ for item in e.ITEMS:
     check(0<=a['excursion']['phase']<e.TAU,item+' offline advance remains bounded')
     if e.ITEMS[item]['motion'] in ('motor','scanner'):check(a['excursion']['running'],item+' rainbow is dry weather')
 
+from engine import castle_work
+for reason,change in [('switched off',{'motor':'off'}),('coiled hose',{'hose':1}),('damaged house',{})]:
+    obj={'condition':.1 if reason=='damaged house' else 1};s=castle_work.state(obj);s.update(change)
+    if 'hose' in change:s['targets']['hose']=change['hose']
+    e.update('bounce_house',obj,100,True,'sunny',.1,12)
+    check(not s['powered'] and obj['excursion']['inflation']<.16,reason+' cannot keep an empty house inflated')
+
 t=host.DesktopInput();g=host.DesktopGame(terminal=t,renderer_factory=host.CanvasRenderer)
 t.game=g;g.renderer.game=g;g.renderer.present=lambda lines:None
 try:
