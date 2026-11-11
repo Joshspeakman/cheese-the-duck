@@ -5,6 +5,7 @@ import { LivingWorld } from '../client/ultra-world.mjs';
 import { luminousPalette } from '../client/scene-effects.mjs';
 import { palette } from '../client/ultra-grid.mjs';
 import { scene } from './scenes.mjs';
+import {BOTANICAL_BLUEPRINTS} from '../client/botanical-workshop.mjs';
 
 test('every live item has readable authored ASCII with matching color masks',()=>{
   assert.equal(catalog.length,542);
@@ -14,7 +15,7 @@ test('every live item has readable authored ASCII with matching color masks',()=
     assert(itemFamily(item.id),item.id);assert(model.art.length>=3,item.id);
     assert(model.art.every((row,i)=>/^[ -~]*$/.test(row)&&row.length===model.tones[i].length),item.id);
     assert(!model.art.join('').includes('[?]'),item.id);
-    assert.equal(model.detail,true);assert(model.width>=5&&model.width<=128,item.id);
+    assert.equal(model.detail,true);assert(model.width>=5&&model.width<=(BOTANICAL_BLUEPRINTS[item.id]?.w||128),item.id);
     assert.deepEqual(itemSprite(item.id,1,{motion:false}),itemSprite(item.id,83,{motion:false}),item.id);
   }
   assert(families.size>200);

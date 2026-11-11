@@ -1,0 +1,578 @@
+{
+  "flower_rose": {
+    "type": "flower",
+    "shape": "rose_bush",
+    "w": 96,
+    "h": 76,
+    "scale": 0.86,
+    "rooted": true,
+    "container": "bed",
+    "color": "rose"
+  },
+  "flower_tulip": {
+    "type": "flower",
+    "shape": "tulip_cluster",
+    "w": 91,
+    "h": 69,
+    "scale": 0.82,
+    "rooted": true,
+    "container": "bed",
+    "color": "mixed"
+  },
+  "flower_sunflower": {
+    "type": "flower",
+    "shape": "sunflower_tall",
+    "w": 83,
+    "h": 93,
+    "scale": 0.87,
+    "rooted": true,
+    "container": "bed",
+    "color": "gold"
+  },
+  "tree_small": {
+    "type": "tree",
+    "shape": "sapling",
+    "w": 85,
+    "h": 82,
+    "scale": 0.82,
+    "rooted": true,
+    "container": "none"
+  },
+  "tree_oak": {
+    "type": "tree",
+    "shape": "oak",
+    "w": 132,
+    "h": 105,
+    "scale": 0.94,
+    "rooted": true,
+    "container": "none"
+  },
+  "tree_cherry": {
+    "type": "tree",
+    "shape": "ornamental_cherry",
+    "w": 123,
+    "h": 94,
+    "scale": 0.9,
+    "rooted": true,
+    "container": "none",
+    "color": "pink"
+  },
+  "bush_hedge": {
+    "type": "hedge",
+    "shape": "hedge",
+    "w": 108,
+    "h": 60,
+    "scale": 0.89,
+    "rooted": true,
+    "container": "none"
+  },
+  "cactus": {
+    "type": "succulent",
+    "shape": "saguaro",
+    "w": 82,
+    "h": 79,
+    "scale": 0.81,
+    "rooted": true,
+    "container": "bed"
+  },
+  "bamboo": {
+    "type": "bamboo",
+    "shape": "grove",
+    "w": 108,
+    "h": 99,
+    "scale": 0.88,
+    "rooted": true,
+    "container": "none"
+  },
+  "bonsai": {
+    "type": "tree",
+    "shape": "bonsai",
+    "w": 98,
+    "h": 71,
+    "scale": 0.8,
+    "rooted": true,
+    "container": "dish"
+  },
+  "venus_flytrap": {
+    "type": "trap",
+    "shape": "traps",
+    "w": 93,
+    "h": 66,
+    "scale": 0.8,
+    "rooted": true,
+    "container": "pot"
+  },
+  "herb_garden": {
+    "type": "garden",
+    "shape": "herbs",
+    "w": 124,
+    "h": 69,
+    "scale": 0.92,
+    "rooted": true,
+    "container": "planter"
+  },
+  "cherry_tree": {
+    "type": "tree",
+    "shape": "orchard_cherry",
+    "w": 130,
+    "h": 100,
+    "scale": 0.91,
+    "rooted": true,
+    "container": "none",
+    "color": "red"
+  },
+  "willow_tree": {
+    "type": "tree",
+    "shape": "willow",
+    "w": 144,
+    "h": 108,
+    "scale": 0.94,
+    "rooted": true,
+    "container": "none"
+  },
+  "mushroom_patch": {
+    "type": "fungus",
+    "shape": "patch",
+    "w": 104,
+    "h": 66,
+    "scale": 0.84,
+    "rooted": true,
+    "container": "none"
+  },
+  "fern": {
+    "type": "frond",
+    "shape": "fern",
+    "w": 112,
+    "h": 81,
+    "scale": 0.86,
+    "rooted": true,
+    "container": "pot"
+  },
+  "lavender": {
+    "type": "flower",
+    "shape": "lavender_bush",
+    "w": 106,
+    "h": 75,
+    "scale": 0.85,
+    "rooted": true,
+    "container": "bed",
+    "color": "lavender"
+  },
+  "hedge_maze": {
+    "type": "hedge",
+    "shape": "maze",
+    "w": 142,
+    "h": 91,
+    "scale": 0.95,
+    "rooted": true,
+    "container": "none"
+  },
+  "potted_cactus": {
+    "type": "succulent",
+    "shape": "barrel",
+    "w": 74,
+    "h": 65,
+    "scale": 0.76,
+    "rooted": true,
+    "container": "pot",
+    "color": "gold"
+  },
+  "autumn_leaves": {
+    "type": "loose",
+    "shape": "pile",
+    "w": 114,
+    "h": 45,
+    "scale": 0.86,
+    "rooted": false,
+    "container": "none",
+    "color": "autumn"
+  },
+  "world_tree": {
+    "type": "tree",
+    "shape": "world",
+    "w": 152,
+    "h": 112,
+    "scale": 0.94,
+    "rooted": true,
+    "container": "none"
+  },
+  "lettuce": {
+    "type": "food",
+    "shape": "lettuce",
+    "w": 68,
+    "h": 48,
+    "scale": 0.71,
+    "rooted": false,
+    "container": "none"
+  },
+  "flower": {
+    "type": "flower",
+    "shape": "cut_daisy",
+    "w": 59,
+    "h": 62,
+    "scale": 0.71,
+    "rooted": false,
+    "container": "none",
+    "color": "white"
+  },
+  "lucky_clover": {
+    "type": "loose",
+    "shape": "four_clover",
+    "w": 63,
+    "h": 55,
+    "scale": 0.72,
+    "rooted": false,
+    "container": "none"
+  },
+  "corn": {
+    "type": "food",
+    "shape": "kernels",
+    "w": 74,
+    "h": 40,
+    "scale": 0.72,
+    "rooted": false,
+    "container": "none"
+  },
+  "peas": {
+    "type": "food",
+    "shape": "peas",
+    "w": 78,
+    "h": 40,
+    "scale": 0.72,
+    "rooted": false,
+    "container": "none"
+  },
+  "grapes": {
+    "type": "food",
+    "shape": "grape_halves",
+    "w": 80,
+    "h": 43,
+    "scale": 0.73,
+    "rooted": false,
+    "container": "none"
+  },
+  "garden_plot": {
+    "type": "garden",
+    "shape": "plot",
+    "w": 137,
+    "h": 78,
+    "scale": 0.94,
+    "rooted": true,
+    "container": "bed"
+  },
+  "flower_bed": {
+    "type": "garden",
+    "shape": "flowers",
+    "w": 139,
+    "h": 75,
+    "scale": 0.94,
+    "rooted": true,
+    "container": "bed",
+    "color": "mixed"
+  },
+  "leaf": {
+    "type": "loose",
+    "shape": "oval_leaf",
+    "w": 70,
+    "h": 46,
+    "scale": 0.71,
+    "rooted": false,
+    "container": "none"
+  },
+  "grass_blade": {
+    "type": "loose",
+    "shape": "grass",
+    "w": 65,
+    "h": 53,
+    "scale": 0.69,
+    "rooted": false,
+    "container": "none"
+  },
+  "wildflower": {
+    "type": "flower",
+    "shape": "wildflower",
+    "w": 68,
+    "h": 64,
+    "scale": 0.72,
+    "rooted": false,
+    "container": "none",
+    "color": "blue"
+  },
+  "clover": {
+    "type": "loose",
+    "shape": "three_clover",
+    "w": 66,
+    "h": 51,
+    "scale": 0.7,
+    "rooted": false,
+    "container": "none"
+  },
+  "dandelion": {
+    "type": "flower",
+    "shape": "dandelion",
+    "w": 74,
+    "h": 68,
+    "scale": 0.74,
+    "rooted": false,
+    "container": "none",
+    "color": "white"
+  },
+  "moss": {
+    "type": "loose",
+    "shape": "moss",
+    "w": 87,
+    "h": 40,
+    "scale": 0.75,
+    "rooted": false,
+    "container": "none"
+  },
+  "pine_needle": {
+    "type": "loose",
+    "shape": "needles",
+    "w": 72,
+    "h": 43,
+    "scale": 0.71,
+    "rooted": false,
+    "container": "none"
+  },
+  "mushroom": {
+    "type": "fungus",
+    "shape": "picked",
+    "w": 66,
+    "h": 57,
+    "scale": 0.73,
+    "rooted": false,
+    "container": "none"
+  },
+  "pond_weed": {
+    "type": "frond",
+    "shape": "pond_weed",
+    "w": 79,
+    "h": 64,
+    "scale": 0.74,
+    "rooted": false,
+    "container": "none"
+  },
+  "lily_pad": {
+    "type": "loose",
+    "shape": "lily",
+    "w": 85,
+    "h": 43,
+    "scale": 0.76,
+    "rooted": false,
+    "container": "none"
+  },
+  "garden_flower": {
+    "type": "flower",
+    "shape": "double_bloom",
+    "w": 73,
+    "h": 68,
+    "scale": 0.74,
+    "rooted": false,
+    "container": "none",
+    "color": "pink"
+  },
+  "rainbow_flower": {
+    "type": "flower",
+    "shape": "rainbow",
+    "w": 91,
+    "h": 76,
+    "scale": 0.8,
+    "rooted": false,
+    "container": "none",
+    "color": "rainbow"
+  },
+  "seaweed": {
+    "type": "frond",
+    "shape": "kelp",
+    "w": 87,
+    "h": 70,
+    "scale": 0.77,
+    "rooted": false,
+    "container": "none"
+  },
+  "reed": {
+    "type": "frond",
+    "shape": "reed",
+    "w": 82,
+    "h": 73,
+    "scale": 0.74,
+    "rooted": false,
+    "container": "none"
+  },
+  "berry": {
+    "type": "food",
+    "shape": "berry",
+    "w": 65,
+    "h": 44,
+    "scale": 0.72,
+    "rooted": false,
+    "container": "none"
+  },
+  "tulip_bulb": {
+    "type": "bulb",
+    "shape": "tulip",
+    "w": 66,
+    "h": 54,
+    "scale": 0.72,
+    "rooted": false,
+    "container": "none"
+  },
+  "rose_petal": {
+    "type": "loose",
+    "shape": "rose_petal",
+    "w": 62,
+    "h": 39,
+    "scale": 0.7,
+    "rooted": false,
+    "container": "none",
+    "color": "rose"
+  },
+  "mint_leaves": {
+    "type": "loose",
+    "shape": "mint_pair",
+    "w": 76,
+    "h": 44,
+    "scale": 0.73,
+    "rooted": false,
+    "container": "none"
+  },
+  "golden_petal": {
+    "type": "loose",
+    "shape": "long_petal",
+    "w": 64,
+    "h": 46,
+    "scale": 0.72,
+    "rooted": false,
+    "container": "none",
+    "color": "gold"
+  },
+  "flower_petal": {
+    "type": "loose",
+    "shape": "round_petal",
+    "w": 64,
+    "h": 41,
+    "scale": 0.71,
+    "rooted": false,
+    "container": "none",
+    "color": "pink"
+  },
+  "golden_leaf": {
+    "type": "loose",
+    "shape": "ginkgo",
+    "w": 76,
+    "h": 51,
+    "scale": 0.75,
+    "rooted": false,
+    "container": "none",
+    "color": "gold"
+  },
+  "red_maple_leaf": {
+    "type": "loose",
+    "shape": "maple",
+    "w": 83,
+    "h": 56,
+    "scale": 0.77,
+    "rooted": false,
+    "container": "none",
+    "color": "red"
+  },
+  "spring_petal": {
+    "type": "loose",
+    "shape": "notched_petal",
+    "w": 68,
+    "h": 43,
+    "scale": 0.72,
+    "rooted": false,
+    "container": "none",
+    "color": "pink"
+  },
+  "autumn_leaf": {
+    "type": "loose",
+    "shape": "oak_leaf",
+    "w": 81,
+    "h": 50,
+    "scale": 0.75,
+    "rooted": false,
+    "container": "none",
+    "color": "autumn"
+  },
+  "dream_flower": {
+    "type": "flower",
+    "shape": "dream_bell",
+    "w": 84,
+    "h": 76,
+    "scale": 0.77,
+    "rooted": false,
+    "container": "none",
+    "color": "lavender"
+  },
+  "sunflower": {
+    "type": "flower",
+    "shape": "sunflower_cut",
+    "w": 79,
+    "h": 82,
+    "scale": 0.8,
+    "rooted": false,
+    "container": "none",
+    "color": "gold"
+  },
+  "tulip": {
+    "type": "flower",
+    "shape": "tulip_cut",
+    "w": 70,
+    "h": 70,
+    "scale": 0.74,
+    "rooted": false,
+    "container": "none",
+    "color": "red"
+  },
+  "rose": {
+    "type": "flower",
+    "shape": "rose_cut",
+    "w": 75,
+    "h": 77,
+    "scale": 0.76,
+    "rooted": false,
+    "container": "none",
+    "color": "rose"
+  },
+  "mint": {
+    "type": "frond",
+    "shape": "mint",
+    "w": 86,
+    "h": 71,
+    "scale": 0.77,
+    "rooted": false,
+    "container": "none"
+  },
+  "golden_flower": {
+    "type": "flower",
+    "shape": "golden_star",
+    "w": 88,
+    "h": 81,
+    "scale": 0.81,
+    "rooted": false,
+    "container": "none",
+    "color": "gold"
+  },
+  "potted_plant": {
+    "type": "frond",
+    "shape": "rubber_plant",
+    "w": 99,
+    "h": 83,
+    "scale": 0.84,
+    "rooted": true,
+    "container": "pot"
+  },
+  "flower_pot": {
+    "type": "flower",
+    "shape": "pot_flowers",
+    "w": 98,
+    "h": 77,
+    "scale": 0.83,
+    "rooted": true,
+    "container": "pot",
+    "color": "mixed"
+  }
+}

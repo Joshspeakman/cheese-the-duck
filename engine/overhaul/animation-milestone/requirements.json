@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: added native footprint-aware arrangement for all 218 placeable shop objects, a notebook preview with mouse/keyboard controls and real placement acknowledgements, safe storage, save migration, dry-bank/water checks and world-anchored Home Pond shoreline. Both renderers accept fractional placements. Stored objects cannot remain activity targets; moving/storing a used object cancels without rewards. Existing building and decoration placements reserve space. Full catalogue reconstruction, 48 bespoke sequences per object, guest-specific repertoires and installation remain unfinished.",
+  "previous_goal_turn": "Progress: rebuilt 61 plant, garden and picked-ingredient drawings with distinct anatomy, larger measured footprints, seasonal foliage, opening flowers, drought posture and actual surface wear. Added persistent moisture/health/bloom for 24 rooted plants, real care arrival and cancellation, one-time water transfer, actual crop watering, safe storage and save/load checks. Natural chat reverified (22 native / 37 UI). Catalogue artwork remains in progress, 48 bespoke sequences per object remain unsatisfied, and no new package was installed.",
   "items": [
     {
       "id": "hat_red",
@@ -441,44 +441,51 @@
     {
       "id": "flower_rose",
       "family": "rose",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "flower_tulip",
       "family": "tulip",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "flower_sunflower",
       "family": "sunflower",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "tree_small",
       "family": "tree",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "tree_oak",
       "family": "tree",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "tree_cherry",
       "family": "cherry",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "bush_hedge",
       "family": "hedge",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "grass_patch",
@@ -489,14 +496,16 @@
     {
       "id": "cactus",
       "family": "cactus",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "bamboo",
       "family": "bamboo",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "bow_tie_blue",
@@ -840,38 +849,44 @@
     {
       "id": "bonsai",
       "family": "bonsai",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "venus_flytrap",
       "family": "flytrap",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "herb_garden",
       "family": "garden",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "cherry_tree",
       "family": "cherry",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "willow_tree",
       "family": "willow",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "mushroom_patch",
       "family": "mushroom",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "topiary_duck",
@@ -882,20 +897,23 @@
     {
       "id": "fern",
       "family": "fern",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "lavender",
       "family": "flowerpot",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "hedge_maze",
       "family": "hedge",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "dog_house",
@@ -1112,8 +1130,9 @@
     {
       "id": "potted_cactus",
       "family": "cactus",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "stepping_stones",
@@ -1443,8 +1462,9 @@
     {
       "id": "autumn_leaves",
       "family": "leaf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "snow_floor",
@@ -1714,8 +1734,9 @@
     {
       "id": "world_tree",
       "family": "tree",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "cosmic_arch",
@@ -1762,8 +1783,9 @@
     {
       "id": "lettuce",
       "family": "leaf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "worm",
@@ -1806,8 +1828,9 @@
     {
       "id": "flower",
       "family": "flowerpot",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "shiny_pebble",
@@ -1818,26 +1841,30 @@
     {
       "id": "lucky_clover",
       "family": "clover",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "corn",
       "family": "corn",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "peas",
       "family": "peas",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "grapes",
       "family": "grapes",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "oats",
@@ -2202,8 +2229,9 @@
     {
       "id": "garden_plot",
       "family": "garden",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "bird_bath",
@@ -2222,8 +2250,9 @@
     {
       "id": "flower_bed",
       "family": "garden",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "stone_path",
@@ -2242,74 +2271,86 @@
     {
       "id": "leaf",
       "family": "leaf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "grass_blade",
       "family": "leaf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "wildflower",
       "family": "flowerpot",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "clover",
       "family": "clover",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "dandelion",
       "family": "flowerpot",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "moss",
       "family": "leaf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "pine_needle",
       "family": "fern",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "mushroom",
       "family": "mushroom",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "pond_weed",
       "family": "fern",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "lily_pad",
       "family": "leaf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "garden_flower",
       "family": "flowerpot",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "rainbow_flower",
       "family": "flowerpot",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "twig",
@@ -2416,8 +2457,9 @@
     {
       "id": "seaweed",
       "family": "fern",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "river_pearl",
@@ -2434,8 +2476,9 @@
     {
       "id": "reed",
       "family": "reed",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "string",
@@ -2458,8 +2501,9 @@
     {
       "id": "berry",
       "family": "grapes",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "seed",
@@ -2500,14 +2544,16 @@
     {
       "id": "tulip_bulb",
       "family": "tulip",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "rose_petal",
       "family": "rose",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "carrot",
@@ -2542,14 +2588,16 @@
     {
       "id": "mint_leaves",
       "family": "fern",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "golden_petal",
       "family": "sunflower",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "crystal_shard",
@@ -2566,8 +2614,9 @@
     {
       "id": "flower_petal",
       "family": "flowerpot",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "juicy_worm",
@@ -2608,14 +2657,16 @@
     {
       "id": "golden_leaf",
       "family": "leaf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "red_maple_leaf",
       "family": "leaf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "mist_crystal",
@@ -2692,8 +2743,9 @@
     {
       "id": "spring_petal",
       "family": "flowerpot",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "fresh_apple",
@@ -2704,8 +2756,9 @@
     {
       "id": "autumn_leaf",
       "family": "leaf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "homemade_pie",
@@ -2916,8 +2969,9 @@
     {
       "id": "dream_flower",
       "family": "flowerpot",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "enchanted_seeds",
@@ -3030,32 +3084,37 @@
     {
       "id": "sunflower",
       "family": "sunflower",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "tulip",
       "family": "tulip",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "rose",
       "family": "rose",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "mint",
       "family": "fern",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "golden_flower",
       "family": "sunflower",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "crystal_plant",
@@ -3346,14 +3405,16 @@
     {
       "id": "potted_plant",
       "family": "flowerpot",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "flower_pot",
       "family": "flowerpot",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animation": "Botanical environmental poses and native care lifecycle implemented; articulated character care and the full 48 bespoke sequence repertoire remain unfinished."
     },
     {
       "id": "lamp",
@@ -3690,10 +3751,10 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "habitat_arrangement_and_ground",
+    "sourcePhase": "botanical_construction_and_care",
     "fullyOverhauled": false,
-    "constructedObjects": 93,
-    "remainingArtwork": 449,
+    "constructedObjects": 154,
+    "remainingArtwork": 388,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -3756,20 +3817,31 @@
       "engine/artifacts/animation-milestone/layout-js-suite.log",
       "engine/artifacts/animation-milestone/layout-native.log",
       "engine/artifacts/animation-milestone/layout-ui.log",
-      "engine/artifacts/animation-milestone/layout-seating-render.log"
+      "engine/artifacts/animation-milestone/layout-seating-render.log",
+      "engine/artifacts/animation-milestone/botanical-simulation.json",
+      "engine/artifacts/animation-milestone/botanical-render.json",
+      "engine/artifacts/animation-milestone/botanical-js-suite.log",
+      "engine/artifacts/animation-milestone/botanical-living.log",
+      "engine/artifacts/animation-milestone/botanical-brains.log",
+      "engine/artifacts/animation-milestone/botanical-layout.log",
+      "engine/artifacts/animation-milestone/botanical-furniture.log",
+      "engine/artifacts/animation-milestone/botanical-game.log",
+      "engine/artifacts/animation-milestone/botanical-live-day.png",
+      "engine/artifacts/animation-milestone/botanical-seasons.png"
     ],
     "next": [
+      "Build articulated botanical care with real tool/bill/wing contacts and actual flower/leaf/root anchors, including guest participation and appropriate age/species variants. Continue the remaining 388 item reconstructions and the complete 48 bespoke sequences per object; do not substitute ambient plant motion or labels for sequences.",
       "Extend spatial arrangement to the separate building/decorating/project editors and consider additional habitat areas for larger collections; all 218 placeable shop objects now use measured footprints, dry-ground/water checks and truthful storage. Building and decoration objects reserve space against habitat purchases, but their own editors still use legacy placement rules.",
       "Deepen construction-specific nest/bed/house acting and each remaining item repertoire; the 51 shared nest scores do not by themselves satisfy 48 bespoke sequences per object.",
       "Add explicit nest body-facing transitions, construction-specific canopy/quilt/pillow/lining actions and species/age-specific climbing and doorway choreography.",
-      "Reconstruct the remaining 449 objects with authored details and anchors; regenerate measured placement bounds as artwork changes.",
+      "Reconstruct the remaining 388 objects with authored details and anchors; regenerate measured placement bounds as artwork changes.",
       "Expand guest-specific and age-specific behavior; eighteen shared tracks are not a complete bespoke catalogue.",
       "Extend invitations, prop handoffs and cooperative item use, with real arrival and completion evidence.",
       "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation.",
       "Add physical reading, desk/workbench actions, cabinet/wardrobe/mirror use and construction-specific furniture routines; the 16 shared seating tracks do not satisfy the per-object 48-sequence target."
     ],
     "checks": {
-      "javascript": 94,
+      "javascript": 99,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 22,
@@ -3777,7 +3849,7 @@
       "learningBrains": 44,
       "shelterLifecycle": 30,
       "pairedLifecycle": 16,
-      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling.",
+      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Character-operated plant tools, plant-specific social routines and every-object 48-sequence coverage remain unfinished.",
       "nestLifecycle": 34,
       "nestReplay": {
         "nativeSceneFrames": 41,
@@ -3844,10 +3916,19 @@
         "medianMs": 4.6,
         "p95Ms": 8.1,
         "note": "Development replay, not final milestone audit."
+      },
+      "botanicalLifecycle": 187,
+      "botanicalArtCases": 1464,
+      "botanicalRootedPlants": 24,
+      "botanicalReplay": {
+        "frames": 87,
+        "botanicalObjects": 112,
+        "medianMs": 9.800000011920929,
+        "p95Ms": 13.100000023841858
       }
     },
     "limitations": [
-      "Only 65 of 542 object artworks rebuilt so far.",
+      "154 of 542 object artworks reconstructed for review; 388 remain.",
       "No object has yet passed the 48 bespoke sequence requirement.",
       "Five nests now use 51 authored core routines (three require a canopy). Individual nest-construction variants, guest participation and egg-specific interactions remain unfinished; no per-object completion is claimed.",
       "Paired tracks currently share a core movement vocabulary across the cast; personality-specific choreography and full guest item participation remain unfinished.",
@@ -3855,7 +3936,8 @@
       "Regular, rare and story visitors now use real shelter slots, shared rooms and six contextual company scores. Full species-specific climbing, doorway, object-contact and personal repertoires remain unfinished.",
       "Installed app remains the previously verified 2.36.0; this development milestone is not packaged or installed.",
       "Eight cooperative toy scenes currently cover seesaw, sandbox, ball and trampoline; full species-specific contact, NPC-to-NPC toy invitations and every-object repertoires remain unfinished. Habitat purchases now reserve enlarged drawing space; additional areas and the other legacy placement editors remain to be designed.",
-      "Sixteen shared water scores are initial object/age-aware routines, not 48 bespoke sequences on each water object. Visitor bathing, species-specific water contacts and detailed ladder/entry choreography remain unfinished."
+      "Sixteen shared water scores are initial object/age-aware routines, not 48 bespoke sequences on each water object. Visitor bathing, species-specific water contacts and detailed ladder/entry choreography remain unfinished.",
+      "Plant care has native arrival/completion and real resource effects, but still uses the legacy character preening pose. It does not count as a bespoke animated sequence. Botanical species, age and visitor tool choreography remain unfinished."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
