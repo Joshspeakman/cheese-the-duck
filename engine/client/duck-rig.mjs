@@ -127,6 +127,7 @@ export function duckRig(duck,t=0,design=null){
   if(action==='sleeping')put(phase%2?'z':'Z',h.x+h.w+2,h.y-1-Math.floor(phase/3),'c');
   if(action==='quacking'&&phase>=2&&phase<=5)put('!',h.x+h.w+3,h.y,'a');
   if(action==='swimming')put(phase%2?'~~~   ~~~~   ~~~':' ~~~~  ~~~~  ~~~',CX-9,FLOOR+1,'p');
+  rig.occlusion=fills.map(f=>({...f}));
   plan=fitWearables(rig,duck.cosmetics,t,duck.apparel);clipped=paintWearables(cells,tones,rig,plan)||clipped;
   fills.push(...(plan.fills||[]));
   if(hatCare&&plan.items.some(i=>i.id===hatCare.item)){
@@ -150,7 +151,7 @@ export function duckRig(duck,t=0,design=null){
      }
      put(')',tip.x,tip.y,'c');hatContact=tip;
     }
-    if(hatCare.debris!==null&&['brush_snow','shed_rain','brush_collar_snow','wring_scarf','dry_frames','dab_earpads'].includes(hatCare.id)){
+    if(hatCare.debris!==null&&['brush_snow','shed_rain','brush_collar_snow','wring_scarf','dry_frames','dab_earpads','brush_garment_snow','wring_hem','shed_coat','shake_cape','dry_pocket'].includes(hatCare.id)){
      const snow=hatCare.id.includes('snow'),d=hatCare.debris,xx=hatCare.id==='shed_rain'?h.x+h.w:target.x;
      for(let i=0;i<3;i++)put(snow?'*':"'",xx+2+i+d*3,target.y+1+i+d*3,'c');
     }

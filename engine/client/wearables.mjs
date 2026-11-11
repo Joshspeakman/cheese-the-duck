@@ -1,6 +1,7 @@
 import { WEARABLE_CATALOG } from './wearable-catalog.mjs';
 import {HEADWEAR_BLUEPRINTS,fittedHat} from './headwear-workshop.mjs';
 import {ACCESSORY_BLUEPRINTS,fittedAccessory,accessoryColors} from './accessory-workshop.mjs';
+import {GARMENT_BLUEPRINTS,fittedGarment,garmentColors} from './garment-workshop.mjs';
 
 // Each family has its own fitted construction and motion. Slots describe where
 // art attaches, independently of the three original wardrobe systems.
@@ -87,17 +88,18 @@ export function fitWearables(rig,cosmetics={},time=0,apparel={}){
    hat.art.forEach((row,j)=>{for(let i=0;i<row.length;i++)if(row[i]!==' ')add(row[i],hat.x+i,hat.y+j,{tone:tones[hat.tones[j][i]]||tones.b});});
    continue;
   }
-  if(ACCESSORY_BLUEPRINTS[item.id]){
-   const material=apparel[item.id]||{},piece=fittedAccessory(rig,item.id,{material,phase:rig.motion===false?0:Number.isFinite(material.phase)?material.phase:time*(moving?4:1.2)});
+  if(ACCESSORY_BLUEPRINTS[item.id]||GARMENT_BLUEPRINTS[item.id]){
+   const garment=GARMENT_BLUEPRINTS[item.id],material=apparel[item.id]||{},piece=(garment?fittedGarment:fittedAccessory)(rig,item.id,{material,phase:rig.motion===false?0:Number.isFinite(material.phase)?material.phase:time*(moving?4:1.2)});
    contacts[item.id]=piece.contacts;
-   const tones=Object.fromEntries(Object.entries(accessoryColors(ACCESSORY_BLUEPRINTS[item.id])).map(([tone,color],i)=>{const code=String.fromCharCode(512+index*12+i);inks[code]=color;return [tone,code];}));
+   const tones=Object.fromEntries(Object.entries(garment?garmentColors(garment,material):accessoryColors(ACCESSORY_BLUEPRINTS[item.id])).map(([tone,color],i)=>{const code=String.fromCharCode(512+index*12+i);inks[code]=color;return [tone,code];}));
    const inside=(x,y,r)=>r&&x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h;
+   const underFeathers=(x,y)=>(rig.occlusion||rig.torso)?.some(f=>f.y===y&&x>=f.x&&x<f.x+f.w)??inside(x,y,b);
    for(const [model,rear]of [[piece.back,true],[piece.front,false]]){
     for(const f of model.fills)for(let x=f.x;x<f.x+f.w;x++){
-     if((item.slot==='neck'||rear)&&inside(x,f.y,rig.faceBounds||h)||rear&&inside(x,f.y,b))continue;
+     if((item.slot==='neck'||rear||garment)&&inside(x,f.y,rig.faceBounds||h)||rear&&underFeathers(x,f.y))continue;
      add(' ',x,f.y,{clear:true,rear});fills.push({id:item.id,x,y:f.y,w:1,tone:tones[f.tone]||tones.b});
     }
-    model.art.forEach((row,y)=>{for(let x=0;x<row.length;x++)if(row[x]!==' ')add(row[x],x,y,{tone:tones[model.tones[y][x]]||tones.b,rear});});
+    model.art.forEach((row,y)=>{for(let x=0;x<row.length;x++)if(row[x]!==' ')add(row[x],x,y,{tone:tones[model.tones[y][x]]||tones.b,rear,protectHead:Boolean(garment)});});
    }
    continue;
   }
@@ -232,6 +234,7 @@ export function fitWearables(rig,cosmetics={},time=0,apparel={}){
 export function paintWearables(cells,tones,rig,plan){
  const H=cells.length,W=cells[0].length;
  const inside=(x,y,r)=>x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h;
+ const underFeathers=(x,y)=>(rig.occlusion||rig.torso)?.some(f=>f.y===y&&x>=f.x&&x<f.x+f.w)??inside(x,y,rig.body);
  let clipped=false;
  for(const layer of [...plan.layers.filter(l=>l.rear),...plan.layers.filter(l=>!l.rear)]){
   for(const [row,line] of layer.art.entries())for(const [col,char] of [...line].entries()){
@@ -239,7 +242,7 @@ export function paintWearables(cells,tones,rig,plan){
    if(char===' '&&!layer.clear)continue;
    if(x<0||x>=W||y<0||y>=H){if(char!==' ')clipped=true;continue;}
    if((layer.protectHead||plan.items.find(i=>i.id===layer.id)?.slot==='neck')&&inside(x,y,rig.faceBounds||rig.head))continue;
-   if(layer.rear&&(inside(x,y,rig.body)||inside(x,y,rig.faceBounds||rig.head)||cells[y][x]!==' '))continue;
+   if(layer.rear&&(underFeathers(x,y)||inside(x,y,rig.faceBounds||rig.head)||cells[y][x]!==' '))continue;
    cells[y][x]=char;tones[y][x]=layer.tone;
   }
  }

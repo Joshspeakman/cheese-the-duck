@@ -247,8 +247,10 @@ Resident speech uses the local Qwen3 model and llama.cpp runtime described above
 
 The next animation milestone is in development on this branch and has **not**
 replaced the installed game; the separate chat update is installed as 2.36.1. Its tracker is
-`overhaul/animation-milestone/requirements.json`: 279 of 542 object drawings have
-been reconstructed, with 263 remaining. The full 48 bespoke sequences per object
+`overhaul/animation-milestone/requirements.json`: 315 of 542 main catalogue drawings
+have been reconstructed for review, with 227 remaining. The 109 live wardrobe
+IDs are also tracked explicitly: 84 constructed, 25 pending, and 67 supplemental
+to the main catalogue (609 unique objects total). The full 48 bespoke sequences per object
 and all guest/age/context coverage remain unfinished.
 
 Nest routines now move saved physical bedding. Thirty-three of the existing
@@ -977,3 +979,44 @@ with 230 still pending. The twelve shared care cores do not constitute 48
 bespoke sequences per object. Guest dressing participation, shared care,
 physical pickup/put-away and the complete contextual repertoires remain open.
 The full milestone remains active and is not yet installed.
+
+## Constructed garments and cloth care (milestone work in progress)
+
+Eighteen garments across the original shop, outfit and seasonal wardrobes now
+have detailed catalogue construction and separate compact fittings. Cable and
+Fair Isle knits, two floral shirts, satin tuxedo lapels, an embroidered robe,
+fur-trimmed suit, storm-flap raincoats, a quilted coat, gourd and ghost costumes,
+an elf tunic, rosette sash, three capes and a pocketed rucksack have distinct
+seams, collars, hems and closures. Body cloth follows each posed feather span,
+leaving the face, wings and feet visible. Rear cloth uses the actual feather
+silhouette for occlusion, keeping shoulder connections visible. Capes trail
+along a tucked or swimming back; bags shorten to stay above the ground or
+waterline at small ages. Eggs do not wear garments.
+
+The native simulation saves water, shoulder snow, dirt, looseness and creases.
+Walking and sleep rumple visible worn cloth; stored or offline clothing does
+not invent movement wear. Thirteen shared care cores brush snow or seams,
+smooth cloth, wring a hem, shed coat water, straighten lapels or a sash, settle
+a collar or clasp, shake a cape, dry a pocket and tighten bag straps. Effects
+apply once at an actual fitted contact, with cooldowns and cancellation when
+movement, urgent needs, travel or another activity takes over. The notebook
+addresses each equipped garment's state independently while Cheese performs
+only one care action at a time. Ownership and original equip handlers remain
+authoritative. These are shared foundations, not 48 sequences per object.
+
+Validation: `engine/check_garments.py` passes 872 lifecycle checks and exports
+27 native material/age frames plus 390 care frames. `engine/garments-check.cjs`
+replays them and produces `artifacts/animation-milestone/garments-review.html`,
+including catalogue drawings, all nine ages and real contact timelines.
+`engine/garments-ui-check.cjs` passes nine notebook command/state checks.
+The JavaScript suite passes 222 tests; the final garment and wearable fitting
+checks also verify rear art stays above the planted floor. Existing headwear
+(1514 checks), accessories (923), terrain (483) and living simulation (694,
+72 simulated hours) pass. Source Electron smoke renders 91 frames using
+disposable saves and no local AI.
+
+This adds three main catalogue objects and 15 supplemental wardrobe IDs.
+Twenty-five live wardrobe IDs still need reconstruction. Guest dressing/shared
+care, physical pickup and put-away, individual contextual repertoires and the
+full per-object sequence audits remain open. The installed game is still the
+verified 2.36.1 chat release; this development milestone is not installed.

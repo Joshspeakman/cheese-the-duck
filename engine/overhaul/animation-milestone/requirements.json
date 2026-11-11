@@ -30,7 +30,10 @@
       "mood",
       "age",
       "company"
-    ]
+    ],
+    "wearableIDs": 109,
+    "supplementalWardrobeIDs": 67,
+    "totalUniqueObjects": 609
   },
   "requirements": [
     {
@@ -87,7 +90,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: reconstructed 25 face/neck/headphone accessories across the original wardrobes, including 11 main catalogue items and 14 supplemental IDs. Added twelve native care cores, saved material/fit changes, actual age-fitted contacts, multi-item notebook controls and native/rendered slot parity. Corrected scarf drape and pendant cord attachment during visual review. 312 reconstructed / 230 pending; every per-object verified-sequence count remains zero. Full milestone and final installation remain unfinished.",
+  "previous_goal_turn": "Progress: reconstructed 18 garments, including three main catalogue objects and 15 supplemental wardrobe IDs. Added 13 native care cores with saved creases/material state, per-item notebook controls, actual feather-contour fitting and grounded cape/backpack geometry. Passed 222 JavaScript tests, 872 garment lifecycle checks, 417 native replay frames, nine notebook checks, existing hat/accessory regressions, terrain/living simulation and source Electron smoke. 315 main catalogue drawings under review / 227 pending; all per-object verified-sequence counts remain zero. Explicitly tracked 109 wardrobe IDs (67 supplemental), 84 constructed / 25 pending. Full milestone and final installation remain unfinished.",
   "items": [
     {
       "id": "hat_red",
@@ -228,8 +231,10 @@
     {
       "id": "cape",
       "family": "cape",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed catalogue garment and age/pose-fitted cloth; native saved water, snow, dirt, slack and creases with contact-driven care. Full individual repertoire is unfinished."
     },
     {
       "id": "wings_fairy",
@@ -535,7 +540,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "cactus",
@@ -658,14 +663,18 @@
     {
       "id": "cape_superhero",
       "family": "cape",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed catalogue garment and age/pose-fitted cloth; native saved water, snow, dirt, slack and creases with contact-driven care. Full individual repertoire is unfinished."
     },
     {
       "id": "backpack_tiny",
       "family": "bag",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed catalogue garment and age/pose-fitted cloth; native saved water, snow, dirt, slack and creases with contact-driven care. Full individual repertoire is unfinished."
     },
     {
       "id": "monocle",
@@ -734,7 +743,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "27 native creative action cores across four props plus 13 complementary company roles. Independent regular/rare/story arrival, native clocks, per-copy controls, actual-observation memories, truthful chat and fixed working steps are verified foundations. Physical tool handling, reciprocal telescope use, personal visitor and mood/season repertoires, and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "27 native creative action cores across four props plus 13 complementary company roles. Independent regular/rare/story arrival, native clocks, per-copy controls, actual-observation memories, truthful chat and fixed working steps are verified foundations. Physical tool handling, reciprocal telescope use, personal visitor and mood/season repertoires, and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "skateboard",
@@ -756,7 +765,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "27 native creative action cores across four props plus 13 complementary company roles. Independent regular/rare/story arrival, native clocks, per-copy controls, actual-observation memories, truthful chat and fixed working steps are verified foundations. Physical tool handling, reciprocal telescope use, personal visitor and mood/season repertoires, and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "27 native creative action cores across four props plus 13 complementary company roles. Independent regular/rare/story arrival, native clocks, per-copy controls, actual-observation memories, truthful chat and fixed working steps are verified foundations. Physical tool handling, reciprocal telescope use, personal visitor and mood/season repertoires, and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "easel",
@@ -764,7 +773,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "27 native creative action cores across four props plus 13 complementary company roles. Independent regular/rare/story arrival, native clocks, per-copy controls, actual-observation memories, truthful chat and fixed working steps are verified foundations. Physical tool handling, reciprocal telescope use, personal visitor and mood/season repertoires, and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "27 native creative action cores across four props plus 13 complementary company roles. Independent regular/rare/story arrival, native clocks, per-copy controls, actual-observation memories, truthful chat and fixed working steps are verified foundations. Physical tool handling, reciprocal telescope use, personal visitor and mood/season repertoires, and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "drums",
@@ -1215,7 +1224,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "potted_cactus",
@@ -1498,7 +1507,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "wooden_planks",
@@ -1522,7 +1531,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "tatami_mat",
@@ -1530,7 +1539,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "sand_floor",
@@ -1602,7 +1611,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "rainbow_path",
@@ -1626,7 +1635,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "autumn_leaves",
@@ -2214,7 +2223,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "pebble_path",
@@ -2310,7 +2319,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "rope",
@@ -2324,7 +2333,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "clay_brick",
@@ -2352,7 +2361,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "stone_hammer",
@@ -2722,7 +2731,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "eagle_feather",
@@ -2944,7 +2953,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "27 native creative action cores across four props plus 13 complementary company roles. Independent regular/rare/story arrival, native clocks, per-copy controls, actual-observation memories, truthful chat and fixed working steps are verified foundations. Physical tool handling, reciprocal telescope use, personal visitor and mood/season repertoires, and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "27 native creative action cores across four props plus 13 complementary company roles. Independent regular/rare/story arrival, native clocks, per-copy controls, actual-observation memories, truthful chat and fixed working steps are verified foundations. Physical tool handling, reciprocal telescope use, personal visitor and mood/season repertoires, and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "fog_bell",
@@ -3697,7 +3706,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object\u2019s 48 meaningful sequences remain unfinished."
+      "animation": "28 native material action cores plus 18 complementary company roles across 13 textile/living-ground/fibre objects. Regular, rare and story visitors arrive independently; per-copy contacts, actual observations, shared native clocks, completed learning, pauses and save interruption are verified. Body scale and short seam reaches are preserved across all hatched ages and 48 visitor rigs. Individual material/personality repertoires, guest-to-guest invitations, tool pickup/put-away, egg listening, full contextual variants and each object’s 48 meaningful sequences remain unfinished."
     },
     {
       "id": "pond_mat",
@@ -4015,10 +4024,10 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "accessories_material_and_care",
+    "sourcePhase": "garments_material_and_care",
     "fullyOverhauled": false,
-    "constructedObjects": 312,
-    "remainingArtwork": 230,
+    "constructedObjects": 315,
+    "remainingArtwork": 227,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -4487,11 +4496,24 @@
       "engine/artifacts/animation-milestone/accessories-living.log",
       "engine/artifacts/animation-milestone/accessories-terrain.log",
       "engine/artifacts/animation-milestone/accessories-smoke.log",
-      "engine/artifacts/animation-milestone/accessories-hat-ui.log"
+      "engine/artifacts/animation-milestone/accessories-hat-ui.log",
+      "engine/artifacts/animation-milestone/garments-native.json",
+      "engine/artifacts/animation-milestone/garments-render.json",
+      "engine/artifacts/animation-milestone/garments-ui.json",
+      "engine/artifacts/animation-milestone/garments-regressions.log",
+      "engine/artifacts/animation-milestone/garments-grounded-fitting.log",
+      "engine/artifacts/animation-milestone/garments-hats.log",
+      "engine/artifacts/animation-milestone/garments-accessories.log",
+      "engine/artifacts/animation-milestone/garments-living.log",
+      "engine/artifacts/animation-milestone/garments-terrain.log",
+      "engine/artifacts/animation-milestone/garments-smoke.log",
+      "engine/artifacts/animation-milestone/garments-review.html",
+      "engine/artifacts/animation-milestone/garments-all-ages.png",
+      "engine/artifacts/animation-milestone/garments-native-care-contacts.png"
     ],
-    "next": "Continue the remaining 230 catalogue constructions and individual contextual repertoires. Remaining wardrobe backs, wings, held pieces and garments need detailed catalogue work and saved physical actions. Preserve shared terrain/support reservations and regenerate measurements when artwork dimensions change. Visitor clothing care and dressing/undressing, tool pickup/put-away and all 542 individual 48-sequence audits remain open. Finish integration and install only after the full milestone.",
+    "next": "Continue the remaining 227 main catalogue reconstructions and 25 pending wardrobe pieces (six overlap the main catalogue). Wings, halos/horns, footwear, held pieces, mittens, swim ring and special effects need detailed constructions and meaningful native behavior. Preserve terrain/support reservations and regenerate measurements when artwork dimensions change. Visitor clothing care, shared dressing, tool pickup/put-away and all individual 48-sequence audits remain open. Finish integration and install only after the full milestone.",
     "checks": {
-      "javascript": 217,
+      "javascript": 222,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4499,7 +4521,7 @@
       "learningBrains": 44,
       "shelterLifecycle": 30,
       "pairedLifecycle": 16,
-      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Initial character-operated tools are now reviewed separately below; plant-specific social routines and every-object 48-sequence coverage remain unfinished. Botanical care: 19 score illustrations on four sheets plus real native solo/company replay. Connected mirrored grips, fixed character scale, supported feet, age-sized tools, actual soil/rim/leaf contacts, downward pours, butterfly hovering, reduced motion and selectable visiting gardeners verified. Interrupted and incomplete shared work grant no shared memory; completed care teaches gardening. Tool pickup/put-away and individual-object/guest repertoires remain unfinished. Music review: nine instrument constructions on three sheets, 25 phrases at three phases on seven sheets, plus real native solo/shared scenes. All eight hatched ages and 48 visitor rigs remain bounded with fixed body scale; mirrored grips, real bill contact, depressed keys/valves, ringing cymbals/chimes, radio knobs, fan brushes, supported feet and continuous note-to-note travel are checked. Actual regular, rare and story visitors reserve independent destinations, and visitor-to-visitor duets work without crediting Cheese. Shared native clocks emit each note once, skip missed-note bursts and grant learning/memories only upon completion. Muting, direct care, pauses, moved objects, storms, replaced visits and safe worker shutdown are verified. Physical entry/climbing and full individual object/guest repertoires remain unfinished. Physical-copy review: distinct healthy/thirsty fern state, exact click identities, copy-specific inspector and arrangement controls reviewed in Electron. Live UI commands target the selected copy; storing/restoring one retains its history and leaves its sibling outside. Same-position replacement cannot inherit a current musician or reward. Physical state snapshots are detached from saves. Lighting review: 27 distinct constructions across five sheets, three Cheese ages at a real control, and live day/night/contact captures. Local cloth glow, ceramic contrast, warm versus blue flame, larger duck hologram, fixed-scale grounded poses, exact held-tool contacts, reduced motion and paused poses verified. Live twin-lamp notebook mode changes, cancellation, storage and same-identity restoration tested through the production command validator. Ordinary and rare visitor light participation and individual-object repertoires remain pending. Keepsake review: twelve constructions, open/closed sheets, three reading ages and live book/barrel/card scenes; 70 native frames with 62 active workers. Fixed character scale, grounded feet, physical page/lid contacts, paused clocks and immutable snapshots pass. The real notebook operates the exact selected chest and exposes live page and water state. Reading words share one definition with the drawing and are supplied to natural chat only after arrival and opening. Full individual repertoires and visitor participation remain unfinished. Shared keepsakes: fifteen complementary company tracks, all 48 cast profiles and eight hatched Cheese ages, ten rendered sheets, and 197 actual native frames. Independent regular/rare/story arrivals, short bounded waits, shared clocks, physical-copy identity, fixed scale, supported feet or butterfly hover, directional pointers, step-in/out gestures, selectable visiting readers, pause, interruption and completed observed-text memories pass. These initial shared scenes do not satisfy any per-object 48-sequence audit. Creative props: four constructions, 27 native cores, telescope/easel/kite/folding age sheets and five real-world captures. Mechanical controls agree across 2727 native/JS samples; 864 hatched-age contact poses retain original body scale. Paint accumulates twelve persistent layers; separate copies, native weather reel-in, paper/canvas covers, pauses, ownership loss, save/reload and live notebook commands pass. Paper art is grounded and fitted at world scale. The initial support platforms still need stationary placement and explicit climbing; visitors and full individual repertoires are pending. Textile review: thirteen constructions, six age/contact sheets and five native scenes. Dense grass and moss, knotted borders, tatami grain, rubber drainage, coir lettering, patchwork seams, layered insulation and tied reeds; 768 native frames, 634 workers, fixed body scale and bounded ASCII. Saved rolls, contact cleaning, footprints, moisture/frost and native pose parity verified. Notebook commands use real selected copies. Visitor participation and 48 bespoke sequences per object remain unfinished. Shared textiles: eighteen complementary visitor tracks, five illustration sheets and thirteen real prop captures. 553 native scenes include 442 independently selectable companion frames. All 48 visitor rigs and eight hatched ages retain body scale; helpers step close for a short wing reach and butterflies hover without tools. Saved compression changes grass, moss and fabric creases. Original material inventory, exact-copy contact, incomplete-session rewards, no pre-arrival reading, pauses and save/load reservations are verified. Full individual repertoires remain unfinished. Ground surface review: all 18 current drawings plus six age sheets and six native gameplay captures; revised sparse pebble/slate/marble details, fish medallion, cloud silhouettes and young-duck sand contrast after initial inspection. 920 actual native frames replay without input mutation or clipping; 646 attached poses. This does not verify the full per-object repertoire. Shared ground: 27 complementary companion roles across 18 surfaces, with real regular/rare/story arrivals and one native clock. 2727 native/renderer contact samples, 6048 fixed-scale age/cast rig cases, 52 rendered sheets/captures and 1322 actual simulation frames pass. Marks retain their authors, separate sand lanes, footprint shapes and weathered edges. Visitors remain clickable at their drawn positions. Missed arrivals, pauses, replacement, departure, care and save/load cannot invent shared completion. A delayed-frame regression verifies that native movement stays held through the exit gesture. Garden structures: thirteen material constructions, five age/contact sheets and thirteen native object captures; 1,215 actual game frames with 921 attached poses. Low mailbox/gate/well/windmill controls retain body scale and short wing reaches; bridge feet follow the fixed deck behind the near rail. 3,636 native/renderer control samples agree, and partial movement, independent copies, saved crank orientation, weather withdrawal, storage and original rewards pass. The real notebook handles all four mechanism types. Visitors and complete individual repertoires remain pending. Shared structures: 31 complementary roles on eight sheets and 44 actual solo/company captures. The 1245-frame replay includes 955 independently selectable companion frames. Native far-landing arrivals, event-time contacts, low joints for shorter rigs, fixed body scale, bridge footing, gate-clearance timing, butterfly hovering and well-call mouths are checked. Actual dirt removal, taps, observed mechanisms/inscriptions and completed-session memories persist per copy; interruptions and save/load release transient reservations. No individual 48-sequence audit is complete.",
+      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Initial character-operated tools are now reviewed separately below; plant-specific social routines and every-object 48-sequence coverage remain unfinished. Botanical care: 19 score illustrations on four sheets plus real native solo/company replay. Connected mirrored grips, fixed character scale, supported feet, age-sized tools, actual soil/rim/leaf contacts, downward pours, butterfly hovering, reduced motion and selectable visiting gardeners verified. Interrupted and incomplete shared work grant no shared memory; completed care teaches gardening. Tool pickup/put-away and individual-object/guest repertoires remain unfinished. Music review: nine instrument constructions on three sheets, 25 phrases at three phases on seven sheets, plus real native solo/shared scenes. All eight hatched ages and 48 visitor rigs remain bounded with fixed body scale; mirrored grips, real bill contact, depressed keys/valves, ringing cymbals/chimes, radio knobs, fan brushes, supported feet and continuous note-to-note travel are checked. Actual regular, rare and story visitors reserve independent destinations, and visitor-to-visitor duets work without crediting Cheese. Shared native clocks emit each note once, skip missed-note bursts and grant learning/memories only upon completion. Muting, direct care, pauses, moved objects, storms, replaced visits and safe worker shutdown are verified. Physical entry/climbing and full individual object/guest repertoires remain unfinished. Physical-copy review: distinct healthy/thirsty fern state, exact click identities, copy-specific inspector and arrangement controls reviewed in Electron. Live UI commands target the selected copy; storing/restoring one retains its history and leaves its sibling outside. Same-position replacement cannot inherit a current musician or reward. Physical state snapshots are detached from saves. Lighting review: 27 distinct constructions across five sheets, three Cheese ages at a real control, and live day/night/contact captures. Local cloth glow, ceramic contrast, warm versus blue flame, larger duck hologram, fixed-scale grounded poses, exact held-tool contacts, reduced motion and paused poses verified. Live twin-lamp notebook mode changes, cancellation, storage and same-identity restoration tested through the production command validator. Ordinary and rare visitor light participation and individual-object repertoires remain pending. Keepsake review: twelve constructions, open/closed sheets, three reading ages and live book/barrel/card scenes; 70 native frames with 62 active workers. Fixed character scale, grounded feet, physical page/lid contacts, paused clocks and immutable snapshots pass. The real notebook operates the exact selected chest and exposes live page and water state. Reading words share one definition with the drawing and are supplied to natural chat only after arrival and opening. Full individual repertoires and visitor participation remain unfinished. Shared keepsakes: fifteen complementary company tracks, all 48 cast profiles and eight hatched Cheese ages, ten rendered sheets, and 197 actual native frames. Independent regular/rare/story arrivals, short bounded waits, shared clocks, physical-copy identity, fixed scale, supported feet or butterfly hover, directional pointers, step-in/out gestures, selectable visiting readers, pause, interruption and completed observed-text memories pass. These initial shared scenes do not satisfy any per-object 48-sequence audit. Creative props: four constructions, 27 native cores, telescope/easel/kite/folding age sheets and five real-world captures. Mechanical controls agree across 2727 native/JS samples; 864 hatched-age contact poses retain original body scale. Paint accumulates twelve persistent layers; separate copies, native weather reel-in, paper/canvas covers, pauses, ownership loss, save/reload and live notebook commands pass. Paper art is grounded and fitted at world scale. The initial support platforms still need stationary placement and explicit climbing; visitors and full individual repertoires are pending. Textile review: thirteen constructions, six age/contact sheets and five native scenes. Dense grass and moss, knotted borders, tatami grain, rubber drainage, coir lettering, patchwork seams, layered insulation and tied reeds; 768 native frames, 634 workers, fixed body scale and bounded ASCII. Saved rolls, contact cleaning, footprints, moisture/frost and native pose parity verified. Notebook commands use real selected copies. Visitor participation and 48 bespoke sequences per object remain unfinished. Shared textiles: eighteen complementary visitor tracks, five illustration sheets and thirteen real prop captures. 553 native scenes include 442 independently selectable companion frames. All 48 visitor rigs and eight hatched ages retain body scale; helpers step close for a short wing reach and butterflies hover without tools. Saved compression changes grass, moss and fabric creases. Original material inventory, exact-copy contact, incomplete-session rewards, no pre-arrival reading, pauses and save/load reservations are verified. Full individual repertoires remain unfinished. Ground surface review: all 18 current drawings plus six age sheets and six native gameplay captures; revised sparse pebble/slate/marble details, fish medallion, cloud silhouettes and young-duck sand contrast after initial inspection. 920 actual native frames replay without input mutation or clipping; 646 attached poses. This does not verify the full per-object repertoire. Shared ground: 27 complementary companion roles across 18 surfaces, with real regular/rare/story arrivals and one native clock. 2727 native/renderer contact samples, 6048 fixed-scale age/cast rig cases, 52 rendered sheets/captures and 1322 actual simulation frames pass. Marks retain their authors, separate sand lanes, footprint shapes and weathered edges. Visitors remain clickable at their drawn positions. Missed arrivals, pauses, replacement, departure, care and save/load cannot invent shared completion. A delayed-frame regression verifies that native movement stays held through the exit gesture. Garden structures: thirteen material constructions, five age/contact sheets and thirteen native object captures; 1,215 actual game frames with 921 attached poses. Low mailbox/gate/well/windmill controls retain body scale and short wing reaches; bridge feet follow the fixed deck behind the near rail. 3,636 native/renderer control samples agree, and partial movement, independent copies, saved crank orientation, weather withdrawal, storage and original rewards pass. The real notebook handles all four mechanism types. Visitors and complete individual repertoires remain pending. Shared structures: 31 complementary roles on eight sheets and 44 actual solo/company captures. The 1245-frame replay includes 955 independently selectable companion frames. Native far-landing arrivals, event-time contacts, low joints for shorter rigs, fixed body scale, bridge footing, gate-clearance timing, butterfly hovering and well-call mouths are checked. Actual dirt removal, taps, observed mechanisms/inscriptions and completed-session memories persist per copy; interruptions and save/load release transient reservations. No individual 48-sequence audit is complete. Garments: eighteen distinct sewn constructions and nine-age sheet, plus 27 native material/age frames and 390 care frames. All hatched ages/action poses keep expression, wings and feet clear. Actual feather masks retain cape/rucksack connections; small swimming bodies carry rear cloth above the waterline. Thirteen native care cores reach real garment contacts once, preserve saved materials and yield to other work. Real notebook commands and multi-garment state verified.",
       "nestLifecycle": 34,
       "nestReplay": {
         "nativeSceneFrames": 41,
@@ -4909,17 +4931,21 @@
       "accessoriesNative": 923,
       "accessoriesNativeRenderFrames": 424,
       "accessoriesNotebook": 9,
-      "headwearNotebookCompatibility": 7
+      "headwearNotebookCompatibility": 7,
+      "garmentsNative": 872,
+      "garmentsUI": 9,
+      "garmentsFinalFitting": 11,
+      "garmentsNativeFrames": 417
     },
     "limitations": [
-      "279 of 542 object artworks reconstructed for review; 263 remain.",
+      "315 of 542 main catalogue artworks reconstructed for review; 227 remain. Separately, 84 of 109 wardrobe IDs are constructed; 67 wardrobe IDs are supplemental to the catalogue. 609 unique objects are explicitly in scope.",
       "No object has yet passed the 48 bespoke sequence requirement.",
       "Five nests now use 51 authored core routines (three require a canopy). Individual nest-construction variants, guest participation and egg-specific interactions remain unfinished; no per-object completion is claimed.",
       "Paired tracks currently share a core movement vocabulary across the cast; personality-specific choreography and full guest item participation remain unfinished.",
       "Thirteen solo tracks and the current mechanical loops are foundations, not the completed object-animation catalogue.",
       "Regular, rare and story visitors now use real shelter slots, shared rooms and six contextual company scores. Full species-specific climbing, doorway, object-contact and personal repertoires remain unfinished.",
       "Installed app remains the previously verified chat release 2.36.1; this development milestone is not packaged or installed.",
-      "Eight cooperative toy scenes currently cover seesaw, sandbox, ball and trampoline; full species-specific contact, NPC-to-NPC toy invitations and every-object repertoires remain unfinished. Habitat purchases now reserve enlarged drawing space; additional areas and the other legacy placement editors remain to be designed.",
+      "Eight cooperative toy scenes currently cover seesaw, sandbox, ball and trampoline; full species-specific contact, NPC-to-NPC toy invitations and every-object repertoires remain unfinished. All 21 areas now share native/rendered terrain support and enlarged reservations; future art changes require regenerated envelopes.",
       "Sixteen shared water scores are initial object/age-aware routines, not 48 bespoke sequences on each water object. Visitor bathing, species-specific water contacts and detailed ladder/entry choreography remain unfinished.",
       "Rooted plants now have 19 shared articulated care scores with tool contacts, independent visitor arrivals and completed shared-care memories. These do not satisfy the 48 bespoke sequences per plant target. Plant-construction-specific acting, personality/mood choreography, explicit tool pickup/put-away and reciprocal tool handoffs remain unfinished. No per-object sequence completion is claimed.",
       "Nine music objects now have 25 shared phrase cores, articulated playing/listening, real synthesized notes, independently arrived visitors and synchronized duets. These are not 48 bespoke sequences per instrument. Construction-specific repertoires, richer expressive posing, explicit tool pickup/put-away, musician climbing and stationary multi-level supports, egg listening and personal visitor phrasing remain unfinished.",
@@ -4932,7 +4958,8 @@
       "Eight outdoor playthings have 42 initial solo cores and 25 complementary visitor roles. All eight hatched ages and all 48 visitor rigs fit, and all 48 native visitor identities plus Pip are tested through real arrival and shared learning. Egg observation, guest-to-guest games, physical pickup/put-away, full personal/mood/season repertoires and each object's 48 bespoke sequences remain unfinished. Boat and board practice stays on the bank; no voyage or surf travel is claimed.",
       "Glass curios have twelve added core tracks and eight observing companion roles, with exact-copy controls and saved snow/forecast state. These are initial contextual foundations, not 48 unique sequences per object; no per-object repertoire audit is complete.",
       "Ten carnival/travel belongings have reconstructed art and saved mechanisms. Ferris/carousel rides have twelve initial scores; bounce house and carpet have 28 shared-play programs. Bounce-house controls add 24 low-control scores and ten ordered procedures, for 48 selectable source routines. The remaining six props need full mechanisms; personal visitor acting, guest-to-guest work, egg observation and every per-object 48-sequence audit remain open. No verified-sequence count is promoted from source routine counts.",
-      "Twenty-five face/neck/headphone accessories now have detailed constructions and twelve shared native care cores with saved weather, grime and fit. Existing cast outfits use the fittings, but visitor dressing/care participation, shared care, physical pickup/put-away and 48 meaningful bespoke sequences per item remain unfinished. No verified-sequence count is promoted from the shared cores."
+      "Twenty-five face/neck/headphone accessories now have detailed constructions and twelve shared native care cores with saved weather, grime and fit. Existing cast outfits use the fittings, but visitor dressing/care participation, shared care, physical pickup/put-away and 48 meaningful bespoke sequences per item remain unfinished. No verified-sequence count is promoted from the shared cores.",
+      "Eighteen body/back/sash garments have constructed art, saved material and fit state, and thirteen native care cores. These do not fulfill 48 bespoke sequences per item. Guest dressing/shared care, physical pickup/put-away, and individual seasonal/mood repertoires remain unfinished. Twenty-five live wardrobe IDs still use their earlier constructions."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -5063,7 +5090,7 @@
       "partners": "independent regular/rare/story arrivals; transient reservations; completion-only learning",
       "save": "native seat/clock/angle retained; paused after load; no resurrected visitor",
       "sequenceCoverageAdded": 0,
-      "remaining": "Personal per-visitor repertoires, guest-to-guest rides, egg observation, physical control-panel contacts and each object\u2019s full 48-sequence audit"
+      "remaining": "Personal per-visitor repertoires, guest-to-guest rides, egg observation, physical control-panel contacts and each object’s full 48-sequence audit"
     },
     "surfacePlayObjects": 2,
     "surfacePlayRoutineCores": 28,
@@ -5193,6 +5220,1033 @@
       "peakMs": 146.5,
       "localAI": false,
       "disposableSaves": true
+    },
+    "wardrobe": {
+      "constructed": 84,
+      "pending": 25,
+      "supplementalConstructed": 48,
+      "scope": "All 109 fitted wardrobe IDs explicitly tracked; 67 are outside the original 542 catalogue. No per-object sequence credit."
+    },
+    "garments": {
+      "constructed": 18,
+      "catalogueObjects": 3,
+      "supplementalWardrobeIDs": 15,
+      "careCores": 13,
+      "materials": [
+        "wet",
+        "snow",
+        "wind",
+        "soil",
+        "slack",
+        "crease"
+      ],
+      "visibleSlots": [
+        "body",
+        "back",
+        "sash"
+      ],
+      "nativeOwns": [
+        "ownership",
+        "selection",
+        "materials",
+        "phase",
+        "contact",
+        "cooldowns"
+      ],
+      "fitting": "Actual feather silhouette, clear head/wing/feet, shoulder-connected rear cloth, swimming cape and backpack above the ground/waterline",
+      "review": "engine/artifacts/animation-milestone/garments-review.html",
+      "fullRepertoiresComplete": false
+    },
+    "garmentsSmoke": {
+      "result": "PASS",
+      "frames": 91,
+      "lastRenderMs": 8,
+      "peakMs": 148,
+      "localAI": false,
+      "disposableSaves": true
     }
-  }
+  },
+  "wardrobe": [
+    {
+      "id": "hat_red",
+      "name": "Red Cap",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hat_blue",
+      "name": "Blue Cap",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hat_party",
+      "name": "Party Hat",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hat_chef",
+      "name": "Chef's Hat",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hat_wizard",
+      "name": "Wizard Hat",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hat_crown",
+      "name": "Golden Crown",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hat_viking",
+      "name": "Viking Helmet",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hat_pirate",
+      "name": "Pirate Hat",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hat_cowboy",
+      "name": "Cowboy Hat",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hat_tophat",
+      "name": "Top Hat",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hat_beret",
+      "name": "Beret",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hat_beanie",
+      "name": "Beanie",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hat_sombrero",
+      "name": "Sombrero",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "glasses_cool",
+      "name": "Sunglasses",
+      "slot": "face",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "glasses_nerd",
+      "name": "Nerd Glasses",
+      "slot": "face",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "bowtie",
+      "name": "Bow Tie",
+      "slot": "neck",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "scarf_red",
+      "name": "Red Scarf",
+      "slot": "neck",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "cape",
+      "name": "Superhero Cape",
+      "slot": "back",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "wings_fairy",
+      "name": "Fairy Wings",
+      "slot": "wings",
+      "inMainCatalogue": true,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "halo",
+      "name": "Halo",
+      "slot": "above",
+      "inMainCatalogue": true,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "bow_tie_blue",
+      "name": "Blue Bow Tie",
+      "slot": "neck",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "bow_tie_pink",
+      "name": "Pink Bow Tie",
+      "slot": "neck",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "cap_sports",
+      "name": "Sports Cap",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "beanie_striped",
+      "name": "Striped Beanie",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "bandana",
+      "name": "Bandana",
+      "slot": "neck",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "headphones",
+      "name": "Headphones",
+      "slot": "above",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "sunglasses_aviator",
+      "name": "Aviator Sunglasses",
+      "slot": "face",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "scarf_winter",
+      "name": "Winter Scarf",
+      "slot": "neck",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "crown_golden",
+      "name": "Golden Crown",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "viking_helmet",
+      "name": "Viking Helmet",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "wizard_hat",
+      "name": "Wizard Hat",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "pirate_hat",
+      "name": "Pirate Hat",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "flower_crown",
+      "name": "Flower Crown",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "cape_superhero",
+      "name": "Superhero Cape",
+      "slot": "back",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "backpack_tiny",
+      "name": "Tiny Backpack",
+      "slot": "back",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "monocle",
+      "name": "Monocle",
+      "slot": "face",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "halo_angel",
+      "name": "Angel Halo",
+      "slot": "above",
+      "inMainCatalogue": true,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "devil_horns",
+      "name": "Devil Horns",
+      "slot": "above",
+      "inMainCatalogue": true,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "party_hat",
+      "name": "Party Hat",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "space_helmet",
+      "name": "Space Helmet",
+      "slot": "head",
+      "inMainCatalogue": true,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "santa_hat",
+      "name": "Santa Hat",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "witch_hat",
+      "name": "Witch Hat",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "bunny_ears",
+      "name": "Bunny Ears",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "sun_hat",
+      "name": "Sun Hat",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "sunglasses_cool",
+      "name": "Cool Sunglasses",
+      "slot": "face",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "heart_glasses",
+      "name": "Heart Glasses",
+      "slot": "face",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "masquerade_mask",
+      "name": "Masquerade Mask",
+      "slot": "face",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "bowtie_red",
+      "name": "Red Bowtie",
+      "slot": "neck",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "scarf_striped",
+      "name": "Striped Scarf",
+      "slot": "neck",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "pearl_necklace",
+      "name": "Pearl Necklace",
+      "slot": "neck",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "flower_lei",
+      "name": "Flower Lei",
+      "slot": "neck",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "bell_collar",
+      "name": "Bell Collar",
+      "slot": "neck",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "superhero_cape",
+      "name": "Superhero Cape",
+      "slot": "back",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "sweater_cozy",
+      "name": "Cozy Sweater",
+      "slot": "body",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "hawaiian_shirt",
+      "name": "Hawaiian Shirt",
+      "slot": "body",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "tuxedo",
+      "name": "Tuxedo",
+      "slot": "body",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "wizard_robe",
+      "name": "Wizard Robe",
+      "slot": "body",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "santa_suit",
+      "name": "Santa Suit",
+      "slot": "body",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "raincoat",
+      "name": "Yellow Raincoat",
+      "slot": "body",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "fairy_wings",
+      "name": "Fairy Wings",
+      "slot": "wings",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "angel_wings",
+      "name": "Angel Wings",
+      "slot": "wings",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "bat_wings",
+      "name": "Bat Wings",
+      "slot": "wings",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "rain_boots",
+      "name": "Rain Boots",
+      "slot": "feet",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "bunny_slippers",
+      "name": "Bunny Slippers",
+      "slot": "feet",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "ice_skates",
+      "name": "Ice Skates",
+      "slot": "feet",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "umbrella",
+      "name": "Umbrella",
+      "slot": "held",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "magic_wand",
+      "name": "Magic Wand",
+      "slot": "held",
+      "inMainCatalogue": true,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "fishing_rod",
+      "name": "Fishing Rod",
+      "slot": "held",
+      "inMainCatalogue": true,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "bouquet",
+      "name": "Flower Bouquet",
+      "slot": "held",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "sparkle_aura",
+      "name": "Sparkle Aura",
+      "slot": "special",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "rainbow_trail",
+      "name": "Rainbow Trail",
+      "slot": "special",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "heart_bubbles",
+      "name": "Heart Bubbles",
+      "slot": "special",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "spring_flower_crown",
+      "name": "Flower Crown",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "spring_rain_boots",
+      "name": "Yellow Rain Boots",
+      "slot": "feet",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "spring_raincoat",
+      "name": "Pastel Raincoat",
+      "slot": "body",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "spring_butterfly_bow",
+      "name": "Butterfly Bow",
+      "slot": "neck",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "spring_gardener_hat",
+      "name": "Gardener's Hat",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "summer_sunglasses",
+      "name": "Cool Shades",
+      "slot": "face",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "summer_sun_hat",
+      "name": "Straw Sun Hat",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "summer_swim_ring",
+      "name": "Duck Floatie Ring",
+      "slot": "waist",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "summer_hawaiian_shirt",
+      "name": "Hawaiian Shirt",
+      "slot": "body",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "summer_flip_flops",
+      "name": "Tiny Flip Flops",
+      "slot": "feet",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "summer_ice_cream_cone",
+      "name": "Ice Cream Cone Hat",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "autumn_leaf_crown",
+      "name": "Autumn Leaf Crown",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "autumn_cozy_sweater",
+      "name": "Cozy Knit Sweater",
+      "slot": "body",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "autumn_scarf",
+      "name": "Plaid Scarf",
+      "slot": "neck",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "autumn_boots",
+      "name": "Leather Boots",
+      "slot": "feet",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "autumn_acorn_charm",
+      "name": "Lucky Acorn Charm",
+      "slot": "neck",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "winter_earmuffs",
+      "name": "Fluffy Earmuffs",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "winter_puffy_coat",
+      "name": "Puffy Winter Coat",
+      "slot": "body",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "winter_snow_boots",
+      "name": "Warm Snow Boots",
+      "slot": "feet",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "winter_cozy_scarf",
+      "name": "Knitted Winter Scarf",
+      "slot": "neck",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "winter_mittens",
+      "name": "Fuzzy Mittens",
+      "slot": "hands",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "winter_snowflake_crown",
+      "name": "Snowflake Crown",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "valentine_heart_headband",
+      "name": "Heart Headband",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "valentine_cupid_wings",
+      "name": "Cupid Wings",
+      "slot": "wings",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "easter_bunny_ears",
+      "name": "Bunny Ears",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "easter_egg_basket",
+      "name": "Easter Basket",
+      "slot": "held",
+      "inMainCatalogue": false,
+      "art": "pending",
+      "verifiedSequences": 0,
+      "operationPrototype": false
+    },
+    {
+      "id": "halloween_witch_hat",
+      "name": "Witch Hat",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "halloween_pumpkin_costume",
+      "name": "Pumpkin Costume",
+      "slot": "body",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "halloween_ghost_sheet",
+      "name": "Ghost Sheet",
+      "slot": "body",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "thanksgiving_pilgrim_hat",
+      "name": "Pilgrim Hat",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "winter_santa_hat",
+      "name": "Santa Hat",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "winter_elf_costume",
+      "name": "Elf Costume",
+      "slot": "body",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "winter_reindeer_antlers",
+      "name": "Reindeer Antlers",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "newyear_party_hat",
+      "name": "Party Hat",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "newyear_fancy_glasses",
+      "name": "2024 Glasses",
+      "slot": "face",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "birthday_crown",
+      "name": "Birthday Crown",
+      "slot": "head",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    },
+    {
+      "id": "birthday_sash",
+      "name": "Birthday Sash",
+      "slot": "sash",
+      "inMainCatalogue": false,
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true
+    }
+  ]
 }

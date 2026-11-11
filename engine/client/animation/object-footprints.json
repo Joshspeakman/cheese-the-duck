@@ -105,10 +105,10 @@
       "construction": "accessory-v1"
     },
     "cape": {
-      "width": 19.22,
-      "height": 9.09,
+      "width": 43.12,
+      "height": 30.16,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "garment-v1"
     },
     "wings_fairy": {
       "width": 20.4,
@@ -447,16 +447,16 @@
       "construction": "headwear-v1"
     },
     "cape_superhero": {
-      "width": 19.22,
-      "height": 9.09,
+      "width": 43.12,
+      "height": 30.16,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "garment-v1"
     },
     "backpack_tiny": {
-      "width": 14.36,
-      "height": 9.54,
+      "width": 43.12,
+      "height": 30.16,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "garment-v1"
     },
     "monocle": {
       "width": 41.72,
