@@ -28,6 +28,14 @@ LABELS = {'rest':'quiet time', 'wander':'exploring', 'observe':'noticing little 
 def clamp(n, lo=0., hi=1.): return max(lo, min(hi, float(n)))
 def stable(value): return int(hashlib.sha256(str(value).encode()).hexdigest()[:12], 16)
 def tokens(text): return set(re.findall(r"[a-z]{3,}", str(text).lower()))
+def player_claim(message):
+    """An attributed player statement, usable in a prompt before it is saved."""
+    message=str(message).strip()[:1000]
+    declaration=(r'\b(?:my name is|call me|i (?:love|like|hate|prefer|enjoy|remember)|remember that)\s+\w'
+                 r'|\bmy favou?rite(?:\s+[\w\x27-]+){0,5}\s+(?:is|are)\s+\w')
+    if re.search(declaration,message,re.I):
+        return 'You said: '+message[:300]
+    return ''
 def action_key(action):
     return {'feed':'forage','play':'practice','clean':'restore','pet':'share','sleep':'rest',
             'talk':'chat','explore':'wander','project':'restore','repair_item':'restore',
@@ -159,8 +167,9 @@ class Minds:
         self.remember(key,'player','You said: '+message,at,.72,'player')
         # Keep explicitly volunteered player facts, attributed as claims. No model
         # output is ever promoted into a fact about the player or game.
-        if re.search(r'\b(my name is|call me|i (?:love|like|hate|prefer|enjoy|remember)|remember that|my favorite)\b',message,re.I):
-            fact={'text':'You said: '+message[:300],'at':at}
+        claim=player_claim(message)
+        if claim:
+            fact={'text':claim,'at':at}
             if not any(f['text']==fact['text'] for f in r['facts']):r['facts']=(r['facts']+[fact])[-12:]
         # Conversation itself builds familiarity. Swearing is not a dislike signal.
         self.bond(key,'player',.18,at,'Spent time talking with you.',False)

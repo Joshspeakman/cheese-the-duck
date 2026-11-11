@@ -31,12 +31,12 @@ class ChatStream:
     def reset(self):
         self.session=uuid.uuid4().hex;self.sequence=0;self.entries=[]
         self.receipts=OrderedDict();self.echoes=[];self.names={'Cheese':'cheese'}
-    def append(self, text, channel='world', speaker='', name='', target='', timestamp=None, source=''):
+    def append(self, text, channel='world', speaker='', name='', target='', timestamp=None, source='', target_name=''):
         text=plain(text).strip()
         if not text:return
         self.sequence+=1
         row=dict(id=self.sequence,text=text[:4000],channel=channel,speaker=speaker,name=name,target=target,
-                 time=timestamp or datetime.now().strftime('%H:%M'),source=source)
+                 time=timestamp or datetime.now().strftime('%H:%M'),source=source,targetName=target_name)
         self.entries.append(row);self.entries=self.entries[-self.LIMIT:]
         return row
     def raw(self,timestamp,text,category):
@@ -52,8 +52,9 @@ class ChatStream:
             if prefix in self.names:speaker=self.names[prefix];name=prefix;text=rest
         channel='say' if speaker else 'loot' if category=='discovery' else 'world'
         self.append(text,channel,speaker,name,timestamp=timestamp)
-    def player(self,text,target='cheese',channel='say'):
-        return self.append(text,channel,'player','You',target)
+    def player(self,text,target='cheese',channel='say',target_name=''):
+        target_name=target_name or next((name for name,key in self.names.items() if key==target),'')
+        return self.append(text,channel,'player','You',target,target_name=target_name)
     def reply(self,key,name,listener,text,channel,source='',timestamp=None,echo=True):
         self.names[name]=key
         row=self.append(text,channel,key,name,listener,timestamp,source)
@@ -64,7 +65,7 @@ class ChatStream:
     def restore(self,exchanges):
         for e in exchanges[-35:]:
             channel=e.get('channel','say' if e['speaker']=='cheese' else 'whisper') if e['listener']=='player' else 'neighbors'
-            if e['listener']=='player':self.append(e['heard'],channel,'player','You',e['speaker'],e.get('time','Earlier'))
+            if e['listener']=='player':self.append(e['heard'],channel,'player','You',e['speaker'],e.get('time','Earlier'),target_name=e['name'])
             self.reply(e['speaker'],e['name'],e['listener'],e['text'],channel,e.get('source',''),e.get('time','Earlier'),False)
     def receipt(self,request,accepted,message=''):
         self.receipts[request]=dict(id=request,accepted=bool(accepted),message=str(message))
