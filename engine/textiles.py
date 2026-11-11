@@ -80,6 +80,8 @@ def advance(pond,plan,dt):
     if wet(pond) and kind in ('mat','scrap','bundle') and work['id'] not in ('mat_roll','rolled_inspect') and not work.get('withdrawal'):
         if kind=='bundle':work.update(done=True,interrupted=True);return False
         work.update(id='mat_roll',elapsed=0.,events=[],start=controls(work),withdrawal=True,label=ROUTINES['mat_roll']['label']);plan['label']=work['label']
+    from engine import textile_company
+    if not work.get('withdrawal') and textile_company.waiting(pond.minds):return True
     spec=ROUTINES[work['id']];before=work['elapsed'];work['elapsed']=min(spec['duration'],before+max(0.,dt));values=controls(work)
     for key in PERSIST:s[key]=values[key]
     for i,(at,event) in enumerate(spec['events']):

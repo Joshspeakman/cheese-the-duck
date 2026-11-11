@@ -129,6 +129,7 @@ export class SceneCanvas {
           const staged=textileGeometry(actor,worker,this.sx,this.sy);
           drawCharacter(this.ctx,{...staged.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
           drawTextileTools(this.ctx,staged);
+          if(staged.character.visitor||staged.character.story)seatedHits.push(staged.character);
         }
         for(const worker of actor.creators||[]){
           const staged=creativeGeometry(actor,worker,this.sx,this.sy);

@@ -361,14 +361,33 @@ original inventory and never claims a crafting or building repair occurred.
 Belongings updates the current material state while natural chat receives only
 what Cheese can actually inspect. Eggs cannot operate these materials.
 
-These are initial shared cores. Visitor participation, personal/material-specific
-choreography, physical tool pickup/put-away, all mood/season variants and the
-48-sequence audit for every object remain open. Textile checks use
+Eighteen complementary company tracks let an independently arriving visitor
+steady a roll, separate fringe, brush lint, hold reeds, guide small steps or
+settle beside the mat. Confidence changes how a visitor reacts to rug patterns;
+young and elder company gets a patient guide, while butterflies hover without
+tools. Helpers step close to the seam and keep their original body size. Brush
+and fringe contacts affect the selected copy when they occur, including if the
+session is later cancelled. Completed shared time teaches both residents once;
+missed invitations, new visits, departures, direct care and bad weather do not.
+
+Natural conversation receives the actual shared activity and material state only
+after arrival. Visitors can remember the welcome mat greeting after seeing it,
+not while walking toward it. Paused work freezes both characters. Loading a save
+retains material changes and releases old visitor reservations. Visitors remain
+clickable and return to independent movement afterward.
+
+These are initial shared cores. Individual visitor/material-specific repertoires,
+guest-to-guest sessions, physical tool pickup/put-away, all mood/season variants
+and the 48-sequence audit for every object remain open. Textile checks use
 `.venv/bin/python engine/check_textiles.py`,
 `engine/node_modules/.bin/electron engine/textiles-check.cjs` and
 `engine/node_modules/.bin/electron engine/textiles-ui-check.cjs`. They exercise
 real game state and notebook commands with disposable saves, plus native-frame
 replays and fixed-scale contact poses across all eight hatched ages.
+Shared textile validation uses `.venv/bin/python engine/check_textile_company.py`
+and `engine/node_modules/.bin/electron engine/textile-company-check.cjs`, with
+actual regular/rare/story arrivals, contact timing, both brains, native replay
+and all 48 visitor rigs.
 
 ## Validation
 

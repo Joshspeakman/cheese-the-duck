@@ -35,7 +35,7 @@ function sod(c,p,v){
 function grasses(c,p,v,s){
  sod(c,p,v);for(let j=0;j<17;j++)for(let i=0;i<29;i++){
   const x=.025+i*.032+(j%2)*.011,y=.045+j*.055+(i%3)*.007;
-  const q=textilePoint(p,x,y,v),n=i*7+j*11,pressed=(v.press||0)>0&&Math.hypot(x-v.u,y-v.v)<.15;
+  const q=textilePoint(p,x,y,v),n=i*7+j*11,pressed=(v.press||0)>0&&Math.hypot(x-v.u,y-v.v)<.15||((s.textile?.nap??.5)<.4&&n%4===0);
   const glyph=pressed?'__':p.style==='lawn'?(n%3?'|/':'\\|'):n%4===0?'\\|/':n%3===0?'i|':'/|';
   c.put(q.x,q.y-3,glyph,n%3?'l':'g');
   if(p.style==='meadow'&&n%13===0)c.put(q.x,q.y-5,'*','a');
@@ -46,7 +46,8 @@ function moss(c,p,v,s){
  sod(c,p,v);
  for(let j=0;j<11;j++)for(let i=0;i<14;i++){
   const q=textilePoint(p,.04+i*.066+(j%2)*.018,.065+j*.085+(i%3)*.008,v),r=3+(i*3+j)%4;
-  c.ellipse(q.x,q.y-2,r,2+(i+j)%2,'~',(i+j)%2?'l':'g',true);c.put(q.x-1,q.y-3,':;','f');c.put(q.x-2,q.y-1,'vv','l');
+  const loft=1+(s.textile?.nap??.5)*2+(i+j)%2;
+  c.ellipse(q.x,q.y-2,r,loft,'~',(i+j)%2?'l':'g',true);c.put(q.x-1,q.y-3,':;','f');c.put(q.x-2,q.y-1,'vv','l');
   if((i*3+j)%11===0){c.line(q.x+2,q.y-2,q.x+3,q.y-6,'|','b');c.put(q.x+2,q.y-7,'()','a');}
  }
 }
@@ -89,6 +90,11 @@ function cloth(c,p,v,s){
    for(let y=Math.ceil(edge.y);y<=corner.y;y++){const u=(y-edge.y)/Math.max(1,corner.y-edge.y),x=edge.x+(left.x-edge.x)*u,right=edge.x+(corner.x-edge.x)*u;c.clear(x,y,right-x+1,1);c.solid(x,y,right-x+1,1,'b');}
    c.line(edge.x,edge.y,left.x,left.y,'/','f');c.line(edge.x,edge.y,corner.x,corner.y,'\\','a');
   }
+ }
+ const crease=1-(s.textile?.nap??.5);
+ if(crease>.06)for(const [u,y] of [[.08,.3],[.88,.43],[.17,.81]])if(y>cut+.05){
+  const a=textilePoint(p,u,y,v),b=textilePoint(p,u+.045+crease*.035,y+crease*.055,v);
+  c.line(a.x,a.y,b.x,b.y,'~','s');c.put(b.x,b.y+1,':','f');
  }
  if(p.style!=='coir')for(let u=.04;u<1;u+=.04){const q=textilePoint(p,u,1,v),lean=(1-(s.textile?.fringe??.5))*(Math.round(u*100)%3-1)*4;c.line(q.x,q.y,q.x+lean,q.y+4+(Math.round(u*100)%2),'|','b');c.put(q.x+lean,q.y+5,'~','f');}
  if(roll>.02){

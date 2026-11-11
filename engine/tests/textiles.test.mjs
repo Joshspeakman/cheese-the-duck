@@ -21,7 +21,7 @@ test('thirteen distinct textile constructions stay bounded through their complet
  assert.equal(signatures.size,13);assert(count>600);
 });
 test('persistent rolls, ties, loft, frost and impressions change real surfaces',()=>{
- for(const [id,a,b]of [['persian_rug',{roll:0},{roll:1}],['fabric_scrap',{roll:0},{roll:.7}],['thatch',{tie:0,spread:1},{tie:1,spread:.2}],['insulation',{loft:.1},{loft:1}],['grass_patch',{frost:0},{frost:1}],['moss_carpet',{tracks:[]},{tracks:[{u:.5,v:.6}]}]])assert.notDeepEqual(itemSprite(id,0,{state:{textile:a}}).art,itemSprite(id,0,{state:{textile:b}}).art,id);
+ for(const [id,a,b]of [['persian_rug',{roll:0},{roll:1}],['fabric_scrap',{roll:0},{roll:.7}],['thatch',{tie:0,spread:1},{tie:1,spread:.2}],['insulation',{loft:.1},{loft:1}],['grass_patch',{frost:0},{frost:1}],['grass_patch',{nap:.2},{nap:.8}],['moss_carpet',{nap:.1},{nap:1}],['persian_rug',{nap:.1},{nap:1}],['moss_carpet',{tracks:[]},{tracks:[{u:.5,v:.6}]}]])assert.notDeepEqual(itemSprite(id,0,{state:{textile:a}}).art,itemSprite(id,0,{state:{textile:b}}).art,id);
  for(const id of ['mat_roll','mat_unroll'])for(const initial of [0,.25,.75,1]){
   const w={id,elapsed:0,start:{roll:initial}};assert.equal(textilePose(w).roll,initial,'folding starts at the actual roll, without a jump');
   w.elapsed=TEXTILE_ROUTINES[id].duration;assert.equal(textilePose(w).roll,id==='mat_roll'?1:0);
