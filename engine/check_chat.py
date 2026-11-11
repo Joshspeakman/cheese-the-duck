@@ -20,6 +20,10 @@ mirror.append(('12:00','Fuck yes.','duck'));mirror.append(('12:00','Two lines.',
 check(s.entries[-1]['text']=='Fuck yes.\nTwo lines.' and s.sequence==301,'real reply appears once despite the Classic echo')
 mirror.append(('12:00','Fuck yes.','duck'))
 check(s.sequence==302,'echo suppression never swallows a later identical statement')
+s.player('Hello there.','visitor-id','whisper','Ada Feather')
+check(s.entries[-1]['targetName']=='Ada Feather','whisper keeps the listener name without requiring a prior snapshot')
+s.restore([dict(speaker='departed-id',name='Ada Moss',listener='player',heard='See you soon.',text='See you.',channel='whisper')])
+check(s.entries[-2]['targetName']=='Ada Moss','restored whisper retains the name of a departed visitor')
 from engine import host
 sys.stdout=host.WIRE
 terminal=host.DesktopInput();g=host.DesktopGame(terminal=terminal,renderer_factory=host.CanvasRenderer)
@@ -36,7 +40,7 @@ try:
    time.sleep(.02)
   raise AssertionError('reply did not finish')
  result=dict(text='Fuck yes. I will remember lavender.',source='authored',detail='controlled transport')
- with patch('engine.local_speech.speak',return_value=result),patch('core.game.find_matching_item',return_value='item-test') as lookup,patch.object(g,'_execute_item_interaction') as use:
+ with patch('engine.local_speech.speak',return_value=result) as transport,patch('core.game.find_matching_item',return_value='item-test') as lookup,patch.object(g,'_execute_item_interaction') as use:
   g._submit_chat(command('first'))
   check(s.receipts['first']['accepted'],'in-world chat is accepted by the real game')
   before=g.duck.memory.total_interactions;g._submit_chat(command('first'))
@@ -44,6 +48,16 @@ try:
   check(not lookup.called and not use.called,'natural item mentions never invoke item interaction matching')
   g._submit_chat(command('busy'));check(not s.receipts['busy']['accepted'],'concurrent thought is rejected with a recoverable receipt')
   settle()
+  messages=transport.call_args[0][0]
+  prompt_facts=json.loads(messages[0]['content'].split('CHARACTER AND VERIFIED GAME STATE:\n',1)[1])
+  check('lavender' in prompt_facts['player_claims'][-1] and messages[-1]['content']==command('first')['text'],'first reply receives the new preference immediately in an immutable prompt')
+  previous_facts=json.loads(json.dumps(b.model.residents['cheese']['facts']))
+  b.prompt('cheese','My favorite flower is now violet.')
+  check(b.model.residents['cheese']['facts']==previous_facts,'prompt preview never saves a claim or duplicates learning')
+  check('violet' in b.fallback('cheese','My favorite flower is now violet.'),'unavailable model acknowledges the current detail instead of an older preference')
+  from engine.social_brains import player_claim
+  check(not player_claim('Do you remember my favorite flower?'),'asking for recall does not become a new preference claim')
+  check('lavender' in b.fallback('cheese','Do you remember my favorite flower?'),'fallback recall uses the saved preference rather than echoing the question')
  check(sum(e['speaker']=='player' for e in s.entries)==1,'one player line per accepted message')
  check(sum(e['text']==result['text'] for e in s.entries)==1,'one complete Cheese reply in the live log')
  check(any('lavender' in f['text'] for f in b.model.residents['cheese']['facts']),'chat reaches actual persistent learned preferences')
@@ -63,6 +77,7 @@ try:
  check(s.receipts['friend']['accepted'],'whisper reaches the actual visiting friend')
  check(s.entries[-1]['speaker']==friend.id and s.entries[-1]['channel']=='whisper','visitor identity and whisper channel survive asynchronous generation')
  check(s.entries[-1]['text'].startswith('I like'),'visitor output is mirrored without prefix duplication')
+ check(next(e for e in s.entries if e['speaker']=='player' and e['target']==friend.id)['targetName']==friend.name,'live visitor whisper records a readable permanent listener name')
  saved=json.loads(json.dumps(p.save()))
  old=s.session;s.reset();g._restore_living_pond(saved)
  check(s.session!=old and any(e['text']==result['text'] for e in s.entries),'saved conversations hydrate into a new session')

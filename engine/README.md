@@ -40,6 +40,13 @@ Use `/s message` for Cheese, `/w Name message` for a present friend, `/r message
 for the last incoming whisper, and `/help` for reminders. `/clear` clears this view,
 not saved memories. `//` begins a literal slash. Up/Down recall sent messages.
 
+The **Say ▾** control chooses Cheese or a present visitor without a command.
+It preserves the current draft. Use arrow keys and Enter in the recipient menu;
+Escape closes the menu before leaving chat. **Tab** completes slash commands and
+visitor names (`/w Ad`); repeated Tab or Shift+Tab cycles matching names. Ordinary
+text retains normal Tab navigation. Whisper history keeps the listener's name
+after they leave; an absent listener never silently redirects a draft to Cheese.
+
 Scroll or use Page Up/Down to read history; new messages leave your place intact,
 with **Latest** to return. The live stream keeps 240 entries; recent saved resident
 conversations return on load. The grip moves the panel, its lower-right corner

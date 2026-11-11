@@ -214,6 +214,13 @@ async function smoke() {
     const answer=latest.scene.living.minds.exchanges.at(-1);
     if(latest.ui.chatStream.entries.filter(e=>e.text===answer.text&&e.speaker==='cheese').length!==1)throw Error('Reply missing or duplicated in chat');
     if(!await win.webContents.executeJavaScript("document.querySelector('.chat-scroll').textContent.includes('lavender')"))throw Error('Live conversation missing from chat UI');
+    await win.webContents.executeJavaScript(`(() => {
+      window.pondChat.open();document.getElementById('pond-chat-input').value='Do you remember my favorite flower?';
+      document.querySelector('.chat-composer').requestSubmit();
+    })()`);
+    await waitFor(()=>latest?.scene?.living?.minds?.exchanges.some(e=>e.id>answer.id&&e.source==='local'&&e.listener==='player'),'local model follows up on a learned preference',40000);
+    const recalled=latest.scene.living.minds.exchanges.at(-1);
+    if(!recalled.text.toLowerCase().includes('lavender'))throw Error('Local model did not recall the actual flower: '+recalled.text);
     fs.writeFileSync(path.join(out,'local-conversation.png'),(await win.webContents.capturePage()).toPNG());
     fs.writeFileSync(path.join(out,'local-conversation.json'),JSON.stringify(latest.scene.living.minds,null,2));
   }

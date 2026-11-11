@@ -241,7 +241,13 @@ body .pond-journal>nav button[aria-current=page]{background:#e7d9b0;color:#2c422
 #pond-chat .chat-composer{display:flex;align-items:center;gap:6px;flex:none;margin:0;border:1px solid #a58f5a66;border-radius:3px;padding:3px 7px;background:#06130f70;color:#d5bd80}
 #pond-chat.composing .chat-composer{border-color:#e9c781;box-shadow:0 0 7px #c1a65b18}
 #pond-chat[data-channel=whisper] .chat-composer{color:#ecb2e5}
-#pond-chat .chat-to{font-size:.9em;white-space:nowrap;max-width:44%;overflow:hidden;text-overflow:ellipsis}
+#pond-chat .chat-to{font-size:.9em;white-space:nowrap;max-width:44%;overflow:hidden;text-overflow:ellipsis;background:none;border:0;padding:2px 3px;color:inherit}
+#pond-chat .chat-to:hover{color:#fff0b7;background:#c5b17a18}
+#pond-chat .chat-listeners{position:absolute;left:12px;bottom:62px;max-width:calc(100% - 24px);max-height:calc(100% - 104px);overflow:auto;overscroll-behavior:contain;background:#10231ff7;border:1px solid #c8b07799;border-radius:4px;box-shadow:0 4px 18px #0009;padding:5px;z-index:2;scrollbar-width:thin}
+#pond-chat .chat-listener{display:block;width:100%;background:none;border:0;text-align:left;color:#ecb2e5;padding:5px 9px;overflow-wrap:anywhere}
+#pond-chat .chat-listener[data-channel=say]{color:#f3ead2}
+#pond-chat .chat-listener[aria-checked=true]{background:#c5b17a1c;box-shadow:inset 2px 0 #d8bc7b}
+#pond-chat .chat-listener:hover,#pond-chat .chat-listener:focus{background:#c5b17a2b}
 #pond-chat .chat-input{flex:1;width:0;min-width:0;border:0;background:none;color:#fff1d6;padding:2px 0;outline:0;font:inherit;line-height:1.5;user-select:text}
 #pond-chat .chat-input::placeholder{color:#a0af9b}
 #pond-chat .chat-send{background:none;border:0;color:#efd191;font-size:19px;padding:0 3px}

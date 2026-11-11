@@ -5,7 +5,7 @@ const out=path.join(__dirname,'artifacts/chat');fs.mkdirSync(out,{recursive:true
 app.setPath('userData',fs.mkdtempSync(path.join(os.tmpdir(),'cheese-chat-ui-')));
 let frame=JSON.parse(fs.readFileSync(path.join(__dirname,'artifacts/interface-frames.json'))).pond;
 frame.ui.modal=null;frame.meta.talking=false;
-frame.ui.chatStream={session:'test-pond',entries:[],receipts:[],targets:[{id:'cheese',name:'Cheese'},{id:'moss',name:'Moss'}],pending:null};
+frame.ui.chatStream={session:'test-pond',entries:[],receipts:[],targets:[{id:'cheese',name:'Cheese'},{id:'moss',name:'Moss'},{id:'ada',name:'Ada Feather'},{id:'ada2',name:'Ada Moss'}],pending:null};
 const stream=frame.ui.chatStream;let sequence=0;
 function row(text,channel='say',speaker='cheese',name='Cheese',target='player'){stream.entries.push({id:++sequence,text,channel,speaker,name,target,time:'12:05'});stream.entries=stream.entries.slice(-240);}
 row('The light is catching the reeds.','world','','');row('Morning, Cheese. How is pond life treating you?','say','player','You','cheese');
@@ -25,6 +25,23 @@ app.whenReady().then(async()=>{
  try{
  await win.loadFile(path.join(__dirname,'client/index.html'));await pause(650);
  check(await js("!document.getElementById('pond-chat').hidden&&document.querySelectorAll('.chat-line').length===4"),'existing bottom-left log becomes readable structured chat');
+ await key('Enter');await text('A thought I want to keep.');await js("document.querySelector('.chat-to').click()");
+ check(await js("window.pondChat.pickerOpen&&document.querySelector('.chat-to').getAttribute('aria-expanded')==='true'&&document.querySelectorAll('.chat-listener').length===5"),'recipient menu lists say and currently present whisper listeners');
+ await js("document.querySelector('[data-listener=moss]').click()");
+ check(await js("window.pondChat.target==='moss'&&window.pondChat.channel==='whisper'&&document.activeElement.id==='pond-chat-input'&&document.getElementById('pond-chat-input').value==='A thought I want to keep.'"),'choosing a visitor preserves the draft and returns to typing');
+ await js("document.querySelector('.chat-to').click()");await key('Home');await key('Enter');
+ check(await js("window.pondChat.channel==='say'&&window.pondChat.target==='cheese'&&!window.pondChat.pickerOpen"),'keyboard menu selection returns to public Cheese chat '+await js("JSON.stringify({target:window.pondChat.target,channel:window.pondChat.channel,picker:window.pondChat.pickerOpen,focus:document.activeElement.outerHTML.slice(0,350)})"));
+ await text('/w Ad');await js('window.pondChat.input.setSelectionRange(5,5)');await key('Tab');
+ check(await js("window.pondChat.input.value==='/w Ada Feather '&&document.activeElement.id==='pond-chat-input'"),'Tab completes a visitor name in place');
+ await key('Tab');check(await js("window.pondChat.input.value==='/w Ada Moss '"),'Tab cycles ambiguous live names');
+ await key('Tab',['shift']);check(await js("window.pondChat.input.value==='/w Ada Feather '"),'Shift+Tab cycles names backward');
+ await text('/w Mo How are you?');await js('window.pondChat.completion=null;window.pondChat.input.setSelectionRange(5,5)');await key('Tab');
+ check(await js("window.pondChat.input.value==='/w Moss How are you?'&&window.pondChat.input.selectionStart===8"),'name completion preserves the message after the caret');
+ await text('An ordinary sentence.');await js('window.pondChat.input.setSelectionRange(21,21)');await key('Tab');
+ check(await js("document.activeElement.classList.contains('chat-send')"),'ordinary text retains accessible Tab focus traversal');
+ await js("document.querySelector('.chat-to').click()");await key('Escape');
+ check(await js("!window.pondChat.pickerOpen&&document.activeElement.classList.contains('chat-to')"),'Escape dismisses only the recipient menu first');
+ await key('Escape');await key('Enter');await text('');await key('Escape');
  const before=inputs.length;await key('Enter');check(await js("document.activeElement.id==='pond-chat-input'"),'Enter focuses inline chat');
  for(const k of ['F','B','T','J'])await key(k);
  check(inputs.length===before,'typing action hotkeys never reaches gameplay');
@@ -42,6 +59,11 @@ app.whenReady().then(async()=>{
  check(await js("document.getElementById('pond-chat-input').value==='A second thought'&&!document.getElementById('pond-chat-input').readOnly"),'rejected message stays editable');await publish();check(await js("document.querySelector('.chat-status').textContent==='Give them a moment to answer.'"),'rejection explanation survives live refresh');
  await text('/w Moss That sounds lovely.');await key('Enter');const whisper=inputs.at(-1);check(whisper.target==='moss'&&whisper.channel==='whisper','whisper addresses independent visitor brain');
  stream.receipts.push({id:whisper.id,accepted:true});row(whisper.text,'whisper','player','You','moss');await publish();
+ await js("document.querySelector('.chat-to').click()");const moss=stream.targets.find(t=>t.id==='moss');stream.targets=stream.targets.filter(t=>t.id!=='moss');await publish();
+ check(await js("!document.querySelector('[data-listener=moss]')&&window.pondChat.target==='moss'&&document.querySelector('.chat-to').title.includes('(away)')&&window.pondChat.pickerOpen&&document.activeElement.classList.contains('chat-listener')"),'departing visitor disappears from picker without silently retargeting a draft or losing menu focus');
+ await js("document.querySelector('[data-chat-tab=world]').click();document.querySelector('[data-chat-tab=general]').click()");
+ check(await js("document.querySelector('.chat-scroll').textContent.includes('[To Moss]')"),'departed whisper remains readable when scrollback is rebuilt');
+ await js('window.pondChat.park()');stream.targets.push(moss);await publish();
  await key('Enter');await text('/r Save me a seat.');await key('Enter');check(inputs.at(-1).target==='moss','reply resolves last incoming whisper');
  stream.receipts.push({id:inputs.at(-1).id,accepted:true});await publish();
  await js("document.querySelector('[data-chat-tab=world]').click()");check(await js("[...document.querySelectorAll('.chat-line')].every(n=>n.dataset.channel==='world')"),'World tab filters speech');
@@ -74,6 +96,7 @@ app.whenReady().then(async()=>{
  await js('window.pondHUD.layout.preset();window.pondHUD.changed();window.pondChat.open()');await text('What should we do today?');
  fs.writeFileSync(path.join(out,'in-world-chat.png'),(await win.webContents.capturePage()).toPNG());
  const rect=await js("(()=>{const r=document.getElementById('pond-chat').getBoundingClientRect();return {x:Math.floor(r.x),y:Math.floor(r.y),width:Math.ceil(r.width),height:Math.ceil(r.height)}})()");fs.writeFileSync(path.join(out,'chat-closeup.png'),(await win.webContents.capturePage(rect)).toPNG());
+ await js("document.querySelector('.chat-to').click()");fs.writeFileSync(path.join(out,'chat-listeners.png'),(await win.webContents.capturePage(rect)).toPNG());
  check(!errors.length,'no renderer errors');fs.writeFileSync(path.join(out,'ui-checks.json'),JSON.stringify({result:'PASS',checks},null,2));console.log(JSON.stringify({result:'PASS',checks:checks.length}));app.exit(0);
  }catch(e){console.error(e,errors);fs.writeFileSync(path.join(out,'ui-failure.png'),(await win.webContents.capturePage()).toPNG());app.exit(1);}
 });

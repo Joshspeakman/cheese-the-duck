@@ -1,13 +1,14 @@
 import {ChatFade} from './chat-fade.mjs';
-import {CHAT_TABS,inTab,parseChat,channelLabel,spoken} from './chat-model.mjs';
+import {CHAT_TABS,inTab,parseChat,channelLabel,spoken,chatCompletions} from './chat-model.mjs';
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
-const HELP='Enter / T: chat · Enter: send · Esc: return · ↑ / ↓: sent history · /s: say to Cheese · /w Name: whisper · /r: reply · /clear: clear this view.';
+const HELP='Enter / T: chat · Enter: send · Esc: return · ↑ / ↓: sent history · Click Say to choose a listener · Tab: complete a command or name · /s: say to Cheese · /w Name: whisper · /r: reply · /clear: clear this view.';
 export class PondChat{
  constructor(renderer,hud){
   this.renderer=renderer;this.hud=hud;renderer.interface.chatExternal=true;this.fade=new ChatFade(performance.now());this.hovered=false;
   this.stream=null;this.frame=null;this.editing=false;this.tab='general';this.target='cheese';this.channel='say';this.lastWhisper=null;
   this.rows=[];this.local=[];this.high=0;this.clearThrough=0;this.unread=0;this.badges={general:0,conversation:0,world:0};this.scrolls={};this.follow=true;
   this.sent=[];this.historyIndex=0;this.draft='';this.inflight=null;this.lastPending='';this.lastVoice='';
+  this.knownTargets=new Map();this.pickerOpen=false;this.completion=null;this.targetSignature='';
   this.root=el('section',undefined,'pond-chat');this.root.id='pond-chat';this.root.dataset.hudUi='';this.root.setAttribute('aria-label','Pond chat');this.root.hidden=true;
   const top=el('div',undefined,'chat-heading');this.tabs=el('div',undefined,'chat-tabs');this.tabs.setAttribute('role','tablist');this.tabs.setAttribute('aria-label','Chat channels');
   for(const [id,label] of CHAT_TABS){const b=el('button',label,'chat-tab');b.dataset.chatTab=id;b.setAttribute('role','tab');b.onclick=()=>this.setTab(id);this.tabs.append(b);}
@@ -17,17 +18,20 @@ export class PondChat{
   this.log=el('div',undefined,'chat-scroll');this.log.tabIndex=0;this.log.setAttribute('role','log');this.log.setAttribute('aria-label','Pond conversation history');this.log.setAttribute('aria-live','polite');this.log.setAttribute('aria-relevant','additions');
   this.log.onscroll=()=>{this.follow=this.log.scrollHeight-this.log.scrollTop-this.log.clientHeight<24;if(this.follow){this.unread=0;this.updateUnread();}};
   this.jump=el('button','↓ Latest','chat-latest');this.jump.hidden=true;this.jump.onclick=()=>this.bottom();
-  this.form=el('form',undefined,'chat-composer');this.label=el('label','Say to Cheese:','chat-to');this.label.htmlFor='pond-chat-input';
+  this.form=el('form',undefined,'chat-composer');this.label=el('button','Say ▾','chat-to');this.label.type='button';this.label.setAttribute('aria-haspopup','menu');this.label.setAttribute('aria-expanded','false');this.label.setAttribute('aria-controls','chat-listeners');this.label.onclick=()=>this.togglePicker();
+  this.picker=el('div',undefined,'chat-listeners');this.picker.id='chat-listeners';this.picker.hidden=true;this.picker.setAttribute('role','menu');this.picker.setAttribute('aria-label','Choose who to talk to');
   this.input=el('input',undefined,'chat-input');this.input.id='pond-chat-input';this.input.type='text';this.input.maxLength=1000;this.input.autocomplete='off';this.input.spellcheck=true;this.input.setAttribute('aria-label','Message to Cheese');this.input.placeholder='Press Enter to chat…';
   this.send=el('button','↵','chat-send');this.send.type='submit';this.send.setAttribute('aria-label','Send chat message');this.send.title='Send · Enter';
   this.form.append(this.label,this.input,this.send);this.form.onsubmit=e=>{e.preventDefault();this.submit();};
   this.status=el('div','Enter to chat · /help','chat-status');this.status.setAttribute('role','status');
   this.resize=el('button','◢','chat-resize');this.resize.setAttribute('aria-label','Resize pond chat');this.resize.title='Drag to resize · arrow keys when focused';
-  this.root.append(top,this.log,this.jump,this.form,this.status,this.resize);document.body.append(this.root);
+  this.root.append(top,this.log,this.jump,this.picker,this.form,this.status,this.resize);document.body.append(this.root);
   this.root.addEventListener('keydown',e=>this.key(e));this.root.addEventListener('pointerdown',()=>hud.wake());
   this.input.onfocus=()=>{this.editing=true;this.root.classList.add('composing');this.input.placeholder='Say something…';hud.wake();};
   this.input.onblur=()=>{this.editing=false;this.root.classList.remove('composing');this.input.placeholder='Press Enter to chat…';};
-  this.input.oninput=()=>{this.draft=this.input.value;this.historyIndex=this.sent.length;this.status.textContent=this.stream?.pending?`${this.stream.pending} is thinking…`:'Enter to send · Esc to return';};
+  this.input.oninput=()=>{this.completion=null;this.draft=this.input.value;this.historyIndex=this.sent.length;this.status.textContent=this.stream?.pending?`${this.stream.pending} is thinking…`:'Enter to send · Esc to return';};
+  document.addEventListener('pointerdown',e=>{if(this.pickerOpen&&!this.picker.contains(e.target)&&e.target!==this.label)this.closePicker();});
+  this.root.addEventListener('focusout',e=>{if(!this.root.contains(e.relatedTarget))this.closePicker();});
   this.root.addEventListener('wheel',e=>e.stopPropagation(),{passive:true});this.root.addEventListener('paste',e=>e.stopPropagation());
   this.recall=el('button','Chat · Enter','chat-recall');this.recall.id='chat-recall';this.recall.dataset.hudUi='';this.recall.hidden=true;this.recall.setAttribute('aria-label','Open pond chat');this.recall.onclick=()=>this.open();document.body.append(this.recall);
   this.root.addEventListener('pointerenter',()=>{this.hovered=true;this.fade.wake(performance.now());});
@@ -36,15 +40,19 @@ export class PondChat{
   this.root.addEventListener('wheel',()=>this.fade.wake(performance.now()),{passive:true});
   this.bindResize();
  }
- get active(){return this.editing||Boolean(this.resizeDrag);}
+ get active(){return this.editing||this.pickerOpen||Boolean(this.resizeDrag);}
  get available(){return this.renderer.mode==='ultra'&&this.frame?.ui?.state==='playing'&&Boolean(this.frame.scene)&&!this.frame.ui.modal&&!this.frame.ui.minigame&&!this.frame.meta.talking;}
  update(frame){
   this.frame=frame;this.root.classList.toggle('high-contrast',Boolean(frame?.ui?.highContrast));const data=frame?.ui?.chatStream;
   if(data){
    let receiptError='';
    const changed=this.stream?.session!==data.session;
-   if(changed){this.fade.wake(performance.now());this.stream=data;this.rows=[];this.local=[];this.high=0;this.clearThrough=0;this.unread=0;this.sent=[];this.historyIndex=0;this.target='cheese';this.channel='say';this.lastWhisper=null;this.badges={general:0,conversation:0,world:0};this.follow=true;this.log.replaceChildren();this.park();this.input.value='';this.input.readOnly=false;this.inflight=null;this.lastPending='';}
+   if(changed){this.fade.wake(performance.now());this.stream=data;this.rows=[];this.local=[];this.high=0;this.clearThrough=0;this.unread=0;this.sent=[];this.historyIndex=0;this.target='cheese';this.channel='say';this.lastWhisper=null;this.badges={general:0,conversation:0,world:0};this.follow=true;this.log.replaceChildren();this.park();this.input.value='';this.input.readOnly=false;this.inflight=null;this.lastPending='';this.knownTargets.clear();this.targetSignature='';this.completion=null;}
    this.stream=data;
+   for(const row of data.entries){if(row.speaker&&row.name)this.knownTargets.set(row.speaker,row.name);if(row.targetName)this.knownTargets.set(row.target,row.targetName);}
+   for(const target of data.targets)this.knownTargets.set(target.id,target.name);
+   const signature=JSON.stringify(data.targets);
+   if(signature!==this.targetSignature){this.targetSignature=signature;this.completion=null;this.renderPicker();}
    const arrivals=data.entries.filter(r=>r.id>this.high);
    if(arrivals.length){
     if(arrivals.some(spoken))this.fade.spoke(performance.now());
@@ -73,22 +81,52 @@ export class PondChat{
  }
  sync(){
   const wasHidden=this.root.hidden,show=this.available&&this.hud.layout.visible('chat');this.root.hidden=!show;
-  if(!show){this.hovered=false;if(this.editing)this.park();}
+  if(!show){this.hovered=false;if(this.editing||this.pickerOpen)this.park();}
   const i=this.renderer.interface,opacity=this.fade.update(performance.now(),{held:this.active||this.hovered||this.root.contains(document.activeElement)||Boolean(this.stream?.pending)||Boolean(this.inflight)||this.hud.editing,reducedMotion:this.frame?.ui?.motion===false});
   const quiet=opacity<.1;this.root.style.setProperty('--chat-opacity',String(opacity));this.root.dataset.quiet=String(quiet);this.root.inert=quiet;i.chatQuiet=quiet;this.recall.hidden=!show||!quiet;
   if(show){const h=this.log.clientHeight,r=this.hud.layout.rect('chat',i.width,i.height);this.hud.position(this.root,r);this.hud.position(this.recall,{x:r.x,y:r.y+r.h-27,w:120,h:27});if(this.follow&&(wasHidden||h!==this.log.clientHeight))this.bottom();}
  }
  open(prefill=null){
   if(!this.available)return false;
+  this.closePicker();
   this.fade.wake(performance.now());this.hud.closeKit();this.hud.layout.show('chat',true);this.hud.changed();this.sync();
-  if(prefill!==null){this.input.value=prefill;this.draft=prefill;}
+  if(prefill!==null){this.input.value=prefill;this.draft=prefill;this.completion=null;}
   this.input.focus();this.input.setSelectionRange(this.input.value.length,this.input.value.length);this.hud.wake();return true;
  }
- park(){const owned=this.root.contains(document.activeElement);this.input.blur();this.editing=false;this.root.classList.remove('composing');if(owned)document.getElementById('world').focus();}
+ park(){const owned=this.root.contains(document.activeElement);this.closePicker();this.input.blur();this.editing=false;this.root.classList.remove('composing');if(owned)document.getElementById('world').focus();}
+ closePicker(){this.pickerOpen=false;this.picker.hidden=true;this.label.setAttribute('aria-expanded','false');}
+ togglePicker(){
+  if(this.pickerOpen){this.closePicker();this.input.focus();return;}
+  this.renderPicker();this.pickerOpen=true;this.picker.hidden=false;this.label.setAttribute('aria-expanded','true');
+  this.fade.wake(performance.now());(this.picker.querySelector('[aria-checked=true]')||this.picker.firstElementChild)?.focus();
+ }
+ renderPicker(){
+  const active=document.activeElement,focused=active?.dataset.listener,channel=active?.dataset.channel,wasOpen=this.pickerOpen;
+  this.picker.replaceChildren();
+  const options=[{id:'cheese',name:'Cheese',channel:'say'},...(this.stream?.targets||[]).map(t=>({...t,channel:'whisper'}))];
+  for(const target of options){
+   const selected=target.id===this.target&&target.channel===this.channel;
+   const button=el('button',(target.channel==='say'?'Say to ':'Whisper to ')+target.name,'chat-listener');button.type='button';
+   button.dataset.listener=target.id;button.dataset.channel=target.channel;button.setAttribute('role','menuitemradio');button.setAttribute('aria-checked',String(selected));
+   button.onclick=()=>{this.target=target.id;this.channel=target.channel;this.updateLabels();this.open();};this.picker.append(button);
+  }
+  if(wasOpen){this.pickerOpen=true;this.picker.hidden=false;this.label.setAttribute('aria-expanded','true');const buttons=[...this.picker.children];(buttons.find(b=>b.dataset.listener===focused&&b.dataset.channel===channel)||buttons[0]).focus();}
+ }
  key(e){
   // Native text editing and clipboard shortcuts stay native inside this panel.
   if(e.isComposing||e.keyCode===229){if(e.key==='Enter')e.preventDefault();e.stopPropagation();return;}
   e.stopPropagation();
+  if(this.pickerOpen){
+   if(e.target.matches('.chat-listener')&&['Enter',' '].includes(e.key)){e.preventDefault();e.target.click();return;}
+   if(e.key==='Escape'){e.preventDefault();this.closePicker();this.label.focus();return;}
+   if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){
+    e.preventDefault();const buttons=[...this.picker.children],i=buttons.indexOf(document.activeElement);
+    const next=e.key==='Home'?0:e.key==='End'?buttons.length-1:(i+(e.key==='ArrowUp'?-1:1)+buttons.length)%buttons.length;buttons[next].focus();return;
+   }
+   if(e.key==='Tab'){e.preventDefault();this.closePicker();(e.shiftKey?this.label:this.input).focus();return;}
+  }
+  if(e.target===this.label&&['Enter',' '].includes(e.key)){e.preventDefault();this.togglePicker();return;}
+  if(e.target===this.label&&['ArrowDown','ArrowUp'].includes(e.key)){e.preventDefault();if(!this.pickerOpen)this.togglePicker();return;}
   if(e.target.matches('[role=tab]')&&['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){
    e.preventDefault();const index=CHAT_TABS.findIndex(([id])=>id===this.tab),next=e.key==='Home'?0:e.key==='End'?CHAT_TABS.length-1:(index+(e.key==='ArrowLeft'?-1:1)+CHAT_TABS.length)%CHAT_TABS.length;
    this.setTab(CHAT_TABS[next][0]);this.tabs.children[next].focus();return;
@@ -96,9 +134,21 @@ export class PondChat{
   if(e.key==='Escape'){e.preventDefault();this.park();return;}
   if(['PageUp','PageDown'].includes(e.key)){e.preventDefault();this.page(e.key==='PageUp'?-1:1);return;}
   if(e.target===this.input&&!e.metaKey&&!e.ctrlKey&&!e.altKey){
+   if(e.key==='Tab'&&!this.inflight&&this.input.selectionStart===this.input.selectionEnd){
+    const previous=this.completion;
+    if(!previous||previous.value!==this.input.value||previous.caret!==this.input.selectionStart){
+     const choices=chatCompletions(this.input.value,this.input.selectionStart,this.stream?.targets||[]);
+     this.completion=choices.length?{choices,index:e.shiftKey?0:-1}:null;
+    }
+    if(this.completion){
+     e.preventDefault();const c=this.completion;c.index=(c.index+(e.shiftKey?-1:1)+c.choices.length)%c.choices.length;
+     const choice=c.choices[c.index];this.input.value=c.value=choice.value;c.caret=choice.caret;this.input.setSelectionRange(c.caret,c.caret);this.draft=c.value;
+     this.status.textContent=c.choices.length>1?`${choice.label} · Tab / Shift+Tab to cycle (${c.index+1}/${c.choices.length})`:'Type your message · Enter to send';return;
+    }
+   }
    if(e.key==='Enter'){e.preventDefault();this.submit();return;}
    if(['ArrowUp','ArrowDown'].includes(e.key)&&!this.inflight){
-    e.preventDefault();if(this.historyIndex===this.sent.length)this.draft=this.input.value;
+    e.preventDefault();this.completion=null;if(this.historyIndex===this.sent.length)this.draft=this.input.value;
     this.historyIndex=Math.max(0,Math.min(this.sent.length,this.historyIndex+(e.key==='ArrowUp'?-1:1)));
     this.input.value=this.historyIndex===this.sent.length?this.draft:this.sent[this.historyIndex];
    }
@@ -108,7 +158,12 @@ export class PondChat{
  setTab(tab){this.scrolls[this.tab]={top:this.log.scrollTop,follow:this.follow};this.tab=tab;this.badges[tab]=0;this.follow=this.scrolls[tab]?.follow??true;this.renderLog();if(!this.follow)this.log.scrollTop=this.scrolls[tab]?.top||0;this.updateUnread();}
  bottom(){this.follow=true;this.unread=0;this.log.scrollTop=this.log.scrollHeight;this.updateUnread();}
  updateUnread(){this.jump.hidden=!this.unread&&!(!this.follow);this.jump.textContent=this.unread?`↓ ${this.unread} new · Latest`:'↓ Latest';for(const [id,label] of CHAT_TABS){const b=this.tabs.querySelector(`[data-chat-tab=${id}]`);b.textContent=label+(this.badges[id]?` (${this.badges[id]})`:'');b.setAttribute('aria-selected',String(this.tab===id));}}
- updateLabels(){const target=this.stream?.targets.find(t=>t.id===this.target);const name=target?.name||this.target;this.label.textContent=this.channel==='whisper'?`To ${name}:`:'Say to Cheese:';this.input.setAttribute('aria-label','Message to '+(this.channel==='whisper'?name:'Cheese'));this.root.dataset.channel=this.channel;this.send.disabled=Boolean(this.inflight)||Boolean(this.stream?.pending);}
+ updateLabels(){
+  const target=this.stream?.targets.find(t=>t.id===this.target),name=target?.name||this.knownTargets.get(this.target)||this.target;
+  this.label.textContent=this.channel==='whisper'?`To ${name} ▾`:'Say ▾';this.label.title=this.channel==='whisper'?`Whisper to ${name}${target?'':' (away)'} · choose a listener`:'Say to Cheese · choose a listener';
+  this.label.setAttribute('aria-label',this.label.title);this.input.setAttribute('aria-label','Message to '+(this.channel==='whisper'?name:'Cheese'));this.root.dataset.channel=this.channel;this.send.disabled=Boolean(this.inflight)||Boolean(this.stream?.pending);
+  for(const b of this.picker.children)b.setAttribute('aria-checked',String(b.dataset.listener===this.target&&b.dataset.channel===this.channel));
+ }
  notice(text){this.local.push({id:'local:'+crypto.randomUUID(),text,channel:'world',name:'',time:'',order:this.high+.5});this.local=this.local.slice(-20);this.status.textContent=text;this.renderLog();}
  submit(){
   if(!this.available||this.inflight)return;
@@ -128,7 +183,7 @@ export class PondChat{
  renderLog(){
   const top=this.log.scrollTop,oldHeight=this.log.scrollHeight;
   const edge=this.log.getBoundingClientRect().top,anchor=this.follow?null:[...this.log.children].find(n=>n.getBoundingClientRect().bottom>edge),anchorTop=anchor?.getBoundingClientRect().top;
-  const rows=[...this.rows.filter(r=>r.id>this.clearThrough),...this.local].sort((a,b)=>(a.order??a.id)-(b.order??b.id)).filter(r=>inTab(r,this.tab));
+  const rows=[...this.rows.filter(r=>r.id>this.clearThrough),...this.local].sort((a,b)=>(a.order??a.id)-(b.order??b.id)).filter(r=>inTab(r,this.tab)),targets=[...this.knownTargets].map(([id,name])=>({id,name}));
   // Reconcile by stable IDs so selection and scrollback do not jump on updates.
   const desired=new Set(rows.map(r=>String(r.id)));
   for(const node of [...this.log.children])if(!desired.has(node.dataset.entry))node.remove();
@@ -138,7 +193,7 @@ export class PondChat{
    if(!line){
     line=el('p',undefined,'chat-line');line.dataset.entry=String(row.id);line.dataset.channel=row.channel;
     if(row.time)line.append(el('span',`[${row.time}] `,'chat-time'));
-    line.append(el('span',`[${channelLabel(row,this.stream?.targets)}] `,'chat-channel'));
+    line.append(el('span',`[${channelLabel(row,targets)}] `,'chat-channel'));
     if(row.name){const speaker=el(row.speaker==='player'?'span':'button',`[${row.name}]`,'chat-speaker');
      if(row.speaker!=='player'){speaker.title='Whisper to '+row.name;speaker.onclick=()=>{this.target=row.speaker;this.channel='whisper';this.updateLabels();this.open();};}
      line.append(speaker,document.createTextNode(row.channel==='whisper'?' whispers: ':row.channel==='neighbors'?' says nearby: ':': '));}

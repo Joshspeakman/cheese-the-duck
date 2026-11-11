@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: physical copies now have persistent identities and independent condition, plant biology, care/use and performance histories. Save migration preserves the old aggregate on one representative without duplicating history; habitat/decorations/structures retain identities through storage and reload. Activities, visitors, original item interactions, natural-chat activity facts and Ultra rendering resolve the actual copy. Clicking, inspecting, choosing, moving and storing twins is verified through the real Electron notebook and native game. Cheese can independently choose a thirsty plant over its well-watered twin. All 112 JavaScript tests, 60 targeted native checks and 11 live copy-UI checks pass, alongside existing simulation/gameplay suites. This adds no artwork or completed 48-sequence repertoire: 163 of 542 drawings reconstructed, 379 remaining, all per-object sequence counts still unverified. Full milestone remains active and installed 2.36.0 is unchanged.",
+  "previous_goal_turn": "Progress on the latest chat request: refined the existing bottom-left conversation panel with a draft-preserving recipient menu, keyboard menu navigation, Tab/Shift+Tab command and present-visitor name completion, and stable listener names after departure/reload. Fixed menu focus when a visitor leaves. Incoming player preferences now reach Cheese in the immutable first-response prompt before asynchronous save-side learning; recall questions no longer become new preference claims. Verified 8 focused JS tests, 30 native chat checks, 44 brain checks, 48 real Electron UI checks and a three-turn real local-model conversation, recall and shutdown save. All work remains on the isolated branch. This adds no artwork or completed 48-sequence repertoire: 163 of 542 drawings reconstructed, 379 pending, all per-object sequence counts still unverified. Full milestone remains active and installed 2.36.0 is unchanged.",
   "items": [
     {
       "id": "hat_red",
@@ -3769,7 +3769,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "physical_object_history_and_storage",
+    "sourcePhase": "natural_chat_recipients_and_memory_context",
     "fullyOverhauled": false,
     "constructedObjects": 163,
     "remainingArtwork": 379,
@@ -3879,9 +3879,16 @@
       "engine/artifacts/animation-milestone/physical-object-inspector.png",
       "engine/artifacts/animation-milestone/physical-object-arrangement.png",
       "engine/artifacts/animation-milestone/physical-object-world.png",
-      "engine/artifacts/animation-milestone/physical-objects-regressions.json"
+      "engine/artifacts/animation-milestone/physical-objects-regressions.json",
+      "engine/artifacts/chat/checks.json",
+      "engine/artifacts/chat/ui-checks.json",
+      "engine/artifacts/chat/chat-closeup.png",
+      "engine/artifacts/chat/chat-listeners.png",
+      "engine/artifacts/chat-live-refinements/local-conversation.json",
+      "engine/artifacts/chat-live-refinements/local-conversation.png"
     ],
     "next": [
+      "Resume remaining item reconstruction with the 27 pending lighting objects: lamp_floor, fairy_lights, tiki_torch, table_lamp, floor_lamp, chandelier, paper_lantern, lava_lamp, neon_sign, disco_ball, candelabra, fairy_lamp, spotlight, street_lamp, campfire, firefly_swarm, moon_lamp, star_projector, torches, glowsticks, laser_lights, eternal_flame, crystal_lamp, torch, lamp, lantern, hologram. Lighting work is inspected/planned only, not implemented. Preserve per-instance state and add physical controls and restrained localized illumination without claiming 48 sequences.",
       "Expand instrument-specific and guest-specific performance repertoires beyond the 25 shared phrase cores, with explicit approach/climbing, stationary multi-level supports, instrument pickup/put-away, listening audiences and richer reciprocal musical gestures. Keep all per-object sequence counts unverified until the 48 meaningful sequence audit passes. Continue the remaining 379 artwork reconstructions and all other milestone requirements.",
       "Continue construction-specific plant repertoires, seasonal/mood/personality choreography, reciprocal gestures and physical tool handoffs. The 19 shared care scores and all-cast rig fit are foundations, not 48 bespoke sequences on each plant. Continue the remaining 379 item reconstructions and the full per-object animation milestone.",
       "Extend spatial arrangement to the separate building/decorating/project editors and consider additional habitat areas for larger collections; all 218 placeable shop objects now use measured footprints, dry-ground/water checks and truthful storage. Building and decoration objects reserve space against habitat purchases, but their own editors still use legacy placement rules.",
@@ -4037,6 +4044,15 @@
       "autonomy": "evaluates each placed copy and its own need, biology and cooldown",
       "ui": "copy-aware click inspection, preview, selection, care and habitat arrangement",
       "sequenceCoverageAdded": 0
+    },
+    "chatRefinements": {
+      "status": "implemented_and_verified",
+      "javascriptChecks": 8,
+      "nativeChatChecks": 30,
+      "brainChecks": 44,
+      "rendererChecks": 48,
+      "localModelConversationAndRecall": true,
+      "installed": false
     }
   }
 }

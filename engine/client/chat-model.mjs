@@ -2,6 +2,19 @@
 export const CHAT_TABS=[['general','General'],['conversation','Conversations'],['world','World']];
 export const spoken=row=>['say','whisper','neighbors'].includes(row.channel);
 export const inTab=(row,tab)=>tab==='general'||(tab==='conversation'?spoken(row):!spoken(row));
+const COMMANDS=['/say','/whisper','/reply','/help','/clear'];
+// Completion only edits the prefix before the caret. Never consume message text.
+export function chatCompletions(value,caret,targets=[]){
+ const prefix=value.slice(0,caret),suffix=value.slice(caret);
+ if(/^\/\w*$/.test(prefix)&&!suffix.trim())return COMMANDS.filter(c=>c.startsWith(prefix.toLowerCase())).map(c=>({value:c+' ',caret:c.length+1,label:c}));
+ const whisper=prefix.match(/^\/(?:w|whisper|tell)\s+(.*)$/i);
+ if(!whisper)return [];
+ const query=whisper[1].replace(/^"/,'').replace(/"$/,'').toLocaleLowerCase();
+ return targets.filter(t=>t.name.toLocaleLowerCase().startsWith(query)).map(t=>{
+  const head='/w '+t.name+' ',tail=suffix.replace(/^\s+/, '');
+  return {value:head+tail,caret:head.length,label:t.name};
+ });
+}
 export function parseChat(value,{target='cheese',channel='say',targets=[],lastWhisper=null}={}){
  const text=value.trim();if(!text)return {kind:'empty'};
  const send=(text,target,channel)=>({kind:text?'send':'target',text,target,channel});
@@ -25,6 +38,6 @@ export function parseChat(value,{target='cheese',channel='say',targets=[],lastWh
  }
 }
 export function channelLabel(row,targets=[]){
- if(row.channel==='whisper')return row.speaker==='player'?`To ${targets.find(t=>t.id===row.target)?.name||row.target}`:'Whisper';
+ if(row.channel==='whisper')return row.speaker==='player'?`To ${row.targetName||targets.find(t=>t.id===row.target)?.name||row.target}`:'Whisper';
  return row.channel==='neighbors'?'Nearby':row.channel==='say'?'Say':row.channel==='loot'?'Discovery':'World';
 }
