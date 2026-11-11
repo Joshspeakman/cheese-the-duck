@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from engine.social_brains import Minds, ACTIONS, LABELS, action_key, clamp, stable
 from engine.local_speech import speak
 from world.guest_cast import guest_profile
-from engine import encounters, visitor_shelters, shelter_company
+from engine import encounters, visitor_shelters, shelter_company, playdates
 
 CHEESE_VOICE = {
  'bio': 'Cheese is a scruffy, opinionated little duck: dry wit, petty pond grievances, theatrical indignation and a tender streak he tries to hide. He is curious, not a helpful assistant.',
@@ -140,6 +140,11 @@ class MindGarden:
             facts['shared_activity']={'with':self.model.residents[partner]['name'],
                 'activity':paired['performance'].replace('_',' '),
                 'status':'walking to meet' if paired['phase']=='approach' else 'doing this together now'}
+        play=playdates.active(self,key)
+        if play:
+            partner=play['partner'] if key=='cheese' else 'cheese'
+            facts['shared_activity']={'with':self.model.residents[partner]['name'],'activity':play['label'],
+                'status':'waiting to start' if play['phase'] in ('approach','enter') else 'doing this together now'}
         history=[]
         if occasion=='player':
             for exchange in self.model.state['exchanges'][-24:]:
@@ -253,7 +258,7 @@ class MindGarden:
         pairs=[];keys=list(self.present)
         for i,key in enumerate(keys):
             for other in keys[i+1:]:
-                if key in self.housing or other in self.housing:continue
+                if key in self.housing or other in self.housing or playdates.active(self,key) or playdates.active(self,other):continue
                 a,b=self.present[key],self.present[other];distance=math.hypot(a[0]-b[0],(a[1]-b[1])*2)
                 pair='|'.join(sorted((key,other)))
                 if distance<24 and self.now>self.pair_cooldowns.get(pair,0):
@@ -298,10 +303,13 @@ class MindGarden:
             if key=='cheese':continue
             r=self.model.residents[key];r['energy']=clamp(r['energy']-dt/2400);r['social']=clamp(r['social']-dt/1800)
             task=self.tasks.get(key)
-            if self.encounter_for(key) or key in self.housing:
+            if self.encounter_for(key) or key in self.housing or playdates.active(self,key):
                 if task:task['until']+=dt
                 if key in self.housing and key in self.pond.state['friends']:
                     self.pond.state['friends'][key].update(activity='sheltering' if self.housing[key]['phase']=='inside' else 'walking to shelter',location=self.pond.location)
+                elif playdates.active(self,key) and key in self.pond.state['friends']:
+                    play=playdates.active(self,key)
+                    self.pond.state['friends'][key].update(activity=('walking over to play' if play['phase']=='approach' else play['label']),location=self.pond.location)
                 continue
             if task and self.now>=task['until']:
                 action=task['action'];before=r['energy']+r['social']+r['mood']
@@ -351,6 +359,10 @@ class MindGarden:
         shelter=visitor_shelters.motion(self,key)
         if shelter:
             result['shelter']=shelter
+            return result
+        play=playdates.motion(self,key)
+        if play:
+            result['meeting']=play
             return result
         if encounter:
             other=encounter['b'] if key==encounter['a'] else encounter['a']

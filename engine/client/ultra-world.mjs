@@ -8,6 +8,7 @@ import { itemSprite,itemWorldScale } from './ultra-items.mjs';
 import { characterSprite } from './ultra-characters.mjs';
 import {residenceStage} from './residence-stage.mjs';
 import {actorPerformance} from './performances.mjs';
+import {playdateStage} from './playdates.mjs';
 import {playgroundStage} from './playground-stage.mjs';
 
 const WATER_BIOMES=new Set(['pond','riverside','beach','swamp']);
@@ -362,7 +363,22 @@ export class LivingWorld {
       (home.occupants||=[]).push({character,inside,slot:r.slot,key:r.actor});
       this.characters=this.characters.filter(c=>c!==character);
     }
-    const ride=!residence&&playgroundStage(plan,this.objects,cheese,s.duck.stage,s.motion!==false);
+    const partnerId=plan?.company?.partner==='story:pip'?'story:lost_duckling':plan?.company?.partner;
+    const partner=this.characters.find(c=>c.id===partnerId),shared=!residence&&playdateStage(plan,this.objects,cheese,partner,s.motion!==false);
+    if(shared){
+      const source=s.visitor?.id===partnerId?s.visitor:s.rareVisitor?.id===partnerId?s.rareVisitor:{...s.storyActor,id:partnerId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
+      const members=[{model:cheese,source:s.duck,role:'a',visitor:false},{model:partner,source,role:'b',visitor:true}];
+      shared.home.riders=members.map(({model,source,role,visitor},i)=>{
+        const pose=shared.pose,walking=plan.company.phase!=='act';
+        const beat=pose.family==='ball'?(pose.turn===role?pose.beat:0):role==='a'?pose.beat:(pose.beat+.5)%1;
+        const kind=pose.family==='sandbox'&&pose.turn!==role?'watch_build':pose[role];
+        const performance=walking?null:{kind,role,progress:beat};
+        const character={...characterSprite({...source,state:walking?'walking':'idle',facing:role==='a',performance},t,visitor),x:model.x,y:model.y,cheese:!visitor};
+        return {character,seat:shared.seats[i],inside:shared.inside};
+      });
+      this.characters=this.characters.filter(c=>c!==cheese&&c!==partner);
+    }
+    const ride=!residence&&!shared&&!plan?.company&&playgroundStage(plan,this.objects,cheese,s.duck.stage,s.motion!==false);
     if(ride){
       const performance={kind:ride.gesture,role:'a',progress:s.motion===false?.5:ride.beat};
       const rider={...characterSprite({...s.duck,state:plan.phase==='settle'?'walking':'idle',performance:plan.phase==='settle'?null:performance},t),x:cheese.x,y:cheese.y,cheese:true};

@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: added physical shelter reservations for regular, rare and story visitors, camera-stable independent travel, furnished shared interiors, six contextual shared shelter performances with bounded learning, and rendered native replays. Full catalogue and per-object bespoke requirements remain open.",
+  "previous_goal_turn": "Progress: eight physically coordinated toy scenes use real independent arrivals, two seats/roles, age and body-mass limits, progressive persistent sandwork, and once-only shared learning. Cancellation releases both actors without granting any item or shared completion. Remaining catalogue and per-object bespoke requirements stay open.",
   "items": [
     {
       "id": "hat_red",
@@ -3589,12 +3589,12 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "visitor_shelters_and_shared_company",
+    "sourcePhase": "cooperative_toy_play",
     "fullyOverhauled": false,
     "constructedObjects": 42,
     "remainingArtwork": 500,
     "pairedTracks": 18,
-    "soloItemTracks": 8,
+    "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
     "installedVersion": "2.36.0",
     "installDeferredUntilFullMilestone": true,
@@ -3618,7 +3618,13 @@
       "engine/artifacts/animation-milestone/shared-homes-native.log",
       "engine/artifacts/animation-milestone/shared-homes-living.log",
       "engine/artifacts/animation-milestone/shared-homes-nests.log",
-      "engine/artifacts/animation-milestone/shared-homes-brains.log"
+      "engine/artifacts/animation-milestone/shared-homes-brains.log",
+      "engine/artifacts/animation-milestone/playdate-simulation.json",
+      "engine/artifacts/animation-milestone/playdate-render.json",
+      "engine/artifacts/animation-milestone/playdate-scores-0.png",
+      "engine/artifacts/animation-milestone/playdate-scores-1.png",
+      "engine/artifacts/animation-milestone/playdate-living.log",
+      "engine/artifacts/animation-milestone/playdate-brains.log"
     ],
     "next": [
       "Deepen construction-specific nest/bed/house acting and each remaining item repertoire; the 51 shared nest scores do not by themselves satisfy 48 bespoke sequences per object.",
@@ -3629,7 +3635,7 @@
       "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation."
     ],
     "checks": {
-      "javascript": 77,
+      "javascript": 81,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 22,
@@ -3637,7 +3643,7 @@
       "learningBrains": 44,
       "shelterLifecycle": 30,
       "pairedLifecycle": 16,
-      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays.",
+      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors.",
       "nestLifecycle": 34,
       "nestReplay": {
         "nativeSceneFrames": 41,
@@ -3662,6 +3668,13 @@
         "medianMs": 8.199999988079071,
         "p95Ms": 21.599999964237213,
         "note": "Actual native snapshots. Reduced motion and snapshot immutability also checked separately."
+      },
+      "cooperativeToyLifecycle": 70,
+      "cooperativeToyReplay": {
+        "frames": 219,
+        "paired": 178,
+        "medianMs": 6.899999976158142,
+        "p95Ms": 8.600000023841858
       }
     },
     "limitations": [
@@ -3669,12 +3682,14 @@
       "No object has yet passed the 48 bespoke sequence requirement.",
       "Five nests now use 51 authored core routines (three require a canopy). Individual nest-construction variants, guest participation and egg-specific interactions remain unfinished; no per-object completion is claimed.",
       "Paired tracks currently share a core movement vocabulary across the cast; personality-specific choreography and full guest item participation remain unfinished.",
-      "Eight solo tracks and the current mechanical loops are foundations, not the completed object-animation catalogue.",
+      "Thirteen solo tracks and the current mechanical loops are foundations, not the completed object-animation catalogue.",
       "Regular, rare and story visitors now use real shelter slots, shared rooms and six contextual company scores. Full species-specific climbing, doorway, object-contact and personal repertoires remain unfinished.",
-      "Installed app remains the previously verified 2.36.0; this development milestone is not packaged or installed."
+      "Installed app remains the previously verified 2.36.0; this development milestone is not packaged or installed.",
+      "Eight cooperative toy scenes currently cover seesaw, sandbox, ball and trampoline; full species-specific contact, NPC-to-NPC toy invitations and every-object repertoires remain unfinished. Placement still needs to accommodate the enlarged constructions."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
-    "sharedShelterScores": 6
+    "sharedShelterScores": 6,
+    "sharedToyScores": 8
   }
 }

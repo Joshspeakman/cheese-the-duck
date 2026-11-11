@@ -23,6 +23,11 @@ export const PERFORMANCES={
 // Solo joint tracks use the same sampler, but are selected by an actual item
 // plan. The item trajectory supplies support/contact; these supply body acting.
 export const ITEM_PERFORMANCES={
+ watch_build:[K(0),K(.2,{y:.8,x:.3}),K(.4,{y:1.1}),K(.6,{x:.5,y:.4,w:.2}),K(.8,{y:-.4,eye:'^'}),K(1)],
+ ball_nudge:[K(0),K(.18,{x:.6,y:1.2,w:.2}),K(.32,{x:1.2,y:1.7,l:1}),K(.44,{x:.4,y:1}),K(.6,{y:-.4,eye:'^'}),K(.8,{w:.3}),K(1)],
+ ball_stop:[K(0,{w:.3}),K(.18,{x:.5,y:.7,r:1}),K(.35,{x:.8,y:1.4,b:.3,w:.55}),K(.5,{y:.4,b:.5}),K(.7,{w:.7,eye:'^'}),K(.85,{y:-.4}),K(1)],
+ spotter:[K(0),K(.15,{y:-.6}),K(.3,{y:-1.2,w:.4}),K(.45,{w:.8,x:.5,eye:'O'}),K(.6,{y:.5,w:.6}),K(.75,{w:.8,eye:'^'}),K(.9,{y:.3}),K(1)],
+ bounce_count:[K(0),K(.14,{y:-.7,mark:'1'}),K(.3,{y:.6}),K(.44,{y:-1,mark:'2',w:.4}),K(.6,{y:.5}),K(.74,{y:-.8,mark:'3',w:.6}),K(.9,{eye:'^',w:.8}),K(1)],
  balance:[K(0),K(.2,{x:-.7,w:.7,l:1}),K(.4,{x:.6,w:1,b:.4}),K(.6,{x:-.6,w:.8,r:1}),K(.8,{y:-.5,eye:'^'}),K(1)],
  slide:[K(0,{y:.4}),K(.15,{w:.4,b:.5}),K(.35,{x:.6,y:-.4,w:1,eye:'O'}),K(.6,{x:.8,w:1,eye:'^',mark:'!'}),K(.85,{b:.7,w:.4}),K(1)],
  splash_steps:[K(0),K(.2,{l:1,y:1}),K(.4,{b:.5,mark:'.'}),K(.6,{r:1,w:.5}),K(.8,{y:.5,eye:'^'}),K(1)],
