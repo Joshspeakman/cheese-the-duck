@@ -1,4 +1,5 @@
 import {playkitPose,PLAYKIT_ROUTINES} from './playkit-routines.mjs';
+import {WeatherDrift,wrap} from './weather-wind.mjs';
 import {architecturePose,ARCHITECTURE_ROUTINES} from './architecture-routines.mjs';
 import {groundPose,GROUND_ROUTINES} from './ground-routines.mjs';
 import {textilePose,TEXTILE_ROUTINES} from './textile-routines.mjs';
@@ -28,7 +29,7 @@ import {homeBankOnScreen} from './habitat-ground.mjs';
 const WATER_BIOMES=new Set(['pond','riverside','beach','swamp']);
 const choice=(s,n)=>s[Math.floor(n*s.length)%s.length];
 export class LivingWorld {
-  constructor(){this.grid=new Grid();this.water=new Uint8Array(W*H);this.shore=new Int16Array(W);this.duckPosition=null;this.lastLocation='';this.lastTime=0;}
+  constructor(){this.grid=new Grid();this.water=new Uint8Array(W*H);this.shore=new Int16Array(W);this.duckPosition=null;this.lastLocation='';this.lastTime=0;this.wind=new WeatherDrift();}
   project(scene,x,y){const c=scene.camera||{x:0,y:0,w:132,h:42};return [24+(x-c.x)/c.w*(W-48),46+(y-c.y)/c.h*47];}
   sky(s,t,seed){
     const g=this.grid,light=sceneLight(s),night=light.night;
@@ -603,7 +604,7 @@ export class LivingWorld {
     const g=this.grid;
     for(let n=0;n<35;n++){
       const x=n<17?n*2:W-(n-17)*2,y=H-1-hash(n,7,seed)*5,h=6+hash(n,8,seed)*12;
-      const sway=Math.sin(t*1.3+n)*1.6;
+      const sway=Math.sin(t*1.3+n)*(.6+this.wind.vector.strength*1.4)+this.wind.vector.x*2;
       for(let j=0;j<h;j++)g.put(x+sway*(j/h),y-j,j===h-1?'!':j%4===0?'/':'|',n%3?C.leafDark:C.leaf);
     }
     if(s.particles===false)return;
@@ -619,7 +620,7 @@ export class LivingWorld {
       g.text(x,y,Math.sin(t*12+n)>0?'x':'><',n%2?C.flower:C.goldLight);
     }
     if(s.season==='fall'&&!/snow/.test(s.weather))for(let n=0;n<15;n++){
-      g.put((n*29+t*3+Math.sin(t+n)*4)%W,((t*2+n*9)%H),choice('~,/;',hash(n,0)),n%2?C.barkLight:C.flower);
+      g.put(wrap(n*29+this.wind.x*12+Math.sin(t+n)*4,W),wrap(t*2+n*9+this.wind.y*4,H),choice('~,/;',hash(n,0)),n%2?C.barkLight:C.flower);
     }
   }
   weather(s,t,seed){
@@ -628,9 +629,10 @@ export class LivingWorld {
     if(/rain|storm|drizzle/.test(w)){
       const count=Math.floor((/storm/.test(w)?230:100)*intensity);
       for(let n=0;n<count;n++){
-        const x=((hash(n,1,seed)*W-t*18)%(W+15)+W+15)%(W+15)-8,y=(hash(n,2,seed)*H+t*(42+n%12))%H;
-        g.put(x,y,'/',n%3?C.water:C.waterLight);
-        if(/storm/.test(w))g.put(x+1,y-1,'/',C.waterDark);
+        const x=wrap(hash(n,1,seed)*W+this.wind.x*32,W+15)-8,y=wrap(hash(n,2,seed)*H+t*(42+n%12)+this.wind.y*4,H);
+        const dx=this.wind.vector.x,drop=Math.abs(dx)<.06?'|':dx<0?'/':'\\';
+        g.put(x,y,drop,n%3?C.water:C.waterLight);
+        if(/storm/.test(w))g.put(x-(Math.abs(dx)<.06?0:Math.sign(dx)),y-1,drop,C.waterDark);
       }
       for(let n=0;n<20;n++){
         const x=hash(n,7,seed)*W,y=70+hash(n,8,seed)*38,phase=(t*3+n)%2;
@@ -638,14 +640,14 @@ export class LivingWorld {
       }
     }
     if(/snow|blizzard/.test(w))for(let n=0;n<160*intensity;n++){
-      const x=(hash(n,3,seed)*W+Math.sin(t*.5+n)*7+t*2)%W,y=(hash(n,4,seed)*H+t*(3+n%5))%H;
+      const x=wrap(hash(n,3,seed)*W+Math.sin(t*.5+n)*4+this.wind.x*19,W),y=wrap(hash(n,4,seed)*H+t*(3+n%5)+this.wind.y*5,H);
       g.put(x,y,n%4===0?'*':'.',n%3?C.ice:C.white);
     }
     if(/fog|mist/.test(w)||s.biome==='swamp')for(let n=0;n<4;n++){
       const y=48+n*14;
       for(let x=0;x<W;x++)if(hash(x,n,seed)>.5)g.put(x,y+Math.sin(x*.05+t*.3+n)*2,choice(' .-~',hash(x,n)),C.mist);
     }
-    if(/wind/.test(w))for(let n=0;n<10;n++)g.text((t*24+n*28)%W,36+n*6,'-..~',C.cloud);
+    if(/wind/.test(w))for(let n=0;n<10;n++)g.text(wrap(this.wind.x*30+n*28,W),36+wrap(n*6+this.wind.y*9,60),this.wind.vector.x<0?'~..-':'-..~',C.cloud);
     if(/rainbow/.test(w))for(let band=0;band<4;band++)for(let x=20;x<220;x++){
       const y=43-Math.sqrt(Math.max(0,1-((x-120)/105)**2))*29+band;
       g.put(x,y,'.',[C.flower,C.gold,C.grass,C.crystal][band]);
@@ -677,6 +679,7 @@ export class LivingWorld {
   render(scene,time,dt=1/30){
     const s={hour:12,season:'spring',weather:'sunny',biome:'pond',location:'Home Pond',...scene};
     const t=s.motion===false?0:time,seed=seedOf(s.location);
+    this.wind.update(s,dt,!this.underground(s));
     this.grid.clear();this.characters=[];this.objects=[];
     if(this.underground(s))this.cavern(s,t,seed);
     else {this.sky(s,t,seed);this.hills(s,t,seed);}

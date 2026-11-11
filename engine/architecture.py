@@ -24,7 +24,7 @@ def update(pond,item,obj,dt,outdoors,wind=0.,weather='sunny',wind_heading=None):
     s=state(item,obj);s['season']=pond.season;dt=max(0.,finite(dt))
     kind=ITEMS[item]['type'];s['wind']=clamp(wind)
     if kind in ('flag','scarecrow'):s['phase']=(s['phase']+dt*(.25+clamp(wind)*2))%(math.pi*2)
-    if kind=='vane' and wind_heading is not None and wind>.01:
+    if kind in ('vane','flag') and wind_heading is not None and wind>.01:
         target=(finite(wind_heading)*math.pi*2)%(math.pi*2);delta=(target-s['bearing']+math.pi)%(math.pi*2)-math.pi
         s['bearing']=(s['bearing']+delta*(1-math.exp(-dt*.8)))%(math.pi*2)
     if kind=='sundial':
