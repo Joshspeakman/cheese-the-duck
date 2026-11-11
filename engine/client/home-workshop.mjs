@@ -129,7 +129,8 @@ function nest(c,p,t,pose,ctx,state){
  if(p.nest==='twig')for(const side of [-1,1])for(let j=0;j<3;j++)c.line(cx+side*(rx-5),cy+j*2,cx+side*(rx+2),cy-3+j*4,side<0?'/':'\\','f');
  drawNestMaterials(c,p,material,pose,cx,cy,rx);
  if(pose.straw)for(let i=0;i<5;i++)c.put(cx-10+i*5,cy-2-Math.round(Math.sin(t*4+i)*pose.straw*4),'/','f');
- return {entry:{x:cx,y:cy-4},seat:{x:cx+(pose.u||0)*7,y:cy+press+(pose.v||0)*3},rim:cy+1,capacity:p.nest==='twig'?1:2};
+ return {entry:{x:cx,y:cy-4},seat:{x:cx+(pose.u||0)*7,y:cy+press+(pose.v||0)*3},rim:cy+1,
+  workLeft:{x:cx-rx+5,y:cy+2},workRight:{x:cx+rx-5,y:cy+2},capacity:p.nest==='twig'?1:2};
 }
 function bed(c,p,t,pose,ctx){
  const W=p.w,H=p.h,x=8,y=H-18,w=W-16;
@@ -248,7 +249,7 @@ export function homeSprite(base,item,time,{motion=true,state={},interaction=null
   foreground=layer.finish();
  }
  if(foreground)for(let y=0;y<foreground.art.length;y++)for(let x=0;x<foreground.width;x++)if(foreground.art[y][x]!==' ')surface.put(x,y,foreground.art[y][x],foreground.tones[y][x]);
- if(p.nest){for(const key of ['seat','entry'])anchors[key]={x:anchors[key].x+pad.x,y:anchors[key].y+pad.y};anchors.rim+=pad.y;}
+ if(p.nest){for(const key of ['seat','entry','workLeft','workRight'])anchors[key]={x:anchors[key].x+pad.x,y:anchors[key].y+pad.y};anchors.rim+=pad.y;}
  if(interaction?.shared){
   const count=ROOMS[item.id]?.capacity||1,area=anchors.opening||{x:pad.x+15,w:p.w-30};
   anchors.slots=Array.from({length:count},(_,i)=>({x:area.x+area.w*(i+.5)/count,y:anchors.seat.y}));

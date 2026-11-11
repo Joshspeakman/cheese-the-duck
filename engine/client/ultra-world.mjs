@@ -417,6 +417,18 @@ export class LivingWorld {
       (home.sitters||=[]).push({character,inside,slot:r.slot,envelope:residentEnvelope(character,'seating')});
       this.characters=this.characters.filter(c=>c!==original);
     }
+    for(const r of living?.minds?.nest_helpers||[]){
+      if(r.phase==='approach'||plan?.paused)continue;
+      const actorId=r.actor==='story:pip'?'story:lost_duckling':r.actor;
+      const original=this.characters.find(c=>c.id===actorId);
+      const home=this.objects.find(o=>o.id===r.id&&sameInstance(o,r)&&o.anchors?.workLeft&&o.worldPosition?.every((n,i)=>Math.abs(n-r.destination[i])<1.1));
+      if(!original||!home)continue;
+      const source=s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
+      const performance={kind:'nest',routine:r.routine,motion:s.motion!==false};
+      const character={...characterSprite({...source,state:'idle',facing:r.spot[0]<r.destination[0],performance},t,true),x:original.x,y:original.y,story:original.story};
+      (home.nestHelpers||=[]).push({character,inside:r.phase==='enter'?clamp(r.elapsed/2,0,1):1});
+      this.characters=this.characters.filter(c=>c!==original);
+    }
     for(const r of botanicalOccupants(s)){
       if(r.phase==='approach'||r.routine?.interrupted||!BOTANICAL_ROUTINES[r.routine?.id])continue;
       const actorId=r.actor==='story:pip'?'story:lost_duckling':r.actor;

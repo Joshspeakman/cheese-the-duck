@@ -13,6 +13,7 @@ import { LivingWorld } from './ultra-world.mjs';
 import { drawCharacter } from './ultra-characters.mjs';
 import { ItemPainter } from './ultra-items.mjs';
 import {occupiedGeometry,heldNestGeometry} from './residence-stage.mjs';
+import {nestHelpGeometry,drawNestHelp} from './nest-company.mjs';
 import {ridingGeometry} from './playground-stage.mjs';
 import {waterGeometry} from './water-routines.mjs';
 import {seatingGeometry} from './seating-routines.mjs';
@@ -60,7 +61,7 @@ export class SceneCanvas {
     for(const model of characters)fit(model);
     for(const model of objects){
       fit(model);
-      for(const member of [...(model.occupants||[]),...(model.riders||[]),...(model.sitters||[]),...(model.gardeners||[]),...(model.musicians||[]),...(model.lightWorkers||[]),...(model.keepers||[]),...(model.creators||[]),...(model.textileUsers||[]),...(model.groundUsers||[]),...(model.structureUsers||[])])fit(member.character);
+      for(const member of [...(model.occupants||[]),...(model.nestHelpers||[]),...(model.riders||[]),...(model.sitters||[]),...(model.gardeners||[]),...(model.musicians||[]),...(model.lightWorkers||[]),...(model.keepers||[]),...(model.creators||[]),...(model.textileUsers||[]),...(model.groundUsers||[]),...(model.structureUsers||[])])fit(member.character);
       if(model.occupant)fit(model.occupant.character);
       if(model.rider)fit(model.rider.character);
       if(model.bather)fit(model.bather.character);
@@ -119,6 +120,11 @@ export class SceneCanvas {
         }
         if(front)this.items.draw(this.ctx,front,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
         for(const held of heldProps)this.items.draw(this.ctx,held.model,held.x,held.y,held.cw,{shadow:false,surface,outline:light.outline});
+        for(const helper of actor.nestHelpers||[]){
+          const staged=nestHelpGeometry(actor,helper,this.sx,this.sy);
+          drawCharacter(this.ctx,{...staged.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
+          drawNestHelp(this.ctx,staged);seatedHits.push(staged.character);
+        }
         for(const passenger of actor.riders||(actor.rider?[actor.rider]:[])){
           const rider=ridingGeometry(actor,passenger.character,passenger.seat,passenger.inside,this.sx,this.sy);
           drawCharacter(this.ctx,{...rider,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);

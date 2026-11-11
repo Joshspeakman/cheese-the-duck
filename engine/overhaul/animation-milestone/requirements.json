@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: deepened all five nest constructions with native saved bedding and 40 physical contacts across 33 existing routines. Tucks, bracing, weaving, fluffing, grit removal, leaf and feather placement, snow and toe grooves persist on the exact copy after departure or cancellation. Actual weather changes exposed materials; missing materials cannot be repeatedly conjured. Visitors now select personal settling and weather-observation routines, with species restrictions, independent positions, bounded per-stay learning and quiet gaps for mutually exclusive shared shelter scenes. Validated actual walking, contacts, original possessions/rewards, save/load/resume, storage/removal, conversation truth, all nine Cheese ages and all 48 guest rigs. Individual per-object 48-sequence repertoire, remaining constructions and full installation are still unfinished; no per-object verification counts were promoted.",
+  "previous_goal_turn": "Progress: added eleven complementary outside-nest companion scores with actual independent arrivals, shared native timing, bounded physical rim contact, fanning, tapping, inspection and quiet company. Young Cheese, low-energy or gloomy guests, Pip, toads and butterflies receive fitting roles. Added seven notebook requests bound to the exact crafted structure or outdoor decoration; corrected availability to use actual scene objects rather than the shop-only layout list. Arrival alone, cancellation, displacement, missing copies, direct care and weather interruption grant no completed shared memory; completed routines teach both residents once without duplicating the original rest use or item/material rewards. Rendered all eleven native sessions and checked all nine age rules and 48 visitor rigs. Remaining drawings, individual per-object 48-sequence audits and the full installation are still unfinished; no per-object verification counts were promoted.",
   "items": [
     {
       "id": "hat_red",
@@ -2309,7 +2309,9 @@
       "sharedNestScores": 51,
       "animation": "shared repertoire with persistent physical contacts; individual construction-specific 48-sequence repertoire still pending",
       "persistentNestMaterials": true,
-      "nativeMaterialContactRoutines": 33
+      "nativeMaterialContactRoutines": 33,
+      "outsideNestCompanyScores": 11,
+      "notebookNestActions": 7
     },
     {
       "id": "cozy_nest",
@@ -2320,7 +2322,9 @@
       "sharedNestScores": 51,
       "animation": "shared repertoire with persistent physical contacts; individual construction-specific 48-sequence repertoire still pending",
       "persistentNestMaterials": true,
-      "nativeMaterialContactRoutines": 33
+      "nativeMaterialContactRoutines": 33,
+      "outsideNestCompanyScores": 11,
+      "notebookNestActions": 7
     },
     {
       "id": "deluxe_nest",
@@ -2331,7 +2335,9 @@
       "sharedNestScores": 51,
       "animation": "shared repertoire with persistent physical contacts; individual construction-specific 48-sequence repertoire still pending",
       "persistentNestMaterials": true,
-      "nativeMaterialContactRoutines": 33
+      "nativeMaterialContactRoutines": 33,
+      "outsideNestCompanyScores": 11,
+      "notebookNestActions": 7
     },
     {
       "id": "mud_hut",
@@ -3534,7 +3540,9 @@
       "sharedNestScores": 51,
       "animation": "shared repertoire with persistent physical contacts; individual construction-specific 48-sequence repertoire still pending",
       "persistentNestMaterials": true,
-      "nativeMaterialContactRoutines": 33
+      "nativeMaterialContactRoutines": 33,
+      "outsideNestCompanyScores": 11,
+      "notebookNestActions": 7
     },
     {
       "id": "tiny_table",
@@ -3649,7 +3657,9 @@
       "sharedNestScores": 51,
       "animation": "shared repertoire with persistent physical contacts; individual construction-specific 48-sequence repertoire still pending",
       "persistentNestMaterials": true,
-      "nativeMaterialContactRoutines": 33
+      "nativeMaterialContactRoutines": 33,
+      "outsideNestCompanyScores": 11,
+      "notebookNestActions": 7
     },
     {
       "id": "old_coin",
@@ -3927,7 +3937,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "persistent_nest_materials_and_personal_shelter_routines",
+    "sourcePhase": "independent_nest_companions_and_player_requests",
     "fullyOverhauled": false,
     "constructedObjects": 269,
     "remainingArtwork": 273,
@@ -4320,11 +4330,20 @@
       "engine/artifacts/animation-milestone/nest-materials-js-suite.log",
       "engine/artifacts/animation-milestone/nest-materials-living.log",
       "engine/artifacts/animation-milestone/nest-materials-brains.log",
-      "engine/artifacts/animation-milestone/nest-materials-smoke.log"
+      "engine/artifacts/animation-milestone/nest-materials-smoke.log",
+      "engine/artifacts/animation-milestone/nest-company-native.json",
+      "engine/artifacts/animation-milestone/nest-company-render.json",
+      "engine/artifacts/animation-milestone/nest-company-contact-sheet.png",
+      "engine/artifacts/animation-milestone/nest-ui.json",
+      "engine/artifacts/animation-milestone/nest-notebook.png",
+      "engine/artifacts/animation-milestone/nest-company-js-suite.log",
+      "engine/artifacts/animation-milestone/nest-company-regressions.json",
+      "engine/artifacts/animation-milestone/nest-company-smoke.log",
+      "engine/artifacts/animation-milestone/nest-company-footprints.log"
     ],
     "next": "Continue the remaining 273 object constructions and individually authored contextual repertoires. All 542 per-object 48-sequence audits remain open; complete personal visitor acting, guest-to-guest sessions, egg observation and physical tool handling before final integration and installation.",
     "checks": {
-      "javascript": 177,
+      "javascript": 185,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4632,6 +4651,30 @@
         "workers": 831,
         "medianMs": 5.100000023841858,
         "p95Ms": 11.700000047683716
+      },
+      "nestCompanyLifecycle": 1014,
+      "nestCompanyUI": 27,
+      "nestCompanyRenderTests": 3,
+      "nestCompanyReplay": {
+        "frames": 611,
+        "helperFrames": 452,
+        "scores": [
+          "left_rim",
+          "right_rim",
+          "weave_tension",
+          "lining_fan",
+          "tamp_rhythm",
+          "lining_inspect",
+          "quiet_guard",
+          "summer_fan",
+          "young_support",
+          "patient_company",
+          "hover_observer"
+        ],
+        "medianMs": 5.5,
+        "p95Ms": 9.699999988079071,
+        "cacheBytes": 66802464,
+        "note": "Actual native regular, rare and story arrivals; all 11 outside-nest roles, every staged helper independently selectable. Reviewed wing contact, ordinary fanning, own ground/body scale and young/elder roles. Development replay, not final whole-milestone audit."
       }
     },
     "limitations": [

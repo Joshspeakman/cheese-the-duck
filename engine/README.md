@@ -268,6 +268,24 @@ turns talking together; solo and shared performances cannot claim the same
 body at once. Completed visitor routines remember the nest, with learning
 capped per stay. Their positions remain tied to their own reserved seats.
 
+Nearby visitors can also help from **outside** the occupied nest. Eleven
+complementary scores cover holding either rim, keeping a braid steady, fanning
+the lining, tapping along, inspecting the arrangement and quiet companionship.
+Young Cheese receives gentle support; weary or gloomy visitors keep patient
+company, Pip watches without overreaching, and Flutter hovers. The visitor walks
+to a separate position before the shared native clock starts. Cheese continues
+alone if the invitation times out. Leaving, displacement, direct care, moving
+the nest or a weather change interrupts the help without a completed shared
+memory. A finished routine teaches both residents once, while the original rest
+visit remains the sole owner of item-use rewards and material changes.
+
+The nest's Belongings page now offers seven specific requests: fluff the lining,
+tuck either edge, weave the rim, pat the bedding, arrange the feather, or watch
+from the nest. These controls work with actual built structures and outdoor
+decorations, preserve the selected physical copy, and disable while busy or
+when that copy is put away. The waiting status and conversation facts reflect
+the helper's actual arrival and the current bedding.
+
 This is interaction depth for the existing nest constructions, not completion
 of the individual 48-sequence requirement. Validation includes
 `.venv/bin/python engine/check_nest_materials.py`,
@@ -275,6 +293,16 @@ of the individual 48-sequence requirement. Validation includes
 `engine/node_modules/.bin/electron engine/nest-materials-check.cjs`.
 The last command replays actual native frames and writes the material-state
 comparison and visitor screenshots to `artifacts/animation-milestone/`.
+Shared nest validation adds `.venv/bin/python engine/check_nest_company.py`,
+`node --test engine/tests/nest-company.test.mjs`,
+`engine/node_modules/.bin/electron engine/nest-company-check.cjs`, and
+`engine/node_modules/.bin/electron engine/nest-ui-check.cjs`. These exercise
+actual regular, rare and story visitor arrivals, both original ownership
+systems, all nine age rules, all 48 visitor rigs, copy selection through desktop
+IPC, cancellation, pause, storage, saved bedding and interrupted learning. The
+renderer replay writes `nest-company-contact-sheet.png` and the eleven live
+world views. These shared roles do not count as eleven new bespoke actions for
+each individual nest.
 
 The lighting work adds 27 distinct constructions, from pleated lanterns and
 glazed lamps to mirrored disco balls and carved crystal lights. Each placed copy

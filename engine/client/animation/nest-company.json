@@ -1,0 +1,743 @@
+{
+  "left_rim": {
+    "label": "Holding the left rim while Cheese tucks the loose ends",
+    "anchor": "left",
+    "cores": [
+      "tuck_left_edge",
+      "mend_gap"
+    ],
+    "track": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.12,
+        "y": 1,
+        "w": 0.3,
+        "reach": 0.25
+      },
+      {
+        "at": 0.25,
+        "y": 1.3,
+        "w": 0.65,
+        "reach": 0.7,
+        "contact": 0.9
+      },
+      {
+        "at": 0.48,
+        "y": 1,
+        "w": 0.8,
+        "reach": 1,
+        "contact": 1,
+        "eye": ">"
+      },
+      {
+        "at": 0.72,
+        "y": 0.8,
+        "w": 0.65,
+        "reach": 0.8,
+        "contact": 1
+      },
+      {
+        "at": 0.84,
+        "y": -0.3,
+        "w": 0.3,
+        "reach": 0.2,
+        "eye": "^"
+      },
+      {
+        "at": 0.94,
+        "y": 0.4,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ],
+    "lead": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.7,
+        "eye": "^"
+      },
+      {
+        "at": 0.9,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ]
+  },
+  "right_rim": {
+    "label": "Steadying the outer rim while Cheese braces and tucks it",
+    "anchor": "right",
+    "cores": [
+      "tuck_right_edge",
+      "crossbrace_twig",
+      "tighten_braid"
+    ],
+    "track": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.13,
+        "x": 0.3,
+        "y": 0.7,
+        "w": 0.4,
+        "reach": 0.3
+      },
+      {
+        "at": 0.3,
+        "y": 1.4,
+        "w": 0.7,
+        "reach": 0.9,
+        "contact": 1
+      },
+      {
+        "at": 0.52,
+        "x": 0.5,
+        "y": 1.2,
+        "w": 0.8,
+        "reach": 1,
+        "contact": 1
+      },
+      {
+        "at": 0.76,
+        "y": 1,
+        "w": 0.7,
+        "reach": 0.9,
+        "contact": 1
+      },
+      {
+        "at": 0.88,
+        "y": -0.4,
+        "w": 0.2,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ],
+    "lead": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.7,
+        "eye": "^"
+      },
+      {
+        "at": 0.9,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ]
+  },
+  "weave_tension": {
+    "label": "Keeping the outer braid steady through Cheese\u2019s over-and-under weave",
+    "anchor": "right",
+    "cores": [
+      "weave_rim"
+    ],
+    "track": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.13,
+        "y": 1,
+        "w": 0.4,
+        "reach": 0.4
+      },
+      {
+        "at": 0.26,
+        "y": 1.4,
+        "w": 0.7,
+        "reach": 1,
+        "contact": 1
+      },
+      {
+        "at": 0.38,
+        "y": 0.7,
+        "w": 0.5,
+        "reach": 0.8,
+        "contact": 1
+      },
+      {
+        "at": 0.48,
+        "y": 1.5,
+        "w": 0.8,
+        "reach": 1,
+        "contact": 1
+      },
+      {
+        "at": 0.6,
+        "y": 0.7,
+        "w": 0.5,
+        "reach": 0.8,
+        "contact": 1
+      },
+      {
+        "at": 0.76,
+        "y": 1.4,
+        "w": 0.8,
+        "reach": 1,
+        "contact": 1
+      },
+      {
+        "at": 0.87,
+        "y": -0.3,
+        "w": 0.3,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ],
+    "lead": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.7,
+        "eye": "^"
+      },
+      {
+        "at": 0.9,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ]
+  },
+  "lining_fan": {
+    "label": "Fanning loose fibres toward Cheese as he fluffs the lining",
+    "anchor": "right",
+    "cores": [
+      "fluff_center",
+      "widen_bowl",
+      "bedtime_tuck"
+    ],
+    "track": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.16,
+        "y": 0.8,
+        "w": 0.2
+      },
+      {
+        "at": 0.28,
+        "y": -0.3,
+        "w": 1.1
+      },
+      {
+        "at": 0.43,
+        "y": 0.9,
+        "w": 0.25
+      },
+      {
+        "at": 0.57,
+        "y": -0.4,
+        "w": 1.2
+      },
+      {
+        "at": 0.72,
+        "y": 0.6,
+        "w": 0.3
+      },
+      {
+        "at": 0.88,
+        "y": -0.2,
+        "w": 0.7,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ],
+    "lead": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.7,
+        "eye": "^"
+      },
+      {
+        "at": 0.9,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ]
+  },
+  "tamp_rhythm": {
+    "label": "Counting and tapping along while Cheese pats the bedding",
+    "anchor": "right",
+    "cores": [
+      "tamp_floor",
+      "toe_trace",
+      "tail_wriggle"
+    ],
+    "track": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.15,
+        "y": 0.8,
+        "l": 1
+      },
+      {
+        "at": 0.25,
+        "b": 0.3,
+        "mark": "1"
+      },
+      {
+        "at": 0.4,
+        "r": 1,
+        "y": 0.5
+      },
+      {
+        "at": 0.55,
+        "b": 0.4,
+        "mark": "2"
+      },
+      {
+        "at": 0.7,
+        "l": 1,
+        "w": 0.4
+      },
+      {
+        "at": 0.82,
+        "b": 0.4,
+        "mark": "3",
+        "eye": "^"
+      },
+      {
+        "at": 0.93,
+        "y": 0.4,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ],
+    "lead": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.7,
+        "eye": "^"
+      },
+      {
+        "at": 0.9,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ]
+  },
+  "lining_inspect": {
+    "label": "Leaning in to admire the feather and leaf arrangement",
+    "anchor": "right",
+    "cores": [
+      "straighten_feather",
+      "leaf_underlay",
+      "spring_feather",
+      "fall_leaf_catch",
+      "polish_pebble",
+      "bowl_test"
+    ],
+    "track": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.15,
+        "x": 0.2,
+        "y": 1
+      },
+      {
+        "at": 0.32,
+        "x": 0.6,
+        "y": 1.6,
+        "eye": "O"
+      },
+      {
+        "at": 0.48,
+        "x": -0.4,
+        "y": -0.3
+      },
+      {
+        "at": 0.64,
+        "x": 0.5,
+        "y": 1.3,
+        "w": 0.25
+      },
+      {
+        "at": 0.8,
+        "y": -0.4,
+        "w": 0.6,
+        "eye": "^"
+      },
+      {
+        "at": 0.93,
+        "y": 0.5
+      },
+      {
+        "at": 1
+      }
+    ],
+    "lead": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.7,
+        "eye": "^"
+      },
+      {
+        "at": 0.9,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ]
+  },
+  "quiet_guard": {
+    "label": "Keeping quiet company beside Cheese\u2019s resting place",
+    "anchor": "right",
+    "cores": [
+      "curl_sleep",
+      "one_eye_guard",
+      "dream_paddle",
+      "long_yawn",
+      "foot_tuck",
+      "chin_on_rim",
+      "satisfied_sigh",
+      "shy_hide",
+      "cold_huddle",
+      "noon_doze",
+      "moon_watch"
+    ],
+    "track": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.15,
+        "x": -0.4,
+        "y": 0.6
+      },
+      {
+        "at": 0.32,
+        "x": -0.8,
+        "y": -0.4,
+        "eye": ">"
+      },
+      {
+        "at": 0.5,
+        "x": 0.4,
+        "y": 0.8,
+        "eye": "-"
+      },
+      {
+        "at": 0.68,
+        "x": -0.7,
+        "y": -0.5,
+        "eye": ">"
+      },
+      {
+        "at": 0.83,
+        "x": 0.3,
+        "y": 0.6,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ],
+    "lead": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.25,
+        "eye": "-"
+      },
+      {
+        "at": 0.55,
+        "eye": "-"
+      },
+      {
+        "at": 0.85,
+        "eye": "-"
+      },
+      {
+        "at": 1
+      }
+    ]
+  },
+  "summer_fan": {
+    "label": "Sharing a gentle cooling breeze beside the nest",
+    "anchor": "right",
+    "cores": [
+      "heat_fan"
+    ],
+    "track": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.14,
+        "y": -0.5,
+        "w": 0.3,
+        "gape": 0.3
+      },
+      {
+        "at": 0.3,
+        "w": 1.1,
+        "y": 0.5
+      },
+      {
+        "at": 0.44,
+        "w": 0.2,
+        "y": -0.4
+      },
+      {
+        "at": 0.58,
+        "w": 1.2,
+        "y": 0.5
+      },
+      {
+        "at": 0.72,
+        "w": 0.25,
+        "y": -0.3
+      },
+      {
+        "at": 0.87,
+        "w": 0.9,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ],
+    "lead": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.7,
+        "eye": "^"
+      },
+      {
+        "at": 0.9,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ]
+  },
+  "young_support": {
+    "label": "Steadying the rim for a small duck\u2019s careful tuck",
+    "anchor": "right",
+    "cores": [
+      "tuck_right_edge",
+      "crossbrace_twig",
+      "tighten_braid",
+      "weave_rim"
+    ],
+    "track": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.1,
+        "y": 1,
+        "w": 0.3,
+        "reach": 0.3
+      },
+      {
+        "at": 0.24,
+        "y": 1.7,
+        "w": 0.7,
+        "reach": 1,
+        "contact": 1,
+        "eye": "^"
+      },
+      {
+        "at": 0.46,
+        "y": 1.4,
+        "w": 0.6,
+        "reach": 0.9,
+        "contact": 1
+      },
+      {
+        "at": 0.7,
+        "y": 1.6,
+        "w": 0.7,
+        "reach": 1,
+        "contact": 1
+      },
+      {
+        "at": 0.84,
+        "y": 0.6,
+        "w": 0.3,
+        "eye": "^"
+      },
+      {
+        "at": 0.94,
+        "y": 0.9,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ],
+    "lead": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.7,
+        "eye": "^"
+      },
+      {
+        "at": 0.9,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ]
+  },
+  "patient_company": {
+    "label": "Waiting patiently beside Cheese\u2019s unhurried nest work",
+    "anchor": "right",
+    "cores": [],
+    "track": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.17,
+        "y": 0.6,
+        "eye": "-"
+      },
+      {
+        "at": 0.36,
+        "x": 0.3,
+        "y": 1.1
+      },
+      {
+        "at": 0.55,
+        "x": 0.5,
+        "y": 1.4,
+        "w": 0.2
+      },
+      {
+        "at": 0.74,
+        "y": 0.5,
+        "eye": "^"
+      },
+      {
+        "at": 0.9,
+        "y": -0.2,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ],
+    "lead": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.7,
+        "eye": "^"
+      },
+      {
+        "at": 0.9,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ]
+  },
+  "hover_observer": {
+    "label": "Hovering beside the nest to watch Cheese work",
+    "anchor": "right",
+    "cores": [],
+    "track": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.15,
+        "y": -0.4,
+        "w": 0.8
+      },
+      {
+        "at": 0.33,
+        "x": 0.3,
+        "y": 0.5,
+        "w": 0.3
+      },
+      {
+        "at": 0.51,
+        "x": 0.4,
+        "y": 0.8,
+        "w": 0.7
+      },
+      {
+        "at": 0.7,
+        "x": -0.3,
+        "y": -0.4,
+        "w": 0.4
+      },
+      {
+        "at": 0.88,
+        "y": 0.3,
+        "w": 0.8,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ],
+    "lead": [
+      {
+        "at": 0
+      },
+      {
+        "at": 0.7,
+        "eye": "^"
+      },
+      {
+        "at": 0.9,
+        "eye": "^"
+      },
+      {
+        "at": 1
+      }
+    ]
+  }
+}

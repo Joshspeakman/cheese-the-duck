@@ -15,6 +15,7 @@ from engine.pond_stories import STORIES
 from engine.placements import outdoor_decorations, complete_structures,habitat_placements
 from engine import shelters, nest_routines, nest_materials, playdates, water_routines, furniture_rests,botany,botanical_care,instrument_sessions
 from world.guest_cast import guest_profile, guest_line
+from engine import nest_company
 
 NEEDS = ('hunger', 'energy', 'fun', 'cleanliness', 'social')
 SKILLS = ('gardening', 'stewardship', 'cooking', 'care', 'building', 'engineering',
@@ -595,6 +596,7 @@ class LivingPond:
             self.state['next_decision']=self.state['elapsed']+30
             return 'Cheese and his friend finish up and go their separate ways.'
         if self.state['plan']:
+            for key in list(self.minds.nest_helpers):nest_company.release(self.minds,key)
             target=self.state['plan']['target']
             obj=self.object_state(target,self.state['plan'])
             if obj is not None:obj['active']=False
@@ -925,6 +927,9 @@ class LivingPond:
         action=command.get('action');target=command.get('target','')
         if not isinstance(target,str) or len(target)>128:return
         self.sync();s=self.state
+        if action=='nest_action':
+            ok,message=nest_routines.request(self,target,command.get('text'),command.get('instance'))
+            return self.notice(message)
         if action=='playkit_action':
             ok,message=playkit.request(self,target,command.get('text'),command.get('instance'))
             return self.notice(message)
@@ -1164,8 +1169,13 @@ class LivingPond:
                 plan['company']=playdates.view(plan)
                 if not plan['company'].get('done'):plan['label']=plan['company']['label']
             routine = plan.get('residence', {}).get('routine')
+            if routine:
+                plan['residence']['routine']=nest_company.work_view(self.minds,self.state['plan']['residence']['routine'])
             if routine and not routine.get('done') and plan['phase'] == 'act':
                 plan['label'] = routine['label']
+                if nest_company.waiting(self.minds):
+                    helper=nest_company.active(self.minds)
+                    plan['label']='Waiting at the nest for '+self.minds.model.residents[helper['actor']]['name']
         return plan
 
     def snapshot(self):
@@ -1175,7 +1185,7 @@ class LivingPond:
         if self._cache is not None and s['elapsed']-self._cache_at<.5:
             from engine.visitor_shelters import snapshot as shelter_snapshot
             return {**self._cache, 'plan': self._plan_view(),
-                    'minds':{**self._cache['minds'],'residences':shelter_snapshot(self.minds),'seats':furniture_rests.snapshot(self.minds),'gardeners':botanical_care.snapshot(self.minds),'musicians':instrument_sessions.snapshot(self.minds),'readers':keepsake_company.snapshot(self.minds),'creators':creative_company.snapshot(self.minds),'textile_helpers':textile_company.snapshot(self.minds),'ground_helpers':ground_company.snapshot(self.minds),'structure_helpers':architecture_company.snapshot(self.minds),'playmates':playkit_company.snapshot(self.minds),'performances':self.minds.performances()}}
+                    'minds':{**self._cache['minds'],'residences':shelter_snapshot(self.minds),'seats':furniture_rests.snapshot(self.minds),'gardeners':botanical_care.snapshot(self.minds),'musicians':instrument_sessions.snapshot(self.minds),'nest_helpers':nest_company.snapshot(self.minds),'readers':keepsake_company.snapshot(self.minds),'creators':creative_company.snapshot(self.minds),'textile_helpers':textile_company.snapshot(self.minds),'ground_helpers':ground_company.snapshot(self.minds),'structure_helpers':architecture_company.snapshot(self.minds),'playmates':playkit_company.snapshot(self.minds),'performances':self.minds.performances()}}
         plan=self._plan_view()
         friends=[]
         rare_guest = None
