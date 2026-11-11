@@ -9,7 +9,7 @@ export function itemProfile(item,family){
  if(has(family,'rose tulip sunflower tree cherry willow cactus bamboo bonsai flytrap fern flowerpot mushroom hedge garden clover corn peas grapes reed leaf')){kind='plant';material='leaf';skill='gardening';verb='Tend';}
  else if(has(family,'pool fountain waterfall sprinkler birdbath bowl pond')){kind='water';material='stone';skill='stewardship';verb='Splash';need='cleanliness';}
  else if(item.category==='food'||has(family,'bread crumbs seeds salad pie cookie honey carrot tomato pumpkin strawberry watermelon')){kind='food';material='food';skill='cooking';verb='Taste';need='hunger';}
- else if(has(family,'bed nest hammock couch chair throne')){kind='comfort';material='fabric';skill='care';verb='Settle in';need='energy';}
+ else if(has(family,'bed nest hammock couch sofa cushion bench chair throne')){kind='comfort';material='fabric';skill='care';verb='Settle in';need='energy';}
  else if(has(family,'house barn treehouse greenhouse tower lighthouse bridge shelter workbench')){kind='structure';material='wood';skill='building';verb='Improve';}
  else if(has(family,'robot machine ray ufo rocket submarine jetpack telescope radio tv clock compass vane windmill infinity dna')){kind='machine';material='metal';skill='engineering';verb='Operate';}
  else if(has(family,'piano trumpet drum guitar chimes')){kind='music';material='wood';skill='music';verb='Play a tune';need='social';}

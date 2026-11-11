@@ -1,6 +1,7 @@
 import {homeSprite} from './home-workshop.mjs';
 import {playgroundSprite,PLAY_BLUEPRINTS} from './playground-workshop.mjs';
 import {waterworksSprite,WATER_BLUEPRINTS} from './waterworks.mjs';
+import {furnitureSprite,FURNITURE_BLUEPRINTS} from './furniture-workshop.mjs';
 import {detailItem,itemProfile} from './item-detail.mjs';
 export {itemProfile};
 import { ART } from './item-art.mjs';
@@ -103,11 +104,12 @@ export function itemSprite(id,time=0,{motion=true,originalArt=null,state={},inte
     sway:(PLANTS.has(family)||['chimes','kite','swing'].includes(family))&&motion?Math.sin(t*1.3+seed)*.025:0,
     lift:/balloon|ufo|orb|motes|fish|worm/.test(family)&&motion?Math.sin(t*1.4+seed)*.25:0};
   const enriched={...base,...itemProfile(item||{},family)},options={motion,state,interaction,context,pose};
-  return homeSprite(enriched,item||{id},t,options)||playgroundSprite(enriched,item||{id},t,options)||waterworksSprite(enriched,item||{id},t,options)||detailItem(base,item,family,t,{motion,state,interaction});
+  return homeSprite(enriched,item||{id},t,options)||playgroundSprite(enriched,item||{id},t,options)||waterworksSprite(enriched,item||{id},t,options)||furnitureSprite(enriched,item||{id},t,options)||detailItem(base,item,family,t,{motion,state,interaction});
 }
 export function itemWorldScale(id){
   if(PLAY_BLUEPRINTS[id])return PLAY_BLUEPRINTS[id].scale;
   if(WATER_BLUEPRINTS[id])return WATER_BLUEPRINTS[id].scale;
+  if(FURNITURE_BLUEPRINTS[id])return FURNITURE_BLUEPRINTS[id].scale;
   const item=ITEM_CATALOG[id],family=itemFamily(id);
   return ['house','barn','treehouse','greenhouse','tower','lighthouse','windmill','willow','tree'].includes(family)?1.15:
     item?.size==='large'?1.05:item?.size==='medium'?.85:.72;

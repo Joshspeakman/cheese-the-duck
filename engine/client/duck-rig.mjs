@@ -15,6 +15,7 @@ export function actionFor(state='idle'){
 export function duckRig(duck,t=0,design=null){
  if(duck.performance?.kind==='nest')t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  if(duck.performance?.kind==='water')t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
+ if(duck.performance?.kind==='seating')t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  const requested=duck.stage==='teen'?'juvenile':duck.stage||'adult',spec=design||DUCK_AGES.find(a=>a.id===requested)||DUCK_AGES[5];
  const stage=design?'adult':spec.id,small=['hatchling','duckling'].includes(stage);
  const performance=performancePose(duck.performance,duck.performance?.young?'duckling':stage);
@@ -84,7 +85,7 @@ export function duckRig(duck,t=0,design=null){
    if(head&&beak<100&&performance?.gape>.2)put('\\'+(performance.gape>.65?'__':'_'),x0+beak,y0+1+(performance.gape>.65?1:0),'a');
   }
   const footPositions=[];
-  if(!['swimming','sleeping'].includes(action))for(const [i,fx] of spec.feet.entries()){
+  if(!performance?.seated&&!['swimming','sleeping'].includes(action))for(const [i,fx] of spec.feet.entries()){
    const lift=performance?(i?performance.r:performance.l):action==='walking'&&((phase<4&&i===0)||(phase>=4&&i===1))?1:0;
    const stride=action==='walking'?[0,i?-1:1,0,0,0,i?1:-1,0,0][phase]:0;
    const x=Math.round(baseX+fx+stride),y=FLOOR+jump-lift;
@@ -117,5 +118,5 @@ export function duckRig(duck,t=0,design=null){
  if(!facing){for(let y=0;y<H;y++){cells[y].reverse();cells[y]=cells[y].map(mirrorGlyph);tones[y].reverse();}for(const f of fills)f.x=W-f.x-f.w;if(bill)bill.x=W-1-bill.x;}
  return {art:cells.map(r=>r.join('')),tones:tones.map(r=>r.join('')),fills,inks:{...ink,...plan.inks},width:W,anchorX:facing?CX:W-1-CX,groundRow:FLOOR+.5,
   scale:stage==='egg'?.66:spec.height/(spec.art.length*7.5),body:ink.b,face:ink.g,accent:ink.a,shade:ink.s,name:'',rig,wearables:plan.items.map(i=>i.id),
-  design:'d10',material:'feathers',phase,frames:8,cycle:phase/8,clipped,action,bill,performance:duck.performance||null,offsetY:action==='idle'?Math.sin(cycle*2)*.1:0};
+  design:'d10',material:'feathers',phase,frames:8,cycle:phase/8,clipped,action,bill,seatContact:performance?.seated&&rig?rig.body.y+rig.body.h-.3:null,performance:duck.performance||null,offsetY:action==='idle'?Math.sin(cycle*2)*.1:0};
 }

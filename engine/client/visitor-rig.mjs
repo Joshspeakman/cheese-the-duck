@@ -124,7 +124,7 @@ function speciesGuest(duck,p,t,state,active){
    c.put(eye,35,21+lift,'e');c.put(eye,38,21+lift,'e');c.put(phase%2?'*':'.',23+phase,21+lift,'a');c.put(phase%2?'.':'*',47-phase%3,29+lift,'h');
    head={x:34,y:20+lift,w:7,h:4};body={x:35,y:24+lift,w:4,h:5};feet=[];
  }
- for(const [i,x] of feet.entries()){const lift=performance?(i?performance.r:performance.l):walking&&((phase<4)===(i===0))?1:0;c.put(p.species==='toad'?'_\\/_':i?'>_':'_>',x,FLOOR+dy-lift-(performance?Math.max(0,performance.b):0),'a');}
+ if(!performance?.seated)for(const [i,x] of feet.entries()){const lift=performance?(i?performance.r:performance.l):walking&&((phase<4)===(i===0))?1:0;c.put(p.species==='toad'?'_\\/_':i?'>_':'_>',x,FLOOR+dy-lift-(performance?Math.max(0,performance.b):0),'a');}
  if(p.species!=='butterfly'&&!walking&&!asleep&&!performance){const x=p.species==='owl'?24:p.species==='toad'?43:p.species==='goose'?43:40;signature(c,p,t,x,p.species==='owl'?31:33,active);}
  if(performance?.w>.2&&p.species!=='butterfly'){
    // A gesture grows from the shoulder. The previous feather patch floated
@@ -143,10 +143,11 @@ function speciesGuest(duck,p,t,state,active){
  if(performance?.mark)c.put(performance.mark,head.x+head.w+2,head.y-2,'a');
  if(asleep)c.put('z',head.x+head.w+2,head.y-1,'p');
  return {...c.finish(duck.facing),width:W,anchorX:duck.facing===false?39:36,groundRow:39.5,scale:p.height/((40-top)*7.5),body:p.palette[0],face:p.palette[1],accent:p.palette[2],shade:'#778b7b',
-   inks:{b:p.palette[0],g:p.palette[1],p:p.palette[2],h:'#e8dfc7',s:'#7c8e81',a:'#e1b26e',w:p.palette[1],e:'#152c29'},rig:{stage:'adult',species:p.species,head,body},material:'feathers',action:state,phase,frames:8,profileId:p.id,design:'pond-cast',signature:active,habit:p.habit,name:'',offsetY:0};
+   inks:{b:p.palette[0],g:p.palette[1],p:p.palette[2],h:'#e8dfc7',s:'#7c8e81',a:'#e1b26e',w:p.palette[1],e:'#152c29'},rig:{stage:'adult',species:p.species,head,body},seatContact:performance?.seated?body.y+body.h+performance.b-.3:null,material:'feathers',action:state,phase,frames:8,profileId:p.id,design:'pond-cast',signature:active,habit:p.habit,name:'',offsetY:0};
 }
 
 export function visitorRig(duck,time=0){
+ if(duck.performance?.kind==='seating')time=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  const p=guestProfile(duck),seed=seedOf(p.id),t=time+seed%19*.17,raw=duck.activity||duck.state||'idle';
  const requested=/reading|painting|giving/.test(raw)?'signature':/bounce|happy|exercise/.test(raw)?'dancing':/chat|greet/.test(raw)?'quacking':raw;
  const active=!duck.performance&&(requested==='signature'||requested==='working'||requested==='idle'&&(t%(10+seed%5))>5&&(t%(10+seed%5))<8.5),state=duck.performance?'idle':requested==='signature'||requested==='working'?'idle':requested;

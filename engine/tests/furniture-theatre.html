@@ -1,0 +1,71 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Furniture workshop</title>
+<style>body{margin:24px;background:#142b23;color:#e5d8b4;font:20px Georgia}canvas{display:block;max-width:100%;margin:24px 0}</style>
+<h1>Furniture workshop</h1>
+<script type="module">
+import {FURNITURE_BLUEPRINTS} from '../client/furniture-workshop.mjs';
+import {itemSprite,ItemPainter} from '../client/ultra-items.mjs';
+import {seatingGeometry,SEATING_ROUTINES} from '../client/seating-routines.mjs';
+import {LivingWorld} from '../client/ultra-world.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {drawCharacter} from '../client/ultra-characters.mjs';
+import {scene} from './scenes.mjs';
+const painter=new ItemPainter();
+window.reviewFurniture=()=>{
+ const images={},ids=Object.keys(FURNITURE_BLUEPRINTS);
+ for(let page=0;page<5;page++){
+  const canvas=document.createElement('canvas');canvas.width=1680;canvas.height=1350;const c=canvas.getContext('2d');
+  c.fillStyle='#142b23';c.fillRect(0,0,canvas.width,canvas.height);
+  ids.slice(page*6,page*6+6).forEach((id,n)=>{
+   const m=itemSprite(id,2.3,{context:{hour:15.25,season:'summer'},interaction:{phase:'act'}}),x=(n%3)*560,y=Math.floor(n/3)*675;
+   c.fillStyle='#e5d8b4';c.font='22px Menlo';c.fillText(id,x+20,y+30);
+   const unit=Math.min(5.8,510/m.width,590/(m.art.length*1.5));
+   painter.draw(c,m,x+280,y+635,unit/m.detailScale,{surface:'#142b23',outline:'#0a1712'});
+  });images['furniture-'+page]=canvas.toDataURL('image/png');document.body.append(canvas);
+ }
+ return images;
+};
+window.reviewSitting=()=>{
+ const images={},world=new LivingWorld(),cases=[
+  ['chair_wood','little_lookout','hatchling'],['chair_throne','royal_inspection','elder'],
+  ['golden_throne','royal_inspection','adult'],['couch','bench_gossip','duckling','friendly_goose'],
+  ['sofa_fancy','shared_view','adult','friend:frida'],['bean_bag','feather_settle','juvenile'],
+  ['cushion','careful_feet','legendary'],['garden_bench','synchronized_sigh','adult','wise_owl'],
+  ['hammock','hammock_rock','adult']];
+ for(let page=0;page<3;page++){
+  const canvas=document.createElement('canvas');canvas.width=1680;canvas.height=1800;const c=canvas.getContext('2d');c.fillStyle='#142b23';c.fillRect(0,0,1680,1800);
+  cases.slice(page*3,page*3+3).forEach(([item,id,age,guest],row)=>[.2,.5,.8].forEach((progress,col)=>{
+   const routine={id,elapsed:progress*SEATING_ROUTINES[id].duration,done:false};
+   const s=scene({duck:{x:60,y:24,stage:age,state:'idle',cosmetics:{}},visitor:guest?{id:guest,castId:guest,name:guest,x:60,y:24}:null,items:[{id:item,x:60,y:24}],living:{
+    plan:{kind:'item',target:item,phase:'act',elapsed:15,duration:24,destination:[60,24],seating:{id:item,destination:[60,24],slot:0,capacity:2},seat_routine:routine},
+    ecology:{},objects:{},garden:[],projects:[],minds:{seats:guest?[{actor:guest,id:item,destination:[60,24],slot:1,capacity:2,phase:'inside',elapsed:0,routine:{...routine,role:'b'}}]:[]}}});
+   const home=world.render(s,2,.03).objects.find(o=>o.sitters),sx=Math.min(7.5,510/(home.width*home.scale*home.detailScale),510/(home.art.length*home.scale*home.detailScale*1.5)),sy=sx*1.5;
+   home.x=(col*560+280)/sx;home.y=(row*600+575)/sy;
+   c.fillStyle='#e5d8b4';c.font='16px Menlo';c.fillText(item+' · '+age+' · '+progress,col*560+14,row*600+24);
+   painter.draw(c,home,home.x*sx,home.y*sy,sx*home.scale,{surface:'#142b23',outline:'#0a1712'});
+   let front=null;
+   for(const sitter of home.sitters){
+    sitter.character.x=home.x;sitter.character.y=home.y;sitter.character.name='';
+    const seated=seatingGeometry(home,sitter,sx,sy);
+    drawCharacter(c,{...seated.character,sun:.9,outline:'#0a1712'},sx,sy,'#142b23');front=seated.front||front;
+   }
+   if(front)painter.draw(c,front,home.x*sx,home.y*sy,sx*home.scale,{surface:'#142b23',outline:'#0a1712',shadow:false});
+  }));images['seating-'+page]=canvas.toDataURL('image/png');document.body.append(canvas);
+ }
+ return images;
+};
+window.replayFurniture=frames=>{
+ const view=new SceneCanvas();view.resize(1440,900);const images={},costs=[];let seated=0,paired=0;
+ for(const [i,s] of frames.entries()){
+  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
+  if(JSON.stringify(s)!==before)throw Error('Mutated furniture snapshot');
+  for(const home of view.world.objects){
+   if(!home.sitters?.length)continue;
+   seated+=home.sitters.length;if(home.sitters.length>1)paired++;
+   const plan=s.living.plan,routine=plan?.seat_routine;
+   const key=home.sitters.length>1?'shared-'+home.id:home.id;
+   if(home.sitters.every(r=>r.inside>=.99)&&(home.sitters.length>1||routine?.elapsed>8)&&!images[key])images[key]=view.canvas.toDataURL('image/png');
+  }
+ }
+ costs.sort((a,b)=>a-b);return {frames:frames.length,seated,paired,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+</script>
