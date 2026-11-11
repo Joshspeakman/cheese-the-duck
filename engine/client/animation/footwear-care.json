@@ -1,0 +1,211 @@
+{
+  "brush_shoe_snow": {
+    "label": "Brush snow from both shoes",
+    "shapes": [
+      "boot",
+      "slipper",
+      "skate",
+      "sandal"
+    ],
+    "material": "snow",
+    "threshold": 0.15,
+    "duration": 8,
+    "contact": 2.2,
+    "contacts": [
+      2.2,
+      6.2
+    ],
+    "retained": 0.08,
+    "cooldown": 40,
+    "anchor": "toe"
+  },
+  "scrape_soles": {
+    "label": "Clear mud from the soles",
+    "shapes": [
+      "boot",
+      "sandal"
+    ],
+    "material": "soil",
+    "threshold": 0.2,
+    "duration": 9,
+    "contact": 2.5,
+    "contacts": [
+      2.5,
+      7
+    ],
+    "retained": 0.18,
+    "cooldown": 55,
+    "anchor": "sole"
+  },
+  "wipe_shoe_uppers": {
+    "label": "Wipe the muddy uppers",
+    "shapes": [
+      "boot",
+      "skate"
+    ],
+    "material": "soil",
+    "threshold": 0.18,
+    "duration": 9.6,
+    "contact": 2.7,
+    "contacts": [
+      2.7,
+      7.5
+    ],
+    "retained": 0.25,
+    "cooldown": 55,
+    "anchor": "toe"
+  },
+  "dry_boot_cuffs": {
+    "label": "Squeeze the damp cuffs",
+    "shapes": [
+      "boot"
+    ],
+    "material": "wet",
+    "threshold": 0.3,
+    "duration": 9.2,
+    "contact": 2.6,
+    "contacts": [
+      2.6,
+      7.2
+    ],
+    "retained": 0.35,
+    "cooldown": 50,
+    "anchor": "cuff"
+  },
+  "settle_boots": {
+    "label": "Settle each boot around the ankle",
+    "shapes": [
+      "boot"
+    ],
+    "material": "slack",
+    "threshold": 0.18,
+    "duration": 8,
+    "contact": 2.2,
+    "contacts": [
+      2.2,
+      6.2
+    ],
+    "retained": 0.12,
+    "cooldown": 45,
+    "anchor": "cuff"
+  },
+  "brush_slippers": {
+    "label": "Brush the fuzzy slippers",
+    "shapes": [
+      "slipper"
+    ],
+    "material": "soil",
+    "threshold": 0.18,
+    "duration": 9,
+    "contact": 2.5,
+    "contacts": [
+      2.5,
+      7
+    ],
+    "retained": 0.18,
+    "cooldown": 50,
+    "anchor": "toe"
+  },
+  "dry_slippers": {
+    "label": "Squeeze the damp slippers",
+    "shapes": [
+      "slipper"
+    ],
+    "material": "wet",
+    "threshold": 0.35,
+    "duration": 10,
+    "contact": 2.8,
+    "contacts": [
+      2.8,
+      7.8
+    ],
+    "retained": 0.4,
+    "cooldown": 60,
+    "anchor": "toe"
+  },
+  "settle_slippers": {
+    "label": "Tuck each foot into its slipper",
+    "shapes": [
+      "slipper"
+    ],
+    "material": "slack",
+    "threshold": 0.18,
+    "duration": 8,
+    "contact": 2.2,
+    "contacts": [
+      2.2,
+      6.2
+    ],
+    "retained": 0.1,
+    "cooldown": 45,
+    "anchor": "cuff"
+  },
+  "wipe_blades": {
+    "label": "Dry the skate blades",
+    "shapes": [
+      "skate"
+    ],
+    "material": "wet",
+    "threshold": 0.2,
+    "duration": 9,
+    "contact": 2.5,
+    "contacts": [
+      2.5,
+      7
+    ],
+    "retained": 0.1,
+    "cooldown": 50,
+    "anchor": "sole"
+  },
+  "tie_skates": {
+    "label": "Tighten both skate laces",
+    "shapes": [
+      "skate"
+    ],
+    "material": "slack",
+    "threshold": 0.18,
+    "duration": 10,
+    "contact": 2.8,
+    "contacts": [
+      2.8,
+      7.8
+    ],
+    "retained": 0.1,
+    "cooldown": 50,
+    "anchor": "cuff"
+  },
+  "clear_sandal_straps": {
+    "label": "Clear grit from the sandal straps",
+    "shapes": [
+      "sandal"
+    ],
+    "material": "soil",
+    "threshold": 0.18,
+    "duration": 8.4,
+    "contact": 2.3,
+    "contacts": [
+      2.3,
+      6.5
+    ],
+    "retained": 0.15,
+    "cooldown": 45,
+    "anchor": "cuff"
+  },
+  "seat_sandal_straps": {
+    "label": "Settle both sandal straps",
+    "shapes": [
+      "sandal"
+    ],
+    "material": "slack",
+    "threshold": 0.18,
+    "duration": 7.6,
+    "contact": 2.1,
+    "contacts": [
+      2.1,
+      5.9
+    ],
+    "retained": 0.1,
+    "cooldown": 40,
+    "anchor": "cuff"
+  }
+}

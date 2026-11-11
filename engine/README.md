@@ -249,7 +249,7 @@ The next animation milestone is in development on this branch and has **not**
 replaced the installed game; the separate chat update is installed as 2.36.1. Its tracker is
 `overhaul/animation-milestone/requirements.json`: 315 of 542 main catalogue drawings
 have been reconstructed for review, with 227 remaining. The 109 live wardrobe
-IDs are also tracked explicitly: 84 constructed, 25 pending, and 67 supplemental
+IDs are also tracked explicitly: 91 constructed, 18 pending, and 67 supplemental
 to the main catalogue (609 unique objects total). The full 48 bespoke sequences per object
 and all guest/age/context coverage remain unfinished.
 
@@ -1020,3 +1020,37 @@ Twenty-five live wardrobe IDs still need reconstruction. Guest dressing/shared
 care, physical pickup and put-away, individual contextual repertoires and the
 full per-object sequence audits remain open. The installed game is still the
 verified 2.36.1 chat release; this development milestone is not installed.
+
+## Constructed footwear and separate foot care (milestone work in progress)
+
+Seven pairs now have constructed catalogue art and fittings anchored to each
+posed foot: rubber and floral rain boots, leather boots, quilted snow boots,
+bunny slippers, laced skates and woven-strap flip-flops. Cuffs narrow above
+extended toes; blades stay on the sole plane; slippers retain their faces.
+Tucked and submerged feet have no floating shoes. The familiar yellow spring
+boots keep their original color with a separate floral treatment.
+
+Native records preserve water, snow, dirt and looseness separately for the
+left and right shoe. Walking on dry or muddy land creates appropriate wear;
+actual swimming in water wets the shoes. Stored and offline pieces dry without
+invented footsteps. Twelve shared care cores use two real timed contacts,
+raising one foot while the other remains planted. The first contact cannot
+clean or tighten the other shoe. Cancellation or save/load retains completed
+work and discards the unfinished gesture. Open water prevents shoe care. The
+notebook displays both shoes' condition and sends the existing native command.
+
+Validation: `engine/check_footwear.py` passes 605 checks and exports 16 material/
+age frames plus 224 care frames. `engine/footwear-check.cjs` replays them and
+writes `artifacts/animation-milestone/footwear-review.html`; its interactive
+preview is `tests/footwear-theatre.html`. Nine live notebook checks, 226 total
+JavaScript tests and 19 final footwear/wardrobe/contact checks pass. Existing
+garment lifecycle (872) and 72-hour living simulation (694) checks pass. Source
+Electron smoke renders 88 frames with disposable saves and no local AI.
+
+This adds seven supplemental wardrobe constructions, bringing unique artwork
+coverage to 370/609 under review. The main catalogue remains 315/542; 18 wardrobe
+IDs still need reconstruction. Shared care cores do not fulfill the individual
+48-sequence requirement. Full visitor care, physical dressing and contextual
+repertoires remain open. Work allocation between Astra Medium production and
+the Astra Extra High advisor is recorded in
+`overhaul/animation-milestone/work-allocation.json`.
