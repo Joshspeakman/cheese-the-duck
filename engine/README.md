@@ -498,6 +498,35 @@ learning, interruption and save/load, plus all 48 visitor rigs and eight hatched
 ages. Render checks replay actual simulation frames and keep each staged visitor
 clickable at its drawn body.
 
+### Outdoor playthings in development
+
+Eight new constructions replace the frisbee, jump rope, yo-yo, bubble machine,
+bubble wand, pinwheel, toy boat and surfboard. Molded disc rims, braided cord,
+wooden grips, brass bubble wheels, soap bottles, folded paper vanes, clinker hull
+planks and striped waxed boards have physical contact points at the approved
+character scale. Forty-two initial native routines roll, retrieve, skip, coil,
+uncoil, wind, dip, blow, clean, rig, balance and inspect them.
+
+Controls and partial work persist on the selected physical copy. The notebook
+sends real play requests; original ownership, cooldowns and one-use rewards stay
+authoritative. Powered machines emit a bounded number of bubbles; switching off
+stops emission while existing bubbles expire. Wand bubbles start beside the
+actor's bill. Wind drives the pinwheel, while adverse weather stops machinery
+and prompts a native wind-down. Young, tired and older Cheese chooses quieter
+play. Stored objects do not keep running. Save/load retains object controls and
+pauses unfinished work. Boat and board activities currently happen on the bank.
+
+These are initial cores, not 48 completed bespoke sequences per object. Actual
+visitor participation, egg observation, guest-to-guest games, physical pickup
+and put-away and full individual mood/season repertoires remain unfinished.
+Validation uses `.venv/bin/python engine/check_playkit.py`,
+`node --test engine/tests/playkit.test.mjs`,
+`engine/node_modules/.bin/electron engine/playkit-check.cjs`, and
+`engine/node_modules/.bin/electron engine/playkit-ui-check.cjs`. Disposable-save
+checks cover native control/renderer parity, all hatched ages and 48 visitor
+rigs, actual ownership, copy identity, partial controls, interruptions, save/load,
+original rewards, live notebook commands and rendered native gameplay frames.
+
 ## Validation
 
 ```sh

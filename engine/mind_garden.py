@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from engine.social_brains import Minds, ACTIONS, LABELS, action_key, clamp, stable, player_claim
 from engine.local_speech import speak
 from world.guest_cast import guest_profile
-from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests, botanical_care, instrument_sessions, keepsakes, keepsake_company, creative_props, creative_company, textiles, textile_company, groundworks, ground_company, architecture, architecture_company
+from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests, botanical_care, instrument_sessions, keepsakes, keepsake_company, creative_props, creative_company, textiles, textile_company, groundworks, ground_company, architecture, architecture_company, playkit
 from engine.instrument_audio import InstrumentAudio
 
 CHEESE_VOICE = {
@@ -226,6 +226,9 @@ class MindGarden:
             if key!='cheese' and self.creators[key]['phase'] in ('inside','finished'):
                 facts['creative_work']=creative_props.conversation(self.pond,self.pond.state['plan'])
                 facts['current_activity']=creative['activity']
+        if key=='cheese':
+            toy=playkit.conversation(self.pond,self.pond.state.get('plan'))
+            if toy:facts['plaything']=toy
         structure=architecture_company.conversation(self,key)
         if structure:
             facts['shared_activity']={'with':structure['with_name'],'activity':structure['activity'],'status':structure['status']}
@@ -359,7 +362,7 @@ class MindGarden:
         for i,key in enumerate(keys):
             for other in keys[i+1:]:
                 if 'cheese' in (key,other) and self.pond.state.get('plan',{}):
-                    if self.pond.state['plan'].get('seating') or self.pond.state['plan'].get('plant_care') or self.pond.state['plan'].get('instrument') or self.pond.state['plan'].get('keepsake_work') or self.pond.state['plan'].get('creative_work') or self.pond.state['plan'].get('textile_work') or self.pond.state['plan'].get('ground_work') or self.pond.state['plan'].get('architecture_work'):continue
+                    if self.pond.state['plan'].get('seating') or self.pond.state['plan'].get('plant_care') or self.pond.state['plan'].get('instrument') or self.pond.state['plan'].get('keepsake_work') or self.pond.state['plan'].get('creative_work') or self.pond.state['plan'].get('textile_work') or self.pond.state['plan'].get('ground_work') or self.pond.state['plan'].get('architecture_work') or self.pond.state['plan'].get('playkit_work'):continue
                 if architecture_company.active(self,key) or architecture_company.active(self,other) or creative_company.active(self,key) or creative_company.active(self,other) or textile_company.active(self,key) or textile_company.active(self,other) or ground_company.active(self,key) or ground_company.active(self,other):continue
                 if keepsake_company.active(self,key) or keepsake_company.active(self,other):continue
                 if key in self.housing or other in self.housing or key in self.furnishings or other in self.furnishings or key in self.gardening or other in self.gardening or key in self.musicians or other in self.musicians or playdates.active(self,key) or playdates.active(self,other):continue

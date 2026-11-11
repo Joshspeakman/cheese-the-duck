@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: added 31 complementary shared roles across the 13 rebuilt garden structures. Regular, rare and story visitors walk independently to the actual far landing, share a native work clock, brush low physical joints, tap the bridge landing, wait for the gate, watch mechanisms and remember only observed facts after completed shared time. All eight hatched ages and 48 visitor rigs retain body scale; shorter guests use corrected low contacts and species mouths support well calls. Validation passed 1063 native checks, 3131 native/renderer samples, 7448 pose cases, 161 JavaScript tests, 195 solo regression checks, 1253 shared-ground regression checks, 694 checks across 72 simulated hours, 18 live notebook checks, all 542 measured footprints, a 1245-frame replay with 955 companion frames, and a clean 95-frame source smoke. Goal remains active: 250 reconstructed drawings, 292 pending, every object still unverified for its 48-sequence audit. Guest-to-guest structure sessions, egg observation, climbing, tool pickup and full personal/contextual repertoires remain unfinished. Installed chat 2.36.1 remains separate and its three chat client modules match the verified release; the animation milestone is not installed.",
+  "previous_goal_turn": "Progress: rebuilt eight outdoor playthings with 42 initial native routines, per-copy controls, age-aware handling, adverse-weather withdrawal, bounded soap bubbles and wind-driven pinwheel motion. Validated 164 native checks, 4242 native/renderer samples, 9408 hatched-age/visitor poses, 164 JavaScript tests, 24 live notebook checks, 254 placement checks, 694 long-run checks, 718 native-frame replay and clean 94-frame source smoke. Art reconstruction is 258/542; all per-object 48-sequence audits remain unverified. Actual visitor arrival and shared play, complete contextual repertoires and final installation remain unfinished. Goal stays active; installed chat 2.36.1 is unchanged.",
   "items": [
     {
       "id": "hat_red",
@@ -640,7 +640,7 @@
     {
       "id": "frisbee",
       "family": "disc",
-      "art": "pending",
+      "art": "reconstructed",
       "verifiedSequences": 0
     },
     {
@@ -653,13 +653,13 @@
     {
       "id": "jump_rope",
       "family": "rope",
-      "art": "pending",
+      "art": "reconstructed",
       "verifiedSequences": 0
     },
     {
       "id": "yo_yo",
       "family": "yoyo",
-      "art": "pending",
+      "art": "reconstructed",
       "verifiedSequences": 0
     },
     {
@@ -1199,7 +1199,7 @@
     {
       "id": "pinwheel",
       "family": "pinwheel",
-      "art": "pending",
+      "art": "reconstructed",
       "verifiedSequences": 0
     },
     {
@@ -1259,7 +1259,7 @@
     {
       "id": "bubble_machine",
       "family": "bubbles",
-      "art": "pending",
+      "art": "reconstructed",
       "verifiedSequences": 0
     },
     {
@@ -2014,7 +2014,7 @@
     {
       "id": "tiny_boat",
       "family": "boat",
-      "art": "pending",
+      "art": "reconstructed",
       "verifiedSequences": 0
     },
     {
@@ -2027,7 +2027,7 @@
     {
       "id": "bubble_wand",
       "family": "bubbles",
-      "art": "pending",
+      "art": "reconstructed",
       "verifiedSequences": 0
     },
     {
@@ -3000,7 +3000,7 @@
     {
       "id": "surfboard",
       "family": "surfboard",
-      "art": "pending",
+      "art": "reconstructed",
       "verifiedSequences": 0
     },
     {
@@ -3917,10 +3917,10 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "shared_architecture_activities",
+    "sourcePhase": "outdoor_playthings",
     "fullyOverhauled": false,
-    "constructedObjects": 250,
-    "remainingArtwork": 292,
+    "constructedObjects": 258,
+    "remainingArtwork": 284,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -4229,27 +4229,23 @@
       "engine/artifacts/animation-milestone/architecture-company-native.json",
       "engine/artifacts/animation-milestone/architecture-company-render.json",
       "engine/artifacts/animation-milestone/structure-company-live-bridge_spotter.png",
-      "engine/artifacts/animation-milestone/structure-company-smoke/frame.json"
+      "engine/artifacts/animation-milestone/structure-company-smoke/frame.json",
+      "engine/artifacts/animation-milestone/playkit-native.log",
+      "engine/artifacts/animation-milestone/playkit-all-js.log",
+      "engine/artifacts/animation-milestone/playkit-focused.log",
+      "engine/artifacts/animation-milestone/playkit-js.log",
+      "engine/artifacts/animation-milestone/playkit-ui.log",
+      "engine/artifacts/animation-milestone/playkit-render.log",
+      "engine/artifacts/animation-milestone/playkit-layout.log",
+      "engine/artifacts/animation-milestone/playkit-living.log",
+      "engine/artifacts/animation-milestone/playkit-smoke.log",
+      "engine/artifacts/animation-milestone/playkit-native.json",
+      "engine/artifacts/animation-milestone/playkit-render.json",
+      "engine/artifacts/animation-milestone/playkit-actions-0.png",
+      "engine/artifacts/animation-milestone/playkit-live-bubble_wand.png",
+      "engine/artifacts/animation-milestone/playkit-inspector.png"
     ],
-    "next": [
-      "Deepen the 13 reconstructed garden structures beyond 36 solo cores and 31 shared roles: guest-to-guest invitations, egg observation, climbing, physical tool pickup/put-away and full contextual/personality repertoires. Initial independent arrivals, native shared clocks, physical helper contacts, exact-copy controls and observed-fact memories are implemented. Continue all 292 remaining artwork reconstructions and every individual 48-sequence audit.",
-      "Deepen the 18 reconstructed ground/path/floor/plank objects beyond 32 solo cores and 27 shared roles: guest-to-guest invitations, physical tool pickup/put-away, egg listening, full mood/season/age/personality acting and individual 48-sequence audits. Independent arrivals, shared clocks, exact-copy contact, authored prints and sand lanes, observed-material memories, native weather and save/load are implemented. Continue the remaining 292 artwork reconstructions and the complete milestone.",
-      "Deepen the 13 textile/living-ground/fibre objects beyond 28 solo cores and 18 shared roles: guest-to-guest invitations, individual personality/material acting, physical tool pickup/put-away, egg listening, full season/mood repertoires and per-object 48-sequence audits. Initial independent arrivals, real helper contacts, actual-observation memories and all-cast fits are now implemented. Continue all 292 remaining artwork reconstructions and the full milestone.",
-      "Deepen the four creative props beyond 27 solo cores and 13 company roles: actual telescope handoffs, personal visitor choreography, guest-to-guest invitations, physical tool pickup/put-away and unfolded practice-paper handling. Independent arrivals, fixed work steps, actual observations and completed shared-session learning are implemented. Complete full mood/season/age/cast coverage and every-object 48-sequence audits; do not count this foundation as a completed repertoire.",
-      "Continue reconstruction of the remaining 292 object artworks and their native interactions; do not treat the 250 initial reconstructions or shared core counts as completion of the full object/age/guest/season/mood milestone.",
-      "Deepen the 12 keepsakes beyond 19 solo cores and 15 shared scene cores: personal visitor variations, guest-to-guest reading, egg listening, physical tool pickup/put-away, portable physical-copy handling and individual 48-sequence repertoires. Their initial regular/rare/story company lifecycle and all-cast posed rigs are now implemented and checked.",
-      "Expand 27 reconstructed lights beyond the ten initial control/observation cores: guest participation, contextual company, real tool pickup/put-away, surface-specific manipulation, expressive age/personality staging and each item\u2019s 48 meaningful sequences. Current controls and native state are verified foundations, not the completed milestone.",
-      "Expand instrument-specific and guest-specific performance repertoires beyond the 25 shared phrase cores, with explicit approach/climbing, stationary multi-level supports, instrument pickup/put-away, listening audiences and richer reciprocal musical gestures. Keep all per-object sequence counts unverified until the 48 meaningful sequence audit passes. Continue the remaining 292 artwork reconstructions and all other milestone requirements.",
-      "Continue construction-specific plant repertoires, seasonal/mood/personality choreography, reciprocal gestures and physical tool handoffs. The 19 shared care scores and all-cast rig fit are foundations, not 48 bespoke sequences on each plant. Continue the remaining 292 item reconstructions and the full per-object animation milestone.",
-      "Extend spatial arrangement to the separate building/decorating/project editors and consider additional habitat areas for larger collections; all 218 placeable shop objects now use measured footprints, dry-ground/water checks and truthful storage. Building and decoration objects reserve space against habitat purchases, but their own editors still use legacy placement rules.",
-      "Deepen construction-specific nest/bed/house acting and each remaining item repertoire; the 51 shared nest scores do not by themselves satisfy 48 bespoke sequences per object.",
-      "Add explicit nest body-facing transitions, construction-specific canopy/quilt/pillow/lining actions and species/age-specific climbing and doorway choreography.",
-      "Reconstruct the remaining 292 objects with authored details and anchors; regenerate measured placement bounds as artwork changes.",
-      "Expand guest-specific and age-specific behavior; eighteen shared tracks are not a complete bespoke catalogue.",
-      "Extend invitations, prop handoffs and cooperative item use, with real arrival and completion evidence.",
-      "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation.",
-      "Add physical reading, desk/workbench actions, cabinet/wardrobe/mirror use and construction-specific furniture routines; the 16 shared seating tracks do not satisfy the per-object 48-sequence target."
-    ],
+    "next": "Independent visitor participation in outdoor playthings, then remaining object constructions and complete per-object contextual repertoires. All 48-sequence audits remain open.",
     "checks": {
       "javascript": 161,
       "livingSimulation": 694,
@@ -4508,10 +4504,27 @@
         "p95Ms": 11.600000023841858,
         "sheets": 52,
         "note": "Actual native shared scenes with selectable regular, rare and story visitors. Development review, not the final full-milestone performance audit."
+      },
+      "playkitLifecycle": 164,
+      "playkitUI": 24,
+      "playkitNativePoseParitySamples": 4242,
+      "playkitRigCases": 9408,
+      "playkitRenderTests": 3,
+      "playkitJavascriptSuite": 164,
+      "playkitHabitatArrangement": 254,
+      "playkitLivingRegression": 694,
+      "playkitReplay": {
+        "frames": 718,
+        "drawn": 678,
+        "players": 518,
+        "medianMs": 4.300000011920929,
+        "p95Ms": 6.100000023841858,
+        "sheets": 22,
+        "note": "Actual native snapshots; development review, not final milestone performance audit."
       }
     },
     "limitations": [
-      "250 of 542 object artworks reconstructed for review; 292 remain.",
+      "258 of 542 object artworks reconstructed for review; 284 remain.",
       "No object has yet passed the 48 bespoke sequence requirement.",
       "Five nests now use 51 authored core routines (three require a canopy). Individual nest-construction variants, guest participation and egg-specific interactions remain unfinished; no per-object completion is claimed.",
       "Paired tracks currently share a core movement vocabulary across the cast; personality-specific choreography and full guest item participation remain unfinished.",
@@ -4527,7 +4540,8 @@
       "Four creative props have 27 native action cores and 13 complementary company roles. Regular, rare and story visitors arrive independently and share actual observations only after completed work. Fixed viewing steps and painting decks fit all eight hatched ages; eggs cannot operate tools. Personal visitor choreography, reciprocal eyepiece use, guest-to-guest invitations, tool pickup/put-away, unfolded practice-paper handling and full mood/season repertoires remain unfinished. No object has passed its 48-sequence audit.",
       "Thirteen textile/living-ground/fibre objects have 28 solo cores and 18 complementary company roles, independently arriving ordinary/rare/story visitors, actual per-copy contacts, pauses, saved materials and completed shared learning. Full individual visitor/material repertoires, guest-to-guest sessions, tool pickup/put-away, egg listening and complete seasonal/mood coverage remain unfinished. No per-object 48-sequence completion is claimed.",
       "Groundwork uses 32 initial solo cores and 27 complementary company roles across 18 objects; these are not 48 bespoke sequences per object. All 48 visitor rigs and eight hatched ages fit, and independent regular/rare/story arrivals, native shared contacts, marks and completed learning are checked. Guest-to-guest sessions, egg observation, full personal/contextual acting and physical tool pickup/put-away remain pending. Native simulation owns arrival, contact events and history.",
-      "Thirteen garden structures have 36 initial solo cores and 31 shared visitor roles with native mechanisms, independently reserved far landings, fixed-scale low contacts, bridge footing, seasonal vines and exact-copy controls. Guest-to-guest sessions, egg observation, climbing, physical tool pickup/put-away, full personality/mood/season acting and each object's 48 meaningful sequences remain unfinished. No object sequence completion is claimed."
+      "Thirteen garden structures have 36 initial solo cores and 31 shared visitor roles with native mechanisms, independently reserved far landings, fixed-scale low contacts, bridge footing, seasonal vines and exact-copy controls. Guest-to-guest sessions, egg observation, climbing, physical tool pickup/put-away, full personality/mood/season acting and each object's 48 meaningful sequences remain unfinished. No object sequence completion is claimed.",
+      "Eight outdoor playthings have 42 initial native routine cores, saved controls, contact effects and finite native bubbles. All hatched ages and visitor rigs fit, but visitors do not yet join these routines through actual arrivals. Egg observation, guest-to-guest games, physical pickup/put-away, complete mood/season repertoires and each object's 48 bespoke sequences remain unfinished. Boat and board practice stays on the bank; no voyage or surf travel is claimed."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -4578,9 +4592,9 @@
     },
     "sourceSmoke": {
       "result": "PASS",
-      "frames": 95,
+      "frames": 94,
       "localAI": false,
-      "evidence": "engine/artifacts/animation-milestone/structure-company-smoke/frame.json"
+      "evidence": "engine/artifacts/animation-milestone/playkit-smoke/frame.json"
     },
     "chatRelease": {
       "branch": "codex/pond-chat-2.36.1",
@@ -4613,6 +4627,8 @@
     "groundCompanyScores": 27,
     "architectureObjects": 13,
     "architectureRoutineCores": 36,
-    "architectureCompanyScores": 31
+    "architectureCompanyScores": 31,
+    "playkitObjects": 8,
+    "playkitRoutineCores": 42
   }
 }

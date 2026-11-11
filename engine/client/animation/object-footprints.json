@@ -489,10 +489,10 @@
       "construction": "legacy-detail"
     },
     "frisbee": {
-      "width": 22.38,
-      "height": 6.84,
+      "width": 50.54,
+      "height": 28.93,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "playkit-v1"
     },
     "toy_car": {
       "width": 32.83,
@@ -501,16 +501,16 @@
       "construction": "playground-v1"
     },
     "jump_rope": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 52.19,
+      "height": 29.52,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "playkit-v1"
     },
     "yo_yo": {
-      "width": 12.47,
-      "height": 9.09,
+      "width": 37.27,
+      "height": 30.58,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "playkit-v1"
     },
     "kite": {
       "width": 56.47,
@@ -963,10 +963,10 @@
       "construction": "lighting-v1"
     },
     "pinwheel": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 41.24,
+      "height": 37.86,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "playkit-v1"
     },
     "rain_barrel": {
       "width": 50.39,
@@ -1017,10 +1017,10 @@
       "construction": "legacy-detail"
     },
     "bubble_machine": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 52.29,
+      "height": 40.37,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "playkit-v1"
     },
     "snow_globe": {
       "width": 20.14,
@@ -1671,10 +1671,10 @@
       "construction": "playground-v1"
     },
     "tiny_boat": {
-      "width": 16.07,
-      "height": 9.09,
+      "width": 49.73,
+      "height": 32.15,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "playkit-v1"
     },
     "wind_up_duck": {
       "width": 26.94,
@@ -1683,10 +1683,10 @@
       "construction": "playground-v1"
     },
     "bubble_wand": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 40.8,
+      "height": 31.78,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "playkit-v1"
     },
     "seashell": {
       "width": 17.7,
@@ -2571,10 +2571,10 @@
       "construction": "legacy-detail"
     },
     "surfboard": {
-      "width": 9.77,
-      "height": 9.09,
+      "width": 63.06,
+      "height": 31.88,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "playkit-v1"
     },
     "scarecrow_costume": {
       "width": 18.15,

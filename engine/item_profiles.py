@@ -33,3 +33,7 @@ for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/
 # Garden structures expose physical controls and observation, not invented construction.
 for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/animation/architecture.json').read_text()).items():
     ITEMS[_id].update(kind='study',material=_p['material'],skill=_p['skill'],verb=_p['verb'],need='fun',duration=24)
+
+# Outdoor playthings share their controls and anatomy with Ultra.
+for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/animation/playkit.json').read_text()).items():
+    ITEMS[_id].update(kind='toy',material=_p['material'],skill=_p['skill'],verb=_p['verb'],need='fun',duration=24)

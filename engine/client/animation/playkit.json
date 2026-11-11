@@ -1,0 +1,82 @@
+{
+  "frisbee": {
+    "type": "disc",
+    "w": 146,
+    "h": 92,
+    "scale": 0.49,
+    "material": "paint",
+    "skill": "agility",
+    "verb": "Roll and retrieve",
+    "portable": true
+  },
+  "jump_rope": {
+    "type": "rope",
+    "w": 148,
+    "h": 92,
+    "scale": 0.5,
+    "material": "fabric",
+    "skill": "agility",
+    "verb": "Step and skip",
+    "portable": true
+  },
+  "yo_yo": {
+    "type": "yoyo",
+    "w": 108,
+    "h": 104,
+    "scale": 0.46,
+    "material": "wood",
+    "skill": "agility",
+    "verb": "Walk the yo-yo",
+    "portable": true
+  },
+  "bubble_machine": {
+    "type": "bubbler",
+    "w": 136,
+    "h": 122,
+    "scale": 0.52,
+    "material": "metal",
+    "skill": "observation",
+    "verb": "Make bubbles",
+    "portable": false
+  },
+  "bubble_wand": {
+    "type": "wand",
+    "w": 128,
+    "h": 116,
+    "scale": 0.43,
+    "material": "glass",
+    "skill": "observation",
+    "verb": "Blow bubbles",
+    "portable": true
+  },
+  "pinwheel": {
+    "type": "pinwheel",
+    "w": 112,
+    "h": 124,
+    "scale": 0.48,
+    "material": "paper",
+    "skill": "observation",
+    "verb": "Turn the vanes",
+    "portable": false
+  },
+  "tiny_boat": {
+    "type": "boat",
+    "w": 154,
+    "h": 112,
+    "scale": 0.45,
+    "material": "wood",
+    "skill": "observation",
+    "verb": "Push the little boat",
+    "portable": true
+  },
+  "surfboard": {
+    "type": "board",
+    "w": 168,
+    "h": 92,
+    "scale": 0.54,
+    "material": "wood",
+    "skill": "agility",
+    "verb": "Practice balance",
+    "portable": true
+  }
+}
