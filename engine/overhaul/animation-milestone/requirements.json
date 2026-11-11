@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: rebuilt 41 original headwear variants (22 catalogue objects and 19 supplemental wardrobe pieces), with separate compact fitting and detailed ASCII construction. Added native worn-only rain/snow/visor material, actual roof protection, storage drying, five physical care cores, automatic material-driven choices, age-fitted connected wings, contact-only effects, cancellation, cooldowns, save compatibility and live notebook controls. All hatched ages and both directions are checked; eggs never wear hats. Corrected the wardrobe comparison to match accumulated frozen weather. The full catalogue, visitor-specific repertoire, every-object 48-sequence audit and final installation remain unfinished.",
+  "previous_goal_turn": "Progress: addressed terrain and perspective placement. Native and preview rules share the shoreline, fixed willow roots and dock; actual ground footprints are distinct from drawing envelopes. Trees and dock occlude rear items and hit targets. Buildings, room decorations, community projects and garden beds now use saved native ground anchors; old layouts migrate without losing ownership or copy history, and external copies can be arranged or stored. Growing a garden preserves its established bed. Artwork/repertoire completion remains unchanged at 301 reconstructed / 241 pending and all verified-sequence counts zero.",
   "items": [
     {
       "id": "hat_red",
@@ -3993,7 +3993,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "constructed_headwear_and_native_weather_care",
+    "sourcePhase": "grounded_world_placement_and_scenery_depth",
     "fullyOverhauled": false,
     "constructedObjects": 301,
     "remainingArtwork": 241,
@@ -4434,11 +4434,17 @@
       "engine/artifacts/animation-milestone/headwear-living.log",
       "engine/artifacts/animation-milestone/headwear-brains.log",
       "engine/artifacts/animation-milestone/headwear-smoke.log",
-      "engine/artifacts/animation-milestone/headwear-wardrobe-render.log"
+      "engine/artifacts/animation-milestone/headwear-wardrobe-render.log",
+      "engine/artifacts/animation-milestone/grounds-cases.json",
+      "engine/artifacts/animation-milestone/grounding-render.json",
+      "engine/artifacts/animation-milestone/grounding-review.png",
+      "engine/artifacts/animation-milestone/grounding-js-suite.log",
+      "engine/artifacts/animation-milestone/grounding-render.log",
+      "engine/artifacts/animation-milestone/grounding-smoke.log"
     ],
-    "next": "Continue the remaining 241 catalogue constructions and individual contextual repertoires. Headwear still needs individual visitor participation, dressing/undressing and the per-object 48-sequence audit. All 542 verified-sequence counts remain zero; preserve the full milestone scope through final integration and installation.",
+    "next": "Finish the terrain/contact audit for temporary portable performances and non-Home-Pond ground planes, then continue the remaining 241 catalogue constructions and individual contextual repertoires. Headwear still needs individual visitor participation and dressing/undressing. All 542 verified-sequence counts remain zero; preserve the full milestone scope through final integration and installation.",
     "checks": {
-      "javascript": 207,
+      "javascript": 208,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4829,7 +4835,10 @@
       "headwearNative": 1514,
       "headwearNativeFrames": 50,
       "headwearCareFrames": 573,
-      "headwearUI": 7
+      "headwearUI": 7,
+      "groundingNative": 292,
+      "groundingUI": 12,
+      "groundingParitySamples": 840
     },
     "limitations": [
       "279 of 542 object artworks reconstructed for review; 263 remain.",
@@ -5041,6 +5050,31 @@
       "ui": "Live equipped-hat care in plans and belongings, original wardrobe access, no misleading ground-object wetness meter for rebuilt hats.",
       "sequenceCoverageAdded": 0,
       "remaining": "Individual item repertoires, visiting wearers, shared dressing activities, tool/hat pickup and put-away, the full 48-sequence age/species/context audit."
+    },
+    "grounding": {
+      "status": "implemented_and_verified_foundation",
+      "measuredCatalogue": 542,
+      "shopPlaceables": 218,
+      "nativeChecks": 292,
+      "placementParitySamples": 840,
+      "uiChecks": 12,
+      "cameraCases": 3,
+      "pixelDepthAspects": [
+        "1440x900",
+        "2400x700",
+        "800x1200"
+      ],
+      "savedSources": [
+        "habitat",
+        "buildings",
+        "outdoor decorations",
+        "community projects",
+        "garden beds"
+      ],
+      "ownership": "Original inventory, construction, source room records and exact-copy history retained. Overflow is accessible through Arrange.",
+      "depth": "Fixed Home Pond trees and dock use native ground anchors; actual scenery ink cells occlude items and clicks behind them. Weather remains above actors without intercepting input.",
+      "garden": "Mature plant envelopes are reserved while beds are empty; new community work finds room around established grounds.",
+      "remaining": "Temporary portable performance origins and terrain outside Home Pond still need their own authoritative terrain/contact audit during the full milestone; no sequence-completion credit is claimed."
     }
   }
 }

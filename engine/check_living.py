@@ -125,6 +125,8 @@ try:
             for material,amount in cost.items():g.materials.add_material(material,amount)
             before=g.materials.get_all_materials().copy()
             check(p.start('project',key)[0],'later project stage starts '+key+str(stage))
+            destination=p.state['plan'].get('destination')
+            if destination:g.renderer.duck_pos.x,g.renderer.duck_pos.y=destination
             p.advance(100)
             check(p.state['projects'][key]['stage']==stage+1,'later project stage completes '+key+str(stage))
             check(all(g.materials.get_count(m)==before[m]-n for m,n in cost.items()),'later project costs applied once '+key+str(stage))

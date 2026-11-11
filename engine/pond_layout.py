@@ -18,12 +18,14 @@ WIDTH,HEIGHT=20,12
 def finite(value):
     return isinstance(value,(int,float)) and not isinstance(value,bool) and math.isfinite(value)
 
-def bounds(item,x,y):
-    f=FOOTPRINTS.get(item,{'width':26,'height':18,'floor':False})
+def bounds(item,x,y,footprint=None):
+    f=footprint or FOOTPRINTS.get(item,{'width':26,'height':18,'floor':False})
     # The largest live camera spans 132 x 42 world units, projected into
     # 192 x 47 ground cells. The drawing grows upward from its actual feet.
     w=f['width']*20/192+.5;h=f['height']*12/47
-    return dict(x=x-w/2,y=y-h,w=w,h=h+.65,floor=f['floor'])
+    box=dict(x=x-w/2,y=y-h,w=w,h=h+.65,floor=f['floor'])
+    box['ground']=ground_bounds(item,box,y)
+    return box
 
 def overlaps(a,b):
     if a['floor']!=b['floor']:return False  # Rugs belong under furniture.
@@ -33,13 +35,32 @@ def shoreline(x):
     gx=24+x*192/20
     return (GROUND['bank']+math.sin(gx*GROUND['waveA'][0]+GROUND['seed'])*GROUND['waveA'][1]+math.sin(gx*GROUND['waveB'][0])*GROUND['waveB'][1]-46)*12/47
 
+def ground_bounds(item,box,y):
+    # Upright drawings rise from their feet. Flat mats/paths occupy their whole
+    # drawn ground plane, including the back edge (important for floating pads).
+    depth=(box['h']-.65 if box['floor'] else .35 if item in GROUND['waterItems']
+           else max(.35,min(1.8,(box['h']-.65)*.18)))
+    return dict(x=box['x'],y=y-depth,w=box['w'],h=depth+.35,floor=False)
+
+def scenery():
+    result=[]
+    for feature in GROUND['scenery']:
+        f=dict(feature)
+        y=f.get('y',shoreline(f.get('shoreX',f['x']))+f.get('shoreOffset',0))
+        f.update(y=y,box=dict(x=f['x']-f['width']/2,y=y-f['depth']/2,
+                             w=f['width'],h=f['depth'],floor=False))
+        result.append(f)
+    return result
+
+SCENERY=scenery()
+
 def surface_fits(item,box,y):
     if item in GROUND['eitherItems']:return True
     water=item in GROUND['waterItems']
     for step in range(33):
         shore=shoreline(box['x']+box['w']*step/32)
         if not water and y+.35>shore:return False
-        if water and y-.35<shore:return False
+        if water and ground_bounds(item,box,y)['y']<shore:return False
     return True
 
 class PondLayout:
@@ -48,41 +69,47 @@ class PondLayout:
 
     def occupied(self,exclude='',instance=None):
         # Idle bobbing never changes the permanent space reservation.
-        return [(p.item_id,p.x,p.y) for p in self.habitat.get_visible_placed_items()
-                if (p.instance_id!=instance if instance is not None else p.item_id!=exclude)]+list(self.obstacles())
+        return [(p.item_id,p.x,p.y,None) for p in self.habitat.get_visible_placed_items()
+                if (p.instance_id!=instance if instance is not None else p.item_id!=exclude)]+[
+                    (*p[:3],p[4] if len(p)>4 else None) for p in self.obstacles() if len(p)<4 or p[3]!=instance]
 
     def eligible(self,item):
         from world.shop import get_item,ItemCategory
         definition=get_item(item)
         return item in self.habitat.owned_items and item in FOOTPRINTS and definition and definition.category!=ItemCategory.COSMETIC
 
-    def check(self,item,x,y,instance=None):
+    def check(self,item,x,y,instance=None,footprint=None):
         if not finite(x) or not finite(y):return False,'Choose a point inside the habitat.'
         if item not in FOOTPRINTS:return False,'This object does not have a placement drawing yet.'
-        f=bounds(item,x,y)
+        f=bounds(item,x,y,footprint)
         if f['x']<.2 or f['x']+f['w']>WIDTH-.2 or x>124*20/132 or y<1 or y>37*12/42:
             return False,'Leave room around the edge for the whole object.'
         # The visible upper sky can contain a tall roof; the ground anchor
         # must stay reachable. No object can be hidden above the window.
-        if 46+y*47/12-FOOTPRINTS[item]['height']<2:
+        if 46+y*47/12-(footprint or FOOTPRINTS[item])['height']<2:
             return False,'That tall object needs a spot farther down the bank.'
         if not surface_fits(item,f,y):
             return False,'That belongs on the water.' if item in GROUND['waterItems'] else 'Keep its feet on the dry bank.'
-        for other,ox,oy in self.occupied(item,instance):
-            if overlaps(f,bounds(other,ox,oy)):
+        feet=ground_bounds(item,f,y)
+        for feature in SCENERY:
+            if overlaps(feet,feature['box']):
+                return False,'Leave room for the '+feature['name'].lower()+'.'
+        for other,ox,oy,shape in self.occupied(item,instance):
+            other_box=bounds(other,ox,oy,shape)
+            if f['floor']==other_box['floor'] and overlaps(feet,other_box['ground']):
                 return False,'That spot overlaps '+other.replace('_',' ')+'.'
         return True,'There is room here.'
 
-    def find(self,item,preferred=None,instance=None):
+    def find(self,item,preferred=None,instance=None,footprint=None):
         if item not in FOOTPRINTS:return None
         if preferred and len(preferred)==2 and all(finite(v) for v in preferred):
-            if self.check(item,*preferred,instance=instance)[0]:return list(preferred)
+            if self.check(item,*preferred,instance=instance,footprint=footprint)[0]:return list(preferred)
         else:preferred=(10,5)
         # Quarter-cell vertical steps and half-cell horizontal steps make small
         # nooks useful without reducing the actual drawing or contact space.
         points=[(x/2,y/4) for x in range(1,40) for y in range(4,45)]
         points.sort(key=lambda p:((p[0]-preferred[0])**2+(p[1]-preferred[1])**2*2,p[1],p[0]))
-        return next((list(p) for p in points if self.check(item,*p,instance=instance)[0]),None)
+        return next((list(p) for p in points if self.check(item,*p,instance=instance,footprint=footprint)[0]),None)
 
     def put(self,item,x,y,instance=None):
         h=self.habitat
@@ -152,4 +179,6 @@ class PondLayout:
                    if key in FOOTPRINTS and get_item(key) and get_item(key).category!=ItemCategory.COSMETIC],
             copies=[dict(id=p.item_id,instance=p.instance_id,placed=p in h.get_visible_placed_items()) for p in h.placed_items+h.stored_placements if self.eligible(p.item_id)],
             placed=[dict(id=p.item_id,instance=p.instance_id,x=p.x,y=p.y,box=bounds(p.item_id,p.x,p.y)) for p in h.get_visible_placed_items()],
-            obstacles=[dict(id=key,x=x,y=y,box=bounds(key,x,y)) for key,x,y in self.obstacles()])
+            scenery=SCENERY,
+            obstacles=[dict(id=p[0],x=p[1],y=p[2],instance=p[3] if len(p)>3 else None,
+                            box=bounds(*p[:3],p[4] if len(p)>4 else None)) for p in self.obstacles()])

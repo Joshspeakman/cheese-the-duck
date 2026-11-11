@@ -8,12 +8,21 @@ export function homeBankOnScreen(x,camera={x:0,y:0,w:132,h:42}){
  return 46+(homeShore(wx*20/132)*42/12-camera.y)/camera.h*47;
 }
 export function itemSurface(id){return GROUND.waterItems.includes(id)?'water':GROUND.eitherItems.includes(id)?'either':'land';}
+export function groundBounds(id,box,y){
+ const depth=box.floor?box.h-.65:itemSurface(id)==='water'?.35:Math.max(.35,Math.min(1.8,(box.h-.65)*.18));
+ return {x:box.x,y:y-depth,w:box.w,h:depth+.35};
+}
+export const homeScenery=GROUND.scenery.map(f=>{
+ const y=f.y??homeShore(f.shoreX??f.x)+(f.shoreOffset||0);
+ return {...f,y,box:{x:f.x-f.width/2,y:y-f.depth/2,w:f.width,h:f.depth}};
+});
+export const intersects=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
 export function surfaceFits(id,box,y){
  const surface=itemSurface(id);
  if(surface==='either')return true;
  for(let x=box.x;x<=box.x+box.w+.001;x+=box.w/32){
   if(surface==='land'&&y+.35>homeShore(x))return false;
-  if(surface==='water'&&y-.35<homeShore(x))return false;
+  if(surface==='water'&&groundBounds(id,box,y).y<homeShore(x))return false;
  }
  return true;
 }

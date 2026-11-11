@@ -6,13 +6,16 @@ sys.path.insert(0,str(ROOT))
 os.environ['CHEESE_SAVE_DIR']=tempfile.mkdtemp(prefix='cheese-layout-')
 os.environ['SDL_AUDIODRIVER']='dummy'
 from engine import host
-from engine.pond_layout import PondLayout,FOOTPRINTS,bounds,overlaps
+from engine.pond_layout import PondLayout,FOOTPRINTS,bounds,overlaps,SCENERY
 from engine.scene import snapshot
 from world.habitat import Habitat,PlacedItem
 from world.shop import get_item,ItemCategory
 from world.atmosphere import Weather,WeatherType
 from world.friends import visitor_animator
 from world.building import Structure,StructureStatus
+from world.decorations import PlacedDecoration,RoomType
+from engine.placements import complete_structures,outdoor_decorations
+from engine.living_world import LivingPond
 from datetime import datetime
 sys.stdout=host.WIRE
 checks=[]
@@ -29,12 +32,14 @@ h.owned_items=['couch','garden_bench','toy_ball','hammock','chair_wood','grass_p
 h.placed_items=[];h.stored_items=[]
 owned=list(h.owned_items);currency=h.currency
 for key in h.owned_items:h.show_item(key)
-check(bool(h.stored_items),'full habitat retains overflow in storage')
+h.placed_items.extend(PlacedItem('couch',10,6) for _ in range(24))
+layout.reconcile()
+check(bool(h.stored_placements),'full habitat retains individual overflow copies in storage')
 for a in h.get_visible_placed_items():
-    check(layout.check(a.item_id,a.x,a.y)[0],a.item_id+' reserves clear space')
-for key in h.stored_items:
+    check(layout.check(a.item_id,a.x,a.y,a.instance_id)[0],a.item_id+' reserves clear space')
+for stored in h.stored_placements[:2]:
     before=copy.deepcopy(h.to_dict())
-    check(not h.show_item(key) and h.to_dict()==before,'full habitat cannot pretend to place '+key)
+    check(not layout.auto_place(stored.item_id,instance=stored.instance_id) and h.to_dict()==before,'full habitat cannot pretend to place a stored copy')
 check(h.owned_items==owned and h.currency==currency,'placement preserves all ownership and currency')
 before=copy.deepcopy(h.to_dict())
 check(not layout.auto_place('castle_tower') and h.to_dict()==before,'unowned auto placement cannot grant or store an item')
@@ -50,7 +55,7 @@ check(loaded.to_dict()==h.to_dict() and loaded.placement_policy is None,'physica
 
 # Existing crowded saves migrate once, preserving possessions and finding honest space.
 legacy=Habitat();legacy.owned_items=['couch','garden_bench','hammock','chair_wood','sofa_fancy','fireplace']
-legacy.placed_items=[PlacedItem(k,10,6) for k in legacy.owned_items]
+legacy.placed_items=[PlacedItem(k,10,6) for k in legacy.owned_items]+[PlacedItem('couch',10,6) for _ in range(24)]
 legacy.placed_items[0].x=-3
 legacy.currency=413;policy=PondLayout(legacy)
 report=policy.reconcile()
@@ -62,6 +67,20 @@ check(not again['moved'] and not again['stored'] and legacy.to_dict()==before,'m
 # External built structures reserve room even when they share a catalogue id.
 external=PondLayout(legacy,lambda:[('couch',10,6)])
 check(not external.check('couch',10,6)[0],'a separately built copy still blocks the selected object')
+empty=PondLayout(Habitat())
+for feature in SCENERY:
+    key='tiny_boat' if feature['kind']=='dock' else 'toy_ball'
+    check(not empty.check(key,feature['x'],feature['y'])[0],'fixed '+feature['id']+' cannot become an item pedestal')
+# All catalogue entries use the measured drawing, including room-only objects.
+for key in ('pond_weed','lily_pad','tiny_boat','submarine','pond_fountain'):
+    spot=empty.find(key)
+    check(spot is not None and empty.check(key,*spot)[0],key+' has a usable aquatic location')
+    check(not empty.check(key,10,2)[0],key+' cannot be placed on dry grass')
+misplaced=Habitat();misplaced.owned_items=['toy_ball','chair_wood','submarine']
+misplaced.placed_items=[PlacedItem('toy_ball',20,5),PlacedItem('chair_wood',10,11),PlacedItem('submarine',10,2)]
+identities={a.instance_id for a in misplaced.placed_items};repair=PondLayout(misplaced);repair.reconcile()
+check({a.instance_id for a in misplaced.placed_items+misplaced.stored_placements}==identities,'tree/water migration preserves every original copy')
+check(all(repair.check(a.item_id,a.x,a.y,a.instance_id)[0] for a in misplaced.placed_items),'legacy ball, chair and submarine move onto their correct surfaces')
 
 # Shared fixtures cover accepted positions, collisions and edge failures in JS.
 cases=[];rng=random.Random(319)
@@ -84,6 +103,7 @@ try:
     g.habitat.owned_items=['couch','garden_bench','toy_ball','hammock','chair_wood']
     g.habitat.placed_items=[];g.habitat.stored_items=[]
     for key in g.habitat.owned_items:g.habitat.show_item(key)
+    g.habitat.store_item('hammock')
     p.sync()
     check('hammock' not in p.placed,'stored habitat possessions are not activity targets')
     # A stale hidden record from an old save is also unavailable.
@@ -91,6 +111,7 @@ try:
     check('hammock' not in p.placed,'legacy hidden placements cannot be used')
     g.habitat.placed_items=[a for a in g.habitat.placed_items if a.item_id!='hammock']
     g.duck.growth_stage='adult';p.state['cooldowns']={}
+    g.duck_store.sync_from_duck(g.duck)
     ok,message=p.start('item','couch')
     check(ok,'real activity can approach the arranged couch: '+message)
     before=p.state['objects']['couch']['uses']
@@ -136,6 +157,62 @@ try:
     check(g.habitat.to_dict()==before,'render snapshots never change placement')
     check(frame['scene']['living']['layout']['reply']['ok'],'live frames deliver placement acknowledgements')
     (out/'layout-frame.json').write_text(json.dumps(frame))
+    # Original building/room grids are not shoreline coordinates. Their saved
+    # native anchors must be used by both walking and drawing, never a visual shim.
+    habitat_before=copy.deepcopy(g.habitat.to_dict())
+    original_structures=list(g.building.structures)
+    original_decor=list(g.decorations.rooms['pond'].decorations)
+    g.habitat.placed_items=[];g.habitat.stored_placements=[];g.habitat.owned_items=[]
+    g.building.structures=[Structure('basic_nest',(2,7),status=StructureStatus.COMPLETE)]
+    room=g.decorations.rooms['pond'];room.unlocked=True
+    room.decorations=[PlacedDecoration('rubber_duck',RoomType.POND,(0,0),datetime.now().isoformat()),
+                      PlacedDecoration('fountain',RoomType.POND,(6,5),datetime.now().isoformat())]
+    source_before=copy.deepcopy((g.building.to_dict(),g.decorations.to_dict()))
+    p.sync()
+    for placement in complete_structures(g)+outdoor_decorations(g):
+        key=placement.item_id;xy=placement.get_display_position()
+        check(p.layout.check(key,*xy,instance=placement.instance)[0],key+' original grid resolved onto valid ground')
+        scene=snapshot(g,g.renderer)
+        drawn=next(a for a in scene['items']+scene['structures'] if a['instance']==placement.instance)
+        check([drawn['x'],drawn['y']]==[placement.x,placement.y],key+' rendering and walking use identical anchors')
+    check(source_before==(g.building.to_dict(),g.decorations.to_dict()),'ground migration preserves original ownership, construction and room records')
+    nested=g.building.structures[0]
+    check(nested.instance_id in p.grounds.records,'completed building has a persistent ground record')
+    before=copy.deepcopy(p.state['grounds'])
+    p.command(dict(action='layout_place',target='basic_nest',instance=nested.instance_id,x=10,y=11))
+    check(not p.state['layout']['reply']['ok'] and before==p.state['grounds'],'water placement cannot change a built nest')
+    p.command(dict(action='layout_store',target='basic_nest',instance=nested.instance_id))
+    check(p.state['layout']['reply']['ok'] and not complete_structures(g),'built copy can be stored without losing construction')
+    p.command(dict(action='layout_auto',target='basic_nest',instance=nested.instance_id))
+    check(p.state['layout']['reply']['ok'] and len(complete_structures(g))==1,'stored built copy can return through Arrange')
+    check(nested.instance_id==complete_structures(g)[0].instance,'rearranging a built copy preserves its identity')
+    saved=p.save();loaded=LivingPond(saved)
+    check(loaded.state['grounds']==p.state['grounds'],'resolved ground anchors and storage survive saves');loaded.minds.close()
+    before=copy.deepcopy(p.state['grounds']);p.sync();snapshot(g,g.renderer)
+    check(before==p.state['grounds'],'sync and rendering leave settled anchors unchanged')
+    projects_before=copy.deepcopy(p.state['projects'])
+    p.state['projects']['workshop']['stage']=1
+    g.garden.get_current_season=lambda:'summer'
+    garden_position=[p.state['grounds']['garden:0'][axis] for axis in ('x','y')]
+    check(g.garden.plant_seed(0,'sunflower_seeds')[0],'garden fixture plants through the original seed inventory')
+    p.sync()
+    check([p.state['grounds']['garden:0'][axis] for axis in ('x','y')]==garden_position,'planting keeps an already suitable garden bed in place')
+    installations=p.grounds.installations()
+    check(any(a['instance']=='project:workshop' for a in installations),'community workshop has an actual ground anchor')
+    check(any(a['instance']=='garden:0' and a['id']=='sunflower' for a in installations),'planted garden uses its own saved ground anchor')
+    for item in installations:
+        check(p.layout.check(item['id'],item['x']*20/132,item['y']*12/42,item['instance'],item['footprint'])[0],item['instance']+' occupies clear dry ground')
+    physical_layout=p.grounds.snapshot(p.layout.snapshot());ground_cases=[]
+    for identity,source in p.grounds.sources.items():
+        for _ in range(60):
+            x=round(rng.uniform(0,20),2);y=round(rng.uniform(1,11),2)
+            ground_cases.append(dict(id=source.item_id,instance=identity,x=x,y=y,
+                ok=p.layout.check(source.item_id,x,y,identity,source.footprint)[0]))
+    (out/'grounds-cases.json').write_text(json.dumps(dict(layout=physical_layout,cases=ground_cases)))
+    (out/'grounding-frame.json').write_text(json.dumps(dict(scene=snapshot(g,g.renderer))))
+    p.state['projects']=projects_before
+    g.building.structures=original_structures;room.decorations=original_decor
+    g.habitat.from_dict(habitat_before);g.habitat.placement_policy=p.layout;p.sync()
     (out/'layout-simulation.json').write_text(json.dumps(dict(result='PASS',checks=len(checks),placeable=len(ids),assertions=checks),indent=2))
     if '--serve' in sys.argv:
         print(json.dumps(dict(type='layout_frame',frame=frame)),flush=True)

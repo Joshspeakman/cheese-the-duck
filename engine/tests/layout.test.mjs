@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import footprints from '../client/animation/object-footprints.json' with {type:'json'};
-import {homeShore,homeBankOnScreen,surfaceFits} from '../client/habitat-ground.mjs';
+import {homeShore,homeBankOnScreen,surfaceFits,homeScenery} from '../client/habitat-ground.mjs';
 import {layoutBounds,layoutCheck} from '../client/pond-layout.mjs';
 import {LivingWorld} from '../client/ultra-world.mjs';
 import {scene} from './scenes.mjs';
@@ -11,6 +11,18 @@ import {scene} from './scenes.mjs';
 test('placement measurements stay current with all actual item drawings',()=>{
  execFileSync(process.execPath,[fileURLToPath(new URL('../build-footprints.mjs',import.meta.url)),'--check'],{stdio:'pipe'});
  assert.equal(Object.keys(footprints.items).length,542);
+});
+test('scenery roots and dock reject placement; world anchors follow the same camera as items',()=>{
+ const layout={items:[{id:'toy_ball',footprint:footprints.items.toy_ball},{id:'tiny_boat',footprint:footprints.items.tiny_boat}],placed:[],obstacles:[]};
+ for(const f of homeScenery)assert.ok(!layoutCheck(layout,f.kind==='dock'?'tiny_boat':'toy_ball',f.x,f.y).ok);
+ for(const camera of [{x:0,y:0,w:132,h:42},{x:10,y:2,w:107,h:38},{x:55,y:10,w:44,h:28}]){
+  const world=new LivingWorld(),s=scene({camera}),result=world.render(s,0);
+  for(const f of homeScenery){
+   const layer=result.scenery.find(l=>l.id===f.id),[x,y]=world.project(s,f.x*132/20,f.y*42/12);
+   assert.equal(layer.y,y+(f.kind==='dock'?3:2));
+   assert.ok(Number.isFinite(x));
+  }
+ }
 });
 test('Home Pond water and dry ground follow world positions across camera movement',()=>{
  const world=new LivingWorld();

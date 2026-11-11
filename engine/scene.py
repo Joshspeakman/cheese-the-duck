@@ -1,6 +1,6 @@
 """Read-only scene snapshots for Ultra. Classic composition is kept unchanged."""
 from engine.frame import line_runs
-from engine.placements import outdoor_decorations,habitat_placements
+from engine.placements import outdoor_decorations,habitat_placements,complete_structures
 from core.settings import get_settings
 from ui.ascii_art import get_mini_duck
 from ui.habitat_art import get_item_art, get_structure_art
@@ -59,13 +59,9 @@ def snapshot(game, renderer):
                           'art': get_item_art(item.item_id)})
         for decoration in outdoor_decorations(game):
             items.append({'id':decoration.item_id,'instance':decoration.instance,'x':decoration.x,'y':decoration.y,'art':get_item_art(decoration.item_id)})
-        for i, structure in enumerate(game.building.structures):
-            if structure.status.value != 'complete':
-                continue
-            p = getattr(structure, 'position', None)
-            structures.append({'id': structure.blueprint_id, 'instance': structure.instance_id, 'x': p[0] * 132 / 10 if p else 8 + i * 12,
-                               'y': p[1] * 42 / 8 if p else 32,
-                               'art': get_structure_art(structure.blueprint_id)})
+        for structure in complete_structures(game):
+            structures.append({'id':structure.item_id,'instance':structure.instance,'x':structure.x,'y':structure.y,
+                               'art':get_structure_art(structure.item_id)})
     if game.friends.current_visit:
         friend = game.friends.get_friend_by_id(game.friends.current_visit.friend_id)
         if friend:

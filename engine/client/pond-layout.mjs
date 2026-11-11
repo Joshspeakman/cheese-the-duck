@@ -1,6 +1,7 @@
 import {SceneCanvas} from './ultra-renderer.mjs';
 import {catalog} from './ultra-items.mjs';
-import {surfaceFits,itemSurface} from './habitat-ground.mjs';
+import {surfaceFits,itemSurface,homeScenery,groundBounds,intersects} from './habitat-ground.mjs';
+import {W,H} from './ultra-grid.mjs';
 
 const names=new Map(catalog.map(i=>[i.id,i.name]));
 const name=id=>names.get(id)||String(id).replaceAll('_',' ');
@@ -14,13 +15,16 @@ export function layoutCheck(layout,id,x,y,instance=null){
  if(!item)return {ok:false,message:'Choose an owned belonging.'};
  if(instance&&layout.copies&&!layout.copies.some(p=>p.instance===instance&&p.id===id))return {ok:false,message:'That copy is no longer available here. Choose another belonging.'};
  if(!Number.isFinite(x)||!Number.isFinite(y))return {ok:false,message:'Choose a point inside the habitat.'};
- const box=layoutBounds(item.footprint,x,y);
+ const footprint=layout.copies?.find(p=>p.instance===instance&&p.id===id)?.footprint||item.footprint;
+ const box=layoutBounds(footprint,x,y);
  if(box.x<.2||box.x+box.w>19.8||x>124*20/132||y<1||y>37*12/42)return {ok:false,message:'Leave room around the edge for the whole object.'};
- if(46+y*47/12-item.footprint.height<2)return {ok:false,message:'That tall object needs a spot farther down the bank.'};
+ if(46+y*47/12-footprint.height<2)return {ok:false,message:'That tall object needs a spot farther down the bank.'};
  if(!surfaceFits(id,box,y))return {ok:false,message:itemSurface(id)==='water'?'That belongs on the water.':'Keep its feet on the dry bank.'};
+ for(const feature of homeScenery)if(intersects(groundBounds(id,box,y),feature.box))return {ok:false,message:'Leave room for the '+feature.name.toLowerCase()+'.'};
  for(const other of [...layout.placed.filter(p=>instance?p.instance!==instance:p.id!==id),...layout.obstacles]){
+  if(instance&&other.instance===instance)continue;
   const b=other.box;
-  if(box.floor===b.floor&&box.x<b.x+b.w&&box.x+box.w>b.x&&box.y<b.y+b.h&&box.y+box.h>b.y)
+  if(box.floor===b.floor&&intersects(groundBounds(id,box,y),b.ground||groundBounds(other.id,b,other.y??b.y+b.h-.65)))
    return {ok:false,message:'That spot overlaps '+name(other.id)+'.'};
  }
  return {ok:true,message:'There is room here. Place it when you like the preview.'};
@@ -40,7 +44,7 @@ export class PondArrangement{
  get layout(){return this.journal.world?.layout;}
  get choices(){
   const l=this.layout;if(!l)return [];
-  return l.items.flatMap(item=>{const copies=l.copies?.filter(p=>p.id===item.id)||[];return copies.length?copies.map((p,i)=>({...p,label:name(p.id)+(copies.length>1?` · copy ${i+1}`:'')})):[{...item,label:name(item.id)}];});
+  return l.items.flatMap(item=>{const copies=l.copies?.filter(p=>p.id===item.id)||[];return copies.length?copies.map((p,i)=>({...p,label:p.label||name(p.id)+(copies.length>1?` · copy ${i+1}`:'')})):[{...item,label:name(item.id)}];});
  }
  options(){
   const choices=this.choices,keys=choices.map(p=>p.instance||p.id).sort().join('|');
@@ -68,7 +72,7 @@ export class PondArrangement{
   c.append(this.canvas);
   const position=e=>{
    if(!this.home||this.pending||!this.draft)return;
-   const r=this.canvas.getBoundingClientRect(),gx=(e.clientX-r.left)/r.width*240,gy=(e.clientY-r.top)/r.height*110;
+   const r=this.canvas.getBoundingClientRect(),gx=(e.clientX-r.left)/r.width*W,gy=(e.clientY-r.top)/r.height*H;
    this.draft={x:Math.max(.5,Math.min(19.5,Math.round((gx-24)/192*20*4)/4)),y:Math.max(1,Math.min(11,Math.round((gy-46)/47*12*4)/4))};
    this.feedback='';this.lastPaint=-Infinity;this.update();
   };
@@ -89,7 +93,7 @@ export class PondArrangement{
   this.auto=node('button','Find a free spot');this.auto.onclick=()=>this.send('layout_auto');
   this.store=node('button','Put in storage');this.store.onclick=()=>this.send('layout_store');
   actions.append(this.place,this.auto,this.store);toolbar.append(actions);
-  c.append(node('small','The outline reserves room for the whole drawing and its movement. Rugs may sit beneath furniture. A full habitat never costs you an item: keep it in storage and swap things around.'));
+  c.append(node('small','The dotted outline shows the drawing; the solid outline shows its ground footprint. Taller things can overlap the view behind them. Rugs may sit beneath furniture. A full habitat never costs you a belonging: store it and swap things around.'));
   grid.append(c);this.update();
  }
  send(action){
@@ -121,17 +125,22 @@ export class PondArrangement{
   const source=this.journal.frame?.scene;if(!source)return;
   this.lastPaint=time;
   const draft=this.home&&this.id&&this.draft&&this.choices.some(i=>i.id===this.id&&(!this.instance||i.instance===this.instance));
+  const copy=this.choices.find(i=>i.instance===this.instance);
   const items=[...(source.items||[])].filter(i=>!draft||i.id!==this.id||(this.instance&&i.instance!==this.instance));
-  if(draft)items.push({id:this.id,instance:this.instance,x:this.draft.x*132/20,y:this.draft.y*42/12});
-  const scene={...source,camera:{x:0,y:0,w:132,h:42},items,particles:false,weatherEffects:false,
-   living:{...source.living,plan:source.living?.plan?.target===this.id&&(!this.instance||source.living.plan.instance===this.instance)?null:source.living?.plan}};
+  const structures=[...(source.structures||[])].filter(i=>!draft||i.instance!==this.instance);
+  const installations=[...(source.living?.installations||[])].filter(i=>!draft||i.instance!==this.instance);
+  if(draft)(copy?.role?installations:items).push({id:this.id,instance:this.instance,x:this.draft.x*132/20,y:this.draft.y*42/12,role:copy?.role,scale:copy?.scale});
+  const scene={...source,camera:{x:0,y:0,w:132,h:42},items,structures,particles:false,weatherEffects:false,
+   living:{...source.living,installations,plan:source.living?.plan?.target===this.id&&(!this.instance||source.living.plan.instance===this.instance)?null:source.living?.plan}};
   this.renderer.resize(this.canvas.width,this.canvas.height);this.renderer.draw(scene,time,.12);
   const ctx=this.canvas.getContext('2d');ctx.drawImage(this.renderer.canvas,0,0);
   if(draft){
-   const footprint=this.layout.items.find(i=>i.id===this.id).footprint,box=layoutBounds(footprint,this.draft.x,this.draft.y);
-   const sx=this.canvas.width/240,sy=this.canvas.height/110;
+   const footprint=this.choices.find(i=>i.instance===this.instance)?.footprint||this.layout.items.find(i=>i.id===this.id).footprint,box=layoutBounds(footprint,this.draft.x,this.draft.y);
+   const sx=this.canvas.width/W,sy=this.canvas.height/H;
    const x=(24+box.x/20*192)*sx,y=(46+box.y/12*47)*sy,w=box.w/20*192*sx,h=box.h/12*47*sy;
    ctx.strokeStyle=this.verdict.ok?'#ffe7a0':'#ff9a8c';ctx.lineWidth=2;ctx.setLineDash([6,5]);ctx.strokeRect(x,y,w,h);ctx.setLineDash([]);
+   const feet=groundBounds(this.id,box,this.draft.y);
+   ctx.strokeRect((24+feet.x/20*192)*sx,(46+feet.y/12*47)*sy,feet.w/20*192*sx,feet.h/12*47*sy);
    const px=(24+this.draft.x/20*192)*sx,py=(46+this.draft.y/12*47)*sy;
    ctx.beginPath();ctx.moveTo(px-7,py);ctx.lineTo(px+7,py);ctx.moveTo(px,py-7);ctx.lineTo(px,py+7);ctx.stroke();
   }

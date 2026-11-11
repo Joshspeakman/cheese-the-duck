@@ -103,7 +103,18 @@ export class SceneCanvas {
     this.effects.draw(this.ctx,this.world,scene,time,this.sx,this.sy,objects);
     const seatedHits=[];
     // Rugs stay under everything; other props and characters share depth order.
-    for(const actor of [...objects,...characters].sort((a,b)=>(a.floor?-1000:a.y)-(b.floor?-1000:b.y))){
+    for(const actor of [...objects,...characters,...result.scenery].sort((a,b)=>(a.floor?-1000:a.y)-(b.floor?-1000:b.y))){
+      if(actor.scenery){
+        for(const [i,char,color,material] of actor.cells){
+          const x=i%W,y=(i/W)|0,left=Math.round(x*this.sx),top=Math.round(y*this.sy);
+          const width=Math.round((x+1)*this.sx)-left,height=Math.round((y+1)*this.sy)-top;
+          const surface=material===M.foliage?'foliage':material===M.wood?'wood':this.world.water[i]?'water':'land';
+          const band=this.bands[i],row=y>>3;
+          if(!actor.overlay){this.ctx.fillStyle=this.swatches[surface][band][y];this.ctx.fillRect(left,top,width,height);}
+          if(char!==32)this.ctx.drawImage(this.tile(char,this.ink[surface][band][row][color],this.outlines[surface][band][row][color]),left,top,width,height);
+        }
+        continue;
+      }
       const surface=this.backdropAt(actor.x*this.sx,actor.y*this.sy);
       if(actor.item){
         this.items.draw(this.ctx,actor,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{surface,outline:light.outline});
@@ -213,18 +224,20 @@ export class SceneCanvas {
       }
       else drawCharacter(this.ctx,{...actor,sun:light.sun,outline:light.outline,backdrop:(x,y)=>this.backdropAt(x,y)},this.sx,this.sy,surface);
     }
-    this.hits=[...objects,...characters,...seatedHits].filter(a=>a.item||a.visitor||a.story).map(a=>{
+    this.occlusion=new Map();
+    for(const layer of result.scenery)if(!layer.overlay)for(const [i] of layer.cells)this.occlusion.set(i,Math.max(this.occlusion.get(i)??-Infinity,layer.y));
+    this.hits=[...objects,...characters,...seatedHits].filter(a=>a.item||a.visitor||a.story).sort((a,b)=>(a.floor?-1000:a.y)-(b.floor?-1000:b.y)).map(a=>{
       const unit=this.sx*a.scale*(a.detailScale||1),width=a.width*unit,height=a.art.length*unit*1.5;
       if(!a.item){
         const b=inkBounds(a),left=a.x*this.sx-(a.anchorX??a.width/2)*unit+(a.offsetX||0)*unit;
         const top=a.y*this.sy-(a.groundRow??a.art.length)*unit*1.5+(a.offsetY||0)*unit;
-        return {id:a.id,kind:a.story?'story':'friend',x:left+b.left*unit,y:top+b.top*unit*1.5,w:(b.right-b.left+1)*unit,h:(b.bottom-b.top+1)*unit*1.5};
+        return {id:a.id,depth:a.y,kind:a.story?'story':'friend',x:left+b.left*unit,y:top+b.top*unit*1.5,w:(b.right-b.left+1)*unit,h:(b.bottom-b.top+1)*unit*1.5};
       }
-      return {id:a.id||scene.visitor?.id,instance:a.instance,kind:a.story?'story':a.visitor?'friend':'item',x:a.x*this.sx-width/2,y:a.y*this.sy-height,w:width,h:height};
+      return {id:a.id||scene.visitor?.id,depth:a.floor?-1000:a.y,instance:a.instance,kind:a.story?'story':a.visitor?'friend':'item',x:a.x*this.sx-width/2,y:a.y*this.sy-height,w:width,h:height};
     });
     this.frames++;
   }
-  hit(nx,ny){const x=nx*this.canvas.width,y=ny*this.canvas.height;return [...(this.hits||[])].reverse().find(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h);}
+  hit(nx,ny){const x=nx*this.canvas.width,y=ny*this.canvas.height,depth=this.occlusion?.get(Math.floor(y/this.sy)*W+Math.floor(x/this.sx))??-Infinity;return [...(this.hits||[])].reverse().find(r=>r.depth>=depth&&x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h);}
   surfaceAt(i){
     const material=this.world.grid.materials[i];
     return material===M.foliage?'foliage':material===M.wood?'wood':this.world.water[i]?'water':'land';

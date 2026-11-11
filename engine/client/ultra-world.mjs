@@ -25,13 +25,27 @@ import {playgroundStage} from './playground-stage.mjs';
 import {waterStage} from './water-routines.mjs';
 import {seatOccupants} from './seating-routines.mjs';
 import {residentEnvelope} from './resident-envelope.mjs';
-import {homeBankOnScreen} from './habitat-ground.mjs';
+import {homeBankOnScreen,homeScenery} from './habitat-ground.mjs';
 
 const WATER_BIOMES=new Set(['pond','riverside','beach','swamp']);
 const choice=(s,n)=>s[Math.floor(n*s.length)%s.length];
 export class LivingWorld {
   constructor(){this.grid=new Grid();this.water=new Uint8Array(W*H);this.shore=new Int16Array(W);this.duckPosition=null;this.lastLocation='';this.lastTime=0;this.wind=new WeatherDrift();}
   project(scene,x,y){const c=scene.camera||{x:0,y:0,w:132,h:42};return [24+(x-c.x)/c.w*(W-48),46+(y-c.y)/c.h*47];}
+  sceneryLayer(id,y,draw){
+    // Keep the composite for reflections/cache, and retain exact ink cells for
+    // painter-order occlusion. Transparent gaps never erase an actor behind it.
+    const base=this.grid,layer=new Grid(),touched=new Set();layer.clear();
+    const put=layer.put.bind(layer);
+    layer.put=(x,y,...rest)=>{put(x,y,...rest);x=Math.round(x);y=Math.round(y);if(x>=0&&y>=0&&x<W&&y<H)touched.add(y*W+x);};
+    this.grid=layer;
+    try{draw();}finally{this.grid=base;}
+    const cells=[...touched].map(i=>[i,layer.chars[i],layer.colors[i],layer.materials[i]]);
+    for(const [i,ch,color,material] of cells){base.chars[i]=ch;base.colors[i]=color;base.materials[i]=material;}
+    const record={id,y,scenery:true,cells};
+    (this.scenery||=[]).push(record);
+    return record;
+  }
   sky(s,t,seed){
     const g=this.grid,light=sceneLight(s),night=light.night;
     for(let y=0;y<45;y++)for(let x=0;x<W;x++){
@@ -115,7 +129,10 @@ export class LivingWorld {
       }
     }
   }
-  tree(x,base,height,kind,t,seed,foreground=false){
+  tree(x,base,height,kind,t,seed,foreground=false,id='tree'){
+    this.sceneryLayer(id,base+2,()=>this.drawTree(x,base,height,kind,t,seed,foreground));
+  }
+  drawTree(x,base,height,kind,t,seed,foreground=false){
     const g=this.grid,top=base-height,wide=kind==='pine'?height*.22:height*.38;
     const bark=foreground?C.bark:C.barkDark,leaf=foreground?C.leaf:C.leafDark;
     // Tapered trunks with roots, knotholes, branching and bark hatching.
@@ -210,7 +227,12 @@ export class LivingWorld {
   landmarks(s,t,seed){
     const g=this.grid,b=s.biome,pan=(s.camera?.x||0)*.2;
     const treeKind=b==='mountains'?'pine':b==='pond'||b==='swamp'?'willow':'oak';
-    if(!['beach','garden','urban'].includes(b)&&!this.underground(s)){
+    if(s.location==='Home Pond'){
+      for(const f of homeScenery.filter(f=>f.kind==='willow')){
+        const [x,y]=this.project(s,f.x*132/20,f.y*42/12);
+        this.tree(x,y,f.height,'willow',t,seed+(f.id==='east_willow'?13:0),true,f.id);
+      }
+    }else if(!['beach','garden','urban'].includes(b)&&!this.underground(s)){
       this.tree(25-pan,68,55,treeKind,t,seed,true);
       this.tree(217-pan,64,47,treeKind,t,seed+13,true);
       if(b==='forest'){this.tree(73-pan,57,30,'oak',t,seed+7);this.tree(173-pan,55,35,'oak',t,seed+4);}
@@ -221,9 +243,13 @@ export class LivingWorld {
     this.reflected(t);
     this.pondLife(s,t,seed);
     if(b==='pond'){
-      const dockY=s.location==='Home Pond'?homeBankOnScreen(174-pan,s.camera)-1:68;
-      g.art(166-pan,dockY,DOCK,(ch,x,y)=>y<4?C.barkLight:C.bark);
-      g.art(184-pan,dockY-9,LANTERN,(ch)=>ch==='*'?C.lamp:C.barkLight);
+      const dock=homeScenery.find(f=>f.kind==='dock');
+      const [x,y]=s.location==='Home Pond'?this.project(s,dock.x*132/20,dock.y*42/12):[184-pan,72];
+      this.sceneryLayer('pond_dock',y+3,()=>{
+        this.grid.art(x-18,y-4,DOCK,(ch,x,y)=>y<4?C.barkLight:C.bark);
+        this.grid.art(x,y-13,LANTERN,(ch)=>ch==='*'?C.lamp:C.barkLight);
+        this.grid.line(x+8,y-6,x+8,y-3,'|',C.barkLight,M.wood);
+      });
     }
     if(b==='forest'){
       if(/oak/i.test(s.location))this.tree(120-pan,63,45,'oak',t,seed+8,true);
@@ -349,9 +375,18 @@ export class LivingWorld {
     if(living&&s.location==='Home Pond'){
       const species=living.ecology.insects>.6?'dragonfly':living.ecology.birds>.55?'robin':living.ecology.fish>.65?'fish':null;
       if(species){const x=30+Math.sin(t*.1)*8,y=species==='fish'?78:68;this.characters.push({...eventModel({id:species,asset:species},t,s.motion!==false),x,y,scale:.55});}
-      const scenery={reed_beds:['reed',56,79],orchard:['tree_oak',197,71],observatory:['telescope',193,54],clubhouse:['wooden_cottage',208,86],workshop:['workbench',27,84],trail:['bridge',122,80]};
-      for(const project of living.projects||[]){if(!project.stage)continue;const [id,x,y]=scenery[project.id];this.objects.push({...itemSprite(id,t,{motion:s.motion!==false,context:s,state:{active:project.stage===3}}),item:true,x,y,scale:.8,floor:false,project:project.id});if(project.stage<3)g.art(x-5,y+1,['[ '+project.stage+' / 3 ]'],C.woodLight);}
-      for(const plot of living.garden||[]){const x=30+plot.id*22,y=88;g.art(x-6,y,['.------------.','/ : . : . : /',"'----------'"],C.woodLight);if(plot.plant)this.objects.push({...itemSprite(plot.plant,t,{motion:s.motion!==false,context:s,state:{wetness:plot.water,growth:plot.health}}),item:true,x,y:y-1,scale:/seed|sprout/.test(plot.stage)?.35:.65});}
+      for(const place of living.installations||[]){
+        const [x,y]=this.project(s,place.x,place.y);
+        const plot=place.role==='garden'?(living.garden||[]).find(p=>'garden:'+p.id===place.instance):null;
+        const project=place.role==='project'?(living.projects||[]).find(p=>'project:'+p.id===place.instance):null;
+        const state=plot?{wetness:plot.water,growth:plot.health}:{active:project?.stage===3};
+        this.objects.push({...itemSprite(place.id,t,{motion:s.motion!==false,context:s,state}),item:true,
+          x,y,worldPosition:[place.x,place.y],instance:place.instance,scale:itemWorldScale(place.id)*place.scale,
+          installation:true,project:project?.id});
+        if(plot?.plant)this.sceneryLayer(place.instance+':soil',-1000,()=>this.grid.art(x-6,y-1,
+          ['.------------.',"'------------'"],C.bark));
+        if(project&&project.stage<3)g.art(x-5,y+1,['[ '+project.stage+' / 3 ]'],C.barkLight);
+      }
       if(living.story){
         const actor=s.storyActor?.storyId===living.story.id?s.storyActor:{x:48,y:24,state:'signature'};
         const performance=actorPerformance(s,'story:pip');
@@ -707,12 +742,13 @@ export class LivingWorld {
     const s={hour:12,season:'spring',weather:'sunny',biome:'pond',location:'Home Pond',...scene};
     const t=s.motion===false?0:time,seed=seedOf(s.location);
     this.wind.update(s,dt,!this.underground(s));
-    this.grid.clear();this.characters=[];this.objects=[];
+    this.grid.clear();this.characters=[];this.objects=[];this.scenery=[];
     if(this.underground(s))this.cavern(s,t,seed);
     else {this.sky(s,t,seed);this.hills(s,t,seed);}
     this.terrain(s,t,seed);
-    this.landmarks(s,t,seed);this.actors(s,t,dt);this.foreground(s,t,seed);if(!this.underground(s))this.weather(s,t,seed);
+    this.landmarks(s,t,seed);this.actors(s,t,dt);this.foreground(s,t,seed);
+    if(!this.underground(s))this.sceneryLayer('weather',Infinity,()=>this.weather(s,t,seed)).overlay=true;
     this.lastLocation=s.location;this.lastTime=t;
-    return {grid:this.grid,palette:palette(s),characters:this.characters,objects:this.objects};
+    return {grid:this.grid,palette:palette(s),characters:this.characters,objects:this.objects,scenery:this.scenery};
   }
 }
