@@ -9,15 +9,16 @@ export function layoutBounds(f,x,y){
  const w=f.width*20/192+.5,h=f.height*12/47;
  return {x:x-w/2,y:y-h,w,h:h+.65,floor:f.floor};
 }
-export function layoutCheck(layout,id,x,y){
+export function layoutCheck(layout,id,x,y,instance=null){
  const item=layout?.items.find(i=>i.id===id);
  if(!item)return {ok:false,message:'Choose an owned belonging.'};
+ if(instance&&layout.copies&&!layout.copies.some(p=>p.instance===instance&&p.id===id))return {ok:false,message:'That copy is no longer available here. Choose another belonging.'};
  if(!Number.isFinite(x)||!Number.isFinite(y))return {ok:false,message:'Choose a point inside the habitat.'};
  const box=layoutBounds(item.footprint,x,y);
  if(box.x<.2||box.x+box.w>19.8||x>124*20/132||y<1||y>37*12/42)return {ok:false,message:'Leave room around the edge for the whole object.'};
  if(46+y*47/12-item.footprint.height<2)return {ok:false,message:'That tall object needs a spot farther down the bank.'};
  if(!surfaceFits(id,box,y))return {ok:false,message:itemSurface(id)==='water'?'That belongs on the water.':'Keep its feet on the dry bank.'};
- for(const other of [...layout.placed.filter(p=>p.id!==id),...layout.obstacles]){
+ for(const other of [...layout.placed.filter(p=>instance?p.instance!==instance:p.id!==id),...layout.obstacles]){
   const b=other.box;
   if(box.floor===b.floor&&box.x<b.x+b.w&&box.x+box.w>b.x&&box.y<b.y+b.h&&box.y+box.h>b.y)
    return {ok:false,message:'That spot overlaps '+name(other.id)+'.'};
@@ -29,27 +30,38 @@ export function layoutCheck(layout,id,x,y){
 // The same full-world camera and native renderer show the actual artwork scale.
 export class PondArrangement{
  constructor(journal){this.journal=journal;this.renderer=new SceneCanvas();this.id=null;this.draft=null;this.pending=null;this.lastPaint=-Infinity;}
- select(id){
-  this.id=id;this.journal.selected=id;
-  const placed=this.layout?.placed.find(p=>p.id===id);
+ select(id,instance=null){
+  const copy=this.choices.find(p=>p.id===id&&(!instance||p.instance===instance));
+  this.id=id;this.instance=instance||copy?.instance||null;this.journal.selected=id;this.journal.selectedInstance=this.instance;
+  const placed=this.layout?.placed.find(p=>p.id===id&&(!this.instance||p.instance===this.instance));
   this.draft=placed?{x:placed.x,y:placed.y}:{x:10,y:5};
   this.feedback='';this.lastPaint=-Infinity;
  }
  get layout(){return this.journal.world?.layout;}
+ get choices(){
+  const l=this.layout;if(!l)return [];
+  return l.items.flatMap(item=>{const copies=l.copies?.filter(p=>p.id===item.id)||[];return copies.length?copies.map((p,i)=>({...p,label:name(p.id)+(copies.length>1?` · copy ${i+1}`:'')})):[{...item,label:name(item.id)}];});
+ }
+ options(){
+  const choices=this.choices,keys=choices.map(p=>p.instance||p.id).sort().join('|');
+  if([...this.selectControl.options].map(p=>p.value).sort().join('|')!==keys){
+   this.selectControl.replaceChildren();
+   for(const c of [...choices].sort((a,b)=>a.label.localeCompare(b.label))){const option=node('option');option.value=c.instance||c.id;this.selectControl.append(option);}
+  }
+  for(const option of this.selectControl.options){const c=choices.find(p=>(p.instance||p.id)===option.value);option.textContent=c.label+(c.placed?' · placed':' · stored');}
+  this.selectControl.value=this.instance||this.id||'';
+ }
  get home(){return this.journal.world?.location==='Home Pond';}
- get verdict(){return layoutCheck(this.layout,this.id,this.draft?.x,this.draft?.y);}
+ get verdict(){return layoutCheck(this.layout,this.id,this.draft?.x,this.draft?.y,this.instance);}
  mount(grid){
   const j=this.journal,l=this.layout;
   if(!l){grid.append(j.card('Arrange the habitat','Continue your game to arrange your belongings.'));return;}
-  if(this.id!==(j.selected||l.items[0]?.id))this.select(j.selected||l.items[0]?.id);
+  if(this.id!==(j.selected||l.items[0]?.id)||this.instance!==(j.selectedInstance||null))this.select(j.selected||l.items[0]?.id,j.selectedInstance);
   const c=j.card('Make a place for your things','Choose a belonging, then click or drag in the preview. Arrow keys make small adjustments. Place here commits the move; closing the notebook leaves a preview untouched.');
   c.classList.add('pond-arrangement');
   const toolbar=node('div',undefined,'arrange-toolbar');
   this.selectControl=node('select');this.selectControl.setAttribute('aria-label','Belonging to arrange');
-  for(const item of [...l.items].sort((a,b)=>name(a.id).localeCompare(name(b.id)))){
-   const option=node('option',name(item.id)+(item.placed?' · placed':' · stored'));option.value=item.id;this.selectControl.append(option);
-  }
-  this.selectControl.value=this.id||'';this.selectControl.onchange=()=>{this.select(this.selectControl.value);this.update();};
+  this.options();this.selectControl.onchange=()=>{const c=this.choices.find(p=>(p.instance||p.id)===this.selectControl.value);this.select(c.id,c.instance);this.update();};
   toolbar.append(this.selectControl);c.append(toolbar);
   this.canvas=node('canvas',undefined,'arrange-preview');this.canvas.width=1000;this.canvas.height=520;
   this.canvas.tabIndex=0;this.canvas.setAttribute('role','group');this.canvas.setAttribute('aria-label','Habitat arrangement preview. Click to position the selected item, or use arrow keys. Press Enter to place.');
@@ -83,7 +95,7 @@ export class PondArrangement{
  send(action){
   if(this.pending||!this.home||!this.id||(action==='layout_place'&&!this.verdict.ok))return;
   this.pending={sequence:this.layout.reply?.sequence||0,action,id:this.id};
-  this.journal.command(action,this.id,action==='layout_place'?this.draft:{});
+  this.journal.command(action,this.id,{...(action==='layout_place'?this.draft:{}),instance:this.instance});
   this.update();
  }
  update(){
@@ -91,22 +103,15 @@ export class PondArrangement{
   const l=this.layout,reply=l?.reply;
   if(this.pending&&reply&&reply.sequence>this.pending.sequence&&reply.target===this.pending.id){
    this.pending=null;this.feedback=reply.message;
-   if(reply.ok){const placed=l.placed.find(p=>p.id===this.id);if(placed)this.draft={x:placed.x,y:placed.y};}
+   if(reply.ok){const placed=l.placed.find(p=>p.id===this.id&&(!this.instance||p.instance===this.instance));if(placed){this.draft={x:placed.x,y:placed.y};this.instance=placed.instance||null;this.journal.selectedInstance=this.instance;}}
    this.lastPaint=-Infinity;
   }
-  const verdict=this.verdict,placed=l?.placed.some(p=>p.id===this.id);
+  const verdict=this.verdict,placed=l?.placed.some(p=>p.id===this.id&&(!this.instance||p.instance===this.instance));
   this.place.disabled=!this.home||!!this.pending||!verdict.ok;
-  this.auto.disabled=!this.home||!!this.pending||!this.id;
+  this.auto.disabled=!this.home||!!this.pending||!this.id||!!this.instance&&!this.choices.some(p=>p.id===this.id&&p.instance===this.instance);
   this.store.disabled=!this.home||!!this.pending||!placed;
   this.selectControl.disabled=!!this.pending||!l?.items.length;
-  if([...this.selectControl.options].map(o=>o.value).sort().join('|')!==l.items.map(i=>i.id).sort().join('|')){
-   this.selectControl.replaceChildren();
-   for(const item of [...l.items].sort((a,b)=>name(a.id).localeCompare(name(b.id)))){
-    const option=node('option',name(item.id));option.value=item.id;this.selectControl.append(option);
-   }
-  }
-  this.selectControl.value=this.id||'';
-  for(const option of this.selectControl.options)option.textContent=name(option.value)+(l.placed.some(p=>p.id===option.value)?' · placed':' · stored');
+  this.options();
   this.description.textContent=!this.home?'Come back to Home Pond to arrange your belongings.':this.pending?'Finding a place…':this.feedback||(!this.id?'Your placeable belongings will appear here.':name(this.id)+' · Preview · '+verdict.message);
   this.description.dataset.valid=String(verdict.ok);
   this.journal.status.textContent=this.pending?'Arranging your habitat…':'Arrange · '+(this.home?'Home Pond':'Return home to place things');
@@ -115,11 +120,11 @@ export class PondArrangement{
   if(!this.canvas?.isConnected||time-this.lastPaint<.12)return;
   const source=this.journal.frame?.scene;if(!source)return;
   this.lastPaint=time;
-  const draft=this.home&&this.id&&this.draft&&this.layout?.items.some(i=>i.id===this.id);
-  const items=[...(source.items||[])].filter(i=>!draft||i.id!==this.id);
-  if(draft)items.push({id:this.id,x:this.draft.x*132/20,y:this.draft.y*42/12});
+  const draft=this.home&&this.id&&this.draft&&this.choices.some(i=>i.id===this.id&&(!this.instance||i.instance===this.instance));
+  const items=[...(source.items||[])].filter(i=>!draft||i.id!==this.id||(this.instance&&i.instance!==this.instance));
+  if(draft)items.push({id:this.id,instance:this.instance,x:this.draft.x*132/20,y:this.draft.y*42/12});
   const scene={...source,camera:{x:0,y:0,w:132,h:42},items,particles:false,weatherEffects:false,
-   living:{...source.living,plan:source.living?.plan?.target===this.id?null:source.living?.plan}};
+   living:{...source.living,plan:source.living?.plan?.target===this.id&&(!this.instance||source.living.plan.instance===this.instance)?null:source.living?.plan}};
   this.renderer.resize(this.canvas.width,this.canvas.height);this.renderer.draw(scene,time,.12);
   const ctx=this.canvas.getContext('2d');ctx.drawImage(this.renderer.canvas,0,0);
   if(draft){

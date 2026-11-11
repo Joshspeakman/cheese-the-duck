@@ -7,6 +7,7 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 
+from world.physical_identity import new_identity, saved_identity
 from world.materials import MaterialInventory, MATERIALS
 
 
@@ -387,6 +388,7 @@ class Structure:
     durability: int = 100
     last_update: float = field(default_factory=time.time)
     placed_decorations: List[str] = field(default_factory=list)
+    instance_id: str = field(default_factory=new_identity)
     
     @property
     def blueprint(self) -> Optional[StructureBlueprint]:
@@ -1190,6 +1192,7 @@ class BuildingSystem:
             "structures": [
                 {
                     "blueprint_id": s.blueprint_id,
+                    "instance_id": s.instance_id,
                     "position": s.position,
                     "status": s.status.value,
                     "stage": s.current_stage,
@@ -1208,7 +1211,7 @@ class BuildingSystem:
         system.building_xp = data.get("xp", 0)
         system.structures_built = data.get("built_count", 0)
         
-        for s_data in data.get("structures", []):
+        for index, s_data in enumerate(data.get("structures", [])):
             structure = Structure(
                 blueprint_id=s_data["blueprint_id"],
                 position=tuple(s_data["position"]),
@@ -1216,6 +1219,7 @@ class BuildingSystem:
                 current_stage=s_data.get("stage", 0),
                 stage_progress=s_data.get("progress", 0.0),
                 durability=s_data.get("durability", 100),
+                instance_id=saved_identity(s_data, "structure", index),
             )
             system.structures.append(structure)
             

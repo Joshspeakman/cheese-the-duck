@@ -49,7 +49,7 @@ try:
     check(later['plan']['label']==routines.ROUTINES[first]['label'],'the live status names the actual routine')
     prompt=p.minds.prompt('cheese','What are you doing?')[0]['content']
     check(routines.ROUTINES[first]['label'] in prompt,'natural chat receives the verified physical action')
-    before=p.state['objects']['basic_nest']['uses']
+    before=p.object_state('basic_nest',plan)['uses']
     live_frames=[]
     for n in range(int(duration/.2)+2):
         pos.update(.2);p._activity(.2)
@@ -57,12 +57,12 @@ try:
             g.renderer.render_frame(g)
             live_frames.append(snapshot(g,g.renderer))
     (ROOT/'engine/artifacts/animation-milestone/nest-live-frames.json').write_text(json.dumps(live_frames))
-    obj=p.state['objects']['basic_nest']
+    obj=p.object_state('basic_nest',plan)
     check(obj['routines'].get(first)==1,'finishing the whole routine records it once')
     for _ in range(60):p._activity(.2)
     check(p.state['plan'] is None and obj['uses']==before+1,'one ordinary visit ends with one normal rest completion')
     saved=p.save();loaded=LivingPond(saved)
-    check(loaded.state['objects']['basic_nest']['routines']==obj['routines'],'learned object history survives a save round trip')
+    check(loaded.object_state('basic_nest',plan)['routines']==obj['routines'],'learned object history survives a save round trip')
     check(routines.ROUTINES[first]['label'].lower() in p.state['journal'][-1]['text'],'a completed visit remembers its actual routine')
 
     p.state['cooldowns'].clear()

@@ -1,10 +1,11 @@
+import {sameInstance} from './physical-objects.mjs';
 // Presentation of a simulation-owned arrival. Never chooses or advances a plan.
 import {inkBounds,residentEnvelope} from './resident-envelope.mjs';
 const clamp=n=>Math.max(0,Math.min(1,n));
 export function residenceStage(plan, objects, character){
  if(!plan?.residence||plan.paused||!['prepare','act','settle'].includes(plan.phase))return null;
  const dest=plan.residence.destination;
- const home=objects.find(o=>o.id===plan.target&&o.worldPosition?.every((n,i)=>Math.abs(n-dest[i])<1.1));
+ const home=objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.worldPosition?.every((n,i)=>Math.abs(n-dest[i])<1.1));
  if(!home?.anchors||!character)return null;
  const progress=plan.progress??plan.elapsed/plan.duration;
  const inside=plan.phase==='act'?1:plan.phase==='prepare'?clamp((progress-.15)/.13):clamp((1-progress)/.1);

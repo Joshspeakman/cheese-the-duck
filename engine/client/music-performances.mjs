@@ -49,7 +49,7 @@ export function musicOccupants(scene){
  const plan=scene.living?.plan,records=[...(scene.living?.minds?.musicians||[])];
  if(plan?.instrument&&plan.music_score&&!plan.paused&&['prepare','act','settle'].includes(plan.phase)){
   const progress=plan.progress??plan.elapsed/plan.duration;
-  records.push({actor:'cheese',id:plan.target,destination:plan.destination,slot:plan.instrument.slot,score:plan.music_score,
+  records.push({actor:'cheese',id:plan.target,instance:plan.instance,destination:plan.destination,slot:plan.instrument.slot,score:plan.music_score,
    phase:plan.phase==='act'?'inside':plan.phase==='prepare'?'enter':'exit',elapsed:plan.phase==='prepare'?clamp((progress-.15)/.13)*3:plan.phase==='settle'?clamp((progress-.9)/.1)*3:0});
  }
  return records;

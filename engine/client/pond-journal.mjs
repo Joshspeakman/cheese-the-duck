@@ -17,7 +17,7 @@ export class PondJournal{
   this.closeButton=el('button','Close ×');this.closeButton.onclick=()=>this.dialog.close();head.append(this.closeButton);
   this.nav=el('nav');this.nav.setAttribute('aria-label','Journal sections');
   for(const [id,label] of [['pond','The pond'],['mind','Cheese’s plans'],['personalities','Personalities'],['belongings','Belongings'],['arrange','Arrange'],['friends','Friends'],['weather','Weather'],['projects','Projects'],['field','Field notes'],['memories','Memories']]){
-   const b=el('button',label);b.dataset.tab=id;b.onclick=()=>{this.tab=id;this.selected=null;this.render(true);};this.nav.append(b);
+   const b=el('button',label);b.dataset.tab=id;b.onclick=()=>{this.tab=id;this.selected=null;this.selectedInstance=null;this.render(true);};this.nav.append(b);
   }
   this.body=el('div',undefined,'pond-body');this.status=el('div',undefined,'pond-live-status');this.status.setAttribute('role','status');
   this.dialog.append(head,this.nav,this.status,this.body);document.body.append(this.dialog);
@@ -26,15 +26,15 @@ export class PondJournal{
   const animate=t=>{if(this.open){this.paint(t/1000);if(t-this.last>1000){this.updateDynamic();if(this.tab!=='arrange'&&t-this.lastRender>5000&&!['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))this.render();this.last=t;}}requestAnimationFrame(animate);};requestAnimationFrame(animate);
  }
  get open(){return this.dialog.open;}
- show(tab='pond',selected=null){this.tab=tab;this.selected=selected;if(!this.open)this.dialog.showModal();this.render(true);this.closeButton.focus();}
+ show(tab='pond',selected=null,instance=null){this.tab=tab;this.selected=selected;this.selectedInstance=instance;if(!this.open)this.dialog.showModal();this.render(true);this.closeButton.focus();}
  update(frame){this.frame=frame;if(this.open)this.updateDynamic();}
  get world(){return this.frame?.scene?.living;}
  command(action,target='',extra={}){window.cheese.input({type:'pond',action,target,...extra});this.status.textContent='Cheese is considering that…';setTimeout(()=>{if(this.open&&this.tab!=='arrange'&&!['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))this.render();},350);}
- button(text,action,target,disabled=false){const b=el('button',text,'pond-action');b.disabled=disabled;b.onclick=()=>this.command(action,target);return b;}
+ button(text,action,target,disabled=false,extra={}){const b=el('button',text,'pond-action');b.disabled=disabled;b.onclick=()=>this.command(action,target,extra);return b;}
  legacy(text,action){const b=el('button',text,'pond-action');b.onclick=()=>{this.dialog.close();window.cheese.input({type:'action',action});};return b;}
  card(title,description){const c=el('section',undefined,'pond-card');c.append(el('h2',title));if(description)c.append(el('p',description));return c;}
  meter(parent,label,value){const row=el('label',undefined,'pond-meter');const text=el('span',label),m=el('meter');m.min=0;m.max=1;m.value=Math.max(0,Math.min(1,value||0));m.setAttribute('aria-label',label);row.append(text,m,el('span',percent(value)));parent.append(row);}
- preview(parent,kind,id,large=false){const canvas=el('canvas',undefined,large?'pond-preview large':'pond-preview');canvas.width=large?720:360;canvas.height=large?390:220;canvas.dataset.kind=kind;canvas.dataset.id=id;canvas.setAttribute('aria-label',names.get(id)?.name||pretty(id));parent.append(canvas);}
+ preview(parent,kind,id,large=false,instance=''){const canvas=el('canvas',undefined,large?'pond-preview large':'pond-preview');canvas.width=large?720:360;canvas.height=large?390:220;canvas.dataset.kind=kind;canvas.dataset.id=id;canvas.dataset.instance=instance;canvas.setAttribute('aria-label',names.get(id)?.name||pretty(id));parent.append(canvas);}
  updateDynamic(){
   const w=this.world;if(!w)return;
   if(this.tab==='arrange'){this.arrangement.update();return;}
@@ -82,12 +82,18 @@ export class PondJournal{
    const list=this.card('Well-loved things','Click an object in the world to inspect it here. The catalogue’s “Item art” button still lets you browse everything without granting items.');
    const search=el('input');search.type='search';search.placeholder='Find an owned item';search.setAttribute('aria-label','Find an owned item');search.value=this.searchQuery;list.append(search);
    const entries=el('div',undefined,'pond-item-list');list.append(entries);
-   const drawList=()=>{entries.replaceChildren();for(const id of Object.keys(w.objects).filter(id=>(names.get(id)?.name||id).toLowerCase().includes(search.value.toLowerCase())).sort((a,b)=>(names.get(a)?.name||a).localeCompare(names.get(b)?.name||b))){const b=el('button',names.get(id)?.name||pretty(id));b.onclick=()=>{this.selected=id;this.render();};b.setAttribute('aria-pressed',id===this.selected);entries.append(b);}};search.oninput=()=>{this.searchQuery=search.value;drawList();};drawList();grid.append(list);
-   const id=this.selected||Object.keys(w.objects)[0],item=names.get(id),state=w.objects[id];if(item&&state){const detail=this.card(item.name,item.description);this.preview(detail,'item',id,true);const p=itemProfile(item,itemFamily(id));detail.append(el('p',`${pretty(p.material)} · ${pretty(p.skill)} · ${state.uses} uses${w.placed.includes(id)?' · placed at home':''}`));for(const [key,label] of [['condition','Condition'],['wetness','Wetness'],['dirt','Dirt'],['bond','Familiarity']])this.meter(detail,label,state[key]);
-    detail.append(this.button(p.verb,'item',id,busy||['food','wearable'].includes(p.kind)),this.button('Brush & polish','clean_item',id,busy||state.dirt<.05),this.button('Repair · 1 twig','repair_item',id,busy||state.condition>=.95));if(['food','wearable'].includes(p.kind))detail.append(this.legacy(p.kind==='food'?'Eat through inventory':'Open wardrobe & items','inventory'));grid.append(detail);
-    if(w.layout?.items.some(i=>i.id===id)){const arrange=el('button',w.placed.includes(id)?'Move or store':'Find a place','pond-action');arrange.onclick=()=>this.show('arrange',id);detail.append(arrange);}
+   const drawList=()=>{entries.replaceChildren();for(const id of Object.keys(w.objects).filter(id=>(names.get(id)?.name||id).toLowerCase().includes(search.value.toLowerCase())).sort((a,b)=>(names.get(a)?.name||a).localeCompare(names.get(b)?.name||b))){const b=el('button',names.get(id)?.name||pretty(id));b.onclick=()=>{this.selected=id;this.selectedInstance=null;this.render();};b.setAttribute('aria-pressed',id===this.selected);entries.append(b);}};search.oninput=()=>{this.searchQuery=search.value;drawList();};drawList();grid.append(list);
+   const id=this.selected||Object.keys(w.objects)[0],item=names.get(id);
+   const copies=[...(this.frame.scene.items||[]),...(this.frame.scene.structures||[])].filter(p=>p.id===id&&p.instance);
+   if(!this.selectedInstance&&copies.length)this.selectedInstance=copies.at(-1).instance;
+   const instance=this.selectedInstance,state=instance?w.instances?.[instance]:w.objects[id],outside=!instance||copies.some(p=>p.instance===instance);
+   if(item&&state){const detail=this.card(item.name,item.description);this.preview(detail,'item',id,true,instance||'');
+    if(copies.length>1){const picker=el('select');picker.setAttribute('aria-label','Choose a placed copy');copies.forEach((copy,i)=>{const option=el('option',`Copy ${i+1} · ${copy.x<44?'west side':copy.x>88?'east side':'middle of the pond'}`);option.value=copy.instance;picker.append(option);});picker.value=instance;picker.onchange=()=>{this.selectedInstance=picker.value;this.render();};detail.append(picker);}
+const p=itemProfile(item,itemFamily(id));detail.append(el('p',`${pretty(p.material)} · ${pretty(p.skill)} · ${state.uses} uses${instance?(outside?' · placed at home':' · put away'):w.placed.includes(id)?' · placed at home':''}`));for(const [key,label] of [['condition','Condition'],['wetness','Wetness'],['dirt','Dirt'],['bond','Familiarity']])this.meter(detail,label,state[key]);
+    detail.append(this.button(p.verb,'item',id,busy||!outside||['food','wearable'].includes(p.kind),{instance}),this.button('Brush & polish','clean_item',id,busy||!outside||state.dirt<.05,{instance}),this.button('Repair · 1 twig','repair_item',id,busy||!outside||state.condition>=.95,{instance}));if(['food','wearable'].includes(p.kind))detail.append(this.legacy(p.kind==='food'?'Eat through inventory':'Open wardrobe & items','inventory'));grid.append(detail);
+    if(w.layout?.items.some(i=>i.id===id)&&(!instance||w.layout.copies?.some(p=>p.id===id&&p.instance===instance))){const arrange=el('button',w.placed.includes(id)?'Move or store':'Find a place','pond-action');arrange.onclick=()=>this.show('arrange',id,instance);detail.append(arrange);}
     if(state.botany){this.meter(detail,'Soil moisture',state.botany.moisture);this.meter(detail,'Plant health',state.botany.health);detail.append(el('p',state.botany.last_care?'Last care: '+pretty(state.botany.last_care):'Rain waters the roots. Warm, dry air slowly draws moisture out of the soil.'));}
-   }else grid.append(this.card('Make a collection','Find resources, craft things or visit the shop. New belongings appear here as you acquire them.'));
+   }else if(instance)grid.append(this.card('Put away or moved','This copy is no longer outside. Choose a belonging from the list to see its current home.'));else grid.append(this.card('Make a collection','Find resources, craft things or visit the shop. New belongings appear here as you acquire them.'));
   }else if(this.tab==='friends'){
    if(w.rare_guest){const guest=w.rare_guest,c=this.card(guest.name,guest.bio);this.preview(c,'friend',guest.id);c.append(el('p',guest.habit),el('p',pretty(guest.relationship)));
     if(guest.last_line)c.append(el('p',guest.last_line,'pond-note'));
@@ -121,11 +127,11 @@ export class PondJournal{
   const w=this.world;if(!w)return;const motion=this.frame?.scene?.motion!==false;if(!motion)time=0;
   if(this.tab==='arrange'){this.arrangement.paint(performance.now()/1000);return;}
   for(const canvas of this.body.querySelectorAll('canvas[data-kind]')){
-   const ctx=canvas.getContext('2d'),{kind,id}=canvas.dataset;ctx.fillStyle='#132721';ctx.fillRect(0,0,canvas.width,canvas.height);
+   const ctx=canvas.getContext('2d'),{kind,id,instance}=canvas.dataset;ctx.fillStyle='#132721';ctx.fillRect(0,0,canvas.width,canvas.height);
    ctx.fillStyle='#345745';ctx.font='11px Menlo,monospace';for(let x=4;x<canvas.width;x+=13)ctx.fillText(x%3?'\'':'.',x,canvas.height-18-(x%5));
    if(kind==='item'||kind==='project'){
     const project={reed_beds:'reed',orchard:'tree_oak',observatory:'telescope',clubhouse:'basic_nest',workshop:'workbench',trail:'bridge'};
-    const model=itemSprite(kind==='project'?project[id]:id,time,{motion,state:w.objects[id],interaction:w.plan?.target===id?w.plan:null});
+    const model=itemSprite(kind==='project'?project[id]:id,time,{motion,state:instance?w.instances?.[instance]:w.objects[id],interaction:w.plan?.target===id&&(!instance||w.plan.instance===instance)?w.plan:null});
     const cw=Math.min((canvas.width-30)/(model.width+2),(canvas.height-45)/((model.art.length+2)*1.5))/(model.detailScale||1);
     this.painter.draw(ctx,model,canvas.width/2,canvas.height-22,cw,{surface:'#142a22',outline:'#091d18'});
    }else{

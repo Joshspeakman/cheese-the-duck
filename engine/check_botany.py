@@ -28,6 +28,7 @@ check(len(profiles)==542,'all 542 simulation and renderer use profiles agree')
 def seed(item,moisture=.55):
     obj=dict(growth=.35,dirt=0.,botany=dict(moisture=moisture,health=.9,bloom=.65,care_count=0,last_care=None))
     p=SimpleNamespace(placed={item:True},season='spring',state={'ecology':dict(soil=.7,water=.8,wind=.2,temperature=20.),'objects':{item:obj}})
+    p.object_state=lambda key,ref=None:p.state['objects'].get(key)
     return p,obj
 for item in botany.ROOTED:
     p,obj=seed(item);before=copy.deepcopy(obj)

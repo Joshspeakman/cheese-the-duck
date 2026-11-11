@@ -65,12 +65,12 @@ def candidates(pond, target='', actor='cheese', stage=None, position_at=None, sp
         px,py=position_at or (pos.x,pos.y)
         distance = abs(px-destination[0]) + abs(py-destination[1])
         comfort = 8 if 'nest' in key or 'bed' in key else 0
-        choices.append({'id': key, 'destination': destination, 'roof': roof,
+        choices.append({'id': key, 'instance': placed.instance, 'destination': destination, 'roof': roof,
                         'score': distance-comfort, 'weather': pond.weather_type,
                         'slot':slots[0], 'capacity':capacity})
     return sorted(choices, key=lambda c: c['score'])
 
 def still_placed(pond, residence):
     return residence['id'] in pond.owned and any(
-        p.item_id == residence['id'] and position(p) == residence['destination']
+        p.item_id == residence['id'] and (not residence.get('instance') or p.instance == residence['instance']) and position(p) == residence['destination']
         for p in getattr(pond, 'placements', []))

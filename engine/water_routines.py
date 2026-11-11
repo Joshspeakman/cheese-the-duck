@@ -9,7 +9,7 @@ BLUEPRINTS=json.loads((DATA/'waterworks.json').read_text())
 WATER={key:spec for key,spec in BLUEPRINTS.items() if spec['type']!='mat'}
 ROUTINES=json.loads((DATA/'water-routines.json').read_text())
 
-def eligible(pond,item,spec):
+def eligible(pond,item,spec,ref=None):
     p=WATER[item];e=pond.state['ecology'];n=pond.game.duck.needs
     stage=pond.game.duck.growth_stage
     if stage=='egg' or any(word in pond.weather_type for word in ('storm','blizzard')):return False
@@ -21,15 +21,15 @@ def eligible(pond,item,spec):
                grown=stage not in ('egg','hatchling','duckling','elder','legendary'),
                tired=n.energy<55,bathing=p.get('shallow',False) and p['type']!='bowl' or p.get('swim',False) and stage not in ('hatchling','duckling'),
                heated=p.get('heated',False),cold=e['temperature']<12,observe=p.get('observe',False),
-               bowl=p['type']=='bowl' and pond.state['objects'][item].get('dirt',0)<.3,
+               bowl=p['type']=='bowl' and pond.object_state(item,ref).get('dirt',0)<.3,
                fountain=p['type']=='fountain',spray=p['type']=='spray',cascade=p['type']=='cascade',
                hot=e['temperature']>=25,rain=any(w in pond.weather_type for w in ('rain','drizzle','shower')),
                night=pond.hour<6 or pond.hour>=19,still=p['type']!='spray',frozen=frozen)
     return all(flags.get(key)==value for key,value in gate.items())
 
-def choose(pond,item):
-    obj=pond.state['objects'][item];history=obj.get('water_routines',{});last=obj.get('last_water_routine')
-    choices=[key for key,s in ROUTINES.items() if eligible(pond,item,s)]
+def choose(pond,item,ref=None):
+    obj=pond.object_state(item,ref);history=obj.get('water_routines',{});last=obj.get('last_water_routine')
+    choices=[key for key,s in ROUTINES.items() if eligible(pond,item,s,ref)]
     if not choices:return None
     # Specific conditions and neglected motions take precedence over repeats.
     def rank(key):
@@ -45,10 +45,10 @@ def advance(pond,plan,dt):
     if routine and routine.get('id') not in ROUTINES:
         routine.update(done=True,interrupted=True);return False
     if not routine:
-        key=choose(pond,item)
+        key=choose(pond,item,plan)
         if not key:plan['water_routine']={'done':True,'interrupted':True};return False
         routine={'id':key,'elapsed':0.,'done':False,'label':ROUTINES[key]['label']};plan['water_routine']=routine
-    if not eligible(pond,item,ROUTINES[routine['id']]) or not shelters.still_placed(pond,{'id':item,'destination':plan['destination']}) or distance((pond.game.renderer.duck_pos.x,pond.game.renderer.duck_pos.y),plan['destination'])>3:
+    if not eligible(pond,item,ROUTINES[routine['id']],plan) or not shelters.still_placed(pond,{'id':item,'instance':plan.get('instance'),'destination':plan['destination']}) or distance((pond.game.renderer.duck_pos.x,pond.game.renderer.duck_pos.y),plan['destination'])>3:
         routine.update(done=True,interrupted=True);return False
     routine['elapsed']=min(ROUTINES[routine['id']]['duration'],routine['elapsed']+dt)
     pond._cache=None
@@ -58,7 +58,7 @@ def advance(pond,plan,dt):
 def complete(pond,plan):
     routine=plan.get('water_routine')
     if not routine or not routine.get('done') or routine.get('interrupted'):return
-    obj=pond.state['objects'][plan['target']];history=obj.setdefault('water_routines',{})
+    obj=pond.object_state(plan['target'],plan);history=obj.setdefault('water_routines',{})
     history[routine['id']]=min(9999,history.get(routine['id'],0)+1)
     obj['last_water_routine']=routine['id']
     pond.remember('item',routine['label']+'.',.35,plan['target'])

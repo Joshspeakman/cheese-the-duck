@@ -39,6 +39,8 @@ class PendingInteraction:
     state: InteractionState = InteractionState.MOVING
     animation_start_time: float = 0.0
     on_complete: Optional[Callable] = None
+    instance: str = ''
+    habitat_position: Optional[Tuple[float, float]] = None
 
 
 class InteractionController:
@@ -134,6 +136,8 @@ class InteractionController:
             start_time=time.time(),
             target_position=target_pos,
             interaction_result=result,
+            instance=placed_item.instance_id,
+            habitat_position=(placed_item.x,placed_item.y),
             state=InteractionState.MOVING
         )
 
@@ -162,10 +166,17 @@ class InteractionController:
         """Get a placed item by ID."""
         if not self._habitat:
             return None
-        for placed in self._habitat.placed_items:
+        for placed in self._habitat.get_visible_placed_items():
             if placed.item_id == item_id:
                 return placed
         return None
+
+    def _pending_item_exists(self):
+        p=self._pending
+        return bool(p and self._habitat and any(
+            item.item_id==p.item_id and (not p.instance or item.instance_id==p.instance)
+            and (p.habitat_position is None or (item.x,item.y)==p.habitat_position)
+            for item in self._habitat.get_visible_placed_items()))
 
     def _get_item_playfield_position(self, placed_item: 'PlacedItem') -> Optional[Tuple[int, int]]:
         """Convert item's habitat grid position to playfield coordinates."""
@@ -208,6 +219,9 @@ class InteractionController:
     def _on_arrived_at_item(self, data: Dict):
         """Callback when duck reaches the item."""
         if not self._pending:
+            return
+        if not self._pending_item_exists():
+            self.cancel_interaction()
             return
 
         item_id = data.get("item_id")
@@ -268,7 +282,7 @@ class InteractionController:
             return
 
         for placed_item in self._habitat.placed_items:
-            if placed_item.item_id == self._pending.item_id:
+            if placed_item.item_id == self._pending.item_id and (not self._pending.instance or placed_item.instance_id==self._pending.instance):
                 # Choose animation type based on item
                 item_id = self._pending.item_id
                 if "ball" in item_id or "toy" in item_id or "trampoline" in item_id:
@@ -310,6 +324,10 @@ class InteractionController:
         if not self._pending:
             return
 
+        if not self._pending_item_exists():
+            self.cancel_interaction()
+            return
+
         # Safety timeout - if stuck in MOVING state for too long, cancel
         # This prevents blocking all interactions if duck can't reach item
         if self._pending.state == InteractionState.MOVING:
@@ -332,6 +350,9 @@ class InteractionController:
     def _complete_interaction(self):
         """Complete the interaction and apply effects."""
         if not self._pending:
+            return
+        if not self._pending_item_exists():
+            self.cancel_interaction()
             return
 
         result = self._pending.interaction_result

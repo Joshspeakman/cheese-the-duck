@@ -1,3 +1,4 @@
+import {sameInstance} from './physical-objects.mjs';
 import ROUTINES from './animation/water-routines.json' with {type:'json'};
 export {ROUTINES as WATER_ROUTINES};
 const clamp=n=>Math.max(0,Math.min(1,n));
@@ -17,7 +18,7 @@ export function waterPose(routine,motion=true){
 export function waterStage(plan,objects,character,stage,motion=true){
  if(!plan||plan.kind!=='item'||plan.paused||plan.phase!=='act'||stage==='egg')return null;
  const routine=plan.water_routine,pose=waterPose(routine,motion);if(!pose||routine.done)return null;
- const home=objects.find(o=>o.id===plan.target&&o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination[i])<1.1));
+ const home=objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination[i])<1.1));
  if(!home||home.construction!=='waterworks-v1'||!character)return null;
  const a=home.anchors,edge=['edge','sip'].includes(pose.mode),seat={...(edge?a.entry:a.seat)};
  seat.x+=pose.u*(edge?4:a.swimRadius||5);seat.y+=pose.v*(edge?1:3);

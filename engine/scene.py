@@ -54,15 +54,15 @@ def snapshot(game, renderer):
     at_home = not area or area.name == 'Home Pond'
     if at_home:
         for item in habitat_placements(game):
-            items.append({'id': item.item_id, 'x': item.x, 'y': item.y,
+            items.append({'id': item.item_id, 'instance': item.instance, 'x': item.x, 'y': item.y,
                           'art': get_item_art(item.item_id)})
         for decoration in outdoor_decorations(game):
-            items.append({'id':decoration.item_id,'x':decoration.x,'y':decoration.y,'art':get_item_art(decoration.item_id)})
+            items.append({'id':decoration.item_id,'instance':decoration.instance,'x':decoration.x,'y':decoration.y,'art':get_item_art(decoration.item_id)})
         for i, structure in enumerate(game.building.structures):
             if structure.status.value != 'complete':
                 continue
             p = getattr(structure, 'position', None)
-            structures.append({'id': structure.blueprint_id, 'x': p[0] * 132 / 10 if p else 8 + i * 12,
+            structures.append({'id': structure.blueprint_id, 'instance': structure.instance_id, 'x': p[0] * 132 / 10 if p else 8 + i * 12,
                                'y': p[1] * 42 / 8 if p else 32,
                                'art': get_structure_art(structure.blueprint_id)})
     if game.friends.current_visit:

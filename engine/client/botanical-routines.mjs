@@ -17,7 +17,7 @@ export function botanicalOccupants(scene){
  const p=scene.living?.plan,records=[...(scene.living?.minds?.gardeners||[])];
  if(p?.care_routine&&!p.paused&&['prepare','act','settle'].includes(p.phase)){
   const progress=p.progress??p.elapsed/p.duration;
-  records.push({actor:'cheese',id:p.target,destination:p.destination,slot:0,routine:p.care_routine,
+  records.push({actor:'cheese',id:p.target,instance:p.instance,destination:p.destination,slot:0,routine:p.care_routine,
    phase:p.phase==='act'?'inside':p.phase==='prepare'?'enter':'exit',
    elapsed:p.phase==='prepare'?clamp((progress-.15)/.13)*3:p.phase==='settle'?clamp((progress-.9)/.1)*3:0});
  }

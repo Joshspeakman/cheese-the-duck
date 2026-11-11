@@ -22,8 +22,8 @@ def flags(pond,item,actor='cheese'):
                 hot=pond.state['ecology']['temperature']>=25,
                 elder=stage in ('elder','legendary'),young=stage in ('hatchling','duckling'))
 
-def choose(pond,item,actor='cheese',shared=False):
-    f=flags(pond,item,actor);obj=pond.state['objects'][item]
+def choose(pond,item,actor='cheese',shared=False,ref=None):
+    f=flags(pond,item,actor);obj=pond.object_state(item,ref)
     history=obj.get('seat_routines',{})
     options=[key for key,spec in ROUTINES.items() if bool(spec.get('shared'))==shared
              and all(f.get(k)==v for k,v in spec['when'].items())]
@@ -57,7 +57,7 @@ def candidates(pond,target='',actor='cheese'):
         slots=[n for n in range(SEATS[item]['capacity']) if n not in used]
         if not slots:continue
         # The reservation belongs to this physical copy and never follows Cheese.
-        result.append(dict(id=item,destination=dest,slot=slots[0],capacity=SEATS[item]['capacity'],
+        result.append(dict(id=item,instance=placed.instance,destination=dest,slot=slots[0],capacity=SEATS[item]['capacity'],
                            distance=distance(pos,dest)))
     return sorted(result,key=lambda r:r['distance'])
 
@@ -74,7 +74,7 @@ def advance(pond,plan,dt):
     if not valid(pond,seat) or distance((pond.game.renderer.duck_pos.x,pond.game.renderer.duck_pos.y),seat['destination'])>3:
         plan['seat_routine']={'done':True,'interrupted':True};return False
     if not routine:
-        key=choose(pond,seat['id'])
+        key=choose(pond,seat['id'],ref=seat)
         routine={'id':key,'elapsed':0.,'done':False,'label':ROUTINES[key]['label']}
         plan['seat_routine']=routine
     if routine.get('done'):return False
@@ -86,14 +86,14 @@ def advance(pond,plan,dt):
     pond._cache=None
     return not routine['done']
 
-def record(pond,item,key):
-    obj=pond.state['objects'][item];history=obj.setdefault('seat_routines',{})
+def record(pond,item,key,ref=None):
+    obj=pond.object_state(item,ref);history=obj.setdefault('seat_routines',{})
     history[key]=min(9999,history.get(key,0)+1);obj['last_seat_routine']=key
 
 def complete(pond,plan):
     r=plan.get('seat_routine')
     if not r or not r.get('done') or r.get('interrupted'):return
-    record(pond,plan['target'],r['id'])
+    record(pond,plan['target'],r['id'],plan)
     pond.remember('item',r['label']+'.',.35,plan['target'])
 
 def release(minds,key,completed=False):
@@ -105,7 +105,7 @@ def release(minds,key,completed=False):
         resident['energy']=min(1.,resident['energy']+.045)
         minds.model.learn(key,'rest',r['context'],.3,minds.now,note)
         minds.model.remember(key,'seat',note,minds.now,.4)
-        record(minds.pond,r['id'],r['routine']['id'])
+        record(minds.pond,r['id'],r['routine']['id'],r)
     minds.seat_retry[key]=minds.now+(300 if completed else 20)
     minds.pond._cache=None
 
@@ -121,7 +121,7 @@ def company_tick(minds,dt):
     for pair,s in list(minds.seat_scenes.items()):
         a,b=s['a'],s['b']
         if any(key not in seated or minds.presence_tokens.get(key)!=s['tokens'][key]
-               or seated[key]['id']!=s['item'] or seated[key]['destination']!=s['destination']
+               or seated[key]['id']!=s['item'] or seated[key].get('instance')!=s.get('instance') or seated[key]['destination']!=s['destination']
                for key in (a,b)):
             minds.seat_scenes.pop(pair);continue
         s['elapsed']+=dt
@@ -130,7 +130,7 @@ def company_tick(minds,dt):
             for key,other in ((a,b),(b,a)):
                 minds.model.learn(key,'share',s['contexts'][key],.2,minds.now,note,other)
                 minds.model.bond(key,other,.15,minds.now,note)
-            record(minds.pond,s['item'],s['id'])
+            record(minds.pond,s['item'],s['id'],s)
             minds.pond.remember('neighbors',note,.45,b)
             minds.seat_scenes.pop(pair)
     keys=sorted(seated)
@@ -140,15 +140,15 @@ def company_tick(minds,dt):
         for b in keys[i+1:]:
             rb=seated[b];owner_b=rb.get('owner',rb)
             if owner_b.get('company_done') or company_for(minds,b):continue
-            if ra['id']!=rb['id'] or ra['destination']!=rb['destination'] or ra['slot']==rb['slot']:continue
+            if ra['id']!=rb['id'] or ra.get('instance')!=rb.get('instance') or ra['destination']!=rb['destination'] or ra['slot']==rb['slot']:continue
             if any(r.get('routine',{}).get('done') for r in (ra,rb)):continue
             owner_a['company_done']=owner_b['company_done']=True
             # A shared clock holds both individual rests. No independent visitor
             # task can expire or reward itself during this actual shared pause.
-            key=choose(minds.pond,ra['id'],a,True)
+            key=choose(minds.pond,ra['id'],a,True,ra)
             left,right=sorted((a,b),key=lambda k:seated[k]['slot'])
             minds.seat_scenes['|'.join(sorted((a,b)))]=dict(id=key,a=left,b=right,elapsed=0.,
-                item=ra['id'],destination=list(ra['destination']),
+                item=ra['id'],instance=ra.get('instance'),destination=list(ra['destination']),
                 tokens={k:minds.presence_tokens[k] for k in (a,b)},
                 contexts={k:minds.context(k) for k in (a,b)})
             break
@@ -182,7 +182,7 @@ def tick(minds,dt):
             choices=candidates(p,actor=key)
             if not choices or choices[0]['distance']>55:
                 minds.seat_retry[key]=minds.now+15;continue
-            r=choices[0];routine=choose(p,r['id'],key)
+            r=choices[0];routine=choose(p,r['id'],key,ref=r)
             # A genuine furniture rest replaces the abstract rest task; it must
             # not wake later and grant an extra, unearned recovery.
             minds.tasks.pop(key,None)
@@ -201,7 +201,7 @@ def routine_view(minds,key,routine):
     return copy.deepcopy(routine)
 
 def snapshot(minds):
-    return [{**{k:copy.deepcopy(r[k]) for k in ('actor','id','destination','slot','capacity','phase','elapsed')},
+    return [{**{k:copy.deepcopy(r.get(k)) for k in ('actor','id','instance','destination','slot','capacity','phase','elapsed')},
              'routine':routine_view(minds,key,r['routine'])} for key,r in minds.furnishings.items()]
 
 def motion(minds,key):

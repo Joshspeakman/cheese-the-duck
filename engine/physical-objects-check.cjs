@@ -1,0 +1,40 @@
+const {app,BrowserWindow,ipcMain}=require('electron'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
+const {spawn}=require('node:child_process'),{createInterface}=require('node:readline');
+app.setPath('userData',fs.mkdtempSync(path.join(os.tmpdir(),'cheese-copy-ui-')));
+app.whenReady().then(async()=>{
+ let child,stderr='';const checks=[],out=path.join(__dirname,'artifacts/animation-milestone');
+ try{
+  const w=new BrowserWindow({show:false,width:1440,height:1000,webPreferences:{nodeIntegration:true,contextIsolation:false,backgroundThrottling:false}});
+  const js=s=>w.webContents.executeJavaScript(s);
+  const until=async(s,label)=>{const start=Date.now();while(!await js(s)){if(Date.now()-start>12000)throw Error(label+' timed out '+stderr);await new Promise(r=>setTimeout(r,30));}checks.push(label);};
+  await w.loadFile(path.join(__dirname,'tests/physical-objects-theatre.html'));
+  await until('Boolean(window.journal)','notebook initialized');
+  ipcMain.on('physical-command',(_,c)=>child.stdin.write(JSON.stringify(c)+'\n'));
+  child=spawn(path.join(__dirname,'../.venv/bin/python'),[path.join(__dirname,'check_physical_objects.py'),'--serve'],{cwd:path.dirname(__dirname),stdio:['pipe','pipe','pipe']});
+  child.stderr.on('data',b=>stderr=(stderr+b).slice(-5000));
+  createInterface({input:child.stdout}).on('line',line=>{try{const m=JSON.parse(line);if(m.type==='physical_frame')js('window.receive('+JSON.stringify(m.frame)+')');}catch{}});
+  await until('Boolean(window.frame)','real native twin objects arrive');
+  await until('window.hitCopies()','click bounds identify each physical plant');
+  await until("journal.body.textContent.includes('3 uses')",'clicked copy shows its own usage');
+  await js("button('Brush & polish').click()");
+  await until('journal.world.plan?.instance===frame.copies[0]','care button targets the actual clicked copy');
+  await js("journal.command('cancel')");await until('!journal.world.plan','cancel acknowledged');
+  await js("(()=>{const p=journal.body.querySelector('[aria-label=\"Choose a placed copy\"]');p.value=frame.copies[1];p.dispatchEvent(new Event('change'));})()");
+  await until("journal.body.textContent.includes('8 uses')",'copy selector shows independent history');
+  await js('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
+  fs.writeFileSync(path.join(out,'physical-object-inspector.png'),(await w.webContents.capturePage()).toPNG());
+  await js("button('Move or store').click();journal.arrangement.store.click()");
+  await until('!journal.arrangement.pending&&!journal.world.layout.placed.some(p=>p.instance===frame.copies[1])','selected copy stored through live UI');
+  await until('journal.world.layout.placed.some(p=>p.instance===frame.copies[0])','other copy remains placed');
+  await js('journal.arrangement.auto.click()');
+  await until('!journal.arrangement.pending&&journal.world.layout.placed.some(p=>p.instance===frame.copies[1])','same copy restored through live UI');
+  await until('journal.world.instances[frame.copies[1]].uses===8','restoration preserves its history');
+  await js("journal.arrangement.lastPaint=-Infinity;journal.paint(performance.now()/1000)");
+  await js('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
+  fs.writeFileSync(path.join(out,'physical-object-arrangement.png'),(await w.webContents.capturePage()).toPNG());
+  const image=await js("world.canvas.toDataURL()");fs.writeFileSync(path.join(out,'physical-object-world.png'),Buffer.from(image.split(',')[1],'base64'));
+  const result={result:'PASS',checks,commands:await js('window.commands')};fs.writeFileSync(path.join(out,'physical-objects-render.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));
+  child.stdin.end('{"type":"quit"}\n');
+  await new Promise((resolve,reject)=>{child.once('exit',code=>code===0?resolve():reject(Error('Native exit '+code+' '+stderr)));setTimeout(()=>reject(Error('Shutdown timed out')),5000).unref();});app.exit(0);
+ }catch(e){console.error(e);if(child)child.stdin.end('{"type":"quit"}\n');app.exit(1);}
+});

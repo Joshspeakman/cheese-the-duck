@@ -46,16 +46,17 @@ class PondLayout:
     def __init__(self,habitat,obstacles=lambda:()):
         self.habitat=habitat;self.obstacles=obstacles
 
-    def occupied(self,exclude=''):
+    def occupied(self,exclude='',instance=None):
         # Idle bobbing never changes the permanent space reservation.
-        return [(p.item_id,p.x,p.y) for p in self.habitat.get_visible_placed_items() if p.item_id!=exclude]+list(self.obstacles())
+        return [(p.item_id,p.x,p.y) for p in self.habitat.get_visible_placed_items()
+                if (p.instance_id!=instance if instance is not None else p.item_id!=exclude)]+list(self.obstacles())
 
     def eligible(self,item):
         from world.shop import get_item,ItemCategory
         definition=get_item(item)
         return item in self.habitat.owned_items and item in FOOTPRINTS and definition and definition.category!=ItemCategory.COSMETIC
 
-    def check(self,item,x,y):
+    def check(self,item,x,y,instance=None):
         if not finite(x) or not finite(y):return False,'Choose a point inside the habitat.'
         if item not in FOOTPRINTS:return False,'This object does not have a placement drawing yet.'
         f=bounds(item,x,y)
@@ -67,59 +68,68 @@ class PondLayout:
             return False,'That tall object needs a spot farther down the bank.'
         if not surface_fits(item,f,y):
             return False,'That belongs on the water.' if item in GROUND['waterItems'] else 'Keep its feet on the dry bank.'
-        for other,ox,oy in self.occupied(item):
+        for other,ox,oy in self.occupied(item,instance):
             if overlaps(f,bounds(other,ox,oy)):
                 return False,'That spot overlaps '+other.replace('_',' ')+'.'
         return True,'There is room here.'
 
-    def find(self,item,preferred=None):
+    def find(self,item,preferred=None,instance=None):
         if item not in FOOTPRINTS:return None
         if preferred and len(preferred)==2 and all(finite(v) for v in preferred):
-            if self.check(item,*preferred)[0]:return list(preferred)
+            if self.check(item,*preferred,instance=instance)[0]:return list(preferred)
         else:preferred=(10,5)
         # Quarter-cell vertical steps and half-cell horizontal steps make small
         # nooks useful without reducing the actual drawing or contact space.
         points=[(x/2,y/4) for x in range(1,40) for y in range(4,45)]
         points.sort(key=lambda p:((p[0]-preferred[0])**2+(p[1]-preferred[1])**2*2,p[1],p[0]))
-        return next((list(p) for p in points if self.check(item,*p)[0]),None)
+        return next((list(p) for p in points if self.check(item,*p,instance=instance)[0]),None)
 
-    def put(self,item,x,y):
+    def put(self,item,x,y,instance=None):
         h=self.habitat
         if item not in h.owned_items:return False,'That item is not owned.'
         from world.shop import get_item,ItemCategory
         definition=get_item(item)
         if not definition or definition.category==ItemCategory.COSMETIC:return False,'Use the wardrobe for clothing.'
-        ok,message=self.check(item,x,y)
+        current=next((p for p in h.placed_items+h.stored_placements if p.item_id==item and (not instance or p.instance_id==instance)),None)
+        if instance and current is None:return False,'That copy is no longer in the habitat.'
+        identity=current.instance_id if current else ''
+        ok,message=self.check(item,x,y,identity)
         if not ok:return False,message
         from world.habitat import PlacedItem
-        current=next((p for p in h.placed_items if p.item_id==item),None)
         if current:
             current.x=x;current.y=y
             current.anim_offset_x=0;current.anim_offset_y=0
             current.is_animating=False
-        else:current=PlacedItem(item,x,y)
-        h.placed_items=[p for p in h.placed_items if p.item_id!=item]+[current]
+            if current in h.stored_placements:h.stored_placements.remove(current)
+        else:
+            current=h.take_stored_placement(item) or PlacedItem(item,x,y)
+            current.x,current.y=x,y
+        if current not in h.placed_items:h.placed_items.append(current)
         h.stored_items=[key for key in h.stored_items if key!=item]
         return True,'Placed '+definition.name+'.'
 
-    def auto_place(self,item,preferred=None):
+    def auto_place(self,item,preferred=None,instance=None):
         if not self.eligible(item):return False
-        current=next((p for p in self.habitat.get_visible_placed_items() if p.item_id==item),None)
-        if current and self.check(item,current.x,current.y)[0]:return True
-        spot=self.find(item,preferred)
-        if spot:return self.put(item,*spot)[0]
+        current=next((p for p in self.habitat.get_visible_placed_items() if p.item_id==item and (not instance or p.instance_id==instance)),None)
+        identity=instance or (current.instance_id if current else '')
+        if instance and not any(p.item_id==item and p.instance_id==instance for p in self.habitat.placed_items+self.habitat.stored_placements):return False
+        if current and self.check(item,current.x,current.y,identity)[0]:return True
+        spot=self.find(item,preferred,identity)
+        if spot:return self.put(item,*spot,instance=instance)[0]
         # A failed attempt to rearrange a placed item must not remove it.
-        if not current:self.habitat.store_item(item)
+        if not current:self.habitat.store_item(item,instance)
         return False
 
     def reconcile(self):
-        h=self.habitat;old=list(h.get_visible_placed_items());h.placed_items=[]
-        moved=[];stored=[];seen=set()
+        h=self.habitat;old=list(h.get_visible_placed_items())
+        h.stored_placements.extend(p for p in h.placed_items if p not in old)
+        h.placed_items=[]
+        moved=[];stored=[]
         for p in old:
-            if p.item_id in seen:continue
-            seen.add(p.item_id)
-            if not self.eligible(p.item_id):continue
-            spot=self.find(p.item_id,(p.x,p.y))
+            if not self.eligible(p.item_id):
+                h.stored_placements.append(p)
+                continue
+            spot=self.find(p.item_id,(p.x,p.y),p.instance_id)
             if spot:
                 if spot!=[p.x,p.y]:moved.append(p.item_id)
                 p.x,p.y=spot
@@ -128,7 +138,9 @@ class PondLayout:
                 h.placed_items.append(p)
             else:
                 stored.append(p.item_id)
-                if p.item_id not in h.stored_items:h.stored_items.append(p.item_id)
+                h.stored_placements.append(p)
+        for item in stored:
+            if item not in h.stored_items and not any(p.item_id==item for p in h.placed_items):h.stored_items.append(item)
         return dict(revision=REVISION,moved=moved,stored=stored)
 
     def snapshot(self):
@@ -138,5 +150,6 @@ class PondLayout:
             items=[dict(id=key,placed=any(p.item_id==key for p in h.get_visible_placed_items()),
                         footprint=FOOTPRINTS[key]) for key in h.owned_items
                    if key in FOOTPRINTS and get_item(key) and get_item(key).category!=ItemCategory.COSMETIC],
-            placed=[dict(id=p.item_id,x=p.x,y=p.y,box=bounds(p.item_id,p.x,p.y)) for p in h.get_visible_placed_items()],
+            copies=[dict(id=p.item_id,instance=p.instance_id,placed=p in h.get_visible_placed_items()) for p in h.placed_items+h.stored_placements if self.eligible(p.item_id)],
+            placed=[dict(id=p.item_id,instance=p.instance_id,x=p.x,y=p.y,box=bounds(p.item_id,p.x,p.y)) for p in h.get_visible_placed_items()],
             obstacles=[dict(id=key,x=x,y=y,box=bounds(key,x,y)) for key,x,y in self.obstacles()])

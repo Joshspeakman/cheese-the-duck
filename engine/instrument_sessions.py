@@ -19,15 +19,15 @@ def flags(pond,item,actor):
         autumn=pond.season=='fall',grumpy=resident['mood']<.35,bold=resident['traits']['confidence']>.65,
         cassette=p['style']=='cassette',wooden=p['style']=='wood',tubes=p['style']=='tubes',shells=p['style']=='shells',bell=p['style']=='bell')
 
-def choose(pond,item,actor='cheese',shared=False):
-    p=INSTRUMENTS[item];f=flags(pond,item,actor);history=pond.state['objects'][item].get('music_scores',{})
+def choose(pond,item,actor='cheese',shared=False,ref=None):
+    p=INSTRUMENTS[item];f=flags(pond,item,actor);history=pond.object_state(item,ref).get('music_scores',{})
     options=[k for k,s in SCORES.items() if p['type'] in s['types'] and s['shared']==shared and all(f.get(k)==v for k,v in s['when'].items())]
     if not options:return None
     weights={'young':10,'elder':8,'night':7,'rain':6,'grumpy':6,'autumn':4,'bold':4,'day':1}
     return max(options,key=lambda k:sum(weights.get(flag,3) for flag in SCORES[k]['when'])-min(5,history.get(k,0))*.4)
 
-def make_score(pond,item,actor='cheese',shared=False):
-    key=choose(pond,item,actor,shared)
+def make_score(pond,item,actor='cheese',shared=False,ref=None):
+    key=choose(pond,item,actor,shared,ref)
     return dict(id=key,elapsed=0.,cursor=0,done=False,label=SCORES[key]['label']) if key else None
 
 def valid(pond,r):
@@ -68,21 +68,21 @@ def advance(pond,plan,dt):
     if not valid(pond,r) or distance((pond.game.renderer.duck_pos.x,pond.game.renderer.duck_pos.y),r['destination'])>3:
         plan['music_score']={'done':True,'interrupted':True};return False
     if not score:
-        score=make_score(pond,r['id']);plan['music_score']=score;plan['music_session']='cheese:'+str(pond.state['elapsed'])
+        score=make_score(pond,r['id'],ref=r);plan['music_score']=score;plan['music_session']='cheese:'+str(pond.state['elapsed'])
     if score.get('id') not in SCORES:score.update(done=True,interrupted=True);return False
     if plan['phase']!='act' or score['done']:return False
     if company_for(pond.minds,'cheese'):return True
     clock(pond.minds,r['id'],score,dt,plan['music_session'])
     return not score['done']
 
-def record(pond,item,score):
-    obj=pond.state['objects'][item];history=obj.setdefault('music_scores',{})
+def record(pond,item,score,ref=None):
+    obj=pond.object_state(item,ref);history=obj.setdefault('music_scores',{})
     history[score['id']]=min(9999,history.get(score['id'],0)+1);obj['last_music_score']=score['id']
 
 def complete(pond,plan):
     s=plan.get('music_score')
     if not s or not s.get('done') or s.get('interrupted') or plan.get('music_recorded'):return
-    plan['music_recorded']=True;record(pond,plan['target'],s)
+    plan['music_recorded']=True;record(pond,plan['target'],s,plan)
     pond.remember('music',s['label']+'.',.45,plan['target'])
 
 def candidates(minds,actor,target=''):
@@ -104,7 +104,7 @@ def candidates(minds,actor,target=''):
         slots=[s for s in range(spec['capacity']) if s not in used]
         if not slots:continue
         slot=slots[0];spot=list(dest) if actor=='cheese' else [dest[0]+(-3 if slot==0 else 3),dest[1]]
-        out.append(dict(id=item,destination=dest,spot=spot,slot=slot,capacity=spec['capacity'],distance=distance(minds.present.get(actor,dest),spot)))
+        out.append(dict(id=item,instance=placed.instance,destination=dest,spot=spot,slot=slot,capacity=spec['capacity'],distance=distance(minds.present.get(actor,dest),spot)))
     return sorted(out,key=lambda r:r['distance'])
 
 def cheese_ready(minds):
@@ -120,27 +120,27 @@ def occupants(minds):
 def company_tick(minds,dt):
     active=occupants(minds)
     for key,s in list(minds.music_scenes.items()):
-        if any(k not in active or active[k]['id']!=s['item'] or active[k]['destination']!=s['destination'] or minds.presence_tokens.get(k)!=s['tokens'][k] for k in (s['a'],s['b'])):
+        if any(k not in active or active[k]['id']!=s['item'] or active[k].get('instance')!=s.get('instance') or active[k]['destination']!=s['destination'] or minds.presence_tokens.get(k)!=s['tokens'][k] for k in (s['a'],s['b'])):
             minds.music_scenes.pop(key);continue
         clock(minds,s['item'],s['score'],dt,s['session'])
         if s['score']['done']:
             note=s['score']['label']+' on the '+s['item'].replace('_',' ')+'.'
             for k,other in ((s['a'],s['b']),(s['b'],s['a'])):
                 minds.model.learn(k,'practice',s['contexts'][k],.25,minds.now,note,other);minds.model.bond(k,other,.17,minds.now,note)
-            record(minds.pond,s['item'],s['score']);minds.pond.remember('neighbors',note,.5,s['b']);minds.music_scenes.pop(key)
+            record(minds.pond,s['item'],s['score'],s);minds.pond.remember('neighbors',note,.5,s['b']);minds.music_scenes.pop(key)
     keys=sorted(active)
     for i,a in enumerate(keys):
         ra=active[a];owner=ra.get('owner',ra)
         if owner.get('duet_done') or company_for(minds,a):continue
         for b in keys[i+1:]:
             rb=active[b];other=rb.get('owner',rb)
-            if other.get('duet_done') or company_for(minds,b) or ra['id']!=rb['id'] or ra['destination']!=rb['destination'] or ra['slot']==rb['slot']:continue
-            score=make_score(minds.pond,ra['id'],a,True)
+            if other.get('duet_done') or company_for(minds,b) or ra['id']!=rb['id'] or ra.get('instance')!=rb.get('instance') or ra['destination']!=rb['destination'] or ra['slot']==rb['slot']:continue
+            score=make_score(minds.pond,ra['id'],a,True,ra)
             if not score:continue
             owner['duet_done']=other['duet_done']=True
             first,second=sorted((a,b),key=lambda k:active[k]['slot'])
             pair='|'.join(sorted((a,b)))
-            minds.music_scenes[pair]=dict(a=first,b=second,item=ra['id'],destination=list(ra['destination']),score=score,session='duet:'+pair+':'+str(minds.now),tokens={k:minds.presence_tokens[k] for k in (a,b)},contexts={k:minds.context(k) for k in (a,b)})
+            minds.music_scenes[pair]=dict(a=first,b=second,item=ra['id'],instance=ra.get('instance'),destination=list(ra['destination']),score=score,session='duet:'+pair+':'+str(minds.now),tokens={k:minds.presence_tokens[k] for k in (a,b)},contexts={k:minds.context(k) for k in (a,b)})
             break
 
 def release(minds,key,finished=False):
@@ -148,7 +148,7 @@ def release(minds,key,finished=False):
     if not r:return
     if finished:
         note=r['score']['label']+' on the '+r['id'].replace('_',' ')+'.'
-        minds.model.learn(key,'practice',r['context'],.25,minds.now,note);record(minds.pond,r['id'],r['score'])
+        minds.model.learn(key,'practice',r['context'],.25,minds.now,note);record(minds.pond,r['id'],r['score'],r)
     minds.music_retry[key]=minds.now+(200 if finished else 20);minds.pond._cache=None
 
 def tick(minds,dt):
@@ -175,7 +175,7 @@ def tick(minds,dt):
         if minds.tasks.get(key,{}).get('action')!='practice' or minds.model.residents[key]['energy']<.25:continue
         choices=candidates(minds,key)
         if not choices or choices[0]['distance']>55:minds.music_retry[key]=minds.now+15;continue
-        r=choices[0];score=make_score(p,r['id'],key);minds.tasks.pop(key,None)
+        r=choices[0];score=make_score(p,r['id'],key,ref=r);minds.tasks.pop(key,None)
         minds.musicians[key]={**r,'actor':key,'token':minds.presence_tokens[key],'started':minds.now,'session':key+':'+str(minds.now),'score':score,'phase':'approach','elapsed':0.,'context':minds.context(key)}
     company_tick(minds,dt)
     sessions={r['session'] for r in minds.musicians.values() if r['phase']=='inside' and not company_for(minds,r['actor'])}
@@ -190,7 +190,7 @@ def score_view(minds,key,score):
     return {**copy.deepcopy(duet['score']),'role':'a' if duet['a']==key else 'b'} if duet else copy.deepcopy(score)
 
 def snapshot(minds):
-    return [{**{k:copy.deepcopy(r[k]) for k in ('actor','id','destination','slot','phase','elapsed')},'score':score_view(minds,key,r['score'])} for key,r in minds.musicians.items()]
+    return [{**{k:copy.deepcopy(r.get(k)) for k in ('actor','id','instance','destination','slot','phase','elapsed')},'score':score_view(minds,key,r['score'])} for key,r in minds.musicians.items()]
 
 def motion(minds,key):
     r=minds.musicians.get(key)
