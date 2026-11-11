@@ -16,6 +16,7 @@ from engine.placements import outdoor_decorations, complete_structures,habitat_p
 from engine import shelters, nest_routines, nest_materials, playdates, water_routines, furniture_rests,botany,botanical_care,instrument_sessions
 from world.guest_cast import guest_profile, guest_line
 from engine import nest_company
+from engine import excursions
 
 NEEDS = ('hunger', 'energy', 'fun', 'cleanliness', 'social')
 SKILLS = ('gardening', 'stewardship', 'cooking', 'care', 'building', 'engineering',
@@ -175,6 +176,7 @@ class LivingPond:
             if key in botany.ROOTED:botany.state(self.state['objects'][key])
         for item, obj, _ in object_history.records(self):
             if item in botany.ROOTED:botany.state(obj)
+            if item in excursions.ITEMS:excursions.state(item,obj)
         for friend in g.friends.friends.values():
             self.state['friends'].setdefault(friend.id, {'trust': .25, 'warmth': .3,
                 'reliability': .5, 'energy': .8, 'social': .7, 'last_shared': -1000.,
@@ -354,6 +356,7 @@ class LivingPond:
             keepsakes.update(self,key,obj,dt,outdoors,home_wet,home_intensity,home_temperature)
             architecture.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type,home_ecology.get('wind_heading',s['weather'].get('pond',{}).get('wind_heading',.25)))
             playkit.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type)
+            excursions.update(key,obj,dt,outdoors,home_type,home_ecology['wind'],self.hour)
             textiles.update(self,key,obj,dt,outdoors,home_wet,home_intensity,home_temperature)
             groundworks.update(self,key,obj,dt,outdoors,home_wet,home_intensity,home_temperature,any(w in home_type for w in ('snow','blizzard')))
             if not outdoors:

@@ -646,6 +646,38 @@ real arrivals for all 48 visitor identities and Pip, native/renderer helper-cloc
 parity, all eight hatched-age rigs, actual contact, observed memories, interruption,
 copy identity, save/load and selectable visitors in native-frame replays.
 
+### Carnival and travel belongings in development
+
+Ten constructions now replace the wheelbarrow, jetpack, submarine, rocket,
+hot-air balloon, UFO, flying carpet, bounce house, Ferris wheel and carousel.
+They have separate hulls, riveted seams, portholes, vents, woven panels, envelope
+gores, rigging, mesh, cabins and carved duck mounts. Sizes are reserved by the
+same placement system that draws them; the small utility objects remain closer
+to Cheese's scale. Opaque glass and panels hide machinery behind them.
+
+The native simulation owns the empty rides' motor phases, the saucer scanner,
+cloth wind, fabric inflation, covers and night lamps. Bad weather, high wind,
+poor condition and nighttime stop appropriate mechanisms. Fabric settles in
+adverse weather. Stored copies freeze, and each physical copy retains its own
+phase through saving and placement. Home weather applies even while Cheese is
+elsewhere. Reduced Motion preserves the actual wheel and cabin positions.
+Original ownership, ordinary item use, inventory and rewards remain authoritative.
+
+These are reconstructed objects and resting mechanisms. Riding, launch/travel,
+individual character contact, shared performances and each object's 48 bespoke
+sequences remain unfinished. This chapter adds no verified sequence counts.
+
+Validation: `.venv/bin/python engine/check_excursions.py`,
+`node --test engine/tests/excursions.test.mjs`, and
+`engine/node_modules/.bin/electron engine/excursions-check.cjs`.
+Disposable-save checks cover all ten real items, ordinary completion rewards,
+separate stored copies, home weather and exact save/load. Art checks cover 1,200
+mechanism states, ASCII bounds, materials, native clocks, immutability, Reduced
+Motion and clickable objects in 70 actual game frames. A separate 180-frame
+continuous ride replay measures steady motion; full day/weather redraws are
+reported separately. Five construction sheets, a weather sheet and thirty native
+pond captures are written under `engine/artifacts/animation-milestone/`.
+
 ## Validation
 
 ```sh

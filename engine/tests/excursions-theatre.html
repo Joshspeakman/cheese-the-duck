@@ -1,0 +1,54 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Carnival and travel belongings</title>
+<style>body{background:#142b23;color:#eadcb9;font:20px Georgia;margin:24px}canvas{display:block;max-width:100%;margin:24px 0}</style>
+<h1>Carnival and travel belongings</h1><p>Current Ultra construction. The gallery shows empty mechanisms and weather states; character riding and travel sequences remain in development.</p>
+<script type="module">
+import {EXCURSION_BLUEPRINTS as BLUEPRINTS} from '../client/excursion-workshop.mjs';
+import {itemSprite,itemWorldScale,ItemPainter} from '../client/ultra-items.mjs';
+import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+const painter=new ItemPainter(),surface='#142b23';
+function sheet(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.fillStyle=surface;ctx.fillRect(0,0,w,h);return [c,ctx];}
+window.reviewExcursions=()=>{
+ const images={},ids=Object.keys(BLUEPRINTS);
+ for(let page=0;page<5;page++){
+  const [canvas,c]=sheet(2000,1450);
+  ids.slice(page*2,page*2+2).forEach((id,i)=>{
+   const x=i*1000,m=itemSprite(id,0,{state:{excursion:{phase:.5,wind_phase:2,wind:.5,inflation:1,cover:0,lights:0}}});
+   const u=Math.min(5,880/m.width,1190/(m.art.length*1.5));
+   painter.draw(c,m,x+500,1300,u/m.detailScale,{surface});
+   c.fillStyle='#eadcb9';c.font='26px Menlo';c.fillText(id.replaceAll('_',' '),x+30,50);
+   // Character scale is relative to the object's actual in-world scale.
+   const cw=u/(m.detailScale*itemWorldScale(id)),ch=cw*1.5;
+   const duck={...characterSprite({stage:'hatchling',state:'idle',facing:true},0),x:(x+170)/cw,y:1300/ch};
+   drawCharacter(c,duck,cw,ch,surface);c.font='18px Menlo';c.fillText('Hatchling at relative game scale',x+30,1400);
+  });
+  images['excursions-objects-'+page]=canvas.toDataURL();document.body.append(canvas);
+ }
+ const [weather,c]=sheet(2000,1500);
+ ['hot_air_balloon','bounce_house','magic_carpet','ferris_wheel'].forEach((id,i)=>{
+  for(let j=0;j<3;j++){
+   const x=j*665,y=i*375,model=itemSprite(id,0,{state:{excursion:{phase:.8,wind_phase:2,wind:j===2?.9:.15,inflation:j>=1?.35:1,cover:j===2?1:0,lights:j===1?1:0}}}),u=Math.min(3,600/model.width,305/(model.art.length*1.5));
+   painter.draw(c,model,x+330,y+340,u/model.detailScale,{surface});c.font='18px Menlo';c.fillStyle='#eadcb9';c.fillText(id+' / '+['day','night','storm'][j],x+20,y+25);
+  }
+ });images['excursions-weather']=weather.toDataURL();document.body.append(weather);return images;
+};
+window.replayExcursions=frames=>{
+ const view=new SceneCanvas();view.resize(1500,950);const images={},costs=[];let objects=0,selectable=0;
+ for(const [i,s]of frames.entries()){
+  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
+  if(before!==JSON.stringify(s))throw Error('Renderer changed native snapshot');
+  for(const o of view.world.objects.filter(o=>o.construction==='excursion-v1')){
+   objects++;if(o.clipped)throw Error('Clipped '+o.id);
+   const hit=view.hits.find(h=>h.id===o.id&&h.instance===o.instance);
+   if(!hit||view.hit((hit.x+hit.w/2)/view.canvas.width,(hit.y+hit.h/2)/view.canvas.height)?.instance!==o.instance)throw Error('Object is not selectable at its drawing '+o.id);selectable++;
+   const name='excursions-live-'+o.id+'-'+(s.hour===23?'night':/storm/.test(s.weather)?'storm':'day');
+   if(!images[name])images[name]=view.canvas.toDataURL();
+  }
+ }
+ const live=frames.find(s=>s.items.some(o=>o.id==='ferris_wheel')),steady=[];
+ if(live){const copy=structuredClone(live),id=copy.items.find(o=>o.id==='ferris_wheel').instance;
+  for(let i=0;i<180;i++){copy.living.instances[id].excursion.phase=i*.12/30;const at=performance.now();view.draw(copy,i/30,1/30);steady.push(performance.now()-at);}
+ }
+ costs.sort((a,b)=>a-b);steady.sort((a,b)=>a-b);return {frames:frames.length,objects,selectable,p95Ms:costs[Math.floor(costs.length*.95)],steadyFrames:steady.length,steadyMedianMs:steady[Math.floor(steady.length*.5)],steadyP95Ms:steady[Math.floor(steady.length*.95)],images};
+};
+</script>
