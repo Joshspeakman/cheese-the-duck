@@ -81,28 +81,28 @@
       "construction": "headwear-v1"
     },
     "glasses_cool": {
-      "width": 21.48,
-      "height": 6.84,
+      "width": 41.72,
+      "height": 27.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "accessory-v1"
     },
     "glasses_nerd": {
-      "width": 21.48,
-      "height": 6.84,
+      "width": 41.72,
+      "height": 27.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "accessory-v1"
     },
     "bowtie": {
-      "width": 15.63,
-      "height": 6.84,
+      "width": 41.72,
+      "height": 27.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "accessory-v1"
     },
     "scarf_red": {
-      "width": 14.81,
-      "height": 9.54,
+      "width": 41.72,
+      "height": 27.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "accessory-v1"
     },
     "cape": {
       "width": 19.22,
@@ -369,16 +369,16 @@
       "construction": "botanical-v1"
     },
     "bow_tie_blue": {
-      "width": 15.63,
-      "height": 6.84,
+      "width": 41.72,
+      "height": 27.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "accessory-v1"
     },
     "bow_tie_pink": {
-      "width": 15.63,
-      "height": 6.84,
+      "width": 41.72,
+      "height": 27.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "accessory-v1"
     },
     "cap_sports": {
       "width": 41.91,
@@ -393,28 +393,28 @@
       "construction": "headwear-v1"
     },
     "bandana": {
-      "width": 15.63,
-      "height": 6.84,
+      "width": 41.72,
+      "height": 27.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "accessory-v1"
     },
     "headphones": {
-      "width": 16.8,
-      "height": 8.19,
+      "width": 41.72,
+      "height": 27.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "accessory-v1"
     },
     "sunglasses_aviator": {
-      "width": 21.48,
-      "height": 6.84,
+      "width": 41.72,
+      "height": 27.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "accessory-v1"
     },
     "scarf_winter": {
-      "width": 14.81,
-      "height": 9.54,
+      "width": 41.72,
+      "height": 27.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "accessory-v1"
     },
     "crown_golden": {
       "width": 41.91,
@@ -459,10 +459,10 @@
       "construction": "legacy-detail"
     },
     "monocle": {
-      "width": 14.27,
-      "height": 9.09,
+      "width": 41.72,
+      "height": 27.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "accessory-v1"
     },
     "halo_angel": {
       "width": 15.81,

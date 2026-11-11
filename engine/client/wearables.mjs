@@ -1,5 +1,6 @@
 import { WEARABLE_CATALOG } from './wearable-catalog.mjs';
 import {HEADWEAR_BLUEPRINTS,fittedHat} from './headwear-workshop.mjs';
+import {ACCESSORY_BLUEPRINTS,fittedAccessory,accessoryColors} from './accessory-workshop.mjs';
 
 // Each family has its own fitted construction and motion. Slots describe where
 // art attaches, independently of the three original wardrobe systems.
@@ -26,13 +27,14 @@ const GROUPS={
 };
 const LOOKS=new Map();
 for(const [family,[slot,ids]] of Object.entries(GROUPS))for(const id of ids.split(' '))LOOKS.set(id,{family,slot});
+export const wearableSlots=Object.fromEntries([...LOOKS].map(([id,look])=>[id,look.slot]));
 const COLORS={red:'#ef8275',blue:'#80c8f1',pink:'#efa4cf',purple:'#ba9ae5',yellow:'#f3cf70',gold:'#f1ce73',white:'#e9eee6',black:'#9aa5be',silver:'#bddae5',brown:'#cda579',cyan:'#7fd7ce',rainbow:'#d69fe9'};
 const BASE={cap:'red',party:'pink',chef:'white',wizard:'purple',crown:'gold',viking:'silver',pirate:'black',cowboy:'brown',tophat:'black',beret:'red',beanie:'blue',sunhat:'yellow',flowers:'pink',santa:'red',ears:'pink',antlers:'brown',headband:'pink',icecream:'pink',earmuffs:'blue',helmet:'cyan',shades:'black',glasses:'blue',hearts:'pink',mask:'purple',newyear:'gold',monocle:'gold',bow:'red',scarf:'red',bandana:'red',pearls:'white',lei:'pink',bell:'gold',charm:'brown',cape:'red',bag:'brown',fairy:'pink',angel:'white',bat:'purple',halo:'gold',horns:'red',headphones:'purple',sweater:'blue',shirt:'cyan',tuxedo:'black',robe:'purple',santa_suit:'red',raincoat:'yellow',coat:'blue',pumpkin:'yellow',ghost:'white',elf:'cyan',sash:'pink',boots:'yellow',slippers:'pink',skates:'silver',sandals:'cyan',umbrella:'red',wand:'gold',rod:'brown',bouquet:'pink',basket:'brown',mittens:'red',sparkle:'gold',rainbow:'rainbow',bubbles:'pink',ring:'yellow'};
 const MOTION={
  cap:'A fitted brim follows head turns; a stitched badge catches the light.',party:'The pompom sways and the foil pattern flickers.',chef:'The soft crown puffs and settles above its fitted band.',wizard:'A bent tip sways over a fitted brim as embroidered stars twinkle.',
  crown:'Jewels catch the light while the band stays seated on his head.',viking:'The horns rock with his head; the metal rivet glints.',pirate:'The tricorn brim follows his head and the skull winks.',cowboy:'The curved brim tips with his head and its buckle glints.',tophat:'The tall crown stays fitted while the hatband buckle shines.',beret:'The soft crown shifts and its little stem flops.',beanie:'The pompom bobs above a snug knitted band.',sunhat:'The broad brim follows his head while its ribbon flicks.',flowers:'Individual flowers, leaves or snowflakes gently flutter.',santa:'A soft tip and white pompom flop independently.',ears:'The ears fold and spring back.',antlers:'Bells swing from the antlers as his head moves.',headband:'A heart bobs on its spring.',icecream:'The scoop wobbles above its cone.',earmuffs:'The padded cups move with his head and their stitch glints.',helmet:'A visor highlight sweeps over the fitted helmet.',
  shades:'The lens catches a moving reflection without covering his bill.',glasses:'The rim stays on his eye while a tiny reflection travels.',hearts:'Heart-shaped rims follow his expression and shimmer.',mask:'The eye opening stays clear while its feather flutters.',newyear:'Festive frames flash their little stars.',monocle:'The fitted lens glints while its chain swings.',
- bow:'The knot stays at his neck while the wings of the bow flex.',scarf:'The fitted neck wrap stays put while its loose tail streams behind.',bandana:'The neck knot stays attached as its triangular tail flutters.',pearls:'Pearls sway under the neck and catch small highlights.',lei:'Flowers bob independently around the neck.',bell:'The collar stays fitted while its little bell swings.',charm:'An acorn pendant swings from its cord.',cape:'The shoulder fastening stays attached while the hem billows behind.',bag:'The shoulder strap stays fitted while the flap and latch bounce.',fairy:'Two translucent wings beat and shimmer from his shoulders.',angel:'Feathered wings fold, spread and glow from the shoulders.',bat:'Webbed wings open and tuck behind his body.',halo:'A small halo floats and its highlights orbit.',horns:'Horns follow his head while their tips glint.',headphones:'The headband fits his head; the cups pulse to their own beat.',
+ bow:'The knot stays at his neck while the wings of the bow flex.',scarf:'The neck wrap stays fitted while its knitted end drapes over his breast.',bandana:'The neck knot stays attached as its triangular tail flutters.',pearls:'Pearls sway under the neck and catch small highlights.',lei:'Flowers bob independently around the neck.',bell:'The collar stays fitted while its little bell swings.',charm:'An acorn pendant swings from its cord.',cape:'The shoulder fastening stays attached while the hem billows behind.',bag:'The shoulder strap stays fitted while the flap and latch bounce.',fairy:'Two translucent wings beat and shimmer from his shoulders.',angel:'Feathered wings fold, spread and glow from the shoulders.',bat:'Webbed wings open and tuck behind his body.',halo:'A small halo floats and its highlights orbit.',horns:'Horns follow his head while their tips glint.',headphones:'The headband fits his head while its soft ear cushions flex.',
  sweater:'The hem hugs his belly and its knit pattern rises with each breath.',shirt:'The collar fits his chest and the flower print shifts with his breathing.',tuxedo:'Fitted lapels and buttons follow his body.',robe:'A fitted robe hem sways while stitched stars twinkle.',santa_suit:'A white-trimmed coat and belt move with his body.',raincoat:'The hem sways and tiny droplets slide down its front.',coat:'Quilted panels compress with his breathing.',pumpkin:'The round costume follows his belly while the carved face flickers.',ghost:'The sheet drapes around his body with a rippling hem.',elf:'A fitted tunic ends in little swaying points.',sash:'The diagonal sash stays across his chest while its badge twinkles.',
  boots:'Each boot follows its own planted or lifted foot.',slippers:'Soft slippers follow each foot; their ears flop on a step.',skates:'Each blade follows its foot and catches a travelling glint.',sandals:'The straps stay on each foot through the waddle.',umbrella:'The wing holds the handle while the canopy rocks and sheds drops.',wand:'The wing holds the wand while its tip sends out little sparks.',rod:'A held rod flexes and its line and float sway.',bouquet:'The stems stay in his wing while the flowers nod.',basket:'The handle stays in his wing as the eggs jiggle.',mittens:'The mittens move with the wings.',sparkle:'Tiny sparks orbit outside his silhouette.',rainbow:'Short colored ribbons trail behind his steps.',bubbles:'Little hearts float up from his shoulder.',ring:'A fitted swim ring bobs around his belly.',
 };
@@ -53,7 +55,7 @@ export function wornItems(cosmetics={}){
 // Rig coordinates are already posed. Art is built in character cells, so hats
 // fit the age's head width and footwear follows the two actual foot contacts.
 export function fitWearables(rig,cosmetics={},time=0,apparel={}){
- const layers=[],fills=[],items=wornItems(cosmetics),inks={};
+ const layers=[],fills=[],items=wornItems(cosmetics),inks={},contacts={};
  const h=rig.head,b=rig.body,n=rig.neck,e=rig.eye;
  const sleeping=rig.action==='sleeping',wet=rig.action==='swimming';
  const moving=/walking|dancing|hopping|flapping/.test(rig.action),small=rig.small;
@@ -83,6 +85,20 @@ export function fitWearables(rig,cosmetics={},time=0,apparel={}){
    if(rig.crest&&!['flowers','ears','headband','antlers','earmuffs'].includes(item.family))add(' '.repeat(rig.crest.w),rig.crest.x,rig.crest.y,{clear:true});
    for(const f of hat.fills){add(' '.repeat(f.w),hat.x+f.x,hat.y+f.y,{clear:true});fills.push({id:item.id,x:hat.x+f.x,y:hat.y+f.y,w:f.w,tone:tones[f.tone]||tones.b});}
    hat.art.forEach((row,j)=>{for(let i=0;i<row.length;i++)if(row[i]!==' ')add(row[i],hat.x+i,hat.y+j,{tone:tones[hat.tones[j][i]]||tones.b});});
+   continue;
+  }
+  if(ACCESSORY_BLUEPRINTS[item.id]){
+   const material=apparel[item.id]||{},piece=fittedAccessory(rig,item.id,{material,phase:rig.motion===false?0:Number.isFinite(material.phase)?material.phase:time*(moving?4:1.2)});
+   contacts[item.id]=piece.contacts;
+   const tones=Object.fromEntries(Object.entries(accessoryColors(ACCESSORY_BLUEPRINTS[item.id])).map(([tone,color],i)=>{const code=String.fromCharCode(512+index*12+i);inks[code]=color;return [tone,code];}));
+   const inside=(x,y,r)=>r&&x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h;
+   for(const [model,rear]of [[piece.back,true],[piece.front,false]]){
+    for(const f of model.fills)for(let x=f.x;x<f.x+f.w;x++){
+     if((item.slot==='neck'||rear)&&inside(x,f.y,rig.faceBounds||h)||rear&&inside(x,f.y,b))continue;
+     add(' ',x,f.y,{clear:true,rear});fills.push({id:item.id,x,y:f.y,w:1,tone:tones[f.tone]||tones.b});
+    }
+    model.art.forEach((row,y)=>{for(let x=0;x<row.length;x++)if(row[x]!==' ')add(row[x],x,y,{tone:tones[model.tones[y][x]]||tones.b,rear});});
+   }
    continue;
   }
   switch(item.family){
@@ -210,7 +226,7 @@ export function fitWearables(rig,cosmetics={},time=0,apparel={}){
    case 'ring':add('('+fill('=',b.w)+')',b.x-1,b.y+b.h-1);add(p<2?'o':'*',b.x+b.w,b.y+b.h-1,{tone:trim});break;
   }
  }
- return {layers,fills,inks,items};
+ return {layers,fills,inks,items,contacts};
 }
 
 export function paintWearables(cells,tones,rig,plan){

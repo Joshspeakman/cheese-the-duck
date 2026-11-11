@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: addressed terrain and perspective placement. Native and preview rules share the shoreline, fixed willow roots and dock; actual ground footprints are distinct from drawing envelopes. Trees and dock occlude rear items and hit targets. Buildings, room decorations, community projects and garden beds now use saved native ground anchors; old layouts migrate without losing ownership or copy history, and external copies can be arranged or stored. Growing a garden preserves its established bed. Artwork/repertoire completion remains unchanged at 301 reconstructed / 241 pending and all verified-sequence counts zero.",
+  "previous_goal_turn": "Progress: reconstructed 25 face/neck/headphone accessories across the original wardrobes, including 11 main catalogue items and 14 supplemental IDs. Added twelve native care cores, saved material/fit changes, actual age-fitted contacts, multi-item notebook controls and native/rendered slot parity. Corrected scarf drape and pendant cord attachment during visual review. 312 reconstructed / 230 pending; every per-object verified-sequence count remains zero. Full milestone and final installation remain unfinished.",
   "items": [
     {
       "id": "hat_red",
@@ -196,26 +196,34 @@
     {
       "id": "glasses_cool",
       "family": "glasses",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Detailed catalogue and compact face/neck/headphone construction; saved rain/snow/lens fog/soil/fit, real care contacts, wardrobe slot parity and notebook controls. Twelve shared care cores are foundations; individual 48-sequence repertoire and visitor care remain unfinished."
     },
     {
       "id": "glasses_nerd",
       "family": "glasses",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Detailed catalogue and compact face/neck/headphone construction; saved rain/snow/lens fog/soil/fit, real care contacts, wardrobe slot parity and notebook controls. Twelve shared care cores are foundations; individual 48-sequence repertoire and visitor care remain unfinished."
     },
     {
       "id": "bowtie",
       "family": "bow",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Detailed catalogue and compact face/neck/headphone construction; saved rain/snow/lens fog/soil/fit, real care contacts, wardrobe slot parity and notebook controls. Twelve shared care cores are foundations; individual 48-sequence repertoire and visitor care remain unfinished."
     },
     {
       "id": "scarf_red",
       "family": "scarf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Detailed catalogue and compact face/neck/headphone construction; saved rain/snow/lens fog/soil/fit, real care contacts, wardrobe slot parity and notebook controls. Twelve shared care cores are foundations; individual 48-sequence repertoire and visitor care remain unfinished."
     },
     {
       "id": "cape",
@@ -546,14 +554,18 @@
     {
       "id": "bow_tie_blue",
       "family": "bow",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Detailed catalogue and compact face/neck/headphone construction; saved rain/snow/lens fog/soil/fit, real care contacts, wardrobe slot parity and notebook controls. Twelve shared care cores are foundations; individual 48-sequence repertoire and visitor care remain unfinished."
     },
     {
       "id": "bow_tie_pink",
       "family": "bow",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Detailed catalogue and compact face/neck/headphone construction; saved rain/snow/lens fog/soil/fit, real care contacts, wardrobe slot parity and notebook controls. Twelve shared care cores are foundations; individual 48-sequence repertoire and visitor care remain unfinished."
     },
     {
       "id": "cap_sports",
@@ -574,26 +586,34 @@
     {
       "id": "bandana",
       "family": "bow",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Detailed catalogue and compact face/neck/headphone construction; saved rain/snow/lens fog/soil/fit, real care contacts, wardrobe slot parity and notebook controls. Twelve shared care cores are foundations; individual 48-sequence repertoire and visitor care remain unfinished."
     },
     {
       "id": "headphones",
       "family": "headphones",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Detailed catalogue and compact face/neck/headphone construction; saved rain/snow/lens fog/soil/fit, real care contacts, wardrobe slot parity and notebook controls. Twelve shared care cores are foundations; individual 48-sequence repertoire and visitor care remain unfinished."
     },
     {
       "id": "sunglasses_aviator",
       "family": "glasses",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Detailed catalogue and compact face/neck/headphone construction; saved rain/snow/lens fog/soil/fit, real care contacts, wardrobe slot parity and notebook controls. Twelve shared care cores are foundations; individual 48-sequence repertoire and visitor care remain unfinished."
     },
     {
       "id": "scarf_winter",
       "family": "scarf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Detailed catalogue and compact face/neck/headphone construction; saved rain/snow/lens fog/soil/fit, real care contacts, wardrobe slot parity and notebook controls. Twelve shared care cores are foundations; individual 48-sequence repertoire and visitor care remain unfinished."
     },
     {
       "id": "crown_golden",
@@ -650,8 +670,10 @@
     {
       "id": "monocle",
       "family": "monocle",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Detailed catalogue and compact face/neck/headphone construction; saved rain/snow/lens fog/soil/fit, real care contacts, wardrobe slot parity and notebook controls. Twelve shared care cores are foundations; individual 48-sequence repertoire and visitor care remain unfinished."
     },
     {
       "id": "halo_angel",
@@ -3993,10 +4015,10 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "grounded_portable_activities_all_areas",
+    "sourcePhase": "accessories_material_and_care",
     "fullyOverhauled": false,
-    "constructedObjects": 301,
-    "remainingArtwork": 241,
+    "constructedObjects": 312,
+    "remainingArtwork": 230,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -4455,11 +4477,21 @@
       "engine/artifacts/animation-milestone/terrain-groundworks.log",
       "engine/artifacts/animation-milestone/terrain-playdates.log",
       "engine/artifacts/animation-milestone/terrain-living.log",
-      "engine/artifacts/animation-milestone/terrain-smoke.log"
+      "engine/artifacts/animation-milestone/terrain-smoke.log",
+      "engine/artifacts/animation-milestone/accessories-native.json",
+      "engine/artifacts/animation-milestone/accessories-render.json",
+      "engine/artifacts/animation-milestone/accessories-review.html",
+      "engine/artifacts/animation-milestone/accessories-ui.json",
+      "engine/artifacts/animation-milestone/accessories-regressions-final.log",
+      "engine/artifacts/animation-milestone/accessories-material-fitting.log",
+      "engine/artifacts/animation-milestone/accessories-living.log",
+      "engine/artifacts/animation-milestone/accessories-terrain.log",
+      "engine/artifacts/animation-milestone/accessories-smoke.log",
+      "engine/artifacts/animation-milestone/accessories-hat-ui.log"
     ],
-    "next": "Continue the remaining 241 catalogue constructions and individual contextual repertoires. Apply the shared terrain/support reservations to future artwork and regenerate measurements when its envelope changes. Headwear still needs individual visitor participation and dressing/undressing; tool pickup/put-away and all 542 individual 48-sequence audits remain open. Preserve the full milestone through final integration and installation.",
+    "next": "Continue the remaining 230 catalogue constructions and individual contextual repertoires. Remaining wardrobe backs, wings, held pieces and garments need detailed catalogue work and saved physical actions. Preserve shared terrain/support reservations and regenerate measurements when artwork dimensions change. Visitor clothing care and dressing/undressing, tool pickup/put-away and all 542 individual 48-sequence audits remain open. Finish integration and install only after the full milestone.",
     "checks": {
-      "javascript": 211,
+      "javascript": 217,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4873,7 +4905,11 @@
         "lastRenderMs": 8.5,
         "peakRenderMs": 151.5,
         "localAI": false
-      }
+      },
+      "accessoriesNative": 923,
+      "accessoriesNativeRenderFrames": 424,
+      "accessoriesNotebook": 9,
+      "headwearNotebookCompatibility": 7
     },
     "limitations": [
       "279 of 542 object artworks reconstructed for review; 263 remain.",
@@ -4895,7 +4931,8 @@
       "Twenty-one garden structures have 54 initial solo cores and 49 shared visitor roles. Eight new landmarks add carved/material detail, saved directional wind, real hour/season/sky-controlled sundial shadows, native flag hoists, low physical contacts and observation-based shared memories. These are initial core actions, not 48 bespoke sequences per item. Guest-to-guest sessions, egg observation, climbing, physical tool pickup/put-away and full personality/mood/season acting remain unfinished. No object sequence completion is claimed.",
       "Eight outdoor playthings have 42 initial solo cores and 25 complementary visitor roles. All eight hatched ages and all 48 visitor rigs fit, and all 48 native visitor identities plus Pip are tested through real arrival and shared learning. Egg observation, guest-to-guest games, physical pickup/put-away, full personal/mood/season repertoires and each object's 48 bespoke sequences remain unfinished. Boat and board practice stays on the bank; no voyage or surf travel is claimed.",
       "Glass curios have twelve added core tracks and eight observing companion roles, with exact-copy controls and saved snow/forecast state. These are initial contextual foundations, not 48 unique sequences per object; no per-object repertoire audit is complete.",
-      "Ten carnival/travel belongings have reconstructed art and saved mechanisms. Ferris/carousel rides have twelve initial scores; bounce house and carpet have 28 shared-play programs. Bounce-house controls add 24 low-control scores and ten ordered procedures, for 48 selectable source routines. The remaining six props need full mechanisms; personal visitor acting, guest-to-guest work, egg observation and every per-object 48-sequence audit remain open. No verified-sequence count is promoted from source routine counts."
+      "Ten carnival/travel belongings have reconstructed art and saved mechanisms. Ferris/carousel rides have twelve initial scores; bounce house and carpet have 28 shared-play programs. Bounce-house controls add 24 low-control scores and ten ordered procedures, for 48 selectable source routines. The remaining six props need full mechanisms; personal visitor acting, guest-to-guest work, egg observation and every per-object 48-sequence audit remain open. No verified-sequence count is promoted from source routine counts.",
+      "Twenty-five face/neck/headphone accessories now have detailed constructions and twelve shared native care cores with saved weather, grime and fit. Existing cast outfits use the fittings, but visitor dressing/care participation, shared care, physical pickup/put-away and 48 meaningful bespoke sequences per item remain unfinished. No verified-sequence count is promoted from the shared cores."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -5117,6 +5154,45 @@
       "portableNativeChecks": 483,
       "renderCases": 876,
       "portable": "Owned props receive a saved object point and separate walking destination. Arrival gates work; pause, travel and save/load preserve deployed props. Resume walks back before advancing. Completion, cancellation or lost ownership release the reservation. No suitable terrain returns failure without cost."
+    },
+    "accessories": {
+      "constructed": 25,
+      "catalogueObjects": 11,
+      "supplementalWardrobeIDs": 14,
+      "careCores": 12,
+      "materials": [
+        "wet",
+        "snow",
+        "fog",
+        "wind",
+        "soil",
+        "slack"
+      ],
+      "visibleSlots": [
+        "head",
+        "face",
+        "neck",
+        "above"
+      ],
+      "nativeOwns": [
+        "ownership",
+        "selection",
+        "materials",
+        "phase",
+        "contact",
+        "cooldowns"
+      ],
+      "notebook": "Per-equipped-item controls and material state; one actor, one care action",
+      "review": "engine/artifacts/animation-milestone/accessories-review.html",
+      "fullRepertoiresComplete": false
+    },
+    "accessoriesSmoke": {
+      "result": "PASS",
+      "frames": 92,
+      "lastRenderMs": 8.1,
+      "peakMs": 146.5,
+      "localAI": false,
+      "disposableSaves": true
     }
   }
 }

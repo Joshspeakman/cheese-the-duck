@@ -21,7 +21,7 @@ app.whenReady().then(async()=>{
   await js("document.querySelector('[data-hat-action=brush_snow]').click()");await pause(100);
   check(inputs.some(c=>c.type==='pond'&&c.action==='hat_care'&&c.target==='hat_blue'&&c.text==='brush_snow'),'notebook sends the exact original equipped item and care request');
   frame.scene.duck.hatCare.active={item:'hat_blue',id:'brush_snow',elapsed:2,applied:false,label:'Brush snow from the crown'};
-  frame.scene.duck.hatCare.options.forEach(o=>{o.enabled=false;o.reason='Let Cheese finish what he is doing.';});
+  for(const entry of [frame.scene.duck.hatCare,...(frame.scene.duck.hatCare.items||[])])entry.options.forEach(o=>{o.enabled=false;o.reason='Let Cheese finish what he is doing.';});
   win.webContents.send('hud-test:frame',frame);await pause(200);
   check(await js("[...document.querySelectorAll('[data-hat-action]')].every(b=>b.disabled)"),'ongoing care disables duplicate requests without replacing the panel');
   check(await js("document.querySelector('[data-hat-care]').textContent==='Brush snow from the crown'"),'native care status updates in place');

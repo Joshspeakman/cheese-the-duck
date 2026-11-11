@@ -931,3 +931,49 @@ at three aspect ratios. `tests/terrain.test.mjs` compares 34,146 support decisio
 across every catalogue drawing and checks camera stability. The existing layout
 and physical-copy checks cover migration, safe storage and the real Arrange UI.
 This placement work does not complete the individual 48-sequence milestone.
+
+## Constructed face and neck accessories (milestone work in progress)
+
+Twenty-five accessories across the original shop, outfit and seasonal wardrobes
+now have new catalogue drawings and separately constructed compact fittings:
+seven kinds of glasses, a feathered mask, an engraved monocle, five bows, a
+bandana, five woven scarves, four necklaces and studio headphones. Lenses have
+dark interiors and reflections; the mask has eye openings; cords join their
+pendants. Scarves drape onto the breast, shorten for swimming and sleeping, and
+compress at a wringing contact. All eight hatched ages retain their eyes, bills
+and original body scale. Existing visitor outfits use the same fittings.
+
+Native apparel records track water, snow, lens mist, grime and looseness.
+Movement and weather affect only visible equipped items. Stored pieces dry,
+and offline catch-up does not invent wear or dressing gestures. Twelve shared
+care cores let Cheese wipe lenses, dry frames or ear pads, straighten a knot,
+squeeze a scarf, brush off snow, polish a pendant or settle loose fittings.
+Effects apply once at the real contact, respect cooldowns, and yield to movement,
+travel, another task, urgent needs or unequipping. Saved materials survive a
+reload without replaying unfinished gestures. Loose frames, bows and cords also
+change their fitted geometry, so settling them has a visible result.
+
+The notebook exposes each equipped accessory's own care options and live state.
+Native material selection shares the renderer's canonical slots through
+`client/animation/wearable-slots.json`; run `node engine/build-wearable-slots.mjs`
+after changing wearable slot definitions. The original inventory and equip
+handlers remain authoritative. No care action grants possessions.
+
+Validation: `engine/check_accessories.py` exercises real wardrobe handlers,
+environment exposure, exclusive care, contact timing, cancellation and saves
+(923 checks), and exports 34 native material/age frames and 390 care frames.
+`engine/accessories-check.cjs` renders those frames and creates the browsable
+`artifacts/animation-milestone/accessories-review.html`; the interactive
+`tests/accessories-theatre.html` includes age, pose and material previews.
+`engine/accessories-ui-check.cjs` checks the real notebook and its commands.
+`tests/accessories.test.mjs` checks distinct constructions, fitted contacts,
+weathered geometry, age/action/direction coverage, Reduced Motion and visitor
+outfit compatibility. Footprint measurements and terrain checks include the
+enlarged catalogue drawings.
+
+This adds 11 main catalogue reconstructions plus 14 supplemental wardrobe IDs:
+312 of the 542 catalogue items now have reconstructed artwork under review,
+with 230 still pending. The twelve shared care cores do not constitute 48
+bespoke sequences per object. Guest dressing participation, shared care,
+physical pickup/put-away and the complete contextual repertoires remain open.
+The full milestone remains active and is not yet installed.
