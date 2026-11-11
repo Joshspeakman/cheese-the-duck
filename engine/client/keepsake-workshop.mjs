@@ -1,4 +1,5 @@
 import {ObjectCanvas} from './object-canvas.mjs';
+import {globe,oracle,GLASS_INKS,GLASS_PANELS} from './glass-curios.mjs';
 import BLUEPRINTS from './animation/keepsakes.json' with {type:'json'};
 export {BLUEPRINTS as KEEPSAKE_BLUEPRINTS};
 const clamp=n=>Math.max(0,Math.min(1,n));
@@ -212,11 +213,11 @@ function book(c,p,v,state){
  }
  return {contact:{x:cx+spread-5,y:bottom-4},inside:{x:cx-18,y:bottom-4},corner:{x:cx+spread-3,y:bottom-3},lid:{x:cx+35,y:bottom-5},entry:{x:cx,y:H-2}};
 }
-const BUILDERS={chest,basket,barrel,frame,paper:loosePaper,map,book};
-export function keepsakeSprite(base,item,time,{state={},pose={}}={}){
+const BUILDERS={chest,basket,barrel,frame,paper:loosePaper,map,book,globe,oracle};
+export function keepsakeSprite(base,item,time,{state={},pose={},motion=true}={}){
  const p=BLUEPRINTS[item.id];if(!p)return null;
  const saved=state.keepsake||{},v={open:saved.open??(p.style==='charcoal'?1:0),sort:0,turn:0,wipe:0,fold:p.style==='charcoal'?1-(saved.open??1):0,pour:0,...pose.keepsake};
- const c=new ObjectCanvas(p.w,p.h),anchors=BUILDERS[p.type](c,p,v,state);
+ const c=new ObjectCanvas(p.w,p.h),anchors=BUILDERS[p.type](c,p,{...v,motion},state);
  if(state.dirt>.35)for(const x of [p.w*.3,p.w*.5,p.w*.7])c.put(x,p.h-13,'.:','s');
  if(state.wetness>.45)for(const x of [p.w*.3,p.w*.5,p.w*.7])c.put(x,p.h-15,"'",'w');
  if(state.condition<.45)c.put(p.w*.4,p.h-12,'/','k');
@@ -224,5 +225,6 @@ export function keepsakeSprite(base,item,time,{state={},pose={}}={}){
  if(['paper','map','book'].includes(p.type))inks.q='#7b3547';
  if(p.type==='book')inks.g='#285954';
  const panels={b:'#493d2e',a:'#665334',f:'#6e6650',s:'#2b3b32',k:'#142820',p:'#b6a77c',d:'#493c2d',g:'#2c4c4c',q:'#59464f',w:'#2e5965',l:'#353843'};
+ if(['globe','oracle'].includes(p.type)){Object.assign(inks,GLASS_INKS);Object.assign(panels,GLASS_PANELS);}
  return {...base,...c.finish(),construction:'keepsake-v1',detail:true,detailScale:.62,blueprint:item.id,anchors,inks,panels,sway:0,lift:0,animated:Boolean(pose.keepsake),emissive:false};
 }

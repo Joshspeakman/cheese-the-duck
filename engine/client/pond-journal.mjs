@@ -16,7 +16,7 @@ import {PondArrangement} from './pond-layout.mjs';
 import LIGHTING from './animation/lighting.json' with {type:'json'};
 import KEEPSAKES from './animation/keepsakes.json' with {type:'json'};
 import {creativeSummary} from './creative-state.mjs';
-import {keepsakeSummary} from './keepsake-state.mjs';
+import {keepsakeSummary,KEEPSAKE_CHOICES} from './keepsake-state.mjs';
 import {creativePose} from './creative-routines.mjs';
 import {keepsakePose} from './keepsake-routines.mjs';
 const names=new Map(catalog.map(i=>[i.id,i]));
@@ -77,6 +77,7 @@ export class PondJournal{
   for(const card of this.body.querySelectorAll('[data-keepsake-id]')){
    const id=card.dataset.keepsakeId,instance=card.dataset.keepsakeInstance,state=instance?w.instances?.[instance]:w.objects[id];if(!state)continue;
    card.querySelector('[data-keepsake-summary]').textContent=keepsakeSummary(id,state);
+   for(const button of card.querySelectorAll('[data-keepsake-choice]'))button.disabled=Boolean(w.plan)||!w.layout?.copies?.some(p=>p.instance===instance);
    const meter=card.querySelector('[aria-label="Rainwater"]');if(meter){meter.value=(state.keepsake?.litres||0)/KEEPSAKES[id].capacity;meter.nextElementSibling.textContent=percent(meter.value);}
   }
   for(const card of this.body.querySelectorAll('[data-light-id]')){
@@ -160,6 +161,7 @@ const p=itemProfile(item,itemFamily(id));detail.append(el('p',`${pretty(p.materi
     if(state.keepsake&&KEEPSAKES[id]){
      detail.dataset.keepsakeId=id;detail.dataset.keepsakeInstance=instance||'';
      const summary=el('p',keepsakeSummary(id,state));summary.dataset.keepsakeSummary='';detail.append(summary);
+     for(const [choice,label]of KEEPSAKE_CHOICES[id]||[]){const button=this.button(label,'keepsake_action',id,busy||!outside,{instance,text:choice});button.dataset.keepsakeChoice=choice;detail.append(button);}
      if(KEEPSAKES[id].type==='barrel'){this.meter(detail,'Rainwater',state.keepsake.litres/KEEPSAKES[id].capacity);detail.append(el('p','Rain collects through the screened cover. Ice holds it still; warm dry air slowly draws it away.'));}
     }
     if(state.lighting&&LIGHTING[id]){

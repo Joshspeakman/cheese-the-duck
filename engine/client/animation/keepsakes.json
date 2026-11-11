@@ -198,5 +198,43 @@
         "Still a duck."
       ]
     ]
+  },
+  "snow_globe": {
+    "type": "globe",
+    "style": "village",
+    "w": 192,
+    "h": 152,
+    "scale": 0.56,
+    "material": "glass",
+    "skill": "observation",
+    "verb": "Explore miniature",
+    "portable": false,
+    "caption": "A LITTLE WINTER",
+    "scene": "A tiny pond village: a bridge, three cottages, a duck on the ice and snowy firs."
+  },
+  "snowglobe": {
+    "type": "globe",
+    "style": "cottage",
+    "w": 142,
+    "h": 118,
+    "scale": 0.58,
+    "material": "glass",
+    "skill": "observation",
+    "verb": "Watch the snow",
+    "portable": false,
+    "caption": "HOME IN THE SNOW",
+    "scene": "A red-roofed cottage, a winding path, a tiny duck and a bent snow-covered fir."
+  },
+  "crystal_ball": {
+    "type": "oracle",
+    "style": "weather",
+    "w": 154,
+    "h": 124,
+    "scale": 0.59,
+    "material": "crystal",
+    "skill": "discovery",
+    "verb": "Read the sky",
+    "portable": false,
+    "caption": "THE SKY REMEMBERS"
   }
 }

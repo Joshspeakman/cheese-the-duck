@@ -10,10 +10,10 @@ import {keepsakeGeometry,drawKeepsakeTools,keepsakePose} from '../client/keepsak
 const painter=new ItemPainter();
 window.reviewKeepsakes=()=>{
  const images={},ids=Object.keys(KEEPSAKE_BLUEPRINTS);
- for(let page=0;page<4;page++){
+ for(let page=0;page<6;page++){
   const canvas=document.createElement('canvas');canvas.width=1800;canvas.height=1600;const c=canvas.getContext('2d');c.fillStyle='#142b23';c.fillRect(0,0,1800,1600);
-  ids.slice((page%2)*6,(page%2)*6+6).forEach((id,n)=>{
-   const open=page>1?1:0,m=itemSprite(id,2.3,{state:{keepsake:{open,litres:38,page:4}},pose:{keepsake:{open,sort:open,turn:open*.45,fold:1-open}}}),x=n%3*600,y=Math.floor(n/3)*800;
+  ids.slice((page%3)*6,(page%3)*6+6).forEach((id,n)=>{
+   const open=page>2?1:0,m=itemSprite(id,2.3,{state:{keepsake:{open,litres:38,page:4,glass:{energy:open,phase:2,focus:1,vision:{weather:"stormy"}}}},pose:{keepsake:{open,sort:open,turn:open*.45,fold:1-open}}}),x=n%3*600,y=Math.floor(n/3)*800;
    c.fillStyle='#e5d8b4';c.font='23px Menlo';c.fillText(id+(open?' · open':' · put away'),x+20,y+32);
    const unit=Math.min(5,550/m.width,690/(m.art.length*1.5));painter.draw(c,m,x+300,y+755,unit/m.detailScale,{surface:'#142b23',outline:'#0a1712'});
   });images['keepsakes-'+page]=canvas.toDataURL('image/png');document.body.append(canvas);
@@ -38,5 +38,17 @@ window.replayKeepsakes=frames=>{
   if(s.review)images['keepsake-live-'+s.review]=view.canvas.toDataURL('image/png');
  }
  costs.sort((a,b)=>a-b);return {frames:frames.length,drawn,workers,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+window.reviewGlassWeather=types=>{
+ const images={};let checked=0;
+ for(let page=0;page<Math.ceil(types.length/12);page++){
+  const canvas=document.createElement('canvas');canvas.width=1800;canvas.height=1600;const ctx=canvas.getContext('2d');ctx.fillStyle='#142b23';ctx.fillRect(0,0,1800,1600);
+  types.slice(page*12,page*12+12).forEach((weather,i)=>{
+   const x=i%3*600,y=Math.floor(i/3)*400,m=itemSprite('crystal_ball',0,{state:{keepsake:{glass:{vision:{weather},focus:1,azimuth:.7}}}});
+   if(m.clipped||m.art.some(r=>!/^[ -~]*$/.test(r))||m.fills.some(f=>f.x<0||f.y<0||f.x+f.w>m.width||f.y>=m.art.length))throw Error('Clipped weather reading '+weather);
+   ctx.font='20px Menlo';ctx.fillStyle='#e8d6ac';ctx.fillText(weather,x+20,y+25);painter.draw(ctx,m,x+300,y+380,1.7/m.detailScale,{surface:'#142b23'});checked++;
+  });images['glass-weather-'+page]=canvas.toDataURL();
+ }
+ return {images,checked};
 };
 </script>

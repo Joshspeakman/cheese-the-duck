@@ -2,7 +2,7 @@
 <style>body{background:#142b23;color:#ecdbb3;font:20px Georgia;margin:24px}canvas{display:block;max-width:100%;margin:24px 0}</style>
 <h1>Shared keepsakes · actual game rigs and native scenes</h1>
 <script type="module">
-import {KEEPSAKE_COMPANY,keepsakePose,keepsakeGeometry,drawKeepsakeTools} from '../client/keepsake-routines.mjs';
+import {KEEPSAKE_COMPANY,KEEPSAKE_ROUTINES,keepsakePose,keepsakeGeometry,drawKeepsakeTools} from '../client/keepsake-routines.mjs';
 import {itemSprite,itemWorldScale,ItemPainter} from '../client/ultra-items.mjs';
 import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';
 import {GUEST_CAST} from '../client/guest-cast.mjs';
@@ -11,9 +11,9 @@ const painter=new ItemPainter();
 const fixtures={count_the_shine:['treasure_chest','coin_inspection'],sort_and_check:['storage_chest','compartment_sort'],ribbon_watch:['weekly_chest','ribbon_unfold'],basket_labels:['storage_basket','basket_sort'],water_witness:['rain_barrel','barrel_measure'],photo_details:['duck_photo','photo_remember'],evening_colors:['sunset_photo','sunset_remember'],future_picture:['picture_frame','frame_corner'],storm_lines:['storm_sketch','charcoal_study'],quiet_card:['friendship_card','card_read'],two_navigators:['pirate_map','map_route']};
 function canvas(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.fillStyle='#142b23';ctx.fillRect(0,0,w,h);document.body.append(c);return c;}
 function pair(ctx,x,y,score,visitor,stage='adult',fraction=.48){
- const [item,id]=fixtures[score]||['ancient_tome','book_leaf'];
- const routine={id,elapsed:36*fraction,start_open:0,company:{id:score,role:'a'}};
- const home={...itemSprite(item,0,{state:{keepsake:{open:1,page:4,litres:38}},pose:{keepsake:keepsakePose(routine)}}),x,y,scale:itemWorldScale(item)};
+ const spec=KEEPSAKE_COMPANY[score],[item,id]=spec.item?[spec.item,spec.preview]:fixtures[score]||['ancient_tome','book_leaf'];
+ const routine={id,elapsed:KEEPSAKE_ROUTINES[id].duration*fraction,start_open:0,company:{id:score,role:'a'}};
+ const home={...itemSprite(item,0,{state:{keepsake:{open:1,page:4,litres:38,glass:{energy:.7,phase:2,focus:1,vision:{weather:'snowy'}}}},pose:{keepsake:keepsakePose(routine)}}),x,y,scale:itemWorldScale(item)};
  painter.draw(ctx,home,x*6,y*8,6*home.scale,{surface:'#142b23'});
  const actors=[{stage,name:'Cheese'},visitor];
  for(const [slot,duck]of actors.entries()){
@@ -24,11 +24,11 @@ function pair(ctx,x,y,score,visitor,stage='adult',fraction=.48){
 }
 window.reviewCompany=()=>{
  const images={},scores=Object.keys(KEEPSAKE_COMPANY),guests=Object.values(GUEST_CAST).map(g=>({id:g.id,castId:g.id,name:g.name}));
- for(let page=0;page<2;page++){
-  const c=canvas(2000,1550),ctx=c.getContext('2d');
+ for(let page=0;page<Math.ceil(scores.length/8);page++){
+  const c=canvas(2000,2100),ctx=c.getContext('2d');
   scores.slice(page*8,page*8+8).forEach((id,i)=>{
-   const x=(i%2)*1000,y=Math.floor(i/2)*385;ctx.fillStyle='#e5d8b4';ctx.font='20px Menlo';ctx.fillText(id,x+20,y+28);
-   pair(ctx,(x+400)/6,(y+350)/8,id,guests[(i+page*8)%guests.length],i%3===0?'hatchling':i%3===1?'adult':'elder');
+   const x=(i%2)*1000,y=Math.floor(i/2)*525;ctx.fillStyle='#e5d8b4';ctx.font='20px Menlo';ctx.fillText(id,x+20,y+28);
+   const when=KEEPSAKE_COMPANY[id].when;pair(ctx,(x+400)/6,(y+490)/8,id,guests[(i+page*8)%guests.length],when==='young'?'hatchling':when==='elder'?'elder':'adult');
   });images['reading-company-'+page]=c.toDataURL();
  }
  for(let page=0;page<4;page++){
@@ -46,7 +46,7 @@ window.replayCompany=frames=>{
   const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.1,.1);costs.push(performance.now()-start);
   if(before!==JSON.stringify(s))throw Error('Reading renderer mutated simulation state');
   for(const o of view.world.objects){
-   if(o.keepers?.length>1){paired++;if(!images['reading-live-'+o.id]&&o.keepers[0].character.performance.routine.elapsed>8)images['reading-live-'+o.id]=view.canvas.toDataURL();}
+   if(o.keepers?.length>1){paired++;const routine=o.keepers[0].character.performance.routine;if(!images['reading-live-'+o.id]&&routine.elapsed>Math.max(8,KEEPSAKE_ROUTINES[routine.id].duration*.5))images['reading-live-'+o.id]=view.canvas.toDataURL();}
    for(const r of o.keepers||[])if(r.character.visitor){
     readers++;if(r.character.clipped)throw Error('Clipped visiting reader');
     const hit=view.hits.find(h=>h.id===r.character.id&&['friend','story'].includes(h.kind));

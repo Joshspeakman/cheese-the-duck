@@ -31,8 +31,8 @@ def choose(minds,plan,key):
     stage,_=profile(minds,key)
     context='young' if age in ('hatchling','duckling') or stage=='duckling' else 'elder' if age in ('mature','elder','legendary') else 'night' if minds.pond.hour<6 or minds.pond.hour>=19 else None
     candidates=[k for k,s in SCORES.items() if p['type'] in s['types'] and
-                (not s.get('style') or s['style']==p['style']) and (not s.get('when') or s['when']==context)]
-    return max(candidates,key=lambda k:bool(SCORES[k].get('when'))) if candidates else None
+                (not s.get('style') or s['style']==p['style']) and (not s.get('when') or s['when']==context) and (not s.get('core') or s['core']==plan['keepsake_work']['id'])]
+    return max(candidates,key=lambda k:2*bool(SCORES[k].get('when'))+bool(SCORES[k].get('core'))) if candidates else None
 
 def release(minds,key):
     if minds.readers.pop(key,None):
@@ -57,6 +57,9 @@ def tick(minds,dt):
             elapsed=r['work']['elapsed'];shared_dt=max(0,elapsed-r['last_clock']);r['overlap']+=shared_dt;r['last_clock']=elapsed
             visible=keepsakes.conversation(p,plan) or {}
             words=visible.get('visible_words')
+            if visible.get('snow'):words=visible['miniature']+' The snow was '+visible['snow']+'.'
+            elif visible.get('weather_reading'):
+                v=visible['weather_reading'];words='The crystal showed '+v['weather'].replace('_',' ')+' for '+v['biome'].replace('_',' ')+' ('+v['status']+').'
             if words and shared_dt:
                 text=(visible.get('chapter','')+': '+words).strip(': ')[:180]
                 noticed=r.setdefault('noticed',{})
@@ -104,7 +107,7 @@ def complete(minds,plan):
     if not work.get('done') or work.get('interrupted') or r['overlap']<max(5,duration*.45) or distance(minds.present[r['actor']],r['spot'])>3:return
     r['recorded']=True;key=r['actor'];note=SCORES[r['score']]['label']+'.'
     noticed=[text for text,seconds in r.get('noticed',{}).items() if seconds>=2]
-    if noticed:note+=' Read together: '+ ' / '.join(noticed[-2:])+'.'
+    if noticed:note+=' Noticed together: '+ ' / '.join(noticed[-2:])+'.'
     for actor,other in (('cheese',key),(key,'cheese')):
         minds.model.learn(actor,'share',r['contexts'][actor],.25,minds.now,note,other)
         minds.model.bond(actor,other,.18,minds.now,note)

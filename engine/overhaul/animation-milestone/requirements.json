@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: rebuilt eight garden landmarks and expanded the architecture subsystem to 21 objects, 54 initial native cores and 49 complementary visitor roles. Saved directional wind drives the vane and breeze-sensitive cloth; actual hour/season/sky drive the sundial; flag hoisting uses real contact and preserves partial state. Material-specific ink, feather carving, stitching and low contacts received visual review. Validation: 293 native lifecycle checks; 1671 shared checks; 5454 solo and 4949 company pose parity samples; 1728 solo and 11760 company rig cases; 168 JavaScript tests; 21 notebook UI checks; 12 native weather states; 1724 solo and 1887 shared rendered frames with 1434 selectable companion frames; 694 checks over 72 hours; 254 layout checks and all 542 measured footprints; 96-frame disposable source launch. Artwork progress is 266 reconstructed/276 pending. Every per-object 48-sequence audit remains open. Installed chat release 2.36.1 remains separate; no full-milestone install or completion claimed. Follow-up: connected rain, snow, leaves, reeds and airborne motes to the same saved wind direction; pennants now turn continuously across their masts and all precipitation moves downwind. Native vane/pennant bearing remains authoritative. Final checks now include 172 JavaScript tests, 297 native structure checks, 22 native weather frames, 96 pennant direction/height poses, 694 checks over 72 hours, and fresh solo/shared visual replays. Counts remain 266 reconstructed/276 pending and zero completed 48-sequence audits. The final disposable source launch passed with 93 frames and local AI disabled for that smoke run. Installed chat 2.36.1 was verified through its bundle version and desktop shortcut, and remains unchanged.",
+  "previous_goal_turn": "Progress: reconstructed the giant village snow globe, seasonal cottage snow globe and crystal ball. Added twelve native contact/observation cores and eight complementary visitor roles. Snow circulation integrates independently of frame rate and settles on the native clock; the crystal records the actual queued weather at physical contact and distinguishes changed/past readings in conversation. Low controls, all growth stages, 48 visitor rigs, independently arriving companions, truthful shared memories, original possessions, cancellation, weather interruption, copy identity, Reduced Motion and full save/reload were exercised. Validation: 177 JavaScript tests; 206 dedicated curio lifecycle checks; 118 keepsake lifecycle checks and 9393 pose-parity samples; 398 shared lifecycle checks; 5152 shared rig cases plus 1536 new observer cases; 26 native notebook checks; 1059 new native frames and 641 shared frames, including 552 selectable companion frames; all 47 weather symbols; 694 checks across 72 hours; 254 layout checks and 542 measured footprints; disposable source launch passed with 96 frames. Visual review corrected globe proportions, grounded miniature buildings and lowered controls to short wing reaches. Artwork progress is 269 reconstructed/273 pending. Every per-object 48-sequence audit remains unfinished; full milestone stays active and uninstalled. The desktop chat release remains separate at 2.36.1.",
   "items": [
     {
       "id": "hat_red",
@@ -1265,7 +1265,7 @@
     {
       "id": "snow_globe",
       "family": "globe",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -1655,7 +1655,7 @@
     {
       "id": "crystal_ball",
       "family": "orb",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -3621,7 +3621,7 @@
     {
       "id": "snowglobe",
       "family": "globe",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -3917,10 +3917,10 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "garden_landmarks_and_directional_wind",
+    "sourcePhase": "glass_curios_and_shared_observation",
     "fullyOverhauled": false,
-    "constructedObjects": 266,
-    "remainingArtwork": 276,
+    "constructedObjects": 269,
+    "remainingArtwork": 273,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -4289,11 +4289,25 @@
       "engine/artifacts/animation-milestone/wind-smoke.log",
       "engine/artifacts/animation-milestone/wind-render.log",
       "engine/artifacts/animation-milestone/wind-living.log",
-      "engine/artifacts/animation-milestone/wind-smoke/frame.json"
+      "engine/artifacts/animation-milestone/wind-smoke/frame.json",
+      "engine/client/glass-curios.mjs",
+      "engine/glass_curios.py",
+      "engine/check_glass_curios.py",
+      "engine/tests/glass-curios.test.mjs",
+      "engine/artifacts/animation-milestone/glass-curios-native.json",
+      "engine/artifacts/animation-milestone/glass-curios-frames.json",
+      "engine/artifacts/animation-milestone/glass-curios-weathers.json",
+      "engine/artifacts/animation-milestone/glass-all-js.log",
+      "engine/artifacts/animation-milestone/glass-living.log",
+      "engine/artifacts/animation-milestone/glass-smoke/frame.json",
+      "engine/artifacts/animation-milestone/keepsakes-5.png",
+      "engine/artifacts/animation-milestone/reading-company-2.png",
+      "engine/artifacts/animation-milestone/glass-weather-0.png",
+      "engine/artifacts/animation-milestone/keepsake-live-glass-snow_globe-globe_pump.png"
     ],
-    "next": "Continue the remaining 276 object constructions and individually authored contextual repertoires. All 542 per-object 48-sequence audits remain open; complete personal visitor acting, guest-to-guest sessions, egg observation and physical tool handling before final integration and installation.",
+    "next": "Continue the remaining 273 object constructions and individually authored contextual repertoires. All 542 per-object 48-sequence audits remain open; complete personal visitor acting, guest-to-guest sessions, egg observation and physical tool handling before final integration and installation.",
     "checks": {
-      "javascript": 172,
+      "javascript": 177,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4416,31 +4430,27 @@
         "p95Ms": 8.5,
         "note": "87 real native scenes, 60 control-worker frames; development replay, not final performance audit."
       },
-      "keepsakeLifecycle": 100,
-      "keepsakeUI": 14,
+      "keepsakeLifecycle": 118,
+      "keepsakeUI": 26,
       "keepsakeRenderTests": 6,
-      "keepsakeNativePoseParitySamples": 5757,
+      "keepsakeNativePoseParitySamples": 9393,
       "keepsakeReplay": {
-        "frames": 70,
-        "drawn": 67,
-        "workers": 62,
-        "medianMs": 6.600000023841858,
-        "p95Ms": 10.900000035762787,
-        "note": "Development replay, not the final full-milestone performance audit."
+        "frames": 116,
+        "drawn": 113,
+        "workers": 100,
+        "medianMs": 6.300000011920929,
+        "p95Ms": 16.69999998807907
       },
-      "keepsakeCompanyLifecycle": 197,
-      "keepsakeCompanyRigCases": 3360,
+      "keepsakeCompanyLifecycle": 398,
+      "keepsakeCompanyRigCases": 5152,
       "keepsakeCompanyRenderTests": 3,
       "keepsakeCompanyReplay": {
-        "result": "PASS",
-        "sheets": 10,
-        "frames": 197,
-        "paired": 175,
-        "readers": 175,
-        "hits": 197,
-        "medianMs": 5.300000011920929,
-        "p95Ms": 9.899999976158142,
-        "note": "Development replay of actual native snapshots, not the final full-milestone performance audit."
+        "frames": 641,
+        "paired": 552,
+        "readers": 552,
+        "hits": 641,
+        "medianMs": 4.699999988079071,
+        "p95Ms": 10.300000011920929
       },
       "creativeLifecycle": 184,
       "creativeUI": 14,
@@ -4594,7 +4604,18 @@
       "landmarkMeasuredFootprints": 542,
       "weatherWindTests": 4,
       "weatherWindFullTurnPoses": 96,
-      "weatherWindLivingRegression": 694
+      "weatherWindLivingRegression": 694,
+      "glassLifecycle": 206,
+      "glassRenderTests": 5,
+      "glassGuestRigCases": 1536,
+      "glassWeatherSymbols": 47,
+      "glassReplay": {
+        "frames": 1059,
+        "drawn": 1149,
+        "workers": 831,
+        "medianMs": 5.100000023841858,
+        "p95Ms": 11.700000047683716
+      }
     },
     "limitations": [
       "258 of 542 object artworks reconstructed for review; 284 remain.",
@@ -4609,12 +4630,13 @@
       "Rooted plants now have 19 shared articulated care scores with tool contacts, independent visitor arrivals and completed shared-care memories. These do not satisfy the 48 bespoke sequences per plant target. Plant-construction-specific acting, personality/mood choreography, explicit tool pickup/put-away and reciprocal tool handoffs remain unfinished. No per-object sequence completion is claimed.",
       "Nine music objects now have 25 shared phrase cores, articulated playing/listening, real synthesized notes, independently arrived visitors and synchronized duets. These are not 48 bespoke sequences per instrument. Construction-specific repertoires, richer expressive posing, explicit tool pickup/put-away, musician climbing and stationary multi-level supports, egg listening and personal visitor phrasing remain unfinished.",
       "Twenty-seven lighting objects now have per-copy modes, real Cheese control contact, warm/cold observation, dusk/weather response, preserved storage state and ten shared cores. Visitor participation, physical tool pickup/put-away and 48 individual meaningful sequences per light remain unfinished; no object sequence completion is claimed.",
-      "Twelve keepsakes have 19 native action cores and 15 shared reading/inspection scenes. Regular, rare and story visitors arrive independently, use the same native clock, and learn only from sufficiently shared completed work. Personal visitor repertoires, guest-to-guest keepsake invitations, egg listening, portable physical-copy handling, tool pickup/put-away and every-item 48-sequence audits remain unfinished.",
+      "Fifteen keepsakes have 31 initial native action cores and 23 shared reading/inspection scenes. Regular, rare and story visitors arrive independently, use the same native clock, and learn only from sufficiently shared completed work. Personal visitor repertoires, guest-to-guest keepsake invitations, egg listening, portable physical-copy handling, tool pickup/put-away and every-item 48-sequence audits remain unfinished.",
       "Four creative props have 27 native action cores and 13 complementary company roles. Regular, rare and story visitors arrive independently and share actual observations only after completed work. Fixed viewing steps and painting decks fit all eight hatched ages; eggs cannot operate tools. Personal visitor choreography, reciprocal eyepiece use, guest-to-guest invitations, tool pickup/put-away, unfolded practice-paper handling and full mood/season repertoires remain unfinished. No object has passed its 48-sequence audit.",
       "Thirteen textile/living-ground/fibre objects have 28 solo cores and 18 complementary company roles, independently arriving ordinary/rare/story visitors, actual per-copy contacts, pauses, saved materials and completed shared learning. Full individual visitor/material repertoires, guest-to-guest sessions, tool pickup/put-away, egg listening and complete seasonal/mood coverage remain unfinished. No per-object 48-sequence completion is claimed.",
       "Groundwork uses 32 initial solo cores and 27 complementary company roles across 18 objects; these are not 48 bespoke sequences per object. All 48 visitor rigs and eight hatched ages fit, and independent regular/rare/story arrivals, native shared contacts, marks and completed learning are checked. Guest-to-guest sessions, egg observation, full personal/contextual acting and physical tool pickup/put-away remain pending. Native simulation owns arrival, contact events and history.",
       "Twenty-one garden structures have 54 initial solo cores and 49 shared visitor roles. Eight new landmarks add carved/material detail, saved directional wind, real hour/season/sky-controlled sundial shadows, native flag hoists, low physical contacts and observation-based shared memories. These are initial core actions, not 48 bespoke sequences per item. Guest-to-guest sessions, egg observation, climbing, physical tool pickup/put-away and full personality/mood/season acting remain unfinished. No object sequence completion is claimed.",
-      "Eight outdoor playthings have 42 initial solo cores and 25 complementary visitor roles. All eight hatched ages and all 48 visitor rigs fit, and all 48 native visitor identities plus Pip are tested through real arrival and shared learning. Egg observation, guest-to-guest games, physical pickup/put-away, full personal/mood/season repertoires and each object's 48 bespoke sequences remain unfinished. Boat and board practice stays on the bank; no voyage or surf travel is claimed."
+      "Eight outdoor playthings have 42 initial solo cores and 25 complementary visitor roles. All eight hatched ages and all 48 visitor rigs fit, and all 48 native visitor identities plus Pip are tested through real arrival and shared learning. Egg observation, guest-to-guest games, physical pickup/put-away, full personal/mood/season repertoires and each object's 48 bespoke sequences remain unfinished. Boat and board practice stays on the bank; no voyage or surf travel is claimed.",
+      "Glass curios have twelve added core tracks and eight observing companion roles, with exact-copy controls and saved snow/forecast state. These are initial contextual foundations, not 48 unique sequences per object; no per-object repertoire audit is complete."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -4665,9 +4687,9 @@
     },
     "sourceSmoke": {
       "result": "PASS",
-      "frames": 93,
+      "frames": 96,
       "localAI": false,
-      "evidence": "engine/artifacts/animation-milestone/wind-smoke/frame.json"
+      "evidence": "engine/artifacts/animation-milestone/glass-smoke/frame.json"
     },
     "chatRelease": {
       "branch": "codex/pond-chat-2.36.1",
@@ -4686,9 +4708,9 @@
       },
       "evidence": "/Volumes/Expansion Pak/Projects/cheese-the-duck-chat-release/engine/artifacts/chat/final-package.log"
     },
-    "keepsakeObjects": 12,
-    "keepsakeRoutineCores": 19,
-    "keepsakeCompanyScores": 15,
+    "keepsakeObjects": 15,
+    "keepsakeRoutineCores": 31,
+    "keepsakeCompanyScores": 23,
     "creativeObjects": 4,
     "creativeRoutineCores": 27,
     "creativeCompanyScores": 13,

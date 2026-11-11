@@ -5,7 +5,7 @@ import {itemSprite,itemWorldScale} from '../client/ultra-items.mjs';
 import {characterSprite} from '../client/ultra-characters.mjs';
 import {LivingWorld} from '../client/ultra-world.mjs';import {scene} from './scenes.mjs';
 const ages=['egg','hatchling','duckling','juvenile','young_adult','adult','mature','elder','legendary'];
-test('all twelve keepsakes have distinct printable construction and bounded moving parts',()=>{
+test('all fifteen keepsakes have distinct printable construction and bounded moving parts',()=>{
  const signatures=new Set();
  for(const id of Object.keys(KEEPSAKE_BLUEPRINTS)){
   signatures.add(itemSprite(id,0).art.join('\n'));assert(itemWorldScale(id)>.45);
@@ -18,7 +18,7 @@ test('all twelve keepsakes have distinct printable construction and bounded movi
    assert.equal(JSON.stringify(options),before,'rendering never changes pages or water');
   }
  }
- assert.equal(signatures.size,12);
+ assert.equal(signatures.size,15);
 });
 test('opening, sorting, folding and turning are driven by contact instead of idle timers',()=>{
  for(const id of ['treasure_chest','storage_chest','weekly_chest','storage_basket','rain_barrel','friendship_card','storm_sketch','pirate_map','ancient_tome','duck_photo','sunset_photo','picture_frame']){
