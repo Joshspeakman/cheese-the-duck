@@ -147,6 +147,7 @@ function speciesGuest(duck,p,t,state,active){
  if(p.species!=='butterfly'){
   const mouth={goose:[34+GOOSE_HEAD[2].length-1,18],crow:[30+CROW_HEAD[3].length-1,22],owl:[28,22],toad:[42,28]}[p.species];
   if(mouth)bill={x:mouth[0]+(performance?.x||0),y:mouth[1]+dy+(performance?.b||0)+(performance?.y||0)};
+  if(bill&&performance?.gape>.2)c.put(p.species==='toad'?'o':p.species==='owl'?'v':'\\_',bill.x-1,bill.y+1-performance.b,'a');
  }
  if(duck.facing===false)for(const point of [grip,workGripRest,bill])if(point)point.x=W-1-point.x;
  return {...c.finish(duck.facing),grip,workGripRest,bill,performance:duck.performance||null,width:W,anchorX:duck.facing===false?39:36,groundRow:39.5,scale:p.height/((40-top)*7.5),body:p.palette[0],face:p.palette[1],accent:p.palette[2],shade:'#778b7b',

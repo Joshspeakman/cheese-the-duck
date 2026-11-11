@@ -105,7 +105,8 @@
     "scale": 0.57,
     "material": "stone",
     "skill": "observation",
-    "verb": "Inspect tower"
+    "verb": "Inspect tower",
+    "inscription": "MDCC / Q"
   },
   "fence_section": {
     "type": "ironfence",

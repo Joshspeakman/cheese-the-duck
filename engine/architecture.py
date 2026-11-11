@@ -12,7 +12,7 @@ def state(item,obj):
     if not isinstance(obj.get('architecture'),dict):obj['architecture']={}
     s=obj['architecture']
     for key in CONTROLS:s[key]=clamp(s.get(key,0))
-    for key in ('studies','adjustments','cleanings'):s[key]=max(0,min(9999,int(finite(s.get(key)))))
+    for key in ('studies','adjustments','cleanings','taps'):s[key]=max(0,min(9999,int(finite(s.get(key)))))
     s['phase']=finite(s.get('phase'))%(math.pi*2);s['speed']=max(0.,min(2.,finite(s.get('speed'))));s['crank']=finite(s.get('crank'))%(math.pi*2)
     if s.get('season') not in ('spring','summer','fall','winter'):s['season']='spring'
     return s
@@ -27,12 +27,14 @@ def update(pond,item,obj,dt,outdoors,wind=0.,weather='sunny'):
         s['speed']=target+(old-target)*decay
         travel=target*dt+(old-target)*(1-decay)/rate
         s['phase']=(s['phase']+travel)%(math.pi*2)
+def sample(work,track,base):
+    p=clamp(work['elapsed']/ROUTINES[work['id']]['duration']);a,b=track[0],track[-1]
+    for i in range(1,len(track)):
+        if p<=track[i][0]:a,b=track[i-1:i+1];break
+    u=clamp((p-a[0])/max(.001,b[0]-a[0]));u=u*u*(3-2*u)
+    return {k:a[1].get(k,value)+(b[1].get(k,value)-a[1].get(k,value))*u for k,value in base.items()}
 def controls(work):
-    spec=ROUTINES[work['id']];p=clamp(work['elapsed']/spec['duration']);a,b=spec['track'][0],spec['track'][-1]
-    for i in range(1,len(spec['track'])):
-        if p<=spec['track'][i][0]:a,b=spec['track'][i-1:i+1];break
-    u=clamp((p-a[0])/max(.001,b[0]-a[0]));u=u*u*(3-2*u);start={**CONTROLS,**work.get('start',{})}
-    return {k:a[1].get(k,start[k])+(b[1].get(k,start[k])-a[1].get(k,start[k]))*u for k in CONTROLS}
+    return sample(work,ROUTINES[work['id']]['track'],{**CONTROLS,**work.get('start',{})})
 def wet(pond):return pond.weather_type!='rainbow' and any(w in pond.weather_type for w in ('rain','storm','shower','drizzle','sleet','snow','blizzard','hail'))
 def choose(pond,item,ref):
     obj=pond.object_state(item,ref);s=state(item,obj);kind=ITEMS[item]['type'];age=pond.game.duck.growth_stage;n=obj.get('uses',0)
@@ -57,6 +59,8 @@ def advance(pond,plan,dt):
     retreat='storm_stepback' if gusty(pond.weather_type) else 'rain_drips' if wet(pond) else None
     if retreat and work['id'] not in ('storm_stepback','rain_drips'):
         work.update(id=retreat,elapsed=0.,events=[],start=controls(work),withdrawal=True,label=ROUTINES[retreat]['label']);plan['label']=work['label']
+    from engine import architecture_company
+    if not work.get('withdrawal') and architecture_company.waiting(pond.minds):return True
     spec=ROUTINES[work['id']];old=work['elapsed'];work['elapsed']=min(spec['duration'],old+max(0.,dt));v=controls(work)
     for field in spec['controls']:
         if field!='walk':s[field]=clamp(v[field])
@@ -93,6 +97,7 @@ def conversation(pond,plan):
     if kind=='windmill':result.update(sail_speed=round(s['speed'],2),brake_applied=s['brake']>.5)
     if kind in ('trellis','pergola','arch'):result['vines']='bare winter stems' if s['season']=='winter' else 'autumn leaves' if s['season']=='fall' else 'climbing leaves and roses'
     if kind in ('watchtower','castle'):result['position']='Inspecting from the ground; no climb has occurred.'
+    if kind=='castle':result['inscription']=ITEMS[item]['inscription']
     return result
 
 CONTROL_CHOICES={'gate':('gate_open','gate_close'),'mailbox':('mailbox_open','mailbox_close','mailbox_flag','mailbox_lower_flag'),'well':('well_lower','well_raise'),'windmill':('windmill_brake','windmill_release')}

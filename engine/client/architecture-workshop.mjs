@@ -51,6 +51,7 @@ function fence(c,p,iron=false){
   c.line(12,H-17,p.w-12,H-17,'=','b');c.line(12,32,p.w-12,32,'=','b');
   for(let x=18;x<p.w-14;x+=18){c.beam(x,23,x,H-9,3,'i');c.rows([' /\\','<||>',' \\/'],x-2,17,'a');curl(c,x+6,50,7,10);curl(c,x-5,H-30,6,8);c.put(x-1,H-18,'(+)','f');}
  }
+ if(iron)c.put(p.w-23,H-10,'(+)','f');
  for(const x of [10,p.w-15]){timber(c,x,18,6,H-22);c.ellipse(x+3,16,5,3,'_','f',true);c.put(x-3,H-3,'[_______]','k');}
  return {contact:{x:46,y:H-14}};
 }
@@ -162,7 +163,7 @@ function castle(c,p){
  c.clear(cx-15,H-51,30,35);c.rect(cx-15,H-45,30,38,'k',true);c.ellipse(cx,H-45,15,8,'_','k',true);
  for(let x=cx-11;x<cx+13;x+=6)c.line(x,H-47,x,H-9,'|','i');c.line(cx-14,H-28,cx+14,H-28,'=','i');
  for(const x of [21,p.w-39])stonewall(c,x,H-58,18,51);
- c.put(24,H-19,'MDCC / Q','a');masonryFoot(c,p);
+ c.put(p.w-38,H-11,p.inscription,'a');masonryFoot(c,p);
  return {contact:{x:32,y:H-24}};
 }
 function windmill(c,p,v){
@@ -197,6 +198,8 @@ export function architectureSprite(base,item,t,{state={},pose={},motion=true}={}
  // In a catalogue the whole bridge is one drawing. During a crossing the near
  // rail is a separate foreground layer, so the feet stay on the deck behind it.
  if(p.type==='bridge'&&!pose.architecture){c.fills.push(...front.fills);front.art.forEach((row,y)=>row.forEach((glyph,x)=>{if(glyph!==' ')c.put(x,y,glyph,front.tones[y][x]);}));}
+ const helper={picket:[p.w-26,p.h-10],wall:[p.w-36,p.h-10],arch:[p.w-23,p.h-14],bridge:[p.w-18,p.h-10],watchtower:[p.w-38,p.h-12],windmill:[p.w-49,p.h-12],gate:[p.w-18,p.h-12],pergola:[p.w-27,p.h-12],mailbox:[104,p.h-10],well:[p.w-32,p.h-12],trellis:[p.w-28,p.h-12],castle:[p.w-33,p.h-11],ironfence:[p.w-22,p.h-10]}[p.type];
+ anchors.company={x:helper[0],y:helper[1]};
  const model={...base,...c.finish(),construction:'architecture-v1',blueprint:item.id,detail:true,detailScale:.62,anchors:{entry:{x:p.w*.35,y:p.h-3},...anchors},inks,panels,sway:0,lift:0,animated:Boolean(pose.architecture)||p.type==='windmill',floor:false,emissive:false};
  if(p.type==='bridge')model.front={...model,...front.finish(),front:null};
  return model;

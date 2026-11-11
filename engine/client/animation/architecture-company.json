@@ -1,0 +1,1848 @@
+{
+  "picket_compare": {
+    "label": "Compare the knots on opposite pickets",
+    "item": "picket_fence",
+    "preview": "picket_knots",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.9,
+          "b": 0.3,
+          "x": -0.3
+        }
+      ],
+      [
+        0.38,
+        {
+          "u": 0.84,
+          "b": 0.8,
+          "eye": "o"
+        }
+      ],
+      [
+        0.56,
+        {
+          "u": 0.87,
+          "b": 0.2,
+          "w": 0.7
+        }
+      ],
+      [
+        0.78,
+        {
+          "u": 0.94,
+          "x": 0.3,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "picket_brush": {
+    "label": "Brush the far picket joints while Cheese cleans the near ones",
+    "item": "picket_fence",
+    "preview": "picket_brush",
+    "tool": "brush",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.25,
+        {
+          "u": 0.9,
+          "contact": 0
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.9,
+          "contact": 1,
+          "b": 0.5
+        }
+      ],
+      [
+        0.5,
+        {
+          "u": 0.9,
+          "contact": 0.4
+        }
+      ],
+      [
+        0.6,
+        {
+          "u": 0.9,
+          "contact": 1,
+          "b": 0.8
+        }
+      ],
+      [
+        0.78,
+        {
+          "u": 1,
+          "contact": 0,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "clean"
+      ],
+      [
+        0.6,
+        "clean"
+      ]
+    ]
+  },
+  "masonry_course": {
+    "label": "Compare a low stone course and its staggered joints",
+    "item": "stone_wall",
+    "preview": "wall_layers",
+    "tool": "hand",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.88,
+          "b": 0.7
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.84,
+          "b": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.54,
+        {
+          "u": 0.88,
+          "b": 0.2,
+          "contact": 0,
+          "w": 0.5
+        }
+      ],
+      [
+        0.73,
+        {
+          "u": 0.97,
+          "b": 0.6,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "touch"
+      ]
+    ]
+  },
+  "moss_watch": {
+    "label": "Crouch near the moss without pulling it from the stone",
+    "item": "stone_wall",
+    "preview": "wall_moss",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.18,
+        {
+          "u": 0.85,
+          "b": 0.3
+        }
+      ],
+      [
+        0.36,
+        {
+          "u": 0.8,
+          "b": 1.1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.6,
+        {
+          "u": 0.8,
+          "b": 1.1,
+          "eye": "-"
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.9,
+          "b": 0.2,
+          "w": 0.25
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "arch_frame": {
+    "label": "Stand inside the arch and frame the pond with a wing",
+    "item": "archway",
+    "preview": "arch_trace",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.8,
+          "l": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.65,
+          "w": 0.8,
+          "x": -0.4
+        }
+      ],
+      [
+        0.58,
+        {
+          "u": 0.65,
+          "w": 0.2,
+          "x": 0.5,
+          "eye": "o"
+        }
+      ],
+      [
+        0.78,
+        {
+          "u": 0.82,
+          "r": 1,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "arch_light": {
+    "label": "Turn between the arch shadow and its bright rim",
+    "item": "archway",
+    "preview": "arch_shadow",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.24,
+        {
+          "u": 0.75,
+          "x": -0.7
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.82,
+          "x": 0.7,
+          "eye": "-"
+        }
+      ],
+      [
+        0.62,
+        {
+          "u": 0.68,
+          "x": -0.4,
+          "w": 0.5
+        }
+      ],
+      [
+        0.82,
+        {
+          "u": 0.84,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "bridge_spotter": {
+    "label": "Wait at the far landing and welcome Cheese across",
+    "item": "bridge",
+    "preview": "bridge_cross",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 1.08,
+          "b": 0.1
+        }
+      ],
+      [
+        0.43,
+        {
+          "u": 1.08,
+          "w": 0.8,
+          "eye": "^"
+        }
+      ],
+      [
+        0.58,
+        {
+          "u": 1.08,
+          "w": 0.2
+        }
+      ],
+      [
+        0.72,
+        {
+          "u": 1.08,
+          "w": 0.9,
+          "eye": "o"
+        }
+      ],
+      [
+        0.9,
+        {
+          "u": 1.08,
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "bridge_echo": {
+    "label": "Tap three times on the far landing stone, then listen together",
+    "item": "bridge",
+    "preview": "bridge_listen",
+    "tool": "hand",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.22,
+        {
+          "u": 1.06,
+          "contact": 1,
+          "b": 0.4
+        }
+      ],
+      [
+        0.32,
+        {
+          "u": 1.06,
+          "contact": 0
+        }
+      ],
+      [
+        0.47,
+        {
+          "u": 1.06,
+          "contact": 1,
+          "b": 0.6
+        }
+      ],
+      [
+        0.57,
+        {
+          "u": 1.06,
+          "contact": 0,
+          "eye": "-"
+        }
+      ],
+      [
+        0.72,
+        {
+          "u": 1.06,
+          "contact": 1,
+          "b": 0.3
+        }
+      ],
+      [
+        0.83,
+        {
+          "u": 1.08,
+          "contact": 0
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.22,
+        "tap"
+      ],
+      [
+        0.47,
+        "tap"
+      ],
+      [
+        0.72,
+        "tap"
+      ]
+    ]
+  },
+  "brace_compare": {
+    "label": "Check the opposite bracing foot and compare its pegs",
+    "item": "tower",
+    "preview": "watchtower_braces",
+    "tool": "hand",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.24,
+        {
+          "u": 0.86,
+          "b": 0.4
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.83,
+          "b": 0.7,
+          "contact": 1
+        }
+      ],
+      [
+        0.56,
+        {
+          "u": 0.83,
+          "contact": 0,
+          "x": -0.4
+        }
+      ],
+      [
+        0.75,
+        {
+          "u": 0.9,
+          "w": 0.7,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.42,
+        "touch"
+      ]
+    ]
+  },
+  "tower_roof_watch": {
+    "label": "Lean back to follow the lookout rails to the shingles",
+    "item": "tower",
+    "preview": "watchtower_roof",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.9,
+          "b": -0.3,
+          "x": -0.4
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.9,
+          "b": -0.6,
+          "x": 0.2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.61,
+        {
+          "u": 0.94,
+          "b": -0.4,
+          "w": 0.4
+        }
+      ],
+      [
+        0.84,
+        {
+          "u": 1,
+          "b": 0.2,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "sail_count": {
+    "label": "Follow the four sail tips from beside the windmill",
+    "item": "windmill",
+    "preview": "windmill_turn",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.96,
+          "x": -0.4,
+          "b": -0.2
+        }
+      ],
+      [
+        0.38,
+        {
+          "u": 0.96,
+          "x": 0.5,
+          "b": -0.6
+        }
+      ],
+      [
+        0.54,
+        {
+          "u": 0.96,
+          "x": 0.4,
+          "b": 0.4
+        }
+      ],
+      [
+        0.7,
+        {
+          "u": 0.96,
+          "x": -0.5,
+          "b": 0.2
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 1,
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "brake_watch": {
+    "label": "Watch the sails while Cheese works the ground brake",
+    "item": "windmill",
+    "preview": "windmill_brake",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.96,
+          "b": -0.5
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.96,
+          "eye": "o",
+          "x": -0.3
+        }
+      ],
+      [
+        0.58,
+        {
+          "u": 0.96,
+          "eye": "-",
+          "b": -0.3
+        }
+      ],
+      [
+        0.76,
+        {
+          "u": 1,
+          "w": 0.6,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "gate_welcome": {
+    "label": "Wait for the open gate, then take a small welcoming step inside",
+    "item": "gate",
+    "preview": "gate_open",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.24,
+        {
+          "u": 1.08,
+          "w": 0.2
+        }
+      ],
+      [
+        0.55,
+        {
+          "u": 1.08,
+          "eye": "o"
+        }
+      ],
+      [
+        0.7,
+        {
+          "u": 0.68,
+          "l": 1,
+          "w": 0.5
+        }
+      ],
+      [
+        0.82,
+        {
+          "u": 0.63,
+          "w": 0.8,
+          "eye": "^"
+        }
+      ],
+      [
+        0.93,
+        {
+          "u": 0.95,
+          "r": 1
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "gate_clear": {
+    "label": "Stand clear of the moving gate and watch the latch settle",
+    "item": "gate",
+    "preview": "gate_close",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 1.12,
+          "l": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 1.12,
+          "b": 0.4,
+          "eye": "o"
+        }
+      ],
+      [
+        0.62,
+        {
+          "u": 1.12,
+          "b": 0.1,
+          "x": -0.4
+        }
+      ],
+      [
+        0.84,
+        {
+          "u": 1.08,
+          "w": 0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "hinge_brush": {
+    "label": "Sweep the opposite gatepost while Cheese attends to the hinge",
+    "item": "gate",
+    "preview": "gate_hinge",
+    "tool": "brush",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.25,
+        {
+          "u": 0.94,
+          "contact": 0
+        }
+      ],
+      [
+        0.44,
+        {
+          "u": 0.94,
+          "contact": 1,
+          "b": 0.6
+        }
+      ],
+      [
+        0.56,
+        {
+          "u": 0.94,
+          "contact": 0.2
+        }
+      ],
+      [
+        0.7,
+        {
+          "u": 0.94,
+          "contact": 1,
+          "b": 0.2
+        }
+      ],
+      [
+        0.86,
+        {
+          "u": 1.04,
+          "contact": 0
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.44,
+        "clean"
+      ],
+      [
+        0.7,
+        "clean"
+      ]
+    ]
+  },
+  "pergola_shade": {
+    "label": "Settle in the far patch of rafter shade together",
+    "item": "pergola",
+    "preview": "pergola_shade",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.24,
+        {
+          "u": 0.72,
+          "b": 0.4
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.72,
+          "b": 1,
+          "eye": "-"
+        }
+      ],
+      [
+        0.64,
+        {
+          "u": 0.72,
+          "b": 1,
+          "eye": "-"
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.82,
+          "b": 0.3,
+          "w": 0.3
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "pergola_vine": {
+    "label": "Follow the other climbing vine and point along a roof beam",
+    "item": "pergola",
+    "preview": "pergola_beams",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.22,
+        {
+          "u": 0.86,
+          "b": 0.7
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.86,
+          "b": -0.2,
+          "w": 0.4
+        }
+      ],
+      [
+        0.6,
+        {
+          "u": 0.8,
+          "b": -0.4,
+          "w": 0.8,
+          "x": -0.2
+        }
+      ],
+      [
+        0.82,
+        {
+          "u": 0.94,
+          "b": 0.2
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "mailbox_watch": {
+    "label": "Watch the mail door and peek into the empty compartment",
+    "item": "mailbox",
+    "preview": "mailbox_open",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.24,
+        {
+          "u": 1.12,
+          "b": 0.2
+        }
+      ],
+      [
+        0.55,
+        {
+          "u": 1.12,
+          "x": -0.6,
+          "b": -0.2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.72,
+        {
+          "u": 1.08,
+          "x": -0.4,
+          "b": -0.3
+        }
+      ],
+      [
+        0.87,
+        {
+          "u": 1.12,
+          "w": 0.5,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "mailbox_flag": {
+    "label": "Follow the red flag and answer with a little wing wave",
+    "item": "mailbox",
+    "preview": "mailbox_flag",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.22,
+        {
+          "u": 1.15,
+          "b": -0.1
+        }
+      ],
+      [
+        0.47,
+        {
+          "u": 1.15,
+          "b": -0.4,
+          "x": -0.3
+        }
+      ],
+      [
+        0.64,
+        {
+          "u": 1.15,
+          "w": 0.9,
+          "eye": "^"
+        }
+      ],
+      [
+        0.79,
+        {
+          "u": 1.15,
+          "w": 0.2
+        }
+      ],
+      [
+        0.9,
+        {
+          "u": 1.12,
+          "w": 0.6
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "bucket_watch": {
+    "label": "Watch the rope and bucket while Cheese turns the winch",
+    "item": "wishing_well",
+    "preview": "well_lower",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.88,
+          "b": -0.2
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.88,
+          "b": 0.2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.6,
+        {
+          "u": 0.88,
+          "b": 0.8,
+          "x": -0.3
+        }
+      ],
+      [
+        0.78,
+        {
+          "u": 0.96,
+          "w": 0.5,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "well_echo": {
+    "label": "Make two quiet calls across the rim, then listen with Cheese",
+    "item": "wishing_well",
+    "preview": "well_echo",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.88,
+          "b": 0.3,
+          "mark": "?"
+        }
+      ],
+      [
+        0.35,
+        {
+          "u": 0.88,
+          "w": 0.4,
+          "gape": 0.8
+        }
+      ],
+      [
+        0.5,
+        {
+          "u": 0.88,
+          "b": 0.7,
+          "eye": "-"
+        }
+      ],
+      [
+        0.66,
+        {
+          "u": 0.88,
+          "w": 0.6,
+          "gape": 0.8
+        }
+      ],
+      [
+        0.82,
+        {
+          "u": 0.96,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "trellis_petals": {
+    "label": "Lean toward a low rose, then compare the climbing leaves",
+    "item": "trellis",
+    "preview": "trellis_flowers",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.22,
+        {
+          "u": 0.9,
+          "b": 0.7,
+          "x": -0.4
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.86,
+          "b": 0.9,
+          "eye": "o"
+        }
+      ],
+      [
+        0.59,
+        {
+          "u": 0.9,
+          "b": -0.1,
+          "w": 0.6
+        }
+      ],
+      [
+        0.79,
+        {
+          "u": 0.96,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "trellis_ties": {
+    "label": "Touch the far binding and trace the crossing lattice",
+    "item": "trellis",
+    "preview": "trellis_ties",
+    "tool": "hand",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.88,
+          "b": 0.3
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.88,
+          "contact": 1,
+          "b": 0.5
+        }
+      ],
+      [
+        0.56,
+        {
+          "u": 0.88,
+          "contact": 0,
+          "w": 0.5,
+          "b": -0.2
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.98,
+          "x": -0.3
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "touch"
+      ]
+    ]
+  },
+  "castle_history": {
+    "label": "Point to the foundation inscription and compare the buttress",
+    "item": "castle_tower",
+    "preview": "castle_stones",
+    "tool": "hand",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.87,
+          "b": 0.5
+        }
+      ],
+      [
+        0.39,
+        {
+          "u": 0.87,
+          "contact": 1,
+          "b": 0.4
+        }
+      ],
+      [
+        0.56,
+        {
+          "u": 0.9,
+          "contact": 0,
+          "w": 0.8,
+          "x": -0.4
+        }
+      ],
+      [
+        0.76,
+        {
+          "u": 1.02,
+          "w": 0.4,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.39,
+        "touch"
+      ]
+    ]
+  },
+  "iron_scrolls": {
+    "label": "Mirror a curling iron fern with a small wing gesture",
+    "item": "fence_section",
+    "preview": "iron_scroll",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.9,
+          "w": 0.3,
+          "b": 0.4
+        }
+      ],
+      [
+        0.36,
+        {
+          "u": 0.88,
+          "w": 0.8,
+          "b": -0.2,
+          "x": -0.4
+        }
+      ],
+      [
+        0.53,
+        {
+          "u": 0.9,
+          "w": 0.5,
+          "b": 0.5,
+          "x": 0.4
+        }
+      ],
+      [
+        0.74,
+        {
+          "u": 0.96,
+          "w": 0.9,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "iron_brushpair": {
+    "label": "Brush the far rosette while Cheese sweeps the near rail",
+    "item": "fence_section",
+    "preview": "iron_brush",
+    "tool": "brush",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.94,
+          "contact": 0
+        }
+      ],
+      [
+        0.37,
+        {
+          "u": 0.94,
+          "contact": 1,
+          "b": 0.4
+        }
+      ],
+      [
+        0.51,
+        {
+          "u": 0.94,
+          "contact": 0.3,
+          "b": 0.1
+        }
+      ],
+      [
+        0.66,
+        {
+          "u": 0.94,
+          "contact": 1,
+          "b": 0.6
+        }
+      ],
+      [
+        0.84,
+        {
+          "u": 1.02,
+          "contact": 0,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.37,
+        "clean"
+      ],
+      [
+        0.66,
+        "clean"
+      ]
+    ]
+  },
+  "young_company": {
+    "label": "Stay low and leave time for the little duck to investigate",
+    "item": "picket_fence",
+    "preview": "young_survey",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.24,
+        {
+          "u": 0.9,
+          "b": 0.5
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.9,
+          "b": 1,
+          "w": 0.2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.64,
+        {
+          "u": 0.92,
+          "b": 0.9,
+          "eye": "^"
+        }
+      ],
+      [
+        0.83,
+        {
+          "u": 1,
+          "b": 0.3,
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "elder_rest": {
+    "label": "Keep quiet company at the structure base",
+    "item": "stone_wall",
+    "preview": "elder_survey",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.22,
+        {
+          "u": 0.96,
+          "b": 0.3
+        }
+      ],
+      [
+        0.44,
+        {
+          "u": 0.96,
+          "b": 0.8,
+          "eye": "-"
+        }
+      ],
+      [
+        0.67,
+        {
+          "u": 0.96,
+          "b": 0.8,
+          "w": 0.15,
+          "eye": "-"
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 1.04,
+          "b": 0.4
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "night_watch": {
+    "label": "Watch the silhouette together without disturbing the pond",
+    "item": "archway",
+    "preview": "night_survey",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.23,
+        {
+          "u": 0.9,
+          "b": -0.2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.45,
+        {
+          "u": 0.9,
+          "x": -0.4,
+          "eye": "-"
+        }
+      ],
+      [
+        0.66,
+        {
+          "u": 0.94,
+          "b": -0.3,
+          "x": 0.3
+        }
+      ],
+      [
+        0.84,
+        {
+          "u": 1.02,
+          "w": 0.25
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "hover_visit": {
+    "label": "Hover beyond the structure and follow the small details",
+    "item": "trellis",
+    "preview": "trellis_flowers",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 1.08,
+          "v": -0.7,
+          "w": 0.8
+        }
+      ],
+      [
+        0.39,
+        {
+          "u": 0.94,
+          "v": -1.2,
+          "x": -0.4
+        }
+      ],
+      [
+        0.58,
+        {
+          "u": 1.02,
+          "v": -0.9,
+          "w": 0.4
+        }
+      ],
+      [
+        0.79,
+        {
+          "u": 1.12,
+          "v": -0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  },
+  "winter_vines": {
+    "label": "Compare the bare climbing stems and their winter knots",
+    "item": "trellis",
+    "preview": "trellis_flowers",
+    "tool": "none",
+    "anchor": "company",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ],
+      [
+        0.23,
+        {
+          "u": 0.9,
+          "b": 0.6
+        }
+      ],
+      [
+        0.41,
+        {
+          "u": 0.87,
+          "x": -0.5,
+          "b": 0.2
+        }
+      ],
+      [
+        0.6,
+        {
+          "u": 0.92,
+          "w": 0.4,
+          "b": -0.4,
+          "eye": "o"
+        }
+      ],
+      [
+        0.82,
+        {
+          "u": 1.03,
+          "b": 0.1
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.08,
+          "v": 0
+        }
+      ]
+    ],
+    "events": []
+  }
+}
