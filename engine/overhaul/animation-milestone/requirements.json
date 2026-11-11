@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Completed the initial reconstruction and native integration of twelve keepsakes/storage objects: physical page turns, bookmarks, lid movements, sorting, rain accumulation, frozen state, exact-copy histories and live notebook controls. Natural conversation now receives the actual reached/open book or card text, selected barrel water and truthful activity phase from the same authored content used for drawing. Verified 100 native checks, 5757 cross-runtime pose samples, 14 live notebook checks, 126 full JS tests plus 15 post-content-refactor tests, 254 placement checks, 694 living checks/72-hour simulation, 76 original game checks, 34 chat and 44 learning checks, source smoke and final art review. Chat remains installed as 2.36.1. Larger milestone is active and incomplete: 202 reconstructed drawings, 340 pending, zero completed per-object 48-sequence audits. Keepsakes and other unfinished milestone art remain in development only.",
+  "previous_goal_turn": "Progress: implemented native shared keepsake sessions and 15 authored company scenes across the twelve reconstructed objects. Regular/rare/story visitors walk to fixed reservations; Cheese waits briefly, both use one native clock, and departures, replaced visits, moved objects, direct care or cancellation cannot fabricate shared completion. Pausing freezes both poses; reloading discards transient reservations. Actual inspected chapter/card words enter each resident\u2019s memory only after sufficient observed time and a completed shared session. Added grounded complementary gestures, age/night selection, butterfly hover, directional pointers, entry/exit footsteps and live visitor hit targets. Validated 197 native lifecycle assertions, 3360 all-cast/age pose cases, 129 JS tests, 197-frame replay, 72-hour living regression, existing care/music/furniture/play/chat/brain checks and source smoke. Goal remains active/incomplete: 202 reconstructed artworks, 340 pending, zero complete per-object 48-sequence audits. Development work is not installed; verified chat release 2.36.1 remains on the desktop.",
   "items": [
     {
       "id": "hat_red",
@@ -1196,7 +1196,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "Native per-copy reading, opening, sorting and rainwater state with 19 shared physical action cores; current visible text feeds conversation. Full individual-object, guest, tool-handling and 48-sequence repertoires remain unfinished."
+      "animation": "19 native reading/sorting cores plus 15 shared scene cores with actual visitor arrival, coordinated poses, per-copy state, completed shared learning and observed readable text. Individual 48-sequence repertoires, personal visitor variations, egg listening and tool handling remain unfinished."
     },
     {
       "id": "wheelbarrow",
@@ -1594,7 +1594,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "Native per-copy reading, opening, sorting and rainwater state with 19 shared physical action cores; current visible text feeds conversation. Full individual-object, guest, tool-handling and 48-sequence repertoires remain unfinished."
+      "animation": "19 native reading/sorting cores plus 15 shared scene cores with actual visitor arrival, coordinated poses, per-copy state, completed shared learning and observed readable text. Individual 48-sequence repertoires, personal visitor variations, egg listening and tool handling remain unfinished."
     },
     {
       "id": "magic_carpet",
@@ -2034,7 +2034,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "Native per-copy reading, opening, sorting and rainwater state with 19 shared physical action cores; current visible text feeds conversation. Full individual-object, guest, tool-handling and 48-sequence repertoires remain unfinished."
+      "animation": "19 native reading/sorting cores plus 15 shared scene cores with actual visitor arrival, coordinated poses, per-copy state, completed shared learning and observed readable text. Individual 48-sequence repertoires, personal visitor variations, egg listening and tool handling remain unfinished."
     },
     {
       "id": "void_crumb",
@@ -2106,7 +2106,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "Native per-copy reading, opening, sorting and rainwater state with 19 shared physical action cores; current visible text feeds conversation. Full individual-object, guest, tool-handling and 48-sequence repertoires remain unfinished."
+      "animation": "19 native reading/sorting cores plus 15 shared scene cores with actual visitor arrival, coordinated poses, per-copy state, completed shared learning and observed readable text. Individual 48-sequence repertoires, personal visitor variations, egg listening and tool handling remain unfinished."
     },
     {
       "id": "torch",
@@ -2300,7 +2300,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "Native per-copy reading, opening, sorting and rainwater state with 19 shared physical action cores; current visible text feeds conversation. Full individual-object, guest, tool-handling and 48-sequence repertoires remain unfinished."
+      "animation": "19 native reading/sorting cores plus 15 shared scene cores with actual visitor arrival, coordinated poses, per-copy state, completed shared learning and observed readable text. Individual 48-sequence repertoires, personal visitor variations, egg listening and tool handling remain unfinished."
     },
     {
       "id": "garden_plot",
@@ -2780,7 +2780,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "Native per-copy reading, opening, sorting and rainwater state with 19 shared physical action cores; current visible text feeds conversation. Full individual-object, guest, tool-handling and 48-sequence repertoires remain unfinished."
+      "animation": "19 native reading/sorting cores plus 15 shared scene cores with actual visitor arrival, coordinated poses, per-copy state, completed shared learning and observed readable text. Individual 48-sequence repertoires, personal visitor variations, egg listening and tool handling remain unfinished."
     },
     {
       "id": "paper_plane_design",
@@ -2877,7 +2877,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "Native per-copy reading, opening, sorting and rainwater state with 19 shared physical action cores; current visible text feeds conversation. Full individual-object, guest, tool-handling and 48-sequence repertoires remain unfinished."
+      "animation": "19 native reading/sorting cores plus 15 shared scene cores with actual visitor arrival, coordinated poses, per-copy state, completed shared learning and observed readable text. Individual 48-sequence repertoires, personal visitor variations, egg listening and tool handling remain unfinished."
     },
     {
       "id": "heart_cookie",
@@ -2897,7 +2897,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "Native per-copy reading, opening, sorting and rainwater state with 19 shared physical action cores; current visible text feeds conversation. Full individual-object, guest, tool-handling and 48-sequence repertoires remain unfinished."
+      "animation": "19 native reading/sorting cores plus 15 shared scene cores with actual visitor arrival, coordinated poses, per-copy state, completed shared learning and observed readable text. Individual 48-sequence repertoires, personal visitor variations, egg listening and tool handling remain unfinished."
     },
     {
       "id": "parade_flag",
@@ -3075,7 +3075,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "Native per-copy reading, opening, sorting and rainwater state with 19 shared physical action cores; current visible text feeds conversation. Full individual-object, guest, tool-handling and 48-sequence repertoires remain unfinished."
+      "animation": "19 native reading/sorting cores plus 15 shared scene cores with actual visitor arrival, coordinated poses, per-copy state, completed shared learning and observed readable text. Individual 48-sequence repertoires, personal visitor variations, egg listening and tool handling remain unfinished."
     },
     {
       "id": "explorer_badge",
@@ -3161,7 +3161,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "Native per-copy reading, opening, sorting and rainwater state with 19 shared physical action cores; current visible text feeds conversation. Full individual-object, guest, tool-handling and 48-sequence repertoires remain unfinished."
+      "animation": "19 native reading/sorting cores plus 15 shared scene cores with actual visitor arrival, coordinated poses, per-copy state, completed shared learning and observed readable text. Individual 48-sequence repertoires, personal visitor variations, egg listening and tool handling remain unfinished."
     },
     {
       "id": "treasure_key",
@@ -3482,7 +3482,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "Native per-copy reading, opening, sorting and rainwater state with 19 shared physical action cores; current visible text feeds conversation. Full individual-object, guest, tool-handling and 48-sequence repertoires remain unfinished."
+      "animation": "19 native reading/sorting cores plus 15 shared scene cores with actual visitor arrival, coordinated poses, per-copy state, completed shared learning and observed readable text. Individual 48-sequence repertoires, personal visitor variations, egg listening and tool handling remain unfinished."
     },
     {
       "id": "clock",
@@ -3643,7 +3643,7 @@
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": true,
-      "animation": "Native per-copy reading, opening, sorting and rainwater state with 19 shared physical action cores; current visible text feeds conversation. Full individual-object, guest, tool-handling and 48-sequence repertoires remain unfinished."
+      "animation": "19 native reading/sorting cores plus 15 shared scene cores with actual visitor arrival, coordinated poses, per-copy state, completed shared learning and observed readable text. Individual 48-sequence repertoires, personal visitor variations, egg listening and tool handling remain unfinished."
     },
     {
       "id": "heart_of_pond",
@@ -3847,7 +3847,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "physical_keepsakes_reading_and_conversation",
+    "sourcePhase": "arrived_keepsake_company_and_shared_reading_memories",
     "fullyOverhauled": false,
     "constructedObjects": 202,
     "remainingArtwork": 340,
@@ -4003,10 +4003,31 @@
       "engine/artifacts/animation-milestone/keepsake-game.log",
       "engine/artifacts/animation-milestone/keepsake-chat.log",
       "engine/artifacts/animation-milestone/keepsake-brains.log",
-      "engine/artifacts/animation-milestone/keepsake-smoke.log"
+      "engine/artifacts/animation-milestone/keepsake-smoke.log",
+      "engine/artifacts/animation-milestone/keepsake-company-native.json",
+      "engine/artifacts/animation-milestone/keepsake-company-render.json",
+      "engine/artifacts/animation-milestone/keepsake-company-full-js.log",
+      "engine/artifacts/animation-milestone/keepsake-company-rig-final.log",
+      "engine/artifacts/animation-milestone/keepsake-company-living.log",
+      "engine/artifacts/animation-milestone/keepsake-company-solo.log",
+      "engine/artifacts/animation-milestone/keepsake-company-brains.log",
+      "engine/artifacts/animation-milestone/keepsake-company-chat.log",
+      "engine/artifacts/animation-milestone/keepsake-company-instruments.log",
+      "engine/artifacts/animation-milestone/keepsake-company-gardening.log",
+      "engine/artifacts/animation-milestone/keepsake-company-furniture.log",
+      "engine/artifacts/animation-milestone/keepsake-company-playdates.log",
+      "engine/artifacts/animation-milestone/keepsake-company-smoke.log",
+      "engine/artifacts/animation-milestone/reading-company-0.png",
+      "engine/artifacts/animation-milestone/reading-company-1.png",
+      "engine/artifacts/animation-milestone/reading-cast-0.png",
+      "engine/artifacts/animation-milestone/reading-cast-1.png",
+      "engine/artifacts/animation-milestone/reading-cast-2.png",
+      "engine/artifacts/animation-milestone/reading-cast-3.png",
+      "engine/artifacts/animation-milestone/reading-live-ancient_tome.png"
     ],
     "next": [
-      "Expand these 12 reconstructed keepsakes beyond the 19 initial shared reading/sorting cores: guest participation and shared reading, contextual company, physical tool pickup/put-away, portable physical-copy handling and individual 48-sequence repertoires. Continue the remaining 340 item reconstructions and full cast/context milestone.",
+      "Deepen the 12 keepsakes beyond 19 solo cores and 15 shared scene cores: personal visitor variations, guest-to-guest reading, egg listening, physical tool pickup/put-away, portable physical-copy handling and individual 48-sequence repertoires. Their initial regular/rare/story company lifecycle and all-cast posed rigs are now implemented and checked.",
+      "Reconstruct the remaining 340 object artworks, starting with creative/observation props such as telescope, easel, kite and paper_plane_design; preserve actual item ownership and give each meaningful physical mechanisms, native contextual use and eventual individual 48-sequence repertoire. These props are still pending; only registry IDs were inspected this turn.",
       "Expand 27 reconstructed lights beyond the ten initial control/observation cores: guest participation, contextual company, real tool pickup/put-away, surface-specific manipulation, expressive age/personality staging and each item\u2019s 48 meaningful sequences. Current controls and native state are verified foundations, not the completed milestone.",
       "Expand instrument-specific and guest-specific performance repertoires beyond the 25 shared phrase cores, with explicit approach/climbing, stationary multi-level supports, instrument pickup/put-away, listening audiences and richer reciprocal musical gestures. Keep all per-object sequence counts unverified until the 48 meaningful sequence audit passes. Continue the remaining 340 artwork reconstructions and all other milestone requirements.",
       "Continue construction-specific plant repertoires, seasonal/mood/personality choreography, reciprocal gestures and physical tool handoffs. The 19 shared care scores and all-cast rig fit are foundations, not 48 bespoke sequences on each plant. Continue the remaining 340 item reconstructions and the full per-object animation milestone.",
@@ -4020,7 +4041,7 @@
       "Add physical reading, desk/workbench actions, cabinet/wardrobe/mirror use and construction-specific furniture routines; the 16 shared seating tracks do not satisfy the per-object 48-sequence target."
     ],
     "checks": {
-      "javascript": 126,
+      "javascript": 129,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4028,7 +4049,7 @@
       "learningBrains": 44,
       "shelterLifecycle": 30,
       "pairedLifecycle": 16,
-      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Initial character-operated tools are now reviewed separately below; plant-specific social routines and every-object 48-sequence coverage remain unfinished. Botanical care: 19 score illustrations on four sheets plus real native solo/company replay. Connected mirrored grips, fixed character scale, supported feet, age-sized tools, actual soil/rim/leaf contacts, downward pours, butterfly hovering, reduced motion and selectable visiting gardeners verified. Interrupted and incomplete shared work grant no shared memory; completed care teaches gardening. Tool pickup/put-away and individual-object/guest repertoires remain unfinished. Music review: nine instrument constructions on three sheets, 25 phrases at three phases on seven sheets, plus real native solo/shared scenes. All eight hatched ages and 48 visitor rigs remain bounded with fixed body scale; mirrored grips, real bill contact, depressed keys/valves, ringing cymbals/chimes, radio knobs, fan brushes, supported feet and continuous note-to-note travel are checked. Actual regular, rare and story visitors reserve independent destinations, and visitor-to-visitor duets work without crediting Cheese. Shared native clocks emit each note once, skip missed-note bursts and grant learning/memories only upon completion. Muting, direct care, pauses, moved objects, storms, replaced visits and safe worker shutdown are verified. Physical entry/climbing and full individual object/guest repertoires remain unfinished. Physical-copy review: distinct healthy/thirsty fern state, exact click identities, copy-specific inspector and arrangement controls reviewed in Electron. Live UI commands target the selected copy; storing/restoring one retains its history and leaves its sibling outside. Same-position replacement cannot inherit a current musician or reward. Physical state snapshots are detached from saves. Lighting review: 27 distinct constructions across five sheets, three Cheese ages at a real control, and live day/night/contact captures. Local cloth glow, ceramic contrast, warm versus blue flame, larger duck hologram, fixed-scale grounded poses, exact held-tool contacts, reduced motion and paused poses verified. Live twin-lamp notebook mode changes, cancellation, storage and same-identity restoration tested through the production command validator. Ordinary and rare visitor light participation and individual-object repertoires remain pending. Keepsake review: twelve constructions, open/closed sheets, three reading ages and live book/barrel/card scenes; 70 native frames with 62 active workers. Fixed character scale, grounded feet, physical page/lid contacts, paused clocks and immutable snapshots pass. The real notebook operates the exact selected chest and exposes live page and water state. Reading words share one definition with the drawing and are supplied to natural chat only after arrival and opening. Full individual repertoires and visitor participation remain unfinished.",
+      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Initial character-operated tools are now reviewed separately below; plant-specific social routines and every-object 48-sequence coverage remain unfinished. Botanical care: 19 score illustrations on four sheets plus real native solo/company replay. Connected mirrored grips, fixed character scale, supported feet, age-sized tools, actual soil/rim/leaf contacts, downward pours, butterfly hovering, reduced motion and selectable visiting gardeners verified. Interrupted and incomplete shared work grant no shared memory; completed care teaches gardening. Tool pickup/put-away and individual-object/guest repertoires remain unfinished. Music review: nine instrument constructions on three sheets, 25 phrases at three phases on seven sheets, plus real native solo/shared scenes. All eight hatched ages and 48 visitor rigs remain bounded with fixed body scale; mirrored grips, real bill contact, depressed keys/valves, ringing cymbals/chimes, radio knobs, fan brushes, supported feet and continuous note-to-note travel are checked. Actual regular, rare and story visitors reserve independent destinations, and visitor-to-visitor duets work without crediting Cheese. Shared native clocks emit each note once, skip missed-note bursts and grant learning/memories only upon completion. Muting, direct care, pauses, moved objects, storms, replaced visits and safe worker shutdown are verified. Physical entry/climbing and full individual object/guest repertoires remain unfinished. Physical-copy review: distinct healthy/thirsty fern state, exact click identities, copy-specific inspector and arrangement controls reviewed in Electron. Live UI commands target the selected copy; storing/restoring one retains its history and leaves its sibling outside. Same-position replacement cannot inherit a current musician or reward. Physical state snapshots are detached from saves. Lighting review: 27 distinct constructions across five sheets, three Cheese ages at a real control, and live day/night/contact captures. Local cloth glow, ceramic contrast, warm versus blue flame, larger duck hologram, fixed-scale grounded poses, exact held-tool contacts, reduced motion and paused poses verified. Live twin-lamp notebook mode changes, cancellation, storage and same-identity restoration tested through the production command validator. Ordinary and rare visitor light participation and individual-object repertoires remain pending. Keepsake review: twelve constructions, open/closed sheets, three reading ages and live book/barrel/card scenes; 70 native frames with 62 active workers. Fixed character scale, grounded feet, physical page/lid contacts, paused clocks and immutable snapshots pass. The real notebook operates the exact selected chest and exposes live page and water state. Reading words share one definition with the drawing and are supplied to natural chat only after arrival and opening. Full individual repertoires and visitor participation remain unfinished. Shared keepsakes: fifteen complementary company tracks, all 48 cast profiles and eight hatched Cheese ages, ten rendered sheets, and 197 actual native frames. Independent regular/rare/story arrivals, short bounded waits, shared clocks, physical-copy identity, fixed scale, supported feet or butterfly hover, directional pointers, step-in/out gestures, selectable visiting readers, pause, interruption and completed observed-text memories pass. These initial shared scenes do not satisfy any per-object 48-sequence audit.",
       "nestLifecycle": 34,
       "nestReplay": {
         "nativeSceneFrames": 41,
@@ -4154,21 +4175,36 @@
         "medianMs": 6.600000023841858,
         "p95Ms": 10.900000035762787,
         "note": "Development replay, not the final full-milestone performance audit."
+      },
+      "keepsakeCompanyLifecycle": 197,
+      "keepsakeCompanyRigCases": 3360,
+      "keepsakeCompanyRenderTests": 3,
+      "keepsakeCompanyReplay": {
+        "result": "PASS",
+        "sheets": 10,
+        "frames": 197,
+        "paired": 175,
+        "readers": 175,
+        "hits": 197,
+        "medianMs": 5.300000011920929,
+        "p95Ms": 9.899999976158142,
+        "note": "Development replay of actual native snapshots, not the final full-milestone performance audit."
       }
     },
     "limitations": [
-      "190 of 542 object artworks reconstructed for review; 352 remain.",
+      "202 of 542 object artworks reconstructed for review; 340 remain.",
       "No object has yet passed the 48 bespoke sequence requirement.",
       "Five nests now use 51 authored core routines (three require a canopy). Individual nest-construction variants, guest participation and egg-specific interactions remain unfinished; no per-object completion is claimed.",
       "Paired tracks currently share a core movement vocabulary across the cast; personality-specific choreography and full guest item participation remain unfinished.",
       "Thirteen solo tracks and the current mechanical loops are foundations, not the completed object-animation catalogue.",
       "Regular, rare and story visitors now use real shelter slots, shared rooms and six contextual company scores. Full species-specific climbing, doorway, object-contact and personal repertoires remain unfinished.",
-      "Installed app remains the previously verified 2.36.0; this development milestone is not packaged or installed.",
+      "Installed app remains the previously verified chat release 2.36.1; this development milestone is not packaged or installed.",
       "Eight cooperative toy scenes currently cover seesaw, sandbox, ball and trampoline; full species-specific contact, NPC-to-NPC toy invitations and every-object repertoires remain unfinished. Habitat purchases now reserve enlarged drawing space; additional areas and the other legacy placement editors remain to be designed.",
       "Sixteen shared water scores are initial object/age-aware routines, not 48 bespoke sequences on each water object. Visitor bathing, species-specific water contacts and detailed ladder/entry choreography remain unfinished.",
       "Rooted plants now have 19 shared articulated care scores with tool contacts, independent visitor arrivals and completed shared-care memories. These do not satisfy the 48 bespoke sequences per plant target. Plant-construction-specific acting, personality/mood choreography, explicit tool pickup/put-away and reciprocal tool handoffs remain unfinished. No per-object sequence completion is claimed.",
       "Nine music objects now have 25 shared phrase cores, articulated playing/listening, real synthesized notes, independently arrived visitors and synchronized duets. These are not 48 bespoke sequences per instrument. Construction-specific repertoires, richer expressive posing, explicit tool pickup/put-away, musician climbing and stationary multi-level supports, egg listening and personal visitor phrasing remain unfinished.",
-      "Twenty-seven lighting objects now have per-copy modes, real Cheese control contact, warm/cold observation, dusk/weather response, preserved storage state and ten shared cores. Visitor participation, physical tool pickup/put-away and 48 individual meaningful sequences per light remain unfinished; no object sequence completion is claimed."
+      "Twenty-seven lighting objects now have per-copy modes, real Cheese control contact, warm/cold observation, dusk/weather response, preserved storage state and ten shared cores. Visitor participation, physical tool pickup/put-away and 48 individual meaningful sequences per light remain unfinished; no object sequence completion is claimed.",
+      "Twelve keepsakes have 19 native action cores and 15 shared reading/inspection scenes. Regular, rare and story visitors arrive independently, use the same native clock, and learn only from sufficiently shared completed work. Personal visitor repertoires, guest-to-guest keepsake invitations, egg listening, portable physical-copy handling, tool pickup/put-away and every-item 48-sequence audits remain unfinished."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -4219,11 +4255,11 @@
     },
     "sourceSmoke": {
       "result": "PASS",
-      "frames": 96,
-      "simulationExit": 0,
+      "frames": 93,
       "localAI": false,
-      "evidence": "engine/artifacts/animation-milestone/keepsake-smoke.log",
-      "note": "Source build only. Installed 2.36.1 local AI was already verified in the separate chat release."
+      "simulationExit": 0,
+      "evidence": "engine/artifacts/animation-milestone/keepsake-company-smoke.log",
+      "note": "Source build with disposable saves. Installed 2.36.1 remains unchanged."
     },
     "chatRelease": {
       "branch": "codex/pond-chat-2.36.1",
@@ -4243,6 +4279,7 @@
       "evidence": "/Volumes/Expansion Pak/Projects/cheese-the-duck-chat-release/engine/artifacts/chat/final-package.log"
     },
     "keepsakeObjects": 12,
-    "keepsakeRoutineCores": 19
+    "keepsakeRoutineCores": 19,
+    "keepsakeCompanyScores": 15
   }
 }

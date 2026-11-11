@@ -284,14 +284,29 @@ Natural conversation receives the actual open chapter or card words from the
 same definitions used to draw them. Cheese cannot read through a closed cover or
 inspect a barrel before arriving. These descriptions never grant treasure or
 invent a photograph's history. Nineteen shared reading/sorting cores are an
-initial repertoire; visitor participation, tool pickup/put-away, portable
-physical-copy handling and all per-object 48-sequence audits remain unfinished.
+initial repertoire. Fifteen additional shared scenes let an independently moving
+friend join Cheese for a page, map, card, photograph, chest or rain-gauge study.
+Cheese waits briefly for arrival. Pausing holds both poses; a missed invitation,
+interruption, moved object or replaced visit cannot award shared learning.
+Completed sessions teach both residents and retain words they actually had time
+to read. Visitors remain clickable at their drawn positions and return to their
+own routines afterward. Young, older and nighttime readers choose different
+scenes; butterflies hover instead of using a pointer.
+
+These shared cores are not 48 bespoke sequences per object. Construction-specific
+repertoires, personality-specific visitor acting, guest-to-guest keepsake sessions,
+physical tool pickup/put-away, portable physical-copy handling and the complete
+per-object sequence audits remain unfinished.
 
 Keepsake checks: `.venv/bin/python engine/check_keepsakes.py`,
 `engine/node_modules/.bin/electron engine/keepsakes-check.cjs` and
 `engine/node_modules/.bin/electron engine/keepsakes-ui-check.cjs`. They use
 isolated saves and exercise real notebook commands, contact timing, cancellation,
 copy identity, weather, save/load and conversation context.
+Shared reading uses `.venv/bin/python engine/check_keepsake_company.py` and
+`engine/node_modules/.bin/electron engine/keepsake-company-check.cjs`, with
+actual regular, rare and story movement, all-cast pose sheets, native replays,
+selectable visitor bounds and interrupted/paused/cancelled sessions.
 
 ## Validation
 

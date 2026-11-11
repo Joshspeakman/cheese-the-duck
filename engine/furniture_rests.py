@@ -177,7 +177,7 @@ def tick(minds,dt):
     if not shelters.adverse(p.weather_type) and p.location=='Home Pond':
         from engine import playdates
         for key in sorted(minds.present):
-            if key=='cheese' or key in minds.furnishings or key in minds.gardening or key in minds.musicians or key in minds.housing or departing(minds,key) or minds.now<minds.seat_retry.get(key,0) or playdates.active(minds,key) or minds.encounter_for(key):continue
+            if key=='cheese' or key in minds.readers or key in minds.furnishings or key in minds.gardening or key in minds.musicians or key in minds.housing or departing(minds,key) or minds.now<minds.seat_retry.get(key,0) or playdates.active(minds,key) or minds.encounter_for(key):continue
             if minds.model.residents[key]['energy']>=.62 and minds.tasks.get(key,{}).get('action')!='rest':continue
             choices=candidates(p,actor=key)
             if not choices or choices[0]['distance']>55:

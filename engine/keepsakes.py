@@ -96,6 +96,8 @@ def advance(pond,plan,dt):
     if not valid(pond,plan):work.update(interrupted=True,done=True);return False
     pos=pond.game.renderer.duck_pos;destination=plan.get('destination',work['origin'])
     if abs(pos.x-destination[0])+abs(pos.y-destination[1])>3:work.update(interrupted=True,done=True);return False
+    from engine import keepsake_company
+    if keepsake_company.waiting(pond.minds):return True
     spec=ROUTINES[work['id']];work['elapsed']=min(spec['duration'],work['elapsed']+dt)
     obj=pond.object_state(plan['target'],plan);s=state(plan['target'],obj);s['open']=openness(work,spec)
     for i,(at,event) in enumerate(spec.get('events',[])):
@@ -117,3 +119,5 @@ def complete(pond,plan):
         if event in events:s[key]=min(9999,s[key]+1)
     history=obj.setdefault('keepsake_routines',{});history[work['id']]=min(9999,history.get(work['id'],0)+1)
     pond.remember('keepsake',work['label']+'.',.5,plan['target'])
+    from engine import keepsake_company
+    keepsake_company.complete(pond.minds,plan)

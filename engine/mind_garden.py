@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from engine.social_brains import Minds, ACTIONS, LABELS, action_key, clamp, stable, player_claim
 from engine.local_speech import speak
 from world.guest_cast import guest_profile
-from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests, botanical_care, instrument_sessions, keepsakes
+from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests, botanical_care, instrument_sessions, keepsakes, keepsake_company
 from engine.instrument_audio import InstrumentAudio
 
 CHEESE_VOICE = {
@@ -36,6 +36,7 @@ class MindGarden:
         self.furnishings={};self.seat_retry={};self.seat_scenes={}
         self.gardening={};self.garden_retry={};self.garden_scenes={}
         self.musicians={};self.music_retry={};self.music_scenes={};self.instrument_audio=InstrumentAudio()
+        self.readers={};self.reading_retry={}
         self._cheese_traits=None
 
     @property
@@ -201,6 +202,12 @@ class MindGarden:
             partner=play['partner'] if key=='cheese' else 'cheese'
             facts['shared_activity']={'with':self.model.residents[partner]['name'],'activity':play['label'],
                 'status':'waiting to start' if play['phase'] in ('approach','enter') else 'doing this together now'}
+        reading=keepsake_company.conversation(self,key)
+        if reading:
+            facts['shared_activity']={'with':reading['with_name'],'activity':reading['activity'],'status':reading['status']}
+            if key!='cheese' and self.readers[key]['phase'] in ('inside','finished'):
+                facts['keepsake']=keepsakes.conversation(self.pond,self.pond.state['plan'])
+                facts['current_activity']=reading['activity']
         system=("You are "+r['name']+", a character in Cheese the Duck, a living ASCII pond simulation. You are speaking to "+other+". "
           "Write a natural conversational reply in English: one or two short sentences, at most 45 words. A small physical gesture is optional. "
           "Your personality is in identity and habit. Be specific, wry and emotionally consistent; warmth and quiet answers are welcome too. "
@@ -316,7 +323,8 @@ class MindGarden:
         for i,key in enumerate(keys):
             for other in keys[i+1:]:
                 if 'cheese' in (key,other) and self.pond.state.get('plan',{}):
-                    if self.pond.state['plan'].get('seating') or self.pond.state['plan'].get('plant_care') or self.pond.state['plan'].get('instrument'):continue
+                    if self.pond.state['plan'].get('seating') or self.pond.state['plan'].get('plant_care') or self.pond.state['plan'].get('instrument') or self.pond.state['plan'].get('keepsake_work'):continue
+                if keepsake_company.active(self,key) or keepsake_company.active(self,other):continue
                 if key in self.housing or other in self.housing or key in self.furnishings or other in self.furnishings or key in self.gardening or other in self.gardening or key in self.musicians or other in self.musicians or playdates.active(self,key) or playdates.active(self,other):continue
                 a,b=self.present[key],self.present[other];distance=math.hypot(a[0]-b[0],(a[1]-b[1])*2)
                 pair='|'.join(sorted((key,other)))
@@ -356,6 +364,7 @@ class MindGarden:
         furniture_rests.tick(self,house_dt)
         botanical_care.tick(self,house_dt)
         instrument_sessions.tick(self,house_dt)
+        keepsake_company.tick(self,house_dt)
         if self.now<self.next_tick:return
         dt=min(5,max(0,self.now-self.last_at));self.last_at=self.now;self.next_tick=self.now+1
         # Absent residents do not accumulate invented interactions or rewards.
@@ -365,13 +374,16 @@ class MindGarden:
             if key=='cheese':continue
             r=self.model.residents[key];r['energy']=clamp(r['energy']-dt/2400);r['social']=clamp(r['social']-dt/1800)
             task=self.tasks.get(key)
-            if self.encounter_for(key) or key in self.housing or key in self.furnishings or key in self.gardening or key in self.musicians or playdates.active(self,key):
+            if self.encounter_for(key) or key in self.readers or key in self.housing or key in self.furnishings or key in self.gardening or key in self.musicians or playdates.active(self,key):
                 if task:task['until']+=dt
                 if key in self.housing and key in self.pond.state['friends']:
                     self.pond.state['friends'][key].update(activity='sheltering' if self.housing[key]['phase']=='inside' else 'walking to shelter',location=self.pond.location)
                 elif playdates.active(self,key) and key in self.pond.state['friends']:
                     play=playdates.active(self,key)
                     self.pond.state['friends'][key].update(activity=('walking over to play' if play['phase']=='approach' else play['label']),location=self.pond.location)
+                elif key in self.readers and key in self.pond.state['friends']:
+                    r=self.readers[key]
+                    self.pond.state['friends'][key].update(activity='walking over to read' if r['phase']=='approach' else keepsake_company.SCORES[r['score']]['label'],location=self.pond.location)
                 elif key in self.musicians and key in self.pond.state['friends']:
                     r=self.musicians[key]
                     self.pond.state['friends'][key].update(activity={'inside':r['score']['label'],'enter':'getting ready to play','exit':'finished playing; stepping away'}.get(r['phase'],'walking to play music'),location=self.pond.location)
@@ -443,6 +455,10 @@ class MindGarden:
         if musician:
             result['meeting']=musician
             return result
+        reader=keepsake_company.motion(self,key)
+        if reader:
+            result['meeting']=reader
+            return result
         play=playdates.motion(self,key)
         if play:
             result['meeting']=play
@@ -472,6 +488,7 @@ class MindGarden:
                 'seats':furniture_rests.snapshot(self),
                 'gardeners':botanical_care.snapshot(self),
                 'musicians':instrument_sessions.snapshot(self),
+                'readers':keepsake_company.snapshot(self),
                 'exchanges':copy.deepcopy(self.model.state['exchanges'][-30:]),'voice':dict(self.voice),
                 'pending':self.model.residents[self.pending['key']]['name'] if self.pending else ('Cheese' if getattr(self.game,'_pending_talk_future',None) else None),
                 'feedback':self.feedback}
