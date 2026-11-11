@@ -53,7 +53,7 @@ def invite(minds,plan):
     origin=list(plan['destination']);options=[]
     for key in minds.present:
         if key=='cheese' or departing(minds,key) or minds.now<minds.nest_retry.get(key,0):continue
-        if any(key in getattr(minds,name,{}) for name in ('playmates','structure_helpers','ground_helpers','textile_helpers','creators','readers','housing','gardening','furnishings','musicians')) or minds.encounter_for(key) or playdates.active(minds,key):continue
+        if any(key in getattr(minds,name,{}) for name in ('carnival_guests','playmates','structure_helpers','ground_helpers','textile_helpers','creators','readers','housing','gardening','furnishings','musicians')) or minds.encounter_for(key) or playdates.active(minds,key):continue
         resident=minds.model.residents[key]
         if resident['energy']<.25 or minds.tasks.get(key,{}).get('action') not in ('observe','share','restore'):continue
         selected=choose(minds,plan,key)

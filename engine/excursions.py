@@ -20,7 +20,7 @@ def state(item,obj):
 def adverse(weather):
     weather=str(weather or '').lower()
     return weather!='rainbow' and any(k in weather for k in ('rain','storm','snow','blizzard','drizzle','shower','hail','sleet','tornado','hurricane','gale','freezing'))
-def update(item,obj,dt,outdoors,weather,wind,hour):
+def update(item,obj,dt,outdoors,weather,wind,hour,reserved=False):
     if item not in ITEMS:return
     s=state(item,obj);dt=max(0.,finite(dt));kind=ITEMS[item]['motion']
     if not outdoors:
@@ -31,10 +31,12 @@ def update(item,obj,dt,outdoors,weather,wind,hour):
     # Exponential approach is frame-rate independent; a long offline update
     # advances the mechanism without emitting a backlog of activity events.
     target=.12 if live and kind=='motor' else .16 if live and kind=='scanner' else 0.
-    old=s['speed'];decay=math.exp(-dt*1.4);s['speed']=target+(old-target)*decay
-    s['phase']=(s['phase']+target*dt+(old-target)*(1-decay)/1.4)%TAU
+    if not reserved:
+        old=s['speed'];decay=math.exp(-dt*1.4);s['speed']=target+(old-target)*decay
+        s['phase']=(s['phase']+target*dt+(old-target)*(1-decay)/1.4)%TAU
+        s['running']=target>0
+    elif reserved=='hold':s.update(speed=0.,running=False)
     s['wind']=wind;s['wind_phase']=(s['wind_phase']+dt*(.4+wind*.7))%TAU
-    s['running']=target>0
     s['lights']=float(not wet and (hour<6 or hour>=18))
     cover=1. if wet else 0.
     if kind in ('envelope','inflation','cloth'):s['cover']+= (cover-s['cover'])*(1-math.exp(-dt*.12))

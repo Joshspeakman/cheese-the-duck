@@ -1,3 +1,4 @@
+import {carnivalGeometry} from './carnival-routines.mjs';
 import {playkitGeometry,drawPlaykitTools} from './playkit-routines.mjs';
 import {architectureGeometry,drawArchitectureTools} from './architecture-routines.mjs';
 import {groundGeometry,drawGroundTools} from './ground-routines.mjs';
@@ -61,7 +62,7 @@ export class SceneCanvas {
     for(const model of characters)fit(model);
     for(const model of objects){
       fit(model);
-      for(const member of [...(model.occupants||[]),...(model.nestHelpers||[]),...(model.riders||[]),...(model.sitters||[]),...(model.gardeners||[]),...(model.musicians||[]),...(model.lightWorkers||[]),...(model.keepers||[]),...(model.creators||[]),...(model.textileUsers||[]),...(model.groundUsers||[]),...(model.structureUsers||[])])fit(member.character);
+      for(const member of [...(model.occupants||[]),...(model.nestHelpers||[]),...(model.riders||[]),...(model.sitters||[]),...(model.gardeners||[]),...(model.musicians||[]),...(model.lightWorkers||[]),...(model.keepers||[]),...(model.creators||[]),...(model.textileUsers||[]),...(model.groundUsers||[]),...(model.structureUsers||[]),...(model.carnivalRiders||[])])fit(member.character);
       if(model.occupant)fit(model.occupant.character);
       if(model.rider)fit(model.rider.character);
       if(model.bather)fit(model.bather.character);
@@ -134,6 +135,13 @@ export class SceneCanvas {
           drawCharacter(this.ctx,{...bath.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
           if(bath.front)this.items.draw(this.ctx,bath.front,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
         }
+        const carnivalSeats=(actor.carnivalRiders||[]).map(r=>carnivalGeometry(actor,r,this.sx,this.sy)).sort((a,b)=>a.character.y-b.character.y);
+        for(const staged of carnivalSeats){
+          drawCharacter(this.ctx,{...staged.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
+          if(staged.front)this.items.draw(this.ctx,staged.front,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
+          if(staged.character.visitor||staged.character.story)seatedHits.push(staged.character);
+        }
+        if(carnivalSeats.length&&actor.anchors.roof){const roof={...actor,...actor.anchors.roof,id:actor.id+':roof',anchors:{},carnivalRiders:null};this.items.draw(this.ctx,roof,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});}
         for(const worker of actor.players||[]){
           const staged=playkitGeometry(actor,worker,this.sx,this.sy);
           drawCharacter(this.ctx,{...staged.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);

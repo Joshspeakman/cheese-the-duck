@@ -223,56 +223,74 @@ function inflatable(c,p,v){
  pennant(c,72,1+sink,v.wind_phase,'g',v.wind);
  return {entry:{x:73,y:112},seat:{x:73,y:91},contact:{x:136,y:102},mesh:{x:43,y:69},blower:{x:136,y:102}};
 }
-function gondola(c,x,y,tone,lights){
- c.line(x,y-7,x,y-3,'|','m');c.ellipse(x,y,9,5,'_','k',true);panel(c,x-9,y-1,19,7,tone);
- c.line(x-7,y+2,x+7,y+2,'_','a');c.line(x-8,y-4,x+8,y-4,'=','a');c.put(x-7,y-6,'o           o',lights?'a':'m');c.put(x-3,y+3,'[<>]','f');
- for(const dx of [-7,-4,4,7])c.line(x+dx,y-3,x+dx,y+1,'|','m');c.put(x-7,y+4,'o           o','a');
+function gondola(c,x,y,tone,lights,front=false){
+ if(!front){
+  c.line(x,y-7,x,y-2,'|','m');
+  c.line(x-25,y-4,x+25,y-4,'=','a');
+  for(const dx of [-25,25]){c.line(x+dx,y-4,x+dx,y+10,'|','m');c.put(x+dx,y-5,lights?'*':'o',lights?'a':'f');}
+  panel(c,x-24,y+5,49,5,'b');c.line(x-21,y+6,x+21,y+6,'_','f');
+ }
+ polygon(c,[[x-26,y+8],[x+26,y+8],[x+23,y+17],[x-23,y+17]],tone);
+ c.line(x-26,y+8,x+26,y+8,'=','a');c.line(x-22,y+15,x+22,y+15,'_','s');
+ for(const dx of [-19,-12,12,19])c.line(x+dx,y+10,x+dx,y+14,':','f');
+ c.put(x-5,y+11,'[ <><> ]','a');c.put(x-23,y+10,'o','a');c.put(x+23,y+10,'o','a');
 }
 function ferris(c,p,v){
- const cx=82,cy=55,rx=62,ry=41,phase=v.phase;
+ const cx=92,cy=53,rx=62,ry=41,phase=v.phase;
  for(const side of [-1,1]){c.beam(cx,cy,cx+side*43,123,5,'g');c.line(cx+side*3,cy+8,cx+side*35,118,':','f');c.put(cx+side*43-9,124,'[________________]','k');}
- c.line(51,110,113,110,'=','m');c.line(51,110,100,82,'/','s');c.line(113,110,64,82,'\\','s');
+ c.line(61,110,123,110,'=','m');c.line(61,110,110,82,'/','s');c.line(123,110,74,82,'\\','s');
  c.ellipse(cx,cy,rx,ry,'o','a');c.ellipse(cx,cy,rx-3,ry-3,'=','m');
- const cabins=[];
+ const cabins=[],fronts=[];
  for(let n=0;n<8;n++){
   const a=phase+n*Math.PI/4,x=cx+Math.cos(a)*rx,y=cy+Math.sin(a)*ry;
   c.line(cx,cy,x,y,null,'m');c.line(cx+2,cy,x+2,y,null,'s');
   const b=a+Math.PI/4;c.line(x,y,cx+Math.cos(b)*rx,cy+Math.sin(b)*ry,null,'g');
-  c.put(cx+Math.cos(a)*28,cy+Math.sin(a)*26,'o','a');cabins.push({x,y:y+7,index:n});
+  c.put(cx+Math.cos(a)*28,cy+Math.sin(a)*26,'o','a');
+  if(n%2===0)cabins.push({x,y:y+7,index:n/2,seat:{x,y:y+13},width:49});
  }
  for(let n=0;n<48;n++){const a=n*TAU/48;c.put(cx+Math.cos(a)*(rx+1),cy+Math.sin(a)*(ry+1),v.lights>.5?'*':'o',v.lights>.5?'a':'m');}
  c.clear(cx-10,cy-7,21,15);c.ellipse(cx,cy,10,7,'=','q',true);c.ellipse(cx,cy,6,4,'o','a',true);c.put(cx-3,cy,'( + )','k');
- cabins.sort((a,b)=>a.y-b.y).forEach(a=>gondola(c,a.x,a.y,['q','w','g','a'][a.index%4],v.lights>.5));
- panel(c,62,113,41,13,'b');c.put(67,117,'POND VIEW / 8 CABINS','a');c.put(69,121,'TICKETS  [o]','f');
- for(const x of [65,99]){c.put(x,115,'o','a');c.put(x,123,'o','a');}
- c.line(21,119,51,119,'=','m');for(let x=22;x<52;x+=6)c.line(x,119,x,129,'|','m');
- return {entry:{x:82,y:131},contact:{x:93,y:121},wheel:{x:cx,y:cy},cabins,platform:{x:82,y:107}};
+ cabins.sort((a,b)=>a.y-b.y).forEach(a=>{
+  const tone=['q','w','g','a'][a.index];gondola(c,a.x,a.y,tone,v.lights>.5);
+  const f=new ObjectCanvas(p.w,p.h);gondola(f,a.x,a.y,tone,v.lights>.5,true);fronts.push({index:a.index,...f.finish()});
+ });
+ // Low landing deck and broad stairs reach the open cabin at the bottom.
+ panel(c,61,119,70,5,'b');c.line(61,119,130,119,'=','a');
+ for(let x=64;x<129;x+=8)c.put(x,122,'o','s');
+ for(let i=0;i<4;i++){const x=127+i*7,y=123+i*5;panel(c,x,y,14,5,'b');c.line(x,y,x+13,y,'=','a');}
+ c.line(135,114,158,133,'\\','m');c.line(134,114,134,123,'|','m');c.line(158,133,158,140,'|','m');
+ panel(c,18,122,36,17,'b');c.put(21,125,'POND VIEW','a');c.put(21,129,'FOUR ROOMY CABINS','f');c.put(21,134,'TICKETS [o]','a');
+ return {entry:{x:153,y:141},contact:{x:134,y:123},wheel:{x:cx,y:cy},cabins,fronts,platform:{x:92,y:107},route:[{x:153,y:141},{x:139,y:128},{x:124,y:119},{x:92,y:107}]};
 }
 function carvedDuck(c,x,y,tone,flip=false){
- const rows=['       _.._','     .( o )___','    /  /____=>',' __/  /','/  `--`---.','\\  (vvvv)  )',' `----.__.-\'','    | |'];
- const art=flip?rows.map(r=>[...r.padEnd(17)].reverse().map(a=>({'/':'\\','\\':'/','(' :')',')':'(','<':'>','>':'<'}[a]||a)).join('')):rows;
- c.rows(art,x-8,y-7,tone,true);c.put(x-2,y-1,'[=]','q');
+ const rows=['                 _..._','               .\'  o  `.','              /    .---\'===.','             /    /________>','            /    /','  __..-----\'    /',' /  .--------.   \\','(  /  vvvvvv  \\   )',' \\  \\_vvvvv_/   /','  `----._____.--\'','       |     |','     __|     |__'];
+ const art=flip?rows.map(r=>[...r.padEnd(30)].reverse().map(a=>({'/':'\\','\\':'/','(' :')',')':'(','<':'>','>':'<'}[a]||a)).join('')):rows;
+ c.rows(art,x-15,y-8,tone,true);panel(c,x-9,y-3,20,3,'q');c.put(x-7,y-2,'=<>==<>==<>==<>','a');
+}
+function carouselRoof(c,v){
+ polygon(c,[[12,40],[74,9],[136,40]],'q');
+ for(let i=0;i<8;i++){const x=13+i*15.2;polygon(c,[[74,9],[x,40],[x+14,40]],i%2?'a':'g');}
+ for(let i=0;i<8;i++){const x=13+i*15.2;stitch(c,74,10,x+7,39);}
+ c.ellipse(74,42,65,6,'=','b',true);
+ for(let x=16;x<137;x+=12){c.clear(x-6,43,13,8);c.ellipse(x,45,6,5,'_','q',true);c.put(x-3,44,'<o>','a');c.put(x-1,48,v.lights>.5?'*':'o',v.lights>.5?'a':'f');}
+ c.put(49,40,'THE QUACK-A-ROUND','a');c.line(74,8,74,2,'|','a');c.put(71,1,'<*>','q');
 }
 function carousel(c,p,v){
  const cx=74,ground=111;
  c.ellipse(cx,ground,66,12,'=','b',true);c.ellipse(cx,ground-3,62,9,'_','a',true);
  for(let x=20;x<133;x+=9){c.line(x,104,x+2,116,'|','s');c.put(x+1,115,'o','a');c.put(x+4,111,'~','s');}
  c.rect(68,36,13,72,'g',true);c.line(70,38,70,106,':','f');c.line(78,38,78,106,'|','k');
- const rides=[];for(let i=0;i<6;i++){const a=v.phase+i*Math.PI/3;rides.push({x:cx+Math.cos(a)*48,y:94+Math.sin(a)*8,phase:a,index:i});}
+ const rides=[],fronts=[];
+ for(let i=0;i<4;i++){const a=v.phase+i*Math.PI/2,y=94+Math.sin(a)*8-Math.sin(a*2)*3,x=cx+Math.cos(a)*46;rides.push({x,y,phase:a,index:i,seat:{x,y:y-3},width:30});}
  for(const r of rides.sort((a,b)=>a.y-b.y)){
-  c.line(r.x,43,r.x,r.y+8,'|','a');c.line(r.x+1,44,r.x+1,r.y+8,':','f');
-  carvedDuck(c,r.x,r.y-Math.sin(r.phase*2)*3,['p','g','q'][r.index%3],Math.sin(r.phase)<0);
-  c.put(r.x-4,r.y+8,'[______]','m');
+  c.line(r.x,43,r.x,r.y+10,'|','a');c.line(r.x+1,44,r.x+1,r.y+10,':','f');
+  carvedDuck(c,r.x,r.y,['p','g','q','a'][r.index],Math.sin(r.phase)<0);
+  c.put(r.x-4,r.y+10,'[______]','m');
+  const f=new ObjectCanvas(p.w,p.h);f.line(r.x+7,r.y-12,r.x+7,r.y+4,'|','a');f.put(r.x+5,r.y-9,'[o]','f');fronts.push({index:r.index,...f.finish()});
  }
- polygon(c,[[12,40],[74,9],[136,40]],'q');
- for(let i=0;i<8;i++){const x=13+i*15.2;polygon(c,[[74,9],[x,40],[x+14,40]],i%2?'a':'g');}
- for(let i=0;i<8;i++){const x=13+i*15.2;stitch(c,74,10,x+7,39);}
- c.ellipse(cx,42,65,6,'=','b',true);
- for(let x=16;x<137;x+=12){c.clear(x-6,43,13,8);c.ellipse(x,45,6,5,'_','q',true);c.put(x-3,44,'<o>','a');c.put(x-1,48,v.lights>.5?'*':'o',v.lights>.5?'a':'f');}
- c.put(49,40,'THE QUACK-A-ROUND','a');
- c.line(74,8,74,2,'|','a');c.put(71,1,'<*>','q');
+ carouselRoof(c,v);const roof=new ObjectCanvas(p.w,p.h);carouselRoof(roof,v);
  c.rows([' _________','/__/__/__/','|__|__|__|'],111,115,'m');
- return {entry:{x:121,y:126},contact:{x:121,y:115},seat:{x:rides.at(-1).x,y:rides.at(-1).y-2},pole:{x:74,y:77},rides};
+ return {entry:{x:121,y:126},contact:{x:121,y:115},seat:rides.at(-1).seat,pole:{x:74,y:77},rides,fronts,roof:roof.finish(),route:[{x:121,y:126},{x:118,y:114},{x:108,y:104}]};
 }
 const BUILDERS={barrow,pack,sub,rocket,balloon,saucer,carpet,inflatable,wheel:ferris,carousel};
 export function excursionSprite(base,item,time,{state={},motion=true,context={}}={}){

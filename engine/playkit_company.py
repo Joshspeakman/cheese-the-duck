@@ -119,7 +119,7 @@ def tick(minds,dt):
     from engine import playdates
     options=[]
     for key in minds.present:
-        if key=='cheese' or key in minds.nest_helpers or departing(minds,key) or minds.now<minds.playmate_retry.get(key,0):continue
+        if key=='cheese' or key in minds.carnival_guests or key in minds.nest_helpers or departing(minds,key) or minds.now<minds.playmate_retry.get(key,0):continue
         if key in minds.structure_helpers or key in minds.ground_helpers or key in minds.textile_helpers or key in minds.creators or key in minds.readers or key in minds.housing or key in minds.gardening or key in minds.furnishings or key in minds.musicians or minds.encounter_for(key) or playdates.active(minds,key):continue
         resident=minds.model.residents[key]
         if resident['energy']<.25 or minds.tasks.get(key,{}).get('action') not in ('observe','share','restore','practice'):continue
