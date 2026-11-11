@@ -14,3 +14,6 @@ for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/
 # Light controls share their construction registry with Ultra.
 for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/animation/lighting.json').read_text()).items():
     ITEMS[_id].update(kind='light',material=_p['material'],skill='observation',verb='Watch' if _p['control']=='observe' else 'Adjust light',need='fun',duration=16)
+
+for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/animation/keepsakes.json').read_text()).items():
+    ITEMS[_id].update(kind='storage' if _p['type'] in ('chest','basket') else 'study',material=_p['material'],skill=_p['skill'],verb=_p['verb'],need='fun',duration=18)

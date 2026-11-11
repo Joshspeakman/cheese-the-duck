@@ -6,6 +6,9 @@ import {guestProfile} from './visitor-rig.mjs';
 import {storyModel} from './story-art.mjs';
 import {PondArrangement} from './pond-layout.mjs';
 import LIGHTING from './animation/lighting.json' with {type:'json'};
+import KEEPSAKES from './animation/keepsakes.json' with {type:'json'};
+import {keepsakeSummary} from './keepsake-state.mjs';
+import {keepsakePose} from './keepsake-routines.mjs';
 const names=new Map(catalog.map(i=>[i.id,i]));
 const pretty=s=>String(s||'').replaceAll('_',' ');
 const percent=n=>`${Math.round((n||0)*100)}%`;
@@ -42,6 +45,11 @@ export class PondJournal{
   refreshConversation(this);
   const p=w.plan;this.status.textContent=p?`${p.label} · ${p.paused?'paused':pretty(p.phase)} · ${Math.round(p.progress*100)}%`:'Cheese is free to choose what comes next.';
   for(const bar of this.body.querySelectorAll('[data-progress]'))bar.value=p?.progress||0;
+  for(const card of this.body.querySelectorAll('[data-keepsake-id]')){
+   const id=card.dataset.keepsakeId,instance=card.dataset.keepsakeInstance,state=instance?w.instances?.[instance]:w.objects[id];if(!state)continue;
+   card.querySelector('[data-keepsake-summary]').textContent=keepsakeSummary(id,state);
+   const meter=card.querySelector('[aria-label="Rainwater"]');if(meter){meter.value=(state.keepsake?.litres||0)/KEEPSAKES[id].capacity;meter.nextElementSibling.textContent=percent(meter.value);}
+  }
   for(const card of this.body.querySelectorAll('[data-light-id]')){
    const id=card.dataset.lightId,instance=card.dataset.lightInstance,light=(instance?w.instances?.[instance]:w.objects[id])?.lighting;
    if(!light)continue;
@@ -102,6 +110,11 @@ const p=itemProfile(item,itemFamily(id));detail.append(el('p',`${pretty(p.materi
     detail.append(this.button(p.verb,'item',id,busy||!outside||['food','wearable'].includes(p.kind),{instance}),this.button('Brush & polish','clean_item',id,busy||!outside||state.dirt<.05,{instance}),this.button('Repair · 1 twig','repair_item',id,busy||!outside||state.condition>=.95,{instance}));if(['food','wearable'].includes(p.kind))detail.append(this.legacy(p.kind==='food'?'Eat through inventory':'Open wardrobe & items','inventory'));grid.append(detail);
     if(w.layout?.items.some(i=>i.id===id)&&(!instance||w.layout.copies?.some(p=>p.id===id&&p.instance===instance))){const arrange=el('button',w.placed.includes(id)?'Move or store':'Find a place','pond-action');arrange.onclick=()=>this.show('arrange',id,instance);detail.append(arrange);}
     if(state.botany){this.meter(detail,'Soil moisture',state.botany.moisture);this.meter(detail,'Plant health',state.botany.health);detail.append(el('p',state.botany.last_care?'Last care: '+pretty(state.botany.last_care):'Rain waters the roots. Warm, dry air slowly draws moisture out of the soil.'));}
+    if(state.keepsake&&KEEPSAKES[id]){
+     detail.dataset.keepsakeId=id;detail.dataset.keepsakeInstance=instance||'';
+     const summary=el('p',keepsakeSummary(id,state));summary.dataset.keepsakeSummary='';detail.append(summary);
+     if(KEEPSAKES[id].type==='barrel'){this.meter(detail,'Rainwater',state.keepsake.litres/KEEPSAKES[id].capacity);detail.append(el('p','Rain collects through the screened cover. Ice holds it still; warm dry air slowly draws it away.'));}
+    }
     if(state.lighting&&LIGHTING[id]){
      const light=state.lighting;detail.dataset.lightId=id;detail.dataset.lightInstance=instance||'';this.meter(detail,'Light',light.level);const summary=el('p',`${pretty(light.mode)} · ${light.switches} careful adjustments`);summary.dataset.lightSummary='';detail.append(summary);
      if(LIGHTING[id].control!=='observe')for(const [mode,label] of [['auto','At dusk'],['on','On'],['off','Off']]){
@@ -147,7 +160,8 @@ const p=itemProfile(item,itemFamily(id));detail.append(el('p',`${pretty(p.materi
    ctx.fillStyle='#345745';ctx.font='11px Menlo,monospace';for(let x=4;x<canvas.width;x+=13)ctx.fillText(x%3?'\'':'.',x,canvas.height-18-(x%5));
    if(kind==='item'||kind==='project'){
     const project={reed_beds:'reed',orchard:'tree_oak',observatory:'telescope',clubhouse:'basic_nest',workshop:'workbench',trail:'bridge'};
-    const model=itemSprite(kind==='project'?project[id]:id,time,{motion,state:instance?w.instances?.[instance]:w.objects[id],interaction:w.plan?.target===id&&(!instance||w.plan.instance===instance)?w.plan:null});
+    const interaction=w.plan?.target===id&&(!instance||w.plan.instance===instance)?w.plan:null;
+    const model=itemSprite(kind==='project'?project[id]:id,time,{motion,state:instance?w.instances?.[instance]:w.objects[id],interaction,pose:{keepsake:interaction?.keepsake_work?keepsakePose(interaction.keepsake_work,motion):null}});
     const cw=Math.min((canvas.width-30)/(model.width+2),(canvas.height-45)/((model.art.length+2)*1.5))/(model.detailScale||1);
     this.painter.draw(ctx,model,canvas.width/2,canvas.height-22,cw,{surface:'#142a22',outline:'#091d18'});
    }else{

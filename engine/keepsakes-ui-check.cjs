@@ -1,0 +1,45 @@
+const {app,BrowserWindow,ipcMain}=require('electron'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
+const {spawn}=require('node:child_process'),{createInterface}=require('node:readline'),{pondCommand}=require('./pond-command.cjs');
+app.setPath('userData',fs.mkdtempSync(path.join(os.tmpdir(),'cheese-keepsakes-ui-')));
+app.whenReady().then(async()=>{
+ let child,stderr='';const checks=[],out=path.join(__dirname,'artifacts/animation-milestone');
+ try{
+  const w=new BrowserWindow({show:false,width:1440,height:1000,webPreferences:{nodeIntegration:true,contextIsolation:false,backgroundThrottling:false}});
+  const js=s=>w.webContents.executeJavaScript(s);
+  const until=async(s,label)=>{const start=Date.now();while(!await js(s)){if(Date.now()-start>15000)throw Error(label+' timed out '+stderr);await new Promise(r=>setTimeout(r,30));}checks.push(label);};
+  const advance=until=>child.stdin.write(JSON.stringify({type:'test_advance',until})+'\n');
+  await w.loadFile(path.join(__dirname,'tests/physical-objects-theatre.html'));
+  await until('Boolean(window.journal)','notebook initialized');
+  ipcMain.on('physical-command',(_,raw)=>{const command=pondCommand(raw);if(command)child.stdin.write(JSON.stringify(command)+'\n');});
+  child=spawn(path.join(__dirname,'../.venv/bin/python'),[path.join(__dirname,'check_keepsakes.py'),'--serve'],{cwd:path.dirname(__dirname),stdio:['pipe','pipe','pipe']});
+  child.stderr.on('data',b=>stderr=(stderr+b).slice(-5000));
+  createInterface({input:child.stdout}).on('line',line=>{try{const m=JSON.parse(line);if(m.type==='physical_frame')js('window.receive('+JSON.stringify(m.frame)+')');}catch{}});
+  const fixture=item=>child.stdin.write(JSON.stringify({type:'test_fixture',item})+'\n');
+  await until('Boolean(window.frame)','native chest copies arrive');
+  await until('window.hitCopies()','both chests have separate world click bounds');
+  await js("button('Look inside').click()");
+  await until("journal.world.plan?.instance===frame.copies[0]&&journal.world.instances[frame.copies[0]].keepsake.open===0",'inspection approaches the actual selected chest');
+  advance('contact');
+  await until("journal.body.querySelector('[data-keepsake-summary]').textContent.startsWith('Lid open')",'native lid movement updates its live inspector');
+  await until("journal.world.instances[frame.copies[1]].keepsake.open===0",'second chest stays closed');
+  advance('finish');
+  await until("!journal.world.plan&&journal.world.instances[frame.copies[0]].uses===1",'one completed inspection records one use');
+  fixture('ancient_tome');await until("frame.item==='ancient_tome'",'real owned tome fixture arrives');
+  await js("journal.show('belongings','ancient_tome');button('Read').click()");
+  await until("journal.world.plan?.target==='ancient_tome'",'Read starts the real portable-book action');
+  advance('page');
+  await until("journal.body.querySelector('[data-keepsake-summary]').textContent.startsWith('Page 2 of 8')",'turning a leaf updates the saved page in the notebook');
+  await js("journal.command('cancel')");
+  await until("!journal.world.plan&&journal.world.objects.ancient_tome.keepsake.page===1&&journal.world.objects.ancient_tome.keepsake.studies===0",'cancelling preserves the turned page without a completed reading session');
+  fixture('rain_barrel');await until("frame.item==='rain_barrel'",'physical rain barrel fixture arrives');
+  await js("journal.show('belongings','rain_barrel',frame.copies[0])");
+  await until("journal.body.querySelector('[aria-label=\"Rainwater\"]').value===.2",'water meter reads the actual twelve litres');
+  child.stdin.write('{"type":"test_rain"}\n');
+  await until("journal.body.querySelector('[data-keepsake-summary]').textContent.startsWith('27.0 / 60 L')&&journal.body.querySelector('[aria-label=\"Rainwater\"]').value===.45",'rain updates measured water without reopening the inspector');
+  await js('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
+  fs.writeFileSync(path.join(out,'keepsake-inspector.png'),(await w.webContents.capturePage()).toPNG());
+  const result={result:'PASS',checks,commands:await js('window.commands')};fs.writeFileSync(path.join(out,'keepsake-ui.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));
+  child.stdin.end('{"type":"quit"}\n');
+  await new Promise((resolve,reject)=>{child.once('exit',code=>code===0?resolve():reject(Error('Native exit '+code+' '+stderr)));setTimeout(()=>reject(Error('Shutdown timed out')),5000).unref();});app.exit(0);
+ }catch(e){console.error(e);if(child)child.stdin.end('{"type":"quit"}\n');app.exit(1);}
+});

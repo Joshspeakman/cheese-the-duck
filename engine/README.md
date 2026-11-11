@@ -247,8 +247,8 @@ Resident speech uses the local Qwen3 model and llama.cpp runtime described above
 
 The next animation milestone is in development on this branch and has **not**
 replaced the installed game; the separate chat update is installed as 2.36.1. Its tracker is
-`overhaul/animation-milestone/requirements.json`: 190 of 542 object drawings have
-been reconstructed, with 352 remaining. The full 48 bespoke sequences per object
+`overhaul/animation-milestone/requirements.json`: 202 of 542 object drawings have
+been reconstructed, with 340 remaining. The full 48 bespoke sequences per object
 and all guest/age/context coverage remain unfinished.
 
 The lighting work adds 27 distinct constructions, from pleated lanterns and
@@ -271,6 +271,27 @@ Lighting validation uses `.venv/bin/python engine/check_lighting.py`,
 `engine/node_modules/.bin/electron engine/lighting-ui-check.cjs`. The UI check
 routes real notebook controls through the production command validator into an
 isolated game process, including duplicate selection, cancellation and storage.
+
+The keepsake work reconstructs twelve storage, reading and display objects. Chest
+lids, woven baskets, glass frames, folded cards, rolled maps and the eight-page
+**Elder Quacks** book have material surfaces and native contact poses. A page
+turn persists when it happens; cancelling afterward keeps the page without
+awarding a finished reading session. Bookmarks, careful sorts, collected
+rainwater and frozen water survive saves. Duplicate chests retain independent
+histories. The Belongings notebook shows live pages and rainwater levels.
+
+Natural conversation receives the actual open chapter or card words from the
+same definitions used to draw them. Cheese cannot read through a closed cover or
+inspect a barrel before arriving. These descriptions never grant treasure or
+invent a photograph's history. Nineteen shared reading/sorting cores are an
+initial repertoire; visitor participation, tool pickup/put-away, portable
+physical-copy handling and all per-object 48-sequence audits remain unfinished.
+
+Keepsake checks: `.venv/bin/python engine/check_keepsakes.py`,
+`engine/node_modules/.bin/electron engine/keepsakes-check.cjs` and
+`engine/node_modules/.bin/electron engine/keepsakes-ui-check.cjs`. They use
+isolated saves and exercise real notebook commands, contact timing, cancellation,
+copy identity, weather, save/load and conversation context.
 
 ## Validation
 

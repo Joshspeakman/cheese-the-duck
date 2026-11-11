@@ -1,0 +1,1100 @@
+{
+  "coin_inspection": {
+    "label": "Lift the brass latch, look through the chest, and lower the lid",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.13,
+        {
+          "anchor": "contact",
+          "contact": 1,
+          "reach": 0.7
+        }
+      ],
+      [
+        0.3,
+        {
+          "anchor": "lid",
+          "contact": 1,
+          "open": 1
+        }
+      ],
+      [
+        0.48,
+        {
+          "open": 1,
+          "y": 1.2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.66,
+        {
+          "open": 1,
+          "sort": 0.8,
+          "w": 0.6
+        }
+      ],
+      [
+        0.82,
+        {
+          "anchor": "lid",
+          "contact": 1,
+          "open": 0.5
+        }
+      ],
+      [
+        1,
+        {
+          "open": 0
+        }
+      ]
+    ]
+  },
+  "compartment_sort": {
+    "label": "Open the storage chest and straighten its little compartments",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "contact": 1,
+          "reach": 0.7
+        }
+      ],
+      [
+        0.3,
+        {
+          "anchor": "lid",
+          "contact": 1,
+          "open": 1
+        }
+      ],
+      [
+        0.45,
+        {
+          "anchor": "inside",
+          "contact": 1,
+          "open": 1,
+          "sort": 0.4
+        }
+      ],
+      [
+        0.6,
+        {
+          "anchor": "inside",
+          "contact": 1,
+          "open": 1,
+          "sort": 1,
+          "x": 0.6
+        }
+      ],
+      [
+        0.75,
+        {
+          "open": 1,
+          "eye": "^"
+        }
+      ],
+      [
+        0.9,
+        {
+          "anchor": "lid",
+          "contact": 1,
+          "open": 0.3
+        }
+      ],
+      [
+        1,
+        {
+          "open": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "tidy"
+      ]
+    ]
+  },
+  "ribbon_unfold": {
+    "label": "Undo the ribbon, examine the weekly keepsake, and tie it again",
+    "duration": 26,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "contact": 1,
+          "reach": 0.7,
+          "y": 0.5
+        }
+      ],
+      [
+        0.33,
+        {
+          "open": 1,
+          "anchor": "lid",
+          "contact": 1
+        }
+      ],
+      [
+        0.52,
+        {
+          "open": 1,
+          "y": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.7,
+        {
+          "open": 1,
+          "w": 0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        0.87,
+        {
+          "open": 0.2,
+          "anchor": "lid",
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "open": 0
+        }
+      ]
+    ]
+  },
+  "basket_sort": {
+    "label": "Lift the cloth, tuck in loose ends, and smooth the basket lining",
+    "duration": 24,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.3,
+        {
+          "anchor": "inside",
+          "contact": 1,
+          "sort": 1
+        }
+      ],
+      [
+        0.48,
+        {
+          "sort": 0.7,
+          "x": 0.7,
+          "contact": 1
+        }
+      ],
+      [
+        0.65,
+        {
+          "sort": 0.3,
+          "x": -0.5,
+          "contact": 1
+        }
+      ],
+      [
+        0.82,
+        {
+          "sort": 0,
+          "contact": 1,
+          "w": 0.6
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.84,
+        "tidy"
+      ]
+    ]
+  },
+  "barrel_measure": {
+    "label": "Lift the barrel cover and compare the water with the gauge",
+    "duration": 24,
+    "tool": "pointer",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "lid",
+          "contact": 1,
+          "open": 0.7
+        }
+      ],
+      [
+        0.4,
+        {
+          "anchor": "gauge",
+          "contact": 1,
+          "open": 0.7,
+          "y": 0.6
+        }
+      ],
+      [
+        0.6,
+        {
+          "anchor": "gauge",
+          "contact": 1,
+          "open": 0.7,
+          "y": -0.5,
+          "eye": "o"
+        }
+      ],
+      [
+        0.82,
+        {
+          "anchor": "lid",
+          "contact": 1,
+          "open": 0.3
+        }
+      ],
+      [
+        1,
+        {
+          "open": 0
+        }
+      ]
+    ]
+  },
+  "barrel_empty": {
+    "label": "Peer into the empty barrel and tap the dry gauge",
+    "duration": 20,
+    "tool": "pointer",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.22,
+        {
+          "anchor": "lid",
+          "contact": 1,
+          "open": 0.8
+        }
+      ],
+      [
+        0.4,
+        {
+          "open": 0.8,
+          "y": 1.2,
+          "mark": "?"
+        }
+      ],
+      [
+        0.6,
+        {
+          "anchor": "gauge",
+          "contact": 1,
+          "open": 0.8
+        }
+      ],
+      [
+        0.82,
+        {
+          "anchor": "lid",
+          "contact": 1,
+          "open": 0.2
+        }
+      ],
+      [
+        1,
+        {
+          "open": 0
+        }
+      ]
+    ]
+  },
+  "barrel_frost": {
+    "label": "Inspect the cold hoops and leave the frozen barrel undisturbed",
+    "duration": 22,
+    "tool": "pointer",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "gauge",
+          "reach": 0.5,
+          "y": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "anchor": "gauge",
+          "contact": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.6,
+        {
+          "w": 0.7,
+          "b": 0.5
+        }
+      ],
+      [
+        0.8,
+        {
+          "w": 0.4,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ]
+  },
+  "photo_remember": {
+    "label": "Study the photograph, spot a tiny detail, and smile",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "inside",
+          "y": 0.7,
+          "x": 0.6
+        }
+      ],
+      [
+        0.42,
+        {
+          "anchor": "inside",
+          "y": -0.5,
+          "eye": "o"
+        }
+      ],
+      [
+        0.62,
+        {
+          "w": 0.5,
+          "mark": "!"
+        }
+      ],
+      [
+        0.82,
+        {
+          "y": -0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.7,
+        "study"
+      ]
+    ]
+  },
+  "sunset_remember": {
+    "label": "Follow the reflected sunset down the water in the picture",
+    "duration": 30,
+    "tool": "pointer",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "glass",
+          "contact": 0.3,
+          "y": -0.8
+        }
+      ],
+      [
+        0.4,
+        {
+          "anchor": "inside",
+          "contact": 0.6,
+          "y": 0.2
+        }
+      ],
+      [
+        0.6,
+        {
+          "anchor": "contact",
+          "contact": 0.5,
+          "y": 1
+        }
+      ],
+      [
+        0.8,
+        {
+          "w": 0.3,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.75,
+        "study"
+      ]
+    ]
+  },
+  "glass_polish": {
+    "label": "Buff one corner of the glass and check it from the side",
+    "duration": 24,
+    "tool": "cloth",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "glass",
+          "contact": 1,
+          "reach": 0.6,
+          "wipe": 0.2
+        }
+      ],
+      [
+        0.4,
+        {
+          "anchor": "glass",
+          "contact": 1,
+          "wipe": 0.8,
+          "x": 0.7
+        }
+      ],
+      [
+        0.6,
+        {
+          "anchor": "glass",
+          "contact": 1,
+          "wipe": 0.3,
+          "x": -0.5
+        }
+      ],
+      [
+        0.8,
+        {
+          "y": -0.6,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "polish"
+      ]
+    ]
+  },
+  "frame_corner": {
+    "label": "Trace the carved corners and imagine the picture that belongs here",
+    "duration": 24,
+    "tool": "pointer",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "corner",
+          "contact": 0.7
+        }
+      ],
+      [
+        0.42,
+        {
+          "anchor": "glass",
+          "contact": 0.4,
+          "y": 0.5
+        }
+      ],
+      [
+        0.62,
+        {
+          "y": -0.7,
+          "mark": "?"
+        }
+      ],
+      [
+        0.82,
+        {
+          "w": 0.4,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.7,
+        "study"
+      ]
+    ]
+  },
+  "charcoal_study": {
+    "label": "Follow the charcoal clouds and trace the lightning without smudging it",
+    "duration": 28,
+    "tool": "pointer",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "corner",
+          "contact": 0.5,
+          "y": -0.5,
+          "open": 1,
+          "fold": 0
+        }
+      ],
+      [
+        0.4,
+        {
+          "anchor": "inside",
+          "contact": 0.7,
+          "x": 0.8,
+          "open": 1,
+          "fold": 0
+        }
+      ],
+      [
+        0.58,
+        {
+          "anchor": "contact",
+          "contact": 0.5,
+          "y": 1,
+          "open": 1,
+          "fold": 0
+        }
+      ],
+      [
+        0.78,
+        {
+          "mark": "!",
+          "w": 0.5,
+          "open": 1,
+          "fold": 0
+        }
+      ],
+      [
+        1,
+        {
+          "open": 1,
+          "fold": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.7,
+        "study"
+      ]
+    ]
+  },
+  "card_read": {
+    "label": "Open the handmade card, read both sides, and fold it carefully",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "anchor": "contact",
+          "contact": 1
+        }
+      ],
+      [
+        0.32,
+        {
+          "open": 1,
+          "anchor": "corner",
+          "contact": 1
+        }
+      ],
+      [
+        0.5,
+        {
+          "open": 1,
+          "x": -0.7,
+          "y": 0.5
+        }
+      ],
+      [
+        0.67,
+        {
+          "open": 1,
+          "x": 0.7,
+          "eye": "^",
+          "w": 0.4
+        }
+      ],
+      [
+        0.85,
+        {
+          "open": 0.4,
+          "anchor": "corner",
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "open": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.72,
+        "study"
+      ]
+    ]
+  },
+  "map_route": {
+    "label": "Unroll the map, follow the dotted route, and roll it back up",
+    "duration": 34,
+    "tool": "pointer",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "open": 1,
+          "anchor": "corner",
+          "contact": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "open": 1,
+          "anchor": "route",
+          "contact": 1,
+          "x": -0.6,
+          "turn": 0
+        }
+      ],
+      [
+        0.5,
+        {
+          "open": 1,
+          "anchor": "route",
+          "contact": 1,
+          "x": 0.6,
+          "y": 0.8,
+          "turn": 0.5
+        }
+      ],
+      [
+        0.65,
+        {
+          "open": 1,
+          "anchor": "route",
+          "contact": 0.7,
+          "mark": "?",
+          "turn": 1
+        }
+      ],
+      [
+        0.82,
+        {
+          "open": 0.6,
+          "anchor": "corner",
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "open": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.7,
+        "study"
+      ]
+    ]
+  },
+  "book_leaf": {
+    "label": "Open the old tome, read a passage, turn a leaf, and close the cover",
+    "duration": 36,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "anchor": "lid",
+          "contact": 1
+        }
+      ],
+      [
+        0.28,
+        {
+          "open": 1,
+          "anchor": "corner",
+          "contact": 1
+        }
+      ],
+      [
+        0.42,
+        {
+          "open": 1,
+          "y": 0.6,
+          "x": -0.5
+        }
+      ],
+      [
+        0.53,
+        {
+          "open": 1,
+          "anchor": "corner",
+          "contact": 1,
+          "turn": 0.05
+        }
+      ],
+      [
+        0.66,
+        {
+          "open": 1,
+          "anchor": "inside",
+          "contact": 1,
+          "turn": 0.98
+        }
+      ],
+      [
+        0.78,
+        {
+          "open": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.9,
+        {
+          "open": 0.4,
+          "anchor": "lid",
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "open": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.67,
+        "page"
+      ],
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "book_pictures": {
+    "label": "Open the tome to a drawing and follow its little duck with one wing",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.22,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "open": 1
+        }
+      ],
+      [
+        0.42,
+        {
+          "anchor": "inside",
+          "contact": 0.8,
+          "open": 1,
+          "y": 0.8,
+          "eye": "o"
+        }
+      ],
+      [
+        0.62,
+        {
+          "open": 1,
+          "w": 0.8,
+          "mark": "!"
+        }
+      ],
+      [
+        0.8,
+        {
+          "open": 0.5,
+          "anchor": "corner",
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "open": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.7,
+        "study"
+      ]
+    ]
+  },
+  "book_bookmark": {
+    "label": "Find the ribbon, read the marked passage, and leave it ready for next time",
+    "duration": 34,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "lid",
+          "contact": 1,
+          "open": 0.7
+        }
+      ],
+      [
+        0.35,
+        {
+          "anchor": "inside",
+          "contact": 1,
+          "open": 1
+        }
+      ],
+      [
+        0.56,
+        {
+          "open": 1,
+          "y": 0.8,
+          "eye": "-"
+        }
+      ],
+      [
+        0.75,
+        {
+          "open": 1,
+          "anchor": "inside",
+          "contact": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "open": 0.3,
+          "anchor": "lid",
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "open": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.77,
+        "bookmark"
+      ],
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "paper_shelter": {
+    "label": "Fold the paper away from the rain and keep it under one wing",
+    "duration": 20,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "w": 0.7,
+          "fold": 0.4
+        }
+      ],
+      [
+        0.45,
+        {
+          "anchor": "contact",
+          "contact": 1,
+          "open": 0,
+          "fold": 1,
+          "w": 1
+        }
+      ],
+      [
+        0.7,
+        {
+          "open": 0,
+          "fold": 1,
+          "w": 0.8,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {
+          "open": 0,
+          "fold": 1
+        }
+      ]
+    ]
+  },
+  "paper_wind": {
+    "label": "Pin down the loose corner, read between gusts, and fold it flat",
+    "duration": 26,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "open": 1,
+          "w": 0.7
+        }
+      ],
+      [
+        0.42,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "open": 1,
+          "y": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "anchor": "corner",
+          "contact": 1,
+          "open": 1,
+          "mark": "!"
+        }
+      ],
+      [
+        0.8,
+        {
+          "anchor": "contact",
+          "contact": 1,
+          "open": 0.3,
+          "fold": 0.7
+        }
+      ],
+      [
+        1,
+        {
+          "open": 0,
+          "fold": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "study"
+      ]
+    ]
+  }
+}

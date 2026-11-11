@@ -969,10 +969,10 @@
       "construction": "legacy-detail"
     },
     "rain_barrel": {
-      "width": 15.62,
-      "height": 9.09,
+      "width": 50.39,
+      "height": 41.37,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "keepsake-v1"
     },
     "wheelbarrow": {
       "width": 16.8,
@@ -1323,10 +1323,10 @@
       "construction": "legacy-detail"
     },
     "treasure_chest": {
-      "width": 21.63,
-      "height": 10.74,
+      "width": 52.05,
+      "height": 34.96,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "keepsake-v1"
     },
     "magic_carpet": {
       "width": 22.91,
@@ -1737,10 +1737,10 @@
       "construction": "legacy-detail"
     },
     "duck_photo": {
-      "width": 15.62,
-      "height": 9.09,
+      "width": 39.3,
+      "height": 33.28,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "keepsake-v1"
     },
     "void_crumb": {
       "width": 17.7,
@@ -1803,10 +1803,10 @@
       "construction": "instrument-v1"
     },
     "storage_basket": {
-      "width": 15.62,
-      "height": 9.09,
+      "width": 46.09,
+      "height": 33.75,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "keepsake-v1"
     },
     "torch": {
       "width": 50.8,
@@ -1977,10 +1977,10 @@
       "construction": "furniture-v1"
     },
     "storage_chest": {
-      "width": 18.32,
-      "height": 9.09,
+      "width": 50.19,
+      "height": 32.8,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "keepsake-v1"
     },
     "garden_plot": {
       "width": 90.11,
@@ -2427,10 +2427,10 @@
       "construction": "legacy-detail"
     },
     "storm_sketch": {
-      "width": 14.1,
-      "height": 8.19,
+      "width": 42.39,
+      "height": 30.14,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "keepsake-v1"
     },
     "paper_plane_design": {
       "width": 10.76,
@@ -2517,10 +2517,10 @@
       "construction": "legacy-detail"
     },
     "friendship_card": {
-      "width": 14.1,
-      "height": 8.19,
+      "width": 43.01,
+      "height": 30.14,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "keepsake-v1"
     },
     "heart_cookie": {
       "width": 16.71,
@@ -2535,10 +2535,10 @@
       "construction": "legacy-detail"
     },
     "sunset_photo": {
-      "width": 15.62,
-      "height": 9.09,
+      "width": 46.66,
+      "height": 31.34,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "keepsake-v1"
     },
     "parade_flag": {
       "width": 14.27,
@@ -2709,10 +2709,10 @@
       "construction": "legacy-detail"
     },
     "weekly_chest": {
-      "width": 18.32,
-      "height": 9.09,
+      "width": 49.61,
+      "height": 33.52,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "keepsake-v1"
     },
     "explorer_badge": {
       "width": 14.72,
@@ -2793,10 +2793,10 @@
       "construction": "legacy-detail"
     },
     "pirate_map": {
-      "width": 16.71,
-      "height": 7.74,
+      "width": 49.12,
+      "height": 30.7,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "keepsake-v1"
     },
     "treasure_key": {
       "width": 17.35,
@@ -3099,10 +3099,10 @@
       "construction": "furniture-v1"
     },
     "picture_frame": {
-      "width": 15.62,
-      "height": 9.09,
+      "width": 41.49,
+      "height": 34.57,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "keepsake-v1"
     },
     "clock": {
       "width": 39.28,
@@ -3243,10 +3243,10 @@
       "construction": "legacy-detail"
     },
     "ancient_tome": {
-      "width": 19.67,
-      "height": 9.09,
+      "width": 50,
+      "height": 35.21,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "keepsake-v1"
     },
     "heart_of_pond": {
       "width": 15.62,
