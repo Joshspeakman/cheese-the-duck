@@ -1,7 +1,8 @@
 import {SURFACE_ROUTINES,surfacePose,surfaceGeometry} from './surface-routines.mjs';
+import {CASTLE_SCORES,castlePose,castleGeometry} from './castle-care.mjs';
 import ROUTINES from './animation/carnival-routines.json' with {type:'json'};
 export {ROUTINES as CARNIVAL_ROUTINES};
-const PROGRAMS={...ROUTINES,...SURFACE_ROUTINES};
+const PROGRAMS={...ROUTINES,...SURFACE_ROUTINES,...CASTLE_SCORES};
 const N={x:0,y:0,b:0,w:0,l:0,r:0,eye:null,mark:''};
 const clamp=v=>Math.max(0,Math.min(1,Number.isFinite(v)?v:0));
 export const CARNIVAL_CHOICES=Object.fromEntries(['ferris_wheel','carousel','bounce_house','magic_carpet'].map(id=>[id,Object.entries(PROGRAMS).filter(([,s])=>s.item===id).map(([key,s])=>[key,s.label])]));
@@ -13,6 +14,7 @@ export function boarding(work,role='a'){
  return aboard.includes(name)?1:0;
 }
 export function carnivalPose(work,role='a',motion=true,watch=false){
+ if(CASTLE_SCORES[work?.id])return castlePose(work,role,motion,watch);
  if(SURFACE_ROUTINES[work?.id])return surfacePose(work,role,motion,watch);
  const spec=ROUTINES[work?.id];if(!spec)return null;
  const track=spec[role],p=clamp(work.ride_elapsed/spec.duration);let a=track[0],b=track.at(-1);
@@ -35,6 +37,7 @@ export function carnivalOccupants(scene){
  return records;
 }
 export function carnivalGeometry(home,member,sx,sy){
+ if(CASTLE_SCORES[member.work?.id])return castleGeometry(home,member,sx,sy);
  if(home.anchors.surface)return surfaceGeometry(home,member,sx,sy);
  const c=member.character,w=member.work,inside=member.watch?0:boarding(w,member.role),unit=sx*home.scale*home.detailScale,uh=unit*1.5,cw=c.scale*sx,ch=cw*1.5;
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*uh;

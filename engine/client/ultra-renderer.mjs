@@ -138,6 +138,7 @@ export class SceneCanvas {
         const carnivalSeats=(actor.carnivalRiders||[]).map(r=>carnivalGeometry(actor,r,this.sx,this.sy)).sort((a,b)=>a.character.y-b.character.y);
         for(const staged of carnivalSeats){
           drawCharacter(this.ctx,{...staged.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
+          if(staged.points)drawArchitectureTools(this.ctx,staged);
           if(staged.front)this.items.draw(this.ctx,staged.front,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
           if(staged.character.visitor||staged.character.story)seatedHits.push(staged.character);
         }

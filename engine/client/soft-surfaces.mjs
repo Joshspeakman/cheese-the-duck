@@ -46,7 +46,7 @@ export function softCarpet(c,p,v){
  return {entry:{x:87,y:94},contact:{x:28,y:74+dy(28)},surface:'carpet',slots,front:front.finish(),route:[{x:87,y:94},{x:87,y:82+dy(87)}],tassel:{x:12,y:65+dy(12)}};
 }
 export function softCastle(c,p,v){
- const s=v.surface,sink=(1-v.inflation)*34;
+ const s=v.surface,care=v.castle,sink=(1-v.inflation)*34;
  const seatX=[56+s.a.u*10,124+s.b.u*10],press=x=>s.a.press*3*Math.exp(-(((x-seatX[0])/22)**2))+s.b.press*3*Math.exp(-(((x-seatX[1])/22)**2));
  panel(c,12,119,155,18,'a');
  for(let n=0;n<9;n++)c.ellipse(20+n*17,127,10,9,'_',['q','g','w'][n%3],true);
@@ -67,22 +67,44 @@ export function softCastle(c,p,v){
  for(let n=0;n<9;n++)c.line(90,10+sink,18+n*18,36+sink,'/',['a','g','w'][n%3]);
  panel(c,28,37+sink,124,11,'a');c.put(45,41+sink,'THE WOBBLY DUCK / BOUNCE CLUB','k');
  stitch(c,18,35+sink,90,12+sink);stitch(c,90,12+sink,161,35+sink);
- const top=67+sink*.5,door=22+s.gate*36;
+ const gate=Math.max(s.gate,care.door),top=67+sink*.5,door=22+gate*36;
  // A wide roll-up mesh door reaches the spring floor; no wall is crossed.
  for(const side of [-1,1]){
   const x=90+side*door/2;c.line(x,top,x+side*3,119,'|','g');c.put(x-1,top+2,'[o]','a');
-  if(s.gate<.95)for(let y=top+4;y<114;y+=4)c.put(x-side*4,y,side<0?'/>':'<\\','s');
+  if(gate<.95)for(let y=top+4;y<114;y+=4)c.put(x-side*4,y,side<0?'/>':'<\\','s');
  }
  c.line(90-door/2,top,90+door/2,top,'=','a');
- if(s.gate<.1)for(let y=top+4;y<114;y+=4)for(let x=90-door/2+4;x<90+door/2-3;x+=5)c.put(x,y,'/\\','s');
+ if(gate<.1)for(let y=top+4;y<114;y+=4)for(let x=90-door/2+4;x<90+door/2-3;x+=5)c.put(x,y,'/\\','s');
  panel(c,62,129,56,8,'g');c.put(72,132,'SOFT LANDING','a');
- c.rows(['  ___________',' /__________/','[___________]'],73,139,'a');
+ c.rows(['  ___________',' /__________/','[___________]'],73,139-care.apron*7,'a');
+ for(let y=0;y<care.apron*6;y++)c.line(74,139-y,86,139-y,'=','g');
+ for(let i=0;i<Math.floor(care.prints*8);i++)c.put(67+(i*13)%42,134+(i%2)*2,'v:','s');
  c.line(169,119,175,124,'~','m');panel(c,169,127,10,12,'m');c.put(171,131,'[o]','k');c.put(170,135,'||||||','s');
- c.line(90,7+sink,90,1+sink,'|','m');polygon(c,[[91,1+sink],[104,3+sink],[91,5+sink]],'g');
+ c.line(90,7+sink,90,1+sink,'|','m');const flagY=1+sink+(1-care.flag)*(125-sink),flagX=91-(1-care.flag)*63;polygon(c,[[flagX,flagY],[flagX+13,flagY+2],[flagX,flagY+4]],'g');
+ c.line(90,8+sink,27,126,':','s');c.line(27,126,27,142,'|','a');c.put(24,140,'[=]','m');
+ for(const [side,tie]of [[-1,care.tie_left],[1,care.tie_right]]){
+  const x=side<0?17:162,end=side<0?4:167;c.line(x,113,end,131+(1-tie)*10,'~','a');c.line(end,131+(1-tie)*10,end,143,'~','a');c.put(end-2,143,'[+]','m');
+ }
+ c.line(118,top+3,118,140,'|','a');c.put(116,140,'(o)','a');
+ c.put(91,141,care.latch>.5?'[><]':'[> <]','m');
+ panel(c,145,131,22,15,'m');c.put(147,133,'AIR / PRESSURE','a');
+ c.put(148,141,care.motor==='off'?'[ ]':'[o]','a');c.put(155,141,care.vent>.5?'( / )':'(---)','q');
+ c.line(161,139,161+Math.cos(Math.PI-v.inflation*Math.PI)*4,139-Math.sin(Math.PI-v.inflation*Math.PI)*3,null,'a');c.put(157,144,'0  :  1','k');
+ c.put(171,131,care.powered?['|','/','-','\\'][Math.floor(care.fan*2)%4]:'o','a');
+ for(let i=0;i<Math.floor(care.dust*7);i++)c.put(170+i%6,134+Math.floor(i/6),':','s');
+ c.line(166,139,174,139+care.kink*4,'~','m');
+ if(care.hose>.1)for(let i=0;i<Math.ceil(care.hose*3);i++)c.ellipse(174,143-i,4,2,'~','a');
+ for(let i=0;i<Math.floor(care.mesh_wet*12);i++)c.put(84+(i*7)%16,86+i*2,"'",'w');
+ for(let i=0;i<Math.floor(care.roof_water*16);i++)c.put(52+i*5,34+sink,'~','w');
+ c.line(151,48+sink,143,140,':','w');c.put(140,140,'(=)','m');
+ if(care.spray>.04)for(let i=0;i<6;i++)c.put(137+i%3*4,126+i*3+care.stroke,"'",'w');
+ c.put(40,140,'[::]','s');
+ c.line(79,140-care.apron*7,79,141,':','a');c.put(77,141,'(=)','a');
  const slots=[{x:seatX[0],y:116+press(seatX[0])+s.a.v*3},{x:seatX[1],y:116+press(seatX[1])+s.b.v*3}];
  for(const [i,r]of [s.a,s.b].entries())impact(c,slots[i],r);
  const front=new ObjectCanvas(p.w,p.h);
  // Only the low apron is in front of players. Side/back mesh stays behind them.
  for(let x=25;x<=155;x++)front.put(x,120+press(x),'=','a');
- return {entry:{x:90,y:146},contact:{x:174,y:132},surface:'castle',slots,front:front.finish(),route:[{x:90,y:146},{x:90,y:136},{x:90,y:119}],blower:{x:174,y:132},mesh:{x:43,y:70+sink}};
+ const controls={switch:{x:149,y:142},valve:{x:156,y:142},gauge:{x:161,y:140},grill:{x:174,y:135},hose:{x:174,y:143},door:{x:118,y:141},door_frame:{x:103,y:141},buckle:{x:93,y:142},tie_left:{x:4,y:143},tie_right:{x:167,y:143},apron:{x:79,y:141},apron_edge:{x:65,y:140},flag_rope:{x:27,y:141},seam:{x:42,y:141},drain:{x:142,y:141}};
+ return {entry:{x:90,y:146},contact:{x:174,y:132},surface:'castle',slots,controls,front:front.finish(),route:[{x:90,y:146},{x:90,y:136},{x:90,y:119}],blower:{x:174,y:132},mesh:{x:43,y:70+sink}};
 }

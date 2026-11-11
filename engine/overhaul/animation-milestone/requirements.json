@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: rebuilt the bounce house and magic carpet at shared-play scale and added 28 initial two-person programs. Native inflation/entry, short age/species-scaled flights, local pressure, hovering/tilting, counted landings and separate exits now support actual independent regular/rare/story arrivals. Pauses, care, weather/need/damage landings, departure, storage/replacement and save/resume preserve physical ownership and prevent duplicate rewards or ghost weight. Chat describes actual body state, height and company. Notebook controls reach real game processes. This adds no completed per-object repertoire audits; all 542 verified-sequence counts remain zero. Full milestone and final install remain unfinished.",
+  "previous_goal_turn": "Progress: added saved physical bounce-house controls and material care. Twenty-four low-control scores and ten ordered procedures join the fourteen shared play tracks; procedures move both residents between real components and apply each effect at wing contact. Native pressure, motor, valve, mesh, buckle, ropes, apron, halyard, hose, dust, water and tracks persist per copy. Autonomous care responds to real condition and time while honoring a player shutdown. Interrupted work, paused/resumed procedures, actual pressure readings, one-use rewards, shared learning, grouped notebook choices and live fold/scroll behavior are exercised. This provides 48 selectable source routines but does not complete the personal/age/context repertoire audit. All 542 verified-sequence counts remain zero; the full milestone and final install remain unfinished.",
   "items": [
     {
       "id": "hat_red",
@@ -3949,7 +3949,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "shared_spring_floor_and_carpet_play",
+    "sourcePhase": "bounce_house_controls_and_material_care",
     "fullyOverhauled": false,
     "constructedObjects": 279,
     "remainingArtwork": 263,
@@ -4366,7 +4366,21 @@
       "engine/artifacts/animation-milestone/surface-play-js-suite.log",
       "engine/artifacts/animation-milestone/surface-play-living.log",
       "engine/artifacts/animation-milestone/surface-play-brains.log",
-      "engine/artifacts/animation-milestone/surface-play-smoke.log"
+      "engine/artifacts/animation-milestone/surface-play-smoke.log",
+      "engine/artifacts/animation-milestone/castle-care-native.json",
+      "engine/artifacts/animation-milestone/castle-care-render.json",
+      "engine/artifacts/animation-milestone/castle-care-ui.json",
+      "engine/artifacts/animation-milestone/castle-care-review.html",
+      "engine/artifacts/animation-milestone/castle-care-native.log",
+      "engine/artifacts/animation-milestone/castle-care-ui.log",
+      "engine/artifacts/animation-milestone/castle-care-render.log",
+      "engine/artifacts/animation-milestone/castle-care-js-suite.log",
+      "engine/artifacts/animation-milestone/castle-care-surface-native.log",
+      "engine/artifacts/animation-milestone/castle-care-surface-ui.log",
+      "engine/artifacts/animation-milestone/castle-care-mechanisms.log",
+      "engine/artifacts/animation-milestone/castle-care-living.log",
+      "engine/artifacts/animation-milestone/castle-care-brains.log",
+      "engine/artifacts/animation-milestone/castle-care-smoke.log"
     ],
     "next": "Continue the remaining 263 object constructions and individually authored contextual repertoires. All 542 per-object 48-sequence audits remain open; complete personal visitor acting, guest-to-guest sessions, egg observation, riding/entry and physical tool handling before final integration and installation.",
     "checks": {
@@ -4740,6 +4754,23 @@
         "flights": 63,
         "p95Ms": 17.80000001192093,
         "medianMs": 11.100000023841858
+      },
+      "castleCareNative": 805,
+      "castleCareJavaScript": 203,
+      "castleCareNotebook": 16,
+      "castleCareSurfaceRegression": 675,
+      "castleCareMechanismRegression": 211,
+      "castleCareLivingRegression": 694,
+      "castleCareBrainRegression": 44,
+      "castleCareSourceSmokeFrames": 103,
+      "castleCareRender": {
+        "frames": 4550,
+        "bodies": 8911,
+        "hits": 4435,
+        "contacts": 3908,
+        "medianMs": 15.699999988079071,
+        "p95Ms": 18.5,
+        "result": "PASS"
       }
     },
     "limitations": [
@@ -4762,7 +4793,7 @@
       "Twenty-one garden structures have 54 initial solo cores and 49 shared visitor roles. Eight new landmarks add carved/material detail, saved directional wind, real hour/season/sky-controlled sundial shadows, native flag hoists, low physical contacts and observation-based shared memories. These are initial core actions, not 48 bespoke sequences per item. Guest-to-guest sessions, egg observation, climbing, physical tool pickup/put-away and full personality/mood/season acting remain unfinished. No object sequence completion is claimed.",
       "Eight outdoor playthings have 42 initial solo cores and 25 complementary visitor roles. All eight hatched ages and all 48 visitor rigs fit, and all 48 native visitor identities plus Pip are tested through real arrival and shared learning. Egg observation, guest-to-guest games, physical pickup/put-away, full personal/mood/season repertoires and each object's 48 bespoke sequences remain unfinished. Boat and board practice stays on the bank; no voyage or surf travel is claimed.",
       "Glass curios have twelve added core tracks and eight observing companion roles, with exact-copy controls and saved snow/forecast state. These are initial contextual foundations, not 48 unique sequences per object; no per-object repertoire audit is complete.",
-      "Ten carnival/travel belongings have reconstructed art and saved mechanisms. Ferris/carousel rides have twelve initial scores; the rebuilt bounce house and magic carpet have 28 initial shared-play programs. Physical tool/control contacts, the other six props' full interactive mechanisms, personal visitor acting, guest-to-guest play, egg observation and all per-object 48-sequence audits remain unfinished. None of these initial cores promotes a verified-sequence count."
+      "Ten carnival/travel belongings have reconstructed art and saved mechanisms. Ferris/carousel rides have twelve initial scores; bounce house and carpet have 28 shared-play programs. Bounce-house controls add 24 low-control scores and ten ordered procedures, for 48 selectable source routines. The remaining six props need full mechanisms; personal visitor acting, guest-to-guest work, egg observation and every per-object 48-sequence audit remain open. No verified-sequence count is promoted from source routine counts."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -4917,7 +4948,27 @@
       "save": "paused native height and clock; actual landing history; absent guest weight removed",
       "conversation": "actual airborne/aboard/entry/exit/observer status, height, pressure, landing history and named company",
       "sequenceCoverageAdded": 0,
-      "remaining": "Full per-object 48-sequence repertoires, personal visitor acting, guest-to-guest sessions, egg observation, physical blower/door/fringe controls and context-specific material work"
+      "remaining": "Full per-object 48-sequence audits, personal visitor acting, guest-to-guest sessions, egg observation, carpet fringe controls and further context-specific material work. Bounce-house physical controls are recorded under castleWork."
+    },
+    "castleWork": {
+      "status": "implemented_and_verified_foundation",
+      "controlScores": 24,
+      "orderedProcedures": 10,
+      "bounceHouseSourceRoutines": 48,
+      "nativeStages": [
+        "queue",
+        "service",
+        "service_exit",
+        "done"
+      ],
+      "physicalState": "motor, valve, mesh, buckle, independent guy ropes, apron, halyard, blower hose, pressure, dust, roof/mesh water and real boarding tracks",
+      "contacts": "effects apply once at the actual low control; grounded residents travel between components; helper movement uses its own station route",
+      "autonomy": "condition-based chores; weather/night closing and morning reopening; severe weather prioritizes shelter; player-requested shutdown stays off",
+      "save": "native material and target values, consumed contacts, route time and measured pressure history persist; resumed Cheese is paused and old helpers are absent",
+      "rewards": "one original use and one eligible shared memory only after the whole procedure completes; interrupted partial effects persist without completion credit",
+      "notebook": "three foldable activity groups, live control summary, preserved fold/scroll state and production-validated exact-copy commands",
+      "sequenceCoverageAdded": 0,
+      "remaining": "individual guest acting, guest-to-guest care, egg observation, full seasonal/mood/company and age audits; source routine count alone is not repertoire completion"
     }
   }
 }

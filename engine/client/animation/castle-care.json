@@ -1,0 +1,5174 @@
+{
+  "castle_start": {
+    "item": "bounce_house",
+    "label": "Wake the blower with a firm little press",
+    "station": "switch",
+    "partner": "gauge",
+    "duration": 26,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "reach": 0.3
+        }
+      ],
+      [
+        0.29,
+        {
+          "contact": 1,
+          "reach": 0.7,
+          "b": 0.25
+        }
+      ],
+      [
+        0.38,
+        {
+          "contact": 1,
+          "reach": 1,
+          "y": 0.4
+        }
+      ],
+      [
+        0.51,
+        {
+          "contact": 0.3,
+          "eye": "O"
+        }
+      ],
+      [
+        0.72,
+        {
+          "x": -0.4,
+          "eye": "^",
+          "w": 0.6
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.38,
+        "motor",
+        "on"
+      ]
+    ],
+    "weatherSafe": false,
+    "note": "Press the low switch, release it and listen as the real fan starts."
+  },
+  "castle_stop": {
+    "item": "bounce_house",
+    "label": "Let the blower wind down",
+    "station": "switch",
+    "partner": "hose",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "x": 0.5,
+          "eye": "-"
+        }
+      ],
+      [
+        0.34,
+        {
+          "contact": 1,
+          "reach": 0.8
+        }
+      ],
+      [
+        0.48,
+        {
+          "contact": 1,
+          "y": 0.6,
+          "b": 0.4
+        }
+      ],
+      [
+        0.6,
+        {
+          "contact": 0,
+          "eye": "O"
+        }
+      ],
+      [
+        0.83,
+        {
+          "y": 0.5,
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.48,
+        "motor",
+        "off"
+      ]
+    ],
+    "weatherSafe": true,
+    "note": "Hold the stop pad then wait for the fan and fabric to settle."
+  },
+  "castle_vent_open": {
+    "item": "bounce_house",
+    "label": "Let air sigh through the low valve",
+    "station": "valve",
+    "partner": "seam",
+    "duration": 34,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.16,
+        {
+          "y": 0.6,
+          "b": 0.3
+        }
+      ],
+      [
+        0.3,
+        {
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.45,
+        {
+          "contact": 1,
+          "reach": 1,
+          "x": -0.4,
+          "y": 0.9
+        }
+      ],
+      [
+        0.64,
+        {
+          "contact": 1,
+          "reach": 0.1,
+          "eye": "O"
+        }
+      ],
+      [
+        0.84,
+        {
+          "x": -0.6,
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.44,
+        "vent",
+        0.5
+      ],
+      [
+        0.63,
+        "vent",
+        1
+      ]
+    ],
+    "weatherSafe": true,
+    "note": "Unseat the valve cap in two twists; the empty house loses pressure."
+  },
+  "castle_vent_close": {
+    "item": "bounce_house",
+    "label": "Seat the valve and check the seal",
+    "station": "valve",
+    "partner": "gauge",
+    "duration": 32,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "b": 0.3,
+          "y": 0.5
+        }
+      ],
+      [
+        0.29,
+        {
+          "contact": 1,
+          "reach": 0.8
+        }
+      ],
+      [
+        0.48,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "x": 0.5
+        }
+      ],
+      [
+        0.64,
+        {
+          "contact": 1,
+          "reach": 0.7,
+          "b": 0.6
+        }
+      ],
+      [
+        0.83,
+        {
+          "eye": "^",
+          "w": 0.3
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.48,
+        "vent",
+        0.35
+      ],
+      [
+        0.64,
+        "vent",
+        0
+      ]
+    ],
+    "weatherSafe": false,
+    "note": "Turn the real cap closed and press its lip; no repair material is invented."
+  },
+  "castle_door_open": {
+    "item": "bounce_house",
+    "label": "Roll the mesh door into its keeper",
+    "station": "door",
+    "partner": "door_frame",
+    "duration": 40,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.14,
+        {
+          "contact": 0.3,
+          "reach": 0.2
+        }
+      ],
+      [
+        0.26,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "y": 0.5
+        }
+      ],
+      [
+        0.42,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.5
+        }
+      ],
+      [
+        0.59,
+        {
+          "contact": 1,
+          "reach": 1,
+          "y": -0.5
+        }
+      ],
+      [
+        0.74,
+        {
+          "contact": 1,
+          "reach": 0.4,
+          "w": 0.6
+        }
+      ],
+      [
+        0.87,
+        {
+          "w": 0.8,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.26,
+        "latch",
+        0
+      ],
+      [
+        0.42,
+        "door",
+        0.35
+      ],
+      [
+        0.59,
+        "door",
+        0.7
+      ],
+      [
+        0.74,
+        "door",
+        1
+      ]
+    ],
+    "weatherSafe": false,
+    "note": "Release the buckle, pull the low cord and roll the actual mesh upward.",
+    "stations": [
+      [
+        0,
+        "buckle"
+      ],
+      [
+        0.29,
+        "door"
+      ]
+    ]
+  },
+  "castle_door_close": {
+    "item": "bounce_house",
+    "label": "Lower the mesh without trapping a wing",
+    "station": "door",
+    "partner": "door_frame",
+    "duration": 38,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.13,
+        {
+          "w": 0.7,
+          "eye": "O"
+        }
+      ],
+      [
+        0.28,
+        {
+          "contact": 1,
+          "reach": 0.4
+        }
+      ],
+      [
+        0.44,
+        {
+          "contact": 1,
+          "reach": 1,
+          "y": 0.4
+        }
+      ],
+      [
+        0.61,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "b": 0.4
+        }
+      ],
+      [
+        0.77,
+        {
+          "contact": 1,
+          "reach": 0.6,
+          "eye": "-"
+        }
+      ],
+      [
+        0.89,
+        {
+          "x": -0.5,
+          "w": 0.3
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.28,
+        "latch",
+        0
+      ],
+      [
+        0.44,
+        "door",
+        0.65
+      ],
+      [
+        0.61,
+        "door",
+        0.25
+      ],
+      [
+        0.77,
+        "door",
+        0
+      ]
+    ],
+    "weatherSafe": true,
+    "note": "Ease the mesh down through three real positions while the helper stays outside.",
+    "stations": [
+      [
+        0,
+        "buckle"
+      ],
+      [
+        0.3,
+        "door"
+      ]
+    ]
+  },
+  "castle_unbuckle": {
+    "item": "bounce_house",
+    "label": "Unclip the little door buckle",
+    "station": "buckle",
+    "partner": "door",
+    "duration": 22,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "y": 0.6,
+          "b": 0.4
+        }
+      ],
+      [
+        0.32,
+        {
+          "contact": 1,
+          "reach": 1,
+          "eye": "-"
+        }
+      ],
+      [
+        0.52,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.6
+        }
+      ],
+      [
+        0.72,
+        {
+          "contact": 0.2,
+          "eye": "O",
+          "mark": "!"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.51,
+        "latch",
+        0
+      ]
+    ],
+    "weatherSafe": true,
+    "note": "Squeeze and pull the clip; its two halves visibly separate."
+  },
+  "castle_buckle": {
+    "item": "bounce_house",
+    "label": "Fasten the mesh for the night",
+    "station": "buckle",
+    "partner": "door_frame",
+    "duration": 28,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.14,
+        {
+          "y": 0.4,
+          "b": 0.3
+        }
+      ],
+      [
+        0.3,
+        {
+          "contact": 1,
+          "reach": 0.2
+        }
+      ],
+      [
+        0.47,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "x": 0.3
+        }
+      ],
+      [
+        0.62,
+        {
+          "contact": 1,
+          "reach": 1,
+          "y": 0.6
+        }
+      ],
+      [
+        0.8,
+        {
+          "contact": 0.3,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.3,
+        "door",
+        0
+      ],
+      [
+        0.61,
+        "latch",
+        1
+      ]
+    ],
+    "weatherSafe": true,
+    "note": "Lay the door flat, bring the clip halves together and snap them shut.",
+    "stations": [
+      [
+        0,
+        "door"
+      ],
+      [
+        0.38,
+        "buckle"
+      ]
+    ]
+  },
+  "castle_tie_left": {
+    "item": "bounce_house",
+    "label": "Draw the left guy rope snug",
+    "station": "tie_left",
+    "partner": "seam",
+    "duration": 36,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "contact": 0.2,
+          "b": 0.5,
+          "y": 0.7
+        }
+      ],
+      [
+        0.31,
+        {
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.49,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.7,
+          "b": 0.3
+        }
+      ],
+      [
+        0.67,
+        {
+          "contact": 1,
+          "reach": 0.6,
+          "y": 0.3
+        }
+      ],
+      [
+        0.84,
+        {
+          "eye": "^",
+          "w": 0.3
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.49,
+        "tie_left",
+        0.65
+      ],
+      [
+        0.67,
+        "tie_left",
+        1
+      ]
+    ],
+    "weatherSafe": false,
+    "note": "Pull the left rope toward its peg and tuck the working end into its real knot."
+  },
+  "castle_tie_right": {
+    "item": "bounce_house",
+    "label": "Set the right guy rope against a tug",
+    "station": "tie_right",
+    "partner": "hose",
+    "duration": 39,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.13,
+        {
+          "b": 0.4,
+          "y": 0.6
+        }
+      ],
+      [
+        0.28,
+        {
+          "contact": 1,
+          "reach": 0.6
+        }
+      ],
+      [
+        0.45,
+        {
+          "contact": 1,
+          "reach": 0.15,
+          "x": -0.7,
+          "y": 0.2
+        }
+      ],
+      [
+        0.63,
+        {
+          "contact": 1,
+          "reach": 1,
+          "b": 0.5
+        }
+      ],
+      [
+        0.79,
+        {
+          "contact": 1,
+          "reach": 0.35,
+          "eye": "-"
+        }
+      ],
+      [
+        0.9,
+        {
+          "w": 0.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.45,
+        "tie_right",
+        0.6
+      ],
+      [
+        0.79,
+        "tie_right",
+        1
+      ]
+    ],
+    "weatherSafe": false,
+    "note": "Take slack from the right rope, seat the knot, then test it with a second tug."
+  },
+  "castle_slack_left": {
+    "item": "bounce_house",
+    "label": "Unpick the left rope’s loop",
+    "station": "tie_left",
+    "partner": "seam",
+    "duration": 31,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "y": 0.7,
+          "b": 0.4
+        }
+      ],
+      [
+        0.33,
+        {
+          "contact": 1,
+          "reach": 0.3
+        }
+      ],
+      [
+        0.51,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "x": 0.4
+        }
+      ],
+      [
+        0.7,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "y": 1
+        }
+      ],
+      [
+        0.86,
+        {
+          "w": 0.3,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.51,
+        "tie_left",
+        0.5
+      ],
+      [
+        0.7,
+        "tie_left",
+        0.15
+      ]
+    ],
+    "weatherSafe": true,
+    "note": "Loosen the loop at the left peg; the rope develops a visible sag."
+  },
+  "castle_slack_right": {
+    "item": "bounce_house",
+    "label": "Feed slack into the right guy rope",
+    "station": "tie_right",
+    "partner": "hose",
+    "duration": 33,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.16,
+        {
+          "b": 0.5,
+          "y": 0.8
+        }
+      ],
+      [
+        0.3,
+        {
+          "contact": 1,
+          "reach": 0.9
+        }
+      ],
+      [
+        0.48,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "x": -0.3
+        }
+      ],
+      [
+        0.67,
+        {
+          "contact": 1,
+          "reach": 0.75,
+          "y": 0.9
+        }
+      ],
+      [
+        0.84,
+        {
+          "w": 0.4,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.48,
+        "tie_right",
+        0.45
+      ],
+      [
+        0.67,
+        "tie_right",
+        0.15
+      ]
+    ],
+    "weatherSafe": true,
+    "note": "Pull the right knot free and feed the loose end back through the loop."
+  },
+  "castle_apron_flat": {
+    "item": "bounce_house",
+    "label": "Smooth the curled landing apron",
+    "station": "apron",
+    "partner": "apron_edge",
+    "duration": 40,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "b": 0.7,
+          "y": 1
+        }
+      ],
+      [
+        0.28,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "x": -0.3
+        }
+      ],
+      [
+        0.44,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "y": 0.6
+        }
+      ],
+      [
+        0.61,
+        {
+          "contact": 1,
+          "reach": 1,
+          "x": 0.5
+        }
+      ],
+      [
+        0.77,
+        {
+          "contact": 1,
+          "reach": 0.4,
+          "b": 0.8
+        }
+      ],
+      [
+        0.9,
+        {
+          "w": 0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.44,
+        "apron",
+        0.65
+      ],
+      [
+        0.61,
+        "apron",
+        0.3
+      ],
+      [
+        0.77,
+        "apron",
+        0
+      ]
+    ],
+    "weatherSafe": false,
+    "note": "Work from the rolled edge toward the body, flattening three sections of real fabric."
+  },
+  "castle_apron_fold": {
+    "item": "bounce_house",
+    "label": "Fold the landing apron out of the rain",
+    "station": "apron",
+    "partner": "apron_edge",
+    "duration": 42,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "b": 0.8,
+          "y": 1.1
+        }
+      ],
+      [
+        0.3,
+        {
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.46,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "y": 0.3
+        }
+      ],
+      [
+        0.63,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "b": 0.6
+        }
+      ],
+      [
+        0.8,
+        {
+          "contact": 1,
+          "reach": 0.3,
+          "y": 0.9
+        }
+      ],
+      [
+        0.92,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.46,
+        "apron",
+        0.35
+      ],
+      [
+        0.63,
+        "apron",
+        0.7
+      ],
+      [
+        0.8,
+        "apron",
+        1
+      ]
+    ],
+    "weatherSafe": true,
+    "note": "Lift the low hem, roll it in stages and pat the final fold flat."
+  },
+  "castle_flag_up": {
+    "item": "bounce_house",
+    "label": "Hoist the little roof pennant",
+    "station": "flag_rope",
+    "partner": "seam",
+    "duration": 38,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.16,
+        {
+          "contact": 1,
+          "reach": 0.9
+        }
+      ],
+      [
+        0.32,
+        {
+          "contact": 1,
+          "reach": 0.15,
+          "y": 0.7
+        }
+      ],
+      [
+        0.48,
+        {
+          "contact": 1,
+          "reach": 0.95,
+          "y": -0.4
+        }
+      ],
+      [
+        0.64,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "b": 0.4
+        }
+      ],
+      [
+        0.8,
+        {
+          "contact": 1,
+          "reach": 0.6,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.32,
+        "flag",
+        0.35
+      ],
+      [
+        0.64,
+        "flag",
+        0.7
+      ],
+      [
+        0.8,
+        "flag",
+        1
+      ]
+    ],
+    "weatherSafe": false,
+    "note": "Pull the low halyard twice and secure it at the cleat; the roof flag really rises."
+  },
+  "castle_flag_down": {
+    "item": "bounce_house",
+    "label": "Lower the pennant before the gusts",
+    "station": "flag_rope",
+    "partner": "seam",
+    "duration": 40,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.14,
+        {
+          "contact": 0.5,
+          "reach": 0.3
+        }
+      ],
+      [
+        0.3,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "eye": "O"
+        }
+      ],
+      [
+        0.48,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.4
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "y": 0.4
+        }
+      ],
+      [
+        0.82,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "b": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.48,
+        "flag",
+        0.7
+      ],
+      [
+        0.65,
+        "flag",
+        0.35
+      ],
+      [
+        0.82,
+        "flag",
+        0
+      ]
+    ],
+    "weatherSafe": true,
+    "note": "Feed the halyard through the low cleat in measured lengths, lowering the actual pennant."
+  },
+  "castle_hose_straight": {
+    "item": "bounce_house",
+    "label": "Uncurl the blower hose",
+    "station": "hose",
+    "partner": "gauge",
+    "duration": 44,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.14,
+        {
+          "b": 0.7,
+          "y": 1
+        }
+      ],
+      [
+        0.29,
+        {
+          "contact": 1,
+          "reach": 0.25
+        }
+      ],
+      [
+        0.45,
+        {
+          "contact": 1,
+          "reach": 1,
+          "x": 0.5
+        }
+      ],
+      [
+        0.61,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "b": 0.5
+        }
+      ],
+      [
+        0.78,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "y": 0.8
+        }
+      ],
+      [
+        0.91,
+        {
+          "eye": "^",
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.29,
+        "hose",
+        0.6
+      ],
+      [
+        0.45,
+        "hose",
+        0.25
+      ],
+      [
+        0.61,
+        "hose",
+        0
+      ],
+      [
+        0.78,
+        "kink",
+        0
+      ]
+    ],
+    "weatherSafe": false,
+    "note": "Open the stored coil, seat the hose and straighten its visible kink."
+  },
+  "castle_hose_stow": {
+    "item": "bounce_house",
+    "label": "Coil the hose beside the silent blower",
+    "station": "hose",
+    "partner": "switch",
+    "duration": 46,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.13,
+        {
+          "eye": "-",
+          "w": 0.3
+        }
+      ],
+      [
+        0.27,
+        {
+          "contact": 1,
+          "reach": 1,
+          "b": 0.5
+        }
+      ],
+      [
+        0.43,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.5
+        }
+      ],
+      [
+        0.59,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "y": 1
+        }
+      ],
+      [
+        0.75,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "b": 0.8
+        }
+      ],
+      [
+        0.9,
+        {
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.27,
+        "motor",
+        "off"
+      ],
+      [
+        0.43,
+        "hose",
+        0.35
+      ],
+      [
+        0.59,
+        "hose",
+        0.7
+      ],
+      [
+        0.75,
+        "hose",
+        1
+      ]
+    ],
+    "weatherSafe": true,
+    "note": "Disconnect airflow before winding the visible hose into a compact coil.",
+    "stations": [
+      [
+        0,
+        "switch"
+      ],
+      [
+        0.3,
+        "hose"
+      ]
+    ]
+  },
+  "castle_grill_clean": {
+    "item": "bounce_house",
+    "label": "Brush fluff from the blower grille",
+    "station": "grill",
+    "partner": "gauge",
+    "duration": 36,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.16,
+        {
+          "b": 0.5,
+          "y": 0.5
+        }
+      ],
+      [
+        0.3,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.4
+        }
+      ],
+      [
+        0.45,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "x": 0.4
+        }
+      ],
+      [
+        0.6,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "y": 0.8
+        }
+      ],
+      [
+        0.76,
+        {
+          "contact": 1,
+          "reach": 0.85,
+          "x": 0.5
+        }
+      ],
+      [
+        0.89,
+        {
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.3,
+        "motor",
+        "off"
+      ],
+      [
+        0.45,
+        "dust_fraction",
+        0.75
+      ],
+      [
+        0.6,
+        "dust_fraction",
+        0.4
+      ],
+      [
+        0.76,
+        "dust_fraction",
+        0.05
+      ]
+    ],
+    "weatherSafe": false,
+    "note": "Turn the fan off and sweep existing grille dust with a wing; no brush materializes.",
+    "stations": [
+      [
+        0,
+        "switch"
+      ],
+      [
+        0.33,
+        "grill"
+      ]
+    ]
+  },
+  "castle_mesh_shake": {
+    "item": "bounce_house",
+    "label": "Shake dew from the mesh hem",
+    "station": "door",
+    "partner": "door_frame",
+    "duration": 34,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "b": 0.5,
+          "y": 0.8
+        }
+      ],
+      [
+        0.32,
+        {
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.46,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "y": -0.3
+        }
+      ],
+      [
+        0.59,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "y": 0.7
+        }
+      ],
+      [
+        0.73,
+        {
+          "contact": 1,
+          "reach": 0.15,
+          "y": -0.4
+        }
+      ],
+      [
+        0.86,
+        {
+          "w": 0.4,
+          "eye": "O"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.32,
+        "latch",
+        0
+      ],
+      [
+        0.46,
+        "mesh_fraction",
+        0.8
+      ],
+      [
+        0.59,
+        "mesh_fraction",
+        0.5
+      ],
+      [
+        0.73,
+        "mesh_fraction",
+        0.25
+      ]
+    ],
+    "weatherSafe": false,
+    "note": "Lift and shake the actual wet mesh hem; droplets come only from stored moisture.",
+    "stations": [
+      [
+        0,
+        "buckle"
+      ],
+      [
+        0.35,
+        "door"
+      ]
+    ]
+  },
+  "castle_roof_drain": {
+    "item": "bounce_house",
+    "label": "Ease collected water down the roof seam",
+    "station": "drain",
+    "partner": "seam",
+    "duration": 42,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.14,
+        {
+          "eye": "O",
+          "y": 0.5
+        }
+      ],
+      [
+        0.29,
+        {
+          "contact": 1,
+          "reach": 0.8
+        }
+      ],
+      [
+        0.45,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.5
+        }
+      ],
+      [
+        0.61,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "y": 0.6
+        }
+      ],
+      [
+        0.77,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "b": 0.4
+        }
+      ],
+      [
+        0.9,
+        {
+          "w": 0.3,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.45,
+        "roof_fraction",
+        0.7
+      ],
+      [
+        0.61,
+        "roof_fraction",
+        0.35
+      ],
+      [
+        0.77,
+        "roof_fraction",
+        0.05
+      ]
+    ],
+    "weatherSafe": true,
+    "note": "Pull the low drain cord so real collected water runs down the outside seam."
+  },
+  "castle_apron_clean": {
+    "item": "bounce_house",
+    "label": "Sweep muddy prints off the landing flap",
+    "station": "apron",
+    "partner": "apron_edge",
+    "duration": 38,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.14,
+        {
+          "b": 0.8,
+          "y": 1
+        }
+      ],
+      [
+        0.28,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "x": -0.6
+        }
+      ],
+      [
+        0.44,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": 0.5
+        }
+      ],
+      [
+        0.6,
+        {
+          "contact": 1,
+          "reach": 1,
+          "y": 0.6
+        }
+      ],
+      [
+        0.77,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "b": 0.6
+        }
+      ],
+      [
+        0.9,
+        {
+          "w": 0.4,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.28,
+        "apron",
+        0
+      ],
+      [
+        0.44,
+        "prints_fraction",
+        0.7
+      ],
+      [
+        0.6,
+        "prints_fraction",
+        0.3
+      ],
+      [
+        0.77,
+        "prints_fraction",
+        0
+      ]
+    ],
+    "weatherSafe": false,
+    "note": "Flatten the flap and sweep its existing footmarks away with alternating wing strokes."
+  },
+  "castle_seam_check": {
+    "item": "bounce_house",
+    "label": "Pinch-test the lower stitched seam",
+    "station": "seam",
+    "partner": "valve",
+    "duration": 32,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "eye": "-",
+          "b": 0.4
+        }
+      ],
+      [
+        0.32,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "y": 0.6
+        }
+      ],
+      [
+        0.48,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "x": -0.4
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "y": 0.9
+        }
+      ],
+      [
+        0.82,
+        {
+          "eye": "O",
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.48,
+        "inspection",
+        "seam"
+      ]
+    ],
+    "weatherSafe": false,
+    "note": "Pinch and release the actual lower seam; record an inspection without repairing it."
+  },
+  "castle_gauge_check": {
+    "item": "bounce_house",
+    "label": "Lean in and read the pressure dial",
+    "station": "gauge",
+    "partner": "valve",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "x": 0.5,
+          "y": 0.6,
+          "eye": "-"
+        }
+      ],
+      [
+        0.34,
+        {
+          "contact": 1,
+          "reach": 0.5,
+          "b": 0.4
+        }
+      ],
+      [
+        0.52,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": 0.8,
+          "eye": "O"
+        }
+      ],
+      [
+        0.7,
+        {
+          "w": 0.6,
+          "mark": "?"
+        }
+      ],
+      [
+        0.85,
+        {
+          "x": -0.5,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.52,
+        "inspection",
+        "pressure"
+      ]
+    ],
+    "weatherSafe": false,
+    "note": "Point at the true inflation needle and share its current reading; the dial is never faked."
+  },
+  "castle_open_day": {
+    "item": "bounce_house",
+    "label": "Open the little castle",
+    "station": "hose",
+    "partner": "gauge",
+    "duration": 176,
+    "entryDuration": 6.16,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.035,
+        {
+          "b": 0.7,
+          "y": 1
+        }
+      ],
+      [
+        0.0725,
+        {
+          "contact": 1,
+          "reach": 0.25
+        }
+      ],
+      [
+        0.1125,
+        {
+          "contact": 1,
+          "reach": 1,
+          "x": 0.5
+        }
+      ],
+      [
+        0.1525,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "b": 0.5
+        }
+      ],
+      [
+        0.195,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "y": 0.8
+        }
+      ],
+      [
+        0.2275,
+        {
+          "eye": "^",
+          "w": 0.4
+        }
+      ],
+      [
+        0.25,
+        {}
+      ],
+      [
+        0.26704545454545453,
+        {}
+      ],
+      [
+        0.2943181818181818,
+        {
+          "b": 0.3,
+          "y": 0.5
+        }
+      ],
+      [
+        0.31977272727272726,
+        {
+          "contact": 1,
+          "reach": 0.8
+        }
+      ],
+      [
+        0.3543181818181818,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "x": 0.5
+        }
+      ],
+      [
+        0.3834090909090909,
+        {
+          "contact": 1,
+          "reach": 0.7,
+          "b": 0.6
+        }
+      ],
+      [
+        0.41795454545454547,
+        {
+          "eye": "^",
+          "w": 0.3
+        }
+      ],
+      [
+        0.44886363636363635,
+        {}
+      ],
+      [
+        0.4659090909090909,
+        {}
+      ],
+      [
+        0.5,
+        {
+          "b": 0.7,
+          "y": 1
+        }
+      ],
+      [
+        0.5295454545454545,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "x": -0.3
+        }
+      ],
+      [
+        0.5659090909090909,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "y": 0.6
+        }
+      ],
+      [
+        0.6045454545454546,
+        {
+          "contact": 1,
+          "reach": 1,
+          "x": 0.5
+        }
+      ],
+      [
+        0.6409090909090909,
+        {
+          "contact": 1,
+          "reach": 0.4,
+          "b": 0.8
+        }
+      ],
+      [
+        0.6704545454545454,
+        {
+          "w": 0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        0.6931818181818182,
+        {}
+      ],
+      [
+        0.7102272727272727,
+        {}
+      ],
+      [
+        0.7289772727272728,
+        {
+          "y": 0.6,
+          "b": 0.4
+        }
+      ],
+      [
+        0.7502272727272726,
+        {
+          "contact": 1,
+          "reach": 1,
+          "eye": "-"
+        }
+      ],
+      [
+        0.7752272727272728,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.6
+        }
+      ],
+      [
+        0.8002272727272728,
+        {
+          "contact": 0.2,
+          "eye": "O",
+          "mark": "!"
+        }
+      ],
+      [
+        0.8352272727272727,
+        {}
+      ],
+      [
+        0.8522727272727273,
+        {}
+      ],
+      [
+        0.8744318181818183,
+        {
+          "reach": 0.3
+        }
+      ],
+      [
+        0.8951136363636363,
+        {
+          "contact": 1,
+          "reach": 0.7,
+          "b": 0.25
+        }
+      ],
+      [
+        0.9084090909090908,
+        {
+          "contact": 1,
+          "reach": 1,
+          "y": 0.4
+        }
+      ],
+      [
+        0.9276136363636364,
+        {
+          "contact": 0.3,
+          "eye": "O"
+        }
+      ],
+      [
+        0.9586363636363636,
+        {
+          "x": -0.4,
+          "eye": "^",
+          "w": 0.6
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.0725,
+        "hose",
+        0.6
+      ],
+      [
+        0.1125,
+        "hose",
+        0.25
+      ],
+      [
+        0.1525,
+        "hose",
+        0
+      ],
+      [
+        0.195,
+        "kink",
+        0
+      ],
+      [
+        0.3543181818181818,
+        "vent",
+        0.35
+      ],
+      [
+        0.3834090909090909,
+        "vent",
+        0
+      ],
+      [
+        0.5659090909090909,
+        "apron",
+        0.65
+      ],
+      [
+        0.6045454545454546,
+        "apron",
+        0.3
+      ],
+      [
+        0.6409090909090909,
+        "apron",
+        0
+      ],
+      [
+        0.7739772727272727,
+        "latch",
+        0
+      ],
+      [
+        0.9084090909090908,
+        "motor",
+        "on"
+      ]
+    ],
+    "stations": [
+      [
+        0,
+        "hose"
+      ],
+      [
+        0.26704545454545453,
+        "valve"
+      ],
+      [
+        0.4659090909090909,
+        "apron"
+      ],
+      [
+        0.7102272727272727,
+        "buckle"
+      ],
+      [
+        0.8522727272727273,
+        "switch"
+      ]
+    ],
+    "partnerStations": [
+      [
+        0,
+        "gauge"
+      ],
+      [
+        0.26704545454545453,
+        "gauge"
+      ],
+      [
+        0.4659090909090909,
+        "apron_edge"
+      ],
+      [
+        0.7102272727272727,
+        "door"
+      ],
+      [
+        0.8522727272727273,
+        "gauge"
+      ]
+    ],
+    "segments": [
+      [
+        0,
+        0.25,
+        "castle_hose_straight",
+        "Uncurl the blower hose"
+      ],
+      [
+        0.26704545454545453,
+        0.44886363636363635,
+        "castle_vent_close",
+        "Seat the valve and check the seal"
+      ],
+      [
+        0.4659090909090909,
+        0.6931818181818182,
+        "castle_apron_flat",
+        "Smooth the curled landing apron"
+      ],
+      [
+        0.7102272727272727,
+        0.8352272727272727,
+        "castle_unbuckle",
+        "Unclip the little door buckle"
+      ],
+      [
+        0.8522727272727273,
+        1,
+        "castle_start",
+        "Wake the blower with a firm little press"
+      ]
+    ],
+    "steps": [
+      "castle_hose_straight",
+      "castle_vent_close",
+      "castle_apron_flat",
+      "castle_unbuckle",
+      "castle_start"
+    ],
+    "weatherSafe": false,
+    "note": "Uncoil the air supply, seal the valve, flatten the landing, release the mesh and finally start the blower."
+  },
+  "castle_close_night": {
+    "item": "bounce_house",
+    "label": "Last bounce, lights out",
+    "station": "switch",
+    "partner": "hose",
+    "duration": 104,
+    "entryDuration": 4.2,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.05192307692307692,
+        {
+          "x": 0.5,
+          "eye": "-"
+        }
+      ],
+      [
+        0.09807692307692309,
+        {
+          "contact": 1,
+          "reach": 0.8
+        }
+      ],
+      [
+        0.13846153846153844,
+        {
+          "contact": 1,
+          "y": 0.6,
+          "b": 0.4
+        }
+      ],
+      [
+        0.17307692307692307,
+        {
+          "contact": 0,
+          "eye": "O"
+        }
+      ],
+      [
+        0.2394230769230769,
+        {
+          "y": 0.5,
+          "w": 0.2
+        }
+      ],
+      [
+        0.28846153846153844,
+        {}
+      ],
+      [
+        0.3173076923076923,
+        {}
+      ],
+      [
+        0.35500000000000004,
+        {
+          "y": 0.4,
+          "b": 0.3
+        }
+      ],
+      [
+        0.39807692307692305,
+        {
+          "contact": 1,
+          "reach": 0.2
+        }
+      ],
+      [
+        0.44384615384615383,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "x": 0.3
+        }
+      ],
+      [
+        0.48423076923076924,
+        {
+          "contact": 1,
+          "reach": 1,
+          "y": 0.6
+        }
+      ],
+      [
+        0.5326923076923078,
+        {
+          "contact": 0.3,
+          "eye": "^"
+        }
+      ],
+      [
+        0.5865384615384616,
+        {}
+      ],
+      [
+        0.6153846153846154,
+        {}
+      ],
+      [
+        0.6692307692307692,
+        {
+          "contact": 0.5,
+          "reach": 0.3
+        }
+      ],
+      [
+        0.7307692307692307,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "eye": "O"
+        }
+      ],
+      [
+        0.8,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.4
+        }
+      ],
+      [
+        0.8653846153846154,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "y": 0.4
+        }
+      ],
+      [
+        0.9307692307692308,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "b": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.13846153846153844,
+        "motor",
+        "off"
+      ],
+      [
+        0.39807692307692305,
+        "door",
+        0
+      ],
+      [
+        0.4815384615384615,
+        "latch",
+        1
+      ],
+      [
+        0.8,
+        "flag",
+        0.7
+      ],
+      [
+        0.8653846153846154,
+        "flag",
+        0.35
+      ],
+      [
+        0.9307692307692308,
+        "flag",
+        0
+      ]
+    ],
+    "stations": [
+      [
+        0,
+        "switch"
+      ],
+      [
+        0.3173076923076923,
+        "door"
+      ],
+      [
+        0.4196153846153846,
+        "buckle"
+      ],
+      [
+        0.6153846153846154,
+        "flag_rope"
+      ]
+    ],
+    "partnerStations": [
+      [
+        0,
+        "hose"
+      ],
+      [
+        0.3173076923076923,
+        "door_frame"
+      ],
+      [
+        0.6153846153846154,
+        "seam"
+      ]
+    ],
+    "segments": [
+      [
+        0,
+        0.28846153846153844,
+        "castle_stop",
+        "Let the blower wind down"
+      ],
+      [
+        0.3173076923076923,
+        0.5865384615384616,
+        "castle_buckle",
+        "Fasten the mesh for the night"
+      ],
+      [
+        0.6153846153846154,
+        1,
+        "castle_flag_down",
+        "Lower the pennant before the gusts"
+      ]
+    ],
+    "steps": [
+      "castle_stop",
+      "castle_buckle",
+      "castle_flag_down"
+    ],
+    "weatherSafe": true,
+    "note": "Stop the fan, lower and buckle the mesh, then bring the pennant down for the night."
+  },
+  "castle_rain_cover": {
+    "item": "bounce_house",
+    "label": "Button up for rain",
+    "station": "switch",
+    "partner": "hose",
+    "duration": 190,
+    "entryDuration": 4.2,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.028421052631578944,
+        {
+          "x": 0.5,
+          "eye": "-"
+        }
+      ],
+      [
+        0.05368421052631579,
+        {
+          "contact": 1,
+          "reach": 0.8
+        }
+      ],
+      [
+        0.07578947368421052,
+        {
+          "contact": 1,
+          "y": 0.6,
+          "b": 0.4
+        }
+      ],
+      [
+        0.09473684210526316,
+        {
+          "contact": 0,
+          "eye": "O"
+        }
+      ],
+      [
+        0.13105263157894737,
+        {
+          "y": 0.5,
+          "w": 0.2
+        }
+      ],
+      [
+        0.15789473684210525,
+        {}
+      ],
+      [
+        0.1736842105263158,
+        {}
+      ],
+      [
+        0.19968421052631577,
+        {
+          "w": 0.7,
+          "eye": "O"
+        }
+      ],
+      [
+        0.2296842105263158,
+        {
+          "contact": 1,
+          "reach": 0.4
+        }
+      ],
+      [
+        0.2616842105263158,
+        {
+          "contact": 1,
+          "reach": 1,
+          "y": 0.4
+        }
+      ],
+      [
+        0.29568421052631577,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "b": 0.4
+        }
+      ],
+      [
+        0.3276842105263158,
+        {
+          "contact": 1,
+          "reach": 0.6,
+          "eye": "-"
+        }
+      ],
+      [
+        0.35168421052631577,
+        {
+          "x": -0.5,
+          "w": 0.3
+        }
+      ],
+      [
+        0.3736842105263158,
+        {}
+      ],
+      [
+        0.3894736842105263,
+        {}
+      ],
+      [
+        0.41010526315789475,
+        {
+          "y": 0.4,
+          "b": 0.3
+        }
+      ],
+      [
+        0.43368421052631584,
+        {
+          "contact": 1,
+          "reach": 0.2
+        }
+      ],
+      [
+        0.45873684210526317,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "x": 0.3
+        }
+      ],
+      [
+        0.4808421052631579,
+        {
+          "contact": 1,
+          "reach": 1,
+          "y": 0.6
+        }
+      ],
+      [
+        0.5073684210526316,
+        {
+          "contact": 0.3,
+          "eye": "^"
+        }
+      ],
+      [
+        0.5368421052631579,
+        {}
+      ],
+      [
+        0.5526315789473685,
+        {}
+      ],
+      [
+        0.5857894736842105,
+        {
+          "b": 0.8,
+          "y": 1.1
+        }
+      ],
+      [
+        0.6189473684210526,
+        {
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.6543157894736842,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "y": 0.3
+        }
+      ],
+      [
+        0.6918947368421053,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "b": 0.6
+        }
+      ],
+      [
+        0.7294736842105263,
+        {
+          "contact": 1,
+          "reach": 0.3,
+          "y": 0.9
+        }
+      ],
+      [
+        0.7559999999999999,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        0.7736842105263158,
+        {}
+      ],
+      [
+        0.7894736842105263,
+        {}
+      ],
+      [
+        0.8189473684210526,
+        {
+          "contact": 0.5,
+          "reach": 0.3
+        }
+      ],
+      [
+        0.8526315789473684,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "eye": "O"
+        }
+      ],
+      [
+        0.8905263157894736,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.4
+        }
+      ],
+      [
+        0.9263157894736842,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "y": 0.4
+        }
+      ],
+      [
+        0.9621052631578948,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "b": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.07578947368421052,
+        "motor",
+        "off"
+      ],
+      [
+        0.2296842105263158,
+        "latch",
+        0
+      ],
+      [
+        0.2616842105263158,
+        "door",
+        0.65
+      ],
+      [
+        0.29568421052631577,
+        "door",
+        0.25
+      ],
+      [
+        0.3276842105263158,
+        "door",
+        0
+      ],
+      [
+        0.43368421052631584,
+        "door",
+        0
+      ],
+      [
+        0.47936842105263155,
+        "latch",
+        1
+      ],
+      [
+        0.6543157894736842,
+        "apron",
+        0.35
+      ],
+      [
+        0.6918947368421053,
+        "apron",
+        0.7
+      ],
+      [
+        0.7294736842105263,
+        "apron",
+        1
+      ],
+      [
+        0.8905263157894736,
+        "flag",
+        0.7
+      ],
+      [
+        0.9263157894736842,
+        "flag",
+        0.35
+      ],
+      [
+        0.9621052631578948,
+        "flag",
+        0
+      ]
+    ],
+    "stations": [
+      [
+        0,
+        "switch"
+      ],
+      [
+        0.1736842105263158,
+        "buckle"
+      ],
+      [
+        0.23368421052631577,
+        "door"
+      ],
+      [
+        0.3894736842105263,
+        "door"
+      ],
+      [
+        0.4454736842105263,
+        "buckle"
+      ],
+      [
+        0.5526315789473685,
+        "apron"
+      ],
+      [
+        0.7894736842105263,
+        "flag_rope"
+      ]
+    ],
+    "partnerStations": [
+      [
+        0,
+        "hose"
+      ],
+      [
+        0.1736842105263158,
+        "door_frame"
+      ],
+      [
+        0.3894736842105263,
+        "door_frame"
+      ],
+      [
+        0.5526315789473685,
+        "apron_edge"
+      ],
+      [
+        0.7894736842105263,
+        "seam"
+      ]
+    ],
+    "segments": [
+      [
+        0,
+        0.15789473684210525,
+        "castle_stop",
+        "Let the blower wind down"
+      ],
+      [
+        0.1736842105263158,
+        0.3736842105263158,
+        "castle_door_close",
+        "Lower the mesh without trapping a wing"
+      ],
+      [
+        0.3894736842105263,
+        0.5368421052631579,
+        "castle_buckle",
+        "Fasten the mesh for the night"
+      ],
+      [
+        0.5526315789473685,
+        0.7736842105263158,
+        "castle_apron_fold",
+        "Fold the landing apron out of the rain"
+      ],
+      [
+        0.7894736842105263,
+        1,
+        "castle_flag_down",
+        "Lower the pennant before the gusts"
+      ]
+    ],
+    "steps": [
+      "castle_stop",
+      "castle_door_close",
+      "castle_buckle",
+      "castle_apron_fold",
+      "castle_flag_down"
+    ],
+    "weatherSafe": true,
+    "note": "Stop the blower before closing the doorway and rolling the apron out of the rain."
+  },
+  "castle_after_rain": {
+    "item": "bounce_house",
+    "label": "Shake yesterday out",
+    "station": "drain",
+    "partner": "seam",
+    "duration": 120,
+    "entryDuration": 5.880000000000001,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.04900000000000001,
+        {
+          "eye": "O",
+          "y": 0.5
+        }
+      ],
+      [
+        0.10149999999999999,
+        {
+          "contact": 1,
+          "reach": 0.8
+        }
+      ],
+      [
+        0.15750000000000003,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.5
+        }
+      ],
+      [
+        0.2135,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "y": 0.6
+        }
+      ],
+      [
+        0.2695,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "b": 0.4
+        }
+      ],
+      [
+        0.31500000000000006,
+        {
+          "w": 0.3,
+          "eye": "^"
+        }
+      ],
+      [
+        0.35,
+        {}
+      ],
+      [
+        0.375,
+        {}
+      ],
+      [
+        0.4231666666666667,
+        {
+          "b": 0.5,
+          "y": 0.8
+        }
+      ],
+      [
+        0.4656666666666667,
+        {
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.5053333333333333,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "y": -0.3
+        }
+      ],
+      [
+        0.5421666666666667,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "y": 0.7
+        }
+      ],
+      [
+        0.5818333333333333,
+        {
+          "contact": 1,
+          "reach": 0.15,
+          "y": -0.4
+        }
+      ],
+      [
+        0.6186666666666666,
+        {
+          "w": 0.4,
+          "eye": "O"
+        }
+      ],
+      [
+        0.6583333333333333,
+        {}
+      ],
+      [
+        0.6833333333333333,
+        {}
+      ],
+      [
+        0.7276666666666666,
+        {
+          "b": 0.8,
+          "y": 1
+        }
+      ],
+      [
+        0.772,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "x": -0.6
+        }
+      ],
+      [
+        0.8226666666666667,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": 0.5
+        }
+      ],
+      [
+        0.8733333333333333,
+        {
+          "contact": 1,
+          "reach": 1,
+          "y": 0.6
+        }
+      ],
+      [
+        0.9271666666666667,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "b": 0.6
+        }
+      ],
+      [
+        0.9683333333333334,
+        {
+          "w": 0.4,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.15750000000000003,
+        "roof_fraction",
+        0.7
+      ],
+      [
+        0.2135,
+        "roof_fraction",
+        0.35
+      ],
+      [
+        0.2695,
+        "roof_fraction",
+        0.05
+      ],
+      [
+        0.4656666666666667,
+        "latch",
+        0
+      ],
+      [
+        0.5053333333333333,
+        "mesh_fraction",
+        0.8
+      ],
+      [
+        0.5421666666666667,
+        "mesh_fraction",
+        0.5
+      ],
+      [
+        0.5818333333333333,
+        "mesh_fraction",
+        0.25
+      ],
+      [
+        0.772,
+        "apron",
+        0
+      ],
+      [
+        0.8226666666666667,
+        "prints_fraction",
+        0.7
+      ],
+      [
+        0.8733333333333333,
+        "prints_fraction",
+        0.3
+      ],
+      [
+        0.9271666666666667,
+        "prints_fraction",
+        0
+      ]
+    ],
+    "stations": [
+      [
+        0,
+        "drain"
+      ],
+      [
+        0.375,
+        "buckle"
+      ],
+      [
+        0.4741666666666667,
+        "door"
+      ],
+      [
+        0.6833333333333333,
+        "apron"
+      ]
+    ],
+    "partnerStations": [
+      [
+        0,
+        "seam"
+      ],
+      [
+        0.375,
+        "door_frame"
+      ],
+      [
+        0.6833333333333333,
+        "apron_edge"
+      ]
+    ],
+    "segments": [
+      [
+        0,
+        0.35,
+        "castle_roof_drain",
+        "Ease collected water down the roof seam"
+      ],
+      [
+        0.375,
+        0.6583333333333333,
+        "castle_mesh_shake",
+        "Shake dew from the mesh hem"
+      ],
+      [
+        0.6833333333333333,
+        1,
+        "castle_apron_clean",
+        "Sweep muddy prints off the landing flap"
+      ]
+    ],
+    "steps": [
+      "castle_roof_drain",
+      "castle_mesh_shake",
+      "castle_apron_clean"
+    ],
+    "weatherSafe": false,
+    "note": "Drain stored roof water, shake droplets from the mesh and sweep real tracks from the landing."
+  },
+  "castle_winter_layup": {
+    "item": "bounce_house",
+    "label": "Put the castle to bed",
+    "station": "hose",
+    "partner": "switch",
+    "duration": 198,
+    "entryDuration": 6.44,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.030202020202020206,
+        {
+          "eye": "-",
+          "w": 0.3
+        }
+      ],
+      [
+        0.06272727272727274,
+        {
+          "contact": 1,
+          "reach": 1,
+          "b": 0.5
+        }
+      ],
+      [
+        0.0998989898989899,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.5
+        }
+      ],
+      [
+        0.13707070707070707,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "y": 1
+        }
+      ],
+      [
+        0.17424242424242425,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "b": 0.8
+        }
+      ],
+      [
+        0.20909090909090908,
+        {
+          "w": 0.4
+        }
+      ],
+      [
+        0.23232323232323232,
+        {}
+      ],
+      [
+        0.2474747474747475,
+        {}
+      ],
+      [
+        0.27494949494949494,
+        {
+          "y": 0.6,
+          "b": 0.3
+        }
+      ],
+      [
+        0.29898989898989903,
+        {
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.32474747474747473,
+        {
+          "contact": 1,
+          "reach": 1,
+          "x": -0.4,
+          "y": 0.9
+        }
+      ],
+      [
+        0.3573737373737374,
+        {
+          "contact": 1,
+          "reach": 0.1,
+          "eye": "O"
+        }
+      ],
+      [
+        0.39171717171717174,
+        {
+          "x": -0.6,
+          "w": 0.4
+        }
+      ],
+      [
+        0.41919191919191917,
+        {}
+      ],
+      [
+        0.43434343434343436,
+        {}
+      ],
+      [
+        0.4625252525252525,
+        {
+          "y": 0.7,
+          "b": 0.4
+        }
+      ],
+      [
+        0.486010101010101,
+        {
+          "contact": 1,
+          "reach": 0.3
+        }
+      ],
+      [
+        0.5141919191919192,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "x": 0.4
+        }
+      ],
+      [
+        0.543939393939394,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "y": 1
+        }
+      ],
+      [
+        0.5689898989898989,
+        {
+          "w": 0.3,
+          "eye": "-"
+        }
+      ],
+      [
+        0.5909090909090909,
+        {}
+      ],
+      [
+        0.6060606060606061,
+        {}
+      ],
+      [
+        0.6327272727272727,
+        {
+          "b": 0.5,
+          "y": 0.8
+        }
+      ],
+      [
+        0.6560606060606061,
+        {
+          "contact": 1,
+          "reach": 0.9
+        }
+      ],
+      [
+        0.686060606060606,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "x": -0.3
+        }
+      ],
+      [
+        0.7177272727272728,
+        {
+          "contact": 1,
+          "reach": 0.75,
+          "y": 0.9
+        }
+      ],
+      [
+        0.7460606060606061,
+        {
+          "w": 0.4,
+          "eye": "^"
+        }
+      ],
+      [
+        0.7727272727272727,
+        {}
+      ],
+      [
+        0.7878787878787878,
+        {}
+      ],
+      [
+        0.8196969696969697,
+        {
+          "b": 0.8,
+          "y": 1.1
+        }
+      ],
+      [
+        0.8515151515151514,
+        {
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.8854545454545454,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "y": 0.3
+        }
+      ],
+      [
+        0.9215151515151515,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "b": 0.6
+        }
+      ],
+      [
+        0.9575757575757575,
+        {
+          "contact": 1,
+          "reach": 0.3,
+          "y": 0.9
+        }
+      ],
+      [
+        0.9830303030303029,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.06272727272727274,
+        "motor",
+        "off"
+      ],
+      [
+        0.0998989898989899,
+        "hose",
+        0.35
+      ],
+      [
+        0.13707070707070707,
+        "hose",
+        0.7
+      ],
+      [
+        0.17424242424242425,
+        "hose",
+        1
+      ],
+      [
+        0.32303030303030306,
+        "vent",
+        0.5
+      ],
+      [
+        0.35565656565656567,
+        "vent",
+        1
+      ],
+      [
+        0.5141919191919192,
+        "tie_left",
+        0.5
+      ],
+      [
+        0.543939393939394,
+        "tie_left",
+        0.15
+      ],
+      [
+        0.686060606060606,
+        "tie_right",
+        0.45
+      ],
+      [
+        0.7177272727272728,
+        "tie_right",
+        0.15
+      ],
+      [
+        0.8854545454545454,
+        "apron",
+        0.35
+      ],
+      [
+        0.9215151515151515,
+        "apron",
+        0.7
+      ],
+      [
+        0.9575757575757575,
+        "apron",
+        1
+      ]
+    ],
+    "stations": [
+      [
+        0,
+        "switch"
+      ],
+      [
+        0.06969696969696969,
+        "hose"
+      ],
+      [
+        0.2474747474747475,
+        "valve"
+      ],
+      [
+        0.43434343434343436,
+        "tie_left"
+      ],
+      [
+        0.6060606060606061,
+        "tie_right"
+      ],
+      [
+        0.7878787878787878,
+        "apron"
+      ]
+    ],
+    "partnerStations": [
+      [
+        0,
+        "switch"
+      ],
+      [
+        0.2474747474747475,
+        "seam"
+      ],
+      [
+        0.43434343434343436,
+        "seam"
+      ],
+      [
+        0.6060606060606061,
+        "hose"
+      ],
+      [
+        0.7878787878787878,
+        "apron_edge"
+      ]
+    ],
+    "segments": [
+      [
+        0,
+        0.23232323232323232,
+        "castle_hose_stow",
+        "Coil the hose beside the silent blower"
+      ],
+      [
+        0.2474747474747475,
+        0.41919191919191917,
+        "castle_vent_open",
+        "Let air sigh through the low valve"
+      ],
+      [
+        0.43434343434343436,
+        0.5909090909090909,
+        "castle_slack_left",
+        "Unpick the left rope’s loop"
+      ],
+      [
+        0.6060606060606061,
+        0.7727272727272727,
+        "castle_slack_right",
+        "Feed slack into the right guy rope"
+      ],
+      [
+        0.7878787878787878,
+        1,
+        "castle_apron_fold",
+        "Fold the landing apron out of the rain"
+      ]
+    ],
+    "steps": [
+      "castle_hose_stow",
+      "castle_vent_open",
+      "castle_slack_left",
+      "castle_slack_right",
+      "castle_apron_fold"
+    ],
+    "weatherSafe": true,
+    "note": "Coil the stopped blower hose, vent the chamber, loosen both ropes and fold the apron. This leaves the house closed for play."
+  },
+  "castle_spring_retension": {
+    "item": "bounce_house",
+    "label": "Wake the guy ropes",
+    "station": "hose",
+    "partner": "gauge",
+    "duration": 160,
+    "entryDuration": 6.16,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.0385,
+        {
+          "b": 0.7,
+          "y": 1
+        }
+      ],
+      [
+        0.07975,
+        {
+          "contact": 1,
+          "reach": 0.25
+        }
+      ],
+      [
+        0.12375,
+        {
+          "contact": 1,
+          "reach": 1,
+          "x": 0.5
+        }
+      ],
+      [
+        0.16775,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "b": 0.5
+        }
+      ],
+      [
+        0.2145,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "y": 0.8
+        }
+      ],
+      [
+        0.25025,
+        {
+          "eye": "^",
+          "w": 0.4
+        }
+      ],
+      [
+        0.275,
+        {}
+      ],
+      [
+        0.29375,
+        {}
+      ],
+      [
+        0.3275,
+        {
+          "contact": 0.2,
+          "b": 0.5,
+          "y": 0.7
+        }
+      ],
+      [
+        0.3635,
+        {
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.404,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.7,
+          "b": 0.3
+        }
+      ],
+      [
+        0.4445,
+        {
+          "contact": 1,
+          "reach": 0.6,
+          "y": 0.3
+        }
+      ],
+      [
+        0.48274999999999996,
+        {
+          "eye": "^",
+          "w": 0.3
+        }
+      ],
+      [
+        0.51875,
+        {}
+      ],
+      [
+        0.5375,
+        {}
+      ],
+      [
+        0.5691875,
+        {
+          "b": 0.4,
+          "y": 0.6
+        }
+      ],
+      [
+        0.60575,
+        {
+          "contact": 1,
+          "reach": 0.6
+        }
+      ],
+      [
+        0.6471875,
+        {
+          "contact": 1,
+          "reach": 0.15,
+          "x": -0.7,
+          "y": 0.2
+        }
+      ],
+      [
+        0.6910624999999999,
+        {
+          "contact": 1,
+          "reach": 1,
+          "b": 0.5
+        }
+      ],
+      [
+        0.7300625000000001,
+        {
+          "contact": 1,
+          "reach": 0.35,
+          "eye": "-"
+        }
+      ],
+      [
+        0.756875,
+        {
+          "w": 0.5
+        }
+      ],
+      [
+        0.78125,
+        {}
+      ],
+      [
+        0.8,
+        {}
+      ],
+      [
+        0.834,
+        {
+          "eye": "-",
+          "b": 0.4
+        }
+      ],
+      [
+        0.8640000000000001,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "y": 0.6
+        }
+      ],
+      [
+        0.8960000000000001,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "x": -0.4
+        }
+      ],
+      [
+        0.93,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "y": 0.9
+        }
+      ],
+      [
+        0.9640000000000001,
+        {
+          "eye": "O",
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.07975,
+        "hose",
+        0.6
+      ],
+      [
+        0.12375,
+        "hose",
+        0.25
+      ],
+      [
+        0.16775,
+        "hose",
+        0
+      ],
+      [
+        0.2145,
+        "kink",
+        0
+      ],
+      [
+        0.404,
+        "tie_left",
+        0.65
+      ],
+      [
+        0.4445,
+        "tie_left",
+        1
+      ],
+      [
+        0.6471875,
+        "tie_right",
+        0.6
+      ],
+      [
+        0.7300625000000001,
+        "tie_right",
+        1
+      ],
+      [
+        0.8960000000000001,
+        "inspection",
+        "seam"
+      ]
+    ],
+    "stations": [
+      [
+        0,
+        "hose"
+      ],
+      [
+        0.29375,
+        "tie_left"
+      ],
+      [
+        0.5375,
+        "tie_right"
+      ],
+      [
+        0.8,
+        "seam"
+      ]
+    ],
+    "partnerStations": [
+      [
+        0,
+        "gauge"
+      ],
+      [
+        0.29375,
+        "seam"
+      ],
+      [
+        0.5375,
+        "hose"
+      ],
+      [
+        0.8,
+        "valve"
+      ]
+    ],
+    "segments": [
+      [
+        0,
+        0.275,
+        "castle_hose_straight",
+        "Uncurl the blower hose"
+      ],
+      [
+        0.29375,
+        0.51875,
+        "castle_tie_left",
+        "Draw the left guy rope snug"
+      ],
+      [
+        0.5375,
+        0.78125,
+        "castle_tie_right",
+        "Set the right guy rope against a tug"
+      ],
+      [
+        0.8,
+        1,
+        "castle_seam_check",
+        "Pinch-test the lower stitched seam"
+      ]
+    ],
+    "steps": [
+      "castle_hose_straight",
+      "castle_tie_left",
+      "castle_tie_right",
+      "castle_seam_check"
+    ],
+    "weatherSafe": false,
+    "note": "Lay out the hose, tighten both sides separately, and inspect the seam without pretending to repair it."
+  },
+  "castle_dust_service": {
+    "item": "bounce_house",
+    "label": "Give the blower a breather",
+    "station": "grill",
+    "partner": "gauge",
+    "duration": 145,
+    "entryDuration": 5.040000000000001,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.03972413793103448,
+        {
+          "b": 0.5,
+          "y": 0.5
+        }
+      ],
+      [
+        0.07448275862068965,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.4
+        }
+      ],
+      [
+        0.11172413793103447,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "x": 0.4
+        }
+      ],
+      [
+        0.1489655172413793,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "y": 0.8
+        }
+      ],
+      [
+        0.1886896551724138,
+        {
+          "contact": 1,
+          "reach": 0.85,
+          "x": 0.5
+        }
+      ],
+      [
+        0.2209655172413793,
+        {
+          "eye": "^"
+        }
+      ],
+      [
+        0.2482758620689655,
+        {}
+      ],
+      [
+        0.2689655172413793,
+        {}
+      ],
+      [
+        0.31144827586206897,
+        {
+          "b": 0.7,
+          "y": 1
+        }
+      ],
+      [
+        0.3569655172413793,
+        {
+          "contact": 1,
+          "reach": 0.25
+        }
+      ],
+      [
+        0.40551724137931033,
+        {
+          "contact": 1,
+          "reach": 1,
+          "x": 0.5
+        }
+      ],
+      [
+        0.4540689655172414,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "b": 0.5
+        }
+      ],
+      [
+        0.5056551724137931,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "y": 0.8
+        }
+      ],
+      [
+        0.545103448275862,
+        {
+          "eye": "^",
+          "w": 0.4
+        }
+      ],
+      [
+        0.5724137931034483,
+        {}
+      ],
+      [
+        0.593103448275862,
+        {}
+      ],
+      [
+        0.62,
+        {
+          "reach": 0.3
+        }
+      ],
+      [
+        0.645103448275862,
+        {
+          "contact": 1,
+          "reach": 0.7,
+          "b": 0.25
+        }
+      ],
+      [
+        0.6612413793103448,
+        {
+          "contact": 1,
+          "reach": 1,
+          "y": 0.4
+        }
+      ],
+      [
+        0.6845517241379311,
+        {
+          "contact": 0.3,
+          "eye": "O"
+        }
+      ],
+      [
+        0.7222068965517241,
+        {
+          "x": -0.4,
+          "eye": "^",
+          "w": 0.6
+        }
+      ],
+      [
+        0.7724137931034483,
+        {}
+      ],
+      [
+        0.7931034482758621,
+        {}
+      ],
+      [
+        0.830344827586207,
+        {
+          "x": 0.5,
+          "y": 0.6,
+          "eye": "-"
+        }
+      ],
+      [
+        0.863448275862069,
+        {
+          "contact": 1,
+          "reach": 0.5,
+          "b": 0.4
+        }
+      ],
+      [
+        0.9006896551724137,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": 0.8,
+          "eye": "O"
+        }
+      ],
+      [
+        0.9379310344827586,
+        {
+          "w": 0.6,
+          "mark": "?"
+        }
+      ],
+      [
+        0.9689655172413794,
+        {
+          "x": -0.5,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.07448275862068965,
+        "motor",
+        "off"
+      ],
+      [
+        0.11172413793103447,
+        "dust_fraction",
+        0.75
+      ],
+      [
+        0.1489655172413793,
+        "dust_fraction",
+        0.4
+      ],
+      [
+        0.1886896551724138,
+        "dust_fraction",
+        0.05
+      ],
+      [
+        0.3569655172413793,
+        "hose",
+        0.6
+      ],
+      [
+        0.40551724137931033,
+        "hose",
+        0.25
+      ],
+      [
+        0.4540689655172414,
+        "hose",
+        0
+      ],
+      [
+        0.5056551724137931,
+        "kink",
+        0
+      ],
+      [
+        0.6612413793103448,
+        "motor",
+        "on"
+      ],
+      [
+        0.9006896551724137,
+        "inspection",
+        "pressure"
+      ]
+    ],
+    "stations": [
+      [
+        0,
+        "switch"
+      ],
+      [
+        0.08193103448275862,
+        "grill"
+      ],
+      [
+        0.2689655172413793,
+        "hose"
+      ],
+      [
+        0.593103448275862,
+        "switch"
+      ],
+      [
+        0.7931034482758621,
+        "gauge"
+      ]
+    ],
+    "partnerStations": [
+      [
+        0,
+        "gauge"
+      ],
+      [
+        0.2689655172413793,
+        "gauge"
+      ],
+      [
+        0.593103448275862,
+        "gauge"
+      ],
+      [
+        0.7931034482758621,
+        "valve"
+      ]
+    ],
+    "segments": [
+      [
+        0,
+        0.2482758620689655,
+        "castle_grill_clean",
+        "Brush fluff from the blower grille"
+      ],
+      [
+        0.2689655172413793,
+        0.5724137931034483,
+        "castle_hose_straight",
+        "Uncurl the blower hose"
+      ],
+      [
+        0.593103448275862,
+        0.7724137931034483,
+        "castle_start",
+        "Wake the blower with a firm little press"
+      ],
+      [
+        0.7931034482758621,
+        1,
+        "castle_gauge_check",
+        "Lean in and read the pressure dial"
+      ]
+    ],
+    "steps": [
+      "castle_grill_clean",
+      "castle_hose_straight",
+      "castle_start",
+      "castle_gauge_check"
+    ],
+    "weatherSafe": false,
+    "note": "Switch off before sweeping the grille, straighten the air supply, restart and read the actual pressure."
+  },
+  "castle_guest_welcome": {
+    "item": "bounce_house",
+    "label": "Make an entrance",
+    "station": "apron",
+    "partner": "apron_edge",
+    "duration": 122,
+    "entryDuration": 5.32,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.04360655737704918,
+        {
+          "b": 0.8,
+          "y": 1
+        }
+      ],
+      [
+        0.08721311475409836,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "x": -0.6
+        }
+      ],
+      [
+        0.13704918032786884,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": 0.5
+        }
+      ],
+      [
+        0.18688524590163935,
+        {
+          "contact": 1,
+          "reach": 1,
+          "y": 0.6
+        }
+      ],
+      [
+        0.23983606557377052,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "b": 0.6
+        }
+      ],
+      [
+        0.28032786885245903,
+        {
+          "w": 0.4,
+          "eye": "^"
+        }
+      ],
+      [
+        0.3114754098360656,
+        {}
+      ],
+      [
+        0.3360655737704918,
+        {}
+      ],
+      [
+        0.3819672131147541,
+        {
+          "contact": 0.3,
+          "reach": 0.2
+        }
+      ],
+      [
+        0.42131147540983604,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "y": 0.5
+        }
+      ],
+      [
+        0.4737704918032787,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": -0.5
+        }
+      ],
+      [
+        0.5295081967213114,
+        {
+          "contact": 1,
+          "reach": 1,
+          "y": -0.5
+        }
+      ],
+      [
+        0.5786885245901638,
+        {
+          "contact": 1,
+          "reach": 0.4,
+          "w": 0.6
+        }
+      ],
+      [
+        0.621311475409836,
+        {
+          "w": 0.8,
+          "eye": "^"
+        }
+      ],
+      [
+        0.6639344262295082,
+        {}
+      ],
+      [
+        0.6885245901639344,
+        {}
+      ],
+      [
+        0.7383606557377049,
+        {
+          "contact": 1,
+          "reach": 0.9
+        }
+      ],
+      [
+        0.7881967213114753,
+        {
+          "contact": 1,
+          "reach": 0.15,
+          "y": 0.7
+        }
+      ],
+      [
+        0.8380327868852459,
+        {
+          "contact": 1,
+          "reach": 0.95,
+          "y": -0.4
+        }
+      ],
+      [
+        0.8878688524590164,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "b": 0.4
+        }
+      ],
+      [
+        0.9377049180327869,
+        {
+          "contact": 1,
+          "reach": 0.6,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.08721311475409836,
+        "apron",
+        0
+      ],
+      [
+        0.13704918032786884,
+        "prints_fraction",
+        0.7
+      ],
+      [
+        0.18688524590163935,
+        "prints_fraction",
+        0.3
+      ],
+      [
+        0.23983606557377052,
+        "prints_fraction",
+        0
+      ],
+      [
+        0.42131147540983604,
+        "latch",
+        0
+      ],
+      [
+        0.4737704918032787,
+        "door",
+        0.35
+      ],
+      [
+        0.5295081967213114,
+        "door",
+        0.7
+      ],
+      [
+        0.5786885245901638,
+        "door",
+        1
+      ],
+      [
+        0.7881967213114753,
+        "flag",
+        0.35
+      ],
+      [
+        0.8878688524590164,
+        "flag",
+        0.7
+      ],
+      [
+        0.9377049180327869,
+        "flag",
+        1
+      ]
+    ],
+    "stations": [
+      [
+        0,
+        "apron"
+      ],
+      [
+        0.3360655737704918,
+        "buckle"
+      ],
+      [
+        0.4311475409836066,
+        "door"
+      ],
+      [
+        0.6885245901639344,
+        "flag_rope"
+      ]
+    ],
+    "partnerStations": [
+      [
+        0,
+        "apron_edge"
+      ],
+      [
+        0.3360655737704918,
+        "door_frame"
+      ],
+      [
+        0.6885245901639344,
+        "seam"
+      ]
+    ],
+    "segments": [
+      [
+        0,
+        0.3114754098360656,
+        "castle_apron_clean",
+        "Sweep muddy prints off the landing flap"
+      ],
+      [
+        0.3360655737704918,
+        0.6639344262295082,
+        "castle_door_open",
+        "Roll the mesh door into its keeper"
+      ],
+      [
+        0.6885245901639344,
+        1,
+        "castle_flag_up",
+        "Hoist the little roof pennant"
+      ]
+    ],
+    "steps": [
+      "castle_apron_clean",
+      "castle_door_open",
+      "castle_flag_up"
+    ],
+    "weatherSafe": false,
+    "note": "Sweep the landing, unbuckle and roll the mesh, then hoist the welcome pennant."
+  },
+  "castle_pressure_check": {
+    "item": "bounce_house",
+    "label": "Follow the escaping air",
+    "station": "gauge",
+    "partner": "valve",
+    "duration": 145,
+    "entryDuration": 4.2,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.037241379310344824,
+        {
+          "x": 0.5,
+          "y": 0.6,
+          "eye": "-"
+        }
+      ],
+      [
+        0.0703448275862069,
+        {
+          "contact": 1,
+          "reach": 0.5,
+          "b": 0.4
+        }
+      ],
+      [
+        0.10758620689655174,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": 0.8,
+          "eye": "O"
+        }
+      ],
+      [
+        0.14482758620689656,
+        {
+          "w": 0.6,
+          "mark": "?"
+        }
+      ],
+      [
+        0.17586206896551723,
+        {
+          "x": -0.5,
+          "eye": "-"
+        }
+      ],
+      [
+        0.20689655172413793,
+        {}
+      ],
+      [
+        0.22758620689655173,
+        {}
+      ],
+      [
+        0.26068965517241377,
+        {
+          "b": 0.3,
+          "y": 0.5
+        }
+      ],
+      [
+        0.29158620689655174,
+        {
+          "contact": 1,
+          "reach": 0.8
+        }
+      ],
+      [
+        0.3335172413793103,
+        {
+          "contact": 1,
+          "reach": 0.25,
+          "x": 0.5
+        }
+      ],
+      [
+        0.3688275862068966,
+        {
+          "contact": 1,
+          "reach": 0.7,
+          "b": 0.6
+        }
+      ],
+      [
+        0.4107586206896552,
+        {
+          "eye": "^",
+          "w": 0.3
+        }
+      ],
+      [
+        0.4482758620689655,
+        {}
+      ],
+      [
+        0.4689655172413793,
+        {}
+      ],
+      [
+        0.511448275862069,
+        {
+          "b": 0.7,
+          "y": 1
+        }
+      ],
+      [
+        0.5569655172413793,
+        {
+          "contact": 1,
+          "reach": 0.25
+        }
+      ],
+      [
+        0.6055172413793103,
+        {
+          "contact": 1,
+          "reach": 1,
+          "x": 0.5
+        }
+      ],
+      [
+        0.6540689655172414,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "b": 0.5
+        }
+      ],
+      [
+        0.705655172413793,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "y": 0.8
+        }
+      ],
+      [
+        0.7451034482758621,
+        {
+          "eye": "^",
+          "w": 0.4
+        }
+      ],
+      [
+        0.7724137931034483,
+        {}
+      ],
+      [
+        0.7931034482758621,
+        {}
+      ],
+      [
+        0.830344827586207,
+        {
+          "x": 0.5,
+          "y": 0.6,
+          "eye": "-"
+        }
+      ],
+      [
+        0.863448275862069,
+        {
+          "contact": 1,
+          "reach": 0.5,
+          "b": 0.4
+        }
+      ],
+      [
+        0.9006896551724137,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "x": 0.8,
+          "eye": "O"
+        }
+      ],
+      [
+        0.9379310344827586,
+        {
+          "w": 0.6,
+          "mark": "?"
+        }
+      ],
+      [
+        0.9689655172413794,
+        {
+          "x": -0.5,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.10758620689655174,
+        "inspection",
+        "pressure"
+      ],
+      [
+        0.3335172413793103,
+        "vent",
+        0.35
+      ],
+      [
+        0.3688275862068966,
+        "vent",
+        0
+      ],
+      [
+        0.5569655172413793,
+        "hose",
+        0.6
+      ],
+      [
+        0.6055172413793103,
+        "hose",
+        0.25
+      ],
+      [
+        0.6540689655172414,
+        "hose",
+        0
+      ],
+      [
+        0.705655172413793,
+        "kink",
+        0
+      ],
+      [
+        0.9006896551724137,
+        "inspection",
+        "pressure"
+      ]
+    ],
+    "stations": [
+      [
+        0,
+        "gauge"
+      ],
+      [
+        0.22758620689655173,
+        "valve"
+      ],
+      [
+        0.4689655172413793,
+        "hose"
+      ],
+      [
+        0.7931034482758621,
+        "gauge"
+      ]
+    ],
+    "partnerStations": [
+      [
+        0,
+        "valve"
+      ],
+      [
+        0.22758620689655173,
+        "gauge"
+      ],
+      [
+        0.4689655172413793,
+        "gauge"
+      ],
+      [
+        0.7931034482758621,
+        "valve"
+      ]
+    ],
+    "segments": [
+      [
+        0,
+        0.20689655172413793,
+        "castle_gauge_check",
+        "Lean in and read the pressure dial"
+      ],
+      [
+        0.22758620689655173,
+        0.4482758620689655,
+        "castle_vent_close",
+        "Seat the valve and check the seal"
+      ],
+      [
+        0.4689655172413793,
+        0.7724137931034483,
+        "castle_hose_straight",
+        "Uncurl the blower hose"
+      ],
+      [
+        0.7931034482758621,
+        1,
+        "castle_gauge_check",
+        "Lean in and read the pressure dial"
+      ]
+    ],
+    "steps": [
+      "castle_gauge_check",
+      "castle_vent_close",
+      "castle_hose_straight",
+      "castle_gauge_check"
+    ],
+    "weatherSafe": false,
+    "note": "Compare pressure before and after sealing the valve and straightening the hose. A reading is not a repair."
+  },
+  "castle_evening_air": {
+    "item": "bounce_house",
+    "label": "Let the fabric breathe",
+    "station": "switch",
+    "partner": "hose",
+    "duration": 147,
+    "entryDuration": 4.2,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.03673469387755102,
+        {
+          "x": 0.5,
+          "eye": "-"
+        }
+      ],
+      [
+        0.06938775510204083,
+        {
+          "contact": 1,
+          "reach": 0.8
+        }
+      ],
+      [
+        0.09795918367346938,
+        {
+          "contact": 1,
+          "y": 0.6,
+          "b": 0.4
+        }
+      ],
+      [
+        0.12244897959183673,
+        {
+          "contact": 0,
+          "eye": "O"
+        }
+      ],
+      [
+        0.1693877551020408,
+        {
+          "y": 0.5,
+          "w": 0.2
+        }
+      ],
+      [
+        0.20408163265306123,
+        {}
+      ],
+      [
+        0.22448979591836735,
+        {}
+      ],
+      [
+        0.2638095238095238,
+        {
+          "b": 0.5,
+          "y": 0.8
+        }
+      ],
+      [
+        0.29850340136054426,
+        {
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.3308843537414966,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "y": -0.3
+        }
+      ],
+      [
+        0.36095238095238097,
+        {
+          "contact": 1,
+          "reach": 0.9,
+          "y": 0.7
+        }
+      ],
+      [
+        0.3933333333333333,
+        {
+          "contact": 1,
+          "reach": 0.15,
+          "y": -0.4
+        }
+      ],
+      [
+        0.4234013605442177,
+        {
+          "w": 0.4,
+          "eye": "O"
+        }
+      ],
+      [
+        0.4557823129251701,
+        {}
+      ],
+      [
+        0.47619047619047616,
+        {}
+      ],
+      [
+        0.5131972789115646,
+        {
+          "y": 0.6,
+          "b": 0.3
+        }
+      ],
+      [
+        0.545578231292517,
+        {
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.5802721088435374,
+        {
+          "contact": 1,
+          "reach": 1,
+          "x": -0.4,
+          "y": 0.9
+        }
+      ],
+      [
+        0.6242176870748299,
+        {
+          "contact": 1,
+          "reach": 0.1,
+          "eye": "O"
+        }
+      ],
+      [
+        0.6704761904761904,
+        {
+          "x": -0.6,
+          "w": 0.4
+        }
+      ],
+      [
+        0.7074829931972789,
+        {}
+      ],
+      [
+        0.7278911564625851,
+        {}
+      ],
+      [
+        0.7687074829931972,
+        {
+          "b": 0.7,
+          "y": 1
+        }
+      ],
+      [
+        0.8040816326530612,
+        {
+          "contact": 1,
+          "reach": 0.8,
+          "x": -0.3
+        }
+      ],
+      [
+        0.8476190476190476,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "y": 0.6
+        }
+      ],
+      [
+        0.8938775510204082,
+        {
+          "contact": 1,
+          "reach": 1,
+          "x": 0.5
+        }
+      ],
+      [
+        0.9374149659863946,
+        {
+          "contact": 1,
+          "reach": 0.4,
+          "b": 0.8
+        }
+      ],
+      [
+        0.9727891156462585,
+        {
+          "w": 0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "effects": [
+      [
+        0.09795918367346938,
+        "motor",
+        "off"
+      ],
+      [
+        0.29850340136054426,
+        "latch",
+        0
+      ],
+      [
+        0.3308843537414966,
+        "mesh_fraction",
+        0.8
+      ],
+      [
+        0.36095238095238097,
+        "mesh_fraction",
+        0.5
+      ],
+      [
+        0.3933333333333333,
+        "mesh_fraction",
+        0.25
+      ],
+      [
+        0.5779591836734694,
+        "vent",
+        0.5
+      ],
+      [
+        0.621904761904762,
+        "vent",
+        1
+      ],
+      [
+        0.8476190476190476,
+        "apron",
+        0.65
+      ],
+      [
+        0.8938775510204082,
+        "apron",
+        0.3
+      ],
+      [
+        0.9374149659863946,
+        "apron",
+        0
+      ]
+    ],
+    "stations": [
+      [
+        0,
+        "switch"
+      ],
+      [
+        0.22448979591836735,
+        "buckle"
+      ],
+      [
+        0.3054421768707483,
+        "door"
+      ],
+      [
+        0.47619047619047616,
+        "valve"
+      ],
+      [
+        0.7278911564625851,
+        "apron"
+      ]
+    ],
+    "partnerStations": [
+      [
+        0,
+        "hose"
+      ],
+      [
+        0.22448979591836735,
+        "door_frame"
+      ],
+      [
+        0.47619047619047616,
+        "seam"
+      ],
+      [
+        0.7278911564625851,
+        "apron_edge"
+      ]
+    ],
+    "segments": [
+      [
+        0,
+        0.20408163265306123,
+        "castle_stop",
+        "Let the blower wind down"
+      ],
+      [
+        0.22448979591836735,
+        0.4557823129251701,
+        "castle_mesh_shake",
+        "Shake dew from the mesh hem"
+      ],
+      [
+        0.47619047619047616,
+        0.7074829931972789,
+        "castle_vent_open",
+        "Let air sigh through the low valve"
+      ],
+      [
+        0.7278911564625851,
+        1,
+        "castle_apron_flat",
+        "Smooth the curled landing apron"
+      ]
+    ],
+    "steps": [
+      "castle_stop",
+      "castle_mesh_shake",
+      "castle_vent_open",
+      "castle_apron_flat"
+    ],
+    "weatherSafe": false,
+    "note": "Stop the blower, shake the wet mesh, open the valve and leave the apron flat to dry. No invented puddle is removed."
+  }
+}

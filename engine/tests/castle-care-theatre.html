@@ -1,0 +1,22 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · The Wobbly Duck workshop</title>
+<style>body{background:#142b23;color:#eadcb9;font:20px Georgia;margin:24px}canvas{max-width:100%}</style><div id="view"></div>
+<script type="module">
+import {SceneCanvas} from '../client/ultra-renderer.mjs';import {carnivalGeometry} from '../client/carnival-routines.mjs';import {CASTLE_SCORES} from '../client/castle-care.mjs';
+window.replayCastle=frames=>{
+ const view=new SceneCanvas();view.resize(1500,950);document.querySelector('#view').append(view.canvas);
+ const images={},costs=[];let bodies=0,hits=0,contacts=0;
+ for(const [i,s]of frames.entries()){
+  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);if(JSON.stringify(s)!==before)throw Error('Renderer mutated physical state');
+  const plan=s.living.plan,w=plan?.carnival_work;if(!w)continue;const home=view.world.objects.find(o=>o.instance===plan.instance);if(!home)throw Error('Missing exact house');
+  for(const member of home.carnivalRiders||[]){
+   const g=carnivalGeometry(home,member,view.sx,view.sy);bodies++;
+   if(g.tip&&g.pose.contact>=1-1e-9&&g.inside===1){if(Math.hypot(g.tip.x-g.target.x,g.tip.y-g.target.y)>1e-6)throw Error('Missing physical contact');contacts++;}
+   if(g.character.visitor||g.character.story){const hit=view.hits.find(h=>h.id===g.character.id);if(!hit||view.hit((hit.x+hit.w/2)/view.canvas.width,(hit.y+hit.h/2)/view.canvas.height)?.id!==g.character.id)throw Error('Unselectable helper '+g.character.id+' '+w.id);hits++;}
+  }
+  if(w.stage==='service'&&w.clock>CASTLE_SCORES[w.id].duration*.5&&!images[w.id])images[w.id]=view.canvas.toDataURL();
+  if(w.stage==='service_exit'&&!images.exit)images.exit=view.canvas.toDataURL();
+  if(w.withdrawal&&!images.weather_exit)images.weather_exit=view.canvas.toDataURL();
+ }
+ costs.sort((a,b)=>a-b);return {images,frames:frames.length,bodies,hits,contacts,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)]};
+};
+</script>

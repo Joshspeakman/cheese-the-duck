@@ -1,4 +1,5 @@
 import {CARNIVAL_CHOICES} from './carnival-routines.mjs';
+import {castleSummary,CASTLE_SCORES} from './castle-care.mjs';
 import {PLAYKIT_CHOICES,playkitSummary} from './playkit-state.mjs';
 import {playkitPose} from './playkit-routines.mjs';
 import {NEST_IDS} from './nest-routines.mjs';
@@ -28,6 +29,7 @@ const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text!==undef
 export class PondJournal{
  constructor(){
   this.tab='pond';this.selected=null;this.frame=null;this.painter=new ItemPainter();this.last=0;this.lastRender=0;this.searchQuery='';this.arrangement=new PondArrangement(this);
+  this.activityGroups=new Map();
   this.dialog=el('dialog',undefined,'pond-journal');this.dialog.id='pond-journal';this.dialog.setAttribute('aria-label','Living pond journal');
   const head=el('header');head.append(el('div','CHEESE’S FIELD NOTEBOOK','pond-eyebrow'),el('h1','Notes from the pond.'));
   this.closeButton=el('button','Close ×');this.closeButton.onclick=()=>this.dialog.close();head.append(this.closeButton);
@@ -58,6 +60,7 @@ export class PondJournal{
   const p=w.plan;this.status.textContent=p?`${p.label} · ${p.paused?'paused':pretty(p.phase)} · ${Math.round(p.progress*100)}%`:'Cheese is free to choose what comes next.';
   for(const card of this.body.querySelectorAll('[data-nest-id]'))for(const button of card.querySelectorAll('[data-nest-choice]'))button.disabled=Boolean(w.plan)||![...(this.frame.scene.items||[]),...(this.frame.scene.structures||[])].some(p=>p.id===card.dataset.nestId&&p.instance===card.dataset.nestInstance);
   for(const bar of this.body.querySelectorAll('[data-progress]'))bar.value=p?.progress||0;
+  for(const card of this.body.querySelectorAll('[data-castle-instance]')){const instance=card.dataset.castleInstance,state=instance?w.instances?.[instance]:w.objects.bounce_house;if(state)card.querySelector('[data-castle-summary]').textContent=castleSummary(state);for(const button of card.querySelectorAll('[data-carnival-choice]'))button.disabled=Boolean(w.plan)||Boolean(instance&&!w.layout?.copies?.some(p=>p.instance===instance));}
   for(const card of this.body.querySelectorAll('[data-playkit-id]')){const id=card.dataset.playkitId,instance=card.dataset.playkitInstance,state=instance?w.instances?.[instance]:w.objects[id];if(state)card.querySelector('[data-playkit-summary]').textContent=playkitSummary(id,state);for(const button of card.querySelectorAll('[data-playkit-choice]'))button.disabled=Boolean(w.plan)||Boolean(instance&&!w.layout?.copies?.some(p=>p.instance===instance));}
   for(const card of this.body.querySelectorAll('[data-architecture-id]')){
    const id=card.dataset.architectureId,instance=card.dataset.architectureInstance,state=instance?w.instances?.[instance]:w.objects[id];
@@ -98,6 +101,7 @@ export class PondJournal{
  render(reset=false){
   this.lastRender=performance.now();
   const w=this.world,scroll=this.body.scrollTop,focus=this.body.contains(document.activeElement)?document.activeElement.textContent:null;
+  for(const group of this.body.querySelectorAll('[data-activity-group]'))this.activityGroups.set(group.dataset.activityGroup,group.open);
   this.body.replaceChildren();for(const b of this.nav.children)b.setAttribute('aria-current',b.dataset.tab===this.tab?'page':'false');
   if(!w){this.body.append(el('p','Start or continue a game to open Cheese’s living journal.'));return;}
   const grid=el('div',undefined,'pond-cards');this.body.append(grid);const busy=Boolean(w.plan);
@@ -143,7 +147,20 @@ const p=itemProfile(item,itemFamily(id));detail.append(el('p',`${pretty(p.materi
     detail.append(this.button(p.verb,'item',id,busy||!outside||['food','wearable'].includes(p.kind),{instance}),this.button('Brush & polish','clean_item',id,busy||!outside||state.dirt<.05,{instance}),this.button('Repair · 1 twig','repair_item',id,busy||!outside||state.condition>=.95,{instance}));if(['food','wearable'].includes(p.kind))detail.append(this.legacy(p.kind==='food'?'Eat through inventory':'Open wardrobe & items','inventory'));grid.append(detail);
     if(w.layout?.items.some(i=>i.id===id)&&(!instance||w.layout.copies?.some(p=>p.id===id&&p.instance===instance))){const arrange=el('button',w.placed.includes(id)?'Move or store':'Find a place','pond-action');arrange.onclick=()=>this.show('arrange',id,instance);detail.append(arrange);}
     if(state.botany){this.meter(detail,'Soil moisture',state.botany.moisture);this.meter(detail,'Plant health',state.botany.health);detail.append(el('p',state.botany.last_care?'Last care: '+pretty(state.botany.last_care):'Rain waters the roots. Warm, dry air slowly draws moisture out of the soil.'));}
-    if(CARNIVAL_CHOICES[id]){detail.append(el('p',id==='bounce_house'?'Step through the soft doorway. A nearby friend can join on their own stretch of spring floor.':id==='magic_carpet'?'Unroll the carpet and settle onto the weave. A nearby friend can share a little hover above this patch of bank.':'Board at the platform. A nearby friend can walk over and share the ride.'));for(const [choice,label]of CARNIVAL_CHOICES[id]){const button=this.button(label,'carnival_action',id,busy||!outside,{instance,text:choice});button.dataset.carnivalChoice=choice;detail.append(button);}}
+    if(CARNIVAL_CHOICES[id]){
+     detail.append(el('p',id==='bounce_house'?'Bounce together, tend the fabric, or open and close the little castle. A nearby friend can come over and help.':id==='magic_carpet'?'Unroll the carpet and settle onto the weave. A nearby friend can share a little hover above this patch of bank.':'Board at the platform. A nearby friend can walk over and share the ride.'));
+     const groups={};
+     for(const [choice,label]of CARNIVAL_CHOICES[id]){
+      const score=CASTLE_SCORES[choice];let parent=detail;
+      if(id==='bounce_house'){
+       const category=score?.steps?'Opening, closing & weather care':score?'Controls & fabric':'Bounce together';
+       if(!groups[category]){const fold=el('details'),key=id+':'+category;fold.dataset.activityGroup=key;fold.append(el('summary',category));fold.open=this.activityGroups.get(key)??category==='Bounce together';detail.append(fold);groups[category]=fold;}
+       parent=groups[category];
+      }
+      const button=this.button(label,'carnival_action',id,busy||!outside,{instance,text:choice});button.dataset.carnivalChoice=choice;if(score)button.title=score.note;parent.append(button);
+     }
+    }
+    if(id==='bounce_house'&&state.castle){detail.dataset.castleInstance=instance||'';const summary=el('p',castleSummary(state));summary.dataset.castleSummary='';detail.insertBefore(summary,detail.querySelector('details')||detail.querySelector('[data-carnival-choice]'));}
     if(state.playkit){detail.dataset.playkitId=id;detail.dataset.playkitInstance=instance||'';const summary=el('p',playkitSummary(id,state));summary.dataset.playkitSummary='';detail.append(summary);for(const [choice,label]of PLAYKIT_CHOICES[id]||[]){const button=this.button(label,'playkit_action',id,busy||!outside,{instance,text:choice});button.dataset.playkitChoice=choice;detail.append(button);}}
     if(state.architecture){
      detail.dataset.architectureId=id;detail.dataset.architectureInstance=instance||'';
@@ -209,7 +226,7 @@ const p=itemProfile(item,itemFamily(id));detail.append(el('p',`${pretty(p.materi
    for(const entry of [...w.journal].reverse()){const c=this.card(pretty(entry.kind),entry.text);c.append(el('small',`${Math.max(0,Math.floor((w.elapsed-entry.at)/60))} minutes ago`));grid.append(c);}if(!w.journal.length)grid.append(this.card('The first page','Shared experiences, care, weather changes and discoveries will collect here.'));
   }
   this.body.scrollTop=reset?0:scroll;
-  if(focus){const b=[...this.body.querySelectorAll('button')].find(b=>b.textContent===focus&&!b.disabled);b?.focus({preventScroll:true});}
+  if(focus){const b=[...this.body.querySelectorAll('button,summary')].find(b=>b.textContent===focus&&!b.disabled);b?.focus({preventScroll:true});}
   this.paint(performance.now()/1000);
  }
  paint(time){

@@ -6,12 +6,12 @@ Reservations are transient and never resurrect a departed visitor after loading.
 """
 import copy,json,math
 from pathlib import Path
-from engine import excursions,shelters,surface_play
+from engine import excursions,shelters,surface_play,castle_work
 from engine.visitor_shelters import distance,departing,profile
 ROUTINES=json.loads((Path(__file__).parent/'client/animation/carnival-routines.json').read_text())
 ITEMS={'ferris_wheel','carousel'}
 ALL_ITEMS=ITEMS|surface_play.ITEMS
-PROGRAMS={**ROUTINES,**surface_play.ROUTINES}
+PROGRAMS={**ROUTINES,**surface_play.ROUTINES,**castle_work.ROUTINES}
 TAU=math.pi*2
 finite=excursions.finite
 clamp=excursions.clamp
@@ -51,7 +51,7 @@ def valid(pond,plan):
 def owns(pond,item,obj):
     plan=pond.state.get('plan')
     if not (plan and plan.get('carnival_work') and plan.get('target')==item and pond.object_state(item,plan) is obj):return False
-    return 'hold' if plan.get('paused') or plan['phase']!='act' or not pond.available() or pond.game.duck.current_action in ('feed','play','clean','pet','sleep') else 'active'
+    return 'hold' if plan.get('paused') or plan['phase']!='act' or not pond.available() or pond.game.duck.current_action in ('feed','play','clean','pet','sleep') else 'service' if plan['carnival_work'].get('castle_care') else 'active'
 
 def release(minds,key):
     r=minds.carnival_guests.pop(key,None)
@@ -64,6 +64,7 @@ def release(minds,key):
             surface['b'].update(jump=0.,press=0.,u=0.,v=0.,impact=0.)
 
 def cancel(minds):
+    castle_work.clear(minds.pond,minds.pond.state.get('plan'))
     surface_play.clear(minds.pond,minds.pond.state.get('plan'))
     for key in list(minds.carnival_guests):release(minds,key)
 
@@ -82,8 +83,9 @@ def tick(minds,dt):
             r['wait']+=max(0,finite(dt))
             if distance(minds.present[key],r['spot'])<=.8:r['phase']='ready'
             elif r['wait']>25:release(minds,key)
-    if not plan or not plan.get('carnival_work') or plan.get('paused') or plan['phase'] not in ('prepare','act') or blocked(p):return
+    if not plan or not plan.get('carnival_work') or plan.get('paused') or plan['phase'] not in ('prepare','act'):return
     w=plan['carnival_work']
+    if blocked(p) and not (w.get('castle_care') and castle_work.allowed(p,w['id'])):return
     if w.get('invitation_checked') or w['stage']!='queue':return
     w['invitation_checked']=True
     if not valid(p,plan) or not all(6<=spot[0]<=122 and 3<=spot[1]<=36 for spot in (w['queue_a'],w['queue_b'])):return
@@ -101,6 +103,7 @@ def tick(minds,dt):
         options.append((d-5*resident['traits']['sociability'],key,'watch' if species=='butterfly' or resident['energy']<.4 else 'ride'))
     if not options:return
     _,key,mode=min(options);minds.tasks.pop(key,None)
+    if w.get('castle_care') and mode=='ride':mode='assist'
     w['companion']=dict(actor=key,mode=mode)
     minds.carnival_guests[key]=dict(actor=key,work=w,spot=list(w['queue_b']),location=p.location,token=minds.presence_tokens[key],
       phase='approach',wait=0.,mode=mode,overlap=0.,contexts={k:minds.context(k) for k in ('cheese',key)})
@@ -125,6 +128,7 @@ def advance(pond,plan,dt):
         w.update(done=True,interrupted=True);cancel(pond.minds);return False
     s=excursions.state(plan['target'],pond.object_state(plan['target'],plan));r=active(pond.minds)
     if r and not partner_valid(pond.minds,r,plan):release(pond.minds,r['actor']);r=None
+    if w.get('castle_care'):return castle_work.advance(pond,plan,dt,r)
     if plan['target'] in surface_play.ITEMS:return surface_play.advance(pond,plan,dt,r)
     needs=pond.game.duck.needs
     if (blocked(pond) or needs.hunger<15 or needs.energy<10 or finite(pond.object_state(plan['target'],plan).get('condition'),1.)<=.2) and not w.get('withdrawal'):
@@ -193,6 +197,7 @@ def complete(pond,plan):
     if r and partner_valid(pond.minds,r,plan) and r['overlap']>=PROGRAMS[w['id']]['duration']*.8:
         m=pond.minds;key=r['actor'];note=w['label']+(' together; boarded separately and returned to the platform.' if r['mode']=='ride' else '; watched from the platform and waved back.')
         if plan['target'] in surface_play.ITEMS:note=w['label']+('; watched from beside the entry.' if r['mode']=='watch' else '; shared the surface and stepped off together.')
+        if w.get('castle_care'):note=w['label']+('; watched the real controls from outside.' if r['mode']=='watch' else '; worked together at the empty house, then stepped away.')
         for actor,other in (('cheese',key),(key,'cheese')):
             m.model.learn(actor,'share',r['contexts'][actor],.25,m.now,note,other);m.model.bond(actor,other,.18,m.now,note)
         counts=obj.setdefault('carnival_company',{});counts[key]=min(9999,counts.get(key,0)+1)
@@ -227,6 +232,7 @@ def conversation(pond,plan,key='cheese'):
     w=plan['carnival_work'];r=active(pond.minds)
     if r and not partner_valid(pond.minds,r,plan):r=None
     if key!='cheese' and (not r or key!=r['actor']):return None
+    if w.get('castle_care'):return castle_work.conversation(pond,plan,key,r)
     if plan['target'] in surface_play.ITEMS:return surface_play.conversation(pond,plan,key,r)
     role='a' if key=='cheese' else 'b';watch=bool(role=='b' and r and r['mode']=='watch')
     aboard=w['stage'] in (('index_b','board_b','ride','weather_return','unload_b','return_a') if role=='a' else ('ride','weather_return')) and not watch
@@ -238,7 +244,7 @@ def conversation(pond,plan,key='cheese'):
 
 def request(pond,item,choice,instance=None):
     if item not in ALL_ITEMS or not isinstance(choice,str) or choice not in PROGRAMS or PROGRAMS[choice]['item']!=item:return False,'Choose an activity for this ride.'
-    ok,message=pond.start('item',item,instance=instance)
+    ok,message=pond.start('item',item,instance=instance,carnival_choice=choice)
     if not ok:return ok,message
     p=pond.state['plan'];p['carnival_work'].update(id=choice,label=PROGRAMS[choice]['label']);p['label']=PROGRAMS[choice]['label']
     return True,p['label']+'.'
