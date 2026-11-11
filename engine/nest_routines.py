@@ -23,7 +23,7 @@ def context(pond, plan):
                 temperature=pond.state['ecology']['temperature'], snow=pond.state['ecology']['snow'],
                 energy=needs.energy, fun=needs.fun, social=needs.social, mood=mood,
                 roof=plan['residence']['roof'], stage=pond.game.duck.growth_stage,
-                bond=pond.state['objects'].get(plan['target'], {}).get('bond', 0.))
+                bond=(pond.object_state(plan['target'],plan) or {}).get('bond', 0.))
 
 
 def eligible(spec, ctx):
@@ -65,7 +65,7 @@ def eligible(spec, ctx):
 
 
 def choose(pond, plan, ctx):
-    obj = pond.state['objects'][plan['target']]
+    obj = pond.object_state(plan['target'],plan)
     history = obj.get('routines', {})
     recent = obj.get('recent_routines', [])[-4:]
     choices = [key for key, spec in ROUTINES.items() if eligible(spec, ctx)]
@@ -121,7 +121,7 @@ def advance(pond, plan, dt):
     if current['elapsed'] < spec['duration']:
         return True
     current['done'] = True
-    obj = pond.state['objects'][plan['target']]
+    obj = pond.object_state(plan['target'],plan)
     history = obj.setdefault('routines', {})
     history[current['id']] = min(9999, history.get(current['id'], 0)+1)
     obj['routine_visits'] = min(999999, obj.get('routine_visits', 0)+1)

@@ -4,6 +4,7 @@ The original registries remain authoritative for ownership, needs, inventory,
 friendship, recipes and rewards. This module owns new physical/ecological state,
 long-term intentions and bounded memories. Presentation snapshots never advance it.
 """
+from engine import object_history
 import copy
 import hashlib
 import math
@@ -59,8 +60,8 @@ def stable(text):
 
 
 def fresh(seed=1):
-    return {'version': 1, 'seed': seed, 'elapsed': 0., 'last_wall': time.time(),
-            'objects': {}, 'friends': {}, 'journal': [], 'knowledge': {}, 'skills': {k: 0. for k in SKILLS},
+    return {'version': 2, 'seed': seed, 'elapsed': 0., 'last_wall': time.time(),
+            'objects': {}, 'instances': {}, 'friends': {}, 'journal': [], 'knowledge': {}, 'skills': {k: 0. for k in SKILLS},
             'preferences': {}, 'habits': {}, 'projects': {k: {'stage': 0, 'work': 0} for k in PROJECTS},
             'stocks': {}, 'plan': None, 'policy': 'balanced', 'next_decision': 20.,
             'cooldowns': {}, 'decision': [], 'weather': {}, 'promises': [], 'seen_events': [],
@@ -94,6 +95,8 @@ class LivingPond:
             # Physical visitor reservations belong to a live visit, not a save.
             self.state['plan'].pop('company',None)
             self.state['plan']['company_tried']=True
+        for records in (self.state['objects'],self.state['instances']):
+            for obj in records.values():obj['active']=False
         self.state['journal'] = self.state['journal'][-120:]
         self.state['promises'] = self.state['promises'][-24:]
         from engine.mind_garden import MindGarden
@@ -155,14 +158,22 @@ class LivingPond:
         owned |= set(g.treasure.found_treasures) | set(g.fishing.fish_caught)
         owned |= {s.blueprint_id for s in g.building.structures if s.status.value == 'complete'}
         self.owned = owned
+        physical = object_history.sync(self)
+        self.physical_belongings = physical
+        previous_placements = [(p.item_id,p.instance,p.x,p.y) for p in getattr(self,'placements',[])]
         self.placements = [*habitat_placements(g),*outdoor_decorations(g),*complete_structures(g)]
+        if previous_placements != [(p.item_id,p.instance,p.x,p.y) for p in self.placements]:self._cache=None
         self.placed = {i.item_id: i for i in self.placements}
+        object_history.catalogue(self, physical)
+        object_history.bind_legacy_plan(self)
         for key in owned:
             if key not in ITEMS:
                 continue
             self.state['objects'].setdefault(key, {'condition': 1., 'wetness': 0., 'dirt': 0.,
                 'bond': 0., 'uses': 0, 'last_use': -1000., 'growth': .35, 'active': False})
             if key in botany.ROOTED:botany.state(self.state['objects'][key])
+        for item, obj, _ in object_history.records(self):
+            if item in botany.ROOTED:botany.state(obj)
         for friend in g.friends.friends.values():
             self.state['friends'].setdefault(friend.id, {'trust': .25, 'warmth': .3,
                 'reliability': .5, 'energy': .8, 'social': .7, 'last_shared': -1000.,
@@ -182,6 +193,9 @@ class LivingPond:
         for biome, resources in RESOURCE_POOLS.items():
             for resource in resources:
                 stocks.setdefault(biome + ':' + resource, 6.)
+
+    def object_state(self, item, ref=None):
+        return object_history.resolve(self, item, ref)
 
     def save(self):
         result = copy.deepcopy(self.state)
@@ -321,8 +335,7 @@ class LivingPond:
         home_temperature=base+math.sin((getattr(self,'hour',12)-8)*math.pi/12)*5+(10 if any(w in home_type for w in ('heat','scorch','muggy')) else -12 if any(w in home_type for w in ('snow','blizzard','frost','cold','freez','ice')) else -4 if home_wet else 0)
         home_ecology=dict(e if getattr(self,'biome','pond')=='pond' else s['biomes'].get('pond',fresh()['ecology']))
         home_ecology['wind']=(.75 if any(w in home_type for w in ('wind','storm','breez','blizzard')) else .12)*home_intensity
-        for key, obj in s['objects'].items():
-            outdoors = key in getattr(self, 'placed', {})
+        for key, obj, outdoors in object_history.records(self):
             if not outdoors:
                 obj['wetness'] = clamp(obj['wetness'] - minutes*.02)
                 continue
@@ -367,7 +380,7 @@ class LivingPond:
             and not g._duck_building and not g._dream_active and not g._cheese_away
             and not g.renderer._show_talk and not g.interaction_controller.is_interacting())
 
-    def start(self, kind, target='', automatic=False):
+    def start(self, kind, target='', automatic=False, instance=None):
         s = self.state
         if self.minds.encounter_for('cheese'):
             if automatic:return False, 'Cheese is spending time with a friend.'
@@ -377,6 +390,10 @@ class LivingPond:
             return False, 'Cheese is busy. Finish or cancel the current activity first.'
         if self.game.duck.needs.energy < 15 and kind not in ('rest', 'item'):
             return False, 'Cheese needs rest before taking that on.'
+        self.sync()
+        selected = next((p for p in self.placements if p.instance == instance and p.item_id == target), None) if instance else self.placed.get(target)
+        if instance and selected is None:
+            return False, 'That particular object has been put away or replaced.'
         duration = PLANS.get(kind, ('', '', '', 20))[3]
         label = PLANS.get(kind, (kind.replace('_',' ').title(),))[0]
         residence = None
@@ -385,11 +402,13 @@ class LivingPond:
         if kind == 'rest':
             self.sync()
             places = shelters.candidates(self, target)
+            places = [r for r in places if not instance or r.get('instance') == instance]
             if target and not places:
                 return False, 'That resting place is not reachable, suitable for Cheese, or sheltered from this weather.'
             if places:
                 residence = places[0]
                 target = residence['id']
+                instance=residence['instance']
                 label = ('Wait out the weather in ' if shelters.adverse(self.weather_type) else 'Settle into ') + ITEMS[target]['name']
             else:
                 label = 'Take a quiet rest nearby'
@@ -403,20 +422,24 @@ class LivingPond:
             if target in instrument_sessions.INSTRUMENTS:
                 self.minds.sync()
                 choices=instrument_sessions.candidates(self.minds,'cheese',target)
+                choices = [r for r in choices if not instance or r.get('instance') == instance]
                 if not choices:
                     return False, 'Place that instrument in a reachable spot with a free place, and wait for the storm to pass.'
                 instrument=choices[0]
+                instance=instrument['instance']
             if target in furniture_rests.SEATS:
                 choices=furniture_rests.candidates(self,target)
+                choices = [r for r in choices if not instance or r.get('instance') == instance]
                 if not choices:
                     return False, 'Place that seat in a reachable spot with a free place, and wait for dry weather.'
                 seating=choices[0]
+                instance=seating['instance']
             if profile['family'] in ('slide','swing','trampoline','seesaw','sandbox','horse') and target not in self.placed:
                 return False, 'Place '+profile['name']+' in the habitat before Cheese uses it.'
             if target in water_routines.WATER:
                 if target not in self.placed:
                     return False, 'Place '+profile['name']+' in the habitat before Cheese uses it.'
-                if not water_routines.choose(self,target):
+                if not water_routines.choose(self,target,instance or (selected.instance if selected else None)):
                     return False, 'Cheese would rather leave the water alone in this weather.'
             if profile['kind'] in ('food','wearable'):
                 return False, 'Use the original inventory or wardrobe to eat or equip this item.'
@@ -426,20 +449,20 @@ class LivingPond:
                     return False,'Place '+profile['name']+' at Home Pond before tending it.'
                 if any(w in self.weather_type for w in ('storm','blizzard')):
                     return False,'Let the storm pass before tending the plants.'
-                if any(r['id']==target and r['slot']==0 and r['destination']==shelters.position(self.placed[target]) for r in self.minds.gardening.values()):
+                if any(r['id']==target and r['slot']==0 and r['destination']==shelters.position(selected) for r in self.minds.gardening.values()):
                     return False,'A visitor is tending that spot. Let them finish their care first.'
-                mode=botany.care_mode(self,target)
+                mode=botany.care_mode(self,target,instance or (selected.instance if selected else None))
                 label={'water':'Water the roots of ','brush':'Brush debris from ','inspect':'Inspect '}[mode]+profile['name']
             if profile['family'] in ('slide','swing','trampoline','seesaw','horse'):
                 label = ('Explore ' if self.game.duck.growth_stage in ('hatchling','duckling') else 'Ride ') + profile['name']
-            if s['elapsed'] - s['objects'][target]['last_use'] < 60:
+            if s['elapsed'] - self.object_state(target,instance or (selected.instance if selected else None))['last_use'] < 60:
                 return False, 'Give that a moment. Cheese would enjoy some variety.'
         elif kind in ('clean_item', 'repair_item'):
             if target not in getattr(self,'owned',set()) or target not in ITEMS:
                 return False, 'You do not own that item.'
             if target in self.placed and self.location != 'Home Pond':
                 return False, 'That item is back at Home Pond.'
-            obj = s['objects'][target]
+            obj = self.object_state(target,instance or (selected.instance if selected else None))
             if kind == 'repair_item' and obj['condition'] >= .95:
                 return False, 'It is already in excellent condition.'
             if kind == 'clean_item' and obj['dirt'] < .05:
@@ -466,7 +489,8 @@ class LivingPond:
             duration = 24
         elif kind not in PLANS:
             return False, 'Unknown activity.'
-        if s['elapsed'] < s['cooldowns'].get(kind+':'+target, -1):
+        instance = instance or (selected.instance if selected else None)
+        if s['elapsed'] < s['cooldowns'].get(kind+':'+(instance or target), -1):
             return False, 'Cheese needs a little variety before doing that again.'
         skill = ITEMS.get(target, {}).get('skill', PLANS.get(kind, ('','','care'))[2])
         duration *= max(.75, 1-math.sqrt(s['skills'].get(skill,0)/12)*.015)
@@ -476,7 +500,8 @@ class LivingPond:
         s['plan'] = {'kind': kind, 'target': target, 'label': label, 'elapsed': 0., 'duration': duration,
                      'phase': 'approach', 'automatic': automatic, 'paused': False, 'location': self.location,
                      'learning_before': self.minds.before(kind)}
-        if kind=='item' and target in botany.ROOTED:s['plan']['plant_care']=botany.care_mode(self,target)
+        if instance:s['plan']['instance']=instance
+        if kind=='item' and target in botany.ROOTED:s['plan']['plant_care']=botany.care_mode(self,target,s['plan'])
         if residence:
             s['plan']['residence'] = residence
         if seating:
@@ -492,12 +517,15 @@ class LivingPond:
             pos.move_to(*seating['destination'])
         elif instrument:
             pos.move_to(*instrument['destination'])
-        elif target in self.placed:
-            x,y = self.placed[target].get_display_position()
+        elif selected:
+            x,y = selected.get_display_position()
             pos.move_to(round(x*132/20), round(y*42/12))
         elif kind in ('forage','observe','restore','garden','wander'):
             seed = stable((s['elapsed'], kind))
             pos.move_to(12+seed%100, 18+(seed//100)%18)
+        if instance:
+            placement=next(p for p in self.placements if p.instance==instance)
+            s['plan']['destination']=shelters.position(placement)
         if pos._is_directed_movement:
             s['plan']['destination']=[pos.target_x,pos.target_y]
             s['plan']['approach_time']=0.
@@ -511,7 +539,10 @@ class LivingPond:
             return 'Cheese and his friend finish up and go their separate ways.'
         if self.state['plan']:
             target=self.state['plan']['target']
-            if target in self.state['objects']:self.state['objects'][target]['active']=False
+            obj=self.object_state(target,self.state['plan'])
+            if obj is not None:obj['active']=False
+            company=self.state['plan'].get('company')
+            if company and not company.get('done'):company.update(done=True,phase='cancelled')
             plan = self.state['plan']; self.state['plan'] = None
             self.state['next_decision'] = self.state['elapsed']+45
             if self.game: self.game.renderer.duck_pos.cancel_movement()
@@ -530,6 +561,8 @@ class LivingPond:
             return
         if g.duck.current_action in ('feed','play','clean','pet','sleep'):
             return
+        if plan.get('instance') and not shelters.still_placed(self,dict(id=plan['target'],instance=plan['instance'],destination=plan.get('destination'))):
+            self.cancel();return
         residence = plan.get('residence')
         if plan.get('instrument') and (not instrument_sessions.valid(self,plan['instrument']) or plan.get('music_score') and plan['music_score'].get('id') not in instrument_sessions.SCORES):
             self.cancel();return
@@ -602,8 +635,8 @@ class LivingPond:
                 g.renderer.duck_pos.cancel_movement()
                 g.renderer.duck_pos.set_state_by_name(state, duration=0 if residence or company_holding or water_holding or seat_holding or care_holding or music_holding else max(1, plan['duration']-plan['elapsed']))
                 self._last_plan_visual = phase
-        if target in s['objects']:
-            s['objects'][target]['active'] = phase == 'act'
+        obj=self.object_state(target,plan)
+        if obj is not None:obj['active'] = phase == 'act'
         if residence:
             residence['inside'] = phase == 'act'
             if phase == 'act' and not residence.get('routine'):
@@ -613,19 +646,20 @@ class LivingPond:
             if residence or plan.get('company') or plan.get('water_routine') or plan.get('seating') or plan.get('care_routine') or plan.get('instrument'):
                 g.renderer.duck_pos.cancel_movement()
                 g.renderer.duck_pos.set_state_by_name('idle',0)
-            if target in s['objects']: s['objects'][target]['active'] = False
+            if obj is not None:obj['active'] = False
             self._complete(plan)
-            s['cooldowns'][plan['kind']+':'+target] = s['elapsed']+45
+            s['cooldowns'][plan['kind']+':'+(plan.get('instance') or target)] = s['elapsed']+45
             s['next_decision'] = s['elapsed']+35
             self._cache = None
 
     def _complete(self, plan):
         s = self.state; kind = plan['kind']; target = plan['target']; g = self.game
+        if plan.get('instance') and not shelters.still_placed(self,dict(id=target,instance=plan['instance'],destination=plan.get('destination'))):return
         message = ''
         skill = PLANS.get(kind, ('','','care'))[2]
         if kind in ('item','clean_item','repair_item'):
             if target not in self.owned: return
-            obj = s['objects'][target]; profile = ITEMS[target]; skill = profile['skill']
+            obj = self.object_state(target,plan); profile = ITEMS[target]; skill = profile['skill']
             water_mode=water_routines.complete(self,plan)
             furniture_rests.complete(self,plan)
             botanical_care.complete(self,plan)
@@ -671,7 +705,7 @@ class LivingPond:
                 message = ('The weather eased. Cheese peeks out of ' + name + '.'
                            if plan['residence'].get('waited') and not shelters.adverse(self.weather_type)
                            else 'A quiet rest in ' + name + ' helped Cheese recharge.')
-                obj = s['objects'].get(target)
+                obj = self.object_state(target,plan)
                 if obj:
                     obj['uses'] += 1; obj['last_use'] = s['elapsed']
                     obj['bond'] = clamp(obj['bond']+.02)
@@ -751,30 +785,35 @@ class LivingPond:
         if g.friends.current_visit:
             key=g.friends.current_visit.friend_id;record=s['friends'].get(key,{})
             if s['elapsed']-record.get('last_shared',0)>120:choices.append(('share',key,(100-n.social)*.7+25,'a friend is here to spend time together'))
+        choices=[(*choice,None) for choice in choices]
         if self.location=='Home Pond':
-            for key in self.placed:
-                profile=ITEMS.get(key);obj=s['objects'].get(key)
+            for placed in self.placements:
+                key=placed.item_id;instance=placed.instance
+                profile=ITEMS.get(key);obj=self.object_state(key,instance)
                 if not profile or not obj or profile['kind'] in ('food','wearable'):continue
-                water_score=water_routines.choose(self,key) if key in water_routines.WATER else None
+                water_score=water_routines.choose(self,key,instance) if key in water_routines.WATER else None
                 if key in water_routines.WATER and not water_score:continue
                 if s['elapsed']-obj['last_use']<120:continue
                 mode=water_routines.ROUTINES[water_score]['mode'] if water_score else None
                 need='fun' if mode=='edge' else 'energy' if mode in ('sip','soak') else profile['need']
                 score=(100-getattr(n,need))*.6+(1-obj['bond'])*10+s['preferences'].get(key,.5)*8
-                choices.append(('item',key,score,'a useful possession can meet a need'))
+                reason='a useful possession can meet a need'
+                if key in botany.ROOTED and botany.care_mode(self,key,instance)=='water':
+                    score+=35*(1-obj['botany']['moisture']);reason='this plant needs water at its roots'
+                choices.append(('item',key,score,reason,instance))
         ranked=[]
-        for kind,target,score,reason in choices:
-            if s['elapsed'] < s['cooldowns'].get(kind+':'+target,0):continue
+        for kind,target,score,reason,instance in choices:
+            if s['elapsed'] < s['cooldowns'].get(kind+':'+(instance or target),0):continue
             habit=s['habits'].get(kind+':'+str(int(self.hour)),0)*.2
             bias=12 if (s['policy']=='curious' and kind in ('observe','wander','forage')) or (s['policy']=='social' and kind in ('share','practice')) or (s['policy']=='homebody' and kind in ('rest','garden','item','restore')) else 0
             learned=self.minds.model.value('cheese',kind,self.minds.context())*24
-            score+=habit+bias+learned+(stable((int(s['elapsed']/30),kind,target))%7)
+            score+=habit+bias+learned+(stable((int(s['elapsed']/30),kind,instance or target))%7)
             if learned>5:reason+='; past experiences make this appealing'
             if any(k in self.weather_type for k in ('storm','blizzard')) and kind=='rest':score+=35;reason='the weather calls for shelter'
-            ranked.append({'kind':kind,'target':target,'score':round(score,1),'reason':reason})
+            ranked.append({'kind':kind,'target':target,'score':round(score,1),'reason':reason,'instance':instance})
         s['decision']=sorted(ranked,key=lambda c:c['score'],reverse=True)[:5]
         for choice in s['decision']:
-            ok,_=self.start(choice['kind'],choice['target'],automatic=True)
+            ok,_=self.start(choice['kind'],choice['target'],automatic=True,instance=choice.get('instance'))
             if ok:break
 
     def _observe_events(self):
@@ -793,13 +832,13 @@ class LivingPond:
             if self.location!='Home Pond':ok,message=False,'Arrange the habitat when Cheese is back at Home Pond.'
             elif target not in self.game.habitat.owned_items:ok,message=False,'That item is not owned.'
             elif action=='layout_place':
-                ok,message=self.layout.put(target,command.get('x'),command.get('y'))
+                ok,message=self.layout.put(target,command.get('x'),command.get('y'),command.get('instance'))
             elif action=='layout_auto':
-                ok=self.layout.auto_place(target);message='Found a place for it.' if ok else 'There is no clear space for the whole object. Your belongings have not been moved.'
+                ok=self.layout.auto_place(target,instance=command.get('instance'));message='Found a place for it.' if ok else 'There is no clear space for the whole object. Your belongings have not been moved.'
             else:
-                ok=self.game.habitat.store_item(target);message='Put away safely.' if ok else 'Use the wardrobe for that item.'
+                ok=self.game.habitat.store_item(target,command.get('instance'));message='Put away safely.' if ok else 'Use the wardrobe for that item.'
             if ok:
-                if s['plan'] and s['plan']['target']==target:
+                if s['plan'] and s['plan']['target']==target and (not command.get('instance') or s['plan'].get('instance')==command['instance']):
                     self.minds.cancel_encounter('cheese')
                     self.cancel()
                 self.sync()
@@ -879,7 +918,7 @@ class LivingPond:
             s['promises']=s['promises'][-24:]
             return self.notice('Promised '+friend.favorite_activity+' with '+friend.name+' within the next 30 minutes. Invite them and share time to keep it.')
         if action in tuple(PLANS)+('item','clean_item','repair_item','project','share'):
-            ok,msg=self.start(action,target)
+            ok,msg=self.start(action,target,instance=command.get('instance'))
             return self.notice(msg)
 
     def _stories(self):
@@ -928,7 +967,7 @@ class LivingPond:
             elif key=='knowledge':s['knowledge'][STORIES[active['id']]['asset']]=s['knowledge'].get(STORIES[active['id']]['asset'],0)+amount
             elif key=='protection':s['protection']=clamp(s['protection']+amount)
             elif key=='repair':
-                for obj in s['objects'].values():obj['condition']=clamp(obj['condition']+amount)
+                for _,obj,_ in object_history.records(self):obj['condition']=clamp(obj['condition']+amount)
             elif key=='warmth':
                 s['community']['warmth']=clamp(s['community']['warmth']+amount)
                 visit=g.friends.current_visit
@@ -1046,7 +1085,8 @@ class LivingPond:
             'story':self.story_snapshot(),'stories':copy.deepcopy(s['stories']),'protection':s['protection'],
             'elapsed':s['elapsed'],'plan':plan,'policy':s['policy'],'auto':s['auto'],
             'ecology':copy.deepcopy(s['ecology']),'weather':copy.deepcopy(s['weather'].get(getattr(self,'biome','pond'),{})),
-            'objects':{k:dict(v) for k,v in s['objects'].items() if k in getattr(self,'owned',set())},
+            'objects':{k:copy.deepcopy(v) for k,v in s['objects'].items() if k in getattr(self,'owned',set())},
+            'instances':{identity:copy.deepcopy(s['instances'][identity]) for _,item,identity in self.physical_belongings if item in self.owned},
             'placed':list(getattr(self,'placed',{})),'friends':friends,'rare_guest':rare_guest,'projects':projects,
             'skills':dict(s['skills']),'knowledge':dict(s['knowledge']),'decision':copy.deepcopy(s['decision']),
             'journal':copy.deepcopy(s['journal'][-35:]),'promises':copy.deepcopy(s['promises']),

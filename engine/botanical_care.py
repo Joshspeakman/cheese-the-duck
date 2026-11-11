@@ -15,9 +15,9 @@ def flags(pond,item,actor):
         winter=pond.season=='winter',night=pond.hour<6 or pond.hour>=19,
         young=stage in ('hatchling','duckling'),elder=stage in ('elder','legendary'),butterfly=species=='butterfly')
 
-def choose(pond,item,actor='cheese',mode=None):
-    f=flags(pond,item,actor);mode='inspect' if f['butterfly'] else mode or botany.care_mode(pond,item)
-    history=pond.state['objects'][item].get('care_routines',{})
+def choose(pond,item,actor='cheese',mode=None,ref=None):
+    f=flags(pond,item,actor);mode='inspect' if f['butterfly'] else mode or botany.care_mode(pond,item,ref)
+    history=pond.object_state(item,ref).get('care_routines',{})
     choices=[k for k,s in ROUTINES.items() if s['mode']==mode and all(f.get(k)==v for k,v in s['when'].items())
              and (not f['butterfly'] or s['tool']=='none')]
     weights={'fungus':8,'succulent':8,'butterfly':12,'young':6,'elder':6,'winter':5,'night':4,'garden':3,'tree':3,'trap':3,'pot':2,'flower':2}
@@ -34,11 +34,11 @@ def resources_available(pond,routine):
 def advance(pond,plan,dt):
     if not plan.get('plant_care') or plan['phase'] not in ('prepare','act'):return False
     routine=plan.get('care_routine')
-    r={'id':plan['target'],'destination':plan.get('destination')}
+    r={'id':plan['target'],'instance':plan.get('instance'),'destination':plan.get('destination')}
     if not r['destination'] or not valid(pond,r) or distance((pond.game.renderer.duck_pos.x,pond.game.renderer.duck_pos.y),r['destination'])>3:
         plan['care_routine']={'done':True,'interrupted':True};return False
     if not routine:
-        routine=choose(pond,plan['target'],mode=plan['plant_care']);plan['care_routine']=routine
+        routine=choose(pond,plan['target'],mode=plan['plant_care'],ref=plan);plan['care_routine']=routine
         plan['care_session']='cheese:'+str(pond.state['elapsed'])
     if not resources_available(pond,routine):
         routine.update(done=True,interrupted=True);return False
@@ -50,8 +50,8 @@ def advance(pond,plan,dt):
     pond._cache=None
     return not routine['done']
 
-def record(pond,item,routine):
-    obj=pond.state['objects'][item];h=obj.setdefault('care_routines',{})
+def record(pond,item,routine,ref=None):
+    obj=pond.object_state(item,ref);h=obj.setdefault('care_routines',{})
     h[routine['id']]=min(9999,h.get(routine['id'],0)+1);obj['last_care_routine']=routine['id']
 
 def completed(minds,key,session):
@@ -62,7 +62,7 @@ def complete(pond,plan):
     r=plan.get('care_routine')
     if not r or not r.get('done') or r.get('interrupted') or plan.get('care_recorded'):return
     plan['care_recorded']=True
-    record(pond,plan['target'],r);botany.complete(pond,plan)
+    record(pond,plan['target'],r,plan);botany.complete(pond,plan)
     completed(pond.minds,'cheese',plan.get('care_session'))
     pond.remember('garden',r['label']+'.',.4,plan['target'])
 
@@ -70,13 +70,13 @@ def workers(minds):
     result={k:r for k,r in minds.gardening.items() if r['phase'] in ('inside','exit')}
     p=minds.pond.state.get('plan')
     if p and p.get('care_routine') and not p.get('paused') and p['phase'] in ('act','settle'):
-        result['cheese']=dict(id=p['target'],destination=p['destination'],slot=0,session=p['care_session'],routine=p['care_routine'])
+        result['cheese']=dict(id=p['target'],instance=p.get('instance'),destination=p['destination'],slot=0,session=p['care_session'],routine=p['care_routine'])
     return result
 
 def company_tick(minds,dt):
     active=workers(minds)
     for pair,s in list(minds.garden_scenes.items()):
-        if not valid(minds.pond,dict(id=s['item'],destination=s['destination'])) or any(
+        if not valid(minds.pond,dict(id=s['item'],instance=s.get('instance'),destination=s['destination'])) or any(
             minds.presence_tokens.get(k)!=s['tokens'][k] or (not s['completed'][k] and
             (k not in active or active[k]['session']!=s['sessions'][k])) for k in s['sessions']):
             minds.garden_scenes.pop(pair);continue
@@ -95,8 +95,8 @@ def company_tick(minds,dt):
         for b in keys[i+1:]:
             rb=active[b];pair='|'.join((a,b))
             if pair in minds.garden_scenes or ra['routine']['done'] or rb['routine']['done']:continue
-            if ra['id']!=rb['id'] or ra['destination']!=rb['destination'] or ra['slot']==rb['slot']:continue
-            minds.garden_scenes[pair]=dict(item=ra['id'],destination=list(ra['destination']),overlap=0.,
+            if ra['id']!=rb['id'] or ra.get('instance')!=rb.get('instance') or ra['destination']!=rb['destination'] or ra['slot']==rb['slot']:continue
+            minds.garden_scenes[pair]=dict(item=ra['id'],instance=ra.get('instance'),destination=list(ra['destination']),overlap=0.,
                 sessions={a:ra['session'],b:rb['session']},completed={a:False,b:False},
                 tokens={k:minds.presence_tokens[k] for k in (a,b)},contexts={k:minds.context(k) for k in (a,b)})
 
@@ -115,7 +115,7 @@ def candidates(minds,key):
         slots=[s for s in range(capacity) if s not in used]
         if not slots:continue
         slot=slots[0];spot=[dest[0]+(-3 if slot==0 else 3),dest[1]]
-        choices.append(dict(id=item,destination=dest,slot=slot,spot=spot,distance=distance(minds.present[key],spot),
+        choices.append(dict(id=item,instance=placed.instance,destination=dest,slot=slot,spot=spot,distance=distance(minds.present[key],spot),
                             observer=bool(used)))
     return sorted(choices,key=lambda r:r['distance'])
 
@@ -126,8 +126,8 @@ def release(minds,key,finished=False):
         p=minds.pond;routine=r['routine'];item=r['id']
         # Resource effects use the same idempotent transfer as Cheese. An
         # observing partner never repeats the other resident's watering.
-        botany.complete(p,dict(kind='item',target=item,plant_care=routine['mode']))
-        record(p,item,routine)
+        botany.complete(p,dict(kind='item',target=item,instance=r.get('instance'),destination=r['destination'],plant_care=routine['mode']))
+        record(p,item,routine,r)
         note=routine['label']+' at the '+item.replace('_',' ')+'.'
         minds.model.learn(key,'garden',r['context'],.28,minds.now,note)
         minds.model.remember(key,'garden',note,minds.now,.4)
@@ -162,7 +162,7 @@ def tick(minds,dt):
         choices=candidates(minds,key)
         if not choices or choices[0]['distance']>55:
             minds.garden_retry[key]=minds.now+15;continue
-        r=choices[0];routine=choose(p,r['id'],key,'inspect' if r['observer'] else None)
+        r=choices[0];routine=choose(p,r['id'],key,'inspect' if r['observer'] else None,ref=r)
         minds.tasks.pop(key,None)
         minds.gardening[key]={**r,'actor':key,'token':minds.presence_tokens[key],
             'phase':'approach','elapsed':0.,'started':minds.now,'session':key+':'+str(minds.now),
@@ -173,7 +173,7 @@ def tick(minds,dt):
         if key not in minds.present:minds.garden_retry.pop(key)
 
 def snapshot(minds):
-    return [{k:copy.deepcopy(r[k]) for k in ('actor','id','destination','slot','spot','phase','elapsed','routine')} for r in minds.gardening.values()]
+    return [{k:copy.deepcopy(r.get(k)) for k in ('actor','id','instance','destination','slot','spot','phase','elapsed','routine')} for r in minds.gardening.values()]
 
 def motion(minds,key):
     r=minds.gardening.get(key)

@@ -155,7 +155,7 @@ export class SceneCanvas {
         const top=a.y*this.sy-(a.groundRow??a.art.length)*unit*1.5+(a.offsetY||0)*unit;
         return {id:a.id,kind:a.story?'story':'friend',x:left+b.left*unit,y:top+b.top*unit*1.5,w:(b.right-b.left+1)*unit,h:(b.bottom-b.top+1)*unit*1.5};
       }
-      return {id:a.id||scene.visitor?.id,kind:a.story?'story':a.visitor?'friend':'item',x:a.x*this.sx-width/2,y:a.y*this.sy-height,w:width,h:height};
+      return {id:a.id||scene.visitor?.id,instance:a.instance,kind:a.story?'story':a.visitor?'friend':'item',x:a.x*this.sx-width/2,y:a.y*this.sy-height,w:width,h:height};
     });
     this.frames++;
   }

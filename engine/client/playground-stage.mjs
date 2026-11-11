@@ -1,9 +1,10 @@
+import {sameInstance} from './physical-objects.mjs';
 import {PLAY_BLUEPRINTS} from './playground-workshop.mjs';
 const clamp=n=>Math.max(0,Math.min(1,n)),mix=(a,b,u)=>a+(b-a)*u;
 export function playgroundStage(plan,objects,character,stage,motion=true){
  if(plan?.kind!=='item'||plan.paused||!['prepare','act','settle'].includes(plan.phase)||!character)return null;
  const p=PLAY_BLUEPRINTS[plan.target];if(!p||!['slide','swing','tire','trampoline','seesaw','horse','skateboard','sandbox'].includes(p.type))return null;
- const home=objects.find(o=>o.id===plan.target&&(!o.worldPosition||!plan.destination||o.worldPosition.every((n,i)=>Math.abs(n-plan.destination[i])<1.1)));
+ const home=objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&(!o.worldPosition||!plan.destination||o.worldPosition.every((n,i)=>Math.abs(n-plan.destination[i])<1.1)));
  if(!home)return null;
  const progress=clamp(plan.progress??plan.elapsed/plan.duration),u=clamp((progress-.28)/.62),a=home.anchors;
  const young=['hatchling','duckling'].includes(stage);

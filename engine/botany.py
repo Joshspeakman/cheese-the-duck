@@ -32,23 +32,29 @@ def update(pond,item,obj,minutes,rain,intensity,temperature,ecology=None):
     if item in ('tree_cherry','cherry_tree') and getattr(pond,'season','spring')!='spring':target*=.2
     b['bloom']=clamp(b['bloom']+(target-b['bloom'])*min(1,minutes*.02))
 
-def care_mode(pond,item):
-    b=state(pond.state['objects'][item])
+def care_mode(pond,item,ref=None):
+    b=state(pond.object_state(item,ref))
     game=getattr(pond,'game',None)
     thirsty_crops=item=='garden_plot' and game and any(p.is_unlocked and p.needs_water for p in game.garden.plots.values())
     if (thirsty_crops or b['moisture']<(.25 if ROOTED[item]['type']=='succulent' else .5)) and pond.state['ecology']['water']>.15 and pond.state['ecology']['temperature']>3:
         return 'water'
-    if pond.state['objects'][item]['dirt']>.25:return 'brush'
+    if pond.object_state(item,ref)['dirt']>.25:return 'brush'
     return 'inspect'
 
 def complete(pond,plan):
     item=plan['target']
     if item not in ROOTED or plan['kind']!='item' or plan.get('plant_care_done'):return
+    if plan.get('instance'):
+        from engine.shelters import still_placed
+        if not still_placed(pond,dict(id=item,instance=plan['instance'],destination=plan.get('destination'))):return
     # Re-entrant callbacks cannot water twice. The activity lifecycle additionally
     # consumes its plan before any reward or learning callbacks are invoked.
     plan['plant_care_done']=True
     if item not in pond.placed:return
-    b=state(pond.state['objects'][item]);mode=plan.get('plant_care','inspect')
+    ref=plan
+    obj=pond.object_state(item,ref)
+    if obj is None:return
+    b=state(obj);mode=plan.get('plant_care','inspect')
     if mode=='water':
         e=pond.state['ecology']
         if e['water']<=.15 or e['temperature']<=3:return
@@ -63,5 +69,5 @@ def complete(pond,plan):
                 before=plot.plant.water_level
                 game._garden_water(plot.plot_id)
                 e['water']=clamp(e['water']-max(0,plot.plant.water_level-before)/100*.006)
-    elif mode=='brush':pond.state['objects'][item]['dirt']=max(0,pond.state['objects'][item]['dirt']-.3)
+    elif mode=='brush':pond.object_state(item,ref)['dirt']=max(0,pond.object_state(item,ref)['dirt']-.3)
     b['care_count']=min(99999,b['care_count']+1);b['last_care']=mode

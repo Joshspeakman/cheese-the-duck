@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Set
 from enum import Enum
 import random
+from world.physical_identity import new_identity, saved_identity
 
 
 class DecorationCategory(Enum):
@@ -67,6 +68,7 @@ class PlacedDecoration:
     position: Tuple[int, int]  # grid position
     placed_at: str
     rotation: int = 0  # 0, 90, 180, 270
+    instance_id: str = field(default_factory=new_identity)
 
 
 @dataclass
@@ -479,6 +481,7 @@ class DecorationsSystem:
     
     def __init__(self):
         self.owned_decorations: Dict[str, int] = {}  # decoration_id -> count
+        self.stored_placements: List[PlacedDecoration] = []
         self.rooms: Dict[str, Room] = {
             "bedroom": Room(RoomType.BEDROOM, "Cozy Bedroom", (8, 6)),
             "living": Room(RoomType.LIVING, "Living Room", (10, 8)),
@@ -556,6 +559,10 @@ class DecorationsSystem:
             placed_at=datetime.now().isoformat(),
         )
         
+        previous = next((d for d in self.stored_placements if d.decoration_id == decoration_id), None)
+        if previous is not None:
+            placed.instance_id = previous.instance_id
+            self.stored_placements.remove(previous)
         room.decorations.append(placed)
         self.owned_decorations[decoration_id] -= 1
         
@@ -597,6 +604,7 @@ class DecorationsSystem:
                 
                 # Remove and return to inventory
                 room.decorations.pop(i)
+                self.stored_placements.append(placed)
                 self.owned_decorations[placed.decoration_id] = \
                     self.owned_decorations.get(placed.decoration_id, 0) + 1
                 
@@ -738,6 +746,7 @@ class DecorationsSystem:
         """Convert to dictionary for saving."""
         return {
             "owned_decorations": self.owned_decorations,
+            "stored_placements": [dict(decoration_id=d.decoration_id, room=d.room.value, position=d.position, placed_at=d.placed_at, rotation=d.rotation, instance_id=d.instance_id) for d in self.stored_placements],
             "rooms": {
                 rtype: {
                     "room_type": room.room_type.value,
@@ -751,6 +760,7 @@ class DecorationsSystem:
                             "position": d.position,
                             "placed_at": d.placed_at,
                             "rotation": d.rotation,
+                            "instance_id": d.instance_id,
                         }
                         for d in room.decorations
                     ],
@@ -787,8 +797,9 @@ class DecorationsSystem:
                         position=tuple(d["position"]),
                         placed_at=d["placed_at"],
                         rotation=d.get("rotation", 0),
+                        instance_id=saved_identity(d, "decoration:" + rtype, index),
                     )
-                    for d in rdata.get("decorations", [])
+                    for index, d in enumerate(rdata.get("decorations", []))
                 ],
                 theme=rdata.get("theme"),
                 mood_modifier=rdata.get("mood_modifier", 0),
@@ -796,6 +807,7 @@ class DecorationsSystem:
             )
             system.rooms[rtype] = room
         
+        system.stored_placements = [PlacedDecoration(d["decoration_id"], RoomType(d["room"]), tuple(d["position"]), d["placed_at"], d.get("rotation", 0), saved_identity(d, "decoration-storage", i)) for i, d in enumerate(data.get("stored_placements", []))]
         system.total_beauty = data.get("total_beauty", 0)
         system.total_comfort = data.get("total_comfort", 0)
         system.favorite_room = data.get("favorite_room")

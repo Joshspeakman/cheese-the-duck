@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: reconstructed nine musical objects and integrated 25 authored phrases with native notes, posed wings/bills/sticks/brushes, contextual expression, independent regular/rare/story musicians, synchronized duets and completed memories/learning. Added bounded procedural instrument voices with safe registered mixer workers and tested mute/cancel/shutdown. All 109 JavaScript tests and native music checks (142) pass; all-cast/age contact fitting covers 20,160 cases. Broader simulation, saves, gardening, seating, playdates, brains, placement and original gameplay checks passed. Artwork now totals 163 of 542; no object yet satisfies 48 bespoke sequences. Full milestone remains active and the installed 2.36.0 is unchanged.",
+  "previous_goal_turn": "Progress: physical copies now have persistent identities and independent condition, plant biology, care/use and performance histories. Save migration preserves the old aggregate on one representative without duplicating history; habitat/decorations/structures retain identities through storage and reload. Activities, visitors, original item interactions, natural-chat activity facts and Ultra rendering resolve the actual copy. Clicking, inspecting, choosing, moving and storing twins is verified through the real Electron notebook and native game. Cheese can independently choose a thirsty plant over its well-watered twin. All 112 JavaScript tests, 60 targeted native checks and 11 live copy-UI checks pass, alongside existing simulation/gameplay suites. This adds no artwork or completed 48-sequence repertoire: 163 of 542 drawings reconstructed, 379 remaining, all per-object sequence counts still unverified. Full milestone remains active and installed 2.36.0 is unchanged.",
   "items": [
     {
       "id": "hat_red",
@@ -3769,7 +3769,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "instrument_art_performances_and_native_audio",
+    "sourcePhase": "physical_object_history_and_storage",
     "fullyOverhauled": false,
     "constructedObjects": 163,
     "remainingArtwork": 379,
@@ -3872,7 +3872,14 @@
       "engine/artifacts/animation-milestone/music-phrases-3.png",
       "engine/artifacts/animation-milestone/music-phrases-4.png",
       "engine/artifacts/animation-milestone/music-phrases-5.png",
-      "engine/artifacts/animation-milestone/music-phrases-6.png"
+      "engine/artifacts/animation-milestone/music-phrases-6.png",
+      "engine/artifacts/animation-milestone/physical-objects-native.json",
+      "engine/artifacts/animation-milestone/physical-objects-render.json",
+      "engine/artifacts/animation-milestone/physical-object-js-suite.log",
+      "engine/artifacts/animation-milestone/physical-object-inspector.png",
+      "engine/artifacts/animation-milestone/physical-object-arrangement.png",
+      "engine/artifacts/animation-milestone/physical-object-world.png",
+      "engine/artifacts/animation-milestone/physical-objects-regressions.json"
     ],
     "next": [
       "Expand instrument-specific and guest-specific performance repertoires beyond the 25 shared phrase cores, with explicit approach/climbing, stationary multi-level supports, instrument pickup/put-away, listening audiences and richer reciprocal musical gestures. Keep all per-object sequence counts unverified until the 48 meaningful sequence audit passes. Continue the remaining 379 artwork reconstructions and all other milestone requirements.",
@@ -3884,11 +3891,10 @@
       "Expand guest-specific and age-specific behavior; eighteen shared tracks are not a complete bespoke catalogue.",
       "Extend invitations, prop handoffs and cooperative item use, with real arrival and completion evidence.",
       "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation.",
-      "Add physical reading, desk/workbench actions, cabinet/wardrobe/mirror use and construction-specific furniture routines; the 16 shared seating tracks do not satisfy the per-object 48-sequence target.",
-      "Audit persistent condition and plant biology for duplicate placed copies: physical reservations are per destination, while existing object state is still keyed by catalogue item. Separate per-copy state with a save migration before claiming complete independent object simulation."
+      "Add physical reading, desk/workbench actions, cabinet/wardrobe/mirror use and construction-specific furniture routines; the 16 shared seating tracks do not satisfy the per-object 48-sequence target."
     ],
     "checks": {
-      "javascript": 109,
+      "javascript": 112,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 22,
@@ -3896,7 +3902,7 @@
       "learningBrains": 44,
       "shelterLifecycle": 30,
       "pairedLifecycle": 16,
-      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Initial character-operated tools are now reviewed separately below; plant-specific social routines and every-object 48-sequence coverage remain unfinished. Botanical care: 19 score illustrations on four sheets plus real native solo/company replay. Connected mirrored grips, fixed character scale, supported feet, age-sized tools, actual soil/rim/leaf contacts, downward pours, butterfly hovering, reduced motion and selectable visiting gardeners verified. Interrupted and incomplete shared work grant no shared memory; completed care teaches gardening. Tool pickup/put-away and individual-object/guest repertoires remain unfinished. Music review: nine instrument constructions on three sheets, 25 phrases at three phases on seven sheets, plus real native solo/shared scenes. All eight hatched ages and 48 visitor rigs remain bounded with fixed body scale; mirrored grips, real bill contact, depressed keys/valves, ringing cymbals/chimes, radio knobs, fan brushes, supported feet and continuous note-to-note travel are checked. Actual regular, rare and story visitors reserve independent destinations, and visitor-to-visitor duets work without crediting Cheese. Shared native clocks emit each note once, skip missed-note bursts and grant learning/memories only upon completion. Muting, direct care, pauses, moved objects, storms, replaced visits and safe worker shutdown are verified. Physical entry/climbing and full individual object/guest repertoires remain unfinished.",
+      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Initial character-operated tools are now reviewed separately below; plant-specific social routines and every-object 48-sequence coverage remain unfinished. Botanical care: 19 score illustrations on four sheets plus real native solo/company replay. Connected mirrored grips, fixed character scale, supported feet, age-sized tools, actual soil/rim/leaf contacts, downward pours, butterfly hovering, reduced motion and selectable visiting gardeners verified. Interrupted and incomplete shared work grant no shared memory; completed care teaches gardening. Tool pickup/put-away and individual-object/guest repertoires remain unfinished. Music review: nine instrument constructions on three sheets, 25 phrases at three phases on seven sheets, plus real native solo/shared scenes. All eight hatched ages and 48 visitor rigs remain bounded with fixed body scale; mirrored grips, real bill contact, depressed keys/valves, ringing cymbals/chimes, radio knobs, fan brushes, supported feet and continuous note-to-note travel are checked. Actual regular, rare and story visitors reserve independent destinations, and visitor-to-visitor duets work without crediting Cheese. Shared native clocks emit each note once, skip missed-note bursts and grant learning/memories only upon completion. Muting, direct care, pauses, moved objects, storms, replaced visits and safe worker shutdown are verified. Physical entry/climbing and full individual object/guest repertoires remain unfinished. Physical-copy review: distinct healthy/thirsty fern state, exact click identities, copy-specific inspector and arrangement controls reviewed in Electron. Live UI commands target the selected copy; storing/restoring one retains its history and leaves its sibling outside. Same-position replacement cannot inherit a current musician or reward. Physical state snapshots are detached from saves.",
       "nestLifecycle": 34,
       "nestReplay": {
         "nativeSceneFrames": 41,
@@ -3994,7 +4000,10 @@
         "medianMs": 4.900000035762787,
         "p95Ms": 17.5,
         "note": "Development replay, not the final whole-milestone performance audit."
-      }
+      },
+      "physicalObjectLifecycle": 60,
+      "physicalObjectUI": 11,
+      "physicalObjectRenderTests": 3
     },
     "limitations": [
       "163 of 542 object artworks reconstructed for review; 379 remain.",
@@ -4018,6 +4027,16 @@
     "seatingSharedTracks": 4,
     "botanicalCareCoreScores": 19,
     "musicPhraseCores": 25,
-    "musicObjects": 9
+    "musicObjects": 9,
+    "physicalObjectState": {
+      "schema": 2,
+      "identities": "habitat, decoration and structure instances",
+      "migration": "deterministic legacy identities; one representative inherits previous aggregate history",
+      "storage": "physical belongings retain identity and history; stored plants stop growing",
+      "activities": "copy-specific care, original interactions, shelter, water, toys, seating, gardening and music; moved or replaced destinations cancel",
+      "autonomy": "evaluates each placed copy and its own need, biology and cooldown",
+      "ui": "copy-aware click inspection, preview, selection, care and habitat arrangement",
+      "sequenceCoverageAdded": 0
+    }
   }
 }

@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 import json
 from pathlib import Path
 
+from world.physical_identity import new_identity, saved_identity
 from world.shop import ShopItem, get_item, ItemCategory
 
 
@@ -92,23 +93,26 @@ class PlacedItem:
     anim_offset_y: float = 0.0  # Temporary y offset for animation
     anim_start: float = 0.0  # When animation started
     is_animating: bool = False
+    instance_id: str = field(default_factory=new_identity)
 
     def to_dict(self) -> dict:
         return {
             "item_id": self.item_id,
             "x": self.x,
             "y": self.y,
+            "instance_id": self.instance_id,
             "last_interaction": self.last_interaction
             # Don't save animation state
         }
 
     @staticmethod
-    def from_dict(data: dict) -> "PlacedItem":
+    def from_dict(data: dict, index=0, scope="habitat") -> "PlacedItem":
         return PlacedItem(
             item_id=data.get("item_id", ""),
             x=data.get("x", 0),
             y=data.get("y", 0),
-            last_interaction=data.get("last_interaction", 0)
+            last_interaction=data.get("last_interaction", 0),
+            instance_id=saved_identity(data, scope, index)
         )
 
     def start_animation(self, anim_type: str = "bounce"):
@@ -169,6 +173,7 @@ class Habitat:
     def __init__(self):
         self.owned_items: List[str] = []  # Item IDs owned
         self.placed_items: List[PlacedItem] = []  # Items placed in habitat
+        self.stored_placements: List[PlacedItem] = []
         self.stored_items: List[str] = []  # Item IDs that are hidden/stored (not visible)
         self.equipped_cosmetics: Dict[str, str] = {}  # slot -> item_id
         self.currency: int = 100  # Starting currency
@@ -257,6 +262,12 @@ class Habitat:
                             self.place_item(item_id, nx, ny)
                             return
     
+    def take_stored_placement(self, item_id, instance=None):
+        item = next((p for p in self.stored_placements if p.item_id == item_id and (not instance or p.instance_id == instance)), None)
+        if item is not None:
+            self.stored_placements.remove(item)
+        return item
+
     def owns_item(self, item_id: str) -> bool:
         """Check if player owns an item."""
         return item_id in self.owned_items
@@ -276,7 +287,8 @@ class Habitat:
         if self.get_item_at(x, y):
             return False
         
-        placed = PlacedItem(item_id=item_id, x=x, y=y)
+        placed = self.take_stored_placement(item_id) or PlacedItem(item_id=item_id, x=x, y=y)
+        placed.x, placed.y = x, y
         self.placed_items.append(placed)
         return True
     
@@ -285,6 +297,7 @@ class Habitat:
         item = self.get_item_at(x, y)
         if item:
             self.placed_items.remove(item)
+            self.stored_placements.append(item)
             return True
         return False
     
@@ -394,6 +407,8 @@ class Habitat:
         data = {
             "owned_items": self.owned_items,
             "placed_items": [item.to_dict() for item in self.placed_items],
+            "stored_placements": [item.to_dict() for item in self.stored_placements],
+            "stored_items": self.stored_items,
             "equipped_cosmetics": self.equipped_cosmetics,
             "currency": self.currency
         }
@@ -411,7 +426,9 @@ class Habitat:
                 data = json.load(f)
             
             self.owned_items = data.get("owned_items", [])
-            self.placed_items = [PlacedItem.from_dict(item) for item in data.get("placed_items", [])]
+            self.placed_items = [PlacedItem.from_dict(item, i) for i, item in enumerate(data.get("placed_items", []))]
+            self.stored_placements = [PlacedItem.from_dict(item, i, "habitat-storage") for i, item in enumerate(data.get("stored_placements", []))]
+            self.stored_items = data.get("stored_items", [])
             self.equipped_cosmetics = data.get("equipped_cosmetics", {})
             self.currency = data.get("currency", 100)
         except Exception as e:
@@ -422,6 +439,7 @@ class Habitat:
         return {
             "owned_items": self.owned_items,
             "placed_items": [item.to_dict() for item in self.placed_items],
+            "stored_placements": [item.to_dict() for item in self.stored_placements],
             "stored_items": self.stored_items,
             "equipped_cosmetics": self.equipped_cosmetics,
             "currency": self.currency
@@ -430,7 +448,8 @@ class Habitat:
     def from_dict(self, data: dict):
         """Load habitat from dictionary."""
         self.owned_items = data.get("owned_items", [])
-        self.placed_items = [PlacedItem.from_dict(item) for item in data.get("placed_items", [])]
+        self.placed_items = [PlacedItem.from_dict(item, i) for i, item in enumerate(data.get("placed_items", []))]
+        self.stored_placements = [PlacedItem.from_dict(item, i, "habitat-storage") for i, item in enumerate(data.get("stored_placements", []))]
         self.stored_items = data.get("stored_items", [])
         self.equipped_cosmetics = data.get("equipped_cosmetics", {})
         self.currency = data.get("currency", 100)
@@ -481,11 +500,12 @@ class Habitat:
         else:
             # Currently placed -> store it
             # Remove from placed_items
+            self.stored_placements.extend(p for p in self.placed_items if p.item_id == item_id)
             self.placed_items = [p for p in self.placed_items if p.item_id != item_id]
             self.stored_items.append(item_id)
             return 'stored'
     
-    def store_item(self, item_id: str) -> bool:
+    def store_item(self, item_id: str, instance=None) -> bool:
         """Store (hide) an item from the habitat. Returns True if successful."""
         if item_id not in self.owned_items:
             return False
@@ -493,11 +513,22 @@ class Habitat:
         item = get_item(item_id)
         if item and item.category == ItemCategory.COSMETIC:
             return False
+
+        if instance:
+            placed = next((p for p in self.placed_items if p.item_id == item_id and p.instance_id == instance), None)
+            if placed is None:
+                return any(p.item_id == item_id and p.instance_id == instance for p in self.stored_placements)
+            self.placed_items.remove(placed)
+            self.stored_placements.append(placed)
+            if not any(p.item_id == item_id for p in self.placed_items) and item_id not in self.stored_items:
+                self.stored_items.append(item_id)
+            return True
         
         if item_id in self.stored_items:
             return True  # Already stored
         
         # Remove from placed_items
+        self.stored_placements.extend(p for p in self.placed_items if p.item_id == item_id)
         self.placed_items = [p for p in self.placed_items if p.item_id != item_id]
         self.stored_items.append(item_id)
         return True

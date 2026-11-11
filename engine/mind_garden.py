@@ -135,7 +135,7 @@ class MindGarden:
                 if routine and not routine.get('done'):
                     facts['current_activity']=routine['label']
                 from engine.nest_routines import ROUTINES
-                history=self.pond.state['objects'].get(plan['target'],{}).get('routines',{})
+                history=(self.pond.object_state(plan['target'],plan) or {}).get('routines',{})
                 facts['familiar_nest_routines']=[ROUTINES[k]['label'] for k,n in sorted(history.items(),key=lambda entry:entry[1],reverse=True) if k in ROUTINES and n>=2][:3]
         musician=self.musicians.get(key)
         if musician:

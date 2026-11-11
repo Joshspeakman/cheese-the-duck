@@ -34,10 +34,10 @@ def choose(pond,plan):
     from world.guest_cast import guest_profile
     profile=guest_profile(resident['cast']) or {};species=profile.get('species','duck')
     adult=stage not in ('hatchling','duckling','elder','legendary')
-    last=pond.state['objects'][plan['target']].get('last_playdate')
+    last=pond.object_state(plan['target'],plan).get('last_playdate')
     options=[k for k,s in SCORES.items() if s['family']==family]
     if family=='seesaw' and (not adult or resident['traits']['confidence']<.4):options=['seesaw_gentle']
-    if family=='ball' and (not adult or pond.state['objects'][plan['target']].get('wetness',0)>.4):options=['ball_pass']
+    if family=='ball' and (not adult or pond.object_state(plan['target'],plan).get('wetness',0)>.4):options=['ball_pass']
     kind=next((k for k in options if k!=last),options[0])
     return {'id':kind,'label':SCORES[kind]['label'],'partner':partner,'token':minds.presence_tokens[partner],
             'destination':destination,'spot':spot,'location':pond.location,'phase':'approach','elapsed':0.,'waited':0.,
@@ -55,7 +55,7 @@ def advance(pond,plan,dt):
     key=scene['partner']
     valid=(key in minds.present and minds.presence_tokens[key]==scene['token'] and key not in minds.housing
            and not departing(minds,key) and pond.location==scene['location'] and not shelters.adverse(pond.weather_type)
-           and shelters.still_placed(pond,{'id':plan['target'],'destination':scene['destination']}))
+           and shelters.still_placed(pond,{'id':plan['target'],'instance':plan.get('instance'),'destination':scene['destination']}))
     if not valid:
         scene.update(done=True,phase='cancelled');return False
     if distance(minds.present['cheese'],scene['destination'])>3:
@@ -78,7 +78,7 @@ def advance(pond,plan,dt):
         for actor,other in [('cheese',key),(key,'cheese')]:
             minds.model.learn(actor,'share',scene['contexts'][actor],.35,minds.now,note,other)
             minds.model.bond(actor,other,.15,minds.now,note,False)
-        obj=pond.state['objects'][plan['target']]
+        obj=pond.object_state(plan['target'],plan)
         obj['last_playdate']=scene['id'];obj['playdates']=min(9999,obj.get('playdates',0)+1)
         if TOYS[plan['target']]=='sandbox':obj['sandwork']=scene['id']
         pond.remember('shared',note,.75,key);pond._cache=None

@@ -36,7 +36,7 @@ def tick(minds,dt):
     for pair,s in list(minds.house_scenes.items()):
         keys=(s['a'],s['b'])
         valid=all(k in current and minds.presence_tokens[k]==s['tokens'][k]
-                  and current[k]['id']==s['home'] and current[k]['destination']==s['destination']
+                  and current[k]['id']==s['home'] and current[k].get('instance')==s.get('instance') and current[k]['destination']==s['destination']
                   and current[k]['slot']==s['slots'][k] for k in keys)
         if not valid or s['performance'] not in available_scores(minds,*keys):
             minds.house_scenes.pop(pair);continue
@@ -62,8 +62,8 @@ def tick(minds,dt):
     groups={}
     for key,r in current.items():
         if key in busy or minds.now<r.get('company_after',r.get('started',minds.now-7)+6):continue
-        groups.setdefault((r['id'],tuple(r['destination'])),[]).append(key)
-    for (home,destination),keys in groups.items():
+        groups.setdefault((r['id'],r.get('instance'),tuple(r['destination'])),[]).append(key)
+    for (home,instance,destination),keys in groups.items():
         keys.sort(key=lambda k:(len(current[k].get('company_history',[])),current[k].get('company_after',0),current[k]['slot']))
         for n in range(0,len(keys)-1,2):
             a,b=sorted(keys[n:n+2],key=lambda k:current[k]['slot']);ra,rb=current[a],current[b]
@@ -71,11 +71,11 @@ def tick(minds,dt):
             recent=ra.get('company_history',[])[-2:]+rb.get('company_history',[])[-2:]
             kind=next((k for k in choices if k not in recent),choices[0])
             minds.house_scenes[a+'|'+b]={'a':a,'b':b,'performance':kind,'phase':'act','elapsed':0.,
-                'duration':SCORES[kind]['duration'],'home':home,'destination':list(destination),
+                'duration':SCORES[kind]['duration'],'home':home,'instance':instance,'destination':list(destination),
                 'slots':{a:ra['slot'],b:rb['slot']},'tokens':{k:minds.presence_tokens[k] for k in (a,b)},
                 'contexts':{k:minds.context(k) for k in (a,b)}}
             minds.pond._cache=None
 
 def snapshot(minds):
-    return [{k:copy.deepcopy(s[k]) for k in ('a','b','performance','phase','elapsed','duration','home','destination','slots')}
+    return [{k:copy.deepcopy(s.get(k)) for k in ('a','b','performance','phase','elapsed','duration','home','instance','destination','slots')}
             for s in minds.house_scenes.values()]

@@ -313,7 +313,8 @@ class DesktopGame(Game):
         super()._on_interaction_effects_applied(item_id, result)
         if self.living_pond and result:
             self.living_pond.sync()
-            obj = self.living_pond.state['objects'].get(item_id)
+            pending = getattr(self.interaction_controller,'_pending',None)
+            obj = self.living_pond.object_state(item_id,getattr(pending,'instance',None))
             if obj:
                 obj['uses'] += 1
                 obj['bond'] = min(1, obj['bond'] + .02)

@@ -96,5 +96,5 @@ def motion(minds,key):
     return {'target':list(r['destination']), 'facing':facing,'phase':r['phase'],'gesture':gesture}
 
 def snapshot(minds):
-    return [{k:copy.deepcopy(r[k]) for k in ('actor','id','destination','slot','capacity','phase','elapsed','waited')}
+    return [{k:copy.deepcopy(r.get(k)) for k in ('actor','id','instance','destination','slot','capacity','phase','elapsed','waited')}
             for r in minds.housing.values()]

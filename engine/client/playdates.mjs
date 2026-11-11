@@ -1,3 +1,4 @@
+import {sameInstance} from './physical-objects.mjs';
 import SCORES from './animation/playdates.json' with {type:'json'};
 export {SCORES as PLAYDATES};
 const clamp=n=>Math.max(0,Math.min(1,n));
@@ -27,7 +28,7 @@ export function playdatePose(plan,motion=true){
 }
 export function playdateStage(plan,objects,cheese,partner,motion=true){
  const pose=playdatePose(plan,motion);if(!pose||!cheese||!partner)return null;
- const home=objects.find(o=>o.id===plan.target&&o.worldPosition?.every((n,i)=>Math.abs(n-plan.company.destination[i])<1.1));
+ const home=objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.worldPosition?.every((n,i)=>Math.abs(n-plan.company.destination[i])<1.1));
  if(!home?.anchors)return null;const a=home.anchors;
  let seats;
  if(pose.family==='seesaw')seats=[a.seat,a.partner];
