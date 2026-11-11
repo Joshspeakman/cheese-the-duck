@@ -7,10 +7,21 @@ import {homeShore,homeBankOnScreen,surfaceFits,homeScenery} from '../client/habi
 import {layoutBounds,layoutCheck} from '../client/pond-layout.mjs';
 import {LivingWorld} from '../client/ultra-world.mjs';
 import {scene} from './scenes.mjs';
+import {itemSprite,itemWorldScale} from '../client/ultra-items.mjs';
+import {PLAYDATES} from '../client/playdates.mjs';
 
 test('placement measurements stay current with all actual item drawings',()=>{
  execFileSync(process.execPath,[fileURLToPath(new URL('../build-footprints.mjs',import.meta.url)),'--check'],{stdio:'pipe'});
  assert.equal(Object.keys(footprints.items).length,542);
+});
+test('shared ball passages fit their reserved ground, including the expanded court',()=>{
+ for(const id of ['toy_ball','ball'])for(const [score,spec]of Object.entries(PLAYDATES).filter(([,s])=>s.family==='ball')){
+  for(const fraction of [0,.2,.5,.8,1]){
+   const model=itemSprite(id,0,{interaction:{kind:'item',target:id,phase:'act',company:{id:score,phase:'act',elapsed:fraction*spec.duration,duration:spec.duration}}});
+   const width=(model.width+2)*itemWorldScale(id)*model.detailScale;
+   assert.ok(width<=footprints.items[id].width,`${id}: ${score} must not outgrow its bank reservation`);
+  }
+ }
 });
 test('scenery roots and dock reject placement; world anchors follow the same camera as items',()=>{
  const layout={items:[{id:'toy_ball',footprint:footprints.items.toy_ball},{id:'tiny_boat',footprint:footprints.items.tiny_boat}],placed:[],obstacles:[]};

@@ -905,3 +905,29 @@ These are reconstructed artwork and care foundations, not a completed repertoire
 of 48 sequences for each object. Individual visitor clothing participation,
 shared dressing, pickup/put-away and the complete contextual audit remain open.
 The complete milestone is still active; the installed chat release stays 2.36.1.
+
+## Terrain and belongings
+
+All 21 areas share native and renderer terrain definitions in
+`client/animation/terrain-regions.json`. Shorelines, forest streams, dry areas,
+fixed landmark supports and their scenery depth use world coordinates. Camera
+movement cannot change which side of a bank an object occupies. The habitat
+editor uses the same support checks, including tree roots and existing objects.
+`build-footprints.mjs` measures all 542 drawings and the wider shared ball court.
+Regenerate those measurements after changing artwork dimensions.
+
+Portable activities now reserve an object point and an adjacent walking
+destination on suitable terrain. Work waits for arrival; a deployed prop remains
+at its saved point while paused or while Cheese walks back. Travel does not carry
+it into another area. Saving preserves the site and routine clock; cancellation,
+completion or lost ownership releases it without inventing rewards. A water-only
+toy cannot be started in a dry area. Existing ownership and copy histories remain
+authoritative.
+
+Run `engine/check_terrain.py` with the repo's Python environment, followed by
+`engine/node_modules/.bin/electron engine/terrain-check.cjs`. They exercise native
+arrival, reservations, save/load, travel, cancellation and all 21 rendered areas
+at three aspect ratios. `tests/terrain.test.mjs` compares 34,146 support decisions
+across every catalogue drawing and checks camera stability. The existing layout
+and physical-copy checks cover migration, safe storage and the real Arrange UI.
+This placement work does not complete the individual 48-sequence milestone.

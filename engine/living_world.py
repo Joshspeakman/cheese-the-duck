@@ -17,6 +17,7 @@ from engine import shelters, nest_routines, nest_materials, playdates, water_rou
 from world.guest_cast import guest_profile, guest_line
 from engine import nest_company
 from engine import excursions,carnival
+from engine import portable_ground
 
 NEEDS = ('hunger', 'energy', 'fun', 'cleanliness', 'social')
 SKILLS = ('gardening', 'stewardship', 'cooking', 'care', 'building', 'engineering',
@@ -127,6 +128,7 @@ class LivingPond:
             if report['moved'] or report['stored']:
                 self.notice('Made room for the larger artwork: '+str(len(report['moved']))+' items moved, '+str(len(report['stored']))+' safely stored. Open Arrange to choose their places.')
         self.sync()
+        portable_ground.restore(self)
         carnival.restore(self)
         self.minds.sync()
         if offline:
@@ -170,6 +172,8 @@ class LivingPond:
         owned |= set(g.treasure.found_treasures) | set(g.fishing.fish_caught)
         owned |= {s.blueprint_id for s in g.building.structures if s.status.value == 'complete'}
         self.owned = owned
+        plan=self.state.get('plan')
+        if plan and plan.get('portable') and plan['target'] not in owned:self.cancel()
         physical = object_history.sync(self)
         self.physical_belongings = physical
         previous_placements = [(p.item_id,p.instance,p.x,p.y) for p in getattr(self,'placements',[])]
@@ -560,6 +564,9 @@ class LivingPond:
         duration *= max(.75, 1-math.sqrt(s['skills'].get(skill,0)/12)*.015)
         if kind == 'repair_item' and self.location == 'Home Pond' and self.completed('workshop'):
             duration *= .8
+        portable=portable_ground.choose(self,target) if kind=='item' and not selected and not instrument and not seating else None
+        if kind=='item' and not selected and not instrument and not seating and not portable:
+            return False,'There is no suitable clear ground here for that belonging. Try another area or make room at the pond.'
         self.minds.cancel_encounter('cheese')
         s['plan'] = {'kind': kind, 'target': target, 'label': label, 'elapsed': 0., 'duration': duration,
                      'phase': 'approach', 'automatic': automatic, 'paused': False, 'location': self.location,
@@ -596,10 +603,13 @@ class LivingPond:
             s['plan']['seating'] = seating
         if instrument:
             s['plan']['instrument'] = instrument
+        if portable:portable_ground.bind(s['plan'],portable)
         self.game.behavior_ai.cancel_pending_movement()
         self.game.behavior_ai.clear_action()
         pos = self.game.renderer.duck_pos
-        if residence:
+        if portable:
+            pos.move_to(*portable['stance'])
+        elif residence:
             pos.move_to(*residence['destination'])
         elif seating:
             pos.move_to(*seating['destination'])
@@ -661,6 +671,11 @@ class LivingPond:
             return
         if g.duck.current_action in ('feed','play','clean','pet','sleep'):
             return
+        if plan.get('portable'):
+            if not portable_ground.valid(self,plan):self.cancel();return
+            destination=plan['portable']['stance'];pos=g.renderer.duck_pos
+            if plan['phase']!='approach' and abs(pos.x-destination[0])+abs(pos.y-destination[1])>3:
+                portable_ground.walk_back(self,plan);return
         if plan.get('instance') and not shelters.still_placed(self,dict(id=plan['target'],instance=plan['instance'],destination=plan.get('destination'))):
             self.cancel();return
         residence = plan.get('residence')
@@ -705,6 +720,7 @@ class LivingPond:
                 return
             if not plan.get('arrived'):
                 plan['arrived']=True
+                if plan.get('portable'):plan['portable']['deployed']=True
                 pos.cancel_movement()
                 pos.set_state_by_name('thinking',max(3,plan['duration']*.3))
         # A roof is an actual place to wait, not a looping reward animation.
@@ -1062,6 +1078,7 @@ class LivingPond:
         if action=='resume':
             if s['plan'] and self.available() and s['plan']['location']==self.location:
                 s['plan']['paused']=False;self._last_plan_visual=None
+                if s['plan'].get('portable'):portable_ground.walk_back(self,s['plan'])
                 if s['plan'].get('residence'):
                     # An interrupted resident may now be elsewhere. Keep the
                     # unfinished score, but walk back and enter again first.

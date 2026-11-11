@@ -11,7 +11,7 @@ import { eventModel } from './event-art.mjs';
 import { storyModel } from './story-art.mjs';
 import { sceneLight } from './scene-lighting.mjs';
 import { Grid,W,H,C,M,hash,seedOf,clamp,lerp,palette } from './ultra-grid.mjs';
-import { NEST,DOCK,CABIN,RUIN,BOAT,LANTERN,MUSHROOM,CRYSTAL,FLOWERS,BENCH,WELL,ARCH,CLOCKTOWER,MILL } from './ultra-art.mjs';
+import { DOCK,LANTERN } from './ultra-art.mjs';
 
 import { itemSprite,itemWorldScale } from './ultra-items.mjs';
 import { characterSprite } from './ultra-characters.mjs';
@@ -25,7 +25,9 @@ import {playgroundStage} from './playground-stage.mjs';
 import {waterStage} from './water-routines.mjs';
 import {seatOccupants} from './seating-routines.mjs';
 import {residentEnvelope} from './resident-envelope.mjs';
-import {homeBankOnScreen,homeScenery} from './habitat-ground.mjs';
+import {homeScenery} from './habitat-ground.mjs';
+import {region,waterAt,bankOnScreen} from './terrain.mjs';
+import * as LANDMARK_ART from './ultra-art.mjs';
 
 const WATER_BIOMES=new Set(['pond','riverside','beach','swamp']);
 const choice=(s,n)=>s[Math.floor(n*s.length)%s.length];
@@ -104,13 +106,13 @@ export class LivingWorld {
     const g=this.grid,b=s.biome;
     this.water.fill(0);
     for(let x=0;x<W;x++){
-      const bank=s.location==='Home Pond'?homeBankOnScreen(x,s.camera):(s.location==='Deep End'?55:65)+Math.sin(x*.025+seed)*6+Math.sin(x*.077)*2;
+      const camera=s.camera||{x:0,y:0,w:132,h:42},wx=camera.x+(x-24)/192*camera.w;
+      const bank=bankOnScreen(s.location,x,camera);
       this.shore[x]=bank;
       for(let y=43;y<H;y++){
         const r=hash(x,y,seed),r2=hash(x>>2,y>>1,seed),depth=(y-43)/69;
-        let wet=WATER_BIOMES.has(b)&&y>bank;
-        if(b==='forest')wet=Math.abs(x-(119+Math.sin(y*.075)*25))<(y-35)*.13;
-        if(b==='garden'||b==='urban')wet=s.location==='Storm Drain'&&y>77;
+        const wy=camera.y+(y-46)/47*camera.h;
+        const wet=waterAt(s.location,wx,wy,b);
         if(wet){
           this.water[y*W+x]=1;
           const wave=Math.sin(x*.19+t*1.6+y*.6)+Math.sin(x*.049-y*.42+t*.8);
@@ -224,97 +226,66 @@ export class LivingWorld {
       if(this.water[(y|0)*W+(x|0)])g.text(x,y,Math.sin(t*1.3+n)>0?'><>':'><=',C.water);
     }
   }
+  regionFeature(s,f,t,seed){
+    const [x,y]=this.project(s,(f.x-24)*132/192,(f.y-46)*42/47);
+    if(f.kind==='tree'){this.tree(x,y,f.height,f.tree,t,seed+(f.seed||0),f.foreground!==false,f.id);return;}
+    this.sceneryLayer(f.id,y,()=>{
+      const g=this.grid,color=C[f.color]??C.barkLight;
+      if(f.kind==='palm'){this.palm(x,y,f.height,t,seed+(f.seed||0));return;}
+      if(f.kind==='waterfall'){this.waterfall(x,y-f.height,f.height,t);return;}
+      if(f.kind==='fountain'){
+        for(let n=0;n<8;n++)for(let j=0;j<18;j++){
+          const u=j/17;g.put(x+(n-3.5)*u*3,y-6-12*Math.sin(u*Math.PI),choice('|:.',hash(n,Math.floor(j+t*10))),C.waterLight);
+        }
+        g.text(x-10,y-1,'(___________________)',C.barkLight);g.text(x-8,y,'\\_______________/',C.bark);return;
+      }
+      const left=x-f.drawWidth/2,top=y-f.drawHeight+1;
+      const ink=f.art==='ARCH'?ch=>ch==='*'?C.flower:ch==='o'?C.goldLight:color:
+        f.art==='FLOWERS'?ch=>ch==='@'?C.goldLight:'()'.includes(ch)?C.flower:C.grass:
+        f.art==='MUSHROOM'?ch=>ch==='o'?C.white:color:color;
+      g.art(left,top,LANDMARK_ART[f.art],ink);
+      if(f.kind==='mill'){
+        const mx=left+13,my=top+4;
+        for(let n=0;n<4;n++)for(let r=1;r<15;r++){
+          const a=t*.25+n*Math.PI/2,px=mx+Math.cos(a)*r,py=my+Math.sin(a)*r*.55;
+          g.put(px,py,Math.abs(Math.sin(a))>.7?'|':'=',C.barkLight);
+          if(r>7)g.put(px+Math.sin(a)*2,py-Math.cos(a),'#',C.bark);
+        }
+        g.put(mx,my,'@',C.goldLight);
+      }
+      if(f.kind==='dock'){
+        g.art(left+18,top-9,LANTERN,ch=>ch==='*'?C.lamp:C.barkLight);
+        g.line(left+26,top-2,left+26,top+1,'|',C.barkLight,M.wood);
+      }
+    });
+  }
   landmarks(s,t,seed){
-    const g=this.grid,b=s.biome,pan=(s.camera?.x||0)*.2;
-    const treeKind=b==='mountains'?'pine':b==='pond'||b==='swamp'?'willow':'oak';
+    const g=this.grid,b=s.biome,features=region(s.location,s.biome).features;
     if(s.location==='Home Pond'){
       for(const f of homeScenery.filter(f=>f.kind==='willow')){
         const [x,y]=this.project(s,f.x*132/20,f.y*42/12);
         this.tree(x,y,f.height,'willow',t,seed+(f.id==='east_willow'?13:0),true,f.id);
       }
-    }else if(!['beach','garden','urban'].includes(b)&&!this.underground(s)){
-      this.tree(25-pan,68,55,treeKind,t,seed,true);
-      this.tree(217-pan,64,47,treeKind,t,seed+13,true);
-      if(b==='forest'){this.tree(73-pan,57,30,'oak',t,seed+7);this.tree(173-pan,55,35,'oak',t,seed+4);}
     }
-    if(b==='garden'||(b==='urban'&&!this.underground(s)&&s.location!=='Rooftop Garden')){
-      this.tree(18-pan,64,44,'oak',t,seed,true);this.tree(224-pan,67,41,'oak',t,seed+9,true);
-    }
-    this.reflected(t);
-    this.pondLife(s,t,seed);
-    if(b==='pond'){
-      const dock=homeScenery.find(f=>f.kind==='dock');
-      const [x,y]=s.location==='Home Pond'?this.project(s,dock.x*132/20,dock.y*42/12):[184-pan,72];
+    for(const f of features.filter(f=>f.kind==='tree'||f.kind==='palm'))this.regionFeature(s,f,t,seed);
+    this.reflected(t);this.pondLife(s,t,seed);
+    if(s.location==='Home Pond'){
+      const f=homeScenery.find(f=>f.kind==='dock'),[x,y]=this.project(s,f.x*132/20,f.y*42/12);
       this.sceneryLayer('pond_dock',y+3,()=>{
         this.grid.art(x-18,y-4,DOCK,(ch,x,y)=>y<4?C.barkLight:C.bark);
-        this.grid.art(x,y-13,LANTERN,(ch)=>ch==='*'?C.lamp:C.barkLight);
+        this.grid.art(x,y-13,LANTERN,ch=>ch==='*'?C.lamp:C.barkLight);
         this.grid.line(x+8,y-6,x+8,y-3,'|',C.barkLight,M.wood);
       });
     }
-    if(b==='forest'){
-      if(/oak/i.test(s.location))this.tree(120-pan,63,45,'oak',t,seed+8,true);
-      if(/mushroom/i.test(s.location)){for(let n=0;n<5;n++)g.art(52+n*32,61+(n%2)*10,MUSHROOM,(ch)=>ch==='o'?C.white:n%2?C.flower:C.berry);}
-      else g.art(172-pan,54,CABIN,C.bark);
-    }
-    if(b==='garden'){
-      if(s.location==='Tool Shed')g.art(108-pan,42,CABIN,C.barkLight);
-      else g.art(110-pan,45,ARCH,(ch)=>ch==='*'?C.flower:ch==='o'?C.goldLight:C.barkLight);
-      for(let n=0;n<5;n++)for(let j=0;j<5;j++)g.text(66+n*8,66+j*6,'{v}',j%2?C.leafLight:C.leaf);
-      g.art(168-pan,51,WELL,C.barkLight);
-      for(let i=0;i<4;i++)g.art(30+i*48-pan,64+(i%2)*10,FLOWERS,(ch)=>ch==='@'?C.goldLight:'()'.includes(ch)?C.flower:C.grass);
-    }
-    if(b==='meadow'){
-      g.art(157-pan,44,MILL,C.barkLight);
-      const mx=170-pan,my=48;
-      for(let n=0;n<4;n++){
-        const a=t*.25+n*Math.PI/2;
-        for(let r=1;r<15;r++){
-          const x=mx+Math.cos(a)*r,y=my+Math.sin(a)*r*.55;
-          g.put(x,y,Math.abs(Math.sin(a))>.7?'|':'=',C.barkLight);
-          if(r>7)g.put(x+Math.sin(a)*2,y-Math.cos(a),'#',C.bark);
-        }
-      }
-      g.put(mx,my,'@',C.goldLight);
-      g.art(166-pan,60,FLOWERS,(ch)=>ch==='@'?C.goldLight:C.flower);
-      g.art(37-pan,73,FLOWERS,C.flower);
-    }
-    if(b==='riverside'){if(s.location==='Waterfall')this.waterfall(143,38,35,t);
-      else for(let n=0;n<20;n++)g.text(12+hash(n,1,seed)*210,57+hash(n,2,seed)*13,'(._)',C.barkLight);g.art(179-pan,73,BOAT,C.barkLight);g.art(40-pan,57,DOCK,C.bark);}
-    if(b==='beach'){
-      this.palm(25-pan,71,39,t,seed);this.palm(207-pan,67,31,t,seed+2);
-      g.art(169-pan,72,BOAT,C.barkLight);
-      if(/wreck/i.test(s.location))g.art(30-pan,62,BOAT,C.bark);
-      for(let n=0;n<16;n++)g.text(n*16+hash(n,4,seed)*8,58+hash(n,3,seed)*14,'(@)',C.barkLight);
-    }
-    if(b==='swamp'){
-      if(s.location==='Sunken Ruins')g.art(115-pan,58,RUIN,C.hill);
-      if(s.location==='Cypress Hollow')this.tree(165-pan,70,61,'willow',t,seed+8,true);
-      g.art(49-pan,69,MUSHROOM,C.crystal);
-    }
-    if(b==='mountains'){
-      g.art(36-pan,64,CRYSTAL,C.crystal);g.art(174-pan,56,CRYSTAL,C.ice);
-      if(/cave/i.test(s.location)){g.art(80-pan,48,CRYSTAL,C.crystal);g.art(144-pan,45,CRYSTAL,C.crystal);}
-    }
-    if(b==='urban'&&!this.underground(s)){
-      g.art(105-pan,36,CLOCKTOWER,C.barkLight);
-      g.art(29-pan,56,BENCH,C.barkLight);g.art(174-pan,55,BENCH,C.bark);
-      g.art(75-pan,47,LANTERN,C.lamp);g.art(192-pan,40,CABIN,C.hill);
-      if(s.location==='Park Fountain'){
-        const fx=147,fy=67;
-        for(let n=0;n<8;n++)for(let j=0;j<18;j++){
-          const u=j/17;g.put(fx+(n-3.5)*u*3,fy-5-12*Math.sin(u*Math.PI),choice('|:.',hash(n,Math.floor(j+t*10))),C.waterLight);
-        }
-        g.text(fx-10,fy,'(___________________)',C.barkLight);
-        g.text(fx-8,fy+1,'\\_______________/',C.bark);
-      }
-      if(s.location==='Rooftop Garden'){
-        for(let x=5;x<W-5;x++)g.put(x,65,x%7?'_':'|',C.barkLight);
-        for(let n=0;n<4;n++)g.art(38+n*43,71,FLOWERS,C.flower);
-      }
-    }
+    for(const f of features.filter(f=>f.kind!=='tree'&&f.kind!=='palm'))this.regionFeature(s,f,t,seed);
+    const detail=(x,y,text,color)=>{const [px,py]=this.project(s,(x-24)*132/192,(y-46)*42/47);g.text(px,py,text,color);};
+    if(b==='garden')for(let n=0;n<5;n++)for(let j=0;j<5;j++)detail(66+n*8,66+j*6,'{v}',j%2?C.leafLight:C.leaf);
+    if(b==='riverside'&&s.location!=='Waterfall')for(let n=0;n<20;n++)detail(12+hash(n,1,seed)*210,57+hash(n,2,seed)*13,'(._)',C.barkLight);
+    if(b==='beach')for(let n=0;n<16;n++)detail(n*16+hash(n,4,seed)*8,58+hash(n,3,seed)*14,'(@)',C.barkLight);
+    if(s.location==='Rooftop Garden')for(let x=5;x<W-5;x++)detail(x,65,x%7?'_':'|',C.barkLight);
     // Seasonal details around the banks and paths, rooted in stable coordinates.
     for(let n=0;n<14;n++){
-      const x=hash(n,88,seed)*W,y=55+hash(n,87,seed)*43;
+      const [x,y]=this.project(s,(hash(n,88,seed)*W-24)*132/192,(55+hash(n,87,seed)*43-46)*42/47);
       if(!this.water[(y|0)*W+(x|0)]){
         if(s.season==='winter')g.text(x,y,'_*_',C.white);
         else if(s.season==='fall')g.text(x,y,hash(n,5)>.5?'{}':'<>',C.barkLight);
@@ -403,12 +374,12 @@ export class LivingWorld {
     const plan=s.living?.plan;
     if(plan&&!plan.paused&&plan.phase==='act'){const poses={rest:'sleeping',forage:'eating',practice:'dancing',restore:'preening',garden:'preening',observe:'idle',project:'preening',share:'quacking'};state=poses[plan.kind]||state;}
     if(Math.abs(x-target[0])+Math.abs(y-target[1])>.7&&state==='idle')state='walking';
-    if(plan&&!plan.instance&&(!plan.paused||plan.keepsake_work||plan.creative_work||plan.textile_work||plan.ground_work||plan.playkit_work)&&['prepare','act','settle'].includes(plan.phase)&&plan.kind==='item'&&![...(s.items||[]),...(s.structures||[])].some(i=>i.id===plan.target&&sameInstance(i,plan))){
+    if(plan&&(plan.location??s.location)===s.location&&!plan.instance&&(!plan.paused||plan.portable||plan.keepsake_work||plan.creative_work||plan.textile_work||plan.ground_work||plan.playkit_work)&&(['prepare','act','settle'].includes(plan.phase)||plan.portable?.deployed)&&plan.kind==='item'&&![...(s.items||[]),...(s.structures||[])].some(i=>i.id===plan.target&&sameInstance(i,plan))){
       const playkit=plan.playkit_work?playkitPose(plan.playkit_work,s.motion!==false):null;
       const ground=plan.ground_work?groundPose(plan.ground_work,s.motion!==false):null;
       const textile=plan.textile_work?textilePose(plan.textile_work,s.motion!==false):null,keepsake=plan.keepsake_work?keepsakePose(plan.keepsake_work,s.motion!==false):null,creative=plan.creative_work?creativePose(plan.creative_work,s.motion!==false):null,origin=plan.playkit_work?.origin||plan.keepsake_work?.origin||plan.creative_work?.origin||plan.textile_work?.origin||plan.ground_work?.origin;
-      const [ox,oy]=origin?this.project(s,...origin):[x,y];
-      this.objects.push({...itemSprite(plan.target,t,{pose:{keepsake,creative,textile,ground,playkit},motion:s.motion!==false,context:s,state:s.living.objects[plan.target],interaction:plan}),item:true,x:ox+7,y:oy,scale:keepsake||creative||textile||ground||playkit?itemWorldScale(plan.target):.65,portable:true});
+      const [ox,oy]=plan.portable?.object?this.project(s,...plan.portable.object):origin?this.project(s,...origin):[x,y];
+      this.objects.push({...itemSprite(plan.target,t,{pose:{keepsake,creative,textile,ground,playkit},motion:s.motion!==false,context:s,state:s.living.objects[plan.target],interaction:plan}),item:true,x:ox+(plan.portable?0:7),y:oy,worldPosition:plan.portable?.object,scale:itemWorldScale(plan.target),portable:true});
     }
     actors.push({y,draw:()=>this.actor(s,t,x,y,{...s.duck,state})});
     actors.sort((a,b)=>a.y-b.y).forEach(a=>a.draw());

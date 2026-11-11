@@ -123,7 +123,7 @@
       "construction": "legacy-detail"
     },
     "toy_ball": {
-      "width": 17.9,
+      "width": 38.95,
       "height": 12.76,
       "floor": false,
       "construction": "playground-v1"
@@ -1593,7 +1593,7 @@
       "construction": "playground-v1"
     },
     "ball": {
-      "width": 17.9,
+      "width": 38.95,
       "height": 12.76,
       "floor": false,
       "construction": "playground-v1"
@@ -2493,7 +2493,7 @@
       "construction": "legacy-detail"
     },
     "snowball": {
-      "width": 15.27,
+      "width": 36.01,
       "height": 10.72,
       "floor": false,
       "construction": "playground-v1"

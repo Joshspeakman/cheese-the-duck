@@ -120,7 +120,8 @@ def conversation(pond,plan):
     s=pond.object_state(item,plan)['playkit'];result['actual_contacts']=[ROUTINES[work['id']]['events'][i][1] for i in work['events']]
     if ITEMS[item]['type'] in ('bubbler','wand'):result.update(bubbles_visible=len(s['bubbles']),machine_running=s['power']>.5)
     if ITEMS[item]['type']=='pinwheel':result['wind_driven_speed']=round(s['speed'],2)
-    if ITEMS[item]['type'] in ('boat','board'):result['setting']='On the bank, not a voyage or surf trip. No fish, water or travel reward.'
+    if ITEMS[item]['type']=='boat':result['setting']='Playing with a toy boat. No voyage, fishing or travel reward.'
+    elif ITEMS[item]['type']=='board':result['setting']='On the bank, not a surf trip. No fish, water or travel reward.'
     return result
 
 

@@ -1,0 +1,1431 @@
+{
+  "version": 1,
+  "coordinates": "canonical full-world glyph plane: 24+worldX*192/132, 46+worldY*47/42",
+  "locations": {
+    "Home Pond": {
+      "biome": "pond",
+      "terrain": "home",
+      "bank": 65,
+      "features": []
+    },
+    "Deep End": {
+      "biome": "pond",
+      "terrain": "shore",
+      "bank": 55,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 25,
+          "y": 59,
+          "height": 55,
+          "tree": "willow",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 217,
+          "y": 50,
+          "height": 47,
+          "tree": "willow",
+          "seed": 13,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "dock-2",
+          "kind": "dock",
+          "art": "DOCK",
+          "x": 184,
+          "y": 75,
+          "drawWidth": 36,
+          "drawHeight": 8,
+          "color": "bark",
+          "width": 35,
+          "depth": 8,
+          "surface": "either"
+        }
+      ]
+    },
+    "Forest Edge": {
+      "biome": "forest",
+      "terrain": "stream",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 25,
+          "y": 68,
+          "height": 55,
+          "tree": "oak",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 217,
+          "y": 64,
+          "height": 47,
+          "tree": "oak",
+          "seed": 13,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-2",
+          "kind": "tree",
+          "x": 73,
+          "y": 57,
+          "height": 30,
+          "tree": "oak",
+          "seed": 7,
+          "width": 20,
+          "depth": 5,
+          "foreground": false,
+          "surface": "land"
+        },
+        {
+          "id": "tree-3",
+          "kind": "tree",
+          "x": 173,
+          "y": 55,
+          "height": 35,
+          "tree": "oak",
+          "seed": 4,
+          "width": 20,
+          "depth": 5,
+          "foreground": false,
+          "surface": "land"
+        },
+        {
+          "id": "cabin-4",
+          "kind": "art",
+          "art": "CABIN",
+          "x": 186,
+          "y": 65,
+          "drawWidth": 28,
+          "drawHeight": 12,
+          "color": "bark",
+          "width": 22.400000000000002,
+          "depth": 3,
+          "surface": "land"
+        }
+      ]
+    },
+    "Ancient Oak": {
+      "biome": "forest",
+      "terrain": "stream",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 25,
+          "y": 68,
+          "height": 55,
+          "tree": "oak",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 217,
+          "y": 64,
+          "height": 47,
+          "tree": "oak",
+          "seed": 13,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-2",
+          "kind": "tree",
+          "x": 73,
+          "y": 57,
+          "height": 30,
+          "tree": "oak",
+          "seed": 7,
+          "width": 20,
+          "depth": 5,
+          "foreground": false,
+          "surface": "land"
+        },
+        {
+          "id": "tree-3",
+          "kind": "tree",
+          "x": 173,
+          "y": 55,
+          "height": 35,
+          "tree": "oak",
+          "seed": 4,
+          "width": 20,
+          "depth": 5,
+          "foreground": false,
+          "surface": "land"
+        },
+        {
+          "id": "tree-4",
+          "kind": "tree",
+          "x": 120,
+          "y": 63,
+          "height": 45,
+          "tree": "oak",
+          "seed": 8,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "cabin-5",
+          "kind": "art",
+          "art": "CABIN",
+          "x": 186,
+          "y": 65,
+          "drawWidth": 28,
+          "drawHeight": 12,
+          "color": "bark",
+          "width": 22.400000000000002,
+          "depth": 3,
+          "surface": "land"
+        }
+      ]
+    },
+    "Mushroom Grove": {
+      "biome": "forest",
+      "terrain": "stream",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 25,
+          "y": 68,
+          "height": 55,
+          "tree": "oak",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 217,
+          "y": 64,
+          "height": 47,
+          "tree": "oak",
+          "seed": 13,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-2",
+          "kind": "tree",
+          "x": 73,
+          "y": 57,
+          "height": 30,
+          "tree": "oak",
+          "seed": 7,
+          "width": 20,
+          "depth": 5,
+          "foreground": false,
+          "surface": "land"
+        },
+        {
+          "id": "tree-3",
+          "kind": "tree",
+          "x": 173,
+          "y": 55,
+          "height": 35,
+          "tree": "oak",
+          "seed": 4,
+          "width": 20,
+          "depth": 5,
+          "foreground": false,
+          "surface": "land"
+        },
+        {
+          "id": "mushroom-4",
+          "kind": "art",
+          "art": "MUSHROOM",
+          "x": 62,
+          "y": 67,
+          "drawWidth": 20,
+          "drawHeight": 7,
+          "color": "berry",
+          "width": 16,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "mushroom-5",
+          "kind": "art",
+          "art": "MUSHROOM",
+          "x": 92,
+          "y": 78,
+          "drawWidth": 20,
+          "drawHeight": 7,
+          "color": "flower",
+          "width": 16,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "mushroom-6",
+          "kind": "art",
+          "art": "MUSHROOM",
+          "x": 126,
+          "y": 67,
+          "drawWidth": 20,
+          "drawHeight": 7,
+          "color": "berry",
+          "width": 16,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "mushroom-7",
+          "kind": "art",
+          "art": "MUSHROOM",
+          "x": 158,
+          "y": 77,
+          "drawWidth": 20,
+          "drawHeight": 7,
+          "color": "flower",
+          "width": 16,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "mushroom-8",
+          "kind": "art",
+          "art": "MUSHROOM",
+          "x": 190,
+          "y": 67,
+          "drawWidth": 20,
+          "drawHeight": 7,
+          "color": "berry",
+          "width": 16,
+          "depth": 3,
+          "surface": "land"
+        }
+      ]
+    },
+    "Sunny Meadow": {
+      "biome": "meadow",
+      "terrain": "dry",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 25,
+          "y": 68,
+          "height": 55,
+          "tree": "oak",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 217,
+          "y": 64,
+          "height": 47,
+          "tree": "oak",
+          "seed": 13,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "mill-2",
+          "kind": "mill",
+          "art": "MILL",
+          "x": 167.5,
+          "y": 54,
+          "drawWidth": 21,
+          "drawHeight": 11,
+          "color": "barkLight",
+          "width": 16.8,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-3",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 181.5,
+          "y": 65,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-4",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 52.5,
+          "y": 78,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        }
+      ]
+    },
+    "Butterfly Garden": {
+      "biome": "meadow",
+      "terrain": "dry",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 25,
+          "y": 68,
+          "height": 55,
+          "tree": "oak",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 217,
+          "y": 64,
+          "height": 47,
+          "tree": "oak",
+          "seed": 13,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "mill-2",
+          "kind": "mill",
+          "art": "MILL",
+          "x": 167.5,
+          "y": 54,
+          "drawWidth": 21,
+          "drawHeight": 11,
+          "color": "barkLight",
+          "width": 16.8,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-3",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 181.5,
+          "y": 65,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-4",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 52.5,
+          "y": 78,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        }
+      ]
+    },
+    "Pebble Beach": {
+      "biome": "riverside",
+      "terrain": "shore",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 24,
+          "y": 67,
+          "height": 55,
+          "tree": "oak",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 217,
+          "y": 64,
+          "height": 47,
+          "tree": "oak",
+          "seed": 13,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "boat-2",
+          "kind": "art",
+          "art": "BOAT",
+          "x": 194.5,
+          "y": 80,
+          "drawWidth": 31,
+          "drawHeight": 8,
+          "color": "barkLight",
+          "width": 24.8,
+          "depth": 3,
+          "surface": "water"
+        },
+        {
+          "id": "dock-3",
+          "kind": "art",
+          "art": "DOCK",
+          "x": 58,
+          "y": 64,
+          "drawWidth": 36,
+          "drawHeight": 8,
+          "color": "bark",
+          "width": 28.8,
+          "depth": 7,
+          "surface": "either"
+        }
+      ]
+    },
+    "Waterfall": {
+      "biome": "riverside",
+      "terrain": "shore",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 25,
+          "y": 58,
+          "height": 55,
+          "tree": "oak",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 216,
+          "y": 56,
+          "height": 47,
+          "tree": "oak",
+          "seed": 13,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "waterfall",
+          "kind": "waterfall",
+          "x": 143,
+          "y": 73,
+          "height": 35,
+          "width": 17,
+          "depth": 5,
+          "surface": "either"
+        },
+        {
+          "id": "boat-3",
+          "kind": "art",
+          "art": "BOAT",
+          "x": 194.5,
+          "y": 80,
+          "drawWidth": 31,
+          "drawHeight": 8,
+          "color": "barkLight",
+          "width": 24.8,
+          "depth": 3,
+          "surface": "water"
+        },
+        {
+          "id": "dock-4",
+          "kind": "art",
+          "art": "DOCK",
+          "x": 58,
+          "y": 64,
+          "drawWidth": 36,
+          "drawHeight": 8,
+          "color": "bark",
+          "width": 28.8,
+          "depth": 7,
+          "surface": "either"
+        }
+      ]
+    },
+    "Vegetable Patch": {
+      "biome": "garden",
+      "terrain": "dry",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 18,
+          "y": 64,
+          "height": 44,
+          "tree": "oak",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 224,
+          "y": 67,
+          "height": 41,
+          "tree": "oak",
+          "seed": 9,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "arch-2",
+          "kind": "art",
+          "art": "ARCH",
+          "x": 124,
+          "y": 54,
+          "drawWidth": 28,
+          "drawHeight": 10,
+          "color": "barkLight",
+          "width": 22.400000000000002,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "well-3",
+          "kind": "art",
+          "art": "WELL",
+          "x": 176,
+          "y": 60,
+          "drawWidth": 16,
+          "drawHeight": 10,
+          "color": "barkLight",
+          "width": 12.8,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-4",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 45.5,
+          "y": 69,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-5",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 93.5,
+          "y": 79,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-6",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 141.5,
+          "y": 69,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-7",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 189.5,
+          "y": 79,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        }
+      ]
+    },
+    "Tool Shed": {
+      "biome": "garden",
+      "terrain": "dry",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 18,
+          "y": 64,
+          "height": 44,
+          "tree": "oak",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 224,
+          "y": 67,
+          "height": 41,
+          "tree": "oak",
+          "seed": 9,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "cabin-2",
+          "kind": "art",
+          "art": "CABIN",
+          "x": 122,
+          "y": 53,
+          "drawWidth": 28,
+          "drawHeight": 12,
+          "color": "barkLight",
+          "width": 22.400000000000002,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "well-3",
+          "kind": "art",
+          "art": "WELL",
+          "x": 176,
+          "y": 60,
+          "drawWidth": 16,
+          "drawHeight": 10,
+          "color": "barkLight",
+          "width": 12.8,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-4",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 45.5,
+          "y": 69,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-5",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 93.5,
+          "y": 79,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-6",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 141.5,
+          "y": 69,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-7",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 189.5,
+          "y": 79,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        }
+      ]
+    },
+    "Foothills": {
+      "biome": "mountains",
+      "terrain": "dry",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 25,
+          "y": 68,
+          "height": 55,
+          "tree": "pine",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 217,
+          "y": 64,
+          "height": 47,
+          "tree": "pine",
+          "seed": 13,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "crystal-2",
+          "kind": "art",
+          "art": "CRYSTAL",
+          "x": 45,
+          "y": 72,
+          "drawWidth": 18,
+          "drawHeight": 9,
+          "color": "crystal",
+          "width": 14.4,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "crystal-3",
+          "kind": "art",
+          "art": "CRYSTAL",
+          "x": 183,
+          "y": 64,
+          "drawWidth": 18,
+          "drawHeight": 9,
+          "color": "ice",
+          "width": 14.4,
+          "depth": 3,
+          "surface": "land"
+        }
+      ]
+    },
+    "Crystal Cave": {
+      "biome": "mountains",
+      "terrain": "dry",
+      "bank": 65,
+      "features": [
+        {
+          "id": "crystal-0",
+          "kind": "art",
+          "art": "CRYSTAL",
+          "x": 45,
+          "y": 72,
+          "drawWidth": 18,
+          "drawHeight": 9,
+          "color": "crystal",
+          "width": 14.4,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "crystal-1",
+          "kind": "art",
+          "art": "CRYSTAL",
+          "x": 183,
+          "y": 64,
+          "drawWidth": 18,
+          "drawHeight": 9,
+          "color": "ice",
+          "width": 14.4,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "crystal-2",
+          "kind": "art",
+          "art": "CRYSTAL",
+          "x": 89,
+          "y": 56,
+          "drawWidth": 18,
+          "drawHeight": 9,
+          "color": "crystal",
+          "width": 14.4,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "crystal-3",
+          "kind": "art",
+          "art": "CRYSTAL",
+          "x": 153,
+          "y": 53,
+          "drawWidth": 18,
+          "drawHeight": 9,
+          "color": "crystal",
+          "width": 14.4,
+          "depth": 3,
+          "surface": "land"
+        }
+      ]
+    },
+    "Sandy Shore": {
+      "biome": "beach",
+      "terrain": "shore",
+      "bank": 65,
+      "features": [
+        {
+          "id": "west-palm",
+          "kind": "palm",
+          "x": 20,
+          "y": 61,
+          "height": 39,
+          "width": 17,
+          "depth": 4,
+          "surface": "land"
+        },
+        {
+          "id": "east-palm",
+          "kind": "palm",
+          "x": 207,
+          "y": 66,
+          "height": 31,
+          "width": 17,
+          "depth": 4,
+          "seed": 2,
+          "surface": "land"
+        },
+        {
+          "id": "boat-2",
+          "kind": "art",
+          "art": "BOAT",
+          "x": 184.5,
+          "y": 79,
+          "drawWidth": 31,
+          "drawHeight": 8,
+          "color": "barkLight",
+          "width": 24.8,
+          "depth": 3,
+          "surface": "water"
+        }
+      ]
+    },
+    "Shipwreck Cove": {
+      "biome": "beach",
+      "terrain": "shore",
+      "bank": 65,
+      "features": [
+        {
+          "id": "west-palm",
+          "kind": "palm",
+          "x": 25,
+          "y": 65,
+          "height": 39,
+          "width": 17,
+          "depth": 4,
+          "surface": "land"
+        },
+        {
+          "id": "east-palm",
+          "kind": "palm",
+          "x": 203,
+          "y": 56,
+          "height": 31,
+          "width": 17,
+          "depth": 4,
+          "seed": 2,
+          "surface": "land"
+        },
+        {
+          "id": "boat-2",
+          "kind": "art",
+          "art": "BOAT",
+          "x": 184.5,
+          "y": 79,
+          "drawWidth": 31,
+          "drawHeight": 8,
+          "color": "barkLight",
+          "width": 24.8,
+          "depth": 3,
+          "surface": "water"
+        },
+        {
+          "id": "boat-3",
+          "kind": "art",
+          "art": "BOAT",
+          "x": 45.5,
+          "y": 71,
+          "drawWidth": 31,
+          "drawHeight": 8,
+          "color": "bark",
+          "width": 24.8,
+          "depth": 3,
+          "surface": "water"
+        }
+      ]
+    },
+    "Misty Marsh": {
+      "biome": "swamp",
+      "terrain": "shore",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 25,
+          "y": 68,
+          "height": 55,
+          "tree": "willow",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "either"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 217,
+          "y": 64,
+          "height": 47,
+          "tree": "willow",
+          "seed": 13,
+          "width": 20,
+          "depth": 5,
+          "surface": "either"
+        },
+        {
+          "id": "mushroom-2",
+          "kind": "art",
+          "art": "MUSHROOM",
+          "x": 59,
+          "y": 55,
+          "drawWidth": 20,
+          "drawHeight": 7,
+          "color": "crystal",
+          "width": 16,
+          "depth": 3,
+          "surface": "land"
+        }
+      ]
+    },
+    "Cypress Hollow": {
+      "biome": "swamp",
+      "terrain": "shore",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 25,
+          "y": 68,
+          "height": 55,
+          "tree": "willow",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "either"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 217,
+          "y": 64,
+          "height": 47,
+          "tree": "willow",
+          "seed": 13,
+          "width": 20,
+          "depth": 5,
+          "surface": "either"
+        },
+        {
+          "id": "tree-2",
+          "kind": "tree",
+          "x": 165,
+          "y": 70,
+          "height": 61,
+          "tree": "willow",
+          "seed": 8,
+          "width": 20,
+          "depth": 5,
+          "surface": "either"
+        },
+        {
+          "id": "mushroom-3",
+          "kind": "art",
+          "art": "MUSHROOM",
+          "x": 59,
+          "y": 59,
+          "drawWidth": 20,
+          "drawHeight": 7,
+          "color": "crystal",
+          "width": 16,
+          "depth": 3,
+          "surface": "land"
+        }
+      ]
+    },
+    "Sunken Ruins": {
+      "biome": "swamp",
+      "terrain": "shore",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 25,
+          "y": 68,
+          "height": 55,
+          "tree": "willow",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "either"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 217,
+          "y": 64,
+          "height": 47,
+          "tree": "willow",
+          "seed": 13,
+          "width": 20,
+          "depth": 5,
+          "surface": "either"
+        },
+        {
+          "id": "ruin-2",
+          "kind": "art",
+          "art": "RUIN",
+          "x": 132,
+          "y": 67,
+          "drawWidth": 34,
+          "drawHeight": 10,
+          "color": "hill",
+          "width": 27.200000000000003,
+          "depth": 3,
+          "surface": "either"
+        },
+        {
+          "id": "mushroom-3",
+          "kind": "art",
+          "art": "MUSHROOM",
+          "x": 58,
+          "y": 60,
+          "drawWidth": 20,
+          "drawHeight": 7,
+          "color": "crystal",
+          "width": 16,
+          "depth": 3,
+          "surface": "land"
+        }
+      ]
+    },
+    "Park Fountain": {
+      "biome": "urban",
+      "terrain": "dry",
+      "bank": 65,
+      "features": [
+        {
+          "id": "tree-0",
+          "kind": "tree",
+          "x": 18,
+          "y": 64,
+          "height": 44,
+          "tree": "oak",
+          "seed": 0,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "tree-1",
+          "kind": "tree",
+          "x": 224,
+          "y": 67,
+          "height": 41,
+          "tree": "oak",
+          "seed": 9,
+          "width": 20,
+          "depth": 5,
+          "surface": "land"
+        },
+        {
+          "id": "clocktower-2",
+          "kind": "art",
+          "art": "CLOCKTOWER",
+          "x": 114.5,
+          "y": 49,
+          "drawWidth": 19,
+          "drawHeight": 14,
+          "color": "barkLight",
+          "width": 15.200000000000001,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "bench-3",
+          "kind": "art",
+          "art": "BENCH",
+          "x": 42,
+          "y": 61,
+          "drawWidth": 26,
+          "drawHeight": 6,
+          "color": "barkLight",
+          "width": 20.8,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "bench-4",
+          "kind": "art",
+          "art": "BENCH",
+          "x": 187,
+          "y": 60,
+          "drawWidth": 26,
+          "drawHeight": 6,
+          "color": "bark",
+          "width": 20.8,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "lantern-5",
+          "kind": "art",
+          "art": "LANTERN",
+          "x": 80.5,
+          "y": 54,
+          "drawWidth": 11,
+          "drawHeight": 8,
+          "color": "lamp",
+          "width": 8.8,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "cabin-6",
+          "kind": "art",
+          "art": "CABIN",
+          "x": 206,
+          "y": 51,
+          "drawWidth": 28,
+          "drawHeight": 12,
+          "color": "hill",
+          "width": 22.400000000000002,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "park-fountain",
+          "kind": "fountain",
+          "x": 147,
+          "y": 68,
+          "width": 22,
+          "depth": 4,
+          "surface": "land"
+        }
+      ]
+    },
+    "Rooftop Garden": {
+      "biome": "urban",
+      "terrain": "dry",
+      "bank": 65,
+      "features": [
+        {
+          "id": "clocktower-0",
+          "kind": "art",
+          "art": "CLOCKTOWER",
+          "x": 114.5,
+          "y": 49,
+          "drawWidth": 19,
+          "drawHeight": 14,
+          "color": "barkLight",
+          "width": 15.200000000000001,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "bench-1",
+          "kind": "art",
+          "art": "BENCH",
+          "x": 42,
+          "y": 61,
+          "drawWidth": 26,
+          "drawHeight": 6,
+          "color": "barkLight",
+          "width": 20.8,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "bench-2",
+          "kind": "art",
+          "art": "BENCH",
+          "x": 187,
+          "y": 60,
+          "drawWidth": 26,
+          "drawHeight": 6,
+          "color": "bark",
+          "width": 20.8,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "lantern-3",
+          "kind": "art",
+          "art": "LANTERN",
+          "x": 80.5,
+          "y": 54,
+          "drawWidth": 11,
+          "drawHeight": 8,
+          "color": "lamp",
+          "width": 8.8,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "cabin-4",
+          "kind": "art",
+          "art": "CABIN",
+          "x": 206,
+          "y": 51,
+          "drawWidth": 28,
+          "drawHeight": 12,
+          "color": "hill",
+          "width": 22.400000000000002,
+          "depth": 3,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-5",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 53.5,
+          "y": 76,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-6",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 96.5,
+          "y": 76,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-7",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 139.5,
+          "y": 76,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        },
+        {
+          "id": "flowers-8",
+          "kind": "art",
+          "art": "FLOWERS",
+          "x": 182.5,
+          "y": 76,
+          "drawWidth": 31,
+          "drawHeight": 6,
+          "color": "flower",
+          "width": 24.8,
+          "depth": 3,
+          "soft": true,
+          "surface": "land"
+        }
+      ]
+    },
+    "Storm Drain": {
+      "biome": "urban",
+      "terrain": "drain",
+      "bank": 65,
+      "features": []
+    }
+  }
+}
