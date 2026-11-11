@@ -1,7 +1,7 @@
 """Native reading/sorting actions; never redeem rewards or fabricate inventory."""
 import json,math
 from pathlib import Path
-from engine import shelters
+from engine import shelters,glass_curios
 DATA=Path(__file__).parent/'client/animation'
 ITEMS=json.loads((DATA/'keepsakes.json').read_text())
 ROUTINES=json.loads((DATA/'keepsake-routines.json').read_text())
@@ -15,11 +15,13 @@ def state(item,obj):
     s['open']=max(0.,min(1.,s['open']));s['page']=int(s['page'])%p.get('pages',8);s['bookmark']=int(s['bookmark'])%p.get('pages',8)
     for key in ('studies','sorted'):s[key]=max(0,min(9999,int(s[key])))
     if 'litres' in defaults:s['litres']=max(0.,min(p['capacity'],s['litres']))
+    if p['type'] in glass_curios.TYPES:glass_curios.state(s)
     return s
 
 def update(pond,item,obj,dt,outdoors,wet=False,intensity=.7,temperature=15):
     if item not in ITEMS:return
     s=state(item,obj)
+    if ITEMS[item]['type'] in glass_curios.TYPES and outdoors:glass_curios.update(s,dt)
     if ITEMS[item]['type']=='barrel':s['frozen']=bool(outdoors and temperature<=0)
     if ITEMS[item]['type']=='barrel' and outdoors and temperature>0:
         # The screened collector catches rain even with the wooden cover down.
@@ -27,7 +29,8 @@ def update(pond,item,obj,dt,outdoors,wet=False,intensity=.7,temperature=15):
 
 def choose(pond,item,ref):
     p=ITEMS[item];obj=pond.object_state(item,ref);s=state(item,obj);age=pond.game.duck.growth_stage
-    if p['type'] in ('paper','map','book') and any(w in pond.weather_type for w in ('rain','storm','shower','drizzle','sleet','snow','blizzard')):key='paper_shelter'
+    if p['type'] in glass_curios.TYPES:key=glass_curios.choose(pond,p,obj)
+    elif p['type'] in ('paper','map','book') and any(w in pond.weather_type for w in ('rain','storm','shower','drizzle','sleet','snow','blizzard')):key='paper_shelter'
     elif p['type'] in ('paper','map') and pond.state['ecology'].get('wind',0)>.55:key='paper_wind'
     elif p['type']=='barrel':key='barrel_frost' if pond.state['ecology'].get('temperature',15)<=0 else 'barrel_empty' if s['litres']<1 else 'barrel_measure'
     elif p['type']=='chest':key={'pirate':'coin_inspection','joinery':'compartment_sort','weekly':'ribbon_unfold'}[p['style']]
@@ -42,6 +45,10 @@ def choose(pond,item,ref):
 def valid(pond,plan):
     item=plan['target'];work=plan.get('keepsake_work',{});obj=pond.object_state(item,plan)
     if item not in ITEMS or item not in pond.owned or obj is None or work.get('id') not in ROUTINES:return False
+    if ROUTINES[work['id']].get('types') and ITEMS[item]['type'] not in ROUTINES[work['id']]['types']:return False
+    if ITEMS[item]['type'] in glass_curios.TYPES:
+        if any(w in pond.weather_type for w in ('storm','blizzard')):return False
+        if glass_curios.wet(pond) and ROUTINES[work['id']].get('tool') not in (None,'none'):return False
     if plan.get('instance'):return shelters.still_placed(pond,dict(id=item,instance=plan['instance'],destination=plan.get('destination')))
     return ITEMS[item]['portable'] and not obj.get('_source')
 
@@ -59,7 +66,10 @@ def conversation(pond,plan):
     if abs(pos.x-dest[0])+abs(pos.y-dest[1])>3:return result
     opened=s.get('open',0)
     result['completed_readings']=s.get('studies',0)
-    if p['type']=='book':
+    if p['type'] in glass_curios.TYPES:
+        import copy
+        result.update(glass_curios.facts(pond,p,copy.deepcopy(s)))
+    elif p['type']=='book':
         result.update(open=opened>.5,page=s.get('page',0)+1,bookmark=s.get('bookmark',0)+1)
         if opened>.5:
             chapter=p['chapters'][s.get('page',0)%p['pages']]
@@ -106,6 +116,7 @@ def advance(pond,plan,dt):
         if event=='page':s['page']=(s['page']+1)%ITEMS[plan['target']].get('pages',8)
         elif event=='bookmark':s['bookmark']=s['page']
         elif event=='polish':obj['dirt']=max(0.,obj['dirt']-.2)
+        elif ITEMS[plan['target']]['type'] in glass_curios.TYPES:glass_curios.contact(pond,s,event)
         # Practice counts are awarded only on full completion below.
     work['done']=work['elapsed']>=spec['duration'];pond._cache=None
     return not work['done']
@@ -121,3 +132,20 @@ def complete(pond,plan):
     pond.remember('keepsake',work['label']+'.',.5,plan['target'])
     from engine import keepsake_company
     keepsake_company.complete(pond.minds,plan)
+
+def request(pond,item,choice,instance=None):
+    if not isinstance(item,str) or not isinstance(choice,str):return False,'Choose an action on this glass keepsake.'
+    p=ITEMS.get(item,{});spec=ROUTINES.get(choice,{})
+    if p.get('type') not in glass_curios.TYPES or p.get('type') not in spec.get('types',()):return False,'Choose an action on this glass keepsake.'
+    if pond.game.duck.growth_stage in ('egg','hatchling','duckling') and spec.get('tool') not in (None,'none'):return False,'Little Cheese watches the tiny details and leaves the controls for later.'
+    if any(w in pond.weather_type for w in ('storm','blizzard')):return False,'Cheese leaves the glass keepsakes alone while the storm passes.'
+    if glass_curios.wet(pond) and spec.get('tool') not in (None,'none'):return False,'Cheese waits for dry weather before handling the controls.'
+    ok,message=pond.start('item',item,instance=instance)
+    if not ok:return ok,message
+    plan=pond.state['plan'];plan['keepsake_work'].update(id=choice,label=spec['label']);plan['label']=spec['label'];pond._cache=None
+    return True,spec['label']
+
+def release(item,obj):
+    """Spring-loaded pads release when the wing leaves; circulation remains."""
+    if obj is not None and ITEMS.get(item,{}).get('type') in glass_curios.TYPES:
+        state(item,obj)['open']=0.

@@ -7,6 +7,7 @@ os.environ['CHEESE_SAVE_DIR']=tempfile.mkdtemp(prefix='cheese-keepsakes-');os.en
 from engine import host,keepsakes as k
 from engine.scene import snapshot
 from world.habitat import PlacedItem
+from world.decorations import PlacedDecoration,RoomType
 from world.building import Structure,StructureStatus
 from world.treasure import FoundTreasure,TreasureLocation
 from world.atmosphere import Weather,WeatherType,Season
@@ -35,9 +36,12 @@ try:
     def own(item,twins=False):
         p.cancel();g.duck.current_action=None;g.behavior_ai.clear_action();g.habitat.owned_items=[];g.habitat.placed_items=[];g.habitat.stored_items=[];g.habitat.stored_placements=[];g.building.structures=[]
         for room in g.decorations.rooms.values():room.decorations=[]
-        if item in ('treasure_chest','rain_barrel'):
+        if item in ('treasure_chest','rain_barrel','snow_globe','crystal_ball'):
             g.habitat.owned_items=[item];g.habitat.placed_items=[PlacedItem(item,10,6)]
             if twins:g.habitat.placed_items.append(PlacedItem(item,17,6))
+        elif item=='snowglobe':
+            g.decorations.owned_decorations[item]=1;g.decorations.rooms['garden'].unlocked=True
+            g.decorations.rooms['garden'].decorations=[PlacedDecoration(item,RoomType.GARDEN,(6,5),datetime.now().isoformat())]
         elif item=='storage_chest':g.building.structures=[Structure(item,(4,3),StructureStatus.COMPLETE)]
         elif item=='picture_frame':
             g.decorations.owned_decorations[item]=1
@@ -66,7 +70,7 @@ try:
         iid,obj=own(item);before=possessions();ok,msg=p.start('item',item,instance=iid);check(ok,item+' starts: '+msg)
         plan=p.state['plan'];initial=copy.deepcopy(obj)
         if iid:p._activity(1);check(obj==initial and plan['keepsake_work']['elapsed']==0,item+' cannot work on it before arrival')
-        finish(item in ('ancient_tome','pirate_map','rain_barrel','storage_chest','friendship_card'))
+        finish(item in ('ancient_tome','pirate_map','rain_barrel','storage_chest','friendship_card','snow_globe','snowglobe','crystal_ball'))
         check(plan['keepsake_work']['done'] and obj['uses']==initial['uses']+1,item+' finishes native action once: '+json.dumps(dict(work=plan['keepsake_work'],uses=obj['uses'],initial=initial['uses'],destination=plan.get('destination'),pos=[g.renderer.duck_pos.x,g.renderer.duck_pos.y],instance=plan.get('instance'))))
         check(possessions()==before,item+' never redeems rewards, consumes inventory or fabricates contents')
         saved=copy.deepcopy(obj);k.complete(p,plan);check(obj==saved,item+' completion replay leaves state alone')
@@ -125,7 +129,7 @@ try:
     check(speech_facts()['keepsake']['visible_words']==k.ITEMS['friendship_card']['reading']['cover'],'a closed card does not reveal unread interior words')
     obj['keepsake']['open']=1
     check('YOU SHOWED UP.' in speech_facts()['keepsake']['visible_words'],'an open card supplies its real written message')
-    for item in ('ancient_tome','rain_barrel','friendship_card'):
+    for item in ('ancient_tome','rain_barrel','friendship_card','snow_globe','snowglobe','crystal_ball'):
         iid,obj=own(item);p.start('item',item,instance=iid)
         for _ in range(600):
             step()
@@ -145,9 +149,10 @@ try:
             command=json.loads(line)
             if command.get('type')=='quit':break
             if command.get('type')=='test_fixture':
-                item=command['item'];iid,obj=own(item)
+                item=command['item'];iid,obj=own(item,item=='snow_globe')
                 if item=='ancient_tome':obj['keepsake'].update(page=0,bookmark=0,studies=0,open=0)
                 if item=='rain_barrel':obj['keepsake']['litres']=12
+                if item in ('snow_globe','snowglobe','crystal_ball'):obj['keepsake'].pop('glass',None);k.state(item,obj);p.state['weather'].pop(p.biome,None);p._weather_front(False)
             elif command.get('type')=='test_rain':k.update(p,item,obj,600,True,True,1,20)
             elif command.get('type')=='test_advance':
                 if command.get('until') in ('contact','page'):

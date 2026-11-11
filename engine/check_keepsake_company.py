@@ -8,6 +8,7 @@ from engine import host,keepsakes,keepsake_company as company
 from engine.scene import snapshot
 from engine.living_world import LivingPond
 from world.habitat import PlacedItem
+from world.decorations import PlacedDecoration,RoomType
 from world.building import Structure,StructureStatus
 from world.treasure import FoundTreasure,TreasureLocation
 from world.atmosphere import Weather,WeatherType,Season,VISITORS
@@ -40,8 +41,11 @@ try:
         g.duck.current_action=None;g.behavior_ai.clear_action();g.duck.growth_stage=stage;g.duck.needs.energy=95;g.duck.needs.hunger=95;g.duck_store.sync_from_duck(g.duck)
         g.habitat.owned_items=[];g.habitat.placed_items=[];g.habitat.stored_items=[];g.habitat.stored_placements=[];g.building.structures=[]
         for room in g.decorations.rooms.values():room.decorations=[]
-        if item in ('treasure_chest','rain_barrel'):
+        if item in ('treasure_chest','rain_barrel','snow_globe','crystal_ball'):
             g.habitat.owned_items=[item];g.habitat.placed_items=[PlacedItem(item,10,6)]
+        elif item=='snowglobe':
+            g.decorations.owned_decorations[item]=1;g.decorations.rooms['garden'].unlocked=True
+            g.decorations.rooms['garden'].decorations=[PlacedDecoration(item,RoomType.GARDEN,(6,5),datetime.now().isoformat())]
         elif item=='storage_chest':g.building.structures=[Structure(item,(4,3),StructureStatus.COMPLETE)]
         elif item=='picture_frame':g.decorations.owned_decorations[item]=1
         elif item in ('duck_photo','storage_basket'):g.inventory.add_item(item)
@@ -49,6 +53,7 @@ try:
         else:g.materials.add_material(item,1)
         pos=g.renderer.duck_pos;pos.cancel_movement();pos.x=48;pos.y=21
         p.sync();p.weather_type='sunny';p.season='spring';p.hour=12;p.state['ecology'].update(temperature=18,wind=.2);p.state['cooldowns']={}
+        if item=='crystal_ball':p.state['weather'].pop(p.biome,None);p._weather_front(False)
         placement=next((a for a in p.placements if a.item_id==item),None);iid=placement.instance if placement else None;obj=p.object_state(item,iid);obj['last_use']=-1000;obj['keepsake'].update(open=0,studies=0,page=0)
         ok,msg=p.start('item',item,instance=iid);check(ok,item+' starts: '+msg);plan=p.state['plan'];dest=plan.get('destination',plan['keepsake_work']['origin']);start=[dest[0]+19,dest[1]]
         if kind=='regular':
@@ -66,7 +71,7 @@ try:
             r=company.active(b)
             if r and r['phase']=='inside':return r
             if not p.state['plan']:break
-        raise AssertionError('friend did not arrive to read')
+        raise AssertionError('friend did not arrive to read: '+json.dumps(dict(plan=p.state['plan'],readers=company.snapshot(b),present=b.present,weather=p.weather_type,hour=p.hour)))
     def finish(capture=False):
         for _ in range(1400):
             advance(capture=capture)
@@ -76,7 +81,7 @@ try:
         plan,key,obj=reset(item,('regular','rare','story')[i%3]);uses=obj['uses'];before={k:b.model.residents[k]['counts']['share'] for k in ('cheese',key)}
         positions=set();waiting=False
         for _ in range(1000):
-            advance(capture=i in (1,9,10,11));positions.add(tuple(round(v,3) for v in b.present[key]))
+            advance(capture=i in (1,9,10,11,12,13,14));positions.add(tuple(round(v,3) for v in b.present[key]))
             r=company.active(b)
             if r and r['phase'] in ('approach','enter') and plan['phase']=='act':
                 waiting=True;assert plan['keepsake_work']['elapsed']==0
@@ -87,14 +92,32 @@ try:
         native=p._plan_view()['keepsake_work'];guest=company.snapshot(b)[0]['routine']
         check(native['elapsed']==guest['elapsed'] and native['company']['role']=='a' and guest['company']['role']=='b',item+' shares one clock with complementary roles')
         before_snapshot=copy.deepcopy(company.snapshot(b));advance();check(before_snapshot!=company.snapshot(b),'native reading snapshots advance without mutating old frames')
-        finish(capture=i in (1,9,10,11))
+        finish(capture=i in (1,9,10,11,12,13,14))
         check(obj['uses']==uses+1,item+' partner does not duplicate original item use')
         check(all(b.model.residents[k]['counts']['share']==v+1 for k,v in before.items()),item+' both learn exactly once on a completed shared session')
         check(bool(obj.get('keepsake_company')),item+' physical object records its actual shared routine')
         if item=='ancient_tome':
             check(all(any('Know the reeds.' in m['text'] for m in b.model.residents[k]['memories']) for k in ('cheese',key)), 'both residents remember words they actually had time to read')
+        if item in ('snow_globe','snowglobe'):
+            check(all(any('The snow was' in m['text'] for m in b.model.residents[k]['memories']) for k in ('cheese',key)),item+' both residents remember observed snow, not invented gifts')
+        if item=='crystal_ball':
+            check(all(any('The crystal showed' in m['text'] for m in b.model.residents[k]['memories']) for k in ('cheese',key)),'both residents remember an actual observed weather reading')
         after={k:b.model.residents[k]['counts']['share'] for k in before};company.complete(b,plan)
         check(all(b.model.residents[k]['counts']['share']==v for k,v in after.items()),item+' completion cannot be repeated')
+    # All ages choose meaningful picture/slow/normal reading; an egg never acts.
+    for score,spec in company.SCORES.items():
+        if not spec.get('item'):continue
+        stage='hatchling' if spec.get('when')=='young' else 'elder' if spec.get('when')=='elder' else 'adult'
+        plan,key,obj=reset(spec['item'],stage=stage)
+        plan['keepsake_work'].update(id=spec['preview'],label=keepsakes.ROUTINES[spec['preview']]['label'])
+        # Start this context check close enough for a wandering friend to still
+        # be nearby when Cheese arrives. The preceding lifecycle cases cover
+        # longer approaches; missed invitations correctly remain solo actions.
+        dest=plan.get('destination',plan['keepsake_work']['origin']);pos=g.renderer.duck_pos;pos.cancel_movement();pos.x=dest[0]-6;pos.y=dest[1];pos.move_to(*dest)
+        if spec.get('when')=='night':p.hour=23;g.day_night.get_current_hour=lambda:23
+        r=arrive(capture=True);check(r['score']==score,score+' actual partner arrives for the selected context')
+        finish(capture=True);check(obj['keepsake_company'].get(score,0)>0,score+' records only its completed shared activity')
+        g.day_night.get_current_hour=lambda:12
     # All ages choose meaningful picture/slow/normal reading; an egg never acts.
     for stage in ('hatchling','duckling','juvenile','young_adult','adult','mature','elder','legendary'):
         plan,key,obj=reset(stage=stage);r=arrive(capture=stage in ('hatchling','elder'))
@@ -126,6 +149,9 @@ try:
     for cast,profile in PROFILES.items():
         b.model.ensure('cast:'+cast,profile.get('name',cast),profile)
         check(company.choose(b,plan,'cast:'+cast) in company.SCORES,cast+' can join appropriate shared reading')
+    for item in ('snow_globe','snowglobe','crystal_ball'):
+        plan,key,obj=reset(item)
+        for cast in PROFILES:check(company.choose(b,plan,'cast:'+cast) in company.SCORES,cast+' can observe '+item)
     out=ROOT/'engine/artifacts/animation-milestone';out.mkdir(parents=True,exist_ok=True)
     (out/'keepsake-company-frames.json').write_text(json.dumps(frames))
     result=dict(result='PASS',checks=len(checks),frames=len(frames),scores=len(company.SCORES));(out/'keepsake-company-native.json').write_text(json.dumps(dict(**result,assertions=checks),indent=2));print(json.dumps(result))

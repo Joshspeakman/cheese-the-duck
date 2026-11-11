@@ -6,8 +6,8 @@ import {GUEST_CAST} from '../client/guest-cast.mjs';
 import {LivingWorld} from '../client/ultra-world.mjs';import {scene} from './scenes.mjs';
 const ages=['hatchling','duckling','juvenile','young_adult','adult','mature','elder','legendary'];
 const actors=[...ages.map(stage=>({stage})),...Object.values(GUEST_CAST).map(g=>({id:g.id,castId:g.id,name:g.name,visitor:true}))];
-test('15 shared reading scores use distinct partner jobs without duplicating object mechanics',()=>{
- assert.equal(Object.keys(KEEPSAKE_COMPANY).length,15);
+test('23 shared reading scores use distinct partner jobs without duplicating object mechanics',()=>{
+ assert.equal(Object.keys(KEEPSAKE_COMPANY).length,23);
  const signatures=new Set();
  for(const [id,s]of Object.entries(KEEPSAKE_COMPANY)){
   signatures.add(JSON.stringify(s.track));
@@ -18,13 +18,14 @@ test('15 shared reading scores use distinct partner jobs without duplicating obj
    assert.deepEqual(keepsakePose({...work,company:{id,role:'b'}},false),keepsakePose({...work,elapsed:500,company:{id,role:'b'}},false));
   }
  }
- assert.equal(signatures.size,15);
+ assert.equal(signatures.size,23);
 });
 test('every hatched age and all 48 visitors fit shared reading without stretching or floating',()=>{
  let cases=0;
  for(const actor of actors)for(const [id,s]of Object.entries(KEEPSAKE_COMPANY))for(const f of [.2,.4,.6,.8]){
-  const routine={id:'book_leaf',elapsed:36*f,start_open:0,company:{id,role:'b'}};
-  const home={...itemSprite('ancient_tome',0,{pose:{keepsake:keepsakePose(routine)}}),x:100,y:70,scale:itemWorldScale('ancient_tome')};
+  const core=s.preview||'book_leaf',item=s.item||'ancient_tome';
+  const routine={id:core,elapsed:KEEPSAKE_ROUTINES[core].duration*f,start_open:0,company:{id,role:'b'}};
+  const home={...itemSprite(item,0,{pose:{keepsake:keepsakePose(routine)}}),x:100,y:70,scale:itemWorldScale(item)};
   const c={...characterSprite({...actor,facing:false,state:'idle',performance:{kind:'keepsake',routine}},10,actor.visitor),x:110,y:70};
   assert(!c.clipped,(actor.id||actor.stage)+' '+id);assert(c.art.every(r=>/^[ -~]*$/.test(r)));
   const before=JSON.stringify({home,c}),posed=keepsakeGeometry(home,{character:c,inside:1,slot:1},6,9);
@@ -36,7 +37,7 @@ test('every hatched age and all 48 visitors fit shared reading without stretchin
   if(posed.tip)assert(posed.tip.x<posed.hand.x,'a right-hand reader raises the pointer toward the page');
   cases++;
  }
- assert.equal(cases,(8+48)*15*4);
+ assert.equal(cases,(8+48)*23*4);
 });
 test('arrived readers attach to the exact copy and remain selectable independently of Cheese',()=>{
  const work={id:'coin_inspection',elapsed:12,start_open:0,origin:[60,24]},shared={...work,company:{id:'count_the_shine',role:'b'}};

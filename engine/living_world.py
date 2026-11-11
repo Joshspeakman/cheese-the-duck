@@ -596,6 +596,7 @@ class LivingPond:
             target=self.state['plan']['target']
             obj=self.object_state(target,self.state['plan'])
             if obj is not None:obj['active']=False
+            keepsakes.release(target,obj)
             company=self.state['plan'].get('company')
             if company and not company.get('done'):company.update(done=True,phase='cancelled')
             plan = self.state['plan']; self.state['plan'] = None
@@ -924,6 +925,9 @@ class LivingPond:
         self.sync();s=self.state
         if action=='playkit_action':
             ok,message=playkit.request(self,target,command.get('text'),command.get('instance'))
+            return self.notice(message)
+        if action=='keepsake_action':
+            ok,message=keepsakes.request(self,target,command.get('text'),command.get('instance'))
             return self.notice(message)
         if action=='architecture_action':
             ok,message=architecture.request(self,target,command.get('text'),command.get('instance'))

@@ -247,8 +247,8 @@ Resident speech uses the local Qwen3 model and llama.cpp runtime described above
 
 The next animation milestone is in development on this branch and has **not**
 replaced the installed game; the separate chat update is installed as 2.36.1. Its tracker is
-`overhaul/animation-milestone/requirements.json`: 250 of 542 object drawings have
-been reconstructed, with 292 remaining. The full 48 bespoke sequences per object
+`overhaul/animation-milestone/requirements.json`: 269 of 542 object drawings have
+been reconstructed, with 273 remaining. The full 48 bespoke sequences per object
 and all guest/age/context coverage remain unfinished.
 
 The lighting work adds 27 distinct constructions, from pleated lanterns and
@@ -272,7 +272,7 @@ Lighting validation uses `.venv/bin/python engine/check_lighting.py`,
 routes real notebook controls through the production command validator into an
 isolated game process, including duplicate selection, cancellation and storage.
 
-The keepsake work reconstructs twelve storage, reading and display objects. Chest
+The keepsake work reconstructs fifteen storage, reading and display objects. Chest
 lids, woven baskets, glass frames, folded cards, rolled maps and the eight-page
 **Elder Quacks** book have material surfaces and native contact poses. A page
 turn persists when it happens; cancelling afterward keeps the page without
@@ -283,8 +283,8 @@ histories. The Belongings notebook shows live pages and rainwater levels.
 Natural conversation receives the actual open chapter or card words from the
 same definitions used to draw them. Cheese cannot read through a closed cover or
 inspect a barrel before arriving. These descriptions never grant treasure or
-invent a photograph's history. Nineteen shared reading/sorting cores are an
-initial repertoire. Fifteen additional shared scenes let an independently moving
+invent a photograph's history. Thirty-one reading, sorting and inspection cores
+form an initial repertoire. Twenty-three additional shared scenes let an independently moving
 friend join Cheese for a page, map, card, photograph, chest or rain-gauge study.
 Cheese waits briefly for arrival. Pausing holds both poses; a missed invitation,
 interruption, moved object or replaced visit cannot award shared learning.
@@ -292,6 +292,19 @@ Completed sessions teach both residents and retain words they actually had time
 to read. Visitors remain clickable at their drawn positions and return to their
 own routines afterward. Young, older and nighttime readers choose different
 scenes; butterflies hover instead of using a pointer.
+
+The two snow globes now have different miniature landscapes: a cottage with a
+tiny duck and a village with three houses, snowy firs and a bridge. Low pump
+strokes circulate saved snow, which gradually settles under the native clock.
+The crystal ball's low controls record the actual next weather front. Its saved
+reading stays visible and conversation distinguishes an expected front, a changed
+forecast and a past reading. Consulting it never changes weather. Young Cheese
+looks from below; tired and older Cheese watch quietly; nighttime visits inspect
+the cottage windows. Visitors can arrive to observe together and remember what
+they saw. Notebook buttons select the real placed copy. Rain stops handling,
+storms interrupt inspection, and releasing a pump keeps its snow in motion
+without awarding an unfinished activity. The controls release when Cheese leaves.
+Reduced Motion holds circulating flakes still while preserving the saved state.
 
 These shared cores are not 48 bespoke sequences per object. Construction-specific
 repertoires, personality-specific visitor acting, guest-to-guest keepsake sessions,
@@ -307,6 +320,9 @@ Shared reading uses `.venv/bin/python engine/check_keepsake_company.py` and
 `engine/node_modules/.bin/electron engine/keepsake-company-check.cjs`, with
 actual regular, rare and story movement, all-cast pose sheets, native replays,
 selectable visitor bounds and interrupted/paused/cancelled sessions.
+`.venv/bin/python engine/check_glass_curios.py` additionally checks miniature
+contact, frame-rate-independent settling, live forecast truth, independent copies,
+all growth stages, weather interruptions, original possessions and full save/load.
 
 The creative props now reconstruct the brass telescope, painting easel, stitched
 kite and actual paper-plane design. Twenty-seven native action cores handle
