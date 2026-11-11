@@ -11,6 +11,7 @@ import {duckRig,DUCK_AGES} from '../client/duck-rig.mjs';
 import {drawCharacter} from '../client/ultra-characters.mjs';
 import {occupiedGeometry,heldNestGeometry} from '../client/residence-stage.mjs';
 import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {nestHelpGeometry} from '../client/nest-company.mjs';
 const painter=new ItemPainter(),cards=[],nest=document.querySelector('#nest'),age=document.querySelector('#age');
 for(const id of NEST_IDS)nest.add(new Option(id.replaceAll('_',' '),id));
 for(const a of DUCK_AGES)age.add(new Option(a.id.replaceAll('_',' '),a.id));
@@ -102,5 +103,36 @@ window.reviewMaterialStates=states=>{
   paintRoutine(cell,id,'hatchling','chin_on_rim',0,state);c.drawImage(cell,col*560,row*340+30);
   c.fillStyle='#e7d7b4';c.font='16px Menlo';c.fillText(id+' · '+['before use','after physical care','after snowfall'][col],col*560+14,row*340+22);
  }));return canvas.toDataURL('image/png');
+};
+window.replayNestCompany=frames=>{
+ paused=true;const view=new SceneCanvas();view.resize(1440,900);const costs=[],images={},scores=new Set();let actors=0;
+ const sheet=document.createElement('canvas');sheet.width=1680;sheet.height=1520;const pen=sheet.getContext('2d');pen.fillStyle='#10251e';pen.fillRect(0,0,sheet.width,sheet.height);
+ for(const [i,frame]of frames.entries()){
+  const start=performance.now();view.draw(frame,i*.1,.1);costs.push(performance.now()-start);
+  for(const r of frame.living.minds.nest_helpers||[]){
+   if(r.phase==='approach')continue;
+   const home=view.world.objects.find(o=>o.instance===r.instance&&o.id===r.id),helper=home?.nestHelpers?.[0];
+   if(!helper)throw Error('Arrived helper vanished at '+i);
+   const current=frame.living.plan.residence.routine;
+   if(current.elapsed!==helper.character.performance.routine.elapsed)throw Error('Participants disagree about native time at '+i);
+   if(helper.character.clipped||home.clipped)throw Error('Clipped native helper at '+i);
+   const id=r.actor==='story:pip'?'story:lost_duckling':r.actor,hit=view.hits.find(h=>h.id===id&&h.kind!=='item');
+   if(!hit||view.hit((hit.x+hit.w/2)/1440,(hit.y+hit.h/2)/900)?.id!==id)throw Error('Helper cannot be selected independently at '+i);
+   const geometry=nestHelpGeometry(home,helper,view.sx,view.sy);
+   if(geometry.tip&&Math.hypot((geometry.tip.x-geometry.hand.x)/geometry.cw,(geometry.tip.y-geometry.hand.y)/geometry.ch)>7)throw Error('Disconnected wing contact at '+i);
+   actors++;const score=r.routine.company.id;
+   if(r.phase==='inside'&&current.elapsed>NEST_ROUTINES[current.id].duration*.45&&!scores.has(score)){
+    const index=scores.size; scores.add(score);images[score]=view.canvas.toDataURL('image/png');
+    const x=home.x*view.sx,y=home.y*view.sy;
+    const sw=400,sh=246,cx=Math.max(0,Math.min(view.canvas.width-sw,x-sw*.43)),cy=Math.max(0,y-sh*.85);
+    pen.drawImage(view.canvas,cx,cy,sw,sh,(index%3)*560,Math.floor(index/3)*380+35,560,345);
+    pen.fillStyle='#e7d7b4';pen.font='17px Menlo';pen.fillText(score+' · '+frame.duck.stage,(index%3)*560+14,Math.floor(index/3)*380+24);
+   }
+  }
+ }
+ if(scores.size!==11)throw Error('Not all 11 companion roles were seen: '+[...scores]);
+ if(view.items.bytes>view.items.maxBytes)throw Error('Item cache exceeded its bound');
+ images['contact-sheet']=sheet.toDataURL('image/png');costs.sort((a,b)=>a-b);
+ return {frames:frames.length,helperFrames:actors,scores:[...scores],medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],cacheBytes:view.items.bytes,images};
 };window.ready=true;
 </script>

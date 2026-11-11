@@ -68,6 +68,8 @@ def eligible(spec, ctx, material_required=True):
 
 
 def choose(pond, plan, ctx):
+    requested=plan['residence'].pop('requested',None)
+    if requested in ROUTINES and eligible(ROUTINES[requested],ctx):return requested
     obj = pond.object_state(plan['target'],plan)
     history = obj.get('routines', {})
     recent = obj.get('recent_routines', [])[-4:]
@@ -87,10 +89,29 @@ def choose(pond, plan, ctx):
     return max(choices, key=rank)
 
 
+def request(pond,item,choice,instance=None):
+    if not isinstance(item,str) or item not in NESTS or not isinstance(choice,str) or choice not in ROUTINES:
+        return False,'Choose something to do at this nest.'
+    if instance is not None and (not isinstance(instance,str) or len(instance)>128):
+        return False,'Choose a placed copy of that nest.'
+    if not pond.available():return False,'Cheese needs to finish what he is doing first.'
+    pond.sync()
+    places=[r for r in shelters.candidates(pond,item) if not instance or r['instance']==instance]
+    if not places:return False,'Place that nest somewhere Cheese can reach safely.'
+    r=places[0];probe=dict(target=item,instance=r['instance'],residence=r)
+    if not eligible(ROUTINES[choice],context(pond,probe)):
+        return False,'That nest activity does not fit the weather, bedding or how Cheese feels right now.'
+    ok,message=pond.start('rest',item,instance=r['instance'])
+    if not ok:return ok,message
+    pond.state['plan']['residence']['requested']=choice;pond._cache=None
+    return True,'Cheese heads over: '+ROUTINES[choice]['label'].lower()+'.'
+
+
 def advance(pond, plan, dt):
     residence = plan.get('residence')
     if not residence or plan['target'] not in NESTS or plan['phase'] != 'act':
         return False
+    from engine import nest_company
     from engine.shelter_company import for_actor
     if for_actor(pond.minds, 'cheese'):
         return False  # Shared conversation owns the body until it finishes.
@@ -117,7 +138,9 @@ def advance(pond, plan, dt):
             return False
         current = {'id': key, 'elapsed': 0., 'label': ROUTINES[key]['label'], 'done': False}
         residence['routine'] = current
+        nest_company.invite(pond.minds, plan)
         return True
+    if nest_company.waiting(pond.minds):return True
     spec = ROUTINES[current['id']]
     # When the front passes or a condition changes, don't keep acting out a
     # vanished storm, heatwave or snow shower. No partial completion is recorded.
@@ -135,6 +158,7 @@ def advance(pond, plan, dt):
         return True
     current['done'] = True
     current['finished_at'] = pond.state['elapsed']
+    nest_company.complete(pond.minds, plan)
     history = obj.setdefault('routines', {})
     history[current['id']] = min(9999, history.get(current['id'], 0)+1)
     obj['routine_visits'] = min(999999, obj.get('routine_visits', 0)+1)

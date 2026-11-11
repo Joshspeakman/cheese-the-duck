@@ -1,5 +1,6 @@
 import {PLAYKIT_CHOICES,playkitSummary} from './playkit-state.mjs';
 import {playkitPose} from './playkit-routines.mjs';
+import {NEST_IDS} from './nest-routines.mjs';
 import {architectureSummary,ARCHITECTURE_CHOICES} from './architecture-state.mjs';
 import {architecturePose} from './architecture-routines.mjs';
 import {groundSummary} from './ground-state.mjs';
@@ -54,6 +55,7 @@ export class PondJournal{
   if(this.tab==='arrange'){this.arrangement.update();return;}
   refreshConversation(this);
   const p=w.plan;this.status.textContent=p?`${p.label} · ${p.paused?'paused':pretty(p.phase)} · ${Math.round(p.progress*100)}%`:'Cheese is free to choose what comes next.';
+  for(const card of this.body.querySelectorAll('[data-nest-id]'))for(const button of card.querySelectorAll('[data-nest-choice]'))button.disabled=Boolean(w.plan)||![...(this.frame.scene.items||[]),...(this.frame.scene.structures||[])].some(p=>p.id===card.dataset.nestId&&p.instance===card.dataset.nestInstance);
   for(const bar of this.body.querySelectorAll('[data-progress]'))bar.value=p?.progress||0;
   for(const card of this.body.querySelectorAll('[data-playkit-id]')){const id=card.dataset.playkitId,instance=card.dataset.playkitInstance,state=instance?w.instances?.[instance]:w.objects[id];if(state)card.querySelector('[data-playkit-summary]').textContent=playkitSummary(id,state);for(const button of card.querySelectorAll('[data-playkit-choice]'))button.disabled=Boolean(w.plan)||Boolean(instance&&!w.layout?.copies?.some(p=>p.instance===instance));}
   for(const card of this.body.querySelectorAll('[data-architecture-id]')){
@@ -163,6 +165,13 @@ const p=itemProfile(item,itemFamily(id));detail.append(el('p',`${pretty(p.materi
      const summary=el('p',keepsakeSummary(id,state));summary.dataset.keepsakeSummary='';detail.append(summary);
      for(const [choice,label]of KEEPSAKE_CHOICES[id]||[]){const button=this.button(label,'keepsake_action',id,busy||!outside,{instance,text:choice});button.dataset.keepsakeChoice=choice;detail.append(button);}
      if(KEEPSAKES[id].type==='barrel'){this.meter(detail,'Rainwater',state.keepsake.litres/KEEPSAKES[id].capacity);detail.append(el('p','Rain collects through the screened cover. Ice holds it still; warm dry air slowly draws it away.'));}
+    }
+    if(NEST_IDS.includes(id)){
+     detail.dataset.nestId=id;detail.dataset.nestInstance=instance||'';
+     for(const [choice,label]of [['fluff_center','Fluff the lining'],['tuck_left_edge','Tuck the left edge'],['tuck_right_edge','Tuck the right edge'],['weave_rim','Weave the rim'],['tamp_floor','Pat the bedding'],['straighten_feather','Arrange the feather'],['chin_on_rim','Watch from the nest']]){
+      const button=this.button(label,'nest_action',id,busy||!instance||!outside,{instance,text:choice});button.dataset.nestChoice=choice;detail.append(button);
+     }
+     detail.append(el('p','Cheese walks over before touching the nest. A nearby friend may come and help from beside the rim.'));
     }
     if(state.lighting&&LIGHTING[id]){
      const light=state.lighting;detail.dataset.lightId=id;detail.dataset.lightInstance=instance||'';this.meter(detail,'Light',light.level);const summary=el('p',`${pretty(light.mode)} · ${light.switches} careful adjustments`);summary.dataset.lightSummary='';detail.append(summary);

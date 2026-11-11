@@ -39,7 +39,8 @@ try:
         g.day_night.get_current_hour=lambda:12;g.day_night.get_current_minute=lambda:0
         g.atmosphere.current_weather=Weather(WeatherType.SUNNY,.5,1,datetime.now().isoformat())
         p.cancel();b.structure_helpers.clear();b.playmates.clear();b.playmate_retry.clear();b.ground_helpers.clear();b.ground_retry.clear();b.textile_helpers.clear();b.textile_retry.clear();b.readers.clear();b.creators.clear();b.tasks.clear();b.housing.clear();b.furnishings.clear();b.gardening.clear();b.musicians.clear();b.coactivities.clear()
-        g.friends.current_visit=None;g.atmosphere.current_visitor=None;p.state['story']=None;g.story_motion.actor=None;g.guest_motion.actor=None
+        g.friends.current_visit=None;g.atmosphere.current_visitor=None;p.state['story']=None
+        g.story_motion.actor=g.story_motion.token=None;g.guest_motion.actor=g.guest_motion.token=None
         g.duck.current_action=None;g.behavior_ai.clear_action();g.duck.growth_stage=stage;g.duck.needs.energy=95;g.duck.needs.hunger=95;g.duck_store.sync_from_duck(g.duck)
         g.habitat.owned_items=[];g.habitat.placed_items=[];g.habitat.stored_items=[];g.habitat.stored_placements=[];g.building.structures=[]
         for room in g.decorations.rooms.values():room.decorations=[]

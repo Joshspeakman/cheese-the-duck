@@ -1,21 +1,34 @@
 import score from './animation/nest-routines.json' with {type:'json'};
 import {ObjectCanvas} from './object-canvas.mjs';
+import COMPANY from './animation/nest-company.json' with {type:'json'};
+export {COMPANY as NEST_COMPANY};
 
 export const NEST_ROUTINES=score.routines;
 export const NEST_IDS=['basic_nest','cozy_nest','deluxe_nest','nest_premium','golden_nest'];
 export const NEST_MARGIN={x:8,y:18};
-const rest={x:0,y:0,b:0,w:0,l:0,r:0,gape:0,tail:0,u:0,v:0,px:0,py:0,turn:0,show:0,press:0,straw:0,blanket:0,pillow:0,eye:null,mark:''};
+const rest={x:0,y:0,b:0,w:0,l:0,r:0,gape:0,tail:0,u:0,v:0,px:0,py:0,turn:0,show:0,press:0,straw:0,blanket:0,pillow:0,reach:0,contact:0,eye:null,mark:''};
 const numeric=Object.keys(rest).filter(k=>typeof rest[k]==='number');
 export function nestPose(routine,motion=true){
  const spec=NEST_ROUTINES[routine?.id];if(!spec)return null;
  const p=motion?Math.max(0,Math.min(1,(routine.elapsed??0)/spec.duration)):.5;
- let a=spec.track[0],b=spec.track.at(-1);
- for(let i=1;i<spec.track.length;i++)if(p<=spec.track[i].at){a=spec.track[i-1];b=spec.track[i];break;}
+ const company=COMPANY[routine.company?.id],helper=company&&routine.company.role==='b';
+ const track=helper?company.track:spec.track;
+ const pose=sample(track,p);
+ if(helper){
+  if(routine.transition)Object.assign(pose,{contact:0,reach:0,w:.15,l:motion?Math.max(0,Math.sin(routine.transition.elapsed*10)):0,r:motion?Math.max(0,-Math.sin(routine.transition.elapsed*10)):0});
+  return {...pose,id:routine.id,progress:p,anchor:company.anchor,nesthelp:true,nestgrip:company.track.some(k=>k.contact>0),label:company.label,prop:'none',grip:0};
+ }
+ if(company){const response=sample(company.lead,p);pose.eye=response.eye??pose.eye;pose.mark=response.mark||pose.mark;}
+ const grip=Math.max(0,...(spec.grips||[]).map(([a,b])=>Math.max(0,Math.min(1,(p-a)/.04,(b-p)/.04))));
+ return {...pose,id:routine.id,progress:p,prop:spec.prop,label:spec.label,grip};
+}
+function sample(track,p){
+ let a=track[0],b=track.at(-1);
+ for(let i=1;i<track.length;i++)if(p<=track[i].at){a=track[i-1];b=track[i];break;}
  a={...rest,...a};b={...rest,...b};let u=(p-a.at)/Math.max(.001,b.at-a.at);u=u*u*(3-2*u);
  const pose={...rest};for(const key of numeric)pose[key]=a[key]+(b[key]-a[key])*u;
  pose.eye=u<.5?a.eye:b.eye;pose.mark=u<.5?a.mark:b.mark;
- const grip=Math.max(0,...(spec.grips||[]).map(([a,b])=>Math.max(0,Math.min(1,(p-a)/.04,(b-p)/.04))));
- return {...pose,id:routine.id,progress:p,prop:spec.prop,label:spec.label,grip};
+ return pose;
 }
 
 // Loose materials are actual ASCII parts of the nest, with their own path and
