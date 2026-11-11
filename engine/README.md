@@ -864,3 +864,44 @@ all hatched ages and all 48 visitor rigs, persistent settings, actual material
 removal, interruptions, separate copies, measured pressure, save/resume and
 one-time learning. The native-frame replay writes `castle-care-review.html`
 and its captures under `engine/artifacts/animation-milestone/`.
+
+## Constructed headwear and weather care (milestone work in progress)
+
+The 41 headwear variants across the three original wardrobes now have constructed
+ASCII catalogue drawings and separate compact drawings fitted to each actual
+posed head. These include panelled caps, chef pleats, bent felt, knitted crowns,
+woven brims, metalwork, flowers, antlers and an open space-helmet visor. The bill
+and eyes remain visible. Twenty-two of these are in the 542-object catalogue;
+nineteen are supplemental outfit/seasonal pieces. This brings reconstructed
+catalogue artwork to 301 objects, with 241 still awaiting reconstruction.
+
+Only the visible, owned hat collects rain and snow. Material state follows the
+original wardrobe precedence, actual weather and actual roof occupancy; walking
+toward a house does not protect it before arrival. Stored hats dry, and offline
+catch-up does not replay a wearer. Snow rests on each constructed crown surface.
+Cold worn helmets develop mist along the visor, without obscuring Cheese's face.
+
+Cheese can shake rain from cloth, dab a delicate brim, brush accumulated snow,
+wipe a misty visor, or hold a hat during a gust. These five care cores use saved
+native clocks and age-fitted wing contacts. Moisture/snow changes happen once at
+contact, not when the animation starts. Care yields to urgent needs, other
+activities, movement and unequipping. Cooldowns and completed material changes
+survive saves; an unfinished gesture does not restart unattended after loading.
+The planner selects care from actual material conditions. The notebook's plans
+and belongings sections expose the same production-validated care commands and
+live material descriptions. Original wardrobe ownership/equipping remains intact.
+
+Validation: `engine/check_headwear.py` checks real wardrobe handlers, weather,
+roof arrival, care contact, cancellation, idle compatibility and save/load,
+exporting 50 material frames and 573 care frames. `engine/headwear-check.cjs`
+replays those frames and writes `headwear-review.html` with catalogue, fitted
+and contact illustrations. `engine/headwear-ui-check.cjs` exercises the actual
+notebook controls. `tests/headwear.test.mjs` checks every fitted hat through all
+hatched ages, actions and both directions, including contact and Reduced Motion.
+The wardrobe's unequip comparison matches frozen weather drift before comparing
+pixels, so independent particle history cannot masquerade as clothing residue.
+
+These are reconstructed artwork and care foundations, not a completed repertoire
+of 48 sequences for each object. Individual visitor clothing participation,
+shared dressing, pickup/put-away and the complete contextual audit remain open.
+The complete milestone is still active; the installed chat release stays 2.36.1.

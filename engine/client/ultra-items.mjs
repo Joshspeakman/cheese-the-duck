@@ -1,4 +1,5 @@
 import {playkitSprite,PLAYKIT_BLUEPRINTS} from './playkit-workshop.mjs';
+import {headwearSprite,HEADWEAR_BLUEPRINTS} from './headwear-workshop.mjs';
 import {excursionSprite,EXCURSION_BLUEPRINTS} from './excursion-workshop.mjs';
 import {architectureSprite,ARCHITECTURE_BLUEPRINTS} from './architecture-workshop.mjs';
 import {groundSprite,GROUND_BLUEPRINTS} from './ground-workshop.mjs';
@@ -114,9 +115,11 @@ export function itemSprite(id,time=0,{motion=true,originalArt=null,state={},inte
     sway:(PLANTS.has(family)||['chimes','kite','swing'].includes(family))&&motion?Math.sin(t*1.3+seed)*.025:0,
     lift:/balloon|ufo|orb|motes|fish|worm/.test(family)&&motion?Math.sin(t*1.4+seed)*.25:0};
   const enriched={...base,...itemProfile(item||{},family)},options={motion,state,interaction,context,pose};
+  if(HEADWEAR_BLUEPRINTS[id])return headwearSprite(enriched,item||{id},t,options);
   return excursionSprite(enriched,item||{id},t,options)||playkitSprite(enriched,item||{id},t,options)||architectureSprite(enriched,item||{id},t,options)||groundSprite(enriched,item||{id},t,options)||textileSprite(enriched,item||{id},t,options)||creativeSprite(enriched,item||{id},t,options)||keepsakeSprite(enriched,item||{id},t,options)||lightingSprite(enriched,item||{id},t,options)||instrumentSprite(enriched,item||{id},t,options)||homeSprite(enriched,item||{id},t,options)||playgroundSprite(enriched,item||{id},t,options)||waterworksSprite(enriched,item||{id},t,options)||furnitureSprite(enriched,item||{id},t,options)||botanicalSprite(enriched,item||{id},t,options)||detailItem(base,item,family,t,{motion,state,interaction});
 }
 export function itemWorldScale(id){
+  if(HEADWEAR_BLUEPRINTS[id])return HEADWEAR_BLUEPRINTS[id].scale;
   if(EXCURSION_BLUEPRINTS[id])return EXCURSION_BLUEPRINTS[id].scale;
   if(PLAYKIT_BLUEPRINTS[id])return PLAYKIT_BLUEPRINTS[id].scale;
   if(ARCHITECTURE_BLUEPRINTS[id])return ARCHITECTURE_BLUEPRINTS[id].scale;

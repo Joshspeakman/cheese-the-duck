@@ -50,6 +50,10 @@ window.checkWearables=frames=>{
  const frame=structuredClone(frames.pond);frame.scene.duck.cosmetics=outfits[0];frame.scene.duck.state='walking';frame.scene.hour=12;frame.ui.modal=null;
  const canvas=document.createElement('canvas'),display=new DisplayRenderer(canvas);display.resize(frame.cols,frame.rows,.8,{width:1500,height:993,uiScale:.993});display.draw(frame,450);images['fitted-in-game']=canvas.toDataURL();
  frame.scene.motion=false;frame.ui.motion=false;display.draw(frame,1000);const frozen=pixels(canvas);display.draw(frame,9000);assert(equal(frozen,pixels(canvas)),'reduced motion animates worn accessories');
- frame.scene.duck.cosmetics={};display.draw(frame,1000);const fresh=new DisplayRenderer(document.createElement('canvas'));fresh.resize(frame.cols,frame.rows,.8,{width:1500,height:993,uiScale:.993});fresh.draw(frame,1000);assert(equal(pixels(canvas),pixels(fresh.canvas)),'unequipping leaves old clothing on Cheese');
+ frame.scene.duck.cosmetics={};display.draw(frame,10000);const fresh=new DisplayRenderer(document.createElement('canvas'));fresh.resize(frame.cols,frame.rows,.8,{width:1500,height:993,uiScale:.993});
+ // A frozen weather field retains the drift accumulated before motion stopped.
+ // Compare the same weather positions, so this assertion isolates erased clothes.
+ Object.assign(fresh.scene.world.wind,display.scene.world.wind);
+ fresh.draw(frame,10000);assert(equal(pixels(canvas),pixels(fresh.canvas)),'unequipping leaves old clothing on Cheese');
  return {images,items:wearableCatalog.length,checks:['all wearable contact sheets','six combined outfits across eight actions','all nine ages','expression-only panel','reduced motion','unequip restoration']};
 };

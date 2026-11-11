@@ -1,0 +1,7 @@
+{
+  "shed_rain": {"label":"Shake rain from the cloth","duration":4.8,"contact":2.1,"anchor":"band","material":"wet","retained":0.8,"threshold":0.3,"cooldown":90,"materials":["fabric"]},
+  "dab_brim": {"label":"Dab the damp brim","duration":5.6,"contact":2.8,"anchor":"brim","material":"wet","retained":0.88,"threshold":0.1,"cooldown":90,"materials":["paper","straw"]},
+  "brush_snow": {"label":"Brush snow from the crown","duration":6,"contact":3,"anchor":"crown","material":"snow","retained":0.2,"threshold":0.12,"cooldown":75},
+  "wipe_visor": {"label":"Wipe the misty visor","duration":6.4,"contact":3.2,"anchor":"visor","material":"fog","retained":0.12,"threshold":0.15,"cooldown":75,"shapes":["helmet"]},
+  "steady_brim": {"label":"Hold the hat against a gust","duration":5.4,"contact":1.8,"anchor":"brim","material":"wind","threshold":0.55,"cooldown":35,"excludeShapes":["helmet","earmuffs","headband","ears","antlers"]}
+}

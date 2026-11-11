@@ -1,5 +1,6 @@
 import {CARNIVAL_CHOICES} from './carnival-routines.mjs';
 import {castleSummary,CASTLE_SCORES} from './castle-care.mjs';
+import {hatSummary,HEADWEAR_BLUEPRINTS} from './headwear-workshop.mjs';
 import {PLAYKIT_CHOICES,playkitSummary} from './playkit-state.mjs';
 import {playkitPose} from './playkit-routines.mjs';
 import {NEST_IDS} from './nest-routines.mjs';
@@ -53,6 +54,12 @@ export class PondJournal{
  card(title,description){const c=el('section',undefined,'pond-card');c.append(el('h2',title));if(description)c.append(el('p',description));return c;}
  meter(parent,label,value){const row=el('label',undefined,'pond-meter');const text=el('span',label),m=el('meter');m.min=0;m.max=1;m.value=Math.max(0,Math.min(1,value||0));m.setAttribute('aria-label',label);row.append(text,m,el('span',percent(value)));parent.append(row);}
  preview(parent,kind,id,large=false,instance=''){const canvas=el('canvas',undefined,large?'pond-preview large':'pond-preview');canvas.width=large?720:360;canvas.height=large?390:220;canvas.dataset.kind=kind;canvas.dataset.id=id;canvas.dataset.instance=instance;canvas.setAttribute('aria-label',names.get(id)?.name||pretty(id));parent.append(canvas);}
+ hatCare(parent,id){
+  const care=this.frame.scene.duck.hatCare,material=el('p',hatSummary(this.frame.scene.duck.apparel?.[id]));material.dataset.hatMaterial=id;parent.append(material);
+  if(care?.equipped!==id){parent.append(el('p','Equip this hat to tend it.'));return;}
+  const status=el('p',care.active?.label||'A little care for the hat he is wearing.');status.dataset.hatCare='';parent.append(status);
+  for(const o of care.options){const b=this.button(o.label,'hat_care',id,!o.enabled,{text:o.id});b.dataset.hatAction=o.id;b.dataset.hatItem=id;b.title=o.reason;parent.append(b);}
+ }
  updateDynamic(){
   const w=this.world;if(!w)return;
   if(this.tab==='arrange'){this.arrangement.update();return;}
@@ -60,6 +67,9 @@ export class PondJournal{
   const p=w.plan;this.status.textContent=p?`${p.label} · ${p.paused?'paused':pretty(p.phase)} · ${Math.round(p.progress*100)}%`:'Cheese is free to choose what comes next.';
   for(const card of this.body.querySelectorAll('[data-nest-id]'))for(const button of card.querySelectorAll('[data-nest-choice]'))button.disabled=Boolean(w.plan)||![...(this.frame.scene.items||[]),...(this.frame.scene.structures||[])].some(p=>p.id===card.dataset.nestId&&p.instance===card.dataset.nestInstance);
   for(const bar of this.body.querySelectorAll('[data-progress]'))bar.value=p?.progress||0;
+  for(const label of this.body.querySelectorAll('[data-hat-material]'))label.textContent=hatSummary(this.frame.scene.duck.apparel?.[label.dataset.hatMaterial]);
+  for(const b of this.body.querySelectorAll('[data-hat-action]')){const c=this.frame.scene.duck.hatCare,o=c?.options?.find(o=>o.id===b.dataset.hatAction);b.disabled=c?.equipped!==b.dataset.hatItem||!o?.enabled;b.title=o?.reason||'';}
+  for(const label of this.body.querySelectorAll('[data-hat-care]'))label.textContent=this.frame.scene.duck.hatCare?.active?.label||'A little care for the hat he is wearing.';
   for(const card of this.body.querySelectorAll('[data-castle-instance]')){const instance=card.dataset.castleInstance,state=instance?w.instances?.[instance]:w.objects.bounce_house;if(state)card.querySelector('[data-castle-summary]').textContent=castleSummary(state);for(const button of card.querySelectorAll('[data-carnival-choice]'))button.disabled=Boolean(w.plan)||Boolean(instance&&!w.layout?.copies?.some(p=>p.instance===instance));}
   for(const card of this.body.querySelectorAll('[data-playkit-id]')){const id=card.dataset.playkitId,instance=card.dataset.playkitInstance,state=instance?w.instances?.[instance]:w.objects[id];if(state)card.querySelector('[data-playkit-summary]').textContent=playkitSummary(id,state);for(const button of card.querySelectorAll('[data-playkit-choice]'))button.disabled=Boolean(w.plan)||Boolean(instance&&!w.layout?.copies?.some(p=>p.instance===instance));}
   for(const card of this.body.querySelectorAll('[data-architecture-id]')){
@@ -126,6 +136,7 @@ export class PondJournal{
    for(const [label,action] of [['Explore & discover','explore'],['Crafting','craft'],['Building','build'],['Inventory & equipment','inventory'],['Shop','shop'],['Full menu & help','help']])systems.append(this.legacy(label,action));grid.append(systems);
   }else if(this.tab==='mind'){
    const c=this.card('What Cheese is doing',w.plan?.label||'Taking in the world.');this.preview(c,'cheese','Cheese');
+   if(this.frame.scene.duck.hatCare?.equipped)this.hatCare(c,this.frame.scene.duck.hatCare.equipped);
    if(w.plan){const progress=el('progress');progress.max=1;progress.value=w.plan.progress;progress.dataset.progress='plan';c.append(progress,el('p',`${w.plan.automatic?'Cheese chose this.':'You suggested this.'} ${pretty(w.plan.phase)}${w.plan.paused?' · paused':''}`));if(w.plan.paused)c.append(this.button('Resume','resume'));c.append(this.button('Set this aside','cancel'));}grid.append(c);
    const meet=el('button','Talk, memories & personality','pond-action');meet.onclick=()=>this.show('personalities','cheese');c.append(meet);
    const intent=this.card('A nudge, not a script','Cheese weighs needs, weather, habits, favorite possessions and who is visiting. Urgent needs still come first.');
@@ -143,8 +154,13 @@ export class PondJournal{
    const instance=this.selectedInstance,state=instance?w.instances?.[instance]:w.objects[id],outside=!instance||copies.some(p=>p.instance===instance);
    if(item&&state){const detail=this.card(item.name,item.description);this.preview(detail,'item',id,true,instance||'');
     if(copies.length>1){const picker=el('select');picker.setAttribute('aria-label','Choose a placed copy');copies.forEach((copy,i)=>{const option=el('option',`Copy ${i+1} · ${copy.x<44?'west side':copy.x>88?'east side':'middle of the pond'}`);option.value=copy.instance;picker.append(option);});picker.value=instance;picker.onchange=()=>{this.selectedInstance=picker.value;this.render();};detail.append(picker);}
-const p=itemProfile(item,itemFamily(id));detail.append(el('p',`${pretty(p.material)} · ${pretty(p.skill)} · ${state.uses} uses${instance?(outside?' · placed at home':' · put away'):w.placed.includes(id)?' · placed at home':''}`));for(const [key,label] of [['condition','Condition'],['wetness','Wetness'],['dirt','Dirt'],['bond','Familiarity']])this.meter(detail,label,state[key]);
-    detail.append(this.button(p.verb,'item',id,busy||!outside||['food','wearable'].includes(p.kind),{instance}),this.button('Brush & polish','clean_item',id,busy||!outside||state.dirt<.05,{instance}),this.button('Repair · 1 twig','repair_item',id,busy||!outside||state.condition>=.95,{instance}));if(['food','wearable'].includes(p.kind))detail.append(this.legacy(p.kind==='food'?'Eat through inventory':'Open wardrobe & items','inventory'));grid.append(detail);
+const p=itemProfile(item,itemFamily(id));
+    if(HEADWEAR_BLUEPRINTS[id])this.hatCare(detail,id);
+    else{
+     detail.append(el('p',`${pretty(p.material)} · ${pretty(p.skill)} · ${state.uses} uses${instance?(outside?' · placed at home':' · put away'):w.placed.includes(id)?' · placed at home':''}`));for(const [key,label] of [['condition','Condition'],['wetness','Wetness'],['dirt','Dirt'],['bond','Familiarity']])this.meter(detail,label,state[key]);
+     detail.append(this.button(p.verb,'item',id,busy||!outside||['food','wearable'].includes(p.kind),{instance}),this.button('Brush & polish','clean_item',id,busy||!outside||state.dirt<.05,{instance}),this.button('Repair · 1 twig','repair_item',id,busy||!outside||state.condition>=.95,{instance}));
+    }
+    if(['food','wearable'].includes(p.kind))detail.append(this.legacy(p.kind==='food'?'Eat through inventory':'Open wardrobe & items','inventory'));grid.append(detail);
     if(w.layout?.items.some(i=>i.id===id)&&(!instance||w.layout.copies?.some(p=>p.id===id&&p.instance===instance))){const arrange=el('button',w.placed.includes(id)?'Move or store':'Find a place','pond-action');arrange.onclick=()=>this.show('arrange',id,instance);detail.append(arrange);}
     if(state.botany){this.meter(detail,'Soil moisture',state.botany.moisture);this.meter(detail,'Plant health',state.botany.health);detail.append(el('p',state.botany.last_care?'Last care: '+pretty(state.botany.last_care):'Rain waters the roots. Warm, dry air slowly draws moisture out of the soil.'));}
     if(CARNIVAL_CHOICES[id]){
@@ -238,7 +254,7 @@ const p=itemProfile(item,itemFamily(id));detail.append(el('p',`${pretty(p.materi
    if(kind==='item'||kind==='project'){
     const project={reed_beds:'reed',orchard:'tree_oak',observatory:'telescope',clubhouse:'basic_nest',workshop:'workbench',trail:'bridge'};
     const interaction=w.plan?.target===id&&(!instance||w.plan.instance===instance)?w.plan:null;
-    const model=itemSprite(kind==='project'?project[id]:id,time,{motion,state:instance?w.instances?.[instance]:w.objects[id],interaction,pose:{playkit:interaction?.playkit_work&&interaction.phase!=='approach'?playkitPose(interaction.playkit_work,motion):null,architecture:interaction?.architecture_work&&interaction.phase!=='approach'?architecturePose(interaction.architecture_work,motion):null,ground:interaction?.ground_work&&interaction.phase!=='approach'?groundPose(interaction.ground_work,motion):null,textile:interaction?.textile_work&&interaction.phase!=='approach'?textilePose(interaction.textile_work,motion):null,creative:interaction?.creative_work&&interaction.phase!=='approach'?creativePose(interaction.creative_work,motion):null,keepsake:interaction?.keepsake_work?keepsakePose(interaction.keepsake_work,motion):null}});
+    const model=itemSprite(kind==='project'?project[id]:id,time,{motion,state:{...(instance?w.instances?.[instance]:w.objects[id]),apparel:this.frame.scene.duck.apparel?.[id]},interaction,pose:{playkit:interaction?.playkit_work&&interaction.phase!=='approach'?playkitPose(interaction.playkit_work,motion):null,architecture:interaction?.architecture_work&&interaction.phase!=='approach'?architecturePose(interaction.architecture_work,motion):null,ground:interaction?.ground_work&&interaction.phase!=='approach'?groundPose(interaction.ground_work,motion):null,textile:interaction?.textile_work&&interaction.phase!=='approach'?textilePose(interaction.textile_work,motion):null,creative:interaction?.creative_work&&interaction.phase!=='approach'?creativePose(interaction.creative_work,motion):null,keepsake:interaction?.keepsake_work?keepsakePose(interaction.keepsake_work,motion):null}});
     const cw=Math.min((canvas.width-30)/(model.width+2),(canvas.height-45)/((model.art.length+2)*1.5))/(model.detailScale||1);
     this.painter.draw(ctx,model,canvas.width/2,canvas.height-22,cw,{surface:'#142a22',outline:'#091d18'});
    }else{

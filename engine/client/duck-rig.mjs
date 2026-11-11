@@ -1,6 +1,8 @@
 import {DUCK_AGES} from './duck-designs.mjs';
 import {fitWearables,paintWearables} from './wearables.mjs';
 import {performancePose} from './performances.mjs';
+import {hatCarePose} from './headwear-care.mjs';
+import {fittedHat} from './headwear-workshop.mjs';
 export {DUCK_AGES};
 export const mirrorGlyph=c=>({'/':'\\','\\':'/','(' :')',')':'(','<':'>','>':'<','[':']',']':'['}[c]||c);
 const W=76,H=48,CX=36,FLOOR=39;
@@ -19,11 +21,13 @@ export function duckRig(duck,t=0,design=null){
  const requested=duck.stage==='teen'?'juvenile':duck.stage||'adult',spec=design||DUCK_AGES.find(a=>a.id===requested)||DUCK_AGES[5];
  const stage=design?'adult':spec.id,small=['hatchling','duckling'].includes(stage);
  const performance=performancePose(duck.performance,duck.performance?.young?'duckling':stage);
+ const hatCare=duck.performance?null:hatCarePose(duck.hatCare?.active,duck.motion!==false);
+ if(hatCare)t=duck.hatCare.active.elapsed;
  const action=performance?.swimming?'swimming':actionFor(duck.performance?'idle':duck.state);
  const rate=spec.pace/4.5,speed=duck.state==='waddle_fast'?1.6:duck.state==='sneaking'?.65:1;
  const cycle=t*rate*speed,phase=Math.floor(cycle*5)%8;
  const cells=Array.from({length:H},()=>Array(W).fill(' ')),tones=cells.map(r=>r.map(()=> 'b')),fills=[];
- let clipped=false,rig=null,bill=null,grip=null,workGripRest=null,plan={items:[],inks:{}};
+ let clipped=false,rig=null,bill=null,grip=null,workGripRest=null,hatContact=null,hatTarget=null,plan={items:[],inks:{}};
  const put=(str,x,y,tone='b')=>{x=Math.round(x);y=Math.round(y);for(let i=0;i<str.length;i++){if(str[i]===' ')continue;if(x+i<0||x+i>=W||y<0||y>=H){clipped=true;continue;}cells[y][x+i]=str[i];tones[y][x+i]=tone;}};
  const group=(rows,x,y,tone)=>rows.forEach((r,j)=>put(r,x,y+j,tone));
  const ink={b:spec.tints?.[0]||'#cba27c',g:spec.tints?.[1]||'#8fc5aa',j:'#65a58d',h:'#b1dcc4',s:'#937152',a:'#efc46a',w:'#dbbfa0',c:'#f0ead2',p:spec.tints?.[2]||'#94c6e4',e:'#172b25',...spec.inkOverrides};
@@ -45,6 +49,7 @@ export function duckRig(duck,t=0,design=null){
   if(action==='dancing'){eye='^';bodyDY--;headDY--;}
   if(cycle%5.3>5||action==='sleeping')eye='-';
   if(performance){headDX=performance.x;bodyDY=performance.b;headDY=performance.y+bodyDY;jump=Math.min(0,bodyDY);if(performance.eye)eye=performance.eye;}
+  if(hatCare){headDX=Math.round(hatCare.x);headDY=Math.round(hatCare.y);if(hatCare.id==='shed_rain'&&hatCare.t>.2&&hatCare.t<.75)eye='-';}
   // Raising or leaning the head must stretch the feathered neck, not detach it
   // from the collar. Draw this small bridge behind the original D10 rows.
   const headBase=spec.art[spec.collar-1],collar=spec.art[spec.collar];
@@ -94,6 +99,8 @@ export function duckRig(duck,t=0,design=null){
   const h=headBounds||{x:CX,y:baseY+2,w:8,h:4},b=bodyBounds||{x:CX-8,y:FLOOR-6,w:16,h:6},e=eyePos||{x:h.x+2,y:h.y+1,char:eye};
   rig={small,stage,action,phase,head:{...h,w:Math.max(4,h.w-4)},faceBounds:h,eye:e,restEye:{x:Math.round(e.x-headDX),y:Math.round(e.y-headDY)},crest:{x:h.x,y:baseY+headDY,w:h.w},neck:{x:Math.round(baseX+spec.art[spec.collar].search(/\S/)),y:baseY+spec.collar+bodyDY,w:small?2:3},body:b,feet:footPositions};
   rig.torso=fills.filter(f=>f.tone==='b').map(f=>({...f}));rig.wing=wingBounds;
+  rig.motion=duck.motion!==false&&duck.performance?.motion!==false;
+  rig.hatCare=hatCare;
   if(['flapping','dancing'].includes(action)){
    const open=phase>=2&&phase<=5,wing=open?['  /)/)',' / / /','/ / /','\\__/']:['  /)',' / /',' \\/'];
    group(wing,b.x-2,b.y-(open?3:0),'w');if(open)group(wing.map(r=>[...r].reverse().map(mirrorGlyph).join('')),b.x+b.w-2,b.y-2,'w');
@@ -120,14 +127,41 @@ export function duckRig(duck,t=0,design=null){
   if(action==='sleeping')put(phase%2?'z':'Z',h.x+h.w+2,h.y-1-Math.floor(phase/3),'c');
   if(action==='quacking'&&phase>=2&&phase<=5)put('!',h.x+h.w+3,h.y,'a');
   if(action==='swimming')put(phase%2?'~~~   ~~~~   ~~~':' ~~~~  ~~~~  ~~~',CX-9,FLOOR+1,'p');
-  plan=fitWearables(rig,duck.cosmetics,t);clipped=paintWearables(cells,tones,rig,plan)||clipped;
+  plan=fitWearables(rig,duck.cosmetics,t,duck.apparel);clipped=paintWearables(cells,tones,rig,plan)||clipped;
   fills.push(...(plan.fills||[]));
+  if(hatCare&&plan.items.some(i=>i.id===hatCare.item)){
+   const hat=fittedHat(rig,hatCare.item),target=hat?.contacts[hatCare.anchor];
+   if(target){
+    hatTarget={...target};
+    if(hatCare.wing>.02){
+     const shoulder={x:Math.round(b.x+b.w*.18),y:Math.round(b.y+b.h*.35)};
+     const tip={x:Math.round(shoulder.x+(target.x-shoulder.x)*hatCare.wing),y:Math.round(shoulder.y+(target.y-shoulder.y)*hatCare.wing)};
+     // Brush along the top, dab the edge, or sweep the visor's outside rim.
+     if(hatCare.anchor==='crown')tip.x+=Math.round(hatCare.sweep*Math.min(2,h.w*.2));
+     else if(hatCare.anchor==='visor')tip.y+=Math.round(hatCare.sweep);
+     else tip.y-=Math.round(Math.abs(hatCare.sweep));
+     const elbow={x:Math.min(h.x-3,shoulder.x-2),y:Math.round((shoulder.y+tip.y)/2)};
+     for(const [a,z] of [[shoulder,elbow],[elbow,tip]]){
+      const n=Math.max(Math.abs(z.x-a.x),Math.abs(z.y-a.y)),edge=z.x===a.x?'|':(z.x-a.x)*(z.y-a.y)>0?'\\':'/';
+      for(let i=0;i<=n;i++){
+       const u=n?i/n:0,x=Math.round(a.x+(z.x-a.x)*u),y=Math.round(a.y+(z.y-a.y)*u);
+       fills.push({x:x-1,y,w:3,tone:'w'});put(edge+'|)',x-1,y,'w');
+      }
+     }
+     put(')',tip.x,tip.y,'c');hatContact=tip;
+    }
+    if(hatCare.debris!==null&&['brush_snow','shed_rain'].includes(hatCare.id)){
+     const d=hatCare.debris,xx=hatCare.id==='brush_snow'?target.x:h.x+h.w;
+     for(let i=0;i<3;i++)put(hatCare.id==='brush_snow'?'*':"'",xx+2+i+d*3,target.y+1+i+d*4,'c');
+    }
+   }
+  }
   put(e.char,e.x,e.y,'e');
   if(duck.state==='diving'&&phase>=2&&phase<=5){cells.forEach(r=>r.fill(' '));fills.length=0;group([' \\ /','  /\\',' (__)'],CX-2,FLOOR-3,'a');put('~~~  ~~~~~',CX-5,FLOOR+1,'p');}
  }
  const facing=duck.facing!==false;
- if(!facing){for(let y=0;y<H;y++){cells[y].reverse();cells[y]=cells[y].map(mirrorGlyph);tones[y].reverse();}for(const f of fills)f.x=W-f.x-f.w;if(bill)bill.x=W-1-bill.x;if(grip)grip.x=W-1-grip.x;if(workGripRest)workGripRest.x=W-1-workGripRest.x;}
+ if(!facing){for(let y=0;y<H;y++){cells[y].reverse();cells[y]=cells[y].map(mirrorGlyph);tones[y].reverse();}for(const f of fills)f.x=W-f.x-f.w;if(bill)bill.x=W-1-bill.x;if(grip)grip.x=W-1-grip.x;if(workGripRest)workGripRest.x=W-1-workGripRest.x;if(hatContact)hatContact.x=W-1-hatContact.x;if(hatTarget)hatTarget.x=W-1-hatTarget.x;}
  return {art:cells.map(r=>r.join('')),tones:tones.map(r=>r.join('')),fills,inks:{...ink,...plan.inks},width:W,anchorX:facing?CX:W-1-CX,groundRow:FLOOR+.5,
   scale:stage==='egg'?.66:spec.height/(spec.art.length*7.5),body:ink.b,face:ink.g,accent:ink.a,shade:ink.s,name:'',rig,wearables:plan.items.map(i=>i.id),
-  design:'d10',material:'feathers',phase,frames:8,cycle:phase/8,clipped,action,bill,grip,workGripRest,seatContact:performance?.seated&&rig?rig.body.y+rig.body.h-.3:null,performance:duck.performance||null,offsetY:action==='idle'?Math.sin(cycle*2)*.1:0};
+  design:'d10',material:'feathers',phase,frames:8,cycle:phase/8,clipped,action,bill,grip,workGripRest,hatContact,hatTarget,seatContact:performance?.seated&&rig?rig.body.y+rig.body.h-.3:null,performance:duck.performance||null,offsetY:action==='idle'?Math.sin(cycle*2)*.1:0};
 }

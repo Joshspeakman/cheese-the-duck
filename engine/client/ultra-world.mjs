@@ -309,7 +309,7 @@ export class LivingWorld {
     const state=duck.state||'idle';
     if(/swim|float|splash|diving/.test(state))this.ripples(x,y,t);
     const performance=actorPerformance(s,visitor?duck.id:'cheese');
-    const sprite=characterSprite({...duck,performance,...(performance?{facing:performance.role==='a'}:{})},t,visitor);
+    const sprite=characterSprite({...duck,motion:s.motion!==false,performance,...(performance?{facing:performance.role==='a'}:{})},t,visitor);
     this.characters.push({...sprite,x,y,cheese:!visitor});
   }
   actors(s,t,dt){
