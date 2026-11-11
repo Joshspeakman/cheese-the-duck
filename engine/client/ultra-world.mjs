@@ -1,3 +1,4 @@
+import {musicOccupants,musicPose,MUSIC_SCORES} from './music-performances.mjs';
 import {botanicalOccupants,BOTANICAL_ROUTINES} from './botanical-routines.mjs';
 import { eventModel } from './event-art.mjs';
 import { storyModel } from './story-art.mjs';
@@ -302,7 +303,7 @@ export class LivingWorld {
     this.characters.push({...sprite,x,y,cheese:!visitor});
   }
   actors(s,t,dt){
-    const g=this.grid,actors=[],seated=seatOccupants(s);
+    const g=this.grid,actors=[],seated=seatOccupants(s),musicians=musicOccupants(s);
     for(const item of [...(s.structures||[]),...(s.items||[])]){
       const [x,y]=this.project(s,item.x,item.y);
       actors.push({y,draw:()=>{
@@ -315,7 +316,8 @@ export class LivingWorld {
         if(interaction&&occupants.length+(owned&&plan.residence?1:0)>1)interaction={...interaction,shared:true};
         const sitters=seated.filter(r=>r.id===item.id&&matches(r.destination)&&r.phase!=='approach');
         if(sitters.length)interaction={...(interaction||{phase:'act'}),seat_occupants:sitters};
-        this.objects.push({...itemSprite(item.id,t,{motion:s.motion!==false,context:s,originalArt:item.art,state:s.living?.objects?.[item.id],interaction}),item:true,x,y,worldPosition:[item.x,item.y],scale:itemWorldScale(item.id)});
+        const music=musicians.filter(r=>r.id===item.id&&matches(r.destination)&&r.phase==='inside').map(r=>{const p=musicPose(r.id,r.score,s.motion!==false);return p&&{...p,slot:r.slot};}).filter(Boolean);
+        this.objects.push({...itemSprite(item.id,t,{pose:{music},motion:s.motion!==false,context:s,originalArt:item.art,state:s.living?.objects?.[item.id],interaction}),item:true,x,y,worldPosition:[item.x,item.y],scale:itemWorldScale(item.id)});
       }});
     }
     if(s.visitor){const [x,y]=this.project(s,s.visitor.x,s.visitor.y);actors.push({y,draw:()=>this.actor(s,t+2,x,y,{stage:'adult',state:'idle',facing:false,...s.visitor},true)});}
@@ -402,6 +404,19 @@ export class LivingWorld {
       const performance={kind:'botanical',routine:r.routine,motion:s.motion!==false};
       const character={...characterSprite({...source,state:'idle',facing:r.slot===0,performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
       (home.gardeners||=[]).push({character,inside,slot:r.slot});
+      this.characters=this.characters.filter(c=>c!==original);
+    }
+    for(const r of musicians){
+      if(r.phase==='approach'||r.score?.interrupted||!MUSIC_SCORES[r.score?.id])continue;
+      const actorId=r.actor==='story:pip'?'story:lost_duckling':r.actor;
+      const original=this.characters.find(c=>r.actor==='cheese'?c.cheese:c.id===actorId);
+      const home=this.objects.find(o=>o.id===r.id&&o.construction==='instrument-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-r.destination?.[i])<1.1));
+      if(!original||!home?.anchors?.entry)continue;
+      const source=r.actor==='cheese'?s.duck:s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
+      const inside=r.phase==='inside'?1:r.phase==='enter'?clamp(r.elapsed/3,0,1):clamp(1-r.elapsed/3,0,1);
+      const performance={kind:'instrument',item:r.id,routine:r.score,motion:s.motion!==false};
+      const character={...characterSprite({...source,state:'idle',facing:r.slot===0,performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
+      (home.musicians||=[]).push({character,inside,slot:r.slot});
       this.characters=this.characters.filter(c=>c!==original);
     }
     const partnerId=plan?.company?.partner==='story:pip'?'story:lost_duckling':plan?.company?.partner;

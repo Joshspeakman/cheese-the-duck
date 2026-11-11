@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: connected 19 authored botanical care scores to real arrived Cheese and independent regular/rare/story visitors. Watering cans, brushes, rakes, probes and lenses attach to posed wings/forefeet; pours fall to actual soil and contacts follow leaf/rim/root anchors. Young residents use reachable tools and supported steps where needed, butterflies hover without tools. Completed care teaches gardening, and overlapping shared care is remembered only after both finish. Validated 78 native care checks, 103 JavaScript tests, 187 botanical lifecycle checks, 694 living checks/72 hours, 207 furniture checks, 70 playdates, 44 brains, 38 visitor shelters and 76 original gameplay checks. Whole catalogue and 48 bespoke sequences per object remain incomplete; installed 2.36.0 remains unchanged.",
+  "previous_goal_turn": "Progress: reconstructed nine musical objects and integrated 25 authored phrases with native notes, posed wings/bills/sticks/brushes, contextual expression, independent regular/rare/story musicians, synchronized duets and completed memories/learning. Added bounded procedural instrument voices with safe registered mixer workers and tested mute/cancel/shutdown. All 109 JavaScript tests and native music checks (142) pass; all-cast/age contact fitting covers 20,160 cases. Broader simulation, saves, gardening, seating, playdates, brains, placement and original gameplay checks passed. Artwork now totals 163 of 542; no object yet satisfies 48 bespoke sequences. Full milestone remains active and the installed 2.36.0 is unchanged.",
   "items": [
     {
       "id": "hat_red",
@@ -226,8 +226,10 @@
     {
       "id": "toy_trumpet",
       "family": "trumpet",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Uses applicable members of 25 authored musical phrases with real arrived solo/duet performers, keys/valves/drumheads/chimes, native audio and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "toy_skateboard",
@@ -239,8 +241,10 @@
     {
       "id": "toy_piano",
       "family": "piano",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Uses applicable members of 25 authored musical phrases with real arrived solo/duet performers, keys/valves/drumheads/chimes, native audio and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "toy_trampoline",
@@ -280,8 +284,10 @@
     {
       "id": "toy_boombox",
       "family": "radio",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Uses applicable members of 25 authored musical phrases with real arrived solo/duet performers, keys/valves/drumheads/chimes, native audio and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "chair_wood",
@@ -687,8 +693,10 @@
     {
       "id": "drums",
       "family": "drums",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Uses applicable members of 25 authored musical phrases with real arrived solo/duet performers, keys/valves/drumheads/chimes, native audio and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "bookshelf_wood",
@@ -725,8 +733,10 @@
     {
       "id": "piano",
       "family": "piano",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Uses applicable members of 25 authored musical phrases with real arrived solo/duet performers, keys/valves/drumheads/chimes, native audio and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "wardrobe",
@@ -1065,8 +1075,10 @@
     {
       "id": "wind_chimes",
       "family": "chimes",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Uses applicable members of 25 authored musical phrases with real arrived solo/duet performers, keys/valves/drumheads/chimes, native audio and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "birdbath_garden",
@@ -1759,8 +1771,10 @@
     {
       "id": "nook_radio",
       "family": "radio",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Uses applicable members of 25 authored musical phrases with real arrived solo/duet performers, keys/valves/drumheads/chimes, native audio and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "breadcrumbs",
@@ -2027,8 +2041,10 @@
     {
       "id": "shell_mobile",
       "family": "chimes",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Uses applicable members of 25 authored musical phrases with real arrived solo/duet performers, keys/valves/drumheads/chimes, native audio and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "storage_basket",
@@ -2713,8 +2729,10 @@
     {
       "id": "fog_bell",
       "family": "chimes",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Uses applicable members of 25 authored musical phrases with real arrived solo/duet performers, keys/valves/drumheads/chimes, native audio and completed learning. Full 48 bespoke sequences for this particular object remain unfinished."
     },
     {
       "id": "mystery_sound",
@@ -3751,10 +3769,10 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "botanical_articulated_care_and_visitors",
+    "sourcePhase": "instrument_art_performances_and_native_audio",
     "fullyOverhauled": false,
-    "constructedObjects": 154,
-    "remainingArtwork": 388,
+    "constructedObjects": 163,
+    "remainingArtwork": 379,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -3837,14 +3855,32 @@
       "engine/artifacts/animation-milestone/botanical-care-company.png",
       "engine/artifacts/animation-milestone/botanical-care-young.png",
       "engine/artifacts/animation-milestone/botanical-care-targeted.log",
-      "engine/artifacts/animation-milestone/botanical-care-3.png"
+      "engine/artifacts/animation-milestone/botanical-care-3.png",
+      "engine/artifacts/animation-milestone/instrument-native.json",
+      "engine/artifacts/animation-milestone/instrument-render.json",
+      "engine/artifacts/animation-milestone/instrument-js-suite.log",
+      "engine/artifacts/animation-milestone/instrument-contact-tests.log",
+      "engine/artifacts/animation-milestone/instrument-regressions.json",
+      "engine/artifacts/animation-milestone/instrument-young.png",
+      "engine/artifacts/animation-milestone/instrument-company.png",
+      "engine/artifacts/animation-milestone/instruments-0.png",
+      "engine/artifacts/animation-milestone/instruments-1.png",
+      "engine/artifacts/animation-milestone/instruments-2.png",
+      "engine/artifacts/animation-milestone/music-phrases-0.png",
+      "engine/artifacts/animation-milestone/music-phrases-1.png",
+      "engine/artifacts/animation-milestone/music-phrases-2.png",
+      "engine/artifacts/animation-milestone/music-phrases-3.png",
+      "engine/artifacts/animation-milestone/music-phrases-4.png",
+      "engine/artifacts/animation-milestone/music-phrases-5.png",
+      "engine/artifacts/animation-milestone/music-phrases-6.png"
     ],
     "next": [
-      "Continue construction-specific plant repertoires, seasonal/mood/personality choreography, reciprocal gestures and physical tool handoffs. The 19 shared care scores and all-cast rig fit are foundations, not 48 bespoke sequences on each plant. Continue the remaining 388 item reconstructions and the full per-object animation milestone.",
+      "Expand instrument-specific and guest-specific performance repertoires beyond the 25 shared phrase cores, with explicit approach/climbing, stationary multi-level supports, instrument pickup/put-away, listening audiences and richer reciprocal musical gestures. Keep all per-object sequence counts unverified until the 48 meaningful sequence audit passes. Continue the remaining 379 artwork reconstructions and all other milestone requirements.",
+      "Continue construction-specific plant repertoires, seasonal/mood/personality choreography, reciprocal gestures and physical tool handoffs. The 19 shared care scores and all-cast rig fit are foundations, not 48 bespoke sequences on each plant. Continue the remaining 379 item reconstructions and the full per-object animation milestone.",
       "Extend spatial arrangement to the separate building/decorating/project editors and consider additional habitat areas for larger collections; all 218 placeable shop objects now use measured footprints, dry-ground/water checks and truthful storage. Building and decoration objects reserve space against habitat purchases, but their own editors still use legacy placement rules.",
       "Deepen construction-specific nest/bed/house acting and each remaining item repertoire; the 51 shared nest scores do not by themselves satisfy 48 bespoke sequences per object.",
       "Add explicit nest body-facing transitions, construction-specific canopy/quilt/pillow/lining actions and species/age-specific climbing and doorway choreography.",
-      "Reconstruct the remaining 388 objects with authored details and anchors; regenerate measured placement bounds as artwork changes.",
+      "Reconstruct the remaining 379 objects with authored details and anchors; regenerate measured placement bounds as artwork changes.",
       "Expand guest-specific and age-specific behavior; eighteen shared tracks are not a complete bespoke catalogue.",
       "Extend invitations, prop handoffs and cooperative item use, with real arrival and completion evidence.",
       "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation.",
@@ -3852,7 +3888,7 @@
       "Audit persistent condition and plant biology for duplicate placed copies: physical reservations are per destination, while existing object state is still keyed by catalogue item. Separate per-copy state with a save migration before claiming complete independent object simulation."
     ],
     "checks": {
-      "javascript": 103,
+      "javascript": 109,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 22,
@@ -3860,7 +3896,7 @@
       "learningBrains": 44,
       "shelterLifecycle": 30,
       "pairedLifecycle": 16,
-      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Initial character-operated tools are now reviewed separately below; plant-specific social routines and every-object 48-sequence coverage remain unfinished. Botanical care: 19 score illustrations on four sheets plus real native solo/company replay. Connected mirrored grips, fixed character scale, supported feet, age-sized tools, actual soil/rim/leaf contacts, downward pours, butterfly hovering, reduced motion and selectable visiting gardeners verified. Interrupted and incomplete shared work grant no shared memory; completed care teaches gardening. Tool pickup/put-away and individual-object/guest repertoires remain unfinished.",
+      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Initial character-operated tools are now reviewed separately below; plant-specific social routines and every-object 48-sequence coverage remain unfinished. Botanical care: 19 score illustrations on four sheets plus real native solo/company replay. Connected mirrored grips, fixed character scale, supported feet, age-sized tools, actual soil/rim/leaf contacts, downward pours, butterfly hovering, reduced motion and selectable visiting gardeners verified. Interrupted and incomplete shared work grant no shared memory; completed care teaches gardening. Tool pickup/put-away and individual-object/guest repertoires remain unfinished. Music review: nine instrument constructions on three sheets, 25 phrases at three phases on seven sheets, plus real native solo/shared scenes. All eight hatched ages and 48 visitor rigs remain bounded with fixed body scale; mirrored grips, real bill contact, depressed keys/valves, ringing cymbals/chimes, radio knobs, fan brushes, supported feet and continuous note-to-note travel are checked. Actual regular, rare and story visitors reserve independent destinations, and visitor-to-visitor duets work without crediting Cheese. Shared native clocks emit each note once, skip missed-note bursts and grant learning/memories only upon completion. Muting, direct care, pauses, moved objects, storms, replaced visits and safe worker shutdown are verified. Physical entry/climbing and full individual object/guest repertoires remain unfinished.",
       "nestLifecycle": 34,
       "nestReplay": {
         "nativeSceneFrames": 41,
@@ -3947,10 +3983,21 @@
         "medianMs": 10.399999976158142,
         "p95Ms": 18,
         "note": "Development replay, not the final milestone performance audit."
+      },
+      "instrumentLifecycle": 142,
+      "instrumentRigCases": 20160,
+      "instrumentSynthVoices": 11,
+      "instrumentReplay": {
+        "frames": 439,
+        "players": 468,
+        "hits": 181,
+        "medianMs": 4.900000035762787,
+        "p95Ms": 17.5,
+        "note": "Development replay, not the final whole-milestone performance audit."
       }
     },
     "limitations": [
-      "154 of 542 object artworks reconstructed for review; 388 remain.",
+      "163 of 542 object artworks reconstructed for review; 379 remain.",
       "No object has yet passed the 48 bespoke sequence requirement.",
       "Five nests now use 51 authored core routines (three require a canopy). Individual nest-construction variants, guest participation and egg-specific interactions remain unfinished; no per-object completion is claimed.",
       "Paired tracks currently share a core movement vocabulary across the cast; personality-specific choreography and full guest item participation remain unfinished.",
@@ -3959,7 +4006,8 @@
       "Installed app remains the previously verified 2.36.0; this development milestone is not packaged or installed.",
       "Eight cooperative toy scenes currently cover seesaw, sandbox, ball and trampoline; full species-specific contact, NPC-to-NPC toy invitations and every-object repertoires remain unfinished. Habitat purchases now reserve enlarged drawing space; additional areas and the other legacy placement editors remain to be designed.",
       "Sixteen shared water scores are initial object/age-aware routines, not 48 bespoke sequences on each water object. Visitor bathing, species-specific water contacts and detailed ladder/entry choreography remain unfinished.",
-      "Rooted plants now have 19 shared articulated care scores with tool contacts, independent visitor arrivals and completed shared-care memories. These do not satisfy the 48 bespoke sequences per plant target. Plant-construction-specific acting, personality/mood choreography, explicit tool pickup/put-away and reciprocal tool handoffs remain unfinished. No per-object sequence completion is claimed."
+      "Rooted plants now have 19 shared articulated care scores with tool contacts, independent visitor arrivals and completed shared-care memories. These do not satisfy the 48 bespoke sequences per plant target. Plant-construction-specific acting, personality/mood choreography, explicit tool pickup/put-away and reciprocal tool handoffs remain unfinished. No per-object sequence completion is claimed.",
+      "Nine music objects now have 25 shared phrase cores, articulated playing/listening, real synthesized notes, independently arrived visitors and synchronized duets. These are not 48 bespoke sequences per instrument. Construction-specific repertoires, richer expressive posing, explicit tool pickup/put-away, musician climbing and stationary multi-level supports, egg listening and personal visitor phrasing remain unfinished."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -3968,6 +4016,8 @@
     "waterScores": 16,
     "seatingSoloTracks": 12,
     "seatingSharedTracks": 4,
-    "botanicalCareCoreScores": 19
+    "botanicalCareCoreScores": 19,
+    "musicPhraseCores": 25,
+    "musicObjects": 9
   }
 }

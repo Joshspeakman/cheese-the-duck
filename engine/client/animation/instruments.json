@@ -1,0 +1,83 @@
+{
+  "toy_trumpet": {
+    "type": "horn",
+    "style": "tin",
+    "w": 104,
+    "h": 62,
+    "scale": 0.77,
+    "capacity": 1,
+    "voice": "brass"
+  },
+  "toy_piano": {
+    "type": "piano",
+    "style": "toy",
+    "w": 112,
+    "h": 77,
+    "scale": 0.88,
+    "capacity": 2,
+    "voice": "tines"
+  },
+  "piano": {
+    "type": "piano",
+    "style": "upright",
+    "w": 146,
+    "h": 110,
+    "scale": 1.0,
+    "capacity": 2,
+    "voice": "piano"
+  },
+  "drums": {
+    "type": "drums",
+    "style": "kit",
+    "w": 144,
+    "h": 103,
+    "scale": 0.72,
+    "capacity": 2,
+    "voice": "drum"
+  },
+  "toy_boombox": {
+    "type": "radio",
+    "style": "cassette",
+    "w": 118,
+    "h": 72,
+    "scale": 0.87,
+    "capacity": 2,
+    "voice": "tines"
+  },
+  "nook_radio": {
+    "type": "radio",
+    "style": "wood",
+    "w": 96,
+    "h": 86,
+    "scale": 0.83,
+    "capacity": 2,
+    "voice": "piano"
+  },
+  "wind_chimes": {
+    "type": "chimes",
+    "style": "tubes",
+    "w": 96,
+    "h": 102,
+    "scale": 0.88,
+    "capacity": 2,
+    "voice": "bell"
+  },
+  "shell_mobile": {
+    "type": "chimes",
+    "style": "shells",
+    "w": 112,
+    "h": 100,
+    "scale": 0.9,
+    "capacity": 2,
+    "voice": "shell"
+  },
+  "fog_bell": {
+    "type": "chimes",
+    "style": "bell",
+    "w": 100,
+    "h": 106,
+    "scale": 0.94,
+    "capacity": 2,
+    "voice": "gong"
+  }
+}

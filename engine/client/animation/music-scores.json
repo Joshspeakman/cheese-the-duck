@@ -1,0 +1,1639 @@
+{
+  "first_keys": {
+    "label": "Trying three keys, then finding a little answer",
+    "types": [
+      "piano"
+    ],
+    "tempo": 64,
+    "notes": [
+      [
+        0,
+        3,
+        "l"
+      ],
+      [
+        2,
+        4,
+        "r"
+      ],
+      [
+        4,
+        3,
+        "l"
+      ],
+      [
+        7,
+        5,
+        "r"
+      ],
+      [
+        8,
+        4,
+        "r"
+      ],
+      [
+        10,
+        3,
+        "l",
+        2
+      ]
+    ],
+    "when": {
+      "young": true
+    },
+    "shared": false,
+    "gesture": "tentative",
+    "duration": 17.25
+  },
+  "stepping_scale": {
+    "label": "Walking a tune up the keyboard and back",
+    "types": [
+      "piano"
+    ],
+    "tempo": 84,
+    "notes": [
+      [
+        0,
+        0,
+        "l"
+      ],
+      [
+        1,
+        1,
+        "l"
+      ],
+      [
+        2,
+        2,
+        "l"
+      ],
+      [
+        3,
+        3,
+        "r"
+      ],
+      [
+        4,
+        4,
+        "r"
+      ],
+      [
+        5,
+        5,
+        "r"
+      ],
+      [
+        6,
+        6,
+        "r"
+      ],
+      [
+        8,
+        7,
+        "r",
+        2
+      ],
+      [
+        11,
+        5,
+        "r"
+      ],
+      [
+        12,
+        3,
+        "l"
+      ],
+      [
+        13,
+        1,
+        "l"
+      ],
+      [
+        15,
+        0,
+        "l",
+        2
+      ]
+    ],
+    "when": {},
+    "shared": false,
+    "gesture": "play",
+    "duration": 18.14
+  },
+  "pond_waltz": {
+    "label": "Giving the pond a slightly lopsided waltz",
+    "types": [
+      "piano"
+    ],
+    "tempo": 98,
+    "notes": [
+      [
+        0,
+        0,
+        "l"
+      ],
+      [
+        1,
+        4,
+        "r"
+      ],
+      [
+        2,
+        6,
+        "r"
+      ],
+      [
+        3,
+        1,
+        "l"
+      ],
+      [
+        4,
+        3,
+        "r"
+      ],
+      [
+        5,
+        5,
+        "r"
+      ],
+      [
+        6,
+        0,
+        "l"
+      ],
+      [
+        7,
+        4,
+        "r"
+      ],
+      [
+        8,
+        7,
+        "r"
+      ],
+      [
+        9,
+        2,
+        "l"
+      ],
+      [
+        10,
+        5,
+        "r"
+      ],
+      [
+        11,
+        3,
+        "r"
+      ],
+      [
+        12,
+        0,
+        "l",
+        2
+      ],
+      [
+        12,
+        4,
+        "r",
+        2
+      ]
+    ],
+    "when": {
+      "day": true
+    },
+    "shared": false,
+    "gesture": "waltz",
+    "duration": 14.57
+  },
+  "rain_on_keys": {
+    "label": "Picking out the rhythm of rain on the lid",
+    "types": [
+      "piano"
+    ],
+    "tempo": 70,
+    "notes": [
+      [
+        0,
+        2,
+        "l",
+        0.7,
+        0.45
+      ],
+      [
+        1.5,
+        5,
+        "r",
+        0.4,
+        0.4
+      ],
+      [
+        2.5,
+        4,
+        "r",
+        1,
+        0.45
+      ],
+      [
+        4,
+        1,
+        "l",
+        1,
+        0.5
+      ],
+      [
+        6,
+        3,
+        "r",
+        0.6,
+        0.45
+      ],
+      [
+        7.5,
+        5,
+        "r",
+        0.4,
+        0.4
+      ],
+      [
+        8,
+        4,
+        "r",
+        1.5,
+        0.4
+      ],
+      [
+        11,
+        0,
+        "l",
+        2,
+        0.45
+      ]
+    ],
+    "when": {
+      "rain": true
+    },
+    "shared": false,
+    "gesture": "play",
+    "duration": 17.14
+  },
+  "quiet_lullaby": {
+    "label": "Playing softly enough not to wake the pond",
+    "types": [
+      "piano"
+    ],
+    "tempo": 62,
+    "notes": [
+      [
+        0,
+        0,
+        "l",
+        2,
+        0.35
+      ],
+      [
+        2,
+        4,
+        "r",
+        1,
+        0.35
+      ],
+      [
+        4,
+        5,
+        "r",
+        1,
+        0.3
+      ],
+      [
+        6,
+        4,
+        "r",
+        2,
+        0.3
+      ],
+      [
+        9,
+        2,
+        "l",
+        1,
+        0.35
+      ],
+      [
+        11,
+        1,
+        "l",
+        1,
+        0.3
+      ],
+      [
+        13,
+        0,
+        "l",
+        3,
+        0.25
+      ]
+    ],
+    "when": {
+      "night": true
+    },
+    "shared": false,
+    "gesture": "lullaby",
+    "duration": 21.48
+  },
+  "grumpy_keys": {
+    "label": "Making a very specific complaint in staccato",
+    "types": [
+      "piano"
+    ],
+    "tempo": 112,
+    "notes": [
+      [
+        0,
+        0,
+        "l",
+        0.3,
+        0.85
+      ],
+      [
+        0.5,
+        0,
+        "l",
+        0.3,
+        0.85
+      ],
+      [
+        1,
+        3,
+        "r",
+        0.4,
+        0.7
+      ],
+      [
+        3,
+        1,
+        "l",
+        0.3,
+        0.85
+      ],
+      [
+        3.5,
+        1,
+        "l",
+        0.3,
+        0.85
+      ],
+      [
+        4,
+        4,
+        "r",
+        0.4,
+        0.75
+      ],
+      [
+        6,
+        2,
+        "l",
+        0.4,
+        0.8
+      ],
+      [
+        7,
+        6,
+        "r",
+        0.4,
+        0.7
+      ],
+      [
+        8,
+        5,
+        "r",
+        0.4,
+        0.75
+      ],
+      [
+        10,
+        0,
+        "l",
+        1,
+        0.6
+      ]
+    ],
+    "when": {
+      "grumpy": true
+    },
+    "shared": false,
+    "gesture": "jab",
+    "duration": 11.89
+  },
+  "old_refrain": {
+    "label": "Taking time over an old familiar refrain",
+    "types": [
+      "piano"
+    ],
+    "tempo": 58,
+    "notes": [
+      [
+        0,
+        2,
+        "l",
+        1.5,
+        0.5
+      ],
+      [
+        2,
+        4,
+        "r",
+        1.5,
+        0.5
+      ],
+      [
+        4,
+        5,
+        "r",
+        2,
+        0.45
+      ],
+      [
+        7,
+        4,
+        "r",
+        1.5,
+        0.4
+      ],
+      [
+        10,
+        2,
+        "l",
+        1,
+        0.45
+      ],
+      [
+        12,
+        1,
+        "l",
+        1,
+        0.4
+      ],
+      [
+        14,
+        0,
+        "l",
+        3,
+        0.4
+      ]
+    ],
+    "when": {
+      "elder": true
+    },
+    "shared": false,
+    "gesture": "patient",
+    "duration": 23.59
+  },
+  "autumn_walk": {
+    "label": "Letting a descending tune drift like falling leaves",
+    "types": [
+      "piano"
+    ],
+    "tempo": 78,
+    "notes": [
+      [
+        0,
+        7,
+        "r",
+        1.2
+      ],
+      [
+        2,
+        6,
+        "r"
+      ],
+      [
+        3,
+        4,
+        "r"
+      ],
+      [
+        5,
+        5,
+        "r"
+      ],
+      [
+        6,
+        3,
+        "l"
+      ],
+      [
+        8,
+        4,
+        "r"
+      ],
+      [
+        9,
+        2,
+        "l"
+      ],
+      [
+        11,
+        1,
+        "l"
+      ],
+      [
+        13,
+        0,
+        "l",
+        2
+      ]
+    ],
+    "when": {
+      "autumn": true
+    },
+    "shared": false,
+    "gesture": "play",
+    "duration": 17.54
+  },
+  "two_wing_answer": {
+    "label": "Trading a bass question for a bright answer",
+    "types": [
+      "piano"
+    ],
+    "tempo": 82,
+    "notes": [
+      [
+        0,
+        0,
+        "a",
+        1.5
+      ],
+      [
+        2,
+        2,
+        "a"
+      ],
+      [
+        3,
+        4,
+        "a"
+      ],
+      [
+        5,
+        4,
+        "b"
+      ],
+      [
+        6,
+        6,
+        "b"
+      ],
+      [
+        7,
+        7,
+        "b",
+        1.5
+      ],
+      [
+        10,
+        1,
+        "a"
+      ],
+      [
+        11,
+        3,
+        "a"
+      ],
+      [
+        13,
+        5,
+        "b"
+      ],
+      [
+        14,
+        4,
+        "b"
+      ],
+      [
+        16,
+        0,
+        "a",
+        2
+      ],
+      [
+        16,
+        7,
+        "b",
+        2
+      ]
+    ],
+    "when": {},
+    "shared": true,
+    "gesture": "play",
+    "duration": 19.17
+  },
+  "drum_steps": {
+    "label": "Trading little steps between the toms and snare",
+    "types": [
+      "drums"
+    ],
+    "tempo": 104,
+    "notes": [
+      [
+        0,
+        0,
+        "l"
+      ],
+      [
+        1,
+        1,
+        "r"
+      ],
+      [
+        2,
+        2,
+        "l"
+      ],
+      [
+        3,
+        1,
+        "r"
+      ],
+      [
+        4,
+        0,
+        "l"
+      ],
+      [
+        5,
+        4,
+        "r"
+      ],
+      [
+        6,
+        2,
+        "l"
+      ],
+      [
+        7,
+        3,
+        "r",
+        1.4
+      ],
+      [
+        9,
+        0,
+        "l"
+      ],
+      [
+        10,
+        1,
+        "r"
+      ],
+      [
+        11,
+        2,
+        "l"
+      ],
+      [
+        12,
+        5,
+        "l"
+      ],
+      [
+        14,
+        3,
+        "r",
+        2
+      ]
+    ],
+    "when": {},
+    "shared": false,
+    "gesture": "play",
+    "duration": 15.23
+  },
+  "small_mallets": {
+    "label": "Testing the snare with careful little taps",
+    "types": [
+      "drums"
+    ],
+    "tempo": 68,
+    "notes": [
+      [
+        0,
+        2,
+        "l",
+        0.5,
+        0.4
+      ],
+      [
+        2,
+        2,
+        "r",
+        0.5,
+        0.4
+      ],
+      [
+        4,
+        2,
+        "l",
+        0.5,
+        0.5
+      ],
+      [
+        5,
+        2,
+        "r",
+        0.5,
+        0.5
+      ],
+      [
+        7,
+        2,
+        "l",
+        0.4,
+        0.5
+      ],
+      [
+        7.5,
+        2,
+        "r",
+        0.4,
+        0.5
+      ],
+      [
+        10,
+        2,
+        "l",
+        1,
+        0.6
+      ]
+    ],
+    "when": {
+      "young": true
+    },
+    "shared": false,
+    "gesture": "play",
+    "duration": 15.71
+  },
+  "snare_roll": {
+    "label": "Building a roll and letting the cymbal answer",
+    "types": [
+      "drums"
+    ],
+    "tempo": 100,
+    "notes": [
+      [
+        0,
+        2,
+        "l"
+      ],
+      [
+        1,
+        2,
+        "r"
+      ],
+      [
+        2,
+        2,
+        "l"
+      ],
+      [
+        2.75,
+        2,
+        "r"
+      ],
+      [
+        3.5,
+        2,
+        "l"
+      ],
+      [
+        4,
+        2,
+        "r"
+      ],
+      [
+        4.5,
+        2,
+        "l"
+      ],
+      [
+        5,
+        2,
+        "r"
+      ],
+      [
+        5.5,
+        2,
+        "l"
+      ],
+      [
+        6,
+        2,
+        "r"
+      ],
+      [
+        6.5,
+        2,
+        "l"
+      ],
+      [
+        7,
+        2,
+        "r"
+      ],
+      [
+        8,
+        3,
+        "r",
+        2
+      ]
+    ],
+    "when": {},
+    "shared": false,
+    "gesture": "roll",
+    "duration": 12.0
+  },
+  "rain_brushes": {
+    "label": "Brushing a soft rain rhythm across the drumhead",
+    "types": [
+      "drums"
+    ],
+    "tempo": 74,
+    "notes": [
+      [
+        0,
+        2,
+        "l",
+        1,
+        0.25
+      ],
+      [
+        1.5,
+        2,
+        "r",
+        1,
+        0.25
+      ],
+      [
+        3,
+        2,
+        "l",
+        1,
+        0.3
+      ],
+      [
+        4.5,
+        4,
+        "r",
+        1,
+        0.25
+      ],
+      [
+        6,
+        2,
+        "l",
+        1,
+        0.3
+      ],
+      [
+        8,
+        2,
+        "r",
+        2,
+        0.2
+      ]
+    ],
+    "when": {
+      "rain": true
+    },
+    "shared": false,
+    "gesture": "brush",
+    "duration": 14.11
+  },
+  "drum_conversation": {
+    "label": "Leaving a gap for a friend to answer on the kit",
+    "types": [
+      "drums"
+    ],
+    "tempo": 96,
+    "notes": [
+      [
+        0,
+        0,
+        "a"
+      ],
+      [
+        1,
+        2,
+        "a"
+      ],
+      [
+        2,
+        0,
+        "a"
+      ],
+      [
+        4,
+        1,
+        "b"
+      ],
+      [
+        5,
+        4,
+        "b"
+      ],
+      [
+        6,
+        1,
+        "b"
+      ],
+      [
+        8,
+        2,
+        "a"
+      ],
+      [
+        8.5,
+        2,
+        "a"
+      ],
+      [
+        9,
+        0,
+        "a"
+      ],
+      [
+        11,
+        4,
+        "b"
+      ],
+      [
+        12,
+        1,
+        "b"
+      ],
+      [
+        14,
+        2,
+        "a"
+      ],
+      [
+        14,
+        3,
+        "b",
+        2
+      ]
+    ],
+    "when": {},
+    "shared": true,
+    "gesture": "play",
+    "duration": 16.0
+  },
+  "horn_breath": {
+    "label": "Warming the trumpet with long patient breaths",
+    "types": [
+      "horn"
+    ],
+    "tempo": 70,
+    "notes": [
+      [
+        0,
+        0,
+        "l",
+        2,
+        0.55
+      ],
+      [
+        4,
+        2,
+        "l",
+        2,
+        0.6
+      ],
+      [
+        8,
+        4,
+        "l",
+        2,
+        0.65
+      ],
+      [
+        12,
+        0,
+        "l",
+        3,
+        0.5
+      ]
+    ],
+    "when": {},
+    "shared": false,
+    "gesture": "play",
+    "duration": 18.86
+  },
+  "pond_fanfare": {
+    "label": "Announcing something far less important than the fanfare",
+    "types": [
+      "horn"
+    ],
+    "tempo": 104,
+    "notes": [
+      [
+        0,
+        0,
+        "l",
+        0.6,
+        0.75
+      ],
+      [
+        1,
+        0,
+        "l",
+        0.6,
+        0.8
+      ],
+      [
+        2,
+        4,
+        "l",
+        1.5,
+        0.8
+      ],
+      [
+        5,
+        2,
+        "l",
+        0.5,
+        0.7
+      ],
+      [
+        6,
+        4,
+        "l",
+        0.5,
+        0.8
+      ],
+      [
+        7,
+        7,
+        "l",
+        2,
+        0.85
+      ],
+      [
+        11,
+        5,
+        "l"
+      ],
+      [
+        12,
+        4,
+        "l"
+      ],
+      [
+        14,
+        0,
+        "l",
+        2,
+        0.7
+      ]
+    ],
+    "when": {
+      "bold": true
+    },
+    "shared": false,
+    "gesture": "flourish",
+    "duration": 15.23
+  },
+  "tiny_toot": {
+    "label": "Taking a breath, missing once, then getting a proper toot",
+    "types": [
+      "horn"
+    ],
+    "tempo": 68,
+    "notes": [
+      [
+        2,
+        0,
+        "l",
+        0.4,
+        0.35
+      ],
+      [
+        5,
+        0,
+        "l",
+        0.6,
+        0.45
+      ],
+      [
+        8,
+        2,
+        "l",
+        0.8,
+        0.4
+      ],
+      [
+        11,
+        0,
+        "l",
+        1.5,
+        0.5
+      ]
+    ],
+    "when": {
+      "young": true
+    },
+    "shared": false,
+    "gesture": "tentative",
+    "duration": 17.03
+  },
+  "low_horn": {
+    "label": "Keeping a mellow low note for the evening",
+    "types": [
+      "horn"
+    ],
+    "tempo": 60,
+    "notes": [
+      [
+        0,
+        0,
+        "l",
+        2,
+        0.25
+      ],
+      [
+        4,
+        1,
+        "l",
+        2,
+        0.3
+      ],
+      [
+        8,
+        2,
+        "l",
+        1,
+        0.3
+      ],
+      [
+        11,
+        0,
+        "l",
+        3,
+        0.25
+      ]
+    ],
+    "when": {
+      "night": true
+    },
+    "shared": false,
+    "gesture": "breath",
+    "duration": 20.0
+  },
+  "cassette_side_a": {
+    "label": "Finding side A and letting the little speakers bounce",
+    "types": [
+      "radio"
+    ],
+    "tempo": 108,
+    "notes": [
+      [
+        0,
+        0,
+        "r"
+      ],
+      [
+        1,
+        2,
+        "r"
+      ],
+      [
+        2,
+        4,
+        "r"
+      ],
+      [
+        3,
+        2,
+        "r"
+      ],
+      [
+        4,
+        1,
+        "r"
+      ],
+      [
+        5,
+        3,
+        "r"
+      ],
+      [
+        6,
+        5,
+        "r"
+      ],
+      [
+        8,
+        4,
+        "r"
+      ],
+      [
+        9,
+        2,
+        "r"
+      ],
+      [
+        10,
+        0,
+        "r",
+        2
+      ]
+    ],
+    "when": {
+      "cassette": true
+    },
+    "shared": false,
+    "gesture": "listen",
+    "duration": 12.67
+  },
+  "evening_station": {
+    "label": "Tuning in a quiet evening melody",
+    "types": [
+      "radio"
+    ],
+    "tempo": 76,
+    "notes": [
+      [
+        0,
+        0,
+        "r",
+        1,
+        0.35
+      ],
+      [
+        2,
+        4,
+        "r",
+        1,
+        0.35
+      ],
+      [
+        4,
+        5,
+        "r",
+        1,
+        0.35
+      ],
+      [
+        6,
+        2,
+        "r",
+        1,
+        0.35
+      ],
+      [
+        8,
+        3,
+        "r",
+        1,
+        0.3
+      ],
+      [
+        10,
+        1,
+        "r",
+        1,
+        0.3
+      ],
+      [
+        12,
+        0,
+        "r",
+        2,
+        0.3
+      ]
+    ],
+    "when": {
+      "wooden": true
+    },
+    "shared": false,
+    "gesture": "listen",
+    "duration": 17.05
+  },
+  "radio_sway": {
+    "label": "Sharing the radio and disagreeing about the best bit",
+    "types": [
+      "radio"
+    ],
+    "tempo": 100,
+    "notes": [
+      [
+        0,
+        0,
+        "a"
+      ],
+      [
+        1,
+        4,
+        "a"
+      ],
+      [
+        2,
+        2,
+        "a"
+      ],
+      [
+        4,
+        3,
+        "b"
+      ],
+      [
+        5,
+        5,
+        "b"
+      ],
+      [
+        6,
+        4,
+        "b"
+      ],
+      [
+        8,
+        0,
+        "a"
+      ],
+      [
+        9,
+        2,
+        "a"
+      ],
+      [
+        10,
+        4,
+        "b"
+      ],
+      [
+        11,
+        6,
+        "b"
+      ],
+      [
+        13,
+        0,
+        "a",
+        2
+      ]
+    ],
+    "when": {},
+    "shared": true,
+    "gesture": "listen",
+    "duration": 15.0
+  },
+  "tube_taps": {
+    "label": "Tapping the tubes from shortest to longest",
+    "types": [
+      "chimes"
+    ],
+    "tempo": 82,
+    "notes": [
+      [
+        0,
+        0,
+        "l",
+        1.5,
+        0.5
+      ],
+      [
+        2,
+        1,
+        "r",
+        1.5,
+        0.5
+      ],
+      [
+        4,
+        2,
+        "l",
+        1.5,
+        0.5
+      ],
+      [
+        6,
+        3,
+        "r",
+        1.5,
+        0.5
+      ],
+      [
+        8,
+        4,
+        "l",
+        1.5,
+        0.5
+      ],
+      [
+        10,
+        5,
+        "r",
+        1.5,
+        0.5
+      ],
+      [
+        12,
+        6,
+        "l",
+        2,
+        0.5
+      ]
+    ],
+    "when": {
+      "tubes": true
+    },
+    "shared": false,
+    "gesture": "play",
+    "duration": 16.24
+  },
+  "shell_ripple": {
+    "label": "Making a small travelling ripple through the shells",
+    "types": [
+      "chimes"
+    ],
+    "tempo": 86,
+    "notes": [
+      [
+        0,
+        0,
+        "l",
+        0.6,
+        0.4
+      ],
+      [
+        1,
+        1,
+        "r",
+        0.6,
+        0.4
+      ],
+      [
+        2,
+        2,
+        "l",
+        0.6,
+        0.5
+      ],
+      [
+        3,
+        3,
+        "r",
+        0.6,
+        0.4
+      ],
+      [
+        4,
+        4,
+        "l",
+        0.6,
+        0.4
+      ],
+      [
+        7,
+        3,
+        "r",
+        0.6,
+        0.4
+      ],
+      [
+        8,
+        2,
+        "l",
+        0.6,
+        0.4
+      ],
+      [
+        9,
+        1,
+        "r",
+        0.6,
+        0.4
+      ],
+      [
+        10,
+        0,
+        "l",
+        1,
+        0.4
+      ]
+    ],
+    "when": {
+      "shells": true
+    },
+    "shared": false,
+    "gesture": "play",
+    "duration": 13.67
+  },
+  "fog_answer": {
+    "label": "Giving the fog two patient bell calls",
+    "types": [
+      "chimes"
+    ],
+    "tempo": 60,
+    "notes": [
+      [
+        0,
+        0,
+        "l",
+        3,
+        0.55
+      ],
+      [
+        6,
+        0,
+        "l",
+        3,
+        0.65
+      ],
+      [
+        13,
+        0,
+        "l",
+        3,
+        0.45
+      ]
+    ],
+    "when": {
+      "bell": true
+    },
+    "shared": false,
+    "gesture": "play",
+    "duration": 22.0
+  },
+  "chime_echo": {
+    "label": "Answering a friend on the hanging chimes",
+    "types": [
+      "chimes"
+    ],
+    "tempo": 80,
+    "notes": [
+      [
+        0,
+        0,
+        "a",
+        1.5,
+        0.45
+      ],
+      [
+        2,
+        2,
+        "a",
+        1.5,
+        0.45
+      ],
+      [
+        4,
+        1,
+        "b",
+        1.5,
+        0.4
+      ],
+      [
+        6,
+        3,
+        "b",
+        1.5,
+        0.4
+      ],
+      [
+        8,
+        0,
+        "a",
+        1,
+        0.45
+      ],
+      [
+        10,
+        2,
+        "b",
+        1,
+        0.45
+      ],
+      [
+        13,
+        1,
+        "a",
+        2,
+        0.4
+      ],
+      [
+        13,
+        3,
+        "b",
+        2,
+        0.4
+      ]
+    ],
+    "when": {},
+    "shared": true,
+    "gesture": "play",
+    "duration": 17.25
+  }
+}

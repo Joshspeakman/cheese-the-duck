@@ -15,7 +15,7 @@ export function actionFor(state='idle'){
 export function duckRig(duck,t=0,design=null){
  if(duck.performance?.kind==='nest')t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  if(duck.performance?.kind==='water')t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
- if(['botanical','seating'].includes(duck.performance?.kind))t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
+ if(['botanical','seating','instrument'].includes(duck.performance?.kind))t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  const requested=duck.stage==='teen'?'juvenile':duck.stage||'adult',spec=design||DUCK_AGES.find(a=>a.id===requested)||DUCK_AGES[5];
  const stage=design?'adult':spec.id,small=['hatchling','duckling'].includes(stage);
  const performance=performancePose(duck.performance,duck.performance?.young?'duckling':stage);
@@ -66,7 +66,7 @@ export function duckRig(duck,t=0,design=null){
    if(first<0)continue;
    if(action==='swimming'&&y>L-4)continue;
    if(!crest){fills.push({x:x0+first,y:y0,w:end-first,tone:head?'g':'b'});if(head)headBounds=extend(headBounds,x0+first,y0,end-first);else bodyBounds=extend(bodyBounds,x0+first,y0,end-first);}
-   const beak=row.indexOf(')==')>=0?row.indexOf(')==')+1:row.indexOf(')>')>=0?row.indexOf(')>')+1:100;
+   const billStart=row.search(/\)={0,6}>/),beak=billStart>=0?billStart+1:100;
    if(head&&beak<100)bill={x:x0+end-1,y:y0};
    const wing=row.indexOf('['),wingEnd=row.indexOf(']');
    if(!head&&wing>=0)wingBounds={x:x0+wing-1,y:y0-1,w:wingEnd-wing+3,h:3};
@@ -98,7 +98,7 @@ export function duckRig(duck,t=0,design=null){
    const open=phase>=2&&phase<=5,wing=open?['  /)/)',' / / /','/ / /','\\__/']:['  /)',' / /',' \\/'];
    group(wing,b.x-2,b.y-(open?3:0),'w');if(open)group(wing.map(r=>[...r].reverse().map(mirrorGlyph).join('')),b.x+b.w-2,b.y-2,'w');
   }
-  if(performance?.botanical){
+  if(performance?.botanical||performance?.instrument){
    const shoulder={x:Math.round(b.x+b.w*.55),y:Math.round(b.y+b.h*.4)};
    grip={x:Math.min(W-4,Math.round(b.x+b.w+2+performance.reach*2)),y:shoulder.y+1};
    workGripRest={x:Math.round(b.x+b.w+2),y:shoulder.y+1-performance.b};
@@ -109,7 +109,7 @@ export function duckRig(duck,t=0,design=null){
    }
    put(')',grip.x,grip.y,'w');
   }
-  if(!performance?.botanical&&performance?.w>.15){
+  if(!performance?.botanical&&!performance?.instrument&&performance?.w>.15){
    const reach=Math.round(performance.w*(small?3:6)),wy=b.y+Math.max(1,Math.round(b.h*.3));
    group(small?[' /)','/ /','\\_/']:['  /)/)',' / / /','/ / /','\\___/'],b.x+b.w-3+Math.round(reach/3),wy-Math.round(reach/2),'w');
   }
