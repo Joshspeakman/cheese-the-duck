@@ -464,8 +464,23 @@ Chat can describe the mechanism only after Cheese arrives. The mailbox has an
 empty compartment, the well does not grant water or treasure, and tower visits
 currently stay on the ground.
 
-These are initial constructions and solo routines. Visitor participation, egg
-observation, climbing, physical tool pickup/put-away, full mood/season/personality
+Thirty-one initial companion roles now bring regular, rare and story visitors
+to independent destinations beside the selected structure. They brush opposite
+rails, tap the bridge's far landing stone, wait for the gate to open, watch the
+bucket, answer the well's echo, compare seasonal vines and read the castle's low
+foundation carving. Shorter guests reach low joints; butterflies hover without
+handling tools. Young, tired and quieter company uses gentler observation.
+
+The native simulation waits for arrival, then gives both participants the same
+work clock. Actual brush contact removes grit from that copy; taps persist.
+Learning requires a completed session with time spent together, and memories
+describe observed mechanism states or inscriptions. Helpers add no duplicate
+item use or reward. Care, weather, departure, displaced actors and moved or
+replaced objects release the reservation. Save/load retains physical changes
+and completed history without reviving a departed companion.
+
+These are initial constructions and shared routines. Guest-to-guest sessions,
+egg observation, climbing, physical tool pickup/put-away, full mood/season/personality
 acting and each object's 48 meaningful sequences remain unfinished. Validation
 uses `.venv/bin/python engine/check_architecture.py`,
 `node --test engine/tests/architecture.test.mjs`,
@@ -475,6 +490,13 @@ Disposable-save checks exercise original rewards, independent copies, partial
 controls, cancellation, care, weather, movement, storage, full save/reload,
 1,152 hatched-age poses and 3,636 native/renderer control samples. The renderer
 replays actual game frames, and the notebook harness sends real commands.
+Shared structure checks use `.venv/bin/python engine/check_architecture_company.py`,
+`node --test engine/tests/architecture-company.test.mjs` and
+`engine/node_modules/.bin/electron engine/architecture-company-check.cjs`.
+They check independent arrivals, native helper contacts, observation-based
+learning, interruption and save/load, plus all 48 visitor rigs and eight hatched
+ages. Render checks replay actual simulation frames and keep each staged visitor
+clickable at its drawn body.
 
 ## Validation
 

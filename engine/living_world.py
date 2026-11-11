@@ -4,7 +4,7 @@ The original registries remain authoritative for ownership, needs, inventory,
 friendship, recipes and rewards. This module owns new physical/ecological state,
 long-term intentions and bounded memories. Presentation snapshots never advance it.
 """
-from engine import object_history,pond_lighting,keepsakes,keepsake_company,creative_props,creative_company,textiles,textile_company,groundworks,ground_company,architecture
+from engine import object_history,pond_lighting,keepsakes,keepsake_company,creative_props,creative_company,textiles,textile_company,groundworks,ground_company,architecture,architecture_company
 import copy
 import hashlib
 import math
@@ -738,6 +738,7 @@ class LivingPond:
             keepsakes.complete(self,plan)
             creative_props.complete(self,plan)
             architecture.complete(self,plan)
+            architecture_company.complete(self.minds,plan)
             groundworks.complete(self,plan)
             ground_company.complete(self.minds,plan)
             textiles.complete(self,plan)
@@ -1125,8 +1126,8 @@ class LivingPond:
                 if not creative_company.ready(self.minds):plan['paused']=True
                 plan['creative_work']=creative_company.work_view(self.minds,self.state['plan']['creative_work'])
             if plan.get('architecture_work'):
-                if not ground_company.ready(self.minds):plan['paused']=True
-                plan['architecture_work']=architecture.view(self,self.state['plan'])
+                if not architecture_company.ready(self.minds):plan['paused']=True
+                plan['architecture_work']=architecture_company.work_view(self.minds,self.state['plan']['architecture_work'])
             if plan.get('ground_work'):
                 if not ground_company.ready(self.minds):plan['paused']=True
                 plan['ground_work']=ground_company.work_view(self.minds,self.state['plan']['ground_work'])
@@ -1148,7 +1149,7 @@ class LivingPond:
         if self._cache is not None and s['elapsed']-self._cache_at<.5:
             from engine.visitor_shelters import snapshot as shelter_snapshot
             return {**self._cache, 'plan': self._plan_view(),
-                    'minds':{**self._cache['minds'],'residences':shelter_snapshot(self.minds),'seats':furniture_rests.snapshot(self.minds),'gardeners':botanical_care.snapshot(self.minds),'musicians':instrument_sessions.snapshot(self.minds),'readers':keepsake_company.snapshot(self.minds),'creators':creative_company.snapshot(self.minds),'textile_helpers':textile_company.snapshot(self.minds),'performances':self.minds.performances()}}
+                    'minds':{**self._cache['minds'],'residences':shelter_snapshot(self.minds),'seats':furniture_rests.snapshot(self.minds),'gardeners':botanical_care.snapshot(self.minds),'musicians':instrument_sessions.snapshot(self.minds),'readers':keepsake_company.snapshot(self.minds),'creators':creative_company.snapshot(self.minds),'textile_helpers':textile_company.snapshot(self.minds),'ground_helpers':ground_company.snapshot(self.minds),'structure_helpers':architecture_company.snapshot(self.minds),'performances':self.minds.performances()}}
         plan=self._plan_view()
         friends=[]
         rare_guest = None
