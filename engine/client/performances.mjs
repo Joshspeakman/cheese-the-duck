@@ -1,3 +1,4 @@
+import {nestPose} from './nest-routines.mjs';
 // Authored joint tracks for two residents. Times are fractions of the shared
 // simulation-owned scene; A and B deliberately take different turns.
 // x/y move the head, b compresses/lifts the torso, w unfolds a wing, l/r step.
@@ -30,12 +31,19 @@ export const ITEM_PERFORMANCES={
  dig:[K(0),K(.2,{x:1,y:1.6,b:.5,w:.4}),K(.4,{x:-.6,y:.7,w:.8,mark:'.'}),K(.6,{x:.8,y:1.4,b:.4}),K(.8,{y:-.3,w:.6,eye:'^'}),K(1)],
 };
 export function performancePose(performance,stage='adult'){
+ if(performance?.kind==='nest'){
+  const pose=nestPose(performance.routine,performance.motion!==false);if(!pose)return null;
+  return scalePose(pose,stage);
+ }
  const solo=ITEM_PERFORMANCES[performance?.kind],spec=PERFORMANCES[performance?.kind]||(solo?{a:solo,b:solo}:null);if(!spec)return null;
  const track=spec[performance.role==='b'?'b':'a'],p=Math.max(0,Math.min(1,performance.progress??0));
  let a=track[0],b=track.at(-1);for(let i=1;i<track.length;i++)if(p<=track[i].at){a=track[i-1];b=track[i];break;}
  let u=(p-a.at)/Math.max(.001,b.at-a.at);u=u*u*(3-2*u);
  const pose={...a};for(const k of ['x','y','b','w','l','r'])pose[k]=a[k]+(b[k]-a[k])*u;
  if(u>.5){pose.eye=b.eye;pose.mark=b.mark;}
+ return scalePose(pose,stage);
+}
+function scalePose(pose,stage){
  const small=['hatchling','duckling'].includes(stage),elder=['elder','legendary'].includes(stage);
  return {...pose,x:Math.round(pose.x*(small?1.4:2.6)),y:Math.round(pose.y*(small?1:1.8)),
   b:Math.round(pose.b*(small?1:elder?1.2:2)),l:Math.round(pose.l),r:Math.round(pose.r)};

@@ -299,7 +299,9 @@ export class LivingWorld {
     for(const item of [...(s.structures||[]),...(s.items||[])]){
       const [x,y]=this.project(s,item.x,item.y);
       actors.push({y,draw:()=>{
-        this.objects.push({...itemSprite(item.id,t,{motion:s.motion!==false,context:s,originalArt:item.art,state:s.living?.objects?.[item.id],interaction:s.living?.plan?.target===item.id?s.living.plan:null}),item:true,x,y,worldPosition:[item.x,item.y],scale:itemWorldScale(item.id)});
+        const plan=s.living?.plan,destination=plan?.residence?.destination||plan?.destination;
+        const interaction=plan?.target===item.id&&(!destination||Math.abs(item.x-destination[0])+Math.abs(item.y-destination[1])<2)?plan:null;
+        this.objects.push({...itemSprite(item.id,t,{motion:s.motion!==false,context:s,originalArt:item.art,state:s.living?.objects?.[item.id],interaction}),item:true,x,y,worldPosition:[item.x,item.y],scale:itemWorldScale(item.id)});
       }});
     }
     if(s.visitor){const [x,y]=this.project(s,s.visitor.x,s.visitor.y);actors.push({y,draw:()=>this.actor(s,t+2,x,y,{stage:'adult',state:'idle',facing:false,...s.visitor},true)});}
@@ -339,7 +341,9 @@ export class LivingWorld {
     actors.sort((a,b)=>a.y-b.y).forEach(a=>a.draw());
     const cheese=this.characters.find(c=>c.cheese),residence=residenceStage(plan,this.objects,cheese);
     if(residence){
-      residence.home.occupant={character:cheese,inside:residence.inside};
+      const routine=plan.phase==='act'?plan.residence.routine:null;
+      const resident=routine?{...characterSprite({...s.duck,state:'idle',facing:true,performance:{kind:'nest',routine,motion:s.motion!==false}},t),x:cheese.x,y:cheese.y,cheese:true}:cheese;
+      residence.home.occupant={character:resident,inside:residence.inside};
       this.characters=this.characters.filter(c=>c!==cheese);
     }
     const ride=!residence&&playgroundStage(plan,this.objects,cheese,s.duck.stage,s.motion!==false);

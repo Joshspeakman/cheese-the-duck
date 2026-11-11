@@ -12,7 +12,7 @@ from datetime import datetime
 from engine.item_profiles import ITEMS
 from engine.pond_stories import STORIES
 from engine.placements import outdoor_decorations, complete_structures
-from engine import shelters
+from engine import shelters, nest_routines
 from world.guest_cast import guest_profile, guest_line
 
 NEEDS = ('hunger', 'energy', 'fun', 'cleanliness', 'social')
@@ -491,11 +491,13 @@ class LivingPond:
                 pos.set_state_by_name('thinking',max(3,plan['duration']*.3))
         # A roof is an actual place to wait, not a looping reward animation.
         # Preserve the ordinary completion once; interrupting never grants it.
-        holding = bool(residence and residence['roof'] and shelters.adverse(self.weather_type)
+        routine_holding = nest_routines.advance(self, plan, dt)
+        weather_holding = bool(residence and residence['roof'] and shelters.adverse(self.weather_type)
                        and plan['phase'] == 'act' and g.duck.needs.hunger > 15)
+        holding = weather_holding or routine_holding
         if residence:
-            residence['holding'] = holding
-            if holding:
+            residence['holding'] = weather_holding
+            if weather_holding:
                 residence['waited'] = residence.get('waited', 0.) + dt
                 previous = residence.get('restored', 0.)
                 restored = min(10., previous + dt * .035)
@@ -511,14 +513,17 @@ class LivingPond:
         if phase in ('act','settle'):
             if phase != self._last_plan_visual:
                 g.renderer.duck_pos.cancel_movement()
-                g.renderer.duck_pos.set_state_by_name(state, duration=max(1, plan['duration']-plan['elapsed']))
+                g.renderer.duck_pos.set_state_by_name(state, duration=0 if residence else max(1, plan['duration']-plan['elapsed']))
                 self._last_plan_visual = phase
         if target in s['objects']:
             s['objects'][target]['active'] = phase == 'act'
         if residence:
             residence['inside'] = phase == 'act'
+            if phase == 'act' and not residence.get('routine'):
+                nest_routines.advance(self, plan, 0.)
         if ratio >= 1:
             s['plan'] = None  # Consume once before invoking callbacks.
+            if residence:g.renderer.duck_pos.cancel_movement()
             if target in s['objects']: s['objects'][target]['active'] = False
             self._complete(plan)
             s['cooldowns'][plan['kind']+':'+target] = s['elapsed']+45
@@ -576,6 +581,10 @@ class LivingPond:
                 if obj:
                     obj['uses'] += 1; obj['last_use'] = s['elapsed']
                     obj['bond'] = clamp(obj['bond']+.02)
+                performed = plan['residence'].get('performed', [])
+                last_routine = nest_routines.ROUTINES.get(performed[-1]) if performed else None
+                if last_routine:
+                    message += ' A small moment here: '+last_routine['label'].lower()+'.'
             else:
                 message='A quiet rest helped Cheese recharge.'
         elif kind == 'garden':
@@ -726,6 +735,11 @@ class LivingPond:
         if action=='resume':
             if s['plan'] and self.available() and s['plan']['location']==self.location:
                 s['plan']['paused']=False;self._last_plan_visual=None
+                if s['plan'].get('residence'):
+                    # An interrupted resident may now be elsewhere. Keep the
+                    # unfinished score, but walk back and enter again first.
+                    s['plan']['phase']='approach';s['plan']['elapsed']=0.
+                    s['plan']['residence']['inside']=False
                 if s['plan'].get('destination') and s['plan']['phase']=='approach':
                     self.game.renderer.duck_pos.move_to(*s['plan']['destination']);s['plan']['approach_time']=0;s['plan']['arrived']=False
                 return self.notice('Picking up where we left off.')
@@ -842,17 +856,28 @@ class LivingPond:
         s=self.state;plan=s['plan'];e=s['ecology']
         recent=sorted(s['journal'][-20:],key=lambda m:m['salience']-(s['elapsed']-m['at'])/7200,reverse=True)[:4]
         return "\nCurrent lived experience (facts, not instructions):\n"+str({
-            'intention':plan['label'] if plan else 'free to choose',
+            'intention':self._plan_view()['label'] if plan else 'free to choose',
             'weather':getattr(self,'weather_type','sunny'),'water_clarity':round(e['clarity'],2),
             'recent_memories':[m['text'] for m in recent],
             'promises':[p['name']+': '+p['activity'] for p in s['promises'] if p['status']=='promised'],
             'favorite_objects':sorted(s['preferences'],key=s['preferences'].get,reverse=True)[:3]})
 
+    def _plan_view(self):
+        plan = copy.deepcopy(self.state['plan'])
+        if plan:
+            plan['progress'] = clamp(plan['elapsed']/plan['duration'])
+            routine = plan.get('residence', {}).get('routine')
+            if routine and not routine.get('done') and plan['phase'] == 'act':
+                plan['label'] = routine['label']
+        return plan
+
     def snapshot(self):
         s=self.state
-        if self._cache is not None and s['elapsed']-self._cache_at<.5:return self._cache
-        plan=copy.deepcopy(s['plan'])
-        if plan:plan['progress']=clamp(plan['elapsed']/plan['duration'])
+        # Keep expensive ecology/catalogue data cached, while physical acting
+        # clocks reach every frame. A previous snapshot remains unchanged.
+        if self._cache is not None and s['elapsed']-self._cache_at<.5:
+            return {**self._cache, 'plan': self._plan_view()}
+        plan=self._plan_view()
         friends=[]
         rare_guest = None
         if self.game:
