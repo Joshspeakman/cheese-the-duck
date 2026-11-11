@@ -1,0 +1,50 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Toy playdates</title>
+<style>body{background:#12271f;color:#ebd9ae;margin:25px;font:18px Georgia}canvas{max-width:100%;display:block;margin:20px 0}</style>
+<h1>Better with company</h1>
+<script type="module">
+import {PLAYDATES} from '../client/playdates.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {LivingWorld} from '../client/ultra-world.mjs';
+import {ItemPainter} from '../client/ultra-items.mjs';
+import {drawCharacter} from '../client/ultra-characters.mjs';
+import {ridingGeometry} from '../client/playground-stage.mjs';
+import {scene} from './scenes.mjs';
+const painter=new ItemPainter(),world=new LivingWorld();
+const items={seesaw:'toy_seesaw',sandbox:'toy_sandbox',ball:'toy_ball',trampoline:'toy_trampoline'};
+function paint(canvas,id,progress,stage='adult',guest='friendly_goose'){
+ const spec=PLAYDATES[id],item=items[spec.family],ctx=canvas.getContext('2d'),sx=7,sy=10.5,x=canvas.width/(2*sx),y=(canvas.height-18)/sy;
+ const plan={kind:'item',target:item,phase:'act',progress:.7,elapsed:20,duration:30,destination:[60,24],company:{id,partner:guest,destination:[60,24],spot:[65,24],phase:'act',elapsed:spec.duration*progress,duration:spec.duration,mass:[stage==='hatchling'?.3:1,1.5],young:stage==='hatchling'}};
+ const s=scene({duck:{x:60,y:24,stage,state:'thinking'},visitor:{id:guest,x:65,y:24,state:'idle'},items:[{id:item,x:60,y:24}],living:{plan,ecology:{},objects:{},projects:[],garden:[],minds:{}}});
+ const home=world.render(s,1,.03).objects.find(o=>o.riders);home.x=x;home.y=y;
+ ctx.fillStyle='#172e25';ctx.fillRect(0,0,canvas.width,canvas.height);
+ painter.draw(ctx,home,x*sx,y*sy,sx*home.scale,{surface:'#172e25',outline:'#0a1913'});
+ for(const rider of home.riders){
+  const c=ridingGeometry(home,rider.character,rider.seat,1,sx,sy);
+  drawCharacter(ctx,{...c,name:'',sun:.8,outline:'#0a1913'},sx,sy,'#172e25');
+ }
+}
+window.reviewPlaydates=()=>{
+ const images={},ids=Object.keys(PLAYDATES);
+ for(let page=0;page<2;page++){
+  const canvas=document.createElement('canvas');canvas.width=1680;canvas.height=1600;const c=canvas.getContext('2d');c.fillStyle='#12271f';c.fillRect(0,0,1680,1600);
+  ids.slice(page*4,page*4+4).forEach((id,row)=>[.2,.5,.8].forEach((p,col)=>{const cell=document.createElement('canvas');cell.width=560;cell.height=360;paint(cell,id,p,row%2?'hatchling':'adult');c.drawImage(cell,col*560,row*400+40);c.fillStyle='#ebd9ae';c.font='16px Menlo';c.fillText(id+' · '+p,col*560+14,row*400+24);}));
+  images['playdate-scores-'+page]=canvas.toDataURL('image/png');document.body.append(canvas);
+ }
+ return images;
+};
+window.replayPlaydates=frames=>{
+ const view=new SceneCanvas();view.resize(1440,900);const images={},costs=[];let paired=0;
+ for(const [i,s] of frames.entries()){
+  const start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
+  const company=s.living.plan?.company;if(!company||!['enter','act','exit'].includes(company.phase))continue;
+  if(s.living.plan.paused){if(view.world.objects.some(o=>o.riders))throw Error('Paused pair kept acting');continue;}
+  const home=view.world.objects.find(o=>o.riders);
+  if(home?.riders.length!==2)throw Error('Missing real shared riders at '+i);
+  if(company.phase==='act'){
+   paired++;const key=s.living.plan.target+'-'+company.partner.replaceAll(':','-');
+   if(company.elapsed/company.duration>.45&&!images[key])images[key]=view.canvas.toDataURL('image/png');
+  }
+ }
+ costs.sort((a,b)=>a-b);return {frames:frames.length,paired,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+</script>

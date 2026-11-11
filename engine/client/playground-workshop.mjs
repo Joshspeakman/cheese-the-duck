@@ -1,4 +1,5 @@
 import {ObjectCanvas} from './object-canvas.mjs';
+import {playdatePose} from './playdates.mjs';
 export const PLAY_BLUEPRINTS={
  toy_ball:{type:'ball',w:48,h:38,scale:.43,pattern:'panels'},ball:{type:'ball',w:48,h:38,scale:.43,pattern:'stripes'},snowball:{type:'ball',w:44,h:34,scale:.4,pattern:'snow'},
  toy_blocks:{type:'blocks',w:76,h:49,scale:.72},
@@ -16,16 +17,24 @@ function wheel(c,x,y,r,turn,tone='k'){
  c.ellipse(x,y,r,r*.55,'=','s',true);c.ellipse(x,y,r-2,Math.max(1,r*.55-1),'-',tone,true);
  c.put(x,y,Math.floor(turn*6)%2?'x':'+','f');for(const sign of [-1,1])c.put(x+sign*r,y,':','k');
 }
-function ball(c,p,t,active){
- const bounce=active?Math.abs(Math.sin(t*3.5))*8:0,cy=p.h-15-bounce,rx=17,ry=11-(active&&bounce<2?2:0),cx=p.w/2;
+function ball(c,p,t,active,pose={}){
+ const bounce=pose.family==='ball'?-(pose.bally||0):active?Math.abs(Math.sin(t*3.5))*8:0,cy=p.h-15-bounce,rx=17,ry=11-(pose.squash??(active&&bounce<2?2:0)),cx=p.w/2+(pose.ballx||0);
+ if(pose.family==='ball')t=pose.spin||0;
  c.ellipse(cx,cy,rx,ry,'_',p.pattern==='snow'?'c':'a',true);
  for(let y=-ry+2;y<ry-1;y++){
   const half=Math.sqrt(1-(y/ry)**2)*(rx-2);
-  if(p.pattern==='panels'){c.put(cx+Math.sin(y*.2+t*(active?2:0))*8,cy+y,'|','f');if(y===-4||y===5)c.line(cx-half,cy+y,cx+half,cy+y,'-','f');}
+  if(p.pattern==='panels'){
+   const seam=cx+Math.sin(y*.2+t*(active?2:0))*8;c.put(seam,cy+y,'|','f');
+   if(y===-4||y===5)c.line(cx-half,cy+y,cx+half,cy+y,'-','f');
+   if(y%2===0){c.put(seam-2,cy+y,':','q');c.put(seam+2,cy+y,':','q');}
+   for(let xx=-half+2;xx<half-1;xx+=5)if(Math.abs(cx+xx-seam)>3)c.put(cx+xx,cy+y,'.','s');
+  }
   if(p.pattern==='stripes'&&y%4===0)c.line(cx-half,cy+y,cx+half,cy+y,'~','q');
   if(p.pattern==='snow')for(let x=-half+2;x<half-1;x+=6)c.put(cx+x,cy+y,(Math.round(x+y)%3)?'.':'*','w');
  }
- c.rows([' ..','...'],cx-9,cy-6,'c');return {contact:{x:cx+rx,y:cy},top:{x:cx,y:cy-ry}};
+ c.rows([' .---.','(  +  )'," '---'"],cx-4+Math.sin(t)*3,cy-2,'q');
+ c.rows([' ..','...'],cx-9,cy-6,'c');c.put(cx+10,cy+5,'(o)','k');
+ return {contact:{x:cx+rx,y:cy},top:{x:cx,y:cy-ry}};
 }
 function blocks(c,p,t,active){
  const lift=active?Math.round(Math.sin(t*3)*3):0;
@@ -36,8 +45,8 @@ function blocks(c,p,t,active){
  }
  return {contact:{x:39,y:15+lift},top:{x:39,y:3+lift}};
 }
-function trampoline(c,p,t,active){
- const x=p.w/2,y=p.h-14,dip=active?Math.max(0,Math.sin(t*4))*4:0;
+function trampoline(c,p,t,active,pose={}){
+ const x=p.w/2,y=p.h-14,dip=pose.dip??(active?Math.max(0,Math.sin(t*4))*4:0);
  for(const sign of [-1,1]){c.line(x+sign*26,y+2,x+sign*29,p.h-3,'|','k');c.line(x+sign*29,p.h-3,x+sign*23,p.h-3,'_','k');}
  c.ellipse(x,y,33,7,'=','f',true);c.ellipse(x,y+dip,27,5,'~','s',true);
  for(let j=-3;j<=3;j++)for(let i=-24;i<=24;i+=3)if((i/26)**2+(j/4)**2<1)c.put(x+i,y+j+dip,(j+i)%2?':':'.','b');
@@ -83,20 +92,44 @@ function swing(c,p,t,active){
  }
  return {seat:{x:mid+angle,y:seatY},entry:{x:mid,y:H-4},pivot:{x:mid,y:9}};
 }
-function seesaw(c,p,t,active){
- const cx=p.w/2,cy=23,tilt=Math.sin(t*(active?2:0))*(active?7:0);
+function seesaw(c,p,t,active,pose={}){
+ const cx=p.w/2,cy=23,tilt=pose.tilt??Math.sin(t*(active?2:0))*(active?7:0);
+ for(let y=cy+1;y<p.h-3;y++){
+  const half=(y-cy)*.53;c.solid(cx-half,y,half*2+1,1,'b');
+  c.put(cx-half+1,y,'/','f');c.put(cx+half-1,y,'\\','s');if(y%3===0)c.put(cx-1,y,'|:|','s');
+ }
  c.line(cx,cy,cx-9,p.h-3,'/','b').line(cx,cy,cx+9,p.h-3,'\\','b').line(cx-9,p.h-3,cx+9,p.h-3,'=','b');c.put(cx-2,cy,'(o)','k');
  for(let j=0;j<4;j++)c.line(8,cy-tilt+j,p.w-9,cy+tilt+j,'=','a');
- for(const sign of [-1,1]){const x=cx+sign*33,y=cy+sign*tilt;c.rect(x-7,y-3,14,4,'q',true);c.line(x-sign*7,y-3,x-sign*7,y-10,'|','k');c.put(x-sign*7-2,y-10,'-+-','k');}
- return {seat:{x:cx-33,y:cy-tilt-3},partner:{x:cx+33,y:cy+tilt-3},pivot:{x:cx,y:cy}};
+ for(let x=13;x<p.w-12;x+=9){const y=cy-tilt+(x-8)/(p.w-17)*tilt*2;c.put(x,y+1,'o','k');c.put(x+2,y+2,'~','s');}
+ c.rows(['[--(O)--]',' |:::::|'],cx-4,cy+1,'k');
+ const seatTilt=tilt*33/(cx-8);
+ for(const sign of [-1,1]){const x=cx+sign*33,y=cy+sign*seatTilt;c.rect(x-7,y-3,14,4,'q',true);c.line(x-5,y-2,x+4,y-2,':','f');c.line(x-sign*7,y-3,x-sign*7,y-10,'|','k');c.put(x-sign*7-3,y-10,'[===]','k');c.put(x-5,y+1,'o','k');c.put(x+4,y+1,'o','k');}
+ return {seat:{x:cx-33,y:cy-seatTilt-3},partner:{x:cx+33,y:cy+seatTilt-3},pivot:{x:cx,y:cy}};
 }
-function sandbox(c,p,t,active){
+function sandbox(c,p,t,active,pose={}){
  const W=p.w,H=p.h;c.rect(7,16,W-14,H-20,'b',true);c.line(7,16,16,7,'/','f').line(16,7,W-15,7,'-','f').line(W-15,7,W-8,16,'\\','f');
- for(let y=10;y<H-6;y++)for(let x=17;x<W-16;x+=4)c.put(x,y,(x+y)%3?'.':':','a');
+ for(let y=8;y<17;y++){const left=16-(y-7);c.solid(left,y,W-left*2,1,'v');}
+ c.solid(8,17,W-16,H-24,'v');
+ for(let y=10;y<H-8;y++)for(let x=17;x<W-16;x+=4)c.put(x,y,(x+y)%3?'.':':','a');
+ for(let x=21;x<W-19;x+=14)c.rows([' .__','_.. '],x,10+(x%3),'s');
  c.rect(7,H-8,W-14,4,'b',true);for(let x=10;x<W-9;x+=9)c.put(x,H-7,'o','k');
- c.rows([' |_|_| |_|_|',' | . | | . |',' |   |_|   |',' | .   .   |',' |__(_o_)__|'],W/2-13,12,'a');
+ if(pose.id==='sandbox_channels'){
+  for(const side of [-1,1])for(let n=0;n<Math.round((pose.build||0)*24);n++){
+   const x=W/2+side*(24-n),y=23+Math.sin(n*.25)*4;
+   c.put(x,y,'.','s');c.put(x,y+1,'~','w');c.put(x,y+2,':','a');
+  }
+ }else{
+  const level=pose.family==='sandbox'?pose.build:1;
+  c.ellipse(W/2,27,18,3,'~','a',true);
+  const castle=['  |_|_|_|             |_|_|_|','  | . : |             | : . |','  |--.--|             |--.--|','  | : . |_|_|_|_|_|_|_| . : |','  |--.--| . : . : . : |--.--|','  | . : |--.--.--.--.-| : . |','  |--.--|   .-----.   |--.--|','  | : . |  / . . . \\  | . : |','  |--.--| |         | |--.--|','  |_____|_|         |_|____|'];
+  const rows=Math.ceil(level*castle.length);c.rows(castle.slice(castle.length-rows),W/2-14,29-rows,'c');
+  if(level>.85)c.rows(['|>>','|','|','|'],W/2+7,15,'q');
+ }
  c.rows([' .----.','/------\\','|:    :|',' \\____/'],13,H-15,'w');c.rows(['  D','  |','  |',' /_\\'],W-19,H-17,'k');
- if(active)for(let i=0;i<4;i++)c.put(W/2+i*2,9-Math.floor(Math.abs(Math.sin(t*4+i))*4),'.','c');
+ if(active)for(let i=0;i<4;i++){
+  const origin=pose.family==='sandbox'?(pose.turn==='a'?W*.32:W*.66):W/2,side=pose.turn==='b'?-1:1;
+  c.put(origin+side*i*2,19-Math.floor(Math.abs(Math.sin(t*4+i))*4),'.','c');
+ }
  return {seat:{x:W/2,y:H-10},entry:{x:W/2,y:H-3},contact:{x:W/2,y:15}};
 }
 function skateboard(c,p,t,active){
@@ -151,7 +184,11 @@ function plush(c,p,t,active){
 }
 const DRAW={ball,blocks,trampoline,slide,swing,tire:swing,seesaw,sandbox,skateboard,car,horse,duck,plush};
 export function playgroundSprite(base,item,time,{motion=true,state={},interaction=null,context={},pose={}}={}){
- const p=PLAY_BLUEPRINTS[item.id];if(!p)return null;const c=new ObjectCanvas(p.w,p.h);
+ let p=PLAY_BLUEPRINTS[item.id];if(!p)return null;
+ const company=playdatePose(interaction,motion);if(company)pose=company;
+ if(p.type==='sandbox'&&!company)pose={id:state.sandwork||'sandbox_castle',family:'sandbox',build:state.sandwork?1:0};
+ if(company?.family==='ball')p={...p,w:116};
+ const c=new ObjectCanvas(p.w,p.h);
  const active=Boolean(interaction&&!interaction.paused&&['prepare','act','settle'].includes(interaction.phase||'act'));
  const t=motion?(active?(interaction.elapsed??time):time):0;
  const anchors=DRAW[p.type](c,p,t,active,pose);
@@ -163,7 +200,9 @@ export function playgroundSprite(base,item,time,{motion=true,state={},interactio
  const inks={b:base.body,f:base.face,s:'#82948a',a:base.accent,q:'#bb8c8e',w:'#8ac1cf',k:'#b2bab2',c:'#e8e5d4',d:'#152d28',g:'#91b491',e:'#122923'};
  if(['slide','swing','tire','trampoline','seesaw'].includes(p.type))Object.assign(inks,{b:'#c7ad83',f:'#e1d2ae',k:'#d0d5c7',s:'#a4b8b3',w:'#a9dbe0'});
  if(p.type==='horse')Object.assign(inks,{b:'#caa278',f:'#e2c8a0',s:'#9d805e',q:'#99bba5',a:'#e2bc78'});
+ if(p.type==='ball')Object.assign(inks,{a:p.pattern==='snow'?'#d8e5dd':'#dbaa6b',f:'#f3d8a5',q:'#8ec7bd',s:'#bf9e6f',k:'#e5c985'});
+ if(p.type==='sandbox')Object.assign(inks,{b:'#bc976d',f:'#dfbe86',a:'#cfb37c',s:'#9b8969',v:'#e5c688',c:'#f1d6a1',q:'#d7907b',w:'#88bfc9'});
  if(p.type==='duck')Object.assign(inks,{a:'#e6c273',q:'#d89b6b',f:'#f0dcaa',s:'#a28a60',b:'#c5ab78'});
  if(p.type==='plush')Object.assign(inks,{b:'#bca48e',q:'#ab9a86',f:'#dfcba8',a:'#bf9091'});
- return {...base,...c.finish(),inks,panels:{b:'#3e3527',f:'#3a4937',a:'#51482e',q:'#453039',w:'#26474c',s:'#24342f',k:'#293d3a',c:'#729b9c',d:'#142c27'},detail:true,detailScale:.72,animated:true,active,lift:0,sway:0,construction:'playground-v1',anchors,blueprint:item.id};
+ return {...base,...c.finish(),inks,panels:{b:'#3e3527',f:'#3a4937',a:'#51482e',q:'#453039',w:'#26474c',s:'#24342f',k:'#293d3a',c:'#729b9c',d:'#142c27',v:'#53452e'},detail:true,detailScale:.72,animated:true,active,lift:0,sway:0,construction:'playground-v1',anchors,blueprint:item.id};
 }

@@ -12,7 +12,7 @@ from datetime import datetime
 from engine.item_profiles import ITEMS
 from engine.pond_stories import STORIES
 from engine.placements import outdoor_decorations, complete_structures
-from engine import shelters, nest_routines
+from engine import shelters, nest_routines, playdates
 from world.guest_cast import guest_profile, guest_line
 
 NEEDS = ('hunger', 'energy', 'fun', 'cleanliness', 'social')
@@ -91,6 +91,9 @@ class LivingPond:
         self._cache_at = -1
         if self.state['plan']:
             self.state['plan']['paused'] = True
+            # Physical visitor reservations belong to a live visit, not a save.
+            self.state['plan'].pop('company',None)
+            self.state['plan']['company_tried']=True
         self.state['journal'] = self.state['journal'][-120:]
         self.state['promises'] = self.state['promises'][-24:]
         from engine.mind_garden import MindGarden
@@ -492,9 +495,21 @@ class LivingPond:
         # A roof is an actual place to wait, not a looping reward animation.
         # Preserve the ordinary completion once; interrupting never grants it.
         routine_holding = nest_routines.advance(self, plan, dt)
+        company_holding = playdates.advance(self, plan, dt)
+        if plan.get('company', {}).get('phase') == 'cancelled':
+            # An interrupted shared activity must not fall through to the normal
+            # item completion either. Release both residents and leave use counts
+            # and needs unchanged, even if the toy remains owned but is put away.
+            self.cancel()
+            return
         weather_holding = bool(residence and residence['roof'] and shelters.adverse(self.weather_type)
                        and plan['phase'] == 'act' and g.duck.needs.hunger > 15)
-        holding = weather_holding or routine_holding
+        holding = weather_holding or routine_holding or company_holding
+        if company_holding:
+            g.renderer.duck_pos.cancel_movement()
+            g.renderer.duck_pos.set_state_by_name('thinking',0)
+        elif plan.get('company',{}).get('done'):
+            plan['elapsed']=max(plan['elapsed'],plan['duration']*.9)
         if residence:
             residence['holding'] = weather_holding
             if weather_holding:
@@ -513,7 +528,7 @@ class LivingPond:
         if phase in ('act','settle'):
             if phase != self._last_plan_visual:
                 g.renderer.duck_pos.cancel_movement()
-                g.renderer.duck_pos.set_state_by_name(state, duration=0 if residence else max(1, plan['duration']-plan['elapsed']))
+                g.renderer.duck_pos.set_state_by_name(state, duration=0 if residence or company_holding else max(1, plan['duration']-plan['elapsed']))
                 self._last_plan_visual = phase
         if target in s['objects']:
             s['objects'][target]['active'] = phase == 'act'
@@ -523,7 +538,9 @@ class LivingPond:
                 nest_routines.advance(self, plan, 0.)
         if ratio >= 1:
             s['plan'] = None  # Consume once before invoking callbacks.
-            if residence:g.renderer.duck_pos.cancel_movement()
+            if residence or plan.get('company'):
+                g.renderer.duck_pos.cancel_movement()
+                g.renderer.duck_pos.set_state_by_name('idle',0)
             if target in s['objects']: s['objects'][target]['active'] = False
             self._complete(plan)
             s['cooldowns'][plan['kind']+':'+target] = s['elapsed']+45
@@ -866,6 +883,9 @@ class LivingPond:
         plan = copy.deepcopy(self.state['plan'])
         if plan:
             plan['progress'] = clamp(plan['elapsed']/plan['duration'])
+            if plan.get('company'):
+                plan['company']=playdates.view(plan)
+                if not plan['company'].get('done'):plan['label']=plan['company']['label']
             routine = plan.get('residence', {}).get('routine')
             if routine and not routine.get('done') and plan['phase'] == 'act':
                 plan['label'] = routine['label']

@@ -94,8 +94,8 @@ export class SceneCanvas {
         }
         if(front)this.items.draw(this.ctx,front,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
         for(const held of heldProps)this.items.draw(this.ctx,held.model,held.x,held.y,held.cw,{shadow:false,surface,outline:light.outline});
-        if(actor.rider){
-          const rider=ridingGeometry(actor,actor.rider.character,actor.rider.seat,actor.rider.inside,this.sx,this.sy);
+        for(const passenger of actor.riders||(actor.rider?[actor.rider]:[])){
+          const rider=ridingGeometry(actor,passenger.character,passenger.seat,passenger.inside,this.sx,this.sy);
           drawCharacter(this.ctx,{...rider,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
         }
       }
