@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress on the latest chat request: refined the existing bottom-left conversation panel with a draft-preserving recipient menu, keyboard menu navigation, Tab/Shift+Tab command and present-visitor name completion, and stable listener names after departure/reload. Fixed menu focus when a visitor leaves. Incoming player preferences now reach Cheese in the immutable first-response prompt before asynchronous save-side learning; recall questions no longer become new preference claims. Verified 8 focused JS tests, 30 native chat checks, 44 brain checks, 48 real Electron UI checks and a three-turn real local-model conversation, recall and shutdown save. All work remains on the isolated branch. This adds no artwork or completed 48-sequence repertoire: 163 of 542 drawings reconstructed, 379 pending, all per-object sequence counts still unverified. Full milestone remains active and installed 2.36.0 is unchanged.",
+  "previous_goal_turn": "Reconstructed 27 lights with distinct enlarged ASCII construction, woven/ceramic/metal/glass detail and localized illumination. Added native per-physical-copy modes and heat/level state, dusk/weather/nature behavior, actual approach/contact controls, cold-versus-warm young observation, ten initial shared routines, grounded age-fitted tools, paused-pose continuity and live notebook meters. Fixed production Electron pond IPC dropping instance IDs and layout coordinates. Verified 234 native checks, 1620 native/preview parity cases, 15 real lamp UI checks, 11 physical-copy UI checks, 120 full JS tests, 694 living/72-hour checks, 44 brains checks, 76 original-game checks, 542 measured footprints and actual source Electron startup/save/shutdown. Visual review includes all 27 objects and 87 native frames. 190 of 542 objects reconstructed, 352 pending; no per-object 48-sequence coverage claimed. Full milestone active; installed 2.36.0 unchanged.",
   "items": [
     {
       "id": "hat_red",
@@ -354,8 +354,10 @@
     {
       "id": "lamp_floor",
       "family": "lamp",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "mirror",
@@ -1177,8 +1179,10 @@
     {
       "id": "fairy_lights",
       "family": "lights",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "pinwheel",
@@ -1201,8 +1205,10 @@
     {
       "id": "tiki_torch",
       "family": "torch",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "ice_sculpture",
@@ -1251,74 +1257,98 @@
     {
       "id": "table_lamp",
       "family": "lamp",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "floor_lamp",
       "family": "lamp",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "chandelier",
       "family": "chandelier",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "paper_lantern",
       "family": "lantern",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "lava_lamp",
       "family": "lava_lamp",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "neon_sign",
       "family": "neon",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "disco_ball",
       "family": "disco",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "candelabra",
       "family": "chandelier",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "fairy_lamp",
       "family": "lamp",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "spotlight",
       "family": "spotlight",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "street_lamp",
       "family": "streetlamp",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "campfire",
       "family": "fire",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "lighthouse",
@@ -1330,32 +1360,42 @@
     {
       "id": "firefly_swarm",
       "family": "motes",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "moon_lamp",
       "family": "moon",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "star_projector",
       "family": "projector",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "torches",
       "family": "torch",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "glowsticks",
       "family": "lights",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "aurora",
@@ -1366,8 +1406,10 @@
     {
       "id": "laser_lights",
       "family": "lights",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "grass_floor",
@@ -1589,8 +1631,10 @@
     {
       "id": "hologram",
       "family": "projector",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "shrink_ray",
@@ -1759,8 +1803,10 @@
     {
       "id": "eternal_flame",
       "family": "fire",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "philosophers_stone",
@@ -2017,8 +2063,10 @@
     {
       "id": "crystal_lamp",
       "family": "lamp",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "flower_wreath",
@@ -2055,8 +2103,10 @@
     {
       "id": "torch",
       "family": "torch",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "water_bowl",
@@ -3437,14 +3487,18 @@
     {
       "id": "lamp",
       "family": "lamp",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "lantern",
       "family": "lantern",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Native per-copy light controls and ten shared physical control/observation cores integrated; individual object, visitor, tool-handling and 48-sequence repertoires pending"
     },
     {
       "id": "plushie",
@@ -3769,10 +3823,10 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "natural_chat_recipients_and_memory_context",
+    "sourcePhase": "physical_lighting_controls_and_local_illumination",
     "fullyOverhauled": false,
-    "constructedObjects": 163,
-    "remainingArtwork": 379,
+    "constructedObjects": 190,
+    "remainingArtwork": 352,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -3885,23 +3939,45 @@
       "engine/artifacts/chat/chat-closeup.png",
       "engine/artifacts/chat/chat-listeners.png",
       "engine/artifacts/chat-live-refinements/local-conversation.json",
-      "engine/artifacts/chat-live-refinements/local-conversation.png"
+      "engine/artifacts/chat-live-refinements/local-conversation.png",
+      "engine/artifacts/animation-milestone/lighting-native.json",
+      "engine/artifacts/animation-milestone/lighting-frames.json",
+      "engine/artifacts/animation-milestone/lighting-render.json",
+      "engine/artifacts/animation-milestone/lighting-ui.json",
+      "engine/artifacts/animation-milestone/lighting-inspector.png",
+      "engine/artifacts/animation-milestone/lighting-js-suite.log",
+      "engine/artifacts/animation-milestone/lighting-focused.log",
+      "engine/artifacts/animation-milestone/lighting-regressions.json",
+      "engine/artifacts/animation-milestone/lighting-regression-living.log",
+      "engine/artifacts/animation-milestone/lighting-regression-brains.log",
+      "engine/artifacts/animation-milestone/lighting-regression-game.log",
+      "engine/artifacts/animation-milestone/lighting-source-smoke.log",
+      "engine/artifacts/animation-milestone/lights-controls.png",
+      "engine/artifacts/animation-milestone/lights-live-day.png",
+      "engine/artifacts/animation-milestone/lights-live-night.png",
+      "engine/artifacts/animation-milestone/lights-live-control.png",
+      "engine/artifacts/animation-milestone/lights-0.png",
+      "engine/artifacts/animation-milestone/lights-1.png",
+      "engine/artifacts/animation-milestone/lights-2.png",
+      "engine/artifacts/animation-milestone/lights-3.png",
+      "engine/artifacts/animation-milestone/lights-4.png"
     ],
     "next": [
-      "Resume remaining item reconstruction with the 27 pending lighting objects: lamp_floor, fairy_lights, tiki_torch, table_lamp, floor_lamp, chandelier, paper_lantern, lava_lamp, neon_sign, disco_ball, candelabra, fairy_lamp, spotlight, street_lamp, campfire, firefly_swarm, moon_lamp, star_projector, torches, glowsticks, laser_lights, eternal_flame, crystal_lamp, torch, lamp, lantern, hologram. Lighting work is inspected/planned only, not implemented. Preserve per-instance state and add physical controls and restrained localized illumination without claiming 48 sequences.",
-      "Expand instrument-specific and guest-specific performance repertoires beyond the 25 shared phrase cores, with explicit approach/climbing, stationary multi-level supports, instrument pickup/put-away, listening audiences and richer reciprocal musical gestures. Keep all per-object sequence counts unverified until the 48 meaningful sequence audit passes. Continue the remaining 379 artwork reconstructions and all other milestone requirements.",
-      "Continue construction-specific plant repertoires, seasonal/mood/personality choreography, reciprocal gestures and physical tool handoffs. The 19 shared care scores and all-cast rig fit are foundations, not 48 bespoke sequences on each plant. Continue the remaining 379 item reconstructions and the full per-object animation milestone.",
+      "Continue remaining item reconstruction with storage/keepsakes: rain_barrel, treasure_chest, storage_basket, storage_chest, weekly_chest, duck_photo, storm_sketch, friendship_card, sunset_photo, pirate_map, picture_frame and ancient_tome. These 12 items are inspected only, not reconstructed. Add construction-specific physical reading, opening, sorting and display actions; preserve original inventory/reward ownership. Continue all remaining 352 item reconstructions and the full 48-sequence/cast/context milestone.",
+      "Expand 27 reconstructed lights beyond the ten initial control/observation cores: guest participation, contextual company, real tool pickup/put-away, surface-specific manipulation, expressive age/personality staging and each item\u2019s 48 meaningful sequences. Current controls and native state are verified foundations, not the completed milestone.",
+      "Expand instrument-specific and guest-specific performance repertoires beyond the 25 shared phrase cores, with explicit approach/climbing, stationary multi-level supports, instrument pickup/put-away, listening audiences and richer reciprocal musical gestures. Keep all per-object sequence counts unverified until the 48 meaningful sequence audit passes. Continue the remaining 352 artwork reconstructions and all other milestone requirements.",
+      "Continue construction-specific plant repertoires, seasonal/mood/personality choreography, reciprocal gestures and physical tool handoffs. The 19 shared care scores and all-cast rig fit are foundations, not 48 bespoke sequences on each plant. Continue the remaining 352 item reconstructions and the full per-object animation milestone.",
       "Extend spatial arrangement to the separate building/decorating/project editors and consider additional habitat areas for larger collections; all 218 placeable shop objects now use measured footprints, dry-ground/water checks and truthful storage. Building and decoration objects reserve space against habitat purchases, but their own editors still use legacy placement rules.",
       "Deepen construction-specific nest/bed/house acting and each remaining item repertoire; the 51 shared nest scores do not by themselves satisfy 48 bespoke sequences per object.",
       "Add explicit nest body-facing transitions, construction-specific canopy/quilt/pillow/lining actions and species/age-specific climbing and doorway choreography.",
-      "Reconstruct the remaining 379 objects with authored details and anchors; regenerate measured placement bounds as artwork changes.",
+      "Reconstruct the remaining 352 objects with authored details and anchors; regenerate measured placement bounds as artwork changes.",
       "Expand guest-specific and age-specific behavior; eighteen shared tracks are not a complete bespoke catalogue.",
       "Extend invitations, prop handoffs and cooperative item use, with real arrival and completion evidence.",
       "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation.",
       "Add physical reading, desk/workbench actions, cabinet/wardrobe/mirror use and construction-specific furniture routines; the 16 shared seating tracks do not satisfy the per-object 48-sequence target."
     ],
     "checks": {
-      "javascript": 112,
+      "javascript": 120,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 22,
@@ -3909,7 +3985,7 @@
       "learningBrains": 44,
       "shelterLifecycle": 30,
       "pairedLifecycle": 16,
-      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Initial character-operated tools are now reviewed separately below; plant-specific social routines and every-object 48-sequence coverage remain unfinished. Botanical care: 19 score illustrations on four sheets plus real native solo/company replay. Connected mirrored grips, fixed character scale, supported feet, age-sized tools, actual soil/rim/leaf contacts, downward pours, butterfly hovering, reduced motion and selectable visiting gardeners verified. Interrupted and incomplete shared work grant no shared memory; completed care teaches gardening. Tool pickup/put-away and individual-object/guest repertoires remain unfinished. Music review: nine instrument constructions on three sheets, 25 phrases at three phases on seven sheets, plus real native solo/shared scenes. All eight hatched ages and 48 visitor rigs remain bounded with fixed body scale; mirrored grips, real bill contact, depressed keys/valves, ringing cymbals/chimes, radio knobs, fan brushes, supported feet and continuous note-to-note travel are checked. Actual regular, rare and story visitors reserve independent destinations, and visitor-to-visitor duets work without crediting Cheese. Shared native clocks emit each note once, skip missed-note bursts and grant learning/memories only upon completion. Muting, direct care, pauses, moved objects, storms, replaced visits and safe worker shutdown are verified. Physical entry/climbing and full individual object/guest repertoires remain unfinished. Physical-copy review: distinct healthy/thirsty fern state, exact click identities, copy-specific inspector and arrangement controls reviewed in Electron. Live UI commands target the selected copy; storing/restoring one retains its history and leaves its sibling outside. Same-position replacement cannot inherit a current musician or reward. Physical state snapshots are detached from saves.",
+      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip. Seated visitors remain selectable at their drawn body bounds; Pip retains his story interaction. Arrangement notebook reviewed against a real game process. Mouse/keyboard previews do not mutate the habitat until committed. Current reservations contain rendered item bounds at wide, standard and tall aspect ratios. Home Pond has a broader dry bank; shoreline and aquatic background details follow the world/camera. Furniture native replay still passes 877 frames, 965 seated occupancies, 243 paired frames and 322 selectable visitor frames after aspect-ratio scaling. Botanical review: 61 constructions on 11 sheets, seasonal/drought comparisons and real simulation replay (87 frames). All 1464 art/context combinations stay within bounds; static ingredients do not perform invented operating loops. Layered rose folds, veined leaves, branching crowns, blossom/fruit seasons, fern pinnae, cactus ribs, trap lobes, mushroom gills, split foods and soil beds are reconstructed. Live young Cheese and plants reviewed in Home Pond. Initial character-operated tools are now reviewed separately below; plant-specific social routines and every-object 48-sequence coverage remain unfinished. Botanical care: 19 score illustrations on four sheets plus real native solo/company replay. Connected mirrored grips, fixed character scale, supported feet, age-sized tools, actual soil/rim/leaf contacts, downward pours, butterfly hovering, reduced motion and selectable visiting gardeners verified. Interrupted and incomplete shared work grant no shared memory; completed care teaches gardening. Tool pickup/put-away and individual-object/guest repertoires remain unfinished. Music review: nine instrument constructions on three sheets, 25 phrases at three phases on seven sheets, plus real native solo/shared scenes. All eight hatched ages and 48 visitor rigs remain bounded with fixed body scale; mirrored grips, real bill contact, depressed keys/valves, ringing cymbals/chimes, radio knobs, fan brushes, supported feet and continuous note-to-note travel are checked. Actual regular, rare and story visitors reserve independent destinations, and visitor-to-visitor duets work without crediting Cheese. Shared native clocks emit each note once, skip missed-note bursts and grant learning/memories only upon completion. Muting, direct care, pauses, moved objects, storms, replaced visits and safe worker shutdown are verified. Physical entry/climbing and full individual object/guest repertoires remain unfinished. Physical-copy review: distinct healthy/thirsty fern state, exact click identities, copy-specific inspector and arrangement controls reviewed in Electron. Live UI commands target the selected copy; storing/restoring one retains its history and leaves its sibling outside. Same-position replacement cannot inherit a current musician or reward. Physical state snapshots are detached from saves. Lighting review: 27 distinct constructions across five sheets, three Cheese ages at a real control, and live day/night/contact captures. Local cloth glow, ceramic contrast, warm versus blue flame, larger duck hologram, fixed-scale grounded poses, exact held-tool contacts, reduced motion and paused poses verified. Live twin-lamp notebook mode changes, cancellation, storage and same-identity restoration tested through the production command validator. Ordinary and rare visitor light participation and individual-object repertoires remain pending.",
       "nestLifecycle": 34,
       "nestReplay": {
         "nativeSceneFrames": 41,
@@ -4010,10 +4086,23 @@
       },
       "physicalObjectLifecycle": 60,
       "physicalObjectUI": 11,
-      "physicalObjectRenderTests": 3
+      "physicalObjectRenderTests": 3,
+      "lightingLifecycle": 234,
+      "lightingUI": 15,
+      "lightingRenderTests": 7,
+      "lightingNativePreviewParityCases": 1620,
+      "originalGameParity": 76,
+      "lightingReplay": {
+        "frames": 87,
+        "drawn": 87,
+        "workers": 60,
+        "medianMs": 5.200000047683716,
+        "p95Ms": 8.5,
+        "note": "87 real native scenes, 60 control-worker frames; development replay, not final performance audit."
+      }
     },
     "limitations": [
-      "163 of 542 object artworks reconstructed for review; 379 remain.",
+      "190 of 542 object artworks reconstructed for review; 352 remain.",
       "No object has yet passed the 48 bespoke sequence requirement.",
       "Five nests now use 51 authored core routines (three require a canopy). Individual nest-construction variants, guest participation and egg-specific interactions remain unfinished; no per-object completion is claimed.",
       "Paired tracks currently share a core movement vocabulary across the cast; personality-specific choreography and full guest item participation remain unfinished.",
@@ -4023,7 +4112,8 @@
       "Eight cooperative toy scenes currently cover seesaw, sandbox, ball and trampoline; full species-specific contact, NPC-to-NPC toy invitations and every-object repertoires remain unfinished. Habitat purchases now reserve enlarged drawing space; additional areas and the other legacy placement editors remain to be designed.",
       "Sixteen shared water scores are initial object/age-aware routines, not 48 bespoke sequences on each water object. Visitor bathing, species-specific water contacts and detailed ladder/entry choreography remain unfinished.",
       "Rooted plants now have 19 shared articulated care scores with tool contacts, independent visitor arrivals and completed shared-care memories. These do not satisfy the 48 bespoke sequences per plant target. Plant-construction-specific acting, personality/mood choreography, explicit tool pickup/put-away and reciprocal tool handoffs remain unfinished. No per-object sequence completion is claimed.",
-      "Nine music objects now have 25 shared phrase cores, articulated playing/listening, real synthesized notes, independently arrived visitors and synchronized duets. These are not 48 bespoke sequences per instrument. Construction-specific repertoires, richer expressive posing, explicit tool pickup/put-away, musician climbing and stationary multi-level supports, egg listening and personal visitor phrasing remain unfinished."
+      "Nine music objects now have 25 shared phrase cores, articulated playing/listening, real synthesized notes, independently arrived visitors and synchronized duets. These are not 48 bespoke sequences per instrument. Construction-specific repertoires, richer expressive posing, explicit tool pickup/put-away, musician climbing and stationary multi-level supports, egg listening and personal visitor phrasing remain unfinished.",
+      "Twenty-seven lighting objects now have per-copy modes, real Cheese control contact, warm/cold observation, dusk/weather response, preserved storage state and ten shared cores. Visitor participation, physical tool pickup/put-away and 48 individual meaningful sequences per light remain unfinished; no object sequence completion is claimed."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -4040,7 +4130,7 @@
       "identities": "habitat, decoration and structure instances",
       "migration": "deterministic legacy identities; one representative inherits previous aggregate history",
       "storage": "physical belongings retain identity and history; stored plants stop growing",
-      "activities": "copy-specific care, original interactions, shelter, water, toys, seating, gardening and music; moved or replaced destinations cancel",
+      "activities": "copy-specific care, original interactions, shelter, water, toys, seating, gardening and music; moved or replaced destinations cancel; light controls preserve instance through the production Electron bridge",
       "autonomy": "evaluates each placed copy and its own need, biology and cooldown",
       "ui": "copy-aware click inspection, preview, selection, care and habitat arrangement",
       "sequenceCoverageAdded": 0
@@ -4053,6 +4143,30 @@
       "rendererChecks": 48,
       "localModelConversationAndRecall": true,
       "installed": false
+    },
+    "lightingObjects": 27,
+    "lightingRoutineCores": 10,
+    "lightingControls": {
+      "status": "implemented_and_verified_foundation",
+      "perCopyModes": [
+        "auto",
+        "on",
+        "off"
+      ],
+      "controls": "Cheese arrives and makes actual contact; cancellation preserves only changes that already happened",
+      "state": "native light level, warmth, adjustments, operating time and mode persist with physical identity; storage stops operation",
+      "fixedNature": "wild fireflies follow dusk/season; eternal flame stays lit",
+      "young": "open-flame controls withheld; cold inspection and warm observation reflect actual light/heat",
+      "illumination": "exact bulb locations, restrained daytime pools below crisp ASCII, localized luminous materials",
+      "ui": "actual notebook buttons via production validator, live meter/mode, copy selector, storage and restoration",
+      "sequenceCoverageAdded": 0,
+      "remaining": "All individual repertoires, visitor light participation, tool pickup/put-away and full 48-sequence audit"
+    },
+    "sourceSmoke": {
+      "result": "PASS",
+      "artifact": "engine/artifacts/lighting-source-smoke",
+      "localAI": false,
+      "note": "Actual source Electron startup, controls, drawing, save and safe shutdown; model inference already verified in previous chat turn, packaging/install still deferred."
     }
   }
 }

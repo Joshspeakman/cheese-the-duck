@@ -237,10 +237,10 @@
       "construction": "furniture-v1"
     },
     "lamp_floor": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 56.66,
+      "height": 54.29,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "mirror": {
       "width": 44.17,
@@ -957,10 +957,10 @@
       "construction": "legacy-detail"
     },
     "fairy_lights": {
-      "width": 25.04,
-      "height": 9.14,
+      "width": 83.67,
+      "height": 53.18,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "pinwheel": {
       "width": 14.72,
@@ -981,10 +981,10 @@
       "construction": "legacy-detail"
     },
     "tiki_torch": {
-      "width": 10.76,
-      "height": 9.54,
+      "width": 44.01,
+      "height": 52.61,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "ice_sculpture": {
       "width": 18.97,
@@ -1029,76 +1029,76 @@
       "construction": "legacy-detail"
     },
     "table_lamp": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 53.2,
+      "height": 42.77,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "floor_lamp": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 59.67,
+      "height": 55.23,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "chandelier": {
-      "width": 19.5,
-      "height": 13.26,
+      "width": 80.23,
+      "height": 62.64,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "paper_lantern": {
-      "width": 12.47,
-      "height": 9.09,
+      "width": 56.48,
+      "height": 51.71,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "lava_lamp": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 52.37,
+      "height": 50.88,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "neon_sign": {
-      "width": 23.02,
-      "height": 9.67,
+      "width": 81.64,
+      "height": 43.83,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "disco_ball": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 65.11,
+      "height": 56.68,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "candelabra": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 64.75,
+      "height": 49.91,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "fairy_lamp": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 53.53,
+      "height": 46.13,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "spotlight": {
-      "width": 20.89,
-      "height": 9.67,
+      "width": 65.32,
+      "height": 52.81,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "street_lamp": {
-      "width": 14.3,
-      "height": 11.27,
+      "width": 62.37,
+      "height": 62.49,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "campfire": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 70.6,
+      "height": 47.5,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "lighthouse": {
       "width": 77.83,
@@ -1107,34 +1107,34 @@
       "construction": "workshop-v1"
     },
     "firefly_swarm": {
-      "width": 20.89,
-      "height": 9.67,
+      "width": 70.36,
+      "height": 50.02,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "moon_lamp": {
-      "width": 14.1,
-      "height": 8.19,
+      "width": 60.89,
+      "height": 49.91,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "star_projector": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 67.25,
+      "height": 52.81,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "torches": {
-      "width": 10.76,
-      "height": 9.54,
+      "width": 70.72,
+      "height": 55.72,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "glowsticks": {
-      "width": 21.21,
-      "height": 7.74,
+      "width": 56.68,
+      "height": 46.41,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "aurora": {
       "width": 19.83,
@@ -1143,10 +1143,10 @@
       "construction": "legacy-detail"
     },
     "laser_lights": {
-      "width": 25.04,
-      "height": 9.14,
+      "width": 75.54,
+      "height": 52.18,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "grass_floor": {
       "width": 26.73,
@@ -1365,10 +1365,10 @@
       "construction": "legacy-detail"
     },
     "hologram": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 70.43,
+      "height": 57.86,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "shrink_ray": {
       "width": 19.41,
@@ -1527,10 +1527,10 @@
       "construction": "legacy-detail"
     },
     "eternal_flame": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 66.83,
+      "height": 56.54,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "philosophers_stone": {
       "width": 14.36,
@@ -1773,10 +1773,10 @@
       "construction": "legacy-detail"
     },
     "crystal_lamp": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 57.87,
+      "height": 53.18,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "flower_wreath": {
       "width": 13.2,
@@ -1809,10 +1809,10 @@
       "construction": "legacy-detail"
     },
     "torch": {
-      "width": 10.76,
-      "height": 9.54,
+      "width": 50.8,
+      "height": 52.14,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "water_bowl": {
       "width": 31.53,
@@ -3123,16 +3123,16 @@
       "construction": "botanical-v1"
     },
     "lamp": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 56.29,
+      "height": 49.27,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "lantern": {
-      "width": 12.47,
-      "height": 9.09,
+      "width": 58.36,
+      "height": 53.34,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "lighting-v1"
     },
     "plushie": {
       "width": 31.86,

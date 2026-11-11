@@ -1,0 +1,44 @@
+const {app,BrowserWindow,ipcMain}=require('electron'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
+const {spawn}=require('node:child_process'),{createInterface}=require('node:readline'),{pondCommand}=require('./pond-command.cjs');
+app.setPath('userData',fs.mkdtempSync(path.join(os.tmpdir(),'cheese-lights-ui-')));
+app.whenReady().then(async()=>{
+ let child,stderr='';const checks=[],out=path.join(__dirname,'artifacts/animation-milestone');
+ try{
+  const w=new BrowserWindow({show:false,width:1440,height:1000,webPreferences:{nodeIntegration:true,contextIsolation:false,backgroundThrottling:false}});
+  const js=s=>w.webContents.executeJavaScript(s);
+  const until=async(s,label)=>{const start=Date.now();while(!await js(s)){if(Date.now()-start>15000)throw Error(label+' timed out '+stderr);await new Promise(r=>setTimeout(r,30));}checks.push(label);};
+  const advance=until=>child.stdin.write(JSON.stringify({type:'test_advance',until})+'\n');
+  await w.loadFile(path.join(__dirname,'tests/physical-objects-theatre.html'));
+  await until('Boolean(window.journal)','notebook initialized');
+  ipcMain.on('physical-command',(_,raw)=>{const command=pondCommand(raw);if(command)child.stdin.write(JSON.stringify(command)+'\n');});
+  child=spawn(path.join(__dirname,'../.venv/bin/python'),[path.join(__dirname,'check_lighting.py'),'--serve'],{cwd:path.dirname(__dirname),stdio:['pipe','pipe','pipe']});
+  child.stderr.on('data',b=>stderr=(stderr+b).slice(-5000));
+  createInterface({input:child.stdout}).on('line',line=>{try{const m=JSON.parse(line);if(m.type==='physical_frame')js('window.receive('+JSON.stringify(m.frame)+')');}catch{}});
+  await until('Boolean(window.frame)','native twin lamps arrive');
+  await until('window.hitCopies()','both lamps have separate world click bounds');
+  await until("button('At dusk').getAttribute('aria-pressed')==='true'&&!button('On').disabled&&journal.body.querySelector('[aria-label=\"Light\"]').value===0",'daylight lamp begins dark with automatic mode selected');
+  await js("button('On').click()");
+  await until("journal.world.plan?.instance===frame.copies[0]&&journal.world.instances[frame.copies[0]].lighting.mode==='auto'",'button requests a walk to the selected lamp without switching remotely');
+  await js("journal.command('cancel')");
+  await until("!journal.world.plan&&journal.world.instances[frame.copies[0]].lighting.mode==='auto'",'cancelling the approach preserves its setting');
+  await js("button('On').click()");await until('Boolean(journal.world.plan)','a new attempt begins');
+  advance('contact');
+  await until("journal.world.plan?.light_work?.changed&&journal.body.querySelector('[data-light-summary]').textContent.startsWith('on')&&journal.body.querySelector('[aria-label=\"Light\"]').value>0",'native contact updates the live meter and setting during the activity');
+  await until("button('Off').disabled&&button('On').getAttribute('aria-pressed')==='true'",'controls reflect the actual switch and remain busy until Cheese finishes');
+  advance('finish');
+  await until("!journal.world.plan&&!button('Off').disabled&&journal.world.instances[frame.copies[0]].uses===1",'completed adjustment records one use and enables another setting');
+  await js("(()=>{const p=journal.body.querySelector('[aria-label=\"Choose a placed copy\"]');p.value=frame.copies[1];p.dispatchEvent(new Event('change'));})()");
+  await until("button('At dusk').getAttribute('aria-pressed')==='true'&&journal.body.querySelector('[aria-label=\"Light\"]').value===0",'the other lamp still has its own automatic mode and dark bulb');
+  await js("button('On').click()");await until('journal.world.plan?.instance===frame.copies[1]','copy selector sends the second physical identity through the production validator');advance('finish');
+  await until("!journal.world.plan&&journal.world.instances[frame.copies[1]].lighting.mode==='on'",'second lamp can be adjusted independently');
+  await js('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
+  fs.writeFileSync(path.join(out,'lighting-inspector.png'),(await w.webContents.capturePage()).toPNG());
+  await js("button('Move or store').click();journal.arrangement.store.click()");
+  await until('!journal.arrangement.pending&&!journal.world.layout.placed.some(p=>p.instance===frame.copies[1])','lit lamp stores through the real arrangement UI');
+  await js('journal.arrangement.auto.click()');
+  await until("!journal.arrangement.pending&&journal.world.layout.placed.some(p=>p.instance===frame.copies[1])&&journal.world.instances[frame.copies[1]].lighting.mode==='on'",'restoring the same lamp preserves its chosen mode');
+  const result={result:'PASS',checks,commands:await js('window.commands')};fs.writeFileSync(path.join(out,'lighting-ui.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));
+  child.stdin.end('{"type":"quit"}\n');
+  await new Promise((resolve,reject)=>{child.once('exit',code=>code===0?resolve():reject(Error('Native exit '+code+' '+stderr)));setTimeout(()=>reject(Error('Shutdown timed out')),5000).unref();});app.exit(0);
+ }catch(e){console.error(e);if(child)child.stdin.end('{"type":"quit"}\n');app.exit(1);}
+});

@@ -10,3 +10,7 @@ import json as _instrument_json
 from pathlib import Path as _InstrumentPath
 for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/animation/instruments.json').read_text()).items():
     ITEMS[_id].update(kind='music',material='metal' if _p['type'] in ('horn','chimes') else 'wood',skill='music',verb='Listen to' if _p['type']=='radio' else 'Play',need='fun',duration=24)
+
+# Light controls share their construction registry with Ultra.
+for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/animation/lighting.json').read_text()).items():
+    ITEMS[_id].update(kind='light',material=_p['material'],skill='observation',verb='Watch' if _p['control']=='observe' else 'Adjust light',need='fun',duration=16)

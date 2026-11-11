@@ -5,6 +5,7 @@ import {eventModel,EVENT_ASSETS} from './event-art.mjs';
 import {guestProfile} from './visitor-rig.mjs';
 import {storyModel} from './story-art.mjs';
 import {PondArrangement} from './pond-layout.mjs';
+import LIGHTING from './animation/lighting.json' with {type:'json'};
 const names=new Map(catalog.map(i=>[i.id,i]));
 const pretty=s=>String(s||'').replaceAll('_',' ');
 const percent=n=>`${Math.round((n||0)*100)}%`;
@@ -41,6 +42,14 @@ export class PondJournal{
   refreshConversation(this);
   const p=w.plan;this.status.textContent=p?`${p.label} · ${p.paused?'paused':pretty(p.phase)} · ${Math.round(p.progress*100)}%`:'Cheese is free to choose what comes next.';
   for(const bar of this.body.querySelectorAll('[data-progress]'))bar.value=p?.progress||0;
+  for(const card of this.body.querySelectorAll('[data-light-id]')){
+   const id=card.dataset.lightId,instance=card.dataset.lightInstance,light=(instance?w.instances?.[instance]:w.objects[id])?.lighting;
+   if(!light)continue;
+   const outside=instance?[...(this.frame.scene.items||[]),...(this.frame.scene.structures||[])].some(o=>o.instance===instance):w.placed.includes(id);
+   const meter=card.querySelector('[aria-label="Light"]');meter.value=Math.max(0,Math.min(1,light.level||0));meter.nextElementSibling.textContent=percent(light.level);
+   card.querySelector('[data-light-summary]').textContent=`${pretty(light.mode)} · ${light.switches} careful adjustments`;
+   for(const button of card.querySelectorAll('[data-light-mode]')){button.disabled=Boolean(p)||!outside||light.mode===button.dataset.lightMode;button.setAttribute('aria-pressed',String(light.mode===button.dataset.lightMode));}
+  }
   // Keep focused controls and scroll position stable as live frames arrive.
   const signature=[p?.kind,p?.paused,...w.projects.map(p=>p.stage),Object.keys(w.objects).length,w.friends.length,w.rare_guest?.id,w.rare_guest?.last_line,w.story?.id,w.story?.step,w.garden.map(p=>p.plant+':'+p.stage).join(',')].join('|');
   if(this.signature&&signature!==this.signature&&!['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))this.render();this.signature=signature;
@@ -93,6 +102,13 @@ const p=itemProfile(item,itemFamily(id));detail.append(el('p',`${pretty(p.materi
     detail.append(this.button(p.verb,'item',id,busy||!outside||['food','wearable'].includes(p.kind),{instance}),this.button('Brush & polish','clean_item',id,busy||!outside||state.dirt<.05,{instance}),this.button('Repair · 1 twig','repair_item',id,busy||!outside||state.condition>=.95,{instance}));if(['food','wearable'].includes(p.kind))detail.append(this.legacy(p.kind==='food'?'Eat through inventory':'Open wardrobe & items','inventory'));grid.append(detail);
     if(w.layout?.items.some(i=>i.id===id)&&(!instance||w.layout.copies?.some(p=>p.id===id&&p.instance===instance))){const arrange=el('button',w.placed.includes(id)?'Move or store':'Find a place','pond-action');arrange.onclick=()=>this.show('arrange',id,instance);detail.append(arrange);}
     if(state.botany){this.meter(detail,'Soil moisture',state.botany.moisture);this.meter(detail,'Plant health',state.botany.health);detail.append(el('p',state.botany.last_care?'Last care: '+pretty(state.botany.last_care):'Rain waters the roots. Warm, dry air slowly draws moisture out of the soil.'));}
+    if(state.lighting&&LIGHTING[id]){
+     const light=state.lighting;detail.dataset.lightId=id;detail.dataset.lightInstance=instance||'';this.meter(detail,'Light',light.level);const summary=el('p',`${pretty(light.mode)} · ${light.switches} careful adjustments`);summary.dataset.lightSummary='';detail.append(summary);
+     if(LIGHTING[id].control!=='observe')for(const [mode,label] of [['auto','At dusk'],['on','On'],['off','Off']]){
+      const button=this.button(label,'lighting_mode',id,busy||!outside||light.mode===mode,{instance,text:mode});button.dataset.lightMode=mode;button.setAttribute('aria-pressed',String(light.mode===mode));detail.append(button);
+     }
+     detail.append(el('p',id==='firefly_swarm'?'Wild fireflies follow dusk and the seasons.':id==='eternal_flame'?'This flame never goes out.':LIGHTING[id].exposed?'Rain softens exposed firelight. Cheese adjusts the flame when he reaches it.':'Cheese walks over to work the control. At dusk follows the pond clock.'));
+    }
    }else if(instance)grid.append(this.card('Put away or moved','This copy is no longer outside. Choose a belonging from the list to see its current home.'));else grid.append(this.card('Make a collection','Find resources, craft things or visit the shop. New belongings appear here as you acquire them.'));
   }else if(this.tab==='friends'){
    if(w.rare_guest){const guest=w.rare_guest,c=this.card(guest.name,guest.bio);this.preview(c,'friend',guest.id);c.append(el('p',guest.habit),el('p',pretty(guest.relationship)));

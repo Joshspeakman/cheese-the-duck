@@ -11,6 +11,7 @@ import { itemSprite,itemWorldScale } from './ultra-items.mjs';
 import { characterSprite } from './ultra-characters.mjs';
 import {residenceStage} from './residence-stage.mjs';
 import {actorPerformance} from './performances.mjs';
+import {lightingPose,LIGHTING_ROUTINES} from './lighting-routines.mjs';
 import {playdateStage} from './playdates.mjs';
 import {playgroundStage} from './playground-stage.mjs';
 import {waterStage} from './water-routines.mjs';
@@ -318,7 +319,8 @@ export class LivingWorld {
         const sitters=seated.filter(r=>r.id===item.id&&sameInstance(item,r)&&matches(r.destination)&&r.phase!=='approach');
         if(sitters.length)interaction={...(interaction||{phase:'act'}),seat_occupants:sitters};
         const music=musicians.filter(r=>r.id===item.id&&sameInstance(item,r)&&matches(r.destination)&&r.phase==='inside').map(r=>{const p=musicPose(r.id,r.score,s.motion!==false);return p&&{...p,slot:r.slot};}).filter(Boolean);
-        this.objects.push({...itemSprite(item.id,t,{pose:{music},motion:s.motion!==false,context:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,worldPosition:[item.x,item.y],scale:itemWorldScale(item.id)});
+        const light=owned&&plan.light_work?lightingPose(plan.light_work,s.motion!==false):null;
+        this.objects.push({...itemSprite(item.id,t,{pose:{music,light},motion:s.motion!==false,context:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,worldPosition:[item.x,item.y],scale:itemWorldScale(item.id)});
       }});
     }
     if(s.visitor){const [x,y]=this.project(s,s.visitor.x,s.visitor.y);actors.push({y,draw:()=>this.actor(s,t+2,x,y,{stage:'adult',state:'idle',facing:false,...s.visitor},true)});}
@@ -406,6 +408,15 @@ export class LivingWorld {
       const character={...characterSprite({...source,state:'idle',facing:r.slot===0,performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
       (home.gardeners||=[]).push({character,inside,slot:r.slot});
       this.characters=this.characters.filter(c=>c!==original);
+    }
+    if(plan?.light_work&&!plan.light_work.interrupted&&LIGHTING_ROUTINES[plan.light_work.id]&&['prepare','act','settle'].includes(plan.phase)){
+      const original=this.characters.find(c=>c.cheese),home=this.objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.construction==='lighting-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination?.[i])<1.1));
+      if(original&&home){
+        const progress=plan.progress??plan.elapsed/plan.duration,inside=plan.phase==='act'?1:plan.phase==='prepare'?clamp((progress-.15)/.13,0,1):clamp(1-(progress-.9)/.1,0,1);
+        const performance={kind:'lighting',routine:plan.light_work,motion:s.motion!==false};
+        const character={...characterSprite({...s.duck,state:'idle',facing:true,performance},t),x:original.x,y:original.y,cheese:true};
+        home.lightWorkers=[{character,inside}];this.characters=this.characters.filter(c=>c!==original);
+      }
     }
     for(const r of musicians){
       if(r.phase==='approach'||r.score?.interrupted||!MUSIC_SCORES[r.score?.id])continue;

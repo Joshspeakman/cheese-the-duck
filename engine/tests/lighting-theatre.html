@@ -1,0 +1,41 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Lighting workshop</title>
+<style>body{background:#142b23;color:#ecdbb3;font:20px Georgia;margin:24px}canvas{display:block;max-width:100%;margin:24px 0}</style>
+<h1>Lighting workshop · current in-game art</h1>
+<script type="module">
+import {LIGHTING_BLUEPRINTS} from '../client/lighting-workshop.mjs';
+import {itemSprite,ItemPainter} from '../client/ultra-items.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';
+import {lightingGeometry,drawLightingTools} from '../client/lighting-routines.mjs';
+const painter=new ItemPainter();
+window.reviewLights=()=>{
+ const images={},ids=Object.keys(LIGHTING_BLUEPRINTS);
+ for(let page=0;page<Math.ceil(ids.length/6);page++){
+  const canvas=document.createElement('canvas');canvas.width=1800;canvas.height=1600;const c=canvas.getContext('2d');c.fillStyle='#142b23';c.fillRect(0,0,1800,1600);
+  ids.slice(page*6,page*6+6).forEach((id,n)=>{
+   const m=itemSprite(id,2.3,{state:{lighting:{level:1,mode:'on'}},context:{hour:21,living:{ecology:{wind:.3}}}}),x=n%3*600,y=Math.floor(n/3)*800;
+   c.fillStyle='#e5d8b4';c.font='23px Menlo';c.fillText(id,x+20,y+32);
+   const unit=Math.min(5,550/m.width,690/(m.art.length*1.5));painter.draw(c,m,x+300,y+755,unit/m.detailScale,{surface:'#142b23',outline:'#0a1712'});
+  });images['lights-'+page]=canvas.toDataURL('image/png');document.body.append(canvas);
+ }
+ const canvas=document.createElement('canvas');canvas.width=1800;canvas.height=1150;const ctx=canvas.getContext('2d');ctx.fillStyle='#142b23';ctx.fillRect(0,0,1800,1150);
+ ['hatchling','adult','elder'].forEach((stage,i)=>{
+  const home={...itemSprite('table_lamp',0,{state:{lighting:{level:1}}}),item:true,x:50+i*100,y:125,scale:.76},routine={id:'pull_chain',elapsed:5.2};
+  const character={...characterSprite({stage,state:'idle',facing:true,performance:{kind:'lighting',routine}},2),x:home.x,y:home.y};
+  painter.draw(ctx,home,home.x*6,home.y*8,6*home.scale,{surface:'#142b23'});
+  const staged=lightingGeometry(home,{character,inside:1},6,8);drawCharacter(ctx,staged.character,6,8,'#142b23');drawLightingTools(ctx,staged);
+  ctx.fillStyle='#e5d8b4';ctx.font='24px Menlo';ctx.fillText(stage,i*600+20,35);
+ });images['lights-controls']=canvas.toDataURL('image/png');document.body.append(canvas);
+ return images;
+};
+window.replayLights=frames=>{
+ const view=new SceneCanvas();view.resize(1500,950);const images={},costs=[];let drawn=0,workers=0;
+ for(const [i,s]of frames.entries()){
+  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
+  if(JSON.stringify(s)!==before)throw Error('Lighting renderer changed native state');
+  for(const o of view.world.objects)if(o.construction==='lighting-v1'){drawn++;if(o.clipped)throw Error('Clipped light '+o.id);workers+=o.lightWorkers?.length||0;}
+  if(s.review)images['lights-live-'+s.review]=view.canvas.toDataURL('image/png');
+ }
+ costs.sort((a,b)=>a-b);return {frames:frames.length,drawn,workers,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+</script>

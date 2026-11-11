@@ -1,5 +1,6 @@
 import { sceneLight } from './scene-lighting.mjs';
 import { W,H,C,hash } from './ultra-grid.mjs';
+import {objectLightSources} from './lighting-state.mjs';
 
 export const EFFECT_LEVELS=['vivid','subtle','off'];
 export function effectStrength(level){return level==='off'?0:level==='subtle'?.38:1;}
@@ -37,7 +38,8 @@ export class SceneEffects {
     // Selective bloom uses a small light buffer; neither UI nor full-size glyphs
     // are blurred. Emissive objects get warm pools, crystals cool ones.
     for(const object of objects){
-      if(object.item&&object.emissive)glow(object.x,object.y-object.art.length*object.scale*.7,12,object.accent,night?.25:.13);
+      if(object.lightSources){for(const s of objectLightSources(object,sx,sy,night))glow(s.x,s.y,s.radius,s.color,s.power);}
+      else if(object.item&&object.emissive)glow(object.x,object.y-object.art.length*object.scale*.7,12,object.accent,night?.25:.13);
     }
     const grid=world.grid;
     for(let i=0,n=0;i<W*H;i+=3){

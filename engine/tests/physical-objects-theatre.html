@@ -6,7 +6,7 @@ import {SceneCanvas} from '../client/ultra-renderer.mjs';
 const ipc=window.require('electron').ipcRenderer;
 window.commands=[];window.cheese={input:c=>{window.commands.push(c);ipc.send('physical-command',c);}};
 window.journal=new PondJournal();window.world=new SceneCanvas();
-window.receive=frame=>{window.frame=frame;journal.update(frame);world.resize(1440,900);world.draw(frame.scene,0,.1);if(!journal.open)journal.show('belongings','fern',frame.copies[0]);};
+window.receive=frame=>{window.frame=frame;journal.update(frame);world.resize(1440,900);world.draw(frame.scene,0,.1);if(!journal.open)journal.show('belongings',frame.item||'fern',frame.copies[0]);};
 window.button=text=>[...journal.body.querySelectorAll('button')].find(b=>b.textContent===text);
 window.hitCopies=()=>frame.copies.every(instance=>{const h=world.hits.find(h=>h.instance===instance);return h&&world.hit((h.x+h.w/2)/1440,(h.y+h.h/2)/900)?.instance===instance;});
 </script>
