@@ -87,85 +87,111 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: added saved physical bounce-house controls and material care. Twenty-four low-control scores and ten ordered procedures join the fourteen shared play tracks; procedures move both residents between real components and apply each effect at wing contact. Native pressure, motor, valve, mesh, buckle, ropes, apron, halyard, hose, dust, water and tracks persist per copy. Autonomous care responds to real condition and time while honoring a player shutdown. Interrupted work, paused/resumed procedures, actual pressure readings, one-use rewards, shared learning, grouped notebook choices and live fold/scroll behavior are exercised. This provides 48 selectable source routines but does not complete the personal/age/context repertoire audit. All 542 verified-sequence counts remain zero; the full milestone and final install remain unfinished.",
+  "previous_goal_turn": "Progress: rebuilt 41 original headwear variants (22 catalogue objects and 19 supplemental wardrobe pieces), with separate compact fitting and detailed ASCII construction. Added native worn-only rain/snow/visor material, actual roof protection, storage drying, five physical care cores, automatic material-driven choices, age-fitted connected wings, contact-only effects, cancellation, cooldowns, save compatibility and live notebook controls. All hatched ages and both directions are checked; eggs never wear hats. Corrected the wardrobe comparison to match accumulated frozen weather. The full catalogue, visitor-specific repertoire, every-object 48-sequence audit and final installation remain unfinished.",
   "items": [
     {
       "id": "hat_red",
       "family": "cap",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "hat_blue",
       "family": "cap",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "hat_party",
       "family": "party",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "hat_chef",
       "family": "chef",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "hat_wizard",
       "family": "wizard",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "hat_crown",
       "family": "crown",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "hat_viking",
       "family": "viking",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "hat_pirate",
       "family": "pirate",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "hat_cowboy",
       "family": "cowboy",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "hat_tophat",
       "family": "tophat",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "hat_beret",
       "family": "beret",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "hat_beanie",
       "family": "beanie",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "hat_sombrero",
       "family": "sombrero",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "glasses_cool",
@@ -532,14 +558,18 @@
     {
       "id": "cap_sports",
       "family": "cap",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "beanie_striped",
       "family": "beanie",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "bandana",
@@ -568,32 +598,42 @@
     {
       "id": "crown_golden",
       "family": "crown",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "viking_helmet",
       "family": "viking",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "wizard_hat",
       "family": "wizard",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "pirate_hat",
       "family": "pirate",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "flower_crown",
       "family": "wreath",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "cape_superhero",
@@ -628,14 +668,18 @@
     {
       "id": "party_hat",
       "family": "party",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "space_helmet",
       "family": "helmet",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animationNote": "Constructed compact and catalogue headwear; real saved fabric/snow/fog state, age-fitted contact gestures and live notebook care. Full individual repertoire is unfinished."
     },
     {
       "id": "frisbee",
@@ -3949,10 +3993,10 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "bounce_house_controls_and_material_care",
+    "sourcePhase": "constructed_headwear_and_native_weather_care",
     "fullyOverhauled": false,
-    "constructedObjects": 279,
-    "remainingArtwork": 263,
+    "constructedObjects": 301,
+    "remainingArtwork": 241,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -4380,11 +4424,21 @@
       "engine/artifacts/animation-milestone/castle-care-mechanisms.log",
       "engine/artifacts/animation-milestone/castle-care-living.log",
       "engine/artifacts/animation-milestone/castle-care-brains.log",
-      "engine/artifacts/animation-milestone/castle-care-smoke.log"
+      "engine/artifacts/animation-milestone/castle-care-smoke.log",
+      "engine/artifacts/animation-milestone/headwear-native.json",
+      "engine/artifacts/animation-milestone/headwear-render.json",
+      "engine/artifacts/animation-milestone/headwear-ui.json",
+      "engine/artifacts/animation-milestone/headwear-review.html",
+      "engine/artifacts/animation-milestone/headwear-fit-final.log",
+      "engine/artifacts/animation-milestone/headwear-js-suite.log",
+      "engine/artifacts/animation-milestone/headwear-living.log",
+      "engine/artifacts/animation-milestone/headwear-brains.log",
+      "engine/artifacts/animation-milestone/headwear-smoke.log",
+      "engine/artifacts/animation-milestone/headwear-wardrobe-render.log"
     ],
-    "next": "Continue the remaining 263 object constructions and individually authored contextual repertoires. All 542 per-object 48-sequence audits remain open; complete personal visitor acting, guest-to-guest sessions, egg observation, riding/entry and physical tool handling before final integration and installation.",
+    "next": "Continue the remaining 241 catalogue constructions and individual contextual repertoires. Headwear still needs individual visitor participation, dressing/undressing and the per-object 48-sequence audit. All 542 verified-sequence counts remain zero; preserve the full milestone scope through final integration and installation.",
     "checks": {
-      "javascript": 194,
+      "javascript": 207,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4771,7 +4825,11 @@
         "medianMs": 15.699999988079071,
         "p95Ms": 18.5,
         "result": "PASS"
-      }
+      },
+      "headwearNative": 1514,
+      "headwearNativeFrames": 50,
+      "headwearCareFrames": 573,
+      "headwearUI": 7
     },
     "limitations": [
       "279 of 542 object artworks reconstructed for review; 263 remain.",
@@ -4844,9 +4902,9 @@
     },
     "sourceSmoke": {
       "result": "PASS",
-      "frames": 104,
+      "frames": 98,
       "localAI": false,
-      "evidence": "engine/artifacts/animation-milestone/surface-play-smoke.log"
+      "evidence": "engine/artifacts/animation-milestone/headwear-smoke.log"
     },
     "chatRelease": {
       "branch": "codex/pond-chat-2.36.1",
@@ -4969,6 +5027,20 @@
       "notebook": "three foldable activity groups, live control summary, preserved fold/scroll state and production-validated exact-copy commands",
       "sequenceCoverageAdded": 0,
       "remaining": "individual guest acting, guest-to-guest care, egg observation, full seasonal/mood/company and age audits; source routine count alone is not repertoire completion"
+    },
+    "headwear": {
+      "status": "implemented_and_verified_foundation",
+      "drawings": 41,
+      "catalogueObjects": 22,
+      "supplementalWardrobePieces": 19,
+      "careCores": 5,
+      "materials": "Only the visible owned hat collects current rain/snow; a reached real roof protects it. Stored/offline clothing dries. Cold worn helmets collect visor mist. Original wardrobe slot precedence is preserved.",
+      "contacts": "Age-fitted crown, brim and visor; wings lift from their own shoulder, brushing reaches the actual constructed surface, and moisture/snow changes once at native contact. Material care does not grant inventory, rewards or completion XP.",
+      "autonomy": "Real material selects care; urgent needs, an existing plan, interaction, travel, movement or unequipping takes priority. Dry hats do not invent a care need.",
+      "save": "Material and cooldowns persist. In-flight dressing gestures are cleared on load; already applied contact remains.",
+      "ui": "Live equipped-hat care in plans and belongings, original wardrobe access, no misleading ground-object wetness meter for rebuilt hats.",
+      "sequenceCoverageAdded": 0,
+      "remaining": "Individual item repertoires, visiting wearers, shared dressing activities, tool/hat pickup and put-away, the full 48-sequence age/species/context audit."
     }
   }
 }

@@ -8,6 +8,14 @@ import {LivingWorld} from '../client/ultra-world.mjs';
 import {scene} from './scenes.mjs';
 test('legacy item operations and all item weather states keep inputs immutable',()=>{
  for(const item of catalog){
+  if(itemSprite(item.id,0).construction==='headwear-v1'){
+   // Worn material has its own saved wardrobe state, not a ground object's dirt
+   // or generic interaction loop. Physical wing contacts are covered separately.
+   const state={apparel:{wet:.9,snow:.7,phase:1,wind:.8,fog:.8}},before=JSON.stringify(state);
+   assert.notDeepEqual(itemSprite(item.id,0).art,itemSprite(item.id,0,{state}).art,item.id+' shows actual weather');
+   assert.deepEqual(itemSprite(item.id,0,{state}),itemSprite(item.id,90,{state}));
+   assert.equal(JSON.stringify(state),before);continue;
+  }
   const state={condition:.3,dirt:.8,wetness:.8,bond:.8},before=JSON.stringify(state);
   const frames=new Set([.05,.23,.45,.7,1.05].map(time=>itemSprite(item.id,time,{state,interaction:{phase:'act',progress:time%1}}).art.join('\n')));
   // Rooted plants animate from weather; picked specimens and food may be still.

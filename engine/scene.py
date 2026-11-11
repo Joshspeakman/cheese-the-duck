@@ -46,6 +46,7 @@ def overlay_bounds(base, final):
 
 
 def snapshot(game, renderer):
+    from engine import headwear
     area = game.exploration.current_area
     weather = game.atmosphere.current_weather
     duck = game.duck
@@ -122,6 +123,9 @@ def snapshot(game, renderer):
                  'name': duck.name, 'away': renderer._cheese_away,
                  'hidden': renderer.interaction_animator.should_hide_duck(),
                  'cosmetics': equipped_wearables(game),
+                 'apparel': headwear.snapshot(getattr(game,'living_pond',None)),
+                 'hatCare': headwear.care_snapshot(getattr(game,'living_pond',None)),
+                 'motion': renderer._show_animations and not get_settings().accessibility.reduced_motion,
                  'art': get_mini_duck(duck.growth_stage, pos.get_state(), pos.facing_right, pos.get_animation_frame())},
         'items': items, 'structures': structures, 'visitor': visitor, 'interaction': active,
     }

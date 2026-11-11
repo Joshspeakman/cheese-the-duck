@@ -3,82 +3,82 @@
   "units": "render-grid-cells",
   "items": {
     "hat_red": {
-      "width": 19.41,
-      "height": 7.74,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "hat_blue": {
-      "width": 19.41,
-      "height": 7.74,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "hat_party": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "hat_chef": {
-      "width": 16.8,
-      "height": 8.19,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "hat_wizard": {
-      "width": 18.41,
-      "height": 9.54,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "hat_crown": {
-      "width": 15.45,
-      "height": 8.19,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "hat_viking": {
-      "width": 19.05,
-      "height": 8.19,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "hat_pirate": {
-      "width": 18.06,
-      "height": 7.74,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "hat_cowboy": {
-      "width": 20.4,
-      "height": 8.19,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "hat_tophat": {
-      "width": 18.32,
-      "height": 9.09,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "hat_beret": {
-      "width": 16.8,
-      "height": 8.19,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "hat_beanie": {
-      "width": 13.2,
-      "height": 8.19,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "hat_sombrero": {
-      "width": 22.65,
-      "height": 8.19,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "glasses_cool": {
       "width": 21.48,
@@ -381,16 +381,16 @@
       "construction": "legacy-detail"
     },
     "cap_sports": {
-      "width": 19.41,
-      "height": 7.74,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "beanie_striped": {
-      "width": 13.2,
-      "height": 8.19,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "bandana": {
       "width": 15.63,
@@ -417,34 +417,34 @@
       "construction": "legacy-detail"
     },
     "crown_golden": {
-      "width": 15.45,
-      "height": 8.19,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "viking_helmet": {
-      "width": 19.05,
-      "height": 8.19,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "wizard_hat": {
-      "width": 18.41,
-      "height": 9.54,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "pirate_hat": {
-      "width": 18.06,
-      "height": 7.74,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "flower_crown": {
-      "width": 13.2,
-      "height": 8.19,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "cape_superhero": {
       "width": 19.22,
@@ -477,16 +477,16 @@
       "construction": "legacy-detail"
     },
     "party_hat": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "space_helmet": {
-      "width": 18.32,
-      "height": 9.09,
+      "width": 41.91,
+      "height": 27.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "headwear-v1"
     },
     "frisbee": {
       "width": 50.54,

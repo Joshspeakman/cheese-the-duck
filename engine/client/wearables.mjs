@@ -1,4 +1,5 @@
 import { WEARABLE_CATALOG } from './wearable-catalog.mjs';
+import {HEADWEAR_BLUEPRINTS,fittedHat} from './headwear-workshop.mjs';
 
 // Each family has its own fitted construction and motion. Slots describe where
 // art attaches, independently of the three original wardrobe systems.
@@ -51,7 +52,7 @@ export function wornItems(cosmetics={}){
 
 // Rig coordinates are already posed. Art is built in character cells, so hats
 // fit the age's head width and footwear follows the two actual foot contacts.
-export function fitWearables(rig,cosmetics={},time=0){
+export function fitWearables(rig,cosmetics={},time=0,apparel={}){
  const layers=[],fills=[],items=wornItems(cosmetics),inks={};
  const h=rig.head,b=rig.body,n=rig.neck,e=rig.eye;
  const sleeping=rig.action==='sleeping',wet=rig.action==='swimming';
@@ -75,6 +76,15 @@ export function fitWearables(rig,cosmetics={},time=0){
    add(art,Math.round(center-(width-1)/2),h.y-art.length+1,{clear:true});
   };
   const glint=phase===2||phase===6?'*':'.';
+  if(HEADWEAR_BLUEPRINTS[item.id]){
+   const material=apparel[item.id]||{},hat=fittedHat(rig,item.id,{material,phase:rig.motion===false||rig.hatCare?.hold?0:Number.isFinite(material.phase)?material.phase:time*3});
+   const colors={b:HEADWEAR_BLUEPRINTS[item.id].color,f:'#eee0be',a:'#d4b47e',s:'#7e8986',k:'#343d3e',p:'#e5c5ba',q:'#93c1c9',g:'#8ab18a'};
+   const tones=Object.fromEntries(Object.entries(colors).map(([tone,color],i)=>{const code=String.fromCharCode(512+index*12+i);inks[code]=color;return [tone,code];}));
+   if(rig.crest&&!['flowers','ears','headband','antlers','earmuffs'].includes(item.family))add(' '.repeat(rig.crest.w),rig.crest.x,rig.crest.y,{clear:true});
+   for(const f of hat.fills){add(' '.repeat(f.w),hat.x+f.x,hat.y+f.y,{clear:true});fills.push({id:item.id,x:hat.x+f.x,y:hat.y+f.y,w:f.w,tone:tones[f.tone]||tones.b});}
+   hat.art.forEach((row,j)=>{for(let i=0;i<row.length;i++)if(row[i]!==' ')add(row[i],hat.x+i,hat.y+j,{tone:tones[hat.tones[j][i]]||tones.b});});
+   continue;
+  }
   switch(item.family){
    case 'cap':headpiece(['.'+fill('-')+'.','|'+fill('_')+(moving&&p===1?'_/':'_>')]);add(glint,Math.round(center),h.y-1,{tone:trim});break;
    case 'party':headpiece([p<2?'  o':' o~',' /'+(p%2?'*':':')+'\\','/'+fill('_')+'\\']);break;

@@ -71,7 +71,7 @@ def fresh(seed=1):
                         'insects': .48, 'fish': .52, 'birds': .45, 'litter': .12,
                         'wetness': .25, 'snow': 0., 'ice': 0., 'temperature': 17., 'wind': .2, 'wind_heading': .25},
             'offline': '', 'sequence': 0, 'auto': True, 'stories': {}, 'story': None, 'next_story': 90.,
-            'protection': 0., 'legacy': {}, 'biomes': {},
+            'protection': 0., 'legacy': {}, 'biomes': {}, 'apparel': {}, 'apparel_care': {},
             'community': {'warmth': .2, 'gatherings': 0}, 'minds': {}, 'layout': {}}
 
 
@@ -92,6 +92,8 @@ class LivingPond:
         self._last_weather = None
         self._cache = None
         self._cache_at = -1
+        # Dressing gestures are live poses, not unattended actions to replay on load.
+        self.state['apparel_care'].pop('active',None)
         if self.state['plan']:
             self.state['plan']['paused'] = True
             # Physical visitor reservations belong to a live visit, not a save.
@@ -109,7 +111,7 @@ class LivingPond:
 
     @property
     def busy(self):
-        return bool((self.state['plan'] and not self.state['plan'].get('paused')) or self.minds.encounter_for('cheese'))
+        return bool((self.state['plan'] and not self.state['plan'].get('paused')) or self.minds.encounter_for('cheese') or self.state['apparel_care'].get('active'))
 
     def attach(self, game, offline=True):
         self.game = game
@@ -261,6 +263,8 @@ class LivingPond:
         self.state['elapsed'] += dt
         self._environment(dt, offline)
         self._social(dt, offline)
+        from engine import headwear
+        headwear.care_step(self,dt,offline)
         if offline:
             return
         self._activity(dt)
@@ -375,6 +379,8 @@ class LivingPond:
                 if plot.plant and not plot.plant.is_withered:
                     plot.plant.water_level = clamp(plot.plant.water_level + minutes*home_intensity*1.2, 0, 100)
         self.weather_type = weather
+        from engine import headwear
+        headwear.update(self,dt,weather,intensity,e['temperature'],e['wind'],offline)
 
     def _social(self, dt, offline):
         s = self.state
@@ -962,6 +968,10 @@ class LivingPond:
         action=command.get('action');target=command.get('target','')
         if not isinstance(target,str) or len(target)>128:return
         self.sync();s=self.state
+        if action=='hat_care':
+            from engine import headwear
+            ok,message=headwear.request(self,target,command.get('text'))
+            return self.notice(message)
         if action=='nest_action':
             ok,message=nest_routines.request(self,target,command.get('text'),command.get('instance'))
             return self.notice(message)
