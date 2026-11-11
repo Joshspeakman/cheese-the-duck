@@ -1,3 +1,4 @@
+import GROUND from './animation/groundworks.json' with {type:'json'};
 import TEXTILES from './animation/textiles.json' with {type:'json'};
 import CREATIVE from './animation/creative-props.json' with {type:'json'};
 import INSTRUMENTS from './animation/instruments.json' with {type:'json'};
@@ -10,6 +11,7 @@ import BOTANICAL from './animation/botanical.json' with {type:'json'};
 const hash=s=>[...s].reduce((n,c)=>(n*33+c.charCodeAt(0))>>>0,17);
 const has=(family,words)=>words.split(' ').includes(family);
 export function itemProfile(item,family){
+ if(GROUND[item.id]){const p=GROUND[item.id];return {kind:'study',material:p.material,skill:p.skill,verb:p.verb,need:'fun',duration:24};}
  if(TEXTILES[item.id]){const p=TEXTILES[item.id];return {kind:['bundle','scrap'].includes(p.type)?'study':'comfort',material:p.material,skill:p.skill,verb:p.verb,need:'fun',duration:24};}
  if(CREATIVE[item.id]){const p=CREATIVE[item.id];return {kind:p.type==='kite'?'toy':'study',material:p.material,skill:p.skill,verb:p.verb,need:'fun',duration:24};}
  if(KEEPSAKES[item.id]){const p=KEEPSAKES[item.id];return {kind:['chest','basket'].includes(p.type)?'storage':'study',material:p.material,skill:p.skill,verb:p.verb,need:'fun',duration:18};}

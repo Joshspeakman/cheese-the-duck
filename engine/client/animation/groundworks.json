@@ -1,0 +1,200 @@
+{
+  "stepping_stones": {
+    "type": "stones",
+    "style": "stepping",
+    "w": 178,
+    "h": 78,
+    "scale": 0.58,
+    "material": "stone",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Cross"
+  },
+  "stone_tiles": {
+    "type": "tiles",
+    "style": "slate",
+    "w": 182,
+    "h": 82,
+    "scale": 0.58,
+    "material": "slate",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Inspect"
+  },
+  "cobblestone": {
+    "type": "stones",
+    "style": "cobbles",
+    "w": 190,
+    "h": 84,
+    "scale": 0.59,
+    "material": "stone",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Walk"
+  },
+  "pebble_path": {
+    "type": "stones",
+    "style": "pebbles",
+    "w": 178,
+    "h": 74,
+    "scale": 0.58,
+    "material": "pebble",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Follow"
+  },
+  "stone_path": {
+    "type": "stones",
+    "style": "winding",
+    "w": 204,
+    "h": 76,
+    "scale": 0.58,
+    "material": "stone",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Follow"
+  },
+  "marble_tiles": {
+    "type": "tiles",
+    "style": "marble",
+    "w": 182,
+    "h": 82,
+    "scale": 0.58,
+    "material": "marble",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Study"
+  },
+  "checkered_floor": {
+    "type": "tiles",
+    "style": "checker",
+    "w": 178,
+    "h": 82,
+    "scale": 0.58,
+    "material": "ceramic",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Step"
+  },
+  "mosaic_tiles": {
+    "type": "tiles",
+    "style": "mosaic",
+    "w": 184,
+    "h": 86,
+    "scale": 0.58,
+    "material": "ceramic",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Trace"
+  },
+  "ice_floor": {
+    "type": "ice",
+    "style": "ice",
+    "w": 178,
+    "h": 82,
+    "scale": 0.58,
+    "material": "ice",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Test footing"
+  },
+  "glass_floor": {
+    "type": "glass",
+    "style": "glass",
+    "w": 182,
+    "h": 82,
+    "scale": 0.58,
+    "material": "glass",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Inspect"
+  },
+  "wooden_planks": {
+    "type": "wood",
+    "style": "deck",
+    "w": 184,
+    "h": 82,
+    "scale": 0.58,
+    "material": "wood",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Listen"
+  },
+  "wooden_plank": {
+    "type": "plank",
+    "style": "plank",
+    "w": 164,
+    "h": 62,
+    "scale": 0.5,
+    "material": "wood",
+    "portable": true,
+    "skill": "observation",
+    "verb": "Inspect grain"
+  },
+  "sand_floor": {
+    "type": "sand",
+    "style": "sand",
+    "w": 184,
+    "h": 84,
+    "scale": 0.58,
+    "material": "sand",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Rake"
+  },
+  "snow_floor": {
+    "type": "snow",
+    "style": "snow",
+    "w": 184,
+    "h": 86,
+    "scale": 0.58,
+    "material": "snow",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Explore"
+  },
+  "cloud_floor": {
+    "type": "cloud",
+    "style": "cloud",
+    "w": 184,
+    "h": 86,
+    "scale": 0.58,
+    "material": "cloud",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Watch"
+  },
+  "rainbow_path": {
+    "type": "rainbow",
+    "style": "rainbow",
+    "w": 202,
+    "h": 78,
+    "scale": 0.59,
+    "material": "light",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Follow colors"
+  },
+  "lava_floor": {
+    "type": "lava",
+    "style": "lava",
+    "w": 184,
+    "h": 86,
+    "scale": 0.58,
+    "material": "lava",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Watch safely"
+  },
+  "galaxy_floor": {
+    "type": "galaxy",
+    "style": "galaxy",
+    "w": 184,
+    "h": 86,
+    "scale": 0.58,
+    "material": "starlight",
+    "portable": false,
+    "skill": "observation",
+    "verb": "Stargaze"
+  }
+}

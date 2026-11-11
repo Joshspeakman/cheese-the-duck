@@ -1,3 +1,4 @@
+import {groundSprite,GROUND_BLUEPRINTS} from './ground-workshop.mjs';
 import {textileSprite,TEXTILE_BLUEPRINTS} from './textile-workshop.mjs';
 import {creativeSprite,CREATIVE_BLUEPRINTS} from './creative-workshop.mjs';
 import {instrumentSprite,INSTRUMENT_BLUEPRINTS} from './instrument-workshop.mjs';
@@ -110,9 +111,10 @@ export function itemSprite(id,time=0,{motion=true,originalArt=null,state={},inte
     sway:(PLANTS.has(family)||['chimes','kite','swing'].includes(family))&&motion?Math.sin(t*1.3+seed)*.025:0,
     lift:/balloon|ufo|orb|motes|fish|worm/.test(family)&&motion?Math.sin(t*1.4+seed)*.25:0};
   const enriched={...base,...itemProfile(item||{},family)},options={motion,state,interaction,context,pose};
-  return textileSprite(enriched,item||{id},t,options)||creativeSprite(enriched,item||{id},t,options)||keepsakeSprite(enriched,item||{id},t,options)||lightingSprite(enriched,item||{id},t,options)||instrumentSprite(enriched,item||{id},t,options)||homeSprite(enriched,item||{id},t,options)||playgroundSprite(enriched,item||{id},t,options)||waterworksSprite(enriched,item||{id},t,options)||furnitureSprite(enriched,item||{id},t,options)||botanicalSprite(enriched,item||{id},t,options)||detailItem(base,item,family,t,{motion,state,interaction});
+  return groundSprite(enriched,item||{id},t,options)||textileSprite(enriched,item||{id},t,options)||creativeSprite(enriched,item||{id},t,options)||keepsakeSprite(enriched,item||{id},t,options)||lightingSprite(enriched,item||{id},t,options)||instrumentSprite(enriched,item||{id},t,options)||homeSprite(enriched,item||{id},t,options)||playgroundSprite(enriched,item||{id},t,options)||waterworksSprite(enriched,item||{id},t,options)||furnitureSprite(enriched,item||{id},t,options)||botanicalSprite(enriched,item||{id},t,options)||detailItem(base,item,family,t,{motion,state,interaction});
 }
 export function itemWorldScale(id){
+  if(GROUND_BLUEPRINTS[id])return GROUND_BLUEPRINTS[id].scale;
   if(TEXTILE_BLUEPRINTS[id])return TEXTILE_BLUEPRINTS[id].scale;
   if(CREATIVE_BLUEPRINTS[id])return CREATIVE_BLUEPRINTS[id].scale;
   if(KEEPSAKE_BLUEPRINTS[id])return KEEPSAKE_BLUEPRINTS[id].scale;

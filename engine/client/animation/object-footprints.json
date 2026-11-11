@@ -933,10 +933,10 @@
       "construction": "botanical-v1"
     },
     "stepping_stones": {
-      "width": 25.67,
-      "height": 9.67,
+      "width": 73.75,
+      "height": 30.62,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "garden_bench": {
       "width": 87.26,
@@ -1155,16 +1155,16 @@
       "construction": "textile-v1"
     },
     "wooden_planks": {
-      "width": 23.77,
-      "height": 8.08,
-      "floor": false,
-      "construction": "legacy-detail"
+      "width": 76.3,
+      "height": 32.13,
+      "floor": true,
+      "construction": "ground-v1"
     },
     "marble_tiles": {
-      "width": 26.63,
-      "height": 9.14,
+      "width": 75.55,
+      "height": 32.13,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "carpet_red": {
       "width": 75.11,
@@ -1179,52 +1179,52 @@
       "construction": "textile-v1"
     },
     "sand_floor": {
-      "width": 23.97,
-      "height": 9.14,
-      "floor": false,
-      "construction": "legacy-detail"
+      "width": 76.45,
+      "height": 32.88,
+      "floor": true,
+      "construction": "ground-v1"
     },
     "stone_tiles": {
-      "width": 25.67,
-      "height": 9.67,
+      "width": 75.55,
+      "height": 32.13,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "checkered_floor": {
-      "width": 26.63,
-      "height": 9.14,
+      "width": 74.04,
+      "height": 32.13,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "mosaic_tiles": {
-      "width": 26.63,
-      "height": 9.14,
+      "width": 76.6,
+      "height": 33.63,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "ice_floor": {
-      "width": 26.63,
-      "height": 9.14,
+      "width": 74.04,
+      "height": 32.13,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "cobblestone": {
-      "width": 25.67,
-      "height": 9.67,
+      "width": 80.07,
+      "height": 33.45,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "lava_floor": {
-      "width": 23.97,
-      "height": 9.14,
+      "width": 76.6,
+      "height": 33.63,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "cloud_floor": {
-      "width": 24.83,
-      "height": 8.08,
-      "floor": false,
-      "construction": "legacy-detail"
+      "width": 76.6,
+      "height": 33.63,
+      "floor": true,
+      "construction": "ground-v1"
     },
     "persian_rug": {
       "width": 72.83,
@@ -1233,16 +1233,16 @@
       "construction": "textile-v1"
     },
     "rainbow_path": {
-      "width": 26.73,
-      "height": 9.67,
-      "floor": false,
-      "construction": "legacy-detail"
+      "width": 84.22,
+      "height": 31.15,
+      "floor": true,
+      "construction": "ground-v1"
     },
     "glass_floor": {
-      "width": 26.63,
-      "height": 9.14,
+      "width": 75.55,
+      "height": 32.13,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "rubber_mat": {
       "width": 62.33,
@@ -1257,16 +1257,16 @@
       "construction": "botanical-v1"
     },
     "snow_floor": {
-      "width": 25.04,
-      "height": 9.14,
+      "width": 76.6,
+      "height": 33.63,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "galaxy_floor": {
-      "width": 23.97,
-      "height": 9.14,
+      "width": 76.6,
+      "height": 33.63,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "portal": {
       "width": 26.85,
@@ -1791,10 +1791,10 @@
       "construction": "textile-v1"
     },
     "pebble_path": {
-      "width": 21.75,
-      "height": 8.19,
+      "width": 73.45,
+      "height": 29.11,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "shell_mobile": {
       "width": 74.72,
@@ -1893,10 +1893,10 @@
       "construction": "legacy-detail"
     },
     "wooden_plank": {
-      "width": 20.13,
-      "height": 6.84,
+      "width": 58.01,
+      "height": 21.19,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "stone_block": {
       "width": 17.61,
@@ -2007,10 +2007,10 @@
       "construction": "botanical-v1"
     },
     "stone_path": {
-      "width": 21.75,
-      "height": 8.19,
+      "width": 83.4,
+      "height": 29.86,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "ground-v1"
     },
     "pond_fountain": {
       "width": 65.5,

@@ -1,0 +1,44 @@
+const {app,BrowserWindow,ipcMain}=require('electron'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
+const {spawn}=require('node:child_process'),{createInterface}=require('node:readline'),{pondCommand}=require('./pond-command.cjs');
+app.setPath('userData',fs.mkdtempSync(path.join(os.tmpdir(),'cheese-ground-ui-')));
+app.whenReady().then(async()=>{
+ let child,stderr='';const checks=[],out=path.join(__dirname,'artifacts/animation-milestone');
+ try{
+  const w=new BrowserWindow({show:false,width:1440,height:1000,webPreferences:{nodeIntegration:true,contextIsolation:false,backgroundThrottling:false}});
+  const js=s=>w.webContents.executeJavaScript(s),send=c=>child.stdin.write(JSON.stringify(c)+'\n');
+  const until=async(s,label)=>{const start=Date.now();while(!await js(s)){if(Date.now()-start>15000)throw Error(label+' timed out '+stderr+' '+await js("JSON.stringify({selected:journal.selected,instance:journal.selectedInstance,plan:journal.world?.plan,summary:journal.body.querySelector('[data-ground-summary]')?.textContent,weather:frame.scene.weather})"));await new Promise(r=>setTimeout(r,30));}checks.push(label);};
+  await w.loadFile(path.join(__dirname,'tests/physical-objects-theatre.html'));
+  await until('Boolean(window.journal)','notebook initialized');
+  ipcMain.on('physical-command',(_,raw)=>{const c=pondCommand(raw);if(c)send(c);});
+  child=spawn(path.join(__dirname,'../.venv/bin/python'),[path.join(__dirname,'check_groundworks.py'),'--serve'],{cwd:path.dirname(__dirname),stdio:['pipe','pipe','pipe']});
+  child.stderr.on('data',b=>stderr=(stderr+b).slice(-5000));
+  createInterface({input:child.stdout}).on('line',line=>{try{const m=JSON.parse(line);if(m.type==='physical_frame')js('window.receive('+JSON.stringify(m.frame)+')');}catch{}});
+  await until('Boolean(window.frame)','native floor copies arrive');
+  await until('window.hitCopies()','each floor has its own clickable world bounds');
+  await js("button('Study').click()");
+  await until("journal.world.plan?.instance===frame.copies[0]&&journal.world.instances[frame.copies[0]].dirt===.8",'handling approaches the exact selected floor');
+  send({type:'test_advance',until:'contact'});
+  await until("Math.abs(journal.world.instances[frame.copies[0]].dirt-.62)<1e-9",'brush contact removes actual dirt');
+  await until("journal.world.instances[frame.copies[1]].dirt===.8",'second floor stays untouched');
+  await js("journal.command('cancel')");
+  await until("!journal.world.plan&&journal.world.instances[frame.copies[0]].uses===0&&Math.abs(journal.world.instances[frame.copies[0]].dirt-.62)<1e-9",'cancel keeps the contact without a use reward');
+  send({type:'test_fixture',item:'sand_floor'});
+  await until("frame.item==='sand_floor'",'real sand floor arrives');
+  await js("journal.show('belongings','sand_floor',frame.copies[0]);button('Rake').click()");
+  await until("journal.world.plan?.ground_work?.id==='sand_rake'",'rake command starts on the selected surface');
+  send({type:'test_advance',until:'contact'});
+  await until("journal.body.querySelector('[data-ground-summary]').textContent.includes('1 raked lines')",'first actual rake line updates live');
+  send({type:'test_advance',until:'finish'});
+  await until("!journal.world.plan&&journal.body.querySelector('[data-ground-summary]').textContent.includes('3 raked lines')",'all three physical strokes remain in the inspector');
+  send({type:'test_fixture',item:'wooden_plank'});await until("frame.item==='wooden_plank'",'original crafting plank arrives');
+  await js("journal.show('belongings','wooden_plank');button('Inspect grain').click()");
+  await until("journal.world.plan?.target==='wooden_plank'",'plank inspection starts without placement');
+  send({type:'test_advance',until:'finish'});
+  await until("!journal.world.plan&&journal.world.objects.wooden_plank.uses>0&&journal.body.querySelector('[data-ground-summary]').textContent.includes('original crafting material')",'inspection retains crafting material');
+  await js('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
+  fs.writeFileSync(path.join(out,'ground-inspector.png'),(await w.webContents.capturePage()).toPNG());
+  const result={result:'PASS',checks,commands:await js('window.commands')};fs.writeFileSync(path.join(out,'ground-ui.json'),JSON.stringify(result,null,2));console.log(JSON.stringify({result:'PASS',checks:checks.length}));
+  child.stdin.end('{"type":"quit"}\n');
+  await new Promise((resolve,reject)=>{child.once('exit',code=>code===0?resolve():reject(Error('Native exit '+code+' '+stderr)));setTimeout(()=>reject(Error('Shutdown timed out')),5000).unref();});app.exit(0);
+ }catch(e){console.error(e);if(child)child.stdin.end('{"type":"quit"}\n');app.exit(1);}
+});
