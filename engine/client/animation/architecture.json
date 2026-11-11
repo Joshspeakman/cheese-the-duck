@@ -1,0 +1,119 @@
+{
+  "picket_fence": {
+    "type": "picket",
+    "w": 184,
+    "h": 102,
+    "scale": 0.61,
+    "material": "wood",
+    "skill": "observation",
+    "verb": "Inspect joinery"
+  },
+  "stone_wall": {
+    "type": "wall",
+    "w": 180,
+    "h": 105,
+    "scale": 0.61,
+    "material": "stone",
+    "skill": "observation",
+    "verb": "Inspect stonework"
+  },
+  "archway": {
+    "type": "arch",
+    "w": 176,
+    "h": 140,
+    "scale": 0.57,
+    "material": "metal",
+    "skill": "observation",
+    "verb": "Walk beneath"
+  },
+  "bridge": {
+    "type": "bridge",
+    "w": 216,
+    "h": 104,
+    "scale": 0.6,
+    "material": "wood",
+    "skill": "observation",
+    "verb": "Cross"
+  },
+  "tower": {
+    "type": "watchtower",
+    "w": 158,
+    "h": 158,
+    "scale": 0.58,
+    "material": "wood",
+    "skill": "observation",
+    "verb": "Inspect bracing"
+  },
+  "windmill": {
+    "type": "windmill",
+    "w": 176,
+    "h": 174,
+    "scale": 0.56,
+    "material": "wood",
+    "skill": "observation",
+    "verb": "Inspect sails"
+  },
+  "gate": {
+    "type": "gate",
+    "w": 182,
+    "h": 116,
+    "scale": 0.61,
+    "material": "metal",
+    "skill": "observation",
+    "verb": "Work latch"
+  },
+  "pergola": {
+    "type": "pergola",
+    "w": 206,
+    "h": 148,
+    "scale": 0.56,
+    "material": "wood",
+    "skill": "observation",
+    "verb": "Rest beneath"
+  },
+  "mailbox": {
+    "type": "mailbox",
+    "w": 126,
+    "h": 108,
+    "scale": 0.63,
+    "material": "metal",
+    "skill": "observation",
+    "verb": "Check box"
+  },
+  "wishing_well": {
+    "type": "well",
+    "w": 166,
+    "h": 144,
+    "scale": 0.59,
+    "material": "stone",
+    "skill": "observation",
+    "verb": "Inspect well"
+  },
+  "trellis": {
+    "type": "trellis",
+    "w": 162,
+    "h": 136,
+    "scale": 0.6,
+    "material": "wood",
+    "skill": "observation",
+    "verb": "Inspect lattice"
+  },
+  "castle_tower": {
+    "type": "castle",
+    "w": 158,
+    "h": 168,
+    "scale": 0.57,
+    "material": "stone",
+    "skill": "observation",
+    "verb": "Inspect tower"
+  },
+  "fence_section": {
+    "type": "ironfence",
+    "w": 184,
+    "h": 106,
+    "scale": 0.61,
+    "material": "metal",
+    "skill": "observation",
+    "verb": "Inspect scrollwork"
+  }
+}

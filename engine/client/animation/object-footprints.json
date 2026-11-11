@@ -735,22 +735,22 @@
       "construction": "workshop-v1"
     },
     "picket_fence": {
-      "width": 22.91,
-      "height": 9.14,
+      "width": 78.02,
+      "height": 39.79,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "stone_wall": {
-      "width": 25.04,
-      "height": 9.14,
+      "width": 76.73,
+      "height": 40.93,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "archway": {
-      "width": 31.31,
-      "height": 13.26,
+      "width": 72.7,
+      "height": 50.61,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "gazebo": {
       "width": 89.91,
@@ -759,34 +759,34 @@
       "construction": "workshop-v1"
     },
     "bridge": {
-      "width": 34.86,
-      "height": 11.29,
+      "width": 88.79,
+      "height": 39.88,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "tower": {
-      "width": 25.81,
-      "height": 15.24,
+      "width": 68.76,
+      "height": 57.97,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "windmill": {
-      "width": 26.09,
-      "height": 16.68,
+      "width": 73.72,
+      "height": 61.53,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "gate": {
-      "width": 20.89,
-      "height": 9.67,
+      "width": 78.3,
+      "height": 45.09,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "pergola": {
-      "width": 25.81,
-      "height": 11.95,
+      "width": 82.38,
+      "height": 52.5,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "shed": {
       "width": 81.75,
@@ -807,22 +807,22 @@
       "construction": "workshop-v1"
     },
     "mailbox": {
-      "width": 16.97,
-      "height": 9.09,
+      "width": 58.38,
+      "height": 43.44,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "wishing_well": {
-      "width": 18.55,
-      "height": 11.27,
+      "width": 71.87,
+      "height": 53.85,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "trellis": {
-      "width": 20.89,
-      "height": 9.67,
+      "width": 71.02,
+      "height": 51.79,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "greenhouse": {
       "width": 100.77,
@@ -831,10 +831,10 @@
       "construction": "workshop-v1"
     },
     "castle_tower": {
-      "width": 25.81,
-      "height": 15.24,
+      "width": 68.26,
+      "height": 60.51,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "barn": {
       "width": 101.42,
@@ -843,10 +843,10 @@
       "construction": "workshop-v1"
     },
     "fence_section": {
-      "width": 22.91,
-      "height": 9.14,
+      "width": 78.32,
+      "height": 41.3,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "architecture-v1"
     },
     "garden_gnome": {
       "width": 10.76,

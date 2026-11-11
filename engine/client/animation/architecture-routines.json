@@ -1,0 +1,2170 @@
+{
+  "picket_knots": {
+    "label": "Follow the grain around a knot and compare the pegged rails",
+    "types": [
+      "picket"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "y": 1,
+          "x": 0.7
+        }
+      ],
+      [
+        0.4,
+        {
+          "y": 1.7,
+          "x": 1.1
+        }
+      ],
+      [
+        0.65,
+        {
+          "y": 0.3,
+          "x": -0.5,
+          "w": 0.3
+        }
+      ],
+      [
+        0.82,
+        {
+          "y": 0.8,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "picket_brush": {
+    "label": "Brush grit from the lower picket joints",
+    "types": [
+      "picket"
+    ],
+    "duration": 26,
+    "tool": "brush",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        0.35,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.55,
+        {
+          "w": 0.6,
+          "contact": 1,
+          "reach": 0.3,
+          "y": 0.5
+        }
+      ],
+      [
+        0.75,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.9,
+        {}
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.55,
+        "clean"
+      ]
+    ]
+  },
+  "wall_layers": {
+    "label": "Read the staggered stone courses and their chipped corners",
+    "types": [
+      "wall"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "y": 0.5
+        }
+      ],
+      [
+        0.38,
+        {
+          "x": 0.8,
+          "y": 1.5
+        }
+      ],
+      [
+        0.6,
+        {
+          "x": -0.5,
+          "y": -0.5
+        }
+      ],
+      [
+        0.82,
+        {
+          "y": 0.4,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "wall_moss": {
+    "label": "Lean close to the moss between the lowest stones",
+    "types": [
+      "wall"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "moss",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "y": 1.2,
+          "b": 0.4
+        }
+      ],
+      [
+        0.42,
+        {
+          "x": 1.2,
+          "y": 2,
+          "b": 0.5
+        }
+      ],
+      [
+        0.6,
+        {
+          "x": 0.5,
+          "y": 1.7
+        }
+      ],
+      [
+        0.8,
+        {
+          "y": 0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "arch_trace": {
+    "label": "Follow the iron scroll from its curl to the arch crown",
+    "types": [
+      "arch"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "x": 0.5,
+          "y": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "y": -0.5,
+          "w": 0.4
+        }
+      ],
+      [
+        0.62,
+        {
+          "y": -1.5,
+          "w": 0.7
+        }
+      ],
+      [
+        0.85,
+        {
+          "y": -0.7,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "arch_shadow": {
+    "label": "Watch the arched opening frame the changing pond light",
+    "types": [
+      "arch"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "y": -0.8
+        }
+      ],
+      [
+        0.4,
+        {
+          "x": -0.7,
+          "y": -0.3
+        }
+      ],
+      [
+        0.65,
+        {
+          "x": 0.8,
+          "y": -0.5
+        }
+      ],
+      [
+        0.84,
+        {
+          "x": 0,
+          "y": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "bridge_cross": {
+    "label": "Cross the curved deck and return along the handrail",
+    "types": [
+      "bridge"
+    ],
+    "duration": 34,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [
+      "walk"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.1,
+        {
+          "walk": 0
+        }
+      ],
+      [
+        0.25,
+        {
+          "walk": 0.22,
+          "l": 1,
+          "w": 0.35
+        }
+      ],
+      [
+        0.46,
+        {
+          "walk": 0.65,
+          "r": 1,
+          "w": 0.5
+        }
+      ],
+      [
+        0.62,
+        {
+          "walk": 1,
+          "l": 1,
+          "w": 0.3
+        }
+      ],
+      [
+        0.8,
+        {
+          "walk": 0.5,
+          "r": 1
+        }
+      ],
+      [
+        0.95,
+        {
+          "walk": 0
+        }
+      ],
+      [
+        1,
+        {
+          "walk": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "bridge_listen": {
+    "label": "Pause by the bridge rail and listen to the deck creak",
+    "types": [
+      "bridge"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "walk": 0.25,
+          "y": 0.5
+        }
+      ],
+      [
+        0.4,
+        {
+          "walk": 0.25,
+          "x": 0.8,
+          "y": 1
+        }
+      ],
+      [
+        0.65,
+        {
+          "walk": 0.25,
+          "x": -0.5,
+          "eye": "o"
+        }
+      ],
+      [
+        0.9,
+        {
+          "walk": 0
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "watchtower_braces": {
+    "label": "Follow the cross braces to their bolted feet",
+    "types": [
+      "watchtower"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "y": 0.7
+        }
+      ],
+      [
+        0.4,
+        {
+          "x": 0.8,
+          "y": 1.6
+        }
+      ],
+      [
+        0.58,
+        {
+          "y": -0.8,
+          "w": 0.3
+        }
+      ],
+      [
+        0.82,
+        {
+          "y": -0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "watchtower_roof": {
+    "label": "Look up through the lookout rails to the shingle roof",
+    "types": [
+      "watchtower"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "y": -0.6
+        }
+      ],
+      [
+        0.42,
+        {
+          "y": -1.8,
+          "x": 0.3
+        }
+      ],
+      [
+        0.6,
+        {
+          "y": -1.4,
+          "x": -0.7
+        }
+      ],
+      [
+        0.83,
+        {
+          "y": -0.2,
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "windmill_turn": {
+    "label": "Follow one sail past the hub and listen to the wheel",
+    "types": [
+      "windmill"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "y": -1,
+          "x": -0.5
+        }
+      ],
+      [
+        0.4,
+        {
+          "y": -1.8,
+          "x": 0.8
+        }
+      ],
+      [
+        0.65,
+        {
+          "y": -0.2,
+          "x": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "y": -1,
+          "x": -0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "windmill_brake": {
+    "label": "Ease the ground brake on and let the sails slow",
+    "types": [
+      "windmill"
+    ],
+    "duration": 26,
+    "tool": "hand",
+    "anchor": "brake",
+    "controls": [
+      "brake"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        0.3,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.55,
+        {
+          "brake": 1,
+          "w": 0.8,
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.72,
+        {
+          "brake": 1,
+          "w": 0.5,
+          "contact": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "brake": 1
+        }
+      ],
+      [
+        1,
+        {
+          "brake": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "adjust"
+      ]
+    ]
+  },
+  "windmill_release": {
+    "label": "Release the ground brake and watch the wind take the sails",
+    "types": [
+      "windmill"
+    ],
+    "duration": 26,
+    "tool": "hand",
+    "anchor": "brake",
+    "controls": [
+      "brake"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        0.3,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.55,
+        {
+          "brake": 0,
+          "w": 0.8,
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.72,
+        {
+          "brake": 0,
+          "w": 0.5,
+          "contact": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "brake": 0
+        }
+      ],
+      [
+        1,
+        {
+          "brake": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "adjust"
+      ]
+    ]
+  },
+  "gate_open": {
+    "label": "Lift the latch and ease the iron gate open",
+    "types": [
+      "gate"
+    ],
+    "duration": 26,
+    "tool": "hand",
+    "anchor": "latch",
+    "controls": [
+      "open"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        0.3,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.55,
+        {
+          "open": 1,
+          "w": 0.8,
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.72,
+        {
+          "open": 1,
+          "w": 0.5,
+          "contact": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "open": 1
+        }
+      ],
+      [
+        1,
+        {
+          "open": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "adjust"
+      ]
+    ]
+  },
+  "gate_close": {
+    "label": "Bring the iron leaf back and settle its latch",
+    "types": [
+      "gate"
+    ],
+    "duration": 26,
+    "tool": "hand",
+    "anchor": "latch",
+    "controls": [
+      "open"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        0.3,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.55,
+        {
+          "open": 0,
+          "w": 0.8,
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.72,
+        {
+          "open": 0,
+          "w": 0.5,
+          "contact": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "open": 0
+        }
+      ],
+      [
+        1,
+        {
+          "open": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "adjust"
+      ]
+    ]
+  },
+  "gate_hinge": {
+    "label": "Brush dust from the lower hinge socket",
+    "types": [
+      "gate"
+    ],
+    "duration": 26,
+    "tool": "brush",
+    "anchor": "hinge",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "y": 0.6
+        }
+      ],
+      [
+        0.35,
+        {
+          "w": 0.7,
+          "contact": 1,
+          "reach": 0.6
+        }
+      ],
+      [
+        0.55,
+        {
+          "w": 0.5,
+          "contact": 1,
+          "reach": 1,
+          "y": 1
+        }
+      ],
+      [
+        0.75,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 0.4
+        }
+      ],
+      [
+        0.9,
+        {}
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.6,
+        "clean"
+      ]
+    ]
+  },
+  "pergola_shade": {
+    "label": "Settle beneath the open rafters and watch their stripes",
+    "types": [
+      "pergola"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "x": -0.4,
+          "y": 0.7,
+          "b": 0.3
+        }
+      ],
+      [
+        0.4,
+        {
+          "y": 1,
+          "b": 0.5,
+          "eye": "-"
+        }
+      ],
+      [
+        0.65,
+        {
+          "y": 0.8,
+          "b": 0.3,
+          "eye": "-"
+        }
+      ],
+      [
+        0.85,
+        {
+          "y": -0.5,
+          "w": 0.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "pergola_beams": {
+    "label": "Trace a vine up the post and across the pegged rafters",
+    "types": [
+      "pergola"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "y": 0.8
+        }
+      ],
+      [
+        0.45,
+        {
+          "y": -1.2,
+          "w": 0.4
+        }
+      ],
+      [
+        0.68,
+        {
+          "x": 0.7,
+          "y": -1.6
+        }
+      ],
+      [
+        0.86,
+        {
+          "y": -0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "mailbox_open": {
+    "label": "Pull down the little mail door and inspect the empty compartment",
+    "types": [
+      "mailbox"
+    ],
+    "duration": 26,
+    "tool": "hand",
+    "anchor": "door",
+    "controls": [
+      "panel"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        0.3,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.55,
+        {
+          "panel": 1,
+          "w": 0.8,
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.72,
+        {
+          "panel": 1,
+          "w": 0.5,
+          "contact": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "panel": 1
+        }
+      ],
+      [
+        1,
+        {
+          "panel": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "adjust"
+      ]
+    ]
+  },
+  "mailbox_close": {
+    "label": "Fold the little mail door shut against its rim",
+    "types": [
+      "mailbox"
+    ],
+    "duration": 26,
+    "tool": "hand",
+    "anchor": "door",
+    "controls": [
+      "panel"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        0.3,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.55,
+        {
+          "panel": 0,
+          "w": 0.8,
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.72,
+        {
+          "panel": 0,
+          "w": 0.5,
+          "contact": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "panel": 0
+        }
+      ],
+      [
+        1,
+        {
+          "panel": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "adjust"
+      ]
+    ]
+  },
+  "mailbox_flag": {
+    "label": "Raise the red flag without inventing a delivery",
+    "types": [
+      "mailbox"
+    ],
+    "duration": 26,
+    "tool": "hand",
+    "anchor": "flag",
+    "controls": [
+      "flag"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        0.3,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.55,
+        {
+          "flag": 1,
+          "w": 0.8,
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.72,
+        {
+          "flag": 1,
+          "w": 0.5,
+          "contact": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "flag": 1
+        }
+      ],
+      [
+        1,
+        {
+          "flag": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "adjust"
+      ]
+    ]
+  },
+  "mailbox_lower_flag": {
+    "label": "Lower the red flag against the box",
+    "types": [
+      "mailbox"
+    ],
+    "duration": 26,
+    "tool": "hand",
+    "anchor": "flag",
+    "controls": [
+      "flag"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        0.3,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.55,
+        {
+          "flag": 0,
+          "w": 0.8,
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.72,
+        {
+          "flag": 0,
+          "w": 0.5,
+          "contact": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "flag": 0
+        }
+      ],
+      [
+        1,
+        {
+          "flag": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "adjust"
+      ]
+    ]
+  },
+  "well_lower": {
+    "label": "Turn the low crank and lower the bucket into the well",
+    "types": [
+      "well"
+    ],
+    "duration": 26,
+    "tool": "hand",
+    "anchor": "crank",
+    "controls": [
+      "bucket"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        0.3,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.55,
+        {
+          "bucket": 1,
+          "w": 0.8,
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.72,
+        {
+          "bucket": 1,
+          "w": 0.5,
+          "contact": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "bucket": 1
+        }
+      ],
+      [
+        1,
+        {
+          "bucket": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "adjust"
+      ]
+    ]
+  },
+  "well_raise": {
+    "label": "Wind the rope back and bring the bucket up to the rim",
+    "types": [
+      "well"
+    ],
+    "duration": 26,
+    "tool": "hand",
+    "anchor": "crank",
+    "controls": [
+      "bucket"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        0.3,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.55,
+        {
+          "bucket": 0,
+          "w": 0.8,
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.72,
+        {
+          "bucket": 0,
+          "w": 0.5,
+          "contact": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "bucket": 0
+        }
+      ],
+      [
+        1,
+        {
+          "bucket": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "adjust"
+      ]
+    ]
+  },
+  "well_echo": {
+    "label": "Listen beside the stone rim for a little returning echo",
+    "types": [
+      "well"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "y": 0.7,
+          "x": 0.7
+        }
+      ],
+      [
+        0.4,
+        {
+          "y": 1.3,
+          "x": 1.1,
+          "mark": "..."
+        }
+      ],
+      [
+        0.6,
+        {
+          "y": -0.5,
+          "x": -0.4,
+          "eye": "O"
+        }
+      ],
+      [
+        0.84,
+        {
+          "y": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "trellis_flowers": {
+    "label": "Examine the rose buds and the veins in a climbing leaf",
+    "types": [
+      "trellis"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "leaf",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "x": 0.7,
+          "y": 0.4
+        }
+      ],
+      [
+        0.43,
+        {
+          "x": 1.1,
+          "y": 0.9
+        }
+      ],
+      [
+        0.65,
+        {
+          "y": -0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        0.85,
+        {
+          "y": 0.3
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "trellis_ties": {
+    "label": "Follow the cane bindings where the lattice crosses",
+    "types": [
+      "trellis"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "y": 1
+        }
+      ],
+      [
+        0.36,
+        {
+          "x": 0.6,
+          "y": 0.3
+        }
+      ],
+      [
+        0.6,
+        {
+          "y": -1,
+          "w": 0.3
+        }
+      ],
+      [
+        0.82,
+        {
+          "x": -0.4,
+          "y": 0.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "castle_arrowloop": {
+    "label": "Look into the narrow stone arrow slit from outside",
+    "types": [
+      "castle"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "x": 0.5,
+          "y": -0.5
+        }
+      ],
+      [
+        0.42,
+        {
+          "x": 1,
+          "y": -1.2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.65,
+        {
+          "x": -0.5,
+          "y": -0.3
+        }
+      ],
+      [
+        0.82,
+        {
+          "y": 0.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "castle_stones": {
+    "label": "Inspect the worn buttress and the carved foundation date",
+    "types": [
+      "castle"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "y": 1,
+          "x": 0.4
+        }
+      ],
+      [
+        0.4,
+        {
+          "y": 1.8,
+          "x": 1
+        }
+      ],
+      [
+        0.67,
+        {
+          "y": 0.5,
+          "w": 0.4
+        }
+      ],
+      [
+        0.85,
+        {
+          "y": -0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "iron_scroll": {
+    "label": "Trace the iron fern curls between the fence bars",
+    "types": [
+      "ironfence"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.17,
+        {
+          "x": 0.7,
+          "y": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "x": 1,
+          "y": -0.4
+        }
+      ],
+      [
+        0.6,
+        {
+          "x": -0.5,
+          "y": -1
+        }
+      ],
+      [
+        0.84,
+        {
+          "y": 0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "iron_brush": {
+    "label": "Sweep dust from the lower iron rosettes",
+    "types": [
+      "ironfence"
+    ],
+    "duration": 26,
+    "tool": "brush",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "y": 0.5
+        }
+      ],
+      [
+        0.32,
+        {
+          "w": 0.8,
+          "contact": 1,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.5,
+        {
+          "w": 0.5,
+          "contact": 1,
+          "reach": 1
+        }
+      ],
+      [
+        0.72,
+        {
+          "w": 0.9,
+          "contact": 1,
+          "reach": 0.4
+        }
+      ],
+      [
+        0.9,
+        {}
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.6,
+        "clean"
+      ]
+    ]
+  },
+  "young_survey": {
+    "label": "Take small steps and inspect the low details from the ground",
+    "types": [
+      "picket",
+      "wall",
+      "arch",
+      "bridge",
+      "watchtower",
+      "windmill",
+      "gate",
+      "pergola",
+      "mailbox",
+      "well",
+      "trellis",
+      "castle",
+      "ironfence"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "l": 0.5,
+          "y": 0.6
+        }
+      ],
+      [
+        0.4,
+        {
+          "x": 0.5,
+          "y": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "r": 0.5,
+          "y": -0.6
+        }
+      ],
+      [
+        0.85,
+        {
+          "y": 0.4,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "elder_survey": {
+    "label": "Rest at the base and take time over the old craftsmanship",
+    "types": [
+      "picket",
+      "wall",
+      "arch",
+      "bridge",
+      "watchtower",
+      "windmill",
+      "gate",
+      "pergola",
+      "mailbox",
+      "well",
+      "trellis",
+      "castle",
+      "ironfence"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "y": 0.7,
+          "b": 0.3
+        }
+      ],
+      [
+        0.4,
+        {
+          "y": 0.9,
+          "x": 0.4,
+          "eye": "-"
+        }
+      ],
+      [
+        0.65,
+        {
+          "y": -0.3,
+          "w": 0.25
+        }
+      ],
+      [
+        0.85,
+        {
+          "y": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "night_survey": {
+    "label": "Watch the silhouette quietly from the ground",
+    "types": [
+      "picket",
+      "wall",
+      "arch",
+      "bridge",
+      "watchtower",
+      "windmill",
+      "gate",
+      "pergola",
+      "mailbox",
+      "well",
+      "trellis",
+      "castle",
+      "ironfence"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "y": -0.5
+        }
+      ],
+      [
+        0.45,
+        {
+          "y": -1.1,
+          "x": -0.3
+        }
+      ],
+      [
+        0.7,
+        {
+          "y": -0.6,
+          "x": 0.4
+        }
+      ],
+      [
+        0.86,
+        {
+          "y": 0.3
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "rain_drips": {
+    "label": "Keep feet on the bank and follow the drips down the structure",
+    "types": [
+      "picket",
+      "wall",
+      "arch",
+      "bridge",
+      "watchtower",
+      "windmill",
+      "gate",
+      "pergola",
+      "mailbox",
+      "well",
+      "trellis",
+      "castle",
+      "ironfence"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "y": -0.9
+        }
+      ],
+      [
+        0.42,
+        {
+          "y": 0.2,
+          "x": 0.6
+        }
+      ],
+      [
+        0.65,
+        {
+          "y": 1.3,
+          "x": 0.9
+        }
+      ],
+      [
+        0.85,
+        {
+          "x": -0.5,
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "storm_stepback": {
+    "label": "Step back from the moving structure and wait out the gust",
+    "types": [
+      "picket",
+      "wall",
+      "arch",
+      "bridge",
+      "watchtower",
+      "windmill",
+      "gate",
+      "pergola",
+      "mailbox",
+      "well",
+      "trellis",
+      "castle",
+      "ironfence"
+    ],
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "x": -0.8,
+          "w": 0.5,
+          "r": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "x": -1,
+          "y": 0.6,
+          "b": 0.5
+        }
+      ],
+      [
+        0.65,
+        {
+          "y": 0.3,
+          "eye": "o"
+        }
+      ],
+      [
+        0.85,
+        {
+          "w": 0.3
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  }
+}

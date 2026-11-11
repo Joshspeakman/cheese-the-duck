@@ -1,0 +1,43 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Garden structures</title>
+<style>body{background:#142b23;color:#ecdbb3;font:20px Georgia;margin:24px}canvas{display:block;max-width:100%;margin:24px 0}</style><h1>Garden structures · current in-game construction</h1>
+<script type="module">
+import {ARCHITECTURE_BLUEPRINTS} from '../client/architecture-workshop.mjs';
+import {ARCHITECTURE_ROUTINES,architecturePose,architectureGeometry,drawArchitectureTools} from '../client/architecture-routines.mjs';
+import {itemSprite,ItemPainter,itemWorldScale} from '../client/ultra-items.mjs';
+import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+const painter=new ItemPainter(),surface='#142b23';
+function sheet(w,h){const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.fillStyle=surface;ctx.fillRect(0,0,w,h);return [canvas,ctx];}
+window.reviewArchitecture=()=>{
+ const images={},ids=Object.keys(ARCHITECTURE_BLUEPRINTS);
+ for(let page=0;page<Math.ceil(ids.length/4);page++){
+  const [canvas,c]=sheet(1800,1400);ids.slice(page*4,page*4+4).forEach((id,i)=>{
+   const m=itemSprite(id,0),x=i%2*900,y=Math.floor(i/2)*700;
+   c.fillStyle='#e5d8b4';c.font='23px Menlo';c.fillText(id,x+20,y+35);
+   const unit=Math.min(5,840/m.width,610/(m.art.length*1.5));painter.draw(c,m,x+450,y+670,unit/m.detailScale,{surface,outline:'#0a1712'});
+  });images['architecture-objects-'+page]=canvas.toDataURL();document.body.append(canvas);
+ }
+ for(const [item,id]of [['gate','gate_open'],['mailbox','mailbox_open'],['wishing_well','well_lower'],['windmill','windmill_brake'],['bridge','bridge_cross']]){
+  const [canvas,ctx]=sheet(1800,1000);
+  ['hatchling','adult','elder'].forEach((stage,i)=>{
+   const core=stage==='hatchling'?'young_survey':id,routine={id:core,elapsed:ARCHITECTURE_ROUTINES[core].duration*.55,start:{}},home={...itemSprite(item,0,{pose:{architecture:architecturePose(routine)}}),x:50+i*100,y:113,scale:itemWorldScale(item)};
+   const character={...characterSprite({stage,state:'idle',facing:true,performance:{kind:'architecture',routine}},0),x:home.x,y:home.y};painter.draw(ctx,home,home.x*6,home.y*8,6*home.scale,{surface});
+   const g=architectureGeometry(home,{character,inside:1},6,8);drawCharacter(ctx,g.character,6,8,surface);drawArchitectureTools(ctx,g);
+   if(home.front)painter.draw(ctx,home.front,home.x*6,home.y*8,6*home.scale,{shadow:false,surface});
+   ctx.fillStyle='#e5d8b4';ctx.font='23px Menlo';ctx.fillText(item+' · '+stage,i*600+20,35);
+  });images['architecture-ages-'+item]=canvas.toDataURL();document.body.append(canvas);
+ }
+ return images;
+};
+window.replayArchitecture=frames=>{
+ const view=new SceneCanvas();view.resize(1500,950);const images={},costs=[];let drawn=0,workers=0;
+ for(const [i,s]of frames.entries()){
+  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);if(JSON.stringify(s)!==before)throw Error('Renderer changed native state');
+  for(const o of view.world.objects)if(o.construction==='architecture-v1'){
+   drawn++;if(o.clipped)throw Error('Clipped structure '+o.id);workers+=o.structureUsers?.length||0;
+   for(const r of o.structureUsers||[]){if(r.character.clipped)throw Error('Clipped worker');const name='architecture-live-'+o.id;if(!images[name]&&r.character.performance.routine.elapsed>12)images[name]=view.canvas.toDataURL();}
+  }
+ }
+ costs.sort((a,b)=>a-b);return {frames:frames.length,drawn,workers,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+</script>

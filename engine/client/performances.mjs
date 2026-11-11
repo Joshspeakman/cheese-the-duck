@@ -1,3 +1,4 @@
+import {architecturePose} from './architecture-routines.mjs';
 import {groundPose} from './ground-routines.mjs';
 import {textilePose} from './textile-routines.mjs';
 import {musicPose} from './music-performances.mjs';
@@ -47,6 +48,9 @@ export const ITEM_PERFORMANCES={
  dig:[K(0),K(.2,{x:1,y:1.6,b:.5,w:.4}),K(.4,{x:-.6,y:.7,w:.8,mark:'.'}),K(.6,{x:.8,y:1.4,b:.4}),K(.8,{y:-.3,w:.6,eye:'^'}),K(1)],
 };
 export function performancePose(performance,stage='adult'){
+ if(performance?.kind==='architecture'){
+  const pose=architecturePose(performance.routine,performance.motion!==false);return pose?scalePose(pose,stage):null;
+ }
  if(performance?.kind==='ground'){
   const pose=groundPose(performance.routine,performance.motion!==false);return pose?scalePose(pose,stage):null;
  }
