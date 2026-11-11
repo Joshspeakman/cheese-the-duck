@@ -12,6 +12,7 @@ import { characterSprite } from './ultra-characters.mjs';
 import {residenceStage} from './residence-stage.mjs';
 import {actorPerformance} from './performances.mjs';
 import {lightingPose,LIGHTING_ROUTINES} from './lighting-routines.mjs';
+import {keepsakePose,KEEPSAKE_ROUTINES} from './keepsake-routines.mjs';
 import {playdateStage} from './playdates.mjs';
 import {playgroundStage} from './playground-stage.mjs';
 import {waterStage} from './water-routines.mjs';
@@ -320,7 +321,8 @@ export class LivingWorld {
         if(sitters.length)interaction={...(interaction||{phase:'act'}),seat_occupants:sitters};
         const music=musicians.filter(r=>r.id===item.id&&sameInstance(item,r)&&matches(r.destination)&&r.phase==='inside').map(r=>{const p=musicPose(r.id,r.score,s.motion!==false);return p&&{...p,slot:r.slot};}).filter(Boolean);
         const light=owned&&plan.light_work?lightingPose(plan.light_work,s.motion!==false):null;
-        this.objects.push({...itemSprite(item.id,t,{pose:{music,light},motion:s.motion!==false,context:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,worldPosition:[item.x,item.y],scale:itemWorldScale(item.id)});
+        const keepsake=owned&&plan.keepsake_work?keepsakePose(plan.keepsake_work,s.motion!==false):null;
+        this.objects.push({...itemSprite(item.id,t,{pose:{music,light,keepsake},motion:s.motion!==false,context:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,worldPosition:[item.x,item.y],scale:itemWorldScale(item.id)});
       }});
     }
     if(s.visitor){const [x,y]=this.project(s,s.visitor.x,s.visitor.y);actors.push({y,draw:()=>this.actor(s,t+2,x,y,{stage:'adult',state:'idle',facing:false,...s.visitor},true)});}
@@ -353,8 +355,10 @@ export class LivingWorld {
     const plan=s.living?.plan;
     if(plan&&!plan.paused&&plan.phase==='act'){const poses={rest:'sleeping',forage:'eating',practice:'dancing',restore:'preening',garden:'preening',observe:'idle',project:'preening',share:'quacking'};state=poses[plan.kind]||state;}
     if(Math.abs(x-target[0])+Math.abs(y-target[1])>.7&&state==='idle')state='walking';
-    if(plan&&!plan.instance&&!plan.paused&&['prepare','act','settle'].includes(plan.phase)&&plan.kind==='item'&&![...(s.items||[]),...(s.structures||[])].some(i=>i.id===plan.target&&sameInstance(i,plan))){
-      this.objects.push({...itemSprite(plan.target,t,{motion:s.motion!==false,context:s,state:s.living.objects[plan.target],interaction:plan}),item:true,x:x+7,y,scale:.65});
+    if(plan&&!plan.instance&&(!plan.paused||plan.keepsake_work)&&['prepare','act','settle'].includes(plan.phase)&&plan.kind==='item'&&![...(s.items||[]),...(s.structures||[])].some(i=>i.id===plan.target&&sameInstance(i,plan))){
+      const keepsake=plan.keepsake_work?keepsakePose(plan.keepsake_work,s.motion!==false):null,origin=plan.keepsake_work?.origin;
+      const [ox,oy]=origin?this.project(s,...origin):[x,y];
+      this.objects.push({...itemSprite(plan.target,t,{pose:{keepsake},motion:s.motion!==false,context:s,state:s.living.objects[plan.target],interaction:plan}),item:true,x:ox+7,y:oy,scale:keepsake?itemWorldScale(plan.target):.65,portable:true});
     }
     actors.push({y,draw:()=>this.actor(s,t,x,y,{...s.duck,state})});
     actors.sort((a,b)=>a.y-b.y).forEach(a=>a.draw());
@@ -408,6 +412,15 @@ export class LivingWorld {
       const character={...characterSprite({...source,state:'idle',facing:r.slot===0,performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
       (home.gardeners||=[]).push({character,inside,slot:r.slot});
       this.characters=this.characters.filter(c=>c!==original);
+    }
+    if(plan?.keepsake_work&&!plan.keepsake_work.interrupted&&KEEPSAKE_ROUTINES[plan.keepsake_work.id]&&['prepare','act','settle'].includes(plan.phase)){
+      const original=this.characters.find(c=>c.cheese),home=this.objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.construction==='keepsake-v1'&&(o.portable||o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination?.[i])<1.1)));
+      if(original&&home){
+        const progress=plan.progress??plan.elapsed/plan.duration,inside=plan.phase==='act'?1:plan.phase==='prepare'?clamp((progress-.15)/.13,0,1):clamp(1-(progress-.9)/.1,0,1);
+        const performance={kind:'keepsake',routine:plan.keepsake_work,motion:s.motion!==false};
+        const character={...characterSprite({...s.duck,state:'idle',facing:true,performance},t),x:original.x,y:original.y,cheese:true};
+        home.keepers=[{character,inside}];this.characters=this.characters.filter(c=>c!==original);
+      }
     }
     if(plan?.light_work&&!plan.light_work.interrupted&&LIGHTING_ROUTINES[plan.light_work.id]&&['prepare','act','settle'].includes(plan.phase)){
       const original=this.characters.find(c=>c.cheese),home=this.objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.construction==='lighting-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination?.[i])<1.1));

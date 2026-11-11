@@ -1,5 +1,6 @@
 import INSTRUMENTS from './animation/instruments.json' with {type:'json'};
 import LIGHTING from './animation/lighting.json' with {type:'json'};
+import KEEPSAKES from './animation/keepsakes.json' with {type:'json'};
 // Detail is constructed in character space: contours, joinery, stitched seams,
 // moving parts and wear stay crisp at every zoom. All gameplay state is supplied
 // by the simulation; inspecting a catalogue never mutates an owned object.
@@ -7,6 +8,7 @@ import BOTANICAL from './animation/botanical.json' with {type:'json'};
 const hash=s=>[...s].reduce((n,c)=>(n*33+c.charCodeAt(0))>>>0,17);
 const has=(family,words)=>words.split(' ').includes(family);
 export function itemProfile(item,family){
+ if(KEEPSAKES[item.id]){const p=KEEPSAKES[item.id];return {kind:['chest','basket'].includes(p.type)?'storage':'study',material:p.material,skill:p.skill,verb:p.verb,need:'fun',duration:18};}
  if(LIGHTING[item.id])return {kind:'light',material:LIGHTING[item.id].material,skill:'observation',verb:LIGHTING[item.id].control==='observe'?'Watch':'Adjust light',need:'fun',duration:16};
  if(INSTRUMENTS[item.id]){const p=INSTRUMENTS[item.id];return {kind:'music',material:p.type==='horn'||p.type==='chimes'?'metal':'wood',skill:'music',verb:p.type==='radio'?'Listen to':'Play',need:'fun',duration:24};}
  if(item.category==='food')return {kind:'food',material:'food',skill:'cooking',verb:'Taste',need:'hunger',duration:10};

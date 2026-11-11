@@ -1,0 +1,202 @@
+{
+  "rain_barrel": {
+    "type": "barrel",
+    "style": "oak",
+    "w": 112,
+    "h": 108,
+    "scale": 0.6,
+    "material": "wood",
+    "skill": "stewardship",
+    "verb": "Check water",
+    "portable": false,
+    "capacity": 60
+  },
+  "treasure_chest": {
+    "type": "chest",
+    "style": "pirate",
+    "w": 124,
+    "h": 94,
+    "scale": 0.58,
+    "material": "wood",
+    "skill": "organization",
+    "verb": "Look inside",
+    "portable": true
+  },
+  "storage_chest": {
+    "type": "chest",
+    "style": "joinery",
+    "w": 120,
+    "h": 88,
+    "scale": 0.58,
+    "material": "wood",
+    "skill": "organization",
+    "verb": "Sort",
+    "portable": false
+  },
+  "weekly_chest": {
+    "type": "chest",
+    "style": "weekly",
+    "w": 118,
+    "h": 90,
+    "scale": 0.58,
+    "material": "wood",
+    "skill": "organization",
+    "verb": "Examine",
+    "portable": true
+  },
+  "storage_basket": {
+    "type": "basket",
+    "style": "reed",
+    "w": 112,
+    "h": 94,
+    "scale": 0.56,
+    "material": "reed",
+    "skill": "organization",
+    "verb": "Sort",
+    "portable": true
+  },
+  "duck_photo": {
+    "type": "frame",
+    "style": "friends",
+    "w": 100,
+    "h": 100,
+    "scale": 0.52,
+    "material": "paper",
+    "skill": "observation",
+    "verb": "Remember",
+    "portable": true,
+    "caption": "US. + THAT CRUMB."
+  },
+  "sunset_photo": {
+    "type": "frame",
+    "style": "sunset",
+    "w": 124,
+    "h": 94,
+    "scale": 0.52,
+    "material": "paper",
+    "skill": "observation",
+    "verb": "Remember",
+    "portable": true,
+    "caption": "ONE GOOD EVENING"
+  },
+  "picture_frame": {
+    "type": "frame",
+    "style": "empty",
+    "w": 106,
+    "h": 104,
+    "scale": 0.52,
+    "material": "wood",
+    "skill": "observation",
+    "verb": "Inspect",
+    "portable": true,
+    "caption": [
+      "A LITTLE SPACE",
+      "FOR A BIG DAY."
+    ]
+  },
+  "storm_sketch": {
+    "type": "paper",
+    "style": "charcoal",
+    "w": 116,
+    "h": 94,
+    "scale": 0.5,
+    "material": "paper",
+    "skill": "observation",
+    "verb": "Study",
+    "portable": true,
+    "caption": "POND / STORM STUDY"
+  },
+  "friendship_card": {
+    "type": "paper",
+    "style": "card",
+    "w": 118,
+    "h": 94,
+    "scale": 0.5,
+    "material": "paper",
+    "skill": "observation",
+    "verb": "Read",
+    "portable": true,
+    "reading": {
+      "greeting": [
+        "FOR YOU.",
+        "YES, YOU."
+      ],
+      "message": [
+        "YOU SHOWED UP.",
+        "I NOTICED.",
+        "",
+        "THANKS FOR",
+        "BEING YOU."
+      ],
+      "signature": "- A FRIEND",
+      "cover": "FOR A FRIEND"
+    }
+  },
+  "pirate_map": {
+    "type": "map",
+    "style": "parchment",
+    "w": 132,
+    "h": 92,
+    "scale": 0.52,
+    "material": "paper",
+    "skill": "observation",
+    "verb": "Trace the map",
+    "portable": true,
+    "caption": "THE CRUMB COAST",
+    "question": "HERE BE BREAD?"
+  },
+  "ancient_tome": {
+    "type": "book",
+    "style": "elders",
+    "w": 132,
+    "h": 106,
+    "scale": 0.52,
+    "material": "paper",
+    "skill": "observation",
+    "verb": "Read",
+    "portable": true,
+    "pages": 8,
+    "chapters": [
+      [
+        "ON QUACKS",
+        "Say it twice.",
+        "Mean it once."
+      ],
+      [
+        "THE POND",
+        "Know the reeds.",
+        "Mind the mud."
+      ],
+      [
+        "ON BREAD",
+        "A crumb saved",
+        "is suspicious."
+      ],
+      [
+        "RAIN",
+        "Find a roof.",
+        "Invite a friend."
+      ],
+      [
+        "WINTER",
+        "A warm wing",
+        "beats a speech."
+      ],
+      [
+        "COMPANY",
+        "Listen first.",
+        "Then complain."
+      ],
+      [
+        "THE MOON",
+        "It follows you.",
+        "Be polite."
+      ],
+      [
+        "ELDER NOTES",
+        "Still learning.",
+        "Still a duck."
+      ]
+    ]
+  }
+}
