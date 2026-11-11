@@ -1,0 +1,1213 @@
+{
+  "disc_finish": {
+    "item": "frisbee",
+    "preview": "disc_roll",
+    "label": "Wait at the far end and follow the rolling disc",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.25,
+        {
+          "b": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.5,
+        {
+          "b": 2,
+          "w": 0.2
+        }
+      ],
+      [
+        0.65,
+        {
+          "b": 1,
+          "w": 0.5
+        }
+      ],
+      [
+        0.85,
+        {
+          "w": 0.25
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "disc_wobble": {
+    "item": "frisbee",
+    "preview": "disc_wobble",
+    "label": "Lean with the wobbling rim, then share a tiny bow",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.25,
+        {
+          "b": 0.6,
+          "x": 0.4
+        }
+      ],
+      [
+        0.45,
+        {
+          "b": 1.2,
+          "x": -0.4
+        }
+      ],
+      [
+        0.65,
+        {
+          "w": 0.45,
+          "b": 0.5
+        }
+      ],
+      [
+        0.85,
+        {
+          "b": 2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "disc_polish": {
+    "item": "frisbee",
+    "preview": "disc_rim",
+    "label": "Polish the far rim while Cheese cleans the near edge",
+    "tool": "cloth",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "b": 2,
+          "reach": 0.3
+        }
+      ],
+      [
+        0.6,
+        {
+          "contact": 1,
+          "b": 1,
+          "reach": 0.6
+        }
+      ],
+      [
+        0.8,
+        {
+          "contact": 1,
+          "b": 2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "clean"
+      ],
+      [
+        0.6,
+        "clean"
+      ]
+    ]
+  },
+  "rope_count": {
+    "item": "jump_rope",
+    "preview": "rope_skip",
+    "label": "Count each landing with a little wing beat",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "w": 0.55,
+          "b": 1
+        }
+      ],
+      [
+        0.48,
+        {
+          "w": 0.1
+        }
+      ],
+      [
+        0.68,
+        {
+          "w": 0.65,
+          "b": 1
+        }
+      ],
+      [
+        0.82,
+        {
+          "b": 2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "rope_hold": {
+    "item": "jump_rope",
+    "preview": "rope_coil",
+    "label": "Gather the far handle as Cheese coils the braid",
+    "tool": "hand",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "contact": 1,
+          "b": 2,
+          "reach": 0.3
+        }
+      ],
+      [
+        0.6,
+        {
+          "contact": 1,
+          "reach": 0.6
+        }
+      ],
+      [
+        0.85,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "hold"
+      ],
+      [
+        0.6,
+        "hold"
+      ]
+    ]
+  },
+  "rope_stepwatch": {
+    "item": "jump_rope",
+    "preview": "rope_steps",
+    "label": "Watch the low cord and nod when Cheese clears it",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.38,
+        {
+          "b": 1,
+          "w": 0.2
+        }
+      ],
+      [
+        0.55,
+        {
+          "b": 2
+        }
+      ],
+      [
+        0.75,
+        {
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "yoyo_sleep": {
+    "item": "yo_yo",
+    "preview": "yoyo_drop",
+    "label": "Follow the sleeping yo-yo with a slow head dip",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "eye": "o"
+        }
+      ],
+      [
+        0.35,
+        {
+          "b": 2
+        }
+      ],
+      [
+        0.6,
+        {
+          "b": 2.5,
+          "eye": "-"
+        }
+      ],
+      [
+        0.82,
+        {
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "yoyo_lane": {
+    "item": "yo_yo",
+    "preview": "yoyo_walk",
+    "label": "Step back to leave a clear walking lane for the yo-yo",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 1.18,
+          "l": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 1.25,
+          "b": 2
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 1.25,
+          "w": 0.3
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 1.1,
+          "r": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "yoyo_cheer": {
+    "item": "yo_yo",
+    "preview": "yoyo_loops",
+    "label": "Answer each yo-yo loop with an amused wing flourish",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.22,
+        {
+          "w": 0.3,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "w": 0.65,
+          "b": 0.5
+        }
+      ],
+      [
+        0.6,
+        {
+          "w": 0.1
+        }
+      ],
+      [
+        0.8,
+        {
+          "w": 0.7,
+          "b": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "bubbler_drift": {
+    "item": "bubble_machine",
+    "preview": "bubbler_start",
+    "label": "Watch the wheel start and follow the first drifting bubbles",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "eye": "o"
+        }
+      ],
+      [
+        0.6,
+        {
+          "w": 0.4,
+          "b": -0.7
+        }
+      ],
+      [
+        0.8,
+        {
+          "w": 0.6,
+          "b": -1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "bubbler_clean": {
+    "item": "bubble_machine",
+    "preview": "bubbler_clean",
+    "label": "Wipe the far casing while Cheese tends the front switch",
+    "tool": "cloth",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "b": 1.5,
+          "reach": 0.2
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "b": 0.7,
+          "reach": 0.5
+        }
+      ],
+      [
+        0.85,
+        {
+          "contact": 1,
+          "b": 1.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "clean"
+      ],
+      [
+        0.65,
+        "clean"
+      ]
+    ]
+  },
+  "wand_bubbles": {
+    "item": "bubble_wand",
+    "preview": "wand_breath",
+    "label": "Follow the small bubbles with three delighted wing flicks",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.3,
+        {
+          "eye": "o"
+        }
+      ],
+      [
+        0.48,
+        {
+          "w": 0.35,
+          "b": -0.5
+        }
+      ],
+      [
+        0.62,
+        {
+          "w": 0.65,
+          "b": -0.8
+        }
+      ],
+      [
+        0.78,
+        {
+          "w": 0.4,
+          "b": -1.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "wand_giant": {
+    "item": "bubble_wand",
+    "preview": "wand_giant",
+    "label": "Lean back as the wide soap bubble drifts between you",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.3,
+        {
+          "eye": "o"
+        }
+      ],
+      [
+        0.5,
+        {
+          "u": 1.15,
+          "b": -1,
+          "w": 0.3
+        }
+      ],
+      [
+        0.7,
+        {
+          "u": 1.25,
+          "b": -0.7,
+          "w": 0.55
+        }
+      ],
+      [
+        0.88,
+        {
+          "u": 1.1,
+          "b": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "wand_rinse": {
+    "item": "bubble_wand",
+    "preview": "wand_rinse",
+    "label": "Watch the soap ring sink and reappear with a quiet nod",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 1.3
+        }
+      ],
+      [
+        0.4,
+        {
+          "b": 2,
+          "eye": "-"
+        }
+      ],
+      [
+        0.6,
+        {
+          "b": 1,
+          "w": 0.2
+        }
+      ],
+      [
+        0.8,
+        {
+          "b": 1.8
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "pinwheel_count": {
+    "item": "pinwheel",
+    "preview": "pinwheel_turn",
+    "label": "Follow the folded vanes and tap a foot in time",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": -0.8,
+          "eye": "o"
+        }
+      ],
+      [
+        0.35,
+        {
+          "l": 0.5,
+          "w": 0.2
+        }
+      ],
+      [
+        0.5,
+        {
+          "r": 0.5,
+          "b": -0.5
+        }
+      ],
+      [
+        0.7,
+        {
+          "l": 0.5,
+          "w": 0.3
+        }
+      ],
+      [
+        0.85,
+        {
+          "b": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "pinwheel_folds": {
+    "item": "pinwheel",
+    "preview": "pinwheel_smooth",
+    "label": "Inspect the four paper folds from the other side",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": -0.5,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "w": 0.2,
+          "x": 0.5
+        }
+      ],
+      [
+        0.6,
+        {
+          "w": 0.3,
+          "x": -0.5
+        }
+      ],
+      [
+        0.8,
+        {
+          "b": 1.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "boat_finish": {
+    "item": "tiny_boat",
+    "preview": "boat_push",
+    "label": "Wait at the grassy finish line and greet the little boat",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "b": 2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.58,
+        {
+          "w": 0.45,
+          "b": 1.5
+        }
+      ],
+      [
+        0.78,
+        {
+          "w": 0.25
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "boat_rigging": {
+    "item": "tiny_boat",
+    "preview": "boat_sail",
+    "label": "Steady the far cleat while Cheese opens the stitched sail",
+    "tool": "hand",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.45,
+        {
+          "contact": 1,
+          "w": 0.2
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "b": 1.5
+        }
+      ],
+      [
+        0.85,
+        {
+          "b": -0.5,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.45,
+        "hold"
+      ]
+    ]
+  },
+  "boat_keel": {
+    "item": "tiny_boat",
+    "preview": "boat_keel",
+    "label": "Brush grit from the opposite plank of the little hull",
+    "tool": "cloth",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1.5
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "b": 2,
+          "reach": 0.3
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "b": 1,
+          "reach": 0.6
+        }
+      ],
+      [
+        0.85,
+        {
+          "contact": 1,
+          "b": 1.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "clean"
+      ],
+      [
+        0.65,
+        "clean"
+      ]
+    ]
+  },
+  "board_spotter": {
+    "item": "surfboard",
+    "preview": "board_balance",
+    "label": "Stay beside the board and mirror Cheese\u2019s steadying wings",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "w": 0.2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.35,
+        {
+          "w": 0.55,
+          "b": 0.5
+        }
+      ],
+      [
+        0.5,
+        {
+          "w": 0.65,
+          "b": 1
+        }
+      ],
+      [
+        0.65,
+        {
+          "w": 0.4
+        }
+      ],
+      [
+        0.85,
+        {
+          "b": 1.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "board_waxpair": {
+    "item": "surfboard",
+    "preview": "board_wax",
+    "label": "Wax the far rail in alternating circles",
+    "tool": "cloth",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "contact": 1,
+          "b": 2,
+          "reach": 0.4
+        }
+      ],
+      [
+        0.55,
+        {
+          "contact": 1,
+          "b": 0.8,
+          "reach": 0.2
+        }
+      ],
+      [
+        0.75,
+        {
+          "contact": 1,
+          "b": 1.6,
+          "reach": 0.6
+        }
+      ],
+      [
+        0.9,
+        {
+          "b": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "wax"
+      ],
+      [
+        0.75,
+        "wax"
+      ]
+    ]
+  },
+  "young_company": {
+    "item": "frisbee",
+    "preview": "disc_gentle",
+    "label": "Crouch nearby and give little Cheese room to investigate",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 1.5
+        }
+      ],
+      [
+        0.4,
+        {
+          "b": 2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.65,
+        {
+          "b": 1.8,
+          "w": 0.15
+        }
+      ],
+      [
+        0.85,
+        {
+          "b": 1.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "quiet_company": {
+    "item": "pinwheel",
+    "preview": "pinwheel_gentle",
+    "label": "Settle beside the toy and share a quiet inspection",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 0.8,
+          "eye": "-"
+        }
+      ],
+      [
+        0.45,
+        {
+          "b": 1.4
+        }
+      ],
+      [
+        0.65,
+        {
+          "w": 0.1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.85,
+        {
+          "b": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "night_company": {
+    "item": "tiny_boat",
+    "preview": "boat_gentle",
+    "label": "Keep the evening game slow and watch the faint toy details",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 1,
+          "eye": "-"
+        }
+      ],
+      [
+        0.4,
+        {
+          "b": 1.7,
+          "w": 0.15
+        }
+      ],
+      [
+        0.6,
+        {
+          "eye": "o",
+          "b": 1.2
+        }
+      ],
+      [
+        0.8,
+        {
+          "b": 0.6
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  },
+  "hover_company": {
+    "item": "bubble_wand",
+    "preview": "wand_gentle",
+    "label": "Hover clear of the tools and share the small discovery",
+    "tool": "none",
+    "anchor": "partner",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "v": -0.2,
+          "w": 0.3
+        }
+      ],
+      [
+        0.4,
+        {
+          "v": -0.35,
+          "u": 1.15
+        }
+      ],
+      [
+        0.6,
+        {
+          "v": -0.1,
+          "w": 0.5
+        }
+      ],
+      [
+        0.8,
+        {
+          "v": -0.25,
+          "u": 1.05
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": []
+  }
+}

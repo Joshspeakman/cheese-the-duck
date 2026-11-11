@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: rebuilt eight outdoor playthings with 42 initial native routines, per-copy controls, age-aware handling, adverse-weather withdrawal, bounded soap bubbles and wind-driven pinwheel motion. Validated 164 native checks, 4242 native/renderer samples, 9408 hatched-age/visitor poses, 164 JavaScript tests, 24 live notebook checks, 254 placement checks, 694 long-run checks, 718 native-frame replay and clean 94-frame source smoke. Art reconstruction is 258/542; all per-object 48-sequence audits remain unverified. Actual visitor arrival and shared play, complete contextual repertoires and final installation remain unfinished. Goal stays active; installed chat 2.36.1 is unchanged.",
+  "previous_goal_turn": "Progress: completed and committed the eight-plaything reconstruction (42 native action cores), then added 25 complementary visitor roles with independent arrival, shared native clocks, opposite-side contacts, observed memories and exact-copy learning. All 48 visitor identities plus Pip now pass actual native play sessions. Validation: 905 shared lifecycle checks, 2525 native/renderer samples, 5936 companion pose cases, 167 full JavaScript tests, 24 live notebook checks, 164 solo regression checks, 1063 shared-structure regression checks, 694 checks across 72 simulated hours, all 542 measured footprints, a 1102-frame replay with 909 selectable companion frames, and a clean 98-frame source smoke. Drawing reconstruction is 258/542; all per-object 48-sequence audits remain unverified. Final installation remains deferred until the full milestone is complete. Desktop target and installed chat version 2.36.1 were verified unchanged. Goal remains active.",
   "items": [
     {
       "id": "hat_red",
@@ -640,7 +640,7 @@
     {
       "id": "frisbee",
       "family": "disc",
-      "art": "reconstructed",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -653,13 +653,13 @@
     {
       "id": "jump_rope",
       "family": "rope",
-      "art": "reconstructed",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
       "id": "yo_yo",
       "family": "yoyo",
-      "art": "reconstructed",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -1199,7 +1199,7 @@
     {
       "id": "pinwheel",
       "family": "pinwheel",
-      "art": "reconstructed",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -1259,7 +1259,7 @@
     {
       "id": "bubble_machine",
       "family": "bubbles",
-      "art": "reconstructed",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -2014,7 +2014,7 @@
     {
       "id": "tiny_boat",
       "family": "boat",
-      "art": "reconstructed",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -2027,7 +2027,7 @@
     {
       "id": "bubble_wand",
       "family": "bubbles",
-      "art": "reconstructed",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -3000,7 +3000,7 @@
     {
       "id": "surfboard",
       "family": "surfboard",
-      "art": "reconstructed",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -3917,7 +3917,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "outdoor_playthings",
+    "sourcePhase": "shared_outdoor_playthings",
     "fullyOverhauled": false,
     "constructedObjects": 258,
     "remainingArtwork": 284,
@@ -4243,11 +4243,26 @@
       "engine/artifacts/animation-milestone/playkit-render.json",
       "engine/artifacts/animation-milestone/playkit-actions-0.png",
       "engine/artifacts/animation-milestone/playkit-live-bubble_wand.png",
-      "engine/artifacts/animation-milestone/playkit-inspector.png"
+      "engine/artifacts/animation-milestone/playkit-inspector.png",
+      "engine/artifacts/animation-milestone/playkit-company-native.log",
+      "engine/artifacts/animation-milestone/playkit-company-js.log",
+      "engine/artifacts/animation-milestone/playkit-company-all-js.log",
+      "engine/artifacts/animation-milestone/playkit-company-render.log",
+      "engine/artifacts/animation-milestone/playkit-company-ui.log",
+      "engine/artifacts/animation-milestone/playkit-company-solo-native.log",
+      "engine/artifacts/animation-milestone/playkit-company-structure-regression.log",
+      "engine/artifacts/animation-milestone/playkit-company-living.log",
+      "engine/artifacts/animation-milestone/playkit-company-footprints.log",
+      "engine/artifacts/animation-milestone/playkit-company-smoke.log",
+      "engine/artifacts/animation-milestone/playkit-company-native.json",
+      "engine/artifacts/animation-milestone/playkit-company-render.json",
+      "engine/artifacts/animation-milestone/playkit-company-0.png",
+      "engine/artifacts/animation-milestone/playkit-company-4.png",
+      "engine/artifacts/animation-milestone/playkit-company-live-wand_bubbles.png"
     ],
-    "next": "Independent visitor participation in outdoor playthings, then remaining object constructions and complete per-object contextual repertoires. All 48-sequence audits remain open.",
+    "next": "Continue remaining object construction and complete individually authored contextual repertoires. Outdoor playthings still need personal guest acting, guest-to-guest invitations, egg observation and physical pickup/put-away. All 542 per-object 48-sequence audits remain open.",
     "checks": {
-      "javascript": 161,
+      "javascript": 167,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4521,6 +4536,24 @@
         "p95Ms": 6.100000023841858,
         "sheets": 22,
         "note": "Actual native snapshots; development review, not final milestone performance audit."
+      },
+      "playkitCompanyLifecycle": 905,
+      "playkitCompanyNativePoseParity": 2525,
+      "playkitCompanyRigCases": 5936,
+      "playkitCompanyRenderTests": 3,
+      "playkitCompanyUI": 24,
+      "playkitCompanySoloRegression": 164,
+      "playkitCompanyStructureRegression": 1063,
+      "playkitCompanyLivingRegression": 694,
+      "playkitCompanyReplay": {
+        "frames": 1102,
+        "drawn": 1068,
+        "players": 1868,
+        "companions": 909,
+        "medianMs": 5.600000023841858,
+        "p95Ms": 7.5,
+        "sheets": 40,
+        "note": "Actual native shared scenes with all 48 visitor identities and Pip exercised. Every staged visitor has verified clickable bounds. Development replay, not the final milestone audit."
       }
     },
     "limitations": [
@@ -4541,7 +4574,7 @@
       "Thirteen textile/living-ground/fibre objects have 28 solo cores and 18 complementary company roles, independently arriving ordinary/rare/story visitors, actual per-copy contacts, pauses, saved materials and completed shared learning. Full individual visitor/material repertoires, guest-to-guest sessions, tool pickup/put-away, egg listening and complete seasonal/mood coverage remain unfinished. No per-object 48-sequence completion is claimed.",
       "Groundwork uses 32 initial solo cores and 27 complementary company roles across 18 objects; these are not 48 bespoke sequences per object. All 48 visitor rigs and eight hatched ages fit, and independent regular/rare/story arrivals, native shared contacts, marks and completed learning are checked. Guest-to-guest sessions, egg observation, full personal/contextual acting and physical tool pickup/put-away remain pending. Native simulation owns arrival, contact events and history.",
       "Thirteen garden structures have 36 initial solo cores and 31 shared visitor roles with native mechanisms, independently reserved far landings, fixed-scale low contacts, bridge footing, seasonal vines and exact-copy controls. Guest-to-guest sessions, egg observation, climbing, physical tool pickup/put-away, full personality/mood/season acting and each object's 48 meaningful sequences remain unfinished. No object sequence completion is claimed.",
-      "Eight outdoor playthings have 42 initial native routine cores, saved controls, contact effects and finite native bubbles. All hatched ages and visitor rigs fit, but visitors do not yet join these routines through actual arrivals. Egg observation, guest-to-guest games, physical pickup/put-away, complete mood/season repertoires and each object's 48 bespoke sequences remain unfinished. Boat and board practice stays on the bank; no voyage or surf travel is claimed."
+      "Eight outdoor playthings have 42 initial solo cores and 25 complementary visitor roles. All eight hatched ages and all 48 visitor rigs fit, and all 48 native visitor identities plus Pip are tested through real arrival and shared learning. Egg observation, guest-to-guest games, physical pickup/put-away, full personal/mood/season repertoires and each object's 48 bespoke sequences remain unfinished. Boat and board practice stays on the bank; no voyage or surf travel is claimed."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -4592,9 +4625,9 @@
     },
     "sourceSmoke": {
       "result": "PASS",
-      "frames": 94,
+      "frames": 98,
       "localAI": false,
-      "evidence": "engine/artifacts/animation-milestone/playkit-smoke/frame.json"
+      "evidence": "engine/artifacts/animation-milestone/playkit-company-smoke/frame.json"
     },
     "chatRelease": {
       "branch": "codex/pond-chat-2.36.1",
@@ -4629,6 +4662,7 @@
     "architectureRoutineCores": 36,
     "architectureCompanyScores": 31,
     "playkitObjects": 8,
-    "playkitRoutineCores": 42
+    "playkitRoutineCores": 42,
+    "playkitCompanyScores": 25
   }
 }

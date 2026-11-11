@@ -516,9 +516,25 @@ and prompts a native wind-down. Young, tired and older Cheese chooses quieter
 play. Stored objects do not keep running. Save/load retains object controls and
 pauses unfinished work. Boat and board activities currently happen on the bank.
 
-These are initial cores, not 48 completed bespoke sequences per object. Actual
-visitor participation, egg observation, guest-to-guest games, physical pickup
-and put-away and full individual mood/season repertoires remain unfinished.
+Twenty-five complementary visitor roles now follow independent native arrivals.
+Friends gather the far rope handle, watch the yo-yo's path, inspect folded vanes,
+steady boat rigging, brush opposite edges, spot board balances and wax the far
+rail. Both performers share the native work clock. Visitors keep their own body
+scale; low cleats fit the shortest guests, while butterflies hover clear of tools.
+Young, tired and quiet visitors use gentler observation.
+
+Actual helper contacts alter only the selected object's dirt or wax marks.
+Memories require completed shared time and describe observed bubbles, sail
+positions, rope coils or wind-driven vanes. Helpers add no duplicate item use or
+reward. A departure, changed visit, care action, moved object or missing portable
+toy releases the reservation. Save/load preserves physical changes and history,
+without reviving a transient visitor reservation. Participants remain clickable
+at their drawn positions, and chat receives the current shared activity only
+after actual arrival.
+
+These are initial cores, not 48 completed bespoke sequences per object. Egg
+observation, guest-to-guest games, physical pickup and put-away and full individual
+mood/season/personality repertoires remain unfinished.
 Validation uses `.venv/bin/python engine/check_playkit.py`,
 `node --test engine/tests/playkit.test.mjs`,
 `engine/node_modules/.bin/electron engine/playkit-check.cjs`, and
@@ -526,6 +542,12 @@ Validation uses `.venv/bin/python engine/check_playkit.py`,
 checks cover native control/renderer parity, all hatched ages and 48 visitor
 rigs, actual ownership, copy identity, partial controls, interruptions, save/load,
 original rewards, live notebook commands and rendered native gameplay frames.
+Shared play checks use `.venv/bin/python engine/check_playkit_company.py`,
+`node --test engine/tests/playkit-company.test.mjs`, and
+`engine/node_modules/.bin/electron engine/playkit-company-check.cjs`. They include
+real arrivals for all 48 visitor identities and Pip, native/renderer helper-clock
+parity, all eight hatched-age rigs, actual contact, observed memories, interruption,
+copy identity, save/load and selectable visitors in native-frame replays.
 
 ## Validation
 

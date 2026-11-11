@@ -15,7 +15,7 @@ function disc(c,p,v){
  for(let yy=-4;yy<=4;yy+=2)for(let xx=-17;xx<=17;xx+=4)if(Math.abs(xx)>9||Math.abs(yy)>2)c.put(cx+xx,cy+yy,yy<0?':':'.','s');
  c.put(cx-8,cy,'P O N D / A I R','p');c.put(cx-3,cy+2,'(o)>','a');
  c.line(cx-17,cy+ry+1,cx+17,cy+ry+1,'_','k');
- return {entry:{x:15,y:p.h-3},contact:{x:cx-21,y:cy+1},center:{x:cx,y:cy}};
+ return {entry:{x:15,y:p.h-3},contact:{x:cx-21,y:cy+1},center:{x:cx,y:cy},partner:{x:cx+21,y:cy+1}};
 }
 function rope(c,p,v){
  const y=p.h-16,coil=clamp(v.coil),cx=72,rx=52*(1-coil)+21*coil,ry=10+coil*3;
@@ -25,7 +25,7 @@ function rope(c,p,v){
  }
  for(const [x,angle]of [[cx-rx-10,-.15],[cx+rx+1,.15]]){c.line(x+5,y,x+5,y+8,':','a');c.rect(x,y+5,10,6,'b',true);for(let j=2;j<9;j+=2)c.line(x+j,y+6,x+j+angle*5,y+10,'|','a');c.put(x+3,y+8,'o','k');}
  c.put(48,p.h-2,'//  / /  //  / /  //','s');
- return {entry:{x:20,y:p.h-3},contact:{x:cx-rx-7,y:y+8},deck:{x:cx,y:p.h-5}};
+ return {entry:{x:20,y:p.h-3},contact:{x:cx-rx-7,y:y+8},deck:{x:cx,y:p.h-5},partner:{x:cx+rx+6,y:y+8}};
 }
 function yoyo(c,p,v){
  const cx=37+v.travel*45,cy=p.h-30+v.drop*14;
@@ -47,7 +47,7 @@ function bubbler(c,p,v,s){
  for(let i=0;i<6;i++){const a=i*Math.PI/3+s.phase;c.ellipse(cx+Math.cos(a)*9,cy+Math.sin(a)*8,4,3,'o','w');}c.put(cx-1,cy,'(+)','f');
  c.rect(x+24,y-8,35,7,'b',true);c.line(x+27,y-6,x+55,y-6,'~','w');c.line(x+5,y-1,x+5,y-8,'|','a');c.line(x+5,y-8,x+18,y-8,'_','a');c.line(x+18,y-8,x+18,y-1,'|','a');
  for(const [xx,yy]of [[x+2,y+2],[x+w-4,y+2],[x+2,y+48],[x+w-4,y+48]])c.put(xx,yy,'+','f');c.line(x+14,y+50,x+14,H-8,':','a');c.rect(x+6,H-9,18,6,'a',true);c.put(x+11,H-6,v.power>.5?'[I]':'[O]','k');particles(c,p,s,cx+12,cy-6);
- return {entry:{x:x,y:H-3},contact:{x:x+14,y:H-6},mouth:{x:cx,y:cy}};
+ return {entry:{x:x,y:H-3},contact:{x:x+14,y:H-6},mouth:{x:cx,y:cy},partner:{x:x+w-6,y:H-12}};
 }
 function wand(c,p,v,s){
  const H=p.h,cx=29,cy=H-22;c.ellipse(cx,cy+10,17,5,'_','g',true);c.rect(cx-17,cy-13,35,24,'g',true);c.ellipse(cx,cy-13,17,5,'_','w',true);c.ellipse(cx,cy-13,12,3,'_','k',true);
@@ -67,8 +67,8 @@ function boat(c,p,v){
  c.ellipse(cx,cy-10,33,6,'_','a',true);c.ellipse(cx,cy-10,27,3,'_','k',true);c.line(cx-2,cy-13,cx-2,cy-61,'|','a');c.line(cx-4,cy-13,cx-4,cy-61,'|','b');
  const sail=clamp(v.sail),width=8+sail*24;poly(c,[[cx-1,cy-59],[cx+width,cy-18],[cx-1,cy-18]],'p');for(let y=cy-52;y<cy-19;y+=6)c.line(cx+1,y,cx+Math.max(1,(y-(cy-59))/41*width-2),y,':','s');
  c.put(cx+3,cy-29,'/o>','q');c.line(cx-3,cy-16,cx+width+3,cy-16,'_','b');c.line(cx-3,cy-55,cx-28,cy-10,':','p');c.line(cx-3,cy-55,cx+29,cy-10,':','p');
- c.put(cx-15,cy+2,'S.S. CRUMB','p');c.ellipse(cx+19,cy,3,2,'o','w');c.put(cx-22,cy-11,'[==]','b');c.line(cx-3,cy-55,cx-24,H-14,':','p');c.put(cx-27,H-14,'[===]','a');
- return {entry:{x:15,y:H-3},contact:{x:cx-22,y:H-12},rigging:{x:cx-24,y:H-14},deck:{x:cx,y:cy-10}};
+ c.put(cx-15,cy+2,'S.S. CRUMB','p');c.ellipse(cx+19,cy,3,2,'o','w');c.put(cx-22,cy-11,'[==]','b');c.line(cx-3,cy-55,cx-24,H-14,':','p');c.put(cx-27,H-14,'[===]','a');c.line(cx+23,H-14,cx+23,H-11,':','p');c.put(cx+20,H-11,'[===]','a');
+ return {entry:{x:15,y:H-3},contact:{x:cx-22,y:H-12},rigging:{x:cx-24,y:H-14},deck:{x:cx,y:cy-10},partner:{x:cx+23,y:H-11}};
 }
 function board(c,p,v,s){
  const H=p.h,cx=p.w/2,cy=H-20,ry=12,rx=73;c.ellipse(cx,cy+3,rx,ry,'_','k',true);c.ellipse(cx,cy,rx,ry,'_','q',true);c.ellipse(cx,cy,rx-4,ry-3,'_','a');
@@ -76,7 +76,7 @@ function board(c,p,v,s){
  for(let i=-54;i<=54;i+=9){const bend=9*Math.sqrt(1-(i/73)**2);c.line(cx+i,cy-bend,cx+i+7,cy+bend,'/','w');}
  c.ellipse(cx+24,cy,15,7,'_','p',true);c.rows(['  __',' (o)>',' /_)',' ~~~'],cx+19,cy-3,'d');c.put(cx-48,cy+1,'POND RIDER','p');c.put(cx-43,cy+5,'EST. / JUST NOW','p');
  for(let n=0;n<Math.min(24,s.waxes*6);n++)c.put(cx-16+(n*7%50),cy-5+(n*3%10),':','f');c.ellipse(cx-rx+7,cy,3,2,'o','k');c.line(cx-rx+7,cy,cx-rx+2,cy+15,':','p');c.ellipse(cx-rx+6,cy+15,5,2,'_','p');
- return {entry:{x:cx-rx,y:H-3},contact:{x:cx-20+v.walk*40,y:H-10},deck:{x:cx-rx+17+v.walk*110,y:cy-4}};
+ return {entry:{x:cx-rx,y:H-3},contact:{x:cx-20+v.walk*40,y:H-10},deck:{x:cx-rx+17+v.walk*110,y:cy-4},partner:{x:cx+50,y:H-10}};
 }
 const BUILDERS={disc,rope,yoyo,bubbler,wand,pinwheel,boat,board};
 export function playkitSprite(base,item,time,{state={},pose={}}={}){
