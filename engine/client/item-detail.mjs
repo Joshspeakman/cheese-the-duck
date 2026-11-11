@@ -1,9 +1,12 @@
 // Detail is constructed in character space: contours, joinery, stitched seams,
 // moving parts and wear stay crisp at every zoom. All gameplay state is supplied
 // by the simulation; inspecting a catalogue never mutates an owned object.
+import BOTANICAL from './animation/botanical.json' with {type:'json'};
 const hash=s=>[...s].reduce((n,c)=>(n*33+c.charCodeAt(0))>>>0,17);
 const has=(family,words)=>words.split(' ').includes(family);
 export function itemProfile(item,family){
+ if(item.category==='food')return {kind:'food',material:'food',skill:'cooking',verb:'Taste',need:'hunger',duration:10};
+ if(BOTANICAL[item.id]&&!BOTANICAL[item.id].rooted)return {kind:'keepsake',material:'leaf',skill:'observation',verb:'Inspect',need:'fun',duration:14};
  if(item.id==='pond_mat')return {kind:'comfort',material:'fabric',skill:'care',verb:'Settle on',need:'energy',duration:24};
  let kind='keepsake',material='ceramic',skill='observation',verb='Examine',need='fun';
  if(has(family,'rose tulip sunflower tree cherry willow cactus bamboo bonsai flytrap fern flowerpot mushroom hedge garden clover corn peas grapes reed leaf')){kind='plant';material='leaf';skill='gardening';verb='Tend';}

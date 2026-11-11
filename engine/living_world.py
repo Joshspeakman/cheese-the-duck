@@ -12,7 +12,7 @@ from datetime import datetime
 from engine.item_profiles import ITEMS
 from engine.pond_stories import STORIES
 from engine.placements import outdoor_decorations, complete_structures,habitat_placements
-from engine import shelters, nest_routines, playdates, water_routines, furniture_rests
+from engine import shelters, nest_routines, playdates, water_routines, furniture_rests,botany
 from world.guest_cast import guest_profile, guest_line
 
 NEEDS = ('hunger', 'energy', 'fun', 'cleanliness', 'social')
@@ -162,6 +162,7 @@ class LivingPond:
                 continue
             self.state['objects'].setdefault(key, {'condition': 1., 'wetness': 0., 'dirt': 0.,
                 'bond': 0., 'uses': 0, 'last_use': -1000., 'growth': .35, 'active': False})
+            if key in botany.ROOTED:botany.state(self.state['objects'][key])
         for friend in g.friends.friends.values():
             self.state['friends'].setdefault(friend.id, {'trust': .25, 'warmth': .3,
                 'reliability': .5, 'energy': .8, 'social': .7, 'last_shared': -1000.,
@@ -317,6 +318,9 @@ class LivingPond:
         home_type = home_weather.weather_type.value if home_weather else weather
         home_wet = any(k in home_type for k in ('rain','storm','shower','drizzle','sleet'))
         home_intensity = home_weather.intensity if home_weather else intensity
+        home_temperature=base+math.sin((getattr(self,'hour',12)-8)*math.pi/12)*5+(10 if any(w in home_type for w in ('heat','scorch','muggy')) else -12 if any(w in home_type for w in ('snow','blizzard','frost','cold','freez','ice')) else -4 if home_wet else 0)
+        home_ecology=dict(e if getattr(self,'biome','pond')=='pond' else s['biomes'].get('pond',fresh()['ecology']))
+        home_ecology['wind']=(.75 if any(w in home_type for w in ('wind','storm','breez','blizzard')) else .12)*home_intensity
         for key, obj in s['objects'].items():
             outdoors = key in getattr(self, 'placed', {})
             if not outdoors:
@@ -325,8 +329,7 @@ class LivingPond:
             obj['wetness'] = clamp(obj['wetness'] + minutes*(.05*home_intensity if home_wet else -.025))
             obj['dirt'] = clamp(obj['dirt'] + minutes*(.001 + e['wind']*.002))
             obj['condition'] = clamp(obj['condition'] - minutes*(.0001+obj['wetness']*.0003*(1-s['protection']*.75)), .15, 1)
-            if ITEMS.get(key, {}).get('kind') == 'plant':
-                obj['growth'] = clamp(obj['growth']+minutes*e['soil']*.003)
+            botany.update(self,key,obj,minutes,home_wet,home_intensity,home_temperature,home_ecology)
         if self.game and not offline and home_wet:
             for plot in self.game.garden.plots.values():
                 if plot.plant and not plot.plant.is_withered:
@@ -411,6 +414,13 @@ class LivingPond:
             if profile['kind'] in ('food','wearable'):
                 return False, 'Use the original inventory or wardrobe to eat or equip this item.'
             duration, label = profile['duration'], profile['verb']+' '+profile['name']
+            if target in botany.ROOTED:
+                if target not in self.placed or self.location!='Home Pond':
+                    return False,'Place '+profile['name']+' at Home Pond before tending it.'
+                if any(w in self.weather_type for w in ('storm','blizzard')):
+                    return False,'Let the storm pass before tending the plants.'
+                mode=botany.care_mode(self,target)
+                label={'water':'Water the roots of ','brush':'Brush debris from ','inspect':'Inspect '}[mode]+profile['name']
             if profile['family'] in ('slide','swing','trampoline','seesaw','horse'):
                 label = ('Explore ' if self.game.duck.growth_stage in ('hatchling','duckling') else 'Ride ') + profile['name']
             if s['elapsed'] - s['objects'][target]['last_use'] < 60:
@@ -457,6 +467,7 @@ class LivingPond:
         s['plan'] = {'kind': kind, 'target': target, 'label': label, 'elapsed': 0., 'duration': duration,
                      'phase': 'approach', 'automatic': automatic, 'paused': False, 'location': self.location,
                      'learning_before': self.minds.before(kind)}
+        if kind=='item' and target in botany.ROOTED:s['plan']['plant_care']=botany.care_mode(self,target)
         if residence:
             s['plan']['residence'] = residence
         if seating:
@@ -507,6 +518,8 @@ class LivingPond:
         if g.duck.current_action in ('feed','play','clean','pet','sleep'):
             return
         residence = plan.get('residence')
+        if plan.get('plant_care') and (not plan.get('destination') or not shelters.still_placed(self,{'id':plan['target'],'destination':plan['destination']}) or any(w in self.weather_type for w in ('storm','blizzard'))):
+            self.cancel();return
         if plan.get('seating') and not furniture_rests.valid(self,plan['seating']):
             self.cancel()
             return
@@ -612,7 +625,7 @@ class LivingPond:
                 obj['condition'] = clamp(obj['condition']-.006, .15, 1)
                 obj['bond'] = clamp(obj['bond']+.025)
                 if not water_mode:self.change_need(profile['need'], 2+obj['condition']*2)
-                if profile['kind']=='plant': obj['growth']=clamp(obj['growth']+.08); s['ecology']['flowers']=clamp(s['ecology']['flowers']+.01)
+                botany.complete(self,plan)
                 if profile['kind']=='water' and not water_mode: obj['wetness']=1
                 message = profile['name']+(' is becoming an old favorite.' if obj['uses']>=5 else ' has a little more history now.')
                 s['preferences'][target] = clamp(s['preferences'].get(target,.5)+.025)

@@ -309,46 +309,46 @@
       "construction": "playground-v1"
     },
     "flower_rose": {
-      "width": 12.74,
-      "height": 10.44,
+      "width": 60.37,
+      "height": 42.23,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "flower_tulip": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 54.32,
+      "height": 36.71,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "flower_sunflower": {
-      "width": 14.83,
-      "height": 11.27,
+      "width": 55.85,
+      "height": 51.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "tree_small": {
-      "width": 27.25,
-      "height": 15.24,
+      "width": 52.56,
+      "height": 43.32,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "tree_oak": {
-      "width": 27.25,
-      "height": 15.24,
+      "width": 90.26,
+      "height": 63.06,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "tree_cherry": {
-      "width": 22.91,
-      "height": 13.92,
+      "width": 80.2,
+      "height": 54.24,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "bush_hedge": {
-      "width": 22.91,
-      "height": 9.14,
+      "width": 67.37,
+      "height": 34.88,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "grass_patch": {
       "width": 22.65,
@@ -357,16 +357,16 @@
       "construction": "legacy-detail"
     },
     "cactus": {
-      "width": 15.71,
-      "height": 9.54,
+      "width": 50.12,
+      "height": 41.29,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "bamboo": {
-      "width": 18.55,
-      "height": 11.27,
+      "width": 70.77,
+      "height": 55.77,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "bow_tie_blue": {
       "width": 15.63,
@@ -669,40 +669,40 @@
       "construction": "waterworks-v1"
     },
     "bonsai": {
-      "width": 17.06,
-      "height": 9.54,
+      "width": 56.67,
+      "height": 36.81,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "venus_flytrap": {
-      "width": 12.11,
-      "height": 9.54,
+      "width": 53.7,
+      "height": 34.33,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "herb_garden": {
-      "width": 25.14,
-      "height": 9.67,
+      "width": 79.77,
+      "height": 41.19,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "cherry_tree": {
-      "width": 22.91,
-      "height": 13.92,
+      "width": 85.7,
+      "height": 58.23,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "willow_tree": {
-      "width": 28.68,
-      "height": 15.24,
+      "width": 97.59,
+      "height": 64.81,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "mushroom_patch": {
-      "width": 16.07,
-      "height": 9.09,
+      "width": 62.12,
+      "height": 36.04,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "topiary_duck": {
       "width": 18.97,
@@ -711,22 +711,22 @@
       "construction": "legacy-detail"
     },
     "fern": {
-      "width": 12.47,
-      "height": 9.09,
+      "width": 69.42,
+      "height": 44.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "lavender": {
-      "width": 14.27,
-      "height": 9.09,
+      "width": 64.83,
+      "height": 41.22,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "hedge_maze": {
-      "width": 28.3,
-      "height": 11.29,
+      "width": 95.5,
+      "height": 55.49,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "dog_house": {
       "width": 66.89,
@@ -927,10 +927,10 @@
       "construction": "legacy-detail"
     },
     "potted_cactus": {
-      "width": 15.71,
-      "height": 9.54,
+      "width": 41.97,
+      "height": 32.14,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "stepping_stones": {
       "width": 25.67,
@@ -1251,10 +1251,10 @@
       "construction": "legacy-detail"
     },
     "autumn_leaves": {
-      "width": 17.38,
-      "height": 10.74,
+      "width": 66.74,
+      "height": 25.71,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "snow_floor": {
       "width": 25.04,
@@ -1515,10 +1515,10 @@
       "construction": "furniture-v1"
     },
     "world_tree": {
-      "width": 27.25,
-      "height": 15.24,
+      "width": 102.71,
+      "height": 67.14,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "cosmic_arch": {
       "width": 31.31,
@@ -1563,10 +1563,10 @@
       "construction": "legacy-detail"
     },
     "lettuce": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 35.11,
+      "height": 22.54,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "worm": {
       "width": 20.13,
@@ -1605,10 +1605,10 @@
       "construction": "legacy-detail"
     },
     "flower": {
-      "width": 14.27,
-      "height": 9.09,
+      "width": 32.35,
+      "height": 28.71,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "shiny_pebble": {
       "width": 16.71,
@@ -1617,28 +1617,28 @@
       "construction": "legacy-detail"
     },
     "lucky_clover": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 33.98,
+      "height": 25.99,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "corn": {
-      "width": 12.11,
-      "height": 9.54,
+      "width": 37.59,
+      "height": 19.29,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "peas": {
-      "width": 16.53,
-      "height": 6.84,
+      "width": 39.37,
+      "height": 19.29,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "grapes": {
-      "width": 11.76,
-      "height": 7.74,
+      "width": 41.09,
+      "height": 20.92,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "oats": {
       "width": 17.7,
@@ -1983,10 +1983,10 @@
       "construction": "legacy-detail"
     },
     "garden_plot": {
-      "width": 21.3,
-      "height": 8.19,
+      "width": 90.11,
+      "height": 47.33,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "bird_bath": {
       "width": 48.58,
@@ -2001,10 +2001,10 @@
       "construction": "legacy-detail"
     },
     "flower_bed": {
-      "width": 21.3,
-      "height": 8.19,
+      "width": 90.93,
+      "height": 45.58,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "stone_path": {
       "width": 21.75,
@@ -2019,76 +2019,76 @@
       "construction": "waterworks-v1"
     },
     "leaf": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 35.82,
+      "height": 21.66,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "grass_blade": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 33.26,
+      "height": 24.05,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "wildflower": {
-      "width": 14.27,
-      "height": 9.09,
+      "width": 37,
+      "height": 30,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "clover": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 34,
+      "height": 23.53,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "dandelion": {
-      "width": 14.27,
-      "height": 9.09,
+      "width": 41.14,
+      "height": 32.67,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "moss": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 45.2,
+      "height": 20.09,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "pine_needle": {
-      "width": 12.47,
-      "height": 9.09,
+      "width": 36.44,
+      "height": 20.34,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "mushroom": {
-      "width": 16.07,
-      "height": 9.09,
+      "width": 35.99,
+      "height": 27.25,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "pond_weed": {
-      "width": 12.47,
-      "height": 9.09,
+      "width": 43.07,
+      "height": 30.84,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "lily_pad": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 45.13,
+      "height": 21.77,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "garden_flower": {
-      "width": 14.27,
-      "height": 9.09,
+      "width": 40.68,
+      "height": 32.67,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "rainbow_flower": {
-      "width": 14.27,
-      "height": 9.09,
+      "width": 53.68,
+      "height": 39.29,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "twig": {
       "width": 11.12,
@@ -2193,10 +2193,10 @@
       "construction": "legacy-detail"
     },
     "seaweed": {
-      "width": 12.47,
-      "height": 9.09,
+      "width": 49.2,
+      "height": 34.95,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "river_pearl": {
       "width": 18.15,
@@ -2211,10 +2211,10 @@
       "construction": "legacy-detail"
     },
     "reed": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 45.25,
+      "height": 34.97,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "string": {
       "width": 17.7,
@@ -2235,10 +2235,10 @@
       "construction": "legacy-detail"
     },
     "berry": {
-      "width": 11.76,
-      "height": 7.74,
+      "width": 33.92,
+      "height": 21.08,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "seed": {
       "width": 13.37,
@@ -2277,16 +2277,16 @@
       "construction": "legacy-detail"
     },
     "tulip_bulb": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 35.23,
+      "height": 25.54,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "rose_petal": {
-      "width": 12.74,
-      "height": 10.44,
+      "width": 31.25,
+      "height": 18.32,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "carrot": {
       "width": 10.67,
@@ -2319,16 +2319,16 @@
       "construction": "legacy-detail"
     },
     "mint_leaves": {
-      "width": 12.47,
-      "height": 9.09,
+      "width": 39.37,
+      "height": 21.37,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "golden_petal": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 33.65,
+      "height": 21.97,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "crystal_shard": {
       "width": 14.36,
@@ -2343,10 +2343,10 @@
       "construction": "legacy-detail"
     },
     "flower_petal": {
-      "width": 14.27,
-      "height": 9.09,
+      "width": 32.75,
+      "height": 19.46,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "juicy_worm": {
       "width": 20.13,
@@ -2385,16 +2385,16 @@
       "construction": "legacy-detail"
     },
     "golden_leaf": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 41.08,
+      "height": 25.21,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "red_maple_leaf": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 45.98,
+      "height": 28.27,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "mist_crystal": {
       "width": 14.36,
@@ -2469,10 +2469,10 @@
       "construction": "legacy-detail"
     },
     "spring_petal": {
-      "width": 14.27,
-      "height": 9.09,
+      "width": 35.17,
+      "height": 20.63,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "fresh_apple": {
       "width": 14.55,
@@ -2481,10 +2481,10 @@
       "construction": "legacy-detail"
     },
     "autumn_leaf": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 43.32,
+      "height": 24.74,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "homemade_pie": {
       "width": 18.06,
@@ -2691,10 +2691,10 @@
       "construction": "legacy-detail"
     },
     "dream_flower": {
-      "width": 14.27,
-      "height": 9.09,
+      "width": 48.32,
+      "height": 37.82,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "enchanted_seeds": {
       "width": 13.37,
@@ -2805,34 +2805,34 @@
       "construction": "legacy-detail"
     },
     "sunflower": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 48.31,
+      "height": 42.26,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "tulip": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 39.48,
+      "height": 33.59,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "rose": {
-      "width": 12.74,
-      "height": 10.44,
+      "width": 43.55,
+      "height": 37.8,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "mint": {
-      "width": 12.47,
-      "height": 9.09,
+      "width": 48.81,
+      "height": 35.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "golden_flower": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 53.33,
+      "height": 42.29,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "crystal_plant": {
       "width": 14.36,
@@ -3111,16 +3111,16 @@
       "construction": "furniture-v1"
     },
     "potted_plant": {
-      "width": 14.27,
-      "height": 9.09,
+      "width": 61.24,
+      "height": 44.9,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "flower_pot": {
-      "width": 14.27,
-      "height": 9.09,
+      "width": 59.39,
+      "height": 41.28,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "botanical-v1"
     },
     "lamp": {
       "width": 12.56,

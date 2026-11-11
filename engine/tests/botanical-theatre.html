@@ -1,0 +1,47 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Botanical workshop</title>
+<style>body{background:#16291e;color:#ebdfba;font:20px Georgia;margin:24px}canvas{display:block;max-width:100%;margin:24px 0}</style>
+<h1>Botanical workshop · current in-game drawings</h1>
+<script type="module">
+import {BOTANICAL_BLUEPRINTS} from '../client/botanical-workshop.mjs';
+import {itemSprite,ItemPainter} from '../client/ultra-items.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+const painter=new ItemPainter();
+window.reviewBotany=()=>{
+ const images={},ids=Object.keys(BOTANICAL_BLUEPRINTS);
+ for(let page=0;page<Math.ceil(ids.length/6);page++){
+  const canvas=document.createElement('canvas');canvas.width=1680;canvas.height=1350;const c=canvas.getContext('2d');
+  c.fillStyle='#142b23';c.fillRect(0,0,canvas.width,canvas.height);
+  ids.slice(page*6,page*6+6).forEach((id,n)=>{
+   const m=itemSprite(id,2.3,{state:{growth:.8,botany:{moisture:.6,health:.95,bloom:.9}},context:{hour:15,season:'spring',living:{ecology:{wind:.3,insects:.7},garden:[{plant:'tomato',stage:'harvestable'},{plant:'mint',stage:'growing'}]}}}),x=(n%3)*560,y=Math.floor(n/3)*675;
+   c.fillStyle='#e5d8b4';c.font='22px Menlo';c.fillText(id,x+20,y+30);
+   const unit=Math.min(6,510/m.width,590/(m.art.length*1.5));
+   painter.draw(c,m,x+280,y+635,unit/m.detailScale,{surface:'#142b23',outline:'#0a1712'});
+  });images['botanical-'+page]=canvas.toDataURL('image/png');document.body.append(canvas);
+ }
+ const canvas=document.createElement('canvas');canvas.width=1680;canvas.height=1800;const c=canvas.getContext('2d');
+ c.fillStyle='#142b23';c.fillRect(0,0,1680,1800);
+ ['tree_oak','flower_tulip','fern'].forEach((id,row)=>[
+  {season:'spring',hour:15,moisture:.6,health:.9,bloom:.9,snow:0},
+  {season:'summer',hour:23,moisture:.08,health:.4,bloom:.4,snow:0},
+  {season:'winter',hour:12,moisture:.4,health:.7,bloom:.1,snow:.8}
+ ].forEach((v,col)=>{
+  const m=itemSprite(id,2,{state:{growth:.8,botany:v},context:{...v,living:{ecology:v}}}),x=col*560,y=row*600;
+  c.fillStyle='#e5d8b4';c.font='18px Menlo';c.fillText(id+' · '+v.season+' · '+v.hour,x+12,y+25);
+  const unit=Math.min(5,510/m.width,520/(m.art.length*1.5));painter.draw(c,m,x+280,y+570,unit/m.detailScale,{surface:'#142b23',outline:'#0a1712'});
+ }));
+ images['botanical-seasons']=canvas.toDataURL('image/png');document.body.append(canvas);
+ return images;
+};
+window.replayBotany=frames=>{
+ const view=new SceneCanvas();view.resize(1440,900);const images={},costs=[];let botanicalObjects=0;
+ for(const [i,s] of frames.entries()){
+  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
+  if(JSON.stringify(s)!==before)throw Error('Plant rendering mutated a simulation snapshot');
+  for(const o of view.world.objects)if(o.construction==='botanical-v1'){
+   botanicalObjects++;if(o.clipped)throw Error('Clipped botanical drawing '+o.id);
+  }
+  if(i===frames.length-1)images['botanical-live-day']=view.canvas.toDataURL('image/png');
+ }
+ costs.sort((a,b)=>a-b);return {frames:frames.length,botanicalObjects,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+</script>
