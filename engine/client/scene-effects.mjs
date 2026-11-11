@@ -1,6 +1,7 @@
 import { sceneLight } from './scene-lighting.mjs';
 import { W,H,C,hash } from './ultra-grid.mjs';
 import {objectLightSources} from './lighting-state.mjs';
+import {wrap} from './weather-wind.mjs';
 
 export const EFFECT_LEVELS=['vivid','subtle','off'];
 export function effectStrength(level){return level==='off'?0:level==='subtle'?.38:1;}
@@ -17,7 +18,7 @@ export class SceneEffects {
   constructor(){this.level='vivid';this.light=document.createElement('canvas');this.light.width=480;this.light.height=224;this.lc=this.light.getContext('2d');}
   draw(ctx,world,scene,time,sx,sy,objects=[]){
     const strength=effectStrength(this.level);if(!strength)return;
-    const t=scene.motion===false?0:time,night=sceneLight(scene).night;
+    const t=scene.motion===false?0:time,night=sceneLight(scene).night,wind=world.wind||{x:0,y:0};
     const underground=world.underground(scene),wet=/rain|storm|drizzle/.test(scene.weather)&&scene.weatherEffects!==false;
     const lc=this.lc;lc.clearRect(0,0,480,224);
     const glow=(x,y,r,color,power)=>{
@@ -66,8 +67,8 @@ export class SceneEffects {
     }
     // Discrete little motes, always ASCII. Wind moves them along repeatable paths.
     if(!wet)for(let i=0;i<(night?22:16);i++){
-      const x=(hash(i,41)*W+t*(.6+hash(i,42))+.6*Math.sin(t*.5+i))%W;
-      const y=43+hash(i,43)*56+Math.sin(t*.7+i)*1.4;
+      const x=wrap(hash(i,41)*W+wind.x*(3+hash(i,42)*4)+.6*Math.sin(t*.5+i),W);
+      const y=43+wrap(hash(i,43)*56+Math.sin(t*.7+i)*1.4+wind.y*2,56);
       ctx.fillStyle=underground?'#bbbcf6':night?'#e7ed9e':/fall|autumn/.test(scene.season)?'#efb373':'#ffe1a5';
       ctx.globalAlpha=(.16+.34*(.5+.5*Math.sin(t*1.4+i)))*strength;
       ctx.fillText(night?(i%4?'*':'+'):/fall|autumn/.test(scene.season)?"'":'.',x*sx,y*sy);
@@ -81,7 +82,7 @@ export class SceneEffects {
         else if(!water&&eco.snow>.08){ctx.fillStyle='#d6e0d8';ctx.globalAlpha=eco.snow*.7;ctx.fillText(i%3?'_.._':'*',x*sx,y*sy);}
         else if(!water&&eco.wetness>.35&&hash(i,83)<eco.wetness*.3){ctx.fillStyle='#8fc1c4';ctx.globalAlpha=.22;ctx.fillText('~._.~',x*sx,y*sy);}
       }
-      if(eco.wind>.25)for(let i=0;i<18;i++){const x=(hash(i,85)*W+t*eco.wind*13)%W,y=48+hash(i,86)*50;ctx.globalAlpha=.25*strength;ctx.fillStyle='#d0bb81';ctx.fillText(i%2?"'":'~',x*sx,y*sy);}
+      if(eco.wind>.25&&!underground)for(let i=0;i<18;i++){const x=wrap(hash(i,85)*W+wind.x*13,W),y=48+wrap(hash(i,86)*50+wind.y*4,50);ctx.globalAlpha=.25*strength;ctx.fillStyle='#d0bb81';ctx.fillText(i%2?"'":'~',x*sx,y*sy);}
     }
     // A short wake keeps Cheese grounded in water without hiding his silhouette.
     const duck=world.duckPosition;

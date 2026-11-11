@@ -75,7 +75,7 @@ function vane(c,p,s){
  const H=p.h,cx=p.w/2,a=s.bearing||0,dx=Math.cos(a)*48,dy=Math.sin(a)*9;
  slab(c,cx-21,H-14,42,11,'s');c.beam(cx,H-15,cx,32,4,'i');c.line(cx-1,40,cx-1,H-19,':','a');
  c.line(cx-38,65,cx+38,65,'=','i');c.line(cx-22,77,cx+22,53,'/','i');for(const [x,y,t]of [[cx-43,65,'W'],[cx+40,65,'E'],[cx+24,50,'N'],[cx-27,78,'S']])c.put(x,y,t,'f');
- c.beam(cx-dx,35-dy,cx+dx,35+dy,2,'a');c.put(cx+dx-1,35+dy,Math.cos(a)>0?'>':'<','f');c.ellipse(cx-dx,35-dy,8,6,'_','i');c.line(cx-dx-5,35-dy-4,cx-dx+5,35-dy+4,'/','l');
+ c.beam(cx-dx,35-dy,cx+dx,35+dy,2,'a');c.put(cx+dx-1,35+dy,Math.abs(dx)>10?(dx>0?'>':'<'):(dy>0?'v':'^'),'f');c.ellipse(cx-dx,35-dy,8,6,'_','i');c.line(cx-dx-5,35-dy-4,cx-dx+5,35-dy+4,'/','l');
  c.ellipse(cx,25,17,8,'_','i',true);c.ellipse(cx+10,15,7,6,'_','a',true);c.put(cx+11,14,'o','k');c.put(cx+16,17,'==>','f');c.rows([' /|','/ |','--+'],cx-22,25,'i');c.put(cx-4,34,'/___\\','a');c.ellipse(cx,39,6,3,'o','i',true);
  for(const x of [cx-13,cx+13])c.put(x-2,H-9,'(+)','f');
  return {contact:{x:cx-13,y:H-9},company:{x:cx+13,y:H-9}};
@@ -89,14 +89,19 @@ function compass(c,p){
  return {contact:{x:cx-30,y:H-12},company:{x:cx+38,y:H-10},entry:{x:cx-55,y:H-3}};
 }
 function flag(c,p,s){
- const H=p.h,mast=38,hoist=clamp(s.flag),fy=H-53-hoist*(H-72),phase=s.phase||0;
+ const H=p.h,mast=p.w/2,hoist=clamp(s.flag),fy=H-53-hoist*(H-72),phase=s.phase||0;
+ const across=-Math.cos(s.bearing||0);
+ // Edge-on cloth narrows through the mast as wind turns; it never flips from
+ // one wide silhouette to another when the horizontal component crosses zero.
+ const clothX=u=>mast+across*(10+u),wave=u=>Math.sin(u*.12-phase)*(s.wind||0)*5;
+ const ink=(u,y,text,tone)=>{for(const [i,glyph]of [...text].entries())if(glyph!==' ')c.put(clothX(u+i),y+wave(u+i),glyph,tone);};
  slab(c,mast-18,H-15,38,12,'s');c.beam(mast,12,mast,H-16,4,'i');c.line(mast-1,15,mast-1,H-16,'|','f');c.ellipse(mast,9,6,5,'o','a',true);
  c.line(mast+7,16,mast+7,H-12,':','a');c.line(mast+10,16,mast+10,H-12,':','s');c.put(mast+5,H-11,'[===]','f');
  const cols=68,rows=34;
- for(let x=0;x<cols;x++){const offset=Math.sin(x*.12-phase)*(s.wind||0)*5;for(let y=0;y<rows;y++){const yy=fy+y+offset;c.put(mast+10+x,yy,y===0||y===rows-1?'_':x===cols-1?'|':(x+y)%7===0?':':' ',y===0?'f':'w');if(y>0&&y<rows-1)c.solid(mast+10+x,yy,1,1,'w');}
-  if(x%4===0){c.put(mast+10+x,fy+2+offset,'+','a');c.put(mast+10+x,fy+rows-3+offset,'+','a');}}
- const wave=Math.sin(35*.12-phase)*(s.wind||0)*5;c.rows(['      __','     (o)>',' ___ / _)',' \\~~~~/','  \\__/'],mast+33,fy+10+wave,'f');c.put(mast+16,fy+27,'P O N D   P R I D E','a');
- for(const y of [fy+3,fy+rows-4]){c.put(mast+5,y,'(o)','a');c.line(mast+8,y,mast+12,y,'-','i');}
+ for(let x=0;x<cols;x++){const offset=wave(x),xx=clothX(x);for(let y=0;y<rows;y++){const yy=fy+y+offset;c.put(xx,yy,y===0||y===rows-1?'_':x===cols-1?'|':(x+y)%7===0?':':' ',y===0?'f':'w');if(y>0&&y<rows-1)c.solid(xx,yy,1,1,'w');}
+  if(x%4===0){c.put(xx,fy+2+offset,'+','a');c.put(xx,fy+rows-3+offset,'+','a');}}
+ ['      __','     (o)>',' ___ / _)',' \\~~~~/','  \\__/'].forEach((row,y)=>ink(23,fy+10+y,row,'f'));ink(6,fy+27,'P O N D   P R I D E','a');
+ for(const y of [fy+3,fy+rows-4]){c.put(mast+5,y,'(o)','a');c.line(mast+8,y,clothX(1),y,'-','i');}
  return {contact:{x:mast+8,y:H-11},company:{x:mast-10,y:H-9},entry:{x:mast-15,y:H-3}};
 }
 export const LANDMARK_BUILDERS={gnome,statue,scarecrow,totem,sundial,vane,compass,flag};

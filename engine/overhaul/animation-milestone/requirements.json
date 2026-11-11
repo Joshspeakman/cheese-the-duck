@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: rebuilt eight garden landmarks and expanded the architecture subsystem to 21 objects, 54 initial native cores and 49 complementary visitor roles. Saved directional wind drives the vane and breeze-sensitive cloth; actual hour/season/sky drive the sundial; flag hoisting uses real contact and preserves partial state. Material-specific ink, feather carving, stitching and low contacts received visual review. Validation: 293 native lifecycle checks; 1671 shared checks; 5454 solo and 4949 company pose parity samples; 1728 solo and 11760 company rig cases; 168 JavaScript tests; 21 notebook UI checks; 12 native weather states; 1724 solo and 1887 shared rendered frames with 1434 selectable companion frames; 694 checks over 72 hours; 254 layout checks and all 542 measured footprints; 96-frame disposable source launch. Artwork progress is 266 reconstructed/276 pending. Every per-object 48-sequence audit remains open. Installed chat release 2.36.1 remains separate; no full-milestone install or completion claimed.",
+  "previous_goal_turn": "Progress: rebuilt eight garden landmarks and expanded the architecture subsystem to 21 objects, 54 initial native cores and 49 complementary visitor roles. Saved directional wind drives the vane and breeze-sensitive cloth; actual hour/season/sky drive the sundial; flag hoisting uses real contact and preserves partial state. Material-specific ink, feather carving, stitching and low contacts received visual review. Validation: 293 native lifecycle checks; 1671 shared checks; 5454 solo and 4949 company pose parity samples; 1728 solo and 11760 company rig cases; 168 JavaScript tests; 21 notebook UI checks; 12 native weather states; 1724 solo and 1887 shared rendered frames with 1434 selectable companion frames; 694 checks over 72 hours; 254 layout checks and all 542 measured footprints; 96-frame disposable source launch. Artwork progress is 266 reconstructed/276 pending. Every per-object 48-sequence audit remains open. Installed chat release 2.36.1 remains separate; no full-milestone install or completion claimed. Follow-up: connected rain, snow, leaves, reeds and airborne motes to the same saved wind direction; pennants now turn continuously across their masts and all precipitation moves downwind. Native vane/pennant bearing remains authoritative. Final checks now include 172 JavaScript tests, 297 native structure checks, 22 native weather frames, 96 pennant direction/height poses, 694 checks over 72 hours, and fresh solo/shared visual replays. Counts remain 266 reconstructed/276 pending and zero completed 48-sequence audits. The final disposable source launch passed with 93 frames and local AI disabled for that smoke run. Installed chat 2.36.1 was verified through its bundle version and desktop shortcut, and remains unchanged.",
   "items": [
     {
       "id": "hat_red",
@@ -3917,7 +3917,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "garden_landmarks",
+    "sourcePhase": "garden_landmarks_and_directional_wind",
     "fullyOverhauled": false,
     "constructedObjects": 266,
     "remainingArtwork": 276,
@@ -4276,11 +4276,24 @@
       "engine/artifacts/animation-milestone/landmarks-company.log",
       "engine/artifacts/animation-milestone/landmarks-smoke.log",
       "engine/artifacts/animation-milestone/landmarks-layout.log",
-      "engine/artifacts/animation-milestone/landmarks-ui.log"
+      "engine/artifacts/animation-milestone/landmarks-ui.log",
+      "engine/client/weather-wind.mjs",
+      "engine/tests/weather-wind.test.mjs",
+      "engine/artifacts/animation-milestone/landmark-weather-4.png",
+      "engine/artifacts/animation-milestone/landmark-weather-5.png",
+      "engine/artifacts/animation-milestone/wind-js.log",
+      "engine/artifacts/animation-milestone/wind-company-render.log",
+      "engine/artifacts/animation-milestone/wind-native.log",
+      "engine/artifacts/animation-milestone/wind-footprints.log",
+      "engine/artifacts/animation-milestone/wind-all-js.log",
+      "engine/artifacts/animation-milestone/wind-smoke.log",
+      "engine/artifacts/animation-milestone/wind-render.log",
+      "engine/artifacts/animation-milestone/wind-living.log",
+      "engine/artifacts/animation-milestone/wind-smoke/frame.json"
     ],
     "next": "Continue the remaining 276 object constructions and individually authored contextual repertoires. All 542 per-object 48-sequence audits remain open; complete personal visitor acting, guest-to-guest sessions, egg observation and physical tool handling before final integration and installation.",
     "checks": {
-      "javascript": 168,
+      "javascript": 172,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4507,7 +4520,7 @@
       "groundCompanyRenderP95Ms": 11.3,
       "groundCompanyTextileRegression": 824,
       "groundCompanyCreativeRegression": 289,
-      "architectureLifecycle": 293,
+      "architectureLifecycle": 297,
       "architectureUI": 21,
       "architectureRenderTests": 5,
       "architectureNativePoseParitySamples": 5454,
@@ -4518,11 +4531,11 @@
         "drawn": 2051,
         "workers": 1272,
         "companions": 0,
-        "medianMs": 4.600000023841858,
+        "medianMs": 4.699999988079071,
         "p95Ms": 9.800000011920929,
-        "sheets": 53,
-        "weatherStates": 12,
-        "note": "Actual native solo snapshots and 12 saved weather states. Development review, not the complete milestone performance audit."
+        "sheets": 63,
+        "weatherStates": 22,
+        "note": "Actual native solo snapshots and 22 captured weather states. Development review, not the complete milestone performance audit."
       },
       "architectureCompanyLifecycle": 1671,
       "architectureCompanyRenderTests": 3,
@@ -4535,10 +4548,10 @@
         "drawn": 1887,
         "workers": 2996,
         "companions": 1434,
-        "medianMs": 5.399999976158142,
+        "medianMs": 5.400000035762787,
         "p95Ms": 12,
         "sheets": 83,
-        "note": "Actual native shared scenes with selectable regular, rare and story visitors. All 48 visitor rigs checked. Development review, not the final full-milestone audit."
+        "note": "Actual native shared scenes, including pennant work after mast repositioning. Every staged companion remains selectable. All 48 visitor rigs checked; development review, not final milestone audit."
       },
       "playkitLifecycle": 164,
       "playkitUI": 24,
@@ -4575,10 +4588,13 @@
         "sheets": 40,
         "note": "Actual native shared scenes with all 48 visitor identities and Pip exercised. Every staged visitor has verified clickable bounds. Development replay, not the final milestone audit."
       },
-      "landmarkWeatherFrames": 12,
+      "landmarkWeatherFrames": 22,
       "landmarkLivingRegression": 694,
       "landmarkHabitatArrangement": 254,
-      "landmarkMeasuredFootprints": 542
+      "landmarkMeasuredFootprints": 542,
+      "weatherWindTests": 4,
+      "weatherWindFullTurnPoses": 96,
+      "weatherWindLivingRegression": 694
     },
     "limitations": [
       "258 of 542 object artworks reconstructed for review; 284 remain.",
@@ -4649,9 +4665,9 @@
     },
     "sourceSmoke": {
       "result": "PASS",
-      "frames": 96,
+      "frames": 93,
       "localAI": false,
-      "evidence": "engine/artifacts/animation-milestone/landmarks-smoke/frame.json"
+      "evidence": "engine/artifacts/animation-milestone/wind-smoke/frame.json"
     },
     "chatRelease": {
       "branch": "codex/pond-chat-2.36.1",
@@ -4687,6 +4703,22 @@
     "architectureCompanyScores": 49,
     "playkitObjects": 8,
     "playkitRoutineCores": 42,
-    "playkitCompanyScores": 25
+    "playkitCompanyScores": 25,
+    "weatherWind": {
+      "status": "implemented_and_verified",
+      "authority": "Saved native heading and strength; cosmetic drift never changes game state or object clocks",
+      "effects": [
+        "rain stroke and drift",
+        "snow drift",
+        "falling leaves",
+        "foreground reed lean",
+        "airborne motes",
+        "gust marks",
+        "pennant direction and foreshortening"
+      ],
+      "convention": "vane points into the wind; precipitation and cloth travel away",
+      "continuity": "incremental cosmetic drift; bounded resume step; location reset; reduced-motion freeze; outdoor gusts withheld in caves",
+      "sequenceCoverageAdded": 0
+    }
   }
 }

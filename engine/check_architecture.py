@@ -113,8 +113,13 @@ try:
     check(abs(a['architecture']['bearing']-b['architecture']['bearing'])<1e-9,'copper arrow follows native wind with frame-independent damping')
     saved=copy.deepcopy(a);k.update(p,'weather_vane',a,10,False,1,'stormy',.8);check(a==saved,'stored vane retains its last orientation')
     for heading,label in [(0,'East'),(.25,'South'),(.5,'West'),(.75,'North')]:
-        p.state['ecology']['wind_heading']=heading;k.update(p,'weather_vane',obj,30,True,.4,'sunny',heading)
+        p.state['ecology'].update(wind_heading=heading,wind=.4);k.update(p,'weather_vane',obj,30,True,.4,'sunny',heading)
         weather_frame('Vane / '+label+' wind','weather_vane',iid)
+    for sky in ('rainy','snowy','windy'):
+        weather(WeatherType(sky))
+        for heading,label in [(0,'East'),(.5,'West')]:
+            p.state['ecology'].update(wind_heading=heading,wind=.8);k.update(p,'weather_vane',obj,30,True,.8,sky,heading)
+            weather_frame('Vane / '+sky+' / '+label+' wind','weather_vane',iid)
     iid,obj=own('sundial')
     for hour,sky,visible,side in [(8,'sunny',True,-1),(12,'sunny',True,0),(16,'sunny',True,1),(23,'sunny',False,0),(12,'overcast',False,0),(12,'rainy',False,0)]:
         weather(WeatherType(sky),hour=hour);k.update(p,'sundial',obj,1,True,.2,sky,.3);a=obj['architecture'];check((a['sun']>.1)==visible,'sundial sunlight at '+str(hour)+' '+sky)
@@ -122,6 +127,10 @@ try:
         weather_frame('Sundial / '+str(hour)+':00 '+sky,'sundial',iid)
     weather(season=Season.SUMMER);k.update(p,'sundial',obj,1,True,.2);summer=obj['architecture']['shadow_length'];weather_frame('Sundial / summer noon','sundial',iid)
     weather(season=Season.WINTER);k.update(p,'sundial',obj,1,True,.2);check(obj['architecture']['shadow_length']>summer,'winter makes the stylized solar shadow longer');weather_frame('Sundial / winter noon','sundial',iid)
+    weather();iid,obj=own('flag_pole');obj['architecture']['flag']=1
+    for heading,label in [(0,'East'),(.25,'South'),(.5,'West'),(.75,'North')]:
+        p.state['ecology'].update(wind_heading=heading,wind=.65);k.update(p,'flag_pole',obj,30,True,.65,'sunny',heading)
+        check(abs(k.math.sin(obj['architecture']['bearing']-heading*k.math.pi*2))<1e-8,'native pennant bearing follows '+label+' wind');weather_frame('Pennant / '+label+' wind','flag_pole',iid)
     weather();iid,obj=own('flag_pole',True);other=p.object_state('flag_pole',g.habitat.placed_items[1].instance_id);uses=obj['uses'];check(k.request(p,'flag_pole','flag_hoist',iid)[0],'explicit pennant command starts real halyard work');arrived()
     while obj['architecture']['flag']<.3:step(True)
     value=obj['architecture']['flag'];check(0<value<1 and other['architecture']['flag']==0,'halyard moves only the selected flag')

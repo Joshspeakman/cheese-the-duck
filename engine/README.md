@@ -482,7 +482,15 @@ their body scale; short guests use low mounting bolts and hanging straw.
 
 Saved weather fronts now carry a wind direction. The vane turns toward that
 direction on the simulation clock; the scarf and pennant respond to the actual
-breeze. The sundial's decorative shadow follows the game hour, lengthens in
+breeze. Rain, snow, falling leaves, reeds and drifting motes use the same native
+wind vector. Precipitation travels away from the direction the vane points into;
+calm rain falls vertically. Particle drift accumulates in small presentation
+steps, so a direction change turns existing trails instead of jumping them to
+a new position. Long window stalls do not cause a catch-up burst. Reduced motion
+holds drift still, and sheltered caves have no outdoor gusts. The pennant narrows
+edge-on before moving to the opposite side of its mast.
+
+The sundial's decorative shadow follows the game hour, lengthens in
 winter, and disappears at night, in rain or under overcast skies. It is not an
 exact civil clock. Stored landmarks retain their physical state without running
 their mechanisms. Renderer time cannot advance them or alter saved state.
@@ -506,8 +514,10 @@ Disposable-save checks exercise original rewards, independent copies, partial
 controls, cancellation, care, weather, movement, storage, full save/reload,
 1,728 hatched-age poses and 5,454 native/renderer control samples. The renderer
 replays actual game frames, and the notebook harness sends real commands.
-Twelve captured native weather states also check the rendered vane and sundial
-against saved direction, actual scene hour, cloud cover and season.
+Twenty-two captured native weather states also check the rendered vane, pennant
+and sundial against saved direction, actual scene hour, cloud cover and season.
+Wind tests compare 30/120 Hz integration, cardinal directions, rain glyph lean,
+calm weather, reduced motion, indoor shelter and a full turn of the pennant.
 Shared structure checks use `.venv/bin/python engine/check_architecture_company.py`,
 `node --test engine/tests/architecture-company.test.mjs` and
 `engine/node_modules/.bin/electron engine/architecture-company-check.cjs`.
