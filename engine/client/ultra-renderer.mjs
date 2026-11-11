@@ -6,6 +6,7 @@ import { ItemPainter } from './ultra-items.mjs';
 import {occupiedGeometry,heldNestGeometry} from './residence-stage.mjs';
 import {ridingGeometry} from './playground-stage.mjs';
 import {waterGeometry} from './water-routines.mjs';
+import {seatingGeometry} from './seating-routines.mjs';
 import { SceneEffects,luminousPalette } from './scene-effects.mjs';
 import { W,H,C,M } from './ultra-grid.mjs';
 import { InterfaceRenderer } from './interface-renderer.mjs';
@@ -104,6 +105,15 @@ export class SceneCanvas {
           drawCharacter(this.ctx,{...bath.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
           if(bath.front)this.items.draw(this.ctx,bath.front,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
         }
+        let seatFront=null,climbers=[];
+        for(const sitter of actor.sitters||[]){
+          const seated=seatingGeometry(actor,sitter,this.sx,this.sy);
+          if(sitter.inside<.99)climbers.push(seated.character);
+          else drawCharacter(this.ctx,{...seated.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
+          seatFront=seated.front||seatFront;
+        }
+        if(seatFront)this.items.draw(this.ctx,seatFront,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
+        for(const character of climbers)drawCharacter(this.ctx,{...character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
       }
       else drawCharacter(this.ctx,{...actor,sun:light.sun,outline:light.outline,backdrop:(x,y)=>this.backdropAt(x,y)},this.sx,this.sy,surface);
     }

@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from engine.social_brains import Minds, ACTIONS, LABELS, action_key, clamp, stable
 from engine.local_speech import speak
 from world.guest_cast import guest_profile
-from engine import encounters, visitor_shelters, shelter_company, playdates
+from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests
 
 CHEESE_VOICE = {
  'bio': 'Cheese is a scruffy, opinionated little duck: dry wit, petty pond grievances, theatrical indignation and a tender streak he tries to hide. He is curious, not a helpful assistant.',
@@ -32,6 +32,7 @@ class MindGarden:
         self.coactivities={}
         self.housing={};self.shelter_retry={};self.housing_last=pond.state['elapsed']
         self.house_scenes={}
+        self.furnishings={};self.seat_retry={};self.seat_scenes={}
         self._cheese_traits=None
 
     @property
@@ -133,6 +134,17 @@ class MindGarden:
                 history=self.pond.state['objects'].get(plan['target'],{}).get('routines',{})
                 facts['familiar_nest_routines']=[ROUTINES[k]['label'] for k,n in sorted(history.items(),key=lambda entry:entry[1],reverse=True) if k in ROUTINES and n>=2][:3]
         housing=self.housing.get(key)
+        seat=self.furnishings.get(key)
+        if seat:
+            facts['current_activity']={'approach':'Walking to a seat','enter':'Settling onto a seat','inside':seat['routine']['label'],'exit':'Getting up from a seat'}[seat['phase']]
+            facts['resting_place']=seat['id'].replace('_',' ')
+        if plan and plan.get('seat_routine'):
+            facts['current_activity']=('Paused: ' if plan.get('paused') else '')+plan['seat_routine'].get('label',plan['label'])
+        seated_company=furniture_rests.company_for(self,key)
+        if seated_company:
+            partner=seated_company['b'] if seated_company['a']==key else seated_company['a']
+            facts['shared_activity']={'with':self.model.residents[partner]['name'],
+                'activity':furniture_rests.ROUTINES[seated_company['id']]['label'],'status':'seated together now'}
         if housing:
             facts['current_activity']={'approach':'Walking to shelter','enter':'Settling under cover','inside':'Waiting out the weather','exit':'Heading back outside'}[housing['phase']]
             facts['destination']=housing['id'].replace('_',' ')
@@ -261,7 +273,9 @@ class MindGarden:
         pairs=[];keys=list(self.present)
         for i,key in enumerate(keys):
             for other in keys[i+1:]:
-                if key in self.housing or other in self.housing or playdates.active(self,key) or playdates.active(self,other):continue
+                if 'cheese' in (key,other) and self.pond.state.get('plan',{}):
+                    if self.pond.state['plan'].get('seating'):continue
+                if key in self.housing or other in self.housing or key in self.furnishings or other in self.furnishings or playdates.active(self,key) or playdates.active(self,other):continue
                 a,b=self.present[key],self.present[other];distance=math.hypot(a[0]-b[0],(a[1]-b[1])*2)
                 pair='|'.join(sorted((key,other)))
                 if distance<24 and self.now>self.pair_cooldowns.get(pair,0):
@@ -297,6 +311,7 @@ class MindGarden:
         house_dt=min(5,max(0,self.now-self.housing_last));self.housing_last=self.now
         visitor_shelters.tick(self,house_dt)
         shelter_company.tick(self,house_dt)
+        furniture_rests.tick(self,house_dt)
         if self.now<self.next_tick:return
         dt=min(5,max(0,self.now-self.last_at));self.last_at=self.now;self.next_tick=self.now+1
         # Absent residents do not accumulate invented interactions or rewards.
@@ -306,13 +321,16 @@ class MindGarden:
             if key=='cheese':continue
             r=self.model.residents[key];r['energy']=clamp(r['energy']-dt/2400);r['social']=clamp(r['social']-dt/1800)
             task=self.tasks.get(key)
-            if self.encounter_for(key) or key in self.housing or playdates.active(self,key):
+            if self.encounter_for(key) or key in self.housing or key in self.furnishings or playdates.active(self,key):
                 if task:task['until']+=dt
                 if key in self.housing and key in self.pond.state['friends']:
                     self.pond.state['friends'][key].update(activity='sheltering' if self.housing[key]['phase']=='inside' else 'walking to shelter',location=self.pond.location)
                 elif playdates.active(self,key) and key in self.pond.state['friends']:
                     play=playdates.active(self,key)
                     self.pond.state['friends'][key].update(activity=('walking over to play' if play['phase']=='approach' else play['label']),location=self.pond.location)
+                elif key in self.furnishings and key in self.pond.state['friends']:
+                    seat=self.furnishings[key]
+                    self.pond.state['friends'][key].update(activity=seat['routine']['label'] if seat['phase']=='inside' else 'walking to a seat',location=self.pond.location)
                 continue
             if task and self.now>=task['until']:
                 action=task['action'];before=r['energy']+r['social']+r['mood']
@@ -363,6 +381,10 @@ class MindGarden:
         if shelter:
             result['shelter']=shelter
             return result
+        seat=furniture_rests.motion(self,key)
+        if seat:
+            result['meeting']=seat
+            return result
         play=playdates.motion(self,key)
         if play:
             result['meeting']=play
@@ -389,6 +411,7 @@ class MindGarden:
         return {'residents':[self.model.snapshot(k,k in self.present) for k in self.model.residents],
                 'performances':self.performances(),
                 'residences':visitor_shelters.snapshot(self),
+                'seats':furniture_rests.snapshot(self),
                 'exchanges':copy.deepcopy(self.model.state['exchanges'][-30:]),'voice':dict(self.voice),
                 'pending':self.model.residents[self.pending['key']]['name'] if self.pending else ('Cheese' if getattr(self.game,'_pending_talk_future',None) else None),
                 'feedback':self.feedback}

@@ -11,6 +11,8 @@ import {actorPerformance} from './performances.mjs';
 import {playdateStage} from './playdates.mjs';
 import {playgroundStage} from './playground-stage.mjs';
 import {waterStage} from './water-routines.mjs';
+import {seatOccupants} from './seating-routines.mjs';
+import {residentEnvelope} from './resident-envelope.mjs';
 
 const WATER_BIOMES=new Set(['pond','riverside','beach','swamp']);
 const choice=(s,n)=>s[Math.floor(n*s.length)%s.length];
@@ -297,7 +299,7 @@ export class LivingWorld {
     this.characters.push({...sprite,x,y,cheese:!visitor});
   }
   actors(s,t,dt){
-    const g=this.grid,actors=[];
+    const g=this.grid,actors=[],seated=seatOccupants(s);
     for(const item of [...(s.structures||[]),...(s.items||[])]){
       const [x,y]=this.project(s,item.x,item.y);
       actors.push({y,draw:()=>{
@@ -308,6 +310,8 @@ export class LivingWorld {
         let interaction=owned?plan:null;
         if(occupants.some(r=>r.phase!=='approach'))interaction=interaction||{phase:'act',kind:'rest'};
         if(interaction&&occupants.length+(owned&&plan.residence?1:0)>1)interaction={...interaction,shared:true};
+        const sitters=seated.filter(r=>r.id===item.id&&matches(r.destination)&&r.phase!=='approach');
+        if(sitters.length)interaction={...(interaction||{phase:'act'}),seat_occupants:sitters};
         this.objects.push({...itemSprite(item.id,t,{motion:s.motion!==false,context:s,originalArt:item.art,state:s.living?.objects?.[item.id],interaction}),item:true,x,y,worldPosition:[item.x,item.y],scale:itemWorldScale(item.id)});
       }});
     }
@@ -370,6 +374,19 @@ export class LivingWorld {
       const inside=r.phase==='inside'?1:r.phase==='enter'?clamp(r.elapsed/3,0,1):clamp(1-r.elapsed/3,0,1);
       (home.occupants||=[]).push({character,inside,slot:r.slot,key:r.actor});
       this.characters=this.characters.filter(c=>c!==character);
+    }
+    for(const r of seated){
+      if(r.phase==='approach')continue;
+      const actorId=r.actor==='story:pip'?'story:lost_duckling':r.actor;
+      const original=this.characters.find(c=>r.actor==='cheese'?c.cheese:c.id===actorId);
+      const home=this.objects.find(o=>o.id===r.id&&o.construction==='furniture-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-r.destination[i])<1.1));
+      if(!original||!home?.anchors?.slots)continue;
+      const source=r.actor==='cheese'?s.duck:s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
+      const inside=r.phase==='inside'?1:r.phase==='enter'?clamp(r.elapsed/3,0,1):clamp(1-r.elapsed/3,0,1);
+      const performance={kind:'seating',routine:r.routine||{id:'perch_watch',elapsed:0},motion:s.motion!==false};
+      const character={...characterSprite({...source,state:'idle',facing:r.slot===0,performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese'};
+      (home.sitters||=[]).push({character,inside,slot:r.slot,envelope:residentEnvelope(character,'seating')});
+      this.characters=this.characters.filter(c=>c!==original);
     }
     const partnerId=plan?.company?.partner==='story:pip'?'story:lost_duckling':plan?.company?.partner;
     const partner=this.characters.find(c=>c.id===partnerId),shared=!residence&&playdateStage(plan,this.objects,cheese,partner,s.motion!==false);

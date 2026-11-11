@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: completed cooperative toy arrival/interruption checks, then rebuilt 23 water-related objects with separate construction geometry, mechanisms, wear, freezing and heated water. Added sixteen simulation-owned bathing/swimming/observing routines, age/weather gates, saved completion history, current-activity chat facts, and native rendered replays. The full catalogue, 48 bespoke sequences per object, all visitor repertoires, placement layout and final installation remain unfinished.",
+  "previous_goal_turn": "Progress: reconstructed 28 furniture objects and added 12 solo seating scores plus four shared scores. Cheese, ordinary visitors, rare visitors and Pip reserve independent physical seats, arrive, rest together and get up. Completion and interruption, real learning, pause/load, age/species contact and native rendered replays verified. Full catalogue reconstruction, 48 bespoke sequences per object, guest-specific repertoires, placement spacing and installation remain unfinished.",
   "items": [
     {
       "id": "hat_red",
@@ -286,20 +286,26 @@
     {
       "id": "chair_wood",
       "family": "chair",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Nine seats have real reservations, articulated rests and shared company; each object still needs its full bespoke repertoire."
     },
     {
       "id": "chair_throne",
       "family": "throne",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Nine seats have real reservations, articulated rests and shared company; each object still needs its full bespoke repertoire."
     },
     {
       "id": "table_small",
       "family": "table",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "bed_small",
@@ -318,20 +324,26 @@
     {
       "id": "couch",
       "family": "sofa",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Nine seats have real reservations, articulated rests and shared company; each object still needs its full bespoke repertoire."
     },
     {
       "id": "bookshelf",
       "family": "shelf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "desk",
       "family": "desk",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "lamp_floor",
@@ -342,8 +354,10 @@
     {
       "id": "mirror",
       "family": "mirror",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "pool_kiddie",
@@ -670,26 +684,34 @@
     {
       "id": "bookshelf_wood",
       "family": "shelf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "dresser",
       "family": "cabinet",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "mirror_standing",
       "family": "mirror",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "desk_writing",
       "family": "desk",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "piano",
@@ -700,32 +722,42 @@
     {
       "id": "wardrobe",
       "family": "cabinet",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "sofa_fancy",
       "family": "sofa",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Nine seats have real reservations, articulated rests and shared company; each object still needs its full bespoke repertoire."
     },
     {
       "id": "coffee_table",
       "family": "table",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "bar_cart",
       "family": "table",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "grandfather_clock",
       "family": "clock",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "rocking_horse",
@@ -737,26 +769,34 @@
     {
       "id": "cabinet",
       "family": "cabinet",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "fireplace",
       "family": "fireplace",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "tv_stand",
       "family": "tv",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "bean_bag",
       "family": "cushion",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Nine seats have real reservations, articulated rests and shared company; each object still needs its full bespoke repertoire."
     },
     {
       "id": "koi_pond",
@@ -1046,8 +1086,10 @@
     {
       "id": "hammock",
       "family": "hammock",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Nine seats have real reservations, articulated rests and shared company; each object still needs its full bespoke repertoire."
     },
     {
       "id": "scarecrow",
@@ -1082,8 +1124,10 @@
     {
       "id": "garden_bench",
       "family": "bench",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Nine seats have real reservations, articulated rests and shared company; each object still needs its full bespoke repertoire."
     },
     {
       "id": "fountain_decorative",
@@ -1138,8 +1182,10 @@
     {
       "id": "trophy_case",
       "family": "shelf",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "compass_rose",
@@ -1660,8 +1706,10 @@
     {
       "id": "golden_throne",
       "family": "throne",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Nine seats have real reservations, articulated rests and shared company; each object still needs its full bespoke repertoire."
     },
     {
       "id": "world_tree",
@@ -2140,8 +2188,10 @@
     {
       "id": "workbench",
       "family": "desk",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "storage_chest",
@@ -3266,14 +3316,18 @@
     {
       "id": "tiny_table",
       "family": "table",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "cushion",
       "family": "cushion",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Nine seats have real reservations, articulated rests and shared company; each object still needs its full bespoke repertoire."
     },
     {
       "id": "picture_frame",
@@ -3284,8 +3338,10 @@
     {
       "id": "clock",
       "family": "clock",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "operationPrototype": true,
+      "animation": "Detailed construction and moving parts; physical individual-use repertoire remains pending."
     },
     {
       "id": "potted_plant",
@@ -3634,10 +3690,10 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "cooperative_toys_and_waterworks",
+    "sourcePhase": "furniture_and_independent_seating",
     "fullyOverhauled": false,
-    "constructedObjects": 65,
-    "remainingArtwork": 477,
+    "constructedObjects": 93,
+    "remainingArtwork": 449,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -3685,18 +3741,28 @@
       "engine/artifacts/animation-milestone/water-live-cascade_listen.png",
       "engine/artifacts/animation-milestone/water-regression-living.log",
       "engine/artifacts/animation-milestone/water-regression-brains.log",
-      "engine/artifacts/animation-milestone/water-regression-playdates.log"
+      "engine/artifacts/animation-milestone/water-regression-playdates.log",
+      "engine/artifacts/animation-milestone/furniture-simulation.json",
+      "engine/artifacts/animation-milestone/furniture-render.json",
+      "engine/artifacts/animation-milestone/furniture-js-suite.log",
+      "engine/artifacts/animation-milestone/furniture-native.log",
+      "engine/artifacts/animation-milestone/seating-0.png",
+      "engine/artifacts/animation-milestone/seating-1.png",
+      "engine/artifacts/animation-milestone/seating-2.png",
+      "engine/artifacts/animation-milestone/furniture-live-shared-garden_bench.png"
     ],
     "next": [
+      "Redesign real placement spacing and usable land to support larger objects without overlaps; do not solve this by teleporting rendered props away from simulation destinations.",
       "Deepen construction-specific nest/bed/house acting and each remaining item repertoire; the 51 shared nest scores do not by themselves satisfy 48 bespoke sequences per object.",
       "Add explicit nest body-facing transitions, construction-specific canopy/quilt/pillow/lining actions and species/age-specific climbing and doorway choreography.",
-      "Reconstruct the remaining 477 objects with authored details and anchors; account for larger footprints in placement so neighboring objects do not overlap.",
+      "Reconstruct the remaining 449 objects with authored details and anchors; account for larger footprints in placement so neighboring objects do not overlap.",
       "Expand guest-specific and age-specific behavior; eighteen shared tracks are not a complete bespoke catalogue.",
       "Extend invitations, prop handoffs and cooperative item use, with real arrival and completion evidence.",
-      "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation."
+      "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation.",
+      "Add physical reading, desk/workbench actions, cabinet/wardrobe/mirror use and construction-specific furniture routines; the 16 shared seating tracks do not satisfy the per-object 48-sequence target."
     ],
     "checks": {
-      "javascript": 87,
+      "javascript": 91,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 22,
@@ -3704,7 +3770,7 @@
       "learningBrains": 44,
       "shelterLifecycle": 30,
       "pairedLifecycle": 16,
-      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects.",
+      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays. Eight toy scores at three phases; native ordinary, rare-goose and story-Pip arrivals and shared play; all eight hatched ages and 48 visitor rigs have separate bounded contact anchors. Twenty-three water constructions and sixteen water scores reviewed on eight sheets; 495 native frames replayed, including 473 active bathing frames. Exact age-fitted sip contact, immersion, reduced motion, object removal and chat activity facts verified. Observation and sipping are also verified to leave cleanliness and exterior wetness unchanged; swimming, shallow bathing, spray play and heated soaking have separate need effects. Twenty-eight furniture drawings reviewed on five sheets; nine seating objects at three phases on three sheets; actual Cheese, regular friend, rare goose and Pip arrival/exit and solo/shared rests replayed. Belly contact, constant repertoire fit, every hatched age and all 48 cast rigs, reduced motion and fresh snapshots checked. Transitional climbers draw in front of the furniture lip.",
       "nestLifecycle": 34,
       "nestReplay": {
         "nativeSceneFrames": 41,
@@ -3743,6 +3809,15 @@
         "bathing": 473,
         "medianMs": 6.900000035762787,
         "p95Ms": 9.699999988079071
+      },
+      "furnitureLifecycle": 207,
+      "seatingNativeFrames": 877,
+      "furnitureReplay": {
+        "frames": 877,
+        "seated": 965,
+        "paired": 243,
+        "medianMs": 5.699999988079071,
+        "p95Ms": 9
       }
     },
     "limitations": [
@@ -3760,6 +3835,8 @@
     "nestObjectsUsingSharedScores": 5,
     "sharedShelterScores": 6,
     "sharedToyScores": 8,
-    "waterScores": 16
+    "waterScores": 16,
+    "seatingSoloTracks": 12,
+    "seatingSharedTracks": 4
   }
 }
