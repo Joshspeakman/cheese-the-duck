@@ -119,6 +119,9 @@ class MindGarden:
         plan=self.pond.state['plan'] if key=='cheese' else None
         if plan:
             facts['current_activity']=('Paused: ' if plan.get('paused') else '')+plan['label']
+            water=plan.get('water_routine')
+            if water and not water.get('done'):
+                facts['current_activity']=('Paused: ' if plan.get('paused') else '')+water['label']
             residence=plan.get('residence',{})
             if residence.get('inside') and not plan.get('paused'):
                 facts['resting_place']=residence['id'].replace('_',' ')

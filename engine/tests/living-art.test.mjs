@@ -9,7 +9,7 @@ import {scene} from './scenes.mjs';
 test('all items have an operating animation, physical weather state and immutable input',()=>{
  for(const item of catalog){
   const state={condition:.3,dirt:.8,wetness:.8,bond:.8},before=JSON.stringify(state);
-  const frames=new Set([.05,.23,.45,.7,1.05].map(time=>itemSprite(item.id,time,{state,interaction:{progress:time%1}}).art.join('\n')));
+  const frames=new Set([.05,.23,.45,.7,1.05].map(time=>itemSprite(item.id,time,{state,interaction:{phase:'act',progress:time%1}}).art.join('\n')));
   assert(frames.size>1,item.id+' operation must visibly animate');
   assert.notDeepEqual(itemSprite(item.id,0).art,itemSprite(item.id,0,{state}).art,item.id+' shows wear');
   assert.deepEqual(itemSprite(item.id,1,{motion:false,state,interaction:{progress:.5}}),itemSprite(item.id,40,{motion:false,state,interaction:{progress:.5}}));

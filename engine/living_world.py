@@ -12,7 +12,7 @@ from datetime import datetime
 from engine.item_profiles import ITEMS
 from engine.pond_stories import STORIES
 from engine.placements import outdoor_decorations, complete_structures
-from engine import shelters, nest_routines, playdates
+from engine import shelters, nest_routines, playdates, water_routines
 from world.guest_cast import guest_profile, guest_line
 
 NEEDS = ('hunger', 'energy', 'fun', 'cleanliness', 'social')
@@ -380,6 +380,11 @@ class LivingPond:
             profile = ITEMS[target]
             if profile['family'] in ('slide','swing','trampoline','seesaw','sandbox','horse') and target not in self.placed:
                 return False, 'Place '+profile['name']+' in the habitat before Cheese uses it.'
+            if target in water_routines.WATER:
+                if target not in self.placed:
+                    return False, 'Place '+profile['name']+' in the habitat before Cheese uses it.'
+                if not water_routines.choose(self,target):
+                    return False, 'Cheese would rather leave the water alone in this weather.'
             if profile['kind'] in ('food','wearable'):
                 return False, 'Use the original inventory or wardrobe to eat or equip this item.'
             duration, label = profile['duration'], profile['verb']+' '+profile['name']
@@ -475,6 +480,9 @@ class LivingPond:
         if g.duck.current_action in ('feed','play','clean','pet','sleep'):
             return
         residence = plan.get('residence')
+        if plan['kind']=='item' and plan['target'] in water_routines.WATER and not shelters.still_placed(self,{'id':plan['target'],'destination':plan['destination']}):
+            self.cancel()
+            return
         if residence and not shelters.still_placed(self, residence):
             self.cancel()
             self.notice('That resting place has moved. Cheese steps back out to find somewhere else.')
@@ -496,7 +504,8 @@ class LivingPond:
         # Preserve the ordinary completion once; interrupting never grants it.
         routine_holding = nest_routines.advance(self, plan, dt)
         company_holding = playdates.advance(self, plan, dt)
-        if plan.get('company', {}).get('phase') == 'cancelled':
+        water_holding = water_routines.advance(self, plan, dt)
+        if plan.get('company', {}).get('phase') == 'cancelled' or plan.get('water_routine',{}).get('interrupted'):
             # An interrupted shared activity must not fall through to the normal
             # item completion either. Release both residents and leave use counts
             # and needs unchanged, even if the toy remains owned but is put away.
@@ -504,11 +513,11 @@ class LivingPond:
             return
         weather_holding = bool(residence and residence['roof'] and shelters.adverse(self.weather_type)
                        and plan['phase'] == 'act' and g.duck.needs.hunger > 15)
-        holding = weather_holding or routine_holding or company_holding
-        if company_holding:
+        holding = weather_holding or routine_holding or company_holding or water_holding
+        if company_holding or water_holding:
             g.renderer.duck_pos.cancel_movement()
             g.renderer.duck_pos.set_state_by_name('thinking',0)
-        elif plan.get('company',{}).get('done'):
+        elif plan.get('company',{}).get('done') or plan.get('water_routine',{}).get('done'):
             plan['elapsed']=max(plan['elapsed'],plan['duration']*.9)
         if residence:
             residence['holding'] = weather_holding
@@ -528,7 +537,7 @@ class LivingPond:
         if phase in ('act','settle'):
             if phase != self._last_plan_visual:
                 g.renderer.duck_pos.cancel_movement()
-                g.renderer.duck_pos.set_state_by_name(state, duration=0 if residence or company_holding else max(1, plan['duration']-plan['elapsed']))
+                g.renderer.duck_pos.set_state_by_name(state, duration=0 if residence or company_holding or water_holding else max(1, plan['duration']-plan['elapsed']))
                 self._last_plan_visual = phase
         if target in s['objects']:
             s['objects'][target]['active'] = phase == 'act'
@@ -538,7 +547,7 @@ class LivingPond:
                 nest_routines.advance(self, plan, 0.)
         if ratio >= 1:
             s['plan'] = None  # Consume once before invoking callbacks.
-            if residence or plan.get('company'):
+            if residence or plan.get('company') or plan.get('water_routine'):
                 g.renderer.duck_pos.cancel_movement()
                 g.renderer.duck_pos.set_state_by_name('idle',0)
             if target in s['objects']: s['objects'][target]['active'] = False
@@ -554,6 +563,8 @@ class LivingPond:
         if kind in ('item','clean_item','repair_item'):
             if target not in self.owned: return
             obj = s['objects'][target]; profile = ITEMS[target]; skill = profile['skill']
+            water_mode=water_routines.complete(self,plan)
+            if water_mode=='edge':skill='observation'
             if kind == 'clean_item': obj['dirt'] = 0; message = 'Every seam and corner looks cared for.'
             elif kind == 'repair_item':
                 if not g.materials.has_materials({'twig':1}):
@@ -568,9 +579,9 @@ class LivingPond:
                 obj['uses'] += 1; obj['last_use'] = s['elapsed']
                 obj['condition'] = clamp(obj['condition']-.006, .15, 1)
                 obj['bond'] = clamp(obj['bond']+.025)
-                self.change_need(profile['need'], 2+obj['condition']*2)
+                if not water_mode:self.change_need(profile['need'], 2+obj['condition']*2)
                 if profile['kind']=='plant': obj['growth']=clamp(obj['growth']+.08); s['ecology']['flowers']=clamp(s['ecology']['flowers']+.01)
-                if profile['kind']=='water': obj['wetness']=1
+                if profile['kind']=='water' and not water_mode: obj['wetness']=1
                 message = profile['name']+(' is becoming an old favorite.' if obj['uses']>=5 else ' has a little more history now.')
                 s['preferences'][target] = clamp(s['preferences'].get(target,.5)+.025)
         elif kind == 'forage':
@@ -677,8 +688,12 @@ class LivingPond:
             for key in self.placed:
                 profile=ITEMS.get(key);obj=s['objects'].get(key)
                 if not profile or not obj or profile['kind'] in ('food','wearable'):continue
+                water_score=water_routines.choose(self,key) if key in water_routines.WATER else None
+                if key in water_routines.WATER and not water_score:continue
                 if s['elapsed']-obj['last_use']<120:continue
-                score=(100-getattr(n,profile['need']))*.6+(1-obj['bond'])*10+s['preferences'].get(key,.5)*8
+                mode=water_routines.ROUTINES[water_score]['mode'] if water_score else None
+                need='fun' if mode=='edge' else 'energy' if mode in ('sip','soak') else profile['need']
+                score=(100-getattr(n,need))*.6+(1-obj['bond'])*10+s['preferences'].get(key,.5)*8
                 choices.append(('item',key,score,'a useful possession can meet a need'))
         ranked=[]
         for kind,target,score,reason in choices:
@@ -883,6 +898,8 @@ class LivingPond:
         plan = copy.deepcopy(self.state['plan'])
         if plan:
             plan['progress'] = clamp(plan['elapsed']/plan['duration'])
+            if plan.get('water_routine',{}).get('label'):
+                plan['label']=plan['water_routine']['label']
             if plan.get('company'):
                 plan['company']=playdates.view(plan)
                 if not plan['company'].get('done'):plan['label']=plan['company']['label']

@@ -1,4 +1,5 @@
 import {nestPose} from './nest-routines.mjs';
+import {waterPose} from './water-routines.mjs';
 import HOME_COMPANY from './animation/home-company.json' with {type:'json'};
 // Authored joint tracks for two residents. Times are fractions of the shared
 // simulation-owned scene; A and B deliberately take different turns.
@@ -38,6 +39,9 @@ export const ITEM_PERFORMANCES={
  dig:[K(0),K(.2,{x:1,y:1.6,b:.5,w:.4}),K(.4,{x:-.6,y:.7,w:.8,mark:'.'}),K(.6,{x:.8,y:1.4,b:.4}),K(.8,{y:-.3,w:.6,eye:'^'}),K(1)],
 };
 export function performancePose(performance,stage='adult'){
+ if(performance?.kind==='water'){
+  const pose=waterPose(performance.routine,performance.motion!==false);return pose?scalePose(pose,stage):null;
+ }
  if(performance?.kind==='nest'){
   const pose=nestPose(performance.routine,performance.motion!==false);if(!pose)return null;
   return scalePose(pose,stage);

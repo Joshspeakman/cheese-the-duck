@@ -4,6 +4,7 @@
 const hash=s=>[...s].reduce((n,c)=>(n*33+c.charCodeAt(0))>>>0,17);
 const has=(family,words)=>words.split(' ').includes(family);
 export function itemProfile(item,family){
+ if(item.id==='pond_mat')return {kind:'comfort',material:'fabric',skill:'care',verb:'Settle on',need:'energy',duration:24};
  let kind='keepsake',material='ceramic',skill='observation',verb='Examine',need='fun';
  if(has(family,'rose tulip sunflower tree cherry willow cactus bamboo bonsai flytrap fern flowerpot mushroom hedge garden clover corn peas grapes reed leaf')){kind='plant';material='leaf';skill='gardening';verb='Tend';}
  else if(has(family,'pool fountain waterfall sprinkler birdbath bowl pond')){kind='water';material='stone';skill='stewardship';verb='Splash';need='cleanliness';}

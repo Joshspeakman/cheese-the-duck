@@ -1,0 +1,60 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Waterworks</title>
+<style>body{margin:24px;background:#142b23;color:#e5d8b4;font:20px Georgia}canvas{display:block;max-width:100%;margin:24px 0}</style>
+<h1>Waterworks</h1>
+<script type="module">
+import {WATER_BLUEPRINTS} from '../client/waterworks.mjs';
+import {itemSprite,ItemPainter} from '../client/ultra-items.mjs';
+import {WATER_ROUTINES,waterGeometry} from '../client/water-routines.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {LivingWorld} from '../client/ultra-world.mjs';
+import {drawCharacter} from '../client/ultra-characters.mjs';
+import {scene} from './scenes.mjs';
+const painter=new ItemPainter();
+window.reviewWaterworks=()=>{
+ const images={},ids=Object.keys(WATER_BLUEPRINTS);
+ for(let page=0;page<4;page++){
+  const canvas=document.createElement('canvas');canvas.width=1680;canvas.height=1350;const c=canvas.getContext('2d');
+  c.fillStyle='#142b23';c.fillRect(0,0,canvas.width,canvas.height);
+  ids.slice(page*6,page*6+6).forEach((id,n)=>{
+   const m=itemSprite(id,2.3,{context:{hour:15,season:'summer'},interaction:{phase:'act'}}),x=(n%3)*560,y=Math.floor(n/3)*675;
+   c.fillStyle='#e5d8b4';c.font='22px Menlo';c.fillText(id,x+20,y+30);
+   const unit=Math.min(5.8,510/m.width,590/(m.art.length*1.5));
+   painter.draw(c,m,x+280,y+635,unit/m.detailScale,{surface:'#142b23',outline:'#0a1712'});
+  });images['waterworks-'+page]=canvas.toDataURL('image/png');document.body.append(canvas);
+ }
+ return images;
+};
+const ITEMS={shallow_steps:'pool_kiddie',paddle_loop:'pool_large',lazy_drift:'pool_large',wing_rinse:'bird_bath',bubble_soak:'hot_tub',steam_stretch:'hot_tub_deluxe',watch_koi:'koi_pond',small_sips:'water_bowl',fountain_rings:'fountain_small',catch_spray:'sprinkler',spray_dash:'sprinkler_system',cascade_listen:'waterfall',rain_rings:'pond',moon_reflection:'pond',ripple_watch:'birdbath',ice_inspect:'pond'};
+window.reviewBathing=()=>{
+ const images={},ids=Object.keys(WATER_ROUTINES),world=new LivingWorld();
+ for(let page=0;page<4;page++){
+  const canvas=document.createElement('canvas');canvas.width=1680;canvas.height=1800;const c=canvas.getContext('2d');c.fillStyle='#142b23';c.fillRect(0,0,1680,1800);
+  ids.slice(page*4,page*4+4).forEach((id,row)=>[.2,.4,.7].forEach((progress,col)=>{
+   const target=ITEMS[id],routine={id,elapsed:progress*WATER_ROUTINES[id].duration,done:false};
+   const s=scene({duck:{x:60,y:24,stage:row%2?'hatchling':'adult',state:'thinking'},items:[{id:target,x:60,y:24}],living:{plan:{kind:'item',target,phase:'act',destination:[60,24],elapsed:20,duration:30,water_routine:routine},ecology:{},objects:{},projects:[],garden:[],minds:{}}});
+   const home=world.render(s,2,.03).objects.find(o=>o.bather),unit=Math.min(5.4,510/(home.width*home.scale*home.detailScale),370/(home.art.length*home.scale*home.detailScale*1.5)),sx=unit,sy=unit*1.5;
+   home.x=(col*560+280)/sx;home.y=(row*450+430)/sy;home.bather.character.x=home.x;home.bather.character.y=home.y;
+   c.fillStyle='#e5d8b4';c.font='16px Menlo';c.fillText(id+' · '+progress,col*560+14,row*450+24);
+   painter.draw(c,home,home.x*sx,home.y*sy,sx*home.scale,{surface:'#142b23',outline:'#0a1712'});
+   const bath=waterGeometry(home,home.bather,sx,sy);drawCharacter(c,{...bath.character,sun:.9,outline:'#0a1712'},sx,sy,'#142b23');
+   if(bath.front)painter.draw(c,bath.front,home.x*sx,home.y*sy,sx*home.scale,{surface:'#142b23',outline:'#0a1712',shadow:false});
+  }));images['water-acting-'+page]=canvas.toDataURL('image/png');document.body.append(canvas);
+ }
+ return images;
+};
+window.replayWater=frames=>{
+ const view=new SceneCanvas();view.resize(1440,900);const images={},costs=[];let bathing=0;
+ for(const [i,s]of frames.entries()){
+  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
+  if(JSON.stringify(s)!==before)throw Error('Renderer mutated a water snapshot');
+  const plan=s.living.plan,routine=plan?.water_routine,home=view.world.objects.find(o=>o.bather);
+  if(plan?.paused||routine?.done){if(home)throw Error('Paused or completed bather remains staged');continue;}
+  if(routine&&plan.phase==='act'){
+   if(!home)throw Error('Missing real bather at '+i);bathing++;
+   const p=routine.elapsed/WATER_ROUTINES[routine.id].duration;
+   if(p>.35&&!images[routine.id])images[routine.id]=view.canvas.toDataURL('image/png');
+  }
+ }
+ costs.sort((a,b)=>a-b);return {frames:frames.length,bathing,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+</script>

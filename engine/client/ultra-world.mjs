@@ -10,6 +10,7 @@ import {residenceStage} from './residence-stage.mjs';
 import {actorPerformance} from './performances.mjs';
 import {playdateStage} from './playdates.mjs';
 import {playgroundStage} from './playground-stage.mjs';
+import {waterStage} from './water-routines.mjs';
 
 const WATER_BIOMES=new Set(['pond','riverside','beach','swamp']);
 const choice=(s,n)=>s[Math.floor(n*s.length)%s.length];
@@ -346,6 +347,13 @@ export class LivingWorld {
     actors.push({y,draw:()=>this.actor(s,t,x,y,{...s.duck,state})});
     actors.sort((a,b)=>a.y-b.y).forEach(a=>a.draw());
     const cheese=this.characters.find(c=>c.cheese),residence=residenceStage(plan,this.objects,cheese);
+    const bathing=waterStage(plan,this.objects,cheese,s.duck.stage,s.motion!==false);
+    if(bathing){
+      const performance={kind:'water',routine:plan.water_routine,motion:s.motion!==false};
+      const character={...characterSprite({...s.duck,state:'idle',facing:bathing.pose.facing,performance},t),x:cheese.x,y:cheese.y,cheese:true};
+      bathing.home.bather={character,seat:bathing.seat,inside:bathing.inside,pose:bathing.pose,immersed:bathing.immersed};
+      this.characters=this.characters.filter(c=>c!==cheese);
+    }
     if(residence){
       const routine=plan.phase==='act'&&!plan.residence.routine?.done?plan.residence.routine:null;
       const resident=routine?{...characterSprite({...s.duck,state:'idle',facing:true,performance:{kind:'nest',routine,motion:s.motion!==false}},t),x:cheese.x,y:cheese.y,cheese:true}:residence.inside<.99?{...characterSprite({...s.duck,state:'walking'},t),x:cheese.x,y:cheese.y,cheese:true}:cheese;
