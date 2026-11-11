@@ -247,8 +247,8 @@ Resident speech uses the local Qwen3 model and llama.cpp runtime described above
 
 The next animation milestone is in development on this branch and has **not**
 replaced the installed game; the separate chat update is installed as 2.36.1. Its tracker is
-`overhaul/animation-milestone/requirements.json`: 219 of 542 object drawings have
-been reconstructed, with 323 remaining. The full 48 bespoke sequences per object
+`overhaul/animation-milestone/requirements.json`: 237 of 542 object drawings have
+been reconstructed, with 305 remaining. The full 48 bespoke sequences per object
 and all guest/age/context coverage remain unfinished.
 
 The lighting work adds 27 distinct constructions, from pleated lanterns and
@@ -388,6 +388,35 @@ Shared textile validation uses `.venv/bin/python engine/check_textile_company.py
 and `engine/node_modules/.bin/electron engine/textile-company-check.cjs`, with
 actual regular/rare/story arrivals, contact timing, both brains, native replay
 and all 48 visitor rigs.
+
+### Ground surfaces in development
+
+Eighteen paths, floor panels and the crafting plank now have larger authored
+construction: irregular stepping stones, cobble/pebble courses, layered slate,
+veined marble, checkerboard and fish mosaic, framed glass, blue ice, deck grain,
+raked sand, powder snow, cloud billows, rainbow bands, lava crust and star lanes.
+The 32 initial native routines use actual surface contacts. Young and elder
+footing stays small and deliberate; narrow paths retain their real stone centers.
+Cheese watches lava from outside its lip. Rain interrupts exposed handling with a
+retreat that starts from the current pose and grants no completed-session reward.
+
+Each physical copy saves footprints, sand furrows, powder, frost and care history.
+Raking draws three actual lines; smoothing removes existing marks. Snow compacts
+under steps, accumulates from pond snowfall and thins in warmth. Rain washes
+marks away. Stored copies retain their state. Inspecting a crafting plank never
+consumes it or invents a repair. The notebook updates during real use, and speech
+receives nearby material facts only after arrival. Completed uses still go through
+the original inventory, needs and memory rules.
+
+These are initial constructions and cores. Visitor participation, egg listening,
+physical tool pickup/put-away, individual mood/season/personality acting and each
+object's 48 meaningful sequences remain open. Validation uses
+`.venv/bin/python engine/check_groundworks.py`,
+`node --test engine/tests/groundworks.test.mjs`,
+`engine/node_modules/.bin/electron engine/groundworks-check.cjs` and
+`engine/node_modules/.bin/electron engine/groundworks-ui-check.cjs`.
+The checks use disposable saves, real notebook commands, full save/reload,
+exact-copy interruptions, native weather and gameplay-frame replays.
 
 ## Validation
 

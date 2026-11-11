@@ -1,0 +1,57 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Ground workshop</title>
+<style>body{background:#142b23;color:#ecdbb3;font:20px Georgia;margin:24px}canvas{display:block;max-width:100%;margin:24px 0}</style>
+<h1>Groundworks · current in-game construction</h1>
+<script type="module">
+import {GROUND_BLUEPRINTS} from '../client/ground-workshop.mjs';
+import {itemSprite,ItemPainter} from '../client/ultra-items.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';
+import {groundGeometry,drawGroundTools,groundPose,GROUND_ROUTINES,GROUND_CONTROLS} from '../client/ground-routines.mjs';
+import {GUEST_CAST} from '../client/guest-cast.mjs';
+const painter=new ItemPainter(),surface='#142b23';
+function sheet(w,h){const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.fillStyle=surface;ctx.fillRect(0,0,w,h);return [canvas,ctx];}
+window.reviewGroundworks=()=>{
+ const images={},ids=Object.keys(GROUND_BLUEPRINTS);
+ for(let page=0;page<Math.ceil(ids.length/4);page++){
+  const [canvas,c]=sheet(1800,1400);
+  ids.slice(page*4,page*4+4).forEach((id,n)=>{
+   const m=itemSprite(id,0,{state:{ground:{tracks:[],furrows:[],powder:.75}}}),x=n%2*900,y=Math.floor(n/2)*700;
+   c.fillStyle='#e5d8b4';c.font='23px Menlo';c.fillText(id,x+20,y+35);
+   const unit=Math.min(5,840/m.width,610/(m.art.length*1.5));painter.draw(c,m,x+450,y+670,unit/m.detailScale,{surface,outline:'#0a1712'});
+  });images['ground-objects-'+page]=canvas.toDataURL();document.body.append(canvas);
+ }
+ for(const [item,id,at] of [['stepping_stones','stone_cross',.55],['sand_floor','sand_rake',.52],['glass_floor','glass_wipe',.48],['snow_floor','snow_crunch',.58],['wooden_plank','wood_grain',.65],['lava_floor','lava_edge',.68]]){
+  const [canvas,ctx]=sheet(1800,850);
+  ['hatchling','adult','elder'].forEach((stage,i)=>{
+   const routine={id,elapsed:GROUND_ROUTINES[id].duration*at,start:GROUND_CONTROLS},pose=groundPose(routine);
+   const home={...itemSprite(item,0,{state:{ground:{...GROUND_CONTROLS}},pose:{ground:pose}}),x:50+i*100,y:96,scale:GROUND_BLUEPRINTS[item].scale};
+   const character={...characterSprite({stage,state:'idle',facing:true,performance:{kind:'ground',routine}},0),x:home.x,y:home.y};
+   painter.draw(ctx,home,home.x*6,home.y*8,6*home.scale,{surface});
+   const g=groundGeometry(home,{character,inside:1},6,8);drawCharacter(ctx,g.character,6,8,surface);drawGroundTools(ctx,g);
+   ctx.fillStyle='#e5d8b4';ctx.font='23px Menlo';ctx.fillText(item+' · '+stage,i*600+20,35);
+  });images['ground-ages-'+item]=canvas.toDataURL();document.body.append(canvas);
+ }
+ return images;
+};
+window.replayGroundworks=frames=>{
+ const view=new SceneCanvas();view.resize(1500,950);const images={},costs=[];let drawn=0,workers=0,companions=0;
+ for(const [i,s]of frames.entries()){
+  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
+  if(JSON.stringify(s)!==before)throw Error('Ground renderer changed native state');
+  for(const o of view.world.objects)if(o.construction==='ground-v1'){
+   drawn++;if(o.clipped)throw Error('Clipped ground '+o.id);workers+=o.groundUsers?.length||0;
+   for(const r of o.groundUsers||[]){
+    if(r.character.clipped)throw Error('Clipped ground user');
+    if(r.slot===1){
+     companions++;const hit=view.hits.find(h=>h.id===r.character.id&&['friend','story'].includes(h.kind));
+     if(!hit||view.hit((hit.x+hit.w/2)/view.canvas.width,(hit.y+hit.h/2)/view.canvas.height)?.id!==r.character.id)throw Error('Ground visitor is not selectable where drawn');
+     const name='ground-company-live-'+o.id;
+     if(!images[name]&&r.character.performance.routine.elapsed>12)images[name]=view.canvas.toDataURL();
+    }
+   }
+  }
+  if(s.review)images['ground-live-'+s.review]=view.canvas.toDataURL();
+ }
+ costs.sort((a,b)=>a-b);return {frames:frames.length,drawn,workers,companions,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+</script>

@@ -1,0 +1,2249 @@
+{
+  "stone_cross": {
+    "label": "Cross the broad stepping stones one careful foot at a time",
+    "types": [
+      "stones"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.16,
+        {
+          "u": 0.22,
+          "v": 0.67,
+          "l": 1
+        }
+      ],
+      [
+        0.34,
+        {
+          "u": 0.4,
+          "v": 0.5,
+          "r": 1
+        }
+      ],
+      [
+        0.55,
+        {
+          "u": 0.6,
+          "v": 0.62,
+          "l": 1
+        }
+      ],
+      [
+        0.78,
+        {
+          "u": 0.78,
+          "v": 0.4,
+          "r": 1
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.16,
+        "track"
+      ],
+      [
+        0.34,
+        "track"
+      ],
+      [
+        0.55,
+        "track"
+      ],
+      [
+        0.78,
+        "track"
+      ]
+    ]
+  },
+  "cobble_seams": {
+    "label": "Follow the curved cobble joints and stop at their little moss seams",
+    "types": [
+      "stones"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.2,
+          "v": 0.7,
+          "l": 1
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.5,
+          "v": 0.45,
+          "r": 1,
+          "x": -1
+        }
+      ],
+      [
+        0.62,
+        {
+          "u": 0.65,
+          "v": 0.7,
+          "b": 1,
+          "y": 1
+        }
+      ],
+      [
+        0.82,
+        {
+          "u": 0.8,
+          "v": 0.65,
+          "x": 2,
+          "mark": "?"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.82,
+        "study"
+      ]
+    ]
+  },
+  "pebble_listen": {
+    "label": "Try three pebble patches and listen to the different little crunches",
+    "types": [
+      "stones"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.25,
+          "v": 0.65,
+          "l": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.5,
+          "v": 0.6,
+          "r": 1,
+          "press": 0.8
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.75,
+          "v": 0.65,
+          "l": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.84,
+        {
+          "u": 0.75,
+          "v": 0.65,
+          "x": -2,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.2,
+        "track"
+      ],
+      [
+        0.42,
+        "track"
+      ],
+      [
+        0.65,
+        "track"
+      ]
+    ]
+  },
+  "stone_trace": {
+    "label": "Trace a weathered stone rim without pulling its moss out",
+    "types": [
+      "stones"
+    ],
+    "tool": "hand",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.4,
+          "v": 0.7,
+          "contact": 1
+        }
+      ],
+      [
+        0.45,
+        {
+          "u": 0.55,
+          "v": 0.65,
+          "contact": 1,
+          "sweep": 0.4
+        }
+      ],
+      [
+        0.7,
+        {
+          "u": 0.65,
+          "v": 0.75,
+          "contact": 1,
+          "sweep": 0.8
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.65,
+          "v": 0.75,
+          "y": -1
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.7,
+        "study"
+      ]
+    ]
+  },
+  "seam_brush": {
+    "label": "Sweep loose grit along a joint and out over the near edge",
+    "types": [
+      "stones",
+      "tiles",
+      "wood",
+      "glass"
+    ],
+    "tool": "brush",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.3,
+          "v": 0.4,
+          "contact": 1,
+          "sweep": 0.1
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.4,
+          "v": 0.6,
+          "contact": 1,
+          "sweep": 0.4
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.55,
+          "v": 0.85,
+          "contact": 1,
+          "sweep": 1
+        }
+      ],
+      [
+        0.84,
+        {
+          "u": 0.6,
+          "v": 0.95,
+          "w": 0.6,
+          "mark": "."
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "clean"
+      ]
+    ]
+  },
+  "slate_layers": {
+    "label": "Crouch beside a slate edge and follow its thin stacked layers",
+    "types": [
+      "tiles"
+    ],
+    "tool": "hand",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.25,
+          "v": 0.94,
+          "b": 1.5,
+          "y": 1
+        }
+      ],
+      [
+        0.46,
+        {
+          "u": 0.5,
+          "v": 0.94,
+          "contact": 1,
+          "x": 1
+        }
+      ],
+      [
+        0.7,
+        {
+          "u": 0.75,
+          "v": 0.94,
+          "contact": 1,
+          "x": 2
+        }
+      ],
+      [
+        0.86,
+        {
+          "u": 0.75,
+          "v": 0.94,
+          "y": -1
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.7,
+        "study"
+      ]
+    ]
+  },
+  "marble_vein": {
+    "label": "Follow a branching marble vein until it disappears under the next tile",
+    "types": [
+      "tiles"
+    ],
+    "tool": "hand",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.3,
+          "v": 0.7,
+          "contact": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.44,
+          "v": 0.56,
+          "contact": 1,
+          "x": -1
+        }
+      ],
+      [
+        0.62,
+        {
+          "u": 0.6,
+          "v": 0.45,
+          "contact": 1,
+          "x": 1
+        }
+      ],
+      [
+        0.84,
+        {
+          "u": 0.73,
+          "v": 0.58,
+          "mark": "?"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.62,
+        "study"
+      ]
+    ]
+  },
+  "marble_buff": {
+    "label": "Buff one dull patch in three small overlapping circles",
+    "types": [
+      "tiles"
+    ],
+    "tool": "cloth",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.42,
+          "v": 0.65,
+          "contact": 1,
+          "sweep": 0.2
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.5,
+          "v": 0.6,
+          "contact": 1,
+          "sweep": 0.6
+        }
+      ],
+      [
+        0.6,
+        {
+          "u": 0.55,
+          "v": 0.7,
+          "contact": 1,
+          "sweep": 1
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.46,
+          "v": 0.7,
+          "contact": 1,
+          "sweep": 0.3
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "clean"
+      ]
+    ]
+  },
+  "checker_steps": {
+    "label": "Choose a pale square, a dark square, then stop with one foot in each",
+    "types": [
+      "tiles"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.3,
+          "v": 0.72,
+          "l": 1
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.5,
+          "v": 0.48,
+          "r": 1
+        }
+      ],
+      [
+        0.64,
+        {
+          "u": 0.7,
+          "v": 0.72,
+          "l": 1
+        }
+      ],
+      [
+        0.82,
+        {
+          "u": 0.5,
+          "v": 0.72,
+          "w": 0.4,
+          "mark": "!"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.82,
+        "study"
+      ]
+    ]
+  },
+  "mosaic_spiral": {
+    "label": "Follow the tiny colored chips around the mosaic pond medallion",
+    "types": [
+      "tiles"
+    ],
+    "tool": "none",
+    "duration": 36,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.16,
+        {
+          "u": 0.28,
+          "v": 0.72,
+          "l": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "u": 0.32,
+          "v": 0.35,
+          "r": 1
+        }
+      ],
+      [
+        0.54,
+        {
+          "u": 0.65,
+          "v": 0.3,
+          "l": 1
+        }
+      ],
+      [
+        0.73,
+        {
+          "u": 0.73,
+          "v": 0.64,
+          "r": 1
+        }
+      ],
+      [
+        0.87,
+        {
+          "u": 0.5,
+          "v": 0.57,
+          "b": 1,
+          "mark": "o"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.87,
+        "study"
+      ]
+    ]
+  },
+  "ice_test": {
+    "label": "Test the icy edge, slide one foot a little, then bring it back",
+    "types": [
+      "ice"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.3,
+          "v": 0.95,
+          "l": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.4,
+          "v": 0.86,
+          "press": 0.5,
+          "r": 0.4,
+          "w": 0.5
+        }
+      ],
+      [
+        0.6,
+        {
+          "u": 0.48,
+          "v": 0.87,
+          "r": 1,
+          "w": 1,
+          "mark": "!"
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.36,
+          "v": 0.98,
+          "b": 0.5,
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "track"
+      ],
+      [
+        0.6,
+        "track"
+      ]
+    ]
+  },
+  "ice_bubbles": {
+    "label": "Peer through the blue ice at its trapped strings of tiny bubbles",
+    "types": [
+      "ice"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.45,
+          "v": 0.92,
+          "b": 1.4,
+          "y": 1
+        }
+      ],
+      [
+        0.45,
+        {
+          "u": 0.45,
+          "v": 0.92,
+          "x": -2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.68,
+        {
+          "u": 0.55,
+          "v": 0.92,
+          "x": 2,
+          "mark": "?"
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.55,
+          "v": 0.92,
+          "y": -1
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.68,
+        "study"
+      ]
+    ]
+  },
+  "glass_reflection": {
+    "label": "Look down through the glass, then shift sideways to find the reflection",
+    "types": [
+      "glass"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.3,
+          "v": 0.65,
+          "b": 1,
+          "y": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.45,
+          "v": 0.65,
+          "x": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.64,
+        {
+          "u": 0.65,
+          "v": 0.65,
+          "l": 1,
+          "x": -1
+        }
+      ],
+      [
+        0.84,
+        {
+          "u": 0.65,
+          "v": 0.65,
+          "w": 0.3,
+          "mark": "?"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.84,
+        "study"
+      ]
+    ]
+  },
+  "glass_wipe": {
+    "label": "Wipe a narrow strip of glass and inspect it from a lower angle",
+    "types": [
+      "glass"
+    ],
+    "tool": "cloth",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.35,
+          "v": 0.65,
+          "contact": 1,
+          "sweep": 0.1
+        }
+      ],
+      [
+        0.48,
+        {
+          "u": 0.65,
+          "v": 0.65,
+          "contact": 1,
+          "sweep": 1
+        }
+      ],
+      [
+        0.7,
+        {
+          "u": 0.65,
+          "v": 0.8,
+          "b": 1.2,
+          "y": 1
+        }
+      ],
+      [
+        0.86,
+        {
+          "u": 0.5,
+          "v": 0.8,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.48,
+        "clean"
+      ]
+    ]
+  },
+  "board_knock": {
+    "label": "Tap three deck boards and turn an ear toward their hollow replies",
+    "types": [
+      "wood",
+      "plank"
+    ],
+    "tool": "hand",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.3,
+          "v": 0.7,
+          "contact": 1,
+          "b": 0.7
+        }
+      ],
+      [
+        0.38,
+        {
+          "u": 0.5,
+          "v": 0.65,
+          "contact": 1,
+          "b": 0.7
+        }
+      ],
+      [
+        0.58,
+        {
+          "u": 0.7,
+          "v": 0.7,
+          "contact": 1,
+          "b": 0.7
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.5,
+          "v": 0.8,
+          "x": -2,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.18,
+        "tap"
+      ],
+      [
+        0.38,
+        "tap"
+      ],
+      [
+        0.58,
+        "tap"
+      ]
+    ]
+  },
+  "wood_grain": {
+    "label": "Follow a knot through the grain to the exposed end of the board",
+    "types": [
+      "wood",
+      "plank"
+    ],
+    "tool": "hand",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.25,
+          "v": 0.65,
+          "contact": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.45,
+          "v": 0.62,
+          "contact": 1,
+          "x": -1
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.75,
+          "v": 0.67,
+          "contact": 1,
+          "x": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.82,
+          "v": 0.86,
+          "b": 1.2,
+          "y": 1
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "study"
+      ]
+    ]
+  },
+  "nail_inspect": {
+    "label": "Check the inset nail heads without prying or pretending to repair them",
+    "types": [
+      "wood"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.18,
+          "v": 0.8,
+          "b": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.45,
+        {
+          "u": 0.5,
+          "v": 0.8,
+          "x": 1
+        }
+      ],
+      [
+        0.7,
+        {
+          "u": 0.82,
+          "v": 0.8,
+          "b": 1,
+          "mark": "?"
+        }
+      ],
+      [
+        0.86,
+        {
+          "u": 0.82,
+          "v": 0.8,
+          "y": -1
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.7,
+        "study"
+      ]
+    ]
+  },
+  "sand_rake": {
+    "label": "Draw three parallel furrows across the sand with a light wing edge",
+    "types": [
+      "sand"
+    ],
+    "tool": "hand",
+    "duration": 36,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.12,
+        {
+          "u": 0.22,
+          "v": 0.38,
+          "contact": 0
+        }
+      ],
+      [
+        0.16,
+        {
+          "u": 0.22,
+          "v": 0.38,
+          "contact": 1
+        }
+      ],
+      [
+        0.3,
+        {
+          "u": 0.7,
+          "v": 0.38,
+          "contact": 1,
+          "sweep": 1
+        }
+      ],
+      [
+        0.325,
+        {
+          "u": 0.7,
+          "v": 0.38,
+          "contact": 0
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.22,
+          "v": 0.57,
+          "contact": 0
+        }
+      ],
+      [
+        0.45999999999999996,
+        {
+          "u": 0.22,
+          "v": 0.57,
+          "contact": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "u": 0.7,
+          "v": 0.57,
+          "contact": 1,
+          "sweep": 1
+        }
+      ],
+      [
+        0.625,
+        {
+          "u": 0.7,
+          "v": 0.57,
+          "contact": 0
+        }
+      ],
+      [
+        0.72,
+        {
+          "u": 0.22,
+          "v": 0.77,
+          "contact": 0
+        }
+      ],
+      [
+        0.76,
+        {
+          "u": 0.22,
+          "v": 0.77,
+          "contact": 1
+        }
+      ],
+      [
+        0.9,
+        {
+          "u": 0.7,
+          "v": 0.77,
+          "contact": 1,
+          "sweep": 1
+        }
+      ],
+      [
+        0.925,
+        {
+          "u": 0.7,
+          "v": 0.77,
+          "contact": 0
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.3,
+        "furrow"
+      ],
+      [
+        0.6,
+        "furrow"
+      ],
+      [
+        0.9,
+        "furrow"
+      ]
+    ]
+  },
+  "sand_tracks": {
+    "label": "Leave a winding set of webbed prints and look back at the trail",
+    "types": [
+      "sand"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.16,
+        {
+          "u": 0.2,
+          "v": 0.75,
+          "l": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.34,
+        {
+          "u": 0.4,
+          "v": 0.55,
+          "r": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.52,
+        {
+          "u": 0.6,
+          "v": 0.7,
+          "l": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.7,
+        {
+          "u": 0.8,
+          "v": 0.45,
+          "r": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.86,
+        {
+          "u": 0.8,
+          "v": 0.45,
+          "x": -2,
+          "mark": "!"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.16,
+        "track"
+      ],
+      [
+        0.34,
+        "track"
+      ],
+      [
+        0.52,
+        "track"
+      ],
+      [
+        0.7,
+        "track"
+      ]
+    ]
+  },
+  "sand_smooth": {
+    "label": "Sweep yesterday's little footprints flat with broad wing strokes",
+    "types": [
+      "sand"
+    ],
+    "tool": "hand",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.25,
+          "v": 0.5,
+          "contact": 1,
+          "sweep": 0.2
+        }
+      ],
+      [
+        0.45,
+        {
+          "u": 0.7,
+          "v": 0.55,
+          "contact": 1,
+          "sweep": 0.55
+        }
+      ],
+      [
+        0.7,
+        {
+          "u": 0.3,
+          "v": 0.8,
+          "contact": 1,
+          "sweep": 1
+        }
+      ],
+      [
+        0.86,
+        {
+          "u": 0.5,
+          "v": 0.9,
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.7,
+        "smooth"
+      ]
+    ]
+  },
+  "snow_crunch": {
+    "label": "Compress fresh powder with four deliberate little crunches",
+    "types": [
+      "snow"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.25,
+          "v": 0.7,
+          "l": 1,
+          "press": 0.7
+        }
+      ],
+      [
+        0.38,
+        {
+          "u": 0.4,
+          "v": 0.55,
+          "r": 1,
+          "press": 1
+        }
+      ],
+      [
+        0.58,
+        {
+          "u": 0.6,
+          "v": 0.7,
+          "l": 1,
+          "press": 0.8
+        }
+      ],
+      [
+        0.78,
+        {
+          "u": 0.75,
+          "v": 0.55,
+          "r": 1,
+          "press": 1
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.18,
+        "track"
+      ],
+      [
+        0.38,
+        "track"
+      ],
+      [
+        0.58,
+        "track"
+      ],
+      [
+        0.78,
+        "track"
+      ]
+    ]
+  },
+  "snow_crystal": {
+    "label": "Lower a wing beside the powder and study the frost on its edge",
+    "types": [
+      "snow",
+      "ice"
+    ],
+    "tool": "hand",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.4,
+          "v": 0.96,
+          "contact": 1,
+          "b": 0.8
+        }
+      ],
+      [
+        0.45,
+        {
+          "u": 0.4,
+          "v": 0.96,
+          "contact": 1,
+          "y": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.55,
+          "v": 0.96,
+          "x": 1,
+          "mark": "*"
+        }
+      ],
+      [
+        0.84,
+        {
+          "u": 0.55,
+          "v": 0.96,
+          "w": 0.4
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.45,
+        "study"
+      ]
+    ]
+  },
+  "cloud_watch": {
+    "label": "Stay at the edge and follow the cloud curls as they drift apart",
+    "types": [
+      "cloud"
+    ],
+    "tool": "none",
+    "duration": 36,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.2,
+          "v": 1.06,
+          "x": -2
+        }
+      ],
+      [
+        0.43,
+        {
+          "u": 0.5,
+          "v": 1.06,
+          "x": 1,
+          "y": -1
+        }
+      ],
+      [
+        0.67,
+        {
+          "u": 0.78,
+          "v": 1.06,
+          "x": 2,
+          "mark": "o"
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.5,
+          "v": 1.06,
+          "w": 0.3,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.85,
+        "study"
+      ]
+    ]
+  },
+  "rainbow_trace": {
+    "label": "Walk beside the colored bands from violet to the warm red edge",
+    "types": [
+      "rainbow"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "u": 0.2,
+          "v": 1.05,
+          "l": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "u": 0.4,
+          "v": 1.05,
+          "r": 1,
+          "x": -1
+        }
+      ],
+      [
+        0.55,
+        {
+          "u": 0.6,
+          "v": 1.05,
+          "l": 1
+        }
+      ],
+      [
+        0.78,
+        {
+          "u": 0.8,
+          "v": 1.05,
+          "r": 1,
+          "mark": "!"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.78,
+        "study"
+      ]
+    ]
+  },
+  "lava_edge": {
+    "label": "Stay behind the stone lip and follow a slow ribbon of molten light",
+    "types": [
+      "lava"
+    ],
+    "tool": "none",
+    "duration": 34,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.25,
+          "v": 1.12,
+          "x": -1
+        }
+      ],
+      [
+        0.45,
+        {
+          "u": 0.5,
+          "v": 1.12,
+          "y": -1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.68,
+        {
+          "u": 0.75,
+          "v": 1.12,
+          "x": 2,
+          "mark": "!"
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.5,
+          "v": 1.16,
+          "b": -0.4,
+          "w": 0.5
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.68,
+        "study"
+      ]
+    ]
+  },
+  "galaxy_orbit": {
+    "label": "Follow the little star lanes from the safe rim of the galaxy floor",
+    "types": [
+      "galaxy"
+    ],
+    "tool": "none",
+    "duration": 36,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "u": 0.22,
+          "v": 1.04,
+          "x": -1
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.43,
+          "v": 1.04,
+          "y": -1
+        }
+      ],
+      [
+        0.63,
+        {
+          "u": 0.7,
+          "v": 1.04,
+          "x": 2,
+          "mark": "*"
+        }
+      ],
+      [
+        0.84,
+        {
+          "u": 0.5,
+          "v": 1.04,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.84,
+        "study"
+      ]
+    ]
+  },
+  "young_footing": {
+    "label": "Try the surface with two short steps, then pause to regain balance",
+    "types": [
+      "stones",
+      "tiles",
+      "wood",
+      "glass",
+      "sand",
+      "snow"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.35,
+          "v": 0.86,
+          "l": 0.8,
+          "w": 0.3
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.5,
+          "v": 0.78,
+          "r": 0.8,
+          "w": 0.7
+        }
+      ],
+      [
+        0.62,
+        {
+          "u": 0.6,
+          "v": 0.83,
+          "l": 0.5,
+          "w": 1,
+          "mark": "!"
+        }
+      ],
+      [
+        0.82,
+        {
+          "u": 0.5,
+          "v": 0.9,
+          "b": 0.5
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.2,
+        "track"
+      ],
+      [
+        0.42,
+        "track"
+      ]
+    ]
+  },
+  "elder_footing": {
+    "label": "Feel out the near edge and choose the broadest, quietest footing",
+    "types": [
+      "stones",
+      "tiles",
+      "wood",
+      "glass",
+      "sand",
+      "snow"
+    ],
+    "tool": "none",
+    "duration": 36,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.32,
+          "v": 0.87,
+          "l": 0.4,
+          "y": 1
+        }
+      ],
+      [
+        0.45,
+        {
+          "u": 0.48,
+          "v": 0.83,
+          "r": 0.4
+        }
+      ],
+      [
+        0.7,
+        {
+          "u": 0.6,
+          "v": 0.86,
+          "b": 0.7,
+          "eye": "-"
+        }
+      ],
+      [
+        0.86,
+        {
+          "u": 0.6,
+          "v": 0.86,
+          "x": -1
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.45,
+        "track"
+      ],
+      [
+        0.7,
+        "study"
+      ]
+    ]
+  },
+  "wet_footing": {
+    "label": "Test the wet near edge and step back before the foot begins to slide",
+    "types": [
+      "stones",
+      "tiles",
+      "wood",
+      "glass",
+      "sand"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.4,
+          "v": 0.96,
+          "l": 0.6
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.45,
+          "v": 0.9,
+          "press": 0.3,
+          "r": 0.4,
+          "w": 0.4
+        }
+      ],
+      [
+        0.62,
+        {
+          "u": 0.5,
+          "v": 0.99,
+          "w": 0.8,
+          "mark": "!"
+        }
+      ],
+      [
+        0.84,
+        {
+          "u": 0.5,
+          "v": 1.08,
+          "b": 0.4
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.42,
+        "track"
+      ]
+    ]
+  },
+  "frost_edge": {
+    "label": "Inspect the frosted edge and choose a dry place beside it",
+    "types": [
+      "stones",
+      "tiles",
+      "wood",
+      "glass",
+      "ice",
+      "snow"
+    ],
+    "tool": "none",
+    "duration": 30,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.3,
+          "v": 1.06,
+          "b": 1,
+          "y": 1
+        }
+      ],
+      [
+        0.44,
+        {
+          "u": 0.5,
+          "v": 1.06,
+          "eye": "o"
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.65,
+          "v": 1.08,
+          "x": 1,
+          "mark": "*"
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.5,
+          "v": 1.12,
+          "w": 0.3
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "study"
+      ]
+    ]
+  },
+  "night_surface": {
+    "label": "Pause beside the surface and follow the faint changes of light",
+    "types": [
+      "stones",
+      "tiles",
+      "wood",
+      "glass",
+      "ice",
+      "sand",
+      "snow"
+    ],
+    "tool": "none",
+    "duration": 34,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.3,
+          "v": 1.04,
+          "x": -2
+        }
+      ],
+      [
+        0.43,
+        {
+          "u": 0.5,
+          "v": 1.04,
+          "eye": "o"
+        }
+      ],
+      [
+        0.66,
+        {
+          "u": 0.7,
+          "v": 1.04,
+          "x": 2,
+          "y": -1
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.5,
+          "v": 1.04,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.85,
+        "study"
+      ]
+    ]
+  },
+  "winding_walk": {
+    "label": "Follow the five stones around the bend without stepping into their gaps",
+    "types": [
+      "stones"
+    ],
+    "tool": "none",
+    "duration": 36,
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.14,
+        {
+          "u": 0.13,
+          "v": 0.67,
+          "l": 1
+        }
+      ],
+      [
+        0.3,
+        {
+          "u": 0.31,
+          "v": 0.47,
+          "r": 1
+        }
+      ],
+      [
+        0.46,
+        {
+          "u": 0.5,
+          "v": 0.57,
+          "l": 1
+        }
+      ],
+      [
+        0.62,
+        {
+          "u": 0.69,
+          "v": 0.39,
+          "r": 1
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.87,
+          "v": 0.55,
+          "l": 1
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1,
+          "press": 0,
+          "sweep": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.14,
+        "track"
+      ],
+      [
+        0.3,
+        "track"
+      ],
+      [
+        0.46,
+        "track"
+      ],
+      [
+        0.62,
+        "track"
+      ],
+      [
+        0.8,
+        "track"
+      ]
+    ]
+  }
+}
