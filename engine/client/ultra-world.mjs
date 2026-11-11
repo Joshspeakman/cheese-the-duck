@@ -1,3 +1,4 @@
+import {carnivalOccupants} from './carnival-routines.mjs';
 import {playkitPose,PLAYKIT_ROUTINES} from './playkit-routines.mjs';
 import {WeatherDrift,wrap} from './weather-wind.mjs';
 import {architecturePose,ARCHITECTURE_ROUTINES} from './architecture-routines.mjs';
@@ -441,6 +442,16 @@ export class LivingWorld {
       const character={...characterSprite({...source,state:'idle',facing:r.slot===0,performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
       (home.gardeners||=[]).push({character,inside,slot:r.slot});
       this.characters=this.characters.filter(c=>c!==original);
+    }
+    for(const r of carnivalOccupants(s)){
+      const actorId=r.actor==='story:pip'?'story:lost_duckling':r.actor;
+      const original=this.characters.find(c=>r.actor==='cheese'?c.cheese:c.id===actorId);
+      const home=this.objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.construction==='excursion-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination?.[i])<1.1));
+      if(!original||!home)continue;
+      const source=r.actor==='cheese'?s.duck:s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
+      const performance={kind:'carnival',routine:r.work,role:r.role,watch:r.watch,motion:s.motion!==false};
+      const character={...characterSprite({...source,state:'idle',facing:r.role==='a',performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
+      (home.carnivalRiders||=[]).push({...r,character});this.characters=this.characters.filter(c=>c!==original);
     }
     if(plan?.playkit_work&&!plan.playkit_work.interrupted&&PLAYKIT_ROUTINES[plan.playkit_work.id]&&['prepare','act','settle'].includes(plan.phase)){
       const original=this.characters.find(c=>c.cheese),home=this.objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.construction==='playkit-v1'&&(o.portable||o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination?.[i])<1.1)));

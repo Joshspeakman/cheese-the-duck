@@ -9,7 +9,7 @@ from engine.local_speech import speak
 from world.guest_cast import guest_profile
 from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests, botanical_care, instrument_sessions, keepsakes, keepsake_company, creative_props, creative_company, textiles, textile_company, groundworks, ground_company, architecture, architecture_company, playkit, playkit_company
 from engine.instrument_audio import InstrumentAudio
-from engine import nest_company
+from engine import nest_company,carnival
 
 CHEESE_VOICE = {
  'bio': 'Cheese is a scruffy, opinionated little duck: dry wit, petty pond grievances, theatrical indignation and a tender streak he tries to hide. He is curious, not a helpful assistant.',
@@ -43,6 +43,7 @@ class MindGarden:
         self.ground_helpers={};self.ground_retry={}
         self.structure_helpers={};self.structure_retry={}
         self.playmates={};self.playmate_retry={}
+        self.carnival_guests={};self.carnival_retry={}
         self.nest_helpers={};self.nest_retry={}
         self._cheese_traits=None
 
@@ -247,6 +248,8 @@ class MindGarden:
         if key=='cheese':
             toy=playkit.conversation(self.pond,self.pond.state.get('plan'))
             if toy:facts['plaything']=toy
+        ride=carnival.conversation(self.pond,self.pond.state.get('plan'),key)
+        if ride:facts['carnival']=ride
         playmate=playkit_company.conversation(self,key)
         if playmate:
             facts['shared_activity']={'with':playmate['with_name'],'activity':playmate['activity'],'status':playmate['status']}
@@ -386,7 +389,8 @@ class MindGarden:
         for i,key in enumerate(keys):
             for other in keys[i+1:]:
                 if 'cheese' in (key,other) and self.pond.state.get('plan',{}):
-                    if self.pond.state['plan'].get('seating') or self.pond.state['plan'].get('plant_care') or self.pond.state['plan'].get('instrument') or self.pond.state['plan'].get('keepsake_work') or self.pond.state['plan'].get('creative_work') or self.pond.state['plan'].get('textile_work') or self.pond.state['plan'].get('ground_work') or self.pond.state['plan'].get('architecture_work') or self.pond.state['plan'].get('playkit_work'):continue
+                    if self.pond.state['plan'].get('seating') or self.pond.state['plan'].get('plant_care') or self.pond.state['plan'].get('instrument') or self.pond.state['plan'].get('keepsake_work') or self.pond.state['plan'].get('creative_work') or self.pond.state['plan'].get('textile_work') or self.pond.state['plan'].get('ground_work') or self.pond.state['plan'].get('architecture_work') or self.pond.state['plan'].get('playkit_work') or self.pond.state['plan'].get('carnival_work'):continue
+                if carnival.active(self,key) or carnival.active(self,other):continue
                 if playkit_company.active(self,key) or playkit_company.active(self,other) or architecture_company.active(self,key) or architecture_company.active(self,other) or creative_company.active(self,key) or creative_company.active(self,other) or textile_company.active(self,key) or textile_company.active(self,other) or ground_company.active(self,key) or ground_company.active(self,other):continue
                 if nest_company.active(self,key) or nest_company.active(self,other):continue
                 if keepsake_company.active(self,key) or keepsake_company.active(self,other):continue
@@ -424,6 +428,7 @@ class MindGarden:
     def tick(self):
         self.sync();self._poll()
         house_dt=min(5,max(0,self.now-self.housing_last));self.housing_last=self.now
+        carnival.tick(self,house_dt)
         visitor_shelters.tick(self,house_dt)
         shelter_company.tick(self,house_dt)
         nest_company.tick(self,house_dt)
@@ -445,10 +450,14 @@ class MindGarden:
             if key=='cheese':continue
             r=self.model.residents[key];r['energy']=clamp(r['energy']-dt/2400);r['social']=clamp(r['social']-dt/1800)
             task=self.tasks.get(key)
-            if self.encounter_for(key) or key in self.nest_helpers or key in self.playmates or key in self.structure_helpers or key in self.ground_helpers or key in self.textile_helpers or key in self.creators or key in self.readers or key in self.housing or key in self.furnishings or key in self.gardening or key in self.musicians or playdates.active(self,key):
+            if self.encounter_for(key) or key in self.carnival_guests or key in self.nest_helpers or key in self.playmates or key in self.structure_helpers or key in self.ground_helpers or key in self.textile_helpers or key in self.creators or key in self.readers or key in self.housing or key in self.furnishings or key in self.gardening or key in self.musicians or playdates.active(self,key):
                 if task:task['until']+=dt
                 if key in self.housing and key in self.pond.state['friends']:
                     self.pond.state['friends'][key].update(activity='sheltering' if self.housing[key]['phase']=='inside' else 'walking to shelter',location=self.pond.location)
+                elif key in self.carnival_guests and key in self.pond.state['friends']:
+                    rider=self.carnival_guests[key]
+                    activity='walking to the boarding platform' if rider['phase']=='approach' else 'watching from the platform' if rider['mode']=='watch' else rider['work']['label']
+                    self.pond.state['friends'][key].update(activity=activity,location=self.pond.location)
                 elif key in self.nest_helpers and key in self.pond.state['friends']:
                     helper=self.nest_helpers[key]
                     activity=nest_company.SCORES[helper['score']]['label'] if helper['phase']=='inside' else 'walking over to help at the nest' if helper['phase']=='approach' else 'settling beside the nest' if helper['phase']=='enter' else 'finished helping at the nest'
@@ -529,6 +538,10 @@ class MindGarden:
                     rest=1.8 if task.get('action')=='rest' else .85,
                     gesture='chatting' if speaking else GESTURE.get(task.get('action'),'signature'))
         encounter=self.encounter_for(key)
+        ride=carnival.motion(self,key)
+        if ride:
+            result['meeting']=ride
+            return result
         shelter=visitor_shelters.motion(self,key)
         if shelter:
             result['shelter']=shelter

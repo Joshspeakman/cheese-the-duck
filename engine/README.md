@@ -247,8 +247,8 @@ Resident speech uses the local Qwen3 model and llama.cpp runtime described above
 
 The next animation milestone is in development on this branch and has **not**
 replaced the installed game; the separate chat update is installed as 2.36.1. Its tracker is
-`overhaul/animation-milestone/requirements.json`: 269 of 542 object drawings have
-been reconstructed, with 273 remaining. The full 48 bespoke sequences per object
+`overhaul/animation-milestone/requirements.json`: 279 of 542 object drawings have
+been reconstructed, with 263 remaining. The full 48 bespoke sequences per object
 and all guest/age/context coverage remain unfinished.
 
 Nest routines now move saved physical bedding. Thirty-three of the existing
@@ -663,9 +663,10 @@ phase through saving and placement. Home weather applies even while Cheese is
 elsewhere. Reduced Motion preserves the actual wheel and cabin positions.
 Original ownership, ordinary item use, inventory and rewards remain authoritative.
 
-These are reconstructed objects and resting mechanisms. Riding, launch/travel,
-individual character contact, shared performances and each object's 48 bespoke
-sequences remain unfinished. This chapter adds no verified sequence counts.
+The Ferris wheel and carousel also have the shared ride foundation below.
+Launch/travel, contact controls for the other eight props, individual character
+repertoires and each object's 48 bespoke sequences remain unfinished. This
+chapter adds no verified sequence counts.
 
 Validation: `.venv/bin/python engine/check_excursions.py`,
 `node --test engine/tests/excursions.test.mjs`, and
@@ -724,3 +725,44 @@ Six community projects each have three stages with validated material costs: ree
 The optional `living_pond` section is saved atomically with the original 59 sections. Old saves acquire defaults without losing existing data. In-progress activities pause on reload. Offline catch-up is capped at 48 hours and 192 environmental steps; it never manufactures inventory or action rewards. Journals and friend memories are bounded.
 
 Validation: `node --test engine/tests/*.test.mjs`, `.venv/bin/python engine/check_living.py`, `.venv/bin/python engine/check_game.py`, and `cd engine && npm run smoke`. The new integration harness uses disposable saves, exercises ownership, arrival, cooldowns, project costs, original garden/tool/friend systems, all stories, save migration and a deterministic 72-hour habitat simulation. `cd engine && ./node_modules/.bin/electron overhaul-check.cjs` checks all event recipes and captures the cast, items, weather scenes and eight journal tabs under `engine/artifacts/overhaul/`.
+
+
+### Shared carnival rides in development
+
+The Ferris wheel has four broad gondolas and a boarding platform. The carousel
+has four larger carved duck mounts. Characters retain their normal body scale;
+their seated bellies rest on explicit anchors, and cabin fronts/poles cover the
+appropriate lower parts of their bodies. Eight hatched ages and all 48 visitor
+rigs fit the two roles. Eggs do not board; butterflies watch from the platform.
+
+Twelve initial two-person acting scores cover a first circuit, cloud spotting,
+autumn canopy watching, evening lamps, quiet company, grumbling, a parade,
+trotting, shyness and canopy lights. The simulation owns alignment, independent
+queue arrival, boarding, cabin indices, the shared circuit and each exit.
+Visitors walk to their own fixed destination at the selected copy. The Ferris
+wheel stops separately for each passenger. The renderer only projects saved
+seat/boarding state; it never advances the mechanism or grants a reward.
+
+Finished rides teach both residents and preserve one original item use. Arrival,
+failed invitations, direct cancellation and interrupted rides earn no shared
+completion. Rain, high wind, urgent needs or damage request a return to the
+platform before disembarking. Pauses and direct care freeze both clocks. A new
+visit cannot inherit a reservation; loading restores Cheese's saved seat and
+pauses the ride without bringing back its visitor. Stored copies retain their
+own angle and history. Chat facts distinguish riding, boarding and watching.
+
+Each ride's notebook has six named choices, sent through the production command
+validator with the physical copy's identity. These are initial performance cores,
+not the full 48 bespoke sequences per object; no verified-sequence count was
+promoted. Personal visitor repertoires, guest-to-guest riding, egg observation,
+control-panel contacts and the remaining individual contexts are still open.
+
+Validation: `.venv/bin/python engine/check_carnival.py`,
+`node --test engine/tests/carnival.test.mjs`,
+`engine/node_modules/.bin/electron engine/carnival-check.cjs`, and
+`engine/node_modules/.bin/electron engine/carnival-ui-check.cjs`.
+The native checks use disposable saves and real regular/rare/story movement.
+The renderer checks body scale, seat contact, boarding paths, exact-copy binding,
+paused poses, front layers and moving visitor click targets. The notebook check
+uses a real game process. Review captures and `carnival-review.html` are written
+under `engine/artifacts/animation-milestone/`.

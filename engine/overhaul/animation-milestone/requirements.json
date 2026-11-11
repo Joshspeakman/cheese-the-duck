@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: reconstructed ten carnival/travel belongings with distinct material construction, usable anchors, larger reserved drawings and revised utility-object scale. Added saved native empty-ride/scanner phases, wind/fabric pressure and night lamps; adverse weather stops motors, stored copies freeze independently and home weather applies when Cheese is elsewhere. Original ownership and ordinary use still grant exactly one original reward. Verified 208 native assertions, 1200 art/mechanism states, 70 selectable native-frame objects, 180 continuous animation frames, 190 JavaScript tests, the 72-hour simulation, learning brains and a 99-frame source launch smoke. Reviewed five construction sheets, a weather sheet and thirty native captures. Full character riding/travel/contact and per-object repertoires remain unfinished; no verified sequence counts or final installation were promoted.",
+  "previous_goal_turn": "Progress: widened the Ferris wheel to four passenger gondolas and rebuilt four carousel mounts. Added twelve initial two-person scores with native alignment, independent real visitor queue arrivals, boarding, seat indices, shared circuits and disembarking. Weather/need/damage returns, failed arrivals, direct care, pauses, departures, replacement copies and save/resume are bounded; only completed rides grant one original use and shared learning. All 48 visitor identities plus Pip and all hatched ages were exercised; eggs do not board and butterflies watch. Notebook controls cross the production command validator to a real game process. This adds no completed per-object repertoire audits; all 542 verified-sequence counts remain zero. Full milestone and final install remain unfinished.",
   "items": [
     {
       "id": "hat_red",
@@ -1750,14 +1750,16 @@
       "family": "wheel",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "restingMechanismPrototype": true
+      "restingMechanismPrototype": true,
+      "sharedRidePrototype": true
     },
     {
       "id": "carousel",
       "family": "carousel",
       "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
-      "restingMechanismPrototype": true
+      "restingMechanismPrototype": true,
+      "sharedRidePrototype": true
     },
     {
       "id": "jetpack",
@@ -3947,7 +3949,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "independent_nest_companions_and_player_requests",
+    "sourcePhase": "shared_carnival_boarding_and_rides",
     "fullyOverhauled": false,
     "constructedObjects": 279,
     "remainingArtwork": 263,
@@ -4349,11 +4351,18 @@
       "engine/artifacts/animation-milestone/nest-company-js-suite.log",
       "engine/artifacts/animation-milestone/nest-company-regressions.json",
       "engine/artifacts/animation-milestone/nest-company-smoke.log",
-      "engine/artifacts/animation-milestone/nest-company-footprints.log"
+      "engine/artifacts/animation-milestone/nest-company-footprints.log",
+      "engine/artifacts/animation-milestone/carnival-native.json",
+      "engine/artifacts/animation-milestone/carnival-render.json",
+      "engine/artifacts/animation-milestone/carnival-ui.json",
+      "engine/artifacts/animation-milestone/carnival-review.html",
+      "engine/artifacts/animation-milestone/carnival-js-suite.log",
+      "engine/artifacts/animation-milestone/carnival-targeted.log",
+      "engine/artifacts/animation-milestone/carnival-smoke.log"
     ],
     "next": "Continue the remaining 263 object constructions and individually authored contextual repertoires. All 542 per-object 48-sequence audits remain open; complete personal visitor acting, guest-to-guest sessions, egg observation, riding/entry and physical tool handling before final integration and installation.",
     "checks": {
-      "javascript": 190,
+      "javascript": 194,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4695,7 +4704,17 @@
         "artSheets": 6,
         "nativeCaptures": 30
       },
-      "excursionsEvidence": "engine/artifacts/animation-milestone/excursions-native.json; engine/artifacts/animation-milestone/excursions-render.json"
+      "excursionsEvidence": "engine/artifacts/animation-milestone/excursions-native.json; engine/artifacts/animation-milestone/excursions-render.json",
+      "carnivalNative": 329,
+      "carnivalNotebook": 8,
+      "carnivalRender": {
+        "frames": 537,
+        "bodies": 1001,
+        "hits": 488,
+        "contacts": 746,
+        "p95Ms": 20.299999952316284,
+        "medianMs": 14.299999952316284
+      }
     },
     "limitations": [
       "279 of 542 object artworks reconstructed for review; 263 remain.",
@@ -4717,7 +4736,7 @@
       "Twenty-one garden structures have 54 initial solo cores and 49 shared visitor roles. Eight new landmarks add carved/material detail, saved directional wind, real hour/season/sky-controlled sundial shadows, native flag hoists, low physical contacts and observation-based shared memories. These are initial core actions, not 48 bespoke sequences per item. Guest-to-guest sessions, egg observation, climbing, physical tool pickup/put-away and full personality/mood/season acting remain unfinished. No object sequence completion is claimed.",
       "Eight outdoor playthings have 42 initial solo cores and 25 complementary visitor roles. All eight hatched ages and all 48 visitor rigs fit, and all 48 native visitor identities plus Pip are tested through real arrival and shared learning. Egg observation, guest-to-guest games, physical pickup/put-away, full personal/mood/season repertoires and each object's 48 bespoke sequences remain unfinished. Boat and board practice stays on the bank; no voyage or surf travel is claimed.",
       "Glass curios have twelve added core tracks and eight observing companion roles, with exact-copy controls and saved snow/forecast state. These are initial contextual foundations, not 48 unique sequences per object; no per-object repertoire audit is complete.",
-      "Ten carnival and travel belongings have reconstructed art and native resting mechanisms. Empty wheels, carousel mounts and the saucer scanner use saved per-copy phases; fabric responds to weather and storage freezes mechanisms. Riding, launch/travel, character control contacts, shared performances and each object's 48 bespoke sequences remain unfinished. No per-object sequence count was promoted."
+      "Ten carnival/travel belongings have reconstructed art and saved mechanisms. The Ferris wheel and carousel now have twelve initial shared ride scores with real queue arrivals, boarding, native seat clocks and exits. Launch/travel and contact controls for the other eight props, personal visitor acting and all per-object 48-sequence audits remain unfinished."
     ],
     "sharedNestScores": 51,
     "nestObjectsUsingSharedScores": 5,
@@ -4768,9 +4787,9 @@
     },
     "sourceSmoke": {
       "result": "PASS",
-      "frames": 99,
+      "frames": 98,
       "localAI": false,
-      "evidence": "engine/artifacts/animation-milestone/excursions-smoke.log"
+      "evidence": "engine/artifacts/animation-milestone/carnival-smoke.log"
     },
     "chatRelease": {
       "branch": "codex/pond-chat-2.36.1",
@@ -4826,6 +4845,29 @@
     "nestMaterialContactRoutines": 33,
     "nestPhysicalContactPoints": 40,
     "visitorNestRoutinePool": 25,
-    "excursionObjects": 10
+    "excursionObjects": 10,
+    "carnivalRoutineCores": 12,
+    "carnivalObjects": 2,
+    "carnivalControls": {
+      "status": "implemented_and_verified_foundation",
+      "nativeStages": [
+        "queue",
+        "align",
+        "board_a",
+        "index_b",
+        "board_b",
+        "ride",
+        "weather_return",
+        "unload_b",
+        "return_a",
+        "unload_a",
+        "done"
+      ],
+      "ownership": "exact placed copy; no duplicate original reward",
+      "partners": "independent regular/rare/story arrivals; transient reservations; completion-only learning",
+      "save": "native seat/clock/angle retained; paused after load; no resurrected visitor",
+      "sequenceCoverageAdded": 0,
+      "remaining": "Personal per-visitor repertoires, guest-to-guest rides, egg observation, physical control-panel contacts and each object\u2019s full 48-sequence audit"
+    }
   }
 }

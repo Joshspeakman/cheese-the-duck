@@ -74,7 +74,7 @@ def tick(minds,dt):
     # A new reservation consumes its slot immediately, before the next resident
     # chooses. Actors keep their own destination even if Cheese walks elsewhere.
     for key in sorted(minds.present):
-        if key=='cheese' or key in minds.housing or minds.now<minds.shelter_retry.get(key,0) or departing(minds,key):continue
+        if key=='cheese' or key in minds.carnival_guests or key in minds.housing or minds.now<minds.shelter_retry.get(key,0) or departing(minds,key):continue
         stage,species=profile(minds,key)
         choices=shelters.candidates(p,actor=key,stage=stage,position_at=minds.present[key],species=species)
         if not choices:

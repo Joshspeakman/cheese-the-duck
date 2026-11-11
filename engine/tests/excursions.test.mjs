@@ -17,7 +17,7 @@ test('ten distinct carnival and travel constructions retain printable ink and bo
    assert.equal(m.construction,'excursion-v1');assert(!m.clipped,id+' phase '+n);
    assert(m.art.every((r,y)=>r.length===m.width&&m.tones[y].length===m.width&&/^[ -~]*$/.test(r)));
    assert(m.fills.every(f=>f.x>=0&&f.y>=0&&f.w>0&&f.x+f.w<=m.width&&f.y<m.art.length),id+' bounded solid panels');
-   for(const anchor of Object.values(m.anchors).flat())assert(anchor.x>=0&&anchor.x<m.width&&anchor.y>=0&&anchor.y<m.art.length,id+' usable anchor');
+   for(const anchor of Object.values(m.anchors).flat().filter(a=>Number.isFinite(a.x)))assert(anchor.x>=0&&anchor.x<m.width&&anchor.y>=0&&anchor.y<m.art.length,id+' usable anchor');
    assert.equal(JSON.stringify(options),before,'rendering cannot change saved state');
   }
  }
@@ -46,11 +46,11 @@ test('optional invalid saved mechanisms cannot make malformed geometry or unboun
 test('gondolas remain upright while mounted around the full wheel and carousel ducks orbit their own poles',()=>{
  for(let n=0;n<100;n++){
   const a=itemSprite('ferris_wheel',0,{state:state(n/100*Math.PI*2)});
-  assert.equal(a.anchors.cabins.length,8);
-  for(const p of a.anchors.cabins)assert(Math.abs(((p.x-82)/62)**2+((p.y-7-55)/41)**2-1)<1e-9,'cabins stay on rim');
+  assert.equal(a.anchors.cabins.length,4);
+  for(const p of a.anchors.cabins)assert(Math.abs(((p.x-92)/62)**2+((p.y-7-53)/41)**2-1)<1e-9,'cabins stay on rim');
   const b=itemSprite('carousel',0,{state:state(n/100*Math.PI*2)});
-  assert.equal(b.anchors.rides.length,6);
-  for(const p of b.anchors.rides)assert(Math.abs(((p.x-74)/48)**2+((p.y-94)/8)**2-1)<1e-9,'carved mounts orbit central column');
+  assert.equal(b.anchors.rides.length,4);
+  for(const p of b.anchors.rides)assert(Math.abs(((p.x-74)/46)**2+((p.y+Math.sin(p.phase*2)*3-94)/8)**2-1)<1e-9,'carved mounts orbit central column');
  }
 });
 test('the live world binds mechanics to each physical copy and never follows Cheese',()=>{
