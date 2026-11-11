@@ -7,6 +7,7 @@ import {occupiedGeometry,heldNestGeometry} from './residence-stage.mjs';
 import {ridingGeometry} from './playground-stage.mjs';
 import {waterGeometry} from './water-routines.mjs';
 import {seatingGeometry} from './seating-routines.mjs';
+import {inkBounds} from './resident-envelope.mjs';
 import { SceneEffects,luminousPalette } from './scene-effects.mjs';
 import { W,H,C,M } from './ultra-grid.mjs';
 import { InterfaceRenderer } from './interface-renderer.mjs';
@@ -77,6 +78,7 @@ export class SceneCanvas {
     // Copy the cached terrain every frame so walking/hidden actors leave no trail.
     this.ctx.drawImage(this.terrain,0,0);
     this.effects.draw(this.ctx,this.world,scene,time,this.sx,this.sy,objects);
+    const seatedHits=[];
     // Rugs stay under everything; other props and characters share depth order.
     for(const actor of [...objects,...characters].sort((a,b)=>(a.floor?-1000:a.y)-(b.floor?-1000:b.y))){
       const surface=this.backdropAt(actor.x*this.sx,actor.y*this.sy);
@@ -108,6 +110,7 @@ export class SceneCanvas {
         let seatFront=null,climbers=[];
         for(const sitter of actor.sitters||[]){
           const seated=seatingGeometry(actor,sitter,this.sx,this.sy);
+          if(seated.character.visitor||seated.character.story)seatedHits.push(seated.character);
           if(sitter.inside<.99)climbers.push(seated.character);
           else drawCharacter(this.ctx,{...seated.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
           seatFront=seated.front||seatFront;
@@ -117,8 +120,13 @@ export class SceneCanvas {
       }
       else drawCharacter(this.ctx,{...actor,sun:light.sun,outline:light.outline,backdrop:(x,y)=>this.backdropAt(x,y)},this.sx,this.sy,surface);
     }
-    this.hits=[...objects,...characters].filter(a=>a.item||a.visitor||a.story).map(a=>{
+    this.hits=[...objects,...characters,...seatedHits].filter(a=>a.item||a.visitor||a.story).map(a=>{
       const unit=this.sx*a.scale*(a.detailScale||1),width=a.width*unit,height=a.art.length*unit*1.5;
+      if(!a.item){
+        const b=inkBounds(a),left=a.x*this.sx-(a.anchorX??a.width/2)*unit+(a.offsetX||0)*unit;
+        const top=a.y*this.sy-(a.groundRow??a.art.length)*unit*1.5+(a.offsetY||0)*unit;
+        return {id:a.id,kind:a.story?'story':'friend',x:left+b.left*unit,y:top+b.top*unit*1.5,w:(b.right-b.left+1)*unit,h:(b.bottom-b.top+1)*unit*1.5};
+      }
       return {id:a.id||scene.visitor?.id,kind:a.story?'story':a.visitor?'friend':'item',x:a.x*this.sx-width/2,y:a.y*this.sy-height,w:width,h:height};
     });
     this.frames++;

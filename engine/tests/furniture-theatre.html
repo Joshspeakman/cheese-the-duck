@@ -54,18 +54,25 @@ window.reviewSitting=()=>{
  return images;
 };
 window.replayFurniture=frames=>{
- const view=new SceneCanvas();view.resize(1440,900);const images={},costs=[];let seated=0,paired=0;
+ const view=new SceneCanvas();view.resize(1440,900);const images={},costs=[];let seated=0,paired=0,clickable=0;
  for(const [i,s] of frames.entries()){
   const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
   if(JSON.stringify(s)!==before)throw Error('Mutated furniture snapshot');
   for(const home of view.world.objects){
    if(!home.sitters?.length)continue;
    seated+=home.sitters.length;if(home.sitters.length>1)paired++;
+   for(const sitter of home.sitters){
+    if(!sitter.character.visitor)continue;
+    const hit=view.hits.find(h=>h.id===sitter.character.id&&h.kind===(sitter.character.story?'story':'friend'));
+    if(!hit)throw Error('Seated visitor cannot be selected: '+sitter.character.id);
+    if(sitter.inside>=.99&&view.hit((hit.x+hit.w/2)/1440,(hit.y+hit.h/2)/900)?.id!==hit.id)throw Error('Seated visitor hit is covered by its furniture');
+    clickable++;
+   }
    const plan=s.living.plan,routine=plan?.seat_routine;
    const key=home.sitters.length>1?'shared-'+home.id:home.id;
    if(home.sitters.every(r=>r.inside>=.99)&&(home.sitters.length>1||routine?.elapsed>8)&&!images[key])images[key]=view.canvas.toDataURL('image/png');
   }
  }
- costs.sort((a,b)=>a-b);return {frames:frames.length,seated,paired,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+ costs.sort((a,b)=>a-b);return {frames:frames.length,seated,paired,clickable,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
 };
 </script>
