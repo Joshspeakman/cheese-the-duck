@@ -1,10 +1,12 @@
 import {nestPose} from './nest-routines.mjs';
+import HOME_COMPANY from './animation/home-company.json' with {type:'json'};
 // Authored joint tracks for two residents. Times are fractions of the shared
 // simulation-owned scene; A and B deliberately take different turns.
 // x/y move the head, b compresses/lifts the torso, w unfolds a wing, l/r step.
 const N={x:0,y:0,b:0,w:0,l:0,r:0,eye:null,mark:''};
 const K=(at,p={})=>({at,...N,...p});
 export const PERFORMANCES={
+ ...Object.fromEntries(Object.entries(HOME_COMPANY).map(([key,s])=>[key,{duration:s.duration,a:s.a.map(([at,p])=>K(at,p)),b:s.b.map(([at,p])=>K(at,p))}])),
  greeting:{duration:12,a:[K(0),K(.15,{y:1,b:.3}),K(.3,{w:1,eye:'^'}),K(.45,{w:.35}),K(.6,{w:.9}),K(.8,{y:.5,eye:'^'}),K(1)],b:[K(0),K(.2,{x:-.5,eye:'O'}),K(.35,{y:.7}),K(.5,{w:.8,eye:'^'}),K(.65,{w:.3}),K(.8,{w:1}),K(1)]},
  call_response:{duration:18,a:[K(0),K(.15,{x:.5,y:-.4,mark:'!'}),K(.3,{x:1,mark:'!'}),K(.42),K(.6,{y:.5}),K(.72,{x:.5,eye:'^'}),K(1)],b:[K(0),K(.2,{y:.6}),K(.4,{y:.5,eye:'^'}),K(.55,{x:.7,y:-.6,mark:'!'}),K(.7,{x:1,mark:'!'}),K(.82,{w:.4}),K(1)]},
  wing_bump:{duration:12,a:[K(0),K(.2,{x:.6,w:.4,l:1}),K(.4,{x:1,w:1,b:-.3}),K(.55,{w:1,b:.4,eye:'^',mark:'*'}),K(.7,{w:.4,r:1}),K(1)],b:[K(0),K(.15,{y:.6}),K(.35,{x:1,w:1,r:1}),K(.55,{w:1,b:.4,eye:'^',mark:'*'}),K(.75,{w:.2,l:1}),K(1)]},

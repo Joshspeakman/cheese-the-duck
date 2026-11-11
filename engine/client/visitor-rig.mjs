@@ -115,7 +115,7 @@ function speciesGuest(duck,p,t,state,active){
    c.group(['  /','_/__'],17,35+dy,'b');c.group(['\\',' \\__'],46,35+dy,'b');if(active&&phase>3)c.put('  ___  ',28,28+dy,'a');
    head={x:21,y:23+dy,w:29,h:8};body={x:23,y:32+dy,w:23,h:7};feet=[23,42];
  }else if(p.species==='butterfly'){
-   top=18;const lift=Math.sin(t*4)*1.4,fold=.35+.65*Math.abs(Math.cos(t*5));
+   top=18;const lift=Math.sin(t*4)*1.4,fold=performance?.w>.2?.35+.65*(1-performance.w*.65):.35+.65*Math.abs(Math.cos(t*5));
    for(const side of [-1,1])BUTTERFLY_WING.forEach((row,y)=>{
      const line=[...row].map(ch=>side<0?mirrorGlyph(ch):ch);if(side<0)line.reverse();
      const visible=line.filter((_,x)=>x%Math.max(1,Math.round(1/fold))===0).join('');c.group([visible],side<0?35-visible.length:39,21+y+lift,'p',true);
@@ -126,7 +126,20 @@ function speciesGuest(duck,p,t,state,active){
  }
  for(const [i,x] of feet.entries()){const lift=performance?(i?performance.r:performance.l):walking&&((phase<4)===(i===0))?1:0;c.put(p.species==='toad'?'_\\/_':i?'>_':'_>',x,FLOOR+dy-lift-(performance?Math.max(0,performance.b):0),'a');}
  if(p.species!=='butterfly'&&!walking&&!asleep&&!performance){const x=p.species==='owl'?24:p.species==='toad'?43:p.species==='goose'?43:40;signature(c,p,t,x,p.species==='owl'?31:33,active);}
- if(performance?.w>.2){const rows=p.species==='toad'?[' /','/_)']:p.species==='butterfly'?['\\',' \\']:[' /)/)','/ / /','\\__/'];c.group(rows,body.x+body.w-3,body.y-Math.round(performance.w*4),'w');}
+ if(performance?.w>.2&&p.species!=='butterfly'){
+   // A gesture grows from the shoulder. The previous feather patch floated
+   // above tall bodies when its upward motion exceeded its own height.
+   const shoulderY=Math.round(body.y+body.h*.4),row=shoulderY+performance.b;
+   const feathers=c.fills.filter(f=>f.tone==='b'&&f.y===row).sort((a,b)=>b.w-a.w)[0];
+   const shoulder={x:Math.round(feathers?feathers.x+feathers.w*.6:body.x+body.w*.4),y:shoulderY};
+   const tip={x:shoulder.x+Math.round(4+performance.w*5),y:shoulder.y-Math.round(performance.w*5)};
+   const n=Math.max(Math.abs(tip.x-shoulder.x),Math.abs(tip.y-shoulder.y));
+   for(let i=0;i<=n;i++){
+     const u=i/n,x=shoulder.x+(tip.x-shoulder.x)*u,y=shoulder.y+(tip.y-shoulder.y)*u;
+     c.put('/',x,y,'w');if(p.species!=='toad')c.put('/',x+2,y+1,'w');
+   }
+   c.group(p.species==='toad'?[' /','/_)']:[' /)/)','/ / /','\\__/'],tip.x-1,tip.y-2,'w',true);
+ }
  if(performance?.mark)c.put(performance.mark,head.x+head.w+2,head.y-2,'a');
  if(asleep)c.put('z',head.x+head.w+2,head.y-1,'p');
  return {...c.finish(duck.facing),width:W,anchorX:duck.facing===false?39:36,groundRow:39.5,scale:p.height/((40-top)*7.5),body:p.palette[0],face:p.palette[1],accent:p.palette[2],shade:'#778b7b',

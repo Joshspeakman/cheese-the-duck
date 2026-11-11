@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from engine.social_brains import Minds, ACTIONS, LABELS, action_key, clamp, stable
 from engine.local_speech import speak
 from world.guest_cast import guest_profile
-from engine import encounters
+from engine import encounters, visitor_shelters, shelter_company
 
 CHEESE_VOICE = {
  'bio': 'Cheese is a scruffy, opinionated little duck: dry wit, petty pond grievances, theatrical indignation and a tender streak he tries to hide. He is curious, not a helpful assistant.',
@@ -30,6 +30,8 @@ class MindGarden:
         self.voice={'source':'starting','detail':'Local voice warms up on this Mac. Personalities and memories are always active.'}
         self.utterances={};self.pair_cooldowns=self.model.state.setdefault('pair_cooldowns',{});self._last_chat=-1000.;self._last_chat_signature=None
         self.coactivities={}
+        self.housing={};self.shelter_retry={};self.housing_last=pond.state['elapsed']
+        self.house_scenes={}
         self._cheese_traits=None
 
     @property
@@ -127,7 +129,12 @@ class MindGarden:
                 from engine.nest_routines import ROUTINES
                 history=self.pond.state['objects'].get(plan['target'],{}).get('routines',{})
                 facts['familiar_nest_routines']=[ROUTINES[k]['label'] for k,n in sorted(history.items(),key=lambda entry:entry[1],reverse=True) if k in ROUTINES and n>=2][:3]
-        paired=self.encounter_for(key)
+        housing=self.housing.get(key)
+        if housing:
+            facts['current_activity']={'approach':'Walking to shelter','enter':'Settling under cover','inside':'Waiting out the weather','exit':'Heading back outside'}[housing['phase']]
+            facts['destination']=housing['id'].replace('_',' ')
+            facts['under_cover']=housing['phase']=='inside'
+        paired=self.encounter_for(key) or shelter_company.for_actor(self,key)
         if paired:
             partner=paired['b'] if key==paired['a'] else paired['a']
             facts['shared_activity']={'with':self.model.residents[partner]['name'],
@@ -246,6 +253,7 @@ class MindGarden:
         pairs=[];keys=list(self.present)
         for i,key in enumerate(keys):
             for other in keys[i+1:]:
+                if key in self.housing or other in self.housing:continue
                 a,b=self.present[key],self.present[other];distance=math.hypot(a[0]-b[0],(a[1]-b[1])*2)
                 pair='|'.join(sorted((key,other)))
                 if distance<24 and self.now>self.pair_cooldowns.get(pair,0):
@@ -278,6 +286,9 @@ class MindGarden:
 
     def tick(self):
         self.sync();self._poll()
+        house_dt=min(5,max(0,self.now-self.housing_last));self.housing_last=self.now
+        visitor_shelters.tick(self,house_dt)
+        shelter_company.tick(self,house_dt)
         if self.now<self.next_tick:return
         dt=min(5,max(0,self.now-self.last_at));self.last_at=self.now;self.next_tick=self.now+1
         # Absent residents do not accumulate invented interactions or rewards.
@@ -287,8 +298,10 @@ class MindGarden:
             if key=='cheese':continue
             r=self.model.residents[key];r['energy']=clamp(r['energy']-dt/2400);r['social']=clamp(r['social']-dt/1800)
             task=self.tasks.get(key)
-            if self.encounter_for(key):
+            if self.encounter_for(key) or key in self.housing:
                 if task:task['until']+=dt
+                if key in self.housing and key in self.pond.state['friends']:
+                    self.pond.state['friends'][key].update(activity='sheltering' if self.housing[key]['phase']=='inside' else 'walking to shelter',location=self.pond.location)
                 continue
             if task and self.now>=task['until']:
                 action=task['action'];before=r['energy']+r['social']+r['mood']
@@ -335,6 +348,10 @@ class MindGarden:
                     rest=1.8 if task.get('action')=='rest' else .85,
                     gesture='chatting' if speaking else GESTURE.get(task.get('action'),'signature'))
         encounter=self.encounter_for(key)
+        shelter=visitor_shelters.motion(self,key)
+        if shelter:
+            result['shelter']=shelter
+            return result
         if encounter:
             other=encounter['b'] if key==encounter['a'] else encounter['a']
             result['meeting']={'target':list(encounter['spots'][key]),'facing':encounter['spots'][other][0]>encounter['spots'][key][0],
@@ -355,8 +372,12 @@ class MindGarden:
 
     def snapshot(self):
         return {'residents':[self.model.snapshot(k,k in self.present) for k in self.model.residents],
-                'performances':[encounters.snapshot(s) for s in self.coactivities.values()],
+                'performances':self.performances(),
+                'residences':visitor_shelters.snapshot(self),
                 'exchanges':copy.deepcopy(self.model.state['exchanges'][-30:]),'voice':dict(self.voice),
                 'pending':self.model.residents[self.pending['key']]['name'] if self.pending else ('Cheese' if getattr(self.game,'_pending_talk_future',None) else None),
                 'feedback':self.feedback}
+
+    def performances(self):
+        return [encounters.snapshot(s) for s in self.coactivities.values()]+shelter_company.snapshot(self)
 

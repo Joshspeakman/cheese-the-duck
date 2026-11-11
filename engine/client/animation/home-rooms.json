@@ -1,0 +1,20 @@
+{
+  "dog_house": {"capacity": 1, "room": "mat", "elevated": false},
+  "shed": {"capacity": 2, "room": "workshop", "elevated": false},
+  "mud_hut": {"capacity": 2, "room": "hearth", "elevated": false},
+  "wooden_cottage": {"capacity": 2, "room": "sitting", "elevated": false},
+  "stone_house": {"capacity": 2, "room": "hearth", "elevated": false},
+  "barn": {"capacity": 3, "room": "hayloft", "elevated": false},
+  "greenhouse": {"capacity": 2, "room": "potting", "elevated": false},
+  "gazebo": {"capacity": 3, "room": "bench", "elevated": false},
+  "treehouse": {"capacity": 2, "room": "lookout", "elevated": true},
+  "lighthouse": {"capacity": 2, "room": "watch", "elevated": true},
+  "basic_nest": {"capacity": 1, "room": "nest", "elevated": false},
+  "cozy_nest": {"capacity": 2, "room": "nest", "elevated": false},
+  "deluxe_nest": {"capacity": 2, "room": "nest", "elevated": false},
+  "nest_premium": {"capacity": 2, "room": "nest", "elevated": false},
+  "golden_nest": {"capacity": 2, "room": "nest", "elevated": false},
+  "bed_small": {"capacity": 1, "room": "bed", "elevated": false},
+  "bed_king": {"capacity": 2, "room": "bed", "elevated": false},
+  "cozy_bed": {"capacity": 1, "room": "bed", "elevated": false}
+}

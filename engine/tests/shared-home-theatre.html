@@ -1,0 +1,65 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Shared shelters</title>
+<style>body{background:#10251e;color:#e7d7b4;margin:24px;font:18px Georgia}canvas{display:block;max-width:100%;margin-bottom:20px}</style>
+<h1>Places to wait out the weather</h1>
+<script type="module">
+import ROOMS from '../client/animation/home-rooms.json' with {type:'json'};
+import {itemSprite,itemWorldScale,ItemPainter} from '../client/ultra-items.mjs';
+import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';
+import {occupiedGeometry} from '../client/residence-stage.mjs';
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import COMPANY from '../client/animation/home-company.json' with {type:'json'};
+const painter=new ItemPainter();
+function drawHome(canvas,id,kind=null,progress=0){
+ const ctx=canvas.getContext('2d'),sx=8,sy=12,x=canvas.width/(2*sx),y=(canvas.height-20)/sy;
+ ctx.fillStyle='#172e25';ctx.fillRect(0,0,canvas.width,canvas.height);
+ const home={...itemSprite(id,1,{interaction:{kind:'rest',phase:'act',shared:true},context:{hour:22,season:'fall',weather:'rainy'}}),x,y,scale:itemWorldScale(id)};
+ painter.draw(ctx,home,x*sx,y*sy,sx*home.scale,{surface:'#172e25',outline:'#0a1913'});
+ let front;
+ for(let slot=0;slot<ROOMS[id].capacity;slot++){
+  const performance=kind&&slot<2?{kind,role:slot?'b':'a',progress}:null;
+  const model=slot?characterSprite({id:slot===1?'friendly_goose':'friend:frida',state:'sleeping',facing:false,performance},1,true):characterSprite({stage:'adult',state:'sleeping',performance},1);
+  const staged=occupiedGeometry(home,{...model,x,y},1,sx,sy,slot);front=staged.front;
+  ctx.save();if(staged.clip){const r=staged.clip;ctx.beginPath();ctx.rect(r.x,r.y,r.w,r.h);ctx.clip();}
+  drawCharacter(ctx,{...staged.character,name:'',sun:.8,outline:'#0a1913'},sx,sy,'#172e25');ctx.restore();
+ }
+ if(front)painter.draw(ctx,front,x*sx,y*sy,sx*home.scale,{surface:'#172e25',outline:'#0a1913',shadow:false});
+}
+window.reviewHomes=()=>{
+ const images={},keys=Object.keys(ROOMS);
+ for(let page=0;page<Math.ceil(keys.length/6);page++){
+  const canvas=document.createElement('canvas');canvas.width=1800;canvas.height=1200;const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#10251e';ctx.fillRect(0,0,1800,1200);
+  keys.slice(page*6,page*6+6).forEach((id,i)=>{const cell=document.createElement('canvas');cell.width=600;cell.height=555;drawHome(cell,id);ctx.drawImage(cell,(i%3)*600,Math.floor(i/3)*600+40);ctx.fillStyle='#e7d7b4';ctx.font='20px Menlo';ctx.fillText(id,(i%3)*600+20,Math.floor(i/3)*600+30);});
+  images['shared-homes-'+page]=canvas.toDataURL('image/png');document.body.append(canvas);
+ }
+ const scores=Object.keys(COMPANY);
+ for(let page=0;page<2;page++){
+  const canvas=document.createElement('canvas');canvas.width=1800;canvas.height=1800;const ctx=canvas.getContext('2d');ctx.fillStyle='#10251e';ctx.fillRect(0,0,1800,1800);
+  scores.slice(page*3,page*3+3).forEach((kind,row)=>[.2,.5,.8].forEach((p,col)=>{
+   const cell=document.createElement('canvas');cell.width=600;cell.height=555;drawHome(cell,'wooden_cottage',kind,p);ctx.drawImage(cell,col*600,row*600+40);ctx.fillStyle='#e7d7b4';ctx.font='16px Menlo';ctx.fillText(kind+' · '+Math.round(p*100)+'%',col*600+20,row*600+28);
+  }));images['shelter-company-'+page]=canvas.toDataURL('image/png');document.body.append(canvas);
+ }
+ return images;
+};
+window.replayHomes=frames=>{
+ const view=new SceneCanvas();view.resize(1440,900);let occupied=0,paired=0,pairImage=null;const costs=[];
+ for(const [i,frame]of frames.entries()){
+  const start=performance.now();view.draw(frame,i*.2,.2);costs.push(performance.now()-start);
+  for(const resident of frame.living.minds.residences.filter(r=>r.phase==='inside')){
+   const home=view.world.objects.find(o=>o.occupants?.some(a=>a.key===resident.actor));
+   if(!home)throw Error('Missing sheltered visitor '+resident.actor+' at '+i);
+   occupied++;
+  }
+  for(const scene of frame.living.minds.performances.filter(s=>s.home)){
+   const home=view.world.objects.find(o=>o.id===scene.home&&o.worldPosition.every((v,i)=>Math.abs(v-scene.destination[i])<1.1));
+   for(const key of [scene.a,scene.b]){
+    const actor=home?.occupants.find(a=>a.key===key);
+    if(actor?.character.performance?.kind!==scene.performance)throw Error('Shared score missing from real occupant '+key);
+   }
+   paired++;if(scene.elapsed>scene.duration*.4&&!pairImage)pairImage=view.canvas.toDataURL('image/png');
+  }
+ }
+ costs.sort((a,b)=>a-b);return {frames:frames.length,occupied,paired,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],image:pairImage||view.canvas.toDataURL('image/png')};
+};
+window.ready=true;
+</script>

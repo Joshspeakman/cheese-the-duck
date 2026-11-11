@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: added 51 authored nest scores with synchronized articulated motion, bill contacts, context selection, persistent routine history, actual arrival/resumption, bounded shelter benefits, and live simulation replay. Full catalogue and per-object bespoke requirements remain open.",
+  "previous_goal_turn": "Progress: added physical shelter reservations for regular, rare and story visitors, camera-stable independent travel, furnished shared interiors, six contextual shared shelter performances with bounded learning, and rendered native replays. Full catalogue and per-object bespoke requirements remain open.",
   "items": [
     {
       "id": "hat_red",
@@ -3589,11 +3589,11 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "nest_repertoire_and_live_contact",
+    "sourcePhase": "visitor_shelters_and_shared_company",
     "fullyOverhauled": false,
     "constructedObjects": 42,
     "remainingArtwork": 500,
-    "pairedTracks": 12,
+    "pairedTracks": 18,
     "soloItemTracks": 8,
     "perObject48SequenceAudit": "not_satisfied",
     "installedVersion": "2.36.0",
@@ -3609,18 +3609,27 @@
       "engine/artifacts/animation-milestone/nest-render.json",
       "engine/artifacts/animation-milestone/nest-live-world.png",
       "engine/artifacts/animation-milestone/nest-living.log",
-      "engine/artifacts/animation-milestone/nest-brains.log"
+      "engine/artifacts/animation-milestone/nest-brains.log",
+      "engine/artifacts/animation-milestone/shared-homes-js.log",
+      "engine/artifacts/animation-milestone/visitor-shelter-simulation.json",
+      "engine/artifacts/animation-milestone/shared-home-render.json",
+      "engine/artifacts/animation-milestone/shared-home-live.png",
+      "engine/artifacts/animation-milestone/shelter-company-live.png",
+      "engine/artifacts/animation-milestone/shared-homes-native.log",
+      "engine/artifacts/animation-milestone/shared-homes-living.log",
+      "engine/artifacts/animation-milestone/shared-homes-nests.log",
+      "engine/artifacts/animation-milestone/shared-homes-brains.log"
     ],
     "next": [
       "Deepen construction-specific nest/bed/house acting and each remaining item repertoire; the 51 shared nest scores do not by themselves satisfy 48 bespoke sequences per object.",
-      "Add explicit body-facing transitions and construction-specific canopy, quilt, pillow and lining actions; extend actual shelter occupancy to visitors.",
-      "Reconstruct the remaining 500 objects with authored details and anchors.",
-      "Expand guest-specific and age-specific behavior; twelve shared tracks are not a complete bespoke catalogue.",
-      "Extend visitor sheltering, invitations, prop handoffs and cooperative item use.",
+      "Add explicit nest body-facing transitions, construction-specific canopy/quilt/pillow/lining actions and species/age-specific climbing and doorway choreography.",
+      "Reconstruct the remaining 500 objects with authored details and anchors; account for larger footprints in placement so neighboring objects do not overlap.",
+      "Expand guest-specific and age-specific behavior; eighteen shared tracks are not a complete bespoke catalogue.",
+      "Extend invitations, prop handoffs and cooperative item use, with real arrival and completion evidence.",
       "Exhaustive integrated visuals, save migration, long runs, performance, packaged local model/audio checks and final installation."
     ],
     "checks": {
-      "javascript": 72,
+      "javascript": 77,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 22,
@@ -3628,7 +3637,7 @@
       "learningBrains": 44,
       "shelterLifecycle": 30,
       "pairedLifecycle": 16,
-      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks.",
+      "renderReview": "42 constructions; previous shelter/ride/paired reviews; 51 nest scores at three phases, five nests at nine ages, actual simulation replay; no glyph clipping, distinct score signatures, age-fitted bill contacts and connected necks. Shared interiors for 18 homes; six shelter scores at three phases; fixed body scale throughout gestures, attached species wings, actual regular/rare/story shelter and shared-company replays.",
       "nestLifecycle": 34,
       "nestReplay": {
         "nativeSceneFrames": 41,
@@ -3636,6 +3645,23 @@
         "p95Ms": 14.3,
         "cacheBytes": 1906992,
         "note": "Development replay, not the final full-milestone performance audit."
+      },
+      "visitorShelterLifecycle": 38,
+      "visitorShelterReplay": {
+        "frames": 15,
+        "occupied": 45,
+        "paired": 15,
+        "medianMs": 19.80000001192093,
+        "p95Ms": 188.4000000357628,
+        "note": "Development replay includes cold first-frame cost; not the final performance audit."
+      },
+      "shelterCompanyReplay": {
+        "frames": 60,
+        "occupied": 180,
+        "paired": 60,
+        "medianMs": 8.199999988079071,
+        "p95Ms": 21.599999964237213,
+        "note": "Actual native snapshots. Reduced motion and snapshot immutability also checked separately."
       }
     },
     "limitations": [
@@ -3643,11 +3669,12 @@
       "No object has yet passed the 48 bespoke sequence requirement.",
       "Five nests now use 51 authored core routines (three require a canopy). Individual nest-construction variants, guest participation and egg-specific interactions remain unfinished; no per-object completion is claimed.",
       "Paired tracks currently share a core movement vocabulary across the cast; personality-specific choreography and full guest item participation remain unfinished.",
-      "Resident shelter behavior currently applies to Cheese, not every visitor.",
       "Eight solo tracks and the current mechanical loops are foundations, not the completed object-animation catalogue.",
+      "Regular, rare and story visitors now use real shelter slots, shared rooms and six contextual company scores. Full species-specific climbing, doorway, object-contact and personal repertoires remain unfinished.",
       "Installed app remains the previously verified 2.36.0; this development milestone is not packaged or installed."
     ],
     "sharedNestScores": 51,
-    "nestObjectsUsingSharedScores": 5
+    "nestObjectsUsingSharedScores": 5,
+    "sharedShelterScores": 6
   }
 }

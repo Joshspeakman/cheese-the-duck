@@ -300,7 +300,12 @@ export class LivingWorld {
       const [x,y]=this.project(s,item.x,item.y);
       actors.push({y,draw:()=>{
         const plan=s.living?.plan,destination=plan?.residence?.destination||plan?.destination;
-        const interaction=plan?.target===item.id&&(!destination||Math.abs(item.x-destination[0])+Math.abs(item.y-destination[1])<2)?plan:null;
+        const matches=dest=>dest&&Math.abs(item.x-dest[0])+Math.abs(item.y-dest[1])<2;
+        const occupants=(s.living?.minds?.residences||[]).filter(r=>r.id===item.id&&matches(r.destination));
+        const owned=plan?.target===item.id&&(!destination||matches(destination));
+        let interaction=owned?plan:null;
+        if(occupants.some(r=>r.phase!=='approach'))interaction=interaction||{phase:'act',kind:'rest'};
+        if(interaction&&occupants.length+(owned&&plan.residence?1:0)>1)interaction={...interaction,shared:true};
         this.objects.push({...itemSprite(item.id,t,{motion:s.motion!==false,context:s,originalArt:item.art,state:s.living?.objects?.[item.id],interaction}),item:true,x,y,worldPosition:[item.x,item.y],scale:itemWorldScale(item.id)});
       }});
     }
@@ -341,10 +346,21 @@ export class LivingWorld {
     actors.sort((a,b)=>a.y-b.y).forEach(a=>a.draw());
     const cheese=this.characters.find(c=>c.cheese),residence=residenceStage(plan,this.objects,cheese);
     if(residence){
-      const routine=plan.phase==='act'?plan.residence.routine:null;
-      const resident=routine?{...characterSprite({...s.duck,state:'idle',facing:true,performance:{kind:'nest',routine,motion:s.motion!==false}},t),x:cheese.x,y:cheese.y,cheese:true}:cheese;
-      residence.home.occupant={character:resident,inside:residence.inside};
+      const routine=plan.phase==='act'&&!plan.residence.routine?.done?plan.residence.routine:null;
+      const resident=routine?{...characterSprite({...s.duck,state:'idle',facing:true,performance:{kind:'nest',routine,motion:s.motion!==false}},t),x:cheese.x,y:cheese.y,cheese:true}:residence.inside<.99?{...characterSprite({...s.duck,state:'walking'},t),x:cheese.x,y:cheese.y,cheese:true}:cheese;
+      residence.home.occupant={character:resident,inside:residence.inside,slot:plan.residence.slot||0,key:'cheese'};
+      residence.home.occupants=[residence.home.occupant];
       this.characters=this.characters.filter(c=>c!==cheese);
+    }
+    for(const r of living?.minds?.residences||[]){
+      if(r.phase==='approach')continue;
+      const actorId=r.actor==='story:pip'?'story:lost_duckling':r.actor;
+      const character=this.characters.find(c=>c.id===actorId);
+      const home=this.objects.find(o=>o.id===r.id&&o.worldPosition?.every((n,i)=>Math.abs(n-r.destination[i])<1.1));
+      if(!home?.anchors||!character)continue;
+      const inside=r.phase==='inside'?1:r.phase==='enter'?clamp(r.elapsed/3,0,1):clamp(1-r.elapsed/3,0,1);
+      (home.occupants||=[]).push({character,inside,slot:r.slot,key:r.actor});
+      this.characters=this.characters.filter(c=>c!==character);
     }
     const ride=!residence&&playgroundStage(plan,this.objects,cheese,s.duck.stage,s.motion!==false);
     if(ride){
