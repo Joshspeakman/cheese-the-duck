@@ -7,12 +7,13 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from engine import terrain
 
 DATA=Path(__file__).parent/'client/animation/object-footprints.json'
 FOOTPRINTS=json.loads(DATA.read_text())['items']
 GROUND_PATH=DATA.with_name('habitat-ground.json')
 GROUND=json.loads(GROUND_PATH.read_text())
-REVISION=hashlib.sha256(DATA.read_bytes()+GROUND_PATH.read_bytes()).hexdigest()[:16]
+REVISION=hashlib.sha256(DATA.read_bytes()+GROUND_PATH.read_bytes()+terrain.DATA.read_bytes()).hexdigest()[:16]
 WIDTH,HEIGHT=20,12
 
 def finite(value):
@@ -33,7 +34,7 @@ def overlaps(a,b):
 
 def shoreline(x):
     gx=24+x*192/20
-    return (GROUND['bank']+math.sin(gx*GROUND['waveA'][0]+GROUND['seed'])*GROUND['waveA'][1]+math.sin(gx*GROUND['waveB'][0])*GROUND['waveB'][1]-46)*12/47
+    return (terrain.bank_grid('Home Pond',gx)-46)*12/47
 
 def ground_bounds(item,box,y):
     # Upright drawings rise from their feet. Flat mats/paths occupy their whole
@@ -54,18 +55,13 @@ def scenery():
 
 SCENERY=scenery()
 
-def surface_fits(item,box,y):
-    if item in GROUND['eitherItems']:return True
-    water=item in GROUND['waterItems']
-    for step in range(33):
-        shore=shoreline(box['x']+box['w']*step/32)
-        if not water and y+.35>shore:return False
-        if water and ground_bounds(item,box,y)['y']<shore:return False
-    return True
+def surface_fits(item,box,y,location='Home Pond',biome='pond'):
+    return terrain.surface_fits(item,ground_bounds(item,box,y),location,biome)
 
 class PondLayout:
-    def __init__(self,habitat,obstacles=lambda:()):
+    def __init__(self,habitat,obstacles=lambda:(),location='Home Pond',biome='pond'):
         self.habitat=habitat;self.obstacles=obstacles
+        self.location=location;self.biome=biome;self.features=terrain.features(location,biome)
 
     def occupied(self,exclude='',instance=None):
         # Idle bobbing never changes the permanent space reservation.
@@ -88,10 +84,10 @@ class PondLayout:
         # must stay reachable. No object can be hidden above the window.
         if 46+y*47/12-(footprint or FOOTPRINTS[item])['height']<2:
             return False,'That tall object needs a spot farther down the bank.'
-        if not surface_fits(item,f,y):
+        if not surface_fits(item,f,y,self.location,self.biome):
             return False,'That belongs on the water.' if item in GROUND['waterItems'] else 'Keep its feet on the dry bank.'
         feet=ground_bounds(item,f,y)
-        for feature in SCENERY:
+        for feature in self.features:
             if overlaps(feet,feature['box']):
                 return False,'Leave room for the '+feature['name'].lower()+'.'
         for other,ox,oy,shape in self.occupied(item,instance):
@@ -179,6 +175,6 @@ class PondLayout:
                    if key in FOOTPRINTS and get_item(key) and get_item(key).category!=ItemCategory.COSMETIC],
             copies=[dict(id=p.item_id,instance=p.instance_id,placed=p in h.get_visible_placed_items()) for p in h.placed_items+h.stored_placements if self.eligible(p.item_id)],
             placed=[dict(id=p.item_id,instance=p.instance_id,x=p.x,y=p.y,box=bounds(p.item_id,p.x,p.y)) for p in h.get_visible_placed_items()],
-            scenery=SCENERY,
+            scenery=self.features,
             obstacles=[dict(id=p[0],x=p[1],y=p[2],instance=p[3] if len(p)>3 else None,
                             box=bounds(*p[:3],p[4] if len(p)>4 else None)) for p in self.obstacles()])

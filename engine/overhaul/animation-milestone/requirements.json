@@ -3993,7 +3993,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "grounded_world_placement_and_scenery_depth",
+    "sourcePhase": "grounded_portable_activities_all_areas",
     "fullyOverhauled": false,
     "constructedObjects": 301,
     "remainingArtwork": 241,
@@ -4440,11 +4440,26 @@
       "engine/artifacts/animation-milestone/grounding-review.png",
       "engine/artifacts/animation-milestone/grounding-js-suite.log",
       "engine/artifacts/animation-milestone/grounding-render.log",
-      "engine/artifacts/animation-milestone/grounding-smoke.log"
+      "engine/artifacts/animation-milestone/grounding-smoke.log",
+      "engine/artifacts/animation-milestone/terrain-native.json",
+      "engine/artifacts/animation-milestone/terrain-final-js.log",
+      "engine/artifacts/animation-milestone/terrain-full-js.log",
+      "engine/artifacts/animation-milestone/terrain-render.json",
+      "engine/artifacts/animation-milestone/terrain-contact-sheet.png",
+      "engine/artifacts/animation-milestone/terrain-layout-ui.log",
+      "engine/artifacts/animation-milestone/terrain-physical.log",
+      "engine/artifacts/animation-milestone/terrain-playkit.log",
+      "engine/artifacts/animation-milestone/terrain-keepsakes.log",
+      "engine/artifacts/animation-milestone/terrain-creative.log",
+      "engine/artifacts/animation-milestone/terrain-textiles.log",
+      "engine/artifacts/animation-milestone/terrain-groundworks.log",
+      "engine/artifacts/animation-milestone/terrain-playdates.log",
+      "engine/artifacts/animation-milestone/terrain-living.log",
+      "engine/artifacts/animation-milestone/terrain-smoke.log"
     ],
-    "next": "Finish the terrain/contact audit for temporary portable performances and non-Home-Pond ground planes, then continue the remaining 241 catalogue constructions and individual contextual repertoires. Headwear still needs individual visitor participation and dressing/undressing. All 542 verified-sequence counts remain zero; preserve the full milestone scope through final integration and installation.",
+    "next": "Continue the remaining 241 catalogue constructions and individual contextual repertoires. Apply the shared terrain/support reservations to future artwork and regenerate measurements when its envelope changes. Headwear still needs individual visitor participation and dressing/undressing; tool pickup/put-away and all 542 individual 48-sequence audits remain open. Preserve the full milestone through final integration and installation.",
     "checks": {
-      "javascript": 208,
+      "javascript": 211,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4838,7 +4853,27 @@
       "headwearUI": 7,
       "groundingNative": 292,
       "groundingUI": 12,
-      "groundingParitySamples": 840
+      "groundingParitySamples": 840,
+      "terrainFocusedJavascript": 12,
+      "terrainNative": 483,
+      "terrainAreas": 21,
+      "terrainSurfaceParitySamples": 34146,
+      "terrainRender": 876,
+      "terrainPortableRegressions": {
+        "playkit": 164,
+        "keepsakes": 118,
+        "creative": 184,
+        "textiles": 286,
+        "groundworks": 190,
+        "sharedPlay": 70,
+        "physicalCopies": 60
+      },
+      "terrainSmoke": {
+        "frames": 94,
+        "lastRenderMs": 8.5,
+        "peakRenderMs": 151.5,
+        "localAI": false
+      }
     },
     "limitations": [
       "279 of 542 object artworks reconstructed for review; 263 remain.",
@@ -5069,12 +5104,19 @@
         "buildings",
         "outdoor decorations",
         "community projects",
-        "garden beds"
+        "garden beds",
+        "temporary portable activity reservations"
       ],
       "ownership": "Original inventory, construction, source room records and exact-copy history retained. Overflow is accessible through Arrange.",
-      "depth": "Fixed Home Pond trees and dock use native ground anchors; actual scenery ink cells occlude items and clicks behind them. Weather remains above actors without intercepting input.",
+      "depth": "Home Pond and all 20 other areas use the same native and renderer terrain/landmark anchors. Scenery ink occludes objects and input behind it; camera movement preserves support surfaces. Fourteen misplaced background supports were corrected. Shared ball courts reserve their full animated width.",
       "garden": "Mature plant envelopes are reserved while beds are empty; new community work finds room around established grounds.",
-      "remaining": "Temporary portable performance origins and terrain outside Home Pond still need their own authoritative terrain/contact audit during the full milestone; no sequence-completion credit is claimed."
+      "remaining": "Future artwork must preserve or regenerate its measured envelope. Tool pickup/put-away and the individual contextual repertoires remain open; this terrain/contact pass adds no sequence-completion credit.",
+      "areas": 21,
+      "fixedRegionFeatures": 101,
+      "terrainParitySamples": 34146,
+      "portableNativeChecks": 483,
+      "renderCases": 876,
+      "portable": "Owned props receive a saved object point and separate walking destination. Arrival gates work; pause, travel and save/load preserve deployed props. Resume walks back before advancing. Completion, cancellation or lost ownership release the reservation. No suitable terrain returns failure without cost."
     }
   }
 }

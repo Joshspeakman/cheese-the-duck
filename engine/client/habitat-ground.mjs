@@ -1,11 +1,11 @@
 import GROUND from './animation/habitat-ground.json' with {type:'json'};
+import {bankGrid,bankOnScreen,surfaceFitsRegion} from './terrain.mjs';
 export function homeShore(x){
  const gx=24+x*192/20;
- return (GROUND.bank+Math.sin(gx*GROUND.waveA[0]+GROUND.seed)*GROUND.waveA[1]+Math.sin(gx*GROUND.waveB[0])*GROUND.waveB[1]-46)*12/47;
+ return (bankGrid('Home Pond',gx)-46)*12/47;
 }
 export function homeBankOnScreen(x,camera={x:0,y:0,w:132,h:42}){
- const wx=camera.x+(x-24)/192*camera.w;
- return 46+(homeShore(wx*20/132)*42/12-camera.y)/camera.h*47;
+ return bankOnScreen('Home Pond',x,camera);
 }
 export function itemSurface(id){return GROUND.waterItems.includes(id)?'water':GROUND.eitherItems.includes(id)?'either':'land';}
 export function groundBounds(id,box,y){
@@ -18,11 +18,5 @@ export const homeScenery=GROUND.scenery.map(f=>{
 });
 export const intersects=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
 export function surfaceFits(id,box,y){
- const surface=itemSurface(id);
- if(surface==='either')return true;
- for(let x=box.x;x<=box.x+box.w+.001;x+=box.w/32){
-  if(surface==='land'&&y+.35>homeShore(x))return false;
-  if(surface==='water'&&groundBounds(id,box,y).y<homeShore(x))return false;
- }
- return true;
+ return surfaceFitsRegion(id,groundBounds(id,box,y));
 }

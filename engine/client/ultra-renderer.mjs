@@ -62,7 +62,7 @@ export class SceneCanvas {
     for(const model of characters)fit(model);
     for(const model of objects){
       fit(model);
-      for(const member of [...(model.occupants||[]),...(model.nestHelpers||[]),...(model.riders||[]),...(model.sitters||[]),...(model.gardeners||[]),...(model.musicians||[]),...(model.lightWorkers||[]),...(model.keepers||[]),...(model.creators||[]),...(model.textileUsers||[]),...(model.groundUsers||[]),...(model.structureUsers||[]),...(model.carnivalRiders||[])])fit(member.character);
+      for(const member of [...(model.occupants||[]),...(model.nestHelpers||[]),...(model.riders||[]),...(model.sitters||[]),...(model.gardeners||[]),...(model.musicians||[]),...(model.lightWorkers||[]),...(model.keepers||[]),...(model.creators||[]),...(model.textileUsers||[]),...(model.groundUsers||[]),...(model.structureUsers||[]),...(model.carnivalRiders||[]),...(model.players||[])])fit(member.character);
       if(model.occupant)fit(model.occupant.character);
       if(model.rider)fit(model.rider.character);
       if(model.bather)fit(model.bather.character);

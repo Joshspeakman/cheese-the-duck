@@ -58,6 +58,9 @@ class PondGrounds:
             yield (p.item_id,*p.get_display_position(),p.instance)
         for p in self.installations():
             yield (p['id'],p['x']*20/132,p['y']*12/42,p['instance'],p['footprint'])
+        from engine.portable_ground import reservation
+        portable=reservation(self.pond)
+        if portable:yield portable
 
     def handles(self,item,instance):
         return instance in self.sources and self.sources[instance].item_id==item

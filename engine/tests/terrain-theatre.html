@@ -1,0 +1,38 @@
+<!doctype html><meta charset="utf-8"><title>Terrain placement review</title>
+<style>body{margin:0;background:#142820;color:#eee1b5;font:16px system-ui}canvas{display:block}#sheet{display:none}</style>
+<script type="module">
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {itemWorldScale} from '../client/ultra-items.mjs';
+const renderer=new SceneCanvas();renderer.effects.level='quiet';document.body.append(renderer.canvas);
+const sheet=document.createElement('canvas');sheet.id='sheet';sheet.width=1440;sheet.height=7*322;document.body.append(sheet);
+const ctx=sheet.getContext('2d');
+window.check=reviews=>{
+ let checks=0;
+ for(const [index,review]of reviews.entries()){
+  const base={...review.scene,motion:false,particles:false,weatherEffects:false,visitor:null,rareVisitor:null,events:[],storyActor:null,living:null,structures:[],duck:{...review.scene.duck,hidden:true}};
+  for(const [width,height]of [[1440,900],[2400,700],[800,1200]])for(const camera of [{x:0,y:0,w:132,h:42},{x:10,y:2,w:107,h:38}])for(const item of review.placements){
+   renderer.resize(width,height);renderer.draw({...base,camera,items:[{...item,instance:'review'}]},0,0);
+   const object=renderer.world.objects.find(o=>o.id===item.id),hit=renderer.hits.find(h=>h.instance==='review');
+   const expected=renderer.world.project({camera},item.x,item.y);
+   if(!object||!hit||object.x!==expected[0]||object.y!==expected[1])throw Error(base.location+' lost ground anchor: '+item.id);
+   if(![hit.x,hit.y,hit.w,hit.h].every(Number.isFinite))throw Error('Invalid item bounds');
+   const scale=itemWorldScale(item.id)*Math.min(1,renderer.sy/(renderer.sx*1.5));
+   if(Math.abs(object.scale-scale)>1e-8)throw Error('Item scale exceeds reserved drawing');
+   checks++;
+  }
+  renderer.resize(1440,900);
+  const item=review.placements.find(i=>i.id==='toy_ball');
+  renderer.draw({...base,items:item?[{...item,instance:'review'}]:[]},0,0);
+  const x=(index%3)*480,y=Math.floor(index/3)*322;
+  ctx.fillStyle='#142820';ctx.fillRect(x,y,480,322);ctx.fillStyle='#eee1b5';ctx.font='15px system-ui';ctx.fillText(base.location,x+10,y+17);
+  ctx.drawImage(renderer.canvas,x,y+22,480,300);
+ }
+ return {areas:reviews.length,checks};
+};
+window.capture=()=>sheet.toDataURL('image/png').split(',')[1];
+window.review=(review,id='toy_ball')=>{
+ renderer.resize(1440,900);const item=review.placements.find(i=>i.id===id);
+ renderer.draw({...review.scene,motion:false,particles:false,weatherEffects:false,visitor:null,rareVisitor:null,events:[],living:null,structures:[],items:item?[{...item,instance:'review'}]:[]},0,0);
+ return renderer.canvas.toDataURL('image/png').split(',')[1];
+};
+</script>

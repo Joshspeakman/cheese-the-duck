@@ -48,7 +48,7 @@ def resolve(pond, item, ref=None):
         obj = pond.state['instances'].get(identity)
         return obj if obj and obj.get('_item') == item else None
     destination = (ref or {}).get('destination')
-    if destination:
+    if destination and not (ref or {}).get('portable'):
         from engine.shelters import position
         copies = [p for p in pond.placements if p.item_id == item and position(p) == destination]
         if len(copies) == 1:
@@ -71,7 +71,7 @@ def records(pond):
 
 def bind_legacy_plan(pond):
     plan = pond.state.get('plan')
-    if not plan or plan.get('instance') or not plan.get('destination'):
+    if not plan or plan.get('instance') or plan.get('portable') or not plan.get('destination'):
         return
     from engine.shelters import position
     copies = [p for p in pond.placements if p.item_id == plan['target'] and position(p) == plan['destination']]
