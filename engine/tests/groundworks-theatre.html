@@ -6,7 +6,7 @@ import {GROUND_BLUEPRINTS} from '../client/ground-workshop.mjs';
 import {itemSprite,ItemPainter} from '../client/ultra-items.mjs';
 import {SceneCanvas} from '../client/ultra-renderer.mjs';
 import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';
-import {groundGeometry,drawGroundTools,groundPose,GROUND_ROUTINES,GROUND_CONTROLS} from '../client/ground-routines.mjs';
+import {groundGeometry,drawGroundTools,groundPose,GROUND_ROUTINES,GROUND_CONTROLS,GROUND_COMPANY} from '../client/ground-routines.mjs';
 import {GUEST_CAST} from '../client/guest-cast.mjs';
 const painter=new ItemPainter(),surface='#142b23';
 function sheet(w,h){const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.fillStyle=surface;ctx.fillRect(0,0,w,h);return [canvas,ctx];}
@@ -33,6 +33,25 @@ window.reviewGroundworks=()=>{
  }
  return images;
 };
+window.reviewGroundCompany=()=>{
+ const images={},entries=Object.entries(GROUND_COMPANY),casts=['friend:frida','friendly_goose','friend:ada','lost_duckling','butterfly_fairy'];
+ for(let page=0;page<Math.ceil(entries.length/4);page++){
+  const [canvas,ctx]=sheet(1800,1200);
+  entries.slice(page*4,page*4+4).forEach(([id,shared],i)=>{
+   const core=shared.preview,item=shared.item,work={id:core,duet:id,elapsed:GROUND_ROUTINES[core].duration*.6,start:{...GROUND_CONTROLS}};
+   const x=i%2*900,y=Math.floor(i/2)*600,home={...itemSprite(item,0,{pose:{ground:groundPose(work)}}),x:(x+380)/6,y:(y+520)/8,scale:GROUND_BLUEPRINTS[item].scale};
+   painter.draw(ctx,home,home.x*6,home.y*8,6*home.scale,{surface});
+   const profile=Object.values(GUEST_CAST).find(g=>g.id===(id==='hover_observer'?'butterfly_fairy':casts[(page*4+i)%casts.length]))||Object.values(GUEST_CAST)[0];
+   for(const slot of [0,1]){
+    const routine={...work,company:{id,role:slot?'b':'a'}},source=slot?{id:profile.id,castId:profile.id,name:profile.name}:{stage:page===0?'hatchling':page===2?'elder':'adult'};
+    const character={...characterSprite({...source,state:'idle',facing:!slot,performance:{kind:'ground',routine}},0,Boolean(slot)),x:home.x,y:home.y};
+    const g=groundGeometry(home,{character,inside:1,slot},6,8);drawCharacter(ctx,g.character,6,8,surface);drawGroundTools(ctx,g);
+   }
+   ctx.fillStyle='#e5d8b4';ctx.font='20px Menlo';ctx.fillText(id+' / '+profile.name,x+20,y+35);
+  });images['ground-company-'+page]=canvas.toDataURL();document.body.append(canvas);
+ }
+ return images;
+};
 window.replayGroundworks=frames=>{
  const view=new SceneCanvas();view.resize(1500,950);const images={},costs=[];let drawn=0,workers=0,companions=0;
  for(const [i,s]of frames.entries()){
@@ -47,6 +66,8 @@ window.replayGroundworks=frames=>{
      if(!hit||view.hit((hit.x+hit.w/2)/view.canvas.width,(hit.y+hit.h/2)/view.canvas.height)?.id!==r.character.id)throw Error('Ground visitor is not selectable where drawn');
      const name='ground-company-live-'+o.id;
      if(!images[name]&&r.character.performance.routine.elapsed>12)images[name]=view.canvas.toDataURL();
+     const work=r.character.performance.routine,contact='ground-company-contact-'+work.company?.id;
+     if(work.company?.id&&!images[contact]&&work.elapsed>GROUND_ROUTINES[work.id].duration*.85)images[contact]=view.canvas.toDataURL();
     }
    }
   }

@@ -126,7 +126,16 @@ function softGround(c,p,s){
  }
  if(p.type==='sand'){
   for(let row=0;row<12;row++)for(let col=0;col<27;col++)if((col*7+row*3)%8===0)mark(c,p,.025+col*.036,.03+row*.08,':','f');
-  for(const line of s.furrows||[])route(c,p,[[.31,line.v],[.48,line.v],[.64,line.v],[.79,line.v]],'k','_');
+  for(const line of s.furrows||[]){
+   const a=line.u0??.31,b=line.u1??.79,v=clamp(line.v);
+   // The pushed-up sandy rim distinguishes a fresh drawn groove from the
+   // underlying wind ripples. Weathered marks lose their crisp bright edge.
+   route(c,p,[[a,v],[b,v]],'k','_');
+   if((line.life??1)>.35){
+    route(c,p,[[a,clamp(v+.018)],[b,clamp(v+.018)]],'f','.');
+    mark(c,p,b,clamp(v+.032),':','a');
+   }
+  }
   for(const [u,v]of [[.12,.2],[.78,.3],[.2,.8],[.87,.74]]){route(c,p,[[u-.05,v+.02],[u,v],[u+.07,v+.03]],'a','~');mark(c,p,u-.02,v+.06,': .','s');}
  }else{
   for(let i=0;i<20;i++)mark(c,p,.08+(i%7)*.13,.1+Math.floor(i/7)*.3,i%3?'*':'+','a');
@@ -178,7 +187,10 @@ export function groundSprite(base,item,t,{state={},pose={},motion=true}={}){
   if(state.dirt>.2&&(x*17+y*7)%Math.max(30,Math.floor(190-state.dirt*150))===0)c.put(x,y,',','s');
   if(s.frost>.2&&(x*11+y*13)%Math.max(25,Math.floor(170-s.frost*130))===0)c.put(x,y,'*','f');
  }
- for(const track of s.tracks||[]){const q=groundPoint(p,clamp(track.u),clamp(track.v));c.put(q.x-1,q.y,'\\|/','s').put(q.x,q.y+1,'v','k');}
+ for(const track of s.tracks||[]){
+  const q=groundPoint(p,clamp(track.u),clamp(track.v)),rows={webbed:['\\|/',' v '],small:['v'],talon:['Y','|'],toad:['o.o',' V ']}[track.shape||'webbed']||['v'];
+  c.rows(rows,q.x-Math.floor(rows[0].length/2),q.y,'s');
+ }
  if(v.press>.1&&['sand','snow'].includes(p.type)){const q=groundPoint(p,v.u,v.v);c.put(q.x-2,q.y+1,'(vv)','s');}
  const inks={b:'#afa99a',a:'#d1c6ad',f:'#e5dbc2',s:'#666c66',k:'#303b38',w:'#79aeb2',l:'#839661','0':'#cf6b72','1':'#e0a05d','2':'#e8d77f','3':'#86bd86','4':'#71b9cc','5':'#8299ca','6':'#b09bc9'};
  const panels={b:'#5d6661',a:'#778178',f:'#bac2af',s:'#364b47',k:'#172e2d',w:'#335c69'};

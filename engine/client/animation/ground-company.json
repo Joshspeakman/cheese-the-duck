@@ -1,0 +1,1882 @@
+{
+  "stone_spotter": {
+    "label": "Wait beside the broad stone and offer a wing when Cheese hesitates",
+    "item": "stepping_stones",
+    "preview": "stone_cross",
+    "tool": "none",
+    "layout": "path",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.16,
+        {
+          "u": 1.1,
+          "v": 0.96,
+          "x": -2,
+          "w": 0.3
+        }
+      ],
+      [
+        0.36,
+        {
+          "u": 1.1,
+          "v": 0.96,
+          "w": 0.8,
+          "eye": "o"
+        }
+      ],
+      [
+        0.57,
+        {
+          "u": 1.1,
+          "v": 0.96,
+          "w": 0.2,
+          "b": 0.3
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 1.1,
+          "v": 0.96,
+          "w": 0.7,
+          "mark": "!"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "winding_guide": {
+    "label": "Watch the bend from the bank and point out the next wide foothold",
+    "item": "stone_path",
+    "preview": "winding_walk",
+    "tool": "none",
+    "layout": "path",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.14,
+        {
+          "u": 1.08,
+          "v": 1.03,
+          "x": -2
+        }
+      ],
+      [
+        0.31,
+        {
+          "u": 1.08,
+          "v": 1.03,
+          "w": 0.7,
+          "y": -1
+        }
+      ],
+      [
+        0.49,
+        {
+          "u": 1.08,
+          "v": 1.03,
+          "x": -1,
+          "w": 0.3
+        }
+      ],
+      [
+        0.64,
+        {
+          "u": 1.08,
+          "v": 1.03,
+          "w": 0.8
+        }
+      ],
+      [
+        0.83,
+        {
+          "u": 1.08,
+          "v": 1.03,
+          "mark": "!"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "cobble_compare": {
+    "label": "Check the right-hand cobble joints while Cheese explores the left",
+    "item": "cobblestone",
+    "preview": "cobble_seams",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.8,
+          "v": 0.9,
+          "b": 0.7
+        }
+      ],
+      [
+        0.43,
+        {
+          "u": 0.83,
+          "v": 0.73,
+          "x": -1,
+          "y": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.64,
+        {
+          "u": 0.88,
+          "v": 0.72,
+          "b": 1.2
+        }
+      ],
+      [
+        0.83,
+        {
+          "u": 0.82,
+          "v": 0.86,
+          "w": 0.5,
+          "mark": "?"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "pebble_echo": {
+    "label": "Answer Cheese with three small crunches on a different pebble band",
+    "item": "pebble_path",
+    "preview": "pebble_listen",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.24,
+        {
+          "u": 0.75,
+          "v": 0.8,
+          "press": 1,
+          "b": 0.5
+        }
+      ],
+      [
+        0.35,
+        {
+          "u": 0.75,
+          "v": 0.8,
+          "l": 0.8
+        }
+      ],
+      [
+        0.47,
+        {
+          "u": 0.87,
+          "v": 0.65,
+          "press": 1,
+          "b": 0.5
+        }
+      ],
+      [
+        0.58,
+        {
+          "u": 0.87,
+          "v": 0.65,
+          "r": 0.8
+        }
+      ],
+      [
+        0.7,
+        {
+          "u": 0.79,
+          "v": 0.5,
+          "press": 1,
+          "b": 0.5
+        }
+      ],
+      [
+        0.87,
+        {
+          "u": 0.79,
+          "v": 0.5,
+          "x": -2,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.24,
+        "foot"
+      ],
+      [
+        0.47,
+        "foot"
+      ],
+      [
+        0.7,
+        "foot"
+      ]
+    ]
+  },
+  "slate_reader": {
+    "label": "Crouch beside the exposed slate layers and compare their thin edges",
+    "item": "stone_tiles",
+    "preview": "slate_layers",
+    "tool": "hand",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.72,
+          "v": 1.02,
+          "b": 1.4,
+          "y": 1
+        }
+      ],
+      [
+        0.43,
+        {
+          "u": 0.8,
+          "v": 1.02,
+          "contact": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.68,
+        {
+          "u": 0.9,
+          "v": 1.02,
+          "contact": 1,
+          "x": -1
+        }
+      ],
+      [
+        0.86,
+        {
+          "u": 0.9,
+          "v": 1.02,
+          "w": 0.4,
+          "mark": "?"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "marble_branch": {
+    "label": "Trace the neighboring marble vein back toward Cheese's branch",
+    "item": "marble_tiles",
+    "preview": "marble_vein",
+    "tool": "hand",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.87,
+          "v": 0.85,
+          "contact": 1
+        }
+      ],
+      [
+        0.41,
+        {
+          "u": 0.8,
+          "v": 0.65,
+          "contact": 1,
+          "x": -1
+        }
+      ],
+      [
+        0.63,
+        {
+          "u": 0.72,
+          "v": 0.58,
+          "contact": 1,
+          "x": -2
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.75,
+          "v": 0.74,
+          "eye": "o",
+          "mark": "!"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "checker_echo": {
+    "label": "Answer each of Cheese's steps from the two squares on the other side",
+    "item": "checkered_floor",
+    "preview": "checker_steps",
+    "tool": "none",
+    "layout": "checker",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.23,
+        {
+          "u": 0.7,
+          "v": 0.625,
+          "press": 1,
+          "b": 0.3
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.7,
+          "v": 0.625,
+          "l": 0.8
+        }
+      ],
+      [
+        0.53,
+        {
+          "u": 0.9,
+          "v": 0.375,
+          "press": 1,
+          "b": 0.3
+        }
+      ],
+      [
+        0.66,
+        {
+          "u": 0.9,
+          "v": 0.375,
+          "r": 0.8
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.9,
+          "v": 0.625,
+          "press": 1,
+          "b": 0.3
+        }
+      ],
+      [
+        0.9,
+        {
+          "u": 0.9,
+          "v": 0.625,
+          "w": 0.6,
+          "mark": "!"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.23,
+        "foot"
+      ],
+      [
+        0.53,
+        "foot"
+      ],
+      [
+        0.8,
+        "foot"
+      ]
+    ],
+    "lead": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "u": 0.1,
+          "v": 0.625,
+          "l": 1
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.3,
+          "v": 0.375,
+          "r": 1
+        }
+      ],
+      [
+        0.64,
+        {
+          "u": 0.1,
+          "v": 0.625,
+          "l": 1
+        }
+      ],
+      [
+        0.82,
+        {
+          "u": 0.3,
+          "v": 0.625,
+          "w": 0.4,
+          "mark": "!"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 0.5,
+          "v": 1.1
+        }
+      ]
+    ]
+  },
+  "mosaic_detail": {
+    "label": "Study the fish tail and the small chips around its rim",
+    "item": "mosaic_tiles",
+    "preview": "mosaic_spiral",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.18,
+        {
+          "u": 0.84,
+          "v": 0.86,
+          "b": 0.6
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.8,
+          "v": 0.62,
+          "y": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.78,
+          "v": 0.46,
+          "x": -1,
+          "b": 1.1
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.79,
+          "v": 0.69,
+          "w": 0.3,
+          "mark": "o"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "mosaic_story": {
+    "label": "Act out the mosaic fish taking an unnecessarily grand lap of its pond",
+    "item": "mosaic_tiles",
+    "preview": "mosaic_spiral",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.18,
+        {
+          "u": 0.84,
+          "v": 0.86,
+          "w": 0.3
+        }
+      ],
+      [
+        0.38,
+        {
+          "u": 0.83,
+          "v": 0.65,
+          "x": -2,
+          "w": 0.9
+        }
+      ],
+      [
+        0.59,
+        {
+          "u": 0.76,
+          "v": 0.45,
+          "y": -1,
+          "w": 0.6,
+          "mark": "!"
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.85,
+          "v": 0.7,
+          "x": 1,
+          "w": 1
+        }
+      ],
+      [
+        0.9,
+        {
+          "u": 0.85,
+          "v": 0.7,
+          "b": 0.5,
+          "eye": "^"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "glass_angles": {
+    "label": "Lean in from the other glass pane and compare where the reflections move",
+    "item": "glass_floor",
+    "preview": "glass_reflection",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.77,
+          "v": 0.8,
+          "b": 0.7,
+          "y": 1
+        }
+      ],
+      [
+        0.43,
+        {
+          "u": 0.87,
+          "v": 0.72,
+          "x": -2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.66,
+        {
+          "u": 0.75,
+          "v": 0.61,
+          "x": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.83,
+          "v": 0.78,
+          "w": 0.3,
+          "mark": "?"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "ice_bubbles": {
+    "label": "Keep both feet off the slick ice and compare its trapped bubble strings",
+    "item": "ice_floor",
+    "preview": "ice_bubbles",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.74,
+          "v": 1.08,
+          "b": 1,
+          "y": 1
+        }
+      ],
+      [
+        0.43,
+        {
+          "u": 0.82,
+          "v": 1.08,
+          "x": -1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.9,
+          "v": 1.08,
+          "x": -2,
+          "mark": "o"
+        }
+      ],
+      [
+        0.86,
+        {
+          "u": 0.8,
+          "v": 1.08,
+          "w": 0.3
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "board_echo": {
+    "label": "Answer the three board taps from the opposite end, then listen together",
+    "item": "wooden_planks",
+    "preview": "board_knock",
+    "tool": "hand",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.24,
+        {
+          "u": 0.78,
+          "v": 0.82,
+          "contact": 1,
+          "b": 0.6
+        }
+      ],
+      [
+        0.34,
+        {
+          "u": 0.78,
+          "v": 0.82,
+          "contact": 0
+        }
+      ],
+      [
+        0.46,
+        {
+          "u": 0.85,
+          "v": 0.66,
+          "contact": 1,
+          "b": 0.6
+        }
+      ],
+      [
+        0.55,
+        {
+          "u": 0.85,
+          "v": 0.66,
+          "contact": 0
+        }
+      ],
+      [
+        0.68,
+        {
+          "u": 0.78,
+          "v": 0.5,
+          "contact": 1,
+          "b": 0.6
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.8,
+          "v": 0.8,
+          "x": -2,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.24,
+        "tap"
+      ],
+      [
+        0.46,
+        "tap"
+      ],
+      [
+        0.68,
+        "tap"
+      ]
+    ]
+  },
+  "grain_compare": {
+    "label": "Follow a second grain line toward the knot without cutting the plank",
+    "item": "wooden_plank",
+    "preview": "wood_grain",
+    "tool": "hand",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.18,
+        {
+          "u": 0.9,
+          "v": 0.86,
+          "contact": 1
+        }
+      ],
+      [
+        0.41,
+        {
+          "u": 0.83,
+          "v": 0.64,
+          "contact": 1,
+          "x": -1
+        }
+      ],
+      [
+        0.66,
+        {
+          "u": 0.74,
+          "v": 0.55,
+          "contact": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.86,
+          "v": 0.86,
+          "b": 1,
+          "y": 1
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "sand_rake_pair": {
+    "label": "Draw three neighboring sand furrows and leave the shared middle untouched",
+    "item": "sand_floor",
+    "preview": "sand_rake",
+    "tool": "hand",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.13,
+        {
+          "u": 0.73,
+          "v": 0.38,
+          "contact": 0
+        }
+      ],
+      [
+        0.17,
+        {
+          "u": 0.73,
+          "v": 0.38,
+          "contact": 1
+        }
+      ],
+      [
+        0.31,
+        {
+          "u": 0.95,
+          "v": 0.38,
+          "contact": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "u": 0.95,
+          "v": 0.38,
+          "contact": 0
+        }
+      ],
+      [
+        0.43,
+        {
+          "u": 0.73,
+          "v": 0.57,
+          "contact": 0
+        }
+      ],
+      [
+        0.47,
+        {
+          "u": 0.73,
+          "v": 0.57,
+          "contact": 1
+        }
+      ],
+      [
+        0.61,
+        {
+          "u": 0.95,
+          "v": 0.57,
+          "contact": 1
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.95,
+          "v": 0.57,
+          "contact": 0
+        }
+      ],
+      [
+        0.73,
+        {
+          "u": 0.73,
+          "v": 0.77,
+          "contact": 0
+        }
+      ],
+      [
+        0.77,
+        {
+          "u": 0.73,
+          "v": 0.77,
+          "contact": 1
+        }
+      ],
+      [
+        0.91,
+        {
+          "u": 0.95,
+          "v": 0.77,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.31,
+        "furrow"
+      ],
+      [
+        0.61,
+        "furrow"
+      ],
+      [
+        0.91,
+        "furrow"
+      ]
+    ]
+  },
+  "sand_track_compare": {
+    "label": "Leave a second footprint trail, then turn back to compare the two sets",
+    "item": "sand_floor",
+    "preview": "sand_tracks",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.21,
+        {
+          "u": 0.76,
+          "v": 0.78,
+          "press": 1,
+          "b": 0.5
+        }
+      ],
+      [
+        0.32,
+        {
+          "u": 0.76,
+          "v": 0.78,
+          "l": 1
+        }
+      ],
+      [
+        0.43,
+        {
+          "u": 0.88,
+          "v": 0.6,
+          "press": 1,
+          "b": 0.5
+        }
+      ],
+      [
+        0.55,
+        {
+          "u": 0.88,
+          "v": 0.6,
+          "r": 1
+        }
+      ],
+      [
+        0.66,
+        {
+          "u": 0.77,
+          "v": 0.4,
+          "press": 1,
+          "b": 0.5
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.85,
+          "v": 0.7,
+          "x": -2,
+          "mark": "?"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.21,
+        "foot"
+      ],
+      [
+        0.43,
+        "foot"
+      ],
+      [
+        0.66,
+        "foot"
+      ]
+    ]
+  },
+  "sand_smooth_pair": {
+    "label": "Smooth the right-hand marks while Cheese clears the other half",
+    "item": "sand_floor",
+    "preview": "sand_smooth",
+    "tool": "hand",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.76,
+          "v": 0.48,
+          "contact": 1
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.93,
+          "v": 0.6,
+          "contact": 1
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.76,
+          "v": 0.82,
+          "contact": 1
+        }
+      ],
+      [
+        0.82,
+        {
+          "u": 0.9,
+          "v": 0.84,
+          "w": 0.5
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "smooth"
+      ]
+    ]
+  },
+  "snow_prints": {
+    "label": "Make three fresh snow impressions beside Cheese's trail",
+    "item": "snow_floor",
+    "preview": "snow_crunch",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.23,
+        {
+          "u": 0.76,
+          "v": 0.8,
+          "press": 1,
+          "b": 0.7
+        }
+      ],
+      [
+        0.36,
+        {
+          "u": 0.76,
+          "v": 0.8,
+          "l": 1
+        }
+      ],
+      [
+        0.48,
+        {
+          "u": 0.9,
+          "v": 0.63,
+          "press": 1,
+          "b": 0.7
+        }
+      ],
+      [
+        0.61,
+        {
+          "u": 0.9,
+          "v": 0.63,
+          "r": 1
+        }
+      ],
+      [
+        0.73,
+        {
+          "u": 0.78,
+          "v": 0.45,
+          "press": 1,
+          "b": 0.7
+        }
+      ],
+      [
+        0.88,
+        {
+          "u": 0.85,
+          "v": 0.78,
+          "x": -2,
+          "mark": "o"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.23,
+        "foot"
+      ],
+      [
+        0.48,
+        "foot"
+      ],
+      [
+        0.73,
+        "foot"
+      ]
+    ]
+  },
+  "snow_crystal_watch": {
+    "label": "Lower a wing beside the powder and compare its tiny frost points",
+    "item": "snow_floor",
+    "preview": "snow_crystal",
+    "tool": "hand",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.75,
+          "v": 1.04,
+          "contact": 1,
+          "b": 0.7
+        }
+      ],
+      [
+        0.44,
+        {
+          "u": 0.85,
+          "v": 1.04,
+          "contact": 1,
+          "y": 1
+        }
+      ],
+      [
+        0.68,
+        {
+          "u": 0.85,
+          "v": 1.04,
+          "x": -1,
+          "eye": "o",
+          "mark": "*"
+        }
+      ],
+      [
+        0.86,
+        {
+          "u": 0.8,
+          "v": 1.04,
+          "w": 0.6
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "cloud_shapes": {
+    "label": "Pick out a cloud curl from the opposite edge and follow it as it opens",
+    "item": "cloud_floor",
+    "preview": "cloud_watch",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.75,
+          "v": 1.08,
+          "x": -2,
+          "y": -1
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.88,
+          "v": 1.08,
+          "w": 0.5,
+          "mark": "o"
+        }
+      ],
+      [
+        0.67,
+        {
+          "u": 0.78,
+          "v": 1.08,
+          "x": 1,
+          "eye": "^"
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.86,
+          "v": 1.08,
+          "w": 0.8
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "rainbow_colors": {
+    "label": "Compare the violet edge with the warmer bands from the bank",
+    "item": "rainbow_path",
+    "preview": "rainbow_trace",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.17,
+        {
+          "u": 0.75,
+          "v": 1.07,
+          "x": -2
+        }
+      ],
+      [
+        0.39,
+        {
+          "u": 0.87,
+          "v": 1.07,
+          "w": 0.6,
+          "eye": "o"
+        }
+      ],
+      [
+        0.62,
+        {
+          "u": 0.8,
+          "v": 1.07,
+          "x": 1,
+          "y": -1
+        }
+      ],
+      [
+        0.84,
+        {
+          "u": 0.9,
+          "v": 1.07,
+          "w": 0.8,
+          "mark": "!"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "lava_edge_pair": {
+    "label": "Stay outside the stone lip and watch a molten ribbon pass between the crusts",
+    "item": "lava_floor",
+    "preview": "lava_edge",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.16
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.75,
+          "v": 1.15,
+          "x": -2
+        }
+      ],
+      [
+        0.44,
+        {
+          "u": 0.85,
+          "v": 1.15,
+          "y": -1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.67,
+        {
+          "u": 0.78,
+          "v": 1.15,
+          "mark": "!"
+        }
+      ],
+      [
+        0.86,
+        {
+          "u": 0.86,
+          "v": 1.18,
+          "w": 0.5,
+          "b": -0.3
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.16
+        }
+      ]
+    ],
+    "events": []
+  },
+  "galaxy_watch": {
+    "label": "Point out one star lane, lose it, and find it again beside Cheese",
+    "item": "galaxy_floor",
+    "preview": "galaxy_orbit",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.76,
+          "v": 1.08,
+          "w": 0.5,
+          "x": -1
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.88,
+          "v": 1.08,
+          "x": 2,
+          "mark": "?"
+        }
+      ],
+      [
+        0.64,
+        {
+          "u": 0.8,
+          "v": 1.08,
+          "y": -1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.9,
+          "v": 1.08,
+          "w": 0.8,
+          "mark": "*"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "galaxy_patient": {
+    "label": "Stay quiet beside Cheese and patiently follow one slow star lane",
+    "item": "galaxy_floor",
+    "preview": "galaxy_orbit",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.8,
+          "v": 1.08,
+          "x": -1,
+          "eye": "-"
+        }
+      ],
+      [
+        0.43,
+        {
+          "u": 0.8,
+          "v": 1.08,
+          "x": 1
+        }
+      ],
+      [
+        0.67,
+        {
+          "u": 0.84,
+          "v": 1.08,
+          "x": 2,
+          "eye": "o"
+        }
+      ],
+      [
+        0.86,
+        {
+          "u": 0.84,
+          "v": 1.08,
+          "w": 0.3,
+          "mark": "*"
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "careful_company": {
+    "label": "Keep a patient pace nearby and offer a small reassuring wing",
+    "item": "stone_tiles",
+    "preview": "young_footing",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.75,
+          "v": 0.92,
+          "w": 0.3
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.82,
+          "v": 0.87,
+          "b": 0.4,
+          "w": 0.5
+        }
+      ],
+      [
+        0.64,
+        {
+          "u": 0.87,
+          "v": 0.92,
+          "eye": "^",
+          "w": 0.7
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.8,
+          "v": 0.96,
+          "x": -1,
+          "w": 0.3
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "night_edge": {
+    "label": "Stand beside Cheese and take turns watching the surface in the low light",
+    "item": "stone_tiles",
+    "preview": "night_surface",
+    "tool": "none",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.78,
+          "v": 1.08,
+          "x": -2
+        }
+      ],
+      [
+        0.42,
+        {
+          "u": 0.88,
+          "v": 1.08,
+          "eye": "o",
+          "y": -1
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 0.8,
+          "v": 1.08,
+          "x": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 0.88,
+          "v": 1.08,
+          "eye": "-",
+          "w": 0.25
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  },
+  "joint_sweep": {
+    "label": "Brush the far half toward its edge while Cheese clears the near seams",
+    "item": "stone_tiles",
+    "preview": "seam_brush",
+    "tool": "brush",
+    "layout": "lanes",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 0.78,
+          "v": 0.38,
+          "contact": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "u": 0.87,
+          "v": 0.6,
+          "contact": 1
+        }
+      ],
+      [
+        0.58,
+        {
+          "u": 0.94,
+          "v": 0.87,
+          "contact": 1
+        }
+      ],
+      [
+        0.8,
+        {
+          "u": 0.92,
+          "v": 1.03,
+          "w": 0.5,
+          "mark": "."
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.58,
+        "clean"
+      ]
+    ]
+  },
+  "hover_observer": {
+    "label": "Hover beside the work and follow the small changes without making footprints",
+    "item": "sand_floor",
+    "preview": "sand_rake",
+    "tool": "none",
+    "layout": "path",
+    "track": [
+      [
+        0,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ],
+      [
+        0.2,
+        {
+          "u": 1.12,
+          "v": 0.83,
+          "w": 0.7,
+          "x": -1
+        }
+      ],
+      [
+        0.43,
+        {
+          "u": 1.1,
+          "v": 0.48,
+          "w": 0.4,
+          "y": -1
+        }
+      ],
+      [
+        0.65,
+        {
+          "u": 1.12,
+          "v": 0.66,
+          "w": 0.9,
+          "mark": "*"
+        }
+      ],
+      [
+        0.85,
+        {
+          "u": 1.12,
+          "v": 0.92,
+          "w": 0.6
+        }
+      ],
+      [
+        1,
+        {
+          "u": 1.12,
+          "v": 1.06
+        }
+      ]
+    ],
+    "events": []
+  }
+}
