@@ -1,6 +1,6 @@
 """Read-only scene snapshots for Ultra. Classic composition is kept unchanged."""
 from engine.frame import line_runs
-from engine.placements import outdoor_decorations
+from engine.placements import outdoor_decorations,habitat_placements
 from core.settings import get_settings
 from ui.ascii_art import get_mini_duck
 from ui.habitat_art import get_item_art, get_structure_art
@@ -53,9 +53,8 @@ def snapshot(game, renderer):
     items, structures, visitor = [], [], None
     at_home = not area or area.name == 'Home Pond'
     if at_home:
-        for item in game.habitat.get_visible_placed_items():
-            x, y = item.get_display_position()
-            items.append({'id': item.item_id, 'x': x * 132 / 20, 'y': y * 42 / 12,
+        for item in habitat_placements(game):
+            items.append({'id': item.item_id, 'x': item.x, 'y': item.y,
                           'art': get_item_art(item.item_id)})
         for decoration in outdoor_decorations(game):
             items.append({'id':decoration.item_id,'x':decoration.x,'y':decoration.y,'art':get_item_art(decoration.item_id)})

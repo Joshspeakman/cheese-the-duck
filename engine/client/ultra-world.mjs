@@ -13,6 +13,7 @@ import {playgroundStage} from './playground-stage.mjs';
 import {waterStage} from './water-routines.mjs';
 import {seatOccupants} from './seating-routines.mjs';
 import {residentEnvelope} from './resident-envelope.mjs';
+import {homeBankOnScreen} from './habitat-ground.mjs';
 
 const WATER_BIOMES=new Set(['pond','riverside','beach','swamp']);
 const choice=(s,n)=>s[Math.floor(n*s.length)%s.length];
@@ -77,7 +78,7 @@ export class LivingWorld {
     const g=this.grid,b=s.biome;
     this.water.fill(0);
     for(let x=0;x<W;x++){
-      const bank=(s.location==='Deep End'?55:65)+Math.sin(x*.025+seed)*6+Math.sin(x*.077)*2;
+      const bank=s.location==='Home Pond'?homeBankOnScreen(x,s.camera):(s.location==='Deep End'?55:65)+Math.sin(x*.025+seed)*6+Math.sin(x*.077)*2;
       this.shore[x]=bank;
       for(let y=43;y<H;y++){
         const r=hash(x,y,seed),r2=hash(x>>2,y>>1,seed),depth=(y-43)/69;
@@ -185,13 +186,13 @@ export class LivingWorld {
   pondLife(s,t,seed){
     const g=this.grid;
     if(['pond','swamp'].includes(s.biome))for(let n=0;n<12;n++){
-      const x=15+hash(n,31,seed)*(W-30),y=76+hash(n,32,seed)*27;
+      const x=15+hash(n,31,seed)*(W-30),bank=this.shore[x|0],y=bank+3+hash(n,32,seed)*Math.max(0,H-bank-7);
       g.text(x,y,Math.sin(t+n)>.1?'(__,)':'(,,_)',C.leaf);
       if(n%4===0){g.put(x+2,y-1,'*',s.biome==='swamp'?C.crystal:C.flower);g.put(x+2,y,'.',C.goldLight);}
     }
     if(s.particles!==false&&WATER_BIOMES.has(s.biome)&&s.season!=='winter')for(let n=0;n<3;n++){
       const x=(n*87+t*3)%(W-30)+10,y=88+n*7+Math.sin(t*.5+n)*2;
-      g.text(x,y,Math.sin(t*1.3+n)>0?'><>':'><=',C.water);
+      if(this.water[(y|0)*W+(x|0)])g.text(x,y,Math.sin(t*1.3+n)>0?'><>':'><=',C.water);
     }
   }
   landmarks(s,t,seed){
@@ -208,8 +209,9 @@ export class LivingWorld {
     this.reflected(t);
     this.pondLife(s,t,seed);
     if(b==='pond'){
-      g.art(166-pan,68,DOCK,(ch,x,y)=>y<4?C.barkLight:C.bark);
-      g.art(184-pan,59,LANTERN,(ch)=>ch==='*'?C.lamp:C.barkLight);
+      const dockY=s.location==='Home Pond'?homeBankOnScreen(174-pan,s.camera)-1:68;
+      g.art(166-pan,dockY,DOCK,(ch,x,y)=>y<4?C.barkLight:C.bark);
+      g.art(184-pan,dockY-9,LANTERN,(ch)=>ch==='*'?C.lamp:C.barkLight);
     }
     if(b==='forest'){
       if(/oak/i.test(s.location))this.tree(120-pan,63,45,'oak',t,seed+8,true);

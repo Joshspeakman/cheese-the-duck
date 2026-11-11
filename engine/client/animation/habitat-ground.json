@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "seed": -232039786,
+  "bank": 82,
+  "waveA": [0.025, 6],
+  "waveB": [0.077, 2],
+  "waterItems": ["tiny_boat", "submarine", "lily_pad", "pond_fountain"],
+  "eitherItems": ["bridge", "stepping_stones", "stone_path"]
+}

@@ -176,6 +176,7 @@ class Habitat:
         # Habitat grid size (for placement)
         self.width = 20
         self.height = 12
+        self.placement_policy = None
     
     def add_currency(self, amount: int):
         """Add currency."""
@@ -211,6 +212,8 @@ class Habitat:
     
     def _auto_place_item(self, item_id: str):
         """Place an item at its designated fixed position, or use deterministic fallback."""
+        if self.placement_policy:
+            return self.placement_policy.auto_place(item_id,ITEM_FIXED_POSITIONS.get(item_id))
         # First, check for a fixed position
         if item_id in ITEM_FIXED_POSITIONS:
             x, y = ITEM_FIXED_POSITIONS[item_id]
@@ -260,6 +263,8 @@ class Habitat:
     
     def place_item(self, item_id: str, x: int, y: int) -> bool:
         """Place an owned item in the habitat."""
+        if self.placement_policy:
+            return self.placement_policy.put(item_id,x,y)[0]
         if not self.owns_item(item_id):
             return False
         
@@ -456,6 +461,7 @@ class Habitat:
             'stored' - item is now hidden
             'not_owned' - item is not owned
             'cosmetic' - cosmetics can't be toggled this way
+            'no_room' - the item stays in storage until there is clear space
         """
         if item_id not in self.owned_items:
             return 'not_owned'
@@ -467,6 +473,8 @@ class Habitat:
         
         if item_id in self.stored_items:
             # Currently stored -> place it
+            if self.placement_policy:
+                return 'placed' if self._auto_place_item(item_id) else 'no_room'
             self.stored_items.remove(item_id)
             self._auto_place_item(item_id)
             return 'placed'
@@ -502,6 +510,8 @@ class Habitat:
         item = get_item(item_id)
         if item and item.category == ItemCategory.COSMETIC:
             return False
+        if self.placement_policy:
+            return self._auto_place_item(item_id)
         
         if item_id in self.stored_items:
             self.stored_items.remove(item_id)

@@ -11,7 +11,7 @@ import time
 from datetime import datetime
 from engine.item_profiles import ITEMS
 from engine.pond_stories import STORIES
-from engine.placements import outdoor_decorations, complete_structures
+from engine.placements import outdoor_decorations, complete_structures,habitat_placements
 from engine import shelters, nest_routines, playdates, water_routines, furniture_rests
 from world.guest_cast import guest_profile, guest_line
 
@@ -69,7 +69,7 @@ def fresh(seed=1):
                         'wetness': .25, 'snow': 0., 'ice': 0., 'temperature': 17., 'wind': .2},
             'offline': '', 'sequence': 0, 'auto': True, 'stories': {}, 'story': None, 'next_story': 90.,
             'protection': 0., 'legacy': {}, 'biomes': {},
-            'community': {'warmth': .2, 'gatherings': 0}, 'minds': {}}
+            'community': {'warmth': .2, 'gatherings': 0}, 'minds': {}, 'layout': {}}
 
 
 class LivingPond:
@@ -105,6 +105,14 @@ class LivingPond:
 
     def attach(self, game, offline=True):
         self.game = game
+        from engine.pond_layout import PondLayout,REVISION
+        self.layout=PondLayout(game.habitat,lambda:[(p.item_id,*p.get_display_position()) for p in [*outdoor_decorations(game),*complete_structures(game)]])
+        self._layout_obstacles=tuple(self.layout.obstacles())
+        game.habitat.placement_policy=self.layout
+        if self.state['layout'].get('revision')!=REVISION:
+            report=self.layout.reconcile();self.state['layout']=report
+            if report['moved'] or report['stored']:
+                self.notice('Made room for the larger artwork: '+str(len(report['moved']))+' items moved, '+str(len(report['stored']))+' safely stored. Open Arrange to choose their places.')
         self.sync()
         self.minds.sync()
         if offline:
@@ -128,6 +136,15 @@ class LivingPond:
         g = self.game
         if not g or not g.duck:
             return
+        if getattr(self,'layout',None):
+            obstacles=tuple(self.layout.obstacles())
+            if obstacles!=self._layout_obstacles:
+                self._layout_obstacles=obstacles
+                report=self.layout.reconcile();self.state['layout'].update(report)
+                changed=set(report['moved']+report['stored'])
+                if self.state['plan'] and self.state['plan']['target'] in changed:
+                    self.minds.cancel_encounter('cheese');self.cancel()
+                if changed:self.notice('Made room for the new surroundings. Your belongings are kept in the habitat or safely stored; Arrange shows their places.')
         owned = set(g.habitat.owned_items) | set(g.inventory.items) | set(g.materials.get_all_materials())
         owned |= set(g.habitat.equipped_cosmetics.values())
         owned |= set(g.crafting.tools)
@@ -138,7 +155,7 @@ class LivingPond:
         owned |= set(g.treasure.found_treasures) | set(g.fishing.fish_caught)
         owned |= {s.blueprint_id for s in g.building.structures if s.status.value == 'complete'}
         self.owned = owned
-        self.placements = [*g.habitat.placed_items,*outdoor_decorations(g),*complete_structures(g)]
+        self.placements = [*habitat_placements(g),*outdoor_decorations(g),*complete_structures(g)]
         self.placed = {i.item_id: i for i in self.placements}
         for key in owned:
             if key not in ITEMS:
@@ -737,6 +754,24 @@ class LivingPond:
         action=command.get('action');target=command.get('target','')
         if not isinstance(target,str) or len(target)>128:return
         self.sync();s=self.state
+        if action in ('layout_place','layout_auto','layout_store'):
+            if self.location!='Home Pond':ok,message=False,'Arrange the habitat when Cheese is back at Home Pond.'
+            elif target not in self.game.habitat.owned_items:ok,message=False,'That item is not owned.'
+            elif action=='layout_place':
+                ok,message=self.layout.put(target,command.get('x'),command.get('y'))
+            elif action=='layout_auto':
+                ok=self.layout.auto_place(target);message='Found a place for it.' if ok else 'There is no clear space for the whole object. Your belongings have not been moved.'
+            else:
+                ok=self.game.habitat.store_item(target);message='Put away safely.' if ok else 'Use the wardrobe for that item.'
+            if ok:
+                if s['plan'] and s['plan']['target']==target:
+                    self.minds.cancel_encounter('cheese')
+                    self.cancel()
+                self.sync()
+            self.state['layout']['reply']={'target':target,'ok':bool(ok),'message':message,
+                'sequence':self.state['layout'].get('reply',{}).get('sequence',0)+1}
+            self._cache=None
+            return self.notice(message)
         if action in ('mind_chat','mind_encourage','mind_redirect'):
             return self.minds.command(command)
         if action in ('guest_chat', 'guest_hobby', 'guest_company'):
@@ -964,7 +999,8 @@ class LivingPond:
                 garden.append({'id':plot.plot_id,'plant':plant.plant_id if plant else None,
                     'stage':plant.growth_stage.value if plant else 'empty','water':plant.water_level/100 if plant else 0,
                     'health':plant.health/100 if plant else 1,'soil':plot.soil_quality/100})
-        self._cache={'garden':garden,'seeds':dict(self.game.garden.seed_inventory) if self.game else {},
+        self._cache={'layout':dict(self.layout.snapshot(),reply=s['layout'].get('reply')) if getattr(self,'layout',None) else None,
+            'garden':garden,'seeds':dict(self.game.garden.seed_inventory) if self.game else {},
             'community':dict(s['community']), 'minds':self.minds.snapshot(),
             'story':self.story_snapshot(),'stories':copy.deepcopy(s['stories']),'protection':s['protection'],
             'elapsed':s['elapsed'],'plan':plan,'policy':s['policy'],'auto':s['auto'],
