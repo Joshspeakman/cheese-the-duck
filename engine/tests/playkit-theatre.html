@@ -1,6 +1,7 @@
 <!doctype html><meta charset="utf-8"><title>Cheese · Outdoor playthings</title><style>body{background:#142b23;color:#ecdbb3;font:20px Georgia;margin:24px}canvas{display:block;max-width:100%;margin:24px 0}</style><h1>Outdoor playthings · current game construction</h1>
 <script type="module">
-import {PLAYKIT_BLUEPRINTS} from '../client/playkit-workshop.mjs';import {PLAYKIT_ROUTINES,playkitPose,playkitGeometry,drawPlaykitTools} from '../client/playkit-routines.mjs';
+import {PLAYKIT_BLUEPRINTS} from '../client/playkit-workshop.mjs';import {PLAYKIT_ROUTINES,PLAYKIT_COMPANY,playkitPose,playkitGeometry,drawPlaykitTools} from '../client/playkit-routines.mjs';
+import {GUEST_CAST} from '../client/guest-cast.mjs';
 import {itemSprite,ItemPainter,itemWorldScale} from '../client/ultra-items.mjs';import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';import {SceneCanvas} from '../client/ultra-renderer.mjs';
 const painter=new ItemPainter(),surface='#142b23';function sheet(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.fillStyle=surface;ctx.fillRect(0,0,w,h);return [c,ctx];}
 window.reviewPlaykit=()=>{
@@ -12,8 +13,28 @@ window.reviewPlaykit=()=>{
  }});images['playkit-actions-'+page]=canvas.toDataURL();document.body.append(canvas);}
  return images;
 };
-window.replayPlaykit=frames=>{const view=new SceneCanvas();view.resize(1500,950);const images={},costs=[];let drawn=0,players=0;for(const [i,s]of frames.entries()){
+window.reviewPlaykitCompany=()=>{
+ const images={},entries=Object.entries(PLAYKIT_COMPANY),casts=['friend:frida','friendly_goose','grumpy_toad','mysterious_crow','wise_owl','lost_duckling'];
+ for(let page=0;page<Math.ceil(entries.length/4);page++){
+  const [canvas,ctx]=sheet(1800,1300);
+  entries.slice(page*4,page*4+4).forEach(([id,shared],i)=>{
+   const core=shared.preview,item=shared.item,at=shared.events[0]?.[0]||.65,work={id:core,duet:id,elapsed:PLAYKIT_ROUTINES[core].duration*at,start:{}};
+   const x=i%2*900,y=Math.floor(i/2)*650,home={...itemSprite(item,0,{pose:{playkit:playkitPose(work)}}),x:(x+360)/6,y:(y+580)/8,scale:PLAYKIT_BLUEPRINTS[item].scale};
+   painter.draw(ctx,home,home.x*6,home.y*8,6*home.scale,{surface});
+   const profile=GUEST_CAST[id==='hover_company'?'butterfly_fairy':casts[(page*4+i)%casts.length]]||Object.values(GUEST_CAST)[0];
+   for(const slot of [0,1]){
+    const routine={...work,company:{id,role:slot?'b':'a'}},source=slot?{id:profile.id,castId:profile.id,name:profile.name}:{stage:page===0?'hatchling':page===2?'elder':'adult'};
+    const character={...characterSprite({...source,state:'idle',facing:!slot,performance:{kind:'playkit',routine}},0,Boolean(slot)),x:home.x,y:home.y};
+    const g=playkitGeometry(home,{character,inside:1,slot},6,8);drawCharacter(ctx,g.character,6,8,surface);drawPlaykitTools(ctx,g);
+   }
+   if(home.front)painter.draw(ctx,home.front,home.x*6,home.y*8,6*home.scale,{shadow:false,surface});
+   ctx.fillStyle='#e5d8b4';ctx.font='20px Menlo';ctx.fillText(id+' / '+profile.name,x+20,y+35);
+  });images['playkit-company-'+page]=canvas.toDataURL();document.body.append(canvas);
+ }
+ return images;
+};
+window.replayPlaykit=frames=>{const view=new SceneCanvas();view.resize(1500,950);const images={},costs=[];let drawn=0,players=0,companions=0;for(const [i,s]of frames.entries()){
  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);if(before!==JSON.stringify(s))throw Error('Renderer changed native snapshot');
- for(const o of view.world.objects)if(o.construction==='playkit-v1'){drawn++;if(o.clipped)throw Error('Clipped toy '+o.id);for(const r of o.players||[]){players++;if(r.character.clipped)throw Error('Clipped player');const id=r.character.performance.routine.id,name='playkit-live-'+o.id;if(!images[name]&&r.character.performance.routine.elapsed>PLAYKIT_ROUTINES[id].duration*.45)images[name]=view.canvas.toDataURL();}}
- }costs.sort((a,b)=>a-b);return {frames:frames.length,drawn,players,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};};
+ for(const o of view.world.objects)if(o.construction==='playkit-v1'){drawn++;if(o.clipped)throw Error('Clipped toy '+o.id);for(const r of o.players||[]){players++;if(r.character.clipped)throw Error('Clipped player');const id=r.character.performance.routine.id,name=r.slot===1?'playkit-company-live-'+r.character.performance.routine.company?.id:'playkit-live-'+o.id;if(r.slot===1){companions++;const hit=view.hits.find(h=>h.id===r.character.id&&['friend','story'].includes(h.kind));if(!hit||view.hit((hit.x+hit.w/2)/view.canvas.width,(hit.y+hit.h/2)/view.canvas.height)?.id!==r.character.id)throw Error('Toy visitor is not selectable where drawn');}if(!images[name]&&r.character.performance.routine.elapsed>PLAYKIT_ROUTINES[id].duration*(o.id==='bubble_wand'?.7:.45))images[name]=view.canvas.toDataURL();}}
+ }costs.sort((a,b)=>a-b);return {frames:frames.length,drawn,players,companions,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};};
 </script>

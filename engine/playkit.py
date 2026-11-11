@@ -50,13 +50,14 @@ def update(pond,item,obj,dt,outdoors,wind=0.,weather=None):
         s['lift']=max(0,s['lift']-dt*.5)
         if kind=='yoyo':s['drop']=min(1,s['drop']+dt*.6)
 
-def controls(work):
-    spec=ROUTINES[work['id']];p=clamp(work['elapsed']/spec['duration']);track=spec['track'];a,b=track[0],track[-1]
+def sample(work,track,base):
+    p=clamp(work['elapsed']/ROUTINES[work['id']]['duration']);a,b=track[0],track[-1]
     for i in range(1,len(track)):
         if p<=track[i][0]:a,b=track[i-1:i+1];break
     u=clamp((p-a[0])/max(.001,b[0]-a[0]));u=u*u*(3-2*u)
-    start={**CONTROLS,**work.get('start',{})}
-    return {k:a[1].get(k,v)+(b[1].get(k,v)-a[1].get(k,v))*u for k,v in start.items() if k in CONTROLS}
+    return {k:a[1].get(k,v)+(b[1].get(k,v)-a[1].get(k,v))*u for k,v in base.items()}
+def controls(work):
+    return sample(work,ROUTINES[work['id']]['track'],{**CONTROLS,**work.get('start',{})})
 
 def choose(pond,item,ref):
     obj=pond.object_state(item,ref);s=state(item,obj);kind=ITEMS[item]['type'];age=pond.game.duck.growth_stage
@@ -85,6 +86,8 @@ def advance(pond,plan,dt):
     item=plan['target'];s=state(item,pond.object_state(item,plan));kind=ITEMS[item]['type']
     if (wet(pond) or gusty(pond)) and not work['id'].endswith('_pack'):
         start=controls(work);work.update(id=kind+'_pack',label=ROUTINES[kind+'_pack']['label'],elapsed=0.,events=[],start=start,withdrawal=True);plan['label']=work['label']
+    from engine import playkit_company
+    if not work.get('withdrawal') and playkit_company.waiting(pond.minds):return True
     spec=ROUTINES[work['id']];old=work['elapsed'];work['elapsed']=min(spec['duration'],old+max(0,finite(dt)));v=controls(work)
     for k in CONTROLS:s[k]=v[k]
     for i,(at,event) in enumerate(spec['events']):

@@ -479,6 +479,16 @@ export class LivingWorld {
         home.keepers=[{character,inside,slot:0}];this.characters=this.characters.filter(c=>c!==original);
       }
     }
+    for(const r of s.living?.minds?.playmates||[]){
+      if(r.phase==='approach'||r.routine?.interrupted||!PLAYKIT_ROUTINES[r.routine?.id])continue;
+      const actorId=r.actor==='story:pip'?'story:lost_duckling':r.actor,original=this.characters.find(c=>c.id===actorId);
+      const home=this.objects.find(o=>o.id===r.id&&sameInstance(o,r)&&o.construction==='playkit-v1'&&(o.portable||o.worldPosition?.every((v,i)=>Math.abs(v-r.destination?.[i])<1.1)));
+      if(!original||!home)continue;
+      const source=s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
+      const inside=r.phase==='enter'?clamp(r.elapsed/2,0,1):r.phase==='exit'?clamp(1-r.elapsed/2,0,1):1,performance={kind:'playkit',routine:r.routine,motion:s.motion!==false};
+      const character={...characterSprite({...source,state:'idle',facing:false,performance},t,true),x:original.x,y:original.y,story:original.story};
+      (home.players||=[]).push({character,inside,slot:1});this.characters=this.characters.filter(c=>c!==original);
+    }
     for(const r of s.living?.minds?.structure_helpers||[]){
       if(r.phase==='approach'||r.routine?.interrupted||!ARCHITECTURE_ROUTINES[r.routine?.id])continue;
       const actorId=r.actor==='story:pip'?'story:lost_duckling':r.actor,original=this.characters.find(c=>c.id===actorId);
