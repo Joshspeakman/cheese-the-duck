@@ -16,6 +16,14 @@ def state(item,obj):
     for k,d in (('speed',0.),('wind',0.),('cover',0.),('inflation',1.),('lights',0.)):
         s[k]=clamp(s.get(k,d))
     s['running']=s.get('running') is True
+    if item in ('bounce_house','magic_carpet'):
+        if not isinstance(s.get('surface'),dict):s['surface']={}
+        floor=s['surface']
+        for role in ('a','b'):
+            if not isinstance(floor.get(role),dict):floor[role]={}
+            for k,lo,hi in (('jump',0,18),('press',0,1),('u',-1,1),('v',-1,1),('impact',0,1)):floor[role][k]=clamp(floor[role].get(k),lo,hi)
+        for k,lo,hi in (('lift',0,18),('tilt',-.65,.65),('gate',0,1)):floor[k]=clamp(floor.get(k),lo,hi)
+        floor['active']=floor.get('active') is True
     return s
 def adverse(weather):
     weather=str(weather or '').lower()
@@ -39,7 +47,13 @@ def update(item,obj,dt,outdoors,weather,wind,hour,reserved=False):
     s['wind']=wind;s['wind_phase']=(s['wind_phase']+dt*(.4+wind*.7))%TAU
     s['lights']=float(not wet and (hour<6 or hour>=18))
     cover=1. if wet else 0.
-    if kind in ('envelope','inflation','cloth'):s['cover']+= (cover-s['cover'])*(1-math.exp(-dt*.12))
-    if kind in ('envelope','inflation'):
+    surface_owned=bool(reserved and item in ('bounce_house','magic_carpet'))
+    if item in ('bounce_house','magic_carpet') and not reserved:
+        floor=s['surface'];floor['active']=False
+        for role in ('a','b'):
+            for k in floor[role]:floor[role][k]*=math.exp(-dt*3)
+        for k in ('lift','tilt','gate'):floor[k]*=math.exp(-dt*3)
+    if not surface_owned and kind in ('envelope','inflation','cloth'):s['cover']+= (cover-s['cover'])*(1-math.exp(-dt*.12))
+    if not surface_owned and kind in ('envelope','inflation'):
         target_inflation=.35 if wet or night or wind>=.8 else 1.
         s['inflation']+=(target_inflation-s['inflation'])*(1-math.exp(-dt*.08))

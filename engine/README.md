@@ -766,3 +766,50 @@ The renderer checks body scale, seat contact, boarding paths, exact-copy binding
 paused poses, front layers and moving visitor click targets. The notebook check
 uses a real game process. Review captures and `carnival-review.html` are written
 under `engine/artifacts/animation-milestone/`.
+
+### Spring floors and little flights in development
+
+The bounce house now has a wider mesh interior, two compressible floor lanes,
+a roll-up entry, a low apron, a stitched canopy and a separate blower. The magic
+carpet has room for two residents, nested woven borders, a knotted medallion,
+fringes and separate seating anchors. Characters keep their normal size. Native
+surface pressure deforms the local floor under each player; airborne feet rise
+by the simulation's saved jump height. Carpet seats follow the actual cloth's
+height and bank angle, with belly contact and a narrow foreground fringe.
+
+Fourteen initial programs per object include staggered echo jumps, synchronized
+hops, a statue game, alternate floor presses, careful tiptoes, wing balancing,
+quiet seated company, broad carpet banks, repeated soft landings, sky watching
+and a cautious friend's gradual first hover. These are explicit two-person
+tracks. They remain preliminary cores, not completed 48-sequence repertoires.
+Age and species affect jump height and flight duration; older/tired residents
+choose quieter play, young residents choose small first steps, and native time,
+season and needs guide other choices. Butterflies watch beside the entry.
+
+The simulation owns inflation/spreading, separate entry, floor pressure, short
+flights, hovering, landing events and exits. Guests arrive through their actual
+movement systems. Both brains learn only after meaningful shared play finishes,
+and the original item action awards exactly one use. Pausing or direct care
+freezes occupied surfaces; bad weather, damage or urgent needs starts a controlled
+landing before exit. Leaving visitors immediately lose their weight and pressure.
+Loading retains Cheese's paused clock and height but drops transient companions.
+Stored and replaced copies cannot inherit another object's performance.
+
+The notebook offers fourteen named activities for each object through the normal
+command validator. Chat facts distinguish airborne, standing/seated, entering,
+leaving and observing residents, and identify actual company, height, pressure
+and landing history. No journey, repair, inventory grant or sleep reward is
+implied by these local activities. Context-specific art and acting, personal
+visitor repertoires, guest-to-guest play, egg observation and the full per-object
+sequence audits remain unfinished. The milestone is still in development.
+
+Validation: `.venv/bin/python engine/check_surface_play.py`,
+`node --test engine/tests/surface-play.test.mjs`,
+`engine/node_modules/.bin/electron engine/surface-play-check.cjs`, and
+`engine/node_modules/.bin/electron engine/surface-play-ui-check.cjs`.
+Disposable native saves exercise all 48 visitor identities plus Pip, all hatched
+ages, save/resume, interruptions, duplicate objects, learning and inventory.
+Renderer checks use native snapshots to verify support, airborne height, unchanged
+body scale, selectable visitors, paused poses and exact-copy attachment. The
+notebook checks use real game processes. `surface-play-review.html` and its
+captures are generated under `engine/artifacts/animation-milestone/`.

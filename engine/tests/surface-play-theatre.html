@@ -1,0 +1,35 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Spring floors and little flights</title>
+<style>body{background:#142b23;color:#eadcb9;font:20px Georgia;margin:24px}canvas{max-width:100%}</style>
+<h1>Spring floors and little flights</h1><div id="view"></div>
+<script type="module">
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {carnivalGeometry} from '../client/carnival-routines.mjs';
+import {SURFACE_ROUTINES} from '../client/surface-routines.mjs';
+window.replaySurfaces=frames=>{
+ const view=new SceneCanvas();view.resize(1500,950);document.querySelector('#view').append(view.canvas);
+ const images={},costs=[];let bodies=0,hits=0,contacts=0,flights=0;
+ for(const [i,s]of frames.entries()){
+  const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
+  if(before!==JSON.stringify(s))throw Error('Renderer changed native snapshot');
+  const plan=s.living.plan,w=plan?.carnival_work;if(!w)continue;
+  const home=view.world.objects.find(o=>o.instance===plan.instance);if(!home)throw Error('Missing actual surface');
+  for(const rider of home.carnivalRiders||[]){
+   const g=carnivalGeometry(home,rider,view.sx,view.sy);bodies++;
+   if(g.inside===1){contacts++;if(g.jumpPixels>1)flights++;}
+   if(g.character.visitor||g.character.story){
+    const hit=view.hits.find(h=>h.id===g.character.id);if(!hit)throw Error('Missing guest hit '+g.character.id);
+    if(view.hit((hit.x+hit.w/2)/view.canvas.width,(hit.y+hit.h/2)/view.canvas.height)?.id!==g.character.id)throw Error('Guest unselectable at drawn surface '+g.character.id);
+    hits++;
+   }
+  }
+  const key=plan.target+'-'+w.stage;
+  const light=s.hour>=21?'night':s.hour>=18?'evening':s.season==='fall'?'autumn':null;
+  if(light&&w.stage==='play'&&!images[plan.target+'-'+light])images[plan.target+'-'+light]=view.canvas.toDataURL();
+  if(['inflate','spread','board_a','board_b','play','land','unload_b','unload_a'].includes(w.stage)&&w.clock>1.5&&!images[key])images[key]=view.canvas.toDataURL();
+  if(w.withdrawal&&!images[plan.target+'-weather-landing'])images[plan.target+'-weather-landing']=view.canvas.toDataURL();
+  if(w.stage==='play'&&w.clock>SURFACE_ROUTINES[w.id].duration*.45&&!images[w.id])images[w.id]=view.canvas.toDataURL();
+  if(w.stage==='play'&&home.surfaceState.a.jump>1&&!images[plan.target+'-airborne'])images[plan.target+'-airborne']=view.canvas.toDataURL();
+ }
+ costs.sort((a,b)=>a-b);return {images,frames:frames.length,bodies,hits,contacts,flights,p95Ms:costs[Math.floor(costs.length*.95)],medianMs:costs[Math.floor(costs.length*.5)]};
+};
+</script>

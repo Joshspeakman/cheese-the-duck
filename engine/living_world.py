@@ -446,7 +446,7 @@ class LivingPond:
             if target in self.placed and self.location != 'Home Pond':
                 return False, 'That item is back at Home Pond.'
             profile = ITEMS[target]
-            if target in carnival.ITEMS:
+            if target in carnival.ALL_ITEMS:
                 if not selected:return False,'Place that ride outside before boarding.'
                 if self.object_state(target,selected.instance).get('condition',1)<=.2:return False,'Repair that ride before boarding.'
                 if carnival.blocked(self):return False,'Cheese waits for drier, calmer weather before boarding.'
@@ -554,7 +554,7 @@ class LivingPond:
         if kind=='item' and target in creative_props.ITEMS:
             s['plan']['creative_work']=creative_props.choose(self,target,s['plan'])
             s['plan']['label']=s['plan']['creative_work']['label']
-        if kind=='item' and target in carnival.ITEMS:
+        if kind=='item' and target in carnival.ALL_ITEMS:
             s['plan']['carnival_work']=carnival.choose(self,target,s['plan'])
             s['plan']['label']=s['plan']['carnival_work']['label']
         if kind=='item' and target in playkit.ITEMS:

@@ -14,6 +14,8 @@ from world.atmosphere import Weather,WeatherType,Season
 from audio.sound import sound_engine
 sys.stdout=host.WIRE
 checks=[];frames=[]
+def numbers(value):
+    return [n for v in value.values() for n in numbers(v)] if isinstance(value,dict) else [value]
 def check(ok,label):
     assert ok,label
     checks.append(label)
@@ -21,11 +23,11 @@ def check(ok,label):
 for item in e.ITEMS:
     bad={'excursion':{'phase':float('nan'),'wind_phase':float('inf'),'inflation':-20,'speed':'bad','cover':None,'wind':True,'lights':1000,'running':'yes'}}
     e.state(item,bad)
-    check(all(isinstance(v,(int,float)) and math.isfinite(v) for v in bad['excursion'].values()),item+' corrupt optional state becomes finite')
+    check(all(isinstance(v,(int,float)) and math.isfinite(v) for v in numbers(bad['excursion'])),item+' corrupt optional state becomes finite')
     a={'condition':1};b=copy.deepcopy(a)
     e.update(item,a,37,True,'sunny',.3,12)
     for _ in range(370):e.update(item,b,.1,True,'sunny',.3,12)
-    check(all(abs(a['excursion'][k]-b['excursion'][k])<1e-9 for k in a['excursion']),item+' mechanism is independent of timestep')
+    check(all(abs(x-y)<1e-9 for x,y in zip(numbers(a['excursion']),numbers(b['excursion']))),item+' mechanism is independent of timestep')
     before=copy.deepcopy(a);e.update(item,a,0,True,'sunny',.3,12)
     check(before==a,item+' zero time adds no movement')
     e.update(item,a,100,True,'stormy',.9,12)
