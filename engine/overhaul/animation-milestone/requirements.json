@@ -1,5 +1,5 @@
 {
-  "status": "active",
+  "status": "paused_by_user",
   "baseline": "2.36.0",
   "scope": {
     "items": 542,
@@ -5316,7 +5316,10 @@
       "peakMs": 146.1,
       "localAI": false,
       "disposableSaves": true
-    }
+    },
+    "pausedByUser": true,
+    "resumeRequires": "Explicit user instruction",
+    "pauseNote": "Footwear committed and verified at a6a1c05. Food23/specimen33 source and direct review evidence exist, but are not integrated or counted. Seed/bait19 files checkpointed unreviewed. All workers interrupted. Installed2.36.1 remains unchanged."
   },
   "wardrobe": [
     {

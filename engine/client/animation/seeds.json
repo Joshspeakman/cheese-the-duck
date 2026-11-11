@@ -1,0 +1,116 @@
+{
+  "seeds": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "seed": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "vegetable_seed": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "sunflower_seeds": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "better_bait": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "enchanted_seeds": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "tulip_seeds": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "rose_seeds": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "carrot_seeds": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "tomato_seeds": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "pumpkin_seeds": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "strawberry_seeds": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "watermelon_seeds": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "mint_seeds": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "golden_seeds": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "crystal_seeds": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "seed"
+  },
+  "worm": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "worm"
+  },
+  "juicy_worm": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.36,
+    "material": "worm"
+  },
+  "giant_worm": {
+    "w": 64,
+    "h": 42,
+    "scale": 0.48,
+    "material": "worm"
+  }
+}

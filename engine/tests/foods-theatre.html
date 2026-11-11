@@ -1,0 +1,21 @@
+<!doctype html><meta charset="utf-8"><title>Food workshop contact sheet</title>
+<style>body{background:#142b23;color:#ecdbb3;font:20px Georgia;margin:20px}canvas{max-width:100%;display:block}</style>
+<h1>Food workshop · authored constructions</h1>
+<script type="module">
+import {FOOD_BLUEPRINTS,foodSprite} from '../client/food-workshop.mjs';
+import {ItemPainter} from '../client/ultra-items.mjs';
+window.reviewFoods=()=>{
+ const painter=new ItemPainter(),images={};
+ for(const worn of [false,true]){
+  const canvas=document.createElement('canvas');canvas.width=1600;canvas.height=1800;
+  const c=canvas.getContext('2d');c.fillStyle='#142b23';c.fillRect(0,0,1600,1800);
+  Object.keys(FOOD_BLUEPRINTS).forEach((id,i)=>{
+   const x=i%4*400,y=Math.floor(i/4)*300;
+   c.fillStyle='#ecdbb3';c.font='18px Menlo';c.fillText(id,x+12,y+25);
+   const model=foodSprite({}, {id},100,{state:worn?{condition:.3,dirt:.5,wetness:.6}:{},motion:0});
+   painter.draw(c,model,x+200,y+275,5,{surface:'#142b23'});
+  });document.body.append(canvas);images[worn?'foods-native-condition':'foods-pristine']=canvas.toDataURL('image/png');
+ }
+ return images;
+};
+</script>

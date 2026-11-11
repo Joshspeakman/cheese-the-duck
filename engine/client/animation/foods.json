@@ -1,0 +1,140 @@
+{
+  "breadcrumbs": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.32
+  },
+  "bread": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.46
+  },
+  "golden_crumb": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.32
+  },
+  "oats": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.32
+  },
+  "mysterious_crumb": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.32
+  },
+  "rainbow_crumb": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.32
+  },
+  "void_crumb": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.32
+  },
+  "bread_crumb": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.32
+  },
+  "rare_treat": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.32
+  },
+  "fancy_bread": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.46
+  },
+  "ancient_bread": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.46
+  },
+  "honey_bread": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.46
+  },
+  "welcome_bread": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.46
+  },
+  "berry_salad": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.46
+  },
+  "honeycomb": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.46
+  },
+  "carrot": {
+    "w": 60,
+    "h": 38,
+    "material": "produce",
+    "scale": 0.46
+  },
+  "tomato": {
+    "w": 60,
+    "h": 38,
+    "material": "produce",
+    "scale": 0.46
+  },
+  "fresh_apple": {
+    "w": 60,
+    "h": 38,
+    "material": "produce",
+    "scale": 0.46
+  },
+  "pumpkin": {
+    "w": 60,
+    "h": 38,
+    "material": "produce",
+    "scale": 0.46
+  },
+  "strawberry": {
+    "w": 60,
+    "h": 38,
+    "material": "produce",
+    "scale": 0.46
+  },
+  "watermelon": {
+    "w": 60,
+    "h": 38,
+    "material": "produce",
+    "scale": 0.46
+  },
+  "homemade_pie": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.46
+  },
+  "heart_cookie": {
+    "w": 60,
+    "h": 38,
+    "material": "prepared-food",
+    "scale": 0.46
+  }
+}
