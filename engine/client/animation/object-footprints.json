@@ -513,10 +513,10 @@
       "construction": "legacy-detail"
     },
     "kite": {
-      "width": 12.7,
-      "height": 11.27,
+      "width": 56.47,
+      "height": 42.87,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "creative-v1"
     },
     "skateboard": {
       "width": 31.13,
@@ -531,16 +531,16 @@
       "construction": "playground-v1"
     },
     "telescope": {
-      "width": 18.77,
-      "height": 9.67,
+      "width": 60.06,
+      "height": 44.29,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "creative-v1"
     },
     "easel": {
-      "width": 16.95,
-      "height": 11.27,
+      "width": 53.59,
+      "height": 42.87,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "creative-v1"
     },
     "drums": {
       "width": 74.32,
@@ -2433,10 +2433,10 @@
       "construction": "keepsake-v1"
     },
     "paper_plane_design": {
-      "width": 10.76,
-      "height": 9.54,
+      "width": 35.5,
+      "height": 25.26,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "creative-v1"
     },
     "fog_bell": {
       "width": 71.72,

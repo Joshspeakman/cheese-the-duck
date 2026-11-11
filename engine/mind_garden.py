@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from engine.social_brains import Minds, ACTIONS, LABELS, action_key, clamp, stable, player_claim
 from engine.local_speech import speak
 from world.guest_cast import guest_profile
-from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests, botanical_care, instrument_sessions, keepsakes, keepsake_company
+from engine import encounters, visitor_shelters, shelter_company, playdates, furniture_rests, botanical_care, instrument_sessions, keepsakes, keepsake_company, creative_props
 from engine.instrument_audio import InstrumentAudio
 
 CHEESE_VOICE = {
@@ -143,6 +143,8 @@ class MindGarden:
             if keepsake:
                 facts['keepsake']=keepsake
                 if plan['phase']=='approach':facts['current_activity']=('Paused: ' if plan.get('paused') else '')+'Walking to inspect '+keepsake['object']
+            creative=creative_props.conversation(self.pond,plan)
+            if creative:facts['creative_work']=creative
             water=plan.get('water_routine')
             if water and not water.get('done'):
                 facts['current_activity']=('Paused: ' if plan.get('paused') else '')+water['label']

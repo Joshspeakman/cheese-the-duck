@@ -1,0 +1,43 @@
+const {app,BrowserWindow,ipcMain}=require('electron'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
+const {spawn}=require('node:child_process'),{createInterface}=require('node:readline'),{pondCommand}=require('./pond-command.cjs');
+app.setPath('userData',fs.mkdtempSync(path.join(os.tmpdir(),'cheese-creative-ui-')));
+app.whenReady().then(async()=>{
+ let child,stderr='';const checks=[],out=path.join(__dirname,'artifacts/animation-milestone');
+ try{
+  const w=new BrowserWindow({show:false,width:1440,height:1000,webPreferences:{nodeIntegration:true,contextIsolation:false,backgroundThrottling:false}});
+  const js=s=>w.webContents.executeJavaScript(s),send=c=>child.stdin.write(JSON.stringify(c)+'\n');
+  const until=async(s,label)=>{const start=Date.now();while(!await js(s)){if(Date.now()-start>15000)throw Error(label+' timed out '+stderr+' '+await js("JSON.stringify({selected:journal.selected,instance:journal.selectedInstance,plan:journal.world?.plan,summary:journal.body.querySelector('[data-creative-summary]')?.textContent,weather:frame.scene.weather})"));await new Promise(r=>setTimeout(r,30));}checks.push(label);};
+  await w.loadFile(path.join(__dirname,'tests/physical-objects-theatre.html'));
+  await until('Boolean(window.journal)','notebook initialized');
+  ipcMain.on('physical-command',(_,raw)=>{const c=pondCommand(raw);if(c)send(c);});
+  child=spawn(path.join(__dirname,'../.venv/bin/python'),[path.join(__dirname,'check_creative.py'),'--serve'],{cwd:path.dirname(__dirname),stdio:['pipe','pipe','pipe']});
+  child.stderr.on('data',b=>stderr=(stderr+b).slice(-5000));
+  createInterface({input:child.stdout}).on('line',line=>{try{const m=JSON.parse(line);if(m.type==='physical_frame')js('window.receive('+JSON.stringify(m.frame)+')');}catch{}});
+  await until('Boolean(window.frame)','native easel copies arrive');
+  await until('window.hitCopies()','each easel has its own clickable world bounds');
+  await js("button('Paint').click()");
+  await until("journal.world.plan?.instance===frame.copies[0]&&journal.world.instances[frame.copies[0]].creative.strokes===0",'Paint approaches the exact selected copy');
+  send({type:'test_advance',until:'contact'});
+  await until("journal.body.querySelector('[data-creative-summary]').textContent.startsWith('1 of 12')",'brush contact updates the live canvas summary');
+  await until("journal.world.instances[frame.copies[1]].creative.strokes===0",'second canvas remains blank');
+  await js("journal.command('cancel')");
+  await until("!journal.world.plan&&journal.world.instances[frame.copies[0]].uses===0&&journal.world.instances[frame.copies[0]].creative.strokes===1",'cancel keeps the painted layer without a use reward');
+  send({type:'test_fixture',item:'paper_plane_design'});
+  await until("frame.item==='paper_plane_design'",'real paper design arrives');
+  await js("journal.show('belongings','paper_plane_design');button('Practice folds').click()");
+  await until("journal.world.plan?.target==='paper_plane_design'",'fold command starts the actual portable design');
+  send({type:'test_advance',until:'finish'});
+  await until("!journal.world.plan&&journal.body.querySelector('[data-creative-summary]').textContent.includes('1 folding sessions')",'native fold completion is visible in the notebook');
+  send({type:'test_fixture',item:'easel'});await until("frame.item==='easel'",'fresh easel arrives');
+  send({type:'test_weather',wet:true});await until("frame.scene.weather==='rainy'",'real weather changes to rain');
+  await js("journal.show('belongings','easel',frame.copies[0]);button('Paint').click()");
+  await until("journal.world.plan?.creative_work?.id==='paint_cover'",'Paint in rain chooses the protective cover action');
+  send({type:'test_advance',until:'finish'});
+  await until("journal.body.querySelector('[data-creative-summary]').textContent.includes('canvas covered')",'covered canvas state updates without reopening the inspector');
+  await js('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
+  fs.writeFileSync(path.join(out,'creative-inspector.png'),(await w.webContents.capturePage()).toPNG());
+  const result={result:'PASS',checks,commands:await js('window.commands')};fs.writeFileSync(path.join(out,'creative-ui.json'),JSON.stringify(result,null,2));console.log(JSON.stringify({result:'PASS',checks:checks.length}));
+  child.stdin.end('{"type":"quit"}\n');
+  await new Promise((resolve,reject)=>{child.once('exit',code=>code===0?resolve():reject(Error('Native exit '+code+' '+stderr)));setTimeout(()=>reject(Error('Shutdown timed out')),5000).unref();});app.exit(0);
+ }catch(e){console.error(e);if(child)child.stdin.end('{"type":"quit"}\n');app.exit(1);}
+});

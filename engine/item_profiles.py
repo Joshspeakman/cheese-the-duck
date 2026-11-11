@@ -17,3 +17,7 @@ for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/
 
 for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/animation/keepsakes.json').read_text()).items():
     ITEMS[_id].update(kind='storage' if _p['type'] in ('chest','basket') else 'study',material=_p['material'],skill=_p['skill'],verb=_p['verb'],need='fun',duration=18)
+
+# Creative props expose the same physical controls in native gameplay and Ultra.
+for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/animation/creative-props.json').read_text()).items():
+    ITEMS[_id].update(kind='toy' if _p['type']=='kite' else 'study',material=_p['material'],skill=_p['skill'],verb=_p['verb'],need='fun',duration=24)
