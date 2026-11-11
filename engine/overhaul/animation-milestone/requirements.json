@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Reconstructed 27 lights with distinct enlarged ASCII construction, woven/ceramic/metal/glass detail and localized illumination. Added native per-physical-copy modes and heat/level state, dusk/weather/nature behavior, actual approach/contact controls, cold-versus-warm young observation, ten initial shared routines, grounded age-fitted tools, paused-pose continuity and live notebook meters. Fixed production Electron pond IPC dropping instance IDs and layout coordinates. Verified 234 native checks, 1620 native/preview parity cases, 15 real lamp UI checks, 11 physical-copy UI checks, 120 full JS tests, 694 living/72-hour checks, 44 brains checks, 76 original-game checks, 542 measured footprints and actual source Electron startup/save/shutdown. Visual review includes all 27 objects and 87 native frames. 190 of 542 objects reconstructed, 352 pending; no per-object 48-sequence coverage claimed. Full milestone active; installed 2.36.0 unchanged.",
+  "previous_goal_turn": "Prioritized the user\u2019s request for natural MMO-style bottom-left chat. Installed an isolated 2.36.1 chat release from the prior installed baseline, with listener selection, command/name completion, silence fading, persistent whispers and memory attribution/repetition fixes. Verified native/UI/learning checks and actual packaged local-model conversation, preference recall and shutdown saving. Existing desktop shortcut resolves to the new app; saves unchanged with backup. The full 542-item animation milestone remains active and incomplete: 190 reconstructed, 352 pending, zero completed 48-sequence audits. Uncommitted 12-keepsake work remains preserved in the development worktree and was not installed.",
   "items": [
     {
       "id": "hat_red",
@@ -3830,7 +3830,7 @@
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
-    "installedVersion": "2.36.0",
+    "installedVersion": "2.36.1",
     "installDeferredUntilFullMilestone": true,
     "evidence": [
       "engine/artifacts/animation-milestone/chat-ui.log",
@@ -4167,6 +4167,23 @@
       "artifact": "engine/artifacts/lighting-source-smoke",
       "localAI": false,
       "note": "Actual source Electron startup, controls, drawing, save and safe shutdown; model inference already verified in previous chat turn, packaging/install still deferred."
+    },
+    "chatRelease": {
+      "branch": "codex/pond-chat-2.36.1",
+      "worktree": "/Volumes/Expansion Pak/Projects/cheese-the-duck-chat-release",
+      "installed": true,
+      "base": "ef16dbe",
+      "scope": "Chat refinement only; full animation milestone remains in development.",
+      "verification": {
+        "js": 58,
+        "chatUI": 48,
+        "nativeChat": 34,
+        "brains": 44,
+        "packagedLocalAI": true,
+        "savedPreferenceRecall": true,
+        "savesUnchanged": true
+      },
+      "evidence": "/Volumes/Expansion Pak/Projects/cheese-the-duck-chat-release/engine/artifacts/chat/final-package.log"
     }
   }
 }

@@ -26,7 +26,7 @@ Ultra includes an animated pond title screen, an ASCII logo, an expression-only 
 
 Classic keyboard controls are unchanged. In Ultra, Enter starts in-world chat when the game menu is collapsed. The title choices, hierarchical side menu, lower action bar and panel navigation controls support mouse input. Stale clicks and clicks behind confirmations are rejected on the game thread; a click uses the same Enter handler as keyboard selection. Arrow keys and Enter navigate the complete game menu. Escape goes back; T opens conversation; Page Up/Down scroll conversation history. Display controls provide fullscreen, larger text with scrolling, Vivid/Subtle/Off scene effects, a searchable item art catalog and PNG screenshots. Every dialogue string is drawn as literal glyphs.
 
-## In-world pond chat (2.36.0)
+## In-world pond chat (2.36.1)
 
 Ultra's bottom-left log is now a live chat window. Press **Enter** while the game
 menu is collapsed, **T**, or **Talk** to compose. **Enter** sends; **Escape** returns
@@ -52,6 +52,14 @@ with **Latest** to return. The live stream keeps 240 entries; recent saved resid
 conversations return on load. The grip moves the panel, its lower-right corner
 resizes it, and both support arrow keys when focused. Layout persists. Close with
 × and recover with Enter or Pond kit. Idle fading waits while you compose.
+
+Chat fades after 14 seconds of silence; reading, typing and waiting for a reply
+keep it visible. Incoming speech restores it. The 2.36.1 chat update was built
+from the installed baseline on `codex/pond-chat-2.36.1` in the separate
+`cheese-the-duck-chat-release` worktree and installed behind the desktop shortcut.
+It includes the listener picker, completion, clearer memory attribution and a
+bounded retry for wholly recycled replies. Real local conversation, preference
+recall and shutdown saving passed; installed saves were preserved.
 
 Host acknowledgments clear only accepted drafts. Busy/absent residents keep the
 message editable, duplicate requests do not repeat learning, and a stale session
@@ -238,7 +246,7 @@ npm --prefix engine run dist
 Resident speech uses the local Qwen3 model and llama.cpp runtime described above. On a fresh development machine, run `npm --prefix engine run setup:voice` before building. Model weights stay in Application Support across application updates; they are not committed to the repository. Actual local inference, conversation memory and shutdown saving have been exercised through the desktop chat. Authored dialogue remains available when the local model is unavailable. Radio still requires its original external stream/tools.
 
 The next animation milestone is in development on this branch and has **not**
-replaced the installed 2.36.0 app. Its tracker is
+replaced the installed game; the separate chat update is installed as 2.36.1. Its tracker is
 `overhaul/animation-milestone/requirements.json`: 190 of 542 object drawings have
 been reconstructed, with 352 remaining. The full 48 bespoke sequences per object
 and all guest/age/context coverage remain unfinished.

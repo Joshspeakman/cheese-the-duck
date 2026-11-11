@@ -11,6 +11,13 @@ checks=[]
 def check(value,label):
     assert value,label
     checks.append(label)
+from engine.local_speech import fresh_speech
+repeated='I have been chasing that fucking crumb all morning.'
+history=[dict(role='system',content='Be Cheese.'),dict(role='assistant',content=repeated),dict(role='user',content='Do you remember my favorite flower?')]
+check(fresh_speech('Yes, lavender. '+repeated,history)=='Yes, lavender.','local reply keeps its new answer without appending an old speech')
+check(fresh_speech(repeated,history)=='','an entirely recycled answer requests another generation')
+check(fresh_speech(repeated,history[:-1]+[dict(role='user',content='Repeat exactly what you said.')])==repeated,'deliberate quotations and profanity remain intact')
+check(fresh_speech('Fuck yes. Lavender.',history)=='Fuck yes. Lavender.','fresh speech and short expressions are unchanged')
 s=ChatStream();mirror=ChatMirror(s.raw)
 for n in range(300):mirror.append(('12:00','\x1b[31mSame line\x1b[0m','system'));mirror=mirror[-30:]
 check(len(s.entries)==240 and len(mirror)==30,'Classic trimming never loses the independent bounded chat stream')
