@@ -1,0 +1,2318 @@
+{
+  "disc_roll": {
+    "type": "disc",
+    "label": "Roll the disc along the bank and bring it back",
+    "duration": 18,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.16,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.32,
+        {
+          "travel": 0.8,
+          "turn": 2
+        }
+      ],
+      [
+        0.5,
+        {
+          "travel": 1,
+          "turn": 3
+        }
+      ],
+      [
+        0.65,
+        {
+          "travel": 1,
+          "walk": 1,
+          "contact": 1,
+          "b": 2
+        }
+      ],
+      [
+        0.82,
+        {
+          "travel": 0.4,
+          "walk": 0.4,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "contact": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.16,
+        "push"
+      ],
+      [
+        0.65,
+        "retrieve"
+      ]
+    ]
+  },
+  "disc_wobble": {
+    "type": "disc",
+    "label": "Set the disc wobbling and wait for it to settle",
+    "duration": 18,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.32,
+        {
+          "tilt": 1,
+          "turn": 1
+        }
+      ],
+      [
+        0.48,
+        {
+          "tilt": -0.7,
+          "turn": 2
+        }
+      ],
+      [
+        0.66,
+        {
+          "tilt": 0.4,
+          "turn": 3
+        }
+      ],
+      [
+        0.82,
+        {
+          "tilt": -0.2,
+          "turn": 3.3
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.2,
+        "spin"
+      ]
+    ]
+  },
+  "disc_rim": {
+    "type": "disc",
+    "label": "Trace the moulded rings and wipe the rim",
+    "duration": 18,
+    "tool": "cloth",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "turn": 0.3
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "turn": 0.6
+        }
+      ],
+      [
+        0.85,
+        {
+          "contact": 1,
+          "turn": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "clean"
+      ],
+      [
+        0.65,
+        "clean"
+      ]
+    ]
+  },
+  "rope_steps": {
+    "type": "rope",
+    "label": "Step through the rope loops one foot at a time",
+    "duration": 18,
+    "tool": "none",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "walk": 0.15,
+          "l": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "walk": 0.35,
+          "r": 1
+        }
+      ],
+      [
+        0.5,
+        {
+          "walk": 0.5,
+          "l": 1
+        }
+      ],
+      [
+        0.65,
+        {
+          "walk": 0.7,
+          "r": 1
+        }
+      ],
+      [
+        0.8,
+        {
+          "walk": 0.35,
+          "l": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "step"
+      ],
+      [
+        0.65,
+        "step"
+      ]
+    ]
+  },
+  "rope_skip": {
+    "type": "rope",
+    "label": "Skip over the low rope and land with both feet",
+    "duration": 18,
+    "tool": "none",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "walk": 0.2,
+          "b": 1
+        }
+      ],
+      [
+        0.3,
+        {
+          "walk": 0.35,
+          "jump": 1,
+          "l": 1,
+          "r": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "walk": 0.5,
+          "b": 1
+        }
+      ],
+      [
+        0.55,
+        {
+          "walk": 0.7,
+          "jump": 1,
+          "l": 1,
+          "r": 1
+        }
+      ],
+      [
+        0.68,
+        {
+          "walk": 0.9,
+          "b": 1
+        }
+      ],
+      [
+        0.8,
+        {
+          "walk": 0.45,
+          "l": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "hop"
+      ],
+      [
+        0.68,
+        "hop"
+      ]
+    ]
+  },
+  "rope_coil": {
+    "type": "rope",
+    "label": "Gather the braided rope into a neat coil",
+    "duration": 18,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "contact": 1,
+          "b": 2
+        }
+      ],
+      [
+        0.35,
+        {
+          "coil": 0.35,
+          "contact": 1,
+          "turn": 0.2
+        }
+      ],
+      [
+        0.6,
+        {
+          "coil": 0.7,
+          "contact": 1,
+          "turn": 0.5
+        }
+      ],
+      [
+        0.85,
+        {
+          "coil": 1,
+          "contact": 1,
+          "turn": 1
+        }
+      ],
+      [
+        1,
+        {
+          "coil": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "fold"
+      ],
+      [
+        0.6,
+        "fold"
+      ]
+    ]
+  },
+  "rope_uncoil": {
+    "type": "rope",
+    "label": "Spread two loops and check the wooden grips",
+    "duration": 18,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.5,
+        {
+          "coil": 0,
+          "contact": 1,
+          "walk": 0.4
+        }
+      ],
+      [
+        0.75,
+        {
+          "coil": 0,
+          "contact": 1,
+          "walk": 0.7
+        }
+      ],
+      [
+        1,
+        {
+          "coil": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.5,
+        "unfold"
+      ]
+    ]
+  },
+  "yoyo_drop": {
+    "type": "yoyo",
+    "label": "Let the yo-yo sleep, then draw it back",
+    "duration": 20,
+    "tool": "string",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {
+          "drop": 1
+        }
+      ],
+      [
+        0.15,
+        {
+          "contact": 1,
+          "w": 0.4,
+          "drop": 0
+        }
+      ],
+      [
+        0.35,
+        {
+          "drop": 1,
+          "turn": 4,
+          "contact": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "drop": 1,
+          "turn": 8,
+          "contact": 1,
+          "eye": "-"
+        }
+      ],
+      [
+        0.82,
+        {
+          "drop": 0.2,
+          "turn": 9,
+          "contact": 1,
+          "w": 0.6
+        }
+      ],
+      [
+        1,
+        {
+          "contact": 1,
+          "drop": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "spin"
+      ],
+      [
+        0.82,
+        "return"
+      ]
+    ]
+  },
+  "yoyo_walk": {
+    "type": "yoyo",
+    "label": "Walk the duck along the bank on a taut string",
+    "duration": 18,
+    "tool": "string",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {
+          "drop": 1
+        }
+      ],
+      [
+        0.2,
+        {
+          "drop": 0,
+          "contact": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "drop": 1,
+          "travel": 0.6,
+          "turn": 4,
+          "walk": 0.35,
+          "contact": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "drop": 1,
+          "travel": 1,
+          "turn": 7,
+          "walk": 0.7,
+          "contact": 1
+        }
+      ],
+      [
+        0.82,
+        {
+          "drop": 0.4,
+          "travel": 0.3,
+          "turn": 9,
+          "walk": 0.3,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "contact": 1,
+          "drop": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "roll"
+      ],
+      [
+        0.82,
+        "return"
+      ]
+    ]
+  },
+  "yoyo_loops": {
+    "type": "yoyo",
+    "label": "Send the yo-yo through two small returning loops",
+    "duration": 18,
+    "tool": "string",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {
+          "drop": 1
+        }
+      ],
+      [
+        0.15,
+        {
+          "contact": 1,
+          "drop": 0
+        }
+      ],
+      [
+        0.3,
+        {
+          "drop": 0.8,
+          "travel": 0.4,
+          "turn": 3,
+          "contact": 1
+        }
+      ],
+      [
+        0.45,
+        {
+          "drop": 0.2,
+          "turn": 4,
+          "contact": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "drop": 0.9,
+          "travel": 0.6,
+          "turn": 7,
+          "contact": 1
+        }
+      ],
+      [
+        0.78,
+        {
+          "drop": 0.2,
+          "turn": 8,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "contact": 1,
+          "drop": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.45,
+        "return"
+      ],
+      [
+        0.78,
+        "return"
+      ]
+    ]
+  },
+  "bubbler_start": {
+    "type": "bubbler",
+    "label": "Press the low switch and watch the bubble wheel",
+    "duration": 18,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "power": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "power": 1,
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {
+          "power": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "switch"
+      ]
+    ]
+  },
+  "bubbler_stop": {
+    "type": "bubbler",
+    "label": "Switch off and watch the last bubbles drift",
+    "duration": 18,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "power": 0,
+          "contact": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "power": 0,
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {
+          "power": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "switch"
+      ]
+    ]
+  },
+  "bubbler_clean": {
+    "type": "bubbler",
+    "label": "Wipe dried soap off the low brass switch plate",
+    "duration": 18,
+    "tool": "cloth",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.15,
+        {
+          "power": 0,
+          "contact": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "power": 0,
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "power": 0,
+          "contact": 1,
+          "b": 2
+        }
+      ],
+      [
+        0.8,
+        {
+          "power": 0,
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        1,
+        {
+          "power": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "clean"
+      ],
+      [
+        0.6,
+        "clean"
+      ]
+    ]
+  },
+  "wand_breath": {
+    "type": "wand",
+    "label": "Dip the wand and blow three little bubbles",
+    "duration": 20,
+    "tool": "wand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "dip": 1,
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.32,
+        {
+          "dip": 0,
+          "held": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.45,
+        {
+          "held": 1,
+          "blow": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "held": 1,
+          "blow": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.75,
+        {
+          "held": 1,
+          "blow": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.88,
+        {
+          "held": 0.5,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.18,
+        "dip"
+      ],
+      [
+        0.45,
+        "bubble"
+      ],
+      [
+        0.6,
+        "bubble"
+      ],
+      [
+        0.75,
+        "bubble"
+      ]
+    ]
+  },
+  "wand_giant": {
+    "type": "wand",
+    "label": "Blow one wide shimmering bubble and hold still",
+    "duration": 22,
+    "tool": "wand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "dip": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.38,
+        {
+          "held": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.55,
+        {
+          "held": 1,
+          "blow": 1,
+          "wide": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.75,
+        {
+          "held": 1,
+          "wide": 1,
+          "eye": "o",
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.2,
+        "dip"
+      ],
+      [
+        0.55,
+        "wide_bubble"
+      ]
+    ]
+  },
+  "wand_rinse": {
+    "type": "wand",
+    "label": "Swirl the loop in its bottle and clear the film",
+    "duration": 18,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.25,
+        {
+          "dip": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.45,
+        {
+          "dip": 1,
+          "turn": 0.5,
+          "contact": 1
+        }
+      ],
+      [
+        0.65,
+        {
+          "dip": 1,
+          "turn": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.82,
+        {
+          "dip": 0.4,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.45,
+        "clean"
+      ]
+    ]
+  },
+  "pinwheel_turn": {
+    "type": "pinwheel",
+    "label": "Tug the pinwheel pull cord and follow its vanes",
+    "duration": 18,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "turn": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "turn": 1.6,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {
+          "turn": 1.8
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "nudge"
+      ]
+    ]
+  },
+  "pinwheel_watch": {
+    "type": "pinwheel",
+    "label": "Follow the turning coloured vanes",
+    "duration": 18,
+    "tool": "none",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "x": -0.3,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "x": 0.3,
+          "w": 0.2
+        }
+      ],
+      [
+        0.6,
+        {
+          "x": -0.3,
+          "eye": "-"
+        }
+      ],
+      [
+        0.8,
+        {
+          "x": 0.3
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.6,
+        "watch"
+      ]
+    ]
+  },
+  "pinwheel_smooth": {
+    "type": "pinwheel",
+    "label": "Wipe the wooden pinwheel handle",
+    "duration": 18,
+    "tool": "cloth",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "tilt": 0.1
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "tilt": 0
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "clean"
+      ]
+    ]
+  },
+  "boat_push": {
+    "type": "boat",
+    "label": "Push the little boat over the grass and collect it",
+    "duration": 18,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "travel": 0.8,
+          "turn": 0.2
+        }
+      ],
+      [
+        0.58,
+        {
+          "travel": 1,
+          "walk": 1,
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.78,
+        {
+          "travel": 0.4,
+          "walk": 0.4,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.18,
+        "push"
+      ],
+      [
+        0.58,
+        "retrieve"
+      ]
+    ]
+  },
+  "boat_tack": {
+    "type": "boat",
+    "label": "Trace a little zigzag voyage on the bank",
+    "duration": 18,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "travel": 0.3,
+          "walk": 0.3,
+          "tilt": 0.4,
+          "contact": 1
+        }
+      ],
+      [
+        0.5,
+        {
+          "travel": 0.6,
+          "walk": 0.6,
+          "tilt": -0.4,
+          "contact": 1
+        }
+      ],
+      [
+        0.65,
+        {
+          "travel": 0.9,
+          "walk": 0.9,
+          "tilt": 0.3,
+          "contact": 1
+        }
+      ],
+      [
+        0.8,
+        {
+          "travel": 0.4,
+          "walk": 0.4,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "push"
+      ],
+      [
+        0.65,
+        "push"
+      ]
+    ]
+  },
+  "boat_sail": {
+    "type": "boat",
+    "label": "Open the stitched sail and check the tiny rigging",
+    "duration": 18,
+    "tool": "hand",
+    "anchor": "rigging",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1
+        }
+      ],
+      [
+        0.45,
+        {
+          "sail": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.7,
+        {
+          "sail": 1,
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {
+          "sail": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.45,
+        "rig"
+      ]
+    ]
+  },
+  "boat_keel": {
+    "type": "boat",
+    "label": "Wipe mud from the clinker-built hull",
+    "duration": 18,
+    "tool": "cloth",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "b": 2
+        }
+      ],
+      [
+        0.7,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "clean"
+      ],
+      [
+        0.7,
+        "clean"
+      ]
+    ]
+  },
+  "board_balance": {
+    "type": "board",
+    "label": "Step onto the board and find a steady stance",
+    "duration": 24,
+    "tool": "none",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "walk": 0.4,
+          "l": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "walk": 0.5,
+          "tilt": 0.15,
+          "w": 0.5
+        }
+      ],
+      [
+        0.5,
+        {
+          "walk": 0.5,
+          "tilt": -0.15,
+          "w": 0.6
+        }
+      ],
+      [
+        0.65,
+        {
+          "walk": 0.5,
+          "tilt": 0.08,
+          "w": 0.4
+        }
+      ],
+      [
+        0.8,
+        {
+          "walk": 0.4
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "balance"
+      ]
+    ]
+  },
+  "board_steps": {
+    "type": "board",
+    "label": "Walk the waxed deck from tail to nose",
+    "duration": 18,
+    "tool": "none",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "walk": 0.15,
+          "l": 1
+        }
+      ],
+      [
+        0.35,
+        {
+          "walk": 0.4,
+          "r": 1,
+          "w": 0.2
+        }
+      ],
+      [
+        0.55,
+        {
+          "walk": 0.75,
+          "l": 1,
+          "w": 0.5
+        }
+      ],
+      [
+        0.7,
+        {
+          "walk": 0.45,
+          "r": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "walk": 0.2,
+          "l": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.35,
+        "step"
+      ],
+      [
+        0.55,
+        "step"
+      ]
+    ]
+  },
+  "board_wax": {
+    "type": "board",
+    "label": "Wax the front rail in overlapping circles",
+    "duration": 18,
+    "tool": "cloth",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 2
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "walk": 0.3,
+          "turn": 0.3
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "walk": 0.6,
+          "turn": 0.7
+        }
+      ],
+      [
+        0.85,
+        {
+          "contact": 1,
+          "walk": 0.3
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "wax"
+      ],
+      [
+        0.65,
+        "wax"
+      ]
+    ]
+  },
+  "disc_gentle": {
+    "type": "disc",
+    "label": "Study the moulded rings on the resting disc",
+    "duration": 16,
+    "tool": "none",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 0.4,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "b": 0.8,
+          "w": 0.1
+        }
+      ],
+      [
+        0.65,
+        {
+          "b": 0.4,
+          "eye": "-"
+        }
+      ],
+      [
+        0.85,
+        {
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "watch"
+      ]
+    ]
+  },
+  "disc_pack": {
+    "type": "disc",
+    "label": "Let the disc settle in the wet weather",
+    "duration": 10,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.25,
+        {
+          "power": 0,
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.6,
+        "pack"
+      ]
+    ]
+  },
+  "rope_gentle": {
+    "type": "rope",
+    "label": "Investigate the braided rope without jumping",
+    "duration": 16,
+    "tool": "none",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 0.4,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "b": 0.8,
+          "w": 0.1
+        }
+      ],
+      [
+        0.65,
+        {
+          "b": 0.4,
+          "eye": "-"
+        }
+      ],
+      [
+        0.85,
+        {
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "watch"
+      ]
+    ]
+  },
+  "rope_pack": {
+    "type": "rope",
+    "label": "Let the rope settle in the wet weather",
+    "duration": 10,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.25,
+        {
+          "power": 0,
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.6,
+        "pack"
+      ]
+    ]
+  },
+  "yoyo_gentle": {
+    "type": "yoyo",
+    "label": "Inspect the wooden yo-yo and its wound string",
+    "duration": 16,
+    "tool": "none",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 0.4,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "b": 0.8,
+          "w": 0.1
+        }
+      ],
+      [
+        0.65,
+        {
+          "b": 0.4,
+          "eye": "-"
+        }
+      ],
+      [
+        0.85,
+        {
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "watch"
+      ]
+    ]
+  },
+  "yoyo_pack": {
+    "type": "yoyo",
+    "label": "Let the yoyo settle in the wet weather",
+    "duration": 10,
+    "tool": "string",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.25,
+        {
+          "power": 0,
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "power": 0,
+          "drop": 1,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "power": 0,
+          "drop": 1,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.6,
+        "pack"
+      ]
+    ]
+  },
+  "bubbler_gentle": {
+    "type": "bubbler",
+    "label": "Watch the bubbles from a quiet spot",
+    "duration": 16,
+    "tool": "none",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 0.4,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "b": 0.8,
+          "w": 0.1
+        }
+      ],
+      [
+        0.65,
+        {
+          "b": 0.4,
+          "eye": "-"
+        }
+      ],
+      [
+        0.85,
+        {
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "watch"
+      ]
+    ]
+  },
+  "bubbler_pack": {
+    "type": "bubbler",
+    "label": "Let the bubbler settle in the wet weather",
+    "duration": 10,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.25,
+        {
+          "power": 0,
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.6,
+        "pack"
+      ]
+    ]
+  },
+  "wand_gentle": {
+    "type": "wand",
+    "label": "Study a tiny soap film in the loop",
+    "duration": 16,
+    "tool": "none",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 0.4,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "b": 0.8,
+          "w": 0.1
+        }
+      ],
+      [
+        0.65,
+        {
+          "b": 0.4,
+          "eye": "-"
+        }
+      ],
+      [
+        0.85,
+        {
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "watch"
+      ]
+    ]
+  },
+  "wand_pack": {
+    "type": "wand",
+    "label": "Let the wand settle in the wet weather",
+    "duration": 10,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.25,
+        {
+          "power": 0,
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.6,
+        "pack"
+      ]
+    ]
+  },
+  "pinwheel_gentle": {
+    "type": "pinwheel",
+    "label": "Watch the lowest paper vane",
+    "duration": 16,
+    "tool": "none",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 0.4,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "b": 0.8,
+          "w": 0.1
+        }
+      ],
+      [
+        0.65,
+        {
+          "b": 0.4,
+          "eye": "-"
+        }
+      ],
+      [
+        0.85,
+        {
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "watch"
+      ]
+    ]
+  },
+  "pinwheel_pack": {
+    "type": "pinwheel",
+    "label": "Let the pinwheel settle in the wet weather",
+    "duration": 10,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.25,
+        {
+          "power": 0,
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.6,
+        "pack"
+      ]
+    ]
+  },
+  "boat_gentle": {
+    "type": "boat",
+    "label": "Inspect the little boat at the edge of the bank",
+    "duration": 16,
+    "tool": "none",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 0.4,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "b": 0.8,
+          "w": 0.1
+        }
+      ],
+      [
+        0.65,
+        {
+          "b": 0.4,
+          "eye": "-"
+        }
+      ],
+      [
+        0.85,
+        {
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "watch"
+      ]
+    ]
+  },
+  "boat_pack": {
+    "type": "boat",
+    "label": "Let the boat settle in the wet weather",
+    "duration": 10,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.25,
+        {
+          "power": 0,
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.6,
+        "pack"
+      ]
+    ]
+  },
+  "board_gentle": {
+    "type": "board",
+    "label": "Inspect the board from the bank",
+    "duration": 16,
+    "tool": "none",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 0.4,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "b": 0.8,
+          "w": 0.1
+        }
+      ],
+      [
+        0.65,
+        {
+          "b": 0.4,
+          "eye": "-"
+        }
+      ],
+      [
+        0.85,
+        {
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.65,
+        "watch"
+      ]
+    ]
+  },
+  "board_pack": {
+    "type": "board",
+    "label": "Let the board settle in the wet weather",
+    "duration": 10,
+    "tool": "hand",
+    "anchor": "contact",
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.25,
+        {
+          "power": 0,
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0,
+          "contact": 1
+        }
+      ],
+      [
+        1,
+        {
+          "power": 0,
+          "drop": 0,
+          "held": 0,
+          "coil": 1,
+          "sail": 0,
+          "lift": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.6,
+        "pack"
+      ]
+    ]
+  }
+}

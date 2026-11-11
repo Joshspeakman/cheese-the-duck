@@ -1,3 +1,5 @@
+import {PLAYKIT_CHOICES,playkitSummary} from './playkit-state.mjs';
+import {playkitPose} from './playkit-routines.mjs';
 import {architectureSummary,ARCHITECTURE_CHOICES} from './architecture-state.mjs';
 import {architecturePose} from './architecture-routines.mjs';
 import {groundSummary} from './ground-state.mjs';
@@ -53,6 +55,7 @@ export class PondJournal{
   refreshConversation(this);
   const p=w.plan;this.status.textContent=p?`${p.label} · ${p.paused?'paused':pretty(p.phase)} · ${Math.round(p.progress*100)}%`:'Cheese is free to choose what comes next.';
   for(const bar of this.body.querySelectorAll('[data-progress]'))bar.value=p?.progress||0;
+  for(const card of this.body.querySelectorAll('[data-playkit-id]')){const id=card.dataset.playkitId,instance=card.dataset.playkitInstance,state=instance?w.instances?.[instance]:w.objects[id];if(state)card.querySelector('[data-playkit-summary]').textContent=playkitSummary(id,state);for(const button of card.querySelectorAll('[data-playkit-choice]'))button.disabled=Boolean(w.plan)||Boolean(instance&&!w.layout?.copies?.some(p=>p.instance===instance));}
   for(const card of this.body.querySelectorAll('[data-architecture-id]')){
    const id=card.dataset.architectureId,instance=card.dataset.architectureInstance,state=instance?w.instances?.[instance]:w.objects[id];
    if(state){card.querySelector('[data-architecture-summary]').textContent=architectureSummary(id,state);
@@ -136,6 +139,7 @@ const p=itemProfile(item,itemFamily(id));detail.append(el('p',`${pretty(p.materi
     detail.append(this.button(p.verb,'item',id,busy||!outside||['food','wearable'].includes(p.kind),{instance}),this.button('Brush & polish','clean_item',id,busy||!outside||state.dirt<.05,{instance}),this.button('Repair · 1 twig','repair_item',id,busy||!outside||state.condition>=.95,{instance}));if(['food','wearable'].includes(p.kind))detail.append(this.legacy(p.kind==='food'?'Eat through inventory':'Open wardrobe & items','inventory'));grid.append(detail);
     if(w.layout?.items.some(i=>i.id===id)&&(!instance||w.layout.copies?.some(p=>p.id===id&&p.instance===instance))){const arrange=el('button',w.placed.includes(id)?'Move or store':'Find a place','pond-action');arrange.onclick=()=>this.show('arrange',id,instance);detail.append(arrange);}
     if(state.botany){this.meter(detail,'Soil moisture',state.botany.moisture);this.meter(detail,'Plant health',state.botany.health);detail.append(el('p',state.botany.last_care?'Last care: '+pretty(state.botany.last_care):'Rain waters the roots. Warm, dry air slowly draws moisture out of the soil.'));}
+    if(state.playkit){detail.dataset.playkitId=id;detail.dataset.playkitInstance=instance||'';const summary=el('p',playkitSummary(id,state));summary.dataset.playkitSummary='';detail.append(summary);for(const [choice,label]of PLAYKIT_CHOICES[id]||[]){const button=this.button(label,'playkit_action',id,busy||!outside,{instance,text:choice});button.dataset.playkitChoice=choice;detail.append(button);}}
     if(state.architecture){
      detail.dataset.architectureId=id;detail.dataset.architectureInstance=instance||'';
      const summary=el('p',architectureSummary(id,state));summary.dataset.architectureSummary='';detail.append(summary);
@@ -204,7 +208,7 @@ const p=itemProfile(item,itemFamily(id));detail.append(el('p',`${pretty(p.materi
    if(kind==='item'||kind==='project'){
     const project={reed_beds:'reed',orchard:'tree_oak',observatory:'telescope',clubhouse:'basic_nest',workshop:'workbench',trail:'bridge'};
     const interaction=w.plan?.target===id&&(!instance||w.plan.instance===instance)?w.plan:null;
-    const model=itemSprite(kind==='project'?project[id]:id,time,{motion,state:instance?w.instances?.[instance]:w.objects[id],interaction,pose:{architecture:interaction?.architecture_work&&interaction.phase!=='approach'?architecturePose(interaction.architecture_work,motion):null,ground:interaction?.ground_work&&interaction.phase!=='approach'?groundPose(interaction.ground_work,motion):null,textile:interaction?.textile_work&&interaction.phase!=='approach'?textilePose(interaction.textile_work,motion):null,creative:interaction?.creative_work&&interaction.phase!=='approach'?creativePose(interaction.creative_work,motion):null,keepsake:interaction?.keepsake_work?keepsakePose(interaction.keepsake_work,motion):null}});
+    const model=itemSprite(kind==='project'?project[id]:id,time,{motion,state:instance?w.instances?.[instance]:w.objects[id],interaction,pose:{playkit:interaction?.playkit_work&&interaction.phase!=='approach'?playkitPose(interaction.playkit_work,motion):null,architecture:interaction?.architecture_work&&interaction.phase!=='approach'?architecturePose(interaction.architecture_work,motion):null,ground:interaction?.ground_work&&interaction.phase!=='approach'?groundPose(interaction.ground_work,motion):null,textile:interaction?.textile_work&&interaction.phase!=='approach'?textilePose(interaction.textile_work,motion):null,creative:interaction?.creative_work&&interaction.phase!=='approach'?creativePose(interaction.creative_work,motion):null,keepsake:interaction?.keepsake_work?keepsakePose(interaction.keepsake_work,motion):null}});
     const cw=Math.min((canvas.width-30)/(model.width+2),(canvas.height-45)/((model.art.length+2)*1.5))/(model.detailScale||1);
     this.painter.draw(ctx,model,canvas.width/2,canvas.height-22,cw,{surface:'#142a22',outline:'#091d18'});
    }else{

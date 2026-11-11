@@ -4,7 +4,7 @@ The original registries remain authoritative for ownership, needs, inventory,
 friendship, recipes and rewards. This module owns new physical/ecological state,
 long-term intentions and bounded memories. Presentation snapshots never advance it.
 """
-from engine import object_history,pond_lighting,keepsakes,keepsake_company,creative_props,creative_company,textiles,textile_company,groundworks,ground_company,architecture,architecture_company
+from engine import object_history,pond_lighting,keepsakes,keepsake_company,creative_props,creative_company,textiles,textile_company,groundworks,ground_company,architecture,architecture_company,playkit
 import copy
 import hashlib
 import math
@@ -196,6 +196,7 @@ class LivingPond:
             if item in textiles.ITEMS:textiles.state(item,obj)
             if item in groundworks.ITEMS:groundworks.state(item,obj)
             if item in architecture.ITEMS:architecture.state(item,obj)
+            if item in playkit.ITEMS:playkit.state(item,obj)
         stocks = self.state['stocks']
         for biome, resources in RESOURCE_POOLS.items():
             for resource in resources:
@@ -346,6 +347,7 @@ class LivingPond:
             pond_lighting.update(self,key,obj,dt,outdoors,home_wet,home_intensity)
             keepsakes.update(self,key,obj,dt,outdoors,home_wet,home_intensity,home_temperature)
             architecture.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type)
+            playkit.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type)
             textiles.update(self,key,obj,dt,outdoors,home_wet,home_intensity,home_temperature)
             groundworks.update(self,key,obj,dt,outdoors,home_wet,home_intensity,home_temperature,any(w in home_type for w in ('snow','blizzard')))
             if not outdoors:
@@ -435,6 +437,7 @@ class LivingPond:
                 return False,'Place that belonging outside before using it.'
             if target in creative_props.ITEMS and not selected and (not creative_props.ITEMS[target]['portable'] or self.object_state(target).get('_source')):
                 return False,'Place that creative prop outside before using it.'
+            if target in playkit.ITEMS and not selected and (not playkit.ITEMS[target]['portable'] or self.object_state(target).get('_source')):return False,'Place that plaything outside first.'
             if target in architecture.ITEMS and not selected:return False,'Place that garden structure outside before inspecting it.'
             if target in groundworks.ITEMS and not selected and (not groundworks.ITEMS[target]['portable'] or self.object_state(target).get('_source')):
                 return False,'Place that path or floor outside before using it.'
@@ -533,6 +536,9 @@ class LivingPond:
         if kind=='item' and target in creative_props.ITEMS:
             s['plan']['creative_work']=creative_props.choose(self,target,s['plan'])
             s['plan']['label']=s['plan']['creative_work']['label']
+        if kind=='item' and target in playkit.ITEMS:
+            s['plan']['playkit_work']=playkit.choose(self,target,s['plan'])
+            s['plan']['label']=s['plan']['playkit_work']['label']
         if kind=='item' and target in architecture.ITEMS:
             s['plan']['architecture_work']=architecture.choose(self,target,s['plan'])
             s['plan']['label']=s['plan']['architecture_work']['label']
@@ -561,7 +567,7 @@ class LivingPond:
         elif selected:
             x,y = selected.get_display_position()
             pos.move_to(round(x*132/20), round(y*42/12))
-        elif s['plan'].get('keepsake_work') or s['plan'].get('creative_work') or s['plan'].get('textile_work') or s['plan'].get('ground_work'):
+        elif s['plan'].get('playkit_work') or s['plan'].get('keepsake_work') or s['plan'].get('creative_work') or s['plan'].get('textile_work') or s['plan'].get('ground_work'):
             # Portable reading starts where Cheese puts the object down. Hold
             # through preparation so idle wandering cannot leave it behind.
             pos.cancel_movement()
@@ -616,6 +622,8 @@ class LivingPond:
             self.cancel();return
         if plan.get('creative_work') and not creative_props.valid(self,plan):
             self.cancel();return
+        if plan.get('playkit_work') and not playkit.valid(self,plan):
+            self.cancel();return
         if plan.get('architecture_work') and not architecture.valid(self,plan):
             self.cancel();return
         if plan.get('ground_work') and not groundworks.valid(self,plan):
@@ -661,9 +669,10 @@ class LivingPond:
         keepsake_holding = keepsakes.advance(self,plan,dt)
         creative_holding = creative_props.advance(self,plan,dt)
         architecture_holding = architecture.advance(self,plan,dt)
+        playkit_holding = playkit.advance(self,plan,dt)
         ground_holding = groundworks.advance(self,plan,dt)
         textile_holding = textiles.advance(self,plan,dt)
-        if plan.get('company', {}).get('phase') == 'cancelled' or plan.get('water_routine',{}).get('interrupted') or plan.get('seat_routine',{}).get('interrupted') or plan.get('care_routine',{}).get('interrupted') or plan.get('music_score',{}).get('interrupted') or plan.get('light_work',{}).get('interrupted') or plan.get('keepsake_work',{}).get('interrupted') or plan.get('creative_work',{}).get('interrupted') or plan.get('textile_work',{}).get('interrupted') or plan.get('ground_work',{}).get('interrupted') or plan.get('architecture_work',{}).get('interrupted'):
+        if plan.get('company', {}).get('phase') == 'cancelled' or plan.get('water_routine',{}).get('interrupted') or plan.get('seat_routine',{}).get('interrupted') or plan.get('care_routine',{}).get('interrupted') or plan.get('music_score',{}).get('interrupted') or plan.get('light_work',{}).get('interrupted') or plan.get('keepsake_work',{}).get('interrupted') or plan.get('creative_work',{}).get('interrupted') or plan.get('textile_work',{}).get('interrupted') or plan.get('ground_work',{}).get('interrupted') or plan.get('architecture_work',{}).get('interrupted') or plan.get('playkit_work',{}).get('interrupted'):
             # An interrupted shared activity must not fall through to the normal
             # item completion either. Release both residents and leave use counts
             # and needs unchanged, even if the toy remains owned but is put away.
@@ -671,11 +680,11 @@ class LivingPond:
             return
         weather_holding = bool(residence and residence['roof'] and shelters.adverse(self.weather_type)
                        and plan['phase'] == 'act' and g.duck.needs.hunger > 15)
-        holding = weather_holding or routine_holding or company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or creative_holding or textile_holding or ground_holding or architecture_holding
-        if company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or creative_holding or textile_holding or ground_holding or architecture_holding:
+        holding = weather_holding or routine_holding or company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or creative_holding or textile_holding or ground_holding or architecture_holding or playkit_holding
+        if company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or creative_holding or textile_holding or ground_holding or architecture_holding or playkit_holding:
             g.renderer.duck_pos.cancel_movement()
             g.renderer.duck_pos.set_state_by_name('thinking',0)
-        elif plan.get('company',{}).get('done') or plan.get('water_routine',{}).get('done') or plan.get('seat_routine',{}).get('done') or plan.get('care_routine',{}).get('done') or plan.get('music_score',{}).get('done') or plan.get('light_work',{}).get('done') or plan.get('keepsake_work',{}).get('done') or plan.get('creative_work',{}).get('done') or plan.get('textile_work',{}).get('done') or plan.get('ground_work',{}).get('done') or plan.get('architecture_work',{}).get('done'):
+        elif plan.get('company',{}).get('done') or plan.get('water_routine',{}).get('done') or plan.get('seat_routine',{}).get('done') or plan.get('care_routine',{}).get('done') or plan.get('music_score',{}).get('done') or plan.get('light_work',{}).get('done') or plan.get('keepsake_work',{}).get('done') or plan.get('creative_work',{}).get('done') or plan.get('textile_work',{}).get('done') or plan.get('ground_work',{}).get('done') or plan.get('architecture_work',{}).get('done') or plan.get('playkit_work',{}).get('done'):
             plan['elapsed']=max(plan['elapsed'],plan['duration']*.9)
         if residence:
             residence['holding'] = weather_holding
@@ -702,7 +711,7 @@ class LivingPond:
                 physical_work = residence or any(plan.get(key) for key in (
                     'company','water_routine','seat_routine','care_routine',
                     'music_score','light_work','keepsake_work','creative_work',
-                    'textile_work','ground_work','architecture_work'))
+                    'textile_work','ground_work','architecture_work','playkit_work'))
                 g.renderer.duck_pos.set_state_by_name(state, duration=0 if physical_work else max(1, plan['duration']-plan['elapsed']))
                 self._last_plan_visual = phase
         obj=self.object_state(target,plan)
@@ -713,7 +722,7 @@ class LivingPond:
                 nest_routines.advance(self, plan, 0.)
         if ratio >= 1:
             s['plan'] = None  # Consume once before invoking callbacks.
-            if residence or plan.get('company') or plan.get('water_routine') or plan.get('seating') or plan.get('care_routine') or plan.get('instrument') or plan.get('light_work') or plan.get('keepsake_work') or plan.get('creative_work') or plan.get('textile_work') or plan.get('ground_work') or plan.get('architecture_work'):
+            if residence or plan.get('company') or plan.get('water_routine') or plan.get('seating') or plan.get('care_routine') or plan.get('instrument') or plan.get('light_work') or plan.get('keepsake_work') or plan.get('creative_work') or plan.get('textile_work') or plan.get('ground_work') or plan.get('architecture_work') or plan.get('playkit_work'):
                 g.renderer.duck_pos.cancel_movement()
                 g.renderer.duck_pos.set_state_by_name('idle',0)
             if obj is not None:obj['active'] = False
@@ -737,6 +746,7 @@ class LivingPond:
             pond_lighting.complete(self,plan)
             keepsakes.complete(self,plan)
             creative_props.complete(self,plan)
+            playkit.complete(self,plan)
             architecture.complete(self,plan)
             architecture_company.complete(self.minds,plan)
             groundworks.complete(self,plan)
@@ -908,6 +918,9 @@ class LivingPond:
         action=command.get('action');target=command.get('target','')
         if not isinstance(target,str) or len(target)>128:return
         self.sync();s=self.state
+        if action=='playkit_action':
+            ok,message=playkit.request(self,target,command.get('text'),command.get('instance'))
+            return self.notice(message)
         if action=='architecture_action':
             ok,message=architecture.request(self,target,command.get('text'),command.get('instance'))
             return self.notice(message)
@@ -1125,6 +1138,8 @@ class LivingPond:
             if plan.get('creative_work'):
                 if not creative_company.ready(self.minds):plan['paused']=True
                 plan['creative_work']=creative_company.work_view(self.minds,self.state['plan']['creative_work'])
+            if plan.get('playkit_work'):
+                plan['playkit_work']=playkit.view(self,self.state['plan'])
             if plan.get('architecture_work'):
                 if not architecture_company.ready(self.minds):plan['paused']=True
                 plan['architecture_work']=architecture_company.work_view(self.minds,self.state['plan']['architecture_work'])

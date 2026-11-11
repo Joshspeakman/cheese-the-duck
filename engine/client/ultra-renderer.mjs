@@ -1,3 +1,4 @@
+import {playkitGeometry,drawPlaykitTools} from './playkit-routines.mjs';
 import {architectureGeometry,drawArchitectureTools} from './architecture-routines.mjs';
 import {groundGeometry,drawGroundTools} from './ground-routines.mjs';
 import {textileGeometry,drawTextileTools} from './textile-routines.mjs';
@@ -126,6 +127,12 @@ export class SceneCanvas {
           const bath=waterGeometry(actor,actor.bather,this.sx,this.sy);
           drawCharacter(this.ctx,{...bath.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
           if(bath.front)this.items.draw(this.ctx,bath.front,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});
+        }
+        for(const worker of actor.players||[]){
+          const staged=playkitGeometry(actor,worker,this.sx,this.sy);
+          drawCharacter(this.ctx,{...staged.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
+          drawPlaykitTools(this.ctx,staged);
+          if(staged.character.visitor||staged.character.story)seatedHits.push(staged.character);
         }
         for(const worker of actor.structureUsers||[]){
           const staged=architectureGeometry(actor,worker,this.sx,this.sy);

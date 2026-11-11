@@ -1,0 +1,19 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Outdoor playthings</title><style>body{background:#142b23;color:#ecdbb3;font:20px Georgia;margin:24px}canvas{display:block;max-width:100%;margin:24px 0}</style><h1>Outdoor playthings · current game construction</h1>
+<script type="module">
+import {PLAYKIT_BLUEPRINTS} from '../client/playkit-workshop.mjs';import {PLAYKIT_ROUTINES,playkitPose,playkitGeometry,drawPlaykitTools} from '../client/playkit-routines.mjs';
+import {itemSprite,ItemPainter,itemWorldScale} from '../client/ultra-items.mjs';import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';import {SceneCanvas} from '../client/ultra-renderer.mjs';
+const painter=new ItemPainter(),surface='#142b23';function sheet(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.fillStyle=surface;ctx.fillRect(0,0,w,h);return [c,ctx];}
+window.reviewPlaykit=()=>{
+ const images={},entries=Object.entries(PLAYKIT_BLUEPRINTS);
+ for(let page=0;page<2;page++){const [canvas,c]=sheet(1800,1400);entries.slice(page*4,page*4+4).forEach(([id,p],i)=>{const m=itemSprite(id,0,{state:{playkit:{sail:1,bubbles:[{age:2,size:1,lane:1},{age:4,size:1.7,lane:3}]}}}),x=i%2*900,y=Math.floor(i/2)*700;c.fillStyle='#eadcb9';c.font='24px Menlo';c.fillText(id,x+20,y+35);const u=Math.min(5,840/m.width,610/(m.art.length*1.5));painter.draw(c,m,x+450,y+665,u/m.detailScale,{surface});});images['playkit-objects-'+page]=canvas.toDataURL();document.body.append(canvas);}
+ const scores=Object.entries(PLAYKIT_ROUTINES).filter(([id])=>!id.endsWith('_pack'));
+ for(let page=0;page<Math.ceil(scores.length/3);page++){const [canvas,c]=sheet(1800,1200);scores.slice(page*3,page*3+3).forEach(([id,s],i)=>{const item=entries.find(([,p])=>p.type===s.type)[0];for(const [j,f]of [.2,.5,.75].entries()){
+  const routine={id,elapsed:s.duration*f},home={...itemSprite(item,0,{pose:{playkit:playkitPose(routine)},state:{playkit:{bubbles:[{age:2,size:1,lane:1}]}}}),x:45+j*100,y:42+i*50,scale:itemWorldScale(item)},stage=id.endsWith('_gentle')?'hatchling':'adult',character={...characterSprite({stage,state:'idle',facing:true,performance:{kind:'playkit',routine}},0),x:home.x,y:home.y};painter.draw(c,home,home.x*6,home.y*8,6*home.scale,{surface});const g=playkitGeometry(home,{character,inside:1},6,8);drawCharacter(c,g.character,6,8,surface);drawPlaykitTools(c,g);c.fillStyle='#eadcb9';c.font='18px Menlo';c.fillText(id+' / '+f,j*600+20,i*400+30);
+ }});images['playkit-actions-'+page]=canvas.toDataURL();document.body.append(canvas);}
+ return images;
+};
+window.replayPlaykit=frames=>{const view=new SceneCanvas();view.resize(1500,950);const images={},costs=[];let drawn=0,players=0;for(const [i,s]of frames.entries()){
+ const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);if(before!==JSON.stringify(s))throw Error('Renderer changed native snapshot');
+ for(const o of view.world.objects)if(o.construction==='playkit-v1'){drawn++;if(o.clipped)throw Error('Clipped toy '+o.id);for(const r of o.players||[]){players++;if(r.character.clipped)throw Error('Clipped player');const id=r.character.performance.routine.id,name='playkit-live-'+o.id;if(!images[name]&&r.character.performance.routine.elapsed>PLAYKIT_ROUTINES[id].duration*.45)images[name]=view.canvas.toDataURL();}}
+ }costs.sort((a,b)=>a-b);return {frames:frames.length,drawn,players,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};};
+</script>
