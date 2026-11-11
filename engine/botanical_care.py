@@ -157,7 +157,7 @@ def tick(minds,dt):
             if r['elapsed']>=3:release(minds,key,True)
     from engine import playdates
     for key in sorted(minds.present):
-        if key=='cheese' or key in minds.gardening or key in minds.musicians or key in minds.housing or key in minds.furnishings or departing(minds,key) or minds.now<minds.garden_retry.get(key,0) or playdates.active(minds,key) or minds.encounter_for(key):continue
+        if key=='cheese' or key in minds.readers or key in minds.gardening or key in minds.musicians or key in minds.housing or key in minds.furnishings or departing(minds,key) or minds.now<minds.garden_retry.get(key,0) or playdates.active(minds,key) or minds.encounter_for(key):continue
         if minds.tasks.get(key,{}).get('action')!='garden' or minds.model.residents[key]['energy']<.3:continue
         choices=candidates(minds,key)
         if not choices or choices[0]['distance']>55:

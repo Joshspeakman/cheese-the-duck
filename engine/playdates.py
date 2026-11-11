@@ -19,7 +19,7 @@ def choose(pond,plan):
     if plan['target'] not in TOYS or plan['target'] not in pond.placed or shelters.adverse(pond.weather_type):return None
     minds=pond.minds;minds.sync();candidates=[];pos=pond.game.renderer.duck_pos
     for key,point in minds.present.items():
-        if key=='cheese' or key in minds.housing or key in minds.furnishings or key in minds.gardening or key in minds.musicians or minds.encounter_for(key) or departing(minds,key):continue
+        if key=='cheese' or key in minds.readers or key in minds.housing or key in minds.furnishings or key in minds.gardening or key in minds.musicians or minds.encounter_for(key) or departing(minds,key):continue
         resident=minds.model.residents[key]
         if resident['energy']<.25 or resident['social']<.15:continue
         if distance(point,plan['destination'])>55:continue
