@@ -87,7 +87,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: completed and committed the eight-plaything reconstruction (42 native action cores), then added 25 complementary visitor roles with independent arrival, shared native clocks, opposite-side contacts, observed memories and exact-copy learning. All 48 visitor identities plus Pip now pass actual native play sessions. Validation: 905 shared lifecycle checks, 2525 native/renderer samples, 5936 companion pose cases, 167 full JavaScript tests, 24 live notebook checks, 164 solo regression checks, 1063 shared-structure regression checks, 694 checks across 72 simulated hours, all 542 measured footprints, a 1102-frame replay with 909 selectable companion frames, and a clean 98-frame source smoke. Drawing reconstruction is 258/542; all per-object 48-sequence audits remain unverified. Final installation remains deferred until the full milestone is complete. Desktop target and installed chat version 2.36.1 were verified unchanged. Goal remains active.",
+  "previous_goal_turn": "Progress: rebuilt eight garden landmarks and expanded the architecture subsystem to 21 objects, 54 initial native cores and 49 complementary visitor roles. Saved directional wind drives the vane and breeze-sensitive cloth; actual hour/season/sky drive the sundial; flag hoisting uses real contact and preserves partial state. Material-specific ink, feather carving, stitching and low contacts received visual review. Validation: 293 native lifecycle checks; 1671 shared checks; 5454 solo and 4949 company pose parity samples; 1728 solo and 11760 company rig cases; 168 JavaScript tests; 21 notebook UI checks; 12 native weather states; 1724 solo and 1887 shared rendered frames with 1434 selectable companion frames; 694 checks over 72 hours; 254 layout checks and all 542 measured footprints; 96-frame disposable source launch. Artwork progress is 266 reconstructed/276 pending. Every per-object 48-sequence audit remains open. Installed chat release 2.36.1 remains separate; no full-milestone install or completion claimed.",
   "items": [
     {
       "id": "hat_red",
@@ -1065,13 +1065,13 @@
     {
       "id": "garden_gnome",
       "family": "gnome",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
       "id": "duck_statue",
       "family": "duck",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -1101,19 +1101,19 @@
     {
       "id": "sundial",
       "family": "sundial",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
       "id": "weather_vane",
       "family": "vane",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
       "id": "flag_pole",
       "family": "flag",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -1134,13 +1134,13 @@
     {
       "id": "scarecrow",
       "family": "scarecrow",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
       "id": "totem_pole",
       "family": "totem",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -1241,7 +1241,7 @@
     {
       "id": "compass_rose",
       "family": "compass",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -3917,10 +3917,10 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "shared_outdoor_playthings",
+    "sourcePhase": "garden_landmarks",
     "fullyOverhauled": false,
-    "constructedObjects": 258,
-    "remainingArtwork": 284,
+    "constructedObjects": 266,
+    "remainingArtwork": 276,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -4258,11 +4258,29 @@
       "engine/artifacts/animation-milestone/playkit-company-render.json",
       "engine/artifacts/animation-milestone/playkit-company-0.png",
       "engine/artifacts/animation-milestone/playkit-company-4.png",
-      "engine/artifacts/animation-milestone/playkit-company-live-wand_bubbles.png"
+      "engine/artifacts/animation-milestone/playkit-company-live-wand_bubbles.png",
+      "engine/client/garden-landmarks.mjs",
+      "engine/artifacts/animation-milestone/landmark-weather-frames.json",
+      "engine/artifacts/animation-milestone/landmark-weather-sheet.png",
+      "engine/artifacts/animation-milestone/architecture-objects-4.png",
+      "engine/artifacts/animation-milestone/architecture-live-scarecrow.png",
+      "engine/artifacts/animation-milestone/landmarks-smoke/frame.json",
+      "engine/artifacts/animation-milestone/landmarks-footprints-check.log",
+      "engine/artifacts/animation-milestone/landmarks-native.log",
+      "engine/artifacts/animation-milestone/landmarks-js.log",
+      "engine/artifacts/animation-milestone/landmarks-footprints.log",
+      "engine/artifacts/animation-milestone/landmarks-all-js.log",
+      "engine/artifacts/animation-milestone/landmarks-company-render.log",
+      "engine/artifacts/animation-milestone/landmarks-render.log",
+      "engine/artifacts/animation-milestone/landmarks-living.log",
+      "engine/artifacts/animation-milestone/landmarks-company.log",
+      "engine/artifacts/animation-milestone/landmarks-smoke.log",
+      "engine/artifacts/animation-milestone/landmarks-layout.log",
+      "engine/artifacts/animation-milestone/landmarks-ui.log"
     ],
-    "next": "Continue remaining object construction and complete individually authored contextual repertoires. Outdoor playthings still need personal guest acting, guest-to-guest invitations, egg observation and physical pickup/put-away. All 542 per-object 48-sequence audits remain open.",
+    "next": "Continue the remaining 276 object constructions and individually authored contextual repertoires. All 542 per-object 48-sequence audits remain open; complete personal visitor acting, guest-to-guest sessions, egg observation and physical tool handling before final integration and installation.",
     "checks": {
-      "javascript": 167,
+      "javascript": 168,
       "livingSimulation": 694,
       "longRunHours": 72,
       "chatHost": 34,
@@ -4489,36 +4507,38 @@
       "groundCompanyRenderP95Ms": 11.3,
       "groundCompanyTextileRegression": 824,
       "groundCompanyCreativeRegression": 289,
-      "architectureLifecycle": 195,
-      "architectureUI": 18,
-      "architectureRenderTests": 4,
-      "architectureNativePoseParitySamples": 3636,
-      "architectureRigCases": 1152,
-      "architectureFinalTargetedTests": 13,
+      "architectureLifecycle": 293,
+      "architectureUI": 21,
+      "architectureRenderTests": 5,
+      "architectureNativePoseParitySamples": 5454,
+      "architectureRigCases": 1728,
+      "architectureFinalTargetedTests": 8,
       "architectureReplay": {
-        "frames": 1215,
-        "drawn": 1485,
-        "workers": 921,
-        "medianMs": 4.599999964237213,
-        "p95Ms": 9.399999976158142,
-        "sheets": 22,
-        "note": "Actual native solo snapshots. Development review, not the complete milestone performance audit."
+        "frames": 1724,
+        "drawn": 2051,
+        "workers": 1272,
+        "companions": 0,
+        "medianMs": 4.600000023841858,
+        "p95Ms": 9.800000011920929,
+        "sheets": 53,
+        "weatherStates": 12,
+        "note": "Actual native solo snapshots and 12 saved weather states. Development review, not the complete milestone performance audit."
       },
-      "architectureCompanyLifecycle": 1063,
+      "architectureCompanyLifecycle": 1671,
       "architectureCompanyRenderTests": 3,
-      "architectureCompanyNativePoseParity": 3131,
-      "architectureCompanyRigCases": 7448,
-      "architectureCompanySoloRegression": 195,
+      "architectureCompanyNativePoseParity": 4949,
+      "architectureCompanyRigCases": 11760,
+      "architectureCompanySoloRegression": 293,
       "architectureCompanyGroundRegression": 1253,
       "architectureCompanyReplay": {
-        "frames": 1245,
-        "drawn": 1245,
-        "workers": 1987,
-        "companions": 955,
-        "medianMs": 4.899999976158142,
-        "p95Ms": 11.600000023841858,
-        "sheets": 52,
-        "note": "Actual native shared scenes with selectable regular, rare and story visitors. Development review, not the final full-milestone performance audit."
+        "frames": 1887,
+        "drawn": 1887,
+        "workers": 2996,
+        "companions": 1434,
+        "medianMs": 5.399999976158142,
+        "p95Ms": 12,
+        "sheets": 83,
+        "note": "Actual native shared scenes with selectable regular, rare and story visitors. All 48 visitor rigs checked. Development review, not the final full-milestone audit."
       },
       "playkitLifecycle": 164,
       "playkitUI": 24,
@@ -4554,7 +4574,11 @@
         "p95Ms": 7.5,
         "sheets": 40,
         "note": "Actual native shared scenes with all 48 visitor identities and Pip exercised. Every staged visitor has verified clickable bounds. Development replay, not the final milestone audit."
-      }
+      },
+      "landmarkWeatherFrames": 12,
+      "landmarkLivingRegression": 694,
+      "landmarkHabitatArrangement": 254,
+      "landmarkMeasuredFootprints": 542
     },
     "limitations": [
       "258 of 542 object artworks reconstructed for review; 284 remain.",
@@ -4573,7 +4597,7 @@
       "Four creative props have 27 native action cores and 13 complementary company roles. Regular, rare and story visitors arrive independently and share actual observations only after completed work. Fixed viewing steps and painting decks fit all eight hatched ages; eggs cannot operate tools. Personal visitor choreography, reciprocal eyepiece use, guest-to-guest invitations, tool pickup/put-away, unfolded practice-paper handling and full mood/season repertoires remain unfinished. No object has passed its 48-sequence audit.",
       "Thirteen textile/living-ground/fibre objects have 28 solo cores and 18 complementary company roles, independently arriving ordinary/rare/story visitors, actual per-copy contacts, pauses, saved materials and completed shared learning. Full individual visitor/material repertoires, guest-to-guest sessions, tool pickup/put-away, egg listening and complete seasonal/mood coverage remain unfinished. No per-object 48-sequence completion is claimed.",
       "Groundwork uses 32 initial solo cores and 27 complementary company roles across 18 objects; these are not 48 bespoke sequences per object. All 48 visitor rigs and eight hatched ages fit, and independent regular/rare/story arrivals, native shared contacts, marks and completed learning are checked. Guest-to-guest sessions, egg observation, full personal/contextual acting and physical tool pickup/put-away remain pending. Native simulation owns arrival, contact events and history.",
-      "Thirteen garden structures have 36 initial solo cores and 31 shared visitor roles with native mechanisms, independently reserved far landings, fixed-scale low contacts, bridge footing, seasonal vines and exact-copy controls. Guest-to-guest sessions, egg observation, climbing, physical tool pickup/put-away, full personality/mood/season acting and each object's 48 meaningful sequences remain unfinished. No object sequence completion is claimed.",
+      "Twenty-one garden structures have 54 initial solo cores and 49 shared visitor roles. Eight new landmarks add carved/material detail, saved directional wind, real hour/season/sky-controlled sundial shadows, native flag hoists, low physical contacts and observation-based shared memories. These are initial core actions, not 48 bespoke sequences per item. Guest-to-guest sessions, egg observation, climbing, physical tool pickup/put-away and full personality/mood/season acting remain unfinished. No object sequence completion is claimed.",
       "Eight outdoor playthings have 42 initial solo cores and 25 complementary visitor roles. All eight hatched ages and all 48 visitor rigs fit, and all 48 native visitor identities plus Pip are tested through real arrival and shared learning. Egg observation, guest-to-guest games, physical pickup/put-away, full personal/mood/season repertoires and each object's 48 bespoke sequences remain unfinished. Boat and board practice stays on the bank; no voyage or surf travel is claimed."
     ],
     "sharedNestScores": 51,
@@ -4625,9 +4649,9 @@
     },
     "sourceSmoke": {
       "result": "PASS",
-      "frames": 98,
+      "frames": 96,
       "localAI": false,
-      "evidence": "engine/artifacts/animation-milestone/playkit-company-smoke/frame.json"
+      "evidence": "engine/artifacts/animation-milestone/landmarks-smoke/frame.json"
     },
     "chatRelease": {
       "branch": "codex/pond-chat-2.36.1",
@@ -4658,9 +4682,9 @@
     "groundObjects": 18,
     "groundRoutineCores": 32,
     "groundCompanyScores": 27,
-    "architectureObjects": 13,
-    "architectureRoutineCores": 36,
-    "architectureCompanyScores": 31,
+    "architectureObjects": 21,
+    "architectureRoutineCores": 54,
+    "architectureCompanyScores": 49,
     "playkitObjects": 8,
     "playkitRoutineCores": 42,
     "playkitCompanyScores": 25

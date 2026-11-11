@@ -18,7 +18,7 @@ window.reviewArchitecture=()=>{
    const unit=Math.min(5,840/m.width,610/(m.art.length*1.5));painter.draw(c,m,x+450,y+670,unit/m.detailScale,{surface,outline:'#0a1712'});
   });images['architecture-objects-'+page]=canvas.toDataURL();document.body.append(canvas);
  }
- for(const [item,id]of [['gate','gate_open'],['mailbox','mailbox_open'],['wishing_well','well_lower'],['windmill','windmill_brake'],['bridge','bridge_cross']]){
+ for(const [item,id]of [['gate','gate_open'],['mailbox','mailbox_open'],['wishing_well','well_lower'],['windmill','windmill_brake'],['bridge','bridge_cross'],['garden_gnome','gnome_boots'],['duck_statue','statue_inscription'],['scarecrow','scarecrow_straw'],['totem_pole','totem_grooves'],['sundial','sundial_marks'],['weather_vane','vane_foot'],['compass_rose','compass_points'],['flag_pole','flag_hoist']]){
   const [canvas,ctx]=sheet(1800,1000);
   ['hatchling','adult','elder'].forEach((stage,i)=>{
    const core=stage==='hatchling'?'young_survey':id,routine={id:core,elapsed:ARCHITECTURE_ROUTINES[core].duration*.55,start:{}},home={...itemSprite(item,0,{pose:{architecture:architecturePose(routine)}}),x:50+i*100,y:113,scale:itemWorldScale(item)};
@@ -67,5 +67,23 @@ window.replayArchitecture=frames=>{
   }
  }
  costs.sort((a,b)=>a-b);return {frames:frames.length,drawn,workers,companions,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)],images};
+};
+window.reviewLandmarkWeather=frames=>{
+ const view=new SceneCanvas();view.resize(1500,950);const images={},[canvas,c]=sheet(1800,Math.ceil(frames.length/3)*420);let states=0;
+ for(const [i,f]of frames.entries()){
+  const before=JSON.stringify(f.scene);view.draw(f.scene,0,.1);
+  if(JSON.stringify(f.scene)!==before)throw Error('Weather review mutated native scene');
+  const m=view.world.objects.find(o=>o.id===f.item&&o.instance===f.instance);
+  if(!m||m.clipped)throw Error('Missing or clipped weather landmark '+f.label);
+  const saved=f.scene.living.instances[f.instance].architecture;
+  const expected=itemSprite(f.item,0,{state:f.scene.living.instances[f.instance]});
+  if(m.art.join('\n')!==expected.art.join('\n'))throw Error('Scene lost native landmark state '+f.label);
+  if(f.item==='sundial'&&saved.sun>.1&&!(f.scene.hour>6&&f.scene.hour<18))throw Error('Nighttime shadow');
+  const x=i%3*600,y=Math.floor(i/3)*420;
+  c.fillStyle='#e5d8b4';c.font='18px Menlo';c.fillText(f.label,x+15,y+25);
+  const unit=Math.min(3.2,550/m.width,350/(m.art.length*1.5));painter.draw(c,m,x+300,y+395,unit/m.detailScale,{surface,outline:'#0a1712'});
+  images['landmark-weather-'+i]=view.canvas.toDataURL();states++;
+ }
+ images['landmark-weather-sheet']=canvas.toDataURL();document.body.append(canvas);return {states,images};
 };
 </script>

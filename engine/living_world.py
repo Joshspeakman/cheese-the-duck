@@ -67,7 +67,7 @@ def fresh(seed=1):
             'cooldowns': {}, 'decision': [], 'weather': {}, 'promises': [], 'seen_events': [],
             'ecology': {'soil': .55, 'water': .66, 'clarity': .72, 'flowers': .45,
                         'insects': .48, 'fish': .52, 'birds': .45, 'litter': .12,
-                        'wetness': .25, 'snow': 0., 'ice': 0., 'temperature': 17., 'wind': .2},
+                        'wetness': .25, 'snow': 0., 'ice': 0., 'temperature': 17., 'wind': .2, 'wind_heading': .25},
             'offline': '', 'sequence': 0, 'auto': True, 'stories': {}, 'story': None, 'next_story': 90.,
             'protection': 0., 'legacy': {}, 'biomes': {},
             'community': {'warmth': .2, 'gatherings': 0}, 'minds': {}, 'layout': {}}
@@ -270,6 +270,7 @@ class LivingPond:
         if not w:
             w.update(type=getattr(self, 'weather_type', 'sunny'), until=s['elapsed'] + 360,
                      forecast=[], front=0)
+        w.setdefault('wind_heading',(stable((s['seed'],getattr(self,'biome','pond'),'wind',w.get('front',0)))%360)/360)
         horizon = 5 if self.completed('observatory') else 3
         if len(w['forecast']) < horizon:
             from world.atmosphere import WEATHER_DATA, BIOME_WEATHER_MODIFIERS
@@ -284,12 +285,12 @@ class LivingPond:
                     weighted.extend([weather.value] * max(1, int(weight * (150 if related else 80))))
             for n in range(len(w['forecast']), horizon):
                 seed = stable((s['seed'], w['front'] + n, getattr(self, 'biome', 'pond')))
-                w['forecast'].append({'type': weighted[seed % len(weighted)] if weighted else 'sunny', 'duration': 300 + seed % 420, 'intensity': .35 + (seed % 60)/100})
+                w['forecast'].append({'type': weighted[seed % len(weighted)] if weighted else 'sunny', 'duration': 300 + seed % 420, 'intensity': .35 + (seed % 60)/100, 'wind_heading': (stable((seed,'wind'))%360)/360})
         if s['elapsed'] >= w['until']:
             next_front = w['forecast'].pop(0)
             old = w['type']
             w.update(type=next_front['type'], until=s['elapsed'] + next_front['duration'],
-                     intensity=next_front['intensity'], front=w['front'] + 1)
+                     intensity=next_front['intensity'], wind_heading=next_front.get('wind_heading',w['wind_heading']), front=w['front'] + 1)
             if not offline:
                 self.remember('weather', f"{old.replace('_', ' ').title()} gave way to {w['type'].replace('_', ' ')}.", .3)
         if self.game and not offline and self._last_weather != (getattr(self, 'biome', 'pond'), w['type'], w['front']):
@@ -321,6 +322,8 @@ class LivingPond:
         e['temperature'] += (target - e['temperature']) * min(1, minutes*.2)
         wind = (.75 if any(k in weather for k in ('wind', 'storm', 'breez', 'blizzard')) else .12) * intensity
         e['wind'] += (wind-e['wind'])*min(1, minutes*.5)
+        heading=s['weather'][getattr(self,'biome','pond')].get('wind_heading',.25)
+        e['wind_heading']=(e.get('wind_heading',heading)+((heading-e.get('wind_heading',heading)+.5)%1-.5)*(1-math.exp(-max(0,dt)/24)))%1
         completed = {PROJECTS[k]['effect'] for k,v in s['projects'].items() if v['stage'] >= 3}
         e['wetness'] = clamp(e['wetness'] + minutes*(.055*intensity if wet else -.012*(1+max(0,e['temperature'])/30)))
         e['snow'] = clamp(e['snow'] + minutes*(.025*intensity if snow else -.002*max(0,e['temperature'])))
@@ -346,7 +349,7 @@ class LivingPond:
         for key, obj, outdoors in object_history.records(self):
             pond_lighting.update(self,key,obj,dt,outdoors,home_wet,home_intensity)
             keepsakes.update(self,key,obj,dt,outdoors,home_wet,home_intensity,home_temperature)
-            architecture.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type)
+            architecture.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type,home_ecology.get('wind_heading',s['weather'].get('pond',{}).get('wind_heading',.25)))
             playkit.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type)
             textiles.update(self,key,obj,dt,outdoors,home_wet,home_intensity,home_temperature)
             groundworks.update(self,key,obj,dt,outdoors,home_wet,home_intensity,home_temperature,any(w in home_type for w in ('snow','blizzard')))

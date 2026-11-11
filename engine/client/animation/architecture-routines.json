@@ -1854,7 +1854,15 @@
       "well",
       "trellis",
       "castle",
-      "ironfence"
+      "ironfence",
+      "gnome",
+      "statue",
+      "scarecrow",
+      "totem",
+      "sundial",
+      "vane",
+      "compass",
+      "flag"
     ],
     "duration": 26,
     "tool": "none",
@@ -1920,7 +1928,15 @@
       "well",
       "trellis",
       "castle",
-      "ironfence"
+      "ironfence",
+      "gnome",
+      "statue",
+      "scarecrow",
+      "totem",
+      "sundial",
+      "vane",
+      "compass",
+      "flag"
     ],
     "duration": 26,
     "tool": "none",
@@ -1986,7 +2002,15 @@
       "well",
       "trellis",
       "castle",
-      "ironfence"
+      "ironfence",
+      "gnome",
+      "statue",
+      "scarecrow",
+      "totem",
+      "sundial",
+      "vane",
+      "compass",
+      "flag"
     ],
     "duration": 26,
     "tool": "none",
@@ -2050,7 +2074,15 @@
       "well",
       "trellis",
       "castle",
-      "ironfence"
+      "ironfence",
+      "gnome",
+      "statue",
+      "scarecrow",
+      "totem",
+      "sundial",
+      "vane",
+      "compass",
+      "flag"
     ],
     "duration": 26,
     "tool": "none",
@@ -2115,7 +2147,15 @@
       "well",
       "trellis",
       "castle",
-      "ironfence"
+      "ironfence",
+      "gnome",
+      "statue",
+      "scarecrow",
+      "totem",
+      "sundial",
+      "vane",
+      "compass",
+      "flag"
     ],
     "duration": 26,
     "tool": "none",
@@ -2163,6 +2203,1052 @@
     "events": [
       [
         0.8,
+        "study"
+      ]
+    ]
+  },
+  "gnome_greet": {
+    "types": [
+      "gnome"
+    ],
+    "label": "Bow to the gnome, wait, and inspect its painted smile",
+    "duration": 22,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.18,
+        {
+          "b": 2,
+          "x": 0.5
+        }
+      ],
+      [
+        0.35,
+        {
+          "b": 0.5,
+          "eye": "o"
+        }
+      ],
+      [
+        0.55,
+        {
+          "w": 0.4,
+          "x": 0.8
+        }
+      ],
+      [
+        0.72,
+        {
+          "b": 1.5,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.72,
+        "study"
+      ]
+    ]
+  },
+  "gnome_boots": {
+    "types": [
+      "gnome"
+    ],
+    "label": "Brush old grit from the gnome\u2019s curled boots",
+    "duration": 22,
+    "tool": "brush",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1.2
+        }
+      ],
+      [
+        0.38,
+        {
+          "contact": 1,
+          "b": 2,
+          "reach": 0.3
+        }
+      ],
+      [
+        0.6,
+        {
+          "contact": 1,
+          "b": 0.8,
+          "reach": 0.6
+        }
+      ],
+      [
+        0.8,
+        {
+          "b": 1,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.38,
+        "clean"
+      ],
+      [
+        0.6,
+        "clean"
+      ]
+    ]
+  },
+  "statue_inscription": {
+    "types": [
+      "statue"
+    ],
+    "label": "Trace the low bronze plaque and compare it with Cheese",
+    "duration": 22,
+    "tool": "hand",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 1,
+          "contact": 1
+        }
+      ],
+      [
+        0.45,
+        {
+          "contact": 1,
+          "reach": 0.5,
+          "b": 1.2
+        }
+      ],
+      [
+        0.65,
+        {
+          "w": 0.4,
+          "x": -0.4
+        }
+      ],
+      [
+        0.85,
+        {
+          "b": 1.6
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.45,
+        "study"
+      ]
+    ]
+  },
+  "statue_polish": {
+    "types": [
+      "statue"
+    ],
+    "label": "Polish the bronze plinth around its old patina",
+    "duration": 22,
+    "tool": "brush",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "b": 1.7,
+          "reach": 0.6
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "b": 0.6,
+          "reach": 0.2
+        }
+      ],
+      [
+        0.85,
+        {
+          "contact": 1,
+          "b": 1.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "clean"
+      ],
+      [
+        0.65,
+        "clean"
+      ]
+    ]
+  },
+  "scarecrow_straw": {
+    "types": [
+      "scarecrow"
+    ],
+    "label": "Tuck the loose straw around the scarecrow\u2019s trouser cuff",
+    "duration": 22,
+    "tool": "hand",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1.5
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "reach": 0.6,
+          "b": 2
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "reach": 0.1,
+          "b": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "b": -0.5,
+          "eye": "o"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "adjust"
+      ],
+      [
+        0.65,
+        "adjust"
+      ]
+    ]
+  },
+  "scarecrow_scarf": {
+    "types": [
+      "scarecrow"
+    ],
+    "label": "Follow the scarf and answer the scarecrow with a wing wave",
+    "duration": 22,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": -0.6,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "w": 0.5,
+          "x": 0.5
+        }
+      ],
+      [
+        0.6,
+        {
+          "w": 0.8,
+          "x": -0.5
+        }
+      ],
+      [
+        0.8,
+        {
+          "b": 1.3,
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "totem_faces": {
+    "types": [
+      "totem"
+    ],
+    "label": "Study the frog, duck and owl carved into the garden pole",
+    "duration": 22,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 1.5,
+          "eye": "o"
+        }
+      ],
+      [
+        0.38,
+        {
+          "b": 0.2,
+          "x": 0.3
+        }
+      ],
+      [
+        0.58,
+        {
+          "b": -1.1,
+          "w": 0.3
+        }
+      ],
+      [
+        0.8,
+        {
+          "b": 1,
+          "eye": "-"
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "totem_grooves": {
+    "types": [
+      "totem"
+    ],
+    "label": "Brush grit out of the lowest carved feather grooves",
+    "duration": 22,
+    "tool": "brush",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "reach": 0.5,
+          "b": 1.8
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "b": 1
+        }
+      ],
+      [
+        0.85,
+        {
+          "contact": 1,
+          "b": 1.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "clean"
+      ],
+      [
+        0.65,
+        "clean"
+      ]
+    ]
+  },
+  "sundial_shadow": {
+    "types": [
+      "sundial"
+    ],
+    "label": "Follow the real sunlight shadow across the numbered dial",
+    "duration": 22,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 1.5,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "x": 0.7,
+          "b": 1
+        }
+      ],
+      [
+        0.6,
+        {
+          "x": -0.5,
+          "b": 1.8
+        }
+      ],
+      [
+        0.8,
+        {
+          "w": 0.2,
+          "b": 0.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "sundial_cloud": {
+    "types": [
+      "sundial"
+    ],
+    "label": "Look for a shadow, then check the clouded sky",
+    "duration": 22,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": 1.8,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "b": 2,
+          "x": 0.5
+        }
+      ],
+      [
+        0.6,
+        {
+          "b": -1,
+          "eye": "o"
+        }
+      ],
+      [
+        0.8,
+        {
+          "w": 0.25,
+          "b": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "sundial_marks": {
+    "types": [
+      "sundial"
+    ],
+    "label": "Brush the lower hour marks without moving the sundial",
+    "duration": 22,
+    "tool": "brush",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1.2
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "reach": 0.5,
+          "b": 2
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "reach": 0.1,
+          "b": 1.2
+        }
+      ],
+      [
+        0.85,
+        {
+          "b": 0.8
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "clean"
+      ],
+      [
+        0.65,
+        "clean"
+      ]
+    ]
+  },
+  "vane_direction": {
+    "types": [
+      "vane"
+    ],
+    "label": "Watch the copper arrow settle into the actual wind",
+    "duration": 22,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": -0.8,
+          "eye": "o"
+        }
+      ],
+      [
+        0.42,
+        {
+          "x": 0.8,
+          "w": 0.2
+        }
+      ],
+      [
+        0.6,
+        {
+          "x": -0.6,
+          "b": -0.6
+        }
+      ],
+      [
+        0.82,
+        {
+          "b": 1.5
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.82,
+        "study"
+      ]
+    ]
+  },
+  "vane_foot": {
+    "types": [
+      "vane"
+    ],
+    "label": "Check and brush the weather vane\u2019s low mounting bolts",
+    "duration": 22,
+    "tool": "brush",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "reach": 0.4,
+          "b": 1.6
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "reach": 0.1,
+          "b": 0.8
+        }
+      ],
+      [
+        0.85,
+        {
+          "b": -0.6
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "clean"
+      ],
+      [
+        0.65,
+        "study"
+      ]
+    ]
+  },
+  "compass_points": {
+    "types": [
+      "compass"
+    ],
+    "label": "Step carefully around the four compass points",
+    "duration": 26,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [
+      "walk"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "walk": 0.15,
+          "l": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "walk": 0.4,
+          "r": 1,
+          "b": 1.2
+        }
+      ],
+      [
+        0.6,
+        {
+          "walk": 0.65,
+          "l": 1,
+          "b": 1.2
+        }
+      ],
+      [
+        0.8,
+        {
+          "walk": 0.9,
+          "r": 1,
+          "b": 1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.8,
+        "study"
+      ]
+    ]
+  },
+  "compass_grout": {
+    "types": [
+      "compass"
+    ],
+    "label": "Brush soil from the north-pointing mosaic seam",
+    "duration": 22,
+    "tool": "brush",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1.8
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "reach": 0.5,
+          "b": 2
+        }
+      ],
+      [
+        0.65,
+        {
+          "contact": 1,
+          "reach": 0.2,
+          "b": 1.3
+        }
+      ],
+      [
+        0.85,
+        {
+          "b": 1.1
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "clean"
+      ],
+      [
+        0.65,
+        "clean"
+      ]
+    ]
+  },
+  "flag_hoist": {
+    "types": [
+      "flag"
+    ],
+    "label": "Pull the low halyard in two strokes to raise the flag",
+    "duration": 26,
+    "tool": "hand",
+    "anchor": "contact",
+    "controls": [
+      "flag"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 1
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "flag": 0.45,
+          "reach": 0.4,
+          "b": 2
+        }
+      ],
+      [
+        0.52,
+        {
+          "contact": 1,
+          "flag": 0.45,
+          "b": 0.5
+        }
+      ],
+      [
+        0.72,
+        {
+          "contact": 1,
+          "flag": 1,
+          "b": 2
+        }
+      ],
+      [
+        0.88,
+        {
+          "flag": 1,
+          "b": -0.8
+        }
+      ],
+      [
+        1,
+        {
+          "flag": 1
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "adjust"
+      ],
+      [
+        0.72,
+        "adjust"
+      ]
+    ]
+  },
+  "flag_lower": {
+    "types": [
+      "flag"
+    ],
+    "label": "Ease the halyard until the flag rests close to the ground",
+    "duration": 26,
+    "tool": "hand",
+    "anchor": "contact",
+    "controls": [
+      "flag"
+    ],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "contact": 1,
+          "b": 0.5
+        }
+      ],
+      [
+        0.4,
+        {
+          "contact": 1,
+          "flag": 0.55,
+          "b": 1.5
+        }
+      ],
+      [
+        0.6,
+        {
+          "contact": 1,
+          "flag": 0.35,
+          "b": 0.5
+        }
+      ],
+      [
+        0.8,
+        {
+          "contact": 1,
+          "flag": 0,
+          "b": 1.8
+        }
+      ],
+      [
+        1,
+        {
+          "flag": 0
+        }
+      ]
+    ],
+    "events": [
+      [
+        0.4,
+        "adjust"
+      ],
+      [
+        0.8,
+        "adjust"
+      ]
+    ]
+  },
+  "flag_salute": {
+    "types": [
+      "flag"
+    ],
+    "label": "Stand by the pole and salute the stitched duck pennant",
+    "duration": 22,
+    "tool": "none",
+    "anchor": "contact",
+    "controls": [],
+    "track": [
+      [
+        0,
+        {}
+      ],
+      [
+        0.2,
+        {
+          "b": -0.6,
+          "eye": "o"
+        }
+      ],
+      [
+        0.4,
+        {
+          "w": 0.9,
+          "b": -0.3
+        }
+      ],
+      [
+        0.65,
+        {
+          "w": 0.8,
+          "eye": "-"
+        }
+      ],
+      [
+        0.85,
+        {
+          "b": 1.7,
+          "w": 0.2
+        }
+      ],
+      [
+        1,
+        {}
+      ]
+    ],
+    "events": [
+      [
+        0.85,
         "study"
       ]
     ]

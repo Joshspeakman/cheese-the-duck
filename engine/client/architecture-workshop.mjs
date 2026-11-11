@@ -1,3 +1,4 @@
+import {LANDMARK_BUILDERS,LANDMARK_COLORS} from './garden-landmarks.mjs';
 import BLUEPRINTS from './animation/architecture.json' with {type:'json'};
 import {ObjectCanvas} from './object-canvas.mjs';
 export {BLUEPRINTS as ARCHITECTURE_BLUEPRINTS};
@@ -182,25 +183,26 @@ function windmill(c,p,v){
  c.put(46,H-4,'[____________________________________]','k');
  return {contact:brake,brake};
 }
-const builders={picket:(c,p)=>fence(c,p),ironfence:(c,p)=>fence(c,p,true),wall:(c,p)=>{stonewall(c,14,30,p.w-28,p.h-37);c.rect(10,23,p.w-20,8,'a',true);for(let x=19;x<p.w-20;x+=23)c.put(x,p.h-16,';,,;','l');return {contact:{x:47,y:p.h-24},moss:{x:42,y:p.h-14}};},arch,bridge,watchtower,gate,pergola,trellis:(c,p,s)=>pergola(c,p,s,true),mailbox,well,castle,windmill};
+const builders={...LANDMARK_BUILDERS,picket:(c,p)=>fence(c,p),ironfence:(c,p)=>fence(c,p,true),wall:(c,p)=>{stonewall(c,14,30,p.w-28,p.h-37);c.rect(10,23,p.w-20,8,'a',true);for(let x=19;x<p.w-20;x+=23)c.put(x,p.h-16,';,,;','l');return {contact:{x:47,y:p.h-24},moss:{x:42,y:p.h-14}};},arch,bridge,watchtower,gate,pergola,trellis:(c,p,s)=>pergola(c,p,s,true),mailbox,well,castle,windmill};
 export function architectureSprite(base,item,t,{state={},pose={},motion=true}={}){
  const p=BLUEPRINTS[item.id];if(!p)return null;
- const v={open:0,panel:0,flag:0,bucket:0,brake:0,phase:0,crank:0,season:'spring',...state.architecture,...pose.architecture};
+ const v={wind:.45,bearing:0,sun:1,shadow_angle:-.4,shadow_length:.7,open:0,panel:0,flag:p.type==='flag'?1:0,bucket:0,brake:0,phase:0,crank:0,season:'spring',...state.architecture,...pose.architecture};
  if(!motion)v.phase=0;
  const c=new ObjectCanvas(p.w,p.h),front=new ObjectCanvas(p.w,p.h);
  const anchors=builders[p.type](c,p,p.type==='bridge'?front:v)||{};
  const inks={b:'#bc9c6e',a:'#d2bd91',f:'#e8d9b1',s:'#899180',k:'#3a5148',i:'#89a69e',l:'#8fae6f',q:'#d79b9f',r:'#aa815e',w:'#91b7bd'};
  const panels={b:'#4b422f',a:'#655b43',f:'#a99c75',s:'#4e5b51',k:'#102820',i:'#304b46',l:'#35533c',q:'#804e56',r:'#493c31',w:'#365967'};
  if(p.type==='picket'){inks.b='#d5d7be';panels.b='#899480';}
+ if(LANDMARK_COLORS[p.type]){Object.assign(inks,LANDMARK_COLORS[p.type].inks);Object.assign(panels,LANDMARK_COLORS[p.type].panels);}
  const cells=[];for(let y=0;y<p.h;y++)for(let x=0;x<p.w;x++)if(c.art[y][x]!==' ')cells.push([x,y]);
  if(state.wetness>.2)for(let n=0;n<Math.ceil(state.wetness*20);n++){const at=cells[n*47%cells.length];if(at)c.put(...at,"'",'w');}
  if(state.dirt>.25)for(let n=0;n<Math.ceil(state.dirt*25);n++){const at=cells[(n*71+19)%cells.length];if(at)c.put(...at,'.','k');}
  // In a catalogue the whole bridge is one drawing. During a crossing the near
  // rail is a separate foreground layer, so the feet stay on the deck behind it.
  if(p.type==='bridge'&&!pose.architecture){c.fills.push(...front.fills);front.art.forEach((row,y)=>row.forEach((glyph,x)=>{if(glyph!==' ')c.put(x,y,glyph,front.tones[y][x]);}));}
- const helper={picket:[p.w-26,p.h-10],wall:[p.w-36,p.h-10],arch:[p.w-23,p.h-14],bridge:[p.w-18,p.h-10],watchtower:[p.w-38,p.h-12],windmill:[p.w-49,p.h-12],gate:[p.w-18,p.h-12],pergola:[p.w-27,p.h-12],mailbox:[104,p.h-10],well:[p.w-32,p.h-12],trellis:[p.w-28,p.h-12],castle:[p.w-33,p.h-11],ironfence:[p.w-22,p.h-10]}[p.type];
+ const helper=anchors.company?[anchors.company.x,anchors.company.y]:{picket:[p.w-26,p.h-10],wall:[p.w-36,p.h-10],arch:[p.w-23,p.h-14],bridge:[p.w-18,p.h-10],watchtower:[p.w-38,p.h-12],windmill:[p.w-49,p.h-12],gate:[p.w-18,p.h-12],pergola:[p.w-27,p.h-12],mailbox:[104,p.h-10],well:[p.w-32,p.h-12],trellis:[p.w-28,p.h-12],castle:[p.w-33,p.h-11],ironfence:[p.w-22,p.h-10]}[p.type];
  anchors.company={x:helper[0],y:helper[1]};
- const model={...base,...c.finish(),construction:'architecture-v1',blueprint:item.id,detail:true,detailScale:.62,anchors:{entry:{x:p.w*.35,y:p.h-3},...anchors},inks,panels,sway:0,lift:0,animated:Boolean(pose.architecture)||p.type==='windmill',floor:false,emissive:false};
+ const model={...base,...c.finish(),construction:'architecture-v1',blueprint:item.id,detail:true,detailScale:.62,anchors:{entry:{x:p.w*.35,y:p.h-3},...anchors},inks,panels,sway:0,lift:0,animated:Boolean(pose.architecture)||['windmill','flag','vane','scarecrow'].includes(p.type),floor:p.type==='compass',emissive:false};
  if(p.type==='bridge')model.front={...model,...front.finish(),front:null};
  return model;
 }

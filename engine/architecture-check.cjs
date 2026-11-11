@@ -7,7 +7,9 @@ app.whenReady().then(async()=>{
   await win.loadFile(path.join(__dirname,'tests/architecture-theatre.html'));
   const images=await win.webContents.executeJavaScript("(()=>{try{return window.reviewArchitecture()}catch(e){console.error(e.stack);throw e}})()");let replay=null;
   if(fs.existsSync(path.join(out,'architecture-frames.json'))){replay=await win.webContents.executeJavaScript('(()=>{try{return window.replayArchitecture('+fs.readFileSync(path.join(out,'architecture-frames.json'),'utf8')+')}catch(e){console.error(e.stack);throw e}})()');Object.assign(images,replay.images);delete replay.images;}
+  let weather=null;
+  if(fs.existsSync(path.join(out,'landmark-weather-frames.json'))){weather=await win.webContents.executeJavaScript('window.reviewLandmarkWeather('+fs.readFileSync(path.join(out,'landmark-weather-frames.json'),'utf8')+')');Object.assign(images,weather.images);delete weather.images;}
   for(const [name,data]of Object.entries(images))fs.writeFileSync(path.join(out,name+'.png'),Buffer.from(data.split(',')[1],'base64'));
-  const result={result:'PASS',objects:13,sheets:Object.keys(images).length,replay};fs.writeFileSync(path.join(out,'architecture-render.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));app.exit(0);
+  const result={result:'PASS',objects:21,sheets:Object.keys(images).length,replay,weather};fs.writeFileSync(path.join(out,'architecture-render.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));app.exit(0);
  }catch(e){console.error(e);app.exit(1);}
 });

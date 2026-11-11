@@ -6,8 +6,8 @@ import {LivingWorld} from '../client/ultra-world.mjs';import {scene} from './sce
 const ages=['hatchling','duckling','juvenile','young_adult','adult','mature','elder','legendary'];
 const actors=[...ages.map(stage=>({stage})),...Object.values(GUEST_CAST).map(g=>({id:g.id,castId:g.id,name:g.name,visitor:true}))];
 const work=(id,s,f,role='b')=>({id:s.preview,elapsed:ARCHITECTURE_ROUTINES[s.preview].duration*f,start:ARCHITECTURE_CONTROLS,duet:id,company:{id,role}});
-test('31 structure company tracks share controls without moving mechanisms twice',()=>{
- const seen=new Set();assert.equal(Object.keys(ARCHITECTURE_COMPANY).length,31);
+test('49 structure company tracks share controls without moving mechanisms twice',()=>{
+ const seen=new Set();assert.equal(Object.keys(ARCHITECTURE_COMPANY).length,49);
  for(const [id,s]of Object.entries(ARCHITECTURE_COMPANY)){
   seen.add(JSON.stringify(s.track));
   for(const f of [.1,.3,.5,.7,.9]){
@@ -17,7 +17,7 @@ test('31 structure company tracks share controls without moving mechanisms twice
   }
   for(const [at]of s.events)assert.equal(architecturePose(work(id,s,at)).contact,1,id+' event occurs at physical contact');
  }
- assert.equal(seen.size,31);
+ assert.equal(seen.size,49);
  for(let i=0;i<=100;i++){const p=architecturePose(work('gate_welcome',ARCHITECTURE_COMPANY.gate_welcome,i/100));if(p.actorU<1)assert(p.open>.99,'visitor steps in only after the iron leaf is open');}
 });
 test('every hatched age and all 48 visitors fit their shared structure roles',()=>{
