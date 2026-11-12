@@ -144,7 +144,9 @@ try:
             check(len(set(positions))==1,key+' story prop stays at its encounter site')
         before=motion.snapshot();g.renderer.duck_pos.x=15;motion.tick(g,199.8)
         check((before['x'],before['y'])==(motion.actor['x'],motion.actor['y']),key+' story actor is not attached to Cheese')
-        g._state='menu';motion.tick(g,200)
+        # A zero-dt roaming tick may select a target/gesture without moving.
+        # Freeze the actual state at menu entry, after that independent tick.
+        before=motion.snapshot();g._state='menu';motion.tick(g,200)
         check(before==motion.snapshot(),key+' story staging pauses in menus');g._state='playing'
         p.state['story']['step']=1;motion.tick(g,200.2)
         check(motion.actor['state']=='quacking',key+' responds to story choice without teleporting')

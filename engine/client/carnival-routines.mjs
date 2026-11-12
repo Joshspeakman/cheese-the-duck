@@ -32,10 +32,12 @@ export function carnivalPose(work,role='a',motion=true,watch=false){
 }
 export function carnivalOccupants(scene){
  const plan=scene.living?.plan,w=plan?.carnival_work;
+ if(w&&(Object.hasOwn(w,'flight_observer')||w.shared?.mode==='flight-observer')&&!sharedCastleRecord(w))return [];
  if(!w||w.interrupted||!PROGRAMS[w.id]||!(w.shared_physical?['approach','prepare','act','settle']:['prepare','act','settle']).includes(plan.phase))return [];
  if(w.shared_physical){
   const shared=sharedCastleRecord(w),visitor=sharedCastleSource(scene,shared);
-  if(!visitor||scene.location!==shared.operator.location||(scene.duck?.stage==='teen'?'juvenile':scene.duck?.stage)!==shared.source_age)return [];
+  if(!visitor||scene.location!==(shared.mode==='flight-observer'?shared.observer.location:shared.operator.location)||(scene.duck?.stage==='teen'?'juvenile':scene.duck?.stage)!==shared.source_age)return [];
+  if(shared.mode==='flight-observer')return [{actor:'cheese',role:'a',work:w,paused:plan.paused===true},{actor:shared.observer.actor,role:'b',work:w,watch:true,paused:plan.paused===true}];
   return [{actor:shared.operator.actor,role:'a',work:w,paused:plan.paused===true},{actor:'cheese',role:'b',work:w,watch:true,paused:plan.paused===true}];
  }
  const records=[{actor:'cheese',role:'a',work:w}];

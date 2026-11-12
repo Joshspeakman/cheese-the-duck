@@ -260,6 +260,11 @@ try:
     pond, plan, work, obj, key = request()
     before = rewards(pond, obj, key)
     initial_guest = guest_root()
+    check(carnival.conversation(pond, plan, 'cheese')['role'] == 'observer' and
+          carnival.conversation(pond, plan, key)['role'] == 'operator',
+          'natural chat describes the actual shared operator and observer without legacy lease fields')
+    check(carnival.conversation(pond, plan, 'unrelated-visitor') is None,
+          'natural chat does not assign the activity to an unrelated visitor')
     until(lambda: not close_points(guest_root(), initial_guest), 'helper begins its own approach')
     check(not work['events'] and rewards(pond, obj, key) == before,
           'independent approach consumes no contact or shared reward')

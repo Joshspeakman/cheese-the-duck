@@ -570,13 +570,13 @@ class LivingPond:
         if shared_proposal is not None:
             if not castle_care or carnival_choice not in castle_work.PHYSICAL_SCORES or not selected:
                 return False,'Choose a placed control activity to share.'
-            from engine import castle_shared
+            controller=carnival.shared_controller({'carnival_work':{'flight_observer':True}}) if shared_proposal.get('mode')=='flight-observer' else carnival.shared_controller({})
             plan={'kind':kind,'target':target,'label':label,'elapsed':0.,'duration':duration,
                   'phase':'approach','automatic':automatic,'paused':False,'location':self.location,
                   'instance':instance,'destination':shelters.position(selected)}
             plan['carnival_work']=castle_work.make(self,plan,carnival_choice)
             plan['label']=plan['carnival_work']['label']
-            ok,reason=castle_shared.prepare(self,plan,shared_proposal)
+            ok,reason=controller.prepare(self,plan,shared_proposal)
             if not ok:return False,reason
             s['plan']=plan
             self.game.behavior_ai.cancel_pending_movement()
@@ -689,12 +689,12 @@ class LivingPond:
             return
         work=plan.get('carnival_work')
         if carnival.is_shared(plan):
-            from engine import castle_shared
-            if not castle_shared.validate(self,plan):
-                castle_shared.interrupt(self,plan,'The shared activity can no longer continue.')
+            controller=carnival.shared_controller(plan)
+            if not controller.validate(self,plan):
+                controller.interrupt(self,plan,'The shared activity can no longer continue.')
                 self.cancel()
                 return
-            castle_shared.refresh(self)
+            controller.refresh(self)
             if work.get('interrupted'):
                 self.cancel()
                 return
@@ -799,7 +799,7 @@ class LivingPond:
         weather_holding = bool(residence and residence['roof'] and shelters.adverse(self.weather_type)
                        and plan['phase'] == 'act' and g.duck.needs.hunger > 15)
         holding = weather_holding or routine_holding or company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or creative_holding or textile_holding or ground_holding or architecture_holding or playkit_holding or carnival_holding
-        native_travel = (castle_work.physical_active(plan) and plan['carnival_work']['physical']['phase'] in ('approach','exit')) or (carnival.is_shared(plan) and work['shared']['cheese']['phase'] in ('approach','exit'))
+        native_travel = (castle_work.physical_active(plan) and plan['carnival_work']['physical']['phase'] in ('approach','exit')) or (carnival.is_shared(plan) and not carnival.is_flight(plan) and work['shared']['cheese']['phase'] in ('approach','exit'))
         if (company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or creative_holding or textile_holding or ground_holding or architecture_holding or playkit_holding or carnival_holding) and not native_travel:
             g.renderer.duck_pos.cancel_movement()
             g.renderer.duck_pos.set_state_by_name('thinking',0)
@@ -981,7 +981,9 @@ class LivingPond:
             action={'rest':'nap','practice':'play','wander':'explore','garden':'clean','forage':'explore','share':'pet'}[kind]
             g.duck.desires.on_action_performed(action,self.location)
         learning_kind='practice' if plan.get('music_score',{}).get('done') else 'garden' if plan.get('care_routine',{}).get('done') else kind
-        if shared_control:skill=PLANS['observe'][2]  # Shared controller owns role-specific brain learning.
+        if shared_control:
+            if not carnival.is_flight(plan):skill=PLANS['observe'][2]
+            # Each shared controller owns the operator/observer brain learning.
         else:self.minds.completed(learning_kind, plan['label']+'. '+message, plan.get('learning_before'), target if kind=='share' else '')
         self.gain(skill,2 if plan['automatic'] else 4)
         hour=str(int(self.hour));s['habits'][kind+':'+hour]=min(30,s['habits'].get(kind+':'+hour,0)+1)

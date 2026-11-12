@@ -7,6 +7,7 @@ import {actorPitches} from '../client/actor-projection.mjs';
 import GEOMETRY from '../client/animation/castle-geometry.json' with {type:'json'};
 import {castleGeometry,CASTLE_SCORES,sharedCastleRecord,sharedCastleSource} from '../client/castle-care.mjs';
 import {sharedCastleFixture,specialSharedCastleFixture} from './castle-shared-fixtures.mjs';
+import {flightFixture} from './castle-flight-fixtures.mjs';
 import METRICS from '../client/animation/castle-guest-metrics.json' with {type:'json'};
 window.reviewSharedCastle=()=>{
  const view=new SceneCanvas();view.effects.level='quiet';document.querySelector('main').append(view.canvas);const images={};let checks=0;
@@ -33,6 +34,18 @@ window.reviewSpecialSharedCastle=()=>{
  }
  return {images,cases,profiles:3,bindings:4,scope:'renderer-fixtures-only'};
 };
+
+window.reviewFlightCastle=()=>{
+ const view=new SceneCanvas();view.effects.level='quiet';const images={};let cases=0;
+ for(const stage of ['hatchling','adult','elder'])for(const [width,height]of [[1200,800],[1800,800],[900,1100]])for(const phase of ['approach','hold','exit']){
+  const s=flightFixture(stage,'castle_start',0,{phase});view.resize(width,height);view.draw(s,1.2,0);const home=view.world.objects.find(o=>o.id==='bounce_house');if(home?.carnivalRiders?.length!==2)throw Error('Flight fixture actor missing');images[stage+'-'+width+'x'+height+'-'+phase]=view.canvas.toDataURL();cases++;
+ }
+ // At the canonical 1:1.5 grid metric, the old clipped-grid scenery painter
+ // and the new native-cell painter must produce identical canvas pixels.
+ const canonical=new SceneCanvas();canonical.effects.level='quiet';canonical.resize(1200,840);const s=flightFixture('adult','castle_start',0,{motion:false});canonical.draw(s,0,0);const a=canonical.ctx.getImageData(0,0,1200,840).data.slice();
+ const original=canonical.world.physicalSceneryLayer.bind(canonical.world);canonical.world.physicalSceneryLayer=(...args)=>{const layer=original(...args);delete layer.projectedCells;return layer;};canonical.draw(s,0,0);const b=canonical.ctx.getImageData(0,0,1200,840).data;let pixelDifferences=0;for(let i=0;i<a.length;i++)if(a[i]!==b[i])pixelDifferences++;if(pixelDifferences)throw Error('Canonical scenery pixels changed: '+pixelDifferences);
+ images['canonical-1200x840']=canonical.canvas.toDataURL();return {images,cases,canonicalPixelDifferences:pixelDifferences,scope:'renderer-fixtures-only'};
+};
 const near=(a,b,label)=>{if(!Number.isFinite(a)||!Number.isFinite(b)||Math.abs(a-b)>1e-7)throw Error(label+': '+a+' != '+b);};
 window.replayNativeSharedCastle=frames=>{
  if(!Array.isArray(frames)||!frames.length)throw Error('Native shared snapshots required');
@@ -44,24 +57,24 @@ window.replayNativeSharedCastle=frames=>{
    if(!work?.shared_physical||!shared||!physical)throw Error('Nonshared native frame');
    if(shifted)s.camera={...s.camera,x:s.camera.x+3,y:s.camera.y+2};if(reduced)s.motion=false;
    const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);if(JSON.stringify(s)!==before)throw Error('Mutated native shared snapshot');
-   const sourceActor=sharedCastleSource(s,sharedCastleRecord(work));if(!sourceActor)throw Error('Wrong actual visitor identity');
-   near(sourceActor.x,physical.root[0],'live operator root x');near(sourceActor.y,physical.root[1],'live operator root y');near(s.duck.x,shared.cheese.root[0],'live Cheese root x');near(s.duck.y,shared.cheese.root[1],'live Cheese root y');
+   const flight=shared.mode==='flight-observer',observerPhysical=flight?shared.observer_physical:shared.cheese,guest=sharedCastleSource(s,sharedCastleRecord(work)),sourceActor=flight?s.duck:guest,watchSource=flight?guest:s.duck,cast=flight?shared.observer.cast:shared.operator.cast,adapter=flight?'flight-observer':shared.operator.adapter;if(!guest||!sourceActor)throw Error('Wrong actual visitor identity');
+   near(sourceActor.x,physical.root[0],'live operator root x');near(sourceActor.y,physical.root[1],'live operator root y');near(watchSource.x,observerPhysical.root[0],'live observer root x');near(watchSource.y,observerPhysical.root[1],'live observer root y');
    const home=view.world.objects.find(o=>o.instance===s.living.plan.instance),members=home?.carnivalRiders;
    if(members?.length!==2)throw Error('Native shared actor missing '+s._physicalCase);
-   const operator=members.find(m=>m.role==='a'),watcher=members.find(m=>m.watch);if(operator.character.id!==sourceActor.id||operator.character.profileId!==shared.operator.cast||watcher.actor!=='cheese')throw Error('Native role/profile replaced');
+   const operator=members.find(m=>m.role==='a'),watcher=members.find(m=>m.watch);if(flight?operator.actor!=='cheese'||!operator.character.cheese||watcher.character.profileId!==cast||watcher.character.rig.feet.length:operator.character.id!==sourceActor.id||operator.character.profileId!==cast||watcher.actor!=='cheese')throw Error('Native role/profile replaced');
    const cg=castleGeometry(home,operator,view.sx,view.sy),wg=castleGeometry(home,watcher,view.sx,view.sy);
-   for(const [member,g,root]of [[operator,cg,physical.root],[watcher,wg,shared.cheese.root]]){
+   for(const [member,g,root]of [[operator,cg,physical.root],[watcher,wg,observerPhysical.root]]){
     if(!g.authoritativeRoot)throw Error('Renderer owns a shared root');const p=projectCastleWorld(home.physicalCastle,root,view.sx,view.sy),pitch=actorPitches(member.character,view.sx,view.sy);near(g.character.x*view.sx,p.x,'displayed root x');near(g.character.y*view.sy,p.y,'displayed root y');near(pitch.ch/pitch.cw,1.5,'body cell aspect');roots++;
    }
    if(wg.points.length||wg.pose.contact||wg.pose.surfaceWork||watcher.character.grip)throw Error('Observer acquired operator contact');watchChecks++;
    const anchor=GEOMETRY.controls[physical.station],nativeTarget=castleArtWorld(home.physicalCastle.origin,anchor.x,anchor.y,{center:true}),target=projectCastleWorld(home.physicalCastle,nativeTarget,view.sx,view.sy);
    near(physical.target[0],nativeTarget[0],'control native x');near(physical.target[1],nativeTarget[1],'control native y');near(cg.target.x,target.x,'control pixel x');near(cg.target.y,target.y,'control pixel y');
-   if((physical.phase!=='hold'||!physical.contact_ready||shared.cheese.phase!=='hold'||!shared.cheese.ready||shared.phase!=='operate')&&cg.points.length)throw Error('Premature operator contact');
-   if(watcher.character.rig.stage!==shared.source_age)throw Error('Observer age rig replaced');
-   const key=shared.operator.adapter+'/'+shared.operator.cast+'/'+work.id+'/'+shared.source_age,b=bindings[key]??={cast:shared.operator.cast,adapter:shared.operator.adapter,score:work.id,age:shared.source_age,cases:0,effects:new Set(),phases:new Set(),watchPhases:new Set()};b.cases++;b.phases.add(physical.phase);b.watchPhases.add(shared.cheese.phase);
+   if((physical.phase!=='hold'||!physical.contact_ready||observerPhysical.phase!=='hold'||!observerPhysical.ready||shared.phase!=='operate')&&cg.points.length)throw Error('Premature operator contact');
+   if((flight?operator:watcher).character.rig.stage!==shared.source_age)throw Error('Observer age rig replaced');
+   const key=adapter+'/'+cast+'/'+work.id+'/'+shared.source_age,b=bindings[key]??={cast,adapter,score:work.id,age:shared.source_age,cases:0,effects:new Set(),phases:new Set(),watchPhases:new Set()};b.cases++;b.phases.add(physical.phase);b.watchPhases.add(observerPhysical.phase);
    if(s._physicalEvent!==undefined){const index=s._physicalEvent,effect=CASTLE_SCORES[work.id].effects[index];if(!effect||!work.events.includes(index))throw Error('Invalid consumed effect');near(work.ride_elapsed,effect[0]*CASTLE_SCORES[work.id].duration,'effect clock');if(!cg.tip||cg.pose.contact<1-1e-8||!cg.reachable)throw Error('Native effect has no rendered actual grip '+key+'/'+index);near(cg.tip.x,target.x,'effect contact x');near(cg.tip.y,target.y,'effect contact y');b.effects.add(index);(effectSets[variant+'/'+key]??=new Set()).add(index);contacts++;}
-   if(!shifted&&!reduced&&(shared.operator.adapter!=='regular'||['friend:marco','friend:ada','friend:frida'].includes(shared.operator.cast))&&(s._physicalEvent===undefined||s._physicalEvent===0)){
-    const imageKey=shared.operator.adapter+'-'+shared.operator.cast.replace('friend:','')+'-'+work.id+'-'+shared.source_age+'-'+width+'x'+height+'-'+physical.phase+(s._physicalEvent!==undefined?'-contact':'');if(!images[imageKey])images[imageKey]=view.canvas.toDataURL();
+   if(!shifted&&!reduced&&(adapter!=='regular'||['friend:marco','friend:ada','friend:frida'].includes(cast))&&(s._physicalEvent===undefined||s._physicalEvent===0)){
+    const imageKey=adapter+'-'+cast.replace('friend:','')+'-'+work.id+'-'+shared.source_age+'-'+width+'x'+height+'-'+physical.phase+(s._physicalEvent!==undefined?'-contact':'');if(!images[imageKey])images[imageKey]=view.canvas.toDataURL();
    }
    cases++;
   }

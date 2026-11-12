@@ -30,7 +30,9 @@ test('scenery roots and dock reject placement; world anchors follow the same cam
   const world=new LivingWorld(),s=scene({camera}),result=world.render(s,0);
   for(const f of homeScenery){
    const layer=result.scenery.find(l=>l.id===f.id),[x,y]=world.project(s,f.x*132/20,f.y*42/12);
-   assert.equal(layer.y,y+(f.kind==='dock'?3:2));
+   // Depth offsets belong to the authored world, so they scale with the root
+   // and visible canopy/dock instead of staying fixed in screen grid cells.
+   assert.ok(Math.abs(layer.y-(y+(f.kind==='dock'?3:2)*42/camera.h))<1e-10);
    assert.ok(Number.isFinite(x));
   }
  }

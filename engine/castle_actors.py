@@ -50,13 +50,22 @@ def identity(actor):
     return {k:actor[k] for k in keys}
 
 
-def rare(pond):
+def rare(pond):return _rare(pond,SPECIAL+SPECIES)
+
+
+def flight(pond):
+    mover=getattr(pond.game,'guest_motion',None);actor=getattr(mover,'actor',None)
+    if not isinstance(actor,dict) or any(type(actor.get(k)) not in (int,float) for k in ('x','y')):return None
+    return _rare(pond,('butterfly_fairy',))
+
+
+def _rare(pond,allowed):
     import json,math
     from datetime import datetime
     g=pond.game;visit=getattr(g.atmosphere,'current_visitor',None);m=getattr(g,'guest_motion',None)
     if not visit or not m:return None
     visitor,arrival=visit
-    if visitor.id not in SPECIAL+SPECIES:return None
+    if visitor.id not in allowed:return None
     area=getattr(g.exploration,'current_area',None)
     token=(visitor.id,arrival,getattr(area,'id',getattr(area,'name','pond')))
     a=m.actor
@@ -95,6 +104,8 @@ def live(pond,operator):
 
 
 def release_owned(pond,actor,lease):
+    if lease.get('flight'):
+        pond.game.guest_motion.release_meeting(lease.get('attempt'));return
     adapter=lease.get('contract',{}).get('operator',{}).get('adapter')
     if adapter=='regular':return _release_regular(pond,actor,lease)
     mover=getattr(pond.game,{'rare':'guest_motion','story':'story_motion'}.get(adapter,''),None)

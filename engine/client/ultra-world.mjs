@@ -1,3 +1,4 @@
+import {projectSceneryCell} from './scenery-projection.mjs';
 import {castleActorPhysical,sharedCastleRecord,sharedCastleSource} from './castle-care.mjs';
 import {carnivalOccupants} from './carnival-routines.mjs';
 import {playkitPose,PLAYKIT_ROUTINES} from './playkit-routines.mjs';
@@ -48,6 +49,20 @@ export class LivingWorld {
     const record={id,y,scenery:true,cells};
     (this.scenery||=[]).push(record);
     return record;
+  }
+  physicalSceneryLayer(scene,id,depth,draw){
+    // Capture canonical ink without viewport clipping; offscreen branches must
+    // retain their real extent when a wider display camera reveals them.
+    const base=this.grid,layer=new Grid(),ink=new Map();
+    layer.put=(x,y,ch,color,material=M.ambient)=>{x=Math.round(x);y=Math.round(y);const c=typeof ch==='number'?ch:ch.charCodeAt(0);ink.set(x+','+y,[x,y,c>=32&&c<=126?c:63,color,material]);};
+    this.grid=layer;try{draw();}finally{this.grid=base;}
+    const nativeCells=[...ink.values()],projectedCells=[],composite=new Map();
+    for(const [x,y,ch,color,material]of nativeCells){
+      const r=projectSceneryCell(scene.camera,x,y);projectedCells.push([r.x,r.y,r.w,r.h,ch,color,material]);
+      for(let py=Math.max(0,Math.floor(r.y));py<Math.min(H,Math.ceil(r.y+r.h));py++)for(let px=Math.max(0,Math.floor(r.x));px<Math.min(W,Math.ceil(r.x+r.w));px++)composite.set(py*W+px,[py*W+px,ch,color,material]);
+    }
+    const cells=[...composite.values()];for(const [i,ch,color,material]of cells){base.chars[i]=ch;base.colors[i]=color;base.materials[i]=material;}
+    const record={id,y:projectSceneryCell(scene.camera,0,depth).y,scenery:true,cells,nativeCells,projectedCells};(this.scenery||=[]).push(record);return record;
   }
   sky(s,t,seed){
     const g=this.grid,light=sceneLight(s),night=light.night;
@@ -264,15 +279,15 @@ export class LivingWorld {
     const g=this.grid,b=s.biome,features=region(s.location,s.biome).features;
     if(s.location==='Home Pond'){
       for(const f of homeScenery.filter(f=>f.kind==='willow')){
-        const [x,y]=this.project(s,f.x*132/20,f.y*42/12);
-        this.tree(x,y,f.height,'willow',t,seed+(f.id==='east_willow'?13:0),true,f.id);
+        const x=24+f.x*192/20,y=46+f.y*47/12;
+        this.physicalSceneryLayer(s,f.id,y+2,()=>this.drawTree(x,y,f.height,'willow',t,seed+(f.id==='east_willow'?13:0),true));
       }
     }
     for(const f of features.filter(f=>f.kind==='tree'||f.kind==='palm'))this.regionFeature(s,f,t,seed);
     this.reflected(t);this.pondLife(s,t,seed);
     if(s.location==='Home Pond'){
-      const f=homeScenery.find(f=>f.kind==='dock'),[x,y]=this.project(s,f.x*132/20,f.y*42/12);
-      this.sceneryLayer('pond_dock',y+3,()=>{
+      const f=homeScenery.find(f=>f.kind==='dock'),x=24+f.x*192/20,y=46+f.y*47/12;
+      this.physicalSceneryLayer(s,'pond_dock',y+3,()=>{
         this.grid.art(x-18,y-4,DOCK,(ch,x,y)=>y<4?C.barkLight:C.bark);
         this.grid.art(x,y-13,LANTERN,ch=>ch==='*'?C.lamp:C.barkLight);
         this.grid.line(x+8,y-6,x+8,y-3,'|',C.barkLight,M.wood);
@@ -463,7 +478,7 @@ export class LivingWorld {
       const walkingPhysical=(shared||r.actor==='cheese'&&r.work.physical_pilot)&&actorPhysical?.phase!=='hold';
       const ownPose=walkingPhysical||(shared&&(plan.paused||r.actor==='cheese'&&source.hatCare?.active));
       const performance=ownPose?null:{kind:'carnival',routine:r.work,role:r.role,watch:r.watch,motion:s.motion!==false};
-      const character={...characterSprite({...source,...(shared&&r.role==='a'?{castId:r.work.shared.operator.cast}:{}),state:ownPose?(source.state||'walking'):'idle',facing:ownPose||shared&&r.watch?source.facing:r.role==='a',performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
+      const character={...characterSprite({...source,...(shared&&r.actor!=='cheese'?{castId:r.work.shared.mode==='flight-observer'?r.work.shared.observer.cast:r.work.shared.operator.cast}:{}),state:ownPose?(source.state||'walking'):'idle',facing:ownPose||shared&&r.watch?source.facing:r.role==='a',performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
       if(home.physicalCastle&&actorPhysical)character.physicalCastleActor=home.physicalCastle;
       (home.carnivalRiders||=[]).push({...r,character});this.characters=this.characters.filter(c=>c!==original);
     }

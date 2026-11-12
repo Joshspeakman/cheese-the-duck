@@ -168,7 +168,9 @@ function speciesGuest(duck,p,t,state,active){
 }
 
 export function visitorRig(duck,time=0){
- if(['nest','botanical','seating','instrument','lighting','keepsake','creative','textile','ground','architecture','playkit','carnival'].includes(duck.performance?.kind))time=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
+ const flightWatch=duck.performance?.kind==='carnival'&&duck.performance.watch&&duck.performance.routine?.shared?.mode==='flight-observer';
+ if(flightWatch){if(duck.performance.motion===false)time=0;}
+ else if(['nest','botanical','seating','instrument','lighting','keepsake','creative','textile','ground','architecture','playkit','carnival'].includes(duck.performance?.kind))time=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  const p=guestProfile(duck),seed=seedOf(p.id),t=time+seed%19*.17,raw=duck.activity||duck.state||'idle';
  const requested=/reading|painting|giving/.test(raw)?'signature':/bounce|happy|exercise/.test(raw)?'dancing':/chat|greet/.test(raw)?'quacking':raw;
  const active=!duck.performance&&(requested==='signature'||requested==='working'||requested==='idle'&&(t%(10+seed%5))>5&&(t%(10+seed%5))<8.5),state=duck.performance?'idle':requested==='signature'||requested==='working'?'idle':requested;

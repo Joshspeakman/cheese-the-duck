@@ -20,7 +20,21 @@ def is_shared(plan):
     if not isinstance(plan,dict) or not isinstance(plan.get('carnival_work'),dict):return False
     work=plan['carnival_work']
     # Route damaged shared saves to strict validation, never to legacy movement.
-    return 'shared_physical' in work or 'shared' in work
+    return 'shared_physical' in work or 'shared' in work or 'flight_observer' in work
+
+def is_flight(plan):
+    if not isinstance(plan,dict) or not isinstance(plan.get('carnival_work'),dict):return False
+    w=plan['carnival_work'];shared=w.get('shared')
+    return 'flight_observer' in w or isinstance(shared,dict) and (shared.get('mode')=='flight-observer' or 'observer_physical' in shared or 'observer' in shared)
+
+
+def shared_controller(plan):
+    if is_flight(plan):
+        from engine import castle_flight
+        return castle_flight
+    from engine import castle_shared
+    return castle_shared
+
 
 def active(minds,key='cheese'):
     return next(iter(minds.carnival_guests.values()),None) if key=='cheese' else minds.carnival_guests.get(key)
@@ -66,6 +80,11 @@ def owns(pond,item,obj):
 
 def release(minds,key):
     r=minds.carnival_guests.pop(key,None)
+    if not isinstance(r,dict) or not isinstance(r.get('work'),dict):
+        # A damaged reservation proves no movement ownership. Remove it without
+        # stopping an independently chosen target or granting completion credit.
+        if r is not None:minds.pond._cache=None
+        return
     if r:
         if r.get('shared'):
             from engine import castle_actors
@@ -79,8 +98,7 @@ def release(minds,key):
 
 def cancel(minds):
     if is_shared(minds.pond.state.get('plan')):
-        from engine import castle_shared
-        castle_shared.interrupt(minds.pond,minds.pond.state['plan'],'The shared activity was set aside.')
+        shared_controller(minds.pond.state['plan']).interrupt(minds.pond,minds.pond.state['plan'],'The shared activity was set aside.')
     castle_work.clear(minds.pond,minds.pond.state.get('plan'))
     surface_play.clear(minds.pond,minds.pond.state.get('plan'))
     for key in list(minds.carnival_guests):release(minds,key)
@@ -94,8 +112,7 @@ def partner_valid(minds,r,plan=None):
 def tick(minds,dt):
     p=minds.pond;plan=p.state.get('plan')
     if is_shared(plan):
-        from engine import castle_shared
-        castle_shared.refresh(p)
+        shared_controller(plan).refresh(p)
         return
     for key,r in list(minds.carnival_guests.items()):
         if not partner_valid(minds,r):release(minds,key);continue
@@ -145,8 +162,7 @@ def dock(pond,plan):
 def advance(pond,plan,dt):
     w=plan.get('carnival_work')
     if is_shared(plan):
-        from engine import castle_shared
-        return castle_shared.advance(pond,plan,dt)
+        return shared_controller(plan).advance(pond,plan,dt)
     if not w or w.get('done'):return False
     if w.get('physical_pilot'):
         if not valid(pond,plan):return castle_work.physical_interrupt(pond,plan,'The house is no longer placed here.')
@@ -222,8 +238,7 @@ def completion_ready(pond,plan):
     w=plan.get('carnival_work')
     if not isinstance(w,dict) or not valid(pond,plan) or w.get('done') is not True or w.get('interrupted') or w.get('recorded'):return False
     if is_shared(plan):
-        from engine import castle_shared
-        return castle_shared.completion_ready(pond,plan)
+        return shared_controller(plan).completion_ready(pond,plan)
     if w['id'] in castle_work.PHYSICAL_SCORES or w.get('physical_pilot'):
         if not castle_work.physical_geometry_ok(pond,plan) or w.get('stage')!='done':return False
         pos=pond.game.renderer.duck_pos;root=[pos.x,pos.y];physical=w['physical']
@@ -235,8 +250,7 @@ def complete(pond,plan):
     w=plan.get('carnival_work')
     if not completion_ready(pond,plan):return
     if is_shared(plan):
-        from engine import castle_shared
-        return castle_shared.complete(pond,plan)
+        return shared_controller(plan).complete(pond,plan)
     w['recorded']=True;obj=pond.object_state(plan['target'],plan);history=obj.setdefault('carnival_routines',{})
     history[w['id']]=min(9999,history.get(w['id'],0)+1)
     pond.remember('belongings',w['label']+'.',.5,plan['target'])
@@ -253,8 +267,7 @@ def complete(pond,plan):
 
 def view(pond,plan):
     if is_shared(plan):
-        from engine import castle_shared
-        return castle_shared.view(pond,plan)
+        return shared_controller(plan).view(pond,plan)
     w=copy.deepcopy(plan['carnival_work']);r=active(pond.minds)
     if w.get('physical_pilot') and isinstance(w.get('physical'),dict):
         pos=pond.game.renderer.duck_pos;root=[pos.x,pos.y]
@@ -269,8 +282,7 @@ def restore(pond):
     if not plan or not isinstance(plan.get('carnival_work'),dict):return
     w=plan['carnival_work']
     if is_shared(plan):
-        from engine import castle_shared
-        castle_shared.interrupt(pond,plan,'A saved shared activity needs a new invitation.')
+        shared_controller(plan).interrupt(pond,plan,'A saved shared activity needs a new invitation.')
         return
     if w.get('physical_pilot') and not castle_work.physical_active(plan):
         castle_work.physical_interrupt(pond,plan,'Invalid saved control reservation.');return
@@ -288,13 +300,29 @@ def restore(pond):
 
 def motion(minds,key):
     if is_shared(minds.pond.state.get('plan')):
-        from engine import castle_shared
-        return castle_shared.motion(minds,key)
+        return shared_controller(minds.pond.state['plan']).motion(minds,key)
     r=minds.carnival_guests.get(key)
     return dict(target=list(r['spot']),phase=r['phase'],facing=False,gesture='idle') if r else None
 
 def conversation(pond,plan,key='cheese'):
     if not plan or not plan.get('carnival_work') or not valid(pond,plan):return None
+    if is_shared(plan):
+        controller=shared_controller(plan)
+        if not controller.validate(pond,plan):return None
+        w=plan['carnival_work'];shared=w['shared'];flight=is_flight(plan)
+        operator=shared['operator']['actor'];observer=shared['observer']['actor'] if flight else 'cheese'
+        if key not in (operator,observer):return None
+        physical=w['physical'] if key==operator else shared['observer_physical'] if flight else shared['cheese']
+        phase=physical['phase'];role='operator' if key==operator else 'observer'
+        status=('flying to a separate observation spot' if flight and role=='observer' else 'walking to a separate observation spot' if role=='observer' else 'walking to the controls') if phase=='approach' else ('leaving the activity' if phase=='exit' else 'watching from a separate hover point' if flight and role=='observer' else 'watching from a separate spot' if role=='observer' else 'at the '+physical['station'].replace('_',' ')+' controls')
+        other=observer if key==operator else operator
+        material=castle_work.state(pond.object_state('bounce_house',plan))
+        return dict(object='bounce house',activity=w['label'],stage=w['stage'],paused=bool(plan.get('paused')),
+          role=role,body_status=status,company=pond.minds.model.residents.get(other,{}).get('name',other),
+          motor=material['motor'],player_left_switched_off=material['power_hold'],fan_turning=material['powered'],
+          pressure=round(pond.object_state('bounce_house',plan)['excursion']['inflation'],2),inspection=w.get('inspection'),
+          door_open=round(material['door'],2),door_buckled=material['latch']>.5,completed_contacts=len(w['events']),
+          setting='The operator uses the controls outside this placed house. The observer watches independently and does not operate its mechanisms.')
     w=plan['carnival_work'];r=active(pond.minds)
     if r and not partner_valid(pond.minds,r,plan):r=None
     if key!='cheese' and (not r or key!=r['actor']):return None
@@ -315,6 +343,10 @@ def request(pond,item,choice,instance=None,together=False):
         if choice not in castle_work.PHYSICAL_SCORES:return False,'Choose one of the shared control activities.'
         from engine import castle_shared
         proposal,reason=castle_shared.propose(pond,choice,instance)
+        visit=pond.game.atmosphere.current_visitor
+        if proposal is None and visit and visit[0].id=='butterfly_fairy':
+            from engine import castle_flight
+            proposal,reason=castle_flight.propose(pond,choice,instance)
         if proposal is None:return False,reason
     ok,message=pond.start('item',item,instance=instance,carnival_choice=choice,shared_proposal=proposal)
     if not ok:return ok,message
