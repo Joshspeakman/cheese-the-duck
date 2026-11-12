@@ -239,13 +239,13 @@
     {
       "id": "wings_fairy",
       "family": "wings",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
       "id": "halo",
       "family": "halo",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -687,13 +687,13 @@
     {
       "id": "halo_angel",
       "family": "halo",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
       "id": "devil_horns",
       "family": "horns",
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0
     },
     {
@@ -4101,8 +4101,8 @@
   "checkpoint": {
     "sourcePhase": "native_age_contacts_and_fitted_costumes",
     "fullyOverhauled": false,
-    "constructedObjects": 390,
-    "remainingArtwork": 152,
+    "constructedObjects": 394,
+    "remainingArtwork": 148,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -5316,9 +5316,9 @@
       "disposableSaves": true
     },
     "wardrobe": {
-      "constructed": 91,
-      "pending": 18,
-      "supplementalConstructed": 55,
+      "constructed": 99,
+      "pending": 10,
+      "supplementalConstructed": 59,
       "scope": "All 109 fitted wardrobe IDs explicitly tracked; 67 are outside the original 542 catalogue. No per-object sequence credit."
     },
     "garments": {
@@ -5522,6 +5522,28 @@
         "Other controls and the full per-object context repertoire"
       ],
       "fullRepertoiresComplete": false
+    },
+    "costumeAttachments": {
+      "constructed": 8,
+      "items": [
+        "angel_wings",
+        "bat_wings",
+        "devil_horns",
+        "fairy_wings",
+        "halo",
+        "halo_angel",
+        "valentine_cupid_wings",
+        "wings_fairy"
+      ],
+      "nativeSource": "Existing equipped cosmetic slots; no invented state or capabilities",
+      "fitting": "Rear layers preserve natural D10 ink, real wing and face; age-fitted costume panels, headbands, wire supports and oval halos",
+      "animation": "Restrained costume flex and glints use existing time/motion flag; Reduced Motion is static; egg gains no body attachment",
+      "focusedTests": 4,
+      "relatedWardrobeTests": 11,
+      "visualAgeCases": 72,
+      "visualPoseCases": 40,
+      "review": "engine/artifacts/animation-milestone/costume-attachments-review.html",
+      "fullRepertoiresComplete": false
     }
   },
   "wardrobe": [
@@ -5692,7 +5714,7 @@
       "name": "Fairy Wings",
       "slot": "wings",
       "inMainCatalogue": true,
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": false
     },
@@ -5701,7 +5723,7 @@
       "name": "Halo",
       "slot": "above",
       "inMainCatalogue": true,
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": false
     },
@@ -5854,7 +5876,7 @@
       "name": "Angel Halo",
       "slot": "above",
       "inMainCatalogue": true,
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": false
     },
@@ -5863,7 +5885,7 @@
       "name": "Devil Horns",
       "slot": "above",
       "inMainCatalogue": true,
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": false
     },
@@ -6061,7 +6083,7 @@
       "name": "Fairy Wings",
       "slot": "wings",
       "inMainCatalogue": false,
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": false
     },
@@ -6070,7 +6092,7 @@
       "name": "Angel Wings",
       "slot": "wings",
       "inMainCatalogue": false,
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": false
     },
@@ -6079,7 +6101,7 @@
       "name": "Bat Wings",
       "slot": "wings",
       "inMainCatalogue": false,
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": false
     },
@@ -6392,7 +6414,7 @@
       "name": "Cupid Wings",
       "slot": "wings",
       "inMainCatalogue": false,
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": false
     },
