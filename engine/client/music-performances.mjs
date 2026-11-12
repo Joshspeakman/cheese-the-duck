@@ -1,3 +1,4 @@
+import {actorPitches} from './actor-projection.mjs';
 import SCORES from './animation/music-scores.json' with {type:'json'};
 import {drawBotanicalTools} from './botanical-routines.mjs';
 import INSTRUMENTS from './animation/instruments.json' with {type:'json'};
@@ -56,7 +57,7 @@ export function musicOccupants(scene){
 }
 export function musicGeometry(home,worker,sx,sy){
  const c=worker.character,pose=musicPose(home.id,c.performance.routine,c.performance.motion!==false);
- const unit=sx*home.scale*home.detailScale,ch=unit*1.5,cw=c.scale*sx,hh=cw*1.5,dir=worker.slot===0?1:-1;
+ const unit=sx*home.scale*home.detailScale,ch=unit*1.5,{cw,ch:hh}=actorPitches(c,sx,sy),dir=worker.slot===0?1:-1;
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*ch;
  const point=a=>({x:left+(a.x+.5)*unit,y:top+(a.y+.5)*ch});
  const key=n=>point(home.anchors.keys[Math.max(0,Math.min(home.anchors.keys.length-1,n))]);

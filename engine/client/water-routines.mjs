@@ -1,3 +1,4 @@
+import {actorPitches} from './actor-projection.mjs';
 import {sameInstance} from './physical-objects.mjs';
 import ROUTINES from './animation/water-routines.json' with {type:'json'};
 export {ROUTINES as WATER_ROUTINES};
@@ -32,8 +33,8 @@ export function waterGeometry(home,passenger,sx,sy){
  // deepest dip; the rest of the gesture returns to the independently reached
  // bank position. The original age-specific bill remains the contact point.
  if(passenger.pose.sip&&c.bill){
-  const cu=sx*c.scale,billX=(c.bill.x+.5-c.anchorX+(c.offsetX||0))*cu;
-  const billY=(c.bill.y+.5-c.groundRow)*cu*1.5+(c.offsetY||0)*cu;
+  const {cw:cu,ch:bodyY}=actorPitches(c,sx,sy),billX=(c.bill.x+.5-c.anchorX+(c.offsetX||0))*cu;
+  const billY=(c.bill.y+.5-c.groundRow)*bodyY+(c.offsetY||0)*bodyY/1.5;
   const contactX=left+(home.anchors.contact.x+.5)*unit,contactY=top+(home.anchors.contact.y+.5)*ch;
   const sip=passenger.pose.sip;x+=(contactX-billX-x)*sip;y+=(contactY-billY-y)*sip;
  }

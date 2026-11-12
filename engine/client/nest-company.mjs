@@ -1,10 +1,11 @@
+import {actorPitches} from './actor-projection.mjs';
 import {nestPose} from './nest-routines.mjs';
 
 // An outside helper keeps its own natural body scale and ground contact. The
 // short wing-to-rim contact belongs to this actor, never to the nest's occupant.
 export function nestHelpGeometry(home,helper,sx,sy){
  const c=helper.character,pose=nestPose(c.performance.routine,c.performance.motion!==false);
- const unit=sx*home.scale*home.detailScale,hh=unit*1.5,cw=c.scale*sx,ch=cw*1.5;
+ const unit=sx*home.scale*home.detailScale,hh=unit*1.5,{cw,ch}=actorPitches(c,sx,sy);
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*hh;
  const anchor=pose.anchor==='left'?home.anchors.workLeft:home.anchors.workRight;
  const target={x:left+(anchor.x+.5)*unit,y:top+(anchor.y+.5)*hh};

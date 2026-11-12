@@ -332,7 +332,7 @@ export class LivingWorld {
         const textile=owned&&plan.textile_work&&plan.phase!=='approach'?textilePose(plan.textile_work,s.motion!==false):null;
         const creative=owned&&plan.creative_work&&plan.phase!=='approach'?creativePose(plan.creative_work,s.motion!==false):null;
         const keepsake=owned&&plan.keepsake_work?keepsakePose(plan.keepsake_work,s.motion!==false):null;
-        this.objects.push({...itemSprite(item.id,t,{pose:{music,light,keepsake,creative,textile,ground,architecture,playkit},motion:s.motion!==false,context:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,worldPosition:[item.x,item.y],scale:itemWorldScale(item.id)});
+        this.objects.push({...itemSprite(item.id,t,{pose:{music,light,keepsake,creative,textile,ground,architecture,playkit},motion:s.motion!==false,context:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,worldPosition:[item.x,item.y],...(item.id==='bounce_house'?{physicalCastle:{origin:[item.x,item.y],camera:{...(s.camera||{x:0,y:0,w:132,h:42})}}}:{}),scale:itemWorldScale(item.id)});
       }});
     }
     if(s.visitor){const [x,y]=this.project(s,s.visitor.x,s.visitor.y);actors.push({y,draw:()=>this.actor(s,t+2,x,y,{stage:'adult',state:'idle',facing:false,...s.visitor},true)});}
@@ -367,8 +367,10 @@ export class LivingWorld {
       }
     }
     const target=this.project(s,s.duck.x,s.duck.y);
-    if(s.motion===false||!this.duckPosition||s.location!==this.lastLocation)this.duckPosition=target;
+    const cameraKey=JSON.stringify(s.camera||null);
+    if(s.motion===false||s.living?.plan?.carnival_work?.physical_pilot||!this.duckPosition||s.location!==this.lastLocation||cameraKey!==this.duckCameraKey)this.duckPosition=target;
     else this.duckPosition=this.duckPosition.map((v,i)=>lerp(v,target[i],clamp(dt*12,0,1)));
+    this.duckCameraKey=cameraKey;
     const [x,y]=this.duckPosition;
     let state=s.duck.state;
     const plan=s.living?.plan;
@@ -455,8 +457,10 @@ export class LivingWorld {
       const home=this.objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.construction==='excursion-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination?.[i])<1.1));
       if(!original||!home)continue;
       const source=r.actor==='cheese'?s.duck:s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
-      const performance={kind:'carnival',routine:r.work,role:r.role,watch:r.watch,motion:s.motion!==false};
-      const character={...characterSprite({...source,state:'idle',facing:r.role==='a',performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
+      const walkingPhysical=r.actor==='cheese'&&r.work.physical_pilot&&r.work.physical?.phase!=='hold';
+      const performance=walkingPhysical?null:{kind:'carnival',routine:r.work,role:r.role,watch:r.watch,motion:s.motion!==false};
+      const character={...characterSprite({...source,state:walkingPhysical?(source.state||'walking'):'idle',facing:walkingPhysical?source.facing:r.role==='a',performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
+      if(home.physicalCastle&&r.role==='a'&&r.work.physical?.version===1&&r.work.physical.actor==='cheese')character.physicalCastleActor=home.physicalCastle;
       (home.carnivalRiders||=[]).push({...r,character});this.characters=this.characters.filter(c=>c!==original);
     }
     if(plan?.playkit_work&&!plan.playkit_work.interrupted&&PLAYKIT_ROUTINES[plan.playkit_work.id]&&['prepare','act','settle'].includes(plan.phase)){

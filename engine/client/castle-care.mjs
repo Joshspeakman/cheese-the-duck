@@ -1,3 +1,4 @@
+import {castleArtFrame,castleActorPitches,projectCastleWorld} from './castle-projection.mjs';
 import CASTLE_GEOMETRY from './animation/castle-geometry.json' with {type:'json'};
 import SCORES from './animation/castle-care.json' with {type:'json'};
 export {SCORES as CASTLE_SCORES};
@@ -26,21 +27,31 @@ export function castlePose(work,role='a',motion=true,watch=false){
  return {...p,station:where.name,previousStation:where.previous,travel:where.travel,surfaceWork:!watch&&work.stage==='service',tool:'hand',seated:false};
 }
 export function castleGeometry(home,member,sx,sy){
+ const frame=castleArtFrame(home,sx,sy);
  const c=member.character,w=member.work,pose=castlePose(w,member.role,c.performance?.motion!==false,member.watch),spec=SCORES[w.id];
  const inside=w.stage==='service'?clamp(w.clock/(spec.entryDuration??spec.duration*.14)):w.stage==='service_exit'?1-clamp(w.clock/4):0;
- const unit=sx*home.scale*home.detailScale,uh=unit*1.5,cw=c.scale*sx,ch=cw*1.5,left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*uh;
+ const unit=frame?.unit||sx*home.scale*home.detailScale,uh=frame?.uh||unit*1.5,{cw,ch}=castleActorPitches(c,sx,sy),left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*uh;
  const end=home.anchors.controls[pose.station],start=home.anchors.controls[pose.previousStation],t=tween(pose.travel),anchor={x:start.x+(end.x-start.x)*t,y:start.y+(end.y-start.y)*t},target={x:left+(anchor.x+.5)*unit,y:top+(anchor.y+.5)*uh},ground=top+CASTLE_GEOMETRY.ground_row*uh;
  const rest=c.workGripRest||c.grip||{x:c.anchorX+5,y:c.groundRow-6},x=target.x+(member.role==='a'?-3:3)*cw-(rest.x+.5-c.anchorX)*cw;
  const character={...c,x:c.x+(x/sx-c.x)*inside,y:c.y+(ground/sy-c.y)*inside,offsetX:0,offsetY:0};
- if(c.rig?.species==='butterfly')character.y-=5*ch/sy*inside;
+ const point=p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);
+ const pilot=member.role==='a'&&w.physical_pilot===true;
+ const physical=frame&&member.role==='a'&&w.physical?.version===1&&w.physical.actor==='cheese'&&point(w.physical.root)&&point(w.physical.target)?w.physical:null;
+ if(pilot&&!physical){character.x=c.x;character.y=c.y;}
+ if(physical){
+  const root=projectCastleWorld(home.physicalCastle,physical.root,sx,sy),nativeTarget=projectCastleWorld(home.physicalCastle,physical.target,sx,sy);
+  character.x=root.x/sx;character.y=root.y/sy;target.x=nativeTarget.x;target.y=nativeTarget.y;
+ }
+ if(!pilot&&!physical&&c.rig?.species==='butterfly')character.y-=5*ch/sy*inside;
  const grip=c.grip||rest,hand={x:character.x*sx+(grip.x+.5-c.anchorX)*cw,y:character.y*sy+(grip.y+.5-c.groundRow)*ch},points=[];let tip=null;
- if(pose.contact>.01&&inside>.01&&!member.watch&&c.rig?.species!=='butterfly'){
+ const reachable=(!pilot||Boolean(physical))&&(!physical||Math.hypot((target.x-hand.x)/cw,(target.y-hand.y)/ch)<=3+1e-9);
+ if(pose.contact>.01&&inside>.01&&!member.watch&&c.rig?.species!=='butterfly'&&(!physical||physical.contact_ready===true)&&reachable){
   const u=pose.contact*inside;tip={x:hand.x+(target.x-hand.x)*u,y:hand.y+(target.y-hand.y)*u};
   const dx=tip.x-hand.x,dy=tip.y-hand.y,n=Math.max(1,Math.ceil(Math.max(Math.abs(dx)/cw,Math.abs(dy)/ch))),glyph=Math.abs(dx)>Math.abs(dy)*2?'-':Math.abs(dy)>Math.abs(dx)*2?'|':dx*dy>0?'\\':'/';
   for(let i=0;i<=n;i++)points.push({x:hand.x+dx*i/n,y:hand.y+dy*i/n,glyph,color:c.inks?.w||'#d9bd8b'});
   points.push({x:tip.x,y:tip.y,glyph:')',color:'#e7d3a0'});
  }
- return {character,pose,cw,ground,target,hand,tip,points,inside,front:null};
+ return {character,pose,cw,ground:physical?character.y*sy:ground,target,hand,tip,points,inside,front:null,authoritativeRoot:Boolean(physical),reachable};
 }
 function tween(t){return t*t*(3-2*t);}
 export function castleSummary(state){const s=castleState(state.castle);return `Blower ${s.motor}${s.powered?' · turning':''} · ${Math.round((state.excursion?.inflation??0)*100)}% inflated · mesh ${s.door>.8?'rolled up':s.door<.2?'lowered':'partly open'}${s.latch>.5?' · buckled':''}`;}

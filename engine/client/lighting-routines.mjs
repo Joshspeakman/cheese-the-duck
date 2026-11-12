@@ -1,3 +1,4 @@
+import {actorPitches} from './actor-projection.mjs';
 import ROUTINES from './animation/lighting-routines.json' with {type:'json'};
 export {ROUTINES as LIGHTING_ROUTINES};
 const clamp=n=>Math.max(0,Math.min(1,n));
@@ -14,7 +15,7 @@ export function lightingPose(routine,motion=true){
 }
 export function lightingGeometry(home,worker,sx,sy){
  const c=worker.character,pose=lightingPose(c.performance.routine,c.performance.motion!==false);
- const unit=sx*home.scale*home.detailScale,ch=unit*1.5,cw=c.scale*sx,hh=cw*1.5;
+ const unit=sx*home.scale*home.detailScale,ch=unit*1.5,{cw,ch:hh}=actorPitches(c,sx,sy);
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*ch;
  const anchor=home.anchors.control||home.anchors.contact,ground=top+home.anchors.entry.y*ch;
  const target={x:left+(anchor.x+.5)*unit,y:top+(anchor.y+.5+pose.pull)*ch};

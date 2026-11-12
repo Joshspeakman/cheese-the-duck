@@ -97,7 +97,7 @@
     {
       "id": "bounce_house_candidates",
       "owner": "milestone_advisor",
-      "status": "running",
+      "status": "committed_18d7e9f_source_candidates_only",
       "next": "Review actual48 candidates and author executable candidate/evidence record; no verification credit."
     },
     {
@@ -120,13 +120,13 @@
     {
       "id": "castle_native_contacts",
       "owner": "medium_specimen_art",
-      "status": "awaiting_advisor_transform_contract",
+      "status": "implementing_native_root_and_arrival_gate",
       "scope": "Native roots and arrival-gated control effects; begin castle_start then door/hose"
     },
     {
       "id": "castle_renderer_contacts",
       "owner": "medium_food_art",
-      "status": "awaiting_advisor_transform_contract",
+      "status": "implementing_camera_independent_physical_projection",
       "scope": "Native root projection, consistent control geometry across camera and aspect ratios"
     }
   ]

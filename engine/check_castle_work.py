@@ -47,7 +47,7 @@ try:
         g.duck_store.sync_from_duck(g.duck)
         g.habitat.owned_items=[item];g.habitat.placed_items=[PlacedItem(item,9,7)];g.habitat.stored_items=[];g.habitat.stored_placements=[];g.building.structures=[]
         for room in g.decorations.rooms.values():room.decorations=[]
-        pos=g.renderer.duck_pos;pos.cancel_movement();pos.x=48;pos.y=24
+        pos=g.renderer.duck_pos;pos.cancel_movement();pos.x=48;pos.y=26  # Exterior ground corridor, also used by the --serve UI fixture.
         p.sync();p.weather_type='sunny';p.season='spring';p.hour=12;p.state['ecology'].update(temperature=18,wind=.2);p.state['cooldowns']={}
         placement=next(a for a in p.placements if a.item_id==item);iid=placement.instance;obj=p.object_state(item,iid)
         obj.update(last_use=-1000,uses=0,dirt=0,wetness=0,condition=1,excursion={},carnival_routines={},carnival_company={});excursions.state(item,obj)
@@ -108,7 +108,11 @@ try:
             if field in castle.MOVING:s[field]=s['targets'][field]=1-value
             elif field in ('motor','latch'):s[field]='off' if field=='motor' and value=='on' else 'on' if field=='motor' else 1-value
         inventory=possessions();condition=obj['condition'];learning={k:b.model.residents[k]['counts']['share'] for k in ('cheese',key)}
-        until('service',capture=n%3==0);check(company.active(b)['phase']=='ready',score+' visitor reaches independent work spot')
+        until('service',capture=n%3==0)
+        native=score=='castle_start'
+        check(castle.physical_active(plan)==native,score+' uses its intended native or legacy controller')
+        if native:check(company.active(b) is None and not w['paired'],score+' adult native pilot stays solo despite a present visitor')
+        else:check(company.active(b)['phase']=='ready',score+' visitor reaches independent work spot')
         check(not w['events'] and obj['uses']==0,score+' arrival does not operate any control or grant a use')
         before_targets=copy.deepcopy(s['targets']);before_motor=s['motor'];advance(5)
         check(s['targets']==before_targets and s['motor']==before_motor,score+' no operation before physical contact')
@@ -122,15 +126,25 @@ try:
                 f={'dust_fraction':'dust','mesh_fraction':'mesh_wet','roof_fraction':'roof_water','prints_fraction':'prints'}[field]
                 check(s[f]<w['start'][f]*value+.02,score+' removes actual stored '+f)
             elif field=='inspection':check(obj['castle_inspections'].get(value)==sum(e[1]=='inspection' and e[2]==value for e in spec['effects']) and w['inspection']['condition']==round(condition,3),score+' records observation without an invented repair')
-        check(obj['uses']==1 and obj['carnival_routines'].get(score)==1 and obj['carnival_company'].get(key)==1,score+' one original use and shared completion')
-        check(all(b.model.residents[k]['counts']['share']==v+1 for k,v in learning.items()),score+' both brains remember finished work once')
+        check(obj['uses']==1 and obj['carnival_routines'].get(score)==1,score+' one original use and routine completion')
+        if native:
+            check(not obj['carnival_company'],score+' adult solo completion grants no companion credit')
+            check(all(b.model.residents[k]['counts']['share']==v for k,v in learning.items()),score+' adult solo work grants neither brain a shared memory')
+        else:
+            check(obj['carnival_company'].get(key)==1,score+' shared completion credits the present companion once')
+            check(all(b.model.residents[k]['counts']['share']==v+1 for k,v in learning.items()),score+' both brains remember finished work once')
         check(possessions()==inventory,score+' consumes and creates no tools, repair supplies or currency')
         check(abs(obj['condition']-(condition-.006))<1e-8,score+' does not secretly repair the house')
         company.complete(p,plan);check(obj['carnival_routines'][score]==1,score+' completion is idempotent')
         if score=='castle_pressure_check':
             check(len(w['inspections'])==2 and w['inspections'][1]['pressure']>w['inspections'][0]['pressure']+.2,'diagnostic compares real pressure before and after closing the valve')
+    # Other ages still exercise the existing shared start-control path.
+    for age in ('young_adult','elder'):
+        plan,key,obj=reset(age=age,score='castle_start');until('service')
+        check(not castle.physical_active(plan) and company.active(b)['phase']=='ready',age+' retains shared legacy blower work')
+        finish();check(obj['uses']==1 and obj['carnival_routines'].get('castle_start')==1 and obj['carnival_company'].get(key)==1,age+' legacy blower completes with shared credit')
     for n,key in enumerate(PROFILES):
-        score=list(castle.ROUTINES)[n%24];plan,actor,obj=reset(kind=key,score=score);until('service');advance(80);frames.append(snapshot(g,g.renderer))
+        score=list(castle.ROUTINES)[n%24];plan,actor,obj=reset(kind=key,score=score,age='young_adult' if score=='castle_start' else 'adult');until('service');advance(80);frames.append(snapshot(g,g.renderer))
         r=company.active(b);check(r and r['actor']==actor and r['phase']=='ready',key+' reaches a real control activity')
         if key=='butterfly_fairy':check(r['mode']=='watch' and castle.conversation(p,plan,key,r)['body_status']=='watching from outside','butterfly observes controls without invented gripping limbs')
         finish();check(obj['carnival_company'].get(actor)==1,key+' receives one meaningful work memory')
@@ -153,8 +167,11 @@ try:
         g.atmosphere.current_weather=Weather(WeatherType.STORMY,.8,1,datetime.now().isoformat());p.sync();p.weather_type='stormy';finish(capture=True)
         check(obj['uses']==1 and not plan['carnival_work'].get('interrupted'),score+' weather-closing work remains useful in actual rain')
     plan,key,obj=reset(score='castle_start');until('service');g.atmosphere.current_weather=Weather(WeatherType.STORMY,.8,1,datetime.now().isoformat());p.sync();p.weather_type='stormy';advance()
-    check(plan['carnival_work'].get('withdrawal') and plan['carnival_work']['stage']=='service_exit','storm interrupts starting the blower with a physical step away')
+    check(plan['carnival_work'].get('interrupted') and not p.state['plan'],'storm interrupts native blower work and releases its reservation')
     finish();check(obj['uses']==0 and not obj['carnival_company'],'interrupted control work grants no original-use or shared completion')
+    plan,key,obj=reset(age='young_adult',score='castle_start');until('service');g.atmosphere.current_weather=Weather(WeatherType.STORMY,.8,1,datetime.now().isoformat());p.sync();p.weather_type='stormy';advance()
+    check(plan['carnival_work'].get('withdrawal') and plan['carnival_work']['stage']=='service_exit','legacy blower worker withdraws through its existing exit stage in a storm')
+    finish();check(obj['uses']==0 and not obj['carnival_company'],'interrupted legacy blower work grants no completion credit')
     plan,key,obj=reset(kind='solo',score='castle_stop');until('service');finish();p.state['cooldowns']={};obj['last_use']=-1000
     check(not p.start('item','bounce_house',instance=plan['instance'])[0],'play cannot magically override a stopped blower')
     p.command(dict(action='carnival_action',target='bounce_house',instance=plan['instance'],text='castle_start'));finish();p.state['cooldowns']={};obj['last_use']=-1000

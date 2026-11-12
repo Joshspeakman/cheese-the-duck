@@ -40,12 +40,17 @@ def prepare(pond,plan):
     # Fixed spots by this exact copy, never a target relative to Cheese.
     w['queue_a']=[origin[0]+offset,origin[1]];w['queue_b']=[origin[0]+offset+5,origin[1]]
     if plan['target'] in surface_play.ITEMS:w['queue_a']=[origin[0],origin[1]+2];w['queue_b']=[origin[0]+12,origin[1]+2]
+    if w.get('physical_pilot'):
+        castle_work.physical_prepare(pond,plan);return
     plan['approach_destination']=list(w['queue_a'])
     pond.game.renderer.duck_pos.move_to(*w['queue_a'])
 
 def valid(pond,plan):
-    w=plan.get('carnival_work',{});key=w.get('id');item=plan.get('target')
-    return bool(item in ALL_ITEMS and key in PROGRAMS and PROGRAMS[key]['item']==item and plan.get('instance') and item in pond.owned
+    if not isinstance(plan,dict):return False
+    w=plan.get('carnival_work',{})
+    if not isinstance(w,dict):return False
+    key=w.get('id');item=plan.get('target')
+    return bool(isinstance(item,str) and isinstance(key,str) and item in ALL_ITEMS and key in PROGRAMS and PROGRAMS[key]['item']==item and plan.get('instance') and item in pond.owned
         and shelters.still_placed(pond,dict(id=item,instance=plan['instance'],destination=plan.get('destination'))))
 
 def owns(pond,item,obj):
@@ -86,6 +91,7 @@ def tick(minds,dt):
     if not plan or not plan.get('carnival_work') or plan.get('paused') or plan['phase'] not in ('prepare','act'):return
     w=plan['carnival_work']
     if blocked(p) and not (w.get('castle_care') and castle_work.allowed(p,w['id'])):return
+    if w.get('physical_pilot'):w['invitation_checked']=True;return
     if w.get('invitation_checked') or w['stage']!='queue':return
     w['invitation_checked']=True
     if not valid(p,plan) or not all(6<=spot[0]<=122 and 3<=spot[1]<=36 for spot in (w['queue_a'],w['queue_b'])):return
@@ -122,7 +128,11 @@ def dock(pond,plan):
 
 def advance(pond,plan,dt):
     w=plan.get('carnival_work')
-    if not w or w.get('done') or plan['phase']!='act':return False
+    if not w or w.get('done'):return False
+    if w.get('physical_pilot'):
+        if not valid(pond,plan):return castle_work.physical_interrupt(pond,plan,'The house is no longer placed here.')
+        return castle_work.physical_advance(pond,plan,dt)
+    if plan['phase']!='act':return False
     pos=pond.game.renderer.duck_pos
     if not valid(pond,plan) or distance((pos.x,pos.y),w['queue_a'])>3:
         w.update(done=True,interrupted=True);cancel(pond.minds);return False
@@ -206,14 +216,23 @@ def complete(pond,plan):
 
 def view(pond,plan):
     w=copy.deepcopy(plan['carnival_work']);r=active(pond.minds)
+    if w.get('physical_pilot') and isinstance(w.get('physical'),dict):
+        pos=pond.game.renderer.duck_pos;root=[pos.x,pos.y]
+        if root!=w['physical'].get('root'):w['physical']['contact_ready']=False
+        w['physical']['root']=root
     if not r or not partner_valid(pond.minds,r,plan):w.pop('companion',None)
     elif w.get('companion'):w['companion']['ready']=r['phase']=='ready'
     return w
 
 def restore(pond):
     plan=pond.state.get('plan')
-    if not plan or not plan.get('carnival_work') or not valid(pond,plan) or pond.location!=plan['location']:return
+    if not plan or not isinstance(plan.get('carnival_work'),dict):return
     w=plan['carnival_work']
+    if w.get('physical_pilot') and not castle_work.physical_active(plan):
+        castle_work.physical_interrupt(pond,plan,'Invalid saved control reservation.');return
+    if not valid(pond,plan) or pond.location!=plan['location']:return
+    if w.get('physical_pilot'):
+        castle_work.physical_restore(pond,plan);return
     if plan['target'] in surface_play.ITEMS:
         w['paired']=False
         surface=excursions.state(plan['target'],pond.object_state(plan['target'],plan))['surface']

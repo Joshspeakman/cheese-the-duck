@@ -1,3 +1,4 @@
+import {actorPitches} from './actor-projection.mjs';
 import ROUTINES from './animation/textile-routines.json' with {type:'json'};
 import COMPANY from './animation/textile-company.json' with {type:'json'};
 import {TEXTILE_BLUEPRINTS,textilePoint} from './textile-workshop.mjs';
@@ -28,7 +29,7 @@ export function textilePose(work,motion=true){
  return {...acting,...controls,...steps,...walking,actorU:acting.u,actorV:acting.v,partner,progress,tool,textile:tool!=='none'&&!work.transition};
 }
 export function textileGeometry(home,worker,sx,sy){
- const c=worker.character,pose=textilePose(c.performance.routine,c.performance.motion!==false),unit=sx*home.scale*home.detailScale,hh=unit*1.5,cw=c.scale*sx,ch=cw*1.5;
+ const c=worker.character,pose=textilePose(c.performance.routine,c.performance.motion!==false),unit=sx*home.scale*home.detailScale,hh=unit*1.5,{cw,ch}=actorPitches(c,sx,sy);
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*hh;
  const p=TEXTILE_BLUEPRINTS[home.blueprint],partner=worker.slot===1;
  const fp=partner?textilePoint(p,pose.actorU,pose.actorV,pose):home.anchors.foot;

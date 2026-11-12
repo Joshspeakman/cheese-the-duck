@@ -1,3 +1,4 @@
+import {actorPitches} from './actor-projection.mjs';
 import ROUTINES from './animation/playkit-routines.json' with {type:'json'};
 import COMPANY from './animation/playkit-company.json' with {type:'json'};
 export {COMPANY as PLAYKIT_COMPANY};
@@ -26,7 +27,7 @@ export function playkitPose(work,motion=true){
  return {...pose,partner,actorU:pose.u,actorV:pose.v,actorJump,playkit:tool!=='none'&&!work.transition,tool,anchor,type:spec.type,progress:clamp(work.elapsed/spec.duration)};
 }
 export function playkitGeometry(home,worker,sx,sy){
- const c=worker.character,pose=playkitPose(c.performance.routine,c.performance.motion!==false),p=PLAYKIT_BLUEPRINTS[home.blueprint],unit=sx*home.scale*home.detailScale,uh=unit*1.5,cw=c.scale*sx,ch=cw*1.5;
+ const c=worker.character,pose=playkitPose(c.performance.routine,c.performance.motion!==false),p=PLAYKIT_BLUEPRINTS[home.blueprint],unit=sx*home.scale*home.detailScale,uh=unit*1.5,{cw,ch}=actorPitches(c,sx,sy);
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*uh,ground=top+home.anchors.entry.y*uh,anchor=home.anchors[pose.anchor]||home.anchors.contact;
  const target={x:left+(anchor.x+.5)*unit,y:top+(anchor.y+.5)*uh},rest=c.workGripRest||c.grip||{x:c.anchorX+5,y:c.groundRow-6},grip=c.grip||rest;
  const range=p.type==='boat'?65:p.type==='yoyo'?45:83;

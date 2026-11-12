@@ -1,3 +1,4 @@
+import {actorPitches} from './actor-projection.mjs';
 import ROUTINES from './animation/creative-routines.json' with {type:'json'};
 import COMPANY from './animation/creative-company.json' with {type:'json'};
 import {scopeEyepiece} from './creative-workshop.mjs';
@@ -30,7 +31,7 @@ export function creativePose(work,motion=true){
  return {...acting,...controls,contact,...stepping,...walking,creative:tool!=='none'&&!work.transition,progress,tool,type:spec.type,partner:Boolean(partner),seconds:motion?work.elapsed:0,wind:motion?work.wind||0:0};
 }
 export function creativeGeometry(home,worker,sx,sy){
- const c=worker.character,pose=creativePose(c.performance.routine,c.performance.motion!==false),unit=sx*home.scale*home.detailScale,uh=unit*1.5,cw=c.scale*sx,ch=cw*1.5;
+ const c=worker.character,pose=creativePose(c.performance.routine,c.performance.motion!==false),unit=sx*home.scale*home.detailScale,uh=unit*1.5,{cw,ch}=actorPitches(c,sx,sy);
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*uh,ground=top+home.anchors.entry.y*uh;
  const a=home.anchors[pose.anchorA]||home.anchors.contact,b=home.anchors[pose.anchorB]||home.anchors.contact;
  const target={x:left+(a.x+(b.x-a.x)*pose.anchorBlend+.5)*unit,y:top+(a.y+(b.y-a.y)*pose.anchorBlend+.5)*uh};

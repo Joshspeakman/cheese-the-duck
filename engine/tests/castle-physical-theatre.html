@@ -1,0 +1,51 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Native castle contacts</title>
+<style>body{background:#142b23;color:#eadcb9;font:18px system-ui}canvas{max-width:100%}</style><div id="view"></div>
+<script type="module">
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {carnivalGeometry} from '../client/carnival-routines.mjs';
+import {castleArtWorld,projectCastleWorld} from '../client/castle-projection.mjs';
+import {actorPitches} from '../client/actor-projection.mjs';
+import GEOMETRY from '../client/animation/castle-geometry.json' with {type:'json'};
+const near=(a,b,label)=>{if(Math.abs(a-b)>1e-6)throw Error(label+': '+a+' != '+b)};
+window.replayPhysicalCastle=frames=>{
+ if(!Array.isArray(frames)||!frames.length)throw Error('Native replay frames required');
+ const view=new SceneCanvas();document.querySelector('#view').append(view.canvas);
+ const images={},phases=new Set(),costs=[];let roots=0,contacts=0,cases=0,transitionChecks=0;
+ for(const [width,height] of [[1200,800],[1800,800],[900,1100]])for(const shifted of [false,true]){
+  view.resize(width,height);let bodyPitch=null;
+  for(const [i,source] of frames.entries()){
+   const s=structuredClone(source),w=s.living?.plan?.carnival_work,physical=w?.physical;
+   if(shifted)s.camera={...s.camera,x:(s.camera?.x||0)+3,y:(s.camera?.y||0)+2};
+   const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
+   if(JSON.stringify(s)!==before)throw Error('Renderer mutated native replay');
+   const body=view.world.characters.find(c=>c.cheese)||view.world.objects.flatMap(o=>(o.carnivalRiders||[]).map(r=>r.character)).find(c=>c.cheese);
+   if(body){
+    const pitch=actorPitches(body,view.sx,view.sy);
+    if(bodyPitch){near(pitch.cw,bodyPitch.cw,'body width across activity');near(pitch.ch,bodyPitch.ch,'body height across activity');transitionChecks++;}
+    else bodyPitch=pitch;
+   }
+   if(!physical||physical.version!==1)continue;
+   const home=view.world.objects.find(o=>o.instance===s.living.plan.instance);
+   if(!home?.physicalCastle)throw Error('Missing exact physical house');
+   const member=home.carnivalRiders?.find(r=>r.role==='a');
+   if(!member&&(!body||s.living.plan.phase!=='approach'))throw Error('Native actor missing from exact house');
+   const g=member?carnivalGeometry(home,member,view.sx,view.sy):{character:body,pose:{contact:0},points:[]},expected=projectCastleWorld(home.physicalCastle,physical.root,view.sx,view.sy);
+   near(g.character.x*view.sx,expected.x,'root x');near(g.character.y*view.sy,expected.y,'root y');
+   if(member&&!g.authoritativeRoot)throw Error('Actor displaced by legacy elapsed interpolation');
+   const anchor=GEOMETRY.controls[physical.station];if(!anchor)throw Error('Unknown native station');
+   const worldTarget=castleArtWorld(home.physicalCastle.origin,anchor.x,anchor.y,{center:true});
+   near(physical.target[0],worldTarget[0],'native target x');near(physical.target[1],worldTarget[1],'native target y');
+   const target=projectCastleWorld(home.physicalCastle,worldTarget,view.sx,view.sy);
+   if(member){near(g.target.x,target.x,'rendered control x');near(g.target.y,target.y,'rendered control y');}
+   if(!physical.contact_ready&&g.points.length)throw Error('Contact drawn before native readiness');
+   if(g.tip&&g.pose.contact>=1-1e-9&&g.inside>=1-1e-9){near(g.tip.x,target.x,'contact x');near(g.tip.y,target.y,'contact y');contacts++;}
+   roots++;phases.add(physical.phase);cases++;
+   const key=width+'x'+height+'-'+physical.phase+(g.tip?'-contact':'')+(shifted?'-camera':'');
+   if(!images[key])images[key]=view.canvas.toDataURL();
+  }
+ }
+ if(!roots||!contacts||!phases.has('approach')||!phases.has('exit'))throw Error('Incomplete native replay: roots='+roots+' contacts='+contacts+' phases='+[...phases]);
+ costs.sort((a,b)=>a-b);
+ return {images,sourceFrames:frames.length,replayCases:cases,roots,contacts,transitionChecks,phases:[...phases],windowSizes:3,cameraVariants:2,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)]};
+};
+</script>

@@ -1,3 +1,5 @@
+import {actorPitches} from './actor-projection.mjs';
+import {castleArtFrame} from './castle-projection.mjs';
 import ROUTINES from './animation/surface-routines.json' with {type:'json'};
 export {ROUTINES as SURFACE_ROUTINES};
 const N={x:0,y:0,b:0,w:0,l:0,r:0,u:0,v:0,press:0,seated:0,eye:null,mark:''};
@@ -39,11 +41,12 @@ export function surfacePose(work,role='a',motion=true,watch=false){
  return {...p,seated:inside>.9&&(spec.item==='magic_carpet'||control.seated>.5)};
 }
 export function surfaceGeometry(home,member,sx,sy){
- const c=member.character,w=member.work,inside=member.watch?0:surfaceInside(w,member.role),slot=member.role==='a'?0:1,unit=sx*home.scale*home.detailScale,uh=unit*1.5,cw=c.scale*sx,ch=cw*1.5;
+ const physical=castleArtFrame(home,sx,sy);
+ const c=member.character,w=member.work,inside=member.watch?0:surfaceInside(w,member.role),slot=member.role==='a'?0:1,unit=physical?.unit||sx*home.scale*home.detailScale,uh=physical?.uh||unit*1.5,{cw,ch}=actorPitches(c,sx,sy);
  if(inside===0)return {character:c,front:null,inside,seatIndex:slot};
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*uh,seat=home.anchors.slots[slot],state=home.surfaceState[member.role];
  const pose=surfaceControls(w)[member.role],seated=home.anchors.surface==='carpet'?1:clamp((pose.seated-.5)*2);
- const contact=c.seatContact??c.groundRow,resting={x:left+seat.x*unit-(c.offsetX||0)*cw,y:top+(seat.y-state.jump)*uh+(c.groundRow-contact)*ch*seated-(c.offsetY||0)*cw};
+ const contact=c.seatContact??c.groundRow,resting={x:left+seat.x*unit-(c.offsetX||0)*cw,y:top+(seat.y-state.jump)*uh+(c.groundRow-contact)*ch*seated-(c.offsetY||0)*ch/1.5};
  const route=[{x:c.x*sx,y:c.y*sy},...home.anchors.route.slice(1).map(p=>({x:left+p.x*unit,y:top+p.y*uh})),resting];
  const t=inside*(route.length-1),i=Math.min(route.length-2,Math.floor(t)),u=t-i,a=route[i],b=route[i+1];
  const character={...c,x:(a.x+(b.x-a.x)*u)/sx,y:(a.y+(b.y-a.y)*u)/sy,offsetY:inside===1?c.offsetY:0};

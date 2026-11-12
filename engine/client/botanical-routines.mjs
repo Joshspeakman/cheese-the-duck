@@ -1,3 +1,4 @@
+import {actorPitches} from './actor-projection.mjs';
 import ROUTINES from './animation/botanical-routines.json' with {type:'json'};
 export {ROUTINES as BOTANICAL_ROUTINES};
 const clamp=n=>Math.max(0,Math.min(1,n));
@@ -27,7 +28,7 @@ export function botanicalGeometry(home,worker,sx,sy){
  const c=worker.character,pose=botanicalPose(c.performance.routine,c.performance.motion!==false);
  const unit=sx*home.scale*home.detailScale,ch=unit*1.5;
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*ch;
- const dir=worker.slot===0?1:-1,cw=c.scale*sx,hh=cw*1.5;
+ const dir=worker.slot===0?1:-1,{cw,ch:hh}=actorPitches(c,sx,sy);
  const anchor=home.anchors[pose.anchor]||home.anchors.contact;
  const leaf=pose.anchor==='leaf'&&Number.isFinite(anchor.dx),length=leaf?Math.hypot(anchor.dx,anchor.dy)||1:1;
  const across=leaf?Math.min(2,anchor.width*.35):0;

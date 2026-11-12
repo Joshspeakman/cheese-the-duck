@@ -1,0 +1,41 @@
+<!doctype html><meta charset="utf-8"><title>Actor projection regression review</title>
+<script type="module">
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {actorPitches} from '../client/actor-projection.mjs';
+import {occupiedGeometry} from '../client/residence-stage.mjs';
+import {seatingGeometry} from '../client/seating-routines.mjs';
+import {scene} from './scenes.mjs';
+window.reviewActorProjection=()=>{
+ const r=new SceneCanvas();r.effects.level='quiet';const images={};let checks=0;
+ for(const [width,height]of [[1440,900],[1800,800],[800,1200]]){
+  const sheet=document.createElement('canvas');sheet.width=1800;sheet.height=900;const ctx=sheet.getContext('2d');ctx.fillStyle='#142820';ctx.fillRect(0,0,1800,900);
+  for(const [i,kind]of ['idle','residence','seating'].entries())for(const [j,camera]of [{x:0,y:0,w:132,h:42},{x:10,y:2,w:107,h:38}].entries()){
+   const id=kind==='residence'?'wooden_cottage':'chair_wood',plan=kind==='residence'?{kind:'rest',target:id,phase:'act',progress:.6,residence:{destination:[65,24]}}:kind==='seating'?{kind:'item',target:id,phase:'act',progress:.5,destination:[65,24],seating:{id,destination:[65,24],slot:0},seat_routine:{id:'little_lookout',elapsed:10}}:null;
+   const s=scene({camera,motion:false,particles:false,weatherEffects:false,items:kind==='idle'?[]:[{id,x:65,y:24}],duck:{x:65,y:24,stage:'adult',state:kind==='residence'?'sleeping':'idle',facing:true},living:{ecology:{},objects:{},plan}}),before=JSON.stringify(s);
+   r.resize(width,height);r.draw(s,0,0);if(before!==JSON.stringify(s))throw Error('Scene mutation');
+   const home=r.world.objects.find(o=>o.id===id),member=kind==='residence'?(home.occupant||home.occupants?.[0]):home?.sitters?.[0],actor=kind==='idle'?r.world.characters.find(c=>c.cheese):member.character;
+   if(!actor.physicalActorProjection)throw Error('Missing continuous Cheese projection');
+   const nested=[...r.world.characters];
+   for(const object of r.world.objects){
+    for(const key of ['occupants','nestHelpers','riders','sitters','gardeners','musicians','lightWorkers','keepers','creators','textileUsers','groundUsers','structureUsers','carnivalRiders','players'])for(const member of object[key]||[])nested.push(member.character);
+    for(const key of ['occupant','rider','bather'])if(object[key])nested.push(object[key].character);
+   }
+   for(const model of nested)if(model?.cheese&&(!model.physicalActorProjection||model.scale!==.675))throw Error('Nested Cheese acquired an activity-dependent scale');
+   const pitches=actorPitches(actor,r.sx,r.sy);if(Math.abs(pitches.cw-actor.scale*132/r.displayCamera.w*r.sx)>1e-9)throw Error('Pitch mismatch');
+   if(Math.abs(pitches.ch/pitches.cw-1.5)>1e-9)throw Error('Actor proportions changed');
+   if(kind==='seating'){
+    const g=seatingGeometry(home,member,r.sx,r.sy),p=actorPitches(g.character,r.sx,r.sy),seat=home.anchors.slots[0],unit=r.sx*home.scale*home.detailScale;
+    const belly=g.character.y*r.sy+(g.character.seatContact-g.character.groundRow)*p.ch+(g.character.offsetY||0)*p.ch/1.5;
+    const expected=home.y*r.sy+(seat.y-home.art.length)*unit*1.5;if(Math.abs(belly-expected)>1e-7)throw Error('Seat contact detached');
+   }
+   if(kind==='residence'){const g=occupiedGeometry(home,actor,member.inside,r.sx,r.sy);if(!(g.character.scale>0&&g.character.scale<=actor.scale))throw Error('Invalid shelter fitting');}
+   if(kind==='idle'){
+    const initial=JSON.stringify({scale:actor.scale,pitches,art:actor.art});r.draw({...s,living:{...s.living,plan:null}},100,0);
+    const after=r.world.characters.find(c=>c.cheese);if(JSON.stringify({scale:after.scale,pitches:actorPitches(after,r.sx,r.sy),art:after.art})!==initial)throw Error('Idle projection drift after activity state removal');
+   }
+   const factor=Math.min(600/width,420/height),x=i*600+(600-width*factor)/2,y=j*450+28;ctx.drawImage(r.canvas,x,y,width*factor,height*factor);ctx.fillStyle='#efdfbc';ctx.font='18px monospace';ctx.fillText(kind+' '+width+'x'+height+' camera '+j,i*600+10,j*450+21);checks++;
+  }images['actor-projection-'+width+'x'+height]=sheet.toDataURL('image/png');
+ }
+ return {images,checks};
+};
+</script>

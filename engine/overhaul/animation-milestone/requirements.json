@@ -90,7 +90,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Integrated75 food/specimen/seed artworks through production renderer, with measured footprints,300 anchor checks and150 day/night render checks. Four native company controllers now use authoritative portable centers;171 native checks.445/609 unique artworks constructed; full per-object sequence certification remains zero. Encounter reward ownership and evidence validation are next bounded Medium tasks.",
+  "previous_goal_turn": "Implemented native adult solo blower-switch interaction with actual walking/support/contact/exit and validated paused saves;135 native checks,31 lifecycle checks including fresh DesktopGame disk reload,342 rendered roots and18 contacts from59 real frames. Corrected global Cheese projection and display camera so world positions and approved proportions remain consistent across window shapes.245 JS regression tests plus4 targeted camera checks;882 castle,675 surface and694 living native regressions.445/609 artwork; all per-object verifiedSequences remain zero. Next native work: two-station door and hose controls, then full age/visitor/context coverage.",
   "items": [
     {
       "id": "hat_red",
@@ -4099,7 +4099,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "medium_art_integration_and_native_companion_anchors",
+    "sourcePhase": "native_control_contacts_and_aspect_correct_projection",
     "fullyOverhauled": false,
     "constructedObjects": 390,
     "remainingArtwork": 152,
@@ -5427,6 +5427,40 @@
       "regressionTests": 9,
       "oldNewEqualityStates": 9,
       "nativeAuthority": "not yet implemented; aspect-independent projection required"
+    },
+    "nativeCastlePilot": {
+      "score": "castle_start",
+      "actors": "adult Cheese, solo",
+      "nativeChecks": 135,
+      "lifecycleChecks": 31,
+      "replayFrames": 59,
+      "renderedRoots": 342,
+      "renderedContacts": 18,
+      "bodyTransitionChecks": 348,
+      "worldAuthority": "Existing native locomotion; actual supported arrival and bounded grip gate control effect; validated exterior exit gates completion",
+      "savePolicy": "Fresh game/animator reload remains stationary, reacquires support, preserves consumed effects and completes once",
+      "limitations": [
+        "All other ages, companions and controls still require migration",
+        "Three-cell reach is a bounded implementation rule, not full anatomical certification",
+        "No full object repertoire certified"
+      ],
+      "fullRepertoiresComplete": false
+    },
+    "physicalProjection": {
+      "camera": "Expand display extent around native camera center; full window and canonical glyph/body aspect preserved",
+      "nativeDataMutated": false,
+      "regressionSuite": 245,
+      "additionalFocusedCameraTests": 4,
+      "actorPreviewCases": 18,
+      "review": "engine/artifacts/animation-milestone/castle-physical-review.html",
+      "remaining": "Procedural scenery styling and full multi-object/actor repertoire validation remain open",
+      "harnessLimitation": "Electron preview teardown intermittently required terminating owned test processes after assertions/artifacts completed."
+    },
+    "nativeCastleRegressions": {
+      "controls": 882,
+      "surfacePlay": 675,
+      "livingSimulation": 694,
+      "livingHours": 72
     }
   },
   "wardrobe": [
