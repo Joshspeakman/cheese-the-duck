@@ -167,14 +167,14 @@ def reject_saved(game, saved, label):
 
 try:
     game = new_game(start=True)
-    for reason in ('paused', 'unavailable', 'direct_care'):
+    for reason in ('paused', 'unavailable', 'direct_care', 'paused_care', 'unavailable_care'):
         plan, work, obj = reset(game)
         pos = game.renderer.duck_pos
-        if reason == 'paused':
+        if reason in ('paused', 'paused_care'):
             plan['paused'] = True
-        elif reason == 'unavailable':
+        if reason in ('unavailable', 'unavailable_care'):
             game.renderer._show_talk = True
-        else:
+        if 'care' in reason:
             game.duck.current_action = 'feed'
             pos.set_state_by_name('eating', 3)
         game.living_pond._activity(.2)
@@ -184,9 +184,9 @@ try:
               reason + ': old idle timer cannot move Cheese between activity ticks')
         check(work['clock'] == 0 and not work['events'] and obj['uses'] == 0,
               reason + ': paused movement earns no contact or completion')
-        if reason == 'direct_care':
+        if 'care' in reason:
             check(pos.get_state_name() == 'eating' and game.duck.current_action == 'feed',
-                  'direct care keeps its own animation while travel is suspended')
+                  reason + ': care keeps its own animation while travel is suspended')
         game.renderer._show_talk = False
         game.duck.current_action = None
         game.living_pond.command({'action': 'resume'})

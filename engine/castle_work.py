@@ -6,8 +6,9 @@ ROUTINES=json.loads((Path(__file__).parent/'client/animation/castle-care.json').
 DEFAULTS=dict(vent=0.,door=0.,latch=0.,tie_left=.8,tie_right=.8,apron=0.,flag=1.,hose=0.,kink=0.,dust=0.,mesh_wet=0.,roof_water=0.,prints=0.)
 MOVING=('vent','door','tie_left','tie_right','apron','flag','hose','kink')
 
-# Only the first explicitly adopted solo control uses native physical ownership.
-PHYSICAL_SCORES={'castle_start'}
+# Explicit adult solo controls; other ages and routines retain legacy ownership.
+CONTACT_METRICS=json.loads((Path(__file__).parent/'client/animation/castle-contact-metrics.json').read_text())['routines']
+PHYSICAL_SCORES={'castle_start','castle_door_open','castle_hose_stow'}
 
 def physical_active(plan):
     if not isinstance(plan,dict) or plan.get('target')!='bounce_house':return False
@@ -18,7 +19,9 @@ def physical_active(plan):
         return isinstance(v,(list,tuple)) and len(v)==2 and all(isinstance(n,(int,float)) and not isinstance(n,bool) and math.isfinite(n) for n in v)
     return bool(w.get('id') in PHYSICAL_SCORES and isinstance(p,dict) and p.get('version')==1
                 and p.get('actor')=='cheese' and p.get('phase') in ('approach','hold','exit')
-                and p.get('station')=='switch' and point(p.get('root')) and point(p.get('target'))
+                and type(p.get('station_index')) is int and 0<=p['station_index']<len(physical_stations(w))
+                and p.get('station')==physical_stations(w)[p['station_index']][1]
+                and p.get('route_kind') in ('initial','transfer','exit') and point(p.get('route_origin')) and point(p.get('root')) and point(p.get('target'))
                 and point(p.get('stance')) and point(p.get('center')) and point(p.get('exit'))
                 and isinstance(p.get('route'),list) and bool(p['route']) and all(point(v) for v in p['route'])
                 and type(p.get('waypoint')) is int and 0<=p['waypoint']<len(p['route'])
@@ -43,6 +46,15 @@ def physical_lifecycle_ok(plan):
     if elapsed>duration or not isinstance(events,list) or any(type(v) is not int for v in events):return False
     expected=[i for i,effect in enumerate(ROUTINES[w['id']]['effects']) if effect[0]*duration<=elapsed]
     if events!=expected:return False
+    steps=physical_stations(w)
+    cursor=max(i for i,(at,_) in enumerate(steps) if at*duration<=elapsed)
+    if p['station_index']!=cursor:return False
+    if p['phase']=='exit':
+        if p['route_kind']!='exit' or p['route']!=[p['exit']]:return False
+    else:
+        if p['route_kind']=='exit' or p['route'][-1]!=p['stance']:return False
+        if p['phase']=='hold' and p['waypoint']!=len(p['route'])-1:return False
+        if p['route_kind']=='transfer' and (cursor==0 or p['route']!=[p['stance']]):return False
     if stage=='queue':return clock==0 and elapsed==0 and p['phase'] in ('approach','hold') and not w.get('done')
     if stage=='service':return clock==elapsed and p['phase'] in ('approach','hold') and not w.get('done')
     if stage in ('service_exit','done'):
@@ -50,10 +62,15 @@ def physical_lifecycle_ok(plan):
                 and p['route'][-1]==p['exit'] and bool(w.get('done'))==(stage=='done'))
     return False
 
-# The first pilot is adult Cheese, solo, at the low blower switch. Rig offsets
-# below come from its authored contact pose, not a renderer-generated body shift.
+# These bounded controls use adult Cheese alone. Contact offsets come from
+# exported authored rig poses, never a renderer-generated body shift.
 GEOMETRY=json.loads((Path(__file__).parent/'client/animation/castle-geometry.json').read_text())
 Q=.66*GEOMETRY['detail_scale']
+# The bounded pilot uses one adult rig. Export drift must fail closed rather
+# than silently certify old scale or support against new authored contacts.
+for _metrics in CONTACT_METRICS.values():
+    for _metric in _metrics:
+        assert (_metric['scale'],_metric['anchorX'],_metric['groundRow'],_metric['feet'])==(.675,36,39.5,[[-3.5,0],[2.5,0]]), 'Revalidate native adult support after rig changes'
 BX=.675*132/192
 BY=.675*42/47
 STANCE=dict(width=6,height=4,floor=False)
@@ -72,8 +89,8 @@ def placement_center(pond,plan):
     x,y=place.get_display_position()
     return [x*132/20,y*42/12]
 
-def reach_distance(root,target):
-    hand=[root[0]+15.5*BX,root[1]-4*BY]
+def reach_distance(root,target,grip=(15.5,-4)):
+    hand=[root[0]+grip[0]*BX,root[1]+grip[1]*BY]
     return math.hypot((target[0]-hand[0])/BX,(target[1]-hand[1])/BY)
 
 def supported(pond,plan,root,center):
@@ -100,28 +117,41 @@ def segment_clear(pond,plan,start,end,center):
         point=[point[i]+(1 if point[i]<end[i] else -1 if point[i]>end[i] else 0) for i in (0,1)]
     return False
 
-def physical_prepare(pond,plan):
+def physical_stations(work):
+    spec=ROUTINES[work['id']]
+    return spec.get('stations',[[0,spec['station']]])
+
+def station_grips(work,name):
+    return [e['grip'] for e in CONTACT_METRICS[work['id']] if e['station']==name]
+
+def physical_route(root,stance,exit_point,ground,kind):
+    if kind=='exit':return [exit_point]
+    if kind=='transfer':return [stance]
+    route=[]
+    if root[1]<ground:route.append([round(root[0]),math.ceil(ground)])
+    return route+[exit_point,stance]
+
+def physical_prepare(pond,plan,cursor=0,kind='initial'):
     w=plan['carnival_work'];pos=pond.game.renderer.duck_pos;center=placement_center(pond,plan)
     if center is None:return physical_interrupt(pond,plan,'The placed house is no longer here.')
-    target=control_world(center);ground=art_world(center,0,GEOMETRY['ground_row'])[1]
+    name=physical_stations(w)[cursor][1]
+    target=control_world(center,name);ground=art_world(center,0,GEOMETRY['ground_row'])[1]
     preferred=[target[0]-16.5*BX,ground]
     candidates=sorted(([x,y] for x in range(math.floor(preferred[0])-3,math.ceil(preferred[0])+4)
                        for y in range(math.ceil(ground),math.ceil(ground)+4)),key=lambda v:(v[0]-preferred[0])**2+(v[1]-preferred[1])**2)
-    stance=next((v for v in candidates if supported(pond,plan,v,center) and reach_distance(v,target)<=3),None)
+    grips=station_grips(w,name)
+    stance=next((v for v in candidates if supported(pond,plan,v,center) and all(reach_distance(v,target,g)<=3 for g in grips)),None)
     entry=art_world(center,GEOMETRY['entry']['x'],GEOMETRY['ground_row'])
-    exit_point=[round(entry[0]),math.ceil(ground)]
-    route=[];root=[pos.x,pos.y]
-    if root[1]<ground:route.append([round(root[0]),math.ceil(ground)])
-    route.append(exit_point)
-    if stance is not None:route.append(stance)
+    exit_point=[round(entry[0]),math.ceil(ground)];root=[pos.x,pos.y]
+    if stance is None:return physical_interrupt(pond,plan,'The '+name+' has no dry reachable stance.')
+    route=physical_route(root,stance,exit_point,ground,kind)
     previous=root
-    if stance is None:return physical_interrupt(pond,plan,'The blower switch has no dry reachable stance.')
     for point in route:
-        if not segment_clear(pond,plan,previous,point,center):return physical_interrupt(pond,plan,'The exterior route to the blower is blocked.')
+        if not segment_clear(pond,plan,previous,point,center):return physical_interrupt(pond,plan,'The exterior route to the '+name+' is blocked.')
         previous=point
     w['physical']=dict(version=1,actor='cheese',center=center,root=root,target=target,stance=stance,
-                       phase='approach',station='switch',contact_ready=False,route=route,waypoint=0,
-                       exit=exit_point,travel_time=0.)
+                       phase='approach',station=name,station_index=cursor,contact_ready=False,route=route,waypoint=0,
+                       route_origin=list(root),route_kind=kind,exit=exit_point,travel_time=0.)
     w['invitation_checked']=True;w['paired']=False
     plan['approach_destination']=list(stance)
     pos.move_to(*route[0])
@@ -135,12 +165,14 @@ def physical_interrupt(pond,plan,reason):
 
 def physical_geometry_ok(pond,plan):
     if not physical_lifecycle_ok(plan):return False
-    p=plan['carnival_work']['physical'];center=placement_center(pond,plan)
-    if center!=p['center'] or p['target']!=control_world(center):return False
+    w=plan['carnival_work'];p=w['physical'];center=placement_center(pond,plan)
+    if center!=p['center'] or p['target']!=control_world(center,p['station']):return False
     ground=art_world(center,0,GEOMETRY['ground_row'])[1]
     entry=art_world(center,GEOMETRY['entry']['x'],GEOMETRY['ground_row'])
     return (p['exit']==[round(entry[0]),math.ceil(ground)] and p['stance'][1]>=ground
-            and all(n==round(n) for n in p['stance']) and reach_distance(p['stance'],p['target'])<=3
+            and p['route']==physical_route(p['route_origin'],p['stance'],p['exit'],ground,p['route_kind'])
+            and all(n==round(n) for n in p['stance'])
+            and all(reach_distance(p['stance'],p['target'],g)<=3 for g in station_grips(w,p['station']))
             and supported(pond,plan,p['stance'],center))
 
 def physical_restore(pond,plan):
@@ -150,10 +182,9 @@ def physical_restore(pond,plan):
     if not physical_geometry_ok(pond,plan):return physical_interrupt(pond,plan,'Invalid saved control reservation.')
     if w.get('done'):
         pond.game.renderer.duck_pos.cancel_movement();return True
-    was_exit=w['physical']['phase']=='exit'
-    if not physical_prepare(pond,plan):return False
-    if was_exit:
-        p=w['physical'];p.update(phase='exit',route=[p['exit']],waypoint=0)
+    old=w['physical'];was_exit=old['phase']=='exit'
+    if not physical_prepare(pond,plan,old['station_index'],kind='exit' if was_exit else 'initial'):return False
+    if was_exit:w['physical']['phase']='exit'
     physical_pause(pond,plan)
     return True
 
@@ -180,21 +211,40 @@ def physical_advance(pond,plan,dt):
         else:
             if not pos._is_directed_movement or [pos.target_x,pos.target_y]!=destination:pos.move_to(*destination)
             return True
-    if not supported(pond,plan,root,center) or reach_distance(root,p['target'])>3 or max(abs(root[i]-p['stance'][i]) for i in (0,1))>.51:
-        return physical_interrupt(pond,plan,'The actual feet and grip cannot reach the switch.')
+    if not supported(pond,plan,root,center) or not all(reach_distance(root,p['target'],g)<=3 for g in station_grips(w,p['station'])) or max(abs(root[i]-p['stance'][i]) for i in (0,1))>.51:
+        return physical_interrupt(pond,plan,'The actual feet and grip cannot reach the '+p['station']+'.')
     p['contact_ready']=True
     if plan['phase']!='act':return True
     obj=pond.object_state('bounce_house',plan);s=state(obj);s['active']=True
     if w['stage']=='queue':
         w['start']=copy.deepcopy(s);carnival.stage(w,'service',ROUTINES[w['id']]['duration'])
     if w['stage']=='service':
-        duration=ROUTINES[w['id']]['duration'];old=w['clock'];step=min(max(0,excursions.finite(dt)),duration-old)
-        w['clock']+=step;w['elapsed']+=step;w['ride_elapsed']=w['clock'];s['stroke']=max(0,math.sin(w['clock']*4))
-        for i,effect in enumerate(ROUTINES[w['id']]['effects']):
-            if old<effect[0]*duration<=w['clock']:apply(obj,w,i,effect)
+        spec=ROUTINES[w['id']];duration=spec['duration'];remaining=max(0,excursions.finite(dt))
+        steps=physical_stations(w);cursor=p['station_index']
+        boundary=steps[cursor+1][0]*duration if cursor+1<len(steps) else duration
+        # Split at each authored effect and station boundary. No score time is
+        # spent walking; an arbitrarily large dt cannot operate the next station.
+        while remaining>0 and w['clock']<boundary:
+            old=w['clock']
+            upcoming=[e[0]*duration for i,e in enumerate(spec['effects']) if i not in w['events'] and e[0]*duration>old]
+            stop=min([old+remaining,boundary]+upcoming)
+            if stop<=old:break  # Sub-ULP remainder cannot advance this score clock.
+            step=stop-old;w['clock']=stop;w['elapsed']+=step;w['ride_elapsed']=stop;remaining-=step
+            s['stroke']=max(0,math.sin(stop*4))
+            for i,effect in enumerate(spec['effects']):
+                if old<effect[0]*duration<=stop:
+                    metric=CONTACT_METRICS[w['id']][i]
+                    if metric['station']!=p['station'] or reach_distance(root,p['target'],metric['grip'])>3:
+                        return physical_interrupt(pond,plan,'The authored contact cannot reach its control.')
+                    if w['id']=='castle_hose_stow' and effect[1]=='hose' and (0 not in w['events'] or s['motor']!='off'):
+                        return physical_interrupt(pond,plan,'Stop the blower before coiling its hose.')
+                    apply(obj,w,i,effect)
+        if w['clock']>=boundary and cursor+1<len(steps):
+            return physical_prepare(pond,plan,cursor+1,kind='transfer')
         if w['clock']>=duration:
-            p.update(phase='exit',contact_ready=False,route=[p['exit']],waypoint=0,travel_time=0.)
+            p.update(phase='exit',contact_ready=False,route=[p['exit']],waypoint=0,travel_time=0.,route_kind='exit',route_origin=list(root))
             carnival.stage(w,'service_exit',0);pos.move_to(*p['exit'])
+
     return True
 
 

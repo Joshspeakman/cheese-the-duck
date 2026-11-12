@@ -1,18 +1,19 @@
 <!doctype html><meta charset="utf-8"><title>Cheese · Native castle contacts</title>
 <style>body{background:#142b23;color:#eadcb9;font:18px system-ui}canvas{max-width:100%}</style><div id="view"></div>
 <script type="module">
+import {CASTLE_SCORES} from '../client/castle-care.mjs';
 import {SceneCanvas} from '../client/ultra-renderer.mjs';
 import {carnivalGeometry} from '../client/carnival-routines.mjs';
 import {castleArtWorld,projectCastleWorld} from '../client/castle-projection.mjs';
 import {actorPitches} from '../client/actor-projection.mjs';
 import GEOMETRY from '../client/animation/castle-geometry.json' with {type:'json'};
-const near=(a,b,label)=>{if(Math.abs(a-b)>1e-6)throw Error(label+': '+a+' != '+b)};
-window.replayPhysicalCastle=frames=>{
+const near=(a,b,label)=>{if(!Number.isFinite(a)||!Number.isFinite(b)||Math.abs(a-b)>1e-6)throw Error(label+': '+a+' != '+b)};
+window.replayPhysicalCastle=(frames,{requireEffects=false}={})=>{
  if(!Array.isArray(frames)||!frames.length)throw Error('Native replay frames required');
  const view=new SceneCanvas();document.querySelector('#view').append(view.canvas);
- const images={},phases=new Set(),costs=[];let roots=0,contacts=0,cases=0,transitionChecks=0;
+ const images={},phases=new Set(),costs=[],bindings={};let roots=0,contacts=0,cases=0,transitionChecks=0,effectChecks=0;
  for(const [width,height] of [[1200,800],[1800,800],[900,1100]])for(const shifted of [false,true]){
-  view.resize(width,height);let bodyPitch=null;
+  view.resize(width,height);let bodyPitch=null;const effects={};
   for(const [i,source] of frames.entries()){
    const s=structuredClone(source),w=s.living?.plan?.carnival_work,physical=w?.physical;
    if(shifted)s.camera={...s.camera,x:(s.camera?.x||0)+3,y:(s.camera?.y||0)+2};
@@ -39,13 +40,30 @@ window.replayPhysicalCastle=frames=>{
    if(member){near(g.target.x,target.x,'rendered control x');near(g.target.y,target.y,'rendered control y');}
    if(!physical.contact_ready&&g.points.length)throw Error('Contact drawn before native readiness');
    if(g.tip&&g.pose.contact>=1-1e-9&&g.inside>=1-1e-9){near(g.tip.x,target.x,'contact x');near(g.tip.y,target.y,'contact y');contacts++;}
+   const binding=bindings[w.id]??={roots:0,contacts:0,stations:new Set(),phases:new Set()};
+   binding.roots++;binding.stations.add(physical.station);binding.phases.add(physical.phase);
+   if(g.tip&&g.pose.contact>=1-1e-9&&g.inside>=1-1e-9)binding.contacts++;
+   if(s._physicalEvent!==undefined){
+    const index=s._physicalEvent,effect=CASTLE_SCORES[w.id]?.effects[index];
+    if(!Number.isInteger(index)||!effect||!w.events.includes(index))throw Error('Invalid observed native effect');
+    near(w.ride_elapsed,effect[0]*CASTLE_SCORES[w.id].duration,'native effect time');
+    if(physical.phase!=='hold'||!physical.contact_ready||!g.tip||g.pose.contact<1-1e-9||g.inside<1-1e-9)throw Error('Effect without a rendered ready contact: '+w.id+'/'+index);
+    near(g.tip.x,target.x,'effect tip x');near(g.tip.y,target.y,'effect tip y');
+    (effects[w.id]??=new Set()).add(index);effectChecks++;
+   }
    roots++;phases.add(physical.phase);cases++;
-   const key=width+'x'+height+'-'+physical.phase+(g.tip?'-contact':'')+(shifted?'-camera':'');
+   const key=w.id+'-'+physical.station+'-'+width+'x'+height+'-'+physical.phase+(g.tip?'-contact':'')+(s._physicalEvent!==undefined?'-effect-'+s._physicalEvent:'')+(shifted?'-camera':'');
    if(!images[key])images[key]=view.canvas.toDataURL();
+  }
+  if(requireEffects)for(const id of Object.keys(bindings)){
+   const expected=CASTLE_SCORES[id].effects.length;
+   if(effects[id]?.size!==expected)throw Error('Missing native contact frames for '+id+' at '+width+'x'+height+' camera '+shifted);
   }
  }
  if(!roots||!contacts||!phases.has('approach')||!phases.has('exit'))throw Error('Incomplete native replay: roots='+roots+' contacts='+contacts+' phases='+[...phases]);
  costs.sort((a,b)=>a-b);
- return {images,sourceFrames:frames.length,replayCases:cases,roots,contacts,transitionChecks,phases:[...phases],windowSizes:3,cameraVariants:2,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)]};
+ const scores=Object.fromEntries(Object.entries(bindings).map(([id,b])=>[id,{...b,stations:[...b.stations],phases:[...b.phases]}]));
+ for(const [id,b]of Object.entries(scores))if(!b.contacts||!b.phases.includes('exit'))throw Error('Incomplete score replay: '+id);
+ return {images,scores,sourceFrames:frames.length,replayCases:cases,roots,contacts,effectChecks,transitionChecks,phases:[...phases],windowSizes:3,cameraVariants:2,medianMs:costs[Math.floor(costs.length*.5)],p95Ms:costs[Math.floor(costs.length*.95)]};
 };
 </script>

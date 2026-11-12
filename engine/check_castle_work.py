@@ -109,7 +109,7 @@ try:
             elif field in ('motor','latch'):s[field]='off' if field=='motor' and value=='on' else 'on' if field=='motor' else 1-value
         inventory=possessions();condition=obj['condition'];learning={k:b.model.residents[k]['counts']['share'] for k in ('cheese',key)}
         until('service',capture=n%3==0)
-        native=score=='castle_start'
+        native=score in castle.PHYSICAL_SCORES
         check(castle.physical_active(plan)==native,score+' uses its intended native or legacy controller')
         if native:check(company.active(b) is None and not w['paired'],score+' adult native pilot stays solo despite a present visitor')
         else:check(company.active(b)['phase']=='ready',score+' visitor reaches independent work spot')
@@ -139,12 +139,12 @@ try:
         if score=='castle_pressure_check':
             check(len(w['inspections'])==2 and w['inspections'][1]['pressure']>w['inspections'][0]['pressure']+.2,'diagnostic compares real pressure before and after closing the valve')
     # Other ages still exercise the existing shared start-control path.
-    for age in ('young_adult','elder'):
-        plan,key,obj=reset(age=age,score='castle_start');until('service')
-        check(not castle.physical_active(plan) and company.active(b)['phase']=='ready',age+' retains shared legacy blower work')
-        finish();check(obj['uses']==1 and obj['carnival_routines'].get('castle_start')==1 and obj['carnival_company'].get(key)==1,age+' legacy blower completes with shared credit')
+    for age,legacy_score in ((age,score) for age in ('young_adult','elder') for score in sorted(castle.PHYSICAL_SCORES)):
+        plan,key,obj=reset(age=age,score=legacy_score);until('service')
+        check(not castle.physical_active(plan) and company.active(b)['phase']=='ready',age+' retains shared legacy '+legacy_score)
+        finish();check(obj['uses']==1 and obj['carnival_routines'].get(legacy_score)==1 and obj['carnival_company'].get(key)==1,age+' legacy '+legacy_score+' completes with shared credit')
     for n,key in enumerate(PROFILES):
-        score=list(castle.ROUTINES)[n%24];plan,actor,obj=reset(kind=key,score=score,age='young_adult' if score=='castle_start' else 'adult');until('service');advance(80);frames.append(snapshot(g,g.renderer))
+        score=list(castle.ROUTINES)[n%24];plan,actor,obj=reset(kind=key,score=score,age='young_adult' if score in castle.PHYSICAL_SCORES else 'adult');until('service');advance(80);frames.append(snapshot(g,g.renderer))
         r=company.active(b);check(r and r['actor']==actor and r['phase']=='ready',key+' reaches a real control activity')
         if key=='butterfly_fairy':check(r['mode']=='watch' and castle.conversation(p,plan,key,r)['body_status']=='watching from outside','butterfly observes controls without invented gripping limbs')
         finish();check(obj['carnival_company'].get(actor)==1,key+' receives one meaningful work memory')
@@ -152,7 +152,7 @@ try:
         plan,key,obj=reset(kind='solo',age=age,score='castle_door_open')
         if plan:until('service');advance(90);frames.append(snapshot(g,g.renderer));finish();check(obj['castle']['door']==1,age+' can use the reachable low door cord')
     for score in ('castle_start','castle_roof_drain','castle_door_close','castle_tie_left'):
-        plan,key,obj=reset(score=score);until('service');advance(30);plan['paused']=True;before=copy.deepcopy((obj['castle'],obj['excursion']['inflation'],plan['carnival_work']));advance(20)
+        plan,key,obj=reset(score=score);until('service');advance(30);plan['paused']=True;p._activity(0);before=copy.deepcopy((obj['castle'],obj['excursion']['inflation'],plan['carnival_work']));advance(20)
         check((obj['castle'],obj['excursion']['inflation'],plan['carnival_work'])==before,score+' pause freezes fabric, fan, strokes and contact history')
         plan['paused']=False;g.duck.current_action='feed';advance(20)
         check((obj['castle'],obj['excursion']['inflation'],plan['carnival_work'])==before,score+' direct care cannot advance a hidden control worker')
@@ -177,8 +177,9 @@ try:
     p.command(dict(action='carnival_action',target='bounce_house',instance=plan['instance'],text='castle_start'));finish();p.state['cooldowns']={};obj['last_use']=-1000
     check(p.start('item','bounce_house',instance=plan['instance'])[0],'using real start control makes bouncing available again');p.cancel()
     plan,key,obj=reset(score='castle_door_open');until('service');advance(100);w=copy.deepcopy(plan['carnival_work']);iid=plan['instance'];saved=copy.deepcopy(obj['castle'])
-    g._save_game();g._flush_pending_save();g.renderer.duck_pos.x=10;g.renderer.duck_pos.y=12;g._load_game();p=g.living_pond;b=p.minds;p.state['auto']=False;b.model.state['next_social']=1e9;p.sync();loaded=p.state['plan']
+    g._save_game();g._flush_pending_save();g.renderer.duck_pos.x=48;g.renderer.duck_pos.y=26;g._load_game();p=g.living_pond;b=p.minds;p.state['auto']=False;b.model.state['next_social']=1e9;p.sync();loaded=p.state['plan']
     check(loaded['paused'] and loaded['carnival_work']['clock']==w['clock'] and loaded['carnival_work']['events']==w['events'],'load preserves exact material time and consumed contact events')
+    check(not loaded['carnival_work'].get('interrupted') and loaded['carnival_work']['physical']['phase']=='approach' and [g.renderer.duck_pos.x,g.renderer.duck_pos.y]==[48,26],'native load reacquires from the actual grounded exterior root without teleporting')
     check(p.object_state('bounce_house',iid)['castle']==saved,'load preserves every actual control and material quantity')
     check(not b.carnival_guests and 'companion' not in loaded['carnival_work'],'load does not resurrect a helper')
     p.command(dict(action='resume'));finish();obj=p.object_state('bounce_house',iid)

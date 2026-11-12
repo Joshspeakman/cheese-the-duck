@@ -4099,7 +4099,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "native_control_contacts_and_aspect_correct_projection",
+    "sourcePhase": "native_multistation_contacts_and_age_reach_review",
     "fullyOverhauled": false,
     "constructedObjects": 390,
     "remainingArtwork": 152,
@@ -5426,13 +5426,13 @@
       "units": "object-art-grid",
       "regressionTests": 9,
       "oldNewEqualityStates": 9,
-      "nativeAuthority": "not yet implemented; aspect-independent projection required"
+      "nativeAuthority": "Shared art-grid control anchors, native adult solo arrival/contact/exit for start, door_open and hose_stow; remaining migration open"
     },
     "nativeCastlePilot": {
       "score": "castle_start",
       "actors": "adult Cheese, solo",
       "nativeChecks": 135,
-      "lifecycleChecks": 31,
+      "lifecycleChecks": 41,
       "replayFrames": 59,
       "renderedRoots": 342,
       "renderedContacts": 18,
@@ -5440,7 +5440,7 @@
       "worldAuthority": "Existing native locomotion; actual supported arrival and bounded grip gate control effect; validated exterior exit gates completion",
       "savePolicy": "Fresh game/animator reload remains stationary, reacquires support, preserves consumed effects and completes once",
       "limitations": [
-        "All other ages, companions and controls still require migration",
+        "Other ages, companions and remaining controls still require migration; adult solo door_open and hose_stow now have separate multistation checks",
         "Three-cell reach is a bounded implementation rule, not full anatomical certification",
         "No full object repertoire certified"
       ],
@@ -5449,7 +5449,7 @@
     "physicalProjection": {
       "camera": "Expand display extent around native camera center; full window and canonical glyph/body aspect preserved",
       "nativeDataMutated": false,
-      "regressionSuite": 245,
+      "regressionSuite": 250,
       "additionalFocusedCameraTests": 4,
       "actorPreviewCases": 18,
       "review": "engine/artifacts/animation-milestone/castle-physical-review.html",
@@ -5457,10 +5457,44 @@
       "harnessLimitation": "Electron preview teardown intermittently required terminating owned test processes after assertions/artifacts completed."
     },
     "nativeCastleRegressions": {
-      "controls": 882,
+      "controls": 895,
       "surfacePlay": 675,
       "livingSimulation": 694,
       "livingHours": 72
+    },
+    "nativeCastleMultistation": {
+      "scores": [
+        "castle_door_open",
+        "castle_hose_stow"
+      ],
+      "actors": "adult Cheese, solo",
+      "nativeChecks": 145,
+      "replayFrames": 39,
+      "renderedRoots": 228,
+      "renderedContactFrames": 180,
+      "renderedEffectChecks": 168,
+      "distinctEffects": 8,
+      "windows": 3,
+      "cameraVariants": 2,
+      "review": "engine/artifacts/animation-milestone/castle-multistation-review.html",
+      "mechanics": "Native station cursor freezes score time during actual locomotion; ordered effects use exported actual pose metrics; completion requires exterior exit",
+      "savePolicy": "Transfer and partial second-station restores preserve consumed effects and material targets; malformed cursor/geometry rejected",
+      "interruption": "Pause, direct care, cancellation, removed copy and blocked second stance preserve completed steps without completion reward",
+      "fullRepertoiresComplete": false
+    },
+    "castleAgeReachReview": {
+      "status": "review_only_not_adopted",
+      "ages": 9,
+      "authoredEffectsPerAge": 9,
+      "placementFixtures": 2,
+      "tests": 3,
+      "review": "engine/artifacts/animation-milestone/castle-age-reach-review.html",
+      "finding": "Hatchling supported reach depends on exact placement; other seven hatched ages have candidate supported stances at both fixtures; egg has no working grip or feet",
+      "limitations": [
+        "Candidate stance feasibility does not establish route validity or native lifecycle adoption",
+        "Assistance and alternative interactions not implemented",
+        "No whole-object sequence credit"
+      ]
     }
   },
   "wardrobe": [

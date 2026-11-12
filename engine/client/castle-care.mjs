@@ -8,7 +8,10 @@ export function castleState(raw={}){
  return {...Object.fromEntries(Object.entries(defaults).map(([k,v])=>[k,clamp(raw[k]??v)])),motor:['auto','on','off'].includes(raw.motor)?raw.motor:'auto',powered:raw.powered===true,fan:Number.isFinite(raw.fan)?raw.fan:0};
 }
 export function castleStation(work,role='a'){
- const spec=SCORES[work.id];
+ const spec=SCORES[work.id],physical=work.physical;
+ // Native locomotion owns station travel and contact readiness. Its frozen
+ // score clock must not restart the legacy two-second crossing on arrival.
+ if(role==='a'&&physical?.version===1&&physical.actor==='cheese'&&CASTLE_GEOMETRY.controls[physical.station])return {name:physical.station,previous:physical.station,travel:1};
  const steps=role==='b'?(spec.partnerStations||[[0,spec.partner]]):(spec.stations||[[0,spec.station]]);let name=steps[0][1],previous=name,travel=1;
  for(const [at,target]of steps.slice(1)){if(work.ride_elapsed<at*spec.duration)break;previous=name;name=target;travel=clamp((work.ride_elapsed-at*spec.duration)/2);}
  return {name,previous,travel};
@@ -29,7 +32,8 @@ export function castlePose(work,role='a',motion=true,watch=false){
 export function castleGeometry(home,member,sx,sy){
  const frame=castleArtFrame(home,sx,sy);
  const c=member.character,w=member.work,pose=castlePose(w,member.role,c.performance?.motion!==false,member.watch),spec=SCORES[w.id];
- const inside=w.stage==='service'?clamp(w.clock/(spec.entryDuration??spec.duration*.14)):w.stage==='service_exit'?1-clamp(w.clock/4):0;
+ const nativePhase=member.role==='a'&&w.physical?.version===1&&w.physical.actor==='cheese';
+ const inside=nativePhase?(w.physical.phase==='hold'?1:0):w.stage==='service'?clamp(w.clock/(spec.entryDuration??spec.duration*.14)):w.stage==='service_exit'?1-clamp(w.clock/4):0;
  const unit=frame?.unit||sx*home.scale*home.detailScale,uh=frame?.uh||unit*1.5,{cw,ch}=castleActorPitches(c,sx,sy),left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*uh;
  const end=home.anchors.controls[pose.station],start=home.anchors.controls[pose.previousStation],t=tween(pose.travel),anchor={x:start.x+(end.x-start.x)*t,y:start.y+(end.y-start.y)*t},target={x:left+(anchor.x+.5)*unit,y:top+(anchor.y+.5)*uh},ground=top+CASTLE_GEOMETRY.ground_row*uh;
  const rest=c.workGripRest||c.grip||{x:c.anchorX+5,y:c.groundRow-6},x=target.x+(member.role==='a'?-3:3)*cw-(rest.x+.5-c.anchorX)*cw;
