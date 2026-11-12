@@ -86,6 +86,7 @@ try:
  import engine.mind_garden as garden_module
  original_speak=garden_module.speak
  garden_module.speak=lambda messages,fallback:dict(text='*leans closer* That little ripple is doing its best.',source='authored',detail='test transport')
+ invitation_before={key:copy.deepcopy({field:r[field] for field in ('counts','relationships')}) for key,r in b.model.residents.items()}
  b._encounter()
  for _ in range(60):
   b._poll()
@@ -94,10 +95,23 @@ try:
  check(len(b.model.state['exchanges'])==2,'nearby residents initiate and answer a two-sided conversation')
  pair=b.model.state['exchanges'][0]
  check(pair['speaker']!=pair['listener'],'conversation is between distinct brains')
- check(b.model.residents[pair['speaker']]['relationships'][pair['listener']]['meetings']>0,'mutual conversation updates the actual relationship')
+ check(all(b.model.residents[key]['counts']==invitation_before[key]['counts'] and b.model.residents[key]['relationships']==invitation_before[key]['relationships'] for key in (pair['speaker'],pair['listener'])),'spoken invitation records conversation without premature activity learning or bond')
+ check(all(any(m['kind']=='conversation' for m in b.model.residents[key]['memories']) for key in (pair['speaker'],pair['listener'])),'both actual spoken replies retain their conversation memories')
  p.state['elapsed']+=20;b.tick()
  check(all(s['phase']=='approach' and s['elapsed']==0 for s in b.coactivities.values()),'paired activities wait for actual arrival before their performance clock runs')
- b.cancel_encounter(pair['speaker'])
+ activity=b.encounter_for(pair['speaker']);action=activity['action'];actors=(activity['a'],activity['b'])
+ start_counts={key:b.model.residents[key]['counts'][action] for key in actors};b.model.state['next_social']=10**9
+ movement_clock=time.monotonic();visitor_animator._last_move_time=movement_clock
+ for i in range(600):
+  p.state['elapsed']+=.2;pos=g.renderer.duck_pos;pos._state_start_time-=.2;pos.update(.2)
+  visitor_animator._mind_motion=b.motion(friend.id)
+  meeting=visitor_animator._mind_motion.get('meeting')
+  if meeting:meeting['target']=[meeting['target'][0]-g.renderer._camera_x,meeting['target'][1]-g.renderer._camera_y]
+  visitor_animator.update(movement_clock+(i+1)*.2,pos.x,pos.y)
+  g.guest_motion.tick(g,movement_clock+(i+1)*.2);b.tick()
+  if b.encounter_for(pair['speaker']) is None:break
+ check(activity.get('rewarded') and all(b.model.residents[key]['counts'][action]==start_counts[key]+1 for key in actors),'actual rendezvous and completed performance teach the selected action once')
+ check(all(b.model.residents[key]['relationships'][other]['meetings']==invitation_before[key]['relationships'].get(other,{}).get('meetings',0)+1 for key,other in (actors,actors[::-1])),'completed performance bonds both actual participants once')
  garden_module.speak=original_speak
  b.pending=None
  old=copy.deepcopy(b.model.state);offline=LivingPond(p.save());offline.attach(g,offline=False);offline.advance(20000,offline=True)
