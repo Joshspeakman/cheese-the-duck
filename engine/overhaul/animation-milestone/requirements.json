@@ -5409,6 +5409,24 @@
       "nativeChecks": 171,
       "productionPaths": 8,
       "scope": "Saved portable center, placed center, converted legacy offset, existing duck stance policy."
+    },
+    "encounterRewards": {
+      "owner": "completed native encounter",
+      "checks": {
+        "dedicated": 25,
+        "brains": 47,
+        "encounters": 16
+      },
+      "savePolicy": "Active encounter reservations are transient; reload cancels unfinished work and retains earned minds.",
+      "speech": "Actual spoken exchanges retain separate conversation memories.",
+      "fullRepertoiresComplete": false
+    },
+    "castleGeometry": {
+      "source": "engine/client/animation/castle-geometry.json",
+      "units": "object-art-grid",
+      "regressionTests": 9,
+      "oldNewEqualityStates": 9,
+      "nativeAuthority": "not yet implemented; aspect-independent projection required"
     }
   },
   "wardrobe": [

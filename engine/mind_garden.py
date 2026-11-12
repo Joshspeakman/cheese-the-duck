@@ -409,17 +409,14 @@ class MindGarden:
         shared=max(('observe','practice','share','forage'),key=lambda k:ra['interests'][k]+rb['interests'][k])
         compatible=1-abs(ra['interests'][shared]-rb['interests'][shared])
         reward=.08+.45*compatible
-        note=ra['name']+' and '+rb['name']+' stopped nearby to talk about '+LABELS[shared]+'.'
-        for key,other in ((a,b),(b,a)):
-            self.model.bond(key,other,reward,self.now,note)
-            self.model.learn(key,'share',self.context(key),reward,self.now,note,other)
-            self.model.residents[key]['social']=clamp(self.model.residents[key]['social']+.12)
-        self.pond.remember('neighbors',note,.65,b)
+        scene=encounters.create(self,a,b,shared,reward)
+        # A reservation or attempted invitation is not shared experience. Failed
+        # creation must not train minds, restore social state, or invent speech.
+        if scene is None:return
+        self.coactivities[pair]=scene
         self.pair_cooldowns[pair]=self.now+180
         if len(self.pair_cooldowns)>64:
             oldest=min(self.pair_cooldowns,key=self.pair_cooldowns.get);self.pair_cooldowns.pop(oldest)
-        scene=encounters.create(self,a,b,shared,reward)
-        if scene:self.coactivities[pair]=scene
         if not self.executor:self.executor=ThreadPoolExecutor(max_workers=1,thread_name_prefix='pond-speech')
         heard='You have stopped near '+rb['name']+'. Start a short conversation with them about '+LABELS[shared]+'. React to the actual weather or a shared memory if relevant.'
         self.pending={'future':self.executor.submit(speak,self.prompt(a,heard,b,'peer'),self.fallback(a,heard)),
@@ -518,11 +515,19 @@ class MindGarden:
             if result=='cancelled':
                 self.cancel_encounter(a);continue
             if result=='completed':
-                label=LABELS[activity['action']]
-                note=self.model.residents[a]['name']+' and '+self.model.residents[b]['name']+' lingered together over '+label+'.'
-                for key,other in ((a,b),(b,a)):
-                    self.model.learn(key,activity['action'],activity['contexts'][key],activity['reward'],self.now,note,other)
-                self.pond.remember('shared',note,.75,b);self.cancel_encounter(a)
+                # Encounters are live reservations, omitted from pond.save().
+                # This marker guards repeated delivery during the live session;
+                # a reload keeps earned minds but never restores an active pair.
+                if not activity.get('rewarded'):
+                    activity['rewarded']=True
+                    label=LABELS[activity['action']]
+                    note=self.model.residents[a]['name']+' and '+self.model.residents[b]['name']+' lingered together over '+label+'.'
+                    for key,other in ((a,b),(b,a)):
+                        self.model.bond(key,other,activity['reward'],self.now,note)
+                        self.model.learn(key,activity['action'],activity['contexts'][key],activity['reward'],self.now,note,other)
+                        self.model.residents[key]['social']=clamp(self.model.residents[key]['social']+.12)
+                    self.pond.remember('shared',note,.75,b)
+                self.cancel_encounter(a)
         if self.now>=self.model.state['next_social']:
             self.model.state['next_social']=self.now+22
             self._encounter()
