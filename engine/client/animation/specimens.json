@@ -68,7 +68,8 @@
           31
         ]
       ]
-    ]
+    ],
+    "worldScale": 0.55
   },
   "glitter_rock": {
     "type": "stone",
@@ -139,7 +140,8 @@
           27
         ]
       ]
-    ]
+    ],
+    "worldScale": 0.42
   },
   "sea_glass": {
     "type": "stone",
@@ -210,7 +212,8 @@
           22
         ]
       ]
-    ]
+    ],
+    "worldScale": 0.3
   },
   "ruby_gem": {
     "type": "stone",
@@ -297,7 +300,8 @@
           16
         ]
       ]
-    ]
+    ],
+    "worldScale": 0.42
   },
   "star_fragment": {
     "type": "stone",
@@ -390,7 +394,8 @@
           19
         ]
       ]
-    ]
+    ],
+    "worldScale": 0.42
   },
   "crystal": {
     "type": "crystal",
@@ -468,7 +473,8 @@
           16
         ]
       ]
-    ]
+    ],
+    "worldScale": 0.42
   },
   "crystal_shard": {
     "type": "crystal",
@@ -498,7 +504,8 @@
           19
         ]
       ]
-    ]
+    ],
+    "worldScale": 0.3
   },
   "crystal_icicle": {
     "type": "crystal",
@@ -528,7 +535,8 @@
           12
         ]
       ]
-    ]
+    ],
+    "worldScale": 0.42
   },
   "mist_crystal": {
     "type": "crystal",
@@ -566,7 +574,8 @@
           27
         ]
       ]
-    ]
+    ],
+    "worldScale": 0.42
   },
   "ice_crystal": {
     "type": "crystal",
@@ -640,7 +649,8 @@
           23
         ]
       ]
-    ]
+    ],
+    "worldScale": 0.42
   },
   "crystal_plant": {
     "type": "crystal",
@@ -728,7 +738,8 @@
           17
         ]
       ]
-    ]
+    ],
+    "worldScale": 0.55
   },
   "shiny_pebble": {
     "type": "stone",
@@ -789,7 +800,8 @@
         ]
       ]
     ],
-    "mark": "polish"
+    "mark": "polish",
+    "worldScale": 0.3
   },
   "shiny_object": {
     "type": "stone",
@@ -856,7 +868,8 @@
         ]
       ]
     ],
-    "mark": "metal"
+    "mark": "metal",
+    "worldScale": 0.3
   },
   "pebble": {
     "type": "stone",
@@ -909,7 +922,8 @@
         ]
       ]
     ],
-    "mark": "plain"
+    "mark": "plain",
+    "worldScale": 0.3
   },
   "smooth_stone": {
     "type": "stone",
@@ -988,7 +1002,8 @@
         ]
       ]
     ],
-    "mark": "band"
+    "mark": "band",
+    "worldScale": 0.42
   },
   "rock": {
     "type": "stone",
@@ -1069,7 +1084,8 @@
         ]
       ]
     ],
-    "mark": "strata"
+    "mark": "strata",
+    "worldScale": 0.42
   },
   "iron_ore": {
     "type": "stone",
@@ -1140,7 +1156,8 @@
         ]
       ]
     ],
-    "mark": "ore"
+    "mark": "ore",
+    "worldScale": 0.42
   },
   "clay": {
     "type": "sediment",
@@ -1177,7 +1194,8 @@
         31
       ]
     ],
-    "mark": "folds"
+    "mark": "folds",
+    "worldScale": 0.42
   },
   "pond_clay": {
     "type": "sediment",
@@ -1218,7 +1236,8 @@
         32
       ]
     ],
-    "mark": "wetfolds"
+    "mark": "wetfolds",
+    "worldScale": 0.42
   },
   "sand": {
     "type": "sediment",
@@ -1255,7 +1274,8 @@
         31
       ]
     ],
-    "mark": "granules"
+    "mark": "granules",
+    "worldScale": 0.42
   },
   "seashell": {
     "type": "shell",
@@ -1267,7 +1287,8 @@
     "cy": 30,
     "rx": 23,
     "ry": 23,
-    "ribs": 11
+    "ribs": 11,
+    "worldScale": 0.42
   },
   "shell": {
     "type": "shell",
@@ -1279,7 +1300,8 @@
     "cy": 19,
     "rx": 19,
     "ry": 12,
-    "turns": 2.7
+    "turns": 2.7,
+    "worldScale": 0.42
   },
   "sea_shell": {
     "type": "shell",
@@ -1290,7 +1312,8 @@
     "cx": 32,
     "cy": 18,
     "rx": 22,
-    "ry": 14
+    "ry": 14,
+    "worldScale": 0.42
   },
   "sand_dollar": {
     "type": "shell",
@@ -1301,7 +1324,8 @@
     "cx": 31,
     "cy": 20,
     "rx": 24,
-    "ry": 12
+    "ry": 12,
+    "worldScale": 0.3
   },
   "pretty_shell": {
     "type": "shell",
@@ -1314,7 +1338,8 @@
     "rx": 18,
     "ry": 27,
     "ribs": 7,
-    "fluted": true
+    "fluted": true,
+    "worldScale": 0.42
   },
   "cool_stick": {
     "type": "wood",
@@ -1390,7 +1415,8 @@
         25,
         24
       ]
-    ]
+    ],
+    "worldScale": 0.42
   },
   "digging_stick": {
     "type": "wood",
@@ -1450,7 +1476,8 @@
         40,
         16
       ]
-    ]
+    ],
+    "worldScale": 0.42
   },
   "twig": {
     "type": "wood",
@@ -1538,7 +1565,8 @@
         32,
         21
       ]
-    ]
+    ],
+    "worldScale": 0.42
   },
   "bark": {
     "type": "wood",
@@ -1638,7 +1666,8 @@
         32,
         18
       ]
-    ]
+    ],
+    "worldScale": 0.42
   },
   "driftwood": {
     "type": "wood",
@@ -1724,7 +1753,8 @@
       21,
       7,
       6
-    ]
+    ],
+    "worldScale": 0.42
   },
   "driftwood_large": {
     "type": "wood",
@@ -1832,7 +1862,8 @@
       25,
       7,
       6
-    ]
+    ],
+    "worldScale": 0.55
   },
   "fossil": {
     "type": "fossil",
@@ -1872,7 +1903,8 @@
     "cx": 30,
     "cy": 20,
     "rx": 17,
-    "ry": 10
+    "ry": 10,
+    "worldScale": 0.42
   },
   "river_pearl": {
     "type": "pearl",
@@ -1882,6 +1914,7 @@
     "cx": 31,
     "cy": 20,
     "rx": 17,
-    "ry": 12
+    "ry": 12,
+    "worldScale": 0.3
   }
 }

@@ -5,7 +5,7 @@ const ids='philosophers_stone glitter_rock crystal sea_glass crystal_shard cryst
 const sprite=(id,time=0,options={})=>specimenSprite({scale:1},{id},time,options);
 function bounds(s,id){
  assert.equal(s.clipped,false,id);
- assert.equal(s.width,64);assert.equal(s.art.length,36);
+ assert.equal(s.width,64);assert(s.art.length<=36);assert(s.art.at(-1).trim()||s.fills.some(f=>f.y===s.art.length-1),'material rests on ground row');
  assert(s.art.every((r,y)=>r.length===s.width&&r.length===s.tones[y].length&&/^[ -~]+$/.test(r)),id+' printable, aligned rows');
  assert(s.fills.every(f=>f.x>=0&&f.y>=0&&f.w>0&&f.x+f.w<=s.width&&f.y<s.art.length&&s.panels[f.tone]),id+' bounded material');
  assert(s.tones.every(r=>[...r].every(t=>s.inks[t])),id+' mapped ink');

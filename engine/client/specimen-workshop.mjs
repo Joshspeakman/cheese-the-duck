@@ -152,5 +152,7 @@ export function specimenSprite(base,item,time,{state={},motion=true}={}){
  if(p.type==='crystal'||item.id==='sea_glass'){inks.b='#a4d3cf';inks.a='#d1eff0';panels.b='#375e60';panels.a='#446e77';panels.k='#193f51';}
  if(item.id==='ruby_gem'){inks.b='#e79ca5';inks.a='#f1bbc0';panels.b='#783d50';panels.a='#9a5060';}
  if(p.type==='wood'){inks.b='#bf9f70';inks.a='#dac08c';panels.b='#51432d';}
- return {...base,...c.finish(),construction:'specimen-v1',detail:true,detailScale:p.scale,blueprint:item.id,inks,panels,sway:0,lift:0,animated:false,emissive:false};
+ const surface=c.finish(),bottom=Math.max(...surface.art.map((r,y)=>r.trim()?y:0),...surface.fills.map(f=>f.y))+1;
+ surface.art=surface.art.slice(0,bottom);surface.tones=surface.tones.slice(0,bottom);surface.groundRow=bottom;
+ return {...base,...surface,construction:'specimen-v1',detail:true,detailScale:p.scale,blueprint:item.id,inks,panels,sway:0,lift:0,animated:false,emissive:false};
 }

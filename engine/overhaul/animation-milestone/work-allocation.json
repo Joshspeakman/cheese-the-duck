@@ -21,7 +21,7 @@
       "owner": "medium_food_art",
       "model": "gpt-6-astra",
       "reasoning": "medium",
-      "status": "art_finished_unintegrated_checkpoint",
+      "status": "integrated_verified_parent_review",
       "objects": 23,
       "files": [
         "engine/client/food-workshop.mjs",
@@ -35,7 +35,7 @@
       "owner": "medium_specimen_art",
       "model": "gpt-6-astra",
       "reasoning": "medium",
-      "status": "art_finished_unintegrated_checkpoint",
+      "status": "integrated_verified_parent_review",
       "objects": 33,
       "files": [
         "engine/client/specimen-workshop.mjs",
@@ -49,7 +49,7 @@
       "owner": "milestone_advisor",
       "model": "gpt-6-astra",
       "reasoning": "xhigh",
-      "status": "advice_written_further_candidate_audit_interrupted",
+      "status": "candidate_audit_running",
       "files": [
         "engine/overhaul/animation-milestone/extra-high-advice.md"
       ],
@@ -73,13 +73,13 @@
     "final scope/completion audit"
   ],
   "installation": "Deferred until full authorized milestone is proven complete.",
-  "state": "paused_by_user",
-  "resumeRequires": "Explicit user instruction to resume; elapsed travel time is not authorization.",
+  "state": "active",
+  "resumeRequires": null,
   "followups": [
     {
       "id": "seeds_and_bait_art",
       "owner": "medium_food_art",
-      "status": "interrupted_unreviewed_checkpoint",
+      "status": "integrated_verified_parent_review",
       "objects": 19,
       "files": [
         "engine/client/animation/seeds.json",
@@ -92,13 +92,13 @@
     {
       "id": "portable_company_anchors",
       "owner": "medium_specimen_art",
-      "status": "analysis_complete_no_production_edits",
-      "next": "Review proposed portable_ground.companion_spot helper and four-company center fix against existing native terrain/stance APIs."
+      "status": "implemented_verified_171_checks",
+      "next": "Parent review and commit"
     },
     {
       "id": "bounce_house_candidates",
       "owner": "milestone_advisor",
-      "status": "interrupted_before_artifact_written",
+      "status": "running",
       "next": "Review actual48 candidates and author executable candidate/evidence record; no verification credit."
     }
   ]

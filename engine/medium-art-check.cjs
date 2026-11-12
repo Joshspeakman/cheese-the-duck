@@ -1,0 +1,11 @@
+const {app,BrowserWindow}=require('electron'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
+app.setPath('userData',fs.mkdtempSync(path.join(os.tmpdir(),'cheese-medium-art-')));
+app.whenReady().then(async()=>{try{
+ const win=new BrowserWindow({show:false,webPreferences:{backgroundThrottling:false}}),out=path.join(__dirname,'artifacts/animation-milestone');
+ win.webContents.on('console-message',d=>{if(d.level==='error')console.error(d.message);});
+ await win.loadFile(path.join(__dirname,'tests/medium-art-theatre.html'));
+ const result=await win.webContents.executeJavaScript('(()=>{try{return window.reviewMediumArt()}catch(e){console.error(e.stack);throw e}})()');
+ for(const [name,data]of Object.entries(result.images))fs.writeFileSync(path.join(out,name+'.png'),Buffer.from(data.split(',')[1],'base64'));
+ const report={result:'PASS',objects:result.objects,checks:result.checks,sheets:Object.keys(result.images).length};
+ fs.writeFileSync(path.join(out,'medium-art-render.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));app.exit(0);
+ }catch(e){console.error(e);app.exit(1);}});

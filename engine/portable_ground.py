@@ -26,6 +26,27 @@ def point_ok(layout,item,point):
     # Ducks can paddle, but cannot stand in a trunk or another belonging.
     return layout.check('rubber_duck',ax*20/132,y*12/42,IDENTITY,STANCE)[0]
 
+def companion_spot(pond,plan,origin):
+    """Reserve the far-side stance from the same center the renderer projects."""
+    if plan.get('instance'):
+        center=origin
+    elif plan.get('portable') is not None:
+        site=plan['portable']
+        if not isinstance(site,dict) or site.get('location')!=pond.location:return None
+        center=site.get('object')
+    else:
+        # Legacy plans lack a saved deployment point; OFFSET is in native cells.
+        if not isinstance(origin,(list,tuple)) or len(origin)!=2 or not all(finite(n) for n in origin):return None
+        center=[origin[0]+OFFSET,origin[1]]
+    if not isinstance(center,(list,tuple)) or len(center)!=2 or not all(finite(n) for n in center):return None
+    spot=[center[0]+9,center[1]]
+    if not (6<=spot[0]<=122 and 3<=spot[1]<=36):return None
+    # Match the existing duck stance policy: paddling is supported, but trees
+    # and other belongings are not. The activity's own copy is its contact zone.
+    if not policy(pond).check('rubber_duck',spot[0]*20/132,spot[1]*12/42,
+                              plan.get('instance') or IDENTITY,STANCE)[0]:return None
+    return spot
+
 def choose(pond,item,origin=None,location=None):
     if item not in FOOTPRINTS:return None
     pos=pond.game.renderer.duck_pos

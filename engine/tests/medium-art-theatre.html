@@ -1,0 +1,30 @@
+<!doctype html><meta charset="utf-8"><title>Production inventory artwork review</title>
+<script type="module">
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {FOOD_BLUEPRINTS} from '../client/food-workshop.mjs';
+import {SPECIMEN_BLUEPRINTS} from '../client/specimen-workshop.mjs';
+import {SEED_BLUEPRINTS} from '../client/seed-workshop.mjs';
+import {itemWorldScale} from '../client/ultra-items.mjs';
+import footprints from '../client/animation/object-footprints.json' with {type:'json'};
+import {surfaceFitsRegion} from '../client/terrain.mjs';
+import {layoutBounds} from '../client/pond-layout.mjs';
+import {groundBounds} from '../client/habitat-ground.mjs';
+import {scene} from './scenes.mjs';
+const ids=[...Object.keys(FOOD_BLUEPRINTS),...Object.keys(SPECIMEN_BLUEPRINTS),...Object.keys(SEED_BLUEPRINTS)];
+function safe(id){for(let y=28;y>=10;y-=2)for(let x=40;x<100;x+=3)if(surfaceFitsRegion(id,groundBounds(id,layoutBounds(footprints.items[id],x,y),y),'Sunny Meadow','meadow'))return {x,y};throw Error('No safe position '+id);}
+window.reviewMediumArt=()=>{
+ const renderer=new SceneCanvas();renderer.effects.level='quiet';renderer.resize(800,600);const images={};let checks=0;
+ for(const hour of [14,23])for(let page=0;page<5;page++){
+  const sheet=document.createElement('canvas');sheet.width=1600;sheet.height=1200;const c=sheet.getContext('2d');c.fillStyle='#142820';c.fillRect(0,0,1600,1200);
+  ids.slice(page*16,page*16+16).forEach((id,i)=>{
+   const p=safe(id),s=scene({location:'Sunny Meadow',biome:'meadow',hour,motion:false,particles:false,weatherEffects:false,camera:{x:p.x-24,y:p.y-20,w:48,h:28},items:[{id,...p,instance:'review'}],duck:{hidden:true,x:p.x-5,y:p.y},living:{objects:{[id]:{condition:.6,dirt:.3,wetness:.4}},ecology:{}}}),before=JSON.stringify(s);
+   renderer.draw(s,0,0);const o=renderer.world.objects.find(o=>o.id===id),hit=renderer.hits.find(h=>h.instance==='review'),expected=renderer.world.project(s,p.x,p.y);
+   if(!o||!hit||o.x!==expected[0]||o.y!==expected[1])throw Error('Anchor/hit failure '+id);
+   const scale=itemWorldScale(id)*Math.min(1,renderer.sy/(renderer.sx*1.5));if(Math.abs(o.scale-scale)>1e-8)throw Error('Scale failure '+id);
+   if(JSON.stringify(s)!==before)throw Error('Scene mutation '+id);
+   const x=i%4*400,y=Math.floor(i/4)*300;c.drawImage(renderer.canvas,x,y+25,400,275);c.fillStyle='#f1dfb4';c.font='16px monospace';c.fillText(id,x+10,y+19);checks++;
+  });images[`medium-world-${hour===14?'day':'night'}-${page+1}`]=sheet.toDataURL('image/png');
+ }
+ return {images,checks,objects:ids.length};
+};
+</script>

@@ -6,7 +6,7 @@ are required for learning. The partner never duplicates an item use or reward.
 import copy
 import json
 from pathlib import Path
-from engine import creative_props, shelters
+from engine import creative_props, shelters, portable_ground
 from engine.visitor_shelters import distance, departing, profile
 
 SCORES=json.loads((Path(__file__).parent/'client/animation/creative-company.json').read_text())
@@ -78,11 +78,8 @@ def tick(minds,dt):
     work['invitation_checked']=True
     if minds.creators:return
     origin=list(plan.get('destination',work['origin']))
-    # A portable prop is laid down seven native cells beside Cheese. Its companion
-    # reserves the far edge, never a destination relative to Cheese's next move.
-    center=[origin[0]+(0 if plan.get('instance') else 7),origin[1]]
-    spot=[center[0]+9,center[1]]
-    if not (6<=spot[0]<=122 and 3<=spot[1]<=36):return
+    spot=portable_ground.companion_spot(p,plan,origin)
+    if spot is None:return
     from engine import playdates
     options=[]
     for key in minds.present:

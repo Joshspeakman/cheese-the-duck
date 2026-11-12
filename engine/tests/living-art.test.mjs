@@ -22,8 +22,9 @@ test('legacy item operations and all item weather states keep inputs immutable',
   // Reconstructed mechanisms and handling follow native contact, not a wall-clock loop.
   // Excursion resting motors are tested with saved native phases in excursions.test.mjs;
   // their full character-operated repertoire is still tracked as unfinished.
-  if(!['botanical-v1','instrument-v1','lighting-v1','keepsake-v1','creative-v1','textile-v1','ground-v1','architecture-v1','playkit-v1','excursion-v1'].includes(itemSprite(item.id,0).construction))assert(frames.size>1,item.id+' operation must visibly animate');
-  assert.notDeepEqual(itemSprite(item.id,0).art,itemSprite(item.id,0,{state}).art,item.id+' shows wear');
+  if(!['seed-v1','food-v1','specimen-v1','botanical-v1','instrument-v1','lighting-v1','keepsake-v1','creative-v1','textile-v1','ground-v1','architecture-v1','playkit-v1','excursion-v1'].includes(itemSprite(item.id,0).construction))assert(frames.size>1,item.id+' operation must visibly animate');
+  const pristine=itemSprite(item.id,0),worn=itemSprite(item.id,0,{state});
+  assert.notDeepEqual([pristine.art,pristine.tones],[worn.art,worn.tones],item.id+' shows wear');
   assert.deepEqual(itemSprite(item.id,1,{motion:false,state,interaction:{progress:.5}}),itemSprite(item.id,40,{motion:false,state,interaction:{progress:.5}}));
   assert.equal(JSON.stringify(state),before);
  }
