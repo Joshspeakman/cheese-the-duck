@@ -1,3 +1,4 @@
+import CASTLE_GEOMETRY from './animation/castle-geometry.json' with {type:'json'};
 import SCORES from './animation/castle-care.json' with {type:'json'};
 export {SCORES as CASTLE_SCORES};
 const N={x:0,y:0,b:0,w:0,l:0,r:0,contact:0,reach:0,gape:0,eye:null,mark:''},clamp=(n,a=0,b=1)=>Math.max(a,Math.min(b,Number.isFinite(n)?n:0));
@@ -28,7 +29,7 @@ export function castleGeometry(home,member,sx,sy){
  const c=member.character,w=member.work,pose=castlePose(w,member.role,c.performance?.motion!==false,member.watch),spec=SCORES[w.id];
  const inside=w.stage==='service'?clamp(w.clock/(spec.entryDuration??spec.duration*.14)):w.stage==='service_exit'?1-clamp(w.clock/4):0;
  const unit=sx*home.scale*home.detailScale,uh=unit*1.5,cw=c.scale*sx,ch=cw*1.5,left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*uh;
- const end=home.anchors.controls[pose.station],start=home.anchors.controls[pose.previousStation],t=tween(pose.travel),anchor={x:start.x+(end.x-start.x)*t,y:start.y+(end.y-start.y)*t},target={x:left+(anchor.x+.5)*unit,y:top+(anchor.y+.5)*uh},ground=top+147*uh;
+ const end=home.anchors.controls[pose.station],start=home.anchors.controls[pose.previousStation],t=tween(pose.travel),anchor={x:start.x+(end.x-start.x)*t,y:start.y+(end.y-start.y)*t},target={x:left+(anchor.x+.5)*unit,y:top+(anchor.y+.5)*uh},ground=top+CASTLE_GEOMETRY.ground_row*uh;
  const rest=c.workGripRest||c.grip||{x:c.anchorX+5,y:c.groundRow-6},x=target.x+(member.role==='a'?-3:3)*cw-(rest.x+.5-c.anchorX)*cw;
  const character={...c,x:c.x+(x/sx-c.x)*inside,y:c.y+(ground/sy-c.y)*inside,offsetX:0,offsetY:0};
  if(c.rig?.species==='butterfly')character.y-=5*ch/sy*inside;
