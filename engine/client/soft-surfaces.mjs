@@ -1,3 +1,4 @@
+import CASTLE_GEOMETRY from './animation/castle-geometry.json' with {type:'json'};
 import {ObjectCanvas} from './object-canvas.mjs';
 const finite=(v,d=0)=>Number.isFinite(v)?v:d,clamp=(v,a,b)=>Math.max(a,Math.min(b,finite(v)));
 export function surfaceState(saved={}){
@@ -47,7 +48,7 @@ export function softCarpet(c,p,v){
 }
 export function softCastle(c,p,v){
  const s=v.surface,care=v.castle,sink=(1-v.inflation)*34;
- const seatX=[56+s.a.u*10,124+s.b.u*10],press=x=>s.a.press*3*Math.exp(-(((x-seatX[0])/22)**2))+s.b.press*3*Math.exp(-(((x-seatX[1])/22)**2));
+ const seatX=[CASTLE_GEOMETRY.floor_slots[0].x+s.a.u*10,CASTLE_GEOMETRY.floor_slots[1].x+s.b.u*10],press=x=>s.a.press*3*Math.exp(-(((x-seatX[0])/22)**2))+s.b.press*3*Math.exp(-(((x-seatX[1])/22)**2));
  panel(c,12,119,155,18,'a');
  for(let n=0;n<9;n++)c.ellipse(20+n*17,127,10,9,'_',['q','g','w'][n%3],true);
  polygon(c,[[30,49+sink],[150,49+sink],[154,110],[26,110]],'k');
@@ -105,6 +106,6 @@ export function softCastle(c,p,v){
  const front=new ObjectCanvas(p.w,p.h);
  // Only the low apron is in front of players. Side/back mesh stays behind them.
  for(let x=25;x<=155;x++)front.put(x,120+press(x),'=','a');
- const controls={switch:{x:149,y:142},valve:{x:156,y:142},gauge:{x:161,y:140},grill:{x:174,y:135},hose:{x:174,y:143},door:{x:118,y:141},door_frame:{x:103,y:141},buckle:{x:93,y:142},tie_left:{x:4,y:143},tie_right:{x:167,y:143},apron:{x:79,y:141},apron_edge:{x:65,y:140},flag_rope:{x:27,y:141},seam:{x:42,y:141},drain:{x:142,y:141}};
- return {entry:{x:90,y:146},contact:{x:174,y:132},surface:'castle',slots,controls,front:front.finish(),route:[{x:90,y:146},{x:90,y:136},{x:90,y:119}],blower:{x:174,y:132},mesh:{x:43,y:70+sink}};
+ const controls=structuredClone(CASTLE_GEOMETRY.controls);
+ return {entry:{...CASTLE_GEOMETRY.entry},contact:{...CASTLE_GEOMETRY.contact},surface:'castle',slots,controls,front:front.finish(),route:structuredClone(CASTLE_GEOMETRY.route),blower:{...CASTLE_GEOMETRY.contact},mesh:{x:43,y:70+sink}};
 }
