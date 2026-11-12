@@ -21,7 +21,7 @@
       "owner": "medium_food_art",
       "model": "gpt-6-astra",
       "reasoning": "medium",
-      "status": "integrated_verified_parent_review",
+      "status": "committed_2a3a73e",
       "objects": 23,
       "files": [
         "engine/client/food-workshop.mjs",
@@ -35,7 +35,7 @@
       "owner": "medium_specimen_art",
       "model": "gpt-6-astra",
       "reasoning": "medium",
-      "status": "integrated_verified_parent_review",
+      "status": "committed_2a3a73e",
       "objects": 33,
       "files": [
         "engine/client/specimen-workshop.mjs",
@@ -79,7 +79,7 @@
     {
       "id": "seeds_and_bait_art",
       "owner": "medium_food_art",
-      "status": "integrated_verified_parent_review",
+      "status": "committed_2a3a73e",
       "objects": 19,
       "files": [
         "engine/client/animation/seeds.json",
@@ -92,14 +92,42 @@
     {
       "id": "portable_company_anchors",
       "owner": "medium_specimen_art",
-      "status": "implemented_verified_171_checks",
-      "next": "Parent review and commit"
+      "status": "committed_2a3a73e"
     },
     {
       "id": "bounce_house_candidates",
       "owner": "milestone_advisor",
       "status": "running",
       "next": "Review actual48 candidates and author executable candidate/evidence record; no verification credit."
+    },
+    {
+      "id": "encounter_reward_ownership",
+      "owner": "medium_specimen_art",
+      "status": "committed_94ab88b",
+      "checks": {
+        "dedicated": 25,
+        "brains": 47,
+        "encounters": 16
+      }
+    },
+    {
+      "id": "scope_evidence_validator",
+      "owner": "medium_food_art",
+      "status": "committed_7bb3dd1",
+      "tests": 14,
+      "semanticCertification": false
+    },
+    {
+      "id": "castle_native_contacts",
+      "owner": "medium_specimen_art",
+      "status": "awaiting_advisor_transform_contract",
+      "scope": "Native roots and arrival-gated control effects; begin castle_start then door/hose"
+    },
+    {
+      "id": "castle_renderer_contacts",
+      "owner": "medium_food_art",
+      "status": "awaiting_advisor_transform_contract",
+      "scope": "Native root projection, consistent control geometry across camera and aspect ratios"
     }
   ]
 }
