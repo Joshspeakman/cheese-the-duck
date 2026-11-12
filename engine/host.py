@@ -261,6 +261,17 @@ class DesktopGame(Game):
         if self._pond_duck is not self.duck:
             self.living_pond.attach(self, offline=offline)
             self._pond_duck = self.duck
+        self._reconcile_visitor_presence()
+
+    def _reconcile_visitor_presence(self):
+        from engine import visitor_presence
+        if visitor_presence.reconcile(self):
+            # Other company routines also consult this presence cache before
+            # the usual end-of-frame mind update. Do not retain the absent body.
+            self.living_pond.minds.sync()
+            # Release a rare-Pip lease before GuestMotion can consume its target.
+            # Its actual actor remains available for owner-specific cleanup.
+            self._refresh_shared_motion()
 
     def _start_new_game(self):
         self.renderer.chat.reset()
@@ -311,6 +322,7 @@ class DesktopGame(Game):
         super()._update()
         if self.living_pond:
             self.living_pond.tick()
+        self._reconcile_visitor_presence()
         # Base/pond callbacks may change a visit, story step or age. Revalidate
         # motion ownership before the rare/story movers consume a destination.
         self._refresh_shared_motion()

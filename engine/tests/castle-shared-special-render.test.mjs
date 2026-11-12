@@ -26,7 +26,7 @@ test('rare and story arrivals and exits retain source walking without early cont
  }
 });
 test('wrong adapters, missing live actors and changed story identities fail closed',()=>{
- const changes=[s=>s.living.plan.carnival_work.shared.operator.cast='friendly_goose',s=>delete s.living.plan.carnival_work.shared.operator.motion_token,s=>s.living.plan.carnival_work.shared.operator.adapter='regular',s=>s.rareVisitor=null];
+ const changes=[s=>s.living.plan.carnival_work.shared.operator.cast='butterfly_fairy',s=>delete s.living.plan.carnival_work.shared.operator.motion_token,s=>s.living.plan.carnival_work.shared.operator.adapter='regular',s=>s.rareVisitor=null];
  for(const change of changes){const s=specialSharedCastleFixture();change(s);assert.deepEqual(carnivalOccupants(s),[]);}
  for(const change of [s=>s.storyActor=null,s=>s.storyActor.id='story:pip',s=>s.storyActor.storyId='frog_choir',s=>s.living.story.step='choice',s=>s.living.story=null,s=>s.living.plan.carnival_work.shared.operator.render_id='story:other']){const s=specialSharedCastleFixture('lost_duckling','story');change(s);assert.deepEqual(carnivalOccupants(s),[]);}
  assert.equal(METRICS.casts['story:pip'],undefined);assert.equal(METRICS.casts['story:lost_duckling'],undefined);

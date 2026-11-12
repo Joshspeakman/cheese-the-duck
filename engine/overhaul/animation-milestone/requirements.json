@@ -5584,7 +5584,7 @@
       "observationOnly": 1,
       "source": "engine/scripts/review-guest-control-capabilities.mjs",
       "runtimeAcceptance": false,
-      "remaining": "43 unique profiles have three adopted shared operator controls; the remaining goose/owl/crow/toad/Flutter profiles, stationary egg scenes, all contextual bindings and full repertoire remain incomplete."
+      "remaining": "47 unique profiles now have three adopted shared operator controls. Flutter, stationary egg scenes, full contextual bindings and complete object repertoires remain unfinished."
     },
     "nativeSharedCastle": {
       "status": "regular_native_and_rendered_verified",
@@ -5606,8 +5606,8 @@
       "uiChecks": 7,
       "rendererSuiteTests": 269,
       "remaining": [
-        "Remaining eight special visitor adapters and anatomical roles",
-        "Egg caregiver scene",
+        "Flutter flight observer",
+        "Stationary egg caregiver scene",
         "Other controls and full individual object repertoires"
       ],
       "fullRepertoiresComplete": false,
@@ -5671,11 +5671,10 @@
       "departure": "Conservative complete-itinerary duration preflight and last-six-seconds refusal; visit time is never extended",
       "hostPublication": "Motion-only refresh before both movement phases revalidates mutations and computes contact readiness from held actual roots and facing without applying effects",
       "remaining": [
-        "Goose/owl/crow/toad actual support and native adapters",
         "Flutter observer role",
         "Stationary egg caregiver scene",
         "Full per-object repertoires and contexts",
-        "Rare/story Pip shared character identity and simultaneous-presence audit"
+        "Rare/story Pip memory reconciliation; simultaneous physical presence is now prevented"
       ],
       "fullRepertoiresComplete": false,
       "observerAges": 8,
@@ -5690,6 +5689,52 @@
       "ageReview": "engine/artifacts/animation-milestone/castle-shared-special-ages-native-render-review.html",
       "independentLifecycleChecks": 85,
       "regularRendererRegressionCases": 7200
+    },
+    "nativeSpeciesCastle": {
+      "status": "native_rendered_and_lifecycle_verified",
+      "profiles": [
+        "friendly_goose",
+        "wise_owl",
+        "mysterious_crow",
+        "grumpy_toad"
+      ],
+      "controls": [
+        "castle_start",
+        "castle_door_open",
+        "castle_hose_stow"
+      ],
+      "observerAges": 8,
+      "nativeAdultChecks": 232,
+      "nativeAgeChecks": 1828,
+      "nativeAdultFrames": 60,
+      "nativeAgeFrames": 480,
+      "independentLifecycleChecks": 63,
+      "adultRenderedCases": 720,
+      "adultRenderedRoots": 1440,
+      "adultRenderedContacts": 432,
+      "ageRenderedCases": 5760,
+      "ageRenderedRoots": 11520,
+      "ageRenderedContacts": 3456,
+      "fullRendererSuiteTests": 277,
+      "unchangedArtComparisons": 1440,
+      "priorProfileMetricsUnchanged": 43,
+      "anatomy": "Pads annotated at actual underscore drawing operations; support bounds from actual head/torso fills; both-facing true species walking/hopping phases and held work included without changing fitter fields or art",
+      "refusal": "Grumble9,7 door/hose refuse before any material change; supported9,6 completes. New water beneath a required lowered toe interrupts without a false later event or reward.",
+      "review": "engine/artifacts/animation-milestone/castle-shared-species-ages-native-render-review.html",
+      "remaining": [
+        "Flutter flight observer",
+        "Stationary egg caregiver owner",
+        "Full per-object and contextual repertoires"
+      ],
+      "fullRepertoiresComplete": false
+    },
+    "singlePipPresence": {
+      "status": "implemented_and_verified",
+      "checks": 21,
+      "source": "engine/check_visitor_presence.py",
+      "policy": "Defer Pip story during his rare visit; reserve rare arrival throughout every active Pip story step. An existing duplicate yields to the story, immediately invalidates cached rare presence and releases its owned work without role handoff.",
+      "preserved": "Story choices, existing brain records, friendships, visitor history, needs and consumed mechanical effects; unrelated guests still arrive. Saved story rebuilds transient exclusion.",
+      "remaining": "Memory reconciliation between existing rare and story brain records is a separate migration; no merge or unified-memory claim."
     }
   },
   "wardrobe": [

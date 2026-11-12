@@ -1182,7 +1182,8 @@ class LivingPond:
                'craft':bool(g.crafting.crafted_count) or s['skills']['crafting']>=8,
                'birds':e['birds']>.45,'night':self.hour>=19 or self.hour<5,
                'friends':bool(g.friends.current_visit),'knowledge':sum(s['knowledge'].values())>=3}
-        choices=[key for key,story in STORIES.items() if key not in s['stories'] and gates[story['gate']]]
+        from engine import visitor_presence
+        choices=[key for key,story in STORIES.items() if key not in s['stories'] and gates[story['gate']] and not visitor_presence.defer_story(self,key)]
         if choices:
             key=choices[0];s['story']={'id':key,'step':0,'choices':[]}
             self.remember('story',STORIES[key]['title']+' began by the pond.',.8,key)
