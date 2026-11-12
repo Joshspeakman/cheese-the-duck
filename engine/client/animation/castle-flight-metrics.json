@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "operators": {
+    "hatchling": {
+      "scale": 0.7166666666666667,
+      "anchorX": 36,
+      "groundRow": 39.5,
+      "body": {
+        "x": -9,
+        "y": -8.5,
+        "w": 19,
+        "h": 10
+      },
+      "samples": 1230,
+      "appearance": "unequipped"
+    },
+    "duckling": {
+      "scale": 0.6666666666666666,
+      "anchorX": 36,
+      "groundRow": 39.5,
+      "body": {
+        "x": -10,
+        "y": -11.5,
+        "w": 21,
+        "h": 12
+      },
+      "samples": 1230,
+      "appearance": "unequipped"
+    },
+    "juvenile": {
+      "scale": 0.6871794871794872,
+      "anchorX": 36,
+      "groundRow": 39.5,
+      "body": {
+        "x": -13,
+        "y": -13.5,
+        "w": 27,
+        "h": 15
+      },
+      "samples": 1230,
+      "appearance": "unequipped"
+    },
+    "young_adult": {
+      "scale": 0.6755555555555556,
+      "anchorX": 36,
+      "groundRow": 39.5,
+      "body": {
+        "x": -15,
+        "y": -15.5,
+        "w": 31,
+        "h": 17
+      },
+      "samples": 1230,
+      "appearance": "unequipped"
+    },
+    "adult": {
+      "scale": 0.675,
+      "anchorX": 36,
+      "groundRow": 39.5,
+      "body": {
+        "x": -15,
+        "y": -16.5,
+        "w": 31,
+        "h": 18
+      },
+      "samples": 1230,
+      "appearance": "unequipped"
+    },
+    "mature": {
+      "scale": 0.7083333333333334,
+      "anchorX": 36,
+      "groundRow": 39.5,
+      "body": {
+        "x": -16,
+        "y": -16.5,
+        "w": 33,
+        "h": 18
+      },
+      "samples": 1230,
+      "appearance": "unequipped"
+    },
+    "elder": {
+      "scale": 0.7111111111111111,
+      "anchorX": 36,
+      "groundRow": 39.5,
+      "body": {
+        "x": -15,
+        "y": -15.5,
+        "w": 31,
+        "h": 16
+      },
+      "samples": 1230,
+      "appearance": "unequipped"
+    },
+    "legendary": {
+      "scale": 0.7083333333333334,
+      "anchorX": 36,
+      "groundRow": 39.5,
+      "body": {
+        "x": -15,
+        "y": -16.5,
+        "w": 31,
+        "h": 17
+      },
+      "samples": 1230,
+      "appearance": "unequipped"
+    }
+  },
+  "kind": "airborne-envelope",
+  "actor": "butterfly_fairy",
+  "cast": "butterfly_fairy",
+  "scale": 0.4,
+  "anchorX": 36,
+  "groundRow": 39.5,
+  "facings": [
+    "right",
+    "left"
+  ],
+  "states": [
+    "flight",
+    "watch",
+    "consumed-effect-attention"
+  ],
+  "motion_modes": [
+    "normal",
+    "reduced"
+  ],
+  "sampling": {
+    "method": "raster-boundaries-and-intervals",
+    "period": 6.283185307179586,
+    "time_samples": 345,
+    "samples": 4140
+  },
+  "body": {
+    "x": -13,
+    "y": -23.5,
+    "w": 27,
+    "h": 17
+  }
+}

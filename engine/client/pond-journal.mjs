@@ -182,7 +182,7 @@ const p=itemProfile(item,itemFamily(id));
        parent=groups[category];
       }
       const button=this.button(label,'carnival_action',id,busy||!outside,{instance,text:choice});button.dataset.carnivalChoice=choice;if(score)button.title=score.note;parent.append(button);
-      if(['castle_start','castle_door_open','castle_hose_stow'].includes(choice)){const together=this.button('With a friend','carnival_action',id,busy||!outside,{instance,text:choice,together:true});together.dataset.carnivalTogether=choice;together.title='Ask a nearby friend to work the controls while Cheese watches.';parent.append(together);}
+      if(['castle_start','castle_door_open','castle_hose_stow'].includes(choice)){const together=this.button('With a friend','carnival_action',id,busy||!outside,{instance,text:choice,together:true});together.dataset.carnivalTogether=choice;together.title='Share this activity with a nearby visitor.';parent.append(together);}
      }
     }
     if(id==='bounce_house'&&state.castle){detail.dataset.castleInstance=instance||'';const summary=el('p',castleSummary(state));summary.dataset.castleSummary='';detail.insertBefore(summary,detail.querySelector('details')||detail.querySelector('[data-carnival-choice]'));}

@@ -5735,6 +5735,50 @@
       "policy": "Defer Pip story during his rare visit; reserve rare arrival throughout every active Pip story step. An existing duplicate yields to the story, immediately invalidates cached rare presence and releases its owned work without role handoff.",
       "preserved": "Story choices, existing brain records, friendships, visitor history, needs and consumed mechanical effects; unrelated guests still arrive. Saved story rebuilds transient exclusion.",
       "remaining": "Memory reconciliation between existing rare and story brain records is a separate migration; no merge or unified-memory claim."
+    },
+    "nativeFlightCastle": {
+      "status": "native_rendered_and_lifecycle_verified",
+      "profile": "butterfly_fairy",
+      "role": "independent airborne observer; Cheese operates actual controls",
+      "controls": [
+        "castle_start",
+        "castle_door_open",
+        "castle_hose_stow"
+      ],
+      "operatorAges": 8,
+      "nativeAdultChecks": 54,
+      "nativeAdultFrames": 36,
+      "nativeAgeChecks": 432,
+      "nativeAgeFrames": 291,
+      "adultRenderedCases": 432,
+      "adultRenderedRoots": 864,
+      "adultRenderedContacts": 108,
+      "ageRenderedCases": 3492,
+      "ageRenderedRoots": 6984,
+      "ageRenderedContacts": 864,
+      "ageRenderedObserverChecks": 3492,
+      "fullRendererSuiteTests": 283,
+      "regularLifecycleRegressionChecks": 63,
+      "specialLifecycleRegressionChecks": 85,
+      "speciesLifecycleRegressionChecks": 63,
+      "soloDiskLifecycleRegressionChecks": 41,
+      "existingGuestChecks": 17985,
+      "priorGuestMetricProfilesUnchanged": 47,
+      "canonicalSceneryPixelDifferences": 0,
+      "geometry": "Actual full Flutter wing/body envelope without feet or grip; full eight-age Cheese operator ink/fills; Home Pond tree/dock/lantern world-space bounds from actual canonical art and analytic sway extrema.",
+      "ownership": "GuestMotion is Flutter root writer; existing native Cheese scheduler is the only mechanical clock. Atomic proposal precedes acquisition. Both exits and current safety conditions precede learning and item rewards.",
+      "conversation": "Shared chat uses exact roles and current material state, bypassing incompatible legacy lease fields. Malformed reservations cannot claim movement ownership.",
+      "review": "engine/artifacts/animation-milestone/castle-flight-ages-native-render-review.html",
+      "adultSourceSha256": "aab30247b8bb87b5a29bff8de9d609aa7f737457093c7dae47515c591774c6de",
+      "ageSourceSha256": "c7b7821e65fed831fcd9940e181e55d8c3265e822c8047742547652a2fda5c56",
+      "remaining": [
+        "Measured equipped-outfit flight envelopes (current interaction refuses unmeasured outfits)",
+        "Additional locations and third-actor flight participation (current scope Home Pond with no third visitor)",
+        "Stationary egg caregiver scene",
+        "Other mechanisms and full individual per-object/contextual repertoires"
+      ],
+      "fullRepertoiresComplete": false,
+      "independentLifecycleChecks": 133
     }
   },
   "wardrobe": [

@@ -84,6 +84,13 @@
       "owner": "root",
       "status": "verified21_native_checks",
       "scope": "One physical Pip, transient arrival exclusion and story deferral; no brain-state merge"
+    },
+    {
+      "id": "flutter_flight_observer",
+      "owner": "native_regressions + projection_finish + root",
+      "advisor": "physical_advisor",
+      "status": "verified_ready_to_commit",
+      "scope": "Eight hatched Cheese operators, three native control scores, independent Flutter flight, full body/scenery bounds and role-correct chat. Explicit outfit/location/third-actor restrictions; no full repertoire credit."
     }
   ],
   "mediumQueue": [

@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "location": "Home Pond",
+  "kind": "native-scenery-ink-envelope",
+  "sampling": {
+    "method": "all-willow-sway-extrema",
+    "samples": 75
+  },
+  "features": [
+    {
+      "id": "west_willow",
+      "kind": "willow",
+      "bounds": {
+        "x": -18.5625,
+        "y": -30.382978723404257,
+        "w": 38.5,
+        "h": 52.723404255319146
+      }
+    },
+    {
+      "id": "east_willow",
+      "kind": "willow",
+      "bounds": {
+        "x": 117.5625,
+        "y": -25.02127659574468,
+        "w": 33.6875,
+        "h": 43.787234042553195
+      }
+    },
+    {
+      "id": "pond_dock",
+      "kind": "dock-and-lantern",
+      "bounds": {
+        "x": 97.625,
+        "y": 18.76595744680851,
+        "w": 24.75,
+        "h": 15.191489361702128
+      }
+    }
+  ]
+}

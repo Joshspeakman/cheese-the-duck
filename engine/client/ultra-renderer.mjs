@@ -112,6 +112,16 @@ export class SceneCanvas {
     const seatedHits=[];
     // Rugs stay under everything; other props and characters share depth order.
     for(const actor of [...objects,...characters,...result.scenery].sort((a,b)=>(a.floor?-1000:a.y)-(b.floor?-1000:b.y))){
+      if(actor.scenery&&actor.projectedCells){
+        for(const [x,y,w,h,char,color,material]of actor.projectedCells){
+          const left=Math.round(x*this.sx),top=Math.round(y*this.sy),width=Math.round((x+w)*this.sx)-left,height=Math.round((y+h)*this.sy)-top;
+          if(left+width<=0||top+height<=0||left>=this.canvas.width||top>=this.canvas.height)continue;
+          const gx=Math.max(0,Math.min(W-1,Math.floor(x+w/2))),gy=Math.max(0,Math.min(H-1,Math.floor(y+h/2))),i=gy*W+gx,surface=material===M.foliage?'foliage':material===M.wood?'wood':this.world.water[i]?'water':'land',band=this.bands[i],row=gy>>3;
+          this.ctx.fillStyle=this.swatches[surface][band][gy];this.ctx.fillRect(left,top,width,height);
+          if(char!==32)this.ctx.drawImage(this.tile(char,this.ink[surface][band][row][color],this.outlines[surface][band][row][color]),left,top,width,height);
+        }
+        continue;
+      }
       if(actor.scenery){
         for(const [i,char,color,material] of actor.cells){
           const x=i%W,y=(i/W)|0,left=Math.round(x*this.sx),top=Math.round(y*this.sy);

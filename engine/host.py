@@ -309,8 +309,7 @@ class DesktopGame(Game):
         if self.living_pond:
             from engine import carnival
             if carnival.is_shared(self.living_pond.state.get('plan')):
-                from engine import castle_shared
-                castle_shared.refresh(self.living_pond)
+                carnival.shared_controller(self.living_pond.state['plan']).refresh(self.living_pond)
 
     def _update(self):
         self._ensure_living_pond()
