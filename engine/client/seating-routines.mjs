@@ -1,3 +1,4 @@
+import {actorPitches} from './actor-projection.mjs';
 import ROUTINES from './animation/seating-routines.json' with {type:'json'};
 export {ROUTINES as SEATING_ROUTINES};
 const clamp=n=>Math.max(0,Math.min(1,n));
@@ -29,13 +30,14 @@ export function seatingGeometry(home,passenger,sx,sy){
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*ch;
  const seat=home.anchors.slots[passenger.slot]||home.anchors.seat,inside=passenger.inside;
  // Fit the complete repertoire once, preserving scale throughout each rest.
- const bounds=passenger.envelope,fit=Math.min(c.scale,home.anchors.seatWidth*unit/((bounds.right-bounds.left+1)*sx));
+ const {cw:bodyX,ch:bodyY}=actorPitches({...c,scale:1},sx,sy);
+ const bounds=passenger.envelope,fit=Math.min(c.scale,home.anchors.seatWidth*unit/((bounds.right-bounds.left+1)*bodyX));
  const scale=c.scale+(fit-c.scale)*inside;
  // Seated feet fold beneath the body. The rig exposes its belly contact so
  // cushions support the resident rather than leaving a gap under it.
  const ground=c.seatContact??c.groundRow;
- const restingY=top+seat.y*ch+(c.groundRow-ground)*fit*sx*1.5-(c.offsetY||0)*fit*sx;
- const restingX=left+seat.x*unit-(c.offsetX||0)*fit*sx;
+ const restingY=top+seat.y*ch+(c.groundRow-ground)*fit*bodyY-(c.offsetY||0)*fit*bodyY/1.5;
+ const restingX=left+seat.x*unit-(c.offsetX||0)*fit*bodyX;
  const character={...c,scale,x:c.x+(restingX/sx-c.x)*inside,y:c.y+(restingY/sy-c.y)*inside};
  const rim=home.anchors.front;
  const front=inside>.99?{...home,id:home.id+':seat-front',sitters:null,

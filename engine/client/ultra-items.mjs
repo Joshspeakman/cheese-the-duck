@@ -171,11 +171,11 @@ export function selectedItem(ui,rows=[]){
 // every placed object on every frame. Animation frames are quantized at 3 fps.
 export class ItemPainter {
   constructor({maxBytes=64*1024*1024}={}){this.cache=new Map();this.bytes=0;this.maxBytes=maxBytes;}
-  image(model,cw,surface='#102023ee',outline='#0c2024'){
-    const unit=Math.max(2,Math.round(cw*2)/2),key=[model.id,unit,model.art.join('\n'),JSON.stringify([model.inks,model.panels,model.tones,model.fills]),surface,outline].join('|');
+  image(model,cw,surface='#102023ee',outline='#0c2024',cellRatio=1.5){
+    const unit=Math.max(2,Math.round(cw*2)/2),key=[model.id,unit,cellRatio,model.art.join('\n'),JSON.stringify([model.inks,model.panels,model.tones,model.fills]),surface,outline].join('|');
     if(this.cache.has(key)){const hit=this.cache.get(key);this.cache.delete(key);this.cache.set(key,hit);return hit;}
-    const ch=unit*1.5,canvas=document.createElement('canvas');canvas.width=Math.ceil((model.width+2)*unit);canvas.height=Math.ceil((model.art.length+2)*ch);
-    const ctx=canvas.getContext('2d');ctx.font=`600 ${ch}px Menlo, monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
+    const ch=unit*cellRatio,canvas=document.createElement('canvas');canvas.width=Math.ceil((model.width+2)*unit);canvas.height=Math.ceil((model.art.length+2)*ch);
+    const ctx=canvas.getContext('2d');ctx.font=`600 ${Math.min(ch,unit*1.5)}px Menlo, monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
     // Preserve the hand-built outline while keeping the busy terrain out of solid
     // furniture. No rectangular tile backgrounds and no blur on the ASCII ink.
     for(const fill of model.fills||[]){ctx.fillStyle=fill.opaque?(model.panels?.[fill.tone]||surface):model.body+'38';ctx.fillRect((fill.x+1)*unit,(fill.y+1)*ch,fill.w*unit,ch+.5);}
@@ -201,11 +201,13 @@ export class ItemPainter {
     return result;
   }
   draw(ctx,model,x,y,cw,{shadow=true,surface,outline}={}){
-    cw*=model.detailScale||1;
-    const {canvas,unit,ch}=this.image(model,cw,surface,outline),width=(model.width+2)*cw,height=(model.art.length+2)*cw*1.5;
-    ctx.save();ctx.translate(x,y-model.lift*cw*1.5);
+    const physical=model.physicalCastlePixels;
+    cw=physical?.unit||cw*(model.detailScale||1);
+    const rowHeight=physical?.uh||cw*1.5;
+    const {canvas}=this.image(model,cw,surface,outline,rowHeight/cw),width=(model.width+2)*cw,height=(model.art.length+2)*rowHeight;
+    ctx.save();ctx.translate(x,y-model.lift*rowHeight);
     if(shadow){ctx.fillStyle='#05171965';ctx.beginPath();ctx.ellipse(0,0,width*.4,Math.max(2,cw*.55),0,0,Math.PI*2);ctx.fill();}
     ctx.transform(1,0,model.sway,1,0,0);
-    ctx.drawImage(canvas,-width/2,-height+cw*1.5,width,height);ctx.restore();
+    ctx.drawImage(canvas,-width/2,-height+rowHeight,width,height);ctx.restore();
   }
 }

@@ -1,3 +1,4 @@
+import {actorPitches} from './actor-projection.mjs';
 import COMPANY from './animation/ground-company.json' with {type:'json'};
 import {GROUND_BLUEPRINTS,groundPoint} from './ground-workshop.mjs';
 export {COMPANY as GROUND_COMPANY};
@@ -29,7 +30,7 @@ export function groundPose(work,motion=true){
  return {...actor,...controls,...transition,actorU:actor.u,actorV:actor.v,actorPress:actor.press,partner,progress:clamp(work.elapsed/spec.duration),tool,ground:tool!=='none'&&!work.transition};
 }
 export function groundGeometry(home,worker,sx,sy){
- const c=worker.character,pose=groundPose(c.performance.routine,c.performance.motion!==false),unit=sx*home.scale*home.detailScale,hh=unit*1.5,cw=c.scale*sx,ch=cw*1.5;
+ const c=worker.character,pose=groundPose(c.performance.routine,c.performance.motion!==false),unit=sx*home.scale*home.detailScale,hh=unit*1.5,{cw,ch}=actorPitches(c,sx,sy);
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*hh,p=GROUND_BLUEPRINTS[home.blueprint];
  const fp=groundPoint(p,pose.actorU,pose.actorV),cp=groundPoint(p,clamp(pose.actorU+(pose.partner?-.09:.09)),clamp(pose.actorV-.12));
  const foot={x:left+(fp.x+.5)*unit,y:top+(fp.y+.5)*hh},target={x:left+(cp.x+.5)*unit,y:top+(cp.y+.5)*hh};

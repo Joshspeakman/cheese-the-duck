@@ -16,7 +16,7 @@ from engine.placements import outdoor_decorations, complete_structures,habitat_p
 from engine import shelters, nest_routines, nest_materials, playdates, water_routines, furniture_rests,botany,botanical_care,instrument_sessions
 from world.guest_cast import guest_profile, guest_line
 from engine import nest_company
-from engine import excursions,carnival
+from engine import excursions,carnival,castle_work
 from engine import portable_ground
 
 NEEDS = ('hunger', 'energy', 'fun', 'cleanliness', 'social')
@@ -635,7 +635,13 @@ class LivingPond:
         if pos._is_directed_movement:
             s['plan']['destination']=[pos.target_x,pos.target_y]
             s['plan']['approach_time']=0.
-        if s['plan'].get('carnival_work'):carnival.prepare(self,s['plan'])
+        if s['plan'].get('carnival_work'):
+            carnival.prepare(self,s['plan'])
+            work=s['plan']['carnival_work']
+            if work.get('physical_pilot') and work.get('interrupted'):
+                reason=work.get('physical_error','The control cannot be reached from here.')
+                self.cancel()
+                return False,reason
         self._last_plan_visual = None
         return True, s['plan']['label']+'.'
 
@@ -663,13 +669,23 @@ class LivingPond:
 
     def _activity(self, dt):
         s = self.state; plan = s['plan']; g = self.game
-        if not plan or plan.get('paused') or not g:
+        if not plan or not g:
+            return
+        work=plan.get('carnival_work')
+        if isinstance(work,dict) and work.get('physical_pilot') and not castle_work.physical_active(plan):
+            self.cancel()
+            self.notice('The saved control position is invalid. Cheese steps away without completing the work.')
+            return
+        if plan.get('paused'):
+            castle_work.physical_pause(self,plan)
             return
         if self.location != plan['location'] or not self.available():
             # Dialogues, minigames, sleep and journeys take priority over plans.
             plan['paused'] = True
+            castle_work.physical_pause(self,plan)
             return
         if g.duck.current_action in ('feed','play','clean','pet','sleep'):
+            castle_work.physical_pause(self,plan,preserve_state=True)
             return
         if plan.get('portable'):
             if not portable_ground.valid(self,plan):self.cancel();return
@@ -710,7 +726,10 @@ class LivingPond:
             self.notice('That resting place has moved. Cheese steps back out to find somewhere else.')
             return
         destination=plan.get('approach_destination',plan.get('destination'))
-        if destination and plan['phase']=='approach':
+        # Adopted component work owns precise arrival; the generic three-cell
+        # approach radius must not stop its walk short of the actual control.
+        native_carnival = castle_work.physical_active(plan)
+        if destination and plan['phase']=='approach' and not native_carnival:
             pos=g.renderer.duck_pos
             distance=abs(pos.x-destination[0])+abs(pos.y-destination[1])
             if distance>3:
@@ -748,7 +767,8 @@ class LivingPond:
         weather_holding = bool(residence and residence['roof'] and shelters.adverse(self.weather_type)
                        and plan['phase'] == 'act' and g.duck.needs.hunger > 15)
         holding = weather_holding or routine_holding or company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or creative_holding or textile_holding or ground_holding or architecture_holding or playkit_holding or carnival_holding
-        if company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or creative_holding or textile_holding or ground_holding or architecture_holding or playkit_holding or carnival_holding:
+        native_travel = castle_work.physical_active(plan) and plan['carnival_work']['physical']['phase'] in ('approach','exit')
+        if (company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or creative_holding or textile_holding or ground_holding or architecture_holding or playkit_holding or carnival_holding) and not native_travel:
             g.renderer.duck_pos.cancel_movement()
             g.renderer.duck_pos.set_state_by_name('thinking',0)
         elif plan.get('company',{}).get('done') or plan.get('water_routine',{}).get('done') or plan.get('seat_routine',{}).get('done') or plan.get('care_routine',{}).get('done') or plan.get('music_score',{}).get('done') or plan.get('light_work',{}).get('done') or plan.get('keepsake_work',{}).get('done') or plan.get('creative_work',{}).get('done') or plan.get('textile_work',{}).get('done') or plan.get('ground_work',{}).get('done') or plan.get('architecture_work',{}).get('done') or plan.get('playkit_work',{}).get('done') or plan.get('carnival_work',{}).get('done'):
@@ -769,7 +789,7 @@ class LivingPond:
         state = {'comfort':'sleeping','water':'swimming','music':'dancing','toy':'hopping',
                  'food':'eating','plant':'preening','machine':'preening'}.get(profile.get('kind'),'preening') if plan['kind']=='item' else PLANS.get(plan['kind'], ('','preening'))[1]
         if phase in ('act','settle'):
-            if phase != self._last_plan_visual:
+            if phase != self._last_plan_visual and not native_travel:
                 g.renderer.duck_pos.cancel_movement()
                 # Material routines own their position until native completion,
                 # including the exit gesture. A wall-clock animation timeout can

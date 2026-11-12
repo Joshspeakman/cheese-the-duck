@@ -1,3 +1,5 @@
+import {actorPitches,hasPhysicalActorProjection,displayCamera} from './actor-projection.mjs';
+import {castleArtFrame} from './castle-projection.mjs';
 import {carnivalGeometry} from './carnival-routines.mjs';
 import {playkitGeometry,drawPlaykitTools} from './playkit-routines.mjs';
 import {architectureGeometry,drawArchitectureTools} from './architecture-routines.mjs';
@@ -53,14 +55,20 @@ export class SceneCanvas {
     this.atlas.set(key,tile);return tile;
   }
   draw(scene,time,dt){
+    this.displayCamera=displayCamera(scene.camera,this.sx,this.sy);
+    scene={...scene,camera:this.displayCamera};
     const light=sceneLight(scene);this.light=light;
     const result=this.world.render(scene,time,dt),{grid,characters,objects}=result;
-    // Keep native ASCII cells within the terrain cell height on wide windows.
-    // Measured placement bounds remain conservative across aspect ratios.
-    const nativeScale=Math.min(1,this.sy/(this.sx*1.5)),scaled=new Set();
-    const fit=model=>{if(model&&!scaled.has(model)){model.scale*=nativeScale;scaled.add(model);}};
+    // All world sprites share the display camera zoom; their glyph proportions
+    // remain canonical even when the visible native extent changes.
+    const nativeScale=132/this.displayCamera.w,scaled=new Set();
+    const fit=model=>{
+      if(model?.cheese)model.physicalActorProjection={camera:{...(scene.camera||{x:0,y:0,w:132,h:42})}};
+      if(model&&!model.physicalCastle&&!hasPhysicalActorProjection(model)&&!scaled.has(model)){model.scale*=nativeScale;scaled.add(model);}
+    };
     for(const model of characters)fit(model);
     for(const model of objects){
+      if(model.physicalCastle)model.physicalCastlePixels=castleArtFrame(model,this.sx,this.sy);
       fit(model);
       for(const member of [...(model.occupants||[]),...(model.nestHelpers||[]),...(model.riders||[]),...(model.sitters||[]),...(model.gardeners||[]),...(model.musicians||[]),...(model.lightWorkers||[]),...(model.keepers||[]),...(model.creators||[]),...(model.textileUsers||[]),...(model.groundUsers||[]),...(model.structureUsers||[]),...(model.carnivalRiders||[]),...(model.players||[])])fit(member.character);
       if(model.occupant)fit(model.occupant.character);
@@ -227,11 +235,11 @@ export class SceneCanvas {
     this.occlusion=new Map();
     for(const layer of result.scenery)if(!layer.overlay)for(const [i] of layer.cells)this.occlusion.set(i,Math.max(this.occlusion.get(i)??-Infinity,layer.y));
     this.hits=[...objects,...characters,...seatedHits].filter(a=>a.item||a.visitor||a.story).sort((a,b)=>(a.floor?-1000:a.y)-(b.floor?-1000:b.y)).map(a=>{
-      const unit=this.sx*a.scale*(a.detailScale||1),width=a.width*unit,height=a.art.length*unit*1.5;
+      const physical=castleArtFrame(a,this.sx,this.sy),pitches=actorPitches(a,this.sx,this.sy),unit=physical?.unit||(hasPhysicalActorProjection(a)?pitches.cw:this.sx*a.scale*(a.detailScale||1)),rowHeight=physical?.uh||(hasPhysicalActorProjection(a)?pitches.ch:unit*1.5),width=a.width*unit,height=a.art.length*rowHeight;
       if(!a.item){
         const b=inkBounds(a),left=a.x*this.sx-(a.anchorX??a.width/2)*unit+(a.offsetX||0)*unit;
-        const top=a.y*this.sy-(a.groundRow??a.art.length)*unit*1.5+(a.offsetY||0)*unit;
-        return {id:a.id,depth:a.y,kind:a.story?'story':'friend',x:left+b.left*unit,y:top+b.top*unit*1.5,w:(b.right-b.left+1)*unit,h:(b.bottom-b.top+1)*unit*1.5};
+        const top=a.y*this.sy-(a.groundRow??a.art.length)*rowHeight+(a.offsetY||0)*rowHeight/1.5;
+        return {id:a.id,depth:a.y,kind:a.story?'story':'friend',x:left+b.left*unit,y:top+b.top*rowHeight,w:(b.right-b.left+1)*unit,h:(b.bottom-b.top+1)*rowHeight};
       }
       return {id:a.id||scene.visitor?.id,depth:a.floor?-1000:a.y,instance:a.instance,kind:a.story?'story':a.visitor?'friend':'item',x:a.x*this.sx-width/2,y:a.y*this.sy-height,w:width,h:height};
     });

@@ -1,3 +1,4 @@
+import {actorPitches,hasPhysicalActorProjection} from './actor-projection.mjs';
 import { duckRig } from './duck-rig.mjs';
 import { visitorRig } from './visitor-rig.mjs';
 import { mixColor } from './scene-lighting.mjs';
@@ -32,11 +33,11 @@ export function characterSprite(duck,time,visitor=false) {
 
 export function drawCharacter(ctx,sprite,sx,sy,background) {
   const {art,scale,width}=sprite;
-  const cw=sx*scale,ch=cw*1.5;
+  const {cw,ch}=actorPitches(sprite,sx,sy);
   const left=Math.round(sprite.x*sx-(sprite.anchorX??width/2)*cw+(sprite.offsetX||0)*cw);
-  const top=Math.round(sprite.y*sy-(sprite.groundRow??art.length)*ch+(sprite.offsetY||0)*cw);
+  const top=Math.round(sprite.y*sy-(sprite.groundRow??art.length)*ch+(sprite.offsetY||0)*ch/1.5);
   ctx.save();
-  ctx.font=`600 ${ch}px Menlo, monospace`;
+  ctx.font=`600 ${hasPhysicalActorProjection(sprite)?Math.min(ch,cw*1.5):ch}px Menlo, monospace`;
   ctx.textBaseline='middle';ctx.textAlign='center';ctx.lineJoin='round';
   // Golden down can disappear into sunlit grass. Give the youngest silhouettes
   // a close dark edge, fading the treatment out at night. Feather colors keep

@@ -1,3 +1,4 @@
+import {actorPitches} from './actor-projection.mjs';
 import ROUTINES from './animation/keepsake-routines.json' with {type:'json'};
 import COMPANY from './animation/keepsake-company.json' with {type:'json'};
 export {ROUTINES as KEEPSAKE_ROUTINES,COMPANY as KEEPSAKE_COMPANY};
@@ -29,7 +30,7 @@ export function keepsakeGeometry(home,worker,sx,sy){
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*hh,ground=top+home.anchors.entry.y*hh;
  const A=home.anchors[pose.anchorA]||home.anchors.contact,B=home.anchors[pose.anchorB]||home.anchors.contact;
  const target={x:left+(A.x+(B.x-A.x)*pose.anchorBlend+.5)*unit,y:top+(A.y+(B.y-A.y)*pose.anchorBlend+.5)*hh};
- const cw=c.scale*sx,ch=cw*1.5,rest=c.workGripRest||c.grip||{x:c.anchorX+5,y:c.groundRow-7};
+ const {cw,ch}=actorPitches(c,sx,sy),rest=c.workGripRest||c.grip||{x:c.anchorX+5,y:c.groundRow-7};
  // Move along the front edge to the part being handled. Staying at one end
  // made every page turn look like a fishing rod reaching across the book.
  const workX=worker.slot===1?left+home.width*unit+6*cw-((c.bill?.x??c.anchorX)+.5-c.anchorX)*cw:target.x-2*cw-(rest.x-c.anchorX)*cw;

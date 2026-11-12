@@ -1,3 +1,4 @@
+import {actorPitches} from './actor-projection.mjs';
 import {SURFACE_ROUTINES,surfacePose,surfaceGeometry} from './surface-routines.mjs';
 import {CASTLE_SCORES,castlePose,castleGeometry} from './castle-care.mjs';
 import ROUTINES from './animation/carnival-routines.json' with {type:'json'};
@@ -39,12 +40,12 @@ export function carnivalOccupants(scene){
 export function carnivalGeometry(home,member,sx,sy){
  if(CASTLE_SCORES[member.work?.id])return castleGeometry(home,member,sx,sy);
  if(home.anchors.surface)return surfaceGeometry(home,member,sx,sy);
- const c=member.character,w=member.work,inside=member.watch?0:boarding(w,member.role),unit=sx*home.scale*home.detailScale,uh=unit*1.5,cw=c.scale*sx,ch=cw*1.5;
+ const c=member.character,w=member.work,inside=member.watch?0:boarding(w,member.role),unit=sx*home.scale*home.detailScale,uh=unit*1.5,{cw,ch}=actorPitches(c,sx,sy);
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*uh;
  const cabins=home.anchors.cabins||home.anchors.rides,seatIndex=w['seat_'+member.role]??0,seat=cabins.find(s=>s.index===seatIndex);
  if(!seat||inside===0)return {character:c,front:null,inside,seatIndex};
  const ground=c.seatContact??c.groundRow;
- const resting={x:left+seat.seat.x*unit-(c.offsetX||0)*cw,y:top+seat.seat.y*uh+(c.groundRow-ground)*ch-(c.offsetY||0)*cw};
+ const resting={x:left+seat.seat.x*unit-(c.offsetX||0)*cw,y:top+seat.seat.y*uh+(c.groundRow-ground)*ch-(c.offsetY||0)*ch/1.5};
  const route=[{x:c.x*sx,y:c.y*sy},...home.anchors.route.slice(1).map(p=>({x:left+p.x*unit,y:top+p.y*uh})),resting];
  const t=inside*(route.length-1),index=Math.min(route.length-2,Math.floor(t)),u=t-index,a=route[index],b=route[index+1];
  const character={...c,x:(a.x+(b.x-a.x)*u)/sx,y:(a.y+(b.y-a.y)*u)/sy,offsetY:inside===1?c.offsetY:0};

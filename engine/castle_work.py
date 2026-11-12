@@ -6,6 +6,198 @@ ROUTINES=json.loads((Path(__file__).parent/'client/animation/castle-care.json').
 DEFAULTS=dict(vent=0.,door=0.,latch=0.,tie_left=.8,tie_right=.8,apron=0.,flag=1.,hose=0.,kink=0.,dust=0.,mesh_wet=0.,roof_water=0.,prints=0.)
 MOVING=('vent','door','tie_left','tie_right','apron','flag','hose','kink')
 
+# Only the first explicitly adopted solo control uses native physical ownership.
+PHYSICAL_SCORES={'castle_start'}
+
+def physical_active(plan):
+    if not isinstance(plan,dict) or plan.get('target')!='bounce_house':return False
+    w=plan.get('carnival_work')
+    if not isinstance(w,dict) or not isinstance(w.get('id'),str) or w.get('id') not in PHYSICAL_SCORES or w.get('castle_care') is not True or w.get('physical_pilot') is not True:return False
+    p=w.get('physical')
+    def point(v):
+        return isinstance(v,(list,tuple)) and len(v)==2 and all(isinstance(n,(int,float)) and not isinstance(n,bool) and math.isfinite(n) for n in v)
+    return bool(w.get('id') in PHYSICAL_SCORES and isinstance(p,dict) and p.get('version')==1
+                and p.get('actor')=='cheese' and p.get('phase') in ('approach','hold','exit')
+                and p.get('station')=='switch' and point(p.get('root')) and point(p.get('target'))
+                and point(p.get('stance')) and point(p.get('center')) and point(p.get('exit'))
+                and isinstance(p.get('route'),list) and bool(p['route']) and all(point(v) for v in p['route'])
+                and type(p.get('waypoint')) is int and 0<=p['waypoint']<len(p['route'])
+                and isinstance(p.get('travel_time'),(int,float)) and math.isfinite(p['travel_time']) and p['travel_time']>=0
+                and isinstance(p.get('contact_ready'),bool))
+
+def physical_pause(pond,plan,preserve_state=False):
+    if not physical_active(plan):return
+    pos=pond.game.renderer.duck_pos
+    state=pos._state_str if preserve_state and pos._state_str in pos.ANIMATABLE_STATES else 'thinking'
+    pos.cancel_movement()
+    # Stopping a route alone enters idle, which can immediately choose a wander
+    # target. Hold a non-expiring stationary state until explicit resume/care end.
+    pos.set_state_by_name(state,0)
+    plan['carnival_work']['physical']['contact_ready']=False
+
+def physical_lifecycle_ok(plan):
+    if not physical_active(plan):return False
+    w=plan['carnival_work'];p=w['physical'];duration=ROUTINES[w['id']]['duration']
+    clock=w.get('clock');elapsed=w.get('ride_elapsed');events=w.get('events');stage=w.get('stage')
+    if any(type(v) not in (int,float) or not math.isfinite(v) or v<0 for v in (clock,elapsed)):return False
+    if elapsed>duration or not isinstance(events,list) or any(type(v) is not int for v in events):return False
+    expected=[i for i,effect in enumerate(ROUTINES[w['id']]['effects']) if effect[0]*duration<=elapsed]
+    if events!=expected:return False
+    if stage=='queue':return clock==0 and elapsed==0 and p['phase'] in ('approach','hold') and not w.get('done')
+    if stage=='service':return clock==elapsed and p['phase'] in ('approach','hold') and not w.get('done')
+    if stage in ('service_exit','done'):
+        return (elapsed==duration and clock==0 and p['phase']=='exit'
+                and p['route'][-1]==p['exit'] and bool(w.get('done'))==(stage=='done'))
+    return False
+
+# The first pilot is adult Cheese, solo, at the low blower switch. Rig offsets
+# below come from its authored contact pose, not a renderer-generated body shift.
+GEOMETRY=json.loads((Path(__file__).parent/'client/animation/castle-geometry.json').read_text())
+Q=.66*GEOMETRY['detail_scale']
+BX=.675*132/192
+BY=.675*42/47
+STANCE=dict(width=6,height=4,floor=False)
+
+def art_world(center,x,y):
+    return [center[0]+(x-GEOMETRY['width']/2)*Q*132/192,
+            center[1]+(y-GEOMETRY['height'])*Q*42/47]
+
+def control_world(center,name='switch'):
+    point=GEOMETRY['controls'][name]
+    return art_world(center,point['x']+.5,point['y']+.5)
+
+def placement_center(pond,plan):
+    place=next((p for p in pond.placements if p.instance==plan.get('instance') and p.item_id=='bounce_house'),None)
+    if place is None:return None
+    x,y=place.get_display_position()
+    return [x*132/20,y*42/12]
+
+def reach_distance(root,target):
+    hand=[root[0]+15.5*BX,root[1]-4*BY]
+    return math.hypot((target[0]-hand[0])/BX,(target[1]-hand[1])/BY)
+
+def supported(pond,plan,root,center):
+    from engine import terrain
+    from engine.portable_ground import policy
+    if not policy(pond).check('rock',root[0]*20/132,root[1]*12/42,plan.get('instance'),STANCE)[0]:return False
+    # Excluding this copy's layout collision does not permit walking through it.
+    # The entire front corridor is at/south of its real ground row. A root may
+    # approach that corridor from outside either outer wall, never through fabric.
+    ground=art_world(center,0,GEOMETRY['ground_row'])[1]
+    left=art_world(center,0,0)[0];right=art_world(center,GEOMETRY['width'],0)[0]
+    if root[1]<ground and left-3*BX<root[0]<right+3*BX:return False
+    for dx in (-3.5*BX,2.5*BX):
+        if terrain.water_at(pond.location,root[0]+dx,root[1],pond.biome):return False
+    return True
+
+def segment_clear(pond,plan,start,end,center):
+    # Match the existing animator's diagonal unit steps, including fractional
+    # starting positions. Arrival is observed within .51, never teleported.
+    point=list(start)
+    for _ in range(180):
+        if not supported(pond,plan,point,center):return False
+        if max(abs(point[i]-end[i]) for i in (0,1))<=.51:return True
+        point=[point[i]+(1 if point[i]<end[i] else -1 if point[i]>end[i] else 0) for i in (0,1)]
+    return False
+
+def physical_prepare(pond,plan):
+    w=plan['carnival_work'];pos=pond.game.renderer.duck_pos;center=placement_center(pond,plan)
+    if center is None:return physical_interrupt(pond,plan,'The placed house is no longer here.')
+    target=control_world(center);ground=art_world(center,0,GEOMETRY['ground_row'])[1]
+    preferred=[target[0]-16.5*BX,ground]
+    candidates=sorted(([x,y] for x in range(math.floor(preferred[0])-3,math.ceil(preferred[0])+4)
+                       for y in range(math.ceil(ground),math.ceil(ground)+4)),key=lambda v:(v[0]-preferred[0])**2+(v[1]-preferred[1])**2)
+    stance=next((v for v in candidates if supported(pond,plan,v,center) and reach_distance(v,target)<=3),None)
+    entry=art_world(center,GEOMETRY['entry']['x'],GEOMETRY['ground_row'])
+    exit_point=[round(entry[0]),math.ceil(ground)]
+    route=[];root=[pos.x,pos.y]
+    if root[1]<ground:route.append([round(root[0]),math.ceil(ground)])
+    route.append(exit_point)
+    if stance is not None:route.append(stance)
+    previous=root
+    if stance is None:return physical_interrupt(pond,plan,'The blower switch has no dry reachable stance.')
+    for point in route:
+        if not segment_clear(pond,plan,previous,point,center):return physical_interrupt(pond,plan,'The exterior route to the blower is blocked.')
+        previous=point
+    w['physical']=dict(version=1,actor='cheese',center=center,root=root,target=target,stance=stance,
+                       phase='approach',station='switch',contact_ready=False,route=route,waypoint=0,
+                       exit=exit_point,travel_time=0.)
+    w['invitation_checked']=True;w['paired']=False
+    plan['approach_destination']=list(stance)
+    pos.move_to(*route[0])
+    return True
+
+def physical_interrupt(pond,plan,reason):
+    w=plan['carnival_work'];w.update(done=True,interrupted=True,physical_error=reason)
+    if isinstance(w.get('physical'),dict):w['physical']['contact_ready']=False
+    pond.game.renderer.duck_pos.cancel_movement();clear(pond,plan)
+    return False
+
+def physical_geometry_ok(pond,plan):
+    if not physical_lifecycle_ok(plan):return False
+    p=plan['carnival_work']['physical'];center=placement_center(pond,plan)
+    if center!=p['center'] or p['target']!=control_world(center):return False
+    ground=art_world(center,0,GEOMETRY['ground_row'])[1]
+    entry=art_world(center,GEOMETRY['entry']['x'],GEOMETRY['ground_row'])
+    return (p['exit']==[round(entry[0]),math.ceil(ground)] and p['stance'][1]>=ground
+            and all(n==round(n) for n in p['stance']) and reach_distance(p['stance'],p['target'])<=3
+            and supported(pond,plan,p['stance'],center))
+
+def physical_restore(pond,plan):
+    w=plan['carnival_work']
+    # Material contacts and event indices remain consumed. Reacquire support
+    # from the loaded actor's actual root; never teleport to a saved picture.
+    if not physical_geometry_ok(pond,plan):return physical_interrupt(pond,plan,'Invalid saved control reservation.')
+    if w.get('done'):
+        pond.game.renderer.duck_pos.cancel_movement();return True
+    was_exit=w['physical']['phase']=='exit'
+    if not physical_prepare(pond,plan):return False
+    if was_exit:
+        p=w['physical'];p.update(phase='exit',route=[p['exit']],waypoint=0)
+    physical_pause(pond,plan)
+    return True
+
+def physical_advance(pond,plan,dt):
+    from engine import carnival
+    w=plan['carnival_work'];pos=pond.game.renderer.duck_pos
+    if not physical_geometry_ok(pond,plan):return physical_interrupt(pond,plan,'Invalid native control reservation.')
+    p=w['physical'];root=[pos.x,pos.y];previous=p['root'];p['root']=root;p['contact_ready']=False
+    center=placement_center(pond,plan)
+    if center!=p['center'] or pond.game.duck.growth_stage!='adult':return physical_interrupt(pond,plan,'The control reservation changed.')
+    if not allowed(pond,w['id']) or pond.game.duck.needs.energy<10 or pond.game.duck.needs.hunger<15:return physical_interrupt(pond,plan,'Control work interrupted by weather or urgent care.')
+    if not segment_clear(pond,plan,previous,root,center):return physical_interrupt(pond,plan,'The actual walking segment is blocked.')
+    if p['phase'] in ('approach','exit'):
+        p['travel_time']+=max(0,excursions.finite(dt))
+        if p['travel_time']>90:return physical_interrupt(pond,plan,'The control stance was not reached.')
+        route=p['route'];index=p['waypoint'];destination=route[index]
+        if not segment_clear(pond,plan,root,destination,center):return physical_interrupt(pond,plan,'The remaining exterior route is blocked.')
+        if max(abs(root[i]-destination[i]) for i in (0,1))<=.51:
+            pos.cancel_movement();p['waypoint']+=1
+            if p['waypoint']<len(route):pos.move_to(*route[p['waypoint']]);return True
+            p['waypoint']=len(route)-1
+            if p['phase']=='exit':w.update(stage='done',done=True);clear(pond,plan);return False
+            p['phase']='hold';pos.set_state_by_name('thinking',0)
+        else:
+            if not pos._is_directed_movement or [pos.target_x,pos.target_y]!=destination:pos.move_to(*destination)
+            return True
+    if not supported(pond,plan,root,center) or reach_distance(root,p['target'])>3 or max(abs(root[i]-p['stance'][i]) for i in (0,1))>.51:
+        return physical_interrupt(pond,plan,'The actual feet and grip cannot reach the switch.')
+    p['contact_ready']=True
+    if plan['phase']!='act':return True
+    obj=pond.object_state('bounce_house',plan);s=state(obj);s['active']=True
+    if w['stage']=='queue':
+        w['start']=copy.deepcopy(s);carnival.stage(w,'service',ROUTINES[w['id']]['duration'])
+    if w['stage']=='service':
+        duration=ROUTINES[w['id']]['duration'];old=w['clock'];step=min(max(0,excursions.finite(dt)),duration-old)
+        w['clock']+=step;w['elapsed']+=step;w['ride_elapsed']=w['clock'];s['stroke']=max(0,math.sin(w['clock']*4))
+        for i,effect in enumerate(ROUTINES[w['id']]['effects']):
+            if old<effect[0]*duration<=w['clock']:apply(obj,w,i,effect)
+        if w['clock']>=duration:
+            p.update(phase='exit',contact_ready=False,route=[p['exit']],waypoint=0,travel_time=0.)
+            carnival.stage(w,'service_exit',0);pos.move_to(*p['exit'])
+    return True
+
+
 def state(obj):
     if not isinstance(obj.get('castle'),dict):obj['castle']={}
     s=obj['castle'];s['motor']=s.get('motor') if s.get('motor') in ('auto','on','off') else 'auto'
@@ -74,7 +266,7 @@ def next_work(pond,obj):
 
 def make(pond,plan,choice):
     s=ROUTINES[choice]
-    return dict(id=choice,label=s['label'],stage='queue',clock=0.,elapsed=0.,ride_elapsed=0.,done=False,invitation_checked=False,castle_care=True,events=[],fractions={},automatic=bool(plan.get('automatic')))
+    return dict(id=choice,label=s['label'],stage='queue',clock=0.,elapsed=0.,ride_elapsed=0.,done=False,invitation_checked=False,castle_care=True,events=[],fractions={},automatic=bool(plan.get('automatic')),physical_pilot=choice in PHYSICAL_SCORES and pond.game.duck.growth_stage=='adult')
 
 def clear(pond,plan):
     if plan and plan.get('target')=='bounce_house':

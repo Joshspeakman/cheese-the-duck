@@ -1,3 +1,4 @@
+import {actorPitches} from './actor-projection.mjs';
 import {sameInstance} from './physical-objects.mjs';
 // Presentation of a simulation-owned arrival. Never chooses or advances a plan.
 import {inkBounds,residentEnvelope} from './resident-envelope.mjs';
@@ -13,7 +14,7 @@ export function residenceStage(plan, objects, character){
  return {home,character,inside};
 }
 export function occupiedGeometry(home,character,inside,sx,sy,slot=0){
- const unit=sx*home.scale*(home.detailScale||1),ch=unit*1.5;
+ const unit=sx*home.scale*(home.detailScale||1),ch=unit*1.5,{cw:bodyX,ch:bodyY}=actorPitches({...character,scale:1},sx,sy);
  // ItemPainter has a one-cell padding around the same native glyph grid.
  const left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*ch;
  let seat=home.anchors.slots?.[slot]||home.anchors.seat;const opening=home.anchors.opening;
@@ -23,17 +24,17 @@ export function occupiedGeometry(home,character,inside,sx,sy,slot=0){
  }
  const {left:minX,right:maxX,top:minY,bottom:maxY}=home.anchors.slots?residentEnvelope(character,NEST_IDS.includes(home.blueprint||home.id)?'nest':'shelter'):inkBounds(character);
  let scale=character.scale;
- if(home.anchors.slotWidth)scale=Math.min(scale,home.anchors.slotWidth*unit/((maxX-minX+1)*sx));
+ if(home.anchors.slotWidth)scale=Math.min(scale,home.anchors.slotWidth*unit/((maxX-minX+1)*bodyX));
  if(opening){
   // Fit around the real foot/anchor, not merely the ink rectangle's height.
   // Tall necks and asymmetric bills otherwise cross the ceiling or jamb.
   const ax=character.anchorX??character.width/2,gy=character.groundRow??character.art.length;
   const dx=home.anchors.slots?0:character.offsetX||0,dy=home.anchors.slots?0:(character.offsetY||0)/1.5;
   const limits=[
-   [seat.x-opening.x-1,ax-minX-dx,unit/sx],
-   [opening.x+opening.w-1-seat.x,maxX+1-ax+dx,unit/sx],
-   [seat.y-opening.y-1,gy-minY-dy,ch/(sx*1.5)],
-   [opening.y+opening.h-seat.y,maxY+1-gy+dy,ch/(sx*1.5)],
+   [seat.x-opening.x-1,ax-minX-dx,unit/bodyX],
+   [opening.x+opening.w-1-seat.x,maxX+1-ax+dx,unit/bodyX],
+   [seat.y-opening.y-1,gy-minY-dy,ch/bodyY],
+   [opening.y+opening.h-seat.y,maxY+1-gy+dy,ch/bodyY],
   ];
   for(const [space,extent,factor]of limits)if(extent>0)scale=Math.min(scale,Math.max(.01,space)*factor/extent);
  }
@@ -52,9 +53,9 @@ export function occupiedGeometry(home,character,inside,sx,sy,slot=0){
 
 export function heldNestGeometry(home,character,sx,sy){
  const held=home.held,bill=character.bill;if(!held?.contact||!bill)return null;
- const bodyUnit=sx*character.scale,bodyCh=bodyUnit*1.5;
+ const {cw:bodyUnit,ch:bodyCh}=actorPitches(character,sx,sy);
  const left=Math.round(character.x*sx-character.anchorX*bodyUnit+(character.offsetX||0)*bodyUnit);
- const top=Math.round(character.y*sy-character.groundRow*bodyCh+(character.offsetY||0)*bodyUnit);
+ const top=Math.round(character.y*sy-character.groundRow*bodyCh+(character.offsetY||0)*bodyCh/1.5);
  const grip=held.grip,unit=sx*home.scale*(home.detailScale||1),ch=unit*1.5;
  const originX=home.x*sx-home.width*unit/2+(held.contact.x+.5)*unit;
  const originY=home.y*sy-home.art.length*ch+(held.contact.y+.5)*ch;
