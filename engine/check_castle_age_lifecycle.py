@@ -175,6 +175,38 @@ try:
         check(obj['uses'] == 0 and not obj['carnival_routines'],
               window + ': growth never receives completion credit from old geometry')
 
+    # Native exit completion precedes outer-plan settling. Its actual animator
+    # must stay at the reached exit even when the next pond tick is delayed.
+    plan, work, obj = request('elder', 'castle_door_open')
+    until(lambda: bool(work.get('done')), 'reach a completed exit before settling')
+    pond = game.living_pond
+    pos = game.renderer.duck_pos
+    root = [pos.x, pos.y]
+    check(pond.state['plan'] is plan and plan['phase'] == 'settle' and obj['uses'] == 0,
+          'held-exit fixture still awaits the outer completion callback')
+    check(root == work['physical']['root'] == work['physical']['exit'],
+          'completed exit records the actual elder root')
+    # Force an idle animator's normal wander decision to succeed; retain its
+    # real target selection and movement, rather than mocking position writes.
+    with patch('duck.animator.random.random', return_value=0), \
+            patch.object(pos, '_pick_new_target', wraps=pos._pick_new_target) as wander:
+        for _ in range(50):
+            pos._state_start_time -= .2
+            pos.update(.2)
+        check(wander.call_count == 0 and [pos.x, pos.y] == root,
+              'done native exit cannot wander while the outer plan still owns its root')
+        check(pond.state['plan'] is plan and not work.get('recorded') and obj['uses'] == 0,
+              'animator-only settling cannot consume completion or award use')
+        settling_roots = []
+        while pond.state['plan'] is plan and len(settling_roots) < 100:
+            step()
+            settling_roots.append([pos.x, pos.y])
+    check(bool(settling_roots) and all(point == root for point in settling_roots),
+          'actual root stays at the reached exit through outer-plan consumption')
+    check(pond.state['plan'] is None and work.get('recorded') is True and
+          obj['uses'] == 1 and obj['carnival_routines'] == {'castle_door_open': 1},
+          'held exit completes and awards exactly one routine and one generic use')
+
     # Both recorded age fields can agree yet disagree with the real loaded duck.
     plan, work, obj = request()
     until(lambda: work['events'] == [0], 'reach a press before age-mismatched reload')

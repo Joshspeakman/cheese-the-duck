@@ -197,9 +197,21 @@ def advance(pond,plan,dt):
     pond._cache=None
     return not w['done']
 
+def completion_ready(pond,plan):
+    """Gate all item rewards using the explicit, already-consumed plan."""
+    if not isinstance(plan,dict):return False
+    w=plan.get('carnival_work')
+    if not isinstance(w,dict) or not valid(pond,plan) or w.get('done') is not True or w.get('interrupted') or w.get('recorded'):return False
+    if w['id'] in castle_work.PHYSICAL_SCORES or w.get('physical_pilot'):
+        if not castle_work.physical_geometry_ok(pond,plan) or w.get('stage')!='done':return False
+        pos=pond.game.renderer.duck_pos;root=[pos.x,pos.y];physical=w['physical']
+        if max(abs(root[i]-physical['exit'][i]) for i in (0,1))>.51:return False
+        if not castle_work.supported(pond,plan,root,physical['center']):return False
+    return True
+
 def complete(pond,plan):
     w=plan.get('carnival_work')
-    if not w or not valid(pond,plan) or not w.get('done') or w.get('interrupted') or w.get('recorded'):cancel(pond.minds);return
+    if not completion_ready(pond,plan):return
     w['recorded']=True;obj=pond.object_state(plan['target'],plan);history=obj.setdefault('carnival_routines',{})
     history[w['id']]=min(9999,history.get(w['id'],0)+1)
     pond.remember('belongings',w['label']+'.',.5,plan['target'])

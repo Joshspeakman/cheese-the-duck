@@ -4099,7 +4099,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "native_age_contacts_and_fitted_costumes",
+    "sourcePhase": "completion_reward_gate_and_posed_seasonal_fittings",
     "fullyOverhauled": false,
     "constructedObjects": 394,
     "remainingArtwork": 148,
@@ -5316,9 +5316,9 @@
       "disposableSaves": true
     },
     "wardrobe": {
-      "constructed": 99,
-      "pending": 10,
-      "supplementalConstructed": 59,
+      "constructed": 101,
+      "pending": 8,
+      "supplementalConstructed": 61,
       "scope": "All 109 fitted wardrobe IDs explicitly tracked; 67 are outside the original 542 catalogue. No per-object sequence credit."
     },
     "garments": {
@@ -5431,7 +5431,7 @@
     "nativeCastlePilot": {
       "score": "castle_start",
       "actors": "adult Cheese, solo",
-      "nativeChecks": 135,
+      "nativeChecks": 147,
       "lifecycleChecks": 41,
       "replayFrames": 59,
       "renderedRoots": 342,
@@ -5449,7 +5449,7 @@
     "physicalProjection": {
       "camera": "Expand display extent around native camera center; full window and canonical glyph/body aspect preserved",
       "nativeDataMutated": false,
-      "regressionSuite": 259,
+      "regressionSuite": 262,
       "additionalFocusedCameraTests": 4,
       "actorPreviewCases": 18,
       "review": "engine/artifacts/animation-milestone/castle-physical-review.html",
@@ -5507,7 +5507,7 @@
       "metricsSchema": 2,
       "distinctEffectBindings": 72,
       "nativeChecks": 412,
-      "independentLifecycleChecks": 38,
+      "independentLifecycleChecks": 45,
       "replayFrames": 124,
       "renderedRoots": 738,
       "renderedEffectChecks": 450,
@@ -5544,6 +5544,47 @@
       "visualPoseCases": 40,
       "review": "engine/artifacts/animation-milestone/costume-attachments-review.html",
       "fullRepertoiresComplete": false
+    },
+    "carnivalCompletionGate": {
+      "nativeCallbackCases": 9,
+      "scope": "Explicit consumed plan gates carnival history and generic item uses, needs, skill, habits, learning and bonds before any completion reward",
+      "rejects": [
+        "duplicate recorded callback",
+        "unfinished work",
+        "interrupted work",
+        "malformed work",
+        "displaced final actor",
+        "grown actor",
+        "false/missing/malformed native flag on adopted control"
+      ],
+      "exit": "Actual reached exit is held through outer settling; independent regression forces idle wander to demonstrate previous bug",
+      "fullRepertoiresComplete": false
+    },
+    "seasonalFittings": {
+      "constructed": 2,
+      "items": [
+        "summer_swim_ring",
+        "winter_mittens"
+      ],
+      "handSource": "Actual painted folded/flapping/working/care tips published in local rig space; hands painted after final care pose without moving native contact points",
+      "ring": "Layered yellow/cream shallow ellipse, rear rim behind torso and front tube occluded by real hands/feet",
+      "focusedTests": 3,
+      "relatedWardrobeTests": 10,
+      "visualAgeCases": 18,
+      "visualPoseCases": 10,
+      "visualContactCases": 15,
+      "review": "engine/artifacts/animation-milestone/seasonal-fittings-review.html",
+      "fullRepertoiresComplete": false
+    },
+    "visitorControlInventory": {
+      "profiles": 48,
+      "exactCastFallbacks": 0,
+      "anatomicalCandidatesNotAdopted": 43,
+      "supportMetadataMissing": 4,
+      "observationOnly": 1,
+      "source": "engine/scripts/review-guest-control-capabilities.mjs",
+      "runtimeAcceptance": false,
+      "remaining": "Native shared operator ownership, independent paths and role-aware renderer; all48 roles and egg scenes remain incomplete"
     }
   },
   "wardrobe": [
@@ -6267,7 +6308,7 @@
       "name": "Duck Floatie Ring",
       "slot": "waist",
       "inMainCatalogue": false,
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": false
     },
@@ -6387,7 +6428,7 @@
       "name": "Fuzzy Mittens",
       "slot": "hands",
       "inMainCatalogue": false,
-      "art": "pending",
+      "art": "reconstructed_review_in_progress",
       "verifiedSequences": 0,
       "operationPrototype": false
     },

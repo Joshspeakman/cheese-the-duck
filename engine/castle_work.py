@@ -241,7 +241,11 @@ def physical_advance(pond,plan,dt):
             pos.cancel_movement();p['waypoint']+=1
             if p['waypoint']<len(route):pos.move_to(*route[p['waypoint']]);return True
             p['waypoint']=len(route)-1
-            if p['phase']=='exit':w.update(stage='done',done=True);clear(pond,plan);return False
+            if p['phase']=='exit':
+                # The outer plan may still settle before consuming completion.
+                # Keep the reached exit instead of allowing idle to wander away.
+                pos.set_state_by_name('thinking',0)
+                w.update(stage='done',done=True);clear(pond,plan);return False
             p['phase']='hold';pos.set_state_by_name('thinking',0)
         else:
             if not pos._is_directed_movement or [pos.target_x,pos.target_y]!=destination:pos.move_to(*destination)

@@ -60,7 +60,7 @@ export function duckRig(duck,t=0,design=null){
    const u=(y-headEnd)/(neckEnd-headEnd),x=Math.round(hx+(nx-hx)*u),w=Math.max(2,Math.round(hw+(nw-hw)*u));
    fills.push({x,y,w,tone:'g'});put('|'+':'.repeat(Math.max(0,w-2))+'|',x,y,'g');
   }
-  let eyePos=null,headBounds=null,bodyBounds=null,wingBounds=null;
+  let eyePos=null,headBounds=null,bodyBounds=null,wingBounds=null,foldedHand=null;
   function extend(bounds,x,y,w){return bounds?{x:Math.min(bounds.x,x),y:Math.min(bounds.y,y),w:Math.max(bounds.x+bounds.w,x+w)-Math.min(bounds.x,x),h:Math.max(bounds.y+bounds.h,y+1)-Math.min(bounds.y,y)}:{x,y,w,h:1};}
   // Torso first, then face: a peck or preen can overlap the folded wing.
   const rows=[...Array(L-1).keys()].sort((a,b)=>(a<spec.collar)-(b<spec.collar));
@@ -74,8 +74,8 @@ export function duckRig(duck,t=0,design=null){
    const billStart=row.search(/\)={0,6}>/),beak=billStart>=0?billStart+1:100;
    if(head&&beak<100)bill={x:x0+end-1,y:y0};
    const wing=row.indexOf('['),wingEnd=row.indexOf(']');
-   if(!head&&wing>=0)wingBounds={x:x0+wing-1,y:y0-1,w:wingEnd-wing+3,h:3};
-   else if(!head&&!wingBounds&&row.includes('(vv)'))wingBounds={x:x0+row.indexOf('(vv)'),y:y0,w:4,h:1};
+   if(!head&&wing>=0){wingBounds={x:x0+wing-1,y:y0-1,w:wingEnd-wing+3,h:3};foldedHand={x:x0+wingEnd,y:y0,direction:1};}
+   else if(!head&&!wingBounds&&row.includes('(vv)')){wingBounds={x:x0+row.indexOf('(vv)'),y:y0,w:4,h:1};foldedHand={x:wingBounds.x+3,y:y0,direction:1};}
    for(let x=0;x<row.length;x++){
     let c=row[x];if(c===' ')continue;
     const isEye=head&&'oO'.includes(c);let tone=head?'g':'b';
@@ -101,9 +101,18 @@ export function duckRig(duck,t=0,design=null){
   rig.torso=fills.filter(f=>f.tone==='b').map(f=>({...f}));rig.wing=wingBounds;
   rig.motion=duck.motion!==false&&duck.performance?.motion!==false;
   rig.hatCare=hatCare;
+  // Visible feather tips are published where they are actually painted. A
+  // hidden far wing does not acquire a second invented hand. Coordinates stay
+  // in the same unmirrored local space used by the wardrobe fitter.
+  rig.handContacts=foldedHand?[foldedHand]:[];
   if(['flapping','dancing'].includes(action)){
    const open=phase>=2&&phase<=5,wing=open?['  /)/)',' / / /','/ / /','\\__/']:['  /)',' / /',' \\/'];
-   group(wing,b.x-2,b.y-(open?3:0),'w');if(open)group(wing.map(r=>[...r].reverse().map(mirrorGlyph).join('')),b.x+b.w-2,b.y-2,'w');
+   group(wing,b.x-2,b.y-(open?3:0),'w');
+   rig.handContacts=[{x:b.x-2+wing[0].trimEnd().length-1,y:b.y-(open?3:0),direction:1}];
+   if(open){
+    const far=wing.map(r=>[...r].reverse().map(mirrorGlyph).join(''));group(far,b.x+b.w-2,b.y-2,'w');
+    rig.handContacts.push({x:b.x+b.w-2+far[0].search(/\S/),y:b.y-2,direction:-1});
+   }
   }
   if(performance?.nestgrip||performance?.botanical||performance?.instrument||performance?.lighting||performance?.keepsake||performance?.creative||performance?.textile||performance?.playkit||performance?.architecture||performance?.ground||performance?.surfaceWork){
    const shoulder={x:Math.round(b.x+b.w*.55),y:Math.round(b.y+b.h*.4)};
@@ -114,11 +123,12 @@ export function duckRig(duck,t=0,design=null){
     const u=i/Math.max(1,steps),x=shoulder.x+i,y=Math.round(shoulder.y+(grip.y-shoulder.y)*u);
     put('=',x,y,'w');if(i<steps)put('~',x,y+1,'p');
    }
-   put(')',grip.x,grip.y,'w');
+   put(')',grip.x,grip.y,'w');rig.handContacts=[{...grip,direction:1}];
   }
   if(!performance?.nestgrip&&!performance?.botanical&&!performance?.instrument&&!performance?.lighting&&!performance?.keepsake&&!performance?.creative&&!performance?.textile&&!performance?.playkit&&!performance?.architecture&&!performance?.ground&&!performance?.surfaceWork&&performance?.w>.15){
    const reach=Math.round(performance.w*(small?3:6)),wy=b.y+Math.max(1,Math.round(b.h*.3));
-   group(small?[' /)','/ /','\\_/']:['  /)/)',' / / /','/ / /','\\___/'],b.x+b.w-3+Math.round(reach/3),wy-Math.round(reach/2),'w');
+   const wing=small?[' /)','/ /','\\_/']:['  /)/)',' / / /','/ / /','\\___/'],wx=b.x+b.w-3+Math.round(reach/3),yy=wy-Math.round(reach/2);
+   group(wing,wx,yy,'w');rig.handContacts=[{x:wx+wing[0].trimEnd().length-1,y:yy,direction:1}];
   }
   if(performance?.mark)put(performance.mark,h.x+h.w+2,h.y-2,'a');
   if(Math.abs(performance?.tail||0)>.2){const lift=Math.round(performance.tail*2);group(small?['\\',' >']:['\\\\',' \\_','  >'],b.x-2,b.y+Math.round(b.h*.5)+lift,'w');}
@@ -128,8 +138,10 @@ export function duckRig(duck,t=0,design=null){
   if(action==='quacking'&&phase>=2&&phase<=5)put('!',h.x+h.w+3,h.y,'a');
   if(action==='swimming')put(phase%2?'~~~   ~~~~   ~~~':' ~~~~  ~~~~  ~~~',CX-9,FLOOR+1,'p');
   rig.occlusion=fills.map(f=>({...f}));
-  plan=fitWearables(rig,duck.cosmetics,t,duck.apparel);clipped=paintWearables(cells,tones,rig,plan)||clipped;
-  fills.push(...(plan.fills||[]));
+  plan=fitWearables(rig,duck.cosmetics,t,duck.apparel);
+  const hands=new Set(plan.items.filter(item=>item.slot==='hands').map(item=>item.id));
+  clipped=paintWearables(cells,tones,rig,{...plan,layers:plan.layers.filter(layer=>!hands.has(layer.id))})||clipped;
+  fills.push(...(plan.fills||[]).filter(fill=>!hands.has(fill.id)));
   if(hatCare&&plan.items.some(i=>i.id===hatCare.item)){
    const target=plan.contacts?.[hatCare.item]?.[hatCare.anchor]||fittedHat(rig,hatCare.item)?.contacts[hatCare.anchor];
    if(target){
@@ -149,7 +161,7 @@ export function duckRig(duck,t=0,design=null){
        fills.push({x:x-1,y,w:3,tone:'w'});put(edge+'|)',x-1,y,'w');
       }
      }
-     put(')',tip.x,tip.y,'c');hatContact=tip;
+     put(')',tip.x,tip.y,'c');hatContact=tip;rig.handContacts=[{...tip,direction:tip.x>=elbow.x?1:-1}];
     }
     if(hatCare.debris!==null&&(hatCare.footIndex!==undefined||['brush_snow','shed_rain','brush_collar_snow','wring_scarf','dry_frames','dab_earpads','brush_garment_snow','wring_hem','shed_coat','shake_cape','dry_pocket'].includes(hatCare.id))){
      const snow=hatCare.id.includes('snow'),d=hatCare.debris,xx=hatCare.id==='shed_rain'?h.x+h.w:target.x;
@@ -157,6 +169,13 @@ export function duckRig(duck,t=0,design=null){
      for(let i=0;i<3;i++)put(snow?'*':mud?'.':"'",xx+2+i+d*3,Math.min(hatCare.footIndex!==undefined?FLOOR+1:H-1,target.y+1+i+d*3),mud?'s':'c');
     }
    }
+  }
+  if(hands.size){
+   // Care gestures draw their arm after fitting the target garment. Fit gloves
+   // against that final tip, retaining the full item order/palette indices.
+   if(hatContact)plan=fitWearables(rig,duck.cosmetics,t,duck.apparel);
+   clipped=paintWearables(cells,tones,rig,{...plan,layers:plan.layers.filter(layer=>hands.has(layer.id))})||clipped;
+   fills.push(...(plan.fills||[]).filter(fill=>hands.has(fill.id)));
   }
   put(e.char,e.x,e.y,'e');
   if(duck.state==='diving'&&phase>=2&&phase<=5){cells.forEach(r=>r.fill(' '));fills.length=0;group([' \\ /','  /\\',' (__)'],CX-2,FLOOR-3,'a');put('~~~  ~~~~~',CX-5,FLOOR+1,'p');}

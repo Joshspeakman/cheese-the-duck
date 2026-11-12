@@ -51,6 +51,12 @@ try:
             excursions.update('bounce_house',obj,dt,True,p.weather_type,.2,p.hour,reserved=carnival.owns(p,'bounce_house',obj))
             if capture_case:
                 capture(capture_case);trace.append(dict(case=capture_case,objectInstance=plan['instance'],actor='cheese',sequenceId=w['id'],root=[pos.x,pos.y],physical=carnival.view(p,plan).get('physical'),events=list(w['events']),clock=w['clock'],motor=obj['castle']['motor']))
+    def reward_ledger(obj):
+        return copy.deepcopy(dict(
+            item={k:obj.get(k) for k in ('uses','last_use','condition','bond','carnival_routines','carnival_company')},
+            needs={k:getattr(g.duck.needs,k) for k in ('energy','hunger','fun','cleanliness','social')},
+            skills=p.state['skills'],preferences=p.state['preferences'],habits=p.state['habits'],
+            journal=p.state['journal'],minds=p.minds.model.state))
     plan,w,obj=reset();check(castle.physical_active(plan),'adult pilot has a validated physical reservation: '+str(w))
     check(w['physical']['center']==[59.4,24.5],'physical control uses exact placement center, not rounded navigation identity')
     expected=castle.control_world(w['physical']['center']);check(w['physical']['target']==expected,'control target comes from shared geometry cell center')
@@ -69,9 +75,29 @@ try:
     check(len(positions)>8 and {'approach','hold','exit','contact'}<=seen,'real intermediate native roots cover approach, hold, contact and exit')
     check(w['events']==[0] and obj['castle']['motor']=='on' and obj['uses']==1,'exactly one reached press turns on the real motor and completes one use')
     check(obj['carnival_routines'].get('castle_start')==1,'completed physical work records one original routine')
+    before_rewards=reward_ledger(obj);p._complete(plan);p._complete(plan)
+    check(reward_ledger(obj)==before_rewards,'duplicate completion callbacks grant no generic item, need, skill, habit, bond or learning rewards')
+    completed_plan=copy.deepcopy(plan)
+    for reason in ('displaced','grown','flag_false','flag_missing','flag_string'):
+        stale=copy.deepcopy(completed_plan);stale['carnival_work']['recorded']=False
+        root=[g.renderer.duck_pos.x,g.renderer.duck_pos.y];age=g.duck.growth_stage
+        if reason=='displaced':g.renderer.duck_pos.x+=10
+        elif reason=='grown':g.duck.growth_stage='duckling'
+        elif reason=='flag_false':stale['carnival_work']['physical_pilot']=False
+        elif reason=='flag_missing':stale['carnival_work'].pop('physical_pilot')
+        else:stale['carnival_work']['physical_pilot']='true'
+        before_rewards=reward_ledger(obj);p._complete(stale)
+        check(reward_ledger(obj)==before_rewards,reason+' completion claim cannot reach generic rewards')
+        g.renderer.duck_pos.x,g.renderer.duck_pos.y=root;g.duck.growth_stage=age
     for row in trace:
         ph=row['physical'];check(ph['root']==row['root'],'snapshot record equals actual native root')
         if row['events']:check(castle.reach_distance(ph['stance'],ph['target'])<=3,'consumed contact has a bounded validated stance')
+    for reason in ('unfinished','interrupted','malformed'):
+        rejected,rw,robj=reset()
+        if reason=='interrupted':rw.update(done=True,interrupted=True)
+        elif reason=='malformed':rejected['carnival_work']={}
+        before_rewards=reward_ledger(robj);p._complete(rejected)
+        check(reward_ledger(robj)==before_rewards,reason+' completion callback earns no generic or carnival rewards')
     # Rendering may update the actor between native work ticks. Snapshot reads
     # that actual root, and never advances work or overwrites saved controller data.
     plan,w,obj=reset();before=copy.deepcopy(w);g.renderer.duck_pos.update(.3)

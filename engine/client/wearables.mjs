@@ -1,3 +1,4 @@
+import {SEASONAL_FITTINGS,fittedSeasonalPiece,seasonalColors} from './seasonal-fittings.mjs';
 import {COSTUME_ATTACHMENTS,fittedCostumeAttachment,costumeColors} from './costume-attachments.mjs';
 import { WEARABLE_CATALOG } from './wearable-catalog.mjs';
 import {HEADWEAR_BLUEPRINTS,fittedHat} from './headwear-workshop.mjs';
@@ -48,7 +49,7 @@ export function wearableSpec(id){
  let color=data.color||BASE[look.family];
  if(/blue|winter_cozy/.test(id))color='blue';else if(/pink|valentine/.test(id))color='pink';
  else if(/snow/.test(id))color='white';else if(/autumn/.test(id))color='brown';
- return {...data,...look,color:COLORS[color]||COLORS[BASE[look.family]],motion:COSTUME_ATTACHMENTS[id]?.motion||MOTION[look.family]};
+ return {...data,...look,color:COLORS[color]||COLORS[BASE[look.family]],motion:SEASONAL_FITTINGS[id]?.motion||COSTUME_ATTACHMENTS[id]?.motion||MOTION[look.family]};
 }
 export function wornItems(cosmetics={}){
  const slots=new Map();for(const id of Object.values(cosmetics)){const item=wearableSpec(id);if(item)slots.set(item.slot,item);}
@@ -90,10 +91,10 @@ export function fitWearables(rig,cosmetics={},time=0,apparel={}){
    hat.art.forEach((row,j)=>{for(let i=0;i<row.length;i++)if(row[i]!==' ')add(row[i],hat.x+i,hat.y+j,{tone:tones[hat.tones[j][i]]||tones.b});});
    continue;
   }
-  if(ACCESSORY_BLUEPRINTS[item.id]||GARMENT_BLUEPRINTS[item.id]||FOOTWEAR_BLUEPRINTS[item.id]||COSTUME_ATTACHMENTS[item.id]){
-   const costume=COSTUME_ATTACHMENTS[item.id],garment=GARMENT_BLUEPRINTS[item.id],shoe=FOOTWEAR_BLUEPRINTS[item.id],material=apparel[item.id]||{},piece=(costume?fittedCostumeAttachment:shoe?fittedFootwear:garment?fittedGarment:fittedAccessory)(rig,item.id,{material,phase:rig.motion===false?0:Number.isFinite(material.phase)?material.phase:time*(moving?4:1.2)});
+  if(ACCESSORY_BLUEPRINTS[item.id]||GARMENT_BLUEPRINTS[item.id]||FOOTWEAR_BLUEPRINTS[item.id]||COSTUME_ATTACHMENTS[item.id]||SEASONAL_FITTINGS[item.id]){
+   const seasonal=SEASONAL_FITTINGS[item.id],costume=COSTUME_ATTACHMENTS[item.id],garment=GARMENT_BLUEPRINTS[item.id],shoe=FOOTWEAR_BLUEPRINTS[item.id],material=apparel[item.id]||{},piece=(seasonal?fittedSeasonalPiece:costume?fittedCostumeAttachment:shoe?fittedFootwear:garment?fittedGarment:fittedAccessory)(rig,item.id,{material,phase:rig.motion===false?0:Number.isFinite(material.phase)?material.phase:time*(moving?4:1.2)});
    contacts[item.id]=piece.contacts;
-   const tones=Object.fromEntries(Object.entries(costume?costumeColors(costume):shoe?footwearColors(shoe):garment?garmentColors(garment,material):accessoryColors(ACCESSORY_BLUEPRINTS[item.id])).map(([tone,color],i)=>{const code=String.fromCharCode(512+index*12+i);inks[code]=color;return [tone,code];}));
+   const tones=Object.fromEntries(Object.entries(seasonal?seasonalColors(seasonal):costume?costumeColors(costume):shoe?footwearColors(shoe):garment?garmentColors(garment,material):accessoryColors(ACCESSORY_BLUEPRINTS[item.id])).map(([tone,color],i)=>{const code=String.fromCharCode(512+index*12+i);inks[code]=color;return [tone,code];}));
    const inside=(x,y,r)=>r&&x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h;
    const underFeathers=(x,y)=>(rig.occlusion||rig.torso)?.some(f=>f.y===y&&x>=f.x&&x<f.x+f.w)??inside(x,y,b);
    for(const [model,rear]of [[piece.back,true],[piece.front,false]]){
@@ -101,7 +102,7 @@ export function fitWearables(rig,cosmetics={},time=0,apparel={}){
      if((item.slot==='neck'||rear||garment)&&inside(x,f.y,rig.faceBounds||h)||rear&&underFeathers(x,f.y))continue;
      add(' ',x,f.y,{clear:true,rear});fills.push({id:item.id,x,y:f.y,w:1,tone:tones[f.tone]||tones.b});
     }
-    model.art.forEach((row,y)=>{for(let x=0;x<row.length;x++)if(row[x]!==' ')add(row[x],x,y,{tone:tones[model.tones[y][x]]||tones.b,rear,protectHead:Boolean(garment)});});
+    model.art.forEach((row,y)=>{for(let x=0;x<row.length;x++)if(row[x]!==' ')add(row[x],x,y,{tone:tones[model.tones[y][x]]||tones.b,rear,protectHead:Boolean(garment||(seasonal&&seasonal.shape!=='mittens'))});});
    }
    continue;
   }
