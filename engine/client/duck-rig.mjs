@@ -116,7 +116,7 @@ export function duckRig(duck,t=0,design=null){
   }
   if(performance?.nestgrip||performance?.botanical||performance?.instrument||performance?.lighting||performance?.keepsake||performance?.creative||performance?.textile||performance?.playkit||performance?.architecture||performance?.ground||performance?.surfaceWork){
    const shoulder={x:Math.round(b.x+b.w*.55),y:Math.round(b.y+b.h*.4)};
-   grip={x:Math.min(W-4,Math.round(b.x+b.w+2+performance.reach*2)),y:shoulder.y+1};
+   grip={x:Math.min(W-4,Math.round(b.x+b.w+2+performance.reach*2)),y:Math.round(shoulder.y+1-(performance.workLift||0))};
    workGripRest={x:Math.round(b.x+b.w+2),y:shoulder.y+1-performance.b};
    const steps=grip.x-shoulder.x;
    for(let i=0;i<=steps;i++){
@@ -142,6 +142,9 @@ export function duckRig(duck,t=0,design=null){
   const hands=new Set(plan.items.filter(item=>item.slot==='hands').map(item=>item.id));
   clipped=paintWearables(cells,tones,rig,{...plan,layers:plan.layers.filter(layer=>!hands.has(layer.id))})||clipped;
   fills.push(...(plan.fills||[]).filter(fill=>!hands.has(fill.id)));
+  // A raised working tip is in front of a helmet's lower rim. Keep the real
+  // contact glyph visible; fitted gloves still paint over this same point below.
+  if(performance?.workLift>0&&grip)put(')',grip.x,grip.y,'w');
   if(hatCare&&plan.items.some(i=>i.id===hatCare.item)){
    const target=plan.contacts?.[hatCare.item]?.[hatCare.anchor]||fittedHat(rig,hatCare.item)?.contacts[hatCare.anchor];
    if(target){

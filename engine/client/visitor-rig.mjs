@@ -141,7 +141,7 @@ function speciesGuest(duck,p,t,state,active){
    const shoulderY=Math.round(body.y+body.h*.4),row=shoulderY+performance.b;
    const feathers=c.fills.filter(f=>f.tone==='b'&&f.y===row).sort((a,b)=>b.w-a.w)[0];
    const shoulder={x:Math.round(feathers?feathers.x+feathers.w*.6:body.x+body.w*.4),y:shoulderY};
-   const tip=workingWing?{x:Math.min(W-4,Math.round(body.x+body.w+2+performance.reach*2)),y:shoulder.y+1}:{x:shoulder.x+Math.round(4+performance.w*5),y:shoulder.y-Math.round(performance.w*5)};
+   const tip=workingWing?{x:Math.min(W-4,Math.round(body.x+body.w+2+performance.reach*2)),y:Math.round(shoulder.y+1-(performance.workLift||0))}:{x:shoulder.x+Math.round(4+performance.w*5),y:shoulder.y-Math.round(performance.w*5)};
    if(workingWing){grip={x:tip.x,y:tip.y+performance.b};workGripRest={x:Math.round(body.x+body.w+2),y:tip.y};}
    const n=Math.max(Math.abs(tip.x-shoulder.x),Math.abs(tip.y-shoulder.y));
    for(let i=0;i<=n;i++){

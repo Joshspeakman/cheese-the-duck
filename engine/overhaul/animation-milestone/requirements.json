@@ -5816,6 +5816,91 @@
         "The wider 609-object overhaul; no sequence-completion credit inferred from these role foundations"
       ],
       "fullRepertoiresComplete": false
+    },
+    "nativeAirSupply": {
+      "status": "verified_bounded_checkpoint_public_procedure_session_pending",
+      "atomicIDs": [
+        "castle_start",
+        "castle_stop",
+        "castle_vent_open",
+        "castle_vent_close",
+        "castle_hose_straight",
+        "castle_hose_stow",
+        "castle_grill_clean",
+        "castle_gauge_check"
+      ],
+      "procedureIDs": [
+        "castle_pressure_check",
+        "castle_dust_service"
+      ],
+      "independentPressureCoreChecks": 61,
+      "evidenceLimit": "Core coordinator exercised with actual animator and executor, not public procedure dispatch or full role/context matrix.",
+      "implemented": [
+        "Separate actual pressure and visual fabric inflation; physical rotor coast and dust-limited airflow",
+        "Occurrence-specific child execution under one logical outer ID",
+        "Transient execution journal rejects forged observations, archived effects and duplicate receipts",
+        "Full future route preflight, original power policy preservation, truthful stopped-supply outcomes",
+        "Observation-only gauge completion dispatch; broader role verification pending",
+        "Pure whole-role preflight for solo, visitor operator, stationary egg caregiver and Flutter observer; runtime session not yet connected"
+      ],
+      "remaining": [
+        "Broader age and visitor feasibility coverage; representative native/render checks passed",
+        "Public procedure role, mover, pause, interruption and completion dispatch",
+        "Full atomic and procedure age/visitor/native/render/lifecycle matrices",
+        "Indexed per-sequence semantic evidence and independent review"
+      ],
+      "verifiedSequences": 0,
+      "independentCombinedChecks": 365,
+      "combinedEvidenceLimit": "All eight public solo atomics; shared/Flutter/egg gauge and grille; five core procedure branches including real nighttime auto restoration; pause/feed/growth, malformed readings, exact-once history and rewards. Full public procedure session and full actor/context matrix remain pending.",
+      "representativeNativeChecks": {
+        "solo": 71,
+        "sharedMarco": 67,
+        "eggCaregiverMarco": 83,
+        "flutterObserver": 67
+      },
+      "representativeReplays": {
+        "solo": {
+          "report": "engine/artifacts/animation-milestone/castle-air-native-render.json",
+          "sourceSha256": "89c9010656040607f6334245edbe9ca0feb1a635535bc6b43c1e53fbcd281a47",
+          "cases": 228,
+          "contacts": 216,
+          "observations": 12,
+          "result": "PASS"
+        },
+        "sharedMarco": {
+          "report": "engine/artifacts/animation-milestone/castle-air-shared-native-render.json",
+          "sourceSha256": "eda275a2a88c13e28737b18961a27169c1d3ec113ad7e5244f0c3c25b0177136",
+          "cases": 228,
+          "contacts": 216,
+          "observations": 12,
+          "result": "PASS"
+        },
+        "eggCaregiverMarco": {
+          "report": "engine/artifacts/animation-milestone/castle-air-egg-native-render.json",
+          "sourceSha256": "a86a8b4e930c965f1487026913153fba655a93490e95e65a6bc54b769814dfbc",
+          "cases": 228,
+          "contacts": 216,
+          "observations": 12,
+          "result": "PASS"
+        },
+        "flutterObserver": {
+          "report": "engine/artifacts/animation-milestone/castle-air-flight-native-render.json",
+          "sourceSha256": "53f0dc8953a40453c441482c98f9649f00f4344f28e050e1b9c031e65b5bb812",
+          "cases": 852,
+          "contacts": 216,
+          "observations": 12,
+          "result": "PASS"
+        }
+      },
+      "javascriptChecks": 301,
+      "temporaryGuards": "Unbound pressure-check/dust-service requests, saved plans, legacy effects and rewards are rejected until the dedicated live session owner is adopted. Autonomous care uses the corresponding measured atomic control meanwhile. These are development guards, not a completed public procedure implementation.",
+      "representativeBindings": {
+        "solo": "adult Cheese",
+        "sharedMarco": "adult Cheese observing Marco",
+        "eggCaregiverMarco": "stationary egg beside Marco",
+        "flutterObserver": "adult Cheese with Flutter observing"
+      },
+      "rolePreflight": "Independent checks cover supported solo/regular/egg formations, a naturally bounded 152.4547-second Flutter inspect-only visit, and honest long-work/near-departure/third-body/outfit refusals. No visit extension or refusal-as-completion credit."
     }
   },
   "wardrobe": [

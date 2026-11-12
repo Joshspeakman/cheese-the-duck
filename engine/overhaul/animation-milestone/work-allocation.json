@@ -204,6 +204,13 @@
       "owner": "native_regressions",
       "status": "48profile_read_only_inventory_complete",
       "scope": "43anatomical candidates,4missing support metadata,1observer; no adopted guest contacts"
+    },
+    {
+      "id": "air_supply_occurrence_owner",
+      "owner": "root",
+      "status": "verified365_native_lifecycle_checks_public_session_pending",
+      "scope": "Two logical procedures with real atomic occurrences, immutable geometry and transient history journal; no full repertoire acceptance.",
+      "next": "Implement dedicated native session/mover owner across solo, shared, Flutter and egg roles; replace temporary unbound-procedure guards with strict session dispatch; complete full actor/context evidence before installation."
     }
   ]
 }

@@ -6,9 +6,10 @@ ROUTINES=json.loads((Path(__file__).parent/'client/animation/castle-care.json').
 DEFAULTS=dict(vent=0.,door=0.,latch=0.,tie_left=.8,tie_right=.8,apron=0.,flag=1.,hose=0.,kink=0.,dust=0.,mesh_wet=0.,roof_water=0.,prints=0.)
 MOVING=('vent','door','tie_left','tie_right','apron','flag','hose','kink')
 
-# These three controls use explicit age geometry; no unknown-age adult fallback.
+# These controls use explicit age geometry; no unknown-age adult fallback.
 CONTACT_METRICS=json.loads((Path(__file__).parent/'client/animation/castle-contact-metrics.json').read_text())['ages']
-PHYSICAL_SCORES={'castle_start','castle_door_open','castle_hose_stow'}
+AIR_SCORES={'castle_start','castle_stop','castle_vent_open','castle_vent_close','castle_hose_straight','castle_hose_stow','castle_grill_clean','castle_gauge_check'}
+PHYSICAL_SCORES=AIR_SCORES|{'castle_door_open'}
 
 def canonical_age(age):
     age='juvenile' if age=='teen' else age
@@ -21,6 +22,9 @@ def physical_age_ok(pond,plan):
     return bool(age and isinstance(p,dict) and p.get('source_age')==age and w.get('source_age')==age)
 
 def effect_metrics(work):
+    if work['id'] in AIR_SCORES:
+        from engine import castle_air
+        return castle_air.DATA['ages'][work['source_age']]['routines'][work['id']]
     return CONTACT_METRICS[work['source_age']]['routines'][work['id']]
 
 def rig_metric(work):return effect_metrics(work)[0]
@@ -107,6 +111,9 @@ def reach_distance(root,target,grip=(15.5,-4),scale=.675):
 def supported(pond,plan,root,center):
     from engine import terrain
     from engine.portable_ground import policy
+    if plan['carnival_work']['id'] in AIR_SCORES:
+        from engine import castle_air
+        return castle_air.supported(pond,plan,plan['carnival_work']['id'],dict(actor='cheese',adapter='cheese',source_age=plan['carnival_work']['source_age']),root)
     metric=rig_metric(plan['carnival_work']);bx,by=pitches(metric)
     feet=list({tuple(f) for m in effect_metrics(plan['carnival_work']) for f in m['feet']})
     # Retain the conservative four-cell adult depth, scaled to this age's pitch;
@@ -143,7 +150,7 @@ def physical_stations(work):
     return spec.get('stations',[[0,spec['station']]])
 
 def station_grips(work,name):
-    return [e['grip'] for e in effect_metrics(work) if e['station']==name]
+    return [e['grip'] for e in effect_metrics(work) if e['station']==name and 'grip' in e]
 
 def physical_route(root,stance,exit_point,ground,kind):
     if kind=='exit':return [exit_point]
@@ -153,7 +160,11 @@ def physical_route(root,stance,exit_point,ground,kind):
     return route+[exit_point,stance]
 
 def physical_sites(pond,plan,center):
-    w=plan['carnival_work'];metric=rig_metric(w);bx,by=pitches(metric)
+    w=plan['carnival_work']
+    if w['id'] in AIR_SCORES:
+        from engine import castle_air
+        return castle_air.plan_sites(pond,plan,w['id'],dict(actor='cheese',adapter='cheese',source_age=w['source_age']))
+    metric=rig_metric(w);bx,by=pitches(metric)
     ground=art_world(center,0,GEOMETRY['ground_row'])[1];sites=[]
     for _,name in physical_stations(w):
         target=control_world(center,name);grips=station_grips(w,name)
@@ -187,6 +198,7 @@ def physical_prepare(pond,plan,cursor=0,kind='initial'):
     w['physical']=dict(version=1,actor='cheese',source_age=age,center=center,root=root,target=target,stance=stance,
                        phase='approach',station=name,station_index=cursor,contact_ready=False,route=route,waypoint=0,
                        route_origin=list(root),route_kind=kind,exit=exit_point,travel_time=0.)
+    if 'observation_target' in site:w['physical']['observation_target']=site['observation_target']
     w['invitation_checked']=True;w['paired']=False
     plan['approach_destination']=list(stance)
     pos.move_to(*route[0])
@@ -202,11 +214,14 @@ def physical_geometry_ok(pond,plan):
     if not physical_age_ok(pond,plan) or not physical_lifecycle_ok(plan):return False
     w=plan['carnival_work'];p=w['physical'];center=placement_center(pond,plan)
     if center!=p['center'] or p['target']!=control_world(center,p['station']):return False
+    if w['id'] in AIR_SCORES:
+        from engine import castle_air
+        if w['id']=='castle_gauge_check' and p.get('observation_target')!=castle_air.observation_target(center):return False
     ground=art_world(center,0,GEOMETRY['ground_row'])[1]
     entry=art_world(center,GEOMETRY['entry']['x'],GEOMETRY['ground_row'])
     return (p['exit']==[round(entry[0]),math.ceil(ground)] and p['stance'][1]>=ground
             and p['route']==physical_route(p['route_origin'],p['stance'],p['exit'],ground,p['route_kind'])
-            and all(n==round(n) for n in p['stance'])
+            and (w['id'] in AIR_SCORES or all(n==round(n) for n in p['stance']))
             and all(reach_distance(p['stance'],p['target'],g,rig_metric(w)['scale'])<=3 for g in station_grips(w,p['station']))
             and supported(pond,plan,p['stance'],center))
 
@@ -252,11 +267,28 @@ def physical_advance(pond,plan,dt):
             return True
     if not supported(pond,plan,root,center) or not all(reach_distance(root,p['target'],g,rig_metric(w)['scale'])<=3 for g in station_grips(w,p['station'])) or max(abs(root[i]-p['stance'][i]) for i in (0,1))>.51:
         return physical_interrupt(pond,plan,'The actual feet and grip cannot reach the '+p['station']+'.')
-    p['contact_ready']=True
+    p['contact_ready']=w['id']!='castle_gauge_check'
+    p['observation_ready']=False
     if plan['phase']!='act':return True
     obj=pond.object_state('bounce_house',plan);s=state(obj);s['active']=True
     if w['stage']=='queue':
         w['start']=copy.deepcopy(s);carnival.stage(w,'service',ROUTINES[w['id']]['duration'])
+    if w['stage']=='service' and w['id'] in AIR_SCORES:
+        from engine import castle_air
+        def preflight():
+            sites,_=physical_sites(pond,plan,center)
+            if not sites:return False
+            points=[root]+[v['stance'] for v in sites[p['station_index']:]]+[p['exit']]
+            return all(segment_clear(pond,plan,a,b,center) for a,b in zip(points,points[1:]))
+        context=dict(operator=dict(actor='cheese',adapter='cheese',source_age=w['source_age']),physical=p,preflight=preflight)
+        answer=castle_air.advance_atomic(pond,plan,w,context,dt)
+        w['done']=False
+        if answer['status']=='blocked':return physical_interrupt(pond,plan,answer['reason'])
+        if answer['status']=='transfer':return physical_prepare(pond,plan,p['station_index']+1,kind='transfer')
+        if answer['status']=='finished':
+            p.update(phase='exit',contact_ready=False,observation_ready=False,route=[p['exit']],waypoint=0,travel_time=0.,route_kind='exit',route_origin=list(root))
+            carnival.stage(w,'service_exit',0);pos.move_to(*p['exit'])
+        return True
     if w['stage']=='service':
         spec=ROUTINES[w['id']];duration=spec['duration'];remaining=max(0,excursions.finite(dt))
         steps=physical_stations(w);cursor=p['station_index']
@@ -302,25 +334,92 @@ def state(obj):
     if not isinstance(s.get('targets'),dict):s['targets']={}
     for key in MOVING:s['targets'][key]=excursions.clamp(s['targets'].get(key,s[key]))
     s['fan']=excursions.finite(s.get('fan'))%math.tau;s['powered']=s.get('powered') is True
+    # Old saves had only an energized flag and a visible fabric volume. Do not
+    # turn passive/night fabric inflation into a fabricated pressure reading.
+    s['rotor_speed']=excursions.clamp(s.get('rotor_speed',float(s['powered'])))
+    old_inflation=obj.get('excursion',{}).get('inflation',1.) if isinstance(obj.get('excursion'),dict) else 1.
+    s['pressure']=excursions.clamp(s.get('pressure',old_inflation if s['powered'] else 0.))
+    s['airflow']=excursions.clamp(s.get('airflow',s['rotor_speed']*(1-.65*s['dust'])*(1-s['hose'])*(1-.6*s['kink'])))
+    s['power_revision']=s.get('power_revision',0) if type(s.get('power_revision',0)) is int and s.get('power_revision',0)>=0 else 0
     s['spray']=excursions.clamp(s.get('spray'));s['stroke']=excursions.clamp(s.get('stroke'));s['active']=s.get('active') is True
     return s
 
+# Authored gameplay response rates, in inverse seconds. Pressure is actual
+# normalized supplied air; excursion.inflation remains a downstream art volume.
+ROTOR_UP=2.4
+ROTOR_COAST=1.6
+ROTOR_STOP=.01
+PRESSURE_RATE=.08
+TRANSIENT_SECONDS=20.
+MECHANISM_STEP=1/60
+
+
+def airflow(s):return s['rotor_speed']*(1-.65*s['dust'])*(1-s['hose'])*(1-.6*s['kink'])
+
+
+def _rotor(s,dt):
+    old=s['rotor_speed']
+    if s['powered']:
+        decay=math.exp(-ROTOR_UP*dt)
+        integral=dt+(old-1)*(1-decay)/ROTOR_UP
+        s['rotor_speed']=1+(old-1)*decay
+    else:
+        stop_at=math.log(old/ROTOR_STOP)/ROTOR_COAST if old>ROTOR_STOP else 0.
+        elapsed=min(dt,stop_at);decay=math.exp(-ROTOR_COAST*elapsed)
+        integral=old*(1-decay)/ROTOR_COAST
+        s['rotor_speed']=0. if dt>=stop_at else old*decay
+    s['fan']=(s['fan']+12*integral)%math.tau
+
+
+def _linear_pressure(value,a,b,dt):
+    # Exact solution of P'=rate*(a+b*t-P), including constant supply.
+    decay=math.exp(-PRESSURE_RATE*dt)
+    return a+b*(dt-1/PRESSURE_RATE)+(value-a+b/PRESSURE_RATE)*decay
+
+
 def update(obj,dt,outdoors,wet,wind,hour,reserved):
     s=state(obj);dt=max(0,excursions.finite(dt))
-    if not outdoors:s['powered']=False;return
-    if reserved=='hold':return
-    for key in MOVING:
-        s[key]+=(s['targets'][key]-s[key])*(1-math.exp(-dt*1.6))
-        if abs(s[key]-s['targets'][key])<.001:s[key]=s['targets'][key]
+    if reserved=='hold':return s['pressure']
     night=hour<7 or hour>=20
-    s['powered']=bool(not wet and wind<.8 and excursions.finite(obj.get('condition'),1.)>.2 and s['motor']!='off' and (s['motor']=='on' or not night or reserved=='active') and s['hose']<.15)
-    if s['powered']:s['fan']=(s['fan']+dt*12)%math.tau
-    s['spray']*=math.exp(-dt*2)
+    s['powered']=bool(outdoors and not wet and wind<.8 and excursions.finite(obj.get('condition'),1.)>.2 and s['motor']!='off' and (s['motor']=='on' or not night or reserved=='active'))
+    if not outdoors:
+        _rotor(s,dt);s['airflow']=0.;s['pressure']*=math.exp(-PRESSURE_RATE*dt)
+        return s['pressure']
+    dust_rate=.000015*(1+wind)
+    def material_step(h):
+        for key in MOVING:
+            s[key]+=(s['targets'][key]-s[key])*(1-math.exp(-h*1.6))
+            if abs(s[key]-s['targets'][key])<.001:s[key]=s['targets'][key]
+        s['dust']=excursions.clamp(s['dust']+h*dust_rate)
+        for key,rate in (('mesh_wet',.0012),('roof_water',.0007)):
+            s[key]=excursions.clamp(s[key]+h*(rate if wet else -.0002))
+        s['spray']*=math.exp(-h*2)
+        _rotor(s,h)
+    # Midpoint forcing with exact material/rotor substeps. At most 1200 steps,
+    # independent of offline duration; after 20s every eased control is snapped
+    # to its target and the rotor residual is below floating-point resolution.
+    transient=min(dt,TRANSIENT_SECONDS);steps=max(1,math.ceil(transient/MECHANISM_STEP));h=transient/steps
+    for _ in range(steps):
+        material_step(h/2)
+        target=airflow(s)*(1-s['vent']*.85)
+        s['pressure']=target+(s['pressure']-target)*math.exp(-PRESSURE_RATE*h)
+        material_step(h/2)
+    tail=dt-transient
+    if tail>0:
+        coefficient=s['rotor_speed']*(1-s['hose'])*(1-.6*s['kink'])*(1-.85*s['vent'])
+        to_clamp=(1-s['dust'])/dust_rate if dust_rate>0 else tail
+        linear=min(tail,max(0,to_clamp))
+        s['pressure']=_linear_pressure(s['pressure'],coefficient*(1-.65*s['dust']),-.65*coefficient*dust_rate,linear)
+        s['dust']=excursions.clamp(s['dust']+linear*dust_rate)
+        if tail>linear:s['pressure']=_linear_pressure(s['pressure'],coefficient*.35,0.,tail-linear)
+        s['dust']=excursions.clamp(s['dust']+(tail-linear)*dust_rate)
+        for key,rate in (('mesh_wet',.0012),('roof_water',.0007)):
+            s[key]=excursions.clamp(s[key]+tail*(rate if wet else -.0002))
+        s['spray']*=math.exp(-tail*2);_rotor(s,tail)
+    s['pressure']=excursions.clamp(s['pressure']);s['airflow']=excursions.clamp(airflow(s))
     if not reserved:s['active']=False;s['stroke']=0.
-    # Moisture is material state, not an emitted effect pretending to be rain.
-    for key,rate in (('mesh_wet',.0012),('roof_water',.0007)):
-        s[key]=excursions.clamp(s[key]+dt*(rate if wet else -.0002))
-    s['dust']=excursions.clamp(s['dust']+dt*.000015*(1+wind))
+    return s['pressure']
+
 
 def ready(obj):
     s=state(obj)
@@ -350,19 +449,21 @@ def next_work(pond,obj):
             return 'castle_close_night','the empty house is still open for the night',18
         return None
     if s['roof_water']>.45 or s['mesh_wet']>.45:return 'castle_after_rain','water is still caught in the roof and mesh',24
-    if s['dust']>.55:return ('castle_grill_clean' if s['power_hold'] or obj.get('condition',1)<=.2 else 'castle_dust_service'),'dust has collected on the blower grille',24
+    if s['dust']>.55:return 'castle_grill_clean','dust has collected on the blower grille',24
     # An explicit player shutdown remains off. Autonomous closing can be undone
     # next morning, but residents do not undo a manually requested shutdown.
     if s['power_hold'] or obj.get('condition',1)<=.2:return None
     if min(s['tie_left'],s['tie_right'])<.45:return 'castle_spring_retension','the side ropes have slackened',22
-    if s['vent']>.2 or s['kink']>.6:return 'castle_pressure_check','air is escaping or the supply hose is bent',22
+    if s['vent']>.2 or s['kink']>.6:return ('castle_vent_close' if s['vent']>.2 else 'castle_hose_straight'),'air is escaping or the supply hose is bent',22
     if s['motor']=='off' or s['hose']>.15 or s['latch']>.5 or s['apron']>.3:return 'castle_open_day','the weather has cleared but the house is still closed',16
     if s['prints']>.5:return 'castle_apron_clean','footprints cover the landing apron',18
     return None
 
 def make(pond,plan,choice):
     s=ROUTINES[choice]
-    return dict(id=choice,label=s['label'],stage='queue',clock=0.,elapsed=0.,ride_elapsed=0.,done=False,invitation_checked=False,castle_care=True,events=[],fractions={},automatic=bool(plan.get('automatic')),physical_pilot=choice in PHYSICAL_SCORES,source_age=canonical_age(pond.game.duck.growth_stage))
+    work=dict(id=choice,label=s['label'],stage='queue',clock=0.,elapsed=0.,ride_elapsed=0.,done=False,invitation_checked=False,castle_care=True,events=[],fractions={},automatic=bool(plan.get('automatic')),physical_pilot=choice in PHYSICAL_SCORES,source_age=canonical_age(pond.game.duck.growth_stage))
+    if choice in AIR_SCORES:work['expected_power_revision']=state(pond.object_state('bounce_house',plan))['power_revision']
+    return work
 
 def clear(pond,plan):
     if plan and plan.get('target')=='bounce_house':
@@ -386,18 +487,27 @@ def apply(obj,w,index,effect):
         if field in ('mesh_wet','roof_water'):s['spray']=min(1,s['spray']+(before-s[field])*4)
     elif key=='inspection':
         history=obj.setdefault('castle_inspections',{});history[value]=min(9999,history.get(value,0)+1)
-        w['inspection']=dict(kind=value,pressure=round(obj['excursion']['inflation'],3),condition=round(obj['condition'],3))
+        w['inspection']=dict(kind=value,pressure=round(s['pressure'],3),condition=round(obj['condition'],3))
         w.setdefault('inspections',[]).append(copy.deepcopy(w['inspection']))
     elif key=='motor':
+        if w.get('power_authority')=='procedure' and w.get('id')=='castle_start' and value=='on':
+            value=w.get('restore_motor','on')
+            if value not in ('on','auto'):raise ValueError('Invalid restored motor policy')
         s['motor']=value
-        if not w.get('automatic'):s['power_hold']=value=='off'
+        if not w.get('automatic') and w.get('power_authority','manual')!='procedure':
+            s['power_hold']=value=='off';s['power_revision']+=1
     elif key in MOVING:s['targets'][key]=value
     else:s[key]=value
     w['events'].append(index)
+    if w.get('id') in AIR_SCORES:w['expected_power_revision']=s['power_revision']
 
 def advance(pond,plan,dt,r):
     from engine import carnival
-    w=plan['carnival_work'];spec=ROUTINES[w['id']];obj=pond.object_state('bounce_house',plan);s=state(obj);s['active']=True
+    w=plan['carnival_work']
+    if carnival.is_air_procedure(plan):
+        w.update(interrupted=True,done=True,physical_error='This procedure has no live native session.')
+        return False
+    spec=ROUTINES[w['id']];obj=pond.object_state('bounce_house',plan);s=state(obj);s['active']=True
     needs=pond.game.duck.needs
     bad=not allowed(pond,w['id']) or needs.energy<10 or needs.hunger<15
     if bad and not w.get('withdrawal'):
@@ -429,6 +539,6 @@ def conversation(pond,plan,key,r):
     where=station(w,'a' if key=='cheese' else 'b')
     return dict(object='bounce house',activity=spec['label'],stage=w['stage'],paused=bool(plan.get('paused')),
       body_status='watching from outside' if key!='cheese' and r and r['mode']=='watch' else 'walking between the '+where['previous'].replace('_',' ')+' and '+where['name'].replace('_',' ') if where['travel']<1 else 'working at the low '+where['name'].replace('_',' '),
-      motor=s['motor'],player_left_switched_off=s['power_hold'],fan_turning=s['powered'],pressure=round(pond.object_state('bounce_house',plan)['excursion']['inflation'],2),
+      motor=s['motor'],player_left_switched_off=s['power_hold'],fan_turning=s['rotor_speed']>0,pressure=round(s['pressure'],2),
       door_open=round(s['door'],2),door_buckled=s['latch']>.5,completed_contacts=len(w['events']),inspection=w.get('inspection'),
       company=pond.minds.model.residents[r['actor']]['name'] if r else None,setting='Both residents stay outside the empty house. Controls and cleaning act only on this placed copy.')

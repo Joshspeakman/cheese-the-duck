@@ -16,6 +16,11 @@ TAU=math.pi*2
 finite=excursions.finite
 clamp=excursions.clamp
 
+def is_air_procedure(plan):
+    work = plan.get('carnival_work') if isinstance(plan, dict) else None
+    return isinstance(work, dict) and ('air_procedure' in work or work.get('id') in ('castle_pressure_check', 'castle_dust_service'))
+
+
 def is_shared(plan):
     if not isinstance(plan,dict) or not isinstance(plan.get('carnival_work'),dict):return False
     work=plan['carnival_work']
@@ -93,6 +98,9 @@ def prepare(pond,plan):
     pond.game.renderer.duck_pos.move_to(*w['queue_a'])
 
 def valid(pond,plan):
+    # Procedure execution belongs to a separate live session, never the old
+    # flattened choreography. Its public session owner is not adopted yet.
+    if is_air_procedure(plan):return False
     if not isinstance(plan,dict):return False
     w=plan.get('carnival_work',{})
     if not isinstance(w,dict):return False
@@ -139,6 +147,7 @@ def partner_valid(minds,r,plan=None):
 
 def tick(minds,dt):
     p=minds.pond;plan=p.state.get('plan')
+    if is_air_procedure(plan):return
     if is_shared(plan):
         shared_controller(plan).refresh(p)
         return
@@ -265,6 +274,9 @@ def completion_ready(pond,plan):
     if not isinstance(plan,dict):return False
     w=plan.get('carnival_work')
     if not isinstance(w,dict) or not valid(pond,plan) or w.get('done') is not True or w.get('interrupted') or w.get('recorded'):return False
+    if w['id'] in castle_work.AIR_SCORES:
+        from engine import castle_air
+        if not castle_air.receipt_ready(pond,plan):return False
     if is_shared(plan):
         return shared_controller(plan).completion_ready(pond,plan)
     if w['id'] in castle_work.PHYSICAL_SCORES or w.get('physical_pilot'):
@@ -348,8 +360,8 @@ def conversation(pond,plan,key='cheese'):
         material=castle_work.state(pond.object_state('bounce_house',plan))
         return dict(object='bounce house',activity=w['label'],stage=w['stage'],paused=bool(plan.get('paused')),
           role=role,body_status=status,company=pond.minds.model.residents.get(other,{}).get('name',other),
-          motor=material['motor'],player_left_switched_off=material['power_hold'],fan_turning=material['powered'],
-          pressure=round(pond.object_state('bounce_house',plan)['excursion']['inflation'],2),inspection=w.get('inspection'),
+          motor=material['motor'],player_left_switched_off=material['power_hold'],fan_turning=material['rotor_speed']>0,
+          pressure=round(material['pressure'],2),inspection=w.get('inspection'),
           door_open=round(material['door'],2),door_buckled=material['latch']>.5,completed_contacts=len(w['events']),
           setting='The operator uses the controls outside this placed house. The observer watches independently and does not operate its mechanisms.')
     w=plan['carnival_work'];r=active(pond.minds)
@@ -366,6 +378,7 @@ def conversation(pond,plan,key='cheese'):
       returning_for_weather=bool(w.get('withdrawal')))
 
 def request(pond,item,choice,instance=None,together=False):
+    if choice in ('castle_pressure_check','castle_dust_service'):return False,'Choose an individual air control for this activity.'
     if item not in ALL_ITEMS or not isinstance(choice,str) or choice not in PROGRAMS or PROGRAMS[choice]['item']!=item:return False,'Choose an activity for this ride.'
     if together and pond.game.duck.growth_stage=='egg':
         from engine import egg_caregiver

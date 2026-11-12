@@ -36,7 +36,9 @@ def cheese_root(pond):
     except (TypeError,ValueError,AttributeError):return None
 
 
-def body(pond,root,age):return box(root,METRIC['operators'][age])
+def body(pond,root,age,score=None):
+    from engine import castle_air
+    return box(root,castle_air.DATA['ages'][age]['travel'] if score in castle.AIR_SCORES else METRIC['operators'][age])
 
 
 def outfitted(pond):
@@ -73,7 +75,7 @@ def flight_clear(pond,plan,root,center,cheese=None):
     for feature in SCENERY['features']:
         obstacle=feature['bounds']
         if overlap(b,[obstacle['x'],obstacle['y'],obstacle['w'],obstacle['h']]):return False
-    return cheese is None or not overlap(b,body(pond,cheese,plan['carnival_work']['source_age']))
+    return cheese is None or not overlap(b,body(pond,cheese,plan['carnival_work']['source_age'],plan['carnival_work']['id']))
 
 
 def flight_segment(pond,plan,a,b,center,cheese):
@@ -88,7 +90,7 @@ def cheese_segment(pond,plan,a,b,center,hover):
         points.append(p)
         if shared.near(p,b,.51):break
         p=[p[i]+(1 if p[i]<b[i] else -1 if p[i]>b[i] else 0) for i in (0,1)]
-    return all(not overlap(box(hover,METRIC),body(pond,r,plan['carnival_work']['source_age'])) for r in points)
+    return all(not overlap(box(hover,METRIC),body(pond,r,plan['carnival_work']['source_age'],plan['carnival_work']['id'])) for r in points)
 
 
 def willing(pond,a):
@@ -160,6 +162,7 @@ def prepare(pond,plan,proposal=None):
     # failure path; no live movement changes until every pure check succeeds.
     site=proposal['sites'][0]
     w['physical']=dict(version=1,actor='cheese',source_age=proposal['source_age'],center=proposal['center'],root=list(proposal['roots']['cheese']),target=site['target'],stance=site['stance'],phase='approach',station=site['station'],station_index=0,contact_ready=False,route=proposal['cheese_route'],waypoint=0,route_origin=list(proposal['roots']['cheese']),route_kind='initial',exit=proposal['cheese_exit'],travel_time=0.)
+    if 'observation_target' in site:w['physical']['observation_target']=site['observation_target']
     plan['approach_destination']=list(site['stance'])
     s=copy.deepcopy(proposal);s.update(version=1,attempt=uuid.uuid4().hex,phase='waiting')
     s['observer_physical']=dict(root=list(a['root']),stance=list(s['hover']),exit=list(s['flight_exit']),phase='approach',route=s['flight_route'],waypoint=0,ready=False)
@@ -221,7 +224,13 @@ def refresh(pond):
     else:
         target=ph['route'][ph['waypoint']]
         if not cheese_segment(pond,plan,cr,target,s['center'],a['root']):interrupt(pond,plan,'The control route is blocked by the flight corridor.');return
-        ph['contact_ready']=bool(ph['phase']=='hold' and o['ready'] and shared.near(a['root'],s['hover']) and a['facing']==(cr[0]>=a['root'][0]) and shared.near(cr,ph['stance'],.51) and all(castle.reach_distance(cr,ph['target'],g,castle.rig_metric(w)['scale'])<=3 for g in castle.station_grips(w,ph['station'])))
+        if w['id'] in castle.AIR_SCORES:
+            from engine import castle_air
+            ph['contact_ready']=ph['observation_ready']=False
+            if o['ready'] and shared.near(a['root'],s['hover']) and a['facing']==(cr[0]>=a['root'][0]):
+                castle_air.station_ready(pond,plan,s['operator'],ph,w['id'],[box(a['root'],METRIC)])
+        else:
+            ph['contact_ready']=bool(ph['phase']=='hold' and o['ready'] and shared.near(a['root'],s['hover']) and a['facing']==(cr[0]>=a['root'][0]) and shared.near(cr,ph['stance'],.51) and all(castle.reach_distance(cr,ph['target'],g,castle.rig_metric(w)['scale'])<=3 for g in castle.station_grips(w,ph['station'])))
 
 
 def motion(minds,key):
@@ -255,12 +264,17 @@ def advance(pond,plan,dt):
 
 
 def completion_ready(pond,plan):
+    from engine import castle_air
+    if not castle_air.receipt_ready(pond,plan):return False
     if not validate(pond,plan):return False
     w=plan['carnival_work'];s=w['shared'];a=live(pond,s)
     return bool(weather_ok(pond) and castle.allowed(pond,w['id']) and castle.supported(pond,plan,cheese_root(pond),s['center']) and not w.get('recorded') and s['phase']=='done' and shared.near(cheese_root(pond),w['physical']['exit'],.51) and shared.near(a['root'],s['flight_exit']) and flight_clear(pond,plan,a['root'],s['center'],cheese_root(pond)))
 
 
 def complete(pond,plan):
+    if plan.get('carnival_work',{}).get('id')=='castle_gauge_check':
+        from engine import castle_air
+        return castle_air.complete_observation(pond,plan)
     if not completion_ready(pond,plan):return False
     w=plan['carnival_work'];s=w['shared'];m=pond.minds;key=s['observer']['actor'];lease=m.carnival_guests[key];w['recorded']=True
     obj=pond.object_state('bounce_house',plan);history=obj.setdefault('carnival_routines',{});history[w['id']]=min(9999,history.get(w['id'],0)+1);company=obj.setdefault('carnival_company',{});company[key]=min(9999,company.get(key,0)+1)

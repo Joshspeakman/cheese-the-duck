@@ -260,6 +260,7 @@ export function excursionSprite(base,item,time,{state={},motion=true,context={}}
  // Accessibility must not rewind a real wheel, cabin, cover or inflation state.
  if(!motion){v.wind_phase=0;v.wind=0;}
  v.surface=surfaceState(saved.surface);
+ v.motion=motion;
  v.castle=castleState(state.castle);
  const c=new ObjectCanvas(p.w,p.h),anchors=BUILDERS[p.type](c,p,v);
  const cells=[];for(let y=0;y<p.h;y++)for(let x=0;x<p.w;x++)if(c.art[y][x]!==' ')cells.push([x,y]);
