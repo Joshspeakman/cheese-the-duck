@@ -1,0 +1,10 @@
+const {app,BrowserWindow}=require('electron'),fs=require('node:fs'),path=require('node:path'),os=require('node:os'),crypto=require('node:crypto');
+app.setPath('userData',fs.mkdtempSync(path.join(os.tmpdir(),'cheese-shared-render-')));
+app.whenReady().then(async()=>{let win;try{
+ win=new BrowserWindow({show:false,webPreferences:{backgroundThrottling:false}});await win.loadFile(path.join(__dirname,'tests/castle-shared-theatre.html'));
+ const ages=process.argv.includes('--native-ages'),native=ages||process.argv.includes('--native'),out=path.join(__dirname,'artifacts/animation-milestone'),frames=native?fs.readFileSync(path.join(out,ages?'castle-shared-ages-frames.json':'castle-shared-frames.json'),'utf8'):null;
+ const result=await win.webContents.executeJavaScript(native?'window.replayNativeSharedCastle('+frames+')':'window.reviewSharedCastle()');fs.mkdirSync(out,{recursive:true});if(native)result.sourceSha256=crypto.createHash('sha256').update(frames).digest('hex');const prefix=ages?'castle-shared-ages-native-render':native?'castle-shared-native-render':'castle-shared-render';
+ for(const [name,data]of Object.entries(result.images))fs.writeFileSync(path.join(out,prefix+'-'+name+'.png'),Buffer.from(data.split(',')[1],'base64'));
+ fs.writeFileSync(path.join(out,prefix+'-review.html'),'<!doctype html><meta charset="utf-8"><title>Shared castle renderer review</title><style>body{background:#142820;color:#eddec2;font:18px system-ui;margin:24px}img{width:100%}</style><h1>Shared castle renderer contract review</h1><p>Rendering evidence only. Source type is recorded in the JSON report. No route, lifecycle, reward, assistance or repertoire acceptance is inferred from these images.</p>'+Object.keys(result.images).map(n=>'<h2>'+n+'</h2><img src="'+prefix+'-'+n+'.png">').join(''));
+ delete result.images;result.result='PASS';fs.writeFileSync(path.join(out,prefix+'.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));win.destroy();app.exit(0);setTimeout(()=>process.exit(0),500).unref();
+}catch(e){console.error(e);win?.destroy();app.exit(1);setTimeout(()=>process.exit(1),500).unref();}});

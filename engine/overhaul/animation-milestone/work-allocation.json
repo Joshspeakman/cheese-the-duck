@@ -54,6 +54,18 @@
         "engine/overhaul/animation-milestone/extra-high-advice.md"
       ],
       "boundary": "Read-only architecture/coverage review plus advice file; no production edits."
+    },
+    {
+      "id": "shared_native_regular_controls",
+      "owner": "native_regressions",
+      "status": "native_and_renderer_verified",
+      "scope": "40 profiles x3 controls with adult observer; one operator x8 observer ages x3controls; independent lifecycle and exact-root/contact render replay. No complete repertoire claim."
+    },
+    {
+      "id": "shared_desktop_invitation",
+      "owner": "root",
+      "status": "verified7_actual_notebook_checks_and_bridge_regression",
+      "scope": "Exact copy/score/together payload across production desktop validator; busy and stored controls disabled"
     }
   ],
   "mediumQueue": [

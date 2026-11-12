@@ -277,8 +277,31 @@ class DesktopGame(Game):
         super()._load_game()
         self._ensure_living_pond(offline=True)
 
+    def _refresh_friend_motion(self):
+        from world.friends import visitor_animator
+        from engine import carnival
+        shared=bool(self.living_pond and carnival.is_shared(self.living_pond.state.get('plan')))
+        if self.living_pond and (self._state=='playing' or shared) and self.duck and self.friends.current_visit:
+            motion=self.living_pond.minds.motion(self.friends.current_visit.friend_id)
+            # Meeting providers publish world points. Convert a fresh descriptor
+            # once here, without mutating a retained reservation or its target.
+            motion=dict(motion)
+            for kind in ('meeting','shelter'):
+                if motion.get(kind):
+                    meeting=dict(motion[kind]);target=meeting['target']
+                    meeting['target']=[target[0]-self.renderer._camera_x,target[1]-self.renderer._camera_y]
+                    motion[kind]=meeting
+            visitor_animator._mind_motion=motion
+        else:visitor_animator._mind_motion={}
+
     def _update(self):
         self._ensure_living_pond()
+        if self.living_pond:
+            from engine import carnival
+            if carnival.is_shared(self.living_pond.state.get('plan')):
+                from engine import castle_shared
+                castle_shared.refresh(self.living_pond)
+        self._refresh_friend_motion()
         from world.friends import visitor_animator
         visitor_animator._roam_bounds = (2, max(12, self.renderer._viewport_width - 12),
                                          1, max(5, self.renderer._viewport_height - 6))
@@ -290,13 +313,7 @@ class DesktopGame(Game):
         self.story_motion.tick(self)
         if self.living_pond and self._state == 'playing' and self.duck:
             self.living_pond.minds.tick()
-            if self.friends.current_visit:
-                visitor_animator._mind_motion = self.living_pond.minds.motion(self.friends.current_visit.friend_id)
-                for kind in ('meeting','shelter'):
-                    meeting=visitor_animator._mind_motion.get(kind)
-                    if meeting:
-                        meeting['target']=[meeting['target'][0]-self.renderer._camera_x,meeting['target'][1]-self.renderer._camera_y]
-            else:visitor_animator._mind_motion = {}
+            self._refresh_friend_motion()
 
     def _perform_interaction(self, interaction):
         if self.living_pond and self.living_pond.busy:

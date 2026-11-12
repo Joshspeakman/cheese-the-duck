@@ -1,6 +1,6 @@
 import {actorPitches} from './actor-projection.mjs';
 import {SURFACE_ROUTINES,surfacePose,surfaceGeometry} from './surface-routines.mjs';
-import {CASTLE_SCORES,castlePose,castleGeometry} from './castle-care.mjs';
+import {CASTLE_SCORES,castlePose,castleGeometry,sharedCastleRecord,sharedCastleVisitorMatches} from './castle-care.mjs';
 import ROUTINES from './animation/carnival-routines.json' with {type:'json'};
 export {ROUTINES as CARNIVAL_ROUTINES};
 const PROGRAMS={...ROUTINES,...SURFACE_ROUTINES,...CASTLE_SCORES};
@@ -32,7 +32,12 @@ export function carnivalPose(work,role='a',motion=true,watch=false){
 }
 export function carnivalOccupants(scene){
  const plan=scene.living?.plan,w=plan?.carnival_work;
- if(!w||w.interrupted||!PROGRAMS[w.id]||!['prepare','act','settle'].includes(plan.phase))return [];
+ if(!w||w.interrupted||!PROGRAMS[w.id]||!(w.shared_physical?['approach','prepare','act','settle']:['prepare','act','settle']).includes(plan.phase))return [];
+ if(w.shared_physical){
+  const shared=sharedCastleRecord(w),visitor=scene.visitor;
+  if(!sharedCastleVisitorMatches(visitor,shared)||scene.location!==shared.operator.location||(scene.duck?.stage==='teen'?'juvenile':scene.duck?.stage)!==shared.source_age)return [];
+  return [{actor:shared.operator.actor,role:'a',work:w,paused:plan.paused===true},{actor:'cheese',role:'b',work:w,watch:true,paused:plan.paused===true}];
+ }
  const records=[{actor:'cheese',role:'a',work:w}];
  if(w.companion?.ready)records.push({actor:w.companion.actor,role:'b',work:w,watch:w.companion.mode==='watch'});
  return records;

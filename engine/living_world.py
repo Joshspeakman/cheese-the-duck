@@ -421,13 +421,13 @@ class LivingPond:
             and not g._duck_building and not g._dream_active and not g._cheese_away
             and not g.renderer._show_talk and not g.interaction_controller.is_interacting())
 
-    def start(self, kind, target='', automatic=False, instance=None, carnival_choice=None):
+    def start(self, kind, target='', automatic=False, instance=None, carnival_choice=None, shared_proposal=None):
         s = self.state
         from engine import castle_work
         if carnival_choice is not None and (kind!='item' or not isinstance(carnival_choice,str) or carnival_choice not in carnival.PROGRAMS or carnival.PROGRAMS[carnival_choice]['item']!=target):return False,'Choose an activity for that object.'
         castle_care=carnival_choice in castle_work.ROUTINES if carnival_choice is not None else False
         if self.minds.encounter_for('cheese'):
-            if automatic:return False, 'Cheese is spending time with a friend.'
+            if automatic or shared_proposal is not None:return False, 'Cheese is spending time with a friend.'
         if kind == 'item' and target in shelters.HOMES:
             kind = 'rest'
         if s['plan'] or not self.available():
@@ -567,6 +567,22 @@ class LivingPond:
         portable=portable_ground.choose(self,target) if kind=='item' and not selected and not instrument and not seating else None
         if kind=='item' and not selected and not instrument and not seating and not portable:
             return False,'There is no suitable clear ground here for that belonging. Try another area or make room at the pond.'
+        if shared_proposal is not None:
+            if not castle_care or carnival_choice not in castle_work.PHYSICAL_SCORES or not selected:
+                return False,'Choose a placed control activity to share.'
+            from engine import castle_shared
+            plan={'kind':kind,'target':target,'label':label,'elapsed':0.,'duration':duration,
+                  'phase':'approach','automatic':automatic,'paused':False,'location':self.location,
+                  'instance':instance,'destination':shelters.position(selected)}
+            plan['carnival_work']=castle_work.make(self,plan,carnival_choice)
+            plan['label']=plan['carnival_work']['label']
+            ok,reason=castle_shared.prepare(self,plan,shared_proposal)
+            if not ok:return False,reason
+            s['plan']=plan
+            self.game.behavior_ai.cancel_pending_movement()
+            self.game.behavior_ai.clear_action()
+            self._last_plan_visual=None
+            return True,plan['label']+'.'
         self.minds.cancel_encounter('cheese')
         s['plan'] = {'kind': kind, 'target': target, 'label': label, 'elapsed': 0., 'duration': duration,
                      'phase': 'approach', 'automatic': automatic, 'paused': False, 'location': self.location,
@@ -672,6 +688,16 @@ class LivingPond:
         if not plan or not g:
             return
         work=plan.get('carnival_work')
+        if carnival.is_shared(plan):
+            from engine import castle_shared
+            if not castle_shared.validate(self,plan):
+                castle_shared.interrupt(self,plan,'The shared activity can no longer continue.')
+                self.cancel()
+                return
+            castle_shared.refresh(self)
+            if work.get('interrupted'):
+                self.cancel()
+                return
         if isinstance(work,dict) and work.get('physical_pilot') and not castle_work.physical_active(plan):
             self.cancel()
             self.notice('The saved control position is invalid. Cheese steps away without completing the work.')
@@ -734,7 +760,7 @@ class LivingPond:
         destination=plan.get('approach_destination',plan.get('destination'))
         # Adopted component work owns precise arrival; the generic three-cell
         # approach radius must not stop its walk short of the actual control.
-        native_carnival = castle_work.physical_active(plan)
+        native_carnival = castle_work.physical_active(plan) or carnival.is_shared(plan)
         if destination and plan['phase']=='approach' and not native_carnival:
             pos=g.renderer.duck_pos
             distance=abs(pos.x-destination[0])+abs(pos.y-destination[1])
@@ -773,7 +799,7 @@ class LivingPond:
         weather_holding = bool(residence and residence['roof'] and shelters.adverse(self.weather_type)
                        and plan['phase'] == 'act' and g.duck.needs.hunger > 15)
         holding = weather_holding or routine_holding or company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or creative_holding or textile_holding or ground_holding or architecture_holding or playkit_holding or carnival_holding
-        native_travel = castle_work.physical_active(plan) and plan['carnival_work']['physical']['phase'] in ('approach','exit')
+        native_travel = (castle_work.physical_active(plan) and plan['carnival_work']['physical']['phase'] in ('approach','exit')) or (carnival.is_shared(plan) and work['shared']['cheese']['phase'] in ('approach','exit'))
         if (company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or creative_holding or textile_holding or ground_holding or architecture_holding or playkit_holding or carnival_holding) and not native_travel:
             g.renderer.duck_pos.cancel_movement()
             g.renderer.duck_pos.set_state_by_name('thinking',0)
@@ -826,6 +852,7 @@ class LivingPond:
 
     def _complete(self, plan):
         s = self.state; kind = plan['kind']; target = plan['target']; g = self.game
+        shared_control=carnival.is_shared(plan)
         if 'carnival_work' in plan and not carnival.completion_ready(self,plan):
             # A stale/unfinished callback must not fall through to generic item
             # uses, needs, learning or bond rewards. Release only this attempt.
@@ -954,7 +981,8 @@ class LivingPond:
             action={'rest':'nap','practice':'play','wander':'explore','garden':'clean','forage':'explore','share':'pet'}[kind]
             g.duck.desires.on_action_performed(action,self.location)
         learning_kind='practice' if plan.get('music_score',{}).get('done') else 'garden' if plan.get('care_routine',{}).get('done') else kind
-        self.minds.completed(learning_kind, plan['label']+'. '+message, plan.get('learning_before'), target if kind=='share' else '')
+        if shared_control:skill=PLANS['observe'][2]  # Shared controller owns role-specific brain learning.
+        else:self.minds.completed(learning_kind, plan['label']+'. '+message, plan.get('learning_before'), target if kind=='share' else '')
         self.gain(skill,2 if plan['automatic'] else 4)
         hour=str(int(self.hour));s['habits'][kind+':'+hour]=min(30,s['habits'].get(kind+':'+hour,0)+1)
         self.remember('shared' if kind=='share' else 'project' if kind=='project' else 'activity', plan['label']+'. '+message,.8 if kind in ('share','project') else .4,target)
@@ -1035,7 +1063,7 @@ class LivingPond:
             ok,message=nest_routines.request(self,target,command.get('text'),command.get('instance'))
             return self.notice(message)
         if action=='carnival_action':
-            ok,message=carnival.request(self,target,command.get('text'),command.get('instance'))
+            ok,message=carnival.request(self,target,command.get('text'),command.get('instance'),together=command.get('together') is True)
             return self.notice(message)
         if action=='playkit_action':
             ok,message=playkit.request(self,target,command.get('text'),command.get('instance'))

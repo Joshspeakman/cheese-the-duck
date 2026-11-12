@@ -1,3 +1,4 @@
+import {castleActorPhysical} from './castle-care.mjs';
 import {carnivalOccupants} from './carnival-routines.mjs';
 import {playkitPose,PLAYKIT_ROUTINES} from './playkit-routines.mjs';
 import {WeatherDrift,wrap} from './weather-wind.mjs';
@@ -457,10 +458,12 @@ export class LivingWorld {
       const home=this.objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.construction==='excursion-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination?.[i])<1.1));
       if(!original||!home)continue;
       const source=r.actor==='cheese'?s.duck:s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
-      const walkingPhysical=r.actor==='cheese'&&r.work.physical_pilot&&r.work.physical?.phase!=='hold';
-      const performance=walkingPhysical?null:{kind:'carnival',routine:r.work,role:r.role,watch:r.watch,motion:s.motion!==false};
-      const character={...characterSprite({...source,state:walkingPhysical?(source.state||'walking'):'idle',facing:walkingPhysical?source.facing:r.role==='a',performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
-      if(home.physicalCastle&&r.role==='a'&&r.work.physical?.version===1&&r.work.physical.actor==='cheese')character.physicalCastleActor=home.physicalCastle;
+      const actorPhysical=castleActorPhysical(r.work,r.role),shared=r.work.shared_physical===true;
+      const walkingPhysical=(shared||r.actor==='cheese'&&r.work.physical_pilot)&&actorPhysical?.phase!=='hold';
+      const ownPose=walkingPhysical||(shared&&(plan.paused||r.actor==='cheese'&&source.hatCare?.active));
+      const performance=ownPose?null:{kind:'carnival',routine:r.work,role:r.role,watch:r.watch,motion:s.motion!==false};
+      const character={...characterSprite({...source,...(shared&&r.role==='a'?{castId:r.work.shared.operator.cast}:{}),state:ownPose?(source.state||'walking'):'idle',facing:ownPose||shared&&r.watch?source.facing:r.role==='a',performance},t,r.actor!=='cheese'),x:original.x,y:original.y,cheese:r.actor==='cheese',story:original.story};
+      if(home.physicalCastle&&actorPhysical)character.physicalCastleActor=home.physicalCastle;
       (home.carnivalRiders||=[]).push({...r,character});this.characters=this.characters.filter(c=>c!==original);
     }
     if(plan?.playkit_work&&!plan.playkit_work.interrupted&&PLAYKIT_ROUTINES[plan.playkit_work.id]&&['prepare','act','settle'].includes(plan.phase)){

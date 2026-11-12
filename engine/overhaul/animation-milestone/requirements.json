@@ -5584,7 +5584,60 @@
       "observationOnly": 1,
       "source": "engine/scripts/review-guest-control-capabilities.mjs",
       "runtimeAcceptance": false,
-      "remaining": "Native shared operator ownership, independent paths and role-aware renderer; all48 roles and egg scenes remain incomplete"
+      "remaining": "Forty regular profiles now pass three native controls with adult Cheese observing; remaining eight profiles, egg scenes, all contextual bindings and full repertoire remain incomplete."
+    },
+    "nativeSharedCastle": {
+      "status": "regular_native_and_rendered_verified",
+      "scores": [
+        "castle_start",
+        "castle_door_open",
+        "castle_hose_stow"
+      ],
+      "regularProfiles": 40,
+      "adultObserverBindings": 120,
+      "nativeChecks": 1920,
+      "nativeFrames": 600,
+      "distinctMechanicalContacts": 360,
+      "nativeSource": "engine/check_castle_shared.py",
+      "operator": "Actual regular visitor owns controls; Cheese independently arrives, watches and exits; no root teleport or legacy three-cell contact proxy",
+      "ownership": "Exact actor/cast/visit token/copy/age lease, atomic all-route proposal, one work clock and consumed effect prefix",
+      "learning": "Operator practice, Cheese observation/discovery and mutual sharing only after both supported exits; duplicate callback inert",
+      "savePolicy": "Shared reload interrupts and preserves applied material effects; transient helper lease is never resurrected",
+      "uiChecks": 7,
+      "rendererSuiteTests": 269,
+      "remaining": [
+        "Remaining eight special visitor adapters and anatomical roles",
+        "Egg caregiver scene",
+        "Other controls and full individual object repertoires"
+      ],
+      "fullRepertoiresComplete": false,
+      "independentLifecycleChecks": 60,
+      "representativeObserverAges": 8,
+      "representativeAgeChecks": 384,
+      "representativeAgeFrames": 120,
+      "representativeAgeOperatorProfiles": 1,
+      "renderedCases": 7200,
+      "renderedActorRoots": 14400,
+      "renderedEffectContacts": 4320,
+      "renderedObserverChecks": 7200,
+      "review": "engine/artifacts/animation-milestone/castle-shared-native-render-review.html",
+      "representativeAgeRenderedCases": 1440,
+      "representativeAgeRenderedRoots": 2880,
+      "representativeAgeRenderedContacts": 864,
+      "representativeAgeRenderedObserverChecks": 1440,
+      "ageReview": "engine/artifacts/animation-milestone/castle-shared-ages-native-render-review.html",
+      "focusedSharedAndBridgeTests": 8,
+      "legacyRegressions": {
+        "castleWork": 894,
+        "physicalContacts": 147,
+        "multipleStations": 145,
+        "allAgeContacts": 412,
+        "diskLifecycle": 41,
+        "ageLifecycle": 45,
+        "brains": 47,
+        "encounters": 16
+      },
+      "installation": "Deferred until the full requested milestone is complete; installed2.36.1 and real saves untouched"
     }
   },
   "wardrobe": [
