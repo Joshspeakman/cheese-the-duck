@@ -95,6 +95,10 @@ class LivingPond:
         self._cache_at = -1
         # Dressing gestures are live poses, not unattended actions to replay on load.
         self.state['apparel_care'].pop('active',None)
+        # Air procedures require live role leases; flattened saved recipes
+        # cannot resume or acquire a replacement visitor on load.
+        if carnival.is_air_procedure(self.state['plan']):
+            self.state['plan'] = None
         if self.state['plan']:
             self.state['plan']['paused'] = True
             # Physical visitor reservations belong to a live visit, not a save.
@@ -426,6 +430,8 @@ class LivingPond:
 
     def start(self, kind, target='', automatic=False, instance=None, carnival_choice=None, shared_proposal=None):
         s = self.state
+        if carnival_choice in ('castle_pressure_check','castle_dust_service'):
+            return False, 'Choose an individual air control for this activity.'
         from engine import castle_work
         if carnival_choice is not None and (kind!='item' or not isinstance(carnival_choice,str) or carnival_choice not in carnival.PROGRAMS or carnival.PROGRAMS[carnival_choice]['item']!=target):return False,'Choose an activity for that object.'
         castle_care=carnival_choice in castle_work.ROUTINES if carnival_choice is not None else False
@@ -690,6 +696,9 @@ class LivingPond:
         s = self.state; plan = s['plan']; g = self.game
         if not plan or not g:
             return
+        if carnival.is_air_procedure(plan):
+            self.cancel()
+            return
         if carnival.is_egg_caregiver(plan):
             carnival.shared_controller(plan).tick(self,dt)
             return
@@ -858,6 +867,14 @@ class LivingPond:
 
     def _complete(self, plan):
         s = self.state; kind = plan['kind']; target = plan['target']; g = self.game
+        work = plan.get('carnival_work')
+        if isinstance(work, dict) and work.get('id') == 'castle_gauge_check':
+            # Reading an instrument is an observation, not a generic item use.
+            # The native helper validates arrival, the reading and actual exits
+            # before crediting the reader, including caregiver/observer roles.
+            from engine import castle_air
+            castle_air.complete_observation(self, plan)
+            return
         if carnival.is_egg_caregiver(plan):
             carnival.shared_controller(plan).complete(self,plan)
             return

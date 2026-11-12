@@ -74,14 +74,15 @@ def shell_safe(pond,plan,r,center):
     return True
 
 
-def separated(root,cast,r):
+def separated(root,cast,r,score=None):
     m=EGG.get('caregivers',{}).get(cast)
+    if score in castle.AIR_SCORES:m=shared.operator_travel(cast,score)
     return bool(m and not overlap(box(root,m),box(r['root'],metric(r))))
 
 
 def segment(pond,plan,a,b,s):
-    m=shared.METRICS[s['operator']['cast']]['travel']
-    return all(shared.support(pond,plan,p,m,s['center']) and separated(p,s['operator']['cast'],s['recipient']) for p in shared.samples(a,b))
+    m=shared.operator_travel(s['operator']['cast'],s['score'])
+    return all(shared.support(pond,plan,p,m,s['center']) and separated(p,s['operator']['cast'],s['recipient'],s['score']) for p in shared.samples(a,b))
 
 
 def route(pond,plan,a,b,s):
@@ -116,13 +117,18 @@ def propose(pond,score,instance):
         if not a:continue
         if not shared.eligible(pond,a) or a['cast'] not in EGG.get('caregivers',{}):continue
         s=dict(destination=[round(v) for v in center],mode='egg-caregiver',score=score,source_age='egg',operator=actors.identity(a),recipient=r,instance=instance,center=center,origin=a['root'],operator_exit=a['root'])
-        ground=math.ceil(castle.art_world(center,0,castle.GEOMETRY['ground_row'])[1]);rows=shared.operator_metrics(a['cast'],score);m=shared.METRICS[a['cast']]['travel'];sites=[]
-        for _,name in castle.physical_stations(dict(id=score)):
-            target=castle.control_world(center,name);contacts=[v for v in rows if v['station']==name];preferred=target[0]-(max(v['grip'][0] for v in contacts)+1)*castle.pitches(m)[0]
-            points=sorted(([x,y] for x in range(math.floor(preferred)-4,math.ceil(preferred)+5) for y in range(ground,ground+4)),key=lambda p:(p[0]-preferred)**2+(p[1]-ground)**2)
-            stance=next((p for p in points if shared.support(pond,plan,p,m,center) and separated(p,a['cast'],r) and all(castle.reach_distance(p,target,v['grip'],v['scale'])<=3 for v in contacts)),None)
-            if stance is None:break
-            sites.append(dict(station=name,target=target,stance=stance))
+        ground=math.ceil(castle.art_world(center,0,castle.GEOMETRY['ground_row'])[1]);rows=shared.operator_metrics(a['cast'],score);m=shared.operator_travel(a['cast'],score);sites=[]
+        if score in castle.AIR_SCORES:
+            from engine import castle_air
+            sites,reason=castle_air.plan_sites(pond,plan,score,s['operator'],[box(r['root'],metric(r))])
+            if sites is None:continue
+        else:
+            for _,name in castle.physical_stations(dict(id=score)):
+                target=castle.control_world(center,name);contacts=[v for v in rows if v['station']==name];preferred=target[0]-(max(v['grip'][0] for v in contacts)+1)*castle.pitches(m)[0]
+                points=sorted(([x,y] for x in range(math.floor(preferred)-4,math.ceil(preferred)+5) for y in range(ground,ground+4)),key=lambda p:(p[0]-preferred)**2+(p[1]-ground)**2)
+                stance=next((p for p in points if shared.support(pond,plan,p,m,center) and separated(p,a['cast'],r) and all(castle.reach_distance(p,target,v['grip'],v['scale'])<=3 for v in contacts)),None)
+                if stance is None:break
+                sites.append(dict(station=name,target=target,stance=stance))
         if len(sites)!=len(castle.physical_stations(dict(id=score))):reason='A later control has no safe caregiver stance beside the egg.';continue
         s['sites']=sites;paths=[];previous=a['root']
         for site in sites:
@@ -148,6 +154,7 @@ def prepare(pond,plan,proposal=None):
         or a['adapter']=='rare' and a['remaining_seconds']<s['required_seconds']):return False,'The caregiver preflight changed before acquisition.'
     s.update(version=1,attempt=uuid.uuid4().hex,phase='approach');site=s['sites'][0]
     ph=dict(version=1,actor=a['actor'],root=list(a['root']),center=s['center'],station_index=0,station=site['station'],target=site['target'],stance=site['stance'],phase='approach',route=s['operator_routes'][0],waypoint=0,exit=s['operator_exit'],contact_ready=False)
+    if 'observation_target' in site:ph['observation_target']=site['observation_target']
     w.update(egg_caregiver=True,shared_physical=True,physical_pilot=False,source_age='egg',shared=s,physical=ph,paired=True,invitation_checked=True,companion=dict(actor=a['actor'],mode='caregiver',ready=False))
     m=pond.minds;key=a['actor'];m.carnival_guests[key]=dict(actor=key,work=w,attempt=s['attempt'],shared=True,egg_caregiver=True,contract={k:copy.deepcopy(s[k]) for k in IMMUTABLE},target=list(a['root']),phase='approach',token=a['token'],context=m.context(key))
     m.tasks.pop(key,None);pond.game.renderer.duck_pos.frozen=True;pond._cache=None
@@ -177,6 +184,9 @@ def validate(pond,plan):
         if type(elapsed) not in (int,float) or not math.isfinite(elapsed) or not 0<=elapsed<=duration or type(w['clock']) not in (int,float) or not math.isfinite(w['clock']):return False
         if not isinstance(w['events'],list) or any(type(i) is not int for i in w['events']) or w['events']!=[i for i,e in enumerate(castle.ROUTINES[w['id']]['effects']) if e[0]*duration<=elapsed]:return False
         cursor=max(i for i,(at,_) in enumerate(castle.physical_stations(w)) if at*duration<=elapsed);site=s['sites'][cursor]
+        if w['id']=='castle_gauge_check':
+            from engine import castle_air
+            if ph.get('observation_target')!=castle_air.observation_target(s['center']):return False
         if ph.get('version')!=1 or type(ph.get('contact_ready')) is not bool or ph['actor']!=a['actor'] or ph['station_index']!=cursor or any(ph[k]!=site[k] for k in ('station','target','stance')) or ph['center']!=s['center'] or ph['exit']!=s['operator_exit']:return False
         if ph['phase'] not in ('approach','hold','exit') or not shared.point(ph['root']) or type(ph['waypoint']) is not int:return False
         expected=s['operator_exit_route'] if ph['phase']=='exit' else s['operator_routes'][cursor]
@@ -219,8 +229,13 @@ def refresh(pond):
     ph['root']=list(a['root']);stop=paused(pond,plan) or s['phase']=='done';target=a['root'] if stop or ph['phase']=='hold' else ph['route'][ph['waypoint']]
     if not segment(pond,plan,a['root'],target,s):interrupt(pond,plan,'The remaining caregiver route is blocked.');return
     lease=pond.minds.carnival_guests[a['actor']];lease['target']=list(target)
-    contacts=[m for m in shared.operator_metrics(a['cast'],w['id']) if m['station']==ph['station']]
-    ph['contact_ready']=bool(not stop and ph['phase']=='hold' and a['facing'] and shared.near(a['root'],ph['stance']) and all(castle.reach_distance(a['root'],ph['target'],m['grip'],m['scale'])<=3 for m in contacts))
+    if w['id'] in castle.AIR_SCORES:
+        from engine import castle_air
+        ph['contact_ready']=ph['observation_ready']=False
+        if not stop:castle_air.station_ready(pond,plan,s['operator'],ph,w['id'],[box(s['recipient']['root'],metric(s['recipient']))])
+    else:
+        contacts=[m for m in shared.operator_metrics(a['cast'],w['id']) if m['station']==ph['station']]
+        ph['contact_ready']=bool(not stop and ph['phase']=='hold' and a['facing'] and shared.near(a['root'],ph['stance']) and all(castle.reach_distance(a['root'],ph['target'],m['grip'],m['scale'])<=3 for m in contacts))
 
 
 def motion(minds,key):
@@ -242,23 +257,30 @@ def advance(pond,plan,dt):
             ph['exited']=True;s['phase']='done';w.update(stage='done',done=True);castle.clear(pond,plan);refresh(pond);return False
         ph['phase']='hold';s['phase']='operate'
     refresh(pond)
-    if w.get('interrupted') or not ph['contact_ready']:return not w.get('interrupted')
+    if w.get('interrupted') or (w['id'] not in castle.AIR_SCORES and not ph['contact_ready']):return not w.get('interrupted')
     status,reason=shared.advance_control_clock(pond,plan,dt,lambda:actual(pond,s['operator']),lambda:proposal_clear(pond,plan,s))
     if status=='blocked':return interrupt(pond,plan,reason)
     from engine import carnival
     if status=='transfer':
-        i=ph['station_index']+1;site=s['sites'][i];ph.update(station_index=i,station=site['station'],target=site['target'],stance=site['stance'],phase='approach',route=s['operator_routes'][i],waypoint=0,contact_ready=False)
+        i=ph['station_index']+1;site=s['sites'][i]
+        if 'observation_target' in site:ph['observation_target']=site['observation_target']
+        ph.update(station_index=i,station=site['station'],target=site['target'],stance=site['stance'],phase='approach',route=s['operator_routes'][i],waypoint=0,contact_ready=False)
     elif status=='exit':s['phase']='exit';ph.update(phase='exit',route=s['operator_exit_route'],waypoint=0,contact_ready=False);carnival.stage(w,'service_exit',0)
     return True
 
 
 def completion_ready(pond,plan):
+    from engine import castle_air
+    if not castle_air.receipt_ready(pond,plan):return False
     if not validate(pond,plan):return False
     w=plan['carnival_work'];s=w['shared'];a=actual(pond,s['operator'])
     return bool(not w.get('recorded') and s['phase']=='done' and weather_ok(pond,w['id']) and shell_safe(pond,plan,s['recipient'],s['center']) and shared.near(a['root'],s['operator_exit']) and segment(pond,plan,a['root'],a['root'],s))
 
 
 def complete(pond,plan):
+    if plan.get('carnival_work',{}).get('id')=='castle_gauge_check':
+        from engine import castle_air
+        return castle_air.complete_observation(pond,plan)
     if not completion_ready(pond,plan):
         w=plan.get('carnival_work') if isinstance(plan,dict) else None
         if isinstance(w,dict) and not w.get('recorded'):

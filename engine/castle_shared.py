@@ -18,8 +18,22 @@ RESERVED=('nest_helpers','playmates','structure_helpers','ground_helpers','texti
 def point(p):return isinstance(p,(tuple,list)) and len(p)==2 and all(type(n) in (int,float) and math.isfinite(n) for n in p)
 def near(a,b,tolerance=1e-7):return point(a) and point(b) and max(abs(a[i]-b[i]) for i in (0,1))<=tolerance
 def cheese_root(pond):return [float(pond.game.renderer.duck_pos.x),float(pond.game.renderer.duck_pos.y)]
-def operator_metrics(cast,score):return METRICS[cast]['routines'][score]
-def cheese_metric(age):return METRIC_DATA['observers'][age]['travel']
+def operator_metrics(cast,score):
+    if score in castle.AIR_SCORES:
+        from engine import castle_air
+        return castle_air.DATA['casts'][cast]['routines'][score]
+    return METRICS[cast]['routines'][score]
+
+def operator_travel(cast,score):
+    if score in castle.AIR_SCORES:
+        from engine import castle_air
+        return dict(castle_air.DATA['casts'][cast]['travel'],full_body=True)
+    return METRICS[cast]['travel']
+def cheese_metric(age,score=None):
+    if score in castle.AIR_SCORES:
+        from engine import castle_air
+        return dict(castle_air.DATA['ages'][age]['travel'],full_body=True)
+    return METRIC_DATA['observers'][age]['travel']
 
 
 def envelope(metric):
@@ -45,6 +59,9 @@ def samples(a,b):
 
 
 def separated(a,am,b,bm):
+    if am.get('full_body') or bm.get('full_body'):
+        from engine import castle_air
+        return not castle_air.overlap(castle_air.box(a,am),castle_air.box(b,bm),1.)
     ax=castle.pitches(am)[0];bx=castle.pitches(bm)[0];al,ar=envelope(am);bl,br=envelope(bm)
     return a[0]+ar*ax+1<b[0]+bl*bx or b[0]+br*bx+1<a[0]+al*ax or abs(a[1]-b[1])>3.5
 
@@ -92,15 +109,20 @@ def _propose_for(pond,score,instance,age,live):
     plan=dict(target='bounce_house',instance=instance);center=castle.placement_center(pond,plan)
     if center is None or 'bounce_house' not in pond.owned:return None,'That exact house is not placed here.'
     if not castle.allowed(pond,score):return None,'The weather does not allow this control work.'
-    op=METRICS[live['cast']]['travel'];watch=cheese_metric(age);ground=math.ceil(castle.art_world(center,0,castle.GEOMETRY['ground_row'])[1])
+    op=operator_travel(live['cast'],score);watch=cheese_metric(age,score);ground=math.ceil(castle.art_world(center,0,castle.GEOMETRY['ground_row'])[1])
     rows=operator_metrics(live['cast'],score);steps=castle.physical_stations(dict(id=score));sites=[]
-    for _,name in steps:
-        target=castle.control_world(center,name);contacts=[m for m in rows if m['station']==name];bx=castle.pitches(op)[0]
-        preferred=target[0]-(max(m['grip'][0] for m in contacts)+1)*bx
-        candidates=sorted(([x,y] for x in range(math.floor(preferred)-4,math.ceil(preferred)+5) for y in range(ground,ground+4)),key=lambda r:(r[0]-preferred)**2+(r[1]-ground)**2)
-        stance=next((r for r in candidates if support(pond,plan,r,op,center) and all(castle.reach_distance(r,target,m['grip'],m['scale'])<=3 for m in contacts)),None)
-        if stance is None:return None,'The visitor cannot reach every '+name+' contact from dry ground.'
-        sites.append(dict(station=name,target=target,stance=stance))
+    if score in castle.AIR_SCORES:
+        from engine import castle_air
+        sites,reason=castle_air.plan_sites(pond,plan,score,actors.identity(live))
+        if sites is None:return None,reason
+    else:
+        for _,name in steps:
+            target=castle.control_world(center,name);contacts=[m for m in rows if m['station']==name];bx=castle.pitches(op)[0]
+            preferred=target[0]-(max(m['grip'][0] for m in contacts)+1)*bx
+            candidates=sorted(([x,y] for x in range(math.floor(preferred)-4,math.ceil(preferred)+5) for y in range(ground,ground+4)),key=lambda r:(r[0]-preferred)**2+(r[1]-ground)**2)
+            stance=next((r for r in candidates if support(pond,plan,r,op,center) and all(castle.reach_distance(r,target,m['grip'],m['scale'])<=3 for m in contacts)),None)
+            if stance is None:return None,'The visitor cannot reach every '+name+' contact from dry ground.'
+            sites.append(dict(station=name,target=target,stance=stance))
     oroot=live['root'];croot=cheese_root(pond)
     if not support(pond,plan,oroot,op,center) or not support(pond,plan,croot,watch,center):return None,'Both actors must start on supported exterior ground.'
     # Cheese arrives first; the held visitor cannot be crossed. Its later entire
@@ -162,6 +184,7 @@ def prepare(pond,plan,proposal=None):
     s=copy.deepcopy(proposal);s.update(version=1,attempt=uuid.uuid4().hex,phase='waiting')
     s['cheese']=dict(root=cheese_root(pond),stance=s['watch'],exit=s['cheese_exit'],phase='approach',ready=False,route=s['cheese_route'],waypoint=0)
     site=s['sites'][0];ph=dict(version=1,actor=live['actor'],root=list(live['root']),target=site['target'],stance=site['stance'],center=s['center'],station=site['station'],station_index=0,phase='approach',route=s['operator_routes'][0],waypoint=0,exit=s['operator_exit'],contact_ready=False)
+    if 'observation_target' in site:ph['observation_target']=site['observation_target']
     # Recheck all preflight legs before acquiring either actor.
     if not proposal_clear(pond,plan,s):return False,'The shared routes changed before acquisition.'
     w.update(shared=s,physical=ph,shared_physical=True,physical_pilot=False,source_age=age,paired=True,invitation_checked=True)
@@ -171,7 +194,7 @@ def prepare(pond,plan,proposal=None):
 
 
 def proposal_clear(pond,plan,s):
-    op=METRICS[s['operator']['cast']]['travel'];watch=cheese_metric(s['source_age']);center=s['center'];spot=s['watch']
+    op=operator_travel(s['operator']['cast'],plan['carnival_work']['id']);watch=cheese_metric(s['source_age'],plan['carnival_work']['id']);center=s['center'];spot=s['watch']
     if not route_ok(pond,plan,s['roots']['cheese'],s['cheese_route'],watch,center,(s['roots']['operator'],op)):return False
     previous=s['roots']['operator']
     for leg in s['operator_routes']:
@@ -200,6 +223,9 @@ def validate(pond,plan):
         if w['events']!=[i for i,e in enumerate(castle.ROUTINES[w['id']]['effects']) if e[0]*duration<=elapsed]:return False
         cursor=max(i for i,(at,_) in enumerate(castle.physical_stations(w)) if at*duration<=elapsed)
         if ph['station_index']!=cursor or ph['station']!=s['sites'][cursor]['station'] or ph['target']!=castle.control_world(s['center'],ph['station']) or ph['stance']!=s['sites'][cursor]['stance']:return False
+        if w['id']=='castle_gauge_check':
+            from engine import castle_air
+            if ph.get('observation_target')!=castle_air.observation_target(s['center']):return False
         if ph['center']!=s['center'] or ph['phase'] not in ('approach','hold','exit') or s['cheese']['phase'] not in ('approach','hold','exit'):return False
         expected_route=s['operator_exit_route'] if ph['phase']=='exit' else s['operator_routes'][cursor]
         if ph['route']!=expected_route or ph['exit']!=s['operator_exit']:return False
@@ -229,6 +255,8 @@ def interrupt(pond,plan,reason):
     # Rejected wire data is untrusted. Release only actual leases bound by work
     # identity, never a forged actor field or a replacement visitor's token.
     for key,lease in list(pond.minds.carnival_guests.items()):
+        if not isinstance(lease,dict):
+            pond.minds.carnival_guests.pop(key,None);continue
         if lease.get('work') is w:
             pond.minds.carnival_guests.pop(key,None)
             if isinstance(key,str):actors.release_owned(pond,key,lease)
@@ -248,7 +276,7 @@ def refresh(pond):
     if not validate(pond,plan):interrupt(pond,plan,'The shared actor, visit, age or placement changed.');return
     if not castle.allowed(pond,w['id']) or pond.game.duck.needs.energy<10 or pond.game.duck.needs.hunger<15:
         interrupt(pond,plan,'Weather or urgent care interrupted shared work.');return
-    s=w['shared'];ph=w['physical'];live=actors.live(pond,s.get('operator') if isinstance(s,dict) else None);op=METRICS[live['cast']]['travel'];watch=cheese_metric(s['source_age']);cr=cheese_root(pond);orr=live['root'];lease=pond.minds.carnival_guests[live['actor']]
+    s=w['shared'];ph=w['physical'];live=actors.live(pond,s.get('operator') if isinstance(s,dict) else None);op=operator_travel(live['cast'],w['id']);watch=cheese_metric(s['source_age'],plan['carnival_work']['id']);cr=cheese_root(pond);orr=live['root'];lease=pond.minds.carnival_guests[live['actor']]
     if not segment(pond,plan,ph['root'],orr,op,s['center'],(cr,watch)) or not segment(pond,plan,s['cheese']['root'],cr,watch,s['center'],(orr,op)):
         interrupt(pond,plan,'An actual actor segment lost support or crossed the other actor.');return
     ph['root']=list(orr);s['cheese']['root']=list(cr);ph['contact_ready']=False
@@ -268,9 +296,14 @@ def refresh(pond):
         pos.facing_right=orr[0]>=cr[0]
     if s['phase']=='done':pos.facing_right=orr[0]>=cr[0]
     if not stop and s['phase']=='operate' and ph['phase']=='hold':
-        contacts=[m for m in operator_metrics(live['cast'],w['id']) if m['station']==ph['station']]
-        ph['contact_ready']=bool(live['facing'] and near(orr,ph['stance']) and near(cr,s['cheese']['stance'],.51)
-            and pos.facing_right==(orr[0]>=cr[0]) and all(castle.reach_distance(orr,ph['target'],m['grip'],m['scale'])<=3 for m in contacts))
+        if w['id'] in castle.AIR_SCORES:
+            from engine import castle_air
+            if near(cr,s['cheese']['stance'],.51) and pos.facing_right==(orr[0]>=cr[0]):
+                castle_air.station_ready(pond,plan,s['operator'],ph,w['id'],[castle_air.box(cr,watch)])
+        else:
+            contacts=[m for m in operator_metrics(live['cast'],w['id']) if m['station']==ph['station']]
+            ph['contact_ready']=bool(live['facing'] and near(orr,ph['stance']) and near(cr,s['cheese']['stance'],.51)
+                and pos.facing_right==(orr[0]>=cr[0]) and all(castle.reach_distance(orr,ph['target'],m['grip'],m['scale'])<=3 for m in contacts))
 
 
 def motion(minds,key):
@@ -312,9 +345,10 @@ def advance(pond,plan,dt):
         if not arrived(ph,orr):return True
         ph['phase']='hold'
     if not near(cr,ch['stance'],.51) or not live['facing'] or pond.game.renderer.duck_pos.facing_right!=(orr[0]>=cr[0]):return True
-    metricrows=operator_metrics(live['cast'],w['id']);current=[m for m in metricrows if m['station']==ph['station']]
+    metricrows=operator_metrics(live['cast'],w['id']);current=[m for m in metricrows if m['station']==ph['station'] and 'grip' in m]
     if not near(orr,ph['stance']) or not all(castle.reach_distance(orr,ph['target'],m['grip'],m['scale'])<=3 for m in current):return interrupt(pond,plan,'The real operator cannot reach this control.')
-    ph['contact_ready']=True
+    ph['contact_ready']=w['id']!='castle_gauge_check'
+    ph['observation_ready']=False
     if plan['phase']!='act':return True
     from engine import carnival
     cursor=ph['station_index'];steps=castle.physical_stations(w)
@@ -322,7 +356,9 @@ def advance(pond,plan,dt):
     if w['events']:s['cheese']['reaction_event']=w['events'][-1]
     if status=='blocked':return interrupt(pond,plan,reason)
     if status=='transfer':
-        site=s['sites'][cursor+1];ph.update(station_index=cursor+1,station=site['station'],target=site['target'],stance=site['stance'],phase='approach',route=s['operator_routes'][cursor+1],waypoint=0,contact_ready=False)
+        site=s['sites'][cursor+1]
+        if 'observation_target' in site:ph['observation_target']=site['observation_target']
+        ph.update(station_index=cursor+1,station=site['station'],target=site['target'],stance=site['stance'],phase='approach',route=s['operator_routes'][cursor+1],waypoint=0,contact_ready=False)
     elif status=='exit':
         s['phase']='exit';ph.update(phase='exit',route=s['operator_exit_route'],waypoint=0,contact_ready=False);ch.update(phase='exit',route=s['cheese_exit_route'],waypoint=0,ready=False);carnival.stage(w,'service_exit',0)
     pond._cache=None
@@ -333,6 +369,16 @@ def advance_control_clock(pond,plan,dt,resolve_actor,preflight):
     """Consume only the existing bounded control clock; no movement or rewards."""
     from engine import carnival
     w=plan['carnival_work'];s=w['shared'];ph=w['physical']
+    if w['id'] in castle.AIR_SCORES:
+        from engine import castle_air
+        obstacles=[]
+        if 'cheese' in s:obstacles=[castle_air.box(cheese_root(pond),cheese_metric(s['source_age'],w['id']))]
+        elif 'recipient' in s:
+            from engine import egg_caregiver
+            obstacles=[egg_caregiver.box(s['recipient']['root'],egg_caregiver.metric(s['recipient']))]
+        answer=castle_air.advance_atomic(pond,plan,w,dict(operator=s['operator'],physical=ph,preflight=preflight,obstacles=obstacles),dt)
+        w['done']=False
+        return ('exit' if answer['status']=='finished' else answer['status']),answer['reason']
     metricrows=operator_metrics(s['operator']['cast'],w['id'])
     obj=pond.object_state('bounce_house',plan)
     if w['stage']=='queue':w['start']=copy.deepcopy(castle.state(obj));carnival.stage(w,'service',castle.ROUTINES[w['id']]['duration'])
@@ -355,13 +401,18 @@ def advance_control_clock(pond,plan,dt,resolve_actor,preflight):
 
 
 def completion_ready(pond,plan):
+    from engine import castle_air
+    if not castle_air.receipt_ready(pond,plan):return False
     if not validate(pond,plan):return False
     w=plan['carnival_work'];s=w['shared'];ph=w['physical'];live=actors.live(pond,s.get('operator') if isinstance(s,dict) else None)
     return bool(not w.get('recorded') and s['phase']=='done' and ph.get('exited') and s['cheese'].get('exited') and near(live['root'],ph['exit']) and near(cheese_root(pond),s['cheese']['exit'],.51) and pond.game.renderer.duck_pos.facing_right==(live['root'][0]>=cheese_root(pond)[0])
-                and support(pond,plan,live['root'],METRICS[live['cast']]['travel'],s['center']) and support(pond,plan,cheese_root(pond),cheese_metric(s['source_age']),s['center']))
+                and support(pond,plan,live['root'],operator_travel(live['cast'],w['id']),s['center']) and support(pond,plan,cheese_root(pond),cheese_metric(s['source_age'],w['id']),s['center']))
 
 
 def complete(pond,plan):
+    if plan.get('carnival_work',{}).get('id')=='castle_gauge_check':
+        from engine import castle_air
+        return castle_air.complete_observation(pond,plan)
     if not completion_ready(pond,plan):return False
     w=plan['carnival_work'];s=w['shared'];m=pond.minds;key=s['operator']['actor'];lease=m.carnival_guests[key];w['recorded']=True
     obj=pond.object_state('bounce_house',plan);history=obj.setdefault('carnival_routines',{});history[w['id']]=min(9999,history.get(w['id'],0)+1);company=obj.setdefault('carnival_company',{});company[key]=min(9999,company.get(key,0)+1)

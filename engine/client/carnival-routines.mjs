@@ -1,3 +1,4 @@
+import {castleActiveWork} from './castle-air-geometry.mjs';
 import {actorPitches} from './actor-projection.mjs';
 import {SURFACE_ROUTINES,surfacePose,surfaceGeometry} from './surface-routines.mjs';
 import {CASTLE_SCORES,castlePose,castleGeometry,sharedCastleRecord,sharedCastleSource,eggCaregiverScene} from './castle-care.mjs';
@@ -32,6 +33,7 @@ export function carnivalPose(work,role='a',motion=true,watch=false){
 }
 export function carnivalOccupants(scene){
  const plan=scene.living?.plan,w=plan?.carnival_work;
+ if(w&&!castleActiveWork(w))return [];
  if(w&&(Object.hasOwn(w,'flight_observer')||Object.hasOwn(w,'egg_caregiver')||['flight-observer','egg-caregiver'].includes(w.shared?.mode))&&!sharedCastleRecord(w))return [];
  if(!w||w.interrupted||!PROGRAMS[w.id]||!(w.shared_physical?['approach','prepare','act','settle']:['prepare','act','settle']).includes(plan.phase))return [];
  if(w.shared_physical){

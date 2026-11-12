@@ -1,5 +1,6 @@
 import CASTLE_GEOMETRY from './animation/castle-geometry.json' with {type:'json'};
 import {ObjectCanvas} from './object-canvas.mjs';
+import {CASTLE_DIAL} from './castle-air-geometry.mjs';
 const finite=(v,d=0)=>Number.isFinite(v)?v:d,clamp=(v,a,b)=>Math.max(a,Math.min(b,finite(v)));
 export function surfaceState(saved={}){
  if(!saved||typeof saved!=='object')saved={};
@@ -90,8 +91,9 @@ export function softCastle(c,p,v){
  c.put(91,141,care.latch>.5?'[><]':'[> <]','m');
  panel(c,145,131,22,15,'m');c.put(147,133,'AIR / PRESSURE','a');
  c.put(148,141,care.motor==='off'?'[ ]':'[o]','a');c.put(155,141,care.vent>.5?'( / )':'(---)','q');
- c.line(161,139,161+Math.cos(Math.PI-v.inflation*Math.PI)*4,139-Math.sin(Math.PI-v.inflation*Math.PI)*3,null,'a');c.put(157,144,'0  :  1','k');
- c.put(171,131,care.powered?['|','/','-','\\'][Math.floor(care.fan*2)%4]:'o','a');
+ const [dialX,dialY]=CASTLE_DIAL.needle_origin;
+ c.line(dialX,dialY,dialX+Math.cos(Math.PI-care.pressure*Math.PI)*CASTLE_DIAL.radius_x,dialY-Math.sin(Math.PI-care.pressure*Math.PI)*CASTLE_DIAL.radius_y,null,'a');c.put(157,144,'0  :  1','k');
+ c.put(171,131,care.rotor_speed>0?['|','/','-','\\'][v.motion===false?0:((Math.floor(care.fan*2)%4)+4)%4]:'o','a');
  for(let i=0;i<Math.floor(care.dust*7);i++)c.put(170+i%6,134+Math.floor(i/6),':','s');
  c.line(166,139,174,139+care.kink*4,'~','m');
  if(care.hose>.1)for(let i=0;i<Math.ceil(care.hose*3);i++)c.ellipse(174,143-i,4,2,'~','a');

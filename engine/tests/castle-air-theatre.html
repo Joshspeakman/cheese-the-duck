@@ -1,0 +1,25 @@
+<!doctype html><meta charset="utf-8"><title>Air atomic pose review — source fixtures</title>
+<style>body{background:#142820;color:#eddec2;font:16px system-ui}canvas{max-width:100%}</style>
+<p>Source pose review only. This sheet does not certify native routes, readings, material effects or procedure completion.</p>
+<script type="module">
+import {replayNativeAir} from './castle-air-replay.mjs';
+window.replayNativeAir=replayNativeAir;
+import {airMetricSprite,AIR_ATOMICS} from '../scripts/castle-air-samples.mjs';
+import {CASTLE_SCORES} from '../client/castle-care.mjs';
+import {drawCharacter} from '../client/ultra-characters.mjs';
+window.reviewAirPoses=()=>{
+ const images={};
+ for(const motion of [true,false])for(const ages of [false,true]){
+  const subjects=ages?['hatchling','duckling','juvenile','young_adult','adult','mature','elder','legendary'].map(stage=>({stage})):[{stage:'adult'},{cast:'friend:marco'},{cast:'friendly_goose'},{cast:'wise_owl'},{cast:'grumpy_toad'},{cast:'friend:rocket'}];
+  const canvas=document.createElement('canvas');canvas.width=1800;canvas.height=1760;const ctx=canvas.getContext('2d');ctx.fillStyle='#142820';ctx.fillRect(0,0,1800,1760);
+  AIR_ATOMICS.forEach((id,row)=>subjects.forEach((actor,col)=>{
+   const cell=1800/subjects.length,pitch=ages?4:5;const c=airMetricSprite({...actor,id,index:CASTLE_SCORES[id].effects.length-1,motion});c.x=(col*cell+cell/2)/pitch;c.y=(row*220+193)/(pitch*1.5);
+   ctx.fillStyle='#eddec2';ctx.textAlign='left';ctx.font=(ages?'11':'14')+'px Menlo';ctx.fillText(id.replace('castle_','')+' / '+(actor.stage||actor.cast),col*cell+8,row*220+20);
+   drawCharacter(ctx,c,pitch,pitch*1.5,'#142820');
+  }));document.body.append(canvas);images[(motion?'normal':'reduced')+(ages?'-ages':'')]=canvas.toDataURL('image/png');
+ }
+ const detail=document.createElement('canvas');detail.width=1280;detail.height=720;const dc=detail.getContext('2d');dc.fillStyle='#142820';dc.fillRect(0,0,1280,720);
+ for(const [row,motion]of [true,false].entries())for(let index=0;index<4;index++){const c=airMetricSprite({cast:'friend:rocket',id:'castle_grill_clean',index,motion});c.x=(index*320+160)/8;c.y=(row*360+305)/12;dc.fillStyle='#eddec2';dc.textAlign='left';dc.font='16px Menlo';dc.fillText((motion?'Normal':'Reduced')+' / effect '+index,index*320+8,row*360+25);drawCharacter(dc,c,8,12,'#142820');}images['rocket-grille-detail']=detail.toDataURL('image/png');
+ return images;
+};
+</script>

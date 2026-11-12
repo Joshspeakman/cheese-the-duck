@@ -63,6 +63,9 @@ def update(item,obj,dt,outdoors,weather,wind,hour,reserved=False):
     if not surface_owned and kind in ('envelope','inflation'):
         target_inflation=.35 if wet or night or wind>=.8 else 1.
         if item=='bounce_house':
-            castle=obj['castle']
-            target_inflation=max(.15,(1. if castle['powered'] else .35 if wet or night else .15)*(1-castle['vent']*.85)*(1-castle['kink']*.6))
+            # A resting fabric silhouette is not positive gauge pressure.
+            # The coupled native mechanism already integrated transient supply.
+            floor=.35 if wet or night else .15
+            s['inflation']=floor+(1-floor)*obj['castle']['pressure']
+            return
         s['inflation']+=(target_inflation-s['inflation'])*(1-math.exp(-dt*.08))
