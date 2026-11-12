@@ -1,5 +1,5 @@
 {
-  "status": "paused_by_user",
+  "status": "active",
   "baseline": "2.36.0",
   "scope": {
     "items": 542,
@@ -90,7 +90,7 @@
     "Disposable saves for tests",
     "Do not mark completion from coverage metadata alone"
   ],
-  "previous_goal_turn": "Progress: seven footwear pairs reconstructed with twelve native two-foot care cores, separate saved left/right material and fit, actual grounded contact and interruption semantics.605 native checks,240 replay frames,nine UI checks,226 JS tests and19 final focused checks pass; native garment and72-hour living simulation regressions pass. User requested Astra Medium production with Extra High advisor; advisor and two bounded art workers launched with separate file ownership.370/609 unique artworks under review,239 pending; all verified-sequence counts remain zero.",
+  "previous_goal_turn": "Integrated75 food/specimen/seed artworks through production renderer, with measured footprints,300 anchor checks and150 day/night render checks. Four native company controllers now use authoritative portable centers;171 native checks.445/609 unique artworks constructed; full per-object sequence certification remains zero. Encounter reward ownership and evidence validation are next bounded Medium tasks.",
   "items": [
     {
       "id": "hat_red",
@@ -1952,8 +1952,9 @@
     {
       "id": "philosophers_stone",
       "family": "gem",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "nook_radio",
@@ -1966,20 +1967,23 @@
     {
       "id": "breadcrumbs",
       "family": "crumbs",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "bread",
       "family": "crumbs",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "seeds",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "lettuce",
@@ -1991,20 +1995,23 @@
     {
       "id": "worm",
       "family": "worm",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "fancy_bread",
       "family": "bread",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "golden_crumb",
       "family": "crumbs",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "rubber_duck",
@@ -2036,8 +2043,9 @@
     {
       "id": "shiny_pebble",
       "family": "rock",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "lucky_clover",
@@ -2070,8 +2078,9 @@
     {
       "id": "oats",
       "family": "crumbs",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "fish_treat",
@@ -2082,14 +2091,16 @@
     {
       "id": "mysterious_crumb",
       "family": "crumbs",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "rainbow_crumb",
       "family": "crumbs",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "squeaky_toy",
@@ -2120,14 +2131,16 @@
     {
       "id": "seashell",
       "family": "shell",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "cool_stick",
       "family": "stick",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "bottle_cap",
@@ -2138,8 +2151,9 @@
     {
       "id": "glitter_rock",
       "family": "gem",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "tiny_crown",
@@ -2162,8 +2176,9 @@
     {
       "id": "ancient_bread",
       "family": "bread",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "duck_photo",
@@ -2176,8 +2191,9 @@
     {
       "id": "void_crumb",
       "family": "crumbs",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "best_friend_badge",
@@ -2194,14 +2210,16 @@
     {
       "id": "berry_salad",
       "family": "salad",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "honey_bread",
       "family": "bread",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "crystal_lamp",
@@ -2280,8 +2298,9 @@
     {
       "id": "shiny_object",
       "family": "rock",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "water_token",
@@ -2384,8 +2403,9 @@
     {
       "id": "digging_stick",
       "family": "stick",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "basic_nest",
@@ -2594,14 +2614,16 @@
     {
       "id": "twig",
       "family": "stick",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "bark",
       "family": "stick",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "acorn",
@@ -2618,80 +2640,93 @@
     {
       "id": "driftwood",
       "family": "stick",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "driftwood_large",
       "family": "stick",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "pebble",
       "family": "rock",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "smooth_stone",
       "family": "rock",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "rock",
       "family": "rock",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "crystal",
       "family": "gem",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "iron_ore",
       "family": "rock",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "clay",
       "family": "rock",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "pond_clay",
       "family": "rock",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "sand",
       "family": "rock",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "shell",
       "family": "shell",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "sea_shell",
       "family": "shell",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "sea_glass",
       "family": "gem",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "seaweed",
@@ -2703,14 +2738,16 @@
     {
       "id": "river_pearl",
       "family": "pearl",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "sand_dollar",
       "family": "shell",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "reed",
@@ -2749,14 +2786,16 @@
     {
       "id": "seed",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "vegetable_seed",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "small_fish",
@@ -2767,20 +2806,23 @@
     {
       "id": "bread_crumb",
       "family": "crumbs",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "honeycomb",
       "family": "honey",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "sunflower_seeds",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "tulip_bulb",
@@ -2799,32 +2841,37 @@
     {
       "id": "carrot",
       "family": "carrot",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "tomato",
       "family": "tomato",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "pumpkin",
       "family": "pumpkin",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "strawberry",
       "family": "strawberry",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "watermelon",
       "family": "watermelon",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "mint_leaves",
@@ -2843,8 +2890,9 @@
     {
       "id": "crystal_shard",
       "family": "gem",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "butterfly_wing",
@@ -2862,14 +2910,16 @@
     {
       "id": "juicy_worm",
       "family": "worm",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "giant_worm",
       "family": "worm",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "rainbow_feather",
@@ -2880,8 +2930,9 @@
     {
       "id": "crystal_icicle",
       "family": "gem",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "frozen_dewdrop",
@@ -2912,8 +2963,9 @@
     {
       "id": "mist_crystal",
       "family": "gem",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "fog_essence",
@@ -2997,8 +3049,9 @@
     {
       "id": "fresh_apple",
       "family": "tomato",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "autumn_leaf",
@@ -3010,8 +3063,9 @@
     {
       "id": "homemade_pie",
       "family": "pie",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "snowball",
@@ -3023,8 +3077,9 @@
     {
       "id": "ice_crystal",
       "family": "gem",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "warmth",
@@ -3049,8 +3104,9 @@
     {
       "id": "heart_cookie",
       "family": "cookie",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "splash_trophy",
@@ -3183,8 +3239,9 @@
     {
       "id": "welcome_bread",
       "family": "bread",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "duck_toy",
@@ -3202,8 +3259,9 @@
     {
       "id": "better_bait",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "master_fishing_rod",
@@ -3227,14 +3285,16 @@
     {
       "id": "enchanted_seeds",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "rare_treat",
       "family": "crumbs",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "weekly_chest",
@@ -3374,68 +3434,79 @@
     {
       "id": "crystal_plant",
       "family": "gem",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "tulip_seeds",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "rose_seeds",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "carrot_seeds",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "tomato_seeds",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "pumpkin_seeds",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "strawberry_seeds",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "watermelon_seeds",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "mint_seeds",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "golden_seeds",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "crystal_seeds",
       "family": "seeds",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "portrait_cheese",
@@ -3757,8 +3828,9 @@
     {
       "id": "pretty_shell",
       "family": "shell",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "ancient_feather",
@@ -3775,14 +3847,16 @@
     {
       "id": "fossil",
       "family": "fossil",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "ruby_gem",
       "family": "gem",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "golden_acorn",
@@ -3811,8 +3885,9 @@
     {
       "id": "star_fragment",
       "family": "gem",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Constructed detailed artwork integrated with production world scale and measured footprint; deterministic native material projection. Individual interaction repertoire remains unfinished."
     },
     {
       "id": "ancient_tome",
@@ -4024,10 +4099,10 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "footwear_contacts_and_medium_art_batches",
+    "sourcePhase": "medium_art_integration_and_native_companion_anchors",
     "fullyOverhauled": false,
-    "constructedObjects": 315,
-    "remainingArtwork": 227,
+    "constructedObjects": 390,
+    "remainingArtwork": 152,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -4520,7 +4595,10 @@
       "engine/artifacts/animation-milestone/footwear-smoke.log",
       "engine/artifacts/animation-milestone/footwear-review.html",
       "engine/artifacts/animation-milestone/footwear-all-ages.png",
-      "engine/artifacts/animation-milestone/footwear-native-care-contacts.png"
+      "engine/artifacts/animation-milestone/footwear-native-care-contacts.png",
+      "engine/artifacts/animation-milestone/medium-art-integration.log",
+      "engine/artifacts/animation-milestone/medium-art-render.json",
+      "engine/artifacts/animation-milestone/parent-medium-review.log"
     ],
     "next": "Run Medium art batches for23 foods and33 natural specimens, then integrate/review their world support envelopes. Extra High advisor reviews hard simulation architecture and the path to complete individual48-sequence repertoires. Remaining wardrobe wings, halos/horns, held pieces, mittens, swim ring and effects need reconstruction. Preserve terrain support, native ownership and saves. Full milestone and final installation remain open.",
     "checks": {
@@ -5317,9 +5395,21 @@
       "localAI": false,
       "disposableSaves": true
     },
-    "pausedByUser": true,
-    "resumeRequires": "Explicit user instruction",
-    "pauseNote": "Footwear committed and verified at a6a1c05. Food23/specimen33 source and direct review evidence exist, but are not integrated or counted. Seed/bait19 files checkpointed unreviewed. All workers interrupted. Installed2.36.1 remains unchanged."
+    "pausedByUser": false,
+    "resumeRequires": null,
+    "pauseNote": "Resumed on user instruction. Integrated and reviewed food23, specimen33, seeds/bait19. Historical pause checkpoint retained.",
+    "mediumArt": {
+      "constructed": 75,
+      "worldAnchorChecks": 300,
+      "dayNightRenderChecks": 150,
+      "reviewSheets": 10,
+      "fullRepertoiresComplete": false
+    },
+    "portableCompanyAnchors": {
+      "nativeChecks": 171,
+      "productionPaths": 8,
+      "scope": "Saved portable center, placed center, converted legacy offset, existing duck stance policy."
+    }
   },
   "wardrobe": [
     {

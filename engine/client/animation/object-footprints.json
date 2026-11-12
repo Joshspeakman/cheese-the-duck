@@ -1533,10 +1533,10 @@
       "construction": "lighting-v1"
     },
     "philosophers_stone": {
-      "width": 14.36,
-      "height": 9.54,
+      "width": 24.77,
+      "height": 12.01,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "nook_radio": {
       "width": 59.27,
@@ -1545,22 +1545,22 @@
       "construction": "instrument-v1"
     },
     "breadcrumbs": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 15.15,
+      "height": 8.75,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "bread": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 21.66,
+      "height": 11.95,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "seeds": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 17.93,
+      "height": 9.36,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "lettuce": {
       "width": 35.11,
@@ -1569,22 +1569,22 @@
       "construction": "botanical-v1"
     },
     "worm": {
-      "width": 20.13,
-      "height": 6.84,
+      "width": 17.93,
+      "height": 9.36,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "fancy_bread": {
-      "width": 21.3,
-      "height": 8.19,
+      "width": 21.72,
+      "height": 12.27,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "golden_crumb": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 15.02,
+      "height": 8.1,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "rubber_duck": {
       "width": 22.25,
@@ -1611,10 +1611,10 @@
       "construction": "botanical-v1"
     },
     "shiny_pebble": {
-      "width": 16.71,
-      "height": 7.74,
+      "width": 13.51,
+      "height": 6.55,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "lucky_clover": {
       "width": 33.98,
@@ -1641,10 +1641,10 @@
       "construction": "botanical-v1"
     },
     "oats": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 15.11,
+      "height": 8.53,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "fish_treat": {
       "width": 19.5,
@@ -1653,16 +1653,16 @@
       "construction": "legacy-detail"
     },
     "mysterious_crumb": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 14.85,
+      "height": 7.23,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "rainbow_crumb": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 14.98,
+      "height": 7.88,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "squeaky_toy": {
       "width": 19.85,
@@ -1689,16 +1689,16 @@
       "construction": "playkit-v1"
     },
     "seashell": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 18.87,
+      "height": 8.91,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "cool_stick": {
-      "width": 11.12,
-      "height": 9.09,
+      "width": 18.92,
+      "height": 9.17,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "bottle_cap": {
       "width": 17.61,
@@ -1707,10 +1707,10 @@
       "construction": "legacy-detail"
     },
     "glitter_rock": {
-      "width": 14.36,
-      "height": 9.54,
+      "width": 18.97,
+      "height": 9.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "tiny_crown": {
       "width": 15.45,
@@ -1731,10 +1731,10 @@
       "construction": "legacy-detail"
     },
     "ancient_bread": {
-      "width": 21.3,
-      "height": 8.19,
+      "width": 21.66,
+      "height": 11.95,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "duck_photo": {
       "width": 39.3,
@@ -1743,10 +1743,10 @@
       "construction": "keepsake-v1"
     },
     "void_crumb": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 15.07,
+      "height": 8.32,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "best_friend_badge": {
       "width": 14.72,
@@ -1761,16 +1761,16 @@
       "construction": "legacy-detail"
     },
     "berry_salad": {
-      "width": 15.36,
-      "height": 7.74,
+      "width": 21.72,
+      "height": 12.27,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "honey_bread": {
-      "width": 21.3,
-      "height": 8.19,
+      "width": 21.72,
+      "height": 12.27,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "crystal_lamp": {
       "width": 57.87,
@@ -1833,10 +1833,10 @@
       "construction": "legacy-detail"
     },
     "shiny_object": {
-      "width": 16.71,
-      "height": 7.74,
+      "width": 13.51,
+      "height": 6.55,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "water_token": {
       "width": 13.37,
@@ -1929,10 +1929,10 @@
       "construction": "legacy-detail"
     },
     "digging_stick": {
-      "width": 11.12,
-      "height": 9.09,
+      "width": 18.87,
+      "height": 8.91,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "basic_nest": {
       "width": 48.5,
@@ -2091,16 +2091,16 @@
       "construction": "botanical-v1"
     },
     "twig": {
-      "width": 11.12,
-      "height": 9.09,
+      "width": 18.92,
+      "height": 9.17,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "bark": {
-      "width": 11.12,
-      "height": 9.09,
+      "width": 18.92,
+      "height": 9.17,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "acorn": {
       "width": 11.85,
@@ -2115,82 +2115,82 @@
       "construction": "legacy-detail"
     },
     "driftwood": {
-      "width": 11.12,
-      "height": 9.09,
+      "width": 18.87,
+      "height": 8.91,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "driftwood_large": {
-      "width": 11.12,
-      "height": 9.09,
+      "width": 24.84,
+      "height": 12.35,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "pebble": {
-      "width": 16.71,
-      "height": 7.74,
+      "width": 13.48,
+      "height": 6.37,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "smooth_stone": {
-      "width": 16.71,
-      "height": 7.74,
+      "width": 18.97,
+      "height": 9.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "rock": {
-      "width": 16.71,
-      "height": 7.74,
+      "width": 18.92,
+      "height": 9.17,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "crystal": {
-      "width": 14.36,
-      "height": 9.54,
+      "width": 18.97,
+      "height": 9.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "iron_ore": {
-      "width": 16.71,
-      "height": 7.74,
+      "width": 18.92,
+      "height": 9.17,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "clay": {
-      "width": 16.71,
-      "height": 7.74,
+      "width": 18.97,
+      "height": 9.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "pond_clay": {
-      "width": 16.71,
-      "height": 7.74,
+      "width": 18.97,
+      "height": 9.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "sand": {
-      "width": 16.71,
-      "height": 7.74,
+      "width": 18.92,
+      "height": 9.17,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "shell": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 18.92,
+      "height": 9.17,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "sea_shell": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 18.97,
+      "height": 9.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "sea_glass": {
-      "width": 14.36,
-      "height": 9.54,
+      "width": 13.51,
+      "height": 6.55,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "seaweed": {
       "width": 49.2,
@@ -2199,16 +2199,16 @@
       "construction": "botanical-v1"
     },
     "river_pearl": {
-      "width": 18.15,
-      "height": 8.19,
+      "width": 13.55,
+      "height": 6.74,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "sand_dollar": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 13.55,
+      "height": 6.74,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "reed": {
       "width": 45.25,
@@ -2241,16 +2241,16 @@
       "construction": "botanical-v1"
     },
     "seed": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.07,
+      "height": 10.09,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "vegetable_seed": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.02,
+      "height": 9.85,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "small_fish": {
       "width": 19.5,
@@ -2259,22 +2259,22 @@
       "construction": "legacy-detail"
     },
     "bread_crumb": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 14.94,
+      "height": 7.66,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "honeycomb": {
-      "width": 12.3,
-      "height": 8.19,
+      "width": 21.72,
+      "height": 12.27,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "sunflower_seeds": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.02,
+      "height": 9.85,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "tulip_bulb": {
       "width": 35.23,
@@ -2289,34 +2289,34 @@
       "construction": "botanical-v1"
     },
     "carrot": {
-      "width": 10.67,
-      "height": 9.09,
+      "width": 21.72,
+      "height": 12.27,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "tomato": {
-      "width": 14.55,
-      "height": 8.19,
+      "width": 21.72,
+      "height": 12.27,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "pumpkin": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 21.72,
+      "height": 12.27,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "strawberry": {
-      "width": 11.85,
-      "height": 8.19,
+      "width": 21.72,
+      "height": 12.27,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "watermelon": {
-      "width": 17.43,
-      "height": 6.84,
+      "width": 21.66,
+      "height": 11.95,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "mint_leaves": {
       "width": 39.37,
@@ -2331,10 +2331,10 @@
       "construction": "botanical-v1"
     },
     "crystal_shard": {
-      "width": 14.36,
-      "height": 9.54,
+      "width": 13.55,
+      "height": 6.74,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "butterfly_wing": {
       "width": 15.9,
@@ -2349,16 +2349,16 @@
       "construction": "botanical-v1"
     },
     "juicy_worm": {
-      "width": 20.13,
-      "height": 6.84,
+      "width": 17.98,
+      "height": 9.6,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "giant_worm": {
-      "width": 20.13,
-      "height": 6.84,
+      "width": 24.03,
+      "height": 13.13,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "rainbow_feather": {
       "width": 10.76,
@@ -2367,10 +2367,10 @@
       "construction": "legacy-detail"
     },
     "crystal_icicle": {
-      "width": 14.36,
-      "height": 9.54,
+      "width": 19.02,
+      "height": 9.69,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "frozen_dewdrop": {
       "width": 15.62,
@@ -2397,10 +2397,10 @@
       "construction": "botanical-v1"
     },
     "mist_crystal": {
-      "width": 14.36,
-      "height": 9.54,
+      "width": 18.97,
+      "height": 9.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "fog_essence": {
       "width": 21.03,
@@ -2475,10 +2475,10 @@
       "construction": "botanical-v1"
     },
     "fresh_apple": {
-      "width": 14.55,
-      "height": 8.19,
+      "width": 21.72,
+      "height": 12.27,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "autumn_leaf": {
       "width": 43.32,
@@ -2487,10 +2487,10 @@
       "construction": "botanical-v1"
     },
     "homemade_pie": {
-      "width": 18.06,
-      "height": 7.74,
+      "width": 21.72,
+      "height": 12.27,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "snowball": {
       "width": 36.01,
@@ -2499,10 +2499,10 @@
       "construction": "playground-v1"
     },
     "ice_crystal": {
-      "width": 14.36,
-      "height": 9.54,
+      "width": 18.97,
+      "height": 9.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "warmth": {
       "width": 13.37,
@@ -2523,10 +2523,10 @@
       "construction": "keepsake-v1"
     },
     "heart_cookie": {
-      "width": 16.71,
-      "height": 7.74,
+      "width": 21.72,
+      "height": 12.27,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "splash_trophy": {
       "width": 15.71,
@@ -2655,10 +2655,10 @@
       "construction": "legacy-detail"
     },
     "welcome_bread": {
-      "width": 21.3,
-      "height": 8.19,
+      "width": 21.53,
+      "height": 11.33,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "duck_toy": {
       "width": 24.79,
@@ -2673,10 +2673,10 @@
       "construction": "legacy-detail"
     },
     "better_bait": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.02,
+      "height": 9.85,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "master_fishing_rod": {
       "width": 15.62,
@@ -2697,16 +2697,16 @@
       "construction": "botanical-v1"
     },
     "enchanted_seeds": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.07,
+      "height": 10.09,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "rare_treat": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 15.07,
+      "height": 8.32,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "food-v1"
     },
     "weekly_chest": {
       "width": 49.61,
@@ -2835,70 +2835,70 @@
       "construction": "botanical-v1"
     },
     "crystal_plant": {
-      "width": 14.36,
-      "height": 9.54,
+      "width": 24.77,
+      "height": 12.01,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "tulip_seeds": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.12,
+      "height": 10.34,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "rose_seeds": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.12,
+      "height": 10.34,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "carrot_seeds": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.12,
+      "height": 10.34,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "tomato_seeds": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.12,
+      "height": 10.34,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "pumpkin_seeds": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.02,
+      "height": 9.85,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "strawberry_seeds": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.12,
+      "height": 10.34,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "watermelon_seeds": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.02,
+      "height": 9.85,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "mint_seeds": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.12,
+      "height": 10.34,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "golden_seeds": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.17,
+      "height": 10.58,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "crystal_seeds": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.02,
+      "height": 9.85,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "seed-v1"
     },
     "portrait_cheese": {
       "width": 23.09,
@@ -3183,10 +3183,10 @@
       "construction": "legacy-detail"
     },
     "pretty_shell": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 18.92,
+      "height": 9.17,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "ancient_feather": {
       "width": 10.76,
@@ -3201,16 +3201,16 @@
       "construction": "legacy-detail"
     },
     "fossil": {
-      "width": 17.61,
-      "height": 7.74,
+      "width": 18.97,
+      "height": 9.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "ruby_gem": {
-      "width": 14.36,
-      "height": 9.54,
+      "width": 18.97,
+      "height": 9.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "golden_acorn": {
       "width": 11.85,
@@ -3237,10 +3237,10 @@
       "construction": "legacy-detail"
     },
     "star_fragment": {
-      "width": 14.36,
-      "height": 9.54,
+      "width": 18.97,
+      "height": 9.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "specimen-v1"
     },
     "ancient_tome": {
       "width": 50,

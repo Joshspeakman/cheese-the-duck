@@ -1,3 +1,6 @@
+import {seedSprite,SEED_BLUEPRINTS} from './seed-workshop.mjs';
+import {foodSprite,FOOD_BLUEPRINTS} from './food-workshop.mjs';
+import {specimenSprite,SPECIMEN_BLUEPRINTS} from './specimen-workshop.mjs';
 import {playkitSprite,PLAYKIT_BLUEPRINTS} from './playkit-workshop.mjs';
 import {headwearSprite,HEADWEAR_BLUEPRINTS} from './headwear-workshop.mjs';
 import {accessorySprite,ACCESSORY_BLUEPRINTS} from './accessory-workshop.mjs';
@@ -122,9 +125,15 @@ export function itemSprite(id,time=0,{motion=true,originalArt=null,state={},inte
   if(ACCESSORY_BLUEPRINTS[id])return accessorySprite(enriched,item||{id},t,options);
   if(GARMENT_BLUEPRINTS[id])return garmentSprite(enriched,item||{id},t,options);
   if(FOOTWEAR_BLUEPRINTS[id])return footwearSprite(enriched,item||{id},t,options);
+  if(SEED_BLUEPRINTS[id])return seedSprite(enriched,item||{id},t,options);
+  if(FOOD_BLUEPRINTS[id])return foodSprite(enriched,item||{id},t,options);
+  if(SPECIMEN_BLUEPRINTS[id])return specimenSprite(enriched,item||{id},t,options);
   return excursionSprite(enriched,item||{id},t,options)||playkitSprite(enriched,item||{id},t,options)||architectureSprite(enriched,item||{id},t,options)||groundSprite(enriched,item||{id},t,options)||textileSprite(enriched,item||{id},t,options)||creativeSprite(enriched,item||{id},t,options)||keepsakeSprite(enriched,item||{id},t,options)||lightingSprite(enriched,item||{id},t,options)||instrumentSprite(enriched,item||{id},t,options)||homeSprite(enriched,item||{id},t,options)||playgroundSprite(enriched,item||{id},t,options)||waterworksSprite(enriched,item||{id},t,options)||furnitureSprite(enriched,item||{id},t,options)||botanicalSprite(enriched,item||{id},t,options)||detailItem(base,item,family,t,{motion,state,interaction});
 }
 export function itemWorldScale(id){
+  if(SEED_BLUEPRINTS[id])return SEED_BLUEPRINTS[id].scale;
+  if(FOOD_BLUEPRINTS[id])return FOOD_BLUEPRINTS[id].scale;
+  if(SPECIMEN_BLUEPRINTS[id])return SPECIMEN_BLUEPRINTS[id].worldScale;
   if(FOOTWEAR_BLUEPRINTS[id])return FOOTWEAR_BLUEPRINTS[id].scale;
   if(GARMENT_BLUEPRINTS[id])return GARMENT_BLUEPRINTS[id].scale;
   if(HEADWEAR_BLUEPRINTS[id])return HEADWEAR_BLUEPRINTS[id].scale;
