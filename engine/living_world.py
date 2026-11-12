@@ -414,12 +414,15 @@ class LivingPond:
                 if not offline:self.minds.promise(promise['friend'], False)
                 self.remember('promise', f"The promised {promise['activity']} had to be postponed. You can make it up to your friend.", .8)
 
-    def available(self):
+    def scene_available(self):
         g = self.game
-        return bool(g and g.duck and g.duck.growth_stage != 'egg' and g._state == 'playing'
+        return bool(g and g.duck and g._state == 'playing'
             and not g._active_minigame and not g._duck_traveling and not g._duck_exploring
             and not g._duck_building and not g._dream_active and not g._cheese_away
             and not g.renderer._show_talk and not g.interaction_controller.is_interacting())
+
+    def available(self):
+        return bool(self.game and self.game.duck and self.game.duck.growth_stage != 'egg' and self.scene_available())
 
     def start(self, kind, target='', automatic=False, instance=None, carnival_choice=None, shared_proposal=None):
         s = self.state
@@ -687,6 +690,9 @@ class LivingPond:
         s = self.state; plan = s['plan']; g = self.game
         if not plan or not g:
             return
+        if carnival.is_egg_caregiver(plan):
+            carnival.shared_controller(plan).tick(self,dt)
+            return
         work=plan.get('carnival_work')
         if carnival.is_shared(plan):
             controller=carnival.shared_controller(plan)
@@ -852,13 +858,16 @@ class LivingPond:
 
     def _complete(self, plan):
         s = self.state; kind = plan['kind']; target = plan['target']; g = self.game
+        if carnival.is_egg_caregiver(plan):
+            carnival.shared_controller(plan).complete(self,plan)
+            return
         shared_control=carnival.is_shared(plan)
         if 'carnival_work' in plan and not carnival.completion_ready(self,plan):
             # A stale/unfinished callback must not fall through to generic item
             # uses, needs, learning or bond rewards. Release only this attempt.
             work=plan.get('carnival_work')
             for key,reservation in list(self.minds.carnival_guests.items()):
-                if reservation.get('work') is work:carnival.release(self.minds,key)
+                if not isinstance(reservation,dict) or reservation.get('work') is work:carnival.release(self.minds,key)
             if not isinstance(work,dict) or not work.get('recorded'):
                 if (self.state.get('plan') is None or self.state.get('plan') is plan) and carnival.valid(self,plan):
                     castle_work.clear(self,plan)
@@ -1142,8 +1151,12 @@ class LivingPond:
                 self._cache=None;return self.notice(msg)
         if action=='cancel':return self.notice(self.cancel())
         if action=='resume':
-            if s['plan'] and self.available() and s['plan']['location']==self.location:
+            can_resume=carnival.shared_controller(s['plan']).available(self) if carnival.is_egg_caregiver(s['plan']) else self.available()
+            if s['plan'] and can_resume and s['plan']['location']==self.location:
                 s['plan']['paused']=False;self._last_plan_visual=None
+                if carnival.is_egg_caregiver(s['plan']):
+                    carnival.shared_controller(s['plan']).refresh(self)
+                    return self.notice('The caregiver can continue. Cheese stays in place.')
                 if s['plan'].get('portable'):portable_ground.walk_back(self,s['plan'])
                 if s['plan'].get('residence'):
                     # An interrupted resident may now be elsewhere. Keep the

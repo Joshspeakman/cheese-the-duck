@@ -182,7 +182,7 @@ const p=itemProfile(item,itemFamily(id));
        parent=groups[category];
       }
       const button=this.button(label,'carnival_action',id,busy||!outside,{instance,text:choice});button.dataset.carnivalChoice=choice;if(score)button.title=score.note;parent.append(button);
-      if(['castle_start','castle_door_open','castle_hose_stow'].includes(choice)){const together=this.button('With a friend','carnival_action',id,busy||!outside,{instance,text:choice,together:true});together.dataset.carnivalTogether=choice;together.title='Share this activity with a nearby visitor.';parent.append(together);}
+      if(['castle_start','castle_door_open','castle_hose_stow'].includes(choice)){const egg=this.frame.scene.duck.stage==='egg',together=this.button(egg?'Ask a caregiver':'With a friend','carnival_action',id,busy||!outside,{instance,text:choice,together:true});together.dataset.carnivalTogether=choice;together.title=egg?'A nearby visitor handles the controls while Cheese stays safely in place.':'Share this activity with a nearby visitor.';parent.append(together);}
      }
     }
     if(id==='bounce_house'&&state.castle){detail.dataset.castleInstance=instance||'';const summary=el('p',castleSummary(state));summary.dataset.castleSummary='';detail.insertBefore(summary,detail.querySelector('details')||detail.querySelector('[data-carnival-choice]'));}

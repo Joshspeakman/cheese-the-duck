@@ -5584,7 +5584,7 @@
       "observationOnly": 1,
       "source": "engine/scripts/review-guest-control-capabilities.mjs",
       "runtimeAcceptance": false,
-      "remaining": "47 unique profiles now have three adopted shared operator controls. Flutter, stationary egg scenes, full contextual bindings and complete object repertoires remain unfinished."
+      "remaining": "47 capable profiles now have three adopted control roles, plus Flutter flight observation and stationary egg caregiving under explicit bounded conditions. Additional occupants, guest-to-guest roles and full contextual/object repertoires remain unfinished."
     },
     "nativeSharedCastle": {
       "status": "regular_native_and_rendered_verified",
@@ -5606,8 +5606,7 @@
       "uiChecks": 7,
       "rendererSuiteTests": 269,
       "remaining": [
-        "Flutter flight observer",
-        "Stationary egg caregiver scene",
+        "Broader flight/outfit and multi-occupant caregiver bindings; bounded Flutter and egg support is recorded in the dedicated checkpoints",
         "Other controls and full individual object repertoires"
       ],
       "fullRepertoiresComplete": false,
@@ -5671,8 +5670,7 @@
       "departure": "Conservative complete-itinerary duration preflight and last-six-seconds refusal; visit time is never extended",
       "hostPublication": "Motion-only refresh before both movement phases revalidates mutations and computes contact readiness from held actual roots and facing without applying effects",
       "remaining": [
-        "Flutter observer role",
-        "Stationary egg caregiver scene",
+        "Broader flight/outfit and multi-occupant caregiver bindings; bounded Flutter and egg support is recorded in the dedicated checkpoints",
         "Full per-object repertoires and contexts",
         "Rare/story Pip memory reconciliation; simultaneous physical presence is now prevented"
       ],
@@ -5722,8 +5720,7 @@
       "refusal": "Grumble9,7 door/hose refuse before any material change; supported9,6 completes. New water beneath a required lowered toe interrupts without a false later event or reward.",
       "review": "engine/artifacts/animation-milestone/castle-shared-species-ages-native-render-review.html",
       "remaining": [
-        "Flutter flight observer",
-        "Stationary egg caregiver owner",
+        "Broader flight/outfit and multi-occupant caregiver bindings; bounded Flutter and egg support is recorded in the dedicated checkpoints",
         "Full per-object and contextual repertoires"
       ],
       "fullRepertoiresComplete": false
@@ -5778,7 +5775,47 @@
         "Other mechanisms and full individual per-object/contextual repertoires"
       ],
       "fullRepertoiresComplete": false,
-      "independentLifecycleChecks": 133
+      "independentLifecycleChecks": 136,
+      "callbackFollowup": "Direct malformed-lease completion callbacks remove invalid reservations without stopping independent replacement movement or granting rewards."
+    },
+    "nativeEggCaregiver": {
+      "status": "native_rendered_and_lifecycle_verified",
+      "caregiverProfiles": 47,
+      "adapterBindings": 48,
+      "controls": [
+        "castle_start",
+        "castle_door_open",
+        "castle_hose_stow"
+      ],
+      "adapterScoreBindings": 144,
+      "recipient": "Original stationary egg, with no invented limbs, facing changes, travel, speech, observation learning or generic item rewards",
+      "frozenAnimatorChecks": 30,
+      "representativeNativeChecks": 60,
+      "representativeNativeFrames": 15,
+      "nativeChecks": 2880,
+      "nativeFrames": 720,
+      "independentLifecycleChecks": 144,
+      "renderedCases": 8640,
+      "renderedRoots": 17280,
+      "renderedContacts": 5184,
+      "unchangedEggChecks": 8640,
+      "fullRendererSuiteTests": 290,
+      "regularLifecycleRegressionChecks": 63,
+      "specialLifecycleRegressionChecks": 85,
+      "speciesLifecycleRegressionChecks": 63,
+      "geometry": "Measured full shell/idle envelope and actual shell-base support; separate full-art caregiver envelopes for 47 profiles. Existing native control clock shared without adding a second movement writer or material clock.",
+      "ownership": "Exact egg identity/age/root/facing, actual caregiver token, physical copy and full route lease; standard rounded object destination is separate from unrounded contact center. Egg never enters the walking observer adapter.",
+      "learning": "Only caregiver practice/share and object caregiving ledger after actual exit. Entire egg resident, needs, skills, preferences, memory, habits and generic item uses remain unaffected by completion.",
+      "lifecycle": "Pre-movement age freeze, hatching interruption, paused movement, blocked contacts, malformed and premature callbacks, exactly-once completion and fresh-game/new-animator save reload verified.",
+      "brainStatus": "Real MindGarden tick publishes the actual control/caregiver role and phase, preserving legacy ride status semantics.",
+      "sourceSha256": "7b393d3a6208cc453cdff358d4c425630f26d467034387538b16f924f9106b95",
+      "review": "engine/artifacts/animation-milestone/egg-caregiver-all-native-render-review.html",
+      "remaining": [
+        "Additional occupants, guest-to-guest work and a third operator when egg and Flutter are both present",
+        "The other 45 bounce-house candidate sequences, contextual bindings and full repertoire evidence",
+        "The wider 609-object overhaul; no sequence-completion credit inferred from these role foundations"
+      ],
+      "fullRepertoiresComplete": false
     }
   },
   "wardrobe": [

@@ -1,6 +1,6 @@
 import {actorPitches} from './actor-projection.mjs';
 import {SURFACE_ROUTINES,surfacePose,surfaceGeometry} from './surface-routines.mjs';
-import {CASTLE_SCORES,castlePose,castleGeometry,sharedCastleRecord,sharedCastleSource} from './castle-care.mjs';
+import {CASTLE_SCORES,castlePose,castleGeometry,sharedCastleRecord,sharedCastleSource,eggCaregiverScene} from './castle-care.mjs';
 import ROUTINES from './animation/carnival-routines.json' with {type:'json'};
 export {ROUTINES as CARNIVAL_ROUTINES};
 const PROGRAMS={...ROUTINES,...SURFACE_ROUTINES,...CASTLE_SCORES};
@@ -32,11 +32,12 @@ export function carnivalPose(work,role='a',motion=true,watch=false){
 }
 export function carnivalOccupants(scene){
  const plan=scene.living?.plan,w=plan?.carnival_work;
- if(w&&(Object.hasOwn(w,'flight_observer')||w.shared?.mode==='flight-observer')&&!sharedCastleRecord(w))return [];
+ if(w&&(Object.hasOwn(w,'flight_observer')||Object.hasOwn(w,'egg_caregiver')||['flight-observer','egg-caregiver'].includes(w.shared?.mode))&&!sharedCastleRecord(w))return [];
  if(!w||w.interrupted||!PROGRAMS[w.id]||!(w.shared_physical?['approach','prepare','act','settle']:['prepare','act','settle']).includes(plan.phase))return [];
  if(w.shared_physical){
   const shared=sharedCastleRecord(w),visitor=sharedCastleSource(scene,shared);
   if(!visitor||scene.location!==(shared.mode==='flight-observer'?shared.observer.location:shared.operator.location)||(scene.duck?.stage==='teen'?'juvenile':scene.duck?.stage)!==shared.source_age)return [];
+  if(shared.mode==='egg-caregiver')return eggCaregiverScene(scene)?[{actor:shared.operator.actor,role:'a',work:w,paused:plan.paused===true}]:[];
   if(shared.mode==='flight-observer')return [{actor:'cheese',role:'a',work:w,paused:plan.paused===true},{actor:shared.observer.actor,role:'b',work:w,watch:true,paused:plan.paused===true}];
   return [{actor:shared.operator.actor,role:'a',work:w,paused:plan.paused===true},{actor:'cheese',role:'b',work:w,watch:true,paused:plan.paused===true}];
  }

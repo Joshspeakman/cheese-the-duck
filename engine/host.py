@@ -313,6 +313,9 @@ class DesktopGame(Game):
 
     def _update(self):
         self._ensure_living_pond()
+        # The base game's slower simulation tick is not a movement boundary:
+        # an egg must already be frozen before any renderer animator advances.
+        if self.duck:self.renderer.duck_pos.frozen=self.duck.growth_stage=='egg'
         self._refresh_shared_motion()
         self._refresh_friend_motion()
         from world.friends import visitor_animator

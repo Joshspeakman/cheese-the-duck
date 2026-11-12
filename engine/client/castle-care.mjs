@@ -11,7 +11,17 @@ export function flightCastleRecord(work){
  const s=work?.shared,p=work?.physical,o=s?.operator,v=s?.observer,a=s?.observer_physical;
  return work?.flight_observer===true&&work.physical_pilot===true&&work.shared_physical===true&&s?.version===1&&s.mode==='flight-observer'&&o?.actor==='cheese'&&o.adapter==='cheese'&&o.source_age===s.source_age&&['hatchling','duckling','juvenile','young_adult','adult','mature','elder','legendary'].includes(s.source_age)&&s.attempt&&v?.actor==='butterfly_fairy'&&v.cast==='butterfly_fairy'&&v.adapter==='rare'&&v.token!=null&&typeof v.motion_token==='string'&&typeof v.location==='string'&&['waiting','operate','exit','done','interrupted'].includes(s.phase)&&p?.version===1&&p.actor==='cheese'&&point(p.root)&&point(p.target)&&CASTLE_GEOMETRY.controls[p.station]&&['approach','hold','exit'].includes(p.phase)&&point(a?.root)&&point(a.stance)&&point(a.exit)&&['approach','hold','exit'].includes(a.phase)?s:null;
 }
+export function eggCaregiverRecord(work){
+ const s=work?.shared,p=work?.physical,o=s?.operator,r=s?.recipient,profile=GUEST_CAST[o?.cast];
+ const adapter=o?.adapter==='regular'?profile?.id.startsWith('friend:')&&!profile.rare&&profile.species==='duck':o?.adapter==='rare'?SHARED_RARE_CASTS.includes(o.cast)&&o.actor===o.cast&&typeof o.motion_token==='string':o?.adapter==='story'?o.cast==='lost_duckling'&&o.actor==='story:pip'&&o.render_id==='story:lost_duckling'&&typeof o.motion_token==='string'&&typeof o.story_step==='string':false;
+ return work?.egg_caregiver===true&&['castle_start','castle_door_open','castle_hose_stow'].includes(work.id)&&work.shared_physical===true&&work.physical_pilot===false&&!Object.hasOwn(work,'flight_observer')&&s?.version===1&&s.mode==='egg-caregiver'&&point(s.destination)&&point(s.center)&&typeof s.instance==='string'&&s.source_age==='egg'&&s.observer===undefined&&s.cheese===undefined&&s.attempt&&adapter&&typeof o.actor==='string'&&o.actor!=='cheese'&&o.token!=null&&typeof o.location==='string'&&['approach','operate','exit','done','interrupted'].includes(s.phase)&&r?.actor==='cheese'&&r.stage==='egg'&&typeof r.token==='string'&&r.token.length>0&&point(r.root)&&typeof r.facing==='boolean'&&r.phase==='stationary'&&p?.version===1&&p.actor===o.actor&&point(p.center)&&p.center.every((v,i)=>v===s.center[i])&&point(p.root)&&point(p.target)&&CASTLE_GEOMETRY.controls[p.station]&&['approach','hold','exit'].includes(p.phase)?s:null;
+}
+export function eggCaregiverScene(scene){
+ const plan=scene.living?.plan,s=eggCaregiverRecord(plan?.carnival_work),d=scene.duck,r=s?.recipient;
+ return s&&plan.kind==='item'&&plan.target==='bounce_house'&&plan.location===scene.location&&d?.stage==='egg'&&d.identity===r.token&&d.facing===r.facing&&d.x===r.root[0]&&d.y===r.root[1]&&scene.location===s.operator.location&&scene.living.plan.instance===s.instance&&point(scene.living.plan.destination)&&scene.living.plan.destination.every((v,i)=>v===s.destination[i])&&sharedCastleSource(scene,s)?s:null;
+}
 export function sharedCastleRecord(work){
+ if((work&&Object.hasOwn(work,'egg_caregiver'))||work?.shared?.mode==='egg-caregiver')return eggCaregiverRecord(work);
  if((work&&Object.hasOwn(work,'flight_observer'))||work?.shared?.mode==='flight-observer')return flightCastleRecord(work);
  const s=work?.shared,p=work?.physical,o=s?.operator,profile=GUEST_CAST[o?.cast];
  const adapter=o?.adapter==='regular'?profile?.id.startsWith('friend:')&&!profile.rare&&profile.species==='duck':o?.adapter==='rare'?SHARED_RARE_CASTS.includes(o.cast)&&o.actor===o.cast&&typeof o.motion_token==='string':o?.adapter==='story'?o.cast==='lost_duckling'&&o.actor==='story:pip'&&o.render_id==='story:lost_duckling'&&typeof o.motion_token==='string'&&typeof o.story_step==='string':false;
@@ -30,7 +40,7 @@ export function sharedCastleSource(scene,shared){
 }
 export function castleActorPhysical(work,role='a'){
  const shared=sharedCastleRecord(work);
- if(work?.shared_physical)return shared?(role==='a'?work.physical:shared.mode==='flight-observer'?shared.observer_physical:shared.cheese):null;
+ if(work?.shared_physical)return shared?(role==='a'?work.physical:shared.mode==='egg-caregiver'?null:shared.mode==='flight-observer'?shared.observer_physical:shared.cheese):null;
  const p=work?.physical;
  return role==='a'&&p?.version===1&&p.actor==='cheese'&&point(p.root)&&point(p.target)?p:null;
 }
@@ -58,7 +68,7 @@ export function castlePose(work,role='a',motion=true,watch=false){
  if(where.travel<1)p={...N,l:Math.max(0,Math.sin(work.ride_elapsed*8)),r:Math.max(0,-Math.sin(work.ride_elapsed*8))};
  if(work.stage!=='service')p={...N,l:work.stage==='service_exit'?Math.max(0,Math.sin(work.clock*8)):0,r:work.stage==='service_exit'?Math.max(0,-Math.sin(work.clock*8)):0};
  if(watch&&work.shared_physical){
-  const shared=sharedCastleRecord(work),react=shared?.phase==='operate'&&(shared.mode==='flight-observer'?shared.observer_physical:shared.cheese).ready===true&&(work.events||[]).some(i=>spec.effects[i]&&work.ride_elapsed-spec.effects[i][0]*spec.duration>=0&&work.ride_elapsed-spec.effects[i][0]*spec.duration<1.5);
+  const shared=sharedCastleRecord(work),react=shared?.mode!=='egg-caregiver'&&shared?.phase==='operate'&&(shared.mode==='flight-observer'?shared.observer_physical:shared.cheese).ready===true&&(work.events||[]).some(i=>spec.effects[i]&&work.ride_elapsed-spec.effects[i][0]*spec.duration>=0&&work.ride_elapsed-spec.effects[i][0]*spec.duration<1.5);
   p={...N,y:react?-.4:0,w:react&&shared?.mode==='flight-observer'?.4:0,eye:react?'^':'O',mark:react&&shared?.mode!=='flight-observer'?'!':''};
  }
  if(!motion){p.x=p.y=p.l=p.r=p.w=p.gape=0;p.mark='';}
@@ -84,7 +94,7 @@ export function castleGeometry(home,member,sx,sy){
  if(!pilot&&!physical&&c.rig?.species==='butterfly')character.y-=5*ch/sy*inside;
  const grip=c.grip||rest,hand={x:character.x*sx+(grip.x+.5-c.anchorX)*cw,y:character.y*sy+(grip.y+.5-c.groundRow)*ch},points=[];let tip=null;
  const reachable=!member.watch&&(!pilot||Boolean(physical))&&(!physical||Math.hypot((target.x-hand.x)/cw,(target.y-hand.y)/ch)<=3+1e-9);
- const sharedContact=!w.shared_physical||!member.paused&&shared?.phase==='operate'&&(shared.mode==='flight-observer'?shared.observer_physical:shared.cheese).ready===true&&(shared.mode==='flight-observer'?shared.observer_physical:shared.cheese).phase==='hold';
+ const sharedContact=!w.shared_physical||!member.paused&&shared?.phase==='operate'&&(shared.mode==='egg-caregiver'||(shared.mode==='flight-observer'?shared.observer_physical:shared.cheese).ready===true&&(shared.mode==='flight-observer'?shared.observer_physical:shared.cheese).phase==='hold');
  if(sharedContact&&pose.contact>.01&&inside>.01&&!member.watch&&c.rig?.species!=='butterfly'&&(!physical||physical.contact_ready===true)&&reachable){
   const u=pose.contact*inside;tip={x:hand.x+(target.x-hand.x)*u,y:hand.y+(target.y-hand.y)*u};
   const dx=tip.x-hand.x,dy=tip.y-hand.y,n=Math.max(1,Math.ceil(Math.max(Math.abs(dx)/cw,Math.abs(dy)/ch))),glyph=Math.abs(dx)>Math.abs(dy)*2?'-':Math.abs(dy)>Math.abs(dx)*2?'|':dx*dy>0?'\\':'/';

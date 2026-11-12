@@ -20,7 +20,12 @@ def is_shared(plan):
     if not isinstance(plan,dict) or not isinstance(plan.get('carnival_work'),dict):return False
     work=plan['carnival_work']
     # Route damaged shared saves to strict validation, never to legacy movement.
-    return 'shared_physical' in work or 'shared' in work or 'flight_observer' in work
+    return 'shared_physical' in work or 'shared' in work or 'flight_observer' in work or 'egg_caregiver' in work
+
+def is_egg_caregiver(plan):
+    if not isinstance(plan,dict) or not isinstance(plan.get('carnival_work'),dict):return False
+    work=plan['carnival_work'];shared=work.get('shared')
+    return 'egg_caregiver' in work or isinstance(shared,dict) and (shared.get('mode')=='egg-caregiver' or 'recipient' in shared)
 
 def is_flight(plan):
     if not isinstance(plan,dict) or not isinstance(plan.get('carnival_work'),dict):return False
@@ -29,6 +34,9 @@ def is_flight(plan):
 
 
 def shared_controller(plan):
+    if is_egg_caregiver(plan):
+        from engine import egg_caregiver
+        return egg_caregiver
     if is_flight(plan):
         from engine import castle_flight
         return castle_flight
@@ -38,6 +46,25 @@ def shared_controller(plan):
 
 def active(minds,key='cheese'):
     return next(iter(minds.carnival_guests.values()),None) if key=='cheese' else minds.carnival_guests.get(key)
+
+def guest_activity(reservation):
+    """Describe the live role, rather than interpreting every lease as a ride."""
+    if not isinstance(reservation,dict):return 'waiting'
+    work=reservation.get('work')
+    if not isinstance(work,dict):return 'waiting'
+    if reservation.get('shared'):
+        shared=work.get('shared',{})
+        flight=work.get('flight_observer') is True
+        physical=shared.get('observer_physical',{}) if flight and isinstance(shared,dict) else work.get('physical',{})
+        phase=physical.get('phase') if isinstance(physical,dict) else None
+        if phase=='approach':return 'flying over to watch' if flight else 'walking to the controls'
+        if phase=='exit':return 'flying away from the activity' if flight else 'leaving the controls'
+        if phase=='hold':
+            if flight:return 'watching Cheese at the controls'
+            if work.get('egg_caregiver') is True:return 'tending the castle beside the resting egg'
+            return work.get('label','working at the controls')
+        return 'waiting beside the castle'
+    return 'walking to the boarding platform' if reservation.get('phase')=='approach' else 'watching from the platform' if reservation.get('mode')=='watch' else work.get('label','using the ride')
 
 def blocked(pond):
     return excursions.adverse(pond.weather_type) or finite(pond.state.get('ecology',{}).get('wind'))>=.8
@@ -76,7 +103,8 @@ def valid(pond,plan):
 def owns(pond,item,obj):
     plan=pond.state.get('plan')
     if not (plan and plan.get('carnival_work') and plan.get('target')==item and pond.object_state(item,plan) is obj):return False
-    return 'hold' if plan.get('paused') or plan['phase']!='act' or not pond.available() or pond.game.duck.current_action in ('feed','play','clean','pet','sleep') else 'service' if plan['carnival_work'].get('castle_care') else 'active'
+    available=shared_controller(plan).available(pond) if is_egg_caregiver(plan) else pond.available()
+    return 'hold' if plan.get('paused') or plan['phase']!='act' or not available or pond.game.duck.current_action in ('feed','play','clean','pet','sleep') else 'service' if plan['carnival_work'].get('castle_care') else 'active'
 
 def release(minds,key):
     r=minds.carnival_guests.pop(key,None)
@@ -306,6 +334,7 @@ def motion(minds,key):
 
 def conversation(pond,plan,key='cheese'):
     if not plan or not plan.get('carnival_work') or not valid(pond,plan):return None
+    if is_egg_caregiver(plan):return shared_controller(plan).conversation(pond,plan,key)
     if is_shared(plan):
         controller=shared_controller(plan)
         if not controller.validate(pond,plan):return None
@@ -338,6 +367,9 @@ def conversation(pond,plan,key='cheese'):
 
 def request(pond,item,choice,instance=None,together=False):
     if item not in ALL_ITEMS or not isinstance(choice,str) or choice not in PROGRAMS or PROGRAMS[choice]['item']!=item:return False,'Choose an activity for this ride.'
+    if together and pond.game.duck.growth_stage=='egg':
+        from engine import egg_caregiver
+        return egg_caregiver.start(pond,choice,instance)
     proposal=None
     if together:
         if choice not in castle_work.PHYSICAL_SCORES:return False,'Choose one of the shared control activities.'

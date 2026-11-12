@@ -1,0 +1,1125 @@
+{
+  "events": [],
+  "rareVisitor": null,
+  "storyActor": null,
+  "living": {
+    "layout": {
+      "width": 20,
+      "height": 12,
+      "revision": "c1d73a3fe07ba763",
+      "items": [
+        {
+          "id": "bounce_house",
+          "placed": true,
+          "footprint": {
+            "width": 86.61,
+            "height": 62.69,
+            "floor": false,
+            "construction": "excursion-v1"
+          }
+        },
+        {
+          "id": "garden_plot",
+          "footprint": {
+            "width": 90.11,
+            "height": 47.33,
+            "floor": false,
+            "construction": "botanical-v1"
+          }
+        }
+      ],
+      "copies": [
+        {
+          "id": "bounce_house",
+          "instance": "4d09422d63184a90ad88d27cffb118b3",
+          "placed": true
+        },
+        {
+          "id": "garden_plot",
+          "instance": "garden:0",
+          "placed": true,
+          "footprint": {
+            "width": 18,
+            "height": 14,
+            "floor": false,
+            "construction": "botanical-v1"
+          },
+          "role": "garden",
+          "scale": 0.19975585395627565,
+          "label": "Garden bed 1"
+        },
+        {
+          "id": "garden_plot",
+          "instance": "garden:1",
+          "placed": true,
+          "footprint": {
+            "width": 18,
+            "height": 14,
+            "floor": false,
+            "construction": "botanical-v1"
+          },
+          "role": "garden",
+          "scale": 0.19975585395627565,
+          "label": "Garden bed 2"
+        }
+      ],
+      "placed": [
+        {
+          "id": "bounce_house",
+          "instance": "4d09422d63184a90ad88d27cffb118b3",
+          "x": 9.0,
+          "y": 6.25,
+          "box": {
+            "x": 4.2390625,
+            "y": -9.755957446808509,
+            "w": 9.521875,
+            "h": 16.655957446808507,
+            "floor": false,
+            "ground": {
+              "x": 4.2390625,
+              "y": 4.45,
+              "w": 9.521875,
+              "h": 2.15,
+              "floor": false
+            }
+          }
+        },
+        {
+          "id": "garden_plot",
+          "instance": "garden:0",
+          "x": 4.0,
+          "y": 4.0,
+          "box": {
+            "x": 2.8125,
+            "y": 0.4255319148936172,
+            "w": 2.375,
+            "h": 4.224468085106383,
+            "floor": false,
+            "ground": {
+              "x": 2.8125,
+              "y": 3.356595744680851,
+              "w": 2.375,
+              "h": 0.9934042553191489,
+              "floor": false
+            }
+          }
+        },
+        {
+          "id": "garden_plot",
+          "instance": "garden:1",
+          "x": 8.0,
+          "y": 3.0,
+          "box": {
+            "x": 6.8125,
+            "y": -0.5744680851063828,
+            "w": 2.375,
+            "h": 4.224468085106383,
+            "floor": false,
+            "ground": {
+              "x": 6.8125,
+              "y": 2.356595744680851,
+              "w": 2.375,
+              "h": 0.9934042553191489,
+              "floor": false
+            }
+          }
+        }
+      ],
+      "scenery": [
+        {
+          "id": "west_willow",
+          "name": "Willow roots",
+          "box": {
+            "x": -1.0458333333333332,
+            "y": 4.967021276595744,
+            "w": 2.3,
+            "h": 1.3,
+            "floor": false
+          }
+        },
+        {
+          "id": "east_willow",
+          "name": "Willow roots",
+          "box": {
+            "x": 18.95416666666667,
+            "y": 3.9457446808510643,
+            "w": 2.3,
+            "h": 1.3,
+            "floor": false
+          }
+        },
+        {
+          "id": "pond_dock",
+          "name": "Pond dock",
+          "box": {
+            "x": 14.716666666666669,
+            "y": 7.754162277233443,
+            "w": 3.9,
+            "h": 2.1,
+            "floor": false
+          }
+        }
+      ],
+      "obstacles": [],
+      "reply": null
+    },
+    "garden": [
+      {
+        "id": 0,
+        "plant": null,
+        "stage": "empty",
+        "water": 0,
+        "health": 1,
+        "soil": 1.0
+      },
+      {
+        "id": 1,
+        "plant": null,
+        "stage": "empty",
+        "water": 0,
+        "health": 1,
+        "soil": 1.0
+      }
+    ],
+    "installations": [
+      {
+        "id": "garden_plot",
+        "instance": "garden:0",
+        "x": 26.4,
+        "y": 14.0,
+        "scale": 0.19975585395627565,
+        "role": "garden",
+        "footprint": {
+          "width": 18,
+          "height": 14,
+          "floor": false,
+          "construction": "botanical-v1"
+        }
+      },
+      {
+        "id": "garden_plot",
+        "instance": "garden:1",
+        "x": 52.8,
+        "y": 10.5,
+        "scale": 0.19975585395627565,
+        "role": "garden",
+        "footprint": {
+          "width": 18,
+          "height": 14,
+          "floor": false,
+          "construction": "botanical-v1"
+        }
+      }
+    ],
+    "seeds": {
+      "sunflower_seeds": 3,
+      "carrot_seeds": 3
+    },
+    "community": {
+      "warmth": 0.2,
+      "gatherings": 0
+    },
+    "minds": {
+      "residents": [
+        {
+          "id": "cheese",
+          "name": "Cheese",
+          "cast": "",
+          "present": true,
+          "experiences": 0,
+          "traits": [
+            {
+              "name": "curiosity",
+              "value": 0.78,
+              "change": 0.0
+            },
+            {
+              "name": "sociability",
+              "value": 0.54,
+              "change": 0.0
+            },
+            {
+              "name": "confidence",
+              "value": 0.66,
+              "change": 0.0
+            },
+            {
+              "name": "patience",
+              "value": 0.35,
+              "change": 0.0
+            },
+            {
+              "name": "care",
+              "value": 0.4,
+              "change": 0.0
+            }
+          ],
+          "interests": [
+            {
+              "id": "share",
+              "name": "company",
+              "value": 0.6
+            },
+            {
+              "id": "item",
+              "name": "familiar belongings",
+              "value": 0.19
+            },
+            {
+              "id": "rest",
+              "name": "quiet time",
+              "value": 0.15
+            },
+            {
+              "id": "forage",
+              "name": "finding treats",
+              "value": 0.08
+            }
+          ],
+          "goal": {
+            "action": "share",
+            "done": 0,
+            "target": 4,
+            "label": "company"
+          },
+          "changes": [],
+          "memories": [],
+          "facts": [],
+          "relationships": [],
+          "last_action": null,
+          "mood": 0.5
+        },
+        {
+          "id": "friend_0_9968",
+          "name": "Marina",
+          "cast": "friend:marina",
+          "present": false,
+          "experiences": 0,
+          "traits": [
+            {
+              "name": "curiosity",
+              "value": 0.6799999999999999,
+              "change": 0.0
+            },
+            {
+              "name": "sociability",
+              "value": 0.77,
+              "change": 0.0
+            },
+            {
+              "name": "confidence",
+              "value": 0.72,
+              "change": 0.0
+            },
+            {
+              "name": "patience",
+              "value": 0.71,
+              "change": 0.0
+            },
+            {
+              "name": "care",
+              "value": 0.27,
+              "change": 0.0
+            }
+          ],
+          "interests": [
+            {
+              "id": "wander",
+              "name": "exploring",
+              "value": 0.6
+            },
+            {
+              "id": "share",
+              "name": "company",
+              "value": 0.2
+            },
+            {
+              "id": "item",
+              "name": "familiar belongings",
+              "value": 0.17
+            },
+            {
+              "id": "chat",
+              "name": "conversation",
+              "value": 0.16
+            }
+          ],
+          "goal": {
+            "action": "wander",
+            "done": 0,
+            "target": 4,
+            "label": "exploring"
+          },
+          "changes": [],
+          "memories": [],
+          "facts": [],
+          "relationships": [],
+          "last_action": null,
+          "mood": 0.5
+        },
+        {
+          "id": "shared-test:friend:marco",
+          "name": "Marco",
+          "cast": "friend:marco",
+          "present": true,
+          "experiences": 0,
+          "traits": [
+            {
+              "name": "curiosity",
+              "value": 0.79,
+              "change": 0.0
+            },
+            {
+              "name": "sociability",
+              "value": 0.84,
+              "change": 0.0
+            },
+            {
+              "name": "confidence",
+              "value": 0.72,
+              "change": 0.0
+            },
+            {
+              "name": "patience",
+              "value": 0.84,
+              "change": 0.0
+            },
+            {
+              "name": "care",
+              "value": 0.52,
+              "change": 0.0
+            }
+          ],
+          "interests": [
+            {
+              "id": "wander",
+              "name": "exploring",
+              "value": 0.6
+            },
+            {
+              "id": "forage",
+              "name": "finding treats",
+              "value": 0.16
+            },
+            {
+              "id": "practice",
+              "name": "making things & music",
+              "value": 0.16
+            },
+            {
+              "id": "item",
+              "name": "familiar belongings",
+              "value": 0.15
+            }
+          ],
+          "goal": {
+            "action": "wander",
+            "done": 0,
+            "target": 4,
+            "label": "exploring"
+          },
+          "changes": [],
+          "memories": [],
+          "facts": [],
+          "relationships": [],
+          "last_action": null,
+          "mood": 0.5
+        }
+      ],
+      "performances": [],
+      "residences": [],
+      "seats": [],
+      "gardeners": [],
+      "musicians": [],
+      "readers": [],
+      "nest_helpers": [],
+      "creators": [],
+      "textile_helpers": [],
+      "ground_helpers": [],
+      "structure_helpers": [],
+      "playmates": [],
+      "exchanges": [],
+      "voice": {
+        "source": "starting",
+        "detail": "Local voice warms up on this Mac. Personalities and memories are always active."
+      },
+      "pending": null,
+      "feedback": ""
+    },
+    "story": null,
+    "stories": {},
+    "protection": 0.0,
+    "elapsed": 16.399999999999977,
+    "plan": {
+      "kind": "item",
+      "target": "bounce_house",
+      "instance": "4d09422d63184a90ad88d27cffb118b3",
+      "location": "Home Pond",
+      "destination": [
+        59,
+        22
+      ],
+      "phase": "act",
+      "elapsed": 9.360000000000001,
+      "duration": 40,
+      "automatic": false,
+      "paused": false,
+      "carnival_work": {
+        "id": "castle_door_open",
+        "label": "Roll the mesh door into its keeper",
+        "stage": "service",
+        "clock": 10.4,
+        "elapsed": 10.4,
+        "ride_elapsed": 10.4,
+        "done": false,
+        "invitation_checked": true,
+        "castle_care": true,
+        "events": [
+          0
+        ],
+        "fractions": {},
+        "automatic": false,
+        "physical_pilot": false,
+        "source_age": "egg",
+        "egg_caregiver": true,
+        "shared_physical": true,
+        "shared": {
+          "destination": [
+            59,
+            22
+          ],
+          "mode": "egg-caregiver",
+          "score": "castle_door_open",
+          "source_age": "egg",
+          "operator": {
+            "actor": "shared-test:friend:marco",
+            "cast": "friend:marco",
+            "adapter": "regular",
+            "token": "2026-11-11T20:03:31.397391",
+            "location": "Home Pond"
+          },
+          "recipient": {
+            "actor": "cheese",
+            "stage": "egg",
+            "token": "2026-11-11T20:03:31.319019",
+            "root": [
+              44,
+              26
+            ],
+            "facing": false,
+            "phase": "stationary"
+          },
+          "instance": "4d09422d63184a90ad88d27cffb118b3",
+          "center": [
+            59.4,
+            21.875
+          ],
+          "origin": [
+            64.0,
+            24.0
+          ],
+          "operator_exit": [
+            64.0,
+            24.0
+          ],
+          "sites": [
+            {
+              "station": "buckle",
+              "target": [
+                60.3846375,
+                19.132489361702127
+              ],
+              "stance": [
+                56,
+                21
+              ]
+            },
+            {
+              "station": "door",
+              "target": [
+                67.4177625,
+                18.766821276595746
+              ],
+              "stance": [
+                63,
+                21
+              ]
+            }
+          ],
+          "operator_routes": [
+            [
+              [
+                64.0,
+                21
+              ],
+              [
+                56,
+                21
+              ]
+            ],
+            [
+              [
+                56,
+                21
+              ],
+              [
+                63,
+                21
+              ]
+            ]
+          ],
+          "operator_exit_route": [
+            [
+              63,
+              24.0
+            ],
+            [
+              64.0,
+              24.0
+            ]
+          ],
+          "required_seconds": 65.13813813813815,
+          "version": 1,
+          "attempt": "2a78136ac36f4ff8af6bf4f08662448c",
+          "phase": "operate"
+        },
+        "physical": {
+          "version": 1,
+          "actor": "shared-test:friend:marco",
+          "root": [
+            56.0,
+            21.0
+          ],
+          "center": [
+            59.4,
+            21.875
+          ],
+          "station_index": 0,
+          "station": "buckle",
+          "target": [
+            60.3846375,
+            19.132489361702127
+          ],
+          "stance": [
+            56,
+            21
+          ],
+          "phase": "hold",
+          "route": [
+            [
+              64.0,
+              21
+            ],
+            [
+              56,
+              21
+            ]
+          ],
+          "waypoint": 1,
+          "exit": [
+            64.0,
+            24.0
+          ],
+          "contact_ready": true
+        },
+        "paired": true,
+        "companion": {
+          "actor": "shared-test:friend:marco",
+          "mode": "caregiver",
+          "ready": false
+        },
+        "start": {
+          "motor": "on",
+          "power_hold": false,
+          "vent": 0.0,
+          "door": 0.0,
+          "latch": 1.0,
+          "tie_left": 0.8,
+          "tie_right": 0.8,
+          "apron": 0.0,
+          "flag": 1.0,
+          "hose": 0.0,
+          "kink": 0.0,
+          "dust": 0.00010800000000000008,
+          "mesh_wet": 0.0,
+          "roof_water": 0.0,
+          "prints": 0.0,
+          "targets": {
+            "vent": 0.0,
+            "door": 0.0,
+            "tie_left": 0.8,
+            "tie_right": 0.8,
+            "apron": 0.0,
+            "flag": 1.0,
+            "hose": 0.0,
+            "kink": 0.0
+          },
+          "fan": 2.884961621024562,
+          "powered": true,
+          "spray": 0.0,
+          "stroke": 0.0,
+          "active": false
+        },
+        "stage_duration": 40
+      },
+      "label": "Caregiver: Roll the mesh door into its keeper",
+      "progress": 0.23400000000000004
+    },
+    "policy": "balanced",
+    "auto": false,
+    "ecology": {
+      "soil": 0.55,
+      "water": 0.66,
+      "clarity": 0.72,
+      "flowers": 0.45,
+      "insects": 0.48,
+      "fish": 0.52,
+      "birds": 0.45,
+      "litter": 0.12,
+      "wetness": 0.25,
+      "snow": 0.0,
+      "ice": 0.0,
+      "temperature": 18,
+      "wind": 0.2,
+      "wind_heading": 0.25
+    },
+    "weather": {},
+    "objects": {
+      "rubber_duck": {
+        "condition": 1.0,
+        "wetness": 0.0,
+        "dirt": 0.0,
+        "bond": 0.0,
+        "uses": 0,
+        "last_use": -1000.0,
+        "growth": 0.35,
+        "active": false
+      },
+      "sunflower_seeds": {
+        "condition": 1.0,
+        "wetness": 0.0,
+        "dirt": 0.0,
+        "bond": 0.0,
+        "uses": 0,
+        "last_use": -1000.0,
+        "growth": 0.35,
+        "active": false
+      },
+      "carrot_seeds": {
+        "condition": 1.0,
+        "wetness": 0.0,
+        "dirt": 0.0,
+        "bond": 0.0,
+        "uses": 0,
+        "last_use": -1000.0,
+        "growth": 0.35,
+        "active": false
+      },
+      "bread": {
+        "condition": 1.0,
+        "wetness": 0.0,
+        "dirt": 0.0,
+        "bond": 0.0,
+        "uses": 0,
+        "last_use": -1000.0,
+        "growth": 0.35,
+        "active": false
+      },
+      "bounce_house": {
+        "condition": 1,
+        "wetness": 0,
+        "dirt": 0,
+        "bond": 0.0,
+        "uses": 0,
+        "last_use": -1000,
+        "growth": 0.35,
+        "active": true,
+        "_item": "bounce_house",
+        "_source": "habitat",
+        "castle": {
+          "motor": "on",
+          "power_hold": false,
+          "vent": 0.0,
+          "door": 0.0,
+          "latch": 0.0,
+          "tie_left": 0.8,
+          "tie_right": 0.8,
+          "apron": 0.0,
+          "flag": 1.0,
+          "hose": 0.0,
+          "kink": 0.0,
+          "dust": 0.00029520000000000013,
+          "mesh_wet": 0.0,
+          "roof_water": 0.0,
+          "prints": 0.0,
+          "targets": {
+            "vent": 0.0,
+            "door": 0.0,
+            "tie_left": 0.8,
+            "tie_right": 0.8,
+            "apron": 0.0,
+            "flag": 1.0,
+            "hose": 0.0,
+            "kink": 0.0
+          },
+          "fan": 2.02125547743292,
+          "powered": true,
+          "spray": 0.0,
+          "stroke": 0.0,
+          "active": true
+        },
+        "excursion": {
+          "phase": 0.0,
+          "wind_phase": 2.572814692820413,
+          "speed": 0.0,
+          "wind": 0.2,
+          "cover": 0.0,
+          "inflation": 1.0,
+          "lights": 0.0,
+          "running": false,
+          "surface": {
+            "a": {
+              "jump": 0,
+              "press": 0,
+              "u": 0.0,
+              "v": 0.0,
+              "impact": 0
+            },
+            "b": {
+              "jump": 0,
+              "press": 0,
+              "u": 0.0,
+              "v": 0.0,
+              "impact": 0
+            },
+            "lift": 0,
+            "tilt": 0.0,
+            "gate": 0,
+            "active": false
+          }
+        },
+        "carnival_routines": {},
+        "carnival_company": {}
+      }
+    },
+    "instances": {
+      "4d09422d63184a90ad88d27cffb118b3": {
+        "condition": 1,
+        "wetness": 0,
+        "dirt": 0,
+        "bond": 0.0,
+        "uses": 0,
+        "last_use": -1000,
+        "growth": 0.35,
+        "active": true,
+        "_item": "bounce_house",
+        "_source": "habitat",
+        "castle": {
+          "motor": "on",
+          "power_hold": false,
+          "vent": 0.0,
+          "door": 0.0,
+          "latch": 0.0,
+          "tie_left": 0.8,
+          "tie_right": 0.8,
+          "apron": 0.0,
+          "flag": 1.0,
+          "hose": 0.0,
+          "kink": 0.0,
+          "dust": 0.00029520000000000013,
+          "mesh_wet": 0.0,
+          "roof_water": 0.0,
+          "prints": 0.0,
+          "targets": {
+            "vent": 0.0,
+            "door": 0.0,
+            "tie_left": 0.8,
+            "tie_right": 0.8,
+            "apron": 0.0,
+            "flag": 1.0,
+            "hose": 0.0,
+            "kink": 0.0
+          },
+          "fan": 2.02125547743292,
+          "powered": true,
+          "spray": 0.0,
+          "stroke": 0.0,
+          "active": true
+        },
+        "excursion": {
+          "phase": 0.0,
+          "wind_phase": 2.572814692820413,
+          "speed": 0.0,
+          "wind": 0.2,
+          "cover": 0.0,
+          "inflation": 1.0,
+          "lights": 0.0,
+          "running": false,
+          "surface": {
+            "a": {
+              "jump": 0,
+              "press": 0,
+              "u": 0.0,
+              "v": 0.0,
+              "impact": 0
+            },
+            "b": {
+              "jump": 0,
+              "press": 0,
+              "u": 0.0,
+              "v": 0.0,
+              "impact": 0
+            },
+            "lift": 0,
+            "tilt": 0.0,
+            "gate": 0,
+            "active": false
+          }
+        },
+        "carnival_routines": {},
+        "carnival_company": {}
+      }
+    },
+    "placed": [
+      "bounce_house"
+    ],
+    "friends": [
+      {
+        "id": "friend_0_9968",
+        "name": "Marina",
+        "personality": "adventurous",
+        "relationship": "stranger",
+        "points": 0,
+        "trust": 0.25,
+        "warmth": 0.3,
+        "reliability": 0.5,
+        "energy": 0.8,
+        "social": 0.7,
+        "last_shared": -1000.0,
+        "memories": [],
+        "activity": "resting",
+        "location": "pond",
+        "want": "company"
+      },
+      {
+        "id": "shared-test:friend:marco",
+        "name": "Marco",
+        "personality": "adventurous",
+        "relationship": "stranger",
+        "points": 0,
+        "trust": 0.25,
+        "warmth": 0.3,
+        "reliability": 0.5,
+        "energy": 0.8,
+        "social": 0.7,
+        "last_shared": -1000.0,
+        "memories": [],
+        "activity": "resting",
+        "location": "pond",
+        "want": "company"
+      }
+    ],
+    "rare_guest": null,
+    "projects": [
+      {
+        "id": "reed_beds",
+        "name": "Living reed beds",
+        "description": "Filter runoff, shelter frogs, and hold water through dry spells.",
+        "stage": 0,
+        "next": "Survey the bank",
+        "cost": {
+          "reed": 2,
+          "pebble": 2
+        },
+        "have": {
+          "reed": 0,
+          "pebble": 0
+        }
+      },
+      {
+        "id": "orchard",
+        "name": "Community orchard",
+        "description": "A shady food grove with flowers for pollinators and fruit to forage.",
+        "stage": 0,
+        "next": "Mark a sunny plot",
+        "cost": {
+          "twig": 3,
+          "pebble": 2
+        },
+        "have": {
+          "twig": 0,
+          "pebble": 0
+        }
+      },
+      {
+        "id": "observatory",
+        "name": "Little sky observatory",
+        "description": "Forecast five weather fronts and record two field notes per observation instead of one.",
+        "stage": 0,
+        "next": "Find the horizon",
+        "cost": {
+          "pebble": 4,
+          "twig": 3
+        },
+        "have": {
+          "pebble": 0,
+          "twig": 0
+        }
+      },
+      {
+        "id": "clubhouse",
+        "name": "Friends\u2019 clubhouse",
+        "description": "Shared time at home restores more social energy and builds warmer relationships.",
+        "stage": 0,
+        "next": "Lay the gathering circle",
+        "cost": {
+          "rock": 5,
+          "twig": 4
+        },
+        "have": {
+          "rock": 0,
+          "twig": 0
+        }
+      },
+      {
+        "id": "workshop",
+        "name": "Repair workshop",
+        "description": "Repairs at home take 20% less time and restore 40 tool durability instead of 25, using the same materials.",
+        "stage": 0,
+        "next": "Sort the work area",
+        "cost": {
+          "pebble": 3,
+          "twig": 5
+        },
+        "have": {
+          "pebble": 0,
+          "twig": 0
+        }
+      },
+      {
+        "id": "trail",
+        "name": "Waterside nature trail",
+        "description": "Safe wildlife corridors link the meadow, grove and pond.",
+        "stage": 0,
+        "next": "Map the old paths",
+        "cost": {
+          "twig": 4,
+          "leaf": 5
+        },
+        "have": {
+          "twig": 0,
+          "leaf": 0
+        }
+      }
+    ],
+    "skills": {
+      "gardening": 0.0,
+      "stewardship": 0.0,
+      "cooking": 0.0,
+      "care": 0.0,
+      "building": 0.0,
+      "engineering": 0.0,
+      "music": 0.0,
+      "discovery": 0.0,
+      "style": 0.0,
+      "agility": 0.0,
+      "observation": 0.0,
+      "organization": 0.0,
+      "crafting": 0.0
+    },
+    "knowledge": {},
+    "decision": [],
+    "journal": [],
+    "promises": [],
+    "stocks": {
+      "reed": 6.0,
+      "pond_clay": 6.0,
+      "pebble": 6.0,
+      "pond_weed": 6.0,
+      "worm": 6.0
+    },
+    "offline": "",
+    "location": "Home Pond"
+  },
+  "location": "Home Pond",
+  "biome": "pond",
+  "season": "spring",
+  "hour": 12.0,
+  "weather": "sunny",
+  "intensity": 0.5,
+  "motion": true,
+  "particles": true,
+  "weatherEffects": true,
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "w": 132,
+    "h": 42
+  },
+  "duck": {
+    "identity": "2026-11-11T20:03:31.319019",
+    "x": 44,
+    "y": 26,
+    "facing": false,
+    "state": "idle",
+    "stage": "egg",
+    "mood": "happy",
+    "name": "Cheese",
+    "away": false,
+    "hidden": false,
+    "cosmetics": {},
+    "apparel": {},
+    "hatCare": {
+      "equipped": null,
+      "active": null,
+      "options": [],
+      "items": []
+    },
+    "motion": true,
+    "art": [
+      "  __  ",
+      " /  \\ ",
+      " \\__/ "
+    ]
+  },
+  "items": [
+    {
+      "id": "bounce_house",
+      "instance": "4d09422d63184a90ad88d27cffb118b3",
+      "x": 59.4,
+      "y": 21.875,
+      "art": [
+        " \u2571\u2593\u2593\u2593\u2572",
+        " \u2593\u2593\u2593\u2593\u2593",
+        " \u2572\u2593\u2593\u2593\u2571"
+      ]
+    }
+  ],
+  "structures": [],
+  "visitor": {
+    "id": "shared-test:friend:marco",
+    "state": "idle",
+    "facing": true,
+    "activity": "idle",
+    "name": "Marco",
+    "x": 56,
+    "y": 21,
+    "personality": "adventurous",
+    "art": [
+      "   /^\\! ",
+      "  (^.^) ",
+      "  /)_)\\>",
+      "   \" \"~]"
+    ]
+  },
+  "interaction": null,
+  "_physicalCase": "friend:marco castle_door_open contact 0",
+  "_physicalEvent": 0,
+  "_sharedCast": "friend:marco",
+  "_physicalAge": "egg",
+  "_fixture_origin": {
+    "source": "native egg-caregiver post-refresh snapshot",
+    "source_sha256": "b653517cbe0306abd683855ace0e4d67acfb956e55209c616fd3cb7c333c86f5",
+    "case": "friend:marco castle_door_open contact 0"
+  }
+}

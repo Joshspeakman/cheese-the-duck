@@ -114,7 +114,7 @@ def snapshot(game, renderer):
         'weatherEffects': renderer._show_weather_effects,
         'camera': {'x': renderer._camera_x, 'y': renderer._camera_y,
                    'w': renderer._viewport_width, 'h': renderer._viewport_height},
-        'duck': {'x': pos.x, 'y': pos.y, 'facing': pos.facing_right, 'state': pos.get_state(),
+        'duck': {'identity': str(duck.created_at), 'x': pos.x, 'y': pos.y, 'facing': pos.facing_right, 'state': pos.get_state(),
                  'stage': duck.growth_stage, 'mood': duck.get_mood().state.value,
                  'name': duck.name, 'away': renderer._cheese_away,
                  'hidden': renderer.interaction_animator.should_hide_duck(),

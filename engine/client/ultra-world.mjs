@@ -1,5 +1,5 @@
 import {projectSceneryCell} from './scenery-projection.mjs';
-import {castleActorPhysical,sharedCastleRecord,sharedCastleSource} from './castle-care.mjs';
+import {castleActorPhysical,sharedCastleRecord,sharedCastleSource,eggCaregiverScene} from './castle-care.mjs';
 import {carnivalOccupants} from './carnival-routines.mjs';
 import {playkitPose,PLAYKIT_ROUTINES} from './playkit-routines.mjs';
 import {WeatherDrift,wrap} from './weather-wind.mjs';
@@ -321,7 +321,7 @@ export class LivingWorld {
     if(duck.away||duck.hidden)return;
     const state=duck.state||'idle';
     if(/swim|float|splash|diving/.test(state))this.ripples(x,y,t);
-    const performance=actorPerformance(s,visitor?duck.id:'cheese');
+    const performance=!visitor&&eggCaregiverScene(s)?null:actorPerformance(s,visitor?duck.id:'cheese');
     const sprite=characterSprite({...duck,motion:s.motion!==false,performance,...(performance?{facing:performance.role==='a'}:{})},t,visitor);
     this.characters.push({...sprite,x,y,cheese:!visitor});
   }
@@ -384,7 +384,7 @@ export class LivingWorld {
     }
     const target=this.project(s,s.duck.x,s.duck.y);
     const cameraKey=JSON.stringify(s.camera||null);
-    if(s.motion===false||s.living?.plan?.carnival_work?.physical_pilot||!this.duckPosition||s.location!==this.lastLocation||cameraKey!==this.duckCameraKey)this.duckPosition=target;
+    if(s.motion===false||s.living?.plan?.carnival_work?.physical_pilot||eggCaregiverScene(s)||!this.duckPosition||s.location!==this.lastLocation||cameraKey!==this.duckCameraKey)this.duckPosition=target;
     else this.duckPosition=this.duckPosition.map((v,i)=>lerp(v,target[i],clamp(dt*12,0,1)));
     this.duckCameraKey=cameraKey;
     const [x,y]=this.duckPosition;
@@ -470,7 +470,7 @@ export class LivingWorld {
     for(const r of carnivalOccupants(s)){
       const actorId=r.actor==='story:pip'?'story:lost_duckling':r.actor;
       const original=this.characters.find(c=>r.actor==='cheese'?c.cheese:c.id===actorId);
-      const home=this.objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.construction==='excursion-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination?.[i])<1.1));
+      const home=this.objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.construction==='excursion-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-(r.work.shared?.mode==='egg-caregiver'?r.work.shared.center:plan.destination)?.[i])<1.1));
       if(!original||!home)continue;
       const source=r.actor==='cheese'?s.duck:r.work.shared_physical?sharedCastleSource(s,sharedCastleRecord(r.work)):s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
       if(!source)continue;

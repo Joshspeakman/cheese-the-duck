@@ -198,6 +198,17 @@ class DuckAnimator:
         self._idle_timer += delta_time
         self._state_animation_timer += delta_time
 
+        if self.frozen:
+            # Freezing invalidates old destinations and arrival callbacks. Keep
+            # intentional stationary animation, but never resume stale movement
+            # (or an accumulated wander timer) when the actor thaws.
+            stationary = (self._state_str, self.state) if self._state_str in self.ANIMATABLE_STATES else None
+            self.stop()
+            self._move_timer = self._idle_timer = 0.0
+            if stationary is None:
+                return
+            self._state_str, self.state = stationary
+
         # Walk speed scales with motivation (0.10s at full -> 0.25s at zero).
         # Original formula: ``0.10 + (1.0 - motivation) * 0.15``
         step_interval: float = 0.10 + (1.0 - self.motivation) * 0.15
