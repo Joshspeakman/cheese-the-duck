@@ -77,7 +77,7 @@ export class PondJournal{
   for(const label of this.body.querySelectorAll('[data-hat-material]')){const id=label.dataset.hatMaterial;label.textContent=wardrobeSummary(id,this.frame.scene.duck.apparel?.[id]);}
   for(const b of this.body.querySelectorAll('[data-hat-action]')){const c=this.frame.scene.duck.hatCare,entry=c?.items?.find(i=>i.id===b.dataset.hatItem)||(c?.equipped===b.dataset.hatItem?c:null),o=entry?.options?.find(o=>o.id===b.dataset.hatAction);b.disabled=!o?.enabled;b.title=o?.reason||'';}
   for(const label of this.body.querySelectorAll('[data-hat-care]')){const active=this.frame.scene.duck.hatCare?.active;label.textContent=active?.item===label.dataset.hatCare?active.label:'A little care for '+wardrobeName(label.dataset.hatCare)+'.';}
-  for(const card of this.body.querySelectorAll('[data-castle-instance]')){const instance=card.dataset.castleInstance,state=instance?w.instances?.[instance]:w.objects.bounce_house;if(state)card.querySelector('[data-castle-summary]').textContent=castleSummary(state);for(const button of card.querySelectorAll('[data-carnival-choice]'))button.disabled=Boolean(w.plan)||Boolean(instance&&!w.layout?.copies?.some(p=>p.instance===instance));}
+  for(const card of this.body.querySelectorAll('[data-castle-instance]')){const instance=card.dataset.castleInstance,state=instance?w.instances?.[instance]:w.objects.bounce_house;if(state)card.querySelector('[data-castle-summary]').textContent=castleSummary(state);for(const button of card.querySelectorAll('[data-carnival-choice], [data-carnival-together]'))button.disabled=Boolean(w.plan)||Boolean(instance&&!w.layout?.copies?.some(p=>p.instance===instance));}
   for(const card of this.body.querySelectorAll('[data-playkit-id]')){const id=card.dataset.playkitId,instance=card.dataset.playkitInstance,state=instance?w.instances?.[instance]:w.objects[id];if(state)card.querySelector('[data-playkit-summary]').textContent=playkitSummary(id,state);for(const button of card.querySelectorAll('[data-playkit-choice]'))button.disabled=Boolean(w.plan)||Boolean(instance&&!w.layout?.copies?.some(p=>p.instance===instance));}
   for(const card of this.body.querySelectorAll('[data-architecture-id]')){
    const id=card.dataset.architectureId,instance=card.dataset.architectureInstance,state=instance?w.instances?.[instance]:w.objects[id];
@@ -182,6 +182,7 @@ const p=itemProfile(item,itemFamily(id));
        parent=groups[category];
       }
       const button=this.button(label,'carnival_action',id,busy||!outside,{instance,text:choice});button.dataset.carnivalChoice=choice;if(score)button.title=score.note;parent.append(button);
+      if(['castle_start','castle_door_open','castle_hose_stow'].includes(choice)){const together=this.button('With a friend','carnival_action',id,busy||!outside,{instance,text:choice,together:true});together.dataset.carnivalTogether=choice;together.title='Ask a nearby friend to work the controls while Cheese watches.';parent.append(together);}
      }
     }
     if(id==='bounce_house'&&state.castle){detail.dataset.castleInstance=instance||'';const summary=el('p',castleSummary(state));summary.dataset.castleSummary='';detail.insertBefore(summary,detail.querySelector('details')||detail.querySelector('[data-carnival-choice]'));}
