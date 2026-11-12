@@ -14,6 +14,24 @@ def clamp(value, low, high):
     return max(low, min(value, max(low, high)))
 
 
+def shared_meeting(mover, meeting=None):
+    """Remember the owner of a published destination, never an actor position."""
+    mover._shared_motion_owner = meeting.get('owner') if meeting else None
+    mover._shared_motion_target = tuple(mover.target) if mover._shared_motion_owner else None
+
+
+def release_shared_meeting(mover, owner):
+    """Cancel only this attempt's destination; a new owner's intent survives."""
+    if not owner or mover._shared_motion_owner != owner:
+        return False
+    stopped = bool(mover.actor and mover.target == mover._shared_motion_target)
+    if stopped:
+        mover.target = (mover.actor['x'], mover.actor['y'])
+        mover.rest_until = max(mover.rest_until, (mover.last or 0) + .3)
+    shared_meeting(mover)
+    return stopped
+
+
 def roaming_target(rng, bounds, position, cheese, social=0):
     """Choose a destination once, then walk there independently of Cheese."""
     left, right, top, bottom = bounds
@@ -42,6 +60,10 @@ class GuestMotion:
         self.reaction_seen = 0.0
         self.reaction_until = 0.0
         self.rng = random.Random(0)
+        shared_meeting(self)
+
+    def release_meeting(self, owner):
+        return release_shared_meeting(self, owner)
 
     def tick(self, game, now=None):
         now = time.monotonic() if now is None else now
@@ -50,6 +72,7 @@ class GuestMotion:
         visit = getattr(game.atmosphere, 'current_visitor', None)
         if not visit or not game.duck:
             self.token = self.actor = None
+            shared_meeting(self)
             return
         if game._state != 'playing':
             # Pause gesture timers with the game, rather than expiring in menus.
@@ -71,6 +94,7 @@ class GuestMotion:
         def point(x, y):
             return (clamp(x, bounds[0], bounds[1]), clamp(y, bounds[2], bounds[3]))
         if token != self.token:
+            shared_meeting(self)
             self.token = token
             self.rng.seed('|'.join(map(str, token)))
             x, y = point(pos.x + p['radius'] + 12, pos.y - 2)
@@ -98,6 +122,7 @@ class GuestMotion:
         meeting=mind.get('shelter') or mind.get('meeting')
         if meeting and not leaving:
             self.target=(clamp(meeting['target'][0],2,pos._play_width-8),clamp(meeting['target'][1],2,pos._play_height-5));self.rest_until=now
+            shared_meeting(self, meeting)
             dx,dy=self.target[0]-a['x'],self.target[1]-a['y'];distance=math.hypot(dx,dy*2)
             step=min(1,pace*.72*dt/max(.001,distance))
             a['x']+=dx*step;a['y']+=dy*step
@@ -105,6 +130,7 @@ class GuestMotion:
             gesture=meeting.get('gesture','idle')
             a.update(state='walking' if moving else gesture,activity='walking' if moving else gesture,facing=dx>=0 if moving else meeting['facing'])
             return
+        shared_meeting(self)
         if now < self.reaction_until and not leaving:
             a.update(state='signature', activity='signature', facing=pos.x > a['x'])
             return
@@ -148,6 +174,10 @@ class StoryMotion:
         self.rest_until = 0
         self.step = None
         self.rng = random.Random(0)
+        shared_meeting(self)
+
+    def release_meeting(self, owner):
+        return release_shared_meeting(self, owner)
 
     def tick(self, game, now=None):
         now = time.monotonic() if now is None else now
@@ -158,6 +188,7 @@ class StoryMotion:
         area = getattr(game.exploration, 'current_area', None)
         if not game.duck or not story or (area and area.name != 'Home Pond'):
             self.token = self.actor = self.target = None
+            shared_meeting(self)
             return
         if game._state != 'playing':
             self.rest_until += dt
@@ -168,6 +199,7 @@ class StoryMotion:
         bounds = (cx + 8, cx + max(16, w - 9), cy + 4, cy + max(8, h - 5))
         token = (id(game.duck), id(story), story['id'])
         if token != self.token:
+            shared_meeting(self)
             self.token = token
             self.rng.seed(str(pond.state['seed']) + ':' + story['id'])
             x, y = roaming_target(self.rng, bounds, (pos.x, pos.y), (pos.x, pos.y))
@@ -186,11 +218,13 @@ class StoryMotion:
         meeting=mind.get('shelter') or mind.get('meeting')
         if meeting:
             self.target=tuple(meeting['target']);self.rest_until=now
+            shared_meeting(self, meeting)
             dx,dy=self.target[0]-a['x'],self.target[1]-a['y'];distance=math.hypot(dx,dy*2)
             step=min(1,speed*dt/max(.001,distance));a['x']+=dx*step;a['y']+=dy*step
             gesture=meeting.get('gesture','idle')
             a.update(state='walking' if distance>.3 else gesture,activity='walking' if distance>.3 else gesture,facing=dx>=0 if distance>.3 else meeting['facing'])
             return
+        shared_meeting(self)
         if now < self.rest_until or not speed:
             return
         dx, dy = self.target[0] - a['x'], self.target[1] - a['y']

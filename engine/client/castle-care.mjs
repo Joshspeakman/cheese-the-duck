@@ -5,13 +5,22 @@ import SCORES from './animation/castle-care.json' with {type:'json'};
 export {SCORES as CASTLE_SCORES};
 const N={x:0,y:0,b:0,w:0,l:0,r:0,contact:0,reach:0,gape:0,eye:null,mark:''},clamp=(n,a=0,b=1)=>Math.max(a,Math.min(b,Number.isFinite(n)?n:0));
 const point=p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);
-// This identifies the bounded regular-visitor wire contract, never a cast fallback.
+export const SHARED_RARE_CASTS=['traveling_merchant','celebrity_duck','lost_duckling'];
+// Exact adapter identities only; a story brain key is distinct from its render ID.
 export function sharedCastleRecord(work){
  const s=work?.shared,p=work?.physical,o=s?.operator,profile=GUEST_CAST[o?.cast];
- return work?.shared_physical===true&&work.physical_pilot!==true&&s?.version===1&&o?.adapter==='regular'&&typeof o.actor==='string'&&o.actor.length>0&&o.actor!=='cheese'&&profile?.id.startsWith('friend:')&&!profile.rare&&profile.species==='duck'&&['hatchling','duckling','juvenile','young_adult','adult','mature','elder','legendary'].includes(s.source_age)&&s.attempt&&o.token!=null&&typeof o.location==='string'&&['waiting','operate','exit','done','interrupted'].includes(s.phase)&&p?.version===1&&p.actor===o.actor&&point(p.root)&&point(p.target)&&CASTLE_GEOMETRY.controls[p.station]&&['approach','hold','exit'].includes(p.phase)&&point(s.cheese?.root)&&point(s.cheese?.stance)&&point(s.cheese?.exit)&&['approach','hold','exit'].includes(s.cheese.phase)?s:null;
+ const adapter=o?.adapter==='regular'?profile?.id.startsWith('friend:')&&!profile.rare&&profile.species==='duck':o?.adapter==='rare'?SHARED_RARE_CASTS.includes(o.cast)&&o.actor===o.cast&&typeof o.motion_token==='string':o?.adapter==='story'?o.cast==='lost_duckling'&&o.actor==='story:pip'&&o.render_id==='story:lost_duckling'&&typeof o.motion_token==='string'&&typeof o.story_step==='string':false;
+ return work?.shared_physical===true&&work.physical_pilot!==true&&s?.version===1&&adapter&&typeof o.actor==='string'&&o.actor.length>0&&o.actor!=='cheese'&&['hatchling','duckling','juvenile','young_adult','adult','mature','elder','legendary'].includes(s.source_age)&&s.attempt&&o.token!=null&&typeof o.location==='string'&&['waiting','operate','exit','done','interrupted'].includes(s.phase)&&p?.version===1&&p.actor===o.actor&&point(p.root)&&point(p.target)&&CASTLE_GEOMETRY.controls[p.station]&&['approach','hold','exit'].includes(p.phase)&&point(s.cheese?.root)&&point(s.cheese?.stance)&&point(s.cheese?.exit)&&['approach','hold','exit'].includes(s.cheese.phase)?s:null;
 }
 export function sharedCastleVisitorMatches(visitor,shared){
  return Boolean(shared&&visitor?.id===shared.operator.actor&&(visitor.castId?visitor.castId===shared.operator.cast:visitor.name===GUEST_CAST[shared.operator.cast]?.name));
+}
+export function sharedCastleSource(scene,shared){
+ if(!shared)return null;const o=shared.operator;
+ if(o.adapter==='regular')return sharedCastleVisitorMatches(scene.visitor,shared)?scene.visitor:null;
+ if(o.adapter==='rare')return sharedCastleVisitorMatches(scene.rareVisitor,shared)?scene.rareVisitor:null;
+ const actor=scene.storyActor,story=scene.living?.story;
+ return o.adapter==='story'&&actor?.id===o.render_id&&actor.storyId==='lost_duckling'&&story?.id==='lost_duckling'&&String(story.step)===o.story_step&&Number.isFinite(actor.x)&&Number.isFinite(actor.y)?{...actor,castId:o.cast,name:GUEST_CAST[o.cast].name,stage:'duckling'}:null;
 }
 export function castleActorPhysical(work,role='a'){
  const shared=sharedCastleRecord(work);

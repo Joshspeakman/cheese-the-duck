@@ -294,13 +294,16 @@ class DesktopGame(Game):
             visitor_animator._mind_motion=motion
         else:visitor_animator._mind_motion={}
 
-    def _update(self):
-        self._ensure_living_pond()
+    def _refresh_shared_motion(self):
         if self.living_pond:
             from engine import carnival
             if carnival.is_shared(self.living_pond.state.get('plan')):
                 from engine import castle_shared
                 castle_shared.refresh(self.living_pond)
+
+    def _update(self):
+        self._ensure_living_pond()
+        self._refresh_shared_motion()
         self._refresh_friend_motion()
         from world.friends import visitor_animator
         visitor_animator._roam_bounds = (2, max(12, self.renderer._viewport_width - 12),
@@ -308,6 +311,9 @@ class DesktopGame(Game):
         super()._update()
         if self.living_pond:
             self.living_pond.tick()
+        # Base/pond callbacks may change a visit, story step or age. Revalidate
+        # motion ownership before the rare/story movers consume a destination.
+        self._refresh_shared_motion()
         if self.duck:
             self.guest_motion.tick(self)
         self.story_motion.tick(self)

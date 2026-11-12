@@ -1,4 +1,4 @@
-"""Bounded shared castle controls: a regular visitor operates, Cheese observes.
+"""Bounded shared castle controls: an exact visitor operates, Cheese observes.
 
 One existing animator owns each root; one existing work clock owns all effects.
 Proposals are pure. Live leases never survive reload or accept replacement guests.
@@ -80,8 +80,15 @@ def propose(pond,score,instance):
     age=castle.canonical_age(pond.game.duck.growth_stage)
     if score not in castle.PHYSICAL_SCORES or age is None:return None,'This shared control needs a hatched observer and an authored score.'
     if pond.state.get('plan'):return None,'Finish the current activity before inviting an operator.'
-    live=actors.regular(pond)
-    if not eligible(pond,live):return None,'No arrived, willing regular visitor can operate this control.'
+    reason='No arrived, willing visitor can operate this control.'
+    for live in actors.candidates(pond):
+        if eligible(pond,live):
+            proposal,reason=_propose_for(pond,score,instance,age,live)
+            if proposal:return proposal,''
+    return None,reason
+
+
+def _propose_for(pond,score,instance,age,live):
     plan=dict(target='bounce_house',instance=instance);center=castle.placement_center(pond,plan)
     if center is None or 'bounce_house' not in pond.owned:return None,'That exact house is not placed here.'
     if not castle.allowed(pond,score):return None,'The weather does not allow this control work.'
@@ -117,11 +124,29 @@ def propose(pond,score,instance):
         ox=route(pond,plan,previous,oe,op,center,(spot,watch))
         ce=[spot[0]-4,spot[1]+2];cx=route(pond,plan,spot,ce,watch,center,(oe,op))
         if ox is None or cx is None:continue
-        operator={k:live[k] for k in ('actor','cast','adapter','token','location')}
-        return dict(operator=operator,source_age=age,cheese_identity=str(pond.game.duck.created_at),instance=instance,center=center,
+        operator=actors.identity(live)
+        proposal=dict(operator=operator,source_age=age,cheese_identity=str(pond.game.duck.created_at),instance=instance,center=center,
                     roots=dict(operator=oroot,cheese=croot),sites=sites,operator_routes=paths,operator_exit_route=ox,
-                    cheese_route=cr,cheese_exit_route=cx,watch=spot,operator_exit=oe,cheese_exit=ce),''
+                    cheese_route=cr,cheese_exit_route=cx,watch=spot,operator_exit=oe,cheese_exit=ce)
+        proposal['required_seconds']=required_seconds(proposal,score)
+        if live['adapter']=='rare':
+            proposal['remaining_seconds']=live['remaining_seconds']
+            if live['remaining_seconds']<proposal['required_seconds']:return None,'The visitor cannot finish both routes before departure.'
+        return proposal,''
     return None,'The operator and observer have no separate safe approach, working corridor and exits.'
+
+
+def required_seconds(proposal,score):
+    def length(start,paths):
+        total=0
+        for path in paths:
+            for end in path:
+                total+=math.hypot(end[0]-start[0],2*(end[1]-start[1]));start=end
+        return total
+    operator=proposal['operator'];pace=3.5 if operator['adapter']=='story' else guest_profile(operator['cast'])['pace']*.72*.8
+    travel=length(proposal['roots']['operator'],proposal['operator_routes']+[proposal['operator_exit_route']])/pace
+    watch=length(proposal['roots']['cheese'],[proposal['cheese_route'],proposal['cheese_exit_route']])
+    return travel+watch+castle.ROUTINES[score]['duration']+12
 
 
 def prepare(pond,plan,proposal=None):
@@ -129,10 +154,11 @@ def prepare(pond,plan,proposal=None):
     # Parent preflights before installing plan. Revalidate that immutable proposal
     # against actual roots without clearing/replacing any prior ownership.
     if proposal is None:return False,'A shared activity needs an atomic preflight proposal.'
-    live=actors.regular(pond);age=castle.canonical_age(pond.game.duck.growth_stage)
+    live=actors.live(pond,proposal['operator']);age=castle.canonical_age(pond.game.duck.growth_stage)
     if (not live or not eligible(pond,live) or proposal['instance']!=plan.get('instance') or age!=proposal['source_age']
         or any(live[k]!=v for k,v in proposal['operator'].items()) or live['root']!=proposal['roots']['operator']
         or cheese_root(pond)!=proposal['roots']['cheese'] or castle.placement_center(pond,plan)!=proposal['center']):return False,'The shared proposal changed before acquisition.'
+    if live['adapter']=='rare' and live['remaining_seconds']<required_seconds(proposal,w['id']):return False,'The visitor no longer has enough time.'
     s=copy.deepcopy(proposal);s.update(version=1,attempt=uuid.uuid4().hex,phase='waiting')
     s['cheese']=dict(root=cheese_root(pond),stance=s['watch'],exit=s['cheese_exit'],phase='approach',ready=False,route=s['cheese_route'],waypoint=0)
     site=s['sites'][0];ph=dict(version=1,actor=live['actor'],root=list(live['root']),target=site['target'],stance=site['stance'],center=s['center'],station=site['station'],station_index=0,phase='approach',route=s['operator_routes'][0],waypoint=0,exit=s['operator_exit'],contact_ready=False)
@@ -157,9 +183,9 @@ def proposal_clear(pond,plan,s):
 
 def validate(pond,plan):
     try:
-        w=plan['carnival_work'];s=w['shared'];ph=w['physical'];live=actors.regular(pond)
+        w=plan['carnival_work'];s=w['shared'];ph=w['physical'];live=actors.live(pond,s.get('operator') if isinstance(s,dict) else None)
         if not isinstance(s,dict) or not isinstance(ph,dict) or not isinstance(s.get('operator'),dict) or not isinstance(s.get('cheese'),dict):return False
-        if set(s['operator'])!={'actor','cast','adapter','token','location'} or any(not isinstance(v,str) for v in s['operator'].values()):return False
+        if any(not isinstance(v,str) for v in s['operator'].values()):return False
         if w.get('shared_physical') is not True or w.get('physical_pilot') is not False or s['version']!=1 or w['id'] not in castle.PHYSICAL_SCORES:return False
         if not live or any(live[k]!=v for k,v in s['operator'].items()) or ph['actor']!=live['actor']:return False
         if str(pond.game.duck.created_at)!=s['cheese_identity'] or castle.canonical_age(pond.game.duck.growth_stage)!=s['source_age']:return False
@@ -222,7 +248,7 @@ def refresh(pond):
     if not validate(pond,plan):interrupt(pond,plan,'The shared actor, visit, age or placement changed.');return
     if not castle.allowed(pond,w['id']) or pond.game.duck.needs.energy<10 or pond.game.duck.needs.hunger<15:
         interrupt(pond,plan,'Weather or urgent care interrupted shared work.');return
-    s=w['shared'];ph=w['physical'];live=actors.regular(pond);op=METRICS[live['cast']]['travel'];watch=cheese_metric(s['source_age']);cr=cheese_root(pond);orr=live['root'];lease=pond.minds.carnival_guests[live['actor']]
+    s=w['shared'];ph=w['physical'];live=actors.live(pond,s.get('operator') if isinstance(s,dict) else None);op=METRICS[live['cast']]['travel'];watch=cheese_metric(s['source_age']);cr=cheese_root(pond);orr=live['root'];lease=pond.minds.carnival_guests[live['actor']]
     if not segment(pond,plan,ph['root'],orr,op,s['center'],(cr,watch)) or not segment(pond,plan,s['cheese']['root'],cr,watch,s['center'],(orr,op)):
         interrupt(pond,plan,'An actual actor segment lost support or crossed the other actor.');return
     ph['root']=list(orr);s['cheese']['root']=list(cr);ph['contact_ready']=False
@@ -241,6 +267,10 @@ def refresh(pond):
     if not stop and (s['cheese']['phase']=='hold' or s['cheese'].get('exited')):
         pos.facing_right=orr[0]>=cr[0]
     if s['phase']=='done':pos.facing_right=orr[0]>=cr[0]
+    if not stop and s['phase']=='operate' and ph['phase']=='hold':
+        contacts=[m for m in operator_metrics(live['cast'],w['id']) if m['station']==ph['station']]
+        ph['contact_ready']=bool(live['facing'] and near(orr,ph['stance']) and near(cr,s['cheese']['stance'],.51)
+            and pos.facing_right==(orr[0]>=cr[0]) and all(castle.reach_distance(orr,ph['target'],m['grip'],m['scale'])<=3 for m in contacts))
 
 
 def motion(minds,key):
@@ -261,7 +291,7 @@ def advance(pond,plan,dt):
     refresh(pond)
     if w.get('interrupted'):return False
     if paused(pond,plan):return True
-    s=w['shared'];ph=w['physical'];ch=s['cheese'];live=actors.regular(pond);orr=live['root'];cr=cheese_root(pond);lease=pond.minds.carnival_guests[live['actor']]
+    s=w['shared'];ph=w['physical'];ch=s['cheese'];live=actors.live(pond,s.get('operator') if isinstance(s,dict) else None);orr=live['root'];cr=cheese_root(pond);lease=pond.minds.carnival_guests[live['actor']]
     s['waited']=s.get('waited',0)+max(0,excursions.finite(dt))
     if s['waited']>600:return interrupt(pond,plan,'The shared route could not be completed.')
     if s['phase']=='done':return False
@@ -298,7 +328,7 @@ def advance(pond,plan,dt):
         for i,e in enumerate(spec['effects']):
             if old<e[0]*duration<=stop:
                 if i==0 and not proposal_clear(pond,plan,s):return interrupt(pond,plan,'A future shared route is no longer safe.')
-                metric=metricrows[i];actual=actors.regular(pond)
+                metric=metricrows[i];actual=actors.live(pond,s['operator'])
                 if not actual or not near(actual['root'],ph['stance']) or castle.reach_distance(actual['root'],ph['target'],metric['grip'],metric['scale'])>3:return interrupt(pond,plan,'The operator lost its actual contact stance.')
                 if w['id']=='castle_hose_stow' and e[1]=='hose' and (0 not in w['events'] or obj['castle']['motor']!='off'):return interrupt(pond,plan,'The blower must stop before the hose is coiled.')
                 castle.apply(obj,w,i,e);s['cheese']['reaction_event']=i
@@ -312,7 +342,7 @@ def advance(pond,plan,dt):
 
 def completion_ready(pond,plan):
     if not validate(pond,plan):return False
-    w=plan['carnival_work'];s=w['shared'];ph=w['physical'];live=actors.regular(pond)
+    w=plan['carnival_work'];s=w['shared'];ph=w['physical'];live=actors.live(pond,s.get('operator') if isinstance(s,dict) else None)
     return bool(not w.get('recorded') and s['phase']=='done' and ph.get('exited') and s['cheese'].get('exited') and near(live['root'],ph['exit']) and near(cheese_root(pond),s['cheese']['exit'],.51) and pond.game.renderer.duck_pos.facing_right==(live['root'][0]>=cheese_root(pond)[0])
                 and support(pond,plan,live['root'],METRICS[live['cast']]['travel'],s['center']) and support(pond,plan,cheese_root(pond),cheese_metric(s['source_age']),s['center']))
 
@@ -326,7 +356,7 @@ def complete(pond,plan):
     for actor,other in ((key,'cheese'),('cheese',key)):
         m.model.learn(actor,'share',lease['contexts'][actor],.25,m.now,note,other);m.model.bond(actor,other,.18,m.now,note)
     pond.remember('belongings',w['label']+'.',.5,plan['target']);pond.remember('neighbors',note,.6,key)
-    m.carnival_guests.pop(key,None);actors.stop_regular(pond,key);pond._cache=None;return True
+    m.carnival_guests.pop(key,None);actors.release_owned(pond,key,lease);pond._cache=None;return True
 
 
 def view(pond,plan):
@@ -338,7 +368,7 @@ def view(pond,plan):
         # explicit but remove invalid geometry rather than falling back to legacy.
         w.update(shared_physical=True,physical={},shared={})
         return w
-    s=w['shared'];ph=w['physical'];live=actors.regular(pond)
+    s=w['shared'];ph=w['physical'];live=actors.live(pond,s.get('operator') if isinstance(s,dict) else None)
     root=live['root']
     if ph.get('root')!=root:ph['contact_ready']=False
     ph['root']=list(root);s['cheese']['root']=cheese_root(pond)

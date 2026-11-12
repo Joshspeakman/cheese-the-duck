@@ -5584,7 +5584,7 @@
       "observationOnly": 1,
       "source": "engine/scripts/review-guest-control-capabilities.mjs",
       "runtimeAcceptance": false,
-      "remaining": "Forty regular profiles now pass three native controls with adult Cheese observing; remaining eight profiles, egg scenes, all contextual bindings and full repertoire remain incomplete."
+      "remaining": "43 unique profiles have three adopted shared operator controls; the remaining goose/owl/crow/toad/Flutter profiles, stationary egg scenes, all contextual bindings and full repertoire remain incomplete."
     },
     "nativeSharedCastle": {
       "status": "regular_native_and_rendered_verified",
@@ -5638,6 +5638,58 @@
         "encounters": 16
       },
       "installation": "Deferred until the full requested milestone is complete; installed2.36.1 and real saves untouched"
+    },
+    "nativeSpecialCastle": {
+      "status": "native_and_rendered_verified",
+      "profiles": [
+        "traveling_merchant",
+        "celebrity_duck",
+        "lost_duckling"
+      ],
+      "adapterBindings": [
+        "rare:traveling_merchant",
+        "rare:celebrity_duck",
+        "rare:lost_duckling",
+        "story:lost_duckling"
+      ],
+      "scores": [
+        "castle_start",
+        "castle_door_open",
+        "castle_hose_stow"
+      ],
+      "nativeChecks": 192,
+      "nativeFrames": 60,
+      "renderedCases": 720,
+      "renderedRoots": 1440,
+      "renderedContacts": 432,
+      "renderedObserverChecks": 720,
+      "fullRendererSuiteTests": 273,
+      "regularHostLifecycleChecks": 61,
+      "existingGuestChecks": 17985,
+      "review": "engine/artifacts/animation-milestone/castle-shared-special-native-render-review.html",
+      "ownership": "Exact rare arrival/location/motion token or story object/step/motion token; existing movers remain sole position writers; owned destination cleanup preserves replacement intent",
+      "departure": "Conservative complete-itinerary duration preflight and last-six-seconds refusal; visit time is never extended",
+      "hostPublication": "Motion-only refresh before both movement phases revalidates mutations and computes contact readiness from held actual roots and facing without applying effects",
+      "remaining": [
+        "Goose/owl/crow/toad actual support and native adapters",
+        "Flutter observer role",
+        "Stationary egg caregiver scene",
+        "Full per-object repertoires and contexts",
+        "Rare/story Pip shared character identity and simultaneous-presence audit"
+      ],
+      "fullRepertoiresComplete": false,
+      "observerAges": 8,
+      "ageAdapterScoreBindings": 96,
+      "ageNativeChecks": 1536,
+      "ageNativeFrames": 480,
+      "regularNativeRegressionChecks": 1920,
+      "ageRenderedCases": 5760,
+      "ageRenderedRoots": 11520,
+      "ageRenderedContacts": 3456,
+      "ageRenderedObserverChecks": 5760,
+      "ageReview": "engine/artifacts/animation-milestone/castle-shared-special-ages-native-render-review.html",
+      "independentLifecycleChecks": 85,
+      "regularRendererRegressionCases": 7200
     }
   },
   "wardrobe": [

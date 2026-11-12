@@ -77,7 +77,7 @@ try:
         capture(s['operator']['cast']+' '+w['id']+' contact '+str(index),index)
         trace.append(dict(age=observer_age,cast=s['operator']['cast'],score=w['id'],event=index,operator=live['actor'],operatorRoot=live['root'],cheeseRoot=shared.cheese_root(p),target=ph['target'],station=ph['station'],clock=w['clock'],events=list(w['events'])))
     castle.apply=observed_apply
-    casts=list(shared.METRICS)
+    casts=list(shared.METRIC_DATA['adapters']['regular'])
     if '--one' in sys.argv:casts=casts[:1]
     if '--cast' in sys.argv:casts=[sys.argv[sys.argv.index('--cast')+1]]
     bindings=[(cast,'adult') for cast in casts]

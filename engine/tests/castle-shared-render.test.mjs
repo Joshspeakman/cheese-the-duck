@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {exportCastleGuestMetrics,REGULAR_CAST_IDS} from '../scripts/export-castle-guest-metrics.mjs';
+import {exportCastleGuestMetrics,REGULAR_CAST_IDS,SHARED_CAST_IDS} from '../scripts/export-castle-guest-metrics.mjs';
 import METRICS from '../client/animation/castle-guest-metrics.json' with {type:'json'};
 import {DUCK_AGES} from '../client/duck-designs.mjs';
 import {GUEST_CAST} from '../client/guest-cast.mjs';
@@ -13,10 +13,10 @@ import {projectCastleWorld} from '../client/castle-projection.mjs';
 import {sharedCastleFixture} from './castle-shared-fixtures.mjs';
 const close=(a,b)=>assert.ok(Math.abs(a-b)<1e-8,`${a} != ${b}`);
 function render(s,width=1440,height=900){const sx=width/240,sy=height/112,copy={...s,camera:displayCamera(s.camera,sx,sy)},world=new LivingWorld(),result=world.render(copy,0,0),home=result.objects.find(o=>o.id==='bounce_house');return {world,result,home,sx,sy,members:home.carnivalRiders||[]};}
-test('40 exact guest exports and 8 actual observer supports match live rigs with no fallback',()=>{
- assert.equal(REGULAR_CAST_IDS.length,40);assert.deepEqual(Object.keys(METRICS.casts),REGULAR_CAST_IDS);assert.deepEqual(METRICS,exportCastleGuestMetrics());
- assert.equal(Object.keys(METRICS.observers).length,8);assert.equal(METRICS.observers.egg,undefined);assert.equal(METRICS.casts.friend,undefined);assert.equal(METRICS.casts.traveling_merchant,undefined);
- assert.equal(Object.values(METRICS.casts).reduce((n,c)=>n+Object.values(c.routines).flat().length,0),360);
+test('43 exact guest exports and 8 actual observer supports match live rigs with no fallback',()=>{
+ assert.equal(REGULAR_CAST_IDS.length,40);assert.deepEqual(Object.keys(METRICS.casts),SHARED_CAST_IDS);assert.deepEqual(METRICS,exportCastleGuestMetrics());
+ assert.equal(Object.keys(METRICS.observers).length,8);assert.equal(METRICS.observers.egg,undefined);assert.equal(METRICS.casts.friend,undefined);assert.equal(METRICS.casts.friendly_goose,undefined);
+ assert.equal(Object.values(METRICS.casts).reduce((n,c)=>n+Object.values(c.routines).flat().length,0),387);
  for(const c of Object.values(METRICS.casts))for(const m of Object.values(c.routines).flat()){assert(m.feet.length===2);assert(m.feet.every(f=>f[1]===0));assert(m.scale>0);}
 });
 test('every regular profile owns exact native contact while Cheese watches at its own root',()=>{
@@ -52,7 +52,7 @@ test('observer reaction follows consumed native effects and never becomes materi
 });
 
 test('travel support encloses actual mirrored feet and body through all walking phases without mutating fitter coordinates',()=>{
- const subjects=[...REGULAR_CAST_IDS.map(cast=>({data:{id:'live',castId:cast,name:GUEST_CAST[cast].name},pace:GUEST_CAST[cast].pace,visitor:true,metric:METRICS.casts[cast].travel})),...DUCK_AGES.filter(a=>a.id!=='egg').map(a=>({data:{stage:a.id},pace:a.pace,visitor:false,metric:METRICS.observers[a.id].travel}))];
+ const subjects=[...SHARED_CAST_IDS.map(cast=>({data:{id:'live',castId:cast,name:GUEST_CAST[cast].name},pace:GUEST_CAST[cast].pace,visitor:true,metric:METRICS.casts[cast].travel})),...DUCK_AGES.filter(a=>a.id!=='egg').map(a=>({data:{stage:a.id},pace:a.pace,visitor:false,metric:METRICS.observers[a.id].travel}))];
  for(const {data,pace,visitor,metric}of subjects)for(const facing of [true,false])for(let phase=0;phase<8;phase++){
   assert.equal(metric.kind,'support-union');const c=characterSprite({...data,state:'walking',facing},(phase+.1)*4.5/(pace*5),visitor),before=JSON.stringify(c.rig.feet);
   for(const foot of c.rig.feet){const expected=[(facing?foot.x:c.width-1-foot.x)+.5-c.anchorX,foot.y+.5-c.groundRow];assert(metric.feet.some(f=>f.every((v,i)=>v===expected[i])),'missing actually drawn mirrored foot');}
