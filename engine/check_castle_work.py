@@ -53,6 +53,8 @@ try:
         obj.update(last_use=-1000,uses=0,dirt=0,wetness=0,condition=1,excursion={},carnival_routines={},carnival_company={});excursions.state(item,obj)
         ok,msg=p.start('item',item,instance=iid,carnival_choice=score) if score else p.start('item',item,instance=iid)
         if age=='egg':check(not ok,'egg cannot board');return None,None,obj
+        if age=='hatchling' and score in ('castle_door_open','castle_hose_stow'):
+            check(not ok and obj['uses']==0 and not obj['carnival_routines'],'hatchling defers unreachable '+score+' before contact');return None,None,obj
         check(ok,item+' starts: '+msg);plan=p.state['plan'];w=plan['carnival_work']
         if score:w.update(id=score,label=company.PROGRAMS[score]['label']);plan['label']=w['label']
         start=[min(120,w['queue_b'][0]+8),w['queue_b'][1]]
@@ -138,13 +140,13 @@ try:
         company.complete(p,plan);check(obj['carnival_routines'][score]==1,score+' completion is idempotent')
         if score=='castle_pressure_check':
             check(len(w['inspections'])==2 and w['inspections'][1]['pressure']>w['inspections'][0]['pressure']+.2,'diagnostic compares real pressure before and after closing the valve')
-    # Other ages still exercise the existing shared start-control path.
-    for age,legacy_score in ((age,score) for age in ('young_adult','elder') for score in sorted(castle.PHYSICAL_SCORES)):
-        plan,key,obj=reset(age=age,score=legacy_score);until('service')
-        check(not castle.physical_active(plan) and company.active(b)['phase']=='ready',age+' retains shared legacy '+legacy_score)
-        finish();check(obj['uses']==1 and obj['carnival_routines'].get(legacy_score)==1 and obj['carnival_company'].get(key)==1,age+' legacy '+legacy_score+' completes with shared credit')
+    # Adopted controls now remain solo for every reachable hatched age.
+    for age,adopted_score in ((age,score) for age in ('young_adult','elder') for score in sorted(castle.PHYSICAL_SCORES)):
+        plan,key,obj=reset(age=age,score=adopted_score);until('service')
+        check(castle.physical_active(plan) and company.active(b) is None and plan['carnival_work']['physical']['source_age']==age,age+' uses its own native solo '+adopted_score)
+        finish();check(obj['uses']==1 and obj['carnival_routines'].get(adopted_score)==1 and not obj['carnival_company'],age+' native '+adopted_score+' completes without false shared credit')
     for n,key in enumerate(PROFILES):
-        score=list(castle.ROUTINES)[n%24];plan,actor,obj=reset(kind=key,score=score,age='young_adult' if score in castle.PHYSICAL_SCORES else 'adult');until('service');advance(80);frames.append(snapshot(g,g.renderer))
+        score=[s for s in list(castle.ROUTINES)[:24] if s not in castle.PHYSICAL_SCORES][n%21];plan,actor,obj=reset(kind=key,score=score);until('service');advance(80);frames.append(snapshot(g,g.renderer))
         r=company.active(b);check(r and r['actor']==actor and r['phase']=='ready',key+' reaches a real control activity')
         if key=='butterfly_fairy':check(r['mode']=='watch' and castle.conversation(p,plan,key,r)['body_status']=='watching from outside','butterfly observes controls without invented gripping limbs')
         finish();check(obj['carnival_company'].get(actor)==1,key+' receives one meaningful work memory')
@@ -169,9 +171,9 @@ try:
     plan,key,obj=reset(score='castle_start');until('service');g.atmosphere.current_weather=Weather(WeatherType.STORMY,.8,1,datetime.now().isoformat());p.sync();p.weather_type='stormy';advance()
     check(plan['carnival_work'].get('interrupted') and not p.state['plan'],'storm interrupts native blower work and releases its reservation')
     finish();check(obj['uses']==0 and not obj['carnival_company'],'interrupted control work grants no original-use or shared completion')
-    plan,key,obj=reset(age='young_adult',score='castle_start');until('service');g.atmosphere.current_weather=Weather(WeatherType.STORMY,.8,1,datetime.now().isoformat());p.sync();p.weather_type='stormy';advance()
-    check(plan['carnival_work'].get('withdrawal') and plan['carnival_work']['stage']=='service_exit','legacy blower worker withdraws through its existing exit stage in a storm')
-    finish();check(obj['uses']==0 and not obj['carnival_company'],'interrupted legacy blower work grants no completion credit')
+    plan,key,obj=reset(age='young_adult',score='castle_vent_close');until('service');g.atmosphere.current_weather=Weather(WeatherType.STORMY,.8,1,datetime.now().isoformat());p.sync();p.weather_type='stormy';advance()
+    check(plan['carnival_work'].get('withdrawal') and plan['carnival_work']['stage']=='service_exit','legacy valve worker withdraws through its existing exit stage in a storm')
+    finish();check(obj['uses']==0 and not obj['carnival_company'],'interrupted legacy valve work grants no completion credit')
     plan,key,obj=reset(kind='solo',score='castle_stop');until('service');finish();p.state['cooldowns']={};obj['last_use']=-1000
     check(not p.start('item','bounce_house',instance=plan['instance'])[0],'play cannot magically override a stopped blower')
     p.command(dict(action='carnival_action',target='bounce_house',instance=plan['instance'],text='castle_start'));finish();p.state['cooldowns']={};obj['last_use']=-1000

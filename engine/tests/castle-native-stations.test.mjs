@@ -24,14 +24,14 @@ test('native arrival selects the authoritative station without a second renderer
   w.ride_elapsed+=.001;assert.equal(JSON.stringify(w),before);
  }
 });
-test('all eight effects use actual rig metrics and only native hold can draw contact',()=>{
- for(const id of ids)for(const metric of METRICS.routines[id])for(const [width,height]of [[1440,900],[1800,800],[800,1200]])for(const motion of [true,false]){
+test('all eight hatched ages use their actual effect metrics and only native hold can draw contact',()=>{
+ for(const [stage,age]of Object.entries(METRICS.ages))for(const id of Object.keys(age.routines))for(const metric of age.routines[id])for(const [width,height]of [[1440,900],[1800,800],[800,1200]])for(const motion of [true,false]){
   const sx=width/240,sy=height/112,camera=displayCamera({x:10,y:2,w:107,h:38},sx,sy),physicalCastle={origin,camera};
   const at=projectCastleWorld(physicalCastle,origin),home={...itemSprite('bounce_house',0),...at,scale:itemWorldScale('bounce_house'),physicalCastle};
   const anchor=home.anchors.controls[metric.station],target=castleArtWorld(origin,anchor.x,anchor.y,{center:true});
-  const w=work(id,metric.at,metric.station);w.physical.target=target;
+  const w=work(id,metric.at,metric.station);w.physical.source_age=stage;w.physical.target=target;
   w.physical.root=[target[0]-metric.grip[0]*metric.scale*132/192,target[1]-metric.grip[1]*metric.scale*42/47];
-  const character={...characterSprite({stage:'adult',state:'idle',facing:true,performance:{kind:'carnival',routine:w,role:'a',motion}},0),x:0,y:0,physicalCastleActor:physicalCastle};
+  const character={...characterSprite({stage,state:'idle',facing:true,performance:{kind:'carnival',routine:w,role:'a',motion}},0),x:0,y:0,physicalCastleActor:physicalCastle};
   close(character.grip.x+.5-character.anchorX,metric.grip[0]);close(character.grip.y+.5-character.groundRow,metric.grip[1]);
   const expected=projectCastleWorld(physicalCastle,w.physical.root,sx,sy),pixel=projectCastleWorld(physicalCastle,target,sx,sy),before=JSON.stringify(w);
   const g=castleGeometry(home,{character,work:w,role:'a'},sx,sy);
@@ -41,9 +41,9 @@ test('all eight effects use actual rig metrics and only native hold can draw con
  }
 });
 test('native transfer and exit retain actual walking art, arrival restores the contact performance',()=>{
- for(const id of ids)for(const phase of ['approach','hold','exit']){
+ for(const stage of Object.keys(METRICS.ages))for(const id of ids)for(const phase of ['approach','hold','exit']){
   const [at,station]=CASTLE_SCORES[id].stations[1],w=work(id,at,station,phase),world=new LivingWorld();
-  const s=scene({duck:{x:65,y:25,stage:'adult',state:'walking',facing:false},items:[{id:'bounce_house',x:origin[0],y:origin[1],instance:'native-stations'}],living:{objects:{},ecology:{},plan:{kind:'item',target:'bounce_house',instance:'native-stations',phase:'act',destination:origin,carnival_work:w}}});
+  const s=scene({duck:{x:65,y:25,stage,state:'walking',facing:false},items:[{id:'bounce_house',x:origin[0],y:origin[1],instance:'native-stations'}],living:{objects:{},ecology:{},plan:{kind:'item',target:'bounce_house',instance:'native-stations',phase:'act',destination:origin,carnival_work:w}}});
   const member=world.render(s,.5,.1).objects.find(o=>o.id==='bounce_house').carnivalRiders[0];
   if(phase==='hold'){assert.equal(member.character.performance.kind,'carnival');assert.equal(castlePose(w).travel,1);}
   else {assert.equal(member.character.performance,null);assert.equal(member.character.action,'walking');}
