@@ -49,7 +49,7 @@
       "owner": "physical_advisor",
       "model": "gpt-6-astra",
       "reasoning": "xhigh",
-      "status": "all_age_contact_policy_review",
+      "status": "age_policy_and_independent38_checks_complete",
       "files": [
         "engine/overhaul/animation-milestone/extra-high-advice.md"
       ],
@@ -120,14 +120,14 @@
     {
       "id": "castle_native_contacts",
       "owner": "native_regressions",
-      "status": "three_adult_solo_controls_verified",
-      "scope": "Start, two-station door opening and blower shutdown/hose stow; no whole repertoire credit"
+      "status": "three_controls_eight_hatched_ages_verified",
+      "scope": "24 direct age/score bindings with actual movement, metrics, atomic preflight and age-aware lifecycle; assistance/egg/full repertoire still pending"
     },
     {
       "id": "castle_renderer_contacts",
       "owner": "projection_finish",
-      "status": "three_controls_replayed_all_age_reach_review_complete",
-      "scope": "Authoritative station and root, actual walking and contact, all-age reach review next"
+      "status": "all24_direct_bindings_replayed",
+      "scope": "72 distinct contact bindings across three windows and two cameras; no whole repertoire credit"
     }
   ]
 }

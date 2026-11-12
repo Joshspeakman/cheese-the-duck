@@ -4099,7 +4099,7 @@
     }
   ],
   "checkpoint": {
-    "sourcePhase": "native_multistation_contacts_and_age_reach_review",
+    "sourcePhase": "native_age_contacts_and_fitted_costumes",
     "fullyOverhauled": false,
     "constructedObjects": 390,
     "remainingArtwork": 152,
@@ -4600,7 +4600,7 @@
       "engine/artifacts/animation-milestone/medium-art-render.json",
       "engine/artifacts/animation-milestone/parent-medium-review.log"
     ],
-    "next": "Run Medium art batches for23 foods and33 natural specimens, then integrate/review their world support envelopes. Extra High advisor reviews hard simulation architecture and the path to complete individual48-sequence repertoires. Remaining wardrobe wings, halos/horns, held pieces, mittens, swim ring and effects need reconstruction. Preserve terrain support, native ownership and saves. Full milestone and final installation remain open.",
+    "next": "Finish remaining wardrobe art and native companion/assistance contacts, then the remaining object repertoires. Each object still needs its full distinct-sequence, age/species/context and interruption audit. No partial installation.",
     "checks": {
       "javascript": 226,
       "livingSimulation": 694,
@@ -5440,7 +5440,7 @@
       "worldAuthority": "Existing native locomotion; actual supported arrival and bounded grip gate control effect; validated exterior exit gates completion",
       "savePolicy": "Fresh game/animator reload remains stationary, reacquires support, preserves consumed effects and completes once",
       "limitations": [
-        "Other ages, companions and remaining controls still require migration; adult solo door_open and hose_stow now have separate multistation checks",
+        "The same three controls now have measured direct operation for eight hatched ages; companions and other controls remain pending",
         "Three-cell reach is a bounded implementation rule, not full anatomical certification",
         "No full object repertoire certified"
       ],
@@ -5449,7 +5449,7 @@
     "physicalProjection": {
       "camera": "Expand display extent around native camera center; full window and canonical glyph/body aspect preserved",
       "nativeDataMutated": false,
-      "regressionSuite": 250,
+      "regressionSuite": 259,
       "additionalFocusedCameraTests": 4,
       "actorPreviewCases": 18,
       "review": "engine/artifacts/animation-milestone/castle-physical-review.html",
@@ -5457,7 +5457,7 @@
       "harnessLimitation": "Electron preview teardown intermittently required terminating owned test processes after assertions/artifacts completed."
     },
     "nativeCastleRegressions": {
-      "controls": 895,
+      "controls": 894,
       "surfacePlay": 675,
       "livingSimulation": 694,
       "livingHours": 72
@@ -5495,6 +5495,33 @@
         "Assistance and alternative interactions not implemented",
         "No whole-object sequence credit"
       ]
+    },
+    "nativeCastleAges": {
+      "scores": [
+        "castle_start",
+        "castle_door_open",
+        "castle_hose_stow"
+      ],
+      "hatchedAges": 8,
+      "directBindings": 24,
+      "metricsSchema": 2,
+      "distinctEffectBindings": 72,
+      "nativeChecks": 412,
+      "independentLifecycleChecks": 38,
+      "replayFrames": 124,
+      "renderedRoots": 738,
+      "renderedEffectChecks": 450,
+      "renderedBodyTransitionChecks": 696,
+      "review": "engine/artifacts/animation-milestone/castle-age-review.html",
+      "nativePolicy": "Preflight every required station and route before first effect; validate actual foot envelope, age-specific grip and source_age at arrival, contact, restore and paused/settling lifecycle boundaries",
+      "growth": "Changed canonical age interrupts while retaining consumed effects and withholding completion credit; teen maps explicitly to juvenile",
+      "placement": "Hatchling door/hose refused atomically at fixture9,7; direct operation succeeds at supported9,6. No forced anatomy or adult fallback.",
+      "remaining": [
+        "Egg caregiver scenes",
+        "Companion assistance and alternate contacts",
+        "Other controls and the full per-object context repertoire"
+      ],
+      "fullRepertoiresComplete": false
     }
   },
   "wardrobe": [

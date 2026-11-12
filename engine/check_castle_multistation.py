@@ -63,7 +63,7 @@ try:
         original_apply(obj,w,index,effect)
         if w['id'] in ('castle_door_open','castle_hose_stow'):
             capture(w['id']+' contact '+str(index),index)
-            physical=w['physical'];metric=castle.CONTACT_METRICS[w['id']][index]
+            physical=w['physical'];metric=castle.effect_metrics(w)[index]
             trace.append(dict(score=w['id'],event=index,clock=w['clock'],station=physical['station'],root=list(physical['root']),target=list(physical['target']),grip=metric['grip'],events=list(w['events']),motor=obj['castle']['motor']))
             check(w['clock']==effect[0]*castle.ROUTINES[w['id']]['duration'],w['id']+' effect occurs at exact authored time '+str(index))
             check(physical['station']==metric['station'] and physical['phase']=='hold' and physical['contact_ready'],w['id']+' effect owns reached station '+str(index))

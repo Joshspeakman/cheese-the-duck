@@ -10,7 +10,7 @@ app.whenReady().then(async()=>{
  try{
   const frames=JSON.parse(fs.readFileSync(path.join(out,frameName),'utf8'));
   await win.loadFile(path.join(__dirname,'tests/castle-physical-theatre.html'));
-  const result=await win.webContents.executeJavaScript('(()=>{try{return window.replayPhysicalCastle('+JSON.stringify(frames)+','+JSON.stringify({requireEffects:process.argv.includes('--require-effects')})+')}catch(error){return {error:error.stack}}})()');
+  const result=await win.webContents.executeJavaScript('(()=>{try{return window.replayPhysicalCastle('+JSON.stringify(frames)+','+JSON.stringify({requireEffects:process.argv.includes('--require-effects'),requireAges:option('--require-ages','').split(',').filter(Boolean)})+')}catch(error){return {error:error.stack}}})()');
   if(result.error)throw Error(result.error);
   for(const [name,data]of Object.entries(result.images))fs.writeFileSync(path.join(out,prefix+'-'+name+'.png'),Buffer.from(data.split(',')[1],'base64'));
   const names=Object.keys(result.images);delete result.images;result.result='PASS';

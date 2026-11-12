@@ -676,6 +676,11 @@ class LivingPond:
             self.cancel()
             self.notice('The saved control position is invalid. Cheese steps away without completing the work.')
             return
+        if isinstance(work,dict) and work.get('physical_pilot') and not castle_work.physical_age_ok(self,plan):
+            castle_work.physical_interrupt(self,plan,'Cheese has grown beyond this saved control position.')
+            self.cancel()
+            self.notice('Cheese has grown. The finished steps are kept; the remaining work needs a new position.')
+            return
         direct_care = g.duck.current_action in ('feed','play','clean','pet','sleep')
         if plan.get('paused'):
             castle_work.physical_pause(self,plan,preserve_state=direct_care)

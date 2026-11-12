@@ -6,9 +6,26 @@ ROUTINES=json.loads((Path(__file__).parent/'client/animation/castle-care.json').
 DEFAULTS=dict(vent=0.,door=0.,latch=0.,tie_left=.8,tie_right=.8,apron=0.,flag=1.,hose=0.,kink=0.,dust=0.,mesh_wet=0.,roof_water=0.,prints=0.)
 MOVING=('vent','door','tie_left','tie_right','apron','flag','hose','kink')
 
-# Explicit adult solo controls; other ages and routines retain legacy ownership.
-CONTACT_METRICS=json.loads((Path(__file__).parent/'client/animation/castle-contact-metrics.json').read_text())['routines']
+# These three controls use explicit age geometry; no unknown-age adult fallback.
+CONTACT_METRICS=json.loads((Path(__file__).parent/'client/animation/castle-contact-metrics.json').read_text())['ages']
 PHYSICAL_SCORES={'castle_start','castle_door_open','castle_hose_stow'}
+
+def canonical_age(age):
+    age='juvenile' if age=='teen' else age
+    return age if isinstance(age,str) and age in CONTACT_METRICS else None
+
+def physical_age_ok(pond,plan):
+    if not isinstance(plan,dict):return False
+    w=plan.get('carnival_work');p=w.get('physical') if isinstance(w,dict) else None
+    age=canonical_age(pond.game.duck.growth_stage)
+    return bool(age and isinstance(p,dict) and p.get('source_age')==age and w.get('source_age')==age)
+
+def effect_metrics(work):
+    return CONTACT_METRICS[work['source_age']]['routines'][work['id']]
+
+def rig_metric(work):return effect_metrics(work)[0]
+
+def pitches(metric):return metric['scale']*132/192,metric['scale']*42/47
 
 def physical_active(plan):
     if not isinstance(plan,dict) or plan.get('target')!='bounce_house':return False
@@ -18,6 +35,8 @@ def physical_active(plan):
     def point(v):
         return isinstance(v,(list,tuple)) and len(v)==2 and all(isinstance(n,(int,float)) and not isinstance(n,bool) and math.isfinite(n) for n in v)
     return bool(w.get('id') in PHYSICAL_SCORES and isinstance(p,dict) and p.get('version')==1
+                and canonical_age(p.get('source_age'))==p.get('source_age') and p.get('source_age') is not None
+                and w.get('source_age')==p.get('source_age')
                 and p.get('actor')=='cheese' and p.get('phase') in ('approach','hold','exit')
                 and type(p.get('station_index')) is int and 0<=p['station_index']<len(physical_stations(w))
                 and p.get('station')==physical_stations(w)[p['station_index']][1]
@@ -62,18 +81,9 @@ def physical_lifecycle_ok(plan):
                 and p['route'][-1]==p['exit'] and bool(w.get('done'))==(stage=='done'))
     return False
 
-# These bounded controls use adult Cheese alone. Contact offsets come from
-# exported authored rig poses, never a renderer-generated body shift.
+# Contact and support use each reserved age's actual authored rig geometry.
 GEOMETRY=json.loads((Path(__file__).parent/'client/animation/castle-geometry.json').read_text())
 Q=.66*GEOMETRY['detail_scale']
-# The bounded pilot uses one adult rig. Export drift must fail closed rather
-# than silently certify old scale or support against new authored contacts.
-for _metrics in CONTACT_METRICS.values():
-    for _metric in _metrics:
-        assert (_metric['scale'],_metric['anchorX'],_metric['groundRow'],_metric['feet'])==(.675,36,39.5,[[-3.5,0],[2.5,0]]), 'Revalidate native adult support after rig changes'
-BX=.675*132/192
-BY=.675*42/47
-STANCE=dict(width=6,height=4,floor=False)
 
 def art_world(center,x,y):
     return [center[0]+(x-GEOMETRY['width']/2)*Q*132/192,
@@ -89,22 +99,33 @@ def placement_center(pond,plan):
     x,y=place.get_display_position()
     return [x*132/20,y*42/12]
 
-def reach_distance(root,target,grip=(15.5,-4)):
-    hand=[root[0]+grip[0]*BX,root[1]+grip[1]*BY]
-    return math.hypot((target[0]-hand[0])/BX,(target[1]-hand[1])/BY)
+def reach_distance(root,target,grip=(15.5,-4),scale=.675):
+    bx,by=scale*132/192,scale*42/47
+    hand=[root[0]+grip[0]*bx,root[1]+grip[1]*by]
+    return math.hypot((target[0]-hand[0])/bx,(target[1]-hand[1])/by)
 
 def supported(pond,plan,root,center):
     from engine import terrain
     from engine.portable_ground import policy
-    if not policy(pond).check('rock',root[0]*20/132,root[1]*12/42,plan.get('instance'),STANCE)[0]:return False
+    metric=rig_metric(plan['carnival_work']);bx,by=pitches(metric)
+    feet=list({tuple(f) for m in effect_metrics(plan['carnival_work']) for f in m['feet']})
+    # Retain the conservative four-cell adult depth, scaled to this age's pitch;
+    # width spans its actual feet. Each foot is also tested individually below.
+    width=(max(f[0] for f in feet)-min(f[0] for f in feet))*metric['scale']/.675
+    stance=dict(width=width,height=4*metric['scale']/.675,floor=False)
+    if not policy(pond).check('rock',root[0]*20/132,root[1]*12/42,plan.get('instance'),stance)[0]:return False
     # Excluding this copy's layout collision does not permit walking through it.
     # The entire front corridor is at/south of its real ground row. A root may
     # approach that corridor from outside either outer wall, never through fabric.
     ground=art_world(center,0,GEOMETRY['ground_row'])[1]
     left=art_world(center,0,0)[0];right=art_world(center,GEOMETRY['width'],0)[0]
-    if root[1]<ground and left-3*BX<root[0]<right+3*BX:return False
-    for dx in (-3.5*BX,2.5*BX):
-        if terrain.water_at(pond.location,root[0]+dx,root[1],pond.biome):return False
+    # Outside the front corridor, neither actual foot may enter this copy's
+    # fabric; large-age feet can extend beyond the retained body margin.
+    right_reach=max(3,max(f[0] for f in feet))*bx
+    left_reach=max(3,-min(f[0] for f in feet))*bx
+    if root[1]<ground and left-right_reach<root[0]<right+left_reach:return False
+    for fx,fy in feet:
+        if terrain.water_at(pond.location,root[0]+fx*bx,root[1]+fy*by,pond.biome):return False
     return True
 
 def segment_clear(pond,plan,start,end,center):
@@ -122,7 +143,7 @@ def physical_stations(work):
     return spec.get('stations',[[0,spec['station']]])
 
 def station_grips(work,name):
-    return [e['grip'] for e in CONTACT_METRICS[work['id']] if e['station']==name]
+    return [e['grip'] for e in effect_metrics(work) if e['station']==name]
 
 def physical_route(root,stance,exit_point,ground,kind):
     if kind=='exit':return [exit_point]
@@ -131,25 +152,39 @@ def physical_route(root,stance,exit_point,ground,kind):
     if root[1]<ground:route.append([round(root[0]),math.ceil(ground)])
     return route+[exit_point,stance]
 
+def physical_sites(pond,plan,center):
+    w=plan['carnival_work'];metric=rig_metric(w);bx,by=pitches(metric)
+    ground=art_world(center,0,GEOMETRY['ground_row'])[1];sites=[]
+    for _,name in physical_stations(w):
+        target=control_world(center,name);grips=station_grips(w,name)
+        preferred=[target[0]-(max(g[0] for g in grips)+1)*bx,ground]
+        candidates=sorted(([x,y] for x in range(math.floor(preferred[0])-3,math.ceil(preferred[0])+4)
+                           for y in range(math.ceil(ground),math.ceil(ground)+4)),key=lambda v:(v[0]-preferred[0])**2+(v[1]-preferred[1])**2)
+        stance=next((v for v in candidates if supported(pond,plan,v,center) and all(reach_distance(v,target,g,metric['scale'])<=3 for g in grips)),None)
+        if stance is None:return None,name
+        sites.append(dict(station=name,target=target,stance=stance))
+    return sites,None
+
 def physical_prepare(pond,plan,cursor=0,kind='initial'):
     w=plan['carnival_work'];pos=pond.game.renderer.duck_pos;center=placement_center(pond,plan)
+    age=canonical_age(pond.game.duck.growth_stage)
+    if age is None or w.get('source_age')!=age:return physical_interrupt(pond,plan,'This age has no valid control reservation.')
     if center is None:return physical_interrupt(pond,plan,'The placed house is no longer here.')
-    name=physical_stations(w)[cursor][1]
-    target=control_world(center,name);ground=art_world(center,0,GEOMETRY['ground_row'])[1]
-    preferred=[target[0]-16.5*BX,ground]
-    candidates=sorted(([x,y] for x in range(math.floor(preferred[0])-3,math.ceil(preferred[0])+4)
-                       for y in range(math.ceil(ground),math.ceil(ground)+4)),key=lambda v:(v[0]-preferred[0])**2+(v[1]-preferred[1])**2)
-    grips=station_grips(w,name)
-    stance=next((v for v in candidates if supported(pond,plan,v,center) and all(reach_distance(v,target,g)<=3 for g in grips)),None)
+    # Reserve a complete feasible itinerary before even starting the walk. An
+    # unreachable later cord must not first consume an unlatch/shutdown effect.
+    sites,missing=physical_sites(pond,plan,center)
+    if sites is None:return physical_interrupt(pond,plan,'The '+missing+' has no dry reachable stance for this age.')
+    ground=art_world(center,0,GEOMETRY['ground_row'])[1]
     entry=art_world(center,GEOMETRY['entry']['x'],GEOMETRY['ground_row'])
     exit_point=[round(entry[0]),math.ceil(ground)];root=[pos.x,pos.y]
-    if stance is None:return physical_interrupt(pond,plan,'The '+name+' has no dry reachable stance.')
+    site=sites[cursor];name=site['station'];stance=site['stance'];target=site['target']
     route=physical_route(root,stance,exit_point,ground,kind)
+    itinerary=route if kind=='exit' else route+[v['stance'] for v in sites[cursor+1:]]+[exit_point]
     previous=root
-    for point in route:
+    for point in itinerary:
         if not segment_clear(pond,plan,previous,point,center):return physical_interrupt(pond,plan,'The exterior route to the '+name+' is blocked.')
         previous=point
-    w['physical']=dict(version=1,actor='cheese',center=center,root=root,target=target,stance=stance,
+    w['physical']=dict(version=1,actor='cheese',source_age=age,center=center,root=root,target=target,stance=stance,
                        phase='approach',station=name,station_index=cursor,contact_ready=False,route=route,waypoint=0,
                        route_origin=list(root),route_kind=kind,exit=exit_point,travel_time=0.)
     w['invitation_checked']=True;w['paired']=False
@@ -164,7 +199,7 @@ def physical_interrupt(pond,plan,reason):
     return False
 
 def physical_geometry_ok(pond,plan):
-    if not physical_lifecycle_ok(plan):return False
+    if not physical_age_ok(pond,plan) or not physical_lifecycle_ok(plan):return False
     w=plan['carnival_work'];p=w['physical'];center=placement_center(pond,plan)
     if center!=p['center'] or p['target']!=control_world(center,p['station']):return False
     ground=art_world(center,0,GEOMETRY['ground_row'])[1]
@@ -172,7 +207,7 @@ def physical_geometry_ok(pond,plan):
     return (p['exit']==[round(entry[0]),math.ceil(ground)] and p['stance'][1]>=ground
             and p['route']==physical_route(p['route_origin'],p['stance'],p['exit'],ground,p['route_kind'])
             and all(n==round(n) for n in p['stance'])
-            and all(reach_distance(p['stance'],p['target'],g)<=3 for g in station_grips(w,p['station']))
+            and all(reach_distance(p['stance'],p['target'],g,rig_metric(w)['scale'])<=3 for g in station_grips(w,p['station']))
             and supported(pond,plan,p['stance'],center))
 
 def physical_restore(pond,plan):
@@ -194,7 +229,7 @@ def physical_advance(pond,plan,dt):
     if not physical_geometry_ok(pond,plan):return physical_interrupt(pond,plan,'Invalid native control reservation.')
     p=w['physical'];root=[pos.x,pos.y];previous=p['root'];p['root']=root;p['contact_ready']=False
     center=placement_center(pond,plan)
-    if center!=p['center'] or pond.game.duck.growth_stage!='adult':return physical_interrupt(pond,plan,'The control reservation changed.')
+    if center!=p['center'] or not physical_age_ok(pond,plan):return physical_interrupt(pond,plan,'The control reservation changed.')
     if not allowed(pond,w['id']) or pond.game.duck.needs.energy<10 or pond.game.duck.needs.hunger<15:return physical_interrupt(pond,plan,'Control work interrupted by weather or urgent care.')
     if not segment_clear(pond,plan,previous,root,center):return physical_interrupt(pond,plan,'The actual walking segment is blocked.')
     if p['phase'] in ('approach','exit'):
@@ -211,7 +246,7 @@ def physical_advance(pond,plan,dt):
         else:
             if not pos._is_directed_movement or [pos.target_x,pos.target_y]!=destination:pos.move_to(*destination)
             return True
-    if not supported(pond,plan,root,center) or not all(reach_distance(root,p['target'],g)<=3 for g in station_grips(w,p['station'])) or max(abs(root[i]-p['stance'][i]) for i in (0,1))>.51:
+    if not supported(pond,plan,root,center) or not all(reach_distance(root,p['target'],g,rig_metric(w)['scale'])<=3 for g in station_grips(w,p['station'])) or max(abs(root[i]-p['stance'][i]) for i in (0,1))>.51:
         return physical_interrupt(pond,plan,'The actual feet and grip cannot reach the '+p['station']+'.')
     p['contact_ready']=True
     if plan['phase']!='act':return True
@@ -233,8 +268,15 @@ def physical_advance(pond,plan,dt):
             s['stroke']=max(0,math.sin(stop*4))
             for i,effect in enumerate(spec['effects']):
                 if old<effect[0]*duration<=stop:
-                    metric=CONTACT_METRICS[w['id']][i]
-                    if metric['station']!=p['station'] or reach_distance(root,p['target'],metric['grip'])>3:
+                    if i==0:
+                        sites,missing=physical_sites(pond,plan,center)
+                        if sites is None:return physical_interrupt(pond,plan,'A required later stance is no longer reachable.')
+                        previous=root
+                        for point in [v['stance'] for v in sites[1:]]+[p['exit']]:
+                            if not segment_clear(pond,plan,previous,point,center):return physical_interrupt(pond,plan,'A required later route is blocked before the first contact.')
+                            previous=point
+                    metric=effect_metrics(w)[i]
+                    if metric['station']!=p['station'] or reach_distance(root,p['target'],metric['grip'],metric['scale'])>3:
                         return physical_interrupt(pond,plan,'The authored contact cannot reach its control.')
                     if w['id']=='castle_hose_stow' and effect[1]=='hose' and (0 not in w['events'] or s['motor']!='off'):
                         return physical_interrupt(pond,plan,'Stop the blower before coiling its hose.')
@@ -316,7 +358,7 @@ def next_work(pond,obj):
 
 def make(pond,plan,choice):
     s=ROUTINES[choice]
-    return dict(id=choice,label=s['label'],stage='queue',clock=0.,elapsed=0.,ride_elapsed=0.,done=False,invitation_checked=False,castle_care=True,events=[],fractions={},automatic=bool(plan.get('automatic')),physical_pilot=choice in PHYSICAL_SCORES and pond.game.duck.growth_stage=='adult')
+    return dict(id=choice,label=s['label'],stage='queue',clock=0.,elapsed=0.,ride_elapsed=0.,done=False,invitation_checked=False,castle_care=True,events=[],fractions={},automatic=bool(plan.get('automatic')),physical_pilot=choice in PHYSICAL_SCORES,source_age=canonical_age(pond.game.duck.growth_stage))
 
 def clear(pond,plan):
     if plan and plan.get('target')=='bounce_house':

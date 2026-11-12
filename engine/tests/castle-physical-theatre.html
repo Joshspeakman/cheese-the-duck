@@ -8,22 +8,26 @@ import {castleArtWorld,projectCastleWorld} from '../client/castle-projection.mjs
 import {actorPitches} from '../client/actor-projection.mjs';
 import GEOMETRY from '../client/animation/castle-geometry.json' with {type:'json'};
 const near=(a,b,label)=>{if(!Number.isFinite(a)||!Number.isFinite(b)||Math.abs(a-b)>1e-6)throw Error(label+': '+a+' != '+b)};
-window.replayPhysicalCastle=(frames,{requireEffects=false}={})=>{
+window.replayPhysicalCastle=(frames,{requireEffects=false,requireAges=[]}={})=>{
  if(!Array.isArray(frames)||!frames.length)throw Error('Native replay frames required');
  const view=new SceneCanvas();document.querySelector('#view').append(view.canvas);
  const images={},phases=new Set(),costs=[],bindings={};let roots=0,contacts=0,cases=0,transitionChecks=0,effectChecks=0;
  for(const [width,height] of [[1200,800],[1800,800],[900,1100]])for(const shifted of [false,true]){
-  view.resize(width,height);let bodyPitch=null;const effects={};
+  view.resize(width,height);const bodyPitches={},effects={};
   for(const [i,source] of frames.entries()){
    const s=structuredClone(source),w=s.living?.plan?.carnival_work,physical=w?.physical;
+   const age=s.duck?.stage==='teen'?'juvenile':s.duck?.stage;
+   if(s._physicalAge!==undefined&&s._physicalAge!==age)throw Error('Trace age differs from actual Cheese');
+   if(physical?.source_age!==undefined&&physical.source_age!==age)throw Error('Reservation age differs from actual Cheese');
    if(shifted)s.camera={...s.camera,x:(s.camera?.x||0)+3,y:(s.camera?.y||0)+2};
    const before=JSON.stringify(s),start=performance.now();view.draw(s,i*.2,.2);costs.push(performance.now()-start);
    if(JSON.stringify(s)!==before)throw Error('Renderer mutated native replay');
    const body=view.world.characters.find(c=>c.cheese)||view.world.objects.flatMap(o=>(o.carnivalRiders||[]).map(r=>r.character)).find(c=>c.cheese);
    if(body){
     const pitch=actorPitches(body,view.sx,view.sy);
-    if(bodyPitch){near(pitch.cw,bodyPitch.cw,'body width across activity');near(pitch.ch,bodyPitch.ch,'body height across activity');transitionChecks++;}
-    else bodyPitch=pitch;
+    const prior=bodyPitches[age];
+    if(prior){near(pitch.cw,prior.cw,'body width across activity');near(pitch.ch,prior.ch,'body height across activity');transitionChecks++;}
+    else bodyPitches[age]=pitch;
    }
    if(!physical||physical.version!==1)continue;
    const home=view.world.objects.find(o=>o.instance===s.living.plan.instance);
@@ -40,7 +44,8 @@ window.replayPhysicalCastle=(frames,{requireEffects=false}={})=>{
    if(member){near(g.target.x,target.x,'rendered control x');near(g.target.y,target.y,'rendered control y');}
    if(!physical.contact_ready&&g.points.length)throw Error('Contact drawn before native readiness');
    if(g.tip&&g.pose.contact>=1-1e-9&&g.inside>=1-1e-9){near(g.tip.x,target.x,'contact x');near(g.tip.y,target.y,'contact y');contacts++;}
-   const binding=bindings[w.id]??={roots:0,contacts:0,stations:new Set(),phases:new Set()};
+   const bindingId=age+'/'+w.id;
+   const binding=bindings[bindingId]??={age,score:w.id,roots:0,contacts:0,stations:new Set(),phases:new Set()};
    binding.roots++;binding.stations.add(physical.station);binding.phases.add(physical.phase);
    if(g.tip&&g.pose.contact>=1-1e-9&&g.inside>=1-1e-9)binding.contacts++;
    if(s._physicalEvent!==undefined){
@@ -49,18 +54,19 @@ window.replayPhysicalCastle=(frames,{requireEffects=false}={})=>{
     near(w.ride_elapsed,effect[0]*CASTLE_SCORES[w.id].duration,'native effect time');
     if(physical.phase!=='hold'||!physical.contact_ready||!g.tip||g.pose.contact<1-1e-9||g.inside<1-1e-9)throw Error('Effect without a rendered ready contact: '+w.id+'/'+index);
     near(g.tip.x,target.x,'effect tip x');near(g.tip.y,target.y,'effect tip y');
-    (effects[w.id]??=new Set()).add(index);effectChecks++;
+    (effects[bindingId]??=new Set()).add(index);effectChecks++;
    }
    roots++;phases.add(physical.phase);cases++;
-   const key=w.id+'-'+physical.station+'-'+width+'x'+height+'-'+physical.phase+(g.tip?'-contact':'')+(s._physicalEvent!==undefined?'-effect-'+s._physicalEvent:'')+(shifted?'-camera':'');
+   const key=age+'-'+w.id+'-'+physical.station+'-'+width+'x'+height+'-'+physical.phase+(g.tip?'-contact':'')+(s._physicalEvent!==undefined?'-effect-'+s._physicalEvent:'')+(shifted?'-camera':'');
    if(!images[key])images[key]=view.canvas.toDataURL();
   }
   if(requireEffects)for(const id of Object.keys(bindings)){
-   const expected=CASTLE_SCORES[id].effects.length;
+   const expected=CASTLE_SCORES[bindings[id].score].effects.length;
    if(effects[id]?.size!==expected)throw Error('Missing native contact frames for '+id+' at '+width+'x'+height+' camera '+shifted);
   }
  }
  if(!roots||!contacts||!phases.has('approach')||!phases.has('exit'))throw Error('Incomplete native replay: roots='+roots+' contacts='+contacts+' phases='+[...phases]);
+ for(const age of requireAges)for(const score of ['castle_start','castle_door_open','castle_hose_stow'])if(!bindings[age+'/'+score])throw Error('Missing required age/score '+age+'/'+score);
  costs.sort((a,b)=>a-b);
  const scores=Object.fromEntries(Object.entries(bindings).map(([id,b])=>[id,{...b,stations:[...b.stations],phases:[...b.phases]}]));
  for(const [id,b]of Object.entries(scores))if(!b.contacts||!b.phases.includes('exit'))throw Error('Incomplete score replay: '+id);

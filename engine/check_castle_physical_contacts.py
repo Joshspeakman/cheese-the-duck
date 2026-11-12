@@ -145,12 +145,12 @@ try:
         restored.attach(g,offline=False)
         check(restored.state['plan']['carnival_work'].get('interrupted'),'finite forged saved target cannot invent a switch contact')
     finally:restored.minds.close();p.attach(g,offline=False)
-    plan,w,obj=reset(age='duckling');check(not w.get('physical_pilot') and not castle.physical_active(plan),'unsupported age is explicitly legacy and receives no native-pilot claim')
+    plan,w,obj=reset(age='duckling');check(w.get('physical_pilot') and castle.physical_active(plan) and w['physical']['source_age']=='duckling','duckling uses its own measured native control reservation')
     for bad in (None,{},dict(target='bounce_house',carnival_work=None),dict(target='bounce_house',carnival_work=[]),dict(target='bounce_house',carnival_work={'id':[]})):
         check(not castle.physical_active(bad),'malformed or unrelated plan is safe for generic hook')
     out=ROOT/'engine/artifacts/animation-milestone';out.mkdir(parents=True,exist_ok=True)
     (out/'castle-physical-frames.json').write_text(json.dumps(frames))
-    result=dict(result='PASS',checks=len(checks),frames=len(frames),pilot='adult-solo-castle_start',trace=trace,limitations=['other ages and controls remain legacy','three-cell bounded pilot reach is not anatomical certification','save restores paused re-approach, not exact pose'])
+    result=dict(result='PASS',checks=len(checks),frames=len(frames),pilot='adult-solo-castle_start',trace=trace,limitations=['other controls, companions and full age repertoires remain pending','three-cell bounded pilot reach is not anatomical certification','save restores paused re-approach, not exact pose'])
     (out/'castle-physical-native.json').write_text(json.dumps(result,indent=2));print(json.dumps({k:v for k,v in result.items() if k not in ('trace','limitations')}))
 finally:
     g.living_pond.minds.close();g._save_executor.shutdown(wait=True)

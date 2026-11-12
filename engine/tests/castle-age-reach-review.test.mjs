@@ -1,14 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildReview,reach,sampleAge} from '../scripts/review-castle-age-reach.mjs';
-import ADULT from '../client/animation/castle-contact-metrics.json' with {type:'json'};
+import METRICS from '../client/animation/castle-contact-metrics.json' with {type:'json'};
 const report=buildReview();
-test('nine-age read-only review preserves actual anatomy and existing adult contact contract',()=>{
+test('nine-age read-only review preserves actual anatomy and explicit per-age contact contract',()=>{
  assert.equal(report.status,'review-only');assert.equal(report.ages.length,9);
  for(const a of report.ages){assert.equal(a.metrics.length,9);for(const m of a.metrics){assert.equal(m.clipped,false);if(a.age==='egg'){assert.equal(m.grip,null);assert.equal(m.feet,null);}else {assert.equal(m.feet.length,2);assert(m.feet.every(f=>f[1]===0));assert(m.scale>0);}}}
  assert.equal(report.ages[0].placements.length,0);
- const adult=report.ages.find(a=>a.age==='adult');
- for(const m of adult.metrics){const expected=ADULT.routines[m.id][m.index];for(const k of ['scale','anchorX','groundRow','grip','feet'])assert.deepEqual(m[k],expected[k],m.id+' '+k);}
+ for(const age of report.ages.filter(a=>a.age!=='egg'))for(const m of age.metrics){const expected=METRICS.ages[age.age].routines[m.id][m.index];for(const k of ['scale','anchorX','groundRow','grip','feet'])assert.deepEqual(m[k],expected[k],age.age+' '+m.id+' '+k);}
 });
 test('hatchling feasibility remains placement-specific with no invented reach extension',()=>{
  const age=report.ages.find(a=>a.age==='hatchling'),[lower,upper]=age.placements;

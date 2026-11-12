@@ -14,7 +14,11 @@ for row in json.load(sys.stdin):
     ok,reason=layout.check('rock',x*20/132,y*12/42,None,dict(width=6,height=4,floor=False))
     ground=cy+(geometry['ground_row']-geometry['height'])*q*42/47
     left=cx-geometry['width']/2*q*132/192;right=cx+geometry['width']/2*q*132/192
-    if ok and y<ground and left-3*bx<x<right+3*bx:ok,reason=False,'Inside own castle exterior clearance.'
+    # Match native exterior clearance: retain its body margin and include the
+    # actual age's outermost foot, even when it extends beyond three glyphs.
+    left_margin=max(3,max(f[0] for f in m['feet']))*bx
+    right_margin=max(3,-min(f[0] for f in m['feet']))*bx
+    if ok and y<ground and left-left_margin<x<right+right_margin:ok,reason=False,'Inside own castle exterior clearance.'
     for fx,fy in m['feet']:
         if ok and water_at('Home Pond',x+fx*bx,y+fy*by,'pond'):ok,reason=False,'Actual posed foot is on water.'
         if ok and abs(fy)>1e-9:ok,reason=False,'Actual posed feet are not on the root ground row.'
