@@ -294,6 +294,10 @@ try:
     until(lambda: bool(work['events']), 'real helper consumes its first contact')
     check(work['events'] == [0] and obj['castle']['latch'] == 0,
           'independent helper reaches the actual first mechanical event')
+    from engine.scene import snapshot
+    published = snapshot(game, game.renderer)['living']['plan']['carnival_work']
+    check(published['physical']['contact_ready'] and published['events'] == [0],
+          'completed host update publishes the real held contact after minds refresh')
     check(game.renderer.duck_pos.facing_right == (guest_root()[0] >= cheese_root()[0]),
           'actual observer faces the independently arrived operator at its first contact')
     after_contact = rewards(pond, obj, key)

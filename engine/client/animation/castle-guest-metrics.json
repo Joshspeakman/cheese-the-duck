@@ -1,7 +1,58 @@
 {
   "schema_version": 1,
   "actor": "guest",
-  "adapter": "regular",
+  "adapters": {
+    "regular": [
+      "friend:marco",
+      "friend:amelia",
+      "friend:columbus",
+      "friend:vasco",
+      "friend:marina",
+      "friend:einstein",
+      "friend:newton",
+      "friend:ada",
+      "friend:darwin",
+      "friend:curie",
+      "friend:picasso",
+      "friend:frida",
+      "friend:leonardo",
+      "friend:monet",
+      "friend:georgia",
+      "friend:bubbles",
+      "friend:giggles",
+      "friend:zippy",
+      "friend:bouncy",
+      "friend:sunny",
+      "friend:shadow",
+      "friend:phantom",
+      "friend:enigma",
+      "friend:whisper",
+      "friend:raven",
+      "friend:charity",
+      "friend:grace",
+      "friend:blessing",
+      "friend:angel",
+      "friend:heart",
+      "friend:cookie",
+      "friend:biscuit",
+      "friend:truffle",
+      "friend:pepper",
+      "friend:ginger",
+      "friend:dash",
+      "friend:sprint",
+      "friend:champion",
+      "friend:victor",
+      "friend:rocket"
+    ],
+    "rare": [
+      "traveling_merchant",
+      "celebrity_duck",
+      "lost_duckling"
+    ],
+    "story": [
+      "lost_duckling"
+    ]
+  },
   "role": "a",
   "facing": "right",
   "reach_cells": 3,
@@ -12425,6 +12476,941 @@
             "grip": [
               5.5,
               -1
+            ]
+          }
+        ]
+      }
+    },
+    "traveling_merchant": {
+      "idle": {
+        "scale": 0.7555555555555555,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -4.5,
+            0
+          ],
+          [
+            4.5,
+            0
+          ]
+        ],
+        "body": {
+          "x": -14,
+          "y": -9.5,
+          "w": 19,
+          "h": 9
+        }
+      },
+      "travel": {
+        "kind": "support-union",
+        "facings": [
+          "right",
+          "left"
+        ],
+        "states": [
+          "idle",
+          "walking"
+        ],
+        "samples": 18,
+        "scale": 0.7555555555555555,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -4.5,
+            0
+          ],
+          [
+            4.5,
+            0
+          ],
+          [
+            -3.5,
+            -1
+          ],
+          [
+            3.5,
+            0
+          ],
+          [
+            -4.5,
+            -1
+          ],
+          [
+            4.5,
+            -1
+          ],
+          [
+            -5.5,
+            0
+          ],
+          [
+            5.5,
+            -1
+          ],
+          [
+            5.5,
+            0
+          ],
+          [
+            -3.5,
+            0
+          ],
+          [
+            -2.5,
+            0
+          ],
+          [
+            6.5,
+            0
+          ]
+        ],
+        "body": {
+          "x": -14,
+          "y": -10.5,
+          "w": 29,
+          "h": 10
+        }
+      },
+      "routines": {
+        "castle_start": [
+          {
+            "at": 0.38,
+            "field": "motor",
+            "value": "on",
+            "station": "switch",
+            "scale": 0.7555555555555555,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              9.5,
+              -4
+            ]
+          }
+        ],
+        "castle_door_open": [
+          {
+            "at": 0.26,
+            "field": "latch",
+            "value": 0,
+            "station": "buckle",
+            "scale": 0.7555555555555555,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              9.5,
+              -4
+            ]
+          },
+          {
+            "at": 0.42,
+            "field": "door",
+            "value": 0.35,
+            "station": "door",
+            "scale": 0.7555555555555555,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              7.5,
+              -4
+            ]
+          },
+          {
+            "at": 0.59,
+            "field": "door",
+            "value": 0.7,
+            "station": "door",
+            "scale": 0.7555555555555555,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              9.5,
+              -4
+            ]
+          },
+          {
+            "at": 0.74,
+            "field": "door",
+            "value": 1,
+            "station": "door",
+            "scale": 0.7555555555555555,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              8.5,
+              -4
+            ]
+          }
+        ],
+        "castle_hose_stow": [
+          {
+            "at": 0.27,
+            "field": "motor",
+            "value": "off",
+            "station": "switch",
+            "scale": 0.7555555555555555,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              9.5,
+              -3
+            ]
+          },
+          {
+            "at": 0.43,
+            "field": "hose",
+            "value": 0.35,
+            "station": "hose",
+            "scale": 0.7555555555555555,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              7.5,
+              -4
+            ]
+          },
+          {
+            "at": 0.59,
+            "field": "hose",
+            "value": 0.7,
+            "station": "hose",
+            "scale": 0.7555555555555555,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              9.5,
+              -4
+            ]
+          },
+          {
+            "at": 0.75,
+            "field": "hose",
+            "value": 1,
+            "station": "hose",
+            "scale": 0.7555555555555555,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              7.5,
+              -2
+            ]
+          }
+        ]
+      }
+    },
+    "celebrity_duck": {
+      "idle": {
+        "scale": 0.7407407407407407,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -3.5,
+            0
+          ],
+          [
+            2.5,
+            0
+          ]
+        ],
+        "body": {
+          "x": -10,
+          "y": -10.5,
+          "w": 13,
+          "h": 10
+        }
+      },
+      "travel": {
+        "kind": "support-union",
+        "facings": [
+          "right",
+          "left"
+        ],
+        "states": [
+          "idle",
+          "walking"
+        ],
+        "samples": 18,
+        "scale": 0.7407407407407407,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -3.5,
+            0
+          ],
+          [
+            2.5,
+            0
+          ],
+          [
+            -2.5,
+            -1
+          ],
+          [
+            1.5,
+            0
+          ],
+          [
+            -3.5,
+            -1
+          ],
+          [
+            2.5,
+            -1
+          ],
+          [
+            -4.5,
+            0
+          ],
+          [
+            3.5,
+            -1
+          ],
+          [
+            4.5,
+            0
+          ],
+          [
+            -1.5,
+            0
+          ],
+          [
+            -0.5,
+            0
+          ],
+          [
+            4.5,
+            -1
+          ],
+          [
+            -1.5,
+            -1
+          ],
+          [
+            5.5,
+            0
+          ]
+        ],
+        "body": {
+          "x": -10,
+          "y": -11.5,
+          "w": 21,
+          "h": 11
+        }
+      },
+      "routines": {
+        "castle_start": [
+          {
+            "at": 0.38,
+            "field": "motor",
+            "value": "on",
+            "station": "switch",
+            "scale": 0.7407407407407407,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -3.5,
+                0
+              ],
+              [
+                2.5,
+                0
+              ]
+            ],
+            "grip": [
+              7.5,
+              -5
+            ]
+          }
+        ],
+        "castle_door_open": [
+          {
+            "at": 0.26,
+            "field": "latch",
+            "value": 0,
+            "station": "buckle",
+            "scale": 0.7407407407407407,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -3.5,
+                0
+              ],
+              [
+                2.5,
+                0
+              ]
+            ],
+            "grip": [
+              7.5,
+              -5
+            ]
+          },
+          {
+            "at": 0.42,
+            "field": "door",
+            "value": 0.35,
+            "station": "door",
+            "scale": 0.7407407407407407,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -3.5,
+                0
+              ],
+              [
+                2.5,
+                0
+              ]
+            ],
+            "grip": [
+              5.5,
+              -5
+            ]
+          },
+          {
+            "at": 0.59,
+            "field": "door",
+            "value": 0.7,
+            "station": "door",
+            "scale": 0.7407407407407407,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -3.5,
+                0
+              ],
+              [
+                2.5,
+                0
+              ]
+            ],
+            "grip": [
+              7.5,
+              -5
+            ]
+          },
+          {
+            "at": 0.74,
+            "field": "door",
+            "value": 1,
+            "station": "door",
+            "scale": 0.7407407407407407,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -3.5,
+                0
+              ],
+              [
+                2.5,
+                0
+              ]
+            ],
+            "grip": [
+              6.5,
+              -5
+            ]
+          }
+        ],
+        "castle_hose_stow": [
+          {
+            "at": 0.27,
+            "field": "motor",
+            "value": "off",
+            "station": "switch",
+            "scale": 0.7407407407407407,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -3.5,
+                0
+              ],
+              [
+                2.5,
+                0
+              ]
+            ],
+            "grip": [
+              7.5,
+              -4
+            ]
+          },
+          {
+            "at": 0.43,
+            "field": "hose",
+            "value": 0.35,
+            "station": "hose",
+            "scale": 0.7407407407407407,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -3.5,
+                0
+              ],
+              [
+                2.5,
+                0
+              ]
+            ],
+            "grip": [
+              5.5,
+              -5
+            ]
+          },
+          {
+            "at": 0.59,
+            "field": "hose",
+            "value": 0.7,
+            "station": "hose",
+            "scale": 0.7407407407407407,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -3.5,
+                0
+              ],
+              [
+                2.5,
+                0
+              ]
+            ],
+            "grip": [
+              7.5,
+              -5
+            ]
+          },
+          {
+            "at": 0.75,
+            "field": "hose",
+            "value": 1,
+            "station": "hose",
+            "scale": 0.7407407407407407,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -3.5,
+                0
+              ],
+              [
+                2.5,
+                0
+              ]
+            ],
+            "grip": [
+              5.5,
+              -3
+            ]
+          }
+        ]
+      }
+    },
+    "lost_duckling": {
+      "idle": {
+        "scale": 0.6303030303030303,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -4.5,
+            0
+          ],
+          [
+            4.5,
+            0
+          ]
+        ],
+        "body": {
+          "x": -14,
+          "y": -6.5,
+          "w": 17,
+          "h": 6
+        }
+      },
+      "travel": {
+        "kind": "support-union",
+        "facings": [
+          "right",
+          "left"
+        ],
+        "states": [
+          "idle",
+          "walking"
+        ],
+        "samples": 18,
+        "scale": 0.6303030303030303,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -4.5,
+            0
+          ],
+          [
+            4.5,
+            0
+          ],
+          [
+            4.5,
+            -1
+          ],
+          [
+            -4.5,
+            -1
+          ],
+          [
+            -3.5,
+            -1
+          ],
+          [
+            3.5,
+            0
+          ],
+          [
+            -5.5,
+            0
+          ],
+          [
+            5.5,
+            -1
+          ],
+          [
+            5.5,
+            0
+          ],
+          [
+            -3.5,
+            0
+          ],
+          [
+            -2.5,
+            0
+          ],
+          [
+            6.5,
+            0
+          ]
+        ],
+        "body": {
+          "x": -14,
+          "y": -7.5,
+          "w": 29,
+          "h": 7
+        }
+      },
+      "routines": {
+        "castle_start": [
+          {
+            "at": 0.38,
+            "field": "motor",
+            "value": "on",
+            "station": "switch",
+            "scale": 0.6303030303030303,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              7.5,
+              -3
+            ]
+          }
+        ],
+        "castle_door_open": [
+          {
+            "at": 0.26,
+            "field": "latch",
+            "value": 0,
+            "station": "buckle",
+            "scale": 0.6303030303030303,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              7.5,
+              -3
+            ]
+          },
+          {
+            "at": 0.42,
+            "field": "door",
+            "value": 0.35,
+            "station": "door",
+            "scale": 0.6303030303030303,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              5.5,
+              -3
+            ]
+          },
+          {
+            "at": 0.59,
+            "field": "door",
+            "value": 0.7,
+            "station": "door",
+            "scale": 0.6303030303030303,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              7.5,
+              -3
+            ]
+          },
+          {
+            "at": 0.74,
+            "field": "door",
+            "value": 1,
+            "station": "door",
+            "scale": 0.6303030303030303,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              6.5,
+              -3
+            ]
+          }
+        ],
+        "castle_hose_stow": [
+          {
+            "at": 0.27,
+            "field": "motor",
+            "value": "off",
+            "station": "switch",
+            "scale": 0.6303030303030303,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              7.5,
+              -2
+            ]
+          },
+          {
+            "at": 0.43,
+            "field": "hose",
+            "value": 0.35,
+            "station": "hose",
+            "scale": 0.6303030303030303,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              5.5,
+              -3
+            ]
+          },
+          {
+            "at": 0.59,
+            "field": "hose",
+            "value": 0.7,
+            "station": "hose",
+            "scale": 0.6303030303030303,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              7.5,
+              -3
+            ]
+          },
+          {
+            "at": 0.75,
+            "field": "hose",
+            "value": 1,
+            "station": "hose",
+            "scale": 0.6303030303030303,
+            "anchorX": 36,
+            "groundRow": 39.5,
+            "feet": [
+              [
+                -4.5,
+                0
+              ],
+              [
+                4.5,
+                0
+              ]
+            ],
+            "grip": [
+              5.5,
+              -2
             ]
           }
         ]

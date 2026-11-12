@@ -11,3 +11,12 @@ export function sharedCastleFixture(cast='friend:marco',id='castle_start',index=
  const elapsed=metric.at*CASTLE_SCORES[id].duration,work={id,stage:phase==='exit'?'service_exit':'service',clock:elapsed,ride_elapsed:elapsed,shared_physical:true,physical_pilot:false,events:Array.from({length:index+1},(_,i)=>i),physical:{version:1,actor,root,target,station:metric.station,phase,contact_ready:phase==='hold'},shared:{version:1,attempt:'renderer-fixture:'+id,operator:{actor,cast,adapter:'regular',token:'visit-token',location:'Home Pond'},source_age:stage,phase:phase==='hold'?'operate':phase==='exit'?'exit':'waiting',cheese:{root:watchRoot,stance:[48,27],exit:[46,27],phase:cheesePhase,ready:cheesePhase==='hold'}}};
  return scene({camera,motion,particles:false,weatherEffects:false,duck:{x:watchRoot[0],y:watchRoot[1],stage,state:cheesePhase==='hold'?'idle':'walking',facing:true},visitor:{id:actor,name:profile.name,x:root[0],y:root[1],state:phase==='hold'?'idle':'walking',facing:phase==='hold',personality:profile.archetype},items:[{id:'bounce_house',instance:'shared-castle-fixture',x:origin[0],y:origin[1]}],living:{objects:{},ecology:{},plan:{kind:'item',target:'bounce_house',instance:'shared-castle-fixture',destination:origin,phase:'act',carnival_work:work}}});
 }
+
+// Rare and story contract fixtures remain synthetic renderer evidence.
+export function specialSharedCastleFixture(cast='traveling_merchant',adapter='rare',id='castle_start',index=0,options={}){
+ const s=sharedCastleFixture(cast,id,index,options),w=s.living.plan.carnival_work,actor=adapter==='story'?'story:pip':cast;
+ Object.assign(w.shared.operator,{actor,adapter,motion_token:'fixture-motion',...(adapter==='story'?{render_id:'story:lost_duckling',story_step:'arrival'}:{})});w.physical.actor=actor;
+ const source={...s.visitor,id:adapter==='story'?'story:lost_duckling':cast,castId:cast};s.visitor=null;
+ if(adapter==='story'){s.storyActor={...source,storyId:'lost_duckling'};s.living.story={id:'lost_duckling',step:'arrival'};}else s.rareVisitor=source;
+ return s;
+}

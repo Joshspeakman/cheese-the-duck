@@ -1,4 +1,4 @@
-import {castleActorPhysical} from './castle-care.mjs';
+import {castleActorPhysical,sharedCastleRecord,sharedCastleSource} from './castle-care.mjs';
 import {carnivalOccupants} from './carnival-routines.mjs';
 import {playkitPose,PLAYKIT_ROUTINES} from './playkit-routines.mjs';
 import {WeatherDrift,wrap} from './weather-wind.mjs';
@@ -457,7 +457,8 @@ export class LivingWorld {
       const original=this.characters.find(c=>r.actor==='cheese'?c.cheese:c.id===actorId);
       const home=this.objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.construction==='excursion-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination?.[i])<1.1));
       if(!original||!home)continue;
-      const source=r.actor==='cheese'?s.duck:s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
+      const source=r.actor==='cheese'?s.duck:r.work.shared_physical?sharedCastleSource(s,sharedCastleRecord(r.work)):s.visitor?.id===actorId?s.visitor:s.rareVisitor?.id===actorId?s.rareVisitor:{...s.storyActor,id:actorId,castId:'lost_duckling',name:'Pip',stage:'duckling'};
+      if(!source)continue;
       const actorPhysical=castleActorPhysical(r.work,r.role),shared=r.work.shared_physical===true;
       const walkingPhysical=(shared||r.actor==='cheese'&&r.work.physical_pilot)&&actorPhysical?.phase!=='hold';
       const ownPose=walkingPhysical||(shared&&(plan.paused||r.actor==='cheese'&&source.hatCare?.active));
