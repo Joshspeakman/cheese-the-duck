@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "actor": "adult-cheese",
+  "role": "a",
+  "facing": "right",
+  "reach_cells": 3,
+  "routines": {
+    "castle_start": [
+      {
+        "at": 0.38,
+        "field": "motor",
+        "value": "on",
+        "station": "switch",
+        "grip": [
+          15.5,
+          -4
+        ],
+        "scale": 0.675,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -3.5,
+            0
+          ],
+          [
+            2.5,
+            0
+          ]
+        ]
+      }
+    ],
+    "castle_door_open": [
+      {
+        "at": 0.26,
+        "field": "latch",
+        "value": 0,
+        "station": "buckle",
+        "grip": [
+          15.5,
+          -4
+        ],
+        "scale": 0.675,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -3.5,
+            0
+          ],
+          [
+            2.5,
+            0
+          ]
+        ]
+      },
+      {
+        "at": 0.42,
+        "field": "door",
+        "value": 0.35,
+        "station": "door",
+        "grip": [
+          13.5,
+          -4
+        ],
+        "scale": 0.675,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -3.5,
+            0
+          ],
+          [
+            2.5,
+            0
+          ]
+        ]
+      },
+      {
+        "at": 0.59,
+        "field": "door",
+        "value": 0.7,
+        "station": "door",
+        "grip": [
+          15.5,
+          -4
+        ],
+        "scale": 0.675,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -3.5,
+            0
+          ],
+          [
+            2.5,
+            0
+          ]
+        ]
+      },
+      {
+        "at": 0.74,
+        "field": "door",
+        "value": 1,
+        "station": "door",
+        "grip": [
+          14.5,
+          -4
+        ],
+        "scale": 0.675,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -3.5,
+            0
+          ],
+          [
+            2.5,
+            0
+          ]
+        ]
+      }
+    ],
+    "castle_hose_stow": [
+      {
+        "at": 0.27,
+        "field": "motor",
+        "value": "off",
+        "station": "switch",
+        "grip": [
+          15.5,
+          -3
+        ],
+        "scale": 0.675,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -3.5,
+            0
+          ],
+          [
+            2.5,
+            0
+          ]
+        ]
+      },
+      {
+        "at": 0.43,
+        "field": "hose",
+        "value": 0.35,
+        "station": "hose",
+        "grip": [
+          13.5,
+          -4
+        ],
+        "scale": 0.675,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -3.5,
+            0
+          ],
+          [
+            2.5,
+            0
+          ]
+        ]
+      },
+      {
+        "at": 0.59,
+        "field": "hose",
+        "value": 0.7,
+        "station": "hose",
+        "grip": [
+          15.5,
+          -4
+        ],
+        "scale": 0.675,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -3.5,
+            0
+          ],
+          [
+            2.5,
+            0
+          ]
+        ]
+      },
+      {
+        "at": 0.75,
+        "field": "hose",
+        "value": 1,
+        "station": "hose",
+        "grip": [
+          13.5,
+          -2
+        ],
+        "scale": 0.675,
+        "anchorX": 36,
+        "groundRow": 39.5,
+        "feet": [
+          [
+            -3.5,
+            0
+          ],
+          [
+            2.5,
+            0
+          ]
+        ]
+      }
+    ]
+  }
+}

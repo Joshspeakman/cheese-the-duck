@@ -46,10 +46,10 @@
     },
     {
       "id": "hard_systems_advice",
-      "owner": "milestone_advisor",
+      "owner": "physical_advisor",
       "model": "gpt-6-astra",
       "reasoning": "xhigh",
-      "status": "candidate_audit_running",
+      "status": "all_age_contact_policy_review",
       "files": [
         "engine/overhaul/animation-milestone/extra-high-advice.md"
       ],
@@ -119,15 +119,15 @@
     },
     {
       "id": "castle_native_contacts",
-      "owner": "medium_specimen_art",
-      "status": "implementing_native_root_and_arrival_gate",
-      "scope": "Native roots and arrival-gated control effects; begin castle_start then door/hose"
+      "owner": "native_regressions",
+      "status": "three_adult_solo_controls_verified",
+      "scope": "Start, two-station door opening and blower shutdown/hose stow; no whole repertoire credit"
     },
     {
       "id": "castle_renderer_contacts",
-      "owner": "medium_food_art",
-      "status": "implementing_camera_independent_physical_projection",
-      "scope": "Native root projection, consistent control geometry across camera and aspect ratios"
+      "owner": "projection_finish",
+      "status": "three_controls_replayed_all_age_reach_review_complete",
+      "scope": "Authoritative station and root, actual walking and contact, all-age reach review next"
     }
   ]
 }

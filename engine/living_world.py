@@ -676,15 +676,16 @@ class LivingPond:
             self.cancel()
             self.notice('The saved control position is invalid. Cheese steps away without completing the work.')
             return
+        direct_care = g.duck.current_action in ('feed','play','clean','pet','sleep')
         if plan.get('paused'):
-            castle_work.physical_pause(self,plan)
+            castle_work.physical_pause(self,plan,preserve_state=direct_care)
             return
         if self.location != plan['location'] or not self.available():
             # Dialogues, minigames, sleep and journeys take priority over plans.
             plan['paused'] = True
-            castle_work.physical_pause(self,plan)
+            castle_work.physical_pause(self,plan,preserve_state=direct_care)
             return
-        if g.duck.current_action in ('feed','play','clean','pet','sleep'):
+        if direct_care:
             castle_work.physical_pause(self,plan,preserve_state=True)
             return
         if plan.get('portable'):
