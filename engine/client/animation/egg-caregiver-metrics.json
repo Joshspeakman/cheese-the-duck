@@ -1,0 +1,1069 @@
+{
+  "schema_version": 1,
+  "actor": "cheese",
+  "stage": "egg",
+  "kind": "stationary-shell-envelope",
+  "scale": 0.66,
+  "groundRow": 39.5,
+  "appearance": "original-egg",
+  "motion_modes": [
+    "normal",
+    "reduced"
+  ],
+  "sampling": {
+    "method": "all-eight-shell-phases-and-analytic-idle-offset-extrema",
+    "time_samples": 25,
+    "offset_divisor": 1.5
+  },
+  "facings": {
+    "right": {
+      "anchorX": 36,
+      "body": {
+        "x": -7,
+        "y": -7.566666666666666,
+        "w": 14,
+        "h": 7.133333333333333
+      },
+      "shell": {
+        "x": -7,
+        "y": -6.566666666666666,
+        "w": 14,
+        "h": 6.133333333333333
+      },
+      "shell_base": {
+        "x": -5,
+        "y": -1.5666666666666667,
+        "w": 10,
+        "h": 1.1333333333333333
+      }
+    },
+    "left": {
+      "anchorX": 39,
+      "body": {
+        "x": -6,
+        "y": -7.566666666666666,
+        "w": 14,
+        "h": 7.133333333333333
+      },
+      "shell": {
+        "x": -6,
+        "y": -6.566666666666666,
+        "w": 14,
+        "h": 6.133333333333333
+      },
+      "shell_base": {
+        "x": -4,
+        "y": -1.5666666666666667,
+        "w": 10,
+        "h": 1.1333333333333333
+      }
+    }
+  },
+  "body": {
+    "x": -7,
+    "y": -7.566666666666666,
+    "w": 15,
+    "h": 7.133333333333333
+  },
+  "shell": {
+    "x": -7,
+    "y": -6.566666666666666,
+    "w": 15,
+    "h": 6.133333333333333
+  },
+  "shell_base": {
+    "x": -5,
+    "y": -1.5666666666666667,
+    "w": 11,
+    "h": 1.1333333333333333
+  },
+  "caregivers": {
+    "friend:marco": {
+      "scale": 0.7333333333333333,
+      "body": {
+        "x": -15,
+        "y": -19.5,
+        "w": 31,
+        "h": 21
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:amelia": {
+      "scale": 0.7583333333333333,
+      "body": {
+        "x": -12,
+        "y": -16.5,
+        "w": 25,
+        "h": 18
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:columbus": {
+      "scale": 0.7466666666666667,
+      "body": {
+        "x": -14,
+        "y": -19.5,
+        "w": 29,
+        "h": 21
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:vasco": {
+      "scale": 0.6974358974358974,
+      "body": {
+        "x": -16,
+        "y": -18.5,
+        "w": 33,
+        "h": 20
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:marina": {
+      "scale": 0.8,
+      "body": {
+        "x": -14,
+        "y": -13.5,
+        "w": 29,
+        "h": 15
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:einstein": {
+      "scale": 0.7904761904761904,
+      "body": {
+        "x": -14,
+        "y": -14.5,
+        "w": 29,
+        "h": 16
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:newton": {
+      "scale": 0.7142857142857143,
+      "body": {
+        "x": -15,
+        "y": -20.566666666666666,
+        "w": 31,
+        "h": 22.066666666666666
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:ada": {
+      "scale": 0.675,
+      "body": {
+        "x": -11,
+        "y": -16.5,
+        "w": 23,
+        "h": 18
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:darwin": {
+      "scale": 0.7733333333333333,
+      "body": {
+        "x": -14,
+        "y": -18.5,
+        "w": 29,
+        "h": 20
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:curie": {
+      "scale": 0.7555555555555555,
+      "body": {
+        "x": -14,
+        "y": -12.5,
+        "w": 29,
+        "h": 14
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:picasso": {
+      "scale": 0.8102564102564103,
+      "body": {
+        "x": -14,
+        "y": -17.5,
+        "w": 29,
+        "h": 19
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:frida": {
+      "scale": 0.6833333333333333,
+      "body": {
+        "x": -15,
+        "y": -16.5,
+        "w": 31,
+        "h": 18
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:leonardo": {
+      "scale": 0.7372549019607844,
+      "body": {
+        "x": -14,
+        "y": -17.5,
+        "w": 29,
+        "h": 19
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:monet": {
+      "scale": 0.717948717948718,
+      "body": {
+        "x": -16,
+        "y": -18.5,
+        "w": 33,
+        "h": 20
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:georgia": {
+      "scale": 0.8717948717948718,
+      "body": {
+        "x": -17,
+        "y": -16.5,
+        "w": 35,
+        "h": 18
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:bubbles": {
+      "scale": 0.6666666666666666,
+      "body": {
+        "x": -14,
+        "y": -13.5,
+        "w": 29,
+        "h": 15
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:giggles": {
+      "scale": 0.7022222222222222,
+      "body": {
+        "x": -14,
+        "y": -21.5,
+        "w": 29,
+        "h": 23
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:zippy": {
+      "scale": 0.65,
+      "body": {
+        "x": -10,
+        "y": -19.5,
+        "w": 21,
+        "h": 21
+      },
+      "samples": 1342,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:bouncy": {
+      "scale": 0.6083333333333333,
+      "body": {
+        "x": -15,
+        "y": -20.566666666666666,
+        "w": 31,
+        "h": 22.133333333333333
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:sunny": {
+      "scale": 0.7111111111111111,
+      "body": {
+        "x": -14,
+        "y": -15.5,
+        "w": 29,
+        "h": 17
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:shadow": {
+      "scale": 0.7583333333333333,
+      "body": {
+        "x": -16,
+        "y": -16.5,
+        "w": 33,
+        "h": 18
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:phantom": {
+      "scale": 0.8380952380952381,
+      "body": {
+        "x": -14,
+        "y": -19.5,
+        "w": 29,
+        "h": 21
+      },
+      "samples": 1310,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:enigma": {
+      "scale": 0.6666666666666666,
+      "body": {
+        "x": -14,
+        "y": -13.5,
+        "w": 29,
+        "h": 15
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:whisper": {
+      "scale": 0.6564102564102564,
+      "body": {
+        "x": -16,
+        "y": -13.5,
+        "w": 33,
+        "h": 15
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:raven": {
+      "scale": 0.8923076923076924,
+      "body": {
+        "x": -14,
+        "y": -13.5,
+        "w": 29,
+        "h": 15
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:charity": {
+      "scale": 0.7377777777777778,
+      "body": {
+        "x": -14,
+        "y": -15.5,
+        "w": 29,
+        "h": 17
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:grace": {
+      "scale": 0.7916666666666666,
+      "body": {
+        "x": -15,
+        "y": -16.5,
+        "w": 31,
+        "h": 18
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:blessing": {
+      "scale": 0.6416666666666667,
+      "body": {
+        "x": -15,
+        "y": -18.5,
+        "w": 31,
+        "h": 20
+      },
+      "samples": 1310,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:angel": {
+      "scale": 0.6358974358974359,
+      "body": {
+        "x": -14,
+        "y": -13.5,
+        "w": 29,
+        "h": 15
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:heart": {
+      "scale": 0.72,
+      "body": {
+        "x": -14,
+        "y": -15.5,
+        "w": 29,
+        "h": 17
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:cookie": {
+      "scale": 0.7555555555555555,
+      "body": {
+        "x": -15,
+        "y": -21.5,
+        "w": 31,
+        "h": 23
+      },
+      "samples": 1310,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:biscuit": {
+      "scale": 0.7636363636363637,
+      "body": {
+        "x": -16,
+        "y": -15.5,
+        "w": 33,
+        "h": 17
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:truffle": {
+      "scale": 0.7428571428571429,
+      "body": {
+        "x": -15,
+        "y": -19.5,
+        "w": 31,
+        "h": 21
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:pepper": {
+      "scale": 0.6666666666666666,
+      "body": {
+        "x": -10,
+        "y": -16.5,
+        "w": 21,
+        "h": 18
+      },
+      "samples": 1246,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:ginger": {
+      "scale": 0.6333333333333333,
+      "body": {
+        "x": -15,
+        "y": -16.5,
+        "w": 31,
+        "h": 18
+      },
+      "samples": 1342,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:dash": {
+      "scale": 0.7644444444444445,
+      "body": {
+        "x": -12,
+        "y": -16.5,
+        "w": 25,
+        "h": 18
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:sprint": {
+      "scale": 0.7897435897435897,
+      "body": {
+        "x": -14,
+        "y": -13.5,
+        "w": 29,
+        "h": 15
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:champion": {
+      "scale": 0.7833333333333333,
+      "body": {
+        "x": -14,
+        "y": -16.5,
+        "w": 29,
+        "h": 18
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:victor": {
+      "scale": 0.7,
+      "body": {
+        "x": -15,
+        "y": -16.5,
+        "w": 31,
+        "h": 18
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friend:rocket": {
+      "scale": 0.7076923076923077,
+      "body": {
+        "x": -14,
+        "y": -19.566666666666666,
+        "w": 29,
+        "h": 21.133333333333333
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "traveling_merchant": {
+      "scale": 0.7555555555555555,
+      "body": {
+        "x": -14,
+        "y": -20.5,
+        "w": 29,
+        "h": 22
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "celebrity_duck": {
+      "scale": 0.7407407407407407,
+      "body": {
+        "x": -16,
+        "y": -21.5,
+        "w": 33,
+        "h": 23
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "lost_duckling": {
+      "scale": 0.6303030303030303,
+      "body": {
+        "x": -14,
+        "y": -11.5,
+        "w": 29,
+        "h": 12.066666666666666
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "friendly_goose": {
+      "scale": 0.5653333333333334,
+      "body": {
+        "x": -24,
+        "y": -24.5,
+        "w": 49,
+        "h": 25.066666666666666
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "wise_owl": {
+      "scale": 0.46190476190476193,
+      "body": {
+        "x": -18,
+        "y": -26.5,
+        "w": 37,
+        "h": 27.066666666666666
+      },
+      "samples": 1262,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "mysterious_crow": {
+      "scale": 0.4811594202898551,
+      "body": {
+        "x": -20,
+        "y": -23.5,
+        "w": 41,
+        "h": 24.066666666666666
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    },
+    "grumpy_toad": {
+      "scale": 0.4631578947368421,
+      "body": {
+        "x": -19,
+        "y": -19.5,
+        "w": 39,
+        "h": 21
+      },
+      "samples": 1358,
+      "states": [
+        "idle",
+        "signature",
+        "walking",
+        "working"
+      ],
+      "facings": [
+        "right",
+        "left"
+      ],
+      "appearance": "authored-visitor-profile"
+    }
+  }
+}

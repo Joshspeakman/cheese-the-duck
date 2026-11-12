@@ -361,8 +361,10 @@ try:
 
         pond,iid,obj,key,mover = fixture('story:pip',age='egg')
         initial = cheese_root()
-        ok,_ = carnival.request(pond,'bounce_house','castle_door_open',iid,together=True)
-        check(not ok and pond.state['plan'] is None and cheese_root() == initial and obj['castle']['latch'] == 1,
+        # The public invitation now has a dedicated stationary egg caregiver.
+        # This legacy walking-observer adapter must still reject an egg outright.
+        proposal,_ = castle_shared.propose(pond,'castle_door_open',iid)
+        check(proposal is None and pond.state['plan'] is None and cheese_root() == initial and obj['castle']['latch'] == 1,
               'an unhatched Cheese cannot enter the walking observer adapter')
         game.duck.growth_stage = 'hatchling'
         check(pond.state['plan'] is None and not pond.minds.carnival_guests,

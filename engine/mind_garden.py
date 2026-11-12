@@ -453,7 +453,7 @@ class MindGarden:
                     self.pond.state['friends'][key].update(activity='sheltering' if self.housing[key]['phase']=='inside' else 'walking to shelter',location=self.pond.location)
                 elif key in self.carnival_guests and key in self.pond.state['friends']:
                     rider=self.carnival_guests[key]
-                    activity='walking to the boarding platform' if rider['phase']=='approach' else 'watching from the platform' if rider['mode']=='watch' else rider['work']['label']
+                    activity=carnival.guest_activity(rider)
                     self.pond.state['friends'][key].update(activity=activity,location=self.pond.location)
                 elif key in self.nest_helpers and key in self.pond.state['friends']:
                     helper=self.nest_helpers[key]

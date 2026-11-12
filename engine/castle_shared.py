@@ -317,6 +317,23 @@ def advance(pond,plan,dt):
     ph['contact_ready']=True
     if plan['phase']!='act':return True
     from engine import carnival
+    cursor=ph['station_index'];steps=castle.physical_stations(w)
+    status,reason=advance_control_clock(pond,plan,dt,lambda:actors.live(pond,s['operator']),lambda:proposal_clear(pond,plan,s))
+    if w['events']:s['cheese']['reaction_event']=w['events'][-1]
+    if status=='blocked':return interrupt(pond,plan,reason)
+    if status=='transfer':
+        site=s['sites'][cursor+1];ph.update(station_index=cursor+1,station=site['station'],target=site['target'],stance=site['stance'],phase='approach',route=s['operator_routes'][cursor+1],waypoint=0,contact_ready=False)
+    elif status=='exit':
+        s['phase']='exit';ph.update(phase='exit',route=s['operator_exit_route'],waypoint=0,contact_ready=False);ch.update(phase='exit',route=s['cheese_exit_route'],waypoint=0,ready=False);carnival.stage(w,'service_exit',0)
+    pond._cache=None
+    return True
+
+
+def advance_control_clock(pond,plan,dt,resolve_actor,preflight):
+    """Consume only the existing bounded control clock; no movement or rewards."""
+    from engine import carnival
+    w=plan['carnival_work'];s=w['shared'];ph=w['physical']
+    metricrows=operator_metrics(s['operator']['cast'],w['id'])
     obj=pond.object_state('bounce_house',plan)
     if w['stage']=='queue':w['start']=copy.deepcopy(castle.state(obj));carnival.stage(w,'service',castle.ROUTINES[w['id']]['duration'])
     spec=castle.ROUTINES[w['id']];duration=spec['duration'];cursor=ph['station_index'];steps=castle.physical_stations(w);boundary=steps[cursor+1][0]*duration if cursor+1<len(steps) else duration
@@ -327,17 +344,14 @@ def advance(pond,plan,dt):
         step=stop-old;w['clock']=stop;w['ride_elapsed']=stop;w['elapsed']+=step;remaining-=step
         for i,e in enumerate(spec['effects']):
             if old<e[0]*duration<=stop:
-                if i==0 and not proposal_clear(pond,plan,s):return interrupt(pond,plan,'A future shared route is no longer safe.')
-                metric=metricrows[i];actual=actors.live(pond,s['operator'])
-                if not actual or not near(actual['root'],ph['stance']) or castle.reach_distance(actual['root'],ph['target'],metric['grip'],metric['scale'])>3:return interrupt(pond,plan,'The operator lost its actual contact stance.')
-                if w['id']=='castle_hose_stow' and e[1]=='hose' and (0 not in w['events'] or obj['castle']['motor']!='off'):return interrupt(pond,plan,'The blower must stop before the hose is coiled.')
-                castle.apply(obj,w,i,e);s['cheese']['reaction_event']=i
-    if w['clock']>=boundary and cursor+1<len(steps):
-        site=s['sites'][cursor+1];ph.update(station_index=cursor+1,station=site['station'],target=site['target'],stance=site['stance'],phase='approach',route=s['operator_routes'][cursor+1],waypoint=0,contact_ready=False)
-    elif w['clock']>=duration:
-        s['phase']='exit';ph.update(phase='exit',route=s['operator_exit_route'],waypoint=0,contact_ready=False);ch.update(phase='exit',route=s['cheese_exit_route'],waypoint=0,ready=False);carnival.stage(w,'service_exit',0)
-    pond._cache=None
-    return True
+                if i==0 and not preflight():return 'blocked','A future shared route is no longer safe.'
+                metric=metricrows[i];actual=resolve_actor()
+                if not actual or not near(actual['root'],ph['stance']) or castle.reach_distance(actual['root'],ph['target'],metric['grip'],metric['scale'])>3:return 'blocked','The operator lost its actual contact stance.'
+                if w['id']=='castle_hose_stow' and e[1]=='hose' and (0 not in w['events'] or obj['castle']['motor']!='off'):return 'blocked','The blower must stop before the hose is coiled.'
+                castle.apply(obj,w,i,e)
+    if w['clock']>=boundary and cursor+1<len(steps):return 'transfer',''
+    if w['clock']>=duration:return 'exit',''
+    return 'hold',''
 
 
 def completion_ready(pond,plan):

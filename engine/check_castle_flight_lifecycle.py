@@ -466,7 +466,7 @@ try:
             check(mover._shared_motion_owner is None,invalidation+': stale flight target ownership is gone')
             if invalidation == 'departure':check(game.atmosphere.current_visitor[1] == arrival,'Flutter departure never extends the visit')
 
-        for release_case in ('premature_callback','new_destination'):
+        for release_case in ('premature_callback','new_destination','malformed_callback'):
             pond,plan,work,obj,key,mover = request()
             start = root(mover)
             until(lambda: not close_points(root(mover),start),'Flutter actual moving cleanup')
@@ -480,8 +480,15 @@ try:
             else:
                 mover.target = (current[0]-2,current[1])
                 destination = mover.target
-                pond.cancel()
-                check(mover.target == destination,'flight release preserves an independently replaced destination')
+                if release_case == 'malformed_callback':
+                    pond.minds.carnival_guests[key] = 'broken lease'
+                    pond._complete(plan)
+                    check(mover.target == destination and not pond.minds.carnival_guests,
+                          'direct malformed-lease callback removes garbage without claiming an independent target')
+                    step()
+                else:
+                    pond.cancel()
+                    check(mover.target == destination,'flight release preserves an independently replaced destination')
             check(not work['events'] and not pond.minds.carnival_guests and mover._shared_motion_owner is None and rewards(pond,obj,key) == before,
                   release_case+': no contact or shared/generic reward')
 

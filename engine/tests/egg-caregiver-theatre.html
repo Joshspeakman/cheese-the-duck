@@ -1,0 +1,44 @@
+<!doctype html><meta charset="utf-8"><title>Egg caregiver renderer review</title>
+<script type="module">
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+import {characterSprite} from '../client/ultra-characters.mjs';
+import {castleGeometry,eggCaregiverScene,sharedCastleSource,CASTLE_SCORES} from '../client/castle-care.mjs';
+import {projectCastleWorld,castleArtWorld} from '../client/castle-projection.mjs';
+import {actorPitches} from '../client/actor-projection.mjs';
+import GEOMETRY from '../client/animation/castle-geometry.json' with {type:'json'};
+import {eggCaregiverFixture} from './egg-caregiver-fixtures.mjs';
+const near=(a,b,label)=>{if(!Number.isFinite(a)||!Number.isFinite(b)||Math.abs(a-b)>1e-7)throw Error(label+': '+a+' != '+b);};
+window.reviewEggCaregiver=()=>{
+ const view=new SceneCanvas();view.effects.level='quiet';const images={};let cases=0;
+ for(const cast of ['friend:marco','traveling_merchant','wise_owl','grumpy_toad'])for(const [width,height]of [[1200,800],[1800,800],[900,1100]])for(const phase of ['approach','hold','exit']){
+  const s=eggCaregiverFixture(cast,cast.startsWith('friend:')?'regular':'rare','castle_start',0,{phase});view.resize(width,height);view.draw(s,2.1,0);const home=view.world.objects.find(o=>o.id==='bounce_house');if(home?.carnivalRiders?.length!==1||!view.world.characters.find(c=>c.cheese))throw Error('Missing caregiver or original egg');images[cast.replace('friend:','')+'-'+width+'x'+height+'-'+phase]=view.canvas.toDataURL();cases++;
+ }
+ return {images,cases,scope:'renderer-fixtures-only'};
+};
+window.replayNativeEggCaregiver=frames=>{
+ if(!Array.isArray(frames)||!frames.length)throw Error('Native egg snapshots required');
+ const view=new SceneCanvas();view.effects.level='quiet';const images={},bindings={},effects={};let cases=0,roots=0,contacts=0,eggChecks=0;
+ for(const [width,height]of [[1200,800],[1800,800],[900,1100]])for(const shifted of [false,true])for(const reduced of [false,true]){
+  view.resize(width,height);const variant=width+'x'+height+'/'+shifted+'/'+reduced;
+  for(const [i,source]of frames.entries()){
+   const s=structuredClone(source),w=s.living?.plan?.carnival_work,shared=eggCaregiverScene(s);if(!shared)throw Error('Invalid native egg binding');if(shifted)s.camera={...s.camera,x:s.camera.x+3,y:s.camera.y+2};if(reduced)s.motion=false;
+   const before=JSON.stringify(s),time=i*.2;view.draw(s,time,.2);if(JSON.stringify(s)!==before)throw Error('Mutated native source');
+   const home=view.world.objects.find(o=>o.instance===s.living.plan.instance),members=home?.carnivalRiders,egg=view.world.characters.find(c=>c.cheese),guest=sharedCastleSource(s,shared);if(members?.length!==1||!egg||!guest)throw Error('Egg relocated into staging or caregiver missing');
+   const op=members[0],g=castleGeometry(home,op,view.sx,view.sy);if(op.actor!==shared.operator.actor||op.character.profileId!==shared.operator.cast||op.role!=='a')throw Error('Wrong caregiver');near(guest.x,w.physical.root[0],'source caregiver x');near(guest.y,w.physical.root[1],'source caregiver y');
+   const p=projectCastleWorld(home.physicalCastle,w.physical.root,view.sx,view.sy);near(g.character.x*view.sx,p.x,'caregiver displayed x');near(g.character.y*view.sy,p.y,'caregiver displayed y');if(!g.authoritativeRoot)throw Error('Renderer owns caregiver root');roots++;
+   const ep=projectCastleWorld(home.physicalCastle,shared.recipient.root,view.sx,view.sy),expected=characterSprite({...s.duck,motion:s.motion!==false,performance:null},s.motion===false?0:time);near(egg.x*view.sx,ep.x,'egg displayed root x');near(egg.y*view.sy,ep.y,'egg displayed root y');roots++;
+   for(const key of ['art','fills','offsetY','phase','scale','facing','rig','grip','bill','performance'])if(JSON.stringify(egg[key])!==JSON.stringify(expected[key]))throw Error('Original egg changed '+key);if(egg.physicalCastleActor)throw Error('Egg mechanically staged');eggChecks++;
+   for(const c of [op.character,egg]){const pitch=actorPitches(c,view.sx,view.sy);near(pitch.ch/pitch.cw,1.5,'actor glyph aspect');}
+   const anchor=GEOMETRY.controls[w.physical.station],nativeTarget=castleArtWorld(home.physicalCastle.origin,anchor.x,anchor.y,{center:true}),target=projectCastleWorld(home.physicalCastle,nativeTarget,view.sx,view.sy);near(w.physical.target[0],nativeTarget[0],'fixed target x');near(w.physical.target[1],nativeTarget[1],'fixed target y');
+   const key=shared.operator.adapter+'/'+shared.operator.cast+'/'+w.id,b=bindings[key]??={adapter:shared.operator.adapter,cast:shared.operator.cast,score:w.id,cases:0,phases:new Set(),effects:new Set()};b.cases++;b.phases.add(w.physical.phase);
+   if((w.physical.phase!=='hold'||!w.physical.contact_ready||shared.phase!=='operate'||s.living.plan.paused)&&g.points.length)throw Error('Premature caregiver contact');
+   if(s._physicalEvent!==undefined){const index=s._physicalEvent,effect=CASTLE_SCORES[w.id].effects[index];if(!effect||!w.events.includes(index))throw Error('Invalid consumed effect');near(w.ride_elapsed,effect[0]*CASTLE_SCORES[w.id].duration,'effect clock');if(!g.tip||!g.reachable||g.pose.contact<1-1e-8)throw Error('Missing caregiver effect contact');near(g.tip.x,target.x,'tip x');near(g.tip.y,target.y,'tip y');b.effects.add(index);(effects[variant+'/'+key]??=new Set()).add(index);contacts++;}
+   if(!shifted&&!reduced&&['friend:marco','traveling_merchant','lost_duckling','friendly_goose','wise_owl','mysterious_crow','grumpy_toad'].includes(shared.operator.cast)&&(s._physicalEvent===undefined||s._physicalEvent===0)){const imageKey=shared.operator.adapter+'-'+shared.operator.cast.replace('friend:','')+'-'+w.id+'-'+width+'x'+height+'-'+w.physical.phase+(s._physicalEvent===undefined?'':'-contact');if(!images[imageKey])images[imageKey]=view.canvas.toDataURL();}
+   cases++;
+  }
+  for(const [key,b]of Object.entries(bindings))if(effects[variant+'/'+key]?.size!==CASTLE_SCORES[b.score].effects.length)throw Error('Missing native caregiver effects '+variant+'/'+key);
+ }
+ const scores=Object.fromEntries(Object.entries(bindings).map(([key,b])=>[key,{...b,phases:[...b.phases],effects:[...b.effects]}]));for(const b of Object.values(scores))if(!b.phases.includes('approach')||!b.phases.includes('exit'))throw Error('Native caregiver travel coverage incomplete');
+ return {images,scores,cases,roots,contacts,eggChecks,sourceFrames:frames.length,profiles:new Set(Object.values(scores).map(b=>b.cast)).size,windowSizes:3,cameras:2,motionModes:2,scope:'native-snapshots-render-only'};
+};
+</script>
