@@ -1542,6 +1542,8 @@ class AtmosphereManager:
         self.current_season: Season = self._calculate_season()
         self.day_fortune: Optional[DayFortune] = None
         self.current_visitor: Optional[Tuple[Visitor, str]] = None  # (visitor, arrival_time)
+        # Transient world-presence reservations; never saved as friendship state.
+        self.excluded_visitors = set()
         self.last_fortune_date: Optional[str] = None
         self.last_weather_check: Optional[str] = None
         self.visitor_history: List[str] = []  # Track who has visited
@@ -1803,6 +1805,8 @@ class AtmosphereManager:
             # Build weighted visitor list (friends visit more often)
             candidates = []
             for visitor_id, visitor in VISITORS.items():
+                if visitor_id in self.excluded_visitors:
+                    continue
                 base_chance = visitor.appearance_chance
 
                 # Increase chance for visitors with higher friendship

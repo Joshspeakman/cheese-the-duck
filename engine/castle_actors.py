@@ -41,6 +41,7 @@ def _release_regular(pond,actor,lease):
 
 
 SPECIAL=('traveling_merchant','celebrity_duck','lost_duckling')
+SPECIES=('friendly_goose','wise_owl','mysterious_crow','grumpy_toad')
 IDENTITY=('actor','cast','adapter','token','location')
 
 
@@ -55,7 +56,7 @@ def rare(pond):
     g=pond.game;visit=getattr(g.atmosphere,'current_visitor',None);m=getattr(g,'guest_motion',None)
     if not visit or not m:return None
     visitor,arrival=visit
-    if visitor.id not in SPECIAL:return None
+    if visitor.id not in SPECIAL+SPECIES:return None
     area=getattr(g.exploration,'current_area',None)
     token=(visitor.id,arrival,getattr(area,'id',getattr(area,'name','pond')))
     a=m.actor

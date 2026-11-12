@@ -7,9 +7,14 @@ import {CASTLE_SCORES,castlePose,SHARED_RARE_CASTS} from '../client/castle-care.
 import {characterSprite} from '../client/ultra-characters.mjs';
 export const REGULAR_CAST_IDS=Object.values(GUEST_CAST).filter(p=>p.id.startsWith('friend:')&&!p.rare&&p.species==='duck').map(p=>p.id);
 export const SHARED_CAST_IDS=[...REGULAR_CAST_IDS,...SHARED_RARE_CASTS];
+export function guestWalkingTime(profile,phase){
+ const seed=[...profile.id].reduce((n,c)=>n+c.charCodeAt(0),0),offset=seed%19*.17;
+ return ['duck','duckling'].includes(profile.species)?(phase+.1)*4.5/(profile.pace*5):((phase+.1)/profile.pace-offset+8/profile.pace*Math.ceil(offset*profile.pace/8));
+}
 function support(c,mirrored=false){
  if(c.clipped||!c.rig?.feet?.length)throw Error('Missing or clipped guest support: '+c.profileId);
- return {scale:c.scale,anchorX:c.anchorX,groundRow:c.groundRow,feet:c.rig.feet.map(f=>[(mirrored?c.width-1-f.x:f.x)+.5-c.anchorX,f.y+.5-c.groundRow]),body:{x:(mirrored?c.width-c.rig.body.x-c.rig.body.w:c.rig.body.x)-c.anchorX,y:c.rig.body.y-c.groundRow,w:c.rig.body.w,h:c.rig.body.h}};
+ const body=c.rig.supportBody||c.rig.drawnBody||c.rig.body;
+ return {scale:c.scale,anchorX:c.anchorX,groundRow:c.groundRow,feet:c.rig.feet.map(f=>[(mirrored?c.width-1-f.x:f.x)+.5-c.anchorX,f.y+.5-c.groundRow]),body:{x:(mirrored?c.width-body.x-body.w:body.x)-c.anchorX,y:body.y-c.groundRow,w:body.w,h:body.h}};
 }
 function supportUnion(samples,states){
  const {scale,anchorX,groundRow}=samples[0],left=Math.min(...samples.map(m=>m.body.x)),top=Math.min(...samples.map(m=>m.body.y));
@@ -27,7 +32,7 @@ export function exportCastleGuestMetrics(){
   const travelSamples=[];
   for(const facing of [true,false]){
    travelSamples.push(support(characterSprite({...duck,facing},0,true),!facing));
-   for(let phase=0;phase<8;phase++)travelSamples.push(support(characterSprite({...duck,facing,state:'walking'},(phase+.1)*4.5/(profile.pace*5),true),!facing));
+   for(let phase=0;phase<8;phase++)travelSamples.push(support(characterSprite({...duck,facing,state:'walking'},guestWalkingTime(profile,phase),true),!facing));
   }
   const travel=supportUnion(travelSamples,['idle','walking']),routines={};casts[cast]={idle,travel,routines};
   for(const id of ['castle_start','castle_door_open','castle_hose_stow']){
@@ -47,6 +52,14 @@ export function exportCastleGuestMetrics(){
     if(cast==='lost_duckling')for(const motion of [true,false])if(JSON.stringify(actual)!==JSON.stringify(sample(motion,true,true)))throw Error('Story Pip differs from rare Pip contact geometry');
     return {at,field,value,station,...actual};
    });
+  }
+  if(!['duck','duckling'].includes(profile.species)){
+   for(const id of ['castle_start','castle_door_open','castle_hose_stow'])for(let step=0;step<=100;step++)for(const facing of [true,false])for(const motion of [true,false]){
+    const clock=step/100*CASTLE_SCORES[id].duration,base={id,stage:'service',clock,ride_elapsed:clock},station=castlePose(base).station;
+    const routine={...base,shared_physical:true,shared:{version:1,attempt:'support-export',operator:{actor,cast,adapter:'rare',motion_token:'metric-motion',token:'metric-token',location:'Home Pond'},source_age:'adult',phase:'operate',cheese:{root:[0,0],stance:[0,0],exit:[0,0],phase:'hold',ready:true}},physical:{version:1,actor,phase:'hold',station,root:[0,0],target:[0,0],contact_ready:true}};
+    travelSamples.push(support(characterSprite({...duck,facing,performance:{kind:'carnival',routine,role:'a',motion}},0,true),!facing));
+   }
+   casts[cast].travel=supportUnion(travelSamples,['idle','walking','working']);
   }
  }
  const observers={};
@@ -68,5 +81,5 @@ export function exportCastleGuestMetrics(){
 if(process.argv[1]===fileURLToPath(import.meta.url)){
  const output=JSON.stringify(exportCastleGuestMetrics(),null,2)+'\n',path=new URL('../client/animation/castle-guest-metrics.json',import.meta.url);
  if(process.argv.includes('--check')){if(fs.readFileSync(path,'utf8')!==output)throw Error('Castle guest metrics are stale');}else fs.writeFileSync(path,output);
- console.log('Castle guest metrics: 43 exact profiles across regular/rare/story adapters × 9 authored contacts + idle support + 8 observer supports validated');
+ console.log('Castle guest metrics: 47 exact profiles across regular/rare/story adapters × 9 authored contacts + idle support + 8 observer supports validated');
 }

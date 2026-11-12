@@ -124,7 +124,15 @@ function speciesGuest(duck,p,t,state,active){
    c.put(eye,35,21+lift,'e');c.put(eye,38,21+lift,'e');c.put(phase%2?'*':'.',23+phase,21+lift,'a');c.put(phase%2?'.':'*',47-phase%3,29+lift,'h');
    head={x:34,y:20+lift,w:7,h:4};body={x:35,y:24+lift,w:4,h:5};feet=[];
  }
- if(!performance?.seated)for(const [i,x] of feet.entries()){const lift=performance?(i?performance.r:performance.l):walking&&((phase<4)===(i===0))?1:0;c.put(p.species==='toad'?'_\\/_':i?'>_':'_>',x,FLOOR+dy-lift-(performance?Math.max(0,performance.b):0),'a');}
+ // Record each drawn contact pad in unmirrored fitter space, after the same
+ // performance translation and pixel rounding used by put. Never infer pads.
+ const footPads=[];
+ if(!performance?.seated)for(const [i,x] of feet.entries()){
+  const lift=performance?(i?performance.r:performance.l):walking&&((phase<4)===(i===0))?1:0,text=p.species==='toad'?'_\\/_':i?'>_':'_>',y=FLOOR+dy-lift-(performance?Math.max(0,performance.b):0);
+  c.put(text,x,y,'a');
+  for(const [j,ch]of [...text].entries())if(ch==='_')footPads.push({x:Math.round(x)+j,y:Math.round(y+(performance?.b||0)),foot:i});
+ }
+
  if(p.species!=='butterfly'&&!walking&&!asleep&&!performance){const x=p.species==='owl'?24:p.species==='toad'?43:p.species==='goose'?43:40;signature(c,p,t,x,p.species==='owl'?31:33,active);}
  const workingWing=performance&&(performance.nestgrip||performance.botanical||performance.instrument||performance.lighting||performance.keepsake||performance.creative||performance.textile||performance.playkit||performance.architecture||performance.ground||performance.surfaceWork);
  if((workingWing||performance?.w>.2)&&p.species!=='butterfly'){
@@ -150,9 +158,13 @@ function speciesGuest(duck,p,t,state,active){
   if(mouth)bill={x:mouth[0]+(performance?.x||0),y:mouth[1]+dy+(performance?.b||0)+(performance?.y||0)};
   if(bill&&performance?.gape>.2)c.put(p.species==='toad'?'o':p.species==='owl'?'v':'\\_',bill.x-1,bill.y+1-performance.b,'a');
  }
+ // Keep fitter head/body coordinates unchanged; clearance includes the actual
+ // head and torso feather fills, with performance translations already applied.
+ const anatomy=c.fills.filter(f=>f.tone==='b'||f.tone==='g'),left=Math.min(...anatomy.map(f=>f.x)),topEdge=Math.min(...anatomy.map(f=>f.y));
+ const supportBody=anatomy.length?{x:left,y:topEdge,w:Math.max(...anatomy.map(f=>f.x+f.w))-left,h:Math.max(...anatomy.map(f=>f.y+1))-topEdge}:null;
  if(duck.facing===false)for(const point of [grip,workGripRest,bill])if(point)point.x=W-1-point.x;
  return {...c.finish(duck.facing),grip,workGripRest,bill,performance:duck.performance||null,width:W,anchorX:duck.facing===false?39:36,groundRow:39.5,scale:p.height/((40-top)*7.5),body:p.palette[0],face:p.palette[1],accent:p.palette[2],shade:'#778b7b',
-   inks:{b:p.palette[0],g:p.palette[1],p:p.palette[2],h:'#e8dfc7',s:'#7c8e81',a:'#e1b26e',w:p.palette[1],e:'#152c29'},rig:{stage:'adult',species:p.species,head,body},seatContact:performance?.seated?body.y+body.h+performance.b-.3:null,material:'feathers',action:state,phase,frames:8,profileId:p.id,design:'pond-cast',signature:active,habit:p.habit,name:'',offsetY:0};
+   inks:{b:p.palette[0],g:p.palette[1],p:p.palette[2],h:'#e8dfc7',s:'#7c8e81',a:'#e1b26e',w:p.palette[1],e:'#152c29'},rig:{stage:'adult',species:p.species,head,body,supportBody,drawnBody:{...body,y:Math.round(body.y+(performance?.b||0))},feet:footPads},seatContact:performance?.seated?body.y+body.h+performance.b-.3:null,material:'feathers',action:state,phase,frames:8,profileId:p.id,design:'pond-cast',signature:active,habit:p.habit,name:'',offsetY:0};
 }
 
 export function visitorRig(duck,time=0){

@@ -5,7 +5,7 @@ import SCORES from './animation/castle-care.json' with {type:'json'};
 export {SCORES as CASTLE_SCORES};
 const N={x:0,y:0,b:0,w:0,l:0,r:0,contact:0,reach:0,gape:0,eye:null,mark:''},clamp=(n,a=0,b=1)=>Math.max(a,Math.min(b,Number.isFinite(n)?n:0));
 const point=p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);
-export const SHARED_RARE_CASTS=['traveling_merchant','celebrity_duck','lost_duckling'];
+export const SHARED_RARE_CASTS=['traveling_merchant','celebrity_duck','lost_duckling','friendly_goose','wise_owl','mysterious_crow','grumpy_toad'];
 // Exact adapter identities only; a story brain key is distinct from its render ID.
 export function sharedCastleRecord(work){
  const s=work?.shared,p=work?.physical,o=s?.operator,profile=GUEST_CAST[o?.cast];
