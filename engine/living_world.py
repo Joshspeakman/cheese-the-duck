@@ -826,6 +826,16 @@ class LivingPond:
 
     def _complete(self, plan):
         s = self.state; kind = plan['kind']; target = plan['target']; g = self.game
+        if 'carnival_work' in plan and not carnival.completion_ready(self,plan):
+            # A stale/unfinished callback must not fall through to generic item
+            # uses, needs, learning or bond rewards. Release only this attempt.
+            work=plan.get('carnival_work')
+            for key,reservation in list(self.minds.carnival_guests.items()):
+                if reservation.get('work') is work:carnival.release(self.minds,key)
+            if not isinstance(work,dict) or not work.get('recorded'):
+                if (self.state.get('plan') is None or self.state.get('plan') is plan) and carnival.valid(self,plan):
+                    castle_work.clear(self,plan)
+            return
         if plan.get('instance') and not shelters.still_placed(self,dict(id=target,instance=plan['instance'],destination=plan.get('destination'))):return
         message = ''
         skill = PLANS.get(kind, ('','','care'))[2]

@@ -135,6 +135,31 @@
       "status": "eight_constructed_visual_review_complete",
       "objects": 8,
       "scope": "Five fitted costume wing designs, two oval halo variants and stitched horns; no native care/repertoire credit"
+    },
+    {
+      "id": "seasonal_fittings",
+      "owner": "projection_finish",
+      "status": "two_constructed_visual_review_complete",
+      "objects": 2,
+      "scope": "Posed mittens and layered ring, no invented mechanics or repertoire credit"
+    },
+    {
+      "id": "carnival_completion_gate",
+      "owner": "root",
+      "status": "verified_with147_native_checks_and45_independent_lifecycle_checks",
+      "scope": "Whole reward callback gated; real exit held through settling"
+    },
+    {
+      "id": "shared_control_contract",
+      "owner": "physical_advisor",
+      "status": "source_contract_ready",
+      "scope": "40regular native operators first, then rare/story/specialspecies/egg with measured anatomy and role-specific ownership"
+    },
+    {
+      "id": "visitor_control_inventory",
+      "owner": "native_regressions",
+      "status": "48profile_read_only_inventory_complete",
+      "scope": "43anatomical candidates,4missing support metadata,1observer; no adopted guest contacts"
     }
   ]
 }

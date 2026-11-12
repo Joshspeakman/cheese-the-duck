@@ -1,0 +1,48 @@
+// Read-only renderer/source inventory. This does not adopt or certify guest controls.
+import fs from 'node:fs';
+import {GUEST_CAST} from '../client/guest-cast.mjs';
+import {characterSprite} from '../client/ultra-characters.mjs';
+import {CASTLE_SCORES,castlePose} from '../client/castle-care.mjs';
+import {castleArtWorld} from '../client/castle-projection.mjs';
+import G from '../client/animation/castle-geometry.json' with {type:'json'};
+const scores=['castle_start','castle_door_open','castle_hose_stow'];
+const point=(p,c)=>p?[p.x+.5-c.anchorX,p.y+.5-c.groundRow]:null;
+function sample(profile,id,at,role,motion){
+ const duration=CASTLE_SCORES[id].duration,work={id,stage:'service',clock:at*duration,ride_elapsed:at*duration,elapsed:at*duration};
+ const c=characterSprite({id:profile.id,castId:profile.id,name:profile.name,stage:profile.species==='duckling'?'duckling':'adult',state:'idle',facing:true,performance:{kind:'carnival',routine:work,role,motion}},0,true);
+ if(c.profileId!==profile.id)throw Error('Unexpected guest fallback for '+profile.id);
+ return {profileId:c.profileId,station:castlePose(work,role,motion).station,scale:c.scale,anchorX:c.anchorX,groundRow:c.groundRow,grip:point(c.grip,c),feet:c.rig?.feet?.map(f=>point(f,c))||null,body:c.rig?.body||null,clipped:c.clipped===true};
+}
+function reachSites(metrics,placement){
+ if(metrics.some(m=>!m.grip||!m.feet))return null;
+ const center=[placement[0]*132/20,placement[1]*42/12],ground=castleArtWorld(center,0,G.ground_row)[1],sites={};
+ for(const station of new Set(metrics.map(m=>m.station))){
+  const rows=metrics.filter(m=>m.station===station),anchor=G.controls[station],target=castleArtWorld(center,anchor.x,anchor.y,{center:true});let best=null;
+  for(let x=0;x<=132;x++)for(let y=Math.ceil(ground);y<=Math.ceil(ground)+4;y++){
+   let worst=0;for(const m of rows){const bx=m.scale*132/192,by=m.scale*42/47;if(m.feet.some(f=>y+f[1]*by<ground)){worst=Infinity;break;}worst=Math.max(worst,Math.hypot((target[0]-x)/bx-m.grip[0],(target[1]-y)/by-m.grip[1]));}
+   if(!best||worst<best.worstReach)best={stance:[x,y],worstReach:worst,target};
+  }
+  sites[station]={...best,geometricallyReachable:best.worstReach<=3};
+ }
+ return {placement,allStationsReachable:Object.values(sites).every(v=>v.geometricallyReachable),sites,limitations:'Geometry only: no dry terrain, obstacle, route, reservation or contact ownership proof.'};
+}
+const profiles=Object.values(GUEST_CAST).map(profile=>{
+ const routines={};let allFeet=true,allGrip=true,reducedEqual=true,contactEqual=true;
+ for(const id of scores){const operator=[],legacyPartner=[];
+  for(const [at,field,value]of CASTLE_SCORES[id].effects){const a=sample(profile,id,at,'a',true),off=sample(profile,id,at,'a',false);allFeet&&=Boolean(a.feet?.length);allGrip&&=Boolean(a.grip);reducedEqual&&=JSON.stringify(a)===JSON.stringify(off);contactEqual&&=JSON.stringify([a.grip,a.feet,a.scale,a.anchorX,a.groundRow])===JSON.stringify([off.grip,off.feet,off.scale,off.anchorX,off.groundRow]);operator.push({at,field,value,...a});legacyPartner.push({at,...sample(profile,id,at,'b',true)});}
+  routines[id]={operator,legacyPartner,sites:[reachSites(operator,[9,7]),reachSites(operator,[9,6])].filter(Boolean)};
+ }
+ const classification=!allGrip?'observation_only_current_rig':!allFeet?'grip_present_support_contract_missing':'measurable_operator_candidate_not_adopted';
+ return {id:profile.id,name:profile.name,species:profile.species,adapter:profile.rare?'rare':'regular',additionalAdapter:profile.id==='lost_duckling'?'story:pip':null,shape:profile.shape,head:profile.head,gear:profile.gear,classification,nativeControlOperation:false,reducedMotionContactMetricsEqual:contactEqual,reducedMotionWholePoseEqual:reducedEqual,routines};
+});
+const counts=Object.fromEntries([...new Set(profiles.map(p=>p.classification))].map(k=>[k,profiles.filter(p=>p.classification===k).length]));
+const report={schema_version:1,recommendedFirstPilot:{castId:'friend:marco',score:'castle_start',role:'operator',facing:'right',reason:'Regular adapter and exact profile expose all required contact fields; first prove native dry-support/route/stop/token ownership before broader adoption.'},status:'read-only preparation; zero new acceptance credit',profileCount:profiles.length,counts,
+ assumptions:['All measurements call the exact castId with visitor=true; no personality/adult fallback.','Operator samples use existing role A track as a proposed binding, not proof current helpers own those effects.','Only right-facing metrics are inventoried. Raw rig.feet remain local fitter coordinates: Marco keeps raw feet x31/40 while rendered anchor changes36→39. Left-facing support requires x→width-1-x before subtracting the mirrored anchor; that conversion is unverified here, not evidence of a production bug. First pilot remains explicitly right-facing.','Costume/decorative wings and props confer no grip or foot capability. Only returned anatomical rig fields qualify.'],
+ adapterContracts:{
+ regular:{sources:['world/friends.py:640','world/friends.py:765','engine/host.py:294','engine/mind_garden.py:68'],root:'visitor_animator._position_x/y are camera-relative floats; minds.present adds renderer camera origin.',move:'MindGarden.motion(key).meeting.target world coords; DesktopGame host subtracts camera before VisitorAnimator.update. Each eligible update clamps x step and y step*0.4 independently.',timing:'move interval .15 for known profiles; elapsed capped .5; pace from exact guest profile and mind multiplier.',arrival:'Animator gesture threshold Manhattan<.4; legacy carnival ready elliptical distance<=.8. Neither is anatomical contact certification.',stop:'No public cancel_movement method. A retained meeting target equal to actual camera-relative root can hold; dropping meeting permits autonomous wandering. Need explicit reservation stop contract.',token:'actual friend ID + current_visit.started_at; departure _is_leaving overrides meeting.'},
+ rare:{sources:['engine/guest_motion.py:46','engine/mind_garden.py:75'],root:'GuestMotion.actor.x/y are native floats.',move:'MindGarden.motion(visitor.id).meeting target; tick applies straight interpolation step=min(1,pace*.72*dt/hypot(dx,2dy)); dt capped .25.',arrival:'distance>.3 selects walking, otherwise meeting gesture; move still approaches exact target.',stop:'No public stop method; retained meeting at actual root holds. Nonplaying pauses ticks. Existing carnival pause freezes score, not this target-following branch.',token:'(visitor.id,arrival,area) transient motion token; mind presence token arrival; last six seconds of visit override meeting.'},
+ story:{sources:['engine/guest_motion.py:152','engine/mind_garden.py:81'],root:'StoryMotion.actor.x/y native floats; only lost_duckling routes minds.motion(story:pip).',move:'Retained meeting target; straight interpolation at story speed3.5, dt capped .25. Other mobile story IDs have no control-meeting adapter.',arrival:'elliptical distance>.3 selects walking; otherwise meeting gesture.',stop:'No public stop method; retained meeting at root needed. Nonplaying freezes tick. Story step changes can impose gesture/rest.',token:'(id(duck),id(story),story.id) transient token; mind presence token str(id(story)). story:pip is same Pip cast profile, not a 49th visitor.'}},
+ reservationFacts:{sources:['engine/carnival.py:75','engine/carnival.py:82','engine/carnival.py:245','engine/living_world.py:98','engine/mind_garden.py:46'],existing:'carnival_guests entries bind actor, exact work object, item plan instance, location, presence token, spot, approach/ready, overlap, contexts. Existing native pilots explicitly suppress invitations.',save:'Guest reservations are transient. Original FriendsSystem.to_dict/from_dict saves current_visit and started_at (world/friends.py:1778,1825), but LivingPond reload removes companion and sets invitation_checked=true; that persisted visit does not resurrect its old helper reservation. Persistent completed memories remain in brains.',gaps:['Existing companion assist label does not own any switch/buckle/hose apply event.','Current native physical record hardcodes actor cheese; no shared operator adoption.','Pause/care needs a guest locomotion hold, not only frozen companion overlap.','Validate actual unrounded roots and actual adapter segments; Cheese integer diagonal segment_clear is not a valid guest-path proof.','Renderer physical guest projection and costume-safe anatomy need dedicated adopted binding evidence.']},
+ specialRigFacts:{sources:['engine/client/visitor-rig.mjs:81','engine/client/visitor-rig.mjs:127','engine/client/visitor-rig.mjs:154'],butterfly:'Explicit feet=[] and working grip suppressed. Observation only; do not infer grasping from decorative wings.',nonDuckSpecies:'Goose/owl/crow/toad draw feet but omit rig.feet from returned metadata. They have measurable working grip but need explicit actual support export before native operation.',footDrawing:'Species foot glyph positions originate at FLOOR+dy-lift-max(0,b), then c.put adds b. Positive b cancels for static feet; do not infer a foot lift from b alone. Glyph-origin positions are not a certified foot-center contract.'},profiles};
+const out=new URL('../artifacts/animation-milestone/guest-control-capabilities.json',import.meta.url);fs.mkdirSync(new URL('../artifacts/animation-milestone/',import.meta.url),{recursive:true});fs.writeFileSync(out,JSON.stringify(report,null,2)+'\n');
+console.log(JSON.stringify({profiles:profiles.length,counts,reducedMotionContactEqual:profiles.every(p=>p.reducedMotionContactMetricsEqual),allThreeAt97:profiles.filter(p=>Object.values(p.routines).every(r=>r.sites[0]?.allStationsReachable)).map(p=>p.id),output:out.pathname}));
