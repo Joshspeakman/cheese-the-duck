@@ -128,6 +128,13 @@
       "owner": "projection_finish",
       "status": "all24_direct_bindings_replayed",
       "scope": "72 distinct contact bindings across three windows and two cameras; no whole repertoire credit"
+    },
+    {
+      "id": "costume_attachments",
+      "owner": "projection_finish",
+      "status": "eight_constructed_visual_review_complete",
+      "objects": 8,
+      "scope": "Five fitted costume wing designs, two oval halo variants and stitched horns; no native care/repertoire credit"
     }
   ]
 }

@@ -1,0 +1,23 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Costume attachment fitting</title>
+<style>body{margin:24px;background:#142820;color:#eddec2;font:16px/1.5 system-ui}header{position:sticky;top:0;background:#142820ee;padding:12px;z-index:2}select,button{font:inherit;padding:8px;background:#29483a;color:inherit;border:1px solid #738a75}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}article{background:#1a332a;padding:12px;border:1px solid #4b6652}canvas{width:100%}h1,h2{margin:4px 0}h2{font-size:19px}p{margin:8px 0}</style>
+<header><h1>Costume attachment fitting</h1><p>Eight worn constructions. Preview only: no items equipped, flight added, or sequence credit awarded. Egg has no costume anatomy.</p><select id="age" aria-label="Age"></select> <select id="action" aria-label="Action"></select> <select id="facing" aria-label="Direction"><option value="right">Right</option><option value="left">Left</option></select> <button id="motion">Pause preview</button></header><main></main>
+<script type="module">
+import {COSTUME_ATTACHMENTS} from '../client/costume-attachments.mjs';
+import {characterSprite,drawCharacter} from '../client/ultra-characters.mjs';
+import {STAGES,ACTIONS} from '../client/scruffy-sprites.mjs';
+const age=document.querySelector('#age'),action=document.querySelector('#action'),facing=document.querySelector('#facing'),cards=[];let motion=true;
+for(const a of STAGES){const o=new Option(a.name,a.id);age.add(o);}age.value='adult';for(const a of ACTIONS)action.add(new Option(a.name||a.id,a.id));action.value='idle';
+document.querySelector('button').onclick=e=>{motion=!motion;e.target.textContent=motion?'Pause preview':'Resume preview';};
+for(const [id,p]of Object.entries(COSTUME_ATTACHMENTS)){const card=document.createElement('article'),h=document.createElement('h2'),text=document.createElement('p'),canvas=document.createElement('canvas');canvas.width=480;canvas.height=420;h.textContent=id;text.textContent=p.motion;card.append(h,canvas,text);document.querySelector('main').append(card);cards.push({id,canvas});}
+function draw(card,time,stage=age.value,state=action.value,right=facing.value==='right',moving=motion){const ctx=card.canvas.getContext('2d');ctx.fillStyle='#142820';ctx.fillRect(0,0,480,420);const duck={stage,state,facing:right,motion:moving,cosmetics:{item:card.id}},before=JSON.stringify(duck),m=characterSprite(duck,time);if(JSON.stringify(duck)!==before||m.clipped)throw Error('Invalid fitting '+card.id+'/'+stage+'/'+state);drawCharacter(ctx,{...m,scale:1,x:240/9,y:345/9,sun:.8},9,9,'#142820');ctx.font='17px Menlo';ctx.fillStyle='#eddec2';ctx.textAlign='center';ctx.fillText(stage+' · '+state+' · '+(right?'right':'left'),240,395);}
+function tick(t){for(const c of cards)draw(c,t/1000);requestAnimationFrame(tick);}requestAnimationFrame(tick);
+window.reviewCostumeAttachments=()=>{
+ const images={},overview=document.createElement('canvas');overview.width=1920;overview.height=920;let ctx=overview.getContext('2d');ctx.fillStyle='#142820';ctx.fillRect(0,0,1920,920);
+ cards.forEach((c,i)=>{draw(c,.7,'adult','idle',true,true);const x=i%4*480,y=Math.floor(i/4)*460;ctx.drawImage(c.canvas,x,y+32);ctx.font='20px Menlo';ctx.fillStyle='#eddec2';ctx.textAlign='center';ctx.fillText(c.id,x+240,y+25);});images.adult=overview.toDataURL();
+ const ages=document.createElement('canvas');ages.width=2700;ages.height=2560;ctx=ages.getContext('2d');ctx.fillStyle='#142820';ctx.fillRect(0,0,ages.width,ages.height);
+ cards.forEach((c,row)=>STAGES.forEach(({id:stage},col)=>{draw(c,.7,stage,'walking',col%2===0,true);ctx.drawImage(c.canvas,col*300,row*320+24,300,262.5);ctx.font='15px Menlo';ctx.fillStyle='#eddec2';ctx.textAlign='center';ctx.fillText(c.id,col*300+150,row*320+17);}));images.ages=ages.toDataURL();
+ const poses=document.createElement('canvas');poses.width=2400;poses.height=3680;ctx=poses.getContext('2d');ctx.fillStyle='#142820';ctx.fillRect(0,0,poses.width,poses.height);
+ cards.forEach((c,row)=>[['idle',0,true],['idle',1.5,true],['walking',.4,true],['walking',.9,false],['sleeping',.7,true]].forEach(([state,t,right],col)=>{draw(c,t,'adult',state,right,true);ctx.drawImage(c.canvas,col*480,row*460+30);ctx.font='20px Menlo';ctx.fillStyle='#eddec2';ctx.textAlign='center';ctx.fillText(c.id,col*480+240,row*460+25);}));images.motion=poses.toDataURL();
+ return {images,items:cards.length,ageCases:cards.length*STAGES.length,poseCases:cards.length*5};
+};
+</script>

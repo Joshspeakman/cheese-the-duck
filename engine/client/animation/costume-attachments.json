@@ -1,0 +1,10 @@
+{
+  "wings_fairy": {"shape":"dragonfly","color":"#8bd2ca","trim":"#d4f3da","shade":"#668fa5","motion":"Fine ribbed gauze wings flex at their backplate as Cheese walks; their stitched tips settle at rest."},
+  "fairy_wings": {"shape":"moth","color":"#c1a2df","trim":"#f0d3ea","shade":"#826ba7","motion":"Scalloped moth-wing panels sway from a small shoulder harness; embroidered eyespots remain sewn in place."},
+  "angel_wings": {"shape":"feathers","color":"#e7e8dc","trim":"#fff2ce","shade":"#93a8b2","motion":"Layered costume feathers jostle on a fitted backplate and tuck close when Cheese rests."},
+  "bat_wings": {"shape":"web","color":"#9e8abb","trim":"#d6b6d7","shade":"#605c83","motion":"Fabric membranes crease between their stitched ribs as the back-mounted costume sways with each step."},
+  "valentine_cupid_wings": {"shape":"cupid","color":"#e5a6b5","trim":"#ffe3d3","shade":"#b27493","motion":"Heart-shaped feather panels bounce lightly at a ribboned harness; their short tips settle against the back."},
+  "halo": {"shape":"wire_halo","color":"#e9c56c","trim":"#fff0b3","shade":"#b08c4d","motion":"A thin brass ring quivers on its visible headband wire as Cheese walks; a small highlight moves along the rim."},
+  "halo_angel": {"shape":"beaded_halo","color":"#e8dfb4","trim":"#fff3d7","shade":"#baac75","motion":"A beaded double ring tilts gently on its headband support while the tiny sunburst stays attached."},
+  "devil_horns": {"shape":"horns","color":"#dd847b","trim":"#f4be9a","shade":"#9a5363","motion":"Two curved stitched horns follow the fitted headband; soft tips wobble slightly with each waddle."}
+}
