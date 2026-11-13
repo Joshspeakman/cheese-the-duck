@@ -4,12 +4,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {curioSprite,CURIO_BLUEPRINTS as B} from '../client/curio-workshop.mjs';
 const req=JSON.parse(fs.readFileSync(new URL('../overhaul/animation-milestone/requirements.json',import.meta.url),'utf8'));
-const pending=req.items.filter(i=>i.art==='pending').map(i=>i.id);
+const WORN=['umbrella','bouquet','easter_egg_basket','sparkle_aura','rainbow_trail','heart_bubbles'];  // standalone drawings of six worn pieces
+const pending=[...req.items.filter(i=>i.art==='pending').map(i=>i.id),...WORN];
 const ids=Object.keys(B);
 const draw=(id,time,motion=true)=>curioSprite({},{id},time,{motion});
 const TIMES=[0,.34,.71,1.03,1.9,2.6];
 test('every pending object has a curio blueprint (and only those)',()=>{
- assert.equal(pending.length,116);
+ assert.equal(pending.length,122);
  for(const id of pending)assert.ok(B[id],id+' has no curio blueprint');
  assert.deepEqual([...ids].sort(),[...pending].sort());
  for(const [id,b] of Object.entries(B)){
