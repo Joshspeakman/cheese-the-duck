@@ -568,31 +568,31 @@
  },
  "acorn": {
   "type": "acorn",
-  "w": 32,
-  "h": 24,
-  "scale": 0.85,
-  "grid": 2
+  "w": 18,
+  "h": 16,
+  "scale": 0.6,
+  "grid": 1
  },
  "magic_acorn": {
   "type": "acorn",
-  "w": 32,
-  "h": 24,
-  "scale": 0.85,
-  "grid": 2
+  "w": 18,
+  "h": 16,
+  "scale": 0.6,
+  "grid": 1
  },
  "golden_acorn": {
   "type": "acorn",
-  "w": 32,
-  "h": 24,
-  "scale": 0.85,
-  "grid": 2
+  "w": 18,
+  "h": 16,
+  "scale": 0.6,
+  "grid": 1
  },
  "pine_cone": {
   "type": "cone",
-  "w": 32,
-  "h": 32,
-  "scale": 0.8,
-  "grid": 2
+  "w": 18,
+  "h": 22,
+  "scale": 0.6,
+  "grid": 1
  },
  "glass_bottle": {
   "type": "bottle",

@@ -31,9 +31,9 @@ export function sampleTrack(track,progress,keys){
 const REACT={cheer:{w:1,b:-.4,eye:'^',mark:'yay!'},nervous:{x:-.7,b:.4,eye:'O',mark:'!'},steady:{y:.3,eye:'-',mark:'mm'},curious:{x:.6,y:.2,eye:'o',mark:'?'}};
 const LEAN={cheer:{x:.3,eye:'o'},nervous:{x:-.3,eye:'o'},steady:{eye:'o'},curious:{x:.5,y:.2,eye:'o'}};
 const COMPANY=new Map();
-export function companyTrack(key,style){
+export function companyTrack(key,style,given=null){
  const id=key+'|'+style;if(COMPANY.has(id))return COMPANY.get(id);
- const spec=ROUTINES[key],keys=[[0,{}]];
+ const spec=given||ROUTINES[key],keys=[[0,{}]];
  if(spec.tool==='none'&&spec.when.includes('wet')&&spec.duration>=30)keys.push([.15,{y:.8,b:.6,eye:'o'}],[.5,{y:1,b:.8,eye:'-',mark:'~'}],[.85,{y:.8,b:.6,eye:'^'}]);
  else if(!spec.events.length)keys.push([.25,{...LEAN[style]}],[.5,{...REACT[style]}],[.75,{...LEAN[style]}]);
  else for(const [at] of spec.events){if(at-.06>keys.at(-1)[0])keys.push([at-.06,{...LEAN[style]}]);if(at>keys.at(-1)[0])keys.push([at,{...REACT[style]}]);if(at+.08<1&&at+.08>keys.at(-1)[0])keys.push([at+.08,{}]);}

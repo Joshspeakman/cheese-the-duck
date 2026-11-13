@@ -564,14 +564,14 @@ export class LivingWorld {
       }
     }
     for(const r of s.living?.minds?.wonderGuests||[]){
-      if(r.phase==='approach'||!WONDER_ROUTINES[r.routine?.id])continue;
+      if(r.phase==='approach'||!(WONDER_ROUTINES[r.routine?.id]||REP_ROUTINES[r.routine?.id]))continue;
       const original=this.characters.find(c=>c.id===r.actor);
-      const home=this.objects.find(o=>o.id===r.id&&sameInstance(o,r)&&o.construction==='wonder-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-r.destination?.[i])<1.1));
+      const home=this.objects.find(o=>o.id===r.id&&sameInstance(o,r)&&(o.construction==='wonder-v1'||REP_ROUTINES[r.routine.id])&&o.worldPosition?.every((v,i)=>Math.abs(v-r.destination?.[i])<1.1));
       if(!original||!home)continue;
       const source=s.visitor?.id===r.actor?s.visitor:s.rareVisitor?.id===r.actor?s.rareVisitor:{...s.storyActor,id:r.actor,castId:'lost_duckling',name:'Pip',stage:'duckling'};
-      const inside=r.phase==='enter'?clamp(r.elapsed/2,0,1):r.phase==='exit'?clamp(1-r.elapsed/2,0,1):1,performance={kind:'wonder',routine:r.routine,motion:s.motion!==false};
+      const inside=r.phase==='enter'?clamp(r.elapsed/2,0,1):r.phase==='exit'?clamp(1-r.elapsed/2,0,1):1,performance={kind:REP_ROUTINES[r.routine.id]?'rep':'wonder',routine:r.routine,motion:s.motion!==false};
       const character={...characterSprite({...source,state:'idle',facing:r.spot[0]<r.destination[0],performance},t,true),x:original.x,y:original.y,story:original.story};
-      (home.wonderWorkers||=[]).push({character,inside,slot:r.mode==='company'?1:0});this.characters=this.characters.filter(c=>c!==original);
+      (REP_ROUTINES[r.routine.id]?(home.repWorkers||=[]):(home.wonderWorkers||=[])).push({character,inside,slot:r.mode==='company'?1:0});this.characters=this.characters.filter(c=>c!==original);
     }
     for(const r of s.living?.minds?.playmates||[]){
       if(r.phase==='approach'||r.routine?.interrupted||!PLAYKIT_ROUTINES[r.routine?.id])continue;

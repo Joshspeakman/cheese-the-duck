@@ -2,17 +2,19 @@
 // every effect). Works on ANY object construction: anchors are the builder's named
 // anchors when present, else fractions of the drawn sprite box from the object file.
 import {actorPitches} from './actor-projection.mjs';
-import {sampleTrack} from './wonder-routines.mjs';
+import {sampleTrack,companyTrack} from './wonder-routines.mjs';
 import DATA from './animation/repertoire.json' with {type:'json'};
 export const REP_OBJECTS=DATA.objects,REP_ROUTINES=DATA.routines;
 const clamp=n=>Math.max(0,Math.min(1,n));
 const JOINTS=['x','y','b','w','l','r','reach','contact'];
 const OBJ=['sway','lift','shake','glow','puff'];
 export function repPose(work,motion=true){
- const spec=REP_ROUTINES[work?.id];if(!spec||work.interrupted)return null;
+ const base=REP_ROUTINES[work?.id];if(!base||work.interrupted)return null;
+ // A visitor keeping Cheese company reacts at the real contacts (derived track).
+ const company=work.company?.mode==='company',spec=company?companyTrack(work.id,work.company.style,base):base;
  const progress=motion?clamp(work.elapsed/spec.duration):.5;
  const pose=sampleTrack(spec.track,progress,JOINTS);
- const obj=spec.obj?sampleTrack([[0,{}],...spec.obj,[1,{}]],progress,OBJ):null;
+ const obj=!company&&spec.obj?sampleTrack([[0,{}],...spec.obj,[1,{}]],progress,OBJ):null;
  return {...pose,object:obj||{},rep:spec.tool!=='none'&&!work.transition,wonder:spec.tool!=='none'&&!work.transition,tool:spec.tool,progress,item:spec.object};
 }
 export function repAnchor(home,objectId,name){
