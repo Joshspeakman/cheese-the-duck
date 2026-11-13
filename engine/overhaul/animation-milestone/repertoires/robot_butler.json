@@ -1,0 +1,326 @@
+{
+ "schemaVersion": 1,
+ "objectId": "robot_butler",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 6,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 42 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "robot_wind_up",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Winding the butler's key until his eyes light up",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/robot_wind_up"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "robot_butler",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "robot_wind_up"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "charge",
+    "charge"
+   ],
+   "anchors": [
+    "key"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "battery<.75"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 94,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "robot_oil_joints",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Oiling the butler's squeaky elbows and knees",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/robot_oil_joints"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "robot_butler",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "robot_oil_joints"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "oil",
+    "oil"
+   ],
+   "anchors": [
+    "elbow",
+    "knee"
+   ],
+   "parts_moved": [
+    "can"
+   ],
+   "tool": "can",
+   "when": [
+    "oil<.6"
+   ],
+   "prefer": [
+    "wet",
+    "rust>.2"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 91,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "robot_morning_greeting",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Saying good morning and getting a stiff robotic wave back",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/robot_morning_greeting"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "robot_butler",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "robot_morning_greeting"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "wave"
+   ],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "battery>.2"
+   ],
+   "prefer": [
+    "dawn",
+    "day",
+    "lonely"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "robot_teach_bow",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Teaching the butler a proper bow, then bowing back",
+   "duration_seconds": 26,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/robot_teach_bow"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "robot_butler",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "robot_teach_bow"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "bow"
+   ],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "battery>.3"
+   ],
+   "prefer": [
+    "happy",
+    "elder"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "robot_high_five",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Going for a high five with the butler's tray hand",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/robot_high_five"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "robot_butler",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "robot_high_five"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "five"
+   ],
+   "anchors": [
+    "hand"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "battery>.2"
+   ],
+   "prefer": [
+    "young",
+    "happy"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 70,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  },
+  {
+   "id": "robot_buff_dome",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Buffing the butler's dome until it reflects the sky",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/robot_buff_dome"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "robot_butler",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "robot_buff_dome"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "buff"
+   ],
+   "anchors": [
+    "dome"
+   ],
+   "parts_moved": [
+    "cloth"
+   ],
+   "tool": "cloth",
+   "when": [
+    "shine<.7"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 173,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

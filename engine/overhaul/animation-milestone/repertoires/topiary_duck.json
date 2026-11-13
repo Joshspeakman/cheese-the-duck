@@ -1,0 +1,333 @@
+{
+ "schemaVersion": 1,
+ "objectId": "topiary_duck",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 6,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 42 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "topiary_trim_bill",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Clipping the hedge duck a sharper bill",
+   "duration_seconds": 26,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/topiary_trim_bill"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "topiary_duck",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "topiary_trim_bill"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "snip_bill",
+    "snip_bill"
+   ],
+   "anchors": [
+    "bill"
+   ],
+   "parts_moved": [
+    "shears"
+   ],
+   "tool": "shears",
+   "when": [
+    "growth>.25"
+   ],
+   "prefer": [
+    "growth>.6"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 170,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "topiary_tail_flourish",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Shaping a curly tail on the hedge",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/topiary_tail_flourish"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "topiary_duck",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "topiary_tail_flourish"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "snip_tail",
+    "snip_wing"
+   ],
+   "anchors": [
+    "rump",
+    "tail"
+   ],
+   "parts_moved": [
+    "shears"
+   ],
+   "tool": "shears",
+   "when": [
+    "growth>.2"
+   ],
+   "prefer": [
+    "fall",
+    "summer"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 142,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "topiary_water_roots",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Watering the roots of the hedge duck",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/topiary_water_roots"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "topiary_duck",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "topiary_water_roots"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "pour"
+   ],
+   "anchors": [
+    "roots"
+   ],
+   "parts_moved": [
+    "can"
+   ],
+   "tool": "can",
+   "when": [
+    "!wet",
+    "!snow"
+   ],
+   "prefer": [
+    "moisture<.35",
+    "summer"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 30,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "topiary_shake_snow",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Shaking the snow off the hedge duck's back",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/topiary_shake_snow"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "topiary_duck",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "topiary_shake_snow"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "shake",
+    "brush"
+   ],
+   "anchors": [
+    "flank"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "snow_on"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 86,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "topiary_mirror_pose",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Striking the same pose as the hedge duck",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/topiary_mirror_pose"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "topiary_duck",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "topiary_mirror_pose"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "dry"
+   ],
+   "prefer": [
+    "happy",
+    "day"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "topiary_rain_tuck",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Hunkering down against the hedge duck's planter out of the rain",
+   "duration_seconds": 34,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/topiary_rain_tuck"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "topiary_duck",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "topiary_rain_tuck"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [],
+   "parts_moved": [
+    "hide"
+   ],
+   "tool": "none",
+   "when": [
+    "wet"
+   ],
+   "prefer": [
+    "young",
+    "tired"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  }
+ ]
+}

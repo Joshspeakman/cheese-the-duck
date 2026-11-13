@@ -1,0 +1,329 @@
+{
+ "schemaVersion": 1,
+ "objectId": "dragon_egg",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 6,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 42 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "dragon_brood",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Settling over the dragon egg like a proper duck to keep it warm",
+   "duration_seconds": 40,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dragon_brood"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dragon_egg",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dragon_brood"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "brood",
+    "brood",
+    "brood"
+   ],
+   "anchors": [
+    "shell"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "incubation<1"
+   ],
+   "prefer": [
+    "cold",
+    "night",
+    "warmth<.4"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 73,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  },
+  {
+   "id": "dragon_turn_egg",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Gently rolling the egg a quarter turn",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dragon_turn_egg"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dragon_egg",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dragon_turn_egg"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "turn"
+   ],
+   "anchors": [
+    "shell"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "incubation<1"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 73,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dragon_stoke_embers",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Poking the embers in the nest back to a glow",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dragon_stoke_embers"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dragon_egg",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dragon_stoke_embers"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "stoke"
+   ],
+   "anchors": [
+    "embers"
+   ],
+   "parts_moved": [
+    "stick"
+   ],
+   "tool": "stick",
+   "when": [
+    "embers<.6",
+    "!wet"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 22,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dragon_ear_to_shell",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Pressing an ear to the shell and hearing something move",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dragon_ear_to_shell"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dragon_egg",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dragon_ear_to_shell"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "listen"
+   ],
+   "anchors": [
+    "shell"
+   ],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "incubation>.2"
+   ],
+   "prefer": [
+    "curious",
+    "young"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 73,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dragon_lullaby",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Humming a lullaby to the egg at bedtime",
+   "duration_seconds": 26,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dragon_lullaby"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dragon_egg",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dragon_lullaby"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "hum"
+   ],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "night"
+   ],
+   "prefer": [
+    "tired",
+    "elder"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dragon_polish_scales",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Polishing the egg's scaly shell",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dragon_polish_scales"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dragon_egg",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dragon_polish_scales"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "buff"
+   ],
+   "anchors": [
+    "shell"
+   ],
+   "parts_moved": [
+    "cloth"
+   ],
+   "tool": "cloth",
+   "when": [
+    "shine<.6"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 73,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

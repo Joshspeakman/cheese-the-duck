@@ -1,0 +1,223 @@
+{
+ "schemaVersion": 1,
+ "objectId": "dream_catcher",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 4,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 44 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "dream_untangle",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Picking the wind tangles out of the web",
+   "duration_seconds": 26,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dream_untangle"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dream_catcher",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dream_untangle"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "untangle",
+    "untangle"
+   ],
+   "anchors": [
+    "web",
+    "web_r"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "tangle>.25"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 119,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dream_hang_feather",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Tying one of his own moulted feathers to the hoop",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dream_hang_feather"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dream_catcher",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dream_hang_feather"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "feather"
+   ],
+   "anchors": [
+    "tassel"
+   ],
+   "parts_moved": [
+    "feather"
+   ],
+   "tool": "none",
+   "when": [
+    "feathers<6"
+   ],
+   "prefer": [
+    "spring",
+    "happy"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 70,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dream_watch_glow",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Watching caught dreams glow in the web at night",
+   "duration_seconds": 30,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dream_watch_glow"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dream_catcher",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dream_watch_glow"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "watch"
+   ],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "night",
+    "dreams>.2"
+   ],
+   "prefer": [
+    "sad",
+    "tired",
+    "lonely"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dream_morning_release",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Shaking last night's dreams loose into the morning light",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dream_morning_release"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dream_catcher",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dream_morning_release"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "release"
+   ],
+   "anchors": [
+    "web"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "dreams>.3",
+    "dawn_or_day"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 119,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

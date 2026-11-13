@@ -1,0 +1,258 @@
+{
+ "schemaVersion": 1,
+ "objectId": "cloning_machine",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 5,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 43 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "clone_load_feather",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Plucking a loose feather and loading it into pod A",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/clone_load_feather"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "cloning_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "clone_load_feather"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "load"
+   ],
+   "anchors": [
+    "pod_a"
+   ],
+   "parts_moved": [
+    "feather"
+   ],
+   "tool": "none",
+   "when": [
+    "sample<.5"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 119,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "clone_run_cycle",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Running a cloning cycle and meeting a glowing duplicate",
+   "duration_seconds": 28,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/clone_run_cycle"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "cloning_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "clone_run_cycle"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "run"
+   ],
+   "anchors": [
+    "button"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "sample>.5",
+    "charge>.35"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 123,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "clone_mirror_dance",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Dancing with the hologram as it copies every move",
+   "duration_seconds": 26,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/clone_mirror_dance"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "cloning_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "clone_mirror_dance"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "hologram>.3"
+   ],
+   "prefer": [
+    "happy",
+    "lonely"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "clone_tap_tube",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Tapping the tube to watch the bubbles rise",
+   "duration_seconds": 14,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/clone_tap_tube"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "cloning_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "clone_tap_tube"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "tap"
+   ],
+   "anchors": [
+    "tube"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [],
+   "prefer": [
+    "young"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 87,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "clone_purge",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Flushing the pods with a big green gurgle",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/clone_purge"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "cloning_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "clone_purge"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "purge"
+   ],
+   "anchors": [
+    "valve"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "sample>.5"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 50,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

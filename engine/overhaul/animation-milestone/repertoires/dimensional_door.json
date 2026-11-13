@@ -1,0 +1,269 @@
+{
+ "schemaVersion": 1,
+ "objectId": "dimensional_door",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 5,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 43 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "dimdoor_sniff_sill",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Sniffing the strange draught under the door",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dimdoor_sniff_sill"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dimensional_door",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dimdoor_sniff_sill"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [
+    "sill"
+   ],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [],
+   "prefer": [
+    "young",
+    "curious"
+   ],
+   "ages": [
+    "hatchling",
+    "duckling",
+    "juvenile"
+   ],
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile"
+   ],
+   "contactHeightPx": 14,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dimdoor_open_peek",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Opening the door onto somewhere else entirely",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dimdoor_open_peek"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dimensional_door",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dimdoor_open_peek"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "open",
+    "shut"
+   ],
+   "anchors": [
+    "knob"
+   ],
+   "parts_moved": [
+    "door"
+   ],
+   "tool": "wing",
+   "when": [],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 79,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dimdoor_turn_knob",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Twisting the knob to a new dimension",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dimdoor_turn_knob"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dimensional_door",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dimdoor_turn_knob"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "knob"
+   ],
+   "anchors": [
+    "knob"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 79,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dimdoor_oil_hinges",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Oiling the squeaky hinges",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dimdoor_oil_hinges"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dimensional_door",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dimdoor_oil_hinges"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "oil",
+    "oil"
+   ],
+   "anchors": [
+    "hinge_low",
+    "hinge_mid"
+   ],
+   "parts_moved": [
+    "can"
+   ],
+   "tool": "can",
+   "when": [
+    "hinge<.6"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 125,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dimdoor_knock_back",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Knocking on the back of the door, just in case",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dimdoor_knock_back"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "dimensional_door",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dimdoor_knock_back"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "knock"
+   ],
+   "anchors": [
+    "back"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [],
+   "prefer": [
+    "young",
+    "curious"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 70,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

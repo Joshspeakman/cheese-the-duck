@@ -1,0 +1,271 @@
+{
+ "schemaVersion": 1,
+ "objectId": "money_printer",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 5,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 43 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "printer_feed_paper",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Feeding a fresh ream into the printer",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/printer_feed_paper"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "money_printer",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "printer_feed_paper"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "paper"
+   ],
+   "anchors": [
+    "tray"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "paper<.6"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "adult",
+    "mature",
+    "legendary"
+   ],
+   "contactHeightPx": 129,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "printer_crank_bills",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Cranking out a stack of silly Duck Bucks (not real money)",
+   "duration_seconds": 26,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/printer_crank_bills"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "money_printer",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "printer_crank_bills"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "crank",
+    "crank"
+   ],
+   "anchors": [
+    "crank"
+   ],
+   "parts_moved": [
+    "crank"
+   ],
+   "tool": "wing",
+   "when": [
+    "paper>.2",
+    "jam<.5"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 90,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "printer_clear_jam",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Fishing a crumpled sheet out of the rollers",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/printer_clear_jam"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "money_printer",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "printer_clear_jam"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "clear"
+   ],
+   "anchors": [
+    "rollers"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "jam>.3"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 97,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "printer_oil_rollers",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Oiling the rollers",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/printer_oil_rollers"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "money_printer",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "printer_oil_rollers"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "oil"
+   ],
+   "anchors": [
+    "rollers"
+   ],
+   "parts_moved": [
+    "can"
+   ],
+   "tool": "can",
+   "when": [
+    "oil<.5"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 97,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "printer_make_it_rain",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Tossing the play money up and letting it rain down",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/printer_make_it_rain"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "money_printer",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "printer_make_it_rain"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "tidy"
+   ],
+   "anchors": [
+    "stack"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "stack>.4"
+   ],
+   "prefer": [
+    "happy",
+    "young"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 32,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

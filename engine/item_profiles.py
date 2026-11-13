@@ -37,3 +37,7 @@ for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/
 # Outdoor playthings share their controls and anatomy with Ultra.
 for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/animation/playkit.json').read_text()).items():
     ITEMS[_id].update(kind='toy',material=_p['material'],skill=_p['skill'],verb=_p['verb'],need='fun',duration=24)
+
+# Wonder machines and garden curiosities: native state and routines in wonders.py.
+for _id, _p in _instrument_json.loads((_InstrumentPath(__file__).parent/'client/animation/wonders.json').read_text()).items():
+    ITEMS[_id].update(kind='wonder',material=_p['material'],skill=_p['skill'],verb=_p['verb'],need='fun',duration=26)

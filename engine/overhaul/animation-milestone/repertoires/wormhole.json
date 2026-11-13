@@ -1,0 +1,316 @@
+{
+ "schemaVersion": 1,
+ "objectId": "wormhole",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 6,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 42 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "wormhole_peep_echo",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Peeping at the near mouth and hearing it peep back from the far one",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/wormhole_peep_echo"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "wormhole",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "wormhole_peep_echo"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "aperture>.5"
+   ],
+   "prefer": [
+    "young",
+    "lonely"
+   ],
+   "ages": [
+    "hatchling",
+    "duckling",
+    "juvenile"
+   ],
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "wormhole_iris_open",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Twisting the brass iris until both mouths yawn open",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/wormhole_iris_open"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "wormhole",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "wormhole_iris_open"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "open"
+   ],
+   "anchors": [
+    "iris"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "aperture<.4"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 52,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "wormhole_align_mouths",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Turning the alignment knob while sighting along both mouths",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/wormhole_align_mouths"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "wormhole",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "wormhole_align_mouths"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "align",
+    "align"
+   ],
+   "anchors": [
+    "align_knob"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "aperture>.3"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 24,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "wormhole_whisper",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Whispering into one mouth and hearing it come out the other",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/wormhole_whisper"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "wormhole",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "wormhole_whisper"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "whisper"
+   ],
+   "anchors": [
+    "far",
+    "near"
+   ],
+   "parts_moved": [
+    "cup"
+   ],
+   "tool": "none",
+   "when": [
+    "aperture>.5"
+   ],
+   "prefer": [
+    "lonely",
+    "young"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 108,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "wormhole_paper_boat",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Floating a paper boat through the wormhole",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/wormhole_paper_boat"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "wormhole",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "wormhole_paper_boat"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "boat"
+   ],
+   "anchors": [
+    "far",
+    "near"
+   ],
+   "parts_moved": [
+    "boat"
+   ],
+   "tool": "none",
+   "when": [
+    "aperture>.5"
+   ],
+   "prefer": [
+    "happy",
+    "wet"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 108,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "wormhole_shut",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Twisting the iris shut",
+   "duration_seconds": 14,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/wormhole_shut"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "wormhole",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "wormhole_shut"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "shut"
+   ],
+   "anchors": [
+    "iris"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "aperture>.3"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 52,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

@@ -1,0 +1,323 @@
+{
+ "schemaVersion": 1,
+ "objectId": "weather_machine",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 6,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 42 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "weather_tongue_drop",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Catching a drop from the tiny cloud on his tongue",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/weather_tongue_drop"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "weather_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "weather_tongue_drop"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "cloud>.2"
+   ],
+   "prefer": [
+    "young"
+   ],
+   "ages": [
+    "hatchling",
+    "duckling",
+    "juvenile"
+   ],
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "weather_set_dial",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Clicking the forecast dial to a new setting",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/weather_set_dial"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "weather_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "weather_set_dial"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "dial"
+   ],
+   "anchors": [
+    "dial"
+   ],
+   "parts_moved": [
+    "dial"
+   ],
+   "tool": "wing",
+   "when": [],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 91,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "weather_wind_dynamo",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Winding the dynamo crank to charge the coils",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/weather_wind_dynamo"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "weather_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "weather_wind_dynamo"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "crank",
+    "crank"
+   ],
+   "anchors": [
+    "crank"
+   ],
+   "parts_moved": [
+    "crank"
+   ],
+   "tool": "wing",
+   "when": [
+    "charge<.8"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 86,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "weather_make_cloud",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Pulling the big lever to puff out a tiny private cloud",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/weather_make_cloud"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "weather_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "weather_make_cloud"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "fire"
+   ],
+   "anchors": [
+    "lever"
+   ],
+   "parts_moved": [
+    "lever"
+   ],
+   "tool": "wing",
+   "when": [
+    "charge>.35"
+   ],
+   "prefer": [
+    "warm",
+    "sun"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 120,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "weather_catch_spark",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Touching the charged terminal in the rain and getting a static zap",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/weather_catch_spark"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "weather_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "weather_catch_spark"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "zap"
+   ],
+   "anchors": [
+    "terminal"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "wet",
+    "charge>.6"
+   ],
+   "prefer": [
+    "curious"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 122,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "weather_vent_steam",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Opening the vent to let a muggy cloud drift off",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/weather_vent_steam"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "weather_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "weather_vent_steam"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "vent"
+   ],
+   "anchors": [
+    "vent"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "cloud>.2"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 72,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

@@ -61,7 +61,7 @@ def propose(pond, score, instance, together=False):
     if pond.state.get('plan') or not pond.scene_available():
         return None, 'Finish the current activity before beginning this procedure.'
     if flight.outfitted(pond):
-        return None, 'This procedure needs measured clearance for the equipped outfit.'
+        return None, 'Try these controls without the outfit for now.'
     count = present_count(pond)
     if count > (1 if together else 0):
         return None, 'Another visitor occupies an unreserved part of the working scene.'
@@ -92,7 +92,7 @@ def propose(pond, score, instance, together=False):
         obstacles = [egg.box(recipient['root'], egg.metric(recipient))]
         available_seconds = remaining_seconds(pond, operator)
     elif not age:
-        return None, 'This age has no measured operator or observer anatomy.'
+        return None, 'Cheese is not ready for these controls yet.'
     elif together:
         if actors.flight(pond):
             formation, reason = flight.propose(pond, first_atomic, instance)

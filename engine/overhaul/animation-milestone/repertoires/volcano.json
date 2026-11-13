@@ -1,0 +1,327 @@
+{
+ "schemaVersion": 1,
+ "objectId": "volcano",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 6,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 42 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "volcano_bleed_valve",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Turning the pressure valve until it hisses",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/volcano_bleed_valve"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "volcano",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "volcano_bleed_valve"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "vent"
+   ],
+   "anchors": [
+    "valve"
+   ],
+   "parts_moved": [
+    "valve"
+   ],
+   "tool": "wing",
+   "when": [
+    "pressure>.5"
+   ],
+   "prefer": [
+    "pressure>.8"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 71,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "volcano_baking_soda",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Pouring fizz into the hopper at the base and running",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/volcano_baking_soda"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "volcano",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "volcano_baking_soda"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "fizz"
+   ],
+   "anchors": [
+    "hopper"
+   ],
+   "parts_moved": [
+    "jug"
+   ],
+   "tool": "jug",
+   "when": [
+    "!wet",
+    "pressure<.9"
+   ],
+   "prefer": [
+    "happy",
+    "young"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 74,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  },
+  {
+   "id": "volcano_sweep_ash",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Sweeping grey ash off the slopes",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/volcano_sweep_ash"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "volcano",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "volcano_sweep_ash"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "sweep",
+    "sweep"
+   ],
+   "anchors": [
+    "base",
+    "slope_l",
+    "slope_r"
+   ],
+   "parts_moved": [
+    "broom"
+   ],
+   "tool": "broom",
+   "when": [
+    "ash>.2"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 97,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "volcano_warm_wings",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Warming cold wings by the glowing vents",
+   "duration_seconds": 30,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/volcano_warm_wings"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "volcano",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "volcano_warm_wings"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "cold"
+   ],
+   "prefer": [
+    "winter",
+    "tired",
+    "wet"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "volcano_stir_magma",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Stirring the glowing side vent with an iron rod",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/volcano_stir_magma"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "volcano",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "volcano_stir_magma"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "stir",
+    "stir"
+   ],
+   "anchors": [
+    "vent_low"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "!wet"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 56,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "volcano_watch_eruption",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Watching the little volcano erupt from a safe distance",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/volcano_watch_eruption"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "volcano",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "volcano_watch_eruption"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "eruption>.3"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

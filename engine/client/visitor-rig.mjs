@@ -62,7 +62,7 @@ function duckGuest(duck,p,t,requested,active){
    const rows=propRows(p,t,active);let x=Math.min(W-Math.max(...rows.map(r=>r.length))-7,b.x+b.w-3),y=Math.min(FLOOR-rows.length-1,b.y+Math.max(3,b.h*.35));
    if(active&&p.prop==='apple'&&Math.floor(t*5)%8<3){x=h.x+1;y=h.y-5;}
    signature(c,p,t,x,y,active);
- }else if(requested!=='sleeping'&&!['nest','botanical','instrument','lighting','keepsake','creative','textile','ground','architecture','playkit','carnival'].includes(duck.performance?.kind))c.group(['.---.','| : |',"'---'"],b.x+1,b.y+Math.max(2,b.h*.4),'p',true);
+ }else if(requested!=='sleeping'&&!['nest','botanical','instrument','lighting','keepsake','wonder','creative','textile','ground','architecture','playkit','carnival'].includes(duck.performance?.kind))c.group(['.---.','| : |',"'---'"],b.x+1,b.y+Math.max(2,b.h*.4),'p',true);
  if(/giving/.test(duck.activity||duck.state||''))c.group([' .-+- .',' |+ +|'," '---'"],Math.min(61,b.x+b.w),FLOOR-4,'p',true);
  c.put(r.eye.char,r.eye.x,r.eye.y,'e');
  return {...base,...c.finish(duck.facing),...Object.fromEntries(['bill','grip','workGripRest'].map(k=>[k,base[k]&&{...base[k],x:duck.facing===false?W-1-base[k].x:base[k].x}])),anchorX:duck.facing===false?W-1-base.anchorX:base.anchorX,action:state,profileId:p.id,design:'pond-cast',signature:active,habit:p.habit};
@@ -134,7 +134,7 @@ function speciesGuest(duck,p,t,state,active){
  }
 
  if(p.species!=='butterfly'&&!walking&&!asleep&&!performance){const x=p.species==='owl'?24:p.species==='toad'?43:p.species==='goose'?43:40;signature(c,p,t,x,p.species==='owl'?31:33,active);}
- const workingWing=performance&&(performance.nestgrip||performance.botanical||performance.instrument||performance.lighting||performance.keepsake||performance.creative||performance.textile||performance.playkit||performance.architecture||performance.ground||performance.surfaceWork);
+ const workingWing=performance&&(performance.nestgrip||performance.botanical||performance.instrument||performance.lighting||performance.keepsake||performance.wonder||performance.creative||performance.textile||performance.playkit||performance.architecture||performance.ground||performance.surfaceWork);
  if((workingWing||performance?.w>.2)&&p.species!=='butterfly'){
    // A gesture grows from the shoulder. The previous feather patch floated
    // above tall bodies when its upward motion exceeded its own height.
@@ -170,7 +170,7 @@ function speciesGuest(duck,p,t,state,active){
 export function visitorRig(duck,time=0){
  const flightWatch=duck.performance?.kind==='carnival'&&duck.performance.watch&&duck.performance.routine?.shared?.mode==='flight-observer';
  if(flightWatch){if(duck.performance.motion===false)time=0;}
- else if(['nest','botanical','seating','instrument','lighting','keepsake','creative','textile','ground','architecture','playkit','carnival'].includes(duck.performance?.kind))time=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
+ else if(['nest','botanical','seating','instrument','lighting','keepsake','wonder','creative','textile','ground','architecture','playkit','carnival'].includes(duck.performance?.kind))time=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  const p=guestProfile(duck),seed=seedOf(p.id),t=time+seed%19*.17,raw=duck.activity||duck.state||'idle';
  const requested=/reading|painting|giving/.test(raw)?'signature':/bounce|happy|exercise/.test(raw)?'dancing':/chat|greet/.test(raw)?'quacking':raw;
  const active=!duck.performance&&(requested==='signature'||requested==='working'||requested==='idle'&&(t%(10+seed%5))>5&&(t%(10+seed%5))<8.5),state=duck.performance?'idle':requested==='signature'||requested==='working'?'idle':requested;

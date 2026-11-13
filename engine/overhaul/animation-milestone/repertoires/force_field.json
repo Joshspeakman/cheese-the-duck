@@ -1,0 +1,273 @@
+{
+ "schemaVersion": 1,
+ "objectId": "force_field",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 5,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 43 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "field_raise_dome",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Raising the shimmering dome",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/field_raise_dome"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "force_field",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "field_raise_dome"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "raise_"
+   ],
+   "anchors": [
+    "switch"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "shield<.5",
+    "charge>.15"
+   ],
+   "prefer": [
+    "wet"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 31,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "field_rain_shelter",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Sitting snug under the dome while rain bounces off",
+   "duration_seconds": 42,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/field_rain_shelter"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "force_field",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "field_rain_shelter"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "shelter"
+   ],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "wet",
+    "shield>.5"
+   ],
+   "prefer": [
+    "young",
+    "tired",
+    "wet"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  },
+  {
+   "id": "field_wind_charger",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Cranking the emitter to charge it back up",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/field_wind_charger"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "force_field",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "field_wind_charger"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "charge",
+    "charge"
+   ],
+   "anchors": [
+    "crank"
+   ],
+   "parts_moved": [
+    "crank"
+   ],
+   "tool": "wing",
+   "when": [
+    "charge<.7"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 36,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "field_boop",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Booping the dome and watching the ripple run round",
+   "duration_seconds": 14,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/field_boop"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "force_field",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "field_boop"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "boop"
+   ],
+   "anchors": [
+    "dome"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "shield>.5"
+   ],
+   "prefer": [
+    "young",
+    "happy"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 123,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "field_lower_dome",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Lowering the dome once the weather clears",
+   "duration_seconds": 14,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/field_lower_dome"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "force_field",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "field_lower_dome"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "lower"
+   ],
+   "anchors": [
+    "switch"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "shield>.5",
+    "dry"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 31,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

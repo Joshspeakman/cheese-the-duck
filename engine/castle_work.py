@@ -449,12 +449,12 @@ def next_work(pond,obj):
             return 'castle_close_night','the empty house is still open for the night',18
         return None
     if s['roof_water']>.45 or s['mesh_wet']>.45:return 'castle_after_rain','water is still caught in the roof and mesh',24
-    if s['dust']>.55:return 'castle_grill_clean','dust has collected on the blower grille',24
+    if s['dust']>.55:return ('castle_grill_clean' if s['power_hold'] or obj.get('condition',1)<=.2 else 'castle_dust_service'),'dust has collected on the blower grille',24
     # An explicit player shutdown remains off. Autonomous closing can be undone
     # next morning, but residents do not undo a manually requested shutdown.
     if s['power_hold'] or obj.get('condition',1)<=.2:return None
     if min(s['tie_left'],s['tie_right'])<.45:return 'castle_spring_retension','the side ropes have slackened',22
-    if s['vent']>.2 or s['kink']>.6:return ('castle_vent_close' if s['vent']>.2 else 'castle_hose_straight'),'air is escaping or the supply hose is bent',22
+    if s['vent']>.2 or s['kink']>.6:return 'castle_pressure_check','air is escaping or the supply hose is bent',22
     if s['motor']=='off' or s['hose']>.15 or s['latch']>.5 or s['apron']>.3:return 'castle_open_day','the weather has cleared but the house is still closed',16
     if s['prints']>.5:return 'castle_apron_clean','footprints cover the landing apron',18
     return None

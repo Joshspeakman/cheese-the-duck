@@ -1,0 +1,318 @@
+{
+ "schemaVersion": 1,
+ "objectId": "rainbow_generator",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 6,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 42 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "rainbow_drip_splash",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Splashing in the drip tray under the tank",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/rainbow_drip_splash"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "rainbow_generator",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "rainbow_drip_splash"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [
+    "drip"
+   ],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "water>.3",
+    "!cold"
+   ],
+   "prefer": [
+    "young",
+    "summer"
+   ],
+   "ages": [
+    "hatchling",
+    "duckling"
+   ],
+   "reachableAges": [
+    "hatchling",
+    "duckling"
+   ],
+   "contactHeightPx": 7,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "rainbow_fill_tank",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Topping up the tank with pond water",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/rainbow_fill_tank"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "rainbow_generator",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "rainbow_fill_tank"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "fill"
+   ],
+   "anchors": [
+    "tank"
+   ],
+   "parts_moved": [
+    "can"
+   ],
+   "tool": "can",
+   "when": [
+    "water<.7",
+    "!cold"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 102,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "rainbow_aim_prism",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Turning the knob that tilts the prism toward the sun",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/rainbow_aim_prism"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "rainbow_generator",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "rainbow_aim_prism"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "aim"
+   ],
+   "anchors": [
+    "prism_knob"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "day"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 79,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "rainbow_crank_mist",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Cranking the mister until a rainbow hangs in the air",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/rainbow_crank_mist"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "rainbow_generator",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "rainbow_crank_mist"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "crank",
+    "crank"
+   ],
+   "anchors": [
+    "crank"
+   ],
+   "parts_moved": [
+    "crank"
+   ],
+   "tool": "wing",
+   "when": [
+    "water>.2",
+    "day",
+    "dry"
+   ],
+   "prefer": [
+    "sun",
+    "happy"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 69,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "rainbow_dance_in_mist",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Opening the spray valve and dancing through the rainbow mist",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/rainbow_dance_in_mist"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "rainbow_generator",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "rainbow_dance_in_mist"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "spray"
+   ],
+   "anchors": [
+    "valve"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "water>.25",
+    "warm"
+   ],
+   "prefer": [
+    "young",
+    "summer"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 93,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "rainbow_after_rain",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Pointing at a real rainbow, then nudging the prism knob to compare",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/rainbow_after_rain"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "rainbow_generator",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "rainbow_after_rain"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [
+    "prism_knob"
+   ],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "rainbow_sky"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 79,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

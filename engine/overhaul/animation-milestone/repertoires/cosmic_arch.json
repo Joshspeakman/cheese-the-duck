@@ -1,0 +1,277 @@
+{
+ "schemaVersion": 1,
+ "objectId": "cosmic_arch",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 5,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 43 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "arch_turn_starwheel",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Turning the low star dial until the keystone wheel lines up",
+   "duration_seconds": 26,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/arch_turn_starwheel"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "cosmic_arch",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "arch_turn_starwheel"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "turn",
+    "turn"
+   ],
+   "anchors": [
+    "dial_low"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "align<.8"
+   ],
+   "prefer": [
+    "dusk",
+    "night"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 86,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "arch_trace_constellation",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Tracing the little constellation carved low on the pillar",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/arch_trace_constellation"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "cosmic_arch",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "arch_trace_constellation"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "trace"
+   ],
+   "anchors": [
+    "stars_low_a",
+    "stars_low_b",
+    "stars_low_c"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "starlight>.3"
+   ],
+   "prefer": [
+    "night",
+    "curious"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 97,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "arch_sit_beneath",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Sitting under the arch and counting stars",
+   "duration_seconds": 36,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/arch_sit_beneath"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "cosmic_arch",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "arch_sit_beneath"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "night",
+    "dry"
+   ],
+   "prefer": [
+    "lonely",
+    "sad",
+    "elder"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "arch_scrub_moss",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Scrubbing moss out of the carved stars",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/arch_scrub_moss"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "cosmic_arch",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "arch_scrub_moss"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "scrub",
+    "scrub"
+   ],
+   "anchors": [
+    "pillar_l",
+    "pillar_r"
+   ],
+   "parts_moved": [
+    "brush"
+   ],
+   "tool": "brush",
+   "when": [
+    "moss>.3"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 63,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "arch_make_wish",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Closing his eyes under the keystone and making a wish",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/arch_make_wish"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "cosmic_arch",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "arch_make_wish"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "wish"
+   ],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "starlight>.5"
+   ],
+   "prefer": [
+    "night",
+    "sad"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

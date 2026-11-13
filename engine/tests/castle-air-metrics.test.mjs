@@ -72,7 +72,7 @@ test('grille sweep raises the actual attached wing tip while every support pad r
   const c=airMetricSprite({[key]:actor,id:'castle_grill_clean',index,motion}),pose=castlePose({id:'castle_grill_clean',stage:'service',ride_elapsed:m.at*CASTLE_SCORES.castle_grill_clean.duration});
   assert.equal(c.art[c.grip.y][c.grip.x],')');assert.equal(c.tones[c.grip.y][c.grip.x],'w');
   assert.ok(c.rig.feet.every(f=>f.y+.5-c.groundRow===0));assert.equal(c.scale,m.scale);
-  assert.equal(pose.workLift>0,m.station==='grill');if(m.station==='grill')assert.ok(pose.workLift>=3&&pose.workLift<=5);
+  assert.equal(pose.workLift>0,m.station==='grill');if(m.station==='grill')assert.equal(pose.workLift,5,'The bare wing stays raised throughout the horizontal sweep');
   assert.deepEqual(m.grip,[c.grip.x+.5-c.anchorX,c.grip.y+.5-c.groundRow]);
  }
 });

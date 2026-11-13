@@ -31,7 +31,7 @@ test('synthetic gauge observation projects actual eye ink and native target with
 
 test('procedure projects only its bound atomic occurrence and never its flattened outer clock',()=>{
  const s=sharedCastleFixture(),outer=s.living.plan.carnival_work,child={id:'castle_gauge_check',occurrence_id:'reading-after',clock:15.6,ride_elapsed:15.6,events:[0],stage:'service'};
- Object.assign(outer,{id:'castle_pressure_check',clock:1e6,ride_elapsed:1e6,atomic:child,air_procedure:{version:1,id:'castle_pressure_check',attempt:'actual-attempt',current_occurrence:'reading-after',cursor:0,occurrences:[{occurrence_id:'reading-after',atomic_id:'castle_gauge_check',status:'active'}]}});outer.physical.station='gauge';
+ Object.assign(outer,{id:'castle_pressure_check',clock:1e6,ride_elapsed:1e6,atomic:child,air_procedure:{version:1,id:'castle_pressure_check',attempt:'actual-attempt',current_occurrence:'reading-after',cursor:0,occurrences:[{occurrence_id:'reading-after',atomic_id:'castle_gauge_check',status:'active'}]}});outer.physical.station='gauge';outer.shared.mode='visitor-operator';outer.source_age=outer.shared.source_age;outer.shared.attempt='actual-attempt';outer.shared.instance=s.living.plan.instance;outer.shared.center=[s.items[0].x,s.items[0].y];outer.physical.center=[...outer.shared.center];outer.shared.destination=[...s.living.plan.destination];s.living.plan.location=s.location;
  const before=structuredClone(outer),resolved=castleActiveWork(outer);
  assert.equal(resolved.physical,outer.physical);assert.equal(resolved.shared,outer.shared);assert.equal(resolved.id,child.id);assert.equal(outer.id,'castle_pressure_check');
  const standalone={...outer,...child};delete standalone.air_procedure;delete standalone.atomic;assert.deepEqual(castlePose(outer),castlePose(standalone));
@@ -39,7 +39,7 @@ test('procedure projects only its bound atomic occurrence and never its flattene
  for(const change of [w=>w.atomic.occurrence_id='stale-reading',w=>delete w.atomic,w=>w.atomic.id='castle_dust_service',w=>w.air_procedure.id='castle_dust_service',w=>delete w.atomic.ride_elapsed,w=>w.air_procedure.occurrences[0].atomic_id='castle_start']){
   const bad=structuredClone(s);change(bad.living.plan.carnival_work);assert.deepEqual(carnivalOccupants(bad),[]);assert.equal(castlePose(bad.living.plan.carnival_work),null);
  }
- const exit=structuredClone(s),w=exit.living.plan.carnival_work;delete w.atomic;w.air_procedure.current_occurrence=null;w.air_procedure.phase='exit';w.air_procedure.occurrences[0].status='finished';w.physical.phase='exit';w.shared.phase='exit';w.shared.cheese.phase='exit';w.shared.cheese.ready=false;
+ const exit=structuredClone(s),w=exit.living.plan.carnival_work;delete w.atomic;w.air_procedure.current_occurrence=null;w.air_procedure.phase='exit';w.air_procedure.occurrences[0].status='finished';w.physical.phase='exit';w.shared.phase='operator_exit';w.shared.cheese.phase='exit';w.shared.cheese.ready=false;
  assert.equal(carnivalOccupants(exit).length,2);assert.equal(castlePose(w).surfaceWork,false);assert.equal(castlePose(w).contact,0);
  const sx=1800/240,sy=800/112,out=new LivingWorld().render({...exit,camera:displayCamera(exit.camera,sx,sy)},0,0),home=out.objects.find(o=>o.id==='bounce_house');
  for(const member of home.carnivalRiders){const g=castleGeometry(home,member,sx,sy);assert.ok(g.authoritativeRoot);assert.equal(g.tip,null);assert.deepEqual(g.points,[]);assert.equal(g.observation,null);}

@@ -22,6 +22,7 @@ import {actorPerformance} from './performances.mjs';
 import {lightingPose,LIGHTING_ROUTINES} from './lighting-routines.mjs';
 import {creativePose,CREATIVE_ROUTINES} from './creative-routines.mjs';
 import {keepsakePose,KEEPSAKE_ROUTINES} from './keepsake-routines.mjs';
+import {wonderPose,WONDER_ROUTINES} from './wonder-routines.mjs';
 import {playdateStage} from './playdates.mjs';
 import {playgroundStage} from './playground-stage.mjs';
 import {waterStage} from './water-routines.mjs';
@@ -348,7 +349,8 @@ export class LivingWorld {
         const textile=owned&&plan.textile_work&&plan.phase!=='approach'?textilePose(plan.textile_work,s.motion!==false):null;
         const creative=owned&&plan.creative_work&&plan.phase!=='approach'?creativePose(plan.creative_work,s.motion!==false):null;
         const keepsake=owned&&plan.keepsake_work?keepsakePose(plan.keepsake_work,s.motion!==false):null;
-        this.objects.push({...itemSprite(item.id,t,{pose:{music,light,keepsake,creative,textile,ground,architecture,playkit},motion:s.motion!==false,context:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,worldPosition:[item.x,item.y],...(item.id==='bounce_house'?{physicalCastle:{origin:[item.x,item.y],camera:{...(s.camera||{x:0,y:0,w:132,h:42})}}}:{}),scale:itemWorldScale(item.id)});
+        const wonder=owned&&plan.wonder_work&&plan.phase!=='approach'?wonderPose(plan.wonder_work,s.motion!==false):null;
+        this.objects.push({...itemSprite(item.id,t,{pose:{music,light,keepsake,wonder,creative,textile,ground,architecture,playkit},motion:s.motion!==false,context:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,worldPosition:[item.x,item.y],...(item.id==='bounce_house'?{physicalCastle:{origin:[item.x,item.y],camera:{...(s.camera||{x:0,y:0,w:132,h:42})}}}:{}),scale:itemWorldScale(item.id)});
       }});
     }
     if(s.visitor){const [x,y]=this.project(s,s.visitor.x,s.visitor.y);actors.push({y,draw:()=>this.actor(s,t+2,x,y,{stage:'adult',state:'idle',facing:false,...s.visitor},true)});}
@@ -535,6 +537,25 @@ export class LivingWorld {
         const character={...characterSprite({...s.duck,state:'idle',facing:true,performance},t),x:original.x,y:original.y,cheese:true};
         home.keepers=[{character,inside,slot:0}];this.characters=this.characters.filter(c=>c!==original);
       }
+    }
+    if(plan?.wonder_work&&!plan.wonder_work.interrupted&&WONDER_ROUTINES[plan.wonder_work.id]&&['prepare','act','settle'].includes(plan.phase)){
+      const original=this.characters.find(c=>c.cheese),home=this.objects.find(o=>o.id===plan.target&&sameInstance(o,plan)&&o.construction==='wonder-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-plan.destination?.[i])<1.1));
+      if(original&&home){
+        const progress=plan.progress??plan.elapsed/plan.duration,inside=plan.phase==='act'?1:plan.phase==='prepare'?clamp((progress-.15)/.13,0,1):clamp(1-(progress-.9)/.1,0,1);
+        const performance={kind:'wonder',routine:plan.wonder_work,motion:s.motion!==false};
+        const character={...characterSprite({...s.duck,state:'idle',facing:true,performance},t),x:original.x,y:original.y,cheese:true};
+        home.wonderWorkers=[{character,inside,slot:0}];this.characters=this.characters.filter(c=>c!==original);
+      }
+    }
+    for(const r of s.living?.minds?.wonderGuests||[]){
+      if(r.phase==='approach'||!WONDER_ROUTINES[r.routine?.id])continue;
+      const original=this.characters.find(c=>c.id===r.actor);
+      const home=this.objects.find(o=>o.id===r.id&&sameInstance(o,r)&&o.construction==='wonder-v1'&&o.worldPosition?.every((v,i)=>Math.abs(v-r.destination?.[i])<1.1));
+      if(!original||!home)continue;
+      const source=s.visitor?.id===r.actor?s.visitor:s.rareVisitor?.id===r.actor?s.rareVisitor:{...s.storyActor,id:r.actor,castId:'lost_duckling',name:'Pip',stage:'duckling'};
+      const inside=r.phase==='enter'?clamp(r.elapsed/2,0,1):r.phase==='exit'?clamp(1-r.elapsed/2,0,1):1,performance={kind:'wonder',routine:r.routine,motion:s.motion!==false};
+      const character={...characterSprite({...source,state:'idle',facing:r.spot[0]<r.destination[0],performance},t,true),x:original.x,y:original.y,story:original.story};
+      (home.wonderWorkers||=[]).push({character,inside,slot:r.mode==='company'?1:0});this.characters=this.characters.filter(c=>c!==original);
     }
     for(const r of s.living?.minds?.playmates||[]){
       if(r.phase==='approach'||r.routine?.interrupted||!PLAYKIT_ROUTINES[r.routine?.id])continue;

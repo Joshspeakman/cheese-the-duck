@@ -38,6 +38,7 @@ class MindGarden:
         self.gardening={};self.garden_retry={};self.garden_scenes={}
         self.musicians={};self.music_retry={};self.music_scenes={};self.instrument_audio=InstrumentAudio()
         self.readers={};self.reading_retry={}
+        self.wonder_guests={};self.wonder_retry={}
         self.creators={};self.creative_retry={}
         self.textile_helpers={};self.textile_retry={}
         self.ground_helpers={};self.ground_retry={}
@@ -151,6 +152,9 @@ class MindGarden:
             if keepsake:
                 facts['keepsake']=keepsake
                 if plan['phase']=='approach':facts['current_activity']=('Paused: ' if plan.get('paused') else '')+'Walking to inspect '+keepsake['object']
+            from engine import wonders
+            wonder=wonders.conversation(self.pond,plan)
+            if wonder:facts['wonder']=wonder
             creative=creative_props.conversation(self.pond,plan)
             if creative:facts['creative_work']=creative
             structure=architecture.conversation(self.pond,plan)
@@ -239,6 +243,9 @@ class MindGarden:
             if key!='cheese' and self.readers[key]['phase'] in ('inside','finished'):
                 facts['keepsake']=keepsakes.conversation(self.pond,self.pond.state['plan'])
                 facts['current_activity']=reading['activity']
+        from engine import wonder_company
+        together=wonder_company.conversation(self,key)
+        if together:facts['wonder_company']=together
         creative=creative_company.conversation(self,key)
         if creative:
             facts['shared_activity']={'with':creative['with_name'],'activity':creative['activity'],'status':creative['status']}
@@ -433,6 +440,8 @@ class MindGarden:
         botanical_care.tick(self,house_dt)
         instrument_sessions.tick(self,house_dt)
         keepsake_company.tick(self,house_dt)
+        from engine import wonder_company
+        wonder_company.tick(self,house_dt)
         creative_company.tick(self,house_dt)
         playkit_company.tick(self,house_dt)
         architecture_company.tick(self,house_dt)
@@ -447,7 +456,7 @@ class MindGarden:
             if key=='cheese':continue
             r=self.model.residents[key];r['energy']=clamp(r['energy']-dt/2400);r['social']=clamp(r['social']-dt/1800)
             task=self.tasks.get(key)
-            if self.encounter_for(key) or key in self.carnival_guests or key in self.nest_helpers or key in self.playmates or key in self.structure_helpers or key in self.ground_helpers or key in self.textile_helpers or key in self.creators or key in self.readers or key in self.housing or key in self.furnishings or key in self.gardening or key in self.musicians or playdates.active(self,key):
+            if self.encounter_for(key) or key in self.carnival_guests or key in self.nest_helpers or key in self.playmates or key in self.structure_helpers or key in self.ground_helpers or key in self.textile_helpers or key in self.creators or key in self.readers or key in self.wonder_guests or key in self.housing or key in self.furnishings or key in self.gardening or key in self.musicians or playdates.active(self,key):
                 if task:task['until']+=dt
                 if key in self.housing and key in self.pond.state['friends']:
                     self.pond.state['friends'][key].update(activity='sheltering' if self.housing[key]['phase']=='inside' else 'walking to shelter',location=self.pond.location)
@@ -583,6 +592,11 @@ class MindGarden:
         if creator:
             result['meeting']=creator
             return result
+        from engine import wonder_company
+        wonder_guest=wonder_company.motion(self,key)
+        if wonder_guest:
+            result['meeting']=wonder_guest
+            return result
         reader=keepsake_company.motion(self,key)
         if reader:
             result['meeting']=reader
@@ -621,6 +635,7 @@ class MindGarden:
                 'gardeners':botanical_care.snapshot(self),
                 'musicians':instrument_sessions.snapshot(self),
                 'readers':keepsake_company.snapshot(self),
+                'wonderGuests':__import__('engine.wonder_company',fromlist=['snapshot']).snapshot(self),
                 'nest_helpers':nest_company.snapshot(self),
                 'creators':creative_company.snapshot(self),'textile_helpers':textile_company.snapshot(self),'ground_helpers':ground_company.snapshot(self),'structure_helpers':architecture_company.snapshot(self),'playmates':playkit_company.snapshot(self),
                 'exchanges':copy.deepcopy(self.model.state['exchanges'][-30:]),'voice':dict(self.voice),

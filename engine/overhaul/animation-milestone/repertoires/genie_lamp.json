@@ -1,0 +1,216 @@
+{
+ "schemaVersion": 1,
+ "objectId": "genie_lamp",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 4,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 44 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "genie_rub_lamp",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Rubbing the lamp until purple smoke curls out",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/genie_rub_lamp"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "genie_lamp",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "genie_rub_lamp"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "rub"
+   ],
+   "anchors": [
+    "belly"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 38,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "genie_make_wish",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Closing his eyes and making one of his three wishes",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/genie_make_wish"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "genie_lamp",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "genie_make_wish"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "wish"
+   ],
+   "anchors": [
+    "belly"
+   ],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "smoke>.3",
+    "wishes<3"
+   ],
+   "prefer": [
+    "sad",
+    "lonely"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 38,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "genie_polish_spout",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Polishing the long curly spout",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/genie_polish_spout"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "genie_lamp",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "genie_polish_spout"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "buff"
+   ],
+   "anchors": [
+    "spout"
+   ],
+   "parts_moved": [
+    "cloth"
+   ],
+   "tool": "cloth",
+   "when": [
+    "polish<.7"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 64,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "genie_peek_spout",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Peering down the spout for whoever lives in there",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/genie_peek_spout"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "genie_lamp",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "genie_peek_spout"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "peek"
+   ],
+   "anchors": [
+    "spout"
+   ],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [],
+   "prefer": [
+    "young",
+    "curious"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 64,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

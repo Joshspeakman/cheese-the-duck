@@ -1,0 +1,12465 @@
+{
+ "topiary_trim_bill": {
+  "item": "topiary_duck",
+  "label": "Clipping the hedge duck a sharper bill",
+  "duration": 26,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.5,
+     "contact": 1,
+     "anchor": "bill",
+     "shears": 1
+    }
+   ],
+   [
+    0.3,
+    {
+     "reach": 0.9,
+     "contact": 1,
+     "anchor": "bill",
+     "shears": 0,
+     "eye": "o"
+    }
+   ],
+   [
+    0.38,
+    {
+     "shears": 1,
+     "contact": 1,
+     "anchor": "bill"
+    }
+   ],
+   [
+    0.5,
+    {
+     "contact": 1,
+     "anchor": "bill",
+     "shears": 0,
+     "mark": "*"
+    }
+   ],
+   [
+    0.68,
+    {
+     "x": -0.8,
+     "y": -0.3,
+     "eye": "^",
+     "mark": "?"
+    }
+   ],
+   [
+    0.86,
+    {
+     "w": 0.4,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "snip_bill"
+   ],
+   [
+    0.5,
+    "snip_bill"
+   ]
+  ],
+  "when": [
+   "growth>.25"
+  ],
+  "prefer": [
+   "growth>.6"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "shears",
+  "say": null
+ },
+ "topiary_tail_flourish": {
+  "item": "topiary_duck",
+  "label": "Shaping a curly tail on the hedge",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.6,
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "tail",
+     "shears": 1
+    }
+   ],
+   [
+    0.33,
+    {
+     "y": 0.6,
+     "b": 0.4,
+     "contact": 1,
+     "anchor": "tail",
+     "shears": 0
+    }
+   ],
+   [
+    0.5,
+    {
+     "contact": 1,
+     "anchor": "rump",
+     "shears": 1
+    }
+   ],
+   [
+    0.62,
+    {
+     "contact": 1,
+     "anchor": "rump",
+     "shears": 0,
+     "mark": "*"
+    }
+   ],
+   [
+    0.82,
+    {
+     "x": -1,
+     "eye": "^",
+     "w": 0.7
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.33,
+    "snip_tail"
+   ],
+   [
+    0.62,
+    "snip_wing"
+   ]
+  ],
+  "when": [
+   "growth>.2"
+  ],
+  "prefer": [
+   "fall",
+   "summer"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "shears",
+  "say": null
+ },
+ "topiary_water_roots": {
+  "item": "topiary_duck",
+  "label": "Watering the roots of the hedge duck",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.4,
+     "contact": 1,
+     "anchor": "roots",
+     "can": 1
+    }
+   ],
+   [
+    0.35,
+    {
+     "y": 0.8,
+     "b": 0.4,
+     "contact": 1,
+     "anchor": "roots",
+     "can": 1,
+     "mark": "~"
+    }
+   ],
+   [
+    0.6,
+    {
+     "contact": 1,
+     "anchor": "roots",
+     "can": 0.4
+    }
+   ],
+   [
+    0.8,
+    {
+     "can": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.38,
+    "pour"
+   ]
+  ],
+  "when": [
+   "!wet",
+   "!snow"
+  ],
+  "prefer": [
+   "moisture<.35",
+   "summer"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "can",
+  "say": null
+ },
+ "topiary_shake_snow": {
+  "item": "topiary_duck",
+  "label": "Shaking the snow off the hedge duck's back",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 1,
+     "contact": 1,
+     "anchor": "flank",
+     "w": 0.6
+    }
+   ],
+   [
+    0.3,
+    {
+     "contact": 1,
+     "anchor": "flank",
+     "b": -0.4,
+     "w": 1,
+     "mark": "*"
+    }
+   ],
+   [
+    0.45,
+    {
+     "contact": 1,
+     "anchor": "flank",
+     "b": 0.4
+    }
+   ],
+   [
+    0.6,
+    {
+     "contact": 1,
+     "anchor": "flank",
+     "w": 0.8
+    }
+   ],
+   [
+    0.8,
+    {
+     "y": 0.5,
+     "eye": "O",
+     "mark": "brr"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "shake"
+   ],
+   [
+    0.6,
+    "brush"
+   ]
+  ],
+  "when": [
+   "snow_on"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "topiary_mirror_pose": {
+  "item": "topiary_duck",
+  "label": "Striking the same pose as the hedge duck",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": -0.6,
+     "eye": "o",
+     "mark": "?"
+    }
+   ],
+   [
+    0.3,
+    {
+     "y": -0.6,
+     "w": 1,
+     "b": -0.4
+    }
+   ],
+   [
+    0.45,
+    {
+     "y": -0.8,
+     "w": 1,
+     "eye": "^"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": 0.8,
+     "y": -0.4,
+     "l": 1,
+     "mark": "!"
+    }
+   ],
+   [
+    0.8,
+    {
+     "w": 0.5,
+     "eye": "^",
+     "mark": "ha"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "dry"
+  ],
+  "prefer": [
+   "happy",
+   "day"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "topiary_mirror"
+ },
+ "topiary_rain_tuck": {
+  "item": "topiary_duck",
+  "label": "Hunkering down against the hedge duck's planter out of the rain",
+  "duration": 34,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": 0.8,
+     "y": 0.8,
+     "b": 0.5,
+     "hide": 0.5
+    }
+   ],
+   [
+    0.28,
+    {
+     "y": 1.4,
+     "b": 0.8,
+     "hide": 1,
+     "eye": "-"
+    }
+   ],
+   [
+    0.5,
+    {
+     "y": 1.4,
+     "b": 0.8,
+     "hide": 1,
+     "eye": "-",
+     "mark": "zz"
+    }
+   ],
+   [
+    0.72,
+    {
+     "y": 1.2,
+     "b": 0.7,
+     "hide": 1,
+     "eye": "o"
+    }
+   ],
+   [
+    0.88,
+    {
+     "y": 0.5,
+     "hide": 0.4,
+     "w": 0.3
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "wet"
+  ],
+  "prefer": [
+   "young",
+   "tired"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "zen_rake_waves": {
+  "item": "zen_garden",
+  "label": "Raking slow waves through the sand",
+  "duration": 30,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.1,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "bed_l",
+     "rake": 1
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 0.5,
+     "contact": 1,
+     "anchor": "bed_c",
+     "rake": 1
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": 1,
+     "contact": 1,
+     "anchor": "bed_r",
+     "rake": 1,
+     "eye": "-"
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": 0.4,
+     "contact": 1,
+     "anchor": "bed_c",
+     "rake": 1
+    }
+   ],
+   [
+    0.88,
+    {
+     "rake": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.1,
+    "rake_start"
+   ],
+   [
+    0.5,
+    "rake_waves"
+   ],
+   [
+    0.7,
+    "rake_waves"
+   ],
+   [
+    0.88,
+    "finish"
+   ]
+  ],
+  "when": [
+   "dry"
+  ],
+  "prefer": [
+   "raked<.5",
+   "day"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "rake",
+  "say": null
+ },
+ "zen_rake_rings": {
+  "item": "zen_garden",
+  "label": "Drawing careful rings around the big stone",
+  "duration": 32,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "stone",
+     "rake": 1
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 0.6,
+     "y": 0.4,
+     "contact": 1,
+     "anchor": "ring_n",
+     "rake": 1
+    }
+   ],
+   [
+    0.48,
+    {
+     "x": 1,
+     "contact": 1,
+     "anchor": "ring_e",
+     "rake": 1
+    }
+   ],
+   [
+    0.66,
+    {
+     "x": 0.3,
+     "y": 0.5,
+     "contact": 1,
+     "anchor": "ring_s",
+     "rake": 1,
+     "eye": "-"
+    }
+   ],
+   [
+    0.86,
+    {
+     "rake": 0,
+     "w": 0.3,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.12,
+    "rake_start"
+   ],
+   [
+    0.48,
+    "rake_rings"
+   ],
+   [
+    0.66,
+    "rake_rings"
+   ],
+   [
+    0.86,
+    "finish"
+   ]
+  ],
+  "when": [
+   "dry"
+  ],
+  "prefer": [
+   "dusk",
+   "calm"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "rake",
+  "say": null
+ },
+ "zen_rake_spiral": {
+  "item": "zen_garden",
+  "label": "Pulling one long spiral from the centre outward",
+  "duration": 34,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "contact": 1,
+     "anchor": "bed_c",
+     "rake": 1
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 0.3,
+     "y": 0.4,
+     "contact": 1,
+     "anchor": "ring_n",
+     "rake": 1
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": 0.9,
+     "contact": 1,
+     "anchor": "ring_e",
+     "rake": 1
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": 1.2,
+     "y": 0.3,
+     "contact": 1,
+     "anchor": "bed_r",
+     "rake": 1,
+     "eye": "-"
+    }
+   ],
+   [
+    0.88,
+    {
+     "rake": 0,
+     "eye": "^",
+     "mark": "~"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.12,
+    "rake_start"
+   ],
+   [
+    0.5,
+    "rake_spiral"
+   ],
+   [
+    0.7,
+    "rake_spiral"
+   ],
+   [
+    0.88,
+    "finish"
+   ]
+  ],
+  "when": [
+   "dry"
+  ],
+  "prefer": [
+   "night",
+   "sad"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "rake",
+  "say": null
+ },
+ "zen_sweep_leaves": {
+  "item": "zen_garden",
+  "label": "Sweeping fallen leaves off the sand",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "bed_l",
+     "broom": 1
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.5,
+     "contact": 1,
+     "anchor": "bed_c",
+     "broom": 1,
+     "mark": "~"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 1,
+     "contact": 1,
+     "anchor": "bed_r",
+     "broom": 1
+    }
+   ],
+   [
+    0.75,
+    {
+     "broom": 0.3,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "gather"
+   ],
+   [
+    0.55,
+    "gather"
+   ]
+  ],
+  "when": [
+   "leaves>.25"
+  ],
+  "prefer": [
+   "fall",
+   "windy"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "broom",
+  "say": null
+ },
+ "zen_move_stone": {
+  "item": "zen_garden",
+  "label": "Rolling a pebble to a better spot",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": 1,
+     "b": 0.6,
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "pebble",
+     "pebble": 0
+    }
+   ],
+   [
+    0.35,
+    {
+     "y": 1.3,
+     "b": 0.8,
+     "contact": 1,
+     "anchor": "pebble",
+     "pebble": 0.5,
+     "mark": "!"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 0.6,
+     "y": 1.2,
+     "contact": 1,
+     "anchor": "pebble",
+     "pebble": 1
+    }
+   ],
+   [
+    0.78,
+    {
+     "y": -0.3,
+     "eye": "o",
+     "mark": "?"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.55,
+    "lift"
+   ]
+  ],
+  "when": [
+   "dry"
+  ],
+  "prefer": [
+   "happy"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "zen_sit_breathe": {
+  "item": "zen_garden",
+  "label": "Sitting at the sand's edge and breathing slowly",
+  "duration": 30,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 0.8,
+     "b": 0.6,
+     "eye": "-"
+    }
+   ],
+   [
+    0.3,
+    {
+     "y": 0.6,
+     "b": 0.3,
+     "w": 0.4,
+     "eye": "-"
+    }
+   ],
+   [
+    0.45,
+    {
+     "y": 0.8,
+     "b": 0.6,
+     "eye": "-"
+    }
+   ],
+   [
+    0.6,
+    {
+     "y": 0.6,
+     "b": 0.3,
+     "w": 0.4,
+     "eye": "-",
+     "mark": "~"
+    }
+   ],
+   [
+    0.8,
+    {
+     "y": 0.8,
+     "b": 0.6,
+     "eye": "-"
+    }
+   ],
+   [
+    0.92,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.45,
+    "breathe"
+   ],
+   [
+    0.8,
+    "breathe"
+   ]
+  ],
+  "when": [
+   "!storm"
+  ],
+  "prefer": [
+   "sad",
+   "lonely",
+   "tired",
+   "dusk"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "zen_smooth_after_rain": {
+  "item": "zen_garden",
+  "label": "Smoothing rain pits out of the sand",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "bed_l",
+     "rake": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "x": 0.6,
+     "contact": 1,
+     "anchor": "bed_c",
+     "rake": 1
+    }
+   ],
+   [
+    0.65,
+    {
+     "x": 1,
+     "contact": 1,
+     "anchor": "bed_r",
+     "rake": 1,
+     "mark": "~"
+    }
+   ],
+   [
+    0.86,
+    {
+     "rake": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "smooth"
+   ],
+   [
+    0.65,
+    "smooth"
+   ]
+  ],
+  "when": [
+   "dry",
+   "raked<.4"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "rake",
+  "say": null
+ },
+ "ice_chisel_feathers": {
+  "item": "ice_sculpture",
+  "label": "Chiselling fresh feathers into the ice swan",
+  "duration": 28,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "wing",
+     "chisel": 1
+    }
+   ],
+   [
+    0.25,
+    {
+     "contact": 1,
+     "anchor": "wing",
+     "chisel": 0,
+     "b": -0.2,
+     "mark": "tk"
+    }
+   ],
+   [
+    0.38,
+    {
+     "contact": 1,
+     "anchor": "wing",
+     "chisel": 1
+    }
+   ],
+   [
+    0.5,
+    {
+     "contact": 1,
+     "anchor": "neck",
+     "chisel": 0,
+     "mark": "tk"
+    }
+   ],
+   [
+    0.66,
+    {
+     "x": -0.7,
+     "eye": "o"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^",
+     "w": 0.4
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.25,
+    "chisel"
+   ],
+   [
+    0.5,
+    "chisel"
+   ]
+  ],
+  "when": [
+   "melt<.85"
+  ],
+  "prefer": [
+   "detail<.5",
+   "cold"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "chisel",
+  "say": null
+ },
+ "ice_polish": {
+  "item": "ice_sculpture",
+  "label": "Buffing the ice until it shines",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "breast",
+     "cloth": 1
+    }
+   ],
+   [
+    0.32,
+    {
+     "x": 0.3,
+     "contact": 1,
+     "anchor": "wing",
+     "cloth": 1,
+     "mark": "*"
+    }
+   ],
+   [
+    0.5,
+    {
+     "contact": 1,
+     "anchor": "neck",
+     "cloth": 1
+    }
+   ],
+   [
+    0.68,
+    {
+     "x": -0.6,
+     "cloth": 0,
+     "eye": "^",
+     "mark": "*"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "polish"
+   ],
+   [
+    0.5,
+    "polish"
+   ]
+  ],
+  "when": [],
+  "prefer": [
+   "frost>.4",
+   "day"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "cloth",
+  "say": null
+ },
+ "ice_tarp_shade": {
+  "item": "ice_sculpture",
+  "label": "Throwing a canvas over the sculpture to keep the sun off",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 1,
+     "w": 0.8,
+     "contact": 1,
+     "anchor": "flank",
+     "tarp_hold": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "y": -0.6,
+     "w": 1,
+     "contact": 1,
+     "anchor": "flank",
+     "tarp_hold": 1
+    }
+   ],
+   [
+    0.6,
+    {
+     "contact": 1,
+     "anchor": "base",
+     "tarp_hold": 0.3
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.6,
+    "cover"
+   ]
+  ],
+  "when": [
+   "tarp<.5",
+   "warm"
+  ],
+  "prefer": [
+   "sun",
+   "melt>.3"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "ice_tarp_reveal": {
+  "item": "ice_sculpture",
+  "label": "Tugging the canvas off for the evening",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 1,
+     "contact": 1,
+     "anchor": "base",
+     "tarp_hold": 0.3
+    }
+   ],
+   [
+    0.4,
+    {
+     "y": -0.6,
+     "w": 1,
+     "contact": 1,
+     "anchor": "flank",
+     "tarp_hold": 1
+    }
+   ],
+   [
+    0.6,
+    {
+     "w": 1,
+     "b": -0.4,
+     "mark": "ta-da"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.45,
+    "uncover"
+   ]
+  ],
+  "when": [
+   "tarp>.5"
+  ],
+  "prefer": [
+   "dusk",
+   "night",
+   "cold"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "ice_mop_meltwater": {
+  "item": "ice_sculpture",
+  "label": "Mopping up the meltwater puddle",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": 1,
+     "b": 0.6,
+     "reach": 0.5,
+     "contact": 1,
+     "anchor": "puddle",
+     "cloth": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "x": 0.6,
+     "y": 1.2,
+     "contact": 1,
+     "anchor": "puddle",
+     "cloth": 1,
+     "mark": "~"
+    }
+   ],
+   [
+    0.65,
+    {
+     "x": -0.2,
+     "contact": 1,
+     "anchor": "puddle",
+     "cloth": 1
+    }
+   ],
+   [
+    0.85,
+    {
+     "cloth": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "mop"
+   ],
+   [
+    0.65,
+    "mop"
+   ]
+  ],
+  "when": [
+   "puddle>.2"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "cloth",
+  "say": null
+ },
+ "ice_tongue_test": {
+  "item": "ice_sculpture",
+  "label": "Licking the ice to see if it is really cold",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.6,
+     "y": 0.2,
+     "eye": "o",
+     "mark": "?"
+    }
+   ],
+   [
+    0.32,
+    {
+     "x": 1.1,
+     "y": 0.1,
+     "contact": 1,
+     "anchor": "breast",
+     "mark": "!"
+    }
+   ],
+   [
+    0.45,
+    {
+     "x": 1.1,
+     "eye": "O",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.62,
+    {
+     "x": -0.6,
+     "b": -0.5,
+     "w": 1,
+     "eye": ">"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^",
+     "mark": "brr"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "lick"
+   ]
+  ],
+  "when": [],
+  "prefer": [
+   "young",
+   "happy"
+  ],
+  "ages": [
+   "hatchling",
+   "duckling",
+   "juvenile"
+  ],
+  "need": null,
+  "tool": "none",
+  "say": "ice_lick"
+ },
+ "ice_frost_breath": {
+  "item": "ice_sculpture",
+  "label": "Huffing frosty breath onto the ice",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.6,
+     "eye": "o"
+    }
+   ],
+   [
+    0.32,
+    {
+     "x": 0.9,
+     "b": -0.3,
+     "mark": "hhh"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": 0.9,
+     "mark": "hhh"
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": -0.4,
+     "eye": "^",
+     "w": 0.4
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "breath"
+   ],
+   [
+    0.5,
+    "breath"
+   ]
+  ],
+  "when": [
+   "cold"
+  ],
+  "prefer": [
+   "winter"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "ice_slush_mould": {
+  "item": "ice_sculpture",
+  "label": "Scooping meltwater slush into the swan mould to set again overnight",
+  "duration": 28,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 1,
+     "b": 0.6,
+     "reach": 0.5,
+     "contact": 1,
+     "anchor": "puddle",
+     "mould": 0
+    }
+   ],
+   [
+    0.3,
+    {
+     "y": 0.4,
+     "contact": 1,
+     "anchor": "base",
+     "mould": 0.5,
+     "mark": "slsh"
+    }
+   ],
+   [
+    0.5,
+    {
+     "y": -0.2,
+     "contact": 1,
+     "anchor": "breast",
+     "mould": 1,
+     "mark": "pat"
+    }
+   ],
+   [
+    0.72,
+    {
+     "x": -0.5,
+     "mould": 1,
+     "eye": "o",
+     "mark": "..."
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.5,
+    "mould"
+   ]
+  ],
+  "when": [
+   "melt>.6"
+  ],
+  "prefer": [
+   "dusk",
+   "night"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "bucket",
+  "say": null
+ },
+ "ice_pack_snow": {
+  "item": "ice_sculpture",
+  "label": "Packing snow into the melted spots",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": 1,
+     "b": 0.5,
+     "reach": 0.4
+    }
+   ],
+   [
+    0.3,
+    {
+     "y": -0.2,
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "base",
+     "w": 0.5
+    }
+   ],
+   [
+    0.5,
+    {
+     "contact": 1,
+     "anchor": "flank",
+     "mark": "pat"
+    }
+   ],
+   [
+    0.7,
+    {
+     "contact": 1,
+     "anchor": "breast",
+     "mark": "pat"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.5,
+    "pack"
+   ],
+   [
+    0.7,
+    "pack"
+   ]
+  ],
+  "when": [
+   "snow",
+   "melt>.15"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "sand_tower_raise": {
+  "item": "sand_castle",
+  "label": "Packing a new tower from a bucket of wet sand",
+  "duration": 30,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 1,
+     "b": 0.6,
+     "reach": 0.4,
+     "contact": 1,
+     "anchor": "sandpile",
+     "bucket": 1
+    }
+   ],
+   [
+    0.28,
+    {
+     "y": 0.2,
+     "contact": 1,
+     "anchor": "keep",
+     "bucket": 1
+    }
+   ],
+   [
+    0.42,
+    {
+     "y": -0.4,
+     "b": -0.4,
+     "w": 0.8,
+     "contact": 1,
+     "anchor": "keep",
+     "bucket": 0.5,
+     "mark": "flip"
+    }
+   ],
+   [
+    0.55,
+    {
+     "contact": 1,
+     "anchor": "keep",
+     "bucket": 0,
+     "mark": "pat"
+    }
+   ],
+   [
+    0.75,
+    {
+     "x": -0.6,
+     "eye": "o",
+     "mark": "!"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.12,
+    "wet_sand"
+   ],
+   [
+    0.55,
+    "tower"
+   ]
+  ],
+  "when": [
+   "towers<4",
+   "dry"
+  ],
+  "prefer": [
+   "summer",
+   "happy"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "bucket",
+  "say": null
+ },
+ "sand_dig_moat": {
+  "item": "sand_castle",
+  "label": "Digging a moat around the walls",
+  "duration": 26,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": 1,
+     "b": 0.6,
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "moat_l",
+     "spade": 1
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.6,
+     "y": 1.2,
+     "contact": 1,
+     "anchor": "moat_c",
+     "spade": 1,
+     "mark": "scoop"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 1,
+     "y": 1.2,
+     "contact": 1,
+     "anchor": "moat_r",
+     "spade": 1
+    }
+   ],
+   [
+    0.8,
+    {
+     "spade": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "dig"
+   ],
+   [
+    0.55,
+    "dig"
+   ]
+  ],
+  "when": [
+   "moat<.4",
+   "dry"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "spade",
+  "say": null
+ },
+ "sand_fill_moat": {
+  "item": "sand_castle",
+  "label": "Pouring pond water into the moat",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.4,
+     "contact": 1,
+     "anchor": "moat_l",
+     "bucket": 1
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.3,
+     "contact": 1,
+     "anchor": "moat_c",
+     "bucket": 1,
+     "mark": "~"
+    }
+   ],
+   [
+    0.6,
+    {
+     "contact": 1,
+     "anchor": "moat_r",
+     "bucket": 0.3,
+     "mark": "~"
+    }
+   ],
+   [
+    0.82,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "pour"
+   ]
+  ],
+  "when": [
+   "moat<.6",
+   "moat>.05",
+   "!cold"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "bucket",
+  "say": null
+ },
+ "sand_plant_flag": {
+  "item": "sand_castle",
+  "label": "Planting a tiny flag on the tallest tower",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": -0.6,
+     "reach": 1,
+     "w": 0.8,
+     "contact": 1,
+     "anchor": "tip",
+     "flagstick": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "y": -0.8,
+     "contact": 1,
+     "anchor": "tip",
+     "flagstick": 1,
+     "mark": "!"
+    }
+   ],
+   [
+    0.6,
+    {
+     "w": 1,
+     "b": -0.4,
+     "eye": "^",
+     "mark": "hup"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "flag"
+   ]
+  ],
+  "when": [
+   "flag<.5",
+   "towers>0"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "flagstick",
+  "say": "sand_flag"
+ },
+ "sand_patch_walls": {
+  "item": "sand_castle",
+  "label": "Patting rain-slumped walls back into shape",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": 0.6,
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "wall_l",
+     "mark": "pat"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.4,
+     "contact": 1,
+     "anchor": "keep",
+     "mark": "pat"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 0.9,
+     "contact": 1,
+     "anchor": "wall_r",
+     "mark": "pat"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.15,
+    "pat"
+   ],
+   [
+    0.35,
+    "pat"
+   ],
+   [
+    0.55,
+    "pat"
+   ]
+  ],
+  "when": [
+   "erosion>.2",
+   "!wet"
+  ],
+  "prefer": [
+   "erosion>.5"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "sand_shell_trim": {
+  "item": "sand_castle",
+  "label": "Pressing little shells into the walls",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": 1,
+     "b": 0.6,
+     "reach": 0.3,
+     "eye": "o"
+    }
+   ],
+   [
+    0.3,
+    {
+     "y": -0.2,
+     "contact": 1,
+     "anchor": "wall_l",
+     "mark": "."
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": 0.4,
+     "contact": 1,
+     "anchor": "keep",
+     "mark": "."
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": 0.9,
+     "contact": 1,
+     "anchor": "wall_r",
+     "mark": "."
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^",
+     "w": 0.4
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "shell"
+   ],
+   [
+    0.5,
+    "shell"
+   ],
+   [
+    0.7,
+    "shell"
+   ]
+  ],
+  "when": [
+   "towers>0",
+   "dry"
+  ],
+  "prefer": [
+   "young",
+   "summer"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "sand_kaiju_stomp": {
+  "item": "sand_castle",
+  "label": "Stomping the castle flat like a giant monster",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": -0.8,
+     "w": 1,
+     "b": -0.5,
+     "eye": ">",
+     "mark": "RAWR"
+    }
+   ],
+   [
+    0.28,
+    {
+     "x": 0.8,
+     "l": 1,
+     "eye": ">"
+    }
+   ],
+   [
+    0.38,
+    {
+     "x": 1,
+     "b": 0.8,
+     "contact": 1,
+     "anchor": "keep",
+     "mark": "STOMP"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": 1.2,
+     "r": 1,
+     "contact": 1,
+     "anchor": "wall_r"
+    }
+   ],
+   [
+    0.66,
+    {
+     "b": -0.6,
+     "w": 1,
+     "eye": "^",
+     "mark": "ha!"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.38,
+    "stomp"
+   ]
+  ],
+  "when": [
+   "towers>0"
+  ],
+  "prefer": [
+   "grumpy",
+   "young"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "sand_stomp"
+ },
+ "gong_peck_post": {
+  "item": "gong",
+  "label": "Pecking the gong post and giggling at the tiny tock",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.6,
+     "y": 0.4,
+     "eye": "o",
+     "mark": "?"
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 0.9,
+     "y": 0.6,
+     "contact": 1,
+     "anchor": "post_foot",
+     "mark": "tok"
+    }
+   ],
+   [
+    0.45,
+    {
+     "x": 0.4,
+     "eye": "^",
+     "mark": "hee"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": 0.9,
+     "y": 0.6,
+     "contact": 1,
+     "anchor": "post_foot",
+     "mark": "tok"
+    }
+   ],
+   [
+    0.8,
+    {
+     "b": -0.4,
+     "w": 0.6,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "tock"
+   ],
+   [
+    0.6,
+    "tock"
+   ]
+  ],
+  "when": [],
+  "prefer": [
+   "young",
+   "happy"
+  ],
+  "ages": [
+   "hatchling",
+   "duckling"
+  ],
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "gong_soft_tap": {
+  "item": "gong",
+  "label": "Tapping the gong softly and listening",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.6,
+     "contact": 0,
+     "mallet": 0.5
+    }
+   ],
+   [
+    0.3,
+    {
+     "reach": 0.9,
+     "contact": 1,
+     "anchor": "boss",
+     "mallet": 1,
+     "mark": "~"
+    }
+   ],
+   [
+    0.45,
+    {
+     "x": -0.3,
+     "mallet": 0.3,
+     "eye": "-",
+     "mark": "bong"
+    }
+   ],
+   [
+    0.75,
+    {
+     "x": 0.4,
+     "y": 0.2,
+     "eye": "-",
+     "mark": "~"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "tap"
+   ]
+  ],
+  "when": [
+   "!night_late"
+  ],
+  "prefer": [
+   "dawn",
+   "calm"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "mallet",
+  "say": null
+ },
+ "gong_mighty_bong": {
+  "item": "gong",
+  "label": "Winding up and giving the gong a mighty BONG",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": -0.8,
+     "w": 1,
+     "b": -0.4,
+     "mallet": 1,
+     "eye": ">"
+    }
+   ],
+   [
+    0.25,
+    {
+     "x": -1.1,
+     "w": 1,
+     "mallet": 1,
+     "mark": "..."
+    }
+   ],
+   [
+    0.34,
+    {
+     "x": 0.9,
+     "contact": 1,
+     "anchor": "boss",
+     "mallet": 1,
+     "mark": "BONG"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": -0.4,
+     "b": 0.6,
+     "eye": "O",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.75,
+    {
+     "eye": "@",
+     "mark": "~"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.34,
+    "boom"
+   ]
+  ],
+  "when": [
+   "!night_late"
+  ],
+  "prefer": [
+   "happy",
+   "day"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "mallet",
+  "say": "gong_bong"
+ },
+ "gong_dinner_call": {
+  "item": "gong",
+  "label": "Striking three slow beats to call friends over",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "boss",
+     "mallet": 1,
+     "mark": "1"
+    }
+   ],
+   [
+    0.25,
+    {
+     "mallet": 0.3
+    }
+   ],
+   [
+    0.38,
+    {
+     "contact": 1,
+     "anchor": "boss",
+     "mallet": 1,
+     "mark": "2"
+    }
+   ],
+   [
+    0.5,
+    {
+     "mallet": 0.3
+    }
+   ],
+   [
+    0.62,
+    {
+     "contact": 1,
+     "anchor": "boss",
+     "mallet": 1,
+     "mark": "3"
+    }
+   ],
+   [
+    0.82,
+    {
+     "y": -0.5,
+     "w": 0.8,
+     "eye": "^",
+     "mark": "!"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.12,
+    "tap"
+   ],
+   [
+    0.38,
+    "tap"
+   ],
+   [
+    0.62,
+    "boom"
+   ]
+  ],
+  "when": [
+   "!night_late"
+  ],
+  "prefer": [
+   "dusk",
+   "lonely"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "mallet",
+  "say": "gong_dinner"
+ },
+ "gong_wing_mute": {
+  "item": "gong",
+  "label": "Hugging the gong to stop it humming",
+  "duration": 14,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.6,
+     "w": 0.7,
+     "reach": 1,
+     "contact": 1,
+     "anchor": "rim"
+    }
+   ],
+   [
+    0.4,
+    {
+     "x": 0.9,
+     "w": 1,
+     "contact": 1,
+     "anchor": "boss",
+     "eye": "-",
+     "mark": "shh"
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": 0.4,
+     "w": 0.4,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "damp"
+   ]
+  ],
+  "when": [
+   "ring>.15"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "gong_polish": {
+  "item": "gong",
+  "label": "Polishing the bronze face in circles",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "rim",
+     "cloth": 1
+    }
+   ],
+   [
+    0.32,
+    {
+     "x": 0.3,
+     "contact": 1,
+     "anchor": "boss",
+     "cloth": 1,
+     "mark": "*"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": 0.6,
+     "contact": 1,
+     "anchor": "rim_r",
+     "cloth": 1
+    }
+   ],
+   [
+    0.7,
+    {
+     "contact": 1,
+     "anchor": "boss",
+     "cloth": 1
+    }
+   ],
+   [
+    0.88,
+    {
+     "cloth": 0,
+     "eye": "^",
+     "mark": "*"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "buff"
+   ],
+   [
+    0.7,
+    "buff"
+   ]
+  ],
+  "when": [],
+  "prefer": [
+   "shine<.4",
+   "dust>.3"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "cloth",
+  "say": null
+ },
+ "gong_ear_to_bronze": {
+  "item": "gong",
+  "label": "Pressing an ear to the gong to hear the last of the hum",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.8,
+     "y": 0.3,
+     "reach": 0.4,
+     "ear": 1
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 1.1,
+     "y": 0.3,
+     "contact": 1,
+     "anchor": "rim",
+     "ear": 1,
+     "eye": "-"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": 1.1,
+     "eye": "-",
+     "mark": "~"
+    }
+   ],
+   [
+    0.8,
+    {
+     "x": 0.2,
+     "eye": "o",
+     "mark": "!"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "ring>.05"
+  ],
+  "prefer": [
+   "young",
+   "calm"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "gong_cover_ears": {
+  "item": "gong",
+  "label": "Bonging the gong, then clapping both wings over his ears",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "mallet": 1,
+     "eye": "o"
+    }
+   ],
+   [
+    0.28,
+    {
+     "contact": 1,
+     "anchor": "boss",
+     "mallet": 1,
+     "mark": "bong"
+    }
+   ],
+   [
+    0.38,
+    {
+     "x": -0.8,
+     "b": 0.6,
+     "w": 1,
+     "mallet": 0,
+     "eye": ">",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.62,
+    {
+     "x": -0.8,
+     "b": 0.5,
+     "w": 1,
+     "eye": ">"
+    }
+   ],
+   [
+    0.85,
+    {
+     "w": 0.3,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.28,
+    "boom"
+   ]
+  ],
+  "when": [
+   "!night_late"
+  ],
+  "prefer": [
+   "young"
+  ],
+  "ages": [
+   "hatchling",
+   "duckling",
+   "juvenile"
+  ],
+  "need": null,
+  "tool": "mallet",
+  "say": "gong_ears"
+ },
+ "aurora_switch_on": {
+  "item": "aurora",
+  "label": "Flicking on the aurora lamp as the sky darkens",
+  "duration": 14,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "switch",
+     "switch": 0
+    }
+   ],
+   [
+    0.35,
+    {
+     "contact": 1,
+     "anchor": "switch",
+     "switch": 1,
+     "mark": "click"
+    }
+   ],
+   [
+    0.55,
+    {
+     "y": -0.6,
+     "x": -0.6,
+     "eye": "O",
+     "mark": "ooh"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "on"
+   ]
+  ],
+  "when": [
+   "power<.5"
+  ],
+  "prefer": [
+   "dusk",
+   "night"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": "aurora_on"
+ },
+ "aurora_tune_colour": {
+  "item": "aurora",
+  "label": "Turning the brass dial through greens and violets",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "dial",
+     "dial": 0
+    }
+   ],
+   [
+    0.35,
+    {
+     "contact": 1,
+     "anchor": "dial",
+     "dial": 0.5,
+     "eye": "o"
+    }
+   ],
+   [
+    0.5,
+    {
+     "y": -0.4,
+     "x": -0.3,
+     "eye": "O"
+    }
+   ],
+   [
+    0.65,
+    {
+     "contact": 1,
+     "anchor": "dial",
+     "dial": 1
+    }
+   ],
+   [
+    0.85,
+    {
+     "y": -0.5,
+     "eye": "^",
+     "mark": "*"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "hue"
+   ],
+   [
+    0.65,
+    "hue"
+   ]
+  ],
+  "when": [
+   "power>.5"
+  ],
+  "prefer": [
+   "night"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "aurora_add_ribbon": {
+  "item": "aurora",
+  "label": "Sliding another lens in for an extra ribbon of light",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "lens",
+     "w": 0.4
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "lens",
+     "mark": "clk"
+    }
+   ],
+   [
+    0.6,
+    {
+     "y": -0.6,
+     "x": -0.4,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "ribbon"
+   ]
+  ],
+  "when": [
+   "power>.5"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "aurora_lie_and_watch": {
+  "item": "aurora",
+  "label": "Lying back on the grass to watch the lights ripple",
+  "duration": 40,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 1,
+     "b": 0.8,
+     "eye": "o"
+    }
+   ],
+   [
+    0.25,
+    {
+     "y": 1.6,
+     "b": 1,
+     "x": -0.4,
+     "eye": "o"
+    }
+   ],
+   [
+    0.5,
+    {
+     "y": 1.6,
+     "b": 1,
+     "x": -0.4,
+     "eye": "^",
+     "mark": "~"
+    }
+   ],
+   [
+    0.75,
+    {
+     "y": 1.6,
+     "b": 1,
+     "x": -0.4,
+     "eye": "-"
+    }
+   ],
+   [
+    0.9,
+    {
+     "y": 0.8,
+     "b": 0.5,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "power>.5",
+   "dry"
+  ],
+  "prefer": [
+   "night",
+   "sad",
+   "lonely"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "aurora_watch"
+ },
+ "aurora_bedtime_dim": {
+  "item": "aurora",
+  "label": "Dimming the aurora down for sleep",
+  "duration": 14,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "dial"
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "dial",
+     "dial": 0.2,
+     "eye": "-"
+    }
+   ],
+   [
+    0.65,
+    {
+     "y": 0.5,
+     "b": 0.4,
+     "eye": "-",
+     "mark": "z"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "-"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "dim"
+   ]
+  ],
+  "when": [
+   "power>.7",
+   "night"
+  ],
+  "prefer": [
+   "tired"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "aurora_switch_off": {
+  "item": "aurora",
+  "label": "Switching off the aurora for the morning",
+  "duration": 12,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.2,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "switch",
+     "switch": 1
+    }
+   ],
+   [
+    0.45,
+    {
+     "contact": 1,
+     "anchor": "switch",
+     "switch": 0,
+     "mark": "click"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.45,
+    "off"
+   ]
+  ],
+  "when": [
+   "power>.5",
+   "day"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "rainbow_drip_splash": {
+  "item": "rainbow_generator",
+  "label": "Splashing in the drip tray under the tank",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.5,
+     "y": 0.4,
+     "eye": "o"
+    }
+   ],
+   [
+    0.3,
+    {
+     "y": 0.8,
+     "b": 0.6,
+     "contact": 1,
+     "anchor": "drip",
+     "mark": "plip"
+    }
+   ],
+   [
+    0.45,
+    {
+     "b": -0.6,
+     "w": 1,
+     "eye": "^",
+     "mark": "*"
+    }
+   ],
+   [
+    0.6,
+    {
+     "y": 0.8,
+     "b": 0.6,
+     "contact": 1,
+     "anchor": "drip",
+     "mark": "splsh"
+    }
+   ],
+   [
+    0.8,
+    {
+     "w": 0.8,
+     "eye": "^",
+     "mark": "hee"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "water>.3",
+   "!cold"
+  ],
+  "prefer": [
+   "young",
+   "summer"
+  ],
+  "ages": [
+   "hatchling",
+   "duckling"
+  ],
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "rainbow_fill_tank": {
+  "item": "rainbow_generator",
+  "label": "Topping up the tank with pond water",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.5,
+     "contact": 1,
+     "anchor": "tank",
+     "can": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "y": -0.3,
+     "contact": 1,
+     "anchor": "tank",
+     "can": 1,
+     "mark": "glug"
+    }
+   ],
+   [
+    0.65,
+    {
+     "can": 0.3
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "fill"
+   ]
+  ],
+  "when": [
+   "water<.7",
+   "!cold"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "can",
+  "say": null
+ },
+ "rainbow_aim_prism": {
+  "item": "rainbow_generator",
+  "label": "Turning the knob that tilts the prism toward the sun",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "prism_knob",
+     "eye": "o"
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "prism_knob",
+     "mark": "tik"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": -0.5,
+     "y": -0.6,
+     "eye": "O"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "aim"
+   ]
+  ],
+  "when": [
+   "day"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "rainbow_crank_mist": {
+  "item": "rainbow_generator",
+  "label": "Cranking the mister until a rainbow hangs in the air",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 0
+    }
+   ],
+   [
+    0.25,
+    {
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 0.5,
+     "mark": "crk"
+    }
+   ],
+   [
+    0.38,
+    {
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 1,
+     "mark": "crk"
+    }
+   ],
+   [
+    0.5,
+    {
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 1.5,
+     "mark": "crk"
+    }
+   ],
+   [
+    0.66,
+    {
+     "x": -0.7,
+     "y": -0.6,
+     "w": 1,
+     "eye": "O",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.38,
+    "crank"
+   ],
+   [
+    0.5,
+    "crank"
+   ]
+  ],
+  "when": [
+   "water>.2",
+   "day",
+   "dry"
+  ],
+  "prefer": [
+   "sun",
+   "happy"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": "rainbow_make"
+ },
+ "rainbow_dance_in_mist": {
+  "item": "rainbow_generator",
+  "label": "Opening the spray valve and dancing through the rainbow mist",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "valve"
+    }
+   ],
+   [
+    0.22,
+    {
+     "contact": 1,
+     "anchor": "valve",
+     "mark": "psst"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.7,
+     "y": -0.5,
+     "w": 1,
+     "l": 1,
+     "eye": "^"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": -0.7,
+     "w": 1,
+     "r": 1,
+     "mark": "*"
+    }
+   ],
+   [
+    0.65,
+    {
+     "x": 0.6,
+     "y": -0.6,
+     "w": 1,
+     "l": 1,
+     "eye": "^",
+     "mark": "~"
+    }
+   ],
+   [
+    0.85,
+    {
+     "b": 0.4,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.22,
+    "spray"
+   ]
+  ],
+  "when": [
+   "water>.25",
+   "warm"
+  ],
+  "prefer": [
+   "young",
+   "summer"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "rainbow_after_rain": {
+  "item": "rainbow_generator",
+  "label": "Pointing at a real rainbow, then nudging the prism knob to compare",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": -0.6,
+     "w": 0.8,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": -0.8,
+     "w": 1,
+     "mark": ">"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 0.8,
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "prism_knob"
+    }
+   ],
+   [
+    0.75,
+    {
+     "eye": "^",
+     "mark": "?"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "rainbow_sky"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "rainbow_compare"
+ },
+ "weather_tongue_drop": {
+  "item": "weather_machine",
+  "label": "Catching a drop from the tiny cloud on his tongue",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": -0.4,
+     "eye": "o",
+     "mark": "?"
+    }
+   ],
+   [
+    0.32,
+    {
+     "y": -0.8,
+     "b": -0.4,
+     "eye": "^",
+     "mark": "ahh"
+    }
+   ],
+   [
+    0.5,
+    {
+     "y": -0.8,
+     "eye": "O",
+     "mark": "plip!"
+    }
+   ],
+   [
+    0.7,
+    {
+     "b": 0.3,
+     "eye": "^",
+     "mark": "hee"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "cloud>.2"
+  ],
+  "prefer": [
+   "young"
+  ],
+  "ages": [
+   "hatchling",
+   "duckling",
+   "juvenile"
+  ],
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "weather_set_dial": {
+  "item": "weather_machine",
+  "label": "Clicking the forecast dial to a new setting",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "dial",
+     "dial": 0
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "dial",
+     "dial": 1,
+     "mark": "click"
+    }
+   ],
+   [
+    0.65,
+    {
+     "x": -0.4,
+     "eye": "o",
+     "mark": "?"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "dial"
+   ]
+  ],
+  "when": [],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "weather_wind_dynamo": {
+  "item": "weather_machine",
+  "label": "Winding the dynamo crank to charge the coils",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 0
+    }
+   ],
+   [
+    0.3,
+    {
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 1,
+     "b": 0.3,
+     "mark": "wrr"
+    }
+   ],
+   [
+    0.48,
+    {
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 2,
+     "b": -0.3,
+     "mark": "wrr"
+    }
+   ],
+   [
+    0.66,
+    {
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 3,
+     "b": 0.3
+    }
+   ],
+   [
+    0.86,
+    {
+     "w": 0.4,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "crank"
+   ],
+   [
+    0.66,
+    "crank"
+   ]
+  ],
+  "when": [
+   "charge<.8"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "weather_make_cloud": {
+  "item": "weather_machine",
+  "label": "Pulling the big lever to puff out a tiny private cloud",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 1,
+     "contact": 1,
+     "anchor": "lever",
+     "lever": 0,
+     "w": 0.6
+    }
+   ],
+   [
+    0.3,
+    {
+     "y": 0.5,
+     "b": 0.5,
+     "contact": 1,
+     "anchor": "lever",
+     "lever": 1,
+     "mark": "CHUNK"
+    }
+   ],
+   [
+    0.45,
+    {
+     "x": -0.7,
+     "y": -0.6,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.65,
+    {
+     "y": -0.8,
+     "w": 1,
+     "eye": "^",
+     "mark": "~"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "fire"
+   ]
+  ],
+  "when": [
+   "charge>.35"
+  ],
+  "prefer": [
+   "warm",
+   "sun"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": "weather_cloud"
+ },
+ "weather_catch_spark": {
+  "item": "weather_machine",
+  "label": "Touching the charged terminal in the rain and getting a static zap",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.6,
+     "reach": 0.8,
+     "eye": "o"
+    }
+   ],
+   [
+    0.32,
+    {
+     "contact": 1,
+     "anchor": "terminal",
+     "mark": "zt"
+    }
+   ],
+   [
+    0.42,
+    {
+     "x": -0.9,
+     "b": -0.6,
+     "w": 1,
+     "eye": "@",
+     "mark": "ZAP"
+    }
+   ],
+   [
+    0.65,
+    {
+     "eye": "@",
+     "mark": "~"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": ">"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "zap"
+   ]
+  ],
+  "when": [
+   "wet",
+   "charge>.6"
+  ],
+  "prefer": [
+   "curious"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": "weather_zap"
+ },
+ "weather_vent_steam": {
+  "item": "weather_machine",
+  "label": "Opening the vent to let a muggy cloud drift off",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "vent"
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "vent",
+     "mark": "fsss"
+    }
+   ],
+   [
+    0.65,
+    {
+     "x": -0.6,
+     "w": 0.6,
+     "mark": "~"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "vent"
+   ]
+  ],
+  "when": [
+   "cloud>.2"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "portal_dial_runes": {
+  "item": "portal",
+  "label": "Pressing the glowing runes on the console in order",
+  "duration": 26,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "console_l",
+     "mark": "1"
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 0.4,
+     "y": -0.5,
+     "w": 0.6,
+     "contact": 1,
+     "anchor": "console_c",
+     "mark": "2"
+    }
+   ],
+   [
+    0.48,
+    {
+     "x": 0.9,
+     "contact": 1,
+     "anchor": "console_r",
+     "mark": "3"
+    }
+   ],
+   [
+    0.66,
+    {
+     "x": -0.5,
+     "eye": "O",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.86,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.12,
+    "rune"
+   ],
+   [
+    0.3,
+    "rune"
+   ],
+   [
+    0.48,
+    "spark"
+   ]
+  ],
+  "when": [
+   "!storm"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "portal_peek_through": {
+  "item": "portal",
+  "label": "Poking his head into the low edge of the swirl and pulling back amazed",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": 0.6,
+     "eye": "o",
+     "mark": "?"
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 1.2,
+     "y": -0.2,
+     "contact": 1,
+     "anchor": "swirl_low",
+     "peek": 1,
+     "eye": "O"
+    }
+   ],
+   [
+    0.48,
+    {
+     "x": 1.2,
+     "peek": 1,
+     "mark": "..."
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": -0.8,
+     "b": -0.5,
+     "w": 1,
+     "peek": 0,
+     "eye": "@",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^",
+     "mark": "?!"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "energy>.4"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "portal_peek"
+ },
+ "portal_toss_pebble": {
+  "item": "portal",
+  "label": "Tossing a pebble in and watching for it to come back",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 1,
+     "b": 0.6,
+     "reach": 0.3,
+     "pebble": 1
+    }
+   ],
+   [
+    0.28,
+    {
+     "x": -0.4,
+     "w": 1,
+     "pebble": 1,
+     "eye": ">"
+    }
+   ],
+   [
+    0.38,
+    {
+     "x": 0.6,
+     "w": 0.4,
+     "pebble": 0,
+     "mark": "toss"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": -0.2,
+     "eye": "o",
+     "mark": "..."
+    }
+   ],
+   [
+    0.7,
+    {
+     "y": -0.5,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.38,
+    "toss"
+   ]
+  ],
+  "when": [
+   "energy>.4"
+  ],
+  "prefer": [
+   "curious",
+   "young"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "portal_brace_ring": {
+  "item": "portal",
+  "label": "Bracing the shuddering ring with both wings",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.7,
+     "w": 1,
+     "reach": 1,
+     "contact": 1,
+     "anchor": "ring_l"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.9,
+     "b": 0.5,
+     "w": 1,
+     "contact": 1,
+     "anchor": "ring_l",
+     "mark": "hng"
+    }
+   ],
+   [
+    0.6,
+    {
+     "b": 0.3,
+     "contact": 1,
+     "anchor": "ring_l",
+     "mark": "!"
+    }
+   ],
+   [
+    0.85,
+    {
+     "w": 0.3,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "brace"
+   ],
+   [
+    0.6,
+    "brace"
+   ]
+  ],
+  "when": [
+   "stability<.7",
+   "energy>.2"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "portal_close_down": {
+  "item": "portal",
+  "label": "Sweeping a wing across the console runes to close the swirl",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "console_r",
+     "w": 0.6
+    }
+   ],
+   [
+    0.4,
+    {
+     "x": -0.3,
+     "contact": 1,
+     "anchor": "console_l",
+     "w": 1,
+     "mark": "fwip"
+    }
+   ],
+   [
+    0.7,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "close"
+   ]
+  ],
+  "when": [
+   "energy>.3"
+  ],
+  "prefer": [
+   "night_late",
+   "storm"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "wormhole_peep_echo": {
+  "item": "wormhole",
+  "label": "Peeping at the near mouth and hearing it peep back from the far one",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.4,
+     "y": -0.3,
+     "eye": "o",
+     "mark": "peep"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.2,
+     "eye": "-",
+     "mark": "..."
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": -0.4,
+     "y": -0.5,
+     "eye": "O",
+     "mark": "peep?"
+    }
+   ],
+   [
+    0.7,
+    {
+     "b": -0.5,
+     "w": 1,
+     "eye": "^",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "aperture>.5"
+  ],
+  "prefer": [
+   "young",
+   "lonely"
+  ],
+  "ages": [
+   "hatchling",
+   "duckling",
+   "juvenile"
+  ],
+  "need": null,
+  "tool": "none",
+  "say": "wormhole_whisper"
+ },
+ "wormhole_iris_open": {
+  "item": "wormhole",
+  "label": "Twisting the brass iris until both mouths yawn open",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "iris"
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "iris",
+     "b": 0.3,
+     "mark": "krrk"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": -0.6,
+     "y": -0.5,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "open"
+   ]
+  ],
+  "when": [
+   "aperture<.4"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "wormhole_align_mouths": {
+  "item": "wormhole",
+  "label": "Turning the alignment knob while sighting along both mouths",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": -0.4,
+     "eye": "o"
+    }
+   ],
+   [
+    0.3,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "align_knob",
+     "mark": "<"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": 0.8,
+     "contact": 1,
+     "anchor": "align_knob",
+     "mark": ">"
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": 0.2,
+     "eye": "-",
+     "mark": ".."
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "align"
+   ],
+   [
+    0.5,
+    "align"
+   ]
+  ],
+  "when": [
+   "aperture>.3"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "wormhole_whisper": {
+  "item": "wormhole",
+  "label": "Whispering into one mouth and hearing it come out the other",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.8,
+     "y": 0.2,
+     "contact": 1,
+     "anchor": "near",
+     "cup": 1,
+     "mark": "psst"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.8,
+     "mark": "..."
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": -0.6,
+     "eye": "O",
+     "mark": "?"
+    }
+   ],
+   [
+    0.65,
+    {
+     "x": 1,
+     "y": 0.3,
+     "contact": 1,
+     "anchor": "far",
+     "cup": 1,
+     "eye": "o"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^",
+     "mark": "!"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.15,
+    "whisper"
+   ]
+  ],
+  "when": [
+   "aperture>.5"
+  ],
+  "prefer": [
+   "lonely",
+   "young"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "wormhole_whisper"
+ },
+ "wormhole_paper_boat": {
+  "item": "wormhole",
+  "label": "Floating a paper boat through the wormhole",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 0.8,
+     "b": 0.5,
+     "boat": 1
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 0.6,
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "near",
+     "boat": 1,
+     "mark": "~"
+    }
+   ],
+   [
+    0.45,
+    {
+     "x": 0.6,
+     "boat": 0,
+     "mark": "bye"
+    }
+   ],
+   [
+    0.62,
+    {
+     "x": 1.1,
+     "eye": "o",
+     "mark": "..."
+    }
+   ],
+   [
+    0.78,
+    {
+     "x": 1.1,
+     "contact": 1,
+     "anchor": "far",
+     "boat": 1,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.45,
+    "boat"
+   ]
+  ],
+  "when": [
+   "aperture>.5"
+  ],
+  "prefer": [
+   "happy",
+   "wet"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "wormhole_shut": {
+  "item": "wormhole",
+  "label": "Twisting the iris shut",
+  "duration": 14,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.2,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "iris"
+    }
+   ],
+   [
+    0.45,
+    {
+     "contact": 1,
+     "anchor": "iris",
+     "mark": "krrk"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.45,
+    "shut"
+   ]
+  ],
+  "when": [
+   "aperture>.3"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "blackhole_feed_leaf": {
+  "item": "black_hole",
+  "label": "Dropping a fallen leaf into the tiny black hole's intake port",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 1,
+     "b": 0.6,
+     "reach": 0.3,
+     "leaf": 1
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 0.6,
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "port",
+     "leaf": 1,
+     "eye": "o"
+    }
+   ],
+   [
+    0.42,
+    {
+     "x": 0.6,
+     "leaf": 0,
+     "mark": "fwoop"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": -0.6,
+     "b": -0.4,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^",
+     "mark": "burp?"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.42,
+    "feed"
+   ]
+  ],
+  "when": [],
+  "prefer": [
+   "fall",
+   "curious"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "blackhole_feed"
+ },
+ "blackhole_tighten_ring": {
+  "item": "black_hole",
+  "label": "Tightening the containment ring bolts",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "bolt_l",
+     "wrench": 1
+    }
+   ],
+   [
+    0.3,
+    {
+     "contact": 1,
+     "anchor": "bolt_l",
+     "wrench": 1,
+     "b": 0.3,
+     "mark": "crk"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": 0.6,
+     "contact": 1,
+     "anchor": "bolt_r",
+     "wrench": 1
+    }
+   ],
+   [
+    0.66,
+    {
+     "contact": 1,
+     "anchor": "bolt_r",
+     "wrench": 1,
+     "b": 0.3,
+     "mark": "crk"
+    }
+   ],
+   [
+    0.86,
+    {
+     "wrench": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "tighten"
+   ],
+   [
+    0.66,
+    "tighten"
+   ]
+  ],
+  "when": [
+   "containment<.8"
+  ],
+  "prefer": [
+   "containment<.4",
+   "storm"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wrench",
+  "say": null
+ },
+ "blackhole_read_gauge": {
+  "item": "black_hole",
+  "label": "Squinting at the event-horizon gauge through goggles",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "goggles": 1,
+     "eye": "o"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.6,
+     "y": 0.2,
+     "contact": 1,
+     "anchor": "gauge",
+     "goggles": 1,
+     "eye": "o",
+     "mark": "hm"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": 0.6,
+     "goggles": 1,
+     "mark": "..."
+    }
+   ],
+   [
+    0.85,
+    {
+     "goggles": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "gauge"
+   ]
+  ],
+  "when": [],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "blackhole_gauge"
+ },
+ "blackhole_stare": {
+  "item": "black_hole",
+  "label": "Staring into the void until the void stares back",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.6,
+     "y": 0.3,
+     "eye": "o"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.9,
+     "y": 0.4,
+     "eye": "O"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 0.9,
+     "y": 0.4,
+     "eye": "@",
+     "mark": "..."
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": -0.7,
+     "b": -0.5,
+     "w": 1,
+     "eye": ">",
+     "mark": "nope"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [],
+  "prefer": [
+   "night",
+   "sad"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "blackhole_stare"
+ },
+ "blackhole_flick": {
+  "item": "black_hole",
+  "label": "Flicking the glass to see if it does anything",
+  "duration": 14,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.8,
+     "contact": 0,
+     "eye": "o"
+    }
+   ],
+   [
+    0.32,
+    {
+     "contact": 1,
+     "anchor": "glass_low",
+     "mark": "tink"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": -0.5,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^",
+     "mark": "?"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "tap"
+   ]
+  ],
+  "when": [],
+  "prefer": [
+   "young"
+  ],
+  "ages": [
+   "hatchling",
+   "duckling",
+   "juvenile"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "volcano_bleed_valve": {
+  "item": "volcano",
+  "label": "Turning the pressure valve until it hisses",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "valve",
+     "valve": 0
+    }
+   ],
+   [
+    0.32,
+    {
+     "contact": 1,
+     "anchor": "valve",
+     "valve": 1,
+     "b": 0.3,
+     "mark": "hsss"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": -0.6,
+     "w": 0.6,
+     "eye": "o",
+     "mark": "~"
+    }
+   ],
+   [
+    0.7,
+    {
+     "contact": 1,
+     "anchor": "valve",
+     "valve": 0
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "vent"
+   ]
+  ],
+  "when": [
+   "pressure>.5"
+  ],
+  "prefer": [
+   "pressure>.8"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "volcano_baking_soda": {
+  "item": "volcano",
+  "label": "Pouring fizz into the hopper at the base and running",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "hopper",
+     "jug": 1,
+     "eye": ">"
+    }
+   ],
+   [
+    0.28,
+    {
+     "y": -0.5,
+     "contact": 1,
+     "anchor": "hopper",
+     "jug": 1,
+     "mark": "glug"
+    }
+   ],
+   [
+    0.38,
+    {
+     "x": -1.1,
+     "l": 1,
+     "r": 1,
+     "jug": 0,
+     "eye": "O",
+     "mark": "RUN"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": -1.2,
+     "b": -0.5,
+     "w": 1,
+     "eye": "^",
+     "mark": "!!!"
+    }
+   ],
+   [
+    0.8,
+    {
+     "x": -0.6,
+     "eye": "^",
+     "mark": "hah"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.28,
+    "fizz"
+   ]
+  ],
+  "when": [
+   "!wet",
+   "pressure<.9"
+  ],
+  "prefer": [
+   "happy",
+   "young"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "jug",
+  "say": "volcano_fizz"
+ },
+ "volcano_sweep_ash": {
+  "item": "volcano",
+  "label": "Sweeping grey ash off the slopes",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "slope_l",
+     "broom": 1
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.4,
+     "contact": 1,
+     "anchor": "base",
+     "broom": 1,
+     "mark": "~"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 0.9,
+     "contact": 1,
+     "anchor": "slope_r",
+     "broom": 1
+    }
+   ],
+   [
+    0.8,
+    {
+     "broom": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "sweep"
+   ],
+   [
+    0.55,
+    "sweep"
+   ]
+  ],
+  "when": [
+   "ash>.2"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "broom",
+  "say": null
+ },
+ "volcano_warm_wings": {
+  "item": "volcano",
+  "label": "Warming cold wings by the glowing vents",
+  "duration": 30,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": 0.5,
+     "y": 0.4,
+     "b": 0.5,
+     "w": 0.6,
+     "eye": "-"
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 0.6,
+     "y": 0.6,
+     "b": 0.7,
+     "w": 1,
+     "eye": "-",
+     "mark": "ahh"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": 0.6,
+     "y": 0.6,
+     "b": 0.7,
+     "w": 1,
+     "eye": "-"
+    }
+   ],
+   [
+    0.82,
+    {
+     "y": 0.3,
+     "w": 0.4,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "cold"
+  ],
+  "prefer": [
+   "winter",
+   "tired",
+   "wet"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "volcano_warm"
+ },
+ "volcano_stir_magma": {
+  "item": "volcano",
+  "label": "Stirring the glowing side vent with an iron rod",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": -0.5,
+     "reach": 1,
+     "contact": 1,
+     "anchor": "vent_low",
+     "w": 0.8
+    }
+   ],
+   [
+    0.32,
+    {
+     "contact": 1,
+     "anchor": "vent_low",
+     "b": -0.3,
+     "mark": "~"
+    }
+   ],
+   [
+    0.52,
+    {
+     "x": 0.3,
+     "contact": 1,
+     "anchor": "vent_low",
+     "b": 0.3,
+     "mark": "~"
+    }
+   ],
+   [
+    0.75,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "stir"
+   ],
+   [
+    0.52,
+    "stir"
+   ]
+  ],
+  "when": [
+   "!wet"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "volcano_watch_eruption": {
+  "item": "volcano",
+  "label": "Watching the little volcano erupt from a safe distance",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": -0.7,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": -0.9,
+     "b": -0.4,
+     "w": 1,
+     "eye": "O",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": -0.8,
+     "eye": "^",
+     "mark": "woo"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "eruption>.3"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "tornado_feed_leaves": {
+  "item": "tornado",
+  "label": "Feeding a wing-full of leaves to the little tornado",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 1,
+     "b": 0.6,
+     "leaf": 1
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 0.6,
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "funnel",
+     "leaf": 1,
+     "eye": "o"
+    }
+   ],
+   [
+    0.42,
+    {
+     "leaf": 0,
+     "mark": "whoosh"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": -0.4,
+     "eye": "^",
+     "mark": "!"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.42,
+    "feed"
+   ]
+  ],
+  "when": [
+   "!covered"
+  ],
+  "prefer": [
+   "fall",
+   "windy"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "tornado_pat": {
+  "item": "tornado",
+  "label": "Patting the tornado and getting his feathers swirled",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.6,
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "funnel",
+     "eye": "^"
+    }
+   ],
+   [
+    0.35,
+    {
+     "contact": 1,
+     "anchor": "funnel",
+     "b": -0.3,
+     "mark": "fwip"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": -0.3,
+     "w": 1,
+     "eye": "@",
+     "mark": "~"
+    }
+   ],
+   [
+    0.75,
+    {
+     "w": 0.3,
+     "eye": "^",
+     "mark": "<3"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "pat"
+   ]
+  ],
+  "when": [
+   "!covered"
+  ],
+  "prefer": [
+   "lonely",
+   "happy"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": "tornado_pat"
+ },
+ "tornado_fetch": {
+  "item": "tornado",
+  "label": "Throwing a pinecone and letting the tornado spit it back",
+  "duration": 26,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": -0.5,
+     "w": 1,
+     "leaf": 1,
+     "eye": ">"
+    }
+   ],
+   [
+    0.24,
+    {
+     "x": 0.6,
+     "w": 0.4,
+     "leaf": 0,
+     "mark": "go!"
+    }
+   ],
+   [
+    0.42,
+    {
+     "x": 0.2,
+     "eye": "o",
+     "mark": "..."
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": -0.6,
+     "y": -0.4,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.68,
+    {
+     "y": 0.6,
+     "b": 0.4,
+     "leaf": 1,
+     "mark": "got it"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.24,
+    "throw"
+   ],
+   [
+    0.55,
+    "spit"
+   ]
+  ],
+  "when": [
+   "!covered",
+   "dry"
+  ],
+  "prefer": [
+   "young",
+   "happy"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "tornado_calm": {
+  "item": "tornado",
+  "label": "Humming the tornado down when the real wind picks up",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.4,
+     "w": 0.6,
+     "eye": "-",
+     "mark": "~"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.6,
+     "w": 0.8,
+     "contact": 1,
+     "anchor": "funnel",
+     "eye": "-",
+     "mark": "shh"
+    }
+   ],
+   [
+    0.6,
+    {
+     "w": 0.5,
+     "eye": "-",
+     "mark": "~"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "hush"
+   ],
+   [
+    0.6,
+    "hush"
+   ]
+  ],
+  "when": [
+   "size>.55"
+  ],
+  "prefer": [
+   "windy",
+   "storm"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "tornado_tuck_in": {
+  "item": "tornado",
+  "label": "Draping a cloth over the jar so the tornado can sleep",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 1,
+     "w": 0.8,
+     "contact": 1,
+     "anchor": "lid",
+     "cloth": 1
+    }
+   ],
+   [
+    0.42,
+    {
+     "y": -0.5,
+     "contact": 1,
+     "anchor": "lid",
+     "cloth": 1,
+     "mark": "night"
+    }
+   ],
+   [
+    0.7,
+    {
+     "eye": "-",
+     "mark": "z"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.42,
+    "cover"
+   ]
+  ],
+  "when": [
+   "!covered",
+   "night"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "cloth",
+  "say": "tornado_night"
+ },
+ "tornado_wake": {
+  "item": "tornado",
+  "label": "Lifting the cloth so the tornado can spin in the morning",
+  "duration": 14,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 1,
+     "contact": 1,
+     "anchor": "lid",
+     "cloth": 1
+    }
+   ],
+   [
+    0.42,
+    {
+     "y": -0.6,
+     "w": 1,
+     "cloth": 0,
+     "mark": "morning!"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.42,
+    "uncover"
+   ]
+  ],
+  "when": [
+   "covered",
+   "day"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "cloth",
+  "say": null
+ },
+ "antigrav_power_up": {
+  "item": "antigravity",
+  "label": "Powering up the anti-gravity plate",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "switch"
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "switch",
+     "mark": "vmmm"
+    }
+   ],
+   [
+    0.6,
+    {
+     "y": -0.3,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "power"
+   ]
+  ],
+  "when": [
+   "field<.5"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "antigrav_float_pebbles": {
+  "item": "antigravity",
+  "label": "Setting pebbles on the plate and watching them rise",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 1,
+     "b": 0.6,
+     "pebble": 1
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 0.6,
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "plate",
+     "pebble": 1
+    }
+   ],
+   [
+    0.42,
+    {
+     "pebble": 0,
+     "mark": "up.."
+    }
+   ],
+   [
+    0.6,
+    {
+     "y": -0.6,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.42,
+    "float"
+   ]
+  ],
+  "when": [
+   "field>.4"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "antigrav_feather_lift": {
+  "item": "antigravity",
+  "label": "Leaning into the field until his feathers stand on end",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.7,
+     "y": -0.2,
+     "w": 0.4,
+     "eye": "o"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 1,
+     "y": -0.6,
+     "w": 1,
+     "b": -0.6,
+     "eye": "O",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 1,
+     "y": -0.8,
+     "w": 1,
+     "b": -0.8,
+     "eye": "^",
+     "mark": "wheee"
+    }
+   ],
+   [
+    0.75,
+    {
+     "x": 0.2,
+     "w": 0.3,
+     "eye": "^"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "field>.6"
+  ],
+  "prefer": [
+   "young",
+   "happy"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "antigrav_float"
+ },
+ "antigrav_calibrate": {
+  "item": "antigravity",
+  "label": "Twisting the lowest floating ring back into line",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": -0.5,
+     "reach": 1,
+     "contact": 1,
+     "anchor": "ring_low",
+     "w": 0.6
+    }
+   ],
+   [
+    0.35,
+    {
+     "contact": 1,
+     "anchor": "ring_low",
+     "mark": "clk"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 0.5,
+     "contact": 1,
+     "anchor": "ring_low",
+     "mark": "clk"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "calibrate"
+   ],
+   [
+    0.55,
+    "calibrate"
+   ]
+  ],
+  "when": [
+   "rings<.7"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "antigrav_power_down": {
+  "item": "antigravity",
+  "label": "Catching the floating pebbles as the plate powers down",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "switch"
+    }
+   ],
+   [
+    0.3,
+    {
+     "contact": 1,
+     "anchor": "switch",
+     "mark": "vmm.."
+    }
+   ],
+   [
+    0.45,
+    {
+     "x": 0.6,
+     "y": -0.4,
+     "w": 1,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.65,
+    {
+     "y": 0.6,
+     "b": 0.5,
+     "mark": "catch"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "off"
+   ],
+   [
+    0.45,
+    "ground"
+   ]
+  ],
+  "when": [
+   "field>.4"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "field_raise_dome": {
+  "item": "force_field",
+  "label": "Raising the shimmering dome",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "switch"
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "switch",
+     "mark": "VWOOM"
+    }
+   ],
+   [
+    0.6,
+    {
+     "y": -0.6,
+     "w": 0.8,
+     "eye": "O"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "raise_"
+   ]
+  ],
+  "when": [
+   "shield<.5",
+   "charge>.15"
+  ],
+  "prefer": [
+   "wet"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "field_rain_shelter": {
+  "item": "force_field",
+  "label": "Sitting snug under the dome while rain bounces off",
+  "duration": 42,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": 0.6,
+     "y": 0.6,
+     "b": 0.5,
+     "eye": "o"
+    }
+   ],
+   [
+    0.25,
+    {
+     "y": 1,
+     "b": 0.8,
+     "eye": "^",
+     "mark": "hah"
+    }
+   ],
+   [
+    0.45,
+    {
+     "y": 1,
+     "b": 0.8,
+     "eye": "-",
+     "mark": "~"
+    }
+   ],
+   [
+    0.65,
+    {
+     "y": 1,
+     "b": 0.8,
+     "eye": "o",
+     "mark": "plink"
+    }
+   ],
+   [
+    0.88,
+    {
+     "y": 0.4,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.45,
+    "shelter"
+   ]
+  ],
+  "when": [
+   "wet",
+   "shield>.5"
+  ],
+  "prefer": [
+   "young",
+   "tired",
+   "wet"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "field_shelter"
+ },
+ "field_wind_charger": {
+  "item": "force_field",
+  "label": "Cranking the emitter to charge it back up",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 0
+    }
+   ],
+   [
+    0.32,
+    {
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 1,
+     "mark": "wrr"
+    }
+   ],
+   [
+    0.52,
+    {
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 2,
+     "b": 0.3,
+     "mark": "wrr"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "charge"
+   ],
+   [
+    0.52,
+    "charge"
+   ]
+  ],
+  "when": [
+   "charge<.7"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "field_boop": {
+  "item": "force_field",
+  "label": "Booping the dome and watching the ripple run round",
+  "duration": 14,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.6,
+     "reach": 0.8,
+     "eye": "o"
+    }
+   ],
+   [
+    0.32,
+    {
+     "contact": 1,
+     "anchor": "dome",
+     "mark": "boop"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": -0.3,
+     "y": -0.5,
+     "eye": "O",
+     "mark": "~"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "boop"
+   ]
+  ],
+  "when": [
+   "shield>.5"
+  ],
+  "prefer": [
+   "young",
+   "happy"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "field_lower_dome": {
+  "item": "force_field",
+  "label": "Lowering the dome once the weather clears",
+  "duration": 14,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.2,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "switch"
+    }
+   ],
+   [
+    0.45,
+    {
+     "contact": 1,
+     "anchor": "switch",
+     "mark": "vwm.."
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.45,
+    "lower"
+   ]
+  ],
+  "when": [
+   "shield>.5",
+   "dry"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "arch_turn_starwheel": {
+  "item": "cosmic_arch",
+  "label": "Turning the low star dial until the keystone wheel lines up",
+  "duration": 26,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": -0.4,
+     "reach": 1,
+     "contact": 1,
+     "anchor": "dial_low",
+     "w": 0.7
+    }
+   ],
+   [
+    0.3,
+    {
+     "contact": 1,
+     "anchor": "dial_low",
+     "b": 0.3,
+     "mark": "grnd"
+    }
+   ],
+   [
+    0.5,
+    {
+     "contact": 1,
+     "anchor": "dial_low",
+     "b": -0.2,
+     "mark": "grnd"
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": -0.5,
+     "y": -0.6,
+     "eye": "O"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "turn"
+   ],
+   [
+    0.5,
+    "turn"
+   ]
+  ],
+  "when": [
+   "align<.8"
+  ],
+  "prefer": [
+   "dusk",
+   "night"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "arch_trace_constellation": {
+  "item": "cosmic_arch",
+  "label": "Tracing the little constellation carved low on the pillar",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": -0.5,
+     "reach": 1,
+     "contact": 1,
+     "anchor": "stars_low_a",
+     "mark": "."
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 0.3,
+     "y": -0.7,
+     "contact": 1,
+     "anchor": "stars_low_b",
+     "mark": "."
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": 0.7,
+     "y": -0.5,
+     "contact": 1,
+     "anchor": "stars_low_c",
+     "mark": "*"
+    }
+   ],
+   [
+    0.75,
+    {
+     "x": -0.3,
+     "eye": "^",
+     "mark": "?"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.5,
+    "trace"
+   ]
+  ],
+  "when": [
+   "starlight>.3"
+  ],
+  "prefer": [
+   "night",
+   "curious"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": "arch_trace"
+ },
+ "arch_sit_beneath": {
+  "item": "cosmic_arch",
+  "label": "Sitting under the arch and counting stars",
+  "duration": 36,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": 0.4,
+     "y": 0.8,
+     "b": 0.6,
+     "eye": "o"
+    }
+   ],
+   [
+    0.3,
+    {
+     "y": 0.8,
+     "b": 0.6,
+     "x": -0.2,
+     "eye": "o",
+     "mark": "1"
+    }
+   ],
+   [
+    0.5,
+    {
+     "y": 0.8,
+     "b": 0.6,
+     "eye": "o",
+     "mark": "2"
+    }
+   ],
+   [
+    0.7,
+    {
+     "y": 0.8,
+     "b": 0.6,
+     "eye": "-",
+     "mark": "..."
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "night",
+   "dry"
+  ],
+  "prefer": [
+   "lonely",
+   "sad",
+   "elder"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "arch_stars"
+ },
+ "arch_scrub_moss": {
+  "item": "cosmic_arch",
+  "label": "Scrubbing moss out of the carved stars",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "pillar_l",
+     "brush": 1
+    }
+   ],
+   [
+    0.35,
+    {
+     "y": -0.4,
+     "contact": 1,
+     "anchor": "pillar_l",
+     "brush": 1,
+     "mark": "scrb"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 0.8,
+     "contact": 1,
+     "anchor": "pillar_r",
+     "brush": 1,
+     "mark": "scrb"
+    }
+   ],
+   [
+    0.8,
+    {
+     "brush": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "scrub"
+   ],
+   [
+    0.55,
+    "scrub"
+   ]
+  ],
+  "when": [
+   "moss>.3"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "brush",
+  "say": null
+ },
+ "arch_make_wish": {
+  "item": "cosmic_arch",
+  "label": "Closing his eyes under the keystone and making a wish",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.4,
+     "y": -0.3,
+     "w": 0.4,
+     "eye": "-"
+    }
+   ],
+   [
+    0.4,
+    {
+     "y": -0.5,
+     "w": 0.8,
+     "eye": "-",
+     "mark": "..."
+    }
+   ],
+   [
+    0.65,
+    {
+     "y": -0.3,
+     "w": 0.4,
+     "eye": "-"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^",
+     "mark": "*"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "wish"
+   ]
+  ],
+  "when": [
+   "starlight>.5"
+  ],
+  "prefer": [
+   "night",
+   "sad"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "arch_wish"
+ },
+ "time_set_year": {
+  "item": "time_machine",
+  "label": "Rolling the console's year knob back to a different century",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "year_knob",
+     "eye": "o"
+    }
+   ],
+   [
+    0.3,
+    {
+     "contact": 1,
+     "anchor": "year_knob",
+     "mark": "tk-tk"
+    }
+   ],
+   [
+    0.48,
+    {
+     "contact": 1,
+     "anchor": "year_knob",
+     "mark": "tk-tk"
+    }
+   ],
+   [
+    0.66,
+    {
+     "x": -0.4,
+     "eye": "O",
+     "mark": "?"
+    }
+   ],
+   [
+    0.86,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "year_back"
+   ],
+   [
+    0.48,
+    "year_far"
+   ]
+  ],
+  "when": [],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": "time_year"
+ },
+ "time_wind_key": {
+  "item": "time_machine",
+  "label": "Winding the big clockwork key on the side",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "key",
+     "key": 0
+    }
+   ],
+   [
+    0.3,
+    {
+     "contact": 1,
+     "anchor": "key",
+     "key": 1,
+     "b": 0.3,
+     "mark": "crk"
+    }
+   ],
+   [
+    0.48,
+    {
+     "contact": 1,
+     "anchor": "key",
+     "key": 2,
+     "b": -0.2,
+     "mark": "crk"
+    }
+   ],
+   [
+    0.66,
+    {
+     "contact": 1,
+     "anchor": "key",
+     "key": 3
+    }
+   ],
+   [
+    0.86,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "wind"
+   ],
+   [
+    0.66,
+    "wind"
+   ]
+  ],
+  "when": [
+   "charge<.8"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "time_pull_lever": {
+  "item": "time_machine",
+  "label": "Stepping in, pulling the lever, and stepping out a second later",
+  "duration": 30,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.1,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "door",
+     "door": 1
+    }
+   ],
+   [
+    0.22,
+    {
+     "x": 0.6,
+     "contact": 1,
+     "anchor": "lever",
+     "door": 1,
+     "eye": ">"
+    }
+   ],
+   [
+    0.32,
+    {
+     "contact": 1,
+     "anchor": "lever",
+     "lever": 1,
+     "door": 0,
+     "mark": "KA-CHUNK"
+    }
+   ],
+   [
+    0.48,
+    {
+     "door": 0,
+     "lever": 1,
+     "eye": "@",
+     "mark": "~~~"
+    }
+   ],
+   [
+    0.62,
+    {
+     "door": 1,
+     "lever": 0,
+     "x": -0.6,
+     "eye": "@",
+     "mark": "..."
+    }
+   ],
+   [
+    0.78,
+    {
+     "door": 1,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.9,
+    {
+     "door": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.1,
+    "door_open"
+   ],
+   [
+    0.32,
+    "lever"
+   ],
+   [
+    0.62,
+    "door_open"
+   ],
+   [
+    0.9,
+    "door_shut"
+   ]
+  ],
+  "when": [
+   "charge>.45"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": "time_trip"
+ },
+ "time_polish_brass": {
+  "item": "time_machine",
+  "label": "Polishing the brass kick plates and door rim",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "brass_low",
+     "cloth": 1
+    }
+   ],
+   [
+    0.35,
+    {
+     "contact": 1,
+     "anchor": "door",
+     "cloth": 1,
+     "mark": "*"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 0.5,
+     "contact": 1,
+     "anchor": "brass_low_r",
+     "cloth": 1
+    }
+   ],
+   [
+    0.8,
+    {
+     "cloth": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "polish"
+   ],
+   [
+    0.55,
+    "polish"
+   ]
+  ],
+  "when": [],
+  "prefer": [
+   "shine<.5"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "cloth",
+  "say": null
+ },
+ "time_rain_booth": {
+  "item": "time_machine",
+  "label": "Ducking into the time booth until the rain eases",
+  "duration": 40,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.1,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "door",
+     "door": 1
+    }
+   ],
+   [
+    0.22,
+    {
+     "x": 0.8,
+     "door": 1,
+     "eye": "o"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.9,
+     "door": 0.3,
+     "eye": "^",
+     "mark": "dry"
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": 0.9,
+     "door": 0.3,
+     "eye": "-",
+     "mark": "~"
+    }
+   ],
+   [
+    0.85,
+    {
+     "x": 0.2,
+     "door": 1,
+     "eye": "^"
+    }
+   ],
+   [
+    0.95,
+    {
+     "door": 0
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.1,
+    "door_open"
+   ],
+   [
+    0.95,
+    "door_shut"
+   ]
+  ],
+  "when": [
+   "wet"
+  ],
+  "prefer": [
+   "young",
+   "tired"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "time_back_to_now": {
+  "item": "time_machine",
+  "label": "Setting the year knob back to the present",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "year_knob"
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "year_knob",
+     "mark": "tk-tk-tk"
+    }
+   ],
+   [
+    0.7,
+    {
+     "eye": "^",
+     "mark": "now"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "home"
+   ]
+  ],
+  "when": [
+   "far_year"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "booth_peek_inside": {
+  "item": "tardis",
+  "label": "Opening the door and gaping at how big it is inside",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "handle",
+     "door": 0
+    }
+   ],
+   [
+    0.25,
+    {
+     "contact": 1,
+     "anchor": "handle",
+     "door": 1,
+     "mark": "creak"
+    }
+   ],
+   [
+    0.4,
+    {
+     "x": 0.6,
+     "y": -0.3,
+     "door": 1,
+     "eye": "O",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": -0.6,
+     "door": 1,
+     "eye": "@",
+     "mark": "?!"
+    }
+   ],
+   [
+    0.8,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "handle",
+     "door": 0
+    }
+   ],
+   [
+    0.92,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.25,
+    "open"
+   ],
+   [
+    0.8,
+    "shut"
+   ]
+  ],
+  "when": [],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": "booth_inside"
+ },
+ "booth_knock": {
+  "item": "tardis",
+  "label": "Knocking on the blue door to see if anybody answers",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "door",
+     "mark": "knock"
+    }
+   ],
+   [
+    0.3,
+    {
+     "contact": 1,
+     "anchor": "door",
+     "mark": "knock"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": -0.3,
+     "eye": "o",
+     "mark": "..."
+    }
+   ],
+   [
+    0.7,
+    {
+     "y": -0.4,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.15,
+    "knock"
+   ],
+   [
+    0.3,
+    "knock"
+   ]
+  ],
+  "when": [],
+  "prefer": [
+   "lonely",
+   "young"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": "booth_knock"
+ },
+ "booth_lamp_whoosh": {
+  "item": "tardis",
+  "label": "Pulling the side chain and hearing a wheezing whoosh from the roof lamp",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": -0.6,
+     "reach": 1,
+     "w": 0.9,
+     "contact": 1,
+     "anchor": "chain"
+    }
+   ],
+   [
+    0.35,
+    {
+     "y": -0.8,
+     "contact": 1,
+     "anchor": "chain",
+     "mark": "vworp"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": -0.6,
+     "eye": "O",
+     "mark": "~"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "lamp"
+   ]
+  ],
+  "when": [],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "booth_dust_panels": {
+  "item": "tardis",
+  "label": "Dusting the lower blue panels",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": -0.5,
+     "reach": 0.9,
+     "contact": 1,
+     "anchor": "panel_low",
+     "cloth": 1
+    }
+   ],
+   [
+    0.35,
+    {
+     "contact": 1,
+     "anchor": "door",
+     "cloth": 1,
+     "mark": "~"
+    }
+   ],
+   [
+    0.55,
+    {
+     "y": 0.5,
+     "contact": 1,
+     "anchor": "base",
+     "cloth": 1
+    }
+   ],
+   [
+    0.8,
+    {
+     "cloth": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "dust"
+   ],
+   [
+    0.55,
+    "dust"
+   ]
+  ],
+  "when": [
+   "dust>.3"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "cloth",
+  "say": null
+ },
+ "booth_storm_hideout": {
+  "item": "tardis",
+  "label": "Hiding inside the booth while the storm grumbles",
+  "duration": 44,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.1,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "handle",
+     "door": 1
+    }
+   ],
+   [
+    0.22,
+    {
+     "x": 0.8,
+     "door": 1
+    }
+   ],
+   [
+    0.32,
+    {
+     "x": 0.9,
+     "door": 0.15,
+     "eye": "o",
+     "mark": "safe"
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": 0.9,
+     "door": 0.15,
+     "eye": "-"
+    }
+   ],
+   [
+    0.86,
+    {
+     "x": 0.2,
+     "door": 1,
+     "eye": "^"
+    }
+   ],
+   [
+    0.95,
+    {
+     "door": 0
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.1,
+    "open"
+   ],
+   [
+    0.95,
+    "shut"
+   ]
+  ],
+  "when": [
+   "wet"
+  ],
+  "prefer": [
+   "storm",
+   "young"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "dimdoor_sniff_sill": {
+  "item": "dimensional_door",
+  "label": "Sniffing the strange draught under the door",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.5,
+     "y": 0.6,
+     "b": 0.5,
+     "eye": "o"
+    }
+   ],
+   [
+    0.32,
+    {
+     "x": 0.8,
+     "y": 1,
+     "b": 0.8,
+     "contact": 1,
+     "anchor": "sill",
+     "mark": "snf"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": 0.8,
+     "y": 1,
+     "eye": "O",
+     "mark": "?!"
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": -0.5,
+     "b": -0.4,
+     "eye": "^",
+     "mark": "brr"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [],
+  "prefer": [
+   "young",
+   "curious"
+  ],
+  "ages": [
+   "hatchling",
+   "duckling",
+   "juvenile"
+  ],
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "dimdoor_open_peek": {
+  "item": "dimensional_door",
+  "label": "Opening the door onto somewhere else entirely",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "knob"
+    }
+   ],
+   [
+    0.28,
+    {
+     "contact": 1,
+     "anchor": "knob",
+     "door": 1,
+     "mark": "creak"
+    }
+   ],
+   [
+    0.45,
+    {
+     "x": 0.5,
+     "door": 1,
+     "eye": "O",
+     "mark": "!"
+    }
+   ],
+   [
+    0.62,
+    {
+     "x": -0.6,
+     "b": -0.4,
+     "door": 1,
+     "w": 1,
+     "eye": "@",
+     "mark": "woah"
+    }
+   ],
+   [
+    0.8,
+    {
+     "contact": 1,
+     "anchor": "knob",
+     "door": 0
+    }
+   ],
+   [
+    0.92,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.28,
+    "open"
+   ],
+   [
+    0.8,
+    "shut"
+   ]
+  ],
+  "when": [],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": "dimdoor_peek"
+ },
+ "dimdoor_turn_knob": {
+  "item": "dimensional_door",
+  "label": "Twisting the knob to a new dimension",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "knob"
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "knob",
+     "b": 0.3,
+     "mark": "clk"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": -0.3,
+     "eye": "o",
+     "mark": "?"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "knob"
+   ]
+  ],
+  "when": [],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "dimdoor_oil_hinges": {
+  "item": "dimensional_door",
+  "label": "Oiling the squeaky hinges",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "hinge_mid",
+     "can": 1
+    }
+   ],
+   [
+    0.35,
+    {
+     "contact": 1,
+     "anchor": "hinge_mid",
+     "can": 1,
+     "mark": "drip"
+    }
+   ],
+   [
+    0.55,
+    {
+     "y": 0.6,
+     "contact": 1,
+     "anchor": "hinge_low",
+     "can": 1,
+     "mark": "drip"
+    }
+   ],
+   [
+    0.8,
+    {
+     "can": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "oil"
+   ],
+   [
+    0.55,
+    "oil"
+   ]
+  ],
+  "when": [
+   "hinge<.6"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "can",
+  "say": null
+ },
+ "dimdoor_knock_back": {
+  "item": "dimensional_door",
+  "label": "Knocking on the back of the door, just in case",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.9,
+     "eye": "o"
+    }
+   ],
+   [
+    0.32,
+    {
+     "x": 1.1,
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "back",
+     "mark": "knock"
+    }
+   ],
+   [
+    0.5,
+    {
+     "eye": "o",
+     "mark": "..."
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": -0.4,
+     "eye": "O",
+     "mark": "knock?"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "knock"
+   ]
+  ],
+  "when": [],
+  "prefer": [
+   "young",
+   "curious"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": "dimdoor_knock"
+ },
+ "teleport_calibrate": {
+  "item": "teleporter",
+  "label": "Tapping coordinates into the teleporter keypad",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "keypad",
+     "mark": "beep"
+    }
+   ],
+   [
+    0.32,
+    {
+     "contact": 1,
+     "anchor": "keypad",
+     "mark": "boop"
+    }
+   ],
+   [
+    0.5,
+    {
+     "contact": 1,
+     "anchor": "keypad",
+     "mark": "beep"
+    }
+   ],
+   [
+    0.75,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.5,
+    "calibrate"
+   ]
+  ],
+  "when": [],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "teleport_beam_pebble": {
+  "item": "teleporter",
+  "label": "Beaming a pebble across the garden",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 1,
+     "b": 0.6,
+     "pebble": 1
+    }
+   ],
+   [
+    0.28,
+    {
+     "x": 0.6,
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "pad",
+     "pebble": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "pebble": 0,
+     "mark": "set"
+    }
+   ],
+   [
+    0.52,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "keypad",
+     "mark": "beep"
+    }
+   ],
+   [
+    0.62,
+    {
+     "x": -0.6,
+     "eye": "O",
+     "mark": "ZZHM"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^",
+     "mark": "!"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.62,
+    "beam"
+   ]
+  ],
+  "when": [
+   "charge>.35"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "teleport_stand_on_pad": {
+  "item": "teleporter",
+  "label": "Standing on the pad, eyes shut, waiting to be beamed",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": 0.6,
+     "y": -0.2,
+     "eye": "o"
+    }
+   ],
+   [
+    0.28,
+    {
+     "x": 0.9,
+     "y": -0.4,
+     "eye": "-",
+     "mark": "ready"
+    }
+   ],
+   [
+    0.48,
+    {
+     "x": 0.9,
+     "eye": "-",
+     "mark": "..."
+    }
+   ],
+   [
+    0.62,
+    {
+     "x": 0.9,
+     "eye": "o",
+     "mark": "?"
+    }
+   ],
+   [
+    0.78,
+    {
+     "x": 0.2,
+     "b": 0.3,
+     "eye": ">",
+     "mark": "hmph"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.48,
+    "stand"
+   ]
+  ],
+  "when": [
+   "charge>.2"
+  ],
+  "prefer": [
+   "young",
+   "curious"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "teleport_wait"
+ },
+ "teleport_wipe_lens": {
+  "item": "teleporter",
+  "label": "Wiping smudges off the pad's sensor ring",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": -0.5,
+     "reach": 0.9,
+     "contact": 1,
+     "anchor": "sensor",
+     "cloth": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "y": -0.6,
+     "contact": 1,
+     "anchor": "sensor",
+     "cloth": 1,
+     "mark": "squeak"
+    }
+   ],
+   [
+    0.65,
+    {
+     "cloth": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "wipe"
+   ]
+  ],
+  "when": [
+   "lens<.6"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "cloth",
+  "say": null
+ },
+ "robot_wind_up": {
+  "item": "robot_butler",
+  "label": "Winding the butler's key until his eyes light up",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "key"
+    }
+   ],
+   [
+    0.3,
+    {
+     "contact": 1,
+     "anchor": "key",
+     "b": 0.3,
+     "mark": "crk"
+    }
+   ],
+   [
+    0.48,
+    {
+     "contact": 1,
+     "anchor": "key",
+     "b": -0.2,
+     "mark": "crk"
+    }
+   ],
+   [
+    0.66,
+    {
+     "x": -0.5,
+     "eye": "O",
+     "mark": "bip!"
+    }
+   ],
+   [
+    0.86,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "charge"
+   ],
+   [
+    0.48,
+    "charge"
+   ]
+  ],
+  "when": [
+   "battery<.75"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "robot_oil_joints": {
+  "item": "robot_butler",
+  "label": "Oiling the butler's squeaky elbows and knees",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "elbow",
+     "can": 1
+    }
+   ],
+   [
+    0.3,
+    {
+     "contact": 1,
+     "anchor": "elbow",
+     "can": 1,
+     "mark": "drip"
+    }
+   ],
+   [
+    0.5,
+    {
+     "y": 0.8,
+     "contact": 1,
+     "anchor": "knee",
+     "can": 1,
+     "mark": "drip"
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": -0.4,
+     "can": 0,
+     "mark": "squeak?"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "oil"
+   ],
+   [
+    0.5,
+    "oil"
+   ]
+  ],
+  "when": [
+   "oil<.6"
+  ],
+  "prefer": [
+   "wet",
+   "rust>.2"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "can",
+  "say": null
+ },
+ "robot_morning_greeting": {
+  "item": "robot_butler",
+  "label": "Saying good morning and getting a stiff robotic wave back",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": -0.4,
+     "w": 0.8,
+     "eye": "^",
+     "mark": "hi!"
+    }
+   ],
+   [
+    0.3,
+    {
+     "reach": 0.4,
+     "eye": "o"
+    }
+   ],
+   [
+    0.45,
+    {
+     "eye": "O",
+     "mark": "bip"
+    }
+   ],
+   [
+    0.6,
+    {
+     "w": 1,
+     "b": -0.3,
+     "eye": "^",
+     "mark": "!"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.45,
+    "wave"
+   ]
+  ],
+  "when": [
+   "battery>.2"
+  ],
+  "prefer": [
+   "dawn",
+   "day",
+   "lonely"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "robot_morning"
+ },
+ "robot_teach_bow": {
+  "item": "robot_butler",
+  "label": "Teaching the butler a proper bow, then bowing back",
+  "duration": 26,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": 0.4,
+     "b": 0.8,
+     "y": 0.6,
+     "eye": "-",
+     "mark": "like this"
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 0.4,
+     "b": 0,
+     "y": 0,
+     "eye": "o"
+    }
+   ],
+   [
+    0.45,
+    {
+     "eye": "o",
+     "mark": "..."
+    }
+   ],
+   [
+    0.58,
+    {
+     "eye": "O",
+     "mark": "bzzt"
+    }
+   ],
+   [
+    0.72,
+    {
+     "b": 0.8,
+     "y": 0.6,
+     "eye": "^"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.58,
+    "bow"
+   ]
+  ],
+  "when": [
+   "battery>.3"
+  ],
+  "prefer": [
+   "happy",
+   "elder"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "none",
+  "say": "robot_bow"
+ },
+ "robot_high_five": {
+  "item": "robot_butler",
+  "label": "Going for a high five with the butler's tray hand",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.4,
+     "y": -0.5,
+     "w": 1,
+     "eye": "^"
+    }
+   ],
+   [
+    0.32,
+    {
+     "x": 0.7,
+     "y": -0.6,
+     "w": 1,
+     "contact": 1,
+     "anchor": "hand",
+     "mark": "CLANK"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": -0.3,
+     "b": -0.3,
+     "w": 0.4,
+     "eye": ">",
+     "mark": "ow"
+    }
+   ],
+   [
+    0.75,
+    {
+     "eye": "^",
+     "mark": "worth it"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "five"
+   ]
+  ],
+  "when": [
+   "battery>.2"
+  ],
+  "prefer": [
+   "young",
+   "happy"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "robot_buff_dome": {
+  "item": "robot_butler",
+  "label": "Buffing the butler's dome until it reflects the sky",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": -0.6,
+     "reach": 1,
+     "contact": 1,
+     "anchor": "dome",
+     "cloth": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "y": -0.7,
+     "contact": 1,
+     "anchor": "dome",
+     "cloth": 1,
+     "mark": "*"
+    }
+   ],
+   [
+    0.65,
+    {
+     "cloth": 0,
+     "eye": "^",
+     "mark": "*"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "buff"
+   ]
+  ],
+  "when": [
+   "shine<.7"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "cloth",
+  "say": null
+ },
+ "clone_load_feather": {
+  "item": "cloning_machine",
+  "label": "Plucking a loose feather and loading it into pod A",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": -0.4,
+     "w": 0.6,
+     "eye": "o",
+     "mark": "plk"
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": 0.5,
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "pod_a",
+     "feather": 1
+    }
+   ],
+   [
+    0.48,
+    {
+     "contact": 1,
+     "anchor": "pod_a",
+     "feather": 0,
+     "mark": "in"
+    }
+   ],
+   [
+    0.75,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.48,
+    "load"
+   ]
+  ],
+  "when": [
+   "sample<.5"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "clone_run_cycle": {
+  "item": "cloning_machine",
+  "label": "Running a cloning cycle and meeting a glowing duplicate",
+  "duration": 28,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "button",
+     "mark": "beep"
+    }
+   ],
+   [
+    0.25,
+    {
+     "x": -0.3,
+     "eye": "o",
+     "mark": "bloop"
+    }
+   ],
+   [
+    0.42,
+    {
+     "x": 0.9,
+     "eye": "O",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 0.9,
+     "w": 1,
+     "eye": "^",
+     "mark": "hi me"
+    }
+   ],
+   [
+    0.72,
+    {
+     "x": 0.9,
+     "w": 0.2,
+     "eye": "o",
+     "mark": "..."
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.12,
+    "run"
+   ]
+  ],
+  "when": [
+   "sample>.5",
+   "charge>.35"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": "clone_meet"
+ },
+ "clone_mirror_dance": {
+  "item": "cloning_machine",
+  "label": "Dancing with the hologram as it copies every move",
+  "duration": 26,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": 0.5,
+     "w": 1,
+     "l": 1,
+     "eye": "^"
+    }
+   ],
+   [
+    0.28,
+    {
+     "x": 0.3,
+     "w": 0.2,
+     "r": 1,
+     "b": 0.4
+    }
+   ],
+   [
+    0.44,
+    {
+     "x": 0.6,
+     "y": -0.5,
+     "w": 1,
+     "eye": "^",
+     "mark": "~"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": 0.4,
+     "b": 0.5,
+     "l": 1
+    }
+   ],
+   [
+    0.76,
+    {
+     "y": -0.5,
+     "w": 1,
+     "eye": "^",
+     "mark": "*"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "hologram>.3"
+  ],
+  "prefer": [
+   "happy",
+   "lonely"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "clone_tap_tube": {
+  "item": "cloning_machine",
+  "label": "Tapping the tube to watch the bubbles rise",
+  "duration": 14,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "tube",
+     "mark": "tink"
+    }
+   ],
+   [
+    0.4,
+    {
+     "x": -0.3,
+     "y": -0.4,
+     "eye": "O",
+     "mark": "o o"
+    }
+   ],
+   [
+    0.75,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.15,
+    "tap"
+   ]
+  ],
+  "when": [],
+  "prefer": [
+   "young"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "clone_purge": {
+  "item": "cloning_machine",
+  "label": "Flushing the pods with a big green gurgle",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "valve",
+     "b": 0.3
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "valve",
+     "mark": "GLRRG"
+    }
+   ],
+   [
+    0.65,
+    {
+     "x": -0.6,
+     "eye": ">",
+     "mark": "eww"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "purge"
+   ]
+  ],
+  "when": [
+   "sample>.5"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "transmog_drop_leaf": {
+  "item": "transmogrifier",
+  "label": "Sliding a leaf into the loading drawer",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": 1,
+     "b": 0.6,
+     "leaf": 1
+    }
+   ],
+   [
+    0.35,
+    {
+     "y": -0.5,
+     "reach": 1,
+     "w": 0.8,
+     "contact": 1,
+     "anchor": "drawer",
+     "leaf": 1
+    }
+   ],
+   [
+    0.5,
+    {
+     "leaf": 0,
+     "mark": "plop"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.5,
+    "drop"
+   ]
+  ],
+  "when": [
+   "hopper<.5",
+   "jam<.5"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "transmog_crank": {
+  "item": "transmogrifier",
+  "label": "Cranking the transmogrifier and seeing what pops out",
+  "duration": 26,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "crank",
+     "b": 0.3,
+     "mark": "crk"
+    }
+   ],
+   [
+    0.28,
+    {
+     "contact": 1,
+     "anchor": "crank",
+     "b": -0.2,
+     "mark": "crk"
+    }
+   ],
+   [
+    0.44,
+    {
+     "x": -0.4,
+     "eye": "o",
+     "mark": "PFOOF"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": 0.6,
+     "y": 0.8,
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "chute",
+     "eye": "O"
+    }
+   ],
+   [
+    0.78,
+    {
+     "y": -0.3,
+     "eye": "^",
+     "mark": "?!"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.44,
+    "crank"
+   ]
+  ],
+  "when": [
+   "hopper>.5",
+   "charge>.25"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": "transmog_result"
+ },
+ "transmog_kick": {
+  "item": "transmogrifier",
+  "label": "Giving the jammed machine a firm kick",
+  "duration": 14,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": -0.3,
+     "eye": ">"
+    }
+   ],
+   [
+    0.32,
+    {
+     "x": 0.6,
+     "l": 1,
+     "contact": 1,
+     "anchor": "panel",
+     "mark": "CLONK"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": -0.4,
+     "b": -0.3,
+     "eye": "@",
+     "mark": "ow"
+    }
+   ],
+   [
+    0.75,
+    {
+     "eye": "^",
+     "mark": "fixed"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "kick"
+   ]
+  ],
+  "when": [
+   "jam>.3"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "transmog_kick"
+ },
+ "transmog_sweep_chute": {
+  "item": "transmogrifier",
+  "label": "Sweeping the odd results out of the chute",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": 0.6,
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "chute",
+     "broom": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "x": 0.4,
+     "contact": 1,
+     "anchor": "chute",
+     "broom": 1,
+     "mark": "swsh"
+    }
+   ],
+   [
+    0.7,
+    {
+     "broom": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "sweep"
+   ]
+  ],
+  "when": [
+   "output>0"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "broom",
+  "say": null
+ },
+ "printer_feed_paper": {
+  "item": "money_printer",
+  "label": "Feeding a fresh ream into the printer",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "tray",
+     "mark": "shff"
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "tray",
+     "mark": "clk"
+    }
+   ],
+   [
+    0.75,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "paper"
+   ]
+  ],
+  "when": [
+   "paper<.6"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "printer_crank_bills": {
+  "item": "money_printer",
+  "label": "Cranking out a stack of silly Duck Bucks (not real money)",
+  "duration": 26,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 0
+    }
+   ],
+   [
+    0.28,
+    {
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 1,
+     "mark": "chk"
+    }
+   ],
+   [
+    0.44,
+    {
+     "contact": 1,
+     "anchor": "crank",
+     "crank": 2,
+     "mark": "chk"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": -0.4,
+     "eye": "$"
+    }
+   ],
+   [
+    0.75,
+    {
+     "x": -0.4,
+     "w": 0.8,
+     "eye": "$",
+     "mark": "rich!"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.28,
+    "crank"
+   ],
+   [
+    0.44,
+    "crank"
+   ]
+  ],
+  "when": [
+   "paper>.2",
+   "jam<.5"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": "printer_bucks"
+ },
+ "printer_clear_jam": {
+  "item": "money_printer",
+  "label": "Fishing a crumpled sheet out of the rollers",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": 0.4,
+     "reach": 0.9,
+     "contact": 1,
+     "anchor": "rollers",
+     "eye": ">"
+    }
+   ],
+   [
+    0.35,
+    {
+     "contact": 1,
+     "anchor": "rollers",
+     "b": 0.4,
+     "mark": "hnng"
+    }
+   ],
+   [
+    0.52,
+    {
+     "x": -0.6,
+     "b": -0.4,
+     "mark": "rrip"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.52,
+    "clear"
+   ]
+  ],
+  "when": [
+   "jam>.3"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": "printer_jam"
+ },
+ "printer_oil_rollers": {
+  "item": "money_printer",
+  "label": "Oiling the rollers",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "rollers",
+     "can": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "rollers",
+     "can": 1,
+     "mark": "drip"
+    }
+   ],
+   [
+    0.75,
+    {
+     "can": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "oil"
+   ]
+  ],
+  "when": [
+   "oil<.5"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "can",
+  "say": null
+ },
+ "printer_make_it_rain": {
+  "item": "money_printer",
+  "label": "Tossing the play money up and letting it rain down",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 0.6,
+     "b": 0.5,
+     "reach": 0.5,
+     "contact": 1,
+     "anchor": "stack"
+    }
+   ],
+   [
+    0.28,
+    {
+     "y": -0.6,
+     "w": 1,
+     "b": -0.5,
+     "eye": "^",
+     "mark": "$$$"
+    }
+   ],
+   [
+    0.5,
+    {
+     "y": -0.4,
+     "w": 1,
+     "eye": "^",
+     "mark": "$ $"
+    }
+   ],
+   [
+    0.75,
+    {
+     "b": 0.3,
+     "eye": "^",
+     "mark": "$"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.28,
+    "tidy"
+   ]
+  ],
+  "when": [
+   "stack>.4"
+  ],
+  "prefer": [
+   "happy",
+   "young"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": "printer_rain"
+ },
+ "perpetual_give_spin": {
+  "item": "perpetual_motion",
+  "label": "Giving the wheel a spin it does not need",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "rim",
+     "w": 0.6
+    }
+   ],
+   [
+    0.32,
+    {
+     "x": 0.4,
+     "contact": 1,
+     "anchor": "rim",
+     "w": 1,
+     "mark": "whirr"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": -0.3,
+     "eye": "o",
+     "mark": "~"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.32,
+    "spin"
+   ]
+  ],
+  "when": [],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "perpetual_try_to_stop": {
+  "item": "perpetual_motion",
+  "label": "Trying with all his might to stop the wheel and failing",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": 0.6,
+     "w": 1,
+     "reach": 1,
+     "contact": 1,
+     "anchor": "rim",
+     "eye": ">"
+    }
+   ],
+   [
+    0.28,
+    {
+     "x": 0.8,
+     "b": 0.6,
+     "w": 1,
+     "contact": 1,
+     "anchor": "rim",
+     "mark": "hnng"
+    }
+   ],
+   [
+    0.44,
+    {
+     "x": 0.4,
+     "b": -0.5,
+     "w": 1,
+     "eye": "@",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": -0.8,
+     "b": -0.4,
+     "eye": "@",
+     "mark": "..."
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": ">",
+     "mark": "fine"
+    }
+   ],
+   [
+    0.92,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.28,
+    "stop"
+   ]
+  ],
+  "when": [],
+  "prefer": [
+   "grumpy",
+   "curious"
+  ],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": "perpetual_stop"
+ },
+ "perpetual_oil_axle": {
+  "item": "perpetual_motion",
+  "label": "Oiling the axle to quiet its squeak",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "axle",
+     "can": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "axle",
+     "can": 1,
+     "mark": "drip"
+    }
+   ],
+   [
+    0.75,
+    {
+     "can": 0,
+     "eye": "^",
+     "mark": "shh"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "oil"
+   ]
+  ],
+  "when": [
+   "oil<.5"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "can",
+  "say": null
+ },
+ "perpetual_count_turns": {
+  "item": "perpetual_motion",
+  "label": "Counting the turns out loud and losing track",
+  "duration": 26,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": 0.3,
+     "eye": "o",
+     "mark": "1"
+    }
+   ],
+   [
+    0.25,
+    {
+     "mark": "2"
+    }
+   ],
+   [
+    0.38,
+    {
+     "mark": "3"
+    }
+   ],
+   [
+    0.5,
+    {
+     "eye": "-",
+     "mark": "4.."
+    }
+   ],
+   [
+    0.62,
+    {
+     "eye": "o",
+     "mark": "7?"
+    }
+   ],
+   [
+    0.76,
+    {
+     "x": -0.3,
+     "eye": "@",
+     "mark": "uh"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.5,
+    "count"
+   ]
+  ],
+  "when": [],
+  "prefer": [
+   "young",
+   "curious",
+   "tired"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "perpetual_count"
+ },
+ "dna_load_samples": {
+  "item": "DNA_mixer",
+  "label": "Loading two feather samples into the vials",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": -0.4,
+     "w": 0.5,
+     "feather": 1,
+     "mark": "plk"
+    }
+   ],
+   [
+    0.3,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "vial_a",
+     "feather": 1
+    }
+   ],
+   [
+    0.42,
+    {
+     "feather": 0,
+     "mark": "in"
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 0.6,
+     "contact": 1,
+     "anchor": "vial_b",
+     "feather": 1
+    }
+   ],
+   [
+    0.68,
+    {
+     "feather": 0,
+     "mark": "in"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.42,
+    "load_a"
+   ],
+   [
+    0.68,
+    "load_b"
+   ]
+  ],
+  "when": [],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "dna_spin_helix": {
+  "item": "DNA_mixer",
+  "label": "Spinning the helix centrifuge up to a whine",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "switch",
+     "mark": "click"
+    }
+   ],
+   [
+    0.3,
+    {
+     "x": -0.4,
+     "eye": "o",
+     "mark": "wheee"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": -0.5,
+     "eye": "O",
+     "mark": "EEEE"
+    }
+   ],
+   [
+    0.7,
+    {
+     "x": -0.2,
+     "eye": "o",
+     "mark": "ding"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.12,
+    "spin"
+   ]
+  ],
+  "when": [
+   "clean>.25"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "dna_read_printout": {
+  "item": "DNA_mixer",
+  "label": "Reading the ridiculous results off the printout",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "slot",
+     "mark": "rrr"
+    }
+   ],
+   [
+    0.35,
+    {
+     "y": 0.3,
+     "eye": "o",
+     "mark": "hm"
+    }
+   ],
+   [
+    0.55,
+    {
+     "eye": "O",
+     "mark": "?!"
+    }
+   ],
+   [
+    0.75,
+    {
+     "b": -0.4,
+     "eye": "^",
+     "mark": "HA"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "read"
+   ]
+  ],
+  "when": [
+   "printout>.5"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": "dna_result"
+ },
+ "dna_rinse_vials": {
+  "item": "DNA_mixer",
+  "label": "Rinsing the vials clean",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "vial_a",
+     "cloth": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "x": 0.5,
+     "contact": 1,
+     "anchor": "vial_b",
+     "cloth": 1,
+     "mark": "squeak"
+    }
+   ],
+   [
+    0.75,
+    {
+     "cloth": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "rinse"
+   ]
+  ],
+  "when": [
+   "clean<.6"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "cloth",
+  "say": null
+ },
+ "shrink_charge": {
+  "item": "shrink_ray",
+  "label": "Pumping the shrink ray's capacitor",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "pump",
+     "b": 0.3,
+     "mark": "pmp"
+    }
+   ],
+   [
+    0.35,
+    {
+     "contact": 1,
+     "anchor": "pump",
+     "b": -0.2,
+     "mark": "pmp"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": -0.3,
+     "eye": "o",
+     "mark": "hmmm"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.15,
+    "charge"
+   ],
+   [
+    0.35,
+    "charge"
+   ]
+  ],
+  "when": [
+   "charge<.7"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "shrink_zap_pebble": {
+  "item": "shrink_ray",
+  "label": "Zapping a pebble on the target plate down to a speck",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 1,
+     "b": 0.6,
+     "pebble": 1
+    }
+   ],
+   [
+    0.25,
+    {
+     "x": 0.6,
+     "contact": 1,
+     "anchor": "plate",
+     "pebble": 0,
+     "mark": "set"
+    }
+   ],
+   [
+    0.4,
+    {
+     "x": -0.2,
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "trigger",
+     "eye": ">"
+    }
+   ],
+   [
+    0.5,
+    {
+     "contact": 1,
+     "anchor": "trigger",
+     "mark": "PEW"
+    }
+   ],
+   [
+    0.66,
+    {
+     "x": 0.6,
+     "y": 0.6,
+     "eye": "O",
+     "mark": "tiny!"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.5,
+    "zap"
+   ]
+  ],
+  "when": [
+   "charge>.3",
+   "target>.3"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": "shrink_zap"
+ },
+ "shrink_blow_barrel": {
+  "item": "shrink_ray",
+  "label": "Blowing the smoke off the barrel like a cowboy",
+  "duration": 14,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.5,
+     "y": -0.3,
+     "eye": "-"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.7,
+     "mark": "fwoo"
+    }
+   ],
+   [
+    0.6,
+    {
+     "w": 0.6,
+     "eye": "^",
+     "mark": "*"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "blow"
+   ]
+  ],
+  "when": [
+   "glow>.2"
+  ],
+  "prefer": [
+   "happy"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "shrink_reset_plate": {
+  "item": "shrink_ray",
+  "label": "Turning the dial to undo the shrink",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "dial"
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "dial",
+     "mark": "clk"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": 0.5,
+     "y": 0.5,
+     "eye": "O",
+     "mark": "back!"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "reset"
+   ]
+  ],
+  "when": [
+   "target<.7"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "growth_charge": {
+  "item": "growth_ray",
+  "label": "Pumping the growth ray's capacitor",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "pump",
+     "b": 0.3,
+     "mark": "pmp"
+    }
+   ],
+   [
+    0.35,
+    {
+     "contact": 1,
+     "anchor": "pump",
+     "b": -0.2,
+     "mark": "pmp"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": -0.3,
+     "eye": "o"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.15,
+    "charge"
+   ],
+   [
+    0.35,
+    "charge"
+   ]
+  ],
+  "when": [
+   "charge<.7"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "growth_zap_dandelion": {
+  "item": "growth_ray",
+  "label": "Zapping a dandelion until it towers over him",
+  "duration": 24,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 1,
+     "b": 0.6,
+     "flower": 1
+    }
+   ],
+   [
+    0.25,
+    {
+     "x": 0.6,
+     "contact": 1,
+     "anchor": "plate",
+     "flower": 0,
+     "mark": "set"
+    }
+   ],
+   [
+    0.4,
+    {
+     "x": -0.2,
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "trigger",
+     "eye": ">"
+    }
+   ],
+   [
+    0.5,
+    {
+     "contact": 1,
+     "anchor": "trigger",
+     "mark": "BZOW"
+    }
+   ],
+   [
+    0.66,
+    {
+     "x": -0.4,
+     "y": -0.8,
+     "eye": "O",
+     "mark": "HUGE"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.5,
+    "zap"
+   ]
+  ],
+  "when": [
+   "charge>.3",
+   "target<2.5"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": "growth_zap"
+ },
+ "growth_sniff_giant": {
+  "item": "growth_ray",
+  "label": "Sniffing the giant dandelion and sneezing",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.6,
+     "y": -0.4,
+     "eye": "-"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.8,
+     "y": -0.5,
+     "mark": "snf"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": 0.8,
+     "eye": ">",
+     "mark": "ah.."
+    }
+   ],
+   [
+    0.62,
+    {
+     "x": -0.6,
+     "b": -0.6,
+     "w": 1,
+     "eye": "@",
+     "mark": "CHOO"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [],
+  "when": [
+   "target>1.4"
+  ],
+  "prefer": [
+   "young",
+   "spring"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "growth_reset_plate": {
+  "item": "growth_ray",
+  "label": "Turning the dial to shrink the flower back",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "dial"
+    }
+   ],
+   [
+    0.4,
+    {
+     "contact": 1,
+     "anchor": "dial",
+     "mark": "clk"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "reset"
+   ]
+  ],
+  "when": [
+   "target>1.3"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "genie_rub_lamp": {
+  "item": "genie_lamp",
+  "label": "Rubbing the lamp until purple smoke curls out",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 0.6,
+     "b": 0.5,
+     "reach": 0.5,
+     "contact": 1,
+     "anchor": "belly",
+     "w": 0.6
+    }
+   ],
+   [
+    0.28,
+    {
+     "contact": 1,
+     "anchor": "belly",
+     "w": 1,
+     "mark": "rub"
+    }
+   ],
+   [
+    0.42,
+    {
+     "contact": 1,
+     "anchor": "belly",
+     "w": 0.6,
+     "mark": "rub"
+    }
+   ],
+   [
+    0.58,
+    {
+     "x": -0.7,
+     "b": -0.5,
+     "eye": "O",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.8,
+    {
+     "y": -0.5,
+     "eye": "O",
+     "mark": "..."
+    }
+   ],
+   [
+    0.92,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.42,
+    "rub"
+   ]
+  ],
+  "when": [],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": "genie_smoke"
+ },
+ "genie_make_wish": {
+  "item": "genie_lamp",
+  "label": "Closing his eyes and making one of his three wishes",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": 0.6,
+     "b": 0.4,
+     "w": 0.4,
+     "contact": 1,
+     "anchor": "belly"
+    }
+   ],
+   [
+    0.3,
+    {
+     "y": -0.3,
+     "w": 0.8,
+     "eye": "-",
+     "mark": "..."
+    }
+   ],
+   [
+    0.55,
+    {
+     "y": -0.4,
+     "w": 0.8,
+     "eye": "-",
+     "mark": "please"
+    }
+   ],
+   [
+    0.75,
+    {
+     "eye": "o",
+     "mark": "?"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.55,
+    "wish"
+   ]
+  ],
+  "when": [
+   "smoke>.3",
+   "wishes<3"
+  ],
+  "prefer": [
+   "sad",
+   "lonely"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "genie_wish"
+ },
+ "genie_polish_spout": {
+  "item": "genie_lamp",
+  "label": "Polishing the long curly spout",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "spout",
+     "cloth": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "x": 0.4,
+     "contact": 1,
+     "anchor": "spout",
+     "cloth": 1,
+     "mark": "*"
+    }
+   ],
+   [
+    0.75,
+    {
+     "cloth": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "buff"
+   ]
+  ],
+  "when": [
+   "polish<.7"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "cloth",
+  "say": null
+ },
+ "genie_peek_spout": {
+  "item": "genie_lamp",
+  "label": "Peering down the spout for whoever lives in there",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.7,
+     "y": 0.5,
+     "b": 0.5,
+     "eye": "o"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.9,
+     "y": 0.6,
+     "contact": 1,
+     "anchor": "spout",
+     "eye": "O",
+     "mark": "hello?"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": -0.4,
+     "eye": "o",
+     "mark": "..."
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "peek"
+   ]
+  ],
+  "when": [],
+  "prefer": [
+   "young",
+   "curious"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "genie_peek"
+ },
+ "cloak_shake_out": {
+  "item": "invisible_cloak",
+  "label": "Shaking the cloak out so it shimmers in the air",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.9,
+     "contact": 1,
+     "anchor": "hem",
+     "w": 0.6
+    }
+   ],
+   [
+    0.35,
+    {
+     "y": -0.4,
+     "w": 1,
+     "b": -0.3,
+     "contact": 1,
+     "anchor": "hem",
+     "mark": "fwap"
+    }
+   ],
+   [
+    0.55,
+    {
+     "w": 0.8,
+     "contact": 1,
+     "anchor": "hem",
+     "mark": "fwap"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "shake"
+   ]
+  ],
+  "when": [
+   "folded<.5"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "cloak_hide_under": {
+  "item": "invisible_cloak",
+  "label": "Hiding under the cloak and sneaking a look out",
+  "duration": 26,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "reach": 0.9,
+     "contact": 1,
+     "anchor": "hem",
+     "cloak": 1
+    }
+   ],
+   [
+    0.28,
+    {
+     "y": 0.5,
+     "b": 0.6,
+     "cloak": 1,
+     "eye": "-",
+     "mark": "shh"
+    }
+   ],
+   [
+    0.45,
+    {
+     "y": 0.5,
+     "b": 0.6,
+     "cloak": 1,
+     "eye": "-"
+    }
+   ],
+   [
+    0.62,
+    {
+     "y": 0.4,
+     "cloak": 0.6,
+     "eye": "o",
+     "mark": "peek"
+    }
+   ],
+   [
+    0.8,
+    {
+     "cloak": 0,
+     "w": 1,
+     "b": -0.4,
+     "eye": "^",
+     "mark": "BOO"
+    }
+   ],
+   [
+    0.92,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.28,
+    "hide"
+   ],
+   [
+    0.62,
+    "peek"
+   ],
+   [
+    0.8,
+    "shake"
+   ]
+  ],
+  "when": [
+   "folded<.5"
+  ],
+  "prefer": [
+   "young",
+   "happy",
+   "lonely"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "cloak_boo"
+ },
+ "cloak_fold": {
+  "item": "invisible_cloak",
+  "label": "Folding the cloak neatly over the stand",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "hem"
+    }
+   ],
+   [
+    0.4,
+    {
+     "y": -0.4,
+     "w": 0.8,
+     "contact": 1,
+     "anchor": "mid",
+     "mark": "fold"
+    }
+   ],
+   [
+    0.7,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "fold"
+   ]
+  ],
+  "when": [
+   "folded<.5"
+  ],
+  "prefer": [
+   "night",
+   "wet"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "cloak_hang_up": {
+  "item": "invisible_cloak",
+  "label": "Unfolding the cloak and shaking it back over the stand",
+  "duration": 16,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "mid"
+    }
+   ],
+   [
+    0.45,
+    {
+     "y": -0.5,
+     "w": 1,
+     "contact": 1,
+     "anchor": "mid",
+     "mark": "there"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.45,
+    "hang"
+   ]
+  ],
+  "when": [
+   "folded>.5"
+  ],
+  "prefer": [
+   "day"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "dream_untangle": {
+  "item": "dream_catcher",
+  "label": "Picking the wind tangles out of the web",
+  "duration": 26,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "y": -0.5,
+     "reach": 0.9,
+     "contact": 1,
+     "anchor": "web",
+     "eye": "o"
+    }
+   ],
+   [
+    0.3,
+    {
+     "y": -0.6,
+     "contact": 1,
+     "anchor": "web",
+     "mark": "pik"
+    }
+   ],
+   [
+    0.48,
+    {
+     "y": -0.5,
+     "x": 0.3,
+     "contact": 1,
+     "anchor": "web_r",
+     "mark": "pik"
+    }
+   ],
+   [
+    0.7,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.3,
+    "untangle"
+   ],
+   [
+    0.48,
+    "untangle"
+   ]
+  ],
+  "when": [
+   "tangle>.25"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "dream_hang_feather": {
+  "item": "dream_catcher",
+  "label": "Tying one of his own moulted feathers to the hoop",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": -0.4,
+     "w": 0.5,
+     "feather": 1,
+     "mark": "plk"
+    }
+   ],
+   [
+    0.3,
+    {
+     "y": -0.3,
+     "reach": 0.8,
+     "contact": 1,
+     "anchor": "tassel",
+     "feather": 1
+    }
+   ],
+   [
+    0.5,
+    {
+     "contact": 1,
+     "anchor": "tassel",
+     "feather": 0,
+     "mark": "tie"
+    }
+   ],
+   [
+    0.8,
+    {
+     "eye": "^",
+     "mark": "<3"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.5,
+    "feather"
+   ]
+  ],
+  "when": [
+   "feathers<6"
+  ],
+  "prefer": [
+   "spring",
+   "happy"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "dream_feather"
+ },
+ "dream_watch_glow": {
+  "item": "dream_catcher",
+  "label": "Watching caught dreams glow in the web at night",
+  "duration": 30,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": 0.3,
+     "y": 0.6,
+     "b": 0.5,
+     "eye": "o"
+    }
+   ],
+   [
+    0.35,
+    {
+     "y": 0.6,
+     "b": 0.5,
+     "eye": "O",
+     "mark": "~"
+    }
+   ],
+   [
+    0.6,
+    {
+     "y": 0.7,
+     "b": 0.6,
+     "eye": "-",
+     "mark": "*"
+    }
+   ],
+   [
+    0.85,
+    {
+     "eye": "-"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.6,
+    "watch"
+   ]
+  ],
+  "when": [
+   "night",
+   "dreams>.2"
+  ],
+  "prefer": [
+   "sad",
+   "tired",
+   "lonely"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": null
+ },
+ "dream_morning_release": {
+  "item": "dream_catcher",
+  "label": "Shaking last night's dreams loose into the morning light",
+  "duration": 20,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": -0.4,
+     "reach": 0.9,
+     "contact": 1,
+     "anchor": "web",
+     "w": 0.6
+    }
+   ],
+   [
+    0.35,
+    {
+     "contact": 1,
+     "anchor": "web",
+     "w": 1,
+     "mark": "shk"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": -0.5,
+     "y": -0.6,
+     "eye": "O",
+     "mark": "*  *"
+    }
+   ],
+   [
+    0.75,
+    {
+     "eye": "^",
+     "mark": "*"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "release"
+   ]
+  ],
+  "when": [
+   "dreams>.3",
+   "dawn_or_day"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": "dream_release"
+ },
+ "dragon_brood": {
+  "item": "dragon_egg",
+  "label": "Settling over the dragon egg like a proper duck to keep it warm",
+  "duration": 40,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": 0.6,
+     "y": 0.4,
+     "b": 0.5,
+     "w": 0.6,
+     "eye": "o"
+    }
+   ],
+   [
+    0.25,
+    {
+     "x": 0.8,
+     "y": 1,
+     "b": 0.9,
+     "w": 1,
+     "contact": 1,
+     "anchor": "shell",
+     "eye": "^"
+    }
+   ],
+   [
+    0.5,
+    {
+     "x": 0.8,
+     "y": 1,
+     "b": 0.9,
+     "w": 1,
+     "contact": 1,
+     "anchor": "shell",
+     "eye": "-",
+     "mark": "~"
+    }
+   ],
+   [
+    0.75,
+    {
+     "x": 0.8,
+     "y": 1,
+     "b": 0.9,
+     "w": 1,
+     "contact": 1,
+     "anchor": "shell",
+     "eye": "-"
+    }
+   ],
+   [
+    0.9,
+    {
+     "y": 0.3,
+     "w": 0.4,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.25,
+    "brood"
+   ],
+   [
+    0.5,
+    "brood"
+   ],
+   [
+    0.75,
+    "brood"
+   ]
+  ],
+  "when": [
+   "incubation<1"
+  ],
+  "prefer": [
+   "cold",
+   "night",
+   "warmth<.4"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "wing",
+  "say": "dragon_brood"
+ },
+ "dragon_turn_egg": {
+  "item": "dragon_egg",
+  "label": "Gently rolling the egg a quarter turn",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": 0.5,
+     "b": 0.5,
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "shell",
+     "w": 0.6
+    }
+   ],
+   [
+    0.4,
+    {
+     "x": 0.4,
+     "y": 0.6,
+     "contact": 1,
+     "anchor": "shell",
+     "w": 1,
+     "mark": "roll"
+    }
+   ],
+   [
+    0.65,
+    {
+     "eye": "o",
+     "mark": "careful"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "turn"
+   ]
+  ],
+  "when": [
+   "incubation<1"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "wing",
+  "say": null
+ },
+ "dragon_stoke_embers": {
+  "item": "dragon_egg",
+  "label": "Poking the embers in the nest back to a glow",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "y": 0.6,
+     "b": 0.5,
+     "reach": 0.7,
+     "contact": 1,
+     "anchor": "embers",
+     "stick": 1
+    }
+   ],
+   [
+    0.38,
+    {
+     "contact": 1,
+     "anchor": "embers",
+     "stick": 1,
+     "mark": "pok"
+    }
+   ],
+   [
+    0.6,
+    {
+     "x": -0.4,
+     "eye": "o",
+     "mark": "~"
+    }
+   ],
+   [
+    0.85,
+    {
+     "stick": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.38,
+    "stoke"
+   ]
+  ],
+  "when": [
+   "embers<.6",
+   "!wet"
+  ],
+  "prefer": [],
+  "ages": [
+   "juvenile",
+   "young_adult",
+   "adult",
+   "mature",
+   "elder",
+   "legendary"
+  ],
+  "need": null,
+  "tool": "stick",
+  "say": null
+ },
+ "dragon_ear_to_shell": {
+  "item": "dragon_egg",
+  "label": "Pressing an ear to the shell and hearing something move",
+  "duration": 22,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "x": 0.7,
+     "y": 0.5,
+     "b": 0.5,
+     "eye": "o"
+    }
+   ],
+   [
+    0.35,
+    {
+     "x": 0.9,
+     "y": 0.5,
+     "contact": 1,
+     "anchor": "shell",
+     "eye": "-",
+     "mark": "..."
+    }
+   ],
+   [
+    0.55,
+    {
+     "x": 0.9,
+     "eye": "O",
+     "mark": "tap tap"
+    }
+   ],
+   [
+    0.75,
+    {
+     "x": -0.4,
+     "eye": "O",
+     "mark": "!!"
+    }
+   ],
+   [
+    0.9,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.35,
+    "listen"
+   ]
+  ],
+  "when": [
+   "incubation>.2"
+  ],
+  "prefer": [
+   "curious",
+   "young"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "dragon_listen"
+ },
+ "dragon_lullaby": {
+  "item": "dragon_egg",
+  "label": "Humming a lullaby to the egg at bedtime",
+  "duration": 26,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.12,
+    {
+     "x": 0.4,
+     "y": 0.3,
+     "b": 0.3,
+     "eye": "-",
+     "mark": "~"
+    }
+   ],
+   [
+    0.3,
+    {
+     "w": 0.4,
+     "eye": "-",
+     "mark": "la"
+    }
+   ],
+   [
+    0.5,
+    {
+     "w": 0.2,
+     "eye": "-",
+     "mark": "~"
+    }
+   ],
+   [
+    0.7,
+    {
+     "w": 0.4,
+     "eye": "-",
+     "mark": "la"
+    }
+   ],
+   [
+    0.88,
+    {
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.5,
+    "hum"
+   ]
+  ],
+  "when": [
+   "night"
+  ],
+  "prefer": [
+   "tired",
+   "elder"
+  ],
+  "ages": null,
+  "need": null,
+  "tool": "none",
+  "say": "dragon_lullaby"
+ },
+ "dragon_polish_scales": {
+  "item": "dragon_egg",
+  "label": "Polishing the egg's scaly shell",
+  "duration": 18,
+  "track": [
+   [
+    0,
+    {}
+   ],
+   [
+    0.15,
+    {
+     "reach": 0.6,
+     "contact": 1,
+     "anchor": "shell",
+     "cloth": 1
+    }
+   ],
+   [
+    0.4,
+    {
+     "x": 0.3,
+     "contact": 1,
+     "anchor": "shell",
+     "cloth": 1,
+     "mark": "*"
+    }
+   ],
+   [
+    0.75,
+    {
+     "cloth": 0,
+     "eye": "^"
+    }
+   ],
+   [
+    1,
+    {}
+   ]
+  ],
+  "events": [
+   [
+    0.4,
+    "buff"
+   ]
+  ],
+  "when": [
+   "shine<.6"
+  ],
+  "prefer": [],
+  "ages": null,
+  "need": null,
+  "tool": "cloth",
+  "say": null
+ }
+}

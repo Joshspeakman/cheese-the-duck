@@ -1,0 +1,391 @@
+{
+ "schemaVersion": 1,
+ "objectId": "sand_castle",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 7,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 41 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "sand_tower_raise",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Packing a new tower from a bucket of wet sand",
+   "duration_seconds": 30,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/sand_tower_raise"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "sand_castle",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "sand_tower_raise"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "wet_sand",
+    "tower"
+   ],
+   "anchors": [
+    "keep",
+    "sandpile"
+   ],
+   "parts_moved": [
+    "bucket"
+   ],
+   "tool": "bucket",
+   "when": [
+    "towers<4",
+    "dry"
+   ],
+   "prefer": [
+    "summer",
+    "happy"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 104,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  },
+  {
+   "id": "sand_dig_moat",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Digging a moat around the walls",
+   "duration_seconds": 26,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/sand_dig_moat"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "sand_castle",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "sand_dig_moat"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "dig",
+    "dig"
+   ],
+   "anchors": [
+    "moat_c",
+    "moat_l",
+    "moat_r"
+   ],
+   "parts_moved": [
+    "spade"
+   ],
+   "tool": "spade",
+   "when": [
+    "moat<.4",
+    "dry"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 19,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "sand_fill_moat",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Pouring pond water into the moat",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/sand_fill_moat"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "sand_castle",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "sand_fill_moat"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "pour"
+   ],
+   "anchors": [
+    "moat_c",
+    "moat_l",
+    "moat_r"
+   ],
+   "parts_moved": [
+    "bucket"
+   ],
+   "tool": "bucket",
+   "when": [
+    "moat<.6",
+    "moat>.05",
+    "!cold"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 19,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "sand_plant_flag",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Planting a tiny flag on the tallest tower",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/sand_plant_flag"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "sand_castle",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "sand_plant_flag"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "flag"
+   ],
+   "anchors": [
+    "tip"
+   ],
+   "parts_moved": [
+    "flagstick"
+   ],
+   "tool": "flagstick",
+   "when": [
+    "flag<.5",
+    "towers>0"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 121,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "sand_patch_walls",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Patting rain-slumped walls back into shape",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/sand_patch_walls"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "sand_castle",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "sand_patch_walls"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "pat",
+    "pat",
+    "pat"
+   ],
+   "anchors": [
+    "keep",
+    "wall_l",
+    "wall_r"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "erosion>.2",
+    "!wet"
+   ],
+   "prefer": [
+    "erosion>.5"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 104,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "sand_shell_trim",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Pressing little shells into the walls",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/sand_shell_trim"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "sand_castle",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "sand_shell_trim"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "shell",
+    "shell",
+    "shell"
+   ],
+   "anchors": [
+    "keep",
+    "wall_l",
+    "wall_r"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "towers>0",
+    "dry"
+   ],
+   "prefer": [
+    "young",
+    "summer"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 104,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "sand_kaiju_stomp",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Stomping the castle flat like a giant monster",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/sand_kaiju_stomp"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "sand_castle",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "sand_kaiju_stomp"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "stomp"
+   ],
+   "anchors": [
+    "keep",
+    "wall_r"
+   ],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "towers>0"
+   ],
+   "prefer": [
+    "grumpy",
+    "young"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 104,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}
