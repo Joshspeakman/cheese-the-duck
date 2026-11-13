@@ -396,7 +396,7 @@ export class LivingWorld {
     const plan=s.living?.plan;
     if(plan&&!plan.paused&&plan.phase==='act'){const poses={rest:'sleeping',forage:'eating',practice:'dancing',restore:'preening',garden:'preening',observe:'idle',project:'preening',share:'quacking'};state=poses[plan.kind]||state;}
     if(Math.abs(x-target[0])+Math.abs(y-target[1])>.7&&state==='idle')state='walking';
-    if(plan&&(plan.location??s.location)===s.location&&!plan.instance&&(!plan.paused||plan.portable||plan.keepsake_work||plan.creative_work||plan.textile_work||plan.ground_work||plan.playkit_work)&&(['prepare','act','settle'].includes(plan.phase)||plan.portable?.deployed)&&plan.kind==='item'&&![...(s.items||[]),...(s.structures||[])].some(i=>i.id===plan.target&&sameInstance(i,plan))){
+    if(plan&&!plan.in_place&&(plan.location??s.location)===s.location&&!plan.instance&&(!plan.paused||plan.portable||plan.keepsake_work||plan.creative_work||plan.textile_work||plan.ground_work||plan.playkit_work)&&(['prepare','act','settle'].includes(plan.phase)||plan.portable?.deployed)&&plan.kind==='item'&&![...(s.items||[]),...(s.structures||[])].some(i=>i.id===plan.target&&sameInstance(i,plan))){
       const playkit=plan.playkit_work?playkitPose(plan.playkit_work,s.motion!==false):null;
       const ground=plan.ground_work?groundPose(plan.ground_work,s.motion!==false):null;
       const textile=plan.textile_work?textilePose(plan.textile_work,s.motion!==false):null,keepsake=plan.keepsake_work?keepsakePose(plan.keepsake_work,s.motion!==false):null,creative=plan.creative_work?creativePose(plan.creative_work,s.motion!==false):null,origin=plan.playkit_work?.origin||plan.keepsake_work?.origin||plan.creative_work?.origin||plan.textile_work?.origin||plan.ground_work?.origin;
