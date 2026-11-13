@@ -36,7 +36,7 @@ def sandbox():
                          ring_l=(0.326, 0.634), ring_r=(0.684, 0.634), ring_near=(0.505, 0.732)))
     # ---------------- care
     o.r('sweep_board', 'Sweeping spilled sand off the base board with a wing', 16, 'wing',
-        [k(.12, 'board_l', reach=.6, x=.3, y=.4), k(.3, 'board_l', reach=1, x=.5, y=.6, l=1), k(.5, 'board_m', reach=1, x=.6, y=.6, r=1), k(.7, 'board_r', reach=1, x=.5, y=.5, l=1), k(.88, eye='^')],
+        [k(.12, 'board_l', reach=.6, x=.3, y=.4), k(.3, 'board_l', reach=1, x=1.2, y=1.4, b=.6, l=1), k(.5, 'board_m', reach=1, x=1.4, y=1.6, b=.8, r=1), k(.7, 'board_r', reach=1, x=1.2, y=1.4, b=.6, l=1), k(.88, y=.6, eye='^')],
         [(.5, 'sweep')], g='care', act=('sweep', 'board'), when=['obj_dirt>.3'], prefer=['grown'])
     o.r('rake_tracks', 'Dragging his feet through the sand until his own prints are gone', 18, 'none',
         [k(.15, 'sand_a', perch=1, x=.3, y=.5, b=.3), k(.3, 'sand_a', perch=1, x=.2, y=.6, b=.5, l=1), k(.5, 'sand_b', perch=1, x=.2, y=.6, b=.5, r=1), k(.7, 'sand_c', perch=1, x=.2, y=.6, b=.5, l=1), k(.88, y=.2, eye='-')],
@@ -135,7 +135,7 @@ def sandbox():
         [k(.15, 'board_r', perch=1, y=.3, b=.2), k(.4, 'board_r', perch=1, y=.5, b=.9, eye='-'), k(.7, 'board_r', perch=1, y=.5, b=.9, eye='-', mark='...'), k(.9, 'board_r', perch=1, y=.2, b=.3, eye='o')],
         [], g='rest', act=('sit', 'board'), when=['dusk'], prefer=['happy'], say=["Sun goes down. I stay sat. Efficient.", "Best seat. Cost me nothing."])
     o.r('sulk_at_the_far_wall', 'Standing at the right wall with his back turned and refusing to explain', 24, 'none',
-        [k(.15, x=-.5, y=.3, w=.4), k(.35, 'wall_r', x=-.6, y=.9, b=.5, eye='>'), k(.6, 'wall_r', x=-1, y=1.4, b=.9, l=1, eye='-', mark='hmph'), k(.85, 'wall_r', x=-1, y=1.6, b=1.1, eye='-')],
+        [k(.15, x=-.5, y=.3, w=.4), k(.35, 'wall_r', x=-.6, y=.9, b=.5, eye='>'), k(.6, 'wall_r', x=-.6, y=2.2, b=.9, w=.7, eye='-', mark='hmph'), k(.85, 'wall_r', x=-.4, y=2.4, b=.4, w=.4, eye='-')],
         [], g='rest', act=('sulk', 'wall'), when=['sad'], prefer=['grumpy'], say=["Not sulking. Facing the wall. Different.", "Sand did this to me."])
     # ---------------- weather
     o.r('tip_out_the_rain', 'Tipping the bucket over to empty out the rainwater', 20, 'wing',
@@ -151,7 +151,7 @@ def sandbox():
         [k(.15, x=.4, y=.5), k(.3, 'sand_c', x=1, y=1.4, b=.4, mark='tak'), k(.45, x=.6, y=.5, w=.5), k(.6, 'sand_c', x=1, y=1.5, b=.5, mark='TAK'), k(.8, x=.1, eye='^')],
         [(.6, 'crack')], g='weather', act=('chip', 'sand'), when=['firm>.6'], prefer=['grumpy'])
     o.r('scrape_frost_off_board', 'Scraping the frost off the base board with the edge of a wing', 18, 'wing',
-        [k(.12, 'board_l', reach=.6, x=.2, y=.5), k(.3, 'board_m', reach=1, x=.3, y=.6, b=.3), k(.5, 'board_m', reach=1, x=.3, y=.7, b=.3, mark='skr'), k(.7, 'board_r', reach=1, x=.3, y=.6, b=.3), k(.88, eye='-')],
+        [k(.12, 'board_l', reach=.6, x=.2, y=.5), k(.3, 'board_m', reach=1, x=.9, y=1.2, b=.8), k(.5, 'board_m', reach=1, x=1.2, y=1.4, b=1, mark='skr'), k(.7, 'board_r', reach=1, x=.9, y=1.2, b=.8), k(.88, y=.6, eye='-')],
         [(.5, 'scrape')], g='weather', act=('scrape', 'board'), when=['cold', 'frost>.3'])
     o.r('dust_bath_in_the_sand', 'Shuffling side to side in the bone-dry sand so the dust flies up through his feathers', 24, 'none',
         [k(.15, 'sand_c', perch=1, y=.6, b=.3), k(.3, 'sand_c', perch=1, x=1, y=.6, b=1.2, w=1, mark='fff'), k(.5, 'sand_c', perch=1, x=-1, y=.6, b=1.4, w=0, l=1), k(.7, 'sand_c', perch=1, x=1, y=.6, b=1.2, w=1, r=1, mark='fff'), k(.9, y=.2, w=.4, eye='^')],
@@ -230,7 +230,7 @@ def dog_house():
         [k(.12, 'frame_l', x=.4, y=.4), k(.3, 'frame_l', x=.9, y=.5, b=.4, mark='hff'), k(.5, 'frame_l', x=1, y=.4, b=.6), k(.7, 'frame_r', x=.9, y=.5, b=.4, mark='hff'), k(.88, x=.1, eye='^')],
         [(.5, 'dry')], g='care', act=('dry', 'frame'), when=['obj_wetness>.3'], obj=[(.3, dict(shake=.2)), (.7, dict(shake=.2))])
     o.r('hammer_loose_bolt', 'Hammering a loose bolt back down with his bill', 14, 'none',
-        [k(.15, x=.4, y=.5), k(.3, 'bolt_l2', x=1, y=1.5, b=.4, mark='tak'), k(.45, x=.2, y=.4), k(.6, 'bolt_l2', x=1, y=1.6, b=.5, mark='TAK'), k(.8, x=.1, eye='^')],
+        [k(.15, x=.4, y=.5), k(.3, 'bolt_l2', x=1.6, y=2, b=1, l=1, mark='tak'), k(.45, x=.2, y=.4), k(.6, 'bolt_l2', x=1.6, y=2.2, b=1.2, r=1, mark='TAK'), k(.8, x=.1, eye='^')],
         [(.6, 'bolt')], g='care', act=('mend', 'bolt'), when=['obj_condition<.6'])
     # ---------------- use
     o.r('guard_the_bowl', 'Planting himself at the bowl with his wings out and daring the garden to come closer', 22, 'none',
@@ -259,7 +259,7 @@ def dog_house():
         [k(.12, 'bolt_l1', x=.6, y=1.2, b=.5, mark='tk'), k(.3, 'bolt_l2', x=.7, y=1.3, b=.4, l=1, mark='tk'), k(.48, 'bolt_l3', x=.8, y=1.2, b=.5, r=1, mark='tk'), k(.68, 'bolt_r', x=.9, y=1.3, b=.4, l=1, mark='tk'), k(.88, x=.2, w=.7, eye='^')],
         [(.68, 'fun')], g='play', act=('race', 'bolts'), prefer=['young', 'happy'])
     o.r('flatten_at_the_frame', 'Flattening himself against the door frame and bursting out at nothing', 18, 'none',
-        [k(.15, 'frame_r', x=-.3, y=.3, b=.4), k(.35, 'frame_r', x=-.4, y=.6, b=.7, eye='-'), k(.55, 'frame_r', x=-.4, y=.6, b=.7, eye='-', mark='...'), k(.7, y=-.8, b=-.8, w=1, eye='O', mark='BOO'), k(.88, y=.3, eye='^')],
+        [k(.15, 'frame_r', x=-.3, y=.3, b=.4), k(.35, 'frame_r', x=-.4, y=.6, b=.7, eye='-'), k(.55, 'frame_r', x=-.4, y=.6, b=.7, eye='-', mark='...'), k(.7, x=1.2, y=-.4, b=-1.6, l=1, eye='O', mark='BOO'), k(.88, y=.3, eye='^')],
         [], g='play', act=('hide', 'frame'), prefer=['young'], say=["Boo. Nothing. Good.", "Got it. Whatever it was."])
     o.r('spy_at_the_knot', 'Putting an eye to the left knot and squinting like a spy', 16, 'none',
         [k(.15, x=.4, y=-.2), k(.3, 'knot_l', x=1, y=-.4, b=.2, eye='-'), k(.5, 'knot_l', x=1.2, y=-.4, b=.3, eye='O', mark='hmm'), k(.7, 'knot_l', x=1.2, y=-.4, b=.3, eye='>'), k(.88, x=.2, eye='-')],
@@ -303,7 +303,7 @@ def dog_house():
         [k(.15, y=.2, x=.3), k(.35, 'plank_r', x=.8, y=.4, b=.3, eye='-'), k(.6, 'plank_r', x=1, y=.7, b=.7, eye='-', mark='ahh'), k(.85, 'plank_r', x=1, y=.7, b=.7, eye='-')],
         [(.6, 'warm')], g='rest', act=('lean', 'planks'), when=['sun', 'warmth>.3'], prefer=['tired'])
     o.r('sit_on_the_sill_at_dusk', 'Sitting on the sill with his chin up, watching the light go out of the garden', 26, 'none',
-        [k(.15, 'sill_b', perch=1, y=.3, b=.2), k(.4, 'sill_b', perch=1, y=.5, b=.9, eye='-'), k(.7, 'sill_b', perch=1, y=.4, b=.9, eye='-', mark='...'), k(.9, 'sill_b', perch=1, y=.1, b=.3, eye='o')],
+        [k(.15, 'sill_b', perch=1, y=.3, b=.2), k(.4, 'sill_b', perch=1, y=-.8, b=.9, eye='-'), k(.7, 'sill_b', perch=1, y=-1.4, x=-.6, b=1.4, eye='-', mark='...'), k(.9, 'sill_b', perch=1, y=.1, b=.3, eye='o')],
         [], g='rest', act=('sit', 'sill'), when=['dusk'], prefer=['happy'], say=["Light goes. I stay. Efficient.", "Best seat on the lot, and it is a step."])
     o.r('sulk_at_the_frame', 'Standing at the door frame with his back turned, refusing to explain', 24, 'none',
         [k(.15, x=-.5, y=.3, w=.4), k(.35, 'frame_l2', x=-.6, y=.9, b=.5, eye='>'), k(.6, 'frame_l2', x=-1, y=1.4, b=.9, l=1, eye='-', mark='hmph'), k(.85, 'frame_l2', x=-1, y=1.6, b=1.1, eye='-')],
@@ -391,7 +391,7 @@ def toy_car():
                          panel_h=(0.585, 0.526), glass_a=(0.446, 0.421), glass_b=(0.600, 0.421), glass_c=(0.385, 0.342)))
     # ---------------- care
     o.r('polish_the_side', 'Polishing the side panel in slow circles with a wing', 18, 'wing',
-        [k(.12, 'panel_h', reach=.6, x=.3, y=.3), k(.3, 'panel_h', reach=1, x=.5, y=.4, l=1), k(.5, 'trim_b', reach=1, x=.5, y=.5, r=1, mark='squk'), k(.7, 'panel_h', reach=1, x=.5, y=.4, l=1), k(.88, eye='^')],
+        [k(.12, 'panel_h', reach=.6, x=.3, y=.3), k(.3, 'panel_h', reach=1, x=1.1, y=-.4, l=1), k(.5, 'trim_b', reach=1, x=1.1, y=.8, b=.6, r=1, mark='squk'), k(.7, 'panel_h', reach=1, x=1.1, y=-.4, l=1), k(.88, eye='^')],
         [(.5, 'polish')], g='care', act=('polish', 'panel'), when=['obj_dirt>.3'], prefer=['grown'], obj=[(.5, dict(glow=.5))])
     o.r('pick_mud_out_of_the_tread', 'Picking dried mud out of the bottom tread, one chunk at a time', 20, 'none',
         [k(.12, 'tread_lb', x=.6, y=1.2, b=.6), k(.3, 'tread_lb', x=1.1, y=1.7, b=.8, mark='pk'), k(.5, 'tread_rb', x=1.1, y=1.6, b=.7, l=1, mark='pk'), k(.7, 'tread_rb', x=1.2, y=1.8, b=.9, mark='pk'), k(.88, x=.2, y=.2, eye='^')],
@@ -454,7 +454,7 @@ def toy_car():
         [k(.1, 'tail_low', x=.5, y=.3, l=1, mark='1'), k(.3, 'sill_a', x=.6, y=.4, r=1, mark='4'), k(.5, 'sill_b', x=.6, y=.4, l=1, mark='8'), k(.7, 'front_low', x=.6, y=.3, r=1, mark='12'), k(.88, x=-.3, y=-.2, eye='-', mark='twelve')],
         [], g='test', act=('measure', 'car'), prefer=['curious'], say=["Nine steps. Then twelve. Car got longer.", "Twelve ducks. Roughly. Do not check."])
     o.r('sniff_the_tread', 'Sniffing the lower tread to work out what it has been driven through', 14, 'none',
-        [k(.15, x=.4, y=.5), k(.3, 'tread_lb', x=1, y=1.3, b=.5, mark='snf'), k(.5, 'tread_lb', x=1.2, y=1.5, b=.6, mark='snf snf'), k(.7, x=-.3, y=.3, eye='>', mark='ugh'), k(.88, eye='-')],
+        [k(.15, x=.4, y=.5), k(.3, 'tread_lb', x=1.6, y=2, b=1.2, mark='snf'), k(.5, 'tread_lb', x=1.8, y=2.2, b=1.6, mark='snf snf'), k(.7, x=-1.4, y=-.4, eye='>', mark='ugh'), k(.88, eye='-')],
         [], g='test', act=('sniff', 'tread'), prefer=['curious'])
     o.r('tap_the_cabin_glass', 'Tapping the cabin glass to find out whether anyone is driving', 16, 'none',
         [k(.12, 'glass_a', x=.8, y=-.3), k(.3, 'glass_a', x=1.1, y=-.2, b=.2, mark='tok'), k(.5, 'glass_b', x=1.1, y=-.2, b=.2, mark='tok tok'), k(.7, x=-.3, y=-.5, w=.4, eye='-', mark='nobody'), k(.88, eye='^')],
@@ -482,7 +482,7 @@ def toy_car():
         [k(.15, y=.2, x=.2), k(.35, 'lamp_l', x=.6, y=.4, b=.6, eye='-'), k(.6, 'lamp_l', x=.7, y=.5, b=.9, eye='-', mark='...and then'), k(.85, 'lamp_l', x=.5, y=.4, b=.8, eye='^', mark='anyway')],
         [], g='rest', act=('sit', 'lamp'), when=['lonely'], say=["It listens. It is a lamp. Zero interruptions.", "Told it everything. It lit up. Supportive."])
     o.r('sulk_at_the_tail', 'Standing at the tail with his back to the car, muttering', 24, 'none',
-        [k(.15, x=-.5, y=.3, w=.4), k(.35, 'tail_low', x=-.6, y=.9, b=.5, eye='>'), k(.6, 'tail_low', x=-1, y=1.4, b=.9, l=1, eye='-', mark='hmph'), k(.85, 'tail_low', x=-1, y=1.6, b=1.1, eye='-')],
+        [k(.15, x=-.5, y=.3, w=.4), k(.35, 'tail_low', x=-.6, y=.9, b=.5, eye='>'), k(.6, 'tail_low', x=-1.6, y=.4, b=1.6, r=1, eye='-', mark='hmph'), k(.85, 'tail_low', x=-1.8, y=.2, b=1.8, eye='-')],
         [], g='rest', act=('sulk', 'tail'), when=['sad'], prefer=['grumpy'], say=["Do not look at the car. It knows what it did.", "Fine. Be a car. See if I care."])
     # ---------------- weather
     o.r('wipe_the_frost_off_the_glass', 'Wiping the frost off the cabin glass corner to corner with a wing', 20, 'wing',
@@ -533,10 +533,10 @@ def toy_car():
         [k(.12, y=.1, x=.2), k(.3, 'tread_rb', x=.4, y=.4, b=.4, l=1, mark='tk'), k(.48, 'tread_rb', x=.2, y=.2, b=1, l=1, eye='O', mark='OW'), k(.68, x=-.2, y=-.4, b=-.7, l=1, w=.8, eye='@'), k(.88, eye='-')],
         [], g='mishap', act=('kick', 'tyre'), say=["Tyre: soft. Tyre: not soft. Foot: sorry.", "I kicked a tyre. I am a man now. A duck."])
     o.r('walk_into_the_panel', 'Wandering along with his eyes fixed up at the cabin and walking straight at the side panel', 16, 'none',
-        [k(.15, y=-.8, x=-.2, eye='^'), k(.3, 'sill_a', x=.4, y=-.8, b=.2, eye='^'), k(.45, 'panel_h', x=1.3, y=.3, b=.5, eye='O', mark='BONK'), k(.65, x=-1, y=-.2, b=-.3, w=.9, eye='@'), k(.88, eye='-')],
+        [k(.15, y=-.8, x=-.2, eye='^'), k(.3, 'sill_a', x=.4, y=-.8, b=.2, eye='^'), k(.45, 'panel_h', x=2.2, y=.8, b=.8, l=1, eye='O', mark='BONK'), k(.65, x=-2, y=1, b=1.6, eye='@'), k(.88, eye='-')],
         [], g='mishap', act=('walk_into', 'panel'), ages=GROWN, say=["The car was there the whole time. Rude.", "I looked up. Mistake. Panel was waiting."])
     o.r('snag_a_feather_on_the_lamp', 'Backing off and snagging a wing feather at the lamp frame', 18, 'none',
-        [k(.15, x=-.2, y=.2), k(.35, 'lamp_r', x=-.9, y=.6, b=.4, l=1, mark='tug'), k(.55, 'front_low', x=-1.2, y=.7, b=.8, w=.6, eye='O', mark='RRIP'), k(.75, x=.6, y=.8, b=.5, eye='@'), k(.9, eye='-')],
+        [k(.15, x=-.2, y=.2), k(.35, 'lamp_r', x=-1.4, y=.3, b=.4, r=1, mark='tug'), k(.55, 'front_low', x=-2, y=.3, b=1.6, w=1, eye='O', mark='RRIP'), k(.75, x=1, y=1.4, b=.5, eye='@'), k(.9, eye='-')],
         [], g='mishap', act=('hook', 'lamp'), say=["Lost a feather. The lamp has a trophy.", "It grabbed me. I will remember the lamp."])
     o.r('caught_by_the_rebound', 'Leaning in to look at the rocking car and catching the rebound square in his chest', 18, 'none',
         [k(.15, x=.3, y=.3), k(.3, 'panel_h', x=.7, y=.5, b=.3, eye='O'), k(.5, 'sill_a', x=-1.2, y=-.4, b=-.7, w=1, eye='@', mark='OOF'), k(.7, y=1.2, b=1, eye='@'), k(.88, y=.4, b=.4, eye='-')],
@@ -631,7 +631,7 @@ def gazebo():
         [k(.1, 'floor_r', perch=1, x=.4, y=.1, b=.2, l=1, mark='1'), k(.3, 'floor_c', perch=1, x=.3, y=.2, b=.3, r=1, mark='5'), k(.5, 'floor_l', perch=1, x=.4, y=.1, b=.2, l=1, mark='9'), k(.72, 'floor_c', perch=1, x=.2, y=.2, b=.3, r=1), k(.9, x=-.2, y=-.1, eye='-', mark='nine')],
         [], g='test', act=('measure', 'floor'), prefer=['curious'], say=["Nine across. Nine back. Floor is exactly a floor.", "Measured. It fits. I knew it would."])
     o.r('listen_at_the_post', 'Pressing an ear to the right post to hear whether the roof is humming', 18, 'none',
-        [k(.12, 'rail_up_l', x=.2, y=-.2), k(.3, 'post_r', x=.5, y=-.3, b=.3, eye='-'), k(.55, 'post_r', x=.7, y=-.2, b=.5, eye='-', mark='...'), k(.78, x=-.3, y=-.5, w=.5, eye='O', mark='nothing')],
+        [k(.12, 'rail_up_l', x=.2, y=-.2), k(.3, 'post_r', x=1.1, y=-1.4, b=.3, eye='-'), k(.55, 'post_r', x=1.5, y=-1.8, b=.9, eye='-', mark='...'), k(.78, x=-.3, y=-.5, w=.5, eye='O', mark='nothing')],
         [], g='test', act=('listen', 'post'), ages=GROWN)
     o.r('hang_off_the_rail', 'Hanging his full weight at the left side rail to see whether it holds a duck', 18, 'none',
         [k(.15, 'rail_up_l', x=.6, y=-.2, b=.2), k(.35, 'rail_up_l', x=1, y=.2, b=.8, mark='creak'), k(.55, 'rail_up_l', x=1, y=.4, b=1.4, eye='O'), k(.8, x=-.1, y=-.3, eye='-', mark='holds')],
@@ -644,7 +644,7 @@ def gazebo():
         [k(.15, y=.2, x=.2, w=.3), k(.35, 'lat_l', x=-.5, y=.5, b=.4, eye='-'), k(.6, 'lat_l', x=-.8, y=1.2, b=1.2, eye='-', mark='z'), k(.85, 'lat_l', x=-.8, y=1.3, b=1.5, eye='-')],
         [(.6, 'hush')], g='rest', act=('lean', 'lattice'), when=['tired'])
     o.r('sulk_at_the_rail', 'Sulking along the side rails with his back to the garden', 24, 'none',
-        [k(.15, x=-.5, y=.3, w=.4), k(.35, 'rail_up_r', x=-.6, y=.9, b=.5, eye='>'), k(.6, 'rail_up_l', x=-1, y=1.4, b=.9, l=1, eye='-', mark='hmph'), k(.85, 'rail_up_l', x=-1, y=1.6, b=1.1, eye='-')],
+        [k(.15, x=-.5, y=.3, w=.4), k(.35, 'rail_up_r', x=-1.4, y=.5, b=.5, l=1, eye='>'), k(.6, 'rail_up_l', x=-1.4, y=1.8, b=1.5, r=1, eye='-', mark='hmph'), k(.85, 'rail_up_l', x=-2.2, y=1.2, b=.9, eye='-')],
         [], g='rest', act=('sulk', 'rail'), ages=GROWN, when=['sad'], prefer=['grumpy'])
     o.r('wait_for_company', 'Waiting at the middle of the floor with his bill turned towards the garden path', 26, 'none',
         [k(.15, y=.2, x=.2), k(.4, 'floor_c', perch=1, x=.5, y=-.2, b=.2, eye='>'), k(.65, 'floor_c', perch=1, x=.7, y=-.3, b=.3, eye='>', mark='...'), k(.85, 'floor_c', perch=1, x=.4, y=.3, b=.5, eye='-', mark='sigh')],
@@ -663,7 +663,7 @@ def gazebo():
         [k(.12, 'lat_r', reach=.6, x=.2, y=.2), k(.3, 'lat_r', reach=1, x=.3, y=.3, b=.2), k(.5, 'lat_r', reach=1, x=.3, y=.4, b=.3, mark='skr'), k(.7, 'flower_r', reach=1, x=.3, y=.3, b=.2), k(.88, eye='-')],
         [(.5, 'chip')], g='weather', act=('scrape', 'lattice'), when=['cold', 'frost>.3'])
     o.r('hold_the_post_in_the_gale', 'Gripping one post, then the other, with both feet braced while the wind comes through', 22, 'none',
-        [k(.15, y=.3, x=.3), k(.35, 'post_l', x=.8, y=.6, b=.6, w=.7, l=1), k(.6, 'post_l', x=1, y=.8, b=.9, w=1, eye='>', mark='hnng'), k(.85, 'post_r', x=.6, y=.6, b=.5, w=.5, r=1)],
+        [k(.15, y=.3, x=.3), k(.35, 'post_l', x=1.6, y=1.2, b=1.4, w=.4, r=1), k(.6, 'post_l', x=2, y=1.6, b=1.8, w=.4, eye='>', mark='hnng'), k(.85, 'post_r', x=-1.4, y=1.2, b=1.2, w=.4, l=1)],
         [], g='weather', act=('brace', 'post'), ages=GROWN, when=['windy'])
     o.r('warm_his_feet_on_the_boards', 'Standing on the sun-warmed boards and lifting each foot in turn', 24, 'none',
         [k(.15, y=.1, b=.1), k(.35, 'floor_r', perch=1, y=.4, b=.3, l=1, eye='-'), k(.6, 'floor_r', perch=1, y=.4, b=.4, r=1, eye='-', mark='ahh'), k(.85, 'floor_r', perch=1, y=.3, b=.2, l=1, eye='^')],
@@ -688,7 +688,7 @@ def gazebo():
         [k(.15, y=.2, x=.2), k(.35, 'flower_l', x=.6, y=-.2, b=.2, w=.5, eye='^', mark='la'), k(.6, 'flower_l', x=.8, y=-.4, b=.1, w=.8, eye='-', mark='LAAAH'), k(.85, 'flower_l', x=.4, y=.3, b=.4, w=.3, eye='^', mark='...')],
         [], g='show', act=('sing', 'flowers'), prefer=['happy'], say=["They leaned in. Wind, probably. Allow me this.", "Flowers: attentive. Roof: jealous."])
     o.r('pose_at_the_rail', 'Posing at the right side rail with one wing against the post like the cover of a magazine about gazebos', 22, 'none',
-        [k(.15, y=.2, x=.2), k(.35, 'rail_up_r', x=.2, y=-.4, b=-.3, w=.5, eye='-'), k(.55, 'post_r', x=.3, y=-.6, b=-.3, w=.7, eye='^'), k(.8, 'post_r', x=.3, y=-.7, b=-.3, w=.9, eye='^', mark='click')],
+        [k(.15, y=.2, x=.2), k(.35, 'rail_up_r', x=.8, y=-1.8, b=-.3, w=1, eye='-'), k(.55, 'post_r', x=.8, y=-1.8, b=.6, l=1, eye='^'), k(.8, 'post_r', x=1.2, y=-2, b=.6, l=1, eye='^', mark='click')],
         [], g='show', act=('pose', 'rail'), ages=GROWN, prefer=['happy'], say=["Gazebo Monthly. Cover price: one bread.", "Hold it. Hold it. Perfect. Now with attitude."])
     o.r('strut_in_like_a_bride', 'Strutting up to the middle of the floor with his wings back like a bride on a bad day', 24, 'none',
         [k(.12, 'floor_r', perch=1, x=.2, y=-.4, w=.5), k(.35, 'floor_r', perch=1, x=.3, y=-.6, b=-.3, w=.9, l=1, mark='dum dum de dum'), k(.6, 'floor_c', perch=1, x=.3, y=-.6, b=-.3, w=.9, r=1), k(.85, 'floor_c', perch=1, x=.3, y=-.5, w=.5, eye='^', mark='I do')],
@@ -698,7 +698,7 @@ def gazebo():
         [], g='show', act=('argue', 'roof'), prefer=['grumpy'], say=["Echo gets the last word. Always. Cheat.", "Won the argument. Until it replied."])
     # ---------------- mishap
     o.r('skid_on_the_leaves', 'Skidding on the loose leaves and ending up flat on his back at the entry', 16, 'none',
-        [k(.15, 'floor_r', perch=1, x=.4, y=.2, b=.3, l=1), k(.3, 'floor_r', perch=1, x=.8, y=-.3, b=-.5, w=1, eye='O'), k(.5, 'floor_c', x=1.2, y=1.4, b=1.3, w=1, mark='FWAP'), k(.75, y=.8, b=.6, eye='@'), k(.9, eye='-')],
+        [k(.15, 'floor_r', perch=1, x=.4, y=.2, b=.3, l=1), k(.3, 'floor_r', perch=1, x=-.8, y=-.3, b=-.5, r=1, eye='O'), k(.5, 'floor_c', x=-1.8, y=1.8, b=1.8, w=.5, mark='FWAP'), k(.75, y=.8, b=1.2, eye='@'), k(.9, eye='-')],
         [(.5, 'smear')], g='mishap', act=('slip', 'floor'), when=['leaves>.4'], say=["Leaves: slippery. Ego: bruised.", "The floor and I are no longer speaking."])
     o.r('head_through_a_diamond', 'Pushing his head through a lattice diamond and having to be a very long duck to get out', 24, 'none',
         [k(.15, x=.5, eye='>'), k(.3, 'lat_r', x=1.2, y=.4, b=.7, mark='oof'), k(.5, 'lat_r', x=1.3, y=.4, b=1, l=1, eye='O', mark='mmf'), k(.7, 'lat_r', x=1.3, y=.4, b=1, r=1, w=1, mark='POP'), k(.88, x=1.6, y=1, b=.6, eye='@')],
@@ -708,7 +708,7 @@ def gazebo():
         [k(.15, y=-.8, x=-.2, eye='^'), k(.3, 'floor_r', x=.4, y=-.8, b=.2, eye='^'), k(.45, 'post_r', x=1.3, y=.2, b=.5, eye='O', mark='BONK'), k(.65, x=-1, y=-.2, b=-.3, w=.9, eye='@'), k(.88, eye='-')],
         [], g='mishap', act=('walk_into', 'post'), ages=GROWN, say=["Looked up. Post did not. Post: rude.", "Roof: beautiful. Post: also there. Noted."])
     o.r('snag_a_feather_in_the_foliage', 'Backing off from the right plant and snagging a wing feather among the foliage', 18, 'none',
-        [k(.15, x=-.2, y=.2), k(.35, 'foliage_r', x=-.9, y=.6, b=.4, l=1, mark='tug'), k(.55, 'foliage_r', x=-1.2, y=.7, b=.8, w=.6, eye='O', mark='RRIP'), k(.75, x=.6, y=.8, b=.5, eye='@'), k(.9, eye='-')],
+        [k(.15, x=-.2, y=.2), k(.35, 'foliage_r', x=-.4, y=1.2, b=.8, l=1, r=1, mark='tug'), k(.55, 'foliage_r', x=-.6, y=1.6, b=1.2, w=.3, eye='O', mark='RRIP'), k(.75, x=.2, y=.2, b=1.8, eye='@'), k(.9, eye='-')],
         [], g='mishap', act=('hook', 'foliage'), say=["It kept the feather. Souvenir.", "Plant 1. Duck 0. Plant to be watched."])
     o.r('miss_the_jump_to_the_rail', 'Jumping for the top rail, missing by a wing, and sliding down the lattice', 18, 'none',
         [k(.15, 'lat_l', x=.3, y=.2, b=.4, l=1), k(.3, y=-1, b=-1.2, w=1, eye='O'), k(.45, 'rail_up_l', x=.6, y=-.2, b=-.5, w=1, mark='grab'), k(.62, 'lat_l', x=.4, y=.8, b=.9, w=.6, mark='sliiide'), k(.85, y=.6, b=.5, eye='@')],

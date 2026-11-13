@@ -1064,7 +1064,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress"
   },
   {
@@ -1247,7 +1247,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress"
   },
   {
@@ -1645,7 +1645,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress"
   },
   {
@@ -2052,7 +2052,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress",
    "native_acts": "rest inside (native residence)"
   },
@@ -2237,7 +2237,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress",
    "native_acts": "rest inside (native residence)"
   },
@@ -3487,7 +3487,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress",
    "native_acts": "build in it (native playground)"
   },
@@ -3666,7 +3666,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress",
    "native_acts": "ride / explore (native playground)"
   },
@@ -3980,7 +3980,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress",
    "native_acts": "ride / explore (native playground)"
   },
@@ -8347,7 +8347,7 @@
    "consumable": false,
    "family_engine": "accessories.json",
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 3,
    "art": "reconstructed_review_in_progress"
   },
   {
@@ -8491,5 +8491,10 @@
    "repertoire_routines": 0,
    "art": "reconstructed_review_in_progress"
   }
- ]
+ ],
+ "progress": {
+  "objects_complete": 8,
+  "objects_total": 609,
+  "repertoire_routines": 393
+ }
 }

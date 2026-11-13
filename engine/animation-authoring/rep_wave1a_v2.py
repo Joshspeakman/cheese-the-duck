@@ -8,12 +8,17 @@ from rep import Obj, k, YOUNG, GROWN
 # A box on a pole. Drawn parts (rep.py birdhouse): pole (12-76 px, walls at both edges), foot slab (6 px), the box floor
 # rim (87), its underside edge (82), the front ledge (93), the doorway panel above it, two plates (117) and the roof.
 o = Obj('birdhouse', 'placed',
-        fields=dict(footing=(1, 0, 1)),
-        physics=[('footing', 'rate', -.0004, 'wet'), ('footing', 'rate', -.0002, 'windy')],
+        fields=dict(footing=(1, 0, 1), leaves=(0, 0, 1), frost=(0, 0, 1), snowcap=(0, 0, 1)),
+        physics=[('footing', 'rate', -.0004, 'wet'), ('footing', 'rate', -.0002, 'windy'),
+                 ('leaves', 'rate', .0006, 'fall'), ('leaves', 'rate', -.0008, 'windy'),
+                 ('frost', 'rate', .002, 'cold'), ('frost', 'rate', -.003, 'warm'),
+                 ('snowcap', 'rate', .002, 'snow'), ('snowcap', 'rate', -.001, 'warm')],
         effects=dict(
             wipe=[('obj.dirt', 'add', -.3)], scrub=[('obj.dirt', 'add', -.25)], dust=[('obj.dirt', 'add', -.2)],
             tamp=[('footing', 'set', 1)], dig=[('footing', 'add', -.3)], dry=[('obj.wetness', 'add', -.4)],
-            clean_bill=[('need.cleanliness', 'add', 1)], maypole=[('need.fun', 'add', 2)]),
+            clean_bill=[('need.cleanliness', 'add', 1)], maypole=[('need.fun', 'add', 2)],
+            sweep=[('leaves', 'set', 0)], chip=[('frost', 'mul', .2)], clear=[('snowcap', 'mul', .2)],
+            snooze=[('need.energy', 'add', 3)], company=[('need.social', 'add', 2)]),
         anchors=dict(pole_high=(.492, .811), pole_high_r=(.557, .811), pole_mid=(.508, .868), pole_mid_r=(.557, .868),
                      pole_low=(.508, .925), pole_low_r=(.557, .925),
                      foot_l=(.41, .981, 'surface'), foot_mid=(.459, .981, 'surface'), foot_r=(.508, .981, 'surface'),
@@ -172,21 +177,58 @@ o.r('twig_whacks_back', "Jabbing at the floor's edge so hard that the twig skids
 o.r('missed_the_ledge_jump', "Jumping up at the front ledge, missing it, and smacking his chest against the pole", 16, 'none',
     [k(.2, x=-1.4, b=.8, eye='>'), k(.4, x=.4, b=-2, w=1, y=-.6, mark='HUP'), k(.58, 'pole_high_r', x=1.6, y=.4, b=-.4, eye='O', mark='thump'), k(.82, x=-.6, y=.6, b=.8, eye='@')],
     [], g='mishap', act=('hop', 'ledge'), prefer=['young'])
-o.emit(need=37)
+o.r('chip_frost_off_the_pole', "Chipping the frost off the pole with the edge of his bill, working up from the foot", 18, 'none',
+    [k(.2, 'pole_low', x=.8, y=1.6, b=.8), k(.4, 'pole_low', x=1.8, y=1.8, b=1, l=1, mark='tik'), k(.6, 'pole_mid', x=1.8, y=1, b=.6, r=1, mark='tik'), k(.8, 'pole_high', x=1.8, y=.2, mark='tik'), k(.92, eye='^')],
+    [(.6, 'chip')], g='weather', act=('chip', 'pole'), when=['frost>.3'])
+o.r('shove_snow_off_the_slab', "Shoving the snow banked at the pole's foot aside with his bill, left then right, in two long pushes", 18, 'none',
+    [k(.2, 'foot_l', x=.6, y=1.8, b=1.2), k(.4, 'foot_l', x=-.8, y=2.2, b=1.6, mark='fshh'), k(.65, 'foot_r', x=2, y=2.2, b=1.6, mark='fshh'), k(.85, y=.3, eye='^')],
+    [(.65, 'clear')], g='weather', act=('shove', 'snow'), when=['snowcap>.3'])
+o.r('sweep_leaves_off_the_foot', "Sweeping the drifted leaves off the foot slab with a wing, left end to the right", 18, 'wing',
+    [k(.15, 'foot_l', reach=.5, x=.3, y=.6), k(.4, 'foot_l', reach=1, x=1.4, y=1.8, b=.8, l=1, mark='fshh'), k(.62, 'foot_r', reach=1, x=-1.2, y=1.8, b=.8, r=1, mark='fshh'), k(.85, y=.6, eye='^')],
+    [(.62, 'sweep')], g='care', act=('sweep', 'leaves'), when=['leaves>.3'], prefer=['fall'])
+o.r('bill_frozen_to_the_pole', "Pecking the frosted pole and getting his bill stuck to it, tugging until it lets go", 22, 'none',
+    [k(.2, 'pole_low_r', x=.8, y=.6, b=.4), k(.35, 'pole_low_r', x=1.4, y=.8, b=.6, mark='tk'), k(.55, 'pole_low_r', x=1.4, y=.8, b=.6, l=1, r=1, eye='>', mark='mmf'), k(.78, 'pole_low_r', x=-.8, y=.6, w=1, eye='@', mark='PWK'), k(.9, y=.2, eye='-')],
+    [(.55, 'chip')], g='mishap', act=('stuck', 'pole'), when=['frost>.5'],
+    say=["Bill's stuck. Dignity's stuck behind it.", "Frost has a sense of humour. A cruel, cold one."])
+o.r('slid_on_the_soaked_soil', "Losing his footing as the soaked soil gives way and sliding down the slab on his belly", 16, 'none',
+    [k(.2, 'foot_l', x=.6, y=.4, b=.3), k(.4, 'foot_l', x=.2, y=.2, b=-.6, l=1, r=1, eye='O', mark='whoa'), k(.6, 'foot_r', x=-.6, y=1.8, b=1.8, eye='@', mark='splat'), k(.85, y=.4, eye='-')],
+    [(.6, 'dig')], g='mishap', act=('slip', 'soil'), when=['obj_wetness>.3', 'footing<.5'])
+o.r('walked_into_the_pole', "Strolling along at night with his eyes fixed up at the roof and walking face first at the pole, then sliding down it", 16, 'none',
+    [k(.2, x=1.4, y=-1.6, eye='^'), k(.4, 'pole_mid', x=2.4, y=.6, b=.4, eye='O', mark='BONK'), k(.58, 'pole_low', x=1, y=1.8, b=1.6, eye='@'), k(.85, y=.2, eye='-', mark='...')],
+    [], g='mishap', act=('walk_into', 'pole'), when=['night'], prefer=['tired'],
+    say=["The pole was there before me. It still doesn't apologise.", "Looked at the roof. Met the pole. Got the full introduction."])
+o.r('sulk_with_the_pole_for_company', "Turning his back to the box and sulking with his forehead against the pole's foot, shuffling over a step", 22, 'none',
+    [k(.2, 'pole_low', x=.3, y=.6, b=.3), k(.4, 'pole_low', x=-.4, y=1.8, b=1.4, eye='-'), k(.6, 'pole_low_r', x=-1.4, y=2, b=1.6, l=1, eye='-', mark='hmph'), k(.9, y=.2, eye='-')],
+    [], g='rest', act=('sulk', 'pole'), when=['sad'],
+    say=["It has a house and a view. I have a pole. Ask me how I feel.", "Not crying. The pole's damp."])
+o.r('doze_at_the_pole_foot', "Curling up at the pole's foot with his bill tucked and dozing off", 28, 'none',
+    [k(.2, 'foot_l', x=.4, y=.8, b=.6), k(.4, 'foot_l', y=1.4, b=1.4, eye='-'), k(.7, 'foot_l', y=1.5, b=1.6, eye='-', mark='zzz'), k(.9, y=.2, b=.3, eye='^')],
+    [(.4, 'snooze')], g='rest', act=('nap', 'foot'), prefer=['tired', 'night'])
+o.r('hug_the_pole', "Hugging the pole with one wing round it and his cheek against the wood", 24, 'wing',
+    [k(.2, 'pole_mid', reach=.5, x=.4, y=.4), k(.45, 'pole_mid', reach=1, x=1.4, y=1.2, b=.8, eye='-'), k(.75, 'pole_mid', reach=1, x=1.4, y=1.2, b=1, eye='-', mark='mm'), k(.9, reach=.2, eye='^')],
+    [(.45, 'company')], g='rest', act=('wrap', 'pole'), when=['lonely'])
+o.r('bow_to_the_slab', "Sweeping a wing out to the foot slab in a deep bow to whoever is meant to be at the doorway", 18, 'wing',
+    [k(.2, 'foot_l', reach=.4, x=.4, y=.6), k(.45, 'foot_l', reach=1, x=.8, y=2.4, b=.6, l=1, mark='after you'), k(.7, 'foot_l', reach=1, x=.8, y=2.4, b=.6, l=1), k(.9, y=-.2, eye='^')],
+    [], g='show', act=('bow', 'doorway'), prefer=['happy'])
+o.r('present_the_house', "Presenting the house to the empty yard with a long wing sweep from the foot up the pole", 22, 'wing',
+    [k(.15, 'foot_r', reach=.5, x=.2), k(.4, 'pole_low', reach=.9, x=.6, y=-.4, mark='behold'), k(.65, 'pole_high', reach=1, x=.8, y=-1.8, b=.6, mark='the house'), k(.88, y=-.2, eye='^')],
+    [], g='show', act=('present', 'house'), prefer=['happy'])
+o.emit()
 
 # ============================================================ tire_swing
 # A tyre on a rope from a beam, post on the left. Drawn parts (rep.py tire_swing): the post (full height, base plate), the rope,
 # the tyre ring (22-168 px: low tip, belly, flanks, walls, sides) and the hole in it (lip at 58 px, edges at 80 px).
 # Riding and exploring the swing are native acts; none of these ride it.
 o = Obj('tire_swing', 'placed',
-        fields=dict(twist=(0, 0, 1), frost=(0, 0, 1)),
+        fields=dict(twist=(0, 0, 1), frost=(0, 0, 1), leaves=(0, 0, 1)),
         physics=[('twist', 'rate', -.0004, 'always'), ('twist', 'rate', .003, 'windy'),
-                 ('frost', 'rate', .002, 'cold'), ('frost', 'rate', -.003, 'warm')],
+                 ('frost', 'rate', .002, 'cold'), ('frost', 'rate', -.003, 'warm'),
+                 ('leaves', 'rate', .0006, 'fall'), ('leaves', 'rate', -.0008, 'windy')],
         effects=dict(
             wipe=[('obj.dirt', 'add', -.3)], scrape=[('obj.dirt', 'add', -.2)], fluff=[('need.cleanliness', 'add', 1)],
             chip=[('frost', 'mul', .2)], dry=[('obj.wetness', 'add', -.4)],
             unkink=[('twist', 'mul', .1)], roll=[('twist', 'add', .5)], catch=[('twist', 'mul', .2)], unwound=[('twist', 'set', 0)],
-            company=[('need.social', 'add', 2)]),
+            company=[('need.social', 'add', 2)], sweep=[('leaves', 'set', 0)], snooze=[('need.energy', 'add', 3)]),
         anchors=dict(post_base=(.148, .959, 'surface'), post_low=(.148, .892), post_mid=(.148, .824),
                      tyre_tip=(.506, .919), tyre_belly_l=(.444, .905), tyre_belly_r=(.58, .905),
                      tyre_flank_l=(.383, .892), tyre_flank_r=(.63, .892), tyre_wall_l=(.333, .865), tyre_wall_r=(.679, .865),
@@ -199,7 +241,7 @@ o.r('wipe_flank_clean', "Wiping dried mud off the tyre's flank with a wing, left
     say=["Wiped the flank. Mud, meet wing. Wing, meet regret.", "It's cleaner. It still hangs there like a dare."])
 
 o.r('scrape_the_tread', "Scraping caked mud out of the tread along the tyre's bottom edge with his bill", 16, 'none',
-    [k(.2, 'tyre_tip', x=.9, y=1, b=.6), k(.4, 'tyre_tip', x=1.4, y=1.4, b=.8, mark='tk'), k(.6, 'tyre_belly_l', x=1.4, y=1.4, b=.8, mark='tk'), k(.8, 'tyre_belly_r', x=1.4, y=1.4, b=.8, mark='tk'), k(.92, y=.2, eye='^')],
+    [k(.2, 'tyre_tip', x=.6, y=1.6, b=1.2), k(.4, 'tyre_tip', x=1.8, y=1.8, b=1.4, r=1, mark='tk'), k(.6, 'tyre_belly_l', x=1.8, y=1.8, b=1.4, l=1, mark='tk'), k(.8, 'tyre_belly_r', x=1.8, y=1.8, b=1.4, r=1, mark='tk'), k(.92, y=.6, eye='^')],
     [(.6, 'scrape')], g='care', act=('scrape', 'tread'), when=['obj_dirt>.3'], obj=[(.4, dict(shake=.2)), (.6, dict(shake=.2))],
     say=["Scraped the muck out. There's a lot of muck. It will return.", "Clean tread. Only my conscience has improved."])
 
@@ -291,7 +333,7 @@ o.r('chin_on_the_rim', "Resting his chin against the tyre's low rim, eyes half s
     [k(.2, 'tyre_flank_r', x=.4, y=.6, b=.6), k(.4, 'tyre_flank_r', x=1.5, y=1.8, b=1.6, eye='-'), k(.7, 'tyre_flank_r', x=1.8, y=2.4, b=2, eye='-', mark='mm'), k(.9, y=.2, eye='^')],
     [], g='rest', act=('lean', 'rim'), prefer=['tired', 'sad'], obj=[(.4, dict(sway=.2)), (.7, dict(sway=-.2))])
 o.r('hug_the_tyre', "Wrapping both wings round the tyre's side and holding on with his cheek against the rubber", 24, 'wing',
-    [k(.2, 'tyre_flank_r', reach=.5, x=.4, y=.4), k(.45, 'tyre_flank_r', reach=1, x=.9, y=.8, b=.4, eye='-'), k(.75, 'tyre_flank_r', reach=1, x=.9, y=.8, b=.4, eye='-', mark='mm'), k(.9, reach=.2, eye='^')],
+    [k(.2, 'tyre_flank_r', reach=.5, x=.8, y=1.2, b=.6), k(.45, 'tyre_flank_r', reach=1, x=1.4, y=1.8, b=1.2, eye='-'), k(.75, 'tyre_flank_r', reach=1, x=1.8, y=2, b=1.6, eye='-', mark='mm'), k(.9, reach=.2, y=.6, eye='^')],
     [(.45, 'company')], g='rest', act=('wrap', 'tyre'), when=['lonely'],
     say=["Hugged a tyre. It was warmer than expected. So's my face.", "Don't ask what I whispered into it."])
 # --- show
@@ -348,7 +390,37 @@ o.r('trip_over_the_base_plate', "Backing away from the swinging tyre, catching a
     [], g='mishap', act=('walk_into', 'plate'), prefer=['young'], obj=[(.2, dict(sway=.8)), (.5, dict(sway=-.7))],
     say=["The plate tripped me. It's been there longer.", "Landed on my tail. Tail's seen worse."])
 
-o.emit(need=39)
+o.r('sweep_leaves_from_the_post', "Sweeping the leaves drifted round the post's base plate out toward the tyre with a wing", 18, 'wing',
+    [k(.15, 'post_base', reach=.5, x=.3, y=.6), k(.4, 'post_base', reach=1, x=1.6, y=1.8, b=1.2, mark='fshh'), k(.62, 'post_base', reach=1, x=-1.2, y=1.8, b=1.4, l=1, mark='fshh'), k(.85, y=.6, eye='^')],
+    [(.62, 'sweep')], g='care', act=('sweep', 'leaves'), when=['leaves>.3'], prefer=['fall'])
+o.r('lick_the_tread', "Licking the tread once to find out what a road tastes like", 14, 'none',
+    [k(.2, 'tyre_belly_l', x=.6, y=.6, b=.6), k(.4, 'tyre_belly_l', x=1.6, y=1.4, b=.8, eye='o', mark='lick'), k(.65, 'tyre_belly_r', x=-1.4, y=-1.8, eye='@', mark='ptoo'), k(.85, x=0, eye='-')],
+    [], g='test', act=('taste', 'tread'),
+    say=["Road, rain and a bit of dog. Zero bread.", "Tastes how it looks. Like going nowhere, gently."])
+o.r('doze_at_the_post_foot', "Curling up at the post's foot with his bill tucked and dozing off", 28, 'none',
+    [k(.2, 'post_base', x=.4, y=.8, b=.6), k(.4, 'post_base', y=1.4, b=1.2, eye='-'), k(.7, 'post_base', y=1.5, b=1.2, eye='-', mark='zzz'), k(.9, y=.2, b=.3, eye='^')],
+    [(.4, 'snooze')], g='rest', act=('nap', 'post'), prefer=['tired', 'night'])
+o.r('sulk_at_the_tyre', "Turning his back to the tyre and sulking with his bill against its wall", 22, 'none',
+    [k(.2, 'tyre_wall_l', x=-.4, y=.8, b=.6), k(.4, 'tyre_wall_l', x=-1.4, y=1.2, b=1.2, eye='-'), k(.75, 'tyre_wall_l', x=-1.4, y=1.2, b=1.2, eye='-', mark='hmph'), k(.9, y=.2, eye='-')],
+    [], g='rest', act=('sulk', 'tyre'), when=['sad'],
+    say=["It swings for no one. Same as me, with less voice.", "Leave me. I'm a tyre now. Round and bitter."])
+o.r('wait_for_a_pusher', "Waiting at the tyre's side for someone to come and give it a shove", 24, 'none',
+    [k(.2, 'tyre_flank_l', x=.2, y=-.2), k(.4, 'tyre_flank_l', x=.2, y=-1.6, l=1, eye='o'), k(.6, 'tyre_flank_l', x=.2, y=-1.6, r=1, eye='o', mark='...'), k(.8, 'tyre_flank_l', x=.6, y=-.5, eye='>')],
+    [], g='rest', act=('wait', 'tyre'), when=['lonely'])
+o.r('bow_to_the_tyre', "Bowing low to the tyre with a wing out, as if it had asked him to dance", 18, 'wing',
+    [k(.2, 'tyre_belly_l', reach=.4, x=.4, y=.6), k(.45, 'tyre_belly_l', reach=1, x=1.1, y=1.8, b=.8, mark='my lady'), k(.7, 'tyre_belly_l', reach=1, x=1.1, y=1.8, b=.8), k(.9, y=-.2, eye='^')],
+    [], g='show', act=('bow', 'tyre'), prefer=['happy'], obj=[(.45, dict(sway=.2))])
+o.r('present_the_swing', "Presenting the swing to the yard with a wing sweep from the post along the tyre's belly", 22, 'wing',
+    [k(.15, 'post_low', reach=.5, x=.2), k(.4, 'tyre_flank_l', reach=1, x=.3, y=-.6, w=.4, mark='behold'), k(.65, 'tyre_belly_r', reach=1, x=.3, y=-.6, mark='the swing'), k(.88, y=-.2, eye='^')],
+    [], g='show', act=('present', 'swing'), prefer=['happy'])
+o.r('argue_with_the_tyre', "Squaring up to the tyre's wall with his bill an inch off it and listing everything wrong with it", 20, 'none',
+    [k(.2, 'tyre_wall_r', x=1.4, y=.4, eye='>'), k(.4, 'tyre_wall_r', x=1.8, y=.6, b=.4, mark='quack'), k(.6, 'tyre_side_r', x=1.6, y=.2, eye='>', mark='QUACK'), k(.85, x=-.8, y=.4, eye='-', mark='hmph')],
+    [], g='show', act=('argue', 'tyre'), prefer=['grumpy'],
+    say=["It's a circle. A rubber circle. Why's everyone so impressed.", "It hasn't answered back. Typical bully."])
+o.r('slid_off_the_wet_flank', "Grabbing the wet flank for balance, losing his grip and sliding down it", 16, 'none',
+    [k(.2, 'tyre_wall_l', x=.8, y=.6, b=.6), k(.4, 'tyre_wall_l', x=.4, y=.2, b=-.6, l=1, r=1, eye='O', mark='whoa'), k(.6, 'tyre_tip', x=-.8, y=1.6, b=1.6, eye='@', mark='splat'), k(.85, y=.6, eye='-')],
+    [], g='mishap', act=('slip', 'flank'), when=['obj_wetness>.3'], obj=[(.4, dict(sway=.4)), (.6, dict(shake=.4))])
+o.emit()
 
 # ============================================================ toy_seesaw
 # An A-frame with a centre post (rung marks), a flat plank on a hinge, studs along the plank face, a seat pad and a handle
@@ -361,7 +433,7 @@ o = Obj('toy_seesaw', 'placed',
         effects=dict(
             wipe=[('obj.dirt', 'add', -.3)], scrub=[('obj.dirt', 'add', -.25)], dust=[('obj.dirt', 'add', -.2)],
             sweep=[('leaves', 'set', 0)], chip=[('frost', 'mul', .2)], scoop=[('snowcap', 'mul', .2)],
-            snooze=[('need.energy', 'add', 3)], fun=[('need.fun', 'add', 2)]),
+            snooze=[('need.energy', 'add', 3)], fun=[('need.fun', 'add', 2)], dry=[('obj.wetness', 'add', -.4)], company=[('need.social', 'add', 2)]),
         anchors=dict(base_l=(.444, .952, 'surface'), base_mid=(.505, .952, 'surface'), base_r=(.566, .952, 'surface'),
                      leg_l_low=(.434, .905), leg_l_mid=(.455, .786), leg_l_top=(.475, .667),
                      leg_r_low=(.566, .905), leg_r_mid=(.545, .786), leg_r_top=(.535, .667),
@@ -380,7 +452,7 @@ o.r('dust_the_seat_pad', "Reaching a twig up to dust the left seat pad, stroke a
     [k(.15, 'seat_l', reach=.6, y=-.5), k(.4, 'seat_l', reach=1, x=.5, y=-.8, mark='fff'), k(.6, 'seat_l', reach=1, x=-.2, y=-.8, b=.2, mark='fff'), k(.82, y=-.3, eye='^')],
     [(.6, 'dust')], g='care', act=('wipe', 'seat'), when=['obj_dirt>.3'])
 o.r('sweep_leaves_off_the_base', "Sweeping the drifted leaves off the base bar with a wing, one foot to the other", 18, 'wing',
-    [k(.15, 'base_l', reach=.5, x=.3, y=.6), k(.4, 'base_l', reach=1, x=.7, y=.8, b=.6, mark='fshh'), k(.62, 'base_r', reach=1, x=.7, y=.8, b=.6, mark='fshh'), k(.85, eye='^')],
+    [k(.15, 'base_l', reach=.5, x=.3, y=.6), k(.4, 'base_l', reach=1, x=1.2, y=1.4, b=.4, l=1, mark='fshh'), k(.62, 'base_r', reach=1, x=-.6, y=1.4, b=.4, r=1, mark='fshh'), k(.85, y=.6, eye='^')],
     [(.62, 'sweep')], g='care', act=('sweep', 'leaves'), when=['leaves>.3'], prefer=['fall'])
 # --- weather
 o.r('chip_frost_off_the_base', "Chipping the frost off the base bar with the edge of his bill, working along it", 18, 'none',
@@ -483,7 +555,7 @@ o.r('banged_his_head_peering_through', "Poking his head through the gap beside t
     [k(.2, 'post_low', x=.8, y=.6, b=.6), k(.45, 'post_low', x=1.6, y=1.2, b=.8, eye='o', mark='hm'), k(.65, 'leg_l_mid', x=-1.8, y=1.8, b=1.2, eye='@', mark='CRACK'), k(.88, y=.6, eye='-')],
     [], g='mishap', act=('peer', 'frame'), shown='head', obj=[(.65, dict(shake=.3))])
 o.r('drum_the_legs', "Playing the A-frame's legs like a xylophone, tapping up the left one and down the right", 20, 'none',
-    [k(.15, 'leg_l_low', x=.8, y=.4, b=.4), k(.3, 'leg_l_low', x=1.4, y=.4, b=.4, mark='ting'), k(.45, 'leg_l_mid', x=1.4, y=-.4, mark='tang'), k(.6, 'leg_r_mid', x=1.4, y=-.4, mark='TING'), k(.75, 'leg_r_low', x=1.4, y=.4, b=.4, mark='tong'), k(.9, eye='^')],
+    [k(.15, 'leg_l_low', x=.8, y=.4, b=.4), k(.3, 'leg_l_low', x=1.4, y=.4, b=.4, mark='ting'), k(.38, 'leg_l_mid', x=1.4, y=-.4, mark='tang'), k(.5, 'leg_l_top', x=1.4, y=-.8, mark='TANG'), k(.6, 'leg_r_top', x=1.4, y=-.8, mark='TING'), k(.7, 'leg_r_mid', x=1.4, y=-.4, mark='tong'), k(.82, 'leg_r_low', x=1.4, y=.4, b=.4, mark='tung'), k(.92, eye='^')],
     [], g='play', act=('drum', 'legs'), prefer=['happy', 'young'], obj=[(.3, dict(shake=.1)), (.45, dict(shake=.1)), (.6, dict(shake=.1)), (.75, dict(shake=.1))],
     say=["Tune's rubbish. The legs never learned the words.", "Four notes, all damp. Still a hit."])
 
@@ -509,20 +581,63 @@ o.r('bounced_off_the_end_of_the_bar', "Bouncing so hard on the base bar that the
     [k(.15, 'base_r', perch=1, b=.6), k(.3, 'base_r', perch=1, b=-2, w=.6, mark='hup'), k(.5, 'base_r', perch=1, b=-2.4, w=1, eye='O', mark='HUP'), k(.7, x=-1.8, y=1.8, b=1.8, w=.6, l=1, eye='@', mark='thud'), k(.88, y=.6, eye='-')],
     [], g='mishap', act=('hop', 'bar'), prefer=['young', 'happy'], obj=[(.3, dict(shake=.3)), (.5, dict(shake=.6)), (.7, dict(shake=.2))],
     say=["Bounced myself out of my own game. Impressive, in a way.", "The bar says that's enough fun. The bar's a snob."])
-o.emit(need=35)
+o.r('rub_the_plank_dry', "Rubbing the damp plank face dry with his tail feathers, backed up against it", 20, 'none',
+    [k(.2, 'plank_under_r', x=-1.4, y=1.2, b=1), k(.4, 'plank_under_r', x=-2, y=1.4, b=1.6, w=.6, mark='fff'), k(.65, 'plank_under_r', x=-2, y=1.4, b=1.6, w=1, mark='fff'), k(.85, eye='^', w=.4)],
+    [(.65, 'dry')], g='weather', act=('dry', 'plank'), when=['obj_wetness>.3'])
+o.r('hop_the_frost_off_his_toes', "Hopping from foot to foot on the base bar, left end to right, to keep the frost out of his toes", 16, 'none',
+    [k(.2, 'base_r', perch=1, l=1, b=.6, eye='>'), k(.4, 'base_l', perch=1, r=1, b=1, eye='>', mark='brr'), k(.6, 'base_r', perch=1, l=1, b=1.4, eye='>'), k(.8, 'base_l', perch=1, r=1, b=1.4, eye='-', mark='brr')],
+    [], g='weather', act=('hop', 'toes'), when=['frost>.3', 'cold'])
+o.r('brace_at_the_leg_in_the_gale', "Wedging his shoulder against the left leg while the gust throws leaves at the frame", 20, 'none',
+    [k(.2, 'leg_l_low', x=.8, y=.4, b=.6), k(.4, 'leg_l_mid', x=1.8, y=.8, b=1.4, w=.4, eye='>', mark='eek'), k(.65, 'leg_l_mid', x=1.8, y=.8, b=1.4, l=1, r=1, eye='@'), k(.85, y=.2, eye='O')],
+    [], g='weather', act=('brace', 'leg'), when=['windy', 'leaves>.3'], obj=[(.3, dict(shake=.5)), (.5, dict(shake=.7)), (.7, dict(shake=.5))])
+o.r('slid_on_the_wet_bar', "Reaching for the wet base bar, losing his footing, and sitting down hard", 16, 'none',
+    [k(.2, 'base_mid', x=.6, y=.4, b=.4), k(.4, 'base_mid', x=1, y=-.4, b=-.8, l=1, eye='O', mark='whoa'), k(.6, x=-1.8, y=1.8, b=1.8, w=.6, eye='@', mark='splat'), k(.85, y=.6, eye='-')],
+    [], g='mishap', act=('slip', 'bar'), when=['obj_wetness>.3'])
+o.r('walked_into_the_leg', "Strolling along at night with his eyes fixed up at the far seat and walking face first at the leg, then slumping down it", 16, 'none',
+    [k(.2, x=1.4, y=-1.6, eye='^'), k(.4, 'leg_l_mid', x=2.4, y=.4, b=.4, eye='O', mark='BONK'), k(.58, 'leg_l_low', x=1, y=1.8, b=1.8, eye='@'), k(.85, y=.2, eye='-', mark='...')],
+    [], g='mishap', act=('walk_into', 'leg'), when=['night'], prefer=['tired'],
+    say=["Walked straight into the one thing that's been standing here all day.", "Leg won. Legs always do."])
+o.r('stubbed_a_toe_on_the_bar', "Kicking the base bar's end to hear it twang and finding out what a stubbed toe sounds like", 16, 'none',
+    [k(.2, 'base_l', x=-.4, y=.4, r=1), k(.4, 'base_l', x=-.8, y=.8, r=1, b=.8, mark='twang'), k(.6, x=.6, y=1.8, b=1.6, l=1, eye='O', mark='ow'), k(.82, x=.6, y=.8, l=1, b=.4, eye='@')],
+    [], g='mishap', act=('kick', 'bar'), prefer=['grumpy'])
+o.r('measure_himself_on_the_leg', "Standing beside the left leg and laying a wing along it to see how much taller it is", 20, 'wing',
+    [k(.15, 'leg_l_low', reach=.4, x=-.4), k(.4, 'leg_l_mid', reach=1, x=.2, y=-1.8, b=.8, mark='hm'), k(.65, 'leg_l_mid', reach=1, x=.2, y=-1.8, b=1.2, eye='^', mark='...'), k(.88, reach=.1, eye='-')],
+    [], g='test', act=('measure', 'leg'), prefer=['curious', 'young'])
+o.r('lick_the_leg', "Licking the left leg once to find out what a seesaw tastes like", 14, 'none',
+    [k(.2, 'leg_l_low', x=.6, y=.6, b=.6), k(.4, 'leg_l_low', x=1.8, y=1.8, b=1, eye='o', mark='lick'), k(.65, x=-1.4, y=-1.8, eye='@', mark='ptoo'), k(.85, eye='-')],
+    [], g='test', act=('taste', 'leg'),
+    say=["Damp wood and other people's ideas of fun.", "Splinter. I'll be fine. I won't."])
+o.r('warm_against_the_sunny_leg', "Pressing his cheek and chest against the sun-warmed leg until the chill leaves his feathers", 24, 'none',
+    [k(.2, 'leg_l_low', x=.2, y=.4, b=.4), k(.45, 'leg_l_low', x=.8, y=1.4, b=1.6, w=.4, eye='-'), k(.75, 'leg_l_low', x=1.2, y=1.8, b=2, w=.6, eye='-', mark='ahh'), k(.9, y=0, eye='^')],
+    [(.45, 'snooze')], g='rest', act=('warm', 'leg'), when=['sun', 'cold'])
+o.r('hug_the_leg', "Wrapping both wings round the right leg and holding on with his cheek against the wood", 24, 'wing',
+    [k(.2, 'leg_r_mid', reach=.5, x=.4, y=.4), k(.45, 'leg_r_mid', reach=1, x=1.4, y=.8, b=.4, eye='-'), k(.75, 'leg_r_mid', reach=1, x=1.4, y=.8, b=.4, w=.6, eye='-', mark='mm'), k(.9, reach=.2, eye='^')],
+    [(.45, 'company')], g='rest', act=('wrap', 'leg'), when=['lonely'])
+o.r('peek_round_the_post', "Peeking round the post's left edge, then its right, ducking back each time", 20, 'none',
+    [k(.2, 'post_mid', x=-1.2, y=1.2, b=.6, eye='o'), k(.4, 'post_mid', x=1.6, y=.2, eye='O', mark='!'), k(.6, 'post_low', x=-1.2, y=1.2, b=.6, eye='o'), k(.82, 'post_low', x=1.6, y=.2, eye='O', mark='boo')],
+    [], g='play', act=('hide', 'post'), prefer=['happy', 'young'])
+o.r('bow_to_the_far_seat', "Bowing low from the left leg toward the far seat with a wing out, inviting it to take its turn", 18, 'wing',
+    [k(.2, 'leg_l_low', reach=.4, x=.4, y=.6), k(.45, 'leg_l_low', reach=1, x=1.4, y=2, b=1.2, mark='after you'), k(.7, 'leg_l_low', reach=1, x=1.4, y=2, b=1.2), k(.9, y=-.2, eye='^')],
+    [], g='show', act=('bow', 'seat'), prefer=['happy'])
+o.r('present_the_seesaw', "Presenting the seesaw to the yard with a wing sweep from the left leg to the right", 22, 'wing',
+    [k(.15, 'leg_l_mid', reach=.5, x=.2), k(.4, 'leg_l_mid', reach=1, x=.4, y=-1.2, w=.4, mark='behold'), k(.65, 'leg_r_mid', reach=1, x=.4, y=-1.2, mark='the seesaw'), k(.88, y=-.2, eye='^')],
+    [], g='show', act=('present', 'seesaw'), prefer=['happy'])
+o.emit()
 
 # ============================================================ rubber_duck
 # A big bath duck facing right: head with eye, flat bill, a wing mark, a tail point on the left, a rounded belly,
 # a flat base rim and ripples below it. The squeak is the toy's whole point.
 o = Obj('rubber_duck', 'placed',
-        fields=dict(leaves=(0, 0, 1), snowcap=(0, 0, 1), heat=(0, 0, 1)),
+        fields=dict(leaves=(0, 0, 1), snowcap=(0, 0, 1), heat=(0, 0, 1), frost=(0, 0, 1)),
         physics=[('leaves', 'rate', .0006, 'fall'), ('leaves', 'rate', -.0008, 'windy'),
                  ('snowcap', 'rate', .002, 'snow'), ('snowcap', 'rate', -.001, 'warm'),
-                 ('heat', 'rate', .002, 'sun'), ('heat', 'rate', -.001, '!sun')],
+                 ('heat', 'rate', .002, 'sun'), ('heat', 'rate', -.001, '!sun'),
+                 ('frost', 'rate', .002, 'cold'), ('frost', 'rate', -.003, 'warm')],
         effects=dict(
             wipe=[('obj.dirt', 'add', -.3)], polish=[('obj.dirt', 'add', -.2)], scrape=[('obj.dirt', 'add', -.2)],
             sweep=[('leaves', 'set', 0)], knock_snow=[('snowcap', 'mul', .2)], cool=[('heat', 'mul', .5)],
-            squeak=[('need.fun', 'add', 2)], snooze=[('need.energy', 'add', 3)], company=[('need.social', 'add', 2)]),
+            squeak=[('need.fun', 'add', 2)], snooze=[('need.energy', 'add', 3)], company=[('need.social', 'add', 2)],
+            dry=[('obj.wetness', 'add', -.4)], chip=[('frost', 'mul', .2)], splat=[('snowcap', 'mul', .3), ('need.cleanliness', 'add', -1)]),
         anchors=dict(base_l=(.255, .838, 'surface'), base_mid=(.49, .838, 'surface'), base_r=(.725, .838, 'surface'),
                      ripple_l=(.392, .865), ripple_r=(.608, .865), tail_tip=(.098, .649), flank_l=(.157, .703),
                      belly_low=(.608, .784), belly_mid=(.51, .676, 'inside'), belly_r=(.745, .703),
@@ -661,7 +776,7 @@ o.r('weigh_it_at_the_base', "Pressing his shoulder against the base rim to learn
     [k(.2, 'base_r', x=-.8, y=.6, b=.6), k(.4, 'base_r', x=1.6, y=.8, b=1, mark='hnng'), k(.6, 'base_r', x=1.8, y=.8, b=1.4, eye='>'), k(.85, eye='-')],
     [], g='test', act=('weigh', 'base'), obj=[(.4, dict(sway=.2)), (.6, dict(sway=0))])
 o.r('ear_to_the_belly', "Laying his ear against the belly, a wing braced beside it, and listening for where the squeak echoes", 20, 'wing',
-    [k(.2, 'belly_mid', reach=.5, x=.4, y=.6, b=.4), k(.4, 'belly_mid', reach=.8, x=-.4, y=1.8, b=1.4, eye='-', mark='...'), k(.7, 'belly_mid', reach=.8, x=-.4, y=1.8, b=1.8, eye='o', mark='...'), k(.88, eye='-')],
+    [k(.2, 'belly_r', reach=.5, x=.4, y=.6, b=.4), k(.4, 'belly_r', reach=.8, x=-.4, y=1.8, b=1.4, eye='-', mark='...'), k(.7, 'belly_r', reach=.8, x=-.4, y=1.8, b=1.8, eye='o', mark='...'), k(.88, eye='-')],
     [], g='test', act=('listen', 'belly'), prefer=['curious'],
     say=["Hollow in there. Echoes. Reminds me of me.", "Something rattles. Something always rattles."])
 
@@ -682,4 +797,36 @@ o.r('rain_drumming_on_its_head', "Laying his ear against the back of the neck wh
     [k(.2, 'neck_back', reach=.5, x=.4, y=-.4), k(.4, 'neck_back', reach=1, x=-.4, y=-1.8, b=.6, eye='-', mark='...'), k(.7, 'neck_back', reach=1, x=-.4, y=-2, b=1.2, eye='o', mark='...'), k(.88, eye='-')],
     [], g='weather', act=('listen', 'head'), when=['obj_wetness>.3'], prefer=['curious'],
     say=["Rain on a rubber head. A drum with a punchline.", "Sounds like thinking. Mine, usually."])
-o.emit(need=38)
+o.r('dry_the_belly_off', "Blotting the rain off the belly with a wing, from the low curve up to the chest", 16, 'wing',
+    [k(.15, 'belly_low', reach=.5, x=.4), k(.4, 'belly_low', reach=1, x=1.2, y=1.2, b=1, mark='fff'), k(.65, 'chest_r', reach=1, x=1.2, y=.4, b=.4, mark='fff'), k(.85, y=.4, eye='^')],
+    [(.65, 'dry')], g='weather', act=('dry', 'belly'), when=['obj_wetness>.3'])
+o.r('chip_frost_off_the_bill', "Chipping the frost off the bill's tip and the cheek above it with the edge of his own bill", 18, 'none',
+    [k(.2, 'bill_tip', x=1.4, y=-1.8, b=.4), k(.4, 'bill_tip', x=2, y=-1.8, b=.8, l=1, mark='tik'), k(.6, 'cheek', x=2, y=-1.8, b=.4, r=1, mark='tik'), k(.85, eye='^')],
+    [(.6, 'chip')], g='weather', act=('chip', 'bill'), when=['frost>.3'], ages=GROWN)
+o.r('squeak_in_the_face', "Squeezing too hard and taking the whole squeak full in his face", 16, 'wing',
+    [k(.2, 'belly_mid', reach=.6, x=.8, y=.8, b=.6), k(.4, 'belly_mid', reach=1, x=2.4, y=2, b=1.8, eye='O', mark='SQUEEEAK'), k(.6, x=-2.4, y=.4, b=.8, w=1, eye='@', mark='...'), k(.85, y=.2, eye='-')],
+    [], g='mishap', act=('press', 'belly'), prefer=['curious'], obj=[(.4, dict(shake=.5, puff=.5))],
+    say=["That was a lot of squeak. I now hear in ducks.", "My ears are ringing in rubber."])
+o.r('knocked_over_by_the_rock_back', "Giving the flank a big wing-shove and taking its rock back full in his chest", 18, 'wing',
+    [k(.2, 'flank_l', reach=.5, x=-.8, y=.4), k(.4, 'flank_l', reach=1, x=2, y=.4, b=.8, mark='HUP'), k(.6, x=-2.4, y=1.8, b=2, eye='@', mark='oof'), k(.85, y=.6, eye='-')],
+    [], g='mishap', act=('shove', 'flank'), prefer=['grumpy'], obj=[(.3, dict(sway=-.5)), (.6, dict(sway=.9, shake=.3))])
+o.r('squeaked_in_the_ear', "Pecking at the big bill and then the cheek above it, and being squeaked at from right beside his ear", 14, 'none',
+    [k(.2, 'bill_tip', x=1, y=-.6), k(.4, 'bill_tip', x=1.8, y=-.4, mark='tk'), k(.55, 'cheek', x=-1, y=.8, b=1, eye='@', mark='SQUK'), k(.85, y=.2, eye='-', mark='...')],
+    [], g='mishap', act=('peck', 'bill'), ages=GROWN, obj=[(.55, dict(shake=.3, puff=.3))],
+    say=["It squeaked into my ear. Now I hear squeaks. Everywhere.", "Never again. Until Thursday."])
+o.r('slipped_off_the_wet_rim', "Stepping onto the wet base rim and skating off its end on his belly", 16, 'none',
+    [k(.2, 'base_r', perch=1, b=.6), k(.4, 'base_r', perch=1, b=-.6, l=1, r=1, eye='O', mark='whoa'), k(.6, 'ripple_r', x=-1.4, y=1.8, b=1.8, eye='@', mark='splat'), k(.85, y=.6, eye='-')],
+    [], g='mishap', act=('slip', 'rim'), when=['obj_wetness>.3'])
+o.r('walked_into_its_chest', "Strolling along at night with his eyes fixed on its eye and walking face first at its chest", 16, 'none',
+    [k(.2, x=1.4, y=-1.6, eye='^'), k(.4, 'chest_hi', x=2.4, y=.4, b=.4, eye='O', mark='BONK'), k(.6, x=-1.8, y=1.8, b=1.6, eye='@', mark='squk'), k(.85, y=.2, eye='-', mark='...')],
+    [], g='mishap', act=('walk_into', 'chest'), when=['night'], prefer=['tired'], obj=[(.4, dict(shake=.3, puff=.2))])
+o.r('snow_slides_onto_him', "Pushing at the back of its neck as the snow slides off its head and lands on him in a lump", 20, 'wing',
+    [k(.2, 'neck_back', reach=.6, x=.4), k(.4, 'neck_back', reach=1, x=.9, y=-.2, mark='hup'), k(.55, x=-.8, y=1.8, b=1.8, w=.3, eye='@', mark='FWUMP'), k(.8, y=.6, b=.6, eye='-', mark='brr')],
+    [(.4, 'splat')], g='mishap', act=('push', 'neck'), when=['snowcap>.5'], ages=GROWN, obj=[(.55, dict(sway=.3, shake=.4))])
+o.r('bow_to_the_duck', "Bowing low to the duck at the water's edge as if it were royalty", 20, 'wing',
+    [k(.2, 'ripple_l', reach=.4, x=.3, y=.2), k(.4, 'ripple_l', reach=1, x=.6, y=2, b=1.2, mark='your grace'), k(.65, 'ripple_l', reach=1, x=.6, y=2, b=1.2), k(.85, 'ripple_l', reach=.4, x=.3, y=-.2, eye='^')],
+    [], g='show', act=('bow', 'duck'), prefer=['happy'])
+o.r('present_the_duck', "Presenting the duck to the yard with a wing sweep from its tail up to its head", 22, 'wing',
+    [k(.15, 'tail_tip', reach=.8, x=.2, mark='behold'), k(.4, 'back_hump', reach=1, x=.3, y=-.6), k(.65, 'cheek', reach=1, x=.3, y=-1.8, mark='the duck'), k(.88, eye='^')],
+    [], g='show', act=('present', 'duck'), ages=GROWN, prefer=['happy', 'grown'])
+o.emit()
