@@ -4632,7 +4632,7 @@
       "engine/artifacts/animation-milestone/medium-art-render.json",
       "engine/artifacts/animation-milestone/parent-medium-review.log"
     ],
-    "next": "Fix check_playkit_company boat_finish now; then finish wonders (bigger-glyph redraw for small ones, wire say cues into speech); then breadth: art + interactions for the 116 non-shop items family by family; then deepen every object toward 48.",
+    "next": "Finish wonders: bigger-glyph redraw for the small ones, wire say cues into speech; then breadth: 116 non-shop items (art + 48 each) family by family; then deepen every object toward 48.",
     "checks": {
       "javascript": 226,
       "livingSimulation": 694,
@@ -6169,7 +6169,8 @@
         "preexistingFailure": {
           "check": "engine/check_playkit_company.py",
           "assertion": "boat_finish has an independent real arrival",
-          "evidence": "Fails identically in a temporary worktree of HEAD 322afda + the handoff working-tree.patch + changed-files.zip (no Claude changes), and with wonder_company.tick disabled. Not caused by the wonders work; unresolved."
+          "evidence": "Fails identically in a temporary worktree of HEAD 322afda + the handoff working-tree.patch + changed-files.zip (no Claude changes), and with wonder_company.tick disabled. Not caused by the wonders work; unresolved.",
+          "resolved": "Fixed 2026-11-13: the boat launches at y 36.75 (water edge) and the companion spot copied that row, failing the y<=36 stance bound, so no visitor could ever join. playkit_company.bank_spot now moves the far-side stance up to the nearest supported bank cell (stance policy). check_playkit_company PASS 908, check_portable_company_anchors 171, check_playkit 164, check_playdates 70."
         }
       },
       "openDecisions": [

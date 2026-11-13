@@ -44,6 +44,18 @@ def choose(minds,plan,key):
       'boat_push':'boat_finish','boat_tack':'boat_finish','boat_sail':'boat_rigging','boat_keel':'boat_keel',
       'board_balance':'board_spotter','board_steps':'board_spotter','board_wax':'board_waxpair'}.get(core)
 
+def bank_spot(pond,plan,spot):
+    """The far-side stance, moved up onto the nearest supported bank when the toy
+    launches from the water's edge (a boat's finish line is on the grass)."""
+    from engine import portable_ground
+    if not 6<=spot[0]<=122:return None
+    layout=portable_ground.policy(pond)
+    for y in [min(spot[1],36)-dy for dy in range(0,7)]:
+        if y<3:break
+        if layout.check('rubber_duck',spot[0]*20/132,y*12/42,plan.get('instance') or portable_ground.IDENTITY,portable_ground.STANCE)[0]:
+            return [spot[0],y]
+    return None
+
 def controls(work,score):
     return playkit.sample(work,SCORES[score]['track'],dict(u=1.08,v=0.,contact=0.))
 
@@ -114,8 +126,8 @@ def tick(minds,dt):
     # Reserve the far side of this toy in native world coordinates.
     # This remains fixed when Cheese moves or the toy rolls during play.
     far_edge=blueprint['w']*blueprint['scale']*.62*.58*132/192
-    spot=[origin[0]+far_edge,origin[1]]
-    if not (6<=spot[0]<=122 and 3<=spot[1]<=36):return
+    spot=bank_spot(p,plan,[origin[0]+far_edge,origin[1]])
+    if spot is None:return
     from engine import playdates
     options=[]
     for key in minds.present:
