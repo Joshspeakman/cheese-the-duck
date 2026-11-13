@@ -18,13 +18,14 @@ export function repPose(work,motion=true){
  return {...pose,object:obj||{},rep:spec.tool!=='none'&&!work.transition,wonder:spec.tool!=='none'&&!work.transition,tool:spec.tool,progress,item:spec.object};
 }
 export function repAnchor(home,objectId,name){
- const named=home.anchors?.[name];if(named)return named;
+ const named=home.anchors?.[name];if(named&&Number.isFinite(named.x)&&Number.isFinite(named.y))return named;
  const f=REP_OBJECTS[objectId]?.anchors?.[name];if(!f)return null;
  return {x:f.x*(home.width-1),y:f.y*(home.art.length-1)};
 }
 // Object reaction at draw time: no re-raster, no state change.
 export function applyObjectPose(model,pose){
  const objPose=pose?.object;if(!objPose)return model;
+ if(!['placed','portable'].includes(REP_OBJECTS[pose.item]?.host))return model;  // never shake a whole pond or case
  const shake=(objPose.shake||0)*Math.sin((pose.progress||0)*90)*.03;
  return {...model,sway:(model.sway||0)+(objPose.sway||0)*.08+shake,lift:(model.lift||0)+(objPose.lift||0)*.6};
 }

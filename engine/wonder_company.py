@@ -38,6 +38,28 @@ def plan_valid(pond, plan, key):
     return repertoire.valid(pond, plan)
 
 
+def family(item):
+    """'wonder' or 'rep' for an object a visitor could work themselves."""
+    if item in wonders.ITEMS:
+        return 'wonder'
+    from engine import repertoire
+    return 'rep' if repertoire.OBJECTS.get(item, {}).get('host') == 'placed' else None
+
+
+def routines_of(item, fam):
+    if fam == 'wonder':
+        return wonders.BY_ITEM[item]
+    from engine import repertoire
+    return repertoire.by_object(item)
+
+
+def state_of(item, obj, fam):
+    if fam == 'wonder':
+        return wonders.state(item, obj)
+    from engine import repertoire
+    return repertoire.state(item, obj)
+
+
 def sheltering(plan, key, routine):
     if key == 'wonder_work':
         return wonders.sheltering(plan['target'], routine)
@@ -79,8 +101,10 @@ def can_operate(minds, key, routine):
     if species not in HANDED:
         return False
     body = 'duckling' if species == 'duckling' else 'adult'  # measured duck-sized reach
-    spec = wonders.ROUTINES[routine]
-    return body in wonders.REACH.get(routine, ()) and (not spec['ages'] or body in spec['ages'])
+    spec = spec_of(routine)
+    from engine import repertoire
+    reach = wonders.REACH.get(routine) if routine in wonders.ROUTINES else repertoire.REACH.get(routine, ())
+    return body in (reach or ()) and (not spec.get('ages') or body in spec['ages'])
 
 
 def valid(minds, r):
@@ -196,14 +220,15 @@ def volunteer(minds):
     world = wonders.World(p)
     for placed in p.placements:
         item, iid = placed.item_id, placed.instance
-        if item not in wonders.ITEMS or (plan and plan.get('target') == item and plan.get('instance') == iid):
+        fam = family(item)
+        if fam is None or (plan and plan.get('target') == item and plan.get('instance') == iid):
             continue
         if any(r['instance'] == iid for r in minds.wonder_guests.values()):
             continue
         obj = p.object_state(item, iid)
         if obj is None:
             continue
-        s = wonders.state(item, obj)
+        s = state_of(item, obj, fam)
         destination = shelters.position(placed)
         spot = portable_ground.companion_spot(p, dict(instance=iid), destination)
         if spot is None:
@@ -214,8 +239,8 @@ def volunteer(minds):
             resident = minds.model.residents[key]
             if resident['energy'] < .3 or minds.tasks.get(key, {}).get('action') not in ('observe', 'share', 'restore') or distance(minds.present[key], spot) > 70:
                 continue
-            keys = [k for k in wonders.BY_ITEM[item] if k not in VISITOR_SKIP and wonders.ROUTINES[k]['events'] and can_operate(minds, key, k)
-                    and all(wonders.condition(w, s, world, {}) for w in wonders.ROUTINES[k]['when'] if not w.lstrip('!') in ('young', 'grown', 'elder', 'tired', 'lonely', 'sad', 'happy', 'grumpy', 'curious'))]
+            keys = [k for k in routines_of(item, fam) if k not in VISITOR_SKIP and spec_of(k)['events'] and can_operate(minds, key, k)
+                    and all(wonders.condition(w, s, world, {}) for w in spec_of(k)['when'] if not w.lstrip('!') in ('young', 'grown', 'elder', 'tired', 'lonely', 'sad', 'happy', 'grumpy', 'curious'))]
             if not keys:
                 continue
             seed = wonders.hash_text(key + item + str(int(minds.now / 60)))
@@ -224,7 +249,7 @@ def volunteer(minds):
             egg = minds.game.duck.growth_stage == 'egg'
             minds.wonder_guests[key] = dict(actor=key, mode='operate', id=item, instance=iid, destination=destination, spot=spot, location=p.location,
                                             token=minds.presence_tokens[key], phase='approach', elapsed=0., started=minds.now, style='operator',
-                                            work=dict(id=routine, elapsed=0., events=[], done=False), egg_watching=egg,
+                                            work=dict(id=routine, elapsed=0., events=[], done=False), egg_watching=egg, family=fam,
                                             contexts={key: minds.context(key)})
             p._cache = None
             return
@@ -234,14 +259,20 @@ def operate(minds, key, r, dt):
     """The visitor's own native clock: contacts land on the real object."""
     p = minds.pond
     work = r['work']
-    spec = wonders.ROUTINES[work['id']]
+    spec = spec_of(work['id'])
+    fam = r.get('family', 'wonder')
     obj = p.object_state(r['id'], r['instance'])
-    s = wonders.state(r['id'], obj)
+    s = state_of(r['id'], obj, fam)
     work['elapsed'] = min(spec['duration'], work['elapsed'] + dt)
     for i, (at, name) in enumerate(spec['events']):
         if work['elapsed'] >= at * spec['duration'] and i not in work['events']:
             work['events'].append(i)
-            wonders.apply(s, r['id'], wonders.ITEMS[r['id']]['effects'][name])
+            if fam == 'wonder':
+                wonders.apply(s, r['id'], wonders.ITEMS[r['id']]['effects'][name])
+            else:
+                from engine import repertoire
+                # Visitors change the object, never Cheese's needs.
+                repertoire.apply(s, r['id'], [row for row in repertoire.OBJECTS[r['id']]['effects'][name] if not row[0].startswith('need.')])
     p._cache = None
     if work['elapsed'] >= spec['duration'] and not work['done']:
         work['done'] = True

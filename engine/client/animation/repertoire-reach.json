@@ -42,7 +42,7 @@
   "koi_net_leaves": {
    "contactHeight": 73,
    "highestAnchor": "surface",
-   "tool": "rake",
+   "tool": "reed",
    "reachableAges": [
     "hatchling",
     "duckling",

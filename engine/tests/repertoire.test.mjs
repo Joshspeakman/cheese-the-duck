@@ -8,7 +8,7 @@ import {REP_ROUTINES as R,REP_OBJECTS as O,repPose,repAnchor} from '../client/re
 import {itemSprite} from '../client/ultra-items.mjs';
 const cwd=fileURLToPath(new URL('..',import.meta.url));
 const SEA=new Set(['pufferfish','swordfish','sturgeon','ancient_dragon_fish']);
-const host=oid=>O[oid].host==='keeping'?(SEA.has(oid)?'infinity_pool':'koi_pond'):oid;
+const host=oid=>O[oid].host==='keeping'?(SEA.has(oid)?'infinity_pool':'koi_pond'):O[oid].host==='display'?'trophy_case':oid;
 test('bundle and reach table match the per-object data',()=>{
  execFileSync(process.execPath,['scripts/build-repertoire.mjs','--check'],{cwd});
  execFileSync(process.execPath,['scripts/export-repertoire-reach.mjs','--check'],{cwd});
@@ -17,7 +17,7 @@ test('every routine anchor resolves on its host drawing and poses end at rest',(
  for(const [key,r] of Object.entries(R)){
   if(O[r.object].host==='wearable'){const end=repPose({id:key,elapsed:r.duration});for(const k of ['x','y','b','w','contact'])assert.equal(end[k],0,key+' rest');continue;}
   const m=itemSprite(host(r.object),0,{state:{keeping:{setup:true,fish:[]}}});
-  for(const [,q] of r.track)if(q.anchor&&!['contact','entry'].includes(q.anchor))assert.ok(repAnchor(m,r.object,q.anchor),key+' anchor '+q.anchor);
+  for(const [,q] of r.track)if(q.anchor&&!['contact','entry'].includes(q.anchor)){const a=repAnchor(m,r.object,q.anchor);assert.ok(a&&Number.isFinite(a.x)&&Number.isFinite(a.y)&&a.x>=0&&a.x<m.width&&a.y>=0&&a.y<m.art.length,key+' anchor '+q.anchor+' is a point inside the drawing');}
   const end=repPose({id:key,elapsed:r.duration});for(const k of ['x','y','b','w','contact'])assert.equal(end[k],0,key+' rest');
  }
 });

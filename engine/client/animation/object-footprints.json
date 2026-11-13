@@ -1599,10 +1599,10 @@
       "construction": "playground-v1"
     },
     "feather": {
-      "width": 10.76,
-      "height": 9.54,
+      "width": 16.44,
+      "height": 16.3,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "flower": {
       "width": 32.35,
@@ -1647,10 +1647,10 @@
       "construction": "food-v1"
     },
     "fish_treat": {
-      "width": 19.5,
-      "height": 8.19,
+      "width": 16.05,
+      "height": 6.55,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "mysterious_crumb": {
       "width": 14.85,
@@ -1701,10 +1701,10 @@
       "construction": "specimen-v1"
     },
     "bottle_cap": {
-      "width": 17.61,
-      "height": 7.74,
+      "width": 14.45,
+      "height": 8.54,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "glitter_rock": {
       "width": 18.97,
@@ -1713,22 +1713,22 @@
       "construction": "specimen-v1"
     },
     "tiny_crown": {
-      "width": 15.45,
-      "height": 8.19,
+      "width": 18.7,
+      "height": 10.72,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "golden_feather": {
-      "width": 10.76,
-      "height": 9.54,
+      "width": 16.44,
+      "height": 16.3,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "mystery_egg": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 15.97,
+      "height": 12.23,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "ancient_bread": {
       "width": 21.66,
@@ -1749,16 +1749,16 @@
       "construction": "food-v1"
     },
     "best_friend_badge": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 23.17,
+      "height": 17.26,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "medicine": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 13.63,
+      "height": 14.49,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "berry_salad": {
       "width": 21.72,
@@ -1779,10 +1779,10 @@
       "construction": "lighting-v1"
     },
     "flower_wreath": {
-      "width": 13.2,
-      "height": 8.19,
+      "width": 22.36,
+      "height": 13.5,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "moss_carpet": {
       "width": 60.14,
@@ -1821,16 +1821,16 @@
       "construction": "waterworks-v1"
     },
     "lucky_charm": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.31,
+      "height": 16.03,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "magic_wand": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.39,
+      "height": 13.5,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "shiny_object": {
       "width": 13.51,
@@ -1839,34 +1839,34 @@
       "construction": "specimen-v1"
     },
     "water_token": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 20.64,
+      "height": 13.16,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "earth_token": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 20.64,
+      "height": 13.16,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "sky_token": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 20.64,
+      "height": 13.16,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "ancient_amulet": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.31,
+      "height": 16.03,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "guardian_blessing": {
-      "width": 15.81,
-      "height": 7.74,
+      "width": 18.31,
+      "height": 16.03,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "woven_grass": {
       "width": 52.38,
@@ -1875,10 +1875,10 @@
       "construction": "textile-v1"
     },
     "rope": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 18,
+      "height": 11.51,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "thatch": {
       "width": 53.88,
@@ -1887,10 +1887,10 @@
       "construction": "textile-v1"
     },
     "clay_brick": {
-      "width": 17.61,
-      "height": 7.74,
+      "width": 17.42,
+      "height": 8.54,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "wooden_plank": {
       "width": 58.01,
@@ -1899,10 +1899,10 @@
       "construction": "ground-v1"
     },
     "stone_block": {
-      "width": 17.61,
-      "height": 7.74,
+      "width": 16.82,
+      "height": 10.52,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "insulation": {
       "width": 48.05,
@@ -1911,22 +1911,22 @@
       "construction": "textile-v1"
     },
     "stone_hammer": {
-      "width": 16.07,
-      "height": 9.09,
+      "width": 21.37,
+      "height": 13.5,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "fishing_rod": {
-      "width": 15.62,
-      "height": 9.09,
+      "width": 36.94,
+      "height": 24.11,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "gathering_bag": {
-      "width": 14.36,
-      "height": 9.54,
+      "width": 20.91,
+      "height": 16.3,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "digging_stick": {
       "width": 18.87,
@@ -1995,10 +1995,10 @@
       "construction": "waterworks-v1"
     },
     "watchtower": {
-      "width": 25.81,
-      "height": 15.24,
+      "width": 79.31,
+      "height": 84.6,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "flower_bed": {
       "width": 90.93,
@@ -2103,16 +2103,16 @@
       "construction": "specimen-v1"
     },
     "acorn": {
-      "width": 11.85,
-      "height": 8.19,
+      "width": 8.75,
+      "height": 7.15,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "pine_cone": {
-      "width": 10.95,
-      "height": 8.19,
+      "width": 9.19,
+      "height": 9.38,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "driftwood": {
       "width": 18.87,
@@ -2217,10 +2217,10 @@
       "construction": "botanical-v1"
     },
     "string": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 15.03,
+      "height": 11.51,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "fabric_scrap": {
       "width": 42.57,
@@ -2229,10 +2229,10 @@
       "construction": "textile-v1"
     },
     "eagle_feather": {
-      "width": 10.76,
-      "height": 9.54,
+      "width": 16.44,
+      "height": 16.3,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "berry": {
       "width": 33.92,
@@ -2253,10 +2253,10 @@
       "construction": "seed-v1"
     },
     "small_fish": {
-      "width": 19.5,
-      "height": 8.19,
+      "width": 16.43,
+      "height": 8.54,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "bread_crumb": {
       "width": 14.94,
@@ -2337,10 +2337,10 @@
       "construction": "specimen-v1"
     },
     "butterfly_wing": {
-      "width": 15.9,
-      "height": 8.19,
+      "width": 18.46,
+      "height": 15.18,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "flower_petal": {
       "width": 32.75,
@@ -2361,10 +2361,10 @@
       "construction": "seed-v1"
     },
     "rainbow_feather": {
-      "width": 10.76,
-      "height": 9.54,
+      "width": 16.44,
+      "height": 16.3,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "crystal_icicle": {
       "width": 19.02,
@@ -2373,16 +2373,16 @@
       "construction": "specimen-v1"
     },
     "frozen_dewdrop": {
-      "width": 15.62,
-      "height": 9.09,
+      "width": 10.67,
+      "height": 9.53,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "static_feather": {
-      "width": 10.76,
-      "height": 9.54,
+      "width": 16.44,
+      "height": 16.3,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "golden_leaf": {
       "width": 41.08,
@@ -2403,28 +2403,28 @@
       "construction": "specimen-v1"
     },
     "fog_essence": {
-      "width": 21.03,
-      "height": 6.84,
+      "width": 13.63,
+      "height": 14.49,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "dandelion_fluff": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 13.84,
+      "height": 10.52,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "mud_sculpture": {
-      "width": 16.07,
-      "height": 9.09,
+      "width": 15.97,
+      "height": 12.23,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "snow_feather": {
-      "width": 10.76,
-      "height": 9.54,
+      "width": 16.44,
+      "height": 16.3,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "storm_sketch": {
       "width": 42.39,
@@ -2445,28 +2445,28 @@
       "construction": "instrument-v1"
     },
     "mystery_sound": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 15.03,
+      "height": 11.51,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "rare_bug_jar": {
-      "width": 12.3,
-      "height": 8.19,
+      "width": 13.63,
+      "height": 14.49,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "memory_trophy": {
-      "width": 15.71,
-      "height": 9.54,
+      "width": 18.56,
+      "height": 19.45,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "racing_medal": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 17.36,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "spring_petal": {
       "width": 35.17,
@@ -2505,16 +2505,16 @@
       "construction": "specimen-v1"
     },
     "warmth": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 13.84,
+      "height": 10.52,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "mystery_gift": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 16.17,
+      "height": 13.29,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "friendship_card": {
       "width": 43.01,
@@ -2529,10 +2529,10 @@
       "construction": "food-v1"
     },
     "splash_trophy": {
-      "width": 15.71,
-      "height": 9.54,
+      "width": 18.56,
+      "height": 19.45,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "sunset_photo": {
       "width": 46.66,
@@ -2541,34 +2541,34 @@
       "construction": "keepsake-v1"
     },
     "parade_flag": {
-      "width": 14.27,
-      "height": 9.09,
+      "width": 20.23,
+      "height": 18.53,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "dance_medal": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 17.36,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "spring_duck_costume": {
-      "width": 18.15,
-      "height": 8.19,
+      "width": 19.96,
+      "height": 16.47,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "cherry_blossom_hat": {
-      "width": 16.8,
-      "height": 8.19,
+      "width": 24.04,
+      "height": 15.18,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "beach_duck_costume": {
-      "width": 18.15,
-      "height": 8.19,
+      "width": 19.96,
+      "height": 16.47,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "surfboard": {
       "width": 63.06,
@@ -2577,82 +2577,82 @@
       "construction": "playkit-v1"
     },
     "scarecrow_costume": {
-      "width": 18.15,
-      "height": 8.19,
+      "width": 19.96,
+      "height": 16.47,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "autumn_wreath_hat": {
-      "width": 16.8,
-      "height": 8.19,
+      "width": 24.04,
+      "height": 15.18,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "winter_coat_costume": {
-      "width": 18.15,
-      "height": 8.19,
+      "width": 19.96,
+      "height": 16.47,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "snowflake_crown": {
-      "width": 15.45,
-      "height": 8.19,
+      "width": 22.49,
+      "height": 12.95,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "duck_crown": {
-      "width": 15.45,
-      "height": 8.19,
+      "width": 22.49,
+      "height": 12.95,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "heart_hat": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 24.04,
+      "height": 15.18,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "golden_duck_trophy": {
-      "width": 15.71,
-      "height": 9.54,
+      "width": 18.56,
+      "height": 19.45,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "spring_spirit_badge": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 23.17,
+      "height": 17.26,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "summer_spirit_badge": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 23.17,
+      "height": 17.26,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "harvest_spirit_badge": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 23.17,
+      "height": 17.26,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "winter_spirit_badge": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 23.17,
+      "height": 17.26,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "duck_day_champion_badge": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 23.17,
+      "height": 17.26,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "love_spirit_badge": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 23.17,
+      "height": 17.26,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "welcome_bread": {
       "width": 21.53,
@@ -2667,10 +2667,10 @@
       "construction": "playground-v1"
     },
     "magpie_friendship_charm": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.31,
+      "height": 16.03,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "better_bait": {
       "width": 18.02,
@@ -2679,16 +2679,16 @@
       "construction": "seed-v1"
     },
     "master_fishing_rod": {
-      "width": 15.62,
-      "height": 9.09,
+      "width": 36.94,
+      "height": 24.11,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "fish_trophy": {
-      "width": 15.71,
-      "height": 9.54,
+      "width": 18.56,
+      "height": 19.45,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "dream_flower": {
       "width": 48.32,
@@ -2715,82 +2715,82 @@
       "construction": "keepsake-v1"
     },
     "explorer_badge": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 23.17,
+      "height": 17.26,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "master_trophy": {
-      "width": 15.71,
-      "height": 9.54,
+      "width": 18.56,
+      "height": 19.45,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "rainbow_charm": {
-      "width": 13.37,
-      "height": 9.09,
+      "width": 18.31,
+      "height": 16.03,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "legendary_trophy": {
-      "width": 15.71,
-      "height": 9.54,
+      "width": 18.56,
+      "height": 19.45,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "golden_badge": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 23.17,
+      "height": 17.26,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "frog_spawn": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 14.64,
+      "height": 9.53,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "fairy_dust": {
-      "width": 17.7,
-      "height": 8.19,
+      "width": 13.84,
+      "height": 10.52,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "dragon_scale": {
-      "width": 12.3,
-      "height": 8.19,
+      "width": 17.12,
+      "height": 14.07,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "mermaid_scale": {
-      "width": 12.3,
-      "height": 8.19,
+      "width": 17.12,
+      "height": 14.07,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "magic_acorn": {
-      "width": 11.85,
-      "height": 8.19,
+      "width": 8.75,
+      "height": 7.15,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "shiny_button": {
-      "width": 16.8,
-      "height": 8.19,
+      "width": 14.64,
+      "height": 9.53,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "ancient_coin": {
-      "width": 16.8,
-      "height": 8.19,
+      "width": 14.64,
+      "height": 9.53,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "message_bottle": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 13.63,
+      "height": 14.49,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "pirate_map": {
       "width": 49.12,
@@ -2799,10 +2799,10 @@
       "construction": "keepsake-v1"
     },
     "treasure_key": {
-      "width": 17.35,
-      "height": 6.39,
+      "width": 18.8,
+      "height": 10.52,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "sunflower": {
       "width": 48.31,
@@ -2901,178 +2901,178 @@
       "construction": "seed-v1"
     },
     "portrait_cheese": {
-      "width": 23.09,
-      "height": 10.44,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "portrait_emperor": {
-      "width": 23.09,
-      "height": 10.44,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "portrait_scholar": {
-      "width": 23.09,
-      "height": 10.44,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "portrait_artist": {
-      "width": 23.09,
-      "height": 10.44,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "portrait_explorer": {
-      "width": 23.09,
-      "height": 10.44,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "pond_frog": {
-      "width": 23.09,
-      "height": 10.44,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "pond_lily": {
-      "width": 23.35,
-      "height": 11.79,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "pond_dragonfly": {
-      "width": 22.91,
-      "height": 9.54,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "pond_fish": {
-      "width": 22.91,
-      "height": 9.54,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "weather_sun": {
-      "width": 23.17,
-      "height": 10.89,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "weather_rain": {
-      "width": 24,
-      "height": 8.19,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "weather_rainbow": {
-      "width": 25.61,
-      "height": 9.54,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "weather_snow": {
-      "width": 23.17,
-      "height": 10.89,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "legend_phoenix": {
-      "width": 23.36,
-      "height": 9.54,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "legend_dragon": {
-      "width": 23.09,
-      "height": 10.44,
+      "width": 22.07,
+      "height": 17.2,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "minnow": {
-      "width": 19.5,
-      "height": 8.19,
+      "width": 14.16,
+      "height": 7.05,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "goldfish": {
-      "width": 19.5,
-      "height": 8.19,
+      "width": 19.99,
+      "height": 11.51,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "carp": {
-      "width": 19.5,
-      "height": 8.19,
+      "width": 30.1,
+      "height": 12.5,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "bass": {
-      "width": 19.5,
-      "height": 8.19,
+      "width": 30.1,
+      "height": 12.5,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "catfish": {
-      "width": 19.5,
-      "height": 8.19,
+      "width": 31.89,
+      "height": 11.51,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "trout": {
-      "width": 19.5,
-      "height": 8.19,
+      "width": 27.73,
+      "height": 10.52,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "koi": {
-      "width": 19.5,
-      "height": 8.19,
+      "width": 29.91,
+      "height": 11.51,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "salmon": {
-      "width": 19.5,
-      "height": 8.19,
+      "width": 31.89,
+      "height": 11.51,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "pufferfish": {
-      "width": 17.87,
-      "height": 9.09,
+      "width": 20.18,
+      "height": 12.5,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "swordfish": {
-      "width": 25.35,
-      "height": 8.19,
+      "width": 57.71,
+      "height": 16.87,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "sturgeon": {
-      "width": 19.5,
-      "height": 8.19,
+      "width": 58.46,
+      "height": 14.39,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "golden_koi": {
-      "width": 19.5,
-      "height": 8.19,
+      "width": 31.09,
+      "height": 12.5,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "ghost_fish": {
-      "width": 19.5,
-      "height": 8.19,
+      "width": 28.92,
+      "height": 11.51,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "ancient_dragon_fish": {
-      "width": 22.65,
-      "height": 8.19,
+      "width": 67.11,
+      "height": 20.59,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "cozy_bed": {
       "width": 50.17,
@@ -3153,10 +3153,10 @@
       "construction": "waterworks-v1"
     },
     "spring_wreath": {
-      "width": 13.2,
-      "height": 8.19,
+      "width": 22.36,
+      "height": 13.5,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "snowglobe": {
       "width": 60.2,
@@ -3177,10 +3177,10 @@
       "construction": "workshop-v1"
     },
     "old_coin": {
-      "width": 16.8,
-      "height": 8.19,
+      "width": 14.64,
+      "height": 9.53,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "pretty_shell": {
       "width": 18.92,
@@ -3189,16 +3189,16 @@
       "construction": "specimen-v1"
     },
     "ancient_feather": {
-      "width": 10.76,
-      "height": 9.54,
+      "width": 16.44,
+      "height": 16.3,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "glass_bottle": {
-      "width": 12.56,
-      "height": 9.54,
+      "width": 13.63,
+      "height": 14.49,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "fossil": {
       "width": 18.97,
@@ -3213,28 +3213,28 @@
       "construction": "specimen-v1"
     },
     "golden_acorn": {
-      "width": 11.85,
-      "height": 8.19,
+      "width": 8.75,
+      "height": 7.15,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "pirate_compass": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 15.56,
+      "height": 10.12,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "ancient_crown": {
-      "width": 15.45,
-      "height": 8.19,
+      "width": 22.49,
+      "height": 12.95,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "mystic_egg": {
-      "width": 14.72,
-      "height": 9.09,
+      "width": 15.97,
+      "height": 12.23,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     },
     "star_fragment": {
       "width": 18.97,
@@ -3249,10 +3249,10 @@
       "construction": "keepsake-v1"
     },
     "heart_of_pond": {
-      "width": 15.62,
-      "height": 9.09,
+      "width": 19.57,
+      "height": 15.18,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "curio-v1"
     }
   }
 }

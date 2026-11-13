@@ -10,16 +10,17 @@ import {actorPitches} from '../client/actor-projection.mjs';
 const AGES=['hatchling','duckling','juvenile','young_adult','adult','mature','elder','legendary'],sx=7.5,sy=800/112,body={};
 for(const stage of AGES){const c=characterSprite({stage,state:'idle',facing:true},2),top=c.art.findIndex(r=>r.trim());body[stage]=(c.groundRow-top)*actorPitches({...c,x:0,y:0},sx,sy).ch;}
 const SEA=new Set(['pufferfish','swordfish','sturgeon','ancient_dragon_fish']);
-export const hostItem=oid=>O[oid].host==='keeping'?(SEA.has(oid)?'infinity_pool':'koi_pond'):oid;
+export const hostItem=oid=>O[oid].host==='keeping'?(SEA.has(oid)?'infinity_pool':'koi_pond'):O[oid].host==='display'?'trophy_case':oid;
 // Worn things: contacts are on Cheese's own body, always within his reach.
 const SELF=oid=>O[oid].host==='wearable';
-const env=(stage,tool)=>body[stage]*(tool==='none'?1.05:tool==='wing'?1.1:1.6);
+const env=(stage,tool)=>body[stage]*({none:1.05,wing:1.1,twig:1.6,reed:1.6}[tool]??0);  // unknown tools reach nothing
 const out={version:1,bodyHeight:body,routines:{}};
 for(const [key,r] of Object.entries(R)){
   if(SELF(r.object)){out.routines[key]={contactHeight:0,highestAnchor:null,tool:r.tool,reachableAges:AGES.filter(a=>!r.ages||r.ages.includes(a))};continue;}
  const item=hostItem(r.object),m=itemSprite(item,0,{state:{keeping:{setup:true,fish:[]}}}),hh=sx*itemWorldScale(item)*(m.detailScale||1)*1.5,ground=(m.anchors?.entry?.y??m.art.length-1);
  let high=0,anchor=null;
- for(let i=0;i<=40;i++){const p=repPose({id:key,elapsed:r.duration*i/40});if(!(p.contact>.05))continue;for(const n of [p.anchorA,p.anchorB]){const a=repAnchor(m,r.object,n);if(!a)continue;const h=(ground-a.y)*hh;if(h>high){high=h;anchor=n;}}}
+ const samples=[...Array(161).keys()].map(i=>i/160).concat(r.events.map(e=>e[0]),r.track.map(q=>q[0]));
+ for(const f of samples){const p=repPose({id:key,elapsed:r.duration*f});if(!(p.contact>.05))continue;for(const n of [p.anchorA,p.anchorB]){const a=repAnchor(m,r.object,n);if(!a)continue;const h=(ground-a.y)*hh;if(h>high){high=h;anchor=n;}}}
  out.routines[key]={contactHeight:Math.round(high),highestAnchor:anchor,tool:r.tool,reachableAges:AGES.filter(a=>(!r.ages||r.ages.includes(a))&&high<=env(a,r.tool))};
 }
 const target=fileURLToPath(new URL('../client/animation/repertoire-reach.json',import.meta.url)),data=JSON.stringify(out,null,1)+'\n';
