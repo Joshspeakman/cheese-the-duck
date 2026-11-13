@@ -7286,5 +7286,9 @@
   "wearableWorn": "Wearable routines run only while the item is worn (outfit slot or equipped cosmetic).",
   "curioArt": "116 previously pending objects drawn as curio-v1 (review); 6 wearables still pending art: bouquet, easter_egg_basket, heart_bubbles, rainbow_trail, sparkle_aura, umbrella.",
   "authoringWaves": "Sonnet workers in linked worktrees author per-object generators engine/animation-authoring/rep_<batch>.py with rep.py; lead merges, rebuilds bundles, runs check_repertoire, Fable reviews per family."
+ },
+ "userDecisions_2026_11_13": {
+  "hardClassAbilities": "Build carry/toss, visitor duets, wearables off/on, open display cases, touch/feed fish and drawn parts/state; keep full 48 per object (pilot: acorn 31, amulet 25, koi 29, scarves 22-23 on the old engine).",
+  "pace": "Slower and cheaper: one worker at a time, lighter reviews."
  }
 }
