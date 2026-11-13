@@ -14,12 +14,14 @@
   "birdhouse_sweep_cobwebs": {
    "contactHeight": 146,
    "highestAnchor": "window_hole",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": []
   },
   "birdhouse_scrub_the_sill": {
    "contactHeight": 99,
    "highestAnchor": "base_slab",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -33,6 +35,7 @@
   "birdhouse_hook_leaves_from_eave": {
    "contactHeight": 175,
    "highestAnchor": "eave_under",
+   "perchHeight": 0,
    "tool": "twig",
    "reachableAges": [
     "young_adult",
@@ -45,18 +48,21 @@
   "birdhouse_shove_it_upright": {
    "contactHeight": 140,
    "highestAnchor": "right_rail",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_chip_mud_off_the_shingles": {
    "contactHeight": 187,
    "highestAnchor": "shingle_low",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": []
   },
   "birdhouse_press_the_slat_back": {
    "contactHeight": 122,
    "highestAnchor": "lower_slot",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -67,12 +73,14 @@
   "birdhouse_landlord_tour": {
    "contactHeight": 146,
    "highestAnchor": "window_hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_plug_the_draught": {
    "contactHeight": 122,
    "highestAnchor": "lower_slot",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -83,36 +91,42 @@
   "birdhouse_ring_the_eave": {
    "contactHeight": 175,
    "highestAnchor": "eave_under",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": []
   },
   "birdhouse_rock_the_rail": {
    "contactHeight": 140,
    "highestAnchor": "right_rail",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_fit_the_bill_in": {
    "contactHeight": 146,
    "highestAnchor": "window_hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_scratch_on_the_rail": {
    "contactHeight": 158,
    "highestAnchor": "spindle_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_peekaboo_through_the_holes": {
    "contactHeight": 146,
    "highestAnchor": "window_hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_knock_and_run": {
    "contactHeight": 93,
    "highestAnchor": "sill",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -126,18 +140,21 @@
   "birdhouse_hop_for_the_high_hole": {
    "contactHeight": 163,
    "highestAnchor": "hole_r_high",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_march_the_slab": {
    "contactHeight": 140,
    "highestAnchor": "right_rail",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_belly_flop_in_the_leaves": {
    "contactHeight": 93,
    "highestAnchor": "sill",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -151,12 +168,14 @@
   "birdhouse_shout_into_the_hole": {
    "contactHeight": 163,
    "highestAnchor": "hole_l_high",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_listen_at_the_hole": {
    "contactHeight": 117,
    "highestAnchor": "hole_r_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -168,18 +187,21 @@
   "birdhouse_sniff_the_dark": {
    "contactHeight": 163,
    "highestAnchor": "hole_l_high",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_tap_the_shingles": {
    "contactHeight": 216,
    "highestAnchor": "shingle_mid",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": []
   },
   "birdhouse_try_the_hole_for_size": {
    "contactHeight": 117,
    "highestAnchor": "hole_l_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -191,6 +213,7 @@
   "birdhouse_wiggle_the_slat": {
    "contactHeight": 122,
    "highestAnchor": "lower_slot",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -201,12 +224,14 @@
   "birdhouse_prod_the_ridge": {
    "contactHeight": 262,
    "highestAnchor": "crown",
+   "perchHeight": 0,
    "tool": "twig",
    "reachableAges": []
   },
   "birdhouse_shade_by_the_wall": {
    "contactHeight": 128,
    "highestAnchor": "post_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "mature",
@@ -216,6 +241,7 @@
   "birdhouse_storm_huddle_by_the_slab": {
    "contactHeight": 105,
    "highestAnchor": "floor_bar",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "young_adult",
@@ -228,6 +254,7 @@
   "birdhouse_doze_on_the_sill": {
    "contactHeight": 93,
    "highestAnchor": "sill",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -241,12 +268,14 @@
   "birdhouse_sulk_facing_the_wall": {
    "contactHeight": 158,
    "highestAnchor": "spindle_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_wait_by_the_low_hole": {
    "contactHeight": 117,
    "highestAnchor": "hole_l_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -258,12 +287,14 @@
   "birdhouse_lee_of_the_rail": {
    "contactHeight": 140,
    "highestAnchor": "right_rail",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_doorman_bow": {
    "contactHeight": 117,
    "highestAnchor": "hole_l_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -275,12 +306,14 @@
   "birdhouse_estate_agent_pitch": {
    "contactHeight": 163,
    "highestAnchor": "hole_l_high",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": []
   },
   "birdhouse_stand_by_it_proud": {
    "contactHeight": 128,
    "highestAnchor": "post_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "mature",
@@ -290,12 +323,14 @@
   "birdhouse_lecture_the_centre_hole": {
    "contactHeight": 158,
    "highestAnchor": "spindle_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_wave_goodbye_to_the_holes": {
    "contactHeight": 117,
    "highestAnchor": "hole_r_low",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "young_adult",
@@ -308,12 +343,14 @@
   "birdhouse_survey_the_house": {
    "contactHeight": 140,
    "highestAnchor": "right_rail",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": []
   },
   "birdhouse_wipe_the_damp_off": {
    "contactHeight": 122,
    "highestAnchor": "lower_slot",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -324,12 +361,14 @@
   "birdhouse_knock_the_snow_off_the_roof": {
    "contactHeight": 216,
    "highestAnchor": "shingle_mid",
+   "perchHeight": 0,
    "tool": "twig",
    "reachableAges": []
   },
   "birdhouse_brush_snow_off_the_sill": {
    "contactHeight": 117,
    "highestAnchor": "hole_l_low",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "young_adult",
@@ -342,6 +381,7 @@
   "birdhouse_stamp_the_puddle_under": {
    "contactHeight": 99,
    "highestAnchor": "base_slab",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -355,6 +395,7 @@
   "birdhouse_air_the_house": {
    "contactHeight": 122,
    "highestAnchor": "lower_slot",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -365,12 +406,14 @@
   "birdhouse_hold_it_steady_in_the_gust": {
    "contactHeight": 140,
    "highestAnchor": "right_rail",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_head_stuck_in_the_hole": {
    "contactHeight": 117,
    "highestAnchor": "hole_l_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -382,12 +425,14 @@
   "birdhouse_bonked_by_the_swinging_house": {
    "contactHeight": 140,
    "highestAnchor": "right_rail",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": []
   },
   "birdhouse_slip_on_the_wet_sill": {
    "contactHeight": 99,
    "highestAnchor": "base_slab",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -401,12 +446,14 @@
   "birdhouse_snow_slides_off": {
    "contactHeight": 187,
    "highestAnchor": "shingle_low",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": []
   },
   "birdhouse_leaf_dump": {
    "contactHeight": 122,
    "highestAnchor": "lower_slot",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -417,6 +464,7 @@
   "birdhouse_walked_into_the_post": {
    "contactHeight": 128,
    "highestAnchor": "post_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "mature",
@@ -424,8 +472,9 @@
    ]
   },
   "dog_house_scrub_planks": {
-   "contactHeight": 65,
-   "highestAnchor": "knot_left",
+   "contactHeight": 47,
+   "highestAnchor": "plank_l",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -440,7 +489,8 @@
   },
   "dog_house_sweep_sill": {
    "contactHeight": 19,
-   "highestAnchor": "threshold",
+   "highestAnchor": "sill_a",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -453,9 +503,10 @@
     "legendary"
    ]
   },
-  "dog_house_wipe_planks_dry": {
-   "contactHeight": 56,
-   "highestAnchor": "plank_right",
+  "dog_house_scour_bowl_rim": {
+   "contactHeight": 0,
+   "highestAnchor": "bowl_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -468,517 +519,42 @@
     "legendary"
    ]
   },
-  "dog_house_hammer_bolt": {
+  "dog_house_mop_frame_dry": {
+   "contactHeight": 47,
+   "highestAnchor": "frame_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_hammer_loose_bolt": {
    "contactHeight": 19,
-   "highestAnchor": "bolt_a",
+   "highestAnchor": "bolt_l2",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
     "duckling",
-    "juvenile"
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
    ]
   },
-  "dog_house_scour_bowl": {
+  "dog_house_guard_the_bowl": {
    "contactHeight": 0,
-   "highestAnchor": "bowl_rim",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_scrub_doorframe": {
-   "contactHeight": 56,
-   "highestAnchor": "frame_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_enter_turn_sit": {
-   "contactHeight": 47,
-   "highestAnchor": "doorway_dark",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_guard_the_door": {
-   "contactHeight": 0,
-   "highestAnchor": "doorsill",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_scent_mark_frame": {
-   "contactHeight": 56,
-   "highestAnchor": "frame_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_peek_out_dark": {
-   "contactHeight": 56,
-   "highestAnchor": "frame_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_drag_bowl_nearer": {
-   "contactHeight": 0,
-   "highestAnchor": "bowl_rim",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_rummage_back_corner": {
-   "contactHeight": 47,
-   "highestAnchor": "doorway_dark",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_bark_through_door": {
-   "contactHeight": 56,
-   "highestAnchor": "frame_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_doorway_hops": {
-   "contactHeight": 19,
-   "highestAnchor": "threshold",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_bowl_hockey": {
-   "contactHeight": 0,
-   "highestAnchor": "bowl_rim",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_spy_through_knothole": {
-   "contactHeight": 65,
-   "highestAnchor": "knot_left",
-   "tool": "none",
-   "reachableAges": [
-    "duckling",
-    "juvenile"
-   ]
-  },
-  "dog_house_jump_scare_from_dark": {
-   "contactHeight": 47,
-   "highestAnchor": "doorway_dark",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_wall_circuit": {
-   "contactHeight": 56,
-   "highestAnchor": "plank_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_knock_planks": {
-   "contactHeight": 56,
-   "highestAnchor": "plank_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_count_bolts": {
-   "contactHeight": 19,
-   "highestAnchor": "bolt_a",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_shoulder_the_frame": {
-   "contactHeight": 56,
-   "highestAnchor": "frame_right",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_inspect_dish": {
-   "contactHeight": 47,
-   "highestAnchor": "doorway_dark",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_waddle_the_floor": {
-   "contactHeight": 28,
-   "highestAnchor": "inner_dish",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_weigh_the_bowl": {
-   "contactHeight": 0,
-   "highestAnchor": "bowl_edge",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_nap_in_the_dark": {
-   "contactHeight": 47,
-   "highestAnchor": "doorway_dark",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_doze_in_the_shade": {
-   "contactHeight": 56,
-   "highestAnchor": "plank_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_lean_on_warm_planks": {
-   "contactHeight": 56,
-   "highestAnchor": "plank_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_sulk_in_the_dark": {
-   "contactHeight": 47,
-   "highestAnchor": "doorway_dark",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_watch_dusk_from_sill": {
-   "contactHeight": 0,
-   "highestAnchor": "doorsill",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_sleep_upright_on_bolts": {
-   "contactHeight": 19,
-   "highestAnchor": "bolt_a",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_tip_out_bowl": {
-   "contactHeight": 0,
-   "highestAnchor": "bowl_rim",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_watch_rain_from_sill": {
-   "contactHeight": 0,
-   "highestAnchor": "doorsill",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_belly_mop_threshold": {
-   "contactHeight": 19,
-   "highestAnchor": "threshold",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_scrape_frost": {
-   "contactHeight": 65,
-   "highestAnchor": "knot_left",
-   "tool": "wing",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_crack_bowl_ice": {
-   "contactHeight": 0,
-   "highestAnchor": "bowl_rim",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_huddle_in_the_cold": {
-   "contactHeight": 47,
-   "highestAnchor": "doorway_dark",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_brace_in_the_gale": {
-   "contactHeight": 56,
-   "highestAnchor": "frame_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_shout_at_the_sign": {
-   "contactHeight": 0,
-   "highestAnchor": null,
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_pose_in_doorway": {
-   "contactHeight": 47,
-   "highestAnchor": "doorway_dark",
+   "highestAnchor": "bowl_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -992,8 +568,9 @@
    ]
   },
   "dog_house_knock_then_answer": {
-   "contactHeight": 56,
-   "highestAnchor": "frame_left",
+   "contactHeight": 47,
+   "highestAnchor": "frame_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1006,10 +583,123 @@
     "legendary"
    ]
   },
-  "dog_house_house_tour": {
+  "dog_house_peer_into_the_dark": {
    "contactHeight": 56,
-   "highestAnchor": "frame_left",
+   "highestAnchor": "door_dark",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_holler_at_the_door": {
+   "contactHeight": 47,
+   "highestAnchor": "frame_r",
+   "perchHeight": 0,
    "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_splash_the_bowl": {
+   "contactHeight": 0,
+   "highestAnchor": "bowl_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_scrape_feet_clean": {
+   "contactHeight": 0,
+   "highestAnchor": "thr_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_hop_up_and_off_the_sill": {
+   "contactHeight": 19,
+   "highestAnchor": "sill_a",
+   "perchHeight": 19,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_race_the_bolts": {
+   "contactHeight": 19,
+   "highestAnchor": "bolt_l1",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_flatten_at_the_frame": {
+   "contactHeight": 47,
+   "highestAnchor": "frame_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_spy_at_the_knot": {
+   "contactHeight": 65,
+   "highestAnchor": "knot_l",
+   "perchHeight": 0,
+   "tool": "none",
    "reachableAges": [
     "juvenile",
     "young_adult",
@@ -1019,10 +709,169 @@
     "legendary"
    ]
   },
-  "dog_house_point_at_the_roof": {
+  "dog_house_dig_beside_the_threshold": {
+   "contactHeight": 0,
+   "highestAnchor": "thr_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_chase_his_tail": {
+   "contactHeight": 0,
+   "highestAnchor": "thr_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_roll_over_and_play_dead": {
+   "contactHeight": 0,
+   "highestAnchor": "thr_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_tap_for_hollow": {
+   "contactHeight": 47,
+   "highestAnchor": "plank_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_count_the_bolts": {
+   "contactHeight": 19,
+   "highestAnchor": "bolt_l1",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_put_a_shoulder_to_it": {
+   "contactHeight": 47,
+   "highestAnchor": "frame_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_sniff_the_right_planks": {
+   "contactHeight": 47,
+   "highestAnchor": "plank_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_measure_the_rain_in_the_bowl": {
+   "contactHeight": 0,
+   "highestAnchor": "bowl_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_ring_the_bowl": {
+   "contactHeight": 0,
+   "highestAnchor": "bowl_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_stand_by_the_frame": {
+   "contactHeight": 56,
+   "highestAnchor": "door_dark",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_crane_at_the_sign": {
    "contactHeight": 0,
    "highestAnchor": null,
-   "tool": "none",
+   "perchHeight": 0,
+   "tool": "wing",
    "reachableAges": [
     "hatchling",
     "duckling",
@@ -1034,24 +883,10 @@
     "legendary"
    ]
   },
-  "dog_house_bow_to_nobody": {
-   "contactHeight": 0,
-   "highestAnchor": "doorsill",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_tail_snagged_on_bolt": {
+  "dog_house_lean_on_warm_planks": {
    "contactHeight": 47,
-   "highestAnchor": "doorway_dark",
+   "highestAnchor": "plank_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1064,9 +899,10 @@
     "legendary"
    ]
   },
-  "dog_house_slip_on_wet_sill": {
+  "dog_house_sit_on_the_sill_at_dusk": {
    "contactHeight": 19,
-   "highestAnchor": "threshold",
+   "highestAnchor": "sill_b",
+   "perchHeight": 19,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1079,177 +915,10 @@
     "legendary"
    ]
   },
-  "dog_house_step_in_the_bowl": {
-   "contactHeight": 0,
-   "highestAnchor": "bowl_rim",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_stuck_in_doorframe": {
-   "contactHeight": 56,
-   "highestAnchor": "frame_left",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "dog_house_fly_chase_headbutt": {
-   "contactHeight": 56,
-   "highestAnchor": "frame_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling"
-   ]
-  },
-  "gazebo_sweep_floor": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_left",
-   "tool": "wing",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_scrub_lattice": {
-   "contactHeight": 51,
-   "highestAnchor": "lattice_left",
-   "tool": "wing",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_mop_wet_rim": {
-   "contactHeight": 85,
-   "highestAnchor": "rim_left",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_hammer_slat": {
-   "contactHeight": 51,
-   "highestAnchor": "lattice_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_prop_up_flowers": {
-   "contactHeight": 43,
-   "highestAnchor": "flower_left",
-   "tool": "wing",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_dust_the_plinths": {
-   "contactHeight": 0,
-   "highestAnchor": "plinth_left",
-   "tool": "wing",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_step_up_and_sit": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_mid",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_survey_the_garden": {
-   "contactHeight": 85,
-   "highestAnchor": "rim_left",
-   "tool": "wing",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_doorman_at_the_entry": {
-   "contactHeight": 0,
-   "highestAnchor": "floor_front",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_back_scratch_on_post": {
+  "dog_house_sulk_at_the_frame": {
    "contactHeight": 93,
-   "highestAnchor": "post_foot_left",
+   "highestAnchor": "frame_l2",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -1260,24 +929,10 @@
     "legendary"
    ]
   },
-  "gazebo_pace_the_floor": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_settle_on_plinth": {
+  "dog_house_wait_at_the_threshold": {
    "contactHeight": 0,
-   "highestAnchor": "plinth_right",
+   "highestAnchor": "thr_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1290,9 +945,26 @@
     "legendary"
    ]
   },
-  "gazebo_hide_behind_flowers": {
-   "contactHeight": 43,
-   "highestAnchor": "flower_right",
+  "dog_house_bail_out_the_rain": {
+   "contactHeight": 0,
+   "highestAnchor": "bowl_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_crack_the_bowl_ice": {
+   "contactHeight": 0,
+   "highestAnchor": "bowl_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1305,9 +977,26 @@
     "legendary"
    ]
   },
-  "gazebo_leaf_pile_dive": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_left",
+  "dog_house_scrape_the_frost": {
+   "contactHeight": 47,
+   "highestAnchor": "plank_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_cool_his_feet": {
+   "contactHeight": 0,
+   "highestAnchor": "bowl_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1320,10 +1009,344 @@
     "legendary"
    ]
   },
-  "gazebo_rim_tightrope": {
+  "dog_house_shelter_from_the_rain": {
+   "contactHeight": 19,
+   "highestAnchor": "bolt_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_brace_the_frame_in_a_gale": {
+   "contactHeight": 93,
+   "highestAnchor": "frame_r2",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_bellow_at_the_sign": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_pose_at_the_frame": {
+   "contactHeight": 93,
+   "highestAnchor": "frame_l2",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_give_the_house_tour": {
+   "contactHeight": 56,
+   "highestAnchor": "door_dark",
+   "perchHeight": 47,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_argue_with_the_knot": {
+   "contactHeight": 65,
+   "highestAnchor": "knot_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_tightrope_the_sill": {
+   "contactHeight": 19,
+   "highestAnchor": "sill_b",
+   "perchHeight": 19,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_slip_on_the_wet_sill": {
+   "contactHeight": 19,
+   "highestAnchor": "sill_a",
+   "perchHeight": 19,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_jammed_in_the_doorway": {
+   "contactHeight": 56,
+   "highestAnchor": "door_dark",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_tail_snagged_on_a_bolt": {
+   "contactHeight": 19,
+   "highestAnchor": "bolt_l3",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_walked_into_the_frame": {
+   "contactHeight": 56,
+   "highestAnchor": "door_dark",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_stub_a_toe_on_the_bowl": {
+   "contactHeight": 0,
+   "highestAnchor": "bowl_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_shake_off_like_a_dog": {
+   "contactHeight": 47,
+   "highestAnchor": "plank_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "dog_house_fit_the_doorway_side_on": {
+   "contactHeight": 56,
+   "highestAnchor": "door_dark",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_sweep_the_leaves": {
+   "contactHeight": 0,
+   "highestAnchor": "floor_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_scrub_the_lattice": {
+   "contactHeight": 60,
+   "highestAnchor": "lat_l2",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_mop_the_wet_rail": {
    "contactHeight": 85,
-   "highestAnchor": "rim_left",
+   "highestAnchor": "rail_up_l",
+   "perchHeight": 0,
    "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_wipe_the_post_clean": {
+   "contactHeight": 111,
+   "highestAnchor": "post_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_wipe_the_tub_rims": {
+   "contactHeight": 0,
+   "highestAnchor": "tub_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_rest_his_wings_on_the_rail": {
+   "contactHeight": 85,
+   "highestAnchor": "rail_up_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_hold_the_entry_open": {
+   "contactHeight": 0,
+   "highestAnchor": "floor_c",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_scratch_his_back_on_the_post": {
+   "contactHeight": 111,
+   "highestAnchor": "post_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_rap_the_rail_to_order": {
+   "contactHeight": 85,
+   "highestAnchor": "rail_up_l",
+   "perchHeight": 0,
+   "tool": "wing",
    "reachableAges": [
     "juvenile",
     "young_adult",
@@ -1334,11 +1357,11 @@
    ]
   },
   "gazebo_spin_round_the_post": {
-   "contactHeight": 93,
-   "highestAnchor": "post_foot_left",
-   "tool": "wing",
+   "contactHeight": 111,
+   "highestAnchor": "post_r",
+   "perchHeight": 0,
+   "tool": "none",
    "reachableAges": [
-    "juvenile",
     "young_adult",
     "adult",
     "mature",
@@ -1346,9 +1369,23 @@
     "legendary"
    ]
   },
-  "gazebo_plinth_to_plinth_leaps": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_mid",
+  "gazebo_count_to_ten_at_the_post": {
+   "contactHeight": 111,
+   "highestAnchor": "post_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_jump_out_at_the_lattice": {
+   "contactHeight": 43,
+   "highestAnchor": "flower_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1361,9 +1398,58 @@
     "legendary"
    ]
   },
-  "gazebo_chase_the_sun_patch": {
+  "gazebo_rake_and_dive_the_leaves": {
+   "contactHeight": 0,
+   "highestAnchor": "floor_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_toss_leaves_like_confetti": {
+   "contactHeight": 0,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_hop_the_board_seams": {
+   "contactHeight": 0,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_race_between_the_tubs": {
    "contactHeight": 8,
-   "highestAnchor": "floor_left",
+   "highestAnchor": "foliage_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1378,7 +1464,8 @@
   },
   "gazebo_sniff_the_flowers": {
    "contactHeight": 43,
-   "highestAnchor": "flower_left",
+   "highestAnchor": "flower_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1391,12 +1478,12 @@
     "legendary"
    ]
   },
-  "gazebo_rap_the_post": {
-   "contactHeight": 93,
-   "highestAnchor": "post_foot_left",
+  "gazebo_knock_the_post_for_hollow": {
+   "contactHeight": 111,
+   "highestAnchor": "post_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
-    "juvenile",
     "young_adult",
     "adult",
     "mature",
@@ -1404,24 +1491,10 @@
     "legendary"
    ]
   },
-  "gazebo_tug_a_slat": {
-   "contactHeight": 51,
-   "highestAnchor": "lattice_edge_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_time_the_echo": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_left",
+  "gazebo_knock_the_tub": {
+   "contactHeight": 0,
+   "highestAnchor": "tub_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1435,8 +1508,9 @@
    ]
   },
   "gazebo_count_the_diamonds": {
-   "contactHeight": 51,
-   "highestAnchor": "rail_outer_left",
+   "contactHeight": 60,
+   "highestAnchor": "lat_l2",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1449,39 +1523,10 @@
     "legendary"
    ]
   },
-  "gazebo_stare_at_the_roof": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_mid",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_nap_on_the_floor": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_mid",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_bask_on_warm_boards": {
+  "gazebo_pace_out_the_floor": {
    "contactHeight": 0,
-   "highestAnchor": "floor_front",
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1494,14 +1539,12 @@
     "legendary"
    ]
   },
-  "gazebo_chin_on_the_plinth": {
-   "contactHeight": 0,
-   "highestAnchor": "plinth_left",
+  "gazebo_listen_at_the_post": {
+   "contactHeight": 111,
+   "highestAnchor": "post_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
     "young_adult",
     "adult",
     "mature",
@@ -1509,99 +1552,10 @@
     "legendary"
    ]
   },
-  "gazebo_sulk_against_the_rail": {
-   "contactHeight": 51,
-   "highestAnchor": "rail_outer_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_lie_under_the_roof_dusk": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_sit_by_the_flowers": {
-   "contactHeight": 43,
-   "highestAnchor": "flower_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_push_out_the_puddle": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_stomp_the_puddle": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_flap_the_leaves_out": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_left",
-   "tool": "wing",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_chip_the_frost_rim": {
+  "gazebo_hang_off_the_rail": {
    "contactHeight": 85,
-   "highestAnchor": "rim_left",
+   "highestAnchor": "rail_up_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -1612,9 +1566,23 @@
     "legendary"
    ]
   },
-  "gazebo_listen_to_the_roof": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_mid",
+  "gazebo_stand_next_to_the_post": {
+   "contactHeight": 111,
+   "highestAnchor": "post_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_lean_back_on_the_lattice": {
+   "contactHeight": 51,
+   "highestAnchor": "lat_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1627,11 +1595,90 @@
     "legendary"
    ]
   },
-  "gazebo_shield_flowers_from_gale": {
-   "contactHeight": 43,
-   "highestAnchor": "flower_left",
+  "gazebo_sulk_at_the_rail": {
+   "contactHeight": 85,
+   "highestAnchor": "rail_up_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_wait_for_company": {
+   "contactHeight": 0,
+   "highestAnchor": "floor_c",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_perch_on_the_base_rail": {
+   "contactHeight": 17,
+   "highestAnchor": "rail_lo_r",
+   "perchHeight": 17,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_stand_dry_in_the_rain": {
+   "contactHeight": 0,
+   "highestAnchor": "floor_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_chip_the_frost_off_the_rail": {
+   "contactHeight": 85,
+   "highestAnchor": "rail_up_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_scrape_frost_off_the_lattice": {
+   "contactHeight": 51,
+   "highestAnchor": "lat_r",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
+    "hatchling",
+    "duckling",
     "juvenile",
     "young_adult",
     "adult",
@@ -1640,12 +1687,12 @@
     "legendary"
    ]
   },
-  "gazebo_hide_behind_post_in_the_wind": {
-   "contactHeight": 93,
-   "highestAnchor": "post_foot_left",
+  "gazebo_hold_the_post_in_the_gale": {
+   "contactHeight": 111,
+   "highestAnchor": "post_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
-    "juvenile",
     "young_adult",
     "adult",
     "mature",
@@ -1653,9 +1700,10 @@
     "legendary"
    ]
   },
-  "gazebo_sing_up_at_the_roof": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_mid",
+  "gazebo_warm_his_feet_on_the_boards": {
+   "contactHeight": 0,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1668,9 +1716,10 @@
     "legendary"
    ]
   },
-  "gazebo_grand_entrance_strut": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_left",
+  "gazebo_cool_off_in_the_draught": {
+   "contactHeight": 0,
+   "highestAnchor": "floor_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1683,9 +1732,103 @@
     "legendary"
    ]
   },
-  "gazebo_serenade_the_blooms": {
+  "gazebo_wrap_both_wings_round_the_flowers": {
    "contactHeight": 43,
-   "highestAnchor": "flower_left",
+   "highestAnchor": "flower_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_bellow_up_at_the_roof": {
+   "contactHeight": 0,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_waltz_the_floor_alone": {
+   "contactHeight": 0,
+   "highestAnchor": "floor_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_tightrope_the_base_rail": {
+   "contactHeight": 17,
+   "highestAnchor": "rail_lo_l",
+   "perchHeight": 17,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_serenade_the_flowers": {
+   "contactHeight": 43,
+   "highestAnchor": "flower_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_pose_at_the_rail": {
+   "contactHeight": 111,
+   "highestAnchor": "post_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_strut_in_like_a_bride": {
+   "contactHeight": 0,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1699,8 +1842,9 @@
    ]
   },
   "gazebo_argue_with_the_echo": {
-   "contactHeight": 8,
-   "highestAnchor": "floor_mid",
+   "contactHeight": 0,
+   "highestAnchor": "floor_c",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1711,64 +1855,12 @@
     "mature",
     "elder",
     "legendary"
-   ]
-  },
-  "gazebo_speech_from_the_rim": {
-   "contactHeight": 85,
-   "highestAnchor": "rim_right",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_pose_at_the_rail": {
-   "contactHeight": 51,
-   "highestAnchor": "rail_outer_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_trip_on_plinth": {
-   "contactHeight": 51,
-   "highestAnchor": "lattice_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "gazebo_head_through_the_lattice": {
-   "contactHeight": 51,
-   "highestAnchor": "lattice_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile"
    ]
   },
   "gazebo_skid_on_the_leaves": {
    "contactHeight": 0,
-   "highestAnchor": "floor_front",
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1781,9 +1873,55 @@
     "legendary"
    ]
   },
-  "gazebo_bill_stuck_to_the_frost": {
+  "gazebo_head_through_a_diamond": {
+   "contactHeight": 51,
+   "highestAnchor": "lat_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_bonk_the_post": {
+   "contactHeight": 111,
+   "highestAnchor": "post_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_snag_a_feather_in_the_foliage": {
+   "contactHeight": 8,
+   "highestAnchor": "foliage_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "gazebo_miss_the_jump_to_the_rail": {
    "contactHeight": 85,
-   "highestAnchor": "rim_right",
+   "highestAnchor": "rail_up_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -1794,11 +1932,14 @@
     "legendary"
    ]
   },
-  "gazebo_miss_the_jump_to_rim": {
-   "contactHeight": 85,
-   "highestAnchor": "rim_left",
+  "gazebo_kick_the_tub_showing_off": {
+   "contactHeight": 0,
+   "highestAnchor": "tub_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
+    "hatchling",
+    "duckling",
     "juvenile",
     "young_adult",
     "adult",
@@ -1810,6 +1951,7 @@
   "koi_scatter_flakes": {
    "contactHeight": 73,
    "highestAnchor": "surface",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "duckling",
@@ -1824,6 +1966,7 @@
   "koi_bill_feed": {
    "contactHeight": 73,
    "highestAnchor": "surface",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "duckling",
@@ -1838,6 +1981,7 @@
   "koi_net_leaves": {
    "contactHeight": 73,
    "highestAnchor": "surface",
+   "perchHeight": 0,
    "tool": "reed",
    "reachableAges": [
     "hatchling",
@@ -1853,6 +1997,7 @@
   "koi_feeding_bell": {
    "contactHeight": 48,
    "highestAnchor": "edge_r",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -1868,6 +2013,7 @@
   "koi_kiss": {
    "contactHeight": 73,
    "highestAnchor": "surface",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "duckling",
@@ -1882,6 +2028,7 @@
   "koi_wingtip_trick": {
    "contactHeight": 89,
    "highestAnchor": "far",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -1895,6 +2042,7 @@
   "rubber_duck_dust_the_belly": {
    "contactHeight": 45,
    "highestAnchor": "belly_mid",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -1910,6 +2058,7 @@
   "rubber_duck_pick_the_seam_clean": {
    "contactHeight": 32,
    "highestAnchor": "belly_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1925,6 +2074,7 @@
   "rubber_duck_buff_the_bill": {
    "contactHeight": 101,
    "highestAnchor": "bill_tip",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -1938,6 +2088,7 @@
   "rubber_duck_pop_out_the_dent": {
    "contactHeight": 105,
    "highestAnchor": "head_cheek",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -1951,6 +2102,7 @@
   "rubber_duck_stamp_the_tail_flat": {
    "contactHeight": 53,
    "highestAnchor": "tail_tip",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -1966,6 +2118,7 @@
   "rubber_duck_dust_the_crest": {
    "contactHeight": 130,
    "highestAnchor": "crest",
+   "perchHeight": 0,
    "tool": "twig",
    "reachableAges": [
     "juvenile",
@@ -1979,6 +2132,7 @@
   "rubber_duck_squeeze_the_belly": {
    "contactHeight": 45,
    "highestAnchor": "belly_mid",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -1994,6 +2148,7 @@
   "rubber_duck_sit_on_the_hump": {
    "contactHeight": 77,
    "highestAnchor": "back_hump",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -2007,6 +2162,7 @@
   "rubber_duck_muffle_the_squeak": {
    "contactHeight": 45,
    "highestAnchor": "belly_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2022,6 +2178,7 @@
   "rubber_duck_rock_it_by_the_flank": {
    "contactHeight": 53,
    "highestAnchor": "flank_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2037,6 +2194,7 @@
   "rubber_duck_catch_the_bill_to_stop_it": {
    "contactHeight": 101,
    "highestAnchor": "bill_tip",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -2050,6 +2208,7 @@
   "rubber_duck_stir_the_ripples": {
    "contactHeight": 20,
    "highestAnchor": "ripple",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2065,6 +2224,7 @@
   "rubber_duck_race_round_and_slap": {
    "contactHeight": 53,
    "highestAnchor": "flank_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2080,6 +2240,7 @@
   "rubber_duck_sumo_bump": {
    "contactHeight": 32,
    "highestAnchor": "belly_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2095,6 +2256,7 @@
   "rubber_duck_bounce_off_the_belly": {
    "contactHeight": 45,
    "highestAnchor": "belly_mid",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2110,6 +2272,7 @@
   "rubber_duck_spin_the_tail": {
    "contactHeight": 53,
    "highestAnchor": "tail_tip",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2125,6 +2288,7 @@
   "rubber_duck_hide_behind_the_duck": {
    "contactHeight": 69,
    "highestAnchor": "breast_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "duckling",
@@ -2139,6 +2303,7 @@
   "rubber_duck_stomp_the_ripples": {
    "contactHeight": 24,
    "highestAnchor": "base_rim",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2154,6 +2319,7 @@
   "rubber_duck_find_where_the_squeak_lives": {
    "contactHeight": 45,
    "highestAnchor": "belly_mid",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -2169,6 +2335,7 @@
   "rubber_duck_rap_the_head": {
    "contactHeight": 105,
    "highestAnchor": "head_cheek",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "young_adult",
@@ -2181,6 +2348,7 @@
   "rubber_duck_sniff_the_patch": {
    "contactHeight": 65,
    "highestAnchor": "patch",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -2196,6 +2364,7 @@
   "rubber_duck_weigh_it_at_the_base": {
    "contactHeight": 24,
    "highestAnchor": "base_rim",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2211,6 +2380,7 @@
   "rubber_duck_tug_the_tail": {
    "contactHeight": 53,
    "highestAnchor": "tail_tip",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2226,6 +2396,7 @@
   "rubber_duck_stare_into_the_eye": {
    "contactHeight": 113,
    "highestAnchor": "eye_spot",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "young_adult",
@@ -2238,6 +2409,7 @@
   "rubber_duck_shade_at_the_flank": {
    "contactHeight": 36,
    "highestAnchor": "belly_rear",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2253,6 +2425,7 @@
   "rubber_duck_storm_huddle_at_the_base": {
    "contactHeight": 32,
    "highestAnchor": "belly_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2268,6 +2441,7 @@
   "rubber_duck_doze_on_the_belly": {
    "contactHeight": 45,
    "highestAnchor": "belly_mid",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2283,6 +2457,7 @@
   "rubber_duck_sulk_at_the_tail": {
    "contactHeight": 53,
    "highestAnchor": "tail_tip",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2298,6 +2473,7 @@
   "rubber_duck_hug_the_duck": {
    "contactHeight": 45,
    "highestAnchor": "belly_r",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -2313,6 +2489,7 @@
   "rubber_duck_bask_against_the_warm_rubber": {
    "contactHeight": 45,
    "highestAnchor": "belly_mid",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2328,6 +2505,7 @@
   "rubber_duck_compare_profiles": {
    "contactHeight": 101,
    "highestAnchor": "bill_tip",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -2341,6 +2519,7 @@
   "rubber_duck_claim_to_be_the_real_one": {
    "contactHeight": 93,
    "highestAnchor": "neck_back",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -2354,6 +2533,7 @@
   "rubber_duck_squeak_duet": {
    "contactHeight": 45,
    "highestAnchor": "belly_mid",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -2369,6 +2549,7 @@
   "rubber_duck_present_it_to_the_yard": {
    "contactHeight": 105,
    "highestAnchor": "head_cheek",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -2382,6 +2563,7 @@
   "rubber_duck_critic_walk_round": {
    "contactHeight": 53,
    "highestAnchor": "tail_tip",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2397,6 +2579,7 @@
   "rubber_duck_bow_to_the_duck": {
    "contactHeight": 24,
    "highestAnchor": "base_rim",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2412,6 +2595,7 @@
   "rubber_duck_shake_the_water_out": {
    "contactHeight": 53,
    "highestAnchor": "tail_tip",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -2425,6 +2609,7 @@
   "rubber_duck_blot_the_belly_dry": {
    "contactHeight": 45,
    "highestAnchor": "belly_mid",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -2440,6 +2625,7 @@
   "rubber_duck_brush_snow_off_the_cheek": {
    "contactHeight": 105,
    "highestAnchor": "head_cheek",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -2453,6 +2639,7 @@
   "rubber_duck_knock_the_snow_cap_off": {
    "contactHeight": 130,
    "highestAnchor": "crest",
+   "perchHeight": 0,
    "tool": "twig",
    "reachableAges": [
     "juvenile",
@@ -2466,6 +2653,7 @@
   "rubber_duck_stamp_the_puddle_round_it": {
    "contactHeight": 32,
    "highestAnchor": "belly_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2481,6 +2669,7 @@
   "rubber_duck_hold_it_in_the_gust": {
    "contactHeight": 53,
    "highestAnchor": "flank_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2496,6 +2685,7 @@
   "rubber_duck_squeak_blast": {
    "contactHeight": 45,
    "highestAnchor": "belly_mid",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2511,6 +2701,7 @@
   "rubber_duck_knocked_by_the_rock_back": {
    "contactHeight": 53,
    "highestAnchor": "flank_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2526,6 +2717,7 @@
   "rubber_duck_slip_in_the_puddle": {
    "contactHeight": 24,
    "highestAnchor": "base_rim",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2541,6 +2733,7 @@
   "rubber_duck_squeaked_in_the_ear": {
    "contactHeight": 101,
    "highestAnchor": "bill_tip",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -2554,6 +2747,7 @@
   "rubber_duck_snow_slides_off_its_head": {
    "contactHeight": 93,
    "highestAnchor": "neck_back",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -2567,6 +2761,7 @@
   "rubber_duck_walked_into_it_in_the_dark": {
    "contactHeight": 69,
    "highestAnchor": "breast_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "duckling",
@@ -2626,6 +2821,7 @@
   "tire_swing_wipe_mud": {
    "contactHeight": 51,
    "highestAnchor": "tyre_rim_l",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -2641,6 +2837,7 @@
   "tire_swing_peck_tread": {
    "contactHeight": 51,
    "highestAnchor": "tyre_rim_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2656,6 +2853,7 @@
   "tire_swing_scour_hole": {
    "contactHeight": 97,
    "highestAnchor": "tyre_far",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -2669,6 +2867,7 @@
   "tire_swing_tamp_post_foot": {
    "contactHeight": 16,
    "highestAnchor": "post_foot",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -2682,6 +2881,7 @@
   "tire_swing_unkink_rope": {
    "contactHeight": 97,
    "highestAnchor": "tyre_far",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -2695,6 +2895,7 @@
   "tire_swing_twig_level": {
    "contactHeight": 183,
    "highestAnchor": "rope_hang",
+   "perchHeight": 0,
    "tool": "twig",
    "reachableAges": [
     "adult",
@@ -2706,6 +2907,7 @@
   "tire_swing_sit_in_hole": {
    "contactHeight": 59,
    "highestAnchor": "hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2721,6 +2923,7 @@
   "tire_swing_wind_it_up": {
    "contactHeight": 97,
    "highestAnchor": "tyre_side",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -2734,6 +2937,7 @@
   "tire_swing_ride_the_unwind": {
    "contactHeight": 59,
    "highestAnchor": "hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2749,6 +2953,7 @@
   "tire_swing_hop_on_mid_swing": {
    "contactHeight": 59,
    "highestAnchor": "hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2764,6 +2969,7 @@
   "tire_swing_brake_with_feet": {
    "contactHeight": 29,
    "highestAnchor": "tyre_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2779,6 +2985,7 @@
   "tire_swing_shoulder_it_out": {
    "contactHeight": 51,
    "highestAnchor": "tyre_rim_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2794,6 +3001,7 @@
   "tire_swing_shove_and_duck": {
    "contactHeight": 29,
    "highestAnchor": "tyre_low",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -2809,6 +3017,7 @@
   "tire_swing_through_the_hole": {
    "contactHeight": 97,
    "highestAnchor": "tyre_far",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -2822,6 +3031,7 @@
   "tire_swing_peck_the_pendulum": {
    "contactHeight": 97,
    "highestAnchor": "tyre_side",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -2835,6 +3045,7 @@
   "tire_swing_high_five_pass": {
    "contactHeight": 51,
    "highestAnchor": "tyre_rim_r",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -2850,6 +3061,7 @@
   "tire_swing_hide_behind_post": {
    "contactHeight": 81,
    "highestAnchor": "post_waist",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "duckling",
@@ -2864,6 +3076,7 @@
   "tire_swing_poke_and_run": {
    "contactHeight": 29,
    "highestAnchor": "tyre_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2879,6 +3092,7 @@
   "tire_swing_shake_the_post": {
    "contactHeight": 81,
    "highestAnchor": "post_waist",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "duckling",
@@ -2893,6 +3107,7 @@
   "tire_swing_sniff_the_rubber": {
    "contactHeight": 51,
    "highestAnchor": "tyre_rim_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2908,6 +3123,7 @@
   "tire_swing_hang_off_the_rim": {
    "contactHeight": 51,
    "highestAnchor": "tyre_rim_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2923,6 +3139,7 @@
   "tire_swing_knock_for_hollow": {
    "contactHeight": 51,
    "highestAnchor": "tyre_rim_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2938,6 +3155,7 @@
   "tire_swing_peer_through_hole": {
    "contactHeight": 59,
    "highestAnchor": "hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2953,6 +3171,7 @@
   "tire_swing_count_the_spins": {
    "contactHeight": 51,
    "highestAnchor": "tyre_rim_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2968,6 +3187,7 @@
   "tire_swing_nap_in_hole": {
    "contactHeight": 59,
    "highestAnchor": "hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -2983,6 +3203,7 @@
   "tire_swing_lean_on_post": {
    "contactHeight": 81,
    "highestAnchor": "post_waist",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "duckling",
@@ -2997,6 +3218,7 @@
   "tire_swing_sit_in_its_shade": {
    "contactHeight": 29,
    "highestAnchor": "tyre_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3012,6 +3234,7 @@
   "tire_swing_sulk_at_the_post": {
    "contactHeight": 16,
    "highestAnchor": "post_foot",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3027,6 +3250,7 @@
   "tire_swing_shelter_in_the_storm": {
    "contactHeight": 51,
    "highestAnchor": "tyre_rim_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3042,6 +3266,7 @@
   "tire_swing_count_swings_sitting": {
    "contactHeight": 51,
    "highestAnchor": "tyre_rim_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3057,6 +3282,7 @@
   "tire_swing_throne_pose": {
    "contactHeight": 59,
    "highestAnchor": "hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3072,6 +3298,7 @@
   "tire_swing_ringmaster_bow": {
    "contactHeight": 97,
    "highestAnchor": "tyre_side",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -3085,6 +3312,7 @@
   "tire_swing_argue_with_the_tyre": {
    "contactHeight": 97,
    "highestAnchor": "tyre_far",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -3098,6 +3326,7 @@
   "tire_swing_judge_the_exhibit": {
    "contactHeight": 29,
    "highestAnchor": "tyre_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3113,6 +3342,7 @@
   "tire_swing_flamingo_in_the_hole": {
    "contactHeight": 59,
    "highestAnchor": "hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3128,6 +3358,7 @@
   "tire_swing_hold_court_by_the_post": {
    "contactHeight": 81,
    "highestAnchor": "post_waist",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "duckling",
@@ -3142,6 +3373,7 @@
   "tire_swing_tip_out_the_rain": {
    "contactHeight": 59,
    "highestAnchor": "hole",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -3155,6 +3387,7 @@
   "tire_swing_blot_it_dry": {
    "contactHeight": 51,
    "highestAnchor": "tyre_rim_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3170,6 +3403,7 @@
   "tire_swing_chip_off_the_frost": {
    "contactHeight": 97,
    "highestAnchor": "tyre_side",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -3183,6 +3417,7 @@
   "tire_swing_sweep_leaves_out": {
    "contactHeight": 59,
    "highestAnchor": "hole",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -3198,6 +3433,7 @@
   "tire_swing_hold_on_in_the_gust": {
    "contactHeight": 59,
    "highestAnchor": "hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3213,6 +3449,7 @@
   "tire_swing_stamp_the_puddle": {
    "contactHeight": 59,
    "highestAnchor": "hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3228,6 +3465,7 @@
   "tire_swing_wedged_in_hole": {
    "contactHeight": 59,
    "highestAnchor": "hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3243,6 +3481,7 @@
   "tire_swing_hit_by_the_return": {
    "contactHeight": 51,
    "highestAnchor": "tyre_rim_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3258,6 +3497,7 @@
   "tire_swing_slip_on_the_wet_tread": {
    "contactHeight": 97,
    "highestAnchor": "tyre_side",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -3271,6 +3511,7 @@
   "tire_swing_spun_out_dizzy": {
    "contactHeight": 59,
    "highestAnchor": "hole",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3286,6 +3527,7 @@
   "tire_swing_bill_frozen_to_the_rim": {
    "contactHeight": 51,
    "highestAnchor": "tyre_rim_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3301,6 +3543,7 @@
   "tire_swing_missed_the_hop": {
    "contactHeight": 97,
    "highestAnchor": "tyre_side",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -3311,12 +3554,12 @@
     "legendary"
    ]
   },
-  "toy_car_polish_door": {
-   "contactHeight": 78,
-   "highestAnchor": "door_panel",
+  "toy_car_polish_the_side": {
+   "contactHeight": 88,
+   "highestAnchor": "panel_h",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
-    "duckling",
     "juvenile",
     "young_adult",
     "adult",
@@ -3325,37 +3568,10 @@
     "legendary"
    ]
   },
-  "toy_car_buff_hubs": {
-   "contactHeight": 34,
-   "highestAnchor": "hub_left",
-   "tool": "wing",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_scoop_arch_grit": {
-   "contactHeight": 53,
-   "highestAnchor": "arch_left",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_pick_tread": {
+  "toy_car_pick_mud_out_of_the_tread": {
    "contactHeight": 15,
-   "highestAnchor": "tread_left",
+   "highestAnchor": "tread_lb",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3368,76 +3584,10 @@
     "legendary"
    ]
   },
-  "toy_car_tighten_hub_nut": {
-   "contactHeight": 34,
-   "highestAnchor": "hub_left",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_wipe_cabin_glass": {
-   "contactHeight": 126,
-   "highestAnchor": "window_glass",
-   "tool": "wing",
-   "reachableAges": [
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_shove_from_behind": {
-   "contactHeight": 63,
-   "highestAnchor": "side_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_haul_back_by_bumper": {
-   "contactHeight": 63,
-   "highestAnchor": "side_left",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_peck_headlamp_awake": {
+  "toy_car_wipe_the_lamps_clear": {
    "contactHeight": 58,
-   "highestAnchor": "headlamp",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_smother_tail_lamp": {
-   "contactHeight": 58,
-   "highestAnchor": "tail_lamp",
+   "highestAnchor": "lamp_l",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -3450,10 +3600,11 @@
     "legendary"
    ]
   },
-  "toy_car_chock_the_front_tyre": {
-   "contactHeight": 29,
-   "highestAnchor": "tyre_front",
-   "tool": "none",
+  "toy_car_hold_the_rocking_still": {
+   "contactHeight": 53,
+   "highestAnchor": "tail_low",
+   "perchHeight": 0,
+   "tool": "wing",
    "reachableAges": [
     "hatchling",
     "duckling",
@@ -3465,9 +3616,10 @@
     "legendary"
    ]
   },
-  "toy_car_steer_by_the_tyres": {
-   "contactHeight": 29,
-   "highestAnchor": "tyre_front",
+  "toy_car_shove_from_the_tail": {
+   "contactHeight": 53,
+   "highestAnchor": "tail_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -3478,9 +3630,24 @@
     "legendary"
    ]
   },
-  "toy_car_ride_the_sill": {
+  "toy_car_haul_back_by_the_lamp": {
+   "contactHeight": 58,
+   "highestAnchor": "lamp_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_rock_it_from_the_sill": {
    "contactHeight": 44,
-   "highestAnchor": "sill",
+   "highestAnchor": "sill_a",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3493,9 +3660,10 @@
     "legendary"
    ]
   },
-  "toy_car_tyre_to_tyre_hops": {
-   "contactHeight": 24,
-   "highestAnchor": "under_mid",
+  "toy_car_peck_the_lamp_awake": {
+   "contactHeight": 58,
+   "highestAnchor": "lamp_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3508,11 +3676,13 @@
     "legendary"
    ]
   },
-  "toy_car_race_alongside": {
-   "contactHeight": 78,
-   "highestAnchor": "door_panel",
-   "tool": "none",
+  "toy_car_smother_the_right_lamp": {
+   "contactHeight": 58,
+   "highestAnchor": "lamp_r",
+   "perchHeight": 0,
+   "tool": "wing",
    "reachableAges": [
+    "hatchling",
     "duckling",
     "juvenile",
     "young_adult",
@@ -3522,19 +3692,10 @@
     "legendary"
    ]
   },
-  "toy_car_hide_beneath_car": {
+  "toy_car_press_the_hub_like_a_horn": {
    "contactHeight": 34,
-   "highestAnchor": "hub_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile"
-   ]
-  },
-  "toy_car_billiards_nudges": {
-   "contactHeight": 63,
-   "highestAnchor": "side_left",
+   "highestAnchor": "hub_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3547,9 +3708,10 @@
     "legendary"
    ]
   },
-  "toy_car_rev_and_launch": {
-   "contactHeight": 29,
-   "highestAnchor": "tyre_front",
+  "toy_car_bounce_off_the_tyre": {
+   "contactHeight": 34,
+   "highestAnchor": "wall_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3562,78 +3724,12 @@
     "legendary"
    ]
   },
-  "toy_car_tap_the_glass": {
-   "contactHeight": 126,
-   "highestAnchor": "window_glass",
-   "tool": "none",
-   "reachableAges": [
-    "mature",
-    "legendary"
-   ]
-  },
-  "toy_car_smell_the_rubber": {
-   "contactHeight": 15,
-   "highestAnchor": "tread_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_squeeze_tyre_check": {
-   "contactHeight": 29,
-   "highestAnchor": "tyre_back",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_door_lean_test": {
-   "contactHeight": 78,
-   "highestAnchor": "door_panel",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_waddle_the_length": {
-   "contactHeight": 78,
-   "highestAnchor": "door_panel",
-   "tool": "none",
-   "reachableAges": [
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_rap_the_belt": {
+  "toy_car_drum_the_trim_line": {
    "contactHeight": 73,
-   "highestAnchor": "belt_left",
-   "tool": "none",
+   "highestAnchor": "trim_a",
+   "perchHeight": 0,
+   "tool": "wing",
    "reachableAges": [
-    "duckling",
     "juvenile",
     "young_adult",
     "adult",
@@ -3642,38 +3738,10 @@
     "legendary"
    ]
   },
-  "toy_car_doze_under_the_car": {
-   "contactHeight": 24,
-   "highestAnchor": "under_mid",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_slump_against_door": {
-   "contactHeight": 78,
-   "highestAnchor": "door_panel",
-   "tool": "none",
-   "reachableAges": [
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_sit_on_the_arch": {
-   "contactHeight": 53,
-   "highestAnchor": "arch_left",
+  "toy_car_race_between_the_hubs": {
+   "contactHeight": 34,
+   "highestAnchor": "hub_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3686,9 +3754,40 @@
     "legendary"
    ]
   },
-  "toy_car_sulk_behind_tail": {
+  "toy_car_peek_round_each_tyre": {
+   "contactHeight": 34,
+   "highestAnchor": "wall_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_rev_then_boot_the_tail": {
    "contactHeight": 58,
-   "highestAnchor": "tail_lamp",
+   "highestAnchor": "lamp_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_donut_round_the_tyre": {
+   "contactHeight": 34,
+   "highestAnchor": "wall_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3701,9 +3800,24 @@
     "legendary"
    ]
   },
-  "toy_car_chat_with_headlamp": {
-   "contactHeight": 58,
-   "highestAnchor": "headlamp",
+  "toy_car_nudge_the_tail_like_a_cue": {
+   "contactHeight": 83,
+   "highestAnchor": "tail_up",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_squeeze_the_tyre_wall": {
+   "contactHeight": 34,
+   "highestAnchor": "wall_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3716,9 +3830,10 @@
     "legendary"
    ]
   },
-  "toy_car_shelter_beneath_in_rain": {
+  "toy_car_knock_along_the_sill": {
    "contactHeight": 44,
-   "highestAnchor": "sill",
+   "highestAnchor": "sill_a",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -3731,253 +3846,447 @@
     "legendary"
    ]
   },
-  "toy_car_stomp_the_puddle": {
-   "contactHeight": 34,
-   "highestAnchor": "hub_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_dry_the_hubs_in_sun": {
-   "contactHeight": 34,
-   "highestAnchor": "hub_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_scrape_the_windscreen": {
-   "contactHeight": 126,
-   "highestAnchor": "window_glass",
-   "tool": "wing",
-   "reachableAges": [
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_chip_frost_off_treads": {
-   "contactHeight": 15,
-   "highestAnchor": "tread_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_cup_the_headlamp": {
-   "contactHeight": 58,
-   "highestAnchor": "headlamp",
-   "tool": "wing",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_huff_the_stiff_tyre": {
-   "contactHeight": 34,
-   "highestAnchor": "hub_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_heave_against_wind_roll": {
-   "contactHeight": 78,
-   "highestAnchor": "door_panel",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_preen_in_the_glass": {
-   "contactHeight": 126,
-   "highestAnchor": "window_glass",
-   "tool": "none",
-   "reachableAges": [
-    "mature",
-    "legendary"
-   ]
-  },
-  "toy_car_hood_ornament_pose": {
-   "contactHeight": 97,
-   "highestAnchor": "hood_top",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_reveal_the_hub": {
-   "contactHeight": 34,
-   "highestAnchor": "hub_right",
-   "tool": "wing",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_parade_lap": {
-   "contactHeight": 63,
-   "highestAnchor": "side_left",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_wind_up_the_take_off": {
-   "contactHeight": 63,
-   "highestAnchor": "side_right",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_signal_then_stay": {
-   "contactHeight": 58,
-   "highestAnchor": "tail_lamp",
-   "tool": "wing",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_foot_under_the_tyre": {
-   "contactHeight": 29,
-   "highestAnchor": "tyre_front",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_slip_in_the_puddle": {
-   "contactHeight": 29,
-   "highestAnchor": "tyre_front",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_head_stuck_in_lamp": {
-   "contactHeight": 58,
-   "highestAnchor": "headlamp",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_car_knocked_by_the_belt": {
-   "contactHeight": 73,
-   "highestAnchor": "belt_left",
-   "tool": "none",
-   "reachableAges": [
-    "duckling",
-    "juvenile"
-   ]
-  },
-  "toy_car_bounced_off_the_arch": {
+  "toy_car_pace_off_the_length": {
    "contactHeight": 53,
-   "highestAnchor": "arch_right",
+   "highestAnchor": "tail_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_sniff_the_tread": {
+   "contactHeight": 15,
+   "highestAnchor": "tread_lb",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_tap_the_cabin_glass": {
+   "contactHeight": 107,
+   "highestAnchor": "glass_a",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_lean_on_the_sill_for_weight": {
+   "contactHeight": 44,
+   "highestAnchor": "sill_b",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_count_the_tyre_rings": {
+   "contactHeight": 53,
+   "highestAnchor": "tread_lt",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_listen_for_an_engine": {
+   "contactHeight": 88,
+   "highestAnchor": "panel_h",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
     "young_adult",
     "adult",
-    "mature"
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_hug_the_tyre_to_measure": {
+   "contactHeight": 34,
+   "highestAnchor": "wall_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_nap_against_the_tyre": {
+   "contactHeight": 34,
+   "highestAnchor": "wall_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_warm_up_at_the_panel": {
+   "contactHeight": 88,
+   "highestAnchor": "panel_h",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_tell_the_lamp_his_day": {
+   "contactHeight": 58,
+   "highestAnchor": "lamp_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_sulk_at_the_tail": {
+   "contactHeight": 53,
+   "highestAnchor": "tail_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_wipe_the_frost_off_the_glass": {
+   "contactHeight": 122,
+   "highestAnchor": "glass_c",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_chip_frost_from_the_tread": {
+   "contactHeight": 53,
+   "highestAnchor": "tread_lt",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_cup_the_lamp_in_the_wind": {
+   "contactHeight": 58,
+   "highestAnchor": "lamp_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_chase_raindrops_down_the_glass": {
+   "contactHeight": 122,
+   "highestAnchor": "glass_c",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_dry_the_hubs_in_the_sun": {
+   "contactHeight": 34,
+   "highestAnchor": "hub_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_warm_his_wings_at_the_lamp": {
+   "contactHeight": 58,
+   "highestAnchor": "lamp_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_preen_in_the_dark_glass": {
+   "contactHeight": 107,
+   "highestAnchor": "glass_a",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_whip_the_wing_off_the_hub": {
+   "contactHeight": 34,
+   "highestAnchor": "hub_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_flash_a_turn_signal": {
+   "contactHeight": 58,
+   "highestAnchor": "lamp_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_wave_the_car_in": {
+   "contactHeight": 83,
+   "highestAnchor": "tail_up",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_quote_a_price_at_the_hub": {
+   "contactHeight": 44,
+   "highestAnchor": "sill_a",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_take_a_bow_in_the_glow": {
+   "contactHeight": 58,
+   "highestAnchor": "lamp_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_slip_beside_the_tyre": {
+   "contactHeight": 34,
+   "highestAnchor": "wall_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_lunge_at_his_reflection": {
+   "contactHeight": 107,
+   "highestAnchor": "glass_a",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_boot_the_tyre_too_hard": {
+   "contactHeight": 15,
+   "highestAnchor": "tread_rb",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_walk_into_the_panel": {
+   "contactHeight": 88,
+   "highestAnchor": "panel_h",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_snag_a_feather_on_the_lamp": {
+   "contactHeight": 58,
+   "highestAnchor": "lamp_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_car_caught_by_the_rebound": {
+   "contactHeight": 88,
+   "highestAnchor": "panel_h",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
    ]
   },
   "toy_sandbox_sweep_board": {
    "contactHeight": 37,
-   "highestAnchor": "board_edge",
+   "highestAnchor": "board_l",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -3990,12 +4299,12 @@
     "legendary"
    ]
   },
-  "toy_sandbox_level_heap": {
-   "contactHeight": 58,
-   "highestAnchor": "sand_mid",
+  "toy_sandbox_rake_tracks": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_a",
+   "perchHeight": 44,
    "tool": "none",
    "reachableAges": [
-    "hatchling",
     "duckling",
     "juvenile",
     "young_adult",
@@ -4007,7 +4316,8 @@
   },
   "toy_sandbox_refill_pit": {
    "contactHeight": 44,
-   "highestAnchor": "sand_front",
+   "highestAnchor": "sand_c",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4020,9 +4330,10 @@
     "legendary"
    ]
   },
-  "toy_sandbox_rake_prints": {
+  "toy_sandbox_plough_heap": {
    "contactHeight": 58,
-   "highestAnchor": "sand_mid",
+   "highestAnchor": "sand_deep",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4035,11 +4346,14 @@
     "legendary"
    ]
   },
-  "toy_sandbox_stand_shovel": {
-   "contactHeight": 87,
-   "highestAnchor": "shovel_shaft",
-   "tool": "wing",
+  "toy_sandbox_hammer_stud": {
+   "contactHeight": 29,
+   "highestAnchor": "stud_3",
+   "perchHeight": 0,
+   "tool": "none",
    "reachableAges": [
+    "hatchling",
+    "duckling",
     "juvenile",
     "young_adult",
     "adult",
@@ -4048,11 +4362,13 @@
     "legendary"
    ]
   },
-  "toy_sandbox_wipe_bucket": {
-   "contactHeight": 87,
-   "highestAnchor": "bucket_rim",
-   "tool": "wing",
+  "toy_sandbox_fan_sand_dry": {
+   "contactHeight": 37,
+   "highestAnchor": "board_m",
+   "perchHeight": 37,
+   "tool": "none",
    "reachableAges": [
+    "duckling",
     "juvenile",
     "young_adult",
     "adult",
@@ -4063,10 +4379,10 @@
   },
   "toy_sandbox_dig_pit": {
    "contactHeight": 44,
-   "highestAnchor": "sand_front",
+   "highestAnchor": "sand_b",
+   "perchHeight": 44,
    "tool": "none",
    "reachableAges": [
-    "hatchling",
     "duckling",
     "juvenile",
     "young_adult",
@@ -4076,38 +4392,10 @@
     "legendary"
    ]
   },
-  "toy_sandbox_heap_mound": {
+  "toy_sandbox_tamp_sand_flat": {
    "contactHeight": 58,
-   "highestAnchor": "sand_mid",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_pack_cake": {
-   "contactHeight": 73,
-   "highestAnchor": "bucket_in",
-   "tool": "wing",
-   "reachableAges": [
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_pat_down": {
-   "contactHeight": 58,
-   "highestAnchor": "sand_mid",
+   "highestAnchor": "sand_deep",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -4120,11 +4408,15 @@
     "legendary"
    ]
   },
-  "toy_sandbox_shovel_trench": {
-   "contactHeight": 102,
-   "highestAnchor": "shovel_grip",
-   "tool": "none",
+  "toy_sandbox_pat_heap_firm": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_a",
+   "perchHeight": 0,
+   "tool": "wing",
    "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
     "young_adult",
     "adult",
     "mature",
@@ -4132,11 +4424,45 @@
     "legendary"
    ]
   },
-  "toy_sandbox_trace_moat": {
-   "contactHeight": 109,
-   "highestAnchor": "moat_top",
+  "toy_sandbox_shove_sand_heap": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_c",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_draw_a_furrow": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_a",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_scrape_ring_deeper": {
+   "contactHeight": 66,
+   "highestAnchor": "ring_near",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
     "young_adult",
     "adult",
     "mature",
@@ -4145,68 +4471,54 @@
    ]
   },
   "toy_sandbox_sand_angel": {
-   "contactHeight": 58,
-   "highestAnchor": "sand_mid",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_stud_sprint": {
-   "contactHeight": 29,
-   "highestAnchor": "stud_a",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_mound_stomp": {
-   "contactHeight": 51,
-   "highestAnchor": "sand_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_hopscotch_trail": {
-   "contactHeight": 58,
-   "highestAnchor": "sand_mid",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_sand_fling": {
    "contactHeight": 44,
-   "highestAnchor": "sand_front",
+   "highestAnchor": "sand_b",
+   "perchHeight": 44,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_hop_a_trail": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_c",
+   "perchHeight": 44,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_stomp_heap_flat": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_c",
+   "perchHeight": 44,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_fling_sand_at_wall": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_a",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4219,9 +4531,41 @@
     "legendary"
    ]
   },
-  "toy_sandbox_bucket_megaphone": {
+  "toy_sandbox_toss_and_catch": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_b",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_leap_off_board": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_a",
+   "perchHeight": 44,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_honk_into_bucket": {
    "contactHeight": 87,
    "highestAnchor": "bucket_rim",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -4234,7 +4578,8 @@
   },
   "toy_sandbox_taste_sand": {
    "contactHeight": 44,
-   "highestAnchor": "sand_front",
+   "highestAnchor": "sand_a",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4247,9 +4592,10 @@
     "legendary"
    ]
   },
-  "toy_sandbox_squeeze_damp": {
+  "toy_sandbox_knock_left_wall": {
    "contactHeight": 51,
-   "highestAnchor": "sand_left",
+   "highestAnchor": "wall_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4262,139 +4608,10 @@
     "legendary"
    ]
   },
-  "toy_sandbox_probe_depth": {
-   "contactHeight": 58,
-   "highestAnchor": "sand_mid",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_knock_walls": {
-   "contactHeight": 58,
-   "highestAnchor": "wall_left_low",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_lean_on_shovel": {
-   "contactHeight": 87,
-   "highestAnchor": "shovel_shaft",
-   "tool": "none",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_ring_bucket": {
-   "contactHeight": 87,
-   "highestAnchor": "bucket_rim",
-   "tool": "wing",
-   "reachableAges": [
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_nap_in_hollow": {
-   "contactHeight": 58,
-   "highestAnchor": "sand_mid",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_bake_belly": {
-   "contactHeight": 44,
-   "highestAnchor": "sand_front",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_lean_on_wall": {
-   "contactHeight": 58,
-   "highestAnchor": "wall_left_low",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_shelter_behind_bucket": {
-   "contactHeight": 73,
-   "highestAnchor": "bucket_side",
-   "tool": "none",
-   "reachableAges": [
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_sulk_in_corner": {
-   "contactHeight": 58,
-   "highestAnchor": "wall_right_low",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_perch_shovel_grip": {
+  "toy_sandbox_tug_stuck_shovel": {
    "contactHeight": 102,
    "highestAnchor": "shovel_grip",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "young_adult",
@@ -4404,9 +4621,149 @@
     "legendary"
    ]
   },
-  "toy_sandbox_tip_out_rain": {
+  "toy_sandbox_measure_the_ring": {
+   "contactHeight": 95,
+   "highestAnchor": "ring_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_count_the_studs": {
+   "contactHeight": 29,
+   "highestAnchor": "stud_1",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_peer_down_the_pit": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_c",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_sniff_wet_sand": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_c",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_nap_in_the_sand": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_b",
+   "perchHeight": 44,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_bake_belly_warm": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_c",
+   "perchHeight": 44,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_lean_on_the_wall": {
+   "contactHeight": 51,
+   "highestAnchor": "wall_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_sit_on_the_board_edge": {
+   "contactHeight": 37,
+   "highestAnchor": "board_r",
+   "perchHeight": 37,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_sulk_at_the_far_wall": {
+   "contactHeight": 51,
+   "highestAnchor": "wall_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_tip_out_the_rain": {
    "contactHeight": 87,
    "highestAnchor": "bucket_rim",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -4417,12 +4774,12 @@
     "legendary"
    ]
   },
-  "toy_sandbox_squelch_stomp": {
+  "toy_sandbox_squelch_the_soaked_sand": {
    "contactHeight": 44,
-   "highestAnchor": "sand_front",
+   "highestAnchor": "sand_a",
+   "perchHeight": 44,
    "tool": "none",
    "reachableAges": [
-    "hatchling",
     "duckling",
     "juvenile",
     "young_adult",
@@ -4432,54 +4789,10 @@
     "legendary"
    ]
   },
-  "toy_sandbox_redraw_blown_tracks": {
-   "contactHeight": 51,
-   "highestAnchor": "sand_right",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_hold_pit_edge": {
-   "contactHeight": 44,
-   "highestAnchor": "sand_front",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_dust_bath": {
+  "toy_sandbox_prop_the_slumping_heap": {
    "contactHeight": 58,
-   "highestAnchor": "sand_mid",
-   "tool": "none",
-   "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_prop_slumping_heap": {
-   "contactHeight": 58,
-   "highestAnchor": "sand_mid",
+   "highestAnchor": "sand_deep",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -4492,12 +4805,44 @@
     "legendary"
    ]
   },
-  "toy_sandbox_hammer_crust": {
-   "contactHeight": 51,
-   "highestAnchor": "sand_right",
+  "toy_sandbox_chip_the_crust": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_c",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_scrape_frost_off_board": {
+   "contactHeight": 37,
+   "highestAnchor": "board_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_dust_bath_in_the_sand": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_c",
+   "perchHeight": 44,
+   "tool": "none",
+   "reachableAges": [
     "duckling",
     "juvenile",
     "young_adult",
@@ -4509,12 +4854,10 @@
   },
   "toy_sandbox_king_of_the_heap": {
    "contactHeight": 58,
-   "highestAnchor": "sand_mid",
+   "highestAnchor": "sand_deep",
+   "perchHeight": 58,
    "tool": "none",
    "reachableAges": [
-    "hatchling",
-    "duckling",
-    "juvenile",
     "young_adult",
     "adult",
     "mature",
@@ -4524,7 +4867,8 @@
   },
   "toy_sandbox_sign_the_sand": {
    "contactHeight": 58,
-   "highestAnchor": "sand_mid",
+   "highestAnchor": "sand_deep",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4537,9 +4881,10 @@
     "legendary"
    ]
   },
-  "toy_sandbox_drumroll_bucket": {
+  "toy_sandbox_drum_the_bucket": {
    "contactHeight": 87,
    "highestAnchor": "bucket_rim",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -4550,12 +4895,12 @@
     "legendary"
    ]
   },
-  "toy_sandbox_tightrope_board": {
+  "toy_sandbox_tap_dance_the_board": {
    "contactHeight": 37,
-   "highestAnchor": "board_edge",
+   "highestAnchor": "board_l",
+   "perchHeight": 37,
    "tool": "none",
    "reachableAges": [
-    "hatchling",
     "duckling",
     "juvenile",
     "young_adult",
@@ -4565,21 +4910,10 @@
     "legendary"
    ]
   },
-  "toy_sandbox_moat_ballet": {
-   "contactHeight": 109,
-   "highestAnchor": "moat_top",
-   "tool": "none",
-   "reachableAges": [
-    "young_adult",
-    "adult",
-    "mature",
-    "elder",
-    "legendary"
-   ]
-  },
-  "toy_sandbox_shovel_salute": {
+  "toy_sandbox_argue_with_the_shovel": {
    "contactHeight": 102,
    "highestAnchor": "shovel_grip",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -4590,9 +4924,10 @@
     "legendary"
    ]
   },
-  "toy_sandbox_wedged_in_bucket": {
-   "contactHeight": 73,
-   "highestAnchor": "bucket_in",
+  "toy_sandbox_head_wedged_in_bucket": {
+   "contactHeight": 87,
+   "highestAnchor": "bucket_rim",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -4603,9 +4938,10 @@
     "legendary"
    ]
   },
-  "toy_sandbox_trip_on_board": {
+  "toy_sandbox_trip_on_the_board": {
    "contactHeight": 44,
-   "highestAnchor": "sand_front",
+   "highestAnchor": "sand_a",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4618,11 +4954,13 @@
     "legendary"
    ]
   },
-  "toy_sandbox_shovel_whack": {
-   "contactHeight": 102,
-   "highestAnchor": "shovel_grip",
+  "toy_sandbox_bonk_the_shovel_shaft": {
+   "contactHeight": 87,
+   "highestAnchor": "shovel_shaft",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
+    "juvenile",
     "young_adult",
     "adult",
     "mature",
@@ -4630,9 +4968,25 @@
     "legendary"
    ]
   },
-  "toy_sandbox_knee_deep_in_pit": {
-   "contactHeight": 58,
-   "highestAnchor": "sand_mid",
+  "toy_sandbox_climb_out_of_the_pit": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_b",
+   "perchHeight": 44,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "toy_sandbox_cave_in_the_heap": {
+   "contactHeight": 44,
+   "highestAnchor": "sand_a",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4645,9 +4999,10 @@
     "legendary"
    ]
   },
-  "toy_sandbox_cave_in": {
-   "contactHeight": 51,
-   "highestAnchor": "sand_left",
+  "toy_sandbox_blow_sand_back_in_his_face": {
+   "contactHeight": 37,
+   "highestAnchor": "board_m",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4663,6 +5018,7 @@
   "toy_seesaw_scrub_the_base": {
    "contactHeight": 15,
    "highestAnchor": "base_l",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -4678,6 +5034,7 @@
   "toy_seesaw_pick_dust_from_hinge": {
    "contactHeight": 131,
    "highestAnchor": "hinge_pin",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "mature",
@@ -4687,6 +5044,7 @@
   "toy_seesaw_stamp_the_brace_true": {
    "contactHeight": 44,
    "highestAnchor": "brace_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4702,6 +5060,7 @@
   "toy_seesaw_lift_the_low_end_level": {
    "contactHeight": 116,
    "highestAnchor": "plank_under_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -4713,6 +5072,7 @@
   "toy_seesaw_lean_on_the_high_end": {
    "contactHeight": 124,
    "highestAnchor": "hinge_plate",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "adult",
@@ -4724,6 +5084,7 @@
   "toy_seesaw_dust_the_seat_box": {
    "contactHeight": 138,
    "highestAnchor": "seat_floor_l",
+   "perchHeight": 0,
    "tool": "twig",
    "reachableAges": [
     "juvenile",
@@ -4737,6 +5098,7 @@
   "toy_seesaw_hang_and_drop_the_end": {
    "contactHeight": 116,
    "highestAnchor": "plank_under_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -4748,6 +5110,7 @@
   "toy_seesaw_heave_the_end_up": {
    "contactHeight": 116,
    "highestAnchor": "plank_under_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -4759,6 +5122,7 @@
   "toy_seesaw_rock_it_in_shoves": {
    "contactHeight": 124,
    "highestAnchor": "plank_l",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "adult",
@@ -4770,6 +5134,7 @@
   "toy_seesaw_shift_weight_on_the_brace": {
    "contactHeight": 66,
    "highestAnchor": "brace_mid",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -4785,6 +5150,7 @@
   "toy_seesaw_butt_the_leg": {
    "contactHeight": 80,
    "highestAnchor": "leg_l_mid",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "juvenile",
@@ -4798,6 +5164,7 @@
   "toy_seesaw_lever_the_cradle": {
    "contactHeight": 124,
    "highestAnchor": "hinge_plate",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "adult",
@@ -4809,6 +5176,7 @@
   "toy_seesaw_tunnel_run": {
    "contactHeight": 37,
    "highestAnchor": "leg_l_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4824,6 +5192,7 @@
   "toy_seesaw_jackhammer_the_base": {
    "contactHeight": 15,
    "highestAnchor": "base_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4839,6 +5208,7 @@
   "toy_seesaw_shove_and_sprint_under": {
    "contactHeight": 116,
    "highestAnchor": "plank_under_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -4850,6 +5220,7 @@
   "toy_seesaw_peek_from_the_cradle": {
    "contactHeight": 44,
    "highestAnchor": "brace_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4860,6 +5231,7 @@
   "toy_seesaw_drum_the_base": {
    "contactHeight": 15,
    "highestAnchor": "base_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4875,6 +5247,7 @@
   "toy_seesaw_belly_slide_the_base": {
    "contactHeight": 15,
    "highestAnchor": "base_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4890,6 +5263,7 @@
   "toy_seesaw_tap_the_leg_and_listen": {
    "contactHeight": 37,
    "highestAnchor": "leg_l_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4905,6 +5279,7 @@
   "toy_seesaw_listen_at_the_brace": {
    "contactHeight": 44,
    "highestAnchor": "brace_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4920,6 +5295,7 @@
   "toy_seesaw_weigh_the_plank": {
    "contactHeight": 116,
    "highestAnchor": "plank_under_r",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "young_adult",
@@ -4932,6 +5308,7 @@
   "toy_seesaw_check_the_clearance": {
    "contactHeight": 116,
    "highestAnchor": "plank_under_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -4943,6 +5320,7 @@
   "toy_seesaw_squint_at_the_hinge_pin": {
    "contactHeight": 131,
    "highestAnchor": "hinge_pin",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "mature",
@@ -4952,6 +5330,7 @@
   "toy_seesaw_poke_seat_box_hollow": {
    "contactHeight": 138,
    "highestAnchor": "seat_floor_r",
+   "perchHeight": 0,
    "tool": "twig",
    "reachableAges": [
     "juvenile",
@@ -4965,6 +5344,7 @@
   "toy_seesaw_shade_under_the_plank": {
    "contactHeight": 44,
    "highestAnchor": "brace_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4980,6 +5360,7 @@
   "toy_seesaw_storm_huddle_under_plank": {
    "contactHeight": 21,
    "highestAnchor": "brace_foot",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -4995,6 +5376,7 @@
   "toy_seesaw_doze_against_the_leg": {
    "contactHeight": 37,
    "highestAnchor": "leg_r_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -5010,6 +5392,7 @@
   "toy_seesaw_sulk_on_the_base": {
    "contactHeight": 15,
    "highestAnchor": "base_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -5025,6 +5408,7 @@
   "toy_seesaw_wait_for_a_partner": {
    "contactHeight": 37,
    "highestAnchor": "leg_l_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -5040,6 +5424,7 @@
   "toy_seesaw_windbreak_at_the_leg": {
    "contactHeight": 80,
    "highestAnchor": "leg_r_mid",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "duckling",
@@ -5054,6 +5439,7 @@
   "toy_seesaw_present_to_a_buyer": {
    "contactHeight": 124,
    "highestAnchor": "plank_l",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "adult",
@@ -5065,6 +5451,7 @@
   "toy_seesaw_flamingo_on_the_base": {
    "contactHeight": 15,
    "highestAnchor": "base_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -5080,6 +5467,7 @@
   "toy_seesaw_tightrope_the_base": {
    "contactHeight": 15,
    "highestAnchor": "base_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -5095,6 +5483,7 @@
   "toy_seesaw_argue_with_the_brace": {
    "contactHeight": 66,
    "highestAnchor": "brace_mid",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "juvenile",
@@ -5108,6 +5497,7 @@
   "toy_seesaw_portrait_in_the_cradle": {
    "contactHeight": 44,
    "highestAnchor": "brace_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -5123,6 +5513,7 @@
   "toy_seesaw_bow_to_the_plank": {
    "contactHeight": 116,
    "highestAnchor": "plank_under_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -5134,6 +5525,7 @@
   "toy_seesaw_wipe_the_plank_dry": {
    "contactHeight": 116,
    "highestAnchor": "plank_under_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -5145,6 +5537,7 @@
   "toy_seesaw_sweep_snow_from_the_leg": {
    "contactHeight": 37,
    "highestAnchor": "leg_l_low",
+   "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [
     "hatchling",
@@ -5160,6 +5553,7 @@
   "toy_seesaw_kick_the_snow_bank": {
    "contactHeight": 15,
    "highestAnchor": "base_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -5175,6 +5569,7 @@
   "toy_seesaw_stamp_the_puddles": {
    "contactHeight": 37,
    "highestAnchor": "leg_l_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -5190,6 +5585,7 @@
   "toy_seesaw_hush_the_wet_hinge": {
    "contactHeight": 44,
    "highestAnchor": "brace_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -5205,6 +5601,7 @@
   "toy_seesaw_run_the_rain_off": {
    "contactHeight": 116,
    "highestAnchor": "plank_under_r",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -5216,6 +5613,7 @@
   "toy_seesaw_clipped_by_the_drop": {
    "contactHeight": 116,
    "highestAnchor": "plank_under_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -5227,6 +5625,7 @@
   "toy_seesaw_bill_stuck_in_the_brace": {
    "contactHeight": 66,
    "highestAnchor": "brace_mid",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "duckling",
@@ -5236,6 +5635,7 @@
   "toy_seesaw_skid_on_the_wet_base": {
    "contactHeight": 37,
    "highestAnchor": "leg_l_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -5251,6 +5651,7 @@
   "toy_seesaw_flipped_by_the_rebound": {
    "contactHeight": 116,
    "highestAnchor": "plank_under_l",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "adult",
@@ -5262,6 +5663,7 @@
   "toy_seesaw_walked_into_the_leg": {
    "contactHeight": 37,
    "highestAnchor": "leg_r_low",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "hatchling",
@@ -5277,6 +5679,7 @@
   "toy_seesaw_stuck_under_the_plank": {
    "contactHeight": 102,
    "highestAnchor": "cradle",
+   "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
     "young_adult",

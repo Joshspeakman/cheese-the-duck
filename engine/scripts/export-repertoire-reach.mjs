@@ -18,10 +18,13 @@ const out={version:1,bodyHeight:body,routines:{}};
 for(const [key,r] of Object.entries(R)){
   if(SELF(r.object)){out.routines[key]={contactHeight:0,highestAnchor:null,tool:r.tool,reachableAges:AGES.filter(a=>!r.ages||r.ages.includes(a))};continue;}
  const item=hostItem(r.object),m=itemSprite(item,0,{state:{keeping:{setup:true,fish:[]}}}),hh=sx*itemWorldScale(item)*(m.detailScale||1)*1.5,ground=repGround(m,item);
- let high=0,anchor=null;
+ let high=0,anchor=null,perchHigh=0;
  const samples=[...Array(161).keys()].map(i=>i/160).concat(r.events.map(e=>e[0]),r.track.map(q=>q[0]));
- for(const f of samples){const p=repPose({id:key,elapsed:r.duration*f});if(!(p.contact>.05))continue;for(const n of [p.anchorA,p.anchorB]){const a=repAnchor(m,r.object,n);if(!a)continue;const h=(ground-a.y)*hh;if(h>high){high=h;anchor=n;}}}
- out.routines[key]={contactHeight:Math.round(high),highestAnchor:anchor,tool:r.tool,reachableAges:AGES.filter(a=>(!r.ages||r.ages.includes(a))&&high<=env(a,r.tool))};
+ for(const f of samples){const p=repPose({id:key,elapsed:r.duration*f});
+  // Perching: he climbs onto the touched surface, which must be at most 0.6 x his body height.
+  if(p.perch>.01)for(const n of [p.anchorA,p.anchorB]){const a=repAnchor(m,r.object,n);if(a)perchHigh=Math.max(perchHigh,(ground-a.y)*hh);}
+  if(!(p.contact>.05))continue;for(const n of [p.anchorA,p.anchorB]){const a=repAnchor(m,r.object,n);if(!a)continue;const h=(ground-a.y)*hh;if(h>high){high=h;anchor=n;}}}
+ out.routines[key]={contactHeight:Math.round(high),highestAnchor:anchor,perchHeight:Math.round(perchHigh),tool:r.tool,reachableAges:AGES.filter(a=>(!r.ages||r.ages.includes(a))&&high<=env(a,r.tool)&&perchHigh<=.6*body[a])};
 }
 const target=fileURLToPath(new URL('../client/animation/repertoire-reach.json',import.meta.url)),data=JSON.stringify(out,null,1)+'\n';
 if(process.argv.includes('--check')){if(!fs.existsSync(target)||fs.readFileSync(target,'utf8')!==data)throw Error('Repertoire anchors changed: run node engine/scripts/export-repertoire-reach.mjs');}
