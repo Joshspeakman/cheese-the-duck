@@ -933,7 +933,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress",
    "native_acts": "rest inside (native residence)"
   },
@@ -2165,7 +2165,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress",
    "native_acts": "rest inside (native residence)"
   },
@@ -2252,7 +2252,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress",
    "native_acts": "rest inside (native residence)"
   },
@@ -2267,7 +2267,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress",
    "native_acts": "rest inside (native residence)"
   },
@@ -2282,7 +2282,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress",
    "native_acts": "rest inside (native residence)"
   },
@@ -2297,7 +2297,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "reconstructed_review_in_progress",
    "native_acts": "rest inside (native residence)"
   },
@@ -8493,8 +8493,8 @@
   }
  ],
  "progress": {
-  "objects_complete": 8,
+  "objects_complete": 14,
   "objects_total": 609,
-  "repertoire_routines": 393
+  "repertoire_routines": 681
  }
 }
