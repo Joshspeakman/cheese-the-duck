@@ -155,19 +155,34 @@ try:
             ok, msg = K.keep(p, hostitem, iid, oid, c.caught_at)
             assert ok, msg
             return hostitem, iid
+        if kind == 'display':
+            own(oid)
+            g.habitat.owned_items = ['trophy_case']
+            g.habitat.placed_items = [PlacedItem('trophy_case', 10, 6)]
+            p.sync()
+            iid = next(x.instance for x in p.placements if x.item_id == 'trophy_case')
+            from engine import display
+            ok, msg = display.show(p, 'trophy_case', iid, oid, R.displayable())
+            assert ok, msg
+            return 'trophy_case', iid
         if kind == 'portable':
-            from engine.item_profiles import ITEMS
-            src = ITEMS[oid]['sources'][0].split('.')[0]
-            if src == 'materials':
-                g.materials.add_material(oid, 1)
-            elif src == 'treasure':
-                from world.treasure import FoundTreasure, TreasureLocation
-                g.treasure.found_treasures[oid] = [FoundTreasure(oid, datetime.now().isoformat(), TreasureLocation.BEACH)]
-            else:
-                g.inventory.add_item(oid)
+            own(oid)
             p.sync()
             return oid, None
         raise AssertionError('unknown host ' + kind)
+
+    def own(oid):
+        from engine.item_profiles import ITEMS
+        src = ITEMS[oid]['sources'][0].split('.')[0] if ITEMS.get(oid, {}).get('sources') else 'items'
+        if src == 'materials':
+            g.materials.add_material(oid, 1)
+        elif src == 'treasure':
+            from world.treasure import FoundTreasure, TreasureLocation
+            g.treasure.found_treasures[oid] = [FoundTreasure(oid, datetime.now().isoformat(), TreasureLocation.BEACH)]
+        elif src == 'collectibles':
+            g.collectibles.collect(oid, 'test')
+        else:
+            g.inventory.add_item(oid)
 
     def setup_for(key, hostitem, iid, age):
         r = R.ROUTINES[key]
