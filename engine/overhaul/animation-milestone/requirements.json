@@ -4632,7 +4632,7 @@
       "engine/artifacts/animation-milestone/medium-art-render.json",
       "engine/artifacts/animation-milestone/parent-medium-review.log"
     ],
-    "next": "Wire wonder say cues into speech; then breadth: 116 non-shop items (art + 48 each) family by family; then deepen every object toward 48.",
+    "next": "Breadth: the 116 non-shop items (collectibles, fish, badges, feathers, materials, treasure): new art + 48 meaningful interactions each, family by family; then deepen every object toward 48.",
     "checks": {
       "javascript": 226,
       "livingSimulation": 694,
@@ -6072,7 +6072,6 @@
         "Displayed work offset follows the keepsake pattern (renderer stages Cheese at the part); not the native castle contact model",
         "4-7 routines per object vs the 48 target",
         "Semantic distinctness only structurally checked; no person has reviewed meaning",
-        "say cues on routines are data only: not yet wired into dialogue/local speech",
         "Frame-time p95 cost noted under performance"
       ],
       "repertoires": "engine/overhaul/animation-milestone/repertoires/<id>.json, stage implemented, verifiedSequences 0; validate_evidence.py 0 errors",
@@ -6212,6 +6211,12 @@
           "dragon_egg": 2
         },
         "reviewed": "In-game crops of robot butler and gong: visor, eyes, buttons, gong rings and ropes now legible."
+      },
+      "speech": {
+        "status": "implemented_tested",
+        "source": "client/animation/wonder-lines.json (56 cues x 2 authored lines, Cheese's deadpan voice, uncensored) + wonders.say",
+        "behavior": "At a voiced routine's first real contact (or a third of the way through a contact-free one) Cheese says one line, posted to the bottom-left chat (say channel) and his speech bubble; not stored as a conversation memory; never while an egg.",
+        "tested": "check_wonders asserts exactly one authored line per voiced routine run lands in the chat log (all ages)"
       }
     },
     "userDecisions_2026_11_13": {
