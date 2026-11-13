@@ -458,8 +458,8 @@ class LivingPond:
         castle_care=carnival_choice in castle_work.ROUTINES if carnival_choice is not None else False
         if self.minds.encounter_for('cheese'):
             if automatic or shared_proposal is not None:return False, 'Cheese is spending time with a friend.'
-        if kind == 'item' and target in shelters.HOMES:
-            kind = 'rest'
+        if kind == 'item' and target in shelters.HOMES and rep_work is None:
+            kind = 'rest'  # a repertoire routine at a home is work at it, not a rest inside
         if s['plan'] or not self.available():
             return False, 'Cheese is busy. Finish or cancel the current activity first.'
         if self.game.duck.needs.energy < 15 and kind not in ('rest', 'item'):
@@ -957,9 +957,6 @@ class LivingPond:
             keepsakes.complete(self,plan)
             wonders.complete(self,plan)
             repertoire.complete(self,plan)
-            if plan.get('rep_work'):
-                from engine import wonder_company
-                wonder_company.complete(self.minds,plan)
             from engine import wonder_company
             wonder_company.complete(self.minds,plan)
             creative_props.complete(self,plan)
