@@ -17,11 +17,38 @@ from engine.wonders import World, condition, cheese_context, hash_text, finite, 
 DIR = Path(__file__).parent / 'client/animation/repertoire'
 OBJECTS = {}
 ROUTINES = {}
+LOAD_ERRORS = []   # a broken file is skipped and reported, never breaks the game
+TOOLS = ('none', 'wing', 'twig', 'reed')
+OBJ_STATE = ('dirt', 'wetness', 'condition')   # real drawn object state effects may change
+_NEEDS_OK = ('fun', 'social', 'energy', 'cleanliness')
+
+
+def _validate(d):
+    assert isinstance(d.get('object'), str) and d.get('host') in ('placed', 'portable', 'keeping', 'display', 'wearable'), 'object/host'
+    fields = d.get('fields', {})
+    for name, rows in d.get('effects', {}).items():
+        for t, op, v in rows:
+            assert op in ('set', 'add', 'mul', 'max', 'min', 'wrap'), name + ' op'
+            ok = t in fields or (t.startswith('need.') and t[5:] in _NEEDS_OK and op == 'add') or (t.startswith('obj.') and t[4:] in OBJ_STATE) \
+                or (d['host'] == 'keeping' and (t.startswith('subject.') or t.startswith('keeping.')))
+            assert ok, name + ' target ' + t
+    for k, r in d['routines'].items():
+        for key in ('label', 'duration', 'track', 'events', 'when', 'prefer', 'tool'):
+            assert key in r, k + ' missing ' + key
+        assert r['tool'] in TOOLS, k + ' tool ' + r['tool']
+        assert all(e[1] in d['effects'] for e in r['events']), k + ' event effect'
+
+
 for _f in sorted(DIR.glob('*.json')) if DIR.exists() else []:
-    _d = json.loads(_f.read_text())
+    try:
+        _d = json.loads(_f.read_text())
+        _validate(_d)
+        assert not any(_k in ROUTINES for _k in _d['routines']), 'duplicate routine id'
+    except Exception as _e:
+        LOAD_ERRORS.append(_f.name + ': ' + str(_e))
+        continue
     OBJECTS[_d['object']] = _d
     for _k, _r in _d['routines'].items():
-        assert _k not in ROUTINES, _k
         ROUTINES[_k] = dict(_r, object=_d['object'])
 _REACH_FILE = Path(__file__).parent / 'client/animation/repertoire-reach.json'
 REACH = {k: set(v['reachableAges']) for k, v in json.loads(_REACH_FILE.read_text())['routines'].items()} if _REACH_FILE.exists() else {}
@@ -58,7 +85,7 @@ def state(oid, obj):
     return s
 
 
-def apply(s, oid, rows, pond=None, subject=None, host=None):
+def apply(s, oid, rows, pond=None, subject=None, host=None, objstate=None):
     fields = OBJECTS[oid].get('fields', {})
     for target, op, value in rows:
         if target.startswith('need.'):
@@ -66,7 +93,13 @@ def apply(s, oid, rows, pond=None, subject=None, host=None):
             if pond is not None and need in NEEDS and op == 'add':
                 pond.change_need(need, float(value))
             continue
-        if target.startswith('keeping.'):
+        if target.startswith('obj.'):
+            if objstate is None or target[4:] not in OBJ_STATE:
+                continue
+            store, key, bounds = objstate, target[4:], (0., 1.)
+            if key == 'condition':
+                store.setdefault('condition', 1.)
+        elif target.startswith('keeping.'):
             from engine import keeping
             key = target[8:]
             if host is None or key not in keeping.POND:
@@ -85,7 +118,7 @@ def apply(s, oid, rows, pond=None, subject=None, host=None):
         lo, hi = bounds
         if target.startswith('keeping.'):
             key = target[8:]
-        old = finite(store.get(key))
+        old = finite(store.get(key), 1. if key == 'condition' else 0.)
         new = {'set': value, 'add': old + value, 'mul': old * value, 'max': max(old, value), 'min': min(old, value)}.get(op)
         if op == 'wrap':
             span = hi - lo
@@ -138,8 +171,10 @@ def host_of(pond, oid, instance=None):
             if p.item_id == oid and (instance is None or p.instance == instance):
                 return oid, p.instance, None
         return None
-    if kind in ('portable', 'wearable'):
+    if kind == 'portable':
         return (oid, None, None) if oid in pond.owned else None
+    if kind == 'wearable':
+        return (oid, None, None) if worn(pond, oid) else None
     if kind == 'display':
         from engine import display
         where = display.shown_anywhere(pond).get(oid)
@@ -157,6 +192,16 @@ def host_of(pond, oid, instance=None):
                 return p.item_id, p.instance, fish
         return None
     return None
+
+
+def worn(pond, oid):
+    """Wearable routines are about the thing on Cheese's body: it must be worn."""
+    g = pond.game
+    on = set((getattr(g.habitat, 'equipped_cosmetics', {}) or {}).values())
+    eq = getattr(getattr(g, 'outfits', None), 'current_outfit', None)
+    if eq is not None:
+        on |= {v for v in vars(eq).values() if isinstance(v, str)}
+    return oid in on
 
 
 def subject_of(pond, work, plan):
@@ -226,7 +271,10 @@ def appeal(pond, oid, obj, key):
     for token in r['when']:
         name = token.lstrip('!')
         score += 4 if COMPARE.match(name) else 0 if token.startswith('!') else 6
-    score -= 4 * min(5, s['history'].get(key, 0))
+    # Least-used rotation: the novelty penalty is relative and uncapped, so gated
+    # favourites cannot strand the rest of the 48.
+    used = [s['history'].get(k, 0) for k in by_object(oid)] or [0]
+    score -= 12 * (s['history'].get(key, 0) - min(used))
     return score
 
 
@@ -255,9 +303,12 @@ def valid(pond, plan):
     oid = work['object']
     kind = OBJECTS[oid].get('host', 'placed')
     target = plan['target']
-    if kind in ('portable', 'wearable'):
+    if kind == 'portable':
         if oid not in pond.owned:
             return False
+    elif kind == 'wearable':
+        if not worn(pond, oid):
+            return False  # taken off mid-routine
     elif target not in pond.owned or not plan.get('instance'):
         return False
     if store(pond, plan, work) is None:
@@ -297,7 +348,7 @@ def advance(pond, plan, dt):
     for i, (at, name) in enumerate(r['events']):
         if work['elapsed'] >= at * r['duration'] and i not in work['events']:
             work['events'].append(i)
-            apply(s, oid, effects[name], pond, subject, host)
+            apply(s, oid, effects[name], pond, subject, host, obj)
     first = work['events'] if r['events'] else work['elapsed'] >= r['duration'] * .35
     if r.get('say') and first and not work.get('said'):
         work['said'] = True
@@ -349,7 +400,7 @@ def request(pond, oid, choice, instance=None):
     if host is None:
         kind = OBJECTS[oid].get('host', 'placed')
         return False, {'placed': 'Place it outside first.', 'portable': 'Cheese does not have one.',
-                       'keeping': 'Keep one in a koi pond or sea tank first.', 'wearable': 'Cheese does not have that to wear.', 'display': 'Put it on display in a trophy case or cabinet first.'}.get(kind, 'Not available right now.')
+                       'keeping': 'Keep one in a koi pond or sea tank first.', 'wearable': 'Cheese needs to be wearing it first.', 'display': 'Put it on display in a trophy case or cabinet first.'}.get(kind, 'Not available right now.')
     item, inst, fish = host
     obj = pond.object_state(item, inst)
     if obj is None:

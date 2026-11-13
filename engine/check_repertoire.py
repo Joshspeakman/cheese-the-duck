@@ -34,7 +34,36 @@ def check(ok, label):
     checks.append(label)
 
 
+check(not R.LOAD_ERRORS, 'every repertoire file loads: ' + '; '.join(R.LOAD_ERRORS))
 objects = sorted(o for o in R.OBJECTS if only is None or o in only)
+
+
+def contact_at(r, t):
+    track = r['track']
+    a, b = track[0], track[-1]
+    for i in range(1, len(track)):
+        if t <= track[i][0]:
+            a, b = track[i - 1], track[i]
+            break
+    u = max(0., min(1., (t - a[0]) / max(.001, b[0] - a[0])))
+    u = u * u * (3 - 2 * u)
+    return a[1].get('contact', 0) + (b[1].get('contact', 0) - a[1].get('contact', 0)) * u
+
+
+def content(oid, r):
+    """What a routine physically is, independent of names: effect rows, touched
+    places by position, tool class, coarse body path with repeats removed."""
+    spec = R.OBJECTS[oid]
+    rows = tuple(tuple(tuple(x) for x in spec['effects'][n]) for _, n in r['events'])
+    anc = spec.get('anchors', {})
+    places = tuple((round(anc[q['anchor']]['x'] / .05), round(anc[q['anchor']]['y'] / .05)) if q.get('anchor') in anc else q.get('anchor')
+                   for _, q in r['track'] if q.get('anchor'))
+    path = []
+    for _, q in r['track']:
+        step = tuple(round(q.get(k, 0) * 2) / 2 for k in ('x', 'y', 'b', 'w'))
+        if not path or path[-1] != step:
+            path.append(step)
+    return rows, places, r['tool'] if r['tool'] in ('none', 'wing') else 'stick', tuple(path)
 check(only is None or set(objects) == only, 'requested objects exist: ' + str(sorted((only or set()) - set(objects))))
 KNOWN = set(W.FLAGS) | {'dry_axle', 'far_year'} | set(R.CHEESE_TAGS)
 probe = W.World.__new__(W.World)
@@ -67,8 +96,9 @@ for oid in objects:
     for f, op, v, when in spec.get('physics', []):
         check(f in fields and op in ('rate', 'decay', 'wrap') and all(kind_of(t, fields) for t in when.split('&')), oid + ' physics row ' + f + ' ' + when)
     for name, rows in spec.get('effects', {}).items():
-        check(all((t in fields or t.startswith('subject.') or t.startswith('need.') or t.startswith('keeping.')) and op in ('set', 'add', 'mul', 'max', 'min', 'wrap') for t, op, _ in rows), oid + ' effect ' + name)
+        check(all((t in fields or t.startswith('subject.') or t.startswith('need.') or t.startswith('keeping.') or t.startswith('obj.')) and op in ('set', 'add', 'mul', 'max', 'min', 'wrap') for t, op, _ in rows), oid + ' effect ' + name)
     sigs = {}
+    far = 0
     for k in keys:
         r = R.ROUTINES[k]
         for t in r['when'] + r['prefer']:
@@ -84,8 +114,19 @@ for oid in objects:
         sig = signature(r)
         check(sig not in sigs, k + ' is physically distinct from ' + str(sigs.get(sig)))
         sigs[sig] = k
+        far += bool(r.get('far'))
+        for at, name in r['events']:
+            check(r.get('far') or contact_at(r, at) >= .5, k + ' effect ' + name + ' lands on a touch, not on air')
+        mine = content(oid, r)
+        for other, ok_ in ((o2, k2) for o2 in R.OBJECTS if o2 != oid for k2 in R.by_object(o2)):
+            check(content(other, R.ROUTINES[ok_]) != mine, k + ' is not a copy of ' + ok_ + ' on ' + other)
         if R.REACH:
             check(bool(R.REACH.get(k)), k + ' is reachable by some age')
+    check(far <= 4, oid + ' has at most four far (throw/shout/breath) acts')
+    if MIN >= 48 and R.REACH:
+        for a in AGES:
+            n = sum(a in R.REACH.get(k, ()) for k in keys)
+            check(n >= (32 if a == 'adult' else 16), oid + f' gives {a} {n} reachable routines (floor 16, adult 32)')
 
 # ---------------------------------------------------------------- native runs
 t = host.DesktopInput()
@@ -121,6 +162,10 @@ try:
 
     def reset():
         p.cancel()
+        p.state['cooldowns'] = {}
+        for o in [*p.state['instances'].values(), *p.state['objects'].values()]:
+            if isinstance(o, dict):
+                o['last_use'] = -1e9
         g.duck.current_action = None
         g.behavior_ai.clear_action()
         g.habitat.owned_items, g.habitat.placed_items, g.habitat.stored_items, g.habitat.stored_placements = [], [], [], []
@@ -166,8 +211,9 @@ try:
             assert ok, msg
             return 'trophy_case', iid
         if kind == 'wearable':
-            if oid in g.outfits.owned_items or hasattr(g.outfits, 'owned_items'):
-                g.outfits.owned_items.append(oid) if oid not in g.outfits.owned_items else None
+            if oid not in g.outfits.owned_items:
+                g.outfits.owned_items.append(oid)
+            g.outfits.current_outfit.neck = oid  # worn on the body, as these routines require
             p.sync()
             return oid, None
         if kind == 'portable':
@@ -254,14 +300,14 @@ try:
     applied = []
     original_apply = R.apply
 
-    def recording(s, oid, rows, pond=None, subject=None, host=None):
+    def recording(s, oid, rows, pond=None, subject=None, host=None, objstate=None):
         for name, authored in R.OBJECTS[oid]['effects'].items():
             if rows is authored:
                 plan = p.state.get('plan') or {}
                 pos = g.renderer.duck_pos
                 dest = plan.get('destination', [pos.x, pos.y])
                 applied.append(dict(name=name, near=abs(pos.x - dest[0]) + abs(pos.y - dest[1]) <= 3, phase=plan.get('phase')))
-        return original_apply(s, oid, rows, pond, subject, host)
+        return original_apply(s, oid, rows, pond, subject, host, objstate)
     R.apply = recording
     runs = 0
     for oid in objects:

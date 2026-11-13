@@ -20,6 +20,7 @@ import {waterworksSprite,WATER_BLUEPRINTS} from './waterworks.mjs';
 import {furnitureSprite,FURNITURE_BLUEPRINTS} from './furniture-workshop.mjs';
 import {botanicalSprite,BOTANICAL_BLUEPRINTS} from './botanical-workshop.mjs';
 import {wonderSprite,WONDER_BLUEPRINTS} from './wonder-workshop.mjs';
+import {curioSprite,CURIO_BLUEPRINTS} from './curio-workshop.mjs';
 import {detailItem,itemProfile} from './item-detail.mjs';
 export {itemProfile};
 import { ART } from './item-art.mjs';
@@ -123,6 +124,7 @@ export function itemSprite(id,time=0,{motion=true,originalArt=null,state={},inte
     lift:/balloon|ufo|orb|motes|fish|worm/.test(family)&&motion?Math.sin(t*1.4+seed)*.25:0};
   const enriched={...base,...itemProfile(item||{},family)},options={motion,state,interaction,context,pose};
   if(WONDER_BLUEPRINTS[id])return wonderSprite(enriched,item||{id},t,options);
+  if(CURIO_BLUEPRINTS[id])return curioSprite(enriched,item||{id},t,options);
   if(HEADWEAR_BLUEPRINTS[id])return headwearSprite(enriched,item||{id},t,options);
   if(ACCESSORY_BLUEPRINTS[id])return accessorySprite(enriched,item||{id},t,options);
   if(GARMENT_BLUEPRINTS[id])return garmentSprite(enriched,item||{id},t,options);
@@ -134,6 +136,7 @@ export function itemSprite(id,time=0,{motion=true,originalArt=null,state={},inte
 }
 export function itemWorldScale(id){
   if(WONDER_BLUEPRINTS[id])return WONDER_BLUEPRINTS[id].scale;
+  if(CURIO_BLUEPRINTS[id])return CURIO_BLUEPRINTS[id].scale;
   if(SEED_BLUEPRINTS[id])return SEED_BLUEPRINTS[id].scale;
   if(FOOD_BLUEPRINTS[id])return FOOD_BLUEPRINTS[id].scale;
   if(SPECIMEN_BLUEPRINTS[id])return SPECIMEN_BLUEPRINTS[id].worldScale;

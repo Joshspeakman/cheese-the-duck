@@ -13,6 +13,6 @@
    "track": [[0, {}], [0.25, {"w": 0.7, "contact": 1, "anchor": "tail_end"}], [0.45, {"w": 1, "x": 0.3, "contact": 1, "anchor": "tail_end", "mark": "fwap"}], [0.75, {"eye": "^"}], [1, {}]],
    "events": [[0.45, "fluff"]], "when": [], "prefer": [], "ages": null},
   "scarf_snuggle": {"label": "Burying his bill in the scarf against the cold", "duration": 24, "tool": "none",
-   "track": [[0, {}], [0.25, {"y": 0.6, "b": 0.5, "eye": "-"}], [0.6, {"y": 0.8, "b": 0.7, "eye": "-", "mark": "mm"}], [0.85, {"y": 0.3, "eye": "^"}], [1, {}]],
+   "track": [[0, {}], [0.25, {"y": 0.6, "b": 0.5, "eye": "-"}], [0.6, {"y": 0.8, "b": 0.7, "contact": 1, "anchor": "neck", "eye": "-", "mark": "mm"}], [0.85, {"y": 0.3, "eye": "^"}], [1, {}]],
    "events": [[0.6, "snug"]], "when": ["cold"], "prefer": ["tired"], "ages": null}
  }}

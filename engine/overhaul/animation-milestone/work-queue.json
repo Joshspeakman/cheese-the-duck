@@ -21,7 +21,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "earth_token",
@@ -35,7 +35,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "lucky_charm",
@@ -50,7 +50,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "magpie_friendship_charm",
@@ -64,7 +64,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "rainbow_charm",
@@ -78,7 +78,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "sky_token",
@@ -92,7 +92,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "water_token",
@@ -106,7 +106,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "best_friend_badge",
@@ -120,7 +120,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "dance_medal",
@@ -134,7 +134,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "duck_day_champion_badge",
@@ -148,7 +148,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "explorer_badge",
@@ -162,7 +162,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "golden_badge",
@@ -176,7 +176,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "harvest_spirit_badge",
@@ -190,7 +190,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "love_spirit_badge",
@@ -204,7 +204,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "racing_medal",
@@ -218,7 +218,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "spring_spirit_badge",
@@ -232,7 +232,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "summer_spirit_badge",
@@ -246,7 +246,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "winter_spirit_badge",
@@ -260,7 +260,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "legend_dragon",
@@ -274,7 +274,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "legend_phoenix",
@@ -288,7 +288,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "pond_dragonfly",
@@ -302,7 +302,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "pond_fish",
@@ -316,7 +316,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "pond_frog",
@@ -330,7 +330,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "pond_lily",
@@ -344,7 +344,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "portrait_artist",
@@ -358,7 +358,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "portrait_cheese",
@@ -372,7 +372,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "portrait_emperor",
@@ -386,7 +386,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "portrait_explorer",
@@ -400,7 +400,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "portrait_scholar",
@@ -414,7 +414,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "weather_rain",
@@ -428,7 +428,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "weather_rainbow",
@@ -442,7 +442,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "weather_snow",
@@ -456,7 +456,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "weather_sun",
@@ -470,7 +470,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "ancient_coin",
@@ -484,7 +484,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "old_coin",
@@ -498,7 +498,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "ancient_crown",
@@ -512,7 +512,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "duck_crown",
@@ -526,7 +526,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "snowflake_crown",
@@ -540,7 +540,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "fish_trophy",
@@ -554,7 +554,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "golden_duck_trophy",
@@ -568,7 +568,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "legendary_trophy",
@@ -582,7 +582,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "master_trophy",
@@ -596,7 +596,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "memory_trophy",
@@ -610,7 +610,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "splash_trophy",
@@ -624,7 +624,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "catfish",
@@ -638,7 +638,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "ancient_dragon_fish",
@@ -652,7 +652,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "bass",
@@ -666,7 +666,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "carp",
@@ -680,7 +680,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "ghost_fish",
@@ -694,7 +694,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "golden_koi",
@@ -708,7 +708,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "koi",
@@ -722,7 +722,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 6,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "minnow",
@@ -736,7 +736,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "salmon",
@@ -750,7 +750,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "sturgeon",
@@ -764,7 +764,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "trout",
@@ -778,7 +778,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "goldfish",
@@ -792,7 +792,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "pufferfish",
@@ -806,7 +806,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "swordfish",
@@ -820,7 +820,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "archway",
@@ -4232,7 +4232,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "toy_trampoline",
@@ -4540,7 +4540,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "yo_yo",
@@ -4582,7 +4582,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "golden_acorn",
@@ -4596,7 +4596,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "magic_acorn",
@@ -4610,7 +4610,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "gathering_bag",
@@ -4624,7 +4624,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "frozen_dewdrop",
@@ -4638,7 +4638,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "snowball",
@@ -4681,7 +4681,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "cherry_blossom_hat",
@@ -4695,7 +4695,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "tiny_boat",
@@ -4737,7 +4737,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "medicine",
@@ -4752,7 +4752,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "message_bottle",
@@ -4766,7 +4766,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "bottle_cap",
@@ -4780,7 +4780,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "water_bowl",
@@ -4867,7 +4867,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "stone_block",
@@ -4882,7 +4882,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "bubble_wand",
@@ -4910,7 +4910,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "carrot",
@@ -4982,7 +4982,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "clover",
@@ -5025,7 +5025,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "pirate_compass",
@@ -5039,7 +5039,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "heart_cookie",
@@ -5081,7 +5081,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "scarecrow_costume",
@@ -5095,7 +5095,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "spring_duck_costume",
@@ -5109,7 +5109,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "winter_coat_costume",
@@ -5123,7 +5123,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "tiny_crown",
@@ -5137,7 +5137,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "bread",
@@ -5277,7 +5277,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "squeaky_toy",
@@ -5319,7 +5319,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "mystic_egg",
@@ -5333,7 +5333,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "ancient_feather",
@@ -5347,7 +5347,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "eagle_feather",
@@ -5361,7 +5361,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "feather",
@@ -5376,7 +5376,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "golden_feather",
@@ -5390,7 +5390,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "rainbow_feather",
@@ -5404,7 +5404,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "snow_feather",
@@ -5418,7 +5418,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "static_feather",
@@ -5432,7 +5432,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "mint_leaves",
@@ -5502,7 +5502,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "fish_treat",
@@ -5516,7 +5516,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "small_fish",
@@ -5530,7 +5530,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "parade_flag",
@@ -5544,7 +5544,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "dandelion",
@@ -5838,7 +5838,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "berry",
@@ -5881,7 +5881,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "stone_hammer",
@@ -5895,7 +5895,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "honeycomb",
@@ -5923,7 +5923,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "treasure_key",
@@ -5937,7 +5937,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "paper_plane_design",
@@ -6106,7 +6106,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "fairy_dust",
@@ -6120,7 +6120,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "mystery_sound",
@@ -6134,7 +6134,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "mushroom",
@@ -6162,7 +6162,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "friendship_card",
@@ -6204,7 +6204,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "pebble_path",
@@ -6275,7 +6275,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "wooden_plank",
@@ -6460,7 +6460,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "rope",
@@ -6475,7 +6475,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "string",
@@ -6489,7 +6489,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "rose_petal",
@@ -6606,7 +6606,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "mermaid_scale",
@@ -6620,7 +6620,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "better_bait",
@@ -6989,7 +6989,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "giant_worm",
@@ -7047,7 +7047,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "angel_wings",
@@ -8285,7 +8285,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "scarf_red",
@@ -8384,7 +8384,7 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "pending"
+   "art": "curio-v1 (review)"
   },
   {
    "id": "wings_fairy",

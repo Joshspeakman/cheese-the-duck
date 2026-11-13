@@ -21,7 +21,7 @@
   "koi_bill_feed": {"label": "Holding a flake in his bill until the koi takes it", "duration": 20, "tool": "none", "pick": "shyest",
    "track": [[0, {}], [0.15, {"x": 0.6, "y": 0.8, "b": 0.6, "eye": "o"}], [0.35, {"x": 0.9, "y": 1.2, "b": 0.8, "contact": 1, "anchor": "surface", "eye": "-"}], [0.55, {"x": 0.9, "y": 1.2, "contact": 1, "anchor": "surface", "mark": "!"}], [0.8, {"y": 0.3, "eye": "^"}], [1, {}]],
    "events": [[0.55, "bill_feed"]], "when": ["fish_hunger>.1"], "prefer": ["calm"], "ages": null, "say": null},
-  "koi_net_leaves": {"label": "Netting fallen leaves off the koi pond", "duration": 22, "tool": "rake",
+  "koi_net_leaves": {"label": "Netting fallen leaves off the koi pond", "duration": 22, "tool": "reed",
    "track": [[0, {}], [0.15, {"reach": 0.7, "contact": 1, "anchor": "bank", "w": 0.5}], [0.35, {"x": 0.4, "contact": 1, "anchor": "surface", "mark": "swsh"}], [0.55, {"x": 0.8, "contact": 1, "anchor": "lily"}], [0.8, {"eye": "^"}], [1, {}]],
    "events": [[0.35, "net"], [0.55, "net"]], "when": [], "prefer": ["fall", "windy"], "ages": null, "say": null},
   "koi_feeding_bell": {"label": "Ringing the little feeding bell so the koi learn the sound", "duration": 18, "tool": "wing",

@@ -42,6 +42,7 @@ def fixture(name):
     elif name == 'scarf_red':
         g.habitat.owned_items, g.habitat.placed_items = [], []
         if 'scarf_red' not in g.outfits.owned_items: g.outfits.owned_items.append('scarf_red')
+        g.outfits.current_outfit.neck = 'scarf_red'
         p.sync()
     else:
         g.habitat.owned_items = [name]; g.habitat.placed_items = [PlacedItem(name, 10, 6)]; p.sync()
