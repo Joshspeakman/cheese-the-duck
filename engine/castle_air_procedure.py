@@ -64,7 +64,8 @@ def propose(pond, plan, operator, origin, obstacles=(), available_seconds=math.i
     live = air.operator_state(pond, operator)
     if not live or not shared.near(live['root'], origin, 1e-7):
         return None, 'The original operator is no longer at the proposed root.'
-    state = castle.state(copy.deepcopy(pond.object_state('bounce_house', plan)))
+    object_snapshot = copy.deepcopy(pond.object_state('bounce_house', plan))
+    state = castle.state(object_snapshot)
     initial = dict(motor=state['motor'], power_hold=state['power_hold'],
                    power_revision=state['power_revision'],
                    restart_allowed=not state['power_hold'] and (state['motor'] == 'on' or state['motor'] == 'auto' and state['powered']))
@@ -75,6 +76,8 @@ def propose(pond, plan, operator, origin, obstacles=(), available_seconds=math.i
         if not sites:
             return None, reason
         mode, reason = disposition(atomic_id, forecast, initial)
+        if atomic_id == 'castle_start' and mode == 'execute' and castle.excursions.finite(object_snapshot.get('condition'), 1.) <= .2:
+            return None, 'Repair the house before restoring its air supply.'
         occurrences.append(dict(occurrence_id=occurrence_id, atomic_id=atomic_id,
                                 sites=sites, disposition=mode, reason=reason))
         # Predict only the already-authored terminal controls for branch choice.

@@ -1,0 +1,3992 @@
+{
+ "topiary_duck": {
+  "type": "topiary",
+  "w": 120,
+  "h": 112,
+  "scale": 0.363,
+  "material": "leaf",
+  "skill": "gardening",
+  "verb": "Tend",
+  "portable": false,
+  "fields": {
+   "growth": [
+    0.35,
+    0,
+    1
+   ],
+   "moisture": [
+    0.6,
+    0,
+    1
+   ],
+   "snow": [
+    0,
+    0,
+    1
+   ],
+   "blossom": [
+    0,
+    0,
+    1
+   ],
+   "trims": [
+    0,
+    0,
+    9999
+   ]
+  },
+  "physics": [
+   [
+    "growth",
+    "rate",
+    5e-05,
+    "growing"
+   ],
+   [
+    "growth",
+    "rate",
+    0.0001,
+    "wet&growing"
+   ],
+   [
+    "moisture",
+    "rate",
+    -0.00018,
+    "dry&warm"
+   ],
+   [
+    "moisture",
+    "rate",
+    0.004,
+    "wet"
+   ],
+   [
+    "snow",
+    "rate",
+    0.004,
+    "snow"
+   ],
+   [
+    "snow",
+    "rate",
+    -0.003,
+    "warm"
+   ],
+   [
+    "blossom",
+    "decay",
+    1,
+    "spring"
+   ],
+   [
+    "blossom",
+    "decay",
+    0,
+    "!spring"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "snip_bill": [
+    [
+     "growth",
+     "add",
+     -0.12
+    ],
+    [
+     "trims",
+     "add",
+     1
+    ]
+   ],
+   "snip_tail": [
+    [
+     "growth",
+     "add",
+     -0.1
+    ],
+    [
+     "trims",
+     "add",
+     1
+    ]
+   ],
+   "snip_wing": [
+    [
+     "growth",
+     "add",
+     -0.08
+    ]
+   ],
+   "pour": [
+    [
+     "moisture",
+     "add",
+     0.45
+    ]
+   ],
+   "shake": [
+    [
+     "snow",
+     "mul",
+     0.2
+    ]
+   ],
+   "brush": [
+    [
+     "snow",
+     "set",
+     0
+    ]
+   ]
+  },
+  "parts": [
+   "shears",
+   "can",
+   "hide"
+  ],
+  "shelter": true
+ },
+ "zen_garden": {
+  "type": "zen",
+  "w": 140,
+  "h": 72,
+  "scale": 0.306,
+  "material": "stone",
+  "skill": "observation",
+  "verb": "Rake",
+  "portable": false,
+  "fields": {
+   "raked": [
+    0.8,
+    0,
+    1
+   ],
+   "pattern": [
+    0,
+    0,
+    3
+   ],
+   "leaves": [
+    0,
+    0,
+    1
+   ],
+   "stone": [
+    0,
+    0,
+    3
+   ],
+   "calm": [
+    0,
+    0,
+    1
+   ],
+   "rakes": [
+    0,
+    0,
+    9999
+   ]
+  },
+  "physics": [
+   [
+    "raked",
+    "rate",
+    -0.0005,
+    "wet"
+   ],
+   [
+    "raked",
+    "rate",
+    -0.0002,
+    "windy"
+   ],
+   [
+    "leaves",
+    "rate",
+    0.0002,
+    "fall"
+   ],
+   [
+    "leaves",
+    "rate",
+    0.0001,
+    "windy"
+   ],
+   [
+    "calm",
+    "decay",
+    0,
+    "always"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "rake_start": [
+    [
+     "raked",
+     "set",
+     0.25
+    ]
+   ],
+   "rake_waves": [
+    [
+     "pattern",
+     "set",
+     0
+    ],
+    [
+     "raked",
+     "add",
+     0.38
+    ]
+   ],
+   "rake_rings": [
+    [
+     "pattern",
+     "set",
+     1
+    ],
+    [
+     "raked",
+     "add",
+     0.38
+    ]
+   ],
+   "rake_spiral": [
+    [
+     "pattern",
+     "set",
+     2
+    ],
+    [
+     "raked",
+     "add",
+     0.38
+    ]
+   ],
+   "finish": [
+    [
+     "raked",
+     "set",
+     1
+    ],
+    [
+     "rakes",
+     "add",
+     1
+    ]
+   ],
+   "gather": [
+    [
+     "leaves",
+     "mul",
+     0.35
+    ]
+   ],
+   "lift": [
+    [
+     "stone",
+     "wrap",
+     1
+    ]
+   ],
+   "breathe": [
+    [
+     "calm",
+     "add",
+     0.35
+    ]
+   ],
+   "smooth": [
+    [
+     "raked",
+     "max",
+     0.55
+    ],
+    [
+     "pattern",
+     "set",
+     3
+    ]
+   ]
+  },
+  "parts": [
+   "rake",
+   "broom",
+   "pebble"
+  ],
+  "shelter": false
+ },
+ "ice_sculpture": {
+  "type": "ice",
+  "w": 112,
+  "h": 120,
+  "scale": 0.31,
+  "material": "ice",
+  "skill": "crafting",
+  "verb": "Carve",
+  "portable": false,
+  "fields": {
+   "melt": [
+    0,
+    0,
+    1
+   ],
+   "detail": [
+    0.7,
+    0,
+    1
+   ],
+   "shine": [
+    0.4,
+    0,
+    1
+   ],
+   "puddle": [
+    0,
+    0,
+    1
+   ],
+   "tarp": [
+    0,
+    0,
+    1
+   ],
+   "frost": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "melt",
+    "rate",
+    0.00012,
+    "warm&!tarp"
+   ],
+   [
+    "melt",
+    "rate",
+    4e-05,
+    "warm&tarp"
+   ],
+   [
+    "melt",
+    "rate",
+    0.00018,
+    "sun&!tarp"
+   ],
+   [
+    "puddle",
+    "rate",
+    0.0001,
+    "warm"
+   ],
+   [
+    "puddle",
+    "rate",
+    -0.0008,
+    "cold"
+   ],
+   [
+    "melt",
+    "rate",
+    -0.0002,
+    "cold"
+   ],
+   [
+    "detail",
+    "rate",
+    -8e-05,
+    "warm&!tarp"
+   ],
+   [
+    "shine",
+    "rate",
+    -8e-05,
+    "always"
+   ],
+   [
+    "frost",
+    "rate",
+    0.002,
+    "cold"
+   ],
+   [
+    "frost",
+    "rate",
+    -0.004,
+    "warm"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "chisel": [
+    [
+     "detail",
+     "add",
+     0.14
+    ],
+    [
+     "melt",
+     "add",
+     0.015
+    ]
+   ],
+   "polish": [
+    [
+     "shine",
+     "add",
+     0.3
+    ],
+    [
+     "frost",
+     "set",
+     0
+    ]
+   ],
+   "cover": [
+    [
+     "tarp",
+     "set",
+     1
+    ]
+   ],
+   "uncover": [
+    [
+     "tarp",
+     "set",
+     0
+    ]
+   ],
+   "mop": [
+    [
+     "puddle",
+     "mul",
+     0.2
+    ]
+   ],
+   "lick": [
+    [
+     "detail",
+     "add",
+     -0.02
+    ],
+    [
+     "frost",
+     "set",
+     0
+    ]
+   ],
+   "breath": [
+    [
+     "frost",
+     "add",
+     0.35
+    ]
+   ],
+   "pack": [
+    [
+     "melt",
+     "add",
+     -0.12
+    ]
+   ],
+   "mould": [
+    [
+     "melt",
+     "set",
+     0.45
+    ],
+    [
+     "detail",
+     "set",
+     0.2
+    ],
+    [
+     "puddle",
+     "mul",
+     0.3
+    ]
+   ]
+  },
+  "parts": [
+   "chisel",
+   "cloth",
+   "tarp_hold",
+   "mould"
+  ],
+  "shelter": false
+ },
+ "sand_castle": {
+  "type": "sandcastle",
+  "w": 132,
+  "h": 96,
+  "scale": 0.299,
+  "material": "sand",
+  "skill": "crafting",
+  "verb": "Build",
+  "portable": false,
+  "fields": {
+   "towers": [
+    2,
+    0,
+    4
+   ],
+   "moat": [
+    0,
+    0,
+    1
+   ],
+   "erosion": [
+    0,
+    0,
+    1
+   ],
+   "flag": [
+    0,
+    0,
+    1
+   ],
+   "damp": [
+    0.4,
+    0,
+    1
+   ],
+   "builds": [
+    0,
+    0,
+    9999
+   ]
+  },
+  "physics": [
+   [
+    "erosion",
+    "rate",
+    0.0016,
+    "wet"
+   ],
+   [
+    "erosion",
+    "rate",
+    0.0007,
+    "windy"
+   ],
+   [
+    "damp",
+    "rate",
+    0.003,
+    "wet"
+   ],
+   [
+    "damp",
+    "rate",
+    -0.0012,
+    "dry&warm"
+   ],
+   [
+    "moat",
+    "rate",
+    -0.0015,
+    "dry&warm"
+   ],
+   [
+    "moat",
+    "rate",
+    0.002,
+    "wet"
+   ]
+  ],
+  "triggers": [
+   [
+    "erosion>=.98",
+    [
+     [
+      "towers",
+      "set",
+      0
+     ],
+     [
+      "flag",
+      "set",
+      0
+     ],
+     [
+      "erosion",
+      "set",
+      0.55
+     ]
+    ]
+   ],
+   [
+    "erosion>=.7&towers>=3",
+    [
+     [
+      "towers",
+      "add",
+      -1
+     ]
+    ]
+   ]
+  ],
+  "effects": {
+   "pat": [
+    [
+     "erosion",
+     "add",
+     -0.15
+    ]
+   ],
+   "tower": [
+    [
+     "towers",
+     "add",
+     1
+    ],
+    [
+     "builds",
+     "add",
+     1
+    ]
+   ],
+   "dig": [
+    [
+     "moat",
+     "max",
+     0.15
+    ]
+   ],
+   "pour": [
+    [
+     "moat",
+     "add",
+     0.5
+    ]
+   ],
+   "flag": [
+    [
+     "flag",
+     "set",
+     1
+    ]
+   ],
+   "wet_sand": [
+    [
+     "damp",
+     "add",
+     0.4
+    ]
+   ],
+   "stomp": [
+    [
+     "towers",
+     "set",
+     0
+    ],
+    [
+     "flag",
+     "set",
+     0
+    ],
+    [
+     "erosion",
+     "set",
+     0.8
+    ]
+   ],
+   "shell": [
+    [
+     "erosion",
+     "add",
+     -0.05
+    ]
+   ]
+  },
+  "parts": [
+   "bucket",
+   "spade",
+   "flagstick"
+  ],
+  "shelter": false
+ },
+ "gong": {
+  "type": "gong",
+  "w": 104,
+  "h": 124,
+  "scale": 0.355,
+  "material": "bronze",
+  "skill": "music",
+  "verb": "Strike",
+  "portable": false,
+  "fields": {
+   "ring": [
+    0,
+    0,
+    1
+   ],
+   "shine": [
+    0.6,
+    0,
+    1
+   ],
+   "muted": [
+    0,
+    0,
+    1
+   ],
+   "strikes": [
+    0,
+    0,
+    9999
+   ],
+   "dust": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "ring",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "ring",
+    "decay",
+    0,
+    "muted>.5"
+   ],
+   [
+    "shine",
+    "rate",
+    -0.0004,
+    "wet"
+   ],
+   [
+    "dust",
+    "rate",
+    0.0003,
+    "dry&windy"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "tap": [
+    [
+     "ring",
+     "max",
+     0.35
+    ],
+    [
+     "strikes",
+     "add",
+     1
+    ],
+    [
+     "muted",
+     "set",
+     0
+    ]
+   ],
+   "boom": [
+    [
+     "ring",
+     "set",
+     1
+    ],
+    [
+     "strikes",
+     "add",
+     1
+    ],
+    [
+     "muted",
+     "set",
+     0
+    ]
+   ],
+   "damp": [
+    [
+     "ring",
+     "mul",
+     0.1
+    ],
+    [
+     "muted",
+     "set",
+     1
+    ]
+   ],
+   "tock": [
+    [
+     "ring",
+     "max",
+     0.08
+    ]
+   ],
+   "buff": [
+    [
+     "shine",
+     "add",
+     0.3
+    ],
+    [
+     "dust",
+     "set",
+     0
+    ]
+   ],
+   "release": [
+    [
+     "muted",
+     "set",
+     0
+    ]
+   ]
+  },
+  "parts": [
+   "mallet",
+   "cloth",
+   "ear"
+  ],
+  "shelter": false
+ },
+ "aurora": {
+  "type": "aurora",
+  "w": 132,
+  "h": 112,
+  "scale": 0.363,
+  "material": "glass",
+  "skill": "observation",
+  "verb": "Tune",
+  "portable": false,
+  "fields": {
+   "power": [
+    0,
+    0,
+    1
+   ],
+   "hue": [
+    0.4,
+    0,
+    1
+   ],
+   "ribbons": [
+    2,
+    1,
+    5
+   ],
+   "glow": [
+    0,
+    0,
+    1
+   ],
+   "drift": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "glow",
+    "decay",
+    1,
+    "powered"
+   ],
+   [
+    "glow",
+    "decay",
+    0,
+    "!powered"
+   ],
+   [
+    "drift",
+    "wrap",
+    0.006,
+    "powered"
+   ],
+   [
+    "hue",
+    "wrap",
+    0.0006,
+    "powered&night"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "on": [
+    [
+     "power",
+     "set",
+     1
+    ]
+   ],
+   "off": [
+    [
+     "power",
+     "set",
+     0
+    ]
+   ],
+   "hue": [
+    [
+     "hue",
+     "wrap",
+     0.18
+    ]
+   ],
+   "ribbon": [
+    [
+     "ribbons",
+     "wrap",
+     1
+    ]
+   ],
+   "dim": [
+    [
+     "power",
+     "set",
+     0.6
+    ]
+   ]
+  },
+  "parts": [
+   "dial",
+   "switch"
+  ],
+  "shelter": false
+ },
+ "rainbow_generator": {
+  "type": "rainbow",
+  "w": 124,
+  "h": 112,
+  "scale": 0.332,
+  "material": "glass",
+  "skill": "engineering",
+  "verb": "Crank",
+  "portable": false,
+  "fields": {
+   "water": [
+    0.5,
+    0,
+    1
+   ],
+   "arc": [
+    0,
+    0,
+    1
+   ],
+   "prism": [
+    0.5,
+    0,
+    1
+   ],
+   "mist": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "arc",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "mist",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "water",
+    "rate",
+    0.003,
+    "wet"
+   ],
+   [
+    "water",
+    "rate",
+    -0.0004,
+    "warm&dry"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "fill": [
+    [
+     "water",
+     "add",
+     0.45
+    ]
+   ],
+   "aim": [
+    [
+     "prism",
+     "wrap",
+     0.2
+    ]
+   ],
+   "crank": [
+    [
+     "mist",
+     "set",
+     1
+    ],
+    [
+     "arc",
+     "max",
+     0.7
+    ],
+    [
+     "water",
+     "add",
+     -0.12
+    ]
+   ],
+   "spray": [
+    [
+     "mist",
+     "set",
+     1
+    ],
+    [
+     "arc",
+     "set",
+     1
+    ],
+    [
+     "water",
+     "add",
+     -0.2
+    ]
+   ]
+  },
+  "parts": [
+   "crank",
+   "can"
+  ],
+  "shelter": false
+ },
+ "weather_machine": {
+  "type": "weather",
+  "w": 136,
+  "h": 128,
+  "scale": 0.344,
+  "material": "metal",
+  "skill": "engineering",
+  "verb": "Adjust",
+  "portable": false,
+  "fields": {
+   "setting": [
+    0,
+    0,
+    3
+   ],
+   "charge": [
+    0.3,
+    0,
+    1
+   ],
+   "cloud": [
+    0,
+    0,
+    1
+   ],
+   "bolt": [
+    0,
+    0,
+    1
+   ],
+   "runs": [
+    0,
+    0,
+    9999
+   ]
+  },
+  "physics": [
+   [
+    "cloud",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "bolt",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "charge",
+    "rate",
+    0.0012,
+    "storm"
+   ],
+   [
+    "charge",
+    "rate",
+    0.0004,
+    "sun"
+   ],
+   [
+    "charge",
+    "rate",
+    0.0002,
+    "windy"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "dial": [
+    [
+     "setting",
+     "wrap",
+     1
+    ]
+   ],
+   "crank": [
+    [
+     "charge",
+     "add",
+     0.2
+    ]
+   ],
+   "fire": [
+    [
+     "cloud",
+     "set",
+     1
+    ],
+    [
+     "charge",
+     "add",
+     -0.35
+    ],
+    [
+     "runs",
+     "add",
+     1
+    ]
+   ],
+   "zap": [
+    [
+     "bolt",
+     "set",
+     1
+    ]
+   ],
+   "vent": [
+    [
+     "cloud",
+     "mul",
+     0.3
+    ]
+   ]
+  },
+  "parts": [
+   "dial",
+   "crank",
+   "lever"
+  ],
+  "shelter": false
+ },
+ "portal": {
+  "type": "portal",
+  "w": 140,
+  "h": 132,
+  "scale": 0.384,
+  "material": "stone",
+  "skill": "engineering",
+  "verb": "Dial",
+  "portable": false,
+  "fields": {
+   "energy": [
+    0,
+    0,
+    1
+   ],
+   "rune": [
+    0,
+    0,
+    5
+   ],
+   "stability": [
+    1,
+    0,
+    1
+   ],
+   "sent": [
+    0,
+    0,
+    9999
+   ],
+   "swirl": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "energy",
+    "rate",
+    -0.0011,
+    "always"
+   ],
+   [
+    "swirl",
+    "wrap",
+    0.01,
+    "energized"
+   ],
+   [
+    "stability",
+    "rate",
+    -0.002,
+    "storm&energized"
+   ],
+   [
+    "stability",
+    "rate",
+    0.001,
+    "calm"
+   ]
+  ],
+  "triggers": [
+   [
+    "stability<=.05",
+    [
+     [
+      "energy",
+      "set",
+      0
+     ],
+     [
+      "stability",
+      "set",
+      0.5
+     ]
+    ]
+   ]
+  ],
+  "effects": {
+   "rune": [
+    [
+     "rune",
+     "wrap",
+     1
+    ],
+    [
+     "energy",
+     "add",
+     0.25
+    ]
+   ],
+   "toss": [
+    [
+     "sent",
+     "add",
+     1
+    ]
+   ],
+   "brace": [
+    [
+     "stability",
+     "add",
+     0.3
+    ]
+   ],
+   "spark": [
+    [
+     "energy",
+     "set",
+     1
+    ]
+   ],
+   "close": [
+    [
+     "energy",
+     "set",
+     0
+    ]
+   ]
+  },
+  "parts": [
+   "pebble",
+   "peek"
+  ],
+  "shelter": false
+ },
+ "wormhole": {
+  "type": "wormhole",
+  "w": 132,
+  "h": 120,
+  "scale": 0.338,
+  "material": "void",
+  "skill": "engineering",
+  "verb": "Align",
+  "portable": false,
+  "fields": {
+   "aperture": [
+    0,
+    0,
+    1
+   ],
+   "align": [
+    0.5,
+    0,
+    1
+   ],
+   "echoes": [
+    0,
+    0,
+    9999
+   ],
+   "boats": [
+    0,
+    0,
+    9999
+   ],
+   "spin": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "spin",
+    "wrap",
+    0.008,
+    "open"
+   ],
+   [
+    "aperture",
+    "rate",
+    -0.0005,
+    "always"
+   ],
+   [
+    "align",
+    "rate",
+    -0.0008,
+    "windy"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "open": [
+    [
+     "aperture",
+     "set",
+     1
+    ]
+   ],
+   "align": [
+    [
+     "align",
+     "add",
+     0.25
+    ]
+   ],
+   "whisper": [
+    [
+     "echoes",
+     "add",
+     1
+    ]
+   ],
+   "boat": [
+    [
+     "boats",
+     "add",
+     1
+    ]
+   ],
+   "shut": [
+    [
+     "aperture",
+     "set",
+     0
+    ]
+   ]
+  },
+  "parts": [
+   "boat",
+   "cup"
+  ],
+  "shelter": false
+ },
+ "black_hole": {
+  "type": "blackhole",
+  "w": 112,
+  "h": 116,
+  "scale": 0.321,
+  "material": "void",
+  "skill": "engineering",
+  "verb": "Observe",
+  "portable": false,
+  "fields": {
+   "mass": [
+    0.3,
+    0,
+    1
+   ],
+   "containment": [
+    1,
+    0,
+    1
+   ],
+   "spin": [
+    0,
+    0,
+    1
+   ],
+   "fed": [
+    0,
+    0,
+    9999
+   ],
+   "hum": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "spin",
+    "wrap",
+    0.012,
+    "always"
+   ],
+   [
+    "containment",
+    "rate",
+    -0.0001,
+    "always"
+   ],
+   [
+    "containment",
+    "rate",
+    -0.0006,
+    "storm"
+   ],
+   [
+    "hum",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "mass",
+    "rate",
+    0.00015,
+    "fall"
+   ]
+  ],
+  "triggers": [
+   [
+    "containment<=.15",
+    [
+     [
+      "hum",
+      "set",
+      1
+     ],
+     [
+      "containment",
+      "set",
+      0.3
+     ]
+    ]
+   ]
+  ],
+  "effects": {
+   "feed": [
+    [
+     "mass",
+     "add",
+     0.06
+    ],
+    [
+     "fed",
+     "add",
+     1
+    ],
+    [
+     "hum",
+     "set",
+     0.6
+    ]
+   ],
+   "tighten": [
+    [
+     "containment",
+     "add",
+     0.35
+    ]
+   ],
+   "gauge": [],
+   "tap": [
+    [
+     "hum",
+     "set",
+     0.4
+    ]
+   ]
+  },
+  "parts": [
+   "leaf",
+   "wrench",
+   "goggles"
+  ],
+  "shelter": false
+ },
+ "volcano": {
+  "type": "volcano",
+  "w": 144,
+  "h": 120,
+  "scale": 0.366,
+  "material": "stone",
+  "skill": "engineering",
+  "verb": "Tend",
+  "portable": false,
+  "fields": {
+   "pressure": [
+    0.2,
+    0,
+    1
+   ],
+   "eruption": [
+    0,
+    0,
+    1
+   ],
+   "ash": [
+    0,
+    0,
+    1
+   ],
+   "warmth": [
+    0.5,
+    0,
+    1
+   ],
+   "eruptions": [
+    0,
+    0,
+    9999
+   ]
+  },
+  "physics": [
+   [
+    "pressure",
+    "rate",
+    0.0007,
+    "always"
+   ],
+   [
+    "pressure",
+    "rate",
+    -0.0012,
+    "wet"
+   ],
+   [
+    "eruption",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "warmth",
+    "decay",
+    1,
+    "always"
+   ],
+   [
+    "warmth",
+    "rate",
+    -0.003,
+    "wet"
+   ]
+  ],
+  "triggers": [
+   [
+    "pressure>=1",
+    [
+     [
+      "eruption",
+      "set",
+      1
+     ],
+     [
+      "pressure",
+      "set",
+      0.1
+     ],
+     [
+      "ash",
+      "add",
+      0.4
+     ],
+     [
+      "eruptions",
+      "add",
+      1
+     ]
+    ]
+   ]
+  ],
+  "effects": {
+   "vent": [
+    [
+     "pressure",
+     "add",
+     -0.35
+    ]
+   ],
+   "stir": [
+    [
+     "warmth",
+     "add",
+     0.2
+    ]
+   ],
+   "sweep": [
+    [
+     "ash",
+     "mul",
+     0.3
+    ]
+   ],
+   "fizz": [
+    [
+     "pressure",
+     "set",
+     1
+    ]
+   ],
+   "toast": [
+    [
+     "warmth",
+     "add",
+     0.05
+    ]
+   ]
+  },
+  "parts": [
+   "valve",
+   "broom",
+   "jug"
+  ],
+  "shelter": false
+ },
+ "tornado": {
+  "type": "tornado",
+  "w": 104,
+  "h": 124,
+  "scale": 0.259,
+  "material": "wind",
+  "skill": "discovery",
+  "verb": "Play",
+  "portable": false,
+  "fields": {
+   "spin": [
+    0.4,
+    0,
+    1
+   ],
+   "size": [
+    0.4,
+    0,
+    1
+   ],
+   "mood": [
+    0.6,
+    0,
+    1
+   ],
+   "debris": [
+    0,
+    0,
+    1
+   ],
+   "covered": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "size",
+    "decay",
+    0.3,
+    "calm"
+   ],
+   [
+    "size",
+    "rate",
+    0.002,
+    "windy"
+   ],
+   [
+    "spin",
+    "decay",
+    0.4,
+    "always"
+   ],
+   [
+    "mood",
+    "rate",
+    -0.0004,
+    "always"
+   ],
+   [
+    "debris",
+    "rate",
+    0.0006,
+    "fall&!covered"
+   ],
+   [
+    "spin",
+    "decay",
+    0.05,
+    "covered"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "feed": [
+    [
+     "debris",
+     "add",
+     0.3
+    ],
+    [
+     "mood",
+     "add",
+     0.2
+    ],
+    [
+     "spin",
+     "add",
+     0.2
+    ]
+   ],
+   "pat": [
+    [
+     "mood",
+     "add",
+     0.25
+    ],
+    [
+     "spin",
+     "add",
+     0.15
+    ]
+   ],
+   "hush": [
+    [
+     "spin",
+     "mul",
+     0.4
+    ],
+    [
+     "size",
+     "mul",
+     0.7
+    ]
+   ],
+   "throw": [
+    [
+     "spin",
+     "add",
+     0.3
+    ],
+    [
+     "mood",
+     "add",
+     0.15
+    ]
+   ],
+   "cover": [
+    [
+     "covered",
+     "set",
+     1
+    ]
+   ],
+   "uncover": [
+    [
+     "covered",
+     "set",
+     0
+    ],
+    [
+     "spin",
+     "max",
+     0.3
+    ]
+   ],
+   "spit": [
+    [
+     "debris",
+     "mul",
+     0.4
+    ]
+   ]
+  },
+  "parts": [
+   "leaf",
+   "cloth"
+  ],
+  "shelter": false
+ },
+ "antigravity": {
+  "type": "antigravity",
+  "w": 124,
+  "h": 120,
+  "scale": 0.31,
+  "material": "metal",
+  "skill": "engineering",
+  "verb": "Calibrate",
+  "portable": false,
+  "fields": {
+   "field": [
+    0,
+    0,
+    1
+   ],
+   "rings": [
+    0.5,
+    0,
+    1
+   ],
+   "floaters": [
+    3,
+    0,
+    6
+   ],
+   "drift": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "field",
+    "rate",
+    -0.0008,
+    "always"
+   ],
+   [
+    "drift",
+    "wrap",
+    0.006,
+    "fielded"
+   ],
+   [
+    "rings",
+    "rate",
+    -0.0005,
+    "windy"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "power": [
+    [
+     "field",
+     "set",
+     1
+    ]
+   ],
+   "float": [
+    [
+     "floaters",
+     "add",
+     1
+    ]
+   ],
+   "calibrate": [
+    [
+     "rings",
+     "add",
+     0.3
+    ]
+   ],
+   "ground": [
+    [
+     "floaters",
+     "set",
+     0
+    ]
+   ],
+   "off": [
+    [
+     "field",
+     "set",
+     0
+    ]
+   ]
+  },
+  "parts": [
+   "pebble",
+   "feather"
+  ],
+  "shelter": false
+ },
+ "force_field": {
+  "type": "forcefield",
+  "w": 148,
+  "h": 120,
+  "scale": 0.366,
+  "material": "energy",
+  "skill": "engineering",
+  "verb": "Shelter",
+  "portable": false,
+  "fields": {
+   "shield": [
+    0,
+    0,
+    1
+   ],
+   "charge": [
+    0.6,
+    0,
+    1
+   ],
+   "hits": [
+    0,
+    0,
+    9999
+   ],
+   "ripple": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "charge",
+    "rate",
+    -0.0018,
+    "shielded&wet"
+   ],
+   [
+    "charge",
+    "rate",
+    -0.0004,
+    "shielded"
+   ],
+   [
+    "charge",
+    "rate",
+    0.0006,
+    "sun&!shielded"
+   ],
+   [
+    "ripple",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "ripple",
+    "decay",
+    0.6,
+    "shielded&wet"
+   ]
+  ],
+  "triggers": [
+   [
+    "charge<=.02&shield>.1",
+    [
+     [
+      "shield",
+      "set",
+      0
+     ]
+    ]
+   ]
+  ],
+  "effects": {
+   "raise_": [
+    [
+     "shield",
+     "set",
+     1
+    ]
+   ],
+   "lower": [
+    [
+     "shield",
+     "set",
+     0
+    ]
+   ],
+   "charge": [
+    [
+     "charge",
+     "add",
+     0.3
+    ]
+   ],
+   "boop": [
+    [
+     "ripple",
+     "set",
+     1
+    ]
+   ],
+   "shelter": [
+    [
+     "hits",
+     "add",
+     1
+    ]
+   ]
+  },
+  "parts": [
+   "crank"
+  ],
+  "shelter": true
+ },
+ "cosmic_arch": {
+  "type": "arch",
+  "w": 150,
+  "h": 132,
+  "scale": 0.41,
+  "material": "stone",
+  "skill": "observation",
+  "verb": "Align",
+  "portable": false,
+  "fields": {
+   "align": [
+    0,
+    0,
+    1
+   ],
+   "starlight": [
+    0,
+    0,
+    1
+   ],
+   "traced": [
+    0,
+    0,
+    7
+   ],
+   "moss": [
+    0.2,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "starlight",
+    "decay",
+    1,
+    "night&clear"
+   ],
+   [
+    "starlight",
+    "decay",
+    0,
+    "!night"
+   ],
+   [
+    "starlight",
+    "decay",
+    0.2,
+    "night&!clear"
+   ],
+   [
+    "moss",
+    "rate",
+    0.0002,
+    "wet"
+   ],
+   [
+    "align",
+    "rate",
+    -0.0002,
+    "always"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "turn": [
+    [
+     "align",
+     "add",
+     0.25
+    ]
+   ],
+   "trace": [
+    [
+     "traced",
+     "wrap",
+     1
+    ]
+   ],
+   "scrub": [
+    [
+     "moss",
+     "mul",
+     0.4
+    ]
+   ],
+   "wish": []
+  },
+  "parts": [
+   "brush"
+  ],
+  "shelter": false
+ },
+ "time_machine": {
+  "type": "timemachine",
+  "w": 132,
+  "h": 136,
+  "scale": 0.361,
+  "material": "brass",
+  "skill": "engineering",
+  "verb": "Travel",
+  "portable": false,
+  "fields": {
+   "year": [
+    2026,
+    1,
+    9999
+   ],
+   "charge": [
+    0.2,
+    0,
+    1
+   ],
+   "flux": [
+    0,
+    0,
+    1
+   ],
+   "door": [
+    0,
+    0,
+    1
+   ],
+   "shine": [
+    0.5,
+    0,
+    1
+   ],
+   "trips": [
+    0,
+    0,
+    9999
+   ]
+  },
+  "physics": [
+   [
+    "flux",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "charge",
+    "rate",
+    0.0003,
+    "always"
+   ],
+   [
+    "shine",
+    "rate",
+    -0.0004,
+    "wet"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "year_up": [
+    [
+     "year",
+     "add",
+     1
+    ]
+   ],
+   "year_back": [
+    [
+     "year",
+     "add",
+     -10
+    ]
+   ],
+   "year_far": [
+    [
+     "year",
+     "add",
+     -100
+    ]
+   ],
+   "wind": [
+    [
+     "charge",
+     "add",
+     0.3
+    ]
+   ],
+   "lever": [
+    [
+     "flux",
+     "set",
+     1
+    ],
+    [
+     "charge",
+     "add",
+     -0.5
+    ],
+    [
+     "trips",
+     "add",
+     1
+    ]
+   ],
+   "door_open": [
+    [
+     "door",
+     "set",
+     1
+    ]
+   ],
+   "door_shut": [
+    [
+     "door",
+     "set",
+     0
+    ]
+   ],
+   "polish": [
+    [
+     "shine",
+     "add",
+     0.35
+    ]
+   ],
+   "home": [
+    [
+     "year",
+     "set",
+     2026
+    ]
+   ]
+  },
+  "parts": [
+   "lever",
+   "key",
+   "cloth"
+  ],
+  "shelter": true
+ },
+ "tardis": {
+  "type": "booth",
+  "w": 104,
+  "h": 136,
+  "scale": 0.361,
+  "material": "wood",
+  "skill": "observation",
+  "verb": "Visit",
+  "portable": false,
+  "fields": {
+   "door": [
+    0,
+    0,
+    1
+   ],
+   "lamp": [
+    0,
+    0,
+    1
+   ],
+   "dust": [
+    0.2,
+    0,
+    1
+   ],
+   "knocks": [
+    0,
+    0,
+    9999
+   ],
+   "whoosh": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "lamp",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "whoosh",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "dust",
+    "rate",
+    0.0003,
+    "dry"
+   ],
+   [
+    "dust",
+    "rate",
+    -0.001,
+    "wet"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "open": [
+    [
+     "door",
+     "set",
+     1
+    ]
+   ],
+   "shut": [
+    [
+     "door",
+     "set",
+     0
+    ]
+   ],
+   "knock": [
+    [
+     "knocks",
+     "add",
+     1
+    ],
+    [
+     "lamp",
+     "set",
+     0.6
+    ]
+   ],
+   "lamp": [
+    [
+     "lamp",
+     "set",
+     1
+    ],
+    [
+     "whoosh",
+     "set",
+     1
+    ]
+   ],
+   "dust": [
+    [
+     "dust",
+     "mul",
+     0.3
+    ]
+   ]
+  },
+  "parts": [
+   "cloth"
+  ],
+  "shelter": true
+ },
+ "dimensional_door": {
+  "type": "dimdoor",
+  "w": 112,
+  "h": 132,
+  "scale": 0.333,
+  "material": "wood",
+  "skill": "observation",
+  "verb": "Open",
+  "portable": false,
+  "fields": {
+   "door": [
+    0,
+    0,
+    1
+   ],
+   "dimension": [
+    0,
+    0,
+    4
+   ],
+   "draft": [
+    0,
+    0,
+    1
+   ],
+   "hinge": [
+    0.6,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "draft",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "hinge",
+    "rate",
+    -0.0004,
+    "wet"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "open": [
+    [
+     "door",
+     "set",
+     1
+    ],
+    [
+     "draft",
+     "set",
+     1
+    ]
+   ],
+   "shut": [
+    [
+     "door",
+     "set",
+     0
+    ]
+   ],
+   "knob": [
+    [
+     "dimension",
+     "wrap",
+     1
+    ]
+   ],
+   "oil": [
+    [
+     "hinge",
+     "add",
+     0.4
+    ]
+   ],
+   "knock": []
+  },
+  "parts": [
+   "can"
+  ],
+  "shelter": false
+ },
+ "teleporter": {
+  "type": "teleporter",
+  "w": 116,
+  "h": 116,
+  "scale": 0.321,
+  "material": "metal",
+  "skill": "engineering",
+  "verb": "Beam",
+  "portable": false,
+  "fields": {
+   "charge": [
+    0.4,
+    0,
+    1
+   ],
+   "beam": [
+    0,
+    0,
+    1
+   ],
+   "lens": [
+    0.6,
+    0,
+    1
+   ],
+   "sent": [
+    0,
+    0,
+    9999
+   ],
+   "target": [
+    0,
+    0,
+    3
+   ]
+  },
+  "physics": [
+   [
+    "beam",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "charge",
+    "rate",
+    0.0005,
+    "always"
+   ],
+   [
+    "lens",
+    "rate",
+    -0.0005,
+    "wet"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "calibrate": [
+    [
+     "target",
+     "wrap",
+     1
+    ]
+   ],
+   "beam": [
+    [
+     "beam",
+     "set",
+     1
+    ],
+    [
+     "charge",
+     "add",
+     -0.35
+    ],
+    [
+     "sent",
+     "add",
+     1
+    ]
+   ],
+   "wipe": [
+    [
+     "lens",
+     "add",
+     0.35
+    ]
+   ],
+   "stand": [
+    [
+     "beam",
+     "set",
+     0.5
+    ]
+   ]
+  },
+  "parts": [
+   "pebble",
+   "cloth"
+  ],
+  "shelter": false
+ },
+ "robot_butler": {
+  "type": "robot",
+  "w": 100,
+  "h": 132,
+  "scale": 0.218,
+  "material": "metal",
+  "skill": "crafting",
+  "verb": "Service",
+  "portable": false,
+  "fields": {
+   "battery": [
+    0.6,
+    0,
+    1
+   ],
+   "oil": [
+    0.6,
+    0,
+    1
+   ],
+   "shine": [
+    0.5,
+    0,
+    1
+   ],
+   "bow": [
+    0,
+    0,
+    1
+   ],
+   "wave": [
+    0,
+    0,
+    1
+   ],
+   "greetings": [
+    0,
+    0,
+    9999
+   ],
+   "rust": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "battery",
+    "rate",
+    -0.0001,
+    "always"
+   ],
+   [
+    "bow",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "wave",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "rust",
+    "rate",
+    0.0002,
+    "wet&!oiled"
+   ],
+   [
+    "oil",
+    "rate",
+    -6e-05,
+    "always"
+   ],
+   [
+    "shine",
+    "rate",
+    -8e-05,
+    "always"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "charge": [
+    [
+     "battery",
+     "add",
+     0.35
+    ]
+   ],
+   "oil": [
+    [
+     "oil",
+     "add",
+     0.4
+    ],
+    [
+     "rust",
+     "mul",
+     0.5
+    ]
+   ],
+   "buff": [
+    [
+     "shine",
+     "add",
+     0.3
+    ]
+   ],
+   "bow": [
+    [
+     "bow",
+     "set",
+     1
+    ]
+   ],
+   "wave": [
+    [
+     "wave",
+     "set",
+     1
+    ],
+    [
+     "greetings",
+     "add",
+     1
+    ]
+   ],
+   "five": [
+    [
+     "wave",
+     "set",
+     1
+    ]
+   ]
+  },
+  "parts": [
+   "can",
+   "cloth",
+   "plug"
+  ],
+  "shelter": false
+ },
+ "cloning_machine": {
+  "type": "cloner",
+  "w": 144,
+  "h": 124,
+  "scale": 0.327,
+  "material": "glass",
+  "skill": "engineering",
+  "verb": "Clone",
+  "portable": false,
+  "fields": {
+   "charge": [
+    0.4,
+    0,
+    1
+   ],
+   "sample": [
+    0,
+    0,
+    1
+   ],
+   "hologram": [
+    0,
+    0,
+    1
+   ],
+   "cycles": [
+    0,
+    0,
+    9999
+   ],
+   "bubbles": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "hologram",
+    "rate",
+    -0.0012,
+    "always"
+   ],
+   [
+    "bubbles",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "charge",
+    "rate",
+    0.0003,
+    "always"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "load": [
+    [
+     "sample",
+     "set",
+     1
+    ]
+   ],
+   "run": [
+    [
+     "hologram",
+     "set",
+     1
+    ],
+    [
+     "charge",
+     "add",
+     -0.4
+    ],
+    [
+     "cycles",
+     "add",
+     1
+    ],
+    [
+     "bubbles",
+     "set",
+     1
+    ]
+   ],
+   "purge": [
+    [
+     "sample",
+     "set",
+     0
+    ],
+    [
+     "hologram",
+     "set",
+     0
+    ]
+   ],
+   "tap": [
+    [
+     "bubbles",
+     "set",
+     0.6
+    ]
+   ]
+  },
+  "parts": [
+   "feather"
+  ],
+  "shelter": false
+ },
+ "transmogrifier": {
+  "type": "transmog",
+  "w": 136,
+  "h": 124,
+  "scale": 0.314,
+  "material": "metal",
+  "skill": "engineering",
+  "verb": "Transmogrify",
+  "portable": false,
+  "fields": {
+   "charge": [
+    0.4,
+    0,
+    1
+   ],
+   "hopper": [
+    0,
+    0,
+    1
+   ],
+   "output": [
+    0,
+    0,
+    4
+   ],
+   "cycles": [
+    0,
+    0,
+    9999
+   ],
+   "smoke": [
+    0,
+    0,
+    1
+   ],
+   "jam": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "smoke",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "charge",
+    "rate",
+    0.0004,
+    "always"
+   ],
+   [
+    "jam",
+    "rate",
+    0.0002,
+    "wet"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "drop": [
+    [
+     "hopper",
+     "set",
+     1
+    ]
+   ],
+   "crank": [
+    [
+     "hopper",
+     "set",
+     0
+    ],
+    [
+     "output",
+     "wrap",
+     1
+    ],
+    [
+     "cycles",
+     "add",
+     1
+    ],
+    [
+     "smoke",
+     "set",
+     1
+    ],
+    [
+     "charge",
+     "add",
+     -0.3
+    ]
+   ],
+   "kick": [
+    [
+     "jam",
+     "set",
+     0
+    ],
+    [
+     "smoke",
+     "set",
+     0.5
+    ]
+   ],
+   "sweep": [
+    [
+     "output",
+     "set",
+     0
+    ]
+   ]
+  },
+  "parts": [
+   "leaf",
+   "broom"
+  ],
+  "shelter": false
+ },
+ "money_printer": {
+  "type": "printer",
+  "w": 120,
+  "h": 112,
+  "scale": 0.257,
+  "material": "metal",
+  "skill": "crafting",
+  "verb": "Print",
+  "portable": false,
+  "fields": {
+   "paper": [
+    0.5,
+    0,
+    1
+   ],
+   "ink": [
+    0.6,
+    0,
+    1
+   ],
+   "stack": [
+    0,
+    0,
+    1
+   ],
+   "jam": [
+    0,
+    0,
+    1
+   ],
+   "runs": [
+    0,
+    0,
+    9999
+   ],
+   "oil": [
+    0.5,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "jam",
+    "rate",
+    0.0004,
+    "wet"
+   ],
+   [
+    "oil",
+    "rate",
+    -0.0002,
+    "always"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "paper": [
+    [
+     "paper",
+     "add",
+     0.5
+    ]
+   ],
+   "crank": [
+    [
+     "stack",
+     "add",
+     0.25
+    ],
+    [
+     "paper",
+     "add",
+     -0.15
+    ],
+    [
+     "ink",
+     "add",
+     -0.05
+    ],
+    [
+     "runs",
+     "add",
+     1
+    ]
+   ],
+   "clear": [
+    [
+     "jam",
+     "set",
+     0
+    ]
+   ],
+   "oil": [
+    [
+     "oil",
+     "add",
+     0.4
+    ]
+   ],
+   "tidy": [
+    [
+     "stack",
+     "set",
+     0
+    ]
+   ]
+  },
+  "parts": [
+   "crank",
+   "can"
+  ],
+  "shelter": false
+ },
+ "perpetual_motion": {
+  "type": "perpetual",
+  "w": 116,
+  "h": 120,
+  "scale": 0.282,
+  "material": "brass",
+  "skill": "engineering",
+  "verb": "Spin",
+  "portable": false,
+  "fields": {
+   "angle": [
+    0,
+    0,
+    1
+   ],
+   "speed": [
+    0.35,
+    0.2,
+    1
+   ],
+   "oil": [
+    0.5,
+    0,
+    1
+   ],
+   "squeak": [
+    0,
+    0,
+    1
+   ],
+   "turns": [
+    0,
+    0,
+    999999
+   ]
+  },
+  "physics": [
+   [
+    "angle",
+    "wrap",
+    0.02,
+    "always"
+   ],
+   [
+    "speed",
+    "decay",
+    0.35,
+    "always"
+   ],
+   [
+    "oil",
+    "rate",
+    -0.0001,
+    "always"
+   ],
+   [
+    "squeak",
+    "decay",
+    1,
+    "dry_axle"
+   ],
+   [
+    "squeak",
+    "decay",
+    0,
+    "!dry_axle"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "spin": [
+    [
+     "speed",
+     "add",
+     0.35
+    ]
+   ],
+   "oil": [
+    [
+     "oil",
+     "add",
+     0.45
+    ]
+   ],
+   "count": [
+    [
+     "turns",
+     "add",
+     1
+    ]
+   ],
+   "stop": [
+    [
+     "speed",
+     "mul",
+     0.8
+    ]
+   ]
+  },
+  "parts": [
+   "can"
+  ],
+  "shelter": false
+ },
+ "DNA_mixer": {
+  "type": "dna",
+  "w": 116,
+  "h": 124,
+  "scale": 0.259,
+  "material": "glass",
+  "skill": "engineering",
+  "verb": "Mix",
+  "portable": false,
+  "fields": {
+   "vial_a": [
+    0,
+    0,
+    4
+   ],
+   "vial_b": [
+    0,
+    0,
+    4
+   ],
+   "spin": [
+    0,
+    0,
+    1
+   ],
+   "mixes": [
+    0,
+    0,
+    9999
+   ],
+   "printout": [
+    0,
+    0,
+    1
+   ],
+   "clean": [
+    0.7,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "spin",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "clean",
+    "rate",
+    -0.0002,
+    "always"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "load_a": [
+    [
+     "vial_a",
+     "wrap",
+     1
+    ]
+   ],
+   "load_b": [
+    [
+     "vial_b",
+     "wrap",
+     1
+    ]
+   ],
+   "spin": [
+    [
+     "spin",
+     "set",
+     1
+    ],
+    [
+     "mixes",
+     "add",
+     1
+    ],
+    [
+     "printout",
+     "set",
+     1
+    ],
+    [
+     "clean",
+     "add",
+     -0.2
+    ]
+   ],
+   "read": [
+    [
+     "printout",
+     "set",
+     0
+    ]
+   ],
+   "rinse": [
+    [
+     "clean",
+     "set",
+     1
+    ]
+   ]
+  },
+  "parts": [
+   "feather",
+   "cloth"
+  ],
+  "shelter": false
+ },
+ "shrink_ray": {
+  "type": "ray",
+  "w": 112,
+  "h": 96,
+  "scale": 0.194,
+  "material": "metal",
+  "skill": "engineering",
+  "verb": "Zap",
+  "portable": false,
+  "fields": {
+   "charge": [
+    0.5,
+    0,
+    1
+   ],
+   "dial": [
+    0.5,
+    0,
+    1
+   ],
+   "target": [
+    1,
+    0.2,
+    1
+   ],
+   "zaps": [
+    0,
+    0,
+    9999
+   ],
+   "glow": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "glow",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "charge",
+    "rate",
+    0.0004,
+    "always"
+   ],
+   [
+    "target",
+    "decay",
+    1,
+    "calm"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "charge": [
+    [
+     "charge",
+     "add",
+     0.35
+    ]
+   ],
+   "dial": [
+    [
+     "dial",
+     "wrap",
+     0.25
+    ]
+   ],
+   "zap": [
+    [
+     "target",
+     "mul",
+     0.55
+    ],
+    [
+     "zaps",
+     "add",
+     1
+    ],
+    [
+     "glow",
+     "set",
+     1
+    ],
+    [
+     "charge",
+     "add",
+     -0.3
+    ]
+   ],
+   "blow": [
+    [
+     "glow",
+     "set",
+     0
+    ]
+   ],
+   "reset": [
+    [
+     "target",
+     "set",
+     1
+    ]
+   ]
+  },
+  "parts": [
+   "pebble"
+  ],
+  "shelter": false
+ },
+ "growth_ray": {
+  "type": "ray",
+  "w": 112,
+  "h": 96,
+  "scale": 0.194,
+  "material": "metal",
+  "skill": "engineering",
+  "verb": "Zap",
+  "portable": false,
+  "fields": {
+   "charge": [
+    0.5,
+    0,
+    1
+   ],
+   "dial": [
+    0.5,
+    0,
+    1
+   ],
+   "target": [
+    1,
+    1,
+    3
+   ],
+   "zaps": [
+    0,
+    0,
+    9999
+   ],
+   "glow": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "glow",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "charge",
+    "rate",
+    0.0004,
+    "always"
+   ],
+   [
+    "target",
+    "decay",
+    1,
+    "calm"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "charge": [
+    [
+     "charge",
+     "add",
+     0.35
+    ]
+   ],
+   "zap": [
+    [
+     "target",
+     "add",
+     0.7
+    ],
+    [
+     "zaps",
+     "add",
+     1
+    ],
+    [
+     "glow",
+     "set",
+     1
+    ],
+    [
+     "charge",
+     "add",
+     -0.3
+    ]
+   ],
+   "blow": [
+    [
+     "glow",
+     "set",
+     0
+    ]
+   ],
+   "reset": [
+    [
+     "target",
+     "set",
+     1
+    ]
+   ]
+  },
+  "parts": [
+   "flower"
+  ],
+  "shelter": false
+ },
+ "genie_lamp": {
+  "type": "lamp",
+  "w": 100,
+  "h": 84,
+  "scale": 0.27,
+  "material": "brass",
+  "skill": "observation",
+  "verb": "Rub",
+  "portable": false,
+  "fields": {
+   "polish": [
+    0.4,
+    0,
+    1
+   ],
+   "smoke": [
+    0,
+    0,
+    1
+   ],
+   "wishes": [
+    0,
+    0,
+    3
+   ],
+   "peeks": [
+    0,
+    0,
+    9999
+   ]
+  },
+  "physics": [
+   [
+    "smoke",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "polish",
+    "rate",
+    -0.0004,
+    "wet"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "rub": [
+    [
+     "polish",
+     "add",
+     0.2
+    ],
+    [
+     "smoke",
+     "set",
+     1
+    ]
+   ],
+   "wish": [
+    [
+     "wishes",
+     "add",
+     1
+    ]
+   ],
+   "buff": [
+    [
+     "polish",
+     "add",
+     0.35
+    ]
+   ],
+   "peek": [
+    [
+     "peeks",
+     "add",
+     1
+    ]
+   ]
+  },
+  "parts": [
+   "cloth"
+  ],
+  "shelter": false
+ },
+ "invisible_cloak": {
+  "type": "cloak",
+  "w": 100,
+  "h": 120,
+  "scale": 0.282,
+  "material": "cloth",
+  "skill": "crafting",
+  "verb": "Try",
+  "portable": false,
+  "fields": {
+   "shimmer": [
+    0.3,
+    0,
+    1
+   ],
+   "folded": [
+    0,
+    0,
+    1
+   ],
+   "hidden": [
+    0,
+    0,
+    1
+   ],
+   "dust": [
+    0,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "shimmer",
+    "decay",
+    0.3,
+    "always"
+   ],
+   [
+    "hidden",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "shimmer",
+    "decay",
+    0.9,
+    "windy&folded<.5"
+   ],
+   [
+    "dust",
+    "rate",
+    0.0002,
+    "dry"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "shake": [
+    [
+     "shimmer",
+     "set",
+     1
+    ],
+    [
+     "dust",
+     "set",
+     0
+    ]
+   ],
+   "fold": [
+    [
+     "folded",
+     "set",
+     1
+    ]
+   ],
+   "hang": [
+    [
+     "folded",
+     "set",
+     0
+    ]
+   ],
+   "hide": [
+    [
+     "hidden",
+     "set",
+     1
+    ]
+   ],
+   "peek": [
+    [
+     "hidden",
+     "set",
+     0.5
+    ]
+   ]
+  },
+  "parts": [
+   "cloak"
+  ],
+  "shelter": false
+ },
+ "dream_catcher": {
+  "type": "dreamcatcher",
+  "w": 96,
+  "h": 132,
+  "scale": 0.295,
+  "material": "fiber",
+  "skill": "observation",
+  "verb": "Untangle",
+  "portable": false,
+  "fields": {
+   "dreams": [
+    0,
+    0,
+    1
+   ],
+   "tangle": [
+    0,
+    0,
+    1
+   ],
+   "sway": [
+    0,
+    0,
+    1
+   ],
+   "feathers": [
+    3,
+    3,
+    6
+   ],
+   "released": [
+    0,
+    0,
+    9999
+   ]
+  },
+  "physics": [
+   [
+    "dreams",
+    "rate",
+    0.0016,
+    "night"
+   ],
+   [
+    "tangle",
+    "rate",
+    0.0007,
+    "windy"
+   ],
+   [
+    "sway",
+    "wrap",
+    0.01,
+    "windy"
+   ],
+   [
+    "sway",
+    "wrap",
+    0.002,
+    "calm"
+   ]
+  ],
+  "triggers": [],
+  "effects": {
+   "untangle": [
+    [
+     "tangle",
+     "add",
+     -0.35
+    ]
+   ],
+   "feather": [
+    [
+     "feathers",
+     "add",
+     1
+    ]
+   ],
+   "release": [
+    [
+     "dreams",
+     "set",
+     0
+    ],
+    [
+     "released",
+     "add",
+     1
+    ]
+   ],
+   "watch": []
+  },
+  "parts": [
+   "feather"
+  ],
+  "shelter": false
+ },
+ "dragon_egg": {
+  "type": "dragonegg",
+  "w": 112,
+  "h": 104,
+  "scale": 0.228,
+  "material": "stone",
+  "skill": "care",
+  "verb": "Warm",
+  "portable": false,
+  "fields": {
+   "warmth": [
+    0.4,
+    0,
+    1
+   ],
+   "incubation": [
+    0,
+    0,
+    1
+   ],
+   "wobble": [
+    0,
+    0,
+    1
+   ],
+   "embers": [
+    0.5,
+    0,
+    1
+   ],
+   "turns": [
+    0,
+    0,
+    9999
+   ],
+   "shine": [
+    0.4,
+    0,
+    1
+   ]
+  },
+  "physics": [
+   [
+    "warmth",
+    "rate",
+    -0.0012,
+    "always"
+   ],
+   [
+    "warmth",
+    "rate",
+    -0.003,
+    "cold"
+   ],
+   [
+    "incubation",
+    "rate",
+    0.00016,
+    "warm_egg"
+   ],
+   [
+    "wobble",
+    "decay",
+    0,
+    "always"
+   ],
+   [
+    "embers",
+    "rate",
+    -0.0008,
+    "always"
+   ],
+   [
+    "embers",
+    "rate",
+    -0.004,
+    "wet"
+   ],
+   [
+    "warmth",
+    "rate",
+    0.0016,
+    "embered"
+   ]
+  ],
+  "triggers": [
+   [
+    "incubation>=.999",
+    [
+     [
+      "incubation",
+      "set",
+      1
+     ],
+     [
+      "wobble",
+      "set",
+      1
+     ]
+    ]
+   ]
+  ],
+  "effects": {
+   "brood": [
+    [
+     "warmth",
+     "add",
+     0.35
+    ],
+    [
+     "wobble",
+     "set",
+     0.4
+    ]
+   ],
+   "turn": [
+    [
+     "turns",
+     "add",
+     1
+    ],
+    [
+     "wobble",
+     "set",
+     0.6
+    ]
+   ],
+   "stoke": [
+    [
+     "embers",
+     "add",
+     0.35
+    ]
+   ],
+   "listen": [],
+   "buff": [
+    [
+     "shine",
+     "add",
+     0.3
+    ]
+   ],
+   "hum": [
+    [
+     "warmth",
+     "add",
+     0.1
+    ],
+    [
+     "wobble",
+     "set",
+     0.3
+    ]
+   ]
+  },
+  "parts": [
+   "stick",
+   "cloth"
+  ],
+  "shelter": false
+ }
+}

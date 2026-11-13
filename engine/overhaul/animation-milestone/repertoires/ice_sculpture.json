@@ -1,0 +1,488 @@
+{
+ "schemaVersion": 1,
+ "objectId": "ice_sculpture",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 9,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 39 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "ice_chisel_feathers",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Chiselling fresh feathers into the ice swan",
+   "duration_seconds": 28,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/ice_chisel_feathers"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "ice_sculpture",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "ice_chisel_feathers"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "chisel",
+    "chisel"
+   ],
+   "anchors": [
+    "neck",
+    "wing"
+   ],
+   "parts_moved": [
+    "chisel"
+   ],
+   "tool": "chisel",
+   "when": [
+    "melt<.85"
+   ],
+   "prefer": [
+    "detail<.5",
+    "cold"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 138,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  },
+  {
+   "id": "ice_polish",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Buffing the ice until it shines",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/ice_polish"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "ice_sculpture",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "ice_polish"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "polish",
+    "polish"
+   ],
+   "anchors": [
+    "breast",
+    "neck",
+    "wing"
+   ],
+   "parts_moved": [
+    "cloth"
+   ],
+   "tool": "cloth",
+   "when": [],
+   "prefer": [
+    "frost>.4",
+    "day"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 138,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "ice_tarp_shade",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Throwing a canvas over the sculpture to keep the sun off",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/ice_tarp_shade"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "ice_sculpture",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "ice_tarp_shade"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "cover"
+   ],
+   "anchors": [
+    "base",
+    "flank"
+   ],
+   "parts_moved": [
+    "tarp_hold"
+   ],
+   "tool": "wing",
+   "when": [
+    "tarp<.5",
+    "warm"
+   ],
+   "prefer": [
+    "sun",
+    "melt>.3"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 69,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "ice_tarp_reveal",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Tugging the canvas off for the evening",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/ice_tarp_reveal"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "ice_sculpture",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "ice_tarp_reveal"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "uncover"
+   ],
+   "anchors": [
+    "base",
+    "flank"
+   ],
+   "parts_moved": [
+    "tarp_hold"
+   ],
+   "tool": "wing",
+   "when": [
+    "tarp>.5"
+   ],
+   "prefer": [
+    "dusk",
+    "night",
+    "cold"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 69,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "ice_mop_meltwater",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Mopping up the meltwater puddle",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/ice_mop_meltwater"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "ice_sculpture",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "ice_mop_meltwater"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "mop",
+    "mop"
+   ],
+   "anchors": [
+    "puddle"
+   ],
+   "parts_moved": [
+    "cloth"
+   ],
+   "tool": "cloth",
+   "when": [
+    "puddle>.2"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 17,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "ice_tongue_test",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Licking the ice to see if it is really cold",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/ice_tongue_test"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "ice_sculpture",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "ice_tongue_test"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "lick"
+   ],
+   "anchors": [
+    "breast"
+   ],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [],
+   "prefer": [
+    "young",
+    "happy"
+   ],
+   "ages": [
+    "hatchling",
+    "duckling",
+    "juvenile"
+   ],
+   "reachableAges": [
+    "duckling",
+    "juvenile"
+   ],
+   "contactHeightPx": 65,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "ice_frost_breath",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Huffing frosty breath onto the ice",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/ice_frost_breath"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "ice_sculpture",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "ice_frost_breath"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "breath",
+    "breath"
+   ],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "cold"
+   ],
+   "prefer": [
+    "winter"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "ice_slush_mould",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Scooping meltwater slush into the swan mould to set again overnight",
+   "duration_seconds": 28,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/ice_slush_mould"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "ice_sculpture",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "ice_slush_mould"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "mould"
+   ],
+   "anchors": [
+    "base",
+    "breast",
+    "puddle"
+   ],
+   "parts_moved": [
+    "mould"
+   ],
+   "tool": "bucket",
+   "when": [
+    "melt>.6"
+   ],
+   "prefer": [
+    "dusk",
+    "night"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 65,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "ice_pack_snow",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Packing snow into the melted spots",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/ice_pack_snow"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "ice_sculpture",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "ice_pack_snow"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "pack",
+    "pack"
+   ],
+   "anchors": [
+    "base",
+    "breast",
+    "flank"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "snow",
+    "melt>.15"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 69,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

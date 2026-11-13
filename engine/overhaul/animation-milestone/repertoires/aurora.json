@@ -1,0 +1,323 @@
+{
+ "schemaVersion": 1,
+ "objectId": "aurora",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 6,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 42 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "aurora_switch_on",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Flicking on the aurora lamp as the sky darkens",
+   "duration_seconds": 14,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/aurora_switch_on"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "aurora",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "aurora_switch_on"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "on"
+   ],
+   "anchors": [
+    "switch"
+   ],
+   "parts_moved": [
+    "switch"
+   ],
+   "tool": "wing",
+   "when": [
+    "power<.5"
+   ],
+   "prefer": [
+    "dusk",
+    "night"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 30,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "aurora_tune_colour",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Turning the brass dial through greens and violets",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/aurora_tune_colour"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "aurora",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "aurora_tune_colour"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "hue",
+    "hue"
+   ],
+   "anchors": [
+    "dial"
+   ],
+   "parts_moved": [
+    "dial"
+   ],
+   "tool": "wing",
+   "when": [
+    "power>.5"
+   ],
+   "prefer": [
+    "night"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 30,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "aurora_add_ribbon",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Sliding another lens in for an extra ribbon of light",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/aurora_add_ribbon"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "aurora",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "aurora_add_ribbon"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "ribbon"
+   ],
+   "anchors": [
+    "lens"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "power>.5"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 96,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "aurora_lie_and_watch",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Lying back on the grass to watch the lights ripple",
+   "duration_seconds": 40,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/aurora_lie_and_watch"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "aurora",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "aurora_lie_and_watch"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "power>.5",
+    "dry"
+   ],
+   "prefer": [
+    "night",
+    "sad",
+    "lonely"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  },
+  {
+   "id": "aurora_bedtime_dim",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Dimming the aurora down for sleep",
+   "duration_seconds": 14,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/aurora_bedtime_dim"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "aurora",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "aurora_bedtime_dim"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "dim"
+   ],
+   "anchors": [
+    "dial"
+   ],
+   "parts_moved": [
+    "dial"
+   ],
+   "tool": "wing",
+   "when": [
+    "power>.7",
+    "night"
+   ],
+   "prefer": [
+    "tired"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 30,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "aurora_switch_off",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Switching off the aurora for the morning",
+   "duration_seconds": 12,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/aurora_switch_off"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "aurora",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "aurora_switch_off"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "off"
+   ],
+   "anchors": [
+    "switch"
+   ],
+   "parts_moved": [
+    "switch"
+   ],
+   "tool": "wing",
+   "when": [
+    "power>.5",
+    "day"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 30,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

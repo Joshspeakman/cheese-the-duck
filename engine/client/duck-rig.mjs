@@ -17,7 +17,7 @@ export function actionFor(state='idle'){
 export function duckRig(duck,t=0,design=null){
  if(duck.performance?.kind==='nest')t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  if(duck.performance?.kind==='water')t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
- if(['botanical','seating','instrument','lighting','keepsake','creative','textile','ground','architecture','playkit','carnival'].includes(duck.performance?.kind))t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
+ if(['botanical','seating','instrument','lighting','keepsake','wonder','creative','textile','ground','architecture','playkit','carnival'].includes(duck.performance?.kind))t=duck.performance.motion===false?0:duck.performance.routine?.elapsed||0;
  const requested=duck.stage==='teen'?'juvenile':duck.stage||'adult',spec=design||DUCK_AGES.find(a=>a.id===requested)||DUCK_AGES[5];
  const stage=design?'adult':spec.id,small=['hatchling','duckling'].includes(stage);
  const performance=performancePose(duck.performance,duck.performance?.young?'duckling':stage);
@@ -114,7 +114,7 @@ export function duckRig(duck,t=0,design=null){
     rig.handContacts.push({x:b.x+b.w-2+far[0].search(/\S/),y:b.y-2,direction:-1});
    }
   }
-  if(performance?.nestgrip||performance?.botanical||performance?.instrument||performance?.lighting||performance?.keepsake||performance?.creative||performance?.textile||performance?.playkit||performance?.architecture||performance?.ground||performance?.surfaceWork){
+  if(performance?.nestgrip||performance?.botanical||performance?.instrument||performance?.lighting||performance?.keepsake||performance?.wonder||performance?.creative||performance?.textile||performance?.playkit||performance?.architecture||performance?.ground||performance?.surfaceWork){
    const shoulder={x:Math.round(b.x+b.w*.55),y:Math.round(b.y+b.h*.4)};
    grip={x:Math.min(W-4,Math.round(b.x+b.w+2+performance.reach*2)),y:Math.round(shoulder.y+1-(performance.workLift||0))};
    workGripRest={x:Math.round(b.x+b.w+2),y:shoulder.y+1-performance.b};
@@ -125,7 +125,7 @@ export function duckRig(duck,t=0,design=null){
    }
    put(')',grip.x,grip.y,'w');rig.handContacts=[{...grip,direction:1}];
   }
-  if(!performance?.nestgrip&&!performance?.botanical&&!performance?.instrument&&!performance?.lighting&&!performance?.keepsake&&!performance?.creative&&!performance?.textile&&!performance?.playkit&&!performance?.architecture&&!performance?.ground&&!performance?.surfaceWork&&performance?.w>.15){
+  if(!performance?.nestgrip&&!performance?.botanical&&!performance?.instrument&&!performance?.lighting&&!performance?.keepsake&&!performance?.wonder&&!performance?.creative&&!performance?.textile&&!performance?.playkit&&!performance?.architecture&&!performance?.ground&&!performance?.surfaceWork&&performance?.w>.15){
    const reach=Math.round(performance.w*(small?3:6)),wy=b.y+Math.max(1,Math.round(b.h*.3));
    const wing=small?[' /)','/ /','\\_/']:['  /)/)',' / / /','/ / /','\\___/'],wx=b.x+b.w-3+Math.round(reach/3),yy=wy-Math.round(reach/2);
    group(wing,wx,yy,'w');rig.handContacts=[{x:wx+wing[0].trimEnd().length-1,y:yy,direction:1}];

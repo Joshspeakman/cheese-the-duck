@@ -4,6 +4,7 @@ export const CASTLE_DIAL={face:{x:157,y:136,w:9,h:4},needle_origin:[161,139],nee
 export const AIR_ATOMICS=['castle_start','castle_stop','castle_vent_open','castle_vent_close','castle_hose_straight','castle_hose_stow','castle_grill_clean','castle_gauge_check'];
 const ACTIVE=Symbol('native air occurrence projection');
 export function castleTransit(work){return work?.[ACTIVE]==='transit';}
+export function castleProcedure(work){return Boolean(work?.[ACTIVE]);}
 export function castleActiveWork(work){
  if(work?.[ACTIVE])return work;
  const marked=work&&Object.hasOwn(work,'air_procedure'),procedure=['castle_pressure_check','castle_dust_service'].includes(work?.id);

@@ -705,10 +705,10 @@
       "construction": "botanical-v1"
     },
     "topiary_duck": {
-      "width": 18.97,
-      "height": 10.74,
+      "width": 32.47,
+      "height": 25.93,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "fern": {
       "width": 69.42,
@@ -951,10 +951,10 @@
       "construction": "waterworks-v1"
     },
     "zen_garden": {
-      "width": 26.73,
-      "height": 9.67,
+      "width": 29.68,
+      "height": 14.27,
       "floor": true,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "fairy_lights": {
       "width": 83.67,
@@ -987,10 +987,10 @@
       "construction": "lighting-v1"
     },
     "ice_sculpture": {
-      "width": 18.97,
-      "height": 10.74,
+      "width": 26.49,
+      "height": 23.68,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "trophy_case": {
       "width": 79.01,
@@ -1005,16 +1005,16 @@
       "construction": "architecture-v1"
     },
     "sand_castle": {
-      "width": 25.81,
-      "height": 15.24,
+      "width": 28.39,
+      "height": 18.39,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "gong": {
-      "width": 21.1,
-      "height": 10.74,
+      "width": 28.74,
+      "height": 28,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "bubble_machine": {
       "width": 52.29,
@@ -1137,10 +1137,10 @@
       "construction": "lighting-v1"
     },
     "aurora": {
-      "width": 19.83,
-      "height": 9.67,
+      "width": 35.17,
+      "height": 25.93,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "laser_lights": {
       "width": 75.54,
@@ -1269,58 +1269,58 @@
       "construction": "ground-v1"
     },
     "portal": {
-      "width": 26.85,
-      "height": 13.92,
+      "width": 40.03,
+      "height": 32.19,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "time_machine": {
-      "width": 24.88,
-      "height": 13.92,
+      "width": 36.02,
+      "height": 31.16,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "rainbow_generator": {
-      "width": 26.73,
-      "height": 9.67,
+      "width": 30.52,
+      "height": 23.72,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "weather_machine": {
-      "width": 24.88,
-      "height": 13.92,
+      "width": 34.84,
+      "height": 27.99,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "black_hole": {
-      "width": 27.16,
-      "height": 9.14,
+      "width": 27.27,
+      "height": 23.73,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "volcano": {
-      "width": 22.78,
-      "height": 13.26,
+      "width": 38.53,
+      "height": 27.96,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "antigravity": {
-      "width": 26.33,
-      "height": 11.29,
+      "width": 28.79,
+      "height": 23.68,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "tornado": {
-      "width": 23.22,
-      "height": 10.74,
+      "width": 20.97,
+      "height": 20.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "dragon_egg": {
-      "width": 17.38,
-      "height": 10.74,
+      "width": 19.04,
+      "height": 15.16,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "treasure_chest": {
       "width": 52.05,
@@ -1341,28 +1341,28 @@
       "construction": "keepsake-v1"
     },
     "wormhole": {
-      "width": 26.85,
-      "height": 13.92,
+      "width": 33.07,
+      "height": 25.82,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "force_field": {
-      "width": 22.78,
-      "height": 13.26,
+      "width": 39.44,
+      "height": 27.96,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "teleporter": {
-      "width": 21.73,
-      "height": 11.27,
+      "width": 28.07,
+      "height": 23.73,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "robot_butler": {
-      "width": 17.69,
-      "height": 12.33,
+      "width": 17.32,
+      "height": 18.28,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "hologram": {
       "width": 70.43,
@@ -1371,22 +1371,22 @@
       "construction": "lighting-v1"
     },
     "shrink_ray": {
-      "width": 19.41,
-      "height": 7.74,
+      "width": 16.02,
+      "height": 11.94,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "growth_ray": {
-      "width": 19.41,
-      "height": 7.74,
+      "width": 16.02,
+      "height": 11.94,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "cloning_machine": {
-      "width": 24.88,
-      "height": 13.92,
+      "width": 34.59,
+      "height": 25.79,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "ufo": {
       "width": 65.91,
@@ -1401,10 +1401,10 @@
       "construction": "playground-v1"
     },
     "genie_lamp": {
-      "width": 21.47,
-      "height": 9.09,
+      "width": 19.89,
+      "height": 14.6,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "infinity_pool": {
       "width": 93.91,
@@ -1455,46 +1455,46 @@
       "construction": "excursion-v1"
     },
     "tardis": {
-      "width": 16.85,
-      "height": 10.74,
+      "width": 29.75,
+      "height": 31.16,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "invisible_cloak": {
-      "width": 19.22,
-      "height": 9.09,
+      "width": 22,
+      "height": 21.55,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "transmogrifier": {
-      "width": 24.88,
-      "height": 13.92,
+      "width": 31.65,
+      "height": 24.77,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "money_printer": {
-      "width": 20.14,
-      "height": 11.27,
+      "width": 22.99,
+      "height": 18.36,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "perpetual_motion": {
-      "width": 21.32,
-      "height": 9.14,
+      "width": 24.8,
+      "height": 21.55,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "DNA_mixer": {
-      "width": 10.58,
-      "height": 11.27,
+      "width": 22.9,
+      "height": 20.43,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "dream_catcher": {
-      "width": 14.81,
-      "height": 9.54,
+      "width": 22.71,
+      "height": 24.73,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "wish_fountain": {
       "width": 81.61,
@@ -1503,10 +1503,10 @@
       "construction": "waterworks-v1"
     },
     "dimensional_door": {
-      "width": 26.85,
-      "height": 13.92,
+      "width": 28.94,
+      "height": 27.92,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "golden_throne": {
       "width": 69.55,
@@ -1521,10 +1521,10 @@
       "construction": "botanical-v1"
     },
     "cosmic_arch": {
-      "width": 31.31,
-      "height": 13.26,
+      "width": 45.29,
+      "height": 34.37,
       "floor": false,
-      "construction": "legacy-detail"
+      "construction": "wonder-v1"
     },
     "eternal_flame": {
       "width": 66.83,

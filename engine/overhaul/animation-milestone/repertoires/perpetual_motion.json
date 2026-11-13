@@ -1,0 +1,221 @@
+{
+ "schemaVersion": 1,
+ "objectId": "perpetual_motion",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 4,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 44 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "perpetual_give_spin",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Giving the wheel a spin it does not need",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/perpetual_give_spin"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "perpetual_motion",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "perpetual_give_spin"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "spin"
+   ],
+   "anchors": [
+    "rim"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 90,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "perpetual_try_to_stop",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Trying with all his might to stop the wheel and failing",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/perpetual_try_to_stop"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "perpetual_motion",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "perpetual_try_to_stop"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "stop"
+   ],
+   "anchors": [
+    "rim"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [],
+   "prefer": [
+    "grumpy",
+    "curious"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 90,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "perpetual_oil_axle",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Oiling the axle to quiet its squeak",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/perpetual_oil_axle"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "perpetual_motion",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "perpetual_oil_axle"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "oil"
+   ],
+   "anchors": [
+    "axle"
+   ],
+   "parts_moved": [
+    "can"
+   ],
+   "tool": "can",
+   "when": [
+    "oil<.5"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 130,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "perpetual_count_turns",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Counting the turns out loud and losing track",
+   "duration_seconds": 26,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/perpetual_count_turns"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "perpetual_motion",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "perpetual_count_turns"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "count"
+   ],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [],
+   "prefer": [
+    "young",
+    "curious",
+    "tired"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

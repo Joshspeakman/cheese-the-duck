@@ -1,0 +1,433 @@
+{
+ "schemaVersion": 1,
+ "objectId": "gong",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 8,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 40 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "gong_peck_post",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Pecking the gong post and giggling at the tiny tock",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/gong_peck_post"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "gong",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "gong_peck_post"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "tock",
+    "tock"
+   ],
+   "anchors": [
+    "post_foot"
+   ],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [],
+   "prefer": [
+    "young",
+    "happy"
+   ],
+   "ages": [
+    "hatchling",
+    "duckling"
+   ],
+   "reachableAges": [
+    "hatchling",
+    "duckling"
+   ],
+   "contactHeightPx": 5,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "gong_soft_tap",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Tapping the gong softly and listening",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/gong_soft_tap"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "gong",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "gong_soft_tap"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "tap"
+   ],
+   "anchors": [
+    "boss"
+   ],
+   "parts_moved": [
+    "mallet"
+   ],
+   "tool": "mallet",
+   "when": [
+    "!night_late"
+   ],
+   "prefer": [
+    "dawn",
+    "calm"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 104,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "gong_mighty_bong",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Winding up and giving the gong a mighty BONG",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/gong_mighty_bong"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "gong",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "gong_mighty_bong"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "boom"
+   ],
+   "anchors": [
+    "boss"
+   ],
+   "parts_moved": [
+    "mallet"
+   ],
+   "tool": "mallet",
+   "when": [
+    "!night_late"
+   ],
+   "prefer": [
+    "happy",
+    "day"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 104,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  },
+  {
+   "id": "gong_dinner_call",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Striking three slow beats to call friends over",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/gong_dinner_call"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "gong",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "gong_dinner_call"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "tap",
+    "tap",
+    "boom"
+   ],
+   "anchors": [
+    "boss"
+   ],
+   "parts_moved": [
+    "mallet"
+   ],
+   "tool": "mallet",
+   "when": [
+    "!night_late"
+   ],
+   "prefer": [
+    "dusk",
+    "lonely"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 104,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "gong_wing_mute",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Hugging the gong to stop it humming",
+   "duration_seconds": 14,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/gong_wing_mute"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "gong",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "gong_wing_mute"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "damp"
+   ],
+   "anchors": [
+    "boss",
+    "rim"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "ring>.15"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 104,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "gong_polish",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Polishing the bronze face in circles",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/gong_polish"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "gong",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "gong_polish"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "buff",
+    "buff"
+   ],
+   "anchors": [
+    "boss",
+    "rim",
+    "rim_r"
+   ],
+   "parts_moved": [
+    "cloth"
+   ],
+   "tool": "cloth",
+   "when": [],
+   "prefer": [
+    "shine<.4",
+    "dust>.3"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 104,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "gong_ear_to_bronze",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Pressing an ear to the gong to hear the last of the hum",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/gong_ear_to_bronze"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "gong",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "gong_ear_to_bronze"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [
+    "rim"
+   ],
+   "parts_moved": [
+    "ear"
+   ],
+   "tool": "none",
+   "when": [
+    "ring>.05"
+   ],
+   "prefer": [
+    "young",
+    "calm"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 74,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "gong_cover_ears",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Bonging the gong, then clapping both wings over his ears",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/gong_cover_ears"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "gong",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "gong_cover_ears"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "boom"
+   ],
+   "anchors": [
+    "boss"
+   ],
+   "parts_moved": [
+    "mallet"
+   ],
+   "tool": "mallet",
+   "when": [
+    "!night_late"
+   ],
+   "prefer": [
+    "young"
+   ],
+   "ages": [
+    "hatchling",
+    "duckling",
+    "juvenile"
+   ],
+   "reachableAges": [
+    "duckling",
+    "juvenile"
+   ],
+   "contactHeightPx": 104,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

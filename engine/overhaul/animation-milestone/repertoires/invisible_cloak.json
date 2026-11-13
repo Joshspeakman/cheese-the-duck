@@ -1,0 +1,224 @@
+{
+ "schemaVersion": 1,
+ "objectId": "invisible_cloak",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 4,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 44 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "cloak_shake_out",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Shaking the cloak out so it shimmers in the air",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/cloak_shake_out"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "invisible_cloak",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "cloak_shake_out"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "shake"
+   ],
+   "anchors": [
+    "hem"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "folded<.5"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 39,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "cloak_hide_under",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Hiding under the cloak and sneaking a look out",
+   "duration_seconds": 26,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/cloak_hide_under"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "invisible_cloak",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "cloak_hide_under"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "hide",
+    "peek",
+    "shake"
+   ],
+   "anchors": [
+    "hem"
+   ],
+   "parts_moved": [
+    "cloak"
+   ],
+   "tool": "none",
+   "when": [
+    "folded<.5"
+   ],
+   "prefer": [
+    "young",
+    "happy",
+    "lonely"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 39,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  },
+  {
+   "id": "cloak_fold",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Folding the cloak neatly over the stand",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/cloak_fold"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "invisible_cloak",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "cloak_fold"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "fold"
+   ],
+   "anchors": [
+    "hem",
+    "mid"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "folded<.5"
+   ],
+   "prefer": [
+    "night",
+    "wet"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 75,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "cloak_hang_up",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Unfolding the cloak and shaking it back over the stand",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/cloak_hang_up"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "invisible_cloak",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "cloak_hang_up"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "hang"
+   ],
+   "anchors": [
+    "mid"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "folded>.5"
+   ],
+   "prefer": [
+    "day"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 75,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

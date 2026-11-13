@@ -1,0 +1,267 @@
+{
+ "schemaVersion": 1,
+ "objectId": "antigravity",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 5,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 43 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "antigrav_power_up",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Powering up the anti-gravity plate",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/antigrav_power_up"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "antigravity",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "antigrav_power_up"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "power"
+   ],
+   "anchors": [
+    "switch"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "field<.5"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 39,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "antigrav_float_pebbles",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Setting pebbles on the plate and watching them rise",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/antigrav_float_pebbles"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "antigravity",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "antigrav_float_pebbles"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "float"
+   ],
+   "anchors": [
+    "plate"
+   ],
+   "parts_moved": [
+    "pebble"
+   ],
+   "tool": "none",
+   "when": [
+    "field>.4"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 43,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "antigrav_feather_lift",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Leaning into the field until his feathers stand on end",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/antigrav_feather_lift"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "antigravity",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "antigrav_feather_lift"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "field>.6"
+   ],
+   "prefer": [
+    "young",
+    "happy"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "antigrav_calibrate",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Twisting the lowest floating ring back into line",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/antigrav_calibrate"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "antigravity",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "antigrav_calibrate"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "calibrate",
+    "calibrate"
+   ],
+   "anchors": [
+    "ring_low"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "rings<.7"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 86,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "antigrav_power_down",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Catching the floating pebbles as the plate powers down",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/antigrav_power_down"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "antigravity",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "antigrav_power_down"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "off",
+    "ground"
+   ],
+   "anchors": [
+    "switch"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "field>.4"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 39,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

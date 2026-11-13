@@ -164,6 +164,7 @@ def _response_ready(obj,execution,index):
         if state['motor']!='off':return result('blocked','Stop the motor before sweeping the actual grille.')
         if state['powered'] or state['rotor_speed']>0:return result('wait','Wait for the real rotor to stop before the wing sweep.')
     if field=='hose' and execution['id']=='castle_hose_stow' and (0 not in execution['events'] or state['motor']!='off'):return result('blocked','Stop the blower before coiling its hose.')
+    if field=='motor' and value=='on' and excursions.finite(obj.get('condition'),1.)<=.2:return result('blocked','Repair the house before starting its air supply.')
     if field=='motor' and value=='on' and execution.get('power_authority')=='procedure' and state['power_hold']:return result('blocked','The user has explicitly left this blower switched off.')
     return result('ready')
 
@@ -184,7 +185,8 @@ def effect_ready(pond,plan,execution,context,index):
 
 def terminal_ready(pond,plan,execution,context):
     try:
-        s=castle.state(pond.object_state('bounce_house',plan));id=execution['id'];spec=castle.ROUTINES[id]
+        obj=pond.object_state('bounce_house',plan);s=castle.state(obj);id=execution['id'];spec=castle.ROUTINES[id]
+        if id=='castle_start' and excursions.finite(obj.get('condition'),1.)<=.2:return result('blocked','The damaged house cannot start its air supply.')
         if execution['events']!=list(range(len(spec['effects']))) or execution['clock']<spec['duration']:return result('wait','The authored atomic contacts are not complete.')
         if id in ('castle_stop','castle_hose_stow','castle_grill_clean') and (s['motor']!='off' or s['powered'] or s['rotor_speed']!=0):return result('wait','The rotor is still moving.')
         if id=='castle_start':

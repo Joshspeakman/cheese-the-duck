@@ -1,0 +1,273 @@
+{
+ "schemaVersion": 1,
+ "objectId": "tardis",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 5,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 43 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "booth_peek_inside",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Opening the door and gaping at how big it is inside",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/booth_peek_inside"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "tardis",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "booth_peek_inside"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "open",
+    "shut"
+   ],
+   "anchors": [
+    "handle"
+   ],
+   "parts_moved": [
+    "door"
+   ],
+   "tool": "wing",
+   "when": [],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 86,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "booth_knock",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Knocking on the blue door to see if anybody answers",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/booth_knock"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "tardis",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "booth_knock"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "knock",
+    "knock"
+   ],
+   "anchors": [
+    "door"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [],
+   "prefer": [
+    "lonely",
+    "young"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 71,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "booth_lamp_whoosh",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Pulling the side chain and hearing a wheezing whoosh from the roof lamp",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/booth_lamp_whoosh"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "tardis",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "booth_lamp_whoosh"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "lamp"
+   ],
+   "anchors": [
+    "chain"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 73,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "booth_dust_panels",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Dusting the lower blue panels",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/booth_dust_panels"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "tardis",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "booth_dust_panels"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "dust",
+    "dust"
+   ],
+   "anchors": [
+    "base",
+    "door",
+    "panel_low"
+   ],
+   "parts_moved": [
+    "cloth"
+   ],
+   "tool": "cloth",
+   "when": [
+    "dust>.3"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 71,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "booth_storm_hideout",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Hiding inside the booth while the storm grumbles",
+   "duration_seconds": 44,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/booth_storm_hideout"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "tardis",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "booth_storm_hideout"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "open",
+    "shut"
+   ],
+   "anchors": [
+    "handle"
+   ],
+   "parts_moved": [
+    "door"
+   ],
+   "tool": "wing",
+   "when": [
+    "wet"
+   ],
+   "prefer": [
+    "storm",
+    "young"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 86,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  }
+ ]
+}

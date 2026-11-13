@@ -6,6 +6,7 @@ import CREATIVE from './animation/creative-props.json' with {type:'json'};
 import INSTRUMENTS from './animation/instruments.json' with {type:'json'};
 import LIGHTING from './animation/lighting.json' with {type:'json'};
 import KEEPSAKES from './animation/keepsakes.json' with {type:'json'};
+import WONDERS from './animation/wonders.json' with {type:'json'};
 // Detail is constructed in character space: contours, joinery, stitched seams,
 // moving parts and wear stay crisp at every zoom. All gameplay state is supplied
 // by the simulation; inspecting a catalogue never mutates an owned object.
@@ -13,6 +14,7 @@ import BOTANICAL from './animation/botanical.json' with {type:'json'};
 const hash=s=>[...s].reduce((n,c)=>(n*33+c.charCodeAt(0))>>>0,17);
 const has=(family,words)=>words.split(' ').includes(family);
 export function itemProfile(item,family){
+ if(WONDERS[item.id]){const p=WONDERS[item.id];return {kind:'wonder',material:p.material,skill:p.skill,verb:p.verb,need:'fun',duration:26};}
  if(PLAYKIT[item.id]){const p=PLAYKIT[item.id];return {kind:'toy',material:p.material,skill:p.skill,verb:p.verb,need:'fun',duration:24};}
  if(ARCHITECTURE[item.id]){const p=ARCHITECTURE[item.id];return {kind:'study',material:p.material,skill:p.skill,verb:p.verb,need:'fun',duration:24};}
  if(GROUND[item.id]){const p=GROUND[item.id];return {kind:'study',material:p.material,skill:p.skill,verb:p.verb,need:'fun',duration:24};}

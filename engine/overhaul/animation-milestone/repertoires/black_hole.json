@@ -1,0 +1,266 @@
+{
+ "schemaVersion": 1,
+ "objectId": "black_hole",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 5,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 43 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "blackhole_feed_leaf",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Dropping a fallen leaf into the tiny black hole's intake port",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/blackhole_feed_leaf"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "black_hole",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "blackhole_feed_leaf"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "feed"
+   ],
+   "anchors": [
+    "port"
+   ],
+   "parts_moved": [
+    "leaf"
+   ],
+   "tool": "none",
+   "when": [],
+   "prefer": [
+    "fall",
+    "curious"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 94,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "blackhole_tighten_ring",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Tightening the containment ring bolts",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/blackhole_tighten_ring"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "black_hole",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "blackhole_tighten_ring"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "tighten",
+    "tighten"
+   ],
+   "anchors": [
+    "bolt_l",
+    "bolt_r"
+   ],
+   "parts_moved": [
+    "wrench"
+   ],
+   "tool": "wrench",
+   "when": [
+    "containment<.8"
+   ],
+   "prefer": [
+    "containment<.4",
+    "storm"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 116,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "blackhole_read_gauge",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Squinting at the event-horizon gauge through goggles",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/blackhole_read_gauge"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "black_hole",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "blackhole_read_gauge"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "gauge"
+   ],
+   "anchors": [
+    "gauge"
+   ],
+   "parts_moved": [
+    "goggles"
+   ],
+   "tool": "none",
+   "when": [],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 45,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "blackhole_stare",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Staring into the void until the void stares back",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/blackhole_stare"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "black_hole",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "blackhole_stare"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [],
+   "prefer": [
+    "night",
+    "sad"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "blackhole_flick",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Flicking the glass to see if it does anything",
+   "duration_seconds": 14,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/blackhole_flick"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "black_hole",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "blackhole_flick"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "tap"
+   ],
+   "anchors": [
+    "glass_low"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [],
+   "prefer": [
+    "young"
+   ],
+   "ages": [
+    "hatchling",
+    "duckling",
+    "juvenile"
+   ],
+   "reachableAges": [
+    "juvenile"
+   ],
+   "contactHeightPx": 101,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

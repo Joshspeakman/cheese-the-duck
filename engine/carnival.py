@@ -22,6 +22,7 @@ def is_air_procedure(plan):
 
 
 def is_shared(plan):
+    if is_air_procedure(plan):return True
     if not isinstance(plan,dict) or not isinstance(plan.get('carnival_work'),dict):return False
     work=plan['carnival_work']
     # Route damaged shared saves to strict validation, never to legacy movement.
@@ -39,6 +40,9 @@ def is_flight(plan):
 
 
 def shared_controller(plan):
+    if is_air_procedure(plan):
+        from engine import castle_air_session
+        return castle_air_session
     if is_egg_caregiver(plan):
         from engine import egg_caregiver
         return egg_caregiver
@@ -88,6 +92,7 @@ def choose(pond,item,plan):
     return dict(id=key,label=ROUTINES[key]['label'],stage='queue',clock=0.,elapsed=0.,ride_elapsed=0.,done=False,invitation_checked=False)
 
 def prepare(pond,plan):
+    if is_air_procedure(plan):return False
     w=plan['carnival_work'];origin=plan['destination'];offset=18 if plan['target']=='ferris_wheel' else 13
     # Fixed spots by this exact copy, never a target relative to Cheese.
     w['queue_a']=[origin[0]+offset,origin[1]];w['queue_b']=[origin[0]+offset+5,origin[1]]
@@ -98,9 +103,9 @@ def prepare(pond,plan):
     pond.game.renderer.duck_pos.move_to(*w['queue_a'])
 
 def valid(pond,plan):
-    # Procedure execution belongs to a separate live session, never the old
-    # flattened choreography. Its public session owner is not adopted yet.
-    if is_air_procedure(plan):return False
+    if is_air_procedure(plan):
+        from engine import castle_air_session
+        return castle_air_session.validate(pond,plan)
     if not isinstance(plan,dict):return False
     w=plan.get('carnival_work',{})
     if not isinstance(w,dict):return False
@@ -111,10 +116,16 @@ def valid(pond,plan):
 def owns(pond,item,obj):
     plan=pond.state.get('plan')
     if not (plan and plan.get('carnival_work') and plan.get('target')==item and pond.object_state(item,plan) is obj):return False
-    available=shared_controller(plan).available(pond) if is_egg_caregiver(plan) else pond.available()
+    available=shared_controller(plan).available(pond) if is_egg_caregiver(plan) or is_air_procedure(plan) else pond.available()
     return 'hold' if plan.get('paused') or plan['phase']!='act' or not available or pond.game.duck.current_action in ('feed','play','clean','pet','sleep') else 'service' if plan['carnival_work'].get('castle_care') else 'active'
 
 def release(minds,key):
+    current=minds.carnival_guests.get(key)
+    if isinstance(current,dict) and is_air_procedure({'carnival_work':current.get('work')}):
+        from engine import castle_air_session
+        owner=castle_air_session.session(minds.pond)
+        if owner and owner.work is current.get('work'):
+            owner.interrupt('A participant left the procedure.');return
     r=minds.carnival_guests.pop(key,None)
     if not isinstance(r,dict) or not isinstance(r.get('work'),dict):
         # A damaged reservation proves no movement ownership. Remove it without
@@ -147,7 +158,8 @@ def partner_valid(minds,r,plan=None):
 
 def tick(minds,dt):
     p=minds.pond;plan=p.state.get('plan')
-    if is_air_procedure(plan):return
+    if is_air_procedure(plan):
+        shared_controller(plan).refresh(p);return
     if is_shared(plan):
         shared_controller(plan).refresh(p)
         return
@@ -272,6 +284,7 @@ def advance(pond,plan,dt):
 def completion_ready(pond,plan):
     """Gate all item rewards using the explicit, already-consumed plan."""
     if not isinstance(plan,dict):return False
+    if is_air_procedure(plan):return shared_controller(plan).completion_ready(pond,plan)
     w=plan.get('carnival_work')
     if not isinstance(w,dict) or not valid(pond,plan) or w.get('done') is not True or w.get('interrupted') or w.get('recorded'):return False
     if w['id'] in castle_work.AIR_SCORES:
@@ -345,6 +358,7 @@ def motion(minds,key):
     return dict(target=list(r['spot']),phase=r['phase'],facing=False,gesture='idle') if r else None
 
 def conversation(pond,plan,key='cheese'):
+    if is_air_procedure(plan):return shared_controller(plan).conversation(pond,plan,key)
     if not plan or not plan.get('carnival_work') or not valid(pond,plan):return None
     if is_egg_caregiver(plan):return shared_controller(plan).conversation(pond,plan,key)
     if is_shared(plan):
@@ -378,7 +392,10 @@ def conversation(pond,plan,key='cheese'):
       returning_for_weather=bool(w.get('withdrawal')))
 
 def request(pond,item,choice,instance=None,together=False):
-    if choice in ('castle_pressure_check','castle_dust_service'):return False,'Choose an individual air control for this activity.'
+    if choice in ('castle_pressure_check','castle_dust_service'):
+        if item!='bounce_house':return False,'Choose an activity for this object.'
+        from engine import castle_air_session
+        return castle_air_session.start(pond,choice,instance,together)
     if item not in ALL_ITEMS or not isinstance(choice,str) or choice not in PROGRAMS or PROGRAMS[choice]['item']!=item:return False,'Choose an activity for this ride.'
     if together and pond.game.duck.growth_stage=='egg':
         from engine import egg_caregiver

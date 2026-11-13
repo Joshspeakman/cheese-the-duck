@@ -986,8 +986,9 @@
     {
       "id": "topiary_duck",
       "family": "duck",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 6 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "fern",
@@ -1260,8 +1261,9 @@
     {
       "id": "zen_garden",
       "family": "zen",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 7 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "fairy_lights",
@@ -1303,8 +1305,9 @@
     {
       "id": "ice_sculpture",
       "family": "duck",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 8 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "trophy_case",
@@ -1323,14 +1326,16 @@
     {
       "id": "sand_castle",
       "family": "tower",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 7 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "gong",
       "family": "gong",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 7 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "bubble_machine",
@@ -1490,8 +1495,9 @@
     {
       "id": "aurora",
       "family": "aurora",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 6 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "laser_lights",
@@ -1663,56 +1669,65 @@
     {
       "id": "portal",
       "family": "portal",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 5 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "time_machine",
       "family": "machine",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 6 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "rainbow_generator",
       "family": "rainbow",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 5 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "weather_machine",
       "family": "machine",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 5 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "black_hole",
       "family": "blackhole",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 5 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "volcano",
       "family": "volcano",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 6 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "antigravity",
       "family": "infinity",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 5 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "tornado",
       "family": "tornado",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 6 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "dragon_egg",
       "family": "egg",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 6 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "treasure_chest",
@@ -1738,26 +1753,30 @@
     {
       "id": "wormhole",
       "family": "portal",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 5 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "force_field",
       "family": "orb",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 5 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "teleporter",
       "family": "portal",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 4 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "robot_butler",
       "family": "robot",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 6 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "hologram",
@@ -1770,20 +1789,23 @@
     {
       "id": "shrink_ray",
       "family": "ray",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 4 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "growth_ray",
       "family": "ray",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 4 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "cloning_machine",
       "family": "machine",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 5 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "ufo",
@@ -1802,8 +1824,9 @@
     {
       "id": "genie_lamp",
       "family": "genie",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 4 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "infinity_pool",
@@ -1867,44 +1890,51 @@
     {
       "id": "tardis",
       "family": "door",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 5 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "invisible_cloak",
       "family": "cape",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 4 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "transmogrifier",
       "family": "machine",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 4 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "money_printer",
       "family": "machine",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 5 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "perpetual_motion",
       "family": "infinity",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 4 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "DNA_mixer",
       "family": "dna",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 4 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "dream_catcher",
       "family": "dreamcatcher",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 4 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "wish_fountain",
@@ -1917,8 +1947,9 @@
     {
       "id": "dimensional_door",
       "family": "portal",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 4 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "golden_throne",
@@ -1938,8 +1969,9 @@
     {
       "id": "cosmic_arch",
       "family": "arch",
-      "art": "pending",
-      "verifiedSequences": 0
+      "art": "reconstructed_review_in_progress",
+      "verifiedSequences": 0,
+      "animationNote": "Wonder family (2026-11-13): bespoke animated ASCII construction driven by saved native state; 5 context-gated routines with timed contacts, all run end to end natively. Not accepted: 48-sequence target, visitor roles, egg observation and per-guest bindings outstanding."
     },
     {
       "id": "eternal_flame",
@@ -4101,8 +4133,8 @@
   "checkpoint": {
     "sourcePhase": "completion_reward_gate_and_posed_seasonal_fittings",
     "fullyOverhauled": false,
-    "constructedObjects": 394,
-    "remainingArtwork": 148,
+    "constructedObjects": 426,
+    "remainingArtwork": 116,
     "pairedTracks": 18,
     "soloItemTracks": 13,
     "perObject48SequenceAudit": "not_satisfied",
@@ -4600,7 +4632,7 @@
       "engine/artifacts/animation-milestone/medium-art-render.json",
       "engine/artifacts/animation-milestone/parent-medium-review.log"
     ],
-    "next": "Finish remaining wardrobe art and native companion/assistance contacts, then the remaining object repertoires. Each object still needs its full distinct-sequence, age/species/context and interruption audit. No partial installation.",
+    "next": "Fix check_playkit_company boat_finish now; then finish wonders (bigger-glyph redraw for small ones, wire say cues into speech); then breadth: art + interactions for the 116 non-shop items family by family; then deepen every object toward 48.",
     "checks": {
       "javascript": 226,
       "livingSimulation": 694,
@@ -5901,6 +5933,256 @@
         "flutterObserver": "adult Cheese with Flutter observing"
       },
       "rolePreflight": "Independent checks cover supported solo/regular/egg formations, a naturally bounded 152.4547-second Flutter inspect-only visit, and honest long-work/near-departure/third-body/outfit refusals. No visit extension or refusal-as-completion credit."
+    },
+    "nativeAirSession": {
+      "status": "implemented_validation_in_progress_not_installed",
+      "source": "engine/castle_air_session.py",
+      "publicProcedures": [
+        "castle_pressure_check",
+        "castle_dust_service"
+      ],
+      "roles": [
+        "solo",
+        "visitor-operator",
+        "flight-observer",
+        "egg-caregiver"
+      ],
+      "currentVerifiedBoundaryChecks": 171,
+      "boundaryCommand": ".venv/bin/python engine/check_castle_air_session_lifecycle.py --boundaries",
+      "boundaryExitCode": 0,
+      "latestFix": "Reject urgent care, active care, unavailable scenes and insufficient remaining visit time before taking ownership of tasks, leases, plans or movement.",
+      "remaining": [
+        "Expand procedure age/visitor/context coverage beyond the ten example sessions",
+        "Egg and flight session review images",
+        "Complete remaining object artwork and full per-object repertoires; no overall completion credit"
+      ],
+      "verifiedSequences": 0,
+      "currentVerifiedFullChecks": 273,
+      "fullCommand": ".venv/bin/python engine/check_castle_air_session_lifecycle.py",
+      "fullExitCode": 0,
+      "reconciliation_2026_11_13": {
+        "by": "Claude (handoff continuation)",
+        "sessionCapture": {
+          "file": "artifacts/animation-milestone/castle-air-session-lifecycle-frames.json (repository root)",
+          "sha256": "8ad86c2cf8530a7e4315bf93a17dcc27672b3c40f2410f1b1d49bdd4cf27176c",
+          "lifecycleChecks": 273,
+          "exitCode": 0,
+          "renderReplay": "PASS 10 sessions, 1560 cases, 2940 roots, 408 contacts, 192 observations, 228 egg checks, 240 transits; report engine/artifacts/animation-milestone/castle-air-session-lifecycle-native-render.json",
+          "images": "Rendered review images exist only for solo and visitor-operator sessions; egg-caregiver and flight-observer sessions are numerically checked, not pictured.",
+          "determinism": "Capture is not run-to-run deterministic: besides UUIDs/timestamps, 10 operator roots, some routes/stances and visitor art differ between the 2026-11-11 and 2026-11-13 captures. Both runs pass their own checks."
+        },
+        "agesMatrixFinal": {
+          "manifest": "castle-air-ages-matrix-final-manifest.json",
+          "cases": 64,
+          "supported": 64,
+          "checks": 520,
+          "renderReplay": "PASS 3360 cases, 1728 contacts, 96 observations",
+          "fix": "merge_castle_air_matrix.py recorded a redundant origin.cheese on solo cases (Cheese is the operator), which the replay coverage validator correctly rejected, so the previous ages-final manifest was never replayable. Origin.cheese is now recorded only for shared cases; frames are byte-identical to the previous merge."
+        },
+        "guestsMatrixFinal": {
+          "manifest": "castle-air-guests-matrix-final-manifest.json",
+          "command": "merge primary(72,25) + georgia/raven/biscuit/friendly_goose root-64 follow-ups + safe-roots castle_grill_clean revision, --revision-score castle_grill_clean",
+          "cases": 384,
+          "supported": 384,
+          "refusedRetainedAttempts": 139,
+          "supersededCases": 47,
+          "checks": 3650,
+          "renderReplay": "PASS 20160 cases, 40320 roots, 10368 contacts, 576 observations, frames sha 9c6ab3e5..."
+        },
+        "status": "tested (native + rendered replay); visually spot-checked one shared grille frame; not accepted as a 48-sequence repertoire"
+      }
+    },
+    "wonders": {
+      "status": "implemented_tested_not_accepted",
+      "objects": 32,
+      "routines": 172,
+      "routinesPerObject": {
+        "DNA_mixer": 4,
+        "antigravity": 5,
+        "aurora": 6,
+        "black_hole": 5,
+        "cloning_machine": 5,
+        "cosmic_arch": 5,
+        "dimensional_door": 5,
+        "dragon_egg": 6,
+        "dream_catcher": 4,
+        "force_field": 5,
+        "genie_lamp": 4,
+        "gong": 8,
+        "growth_ray": 4,
+        "ice_sculpture": 9,
+        "invisible_cloak": 4,
+        "money_printer": 5,
+        "perpetual_motion": 4,
+        "portal": 5,
+        "rainbow_generator": 6,
+        "robot_butler": 6,
+        "sand_castle": 7,
+        "shrink_ray": 4,
+        "tardis": 5,
+        "teleporter": 4,
+        "time_machine": 6,
+        "topiary_duck": 6,
+        "tornado": 6,
+        "transmogrifier": 4,
+        "volcano": 6,
+        "weather_machine": 6,
+        "wormhole": 6,
+        "zen_garden": 7
+      },
+      "authored": [
+        "engine/animation-authoring/wonders.py -> client/animation/wonders.json + wonder-routines.json",
+        "engine/client/wonder-workshop.mjs (31 builders; shrink_ray and growth_ray share one ray builder with distinct targets)",
+        "engine/client/wonder-routines.mjs",
+        "engine/client/wonder-state.mjs",
+        "engine/wonders.py",
+        "engine/scripts/export-wonder-reach.mjs -> client/animation/wonder-reach.json (measured physical reach per routine and age)"
+      ],
+      "integrated": [
+        "ultra-items itemSprite/itemWorldScale",
+        "item-detail + item_profiles (kind wonder)",
+        "living_world start/choose/valid/advance/complete/cancel/command/decide",
+        "mind_garden chat facts",
+        "ultra-world, ultra-renderer, performances, duck-rig, visitor-rig",
+        "pond-journal wonder cards + 166 player choices",
+        "object-footprints regenerated (only the 32 changed)"
+      ],
+      "tested": {
+        "native": "engine/check_wonders.py PASS 14330 checks: all 172 routines at every age that can reach them (1128 routine-age runs) end to end in DesktopGame with disposable saves; weather physics; shelter by age; real pond advance() loop with 8 wonders through four seasons; journal command; cancel/pause/save-reload/store-away",
+        "js": "tests/wonders.test.mjs 9 tests; full npm test 317/317",
+        "render": "wonders-check.cjs PASS: 32 objects at rest and active, 3-age working sheet, 19 native frames (adult and hatchling) replayed without state mutation, Cheese staged in every frame",
+        "regression": "check_living 694 (72h run), check_keepsakes 118, check_glass_curios 206, check_brains 47, castle session smoke 9: all PASS after integration",
+        "layout": "check_layout 292, check_physical_objects 60, check_terrain 483: PASS with regenerated footprints"
+      },
+      "visuallyReviewed": "By Claude on rendered sheets and live native frames (adult and hatchling) after the scale/reach rework; ice swan and rainbow arc weaker. Not yet reviewed by the user. Rest sheets reviewed: robot butler and money printer bodies read plain; cloak on stand reads like a cone; candidates for a second art pass.",
+      "bugsFoundAndFixed": [
+        "physics integrated rules with whole dt (order-dependent results); now 5 s slices",
+        "600 s physics cap dropped catch-up time; now up to 1 day, <=2000 slices",
+        "weather_catch_spark required a storm, which blocks machinery: unreachable; now rain + charge",
+        "two physics rows used unknown bare tags (muted, folded) that never fired",
+        "force-field hex grid printed \"undefined\" (float glyph index)",
+        "Wear rates were minutes-scale while the pond runs in real seconds (ice gone in ~4 min, robot flat in 40 min): retuned to hours; melted swan can be re-set with the slush mould",
+        "111/167 contacts physically unreachable (see reach)",
+        "Keyframes without an anchor fell back to the object centre, sliding the wing across the object; they now hold the nearest authored anchor",
+        "check_wonder_company had a vacuous assertion (ring >= 0); now records each applied contact"
+      ],
+      "limitations": [
+        "No visitor company roles yet: guests do not join, watch or take turns at wonders",
+        "Egg Cheese only refuses; no egg observation role",
+        "Displayed work offset follows the keepsake pattern (renderer stages Cheese at the part); not the native castle contact model",
+        "4-7 routines per object vs the 48 target",
+        "Semantic distinctness only structurally checked; no person has reviewed meaning",
+        "say cues on routines are data only: not yet wired into dialogue/local speech",
+        "Frame-time p95 cost noted under performance"
+      ],
+      "repertoires": "engine/overhaul/animation-milestone/repertoires/<id>.json, stage implemented, verifiedSequences 0; validate_evidence.py 0 errors",
+      "reach": {
+        "method": "Contact anchor heights measured from the drawn art against the D10 rig body height per age; bare wing 1.10x body, head/body 1.05x, held tool 1.6x. Native eligibility only offers a routine to ages in its reachableAges.",
+        "routinesReachableByAge": {
+          "hatchling": 64,
+          "duckling": 97,
+          "juvenile": 153,
+          "young_adult": 159,
+          "adult": 164,
+          "mature": 164,
+          "elder": 163,
+          "legendary": 164
+        },
+        "history": "First measurement: 111/167 routines were out of an adult duck's reach (objects 3-5 ducks tall, controls high). Fixed by natural duck-relative sizes and reachable controls (pull chain, low consoles, hoppers, low dials, lowered gong); none was fixed by inflating reach.",
+        "youngAdditions": [
+          "gong_peck_post",
+          "rainbow_drip_splash",
+          "weather_tongue_drop",
+          "wormhole_peep_echo",
+          "dimdoor_sniff_sill",
+          "ice_slush_mould (all ages that reach)"
+        ],
+        "drawing": "Wing contacts are drawn as the wing stretched from the hand to the part (bounded by the native reach envelope); tools draw their shaft. Envelope multipliers (wing 1.1x, head 1.05x, tool 1.6x body height) are authored judgments, not measured joint limits."
+      },
+      "performance": {
+        "scene": "Captured live scene with 8 wonders placed, 200 frames at 1500x950, headless Electron",
+        "withWonders": {
+          "median": 12.199999988079071,
+          "p95": 17.299999952316284,
+          "max": 23.899999976158142
+        },
+        "withoutWonders": {
+          "median": 10.800000011920929,
+          "p95": 11.700000047683716,
+          "max": 26.399999976158142
+        },
+        "measures": [
+          "construction memoized on read state",
+          "idle motion stepped at 3 fps (6 fps while worked), per-object phase offsets",
+          "per-cell fills merged into row runs"
+        ],
+        "remaining": "p95 17.3 ms vs 11.7 ms baseline with 8 wonders in view (headless Electron, 1500x950)."
+      },
+      "visitorCompany": {
+        "status": "implemented_tested_not_accepted",
+        "source": [
+          "engine/wonder_company.py",
+          "client/wonder-routines.mjs companyTrack",
+          "ultra-world wonderGuests"
+        ],
+        "modes": {
+          "company": "A present regular/rare/story visitor walks over under their own movement and shares Cheese's routine clock; reactions are derived from the routine's authored contact times in a personality style (cheer/nervous/steady/curious from resident traits); bond/learn/memory only after a completed routine with >=45% overlap.",
+          "operate": "An idle handed visitor (duck/goose/owl/crow/toad; Pip at duckling reach) works a free placed wonder within measured reach; their own native clock applies the authored contacts to the real object; Cheese starting on that copy makes them step away.",
+          "egg": "When Cheese is an egg, a visitor operating nearby gives him only a heard-it memory; the egg never moves (host freezes it), turns, or gains skills."
+        },
+        "exclusion": "minds.wonder_guests added to every company module that excludes readers (9 modules + keepsake + mind_garden task list); check_wonder_company asserts this statically",
+        "tested": "check_wonder_company PASS 30 checks (regular, rare goose, story Pip join; cancel = no credit; volunteer operator; egg watching; takeover); 2 native frames rendered (company cheer at the gong; visitor operating while egg rests)",
+        "limitations": [
+          "Company reactions are derived variants (actor/context variants), not new object sequences",
+          "Visitor reach uses duck-sized body classes, not each species' measured rig",
+          "At most one companion and one independent operator at a time"
+        ],
+        "choicesMadeForUser": [
+          "Unattended visitors never stomp the sand castle, spend genie wishes, force eruptions, purge the cloner or throw the play money",
+          "Visitor runs are counted separately (wonder_visitor_routines) and do not change Cheese's own routine history/novelty"
+        ]
+      },
+      "regression2026_11_13": {
+        "pass": [
+          "check_wonders",
+          "check_wonder_company",
+          "check_keepsake_company 398",
+          "check_creative_company 289",
+          "check_textile_company 824",
+          "check_ground_company 1253",
+          "check_architecture_company 1671",
+          "check_playdates 70",
+          "check_botanical_care 78",
+          "check_furniture 207",
+          "check_instruments 142",
+          "check_nest_company 1014",
+          "check_visitor_shelters 38",
+          "check_shelters 30",
+          "check_living 694",
+          "check_brains 47",
+          "check_guests 17985",
+          "check_visitor_presence 21",
+          "check_layout 292",
+          "check_physical_objects 60",
+          "check_terrain 483"
+        ],
+        "preexistingFailure": {
+          "check": "engine/check_playkit_company.py",
+          "assertion": "boat_finish has an independent real arrival",
+          "evidence": "Fails identically in a temporary worktree of HEAD 322afda + the handoff working-tree.patch + changed-files.zip (no Claude changes), and with wonder_company.tick disabled. Not caused by the wonders work; unresolved."
+        }
+      },
+      "openDecisions": [
+        "Resolved 2026-11-13: see userDecisions_2026_11_13"
+      ]
+    },
+    "userDecisions_2026_11_13": {
+      "wonderSize": "Redraw small wonders (lamp, robot, rays, DNA mixer...) with fewer, larger glyphs; keep duck-relative sizes and reachable controls.",
+      "collectibles": "FULL 48 interactions each for all non-shop items too (collectibles, fish, badges, feathers, materials, treasure). Denominator 609 x 48 confirmed.",
+      "wearSpeed": "Keep hours pace.",
+      "commits": "Local checkpoint commits on codex/ascii-engine-port after each verified batch; no push, no install.",
+      "order": "Fix check_playkit_company boat_finish now; then finish wonders (bigger-glyph redraw for small ones, wire say cues into speech); then breadth: art + interactions for the 116 non-shop items family by family; then deepen every object toward 48.",
+      "install": "Only when the whole milestone is done, saves verified and migrated."
     }
   },
   "wardrobe": [

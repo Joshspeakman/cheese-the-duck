@@ -1,0 +1,225 @@
+{
+ "schemaVersion": 1,
+ "objectId": "growth_ray",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 4,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 44 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "growth_charge",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Pumping the growth ray's capacitor",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/growth_charge"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "growth_ray",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "growth_charge"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "charge",
+    "charge"
+   ],
+   "anchors": [
+    "pump"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "charge<.7"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 46,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "growth_zap_dandelion",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Zapping a dandelion until it towers over him",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/growth_zap_dandelion"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "growth_ray",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "growth_zap_dandelion"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "zap"
+   ],
+   "anchors": [
+    "plate",
+    "trigger"
+   ],
+   "parts_moved": [
+    "flower"
+   ],
+   "tool": "wing",
+   "when": [
+    "charge>.3",
+    "target<2.5"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 51,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "growth_sniff_giant",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Sniffing the giant dandelion and sneezing",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/growth_sniff_giant"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "growth_ray",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "growth_sniff_giant"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "target>1.4"
+   ],
+   "prefer": [
+    "young",
+    "spring"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "growth_reset_plate",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Turning the dial to shrink the flower back",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/growth_reset_plate"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "growth_ray",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "growth_reset_plate"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "reset"
+   ],
+   "anchors": [
+    "dial"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "target>1.3"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 76,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

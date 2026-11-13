@@ -25,6 +25,7 @@ import LIGHTING from './animation/lighting.json' with {type:'json'};
 import KEEPSAKES from './animation/keepsakes.json' with {type:'json'};
 import {creativeSummary} from './creative-state.mjs';
 import {keepsakeSummary,KEEPSAKE_CHOICES} from './keepsake-state.mjs';
+import {wonderSummary,WONDER_CHOICES} from './wonder-state.mjs';
 import {creativePose} from './creative-routines.mjs';
 import {keepsakePose} from './keepsake-routines.mjs';
 const names=new Map(catalog.map(i=>[i.id,i]));
@@ -96,6 +97,11 @@ export class PondJournal{
   for(const card of this.body.querySelectorAll('[data-creative-id]')){
    const id=card.dataset.creativeId,instance=card.dataset.creativeInstance,state=instance?w.instances?.[instance]:w.objects[id];
    if(state)card.querySelector('[data-creative-summary]').textContent=creativeSummary(id,state);
+  }
+  for(const card of this.body.querySelectorAll('[data-wonder-id]')){
+   const id=card.dataset.wonderId,instance=card.dataset.wonderInstance,state=instance?w.instances?.[instance]:w.objects[id];if(!state)continue;
+   card.querySelector('[data-wonder-summary]').textContent=wonderSummary(id,state);
+   for(const button of card.querySelectorAll('[data-wonder-choice]'))button.disabled=Boolean(w.plan)||!w.layout?.copies?.some(p=>p.instance===instance);
   }
   for(const card of this.body.querySelectorAll('[data-keepsake-id]')){
    const id=card.dataset.keepsakeId,instance=card.dataset.keepsakeInstance,state=instance?w.instances?.[instance]:w.objects[id];if(!state)continue;
@@ -203,6 +209,11 @@ const p=itemProfile(item,itemFamily(id));
     if(state.creative){
      detail.dataset.creativeId=id;detail.dataset.creativeInstance=instance||'';
      const summary=el('p',creativeSummary(id,state));summary.dataset.creativeSummary='';detail.append(summary);
+    }
+    if(state.wonder&&WONDER_CHOICES[id]){
+     detail.dataset.wonderId=id;detail.dataset.wonderInstance=instance||'';
+     const summary=el('p',wonderSummary(id,state));summary.dataset.wonderSummary='';detail.append(summary);
+     for(const [choice,label]of WONDER_CHOICES[id]){const button=this.button(label,'wonder_action',id,busy||!instance||!outside,{instance,text:choice});button.dataset.wonderChoice=choice;detail.append(button);}
     }
     if(state.keepsake&&KEEPSAKES[id]){
      detail.dataset.keepsakeId=id;detail.dataset.keepsakeInstance=instance||'';

@@ -1,0 +1,340 @@
+{
+ "schemaVersion": 1,
+ "objectId": "time_machine",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 6,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 42 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "time_set_year",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Rolling the console's year knob back to a different century",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/time_set_year"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "time_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "time_set_year"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "year_back",
+    "year_far"
+   ],
+   "anchors": [
+    "year_knob"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 60,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "time_wind_key",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Winding the big clockwork key on the side",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/time_wind_key"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "time_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "time_wind_key"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "wind",
+    "wind"
+   ],
+   "anchors": [
+    "key"
+   ],
+   "parts_moved": [
+    "key"
+   ],
+   "tool": "wing",
+   "when": [
+    "charge<.8"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 86,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "time_pull_lever",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Stepping in, pulling the lever, and stepping out a second later",
+   "duration_seconds": 30,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/time_pull_lever"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "time_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "time_pull_lever"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "door_open",
+    "lever",
+    "door_open",
+    "door_shut"
+   ],
+   "anchors": [
+    "door",
+    "lever"
+   ],
+   "parts_moved": [
+    "door",
+    "lever"
+   ],
+   "tool": "wing",
+   "when": [
+    "charge>.45"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 86,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  },
+  {
+   "id": "time_polish_brass",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Polishing the brass kick plates and door rim",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/time_polish_brass"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "time_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "time_polish_brass"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "polish",
+    "polish"
+   ],
+   "anchors": [
+    "brass_low",
+    "brass_low_r",
+    "door"
+   ],
+   "parts_moved": [
+    "cloth"
+   ],
+   "tool": "cloth",
+   "when": [],
+   "prefer": [
+    "shine<.5"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 76,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "time_rain_booth",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Ducking into the time booth until the rain eases",
+   "duration_seconds": 40,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/time_rain_booth"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "time_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "time_rain_booth"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "door_open",
+    "door_shut"
+   ],
+   "anchors": [
+    "door"
+   ],
+   "parts_moved": [
+    "door"
+   ],
+   "tool": "wing",
+   "when": [
+    "wet"
+   ],
+   "prefer": [
+    "young",
+    "tired"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 76,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "time_back_to_now",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Setting the year knob back to the present",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/time_back_to_now"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "time_machine",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "time_back_to_now"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "home"
+   ],
+   "anchors": [
+    "year_knob"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "far_year"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 60,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

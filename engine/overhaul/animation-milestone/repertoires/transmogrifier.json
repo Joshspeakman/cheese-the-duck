@@ -1,0 +1,222 @@
+{
+ "schemaVersion": 1,
+ "objectId": "transmogrifier",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 4,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 44 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "transmog_drop_leaf",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Sliding a leaf into the loading drawer",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/transmog_drop_leaf"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "transmogrifier",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "transmog_drop_leaf"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "drop"
+   ],
+   "anchors": [
+    "drawer"
+   ],
+   "parts_moved": [
+    "leaf"
+   ],
+   "tool": "none",
+   "when": [
+    "hopper<.5",
+    "jam<.5"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 70,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "transmog_crank",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Cranking the transmogrifier and seeing what pops out",
+   "duration_seconds": 26,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/transmog_crank"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "transmogrifier",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "transmog_crank"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "crank"
+   ],
+   "anchors": [
+    "chute",
+    "crank"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "hopper>.5",
+    "charge>.25"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 114,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "transmog_kick",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Giving the jammed machine a firm kick",
+   "duration_seconds": 14,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/transmog_kick"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "transmogrifier",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "transmog_kick"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "kick"
+   ],
+   "anchors": [
+    "panel"
+   ],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "jam>.3"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 57,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "transmog_sweep_chute",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Sweeping the odd results out of the chute",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/transmog_sweep_chute"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "transmogrifier",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "transmog_sweep_chute"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "sweep"
+   ],
+   "anchors": [
+    "chute"
+   ],
+   "parts_moved": [
+    "broom"
+   ],
+   "tool": "broom",
+   "when": [
+    "output>0"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 31,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

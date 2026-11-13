@@ -1,0 +1,316 @@
+{
+ "schemaVersion": 1,
+ "objectId": "tornado",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 6,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 42 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "tornado_feed_leaves",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Feeding a wing-full of leaves to the little tornado",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/tornado_feed_leaves"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "tornado",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "tornado_feed_leaves"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "feed"
+   ],
+   "anchors": [
+    "funnel"
+   ],
+   "parts_moved": [
+    "leaf"
+   ],
+   "tool": "none",
+   "when": [
+    "!covered"
+   ],
+   "prefer": [
+    "fall",
+    "windy"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 105,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "tornado_pat",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Patting the tornado and getting his feathers swirled",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/tornado_pat"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "tornado",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "tornado_pat"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "pat"
+   ],
+   "anchors": [
+    "funnel"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "!covered"
+   ],
+   "prefer": [
+    "lonely",
+    "happy"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 105,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "tornado_fetch",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Throwing a pinecone and letting the tornado spit it back",
+   "duration_seconds": 26,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/tornado_fetch"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "tornado",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "tornado_fetch"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "throw",
+    "spit"
+   ],
+   "anchors": [],
+   "parts_moved": [
+    "leaf"
+   ],
+   "tool": "none",
+   "when": [
+    "!covered",
+    "dry"
+   ],
+   "prefer": [
+    "young",
+    "happy"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "tornado_calm",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Humming the tornado down when the real wind picks up",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/tornado_calm"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "tornado",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "tornado_calm"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "hush",
+    "hush"
+   ],
+   "anchors": [
+    "funnel"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "size>.55"
+   ],
+   "prefer": [
+    "windy",
+    "storm"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 105,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "tornado_tuck_in",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Draping a cloth over the jar so the tornado can sleep",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/tornado_tuck_in"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "tornado",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "tornado_tuck_in"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "cover"
+   ],
+   "anchors": [
+    "lid"
+   ],
+   "parts_moved": [
+    "cloth"
+   ],
+   "tool": "cloth",
+   "when": [
+    "!covered",
+    "night"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 166,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "tornado_wake",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Lifting the cloth so the tornado can spin in the morning",
+   "duration_seconds": 14,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/tornado_wake"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "tornado",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "tornado_wake"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "uncover"
+   ],
+   "anchors": [
+    "lid"
+   ],
+   "parts_moved": [
+    "cloth"
+   ],
+   "tool": "cloth",
+   "when": [
+    "covered",
+    "day"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 166,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

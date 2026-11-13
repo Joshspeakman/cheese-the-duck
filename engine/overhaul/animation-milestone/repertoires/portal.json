@@ -1,0 +1,280 @@
+{
+ "schemaVersion": 1,
+ "objectId": "portal",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 5,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 43 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "portal_dial_runes",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Pressing the glowing runes on the console in order",
+   "duration_seconds": 26,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/portal_dial_runes"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "portal",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "portal_dial_runes"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "rune",
+    "rune",
+    "spark"
+   ],
+   "anchors": [
+    "console_c",
+    "console_l",
+    "console_r"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "!storm"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 54,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "portal_peek_through",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Poking his head into the low edge of the swirl and pulling back amazed",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/portal_peek_through"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "portal",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "portal_peek_through"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [],
+   "anchors": [
+    "swirl_low"
+   ],
+   "parts_moved": [
+    "peek"
+   ],
+   "tool": "none",
+   "when": [
+    "energy>.4"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 91,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  },
+  {
+   "id": "portal_toss_pebble",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Tossing a pebble in and watching for it to come back",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/portal_toss_pebble"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "portal",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "portal_toss_pebble"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "toss"
+   ],
+   "anchors": [],
+   "parts_moved": [
+    "pebble"
+   ],
+   "tool": "none",
+   "when": [
+    "energy>.4"
+   ],
+   "prefer": [
+    "curious",
+    "young"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "portal_brace_ring",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Bracing the shuddering ring with both wings",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/portal_brace_ring"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "portal",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "portal_brace_ring"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "brace",
+    "brace"
+   ],
+   "anchors": [
+    "ring_l"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "stability<.7",
+    "energy>.2"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 91,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "portal_close_down",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Sweeping a wing across the console runes to close the swirl",
+   "duration_seconds": 16,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/portal_close_down"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "portal",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "portal_close_down"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "close"
+   ],
+   "anchors": [
+    "console_l",
+    "console_r"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "energy>.3"
+   ],
+   "prefer": [
+    "night_late",
+    "storm"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 54,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

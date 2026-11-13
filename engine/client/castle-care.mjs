@@ -1,23 +1,32 @@
 import {GUEST_CAST} from './guest-cast.mjs';
 import {castleArtFrame,castleActorPitches,projectCastleWorld} from './castle-projection.mjs';
-import {castleVisibleEyes,castleActiveWork,castleTransit,AIR_ATOMICS} from './castle-air-geometry.mjs';
+import {castleVisibleEyes,castleActiveWork,castleTransit,castleProcedure,AIR_ATOMICS} from './castle-air-geometry.mjs';
 import CASTLE_GEOMETRY from './animation/castle-geometry.json' with {type:'json'};
 import SCORES from './animation/castle-care.json' with {type:'json'};
 export {SCORES as CASTLE_SCORES};
 const N={x:0,y:0,b:0,w:0,l:0,r:0,contact:0,reach:0,gape:0,eye:null,mark:''},clamp=(n,a=0,b=1)=>Math.max(a,Math.min(b,Number.isFinite(n)?n:0));
+const rolePhases=(work,legacy)=>castleProcedure(work)?(work.shared?.mode==='egg-caregiver'?['operate','operator_exit','done','interrupted']:['observer_approach','operate','operator_exit','observer_exit','done','interrupted']):legacy;
 const point=p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);
+function sessionEnvelope(work){
+ if(!castleProcedure(work))return true;const s=work.shared,p=work.physical;
+ return s?.version===1&&s.attempt===work.air_procedure.attempt&&s.source_age===work.source_age&&typeof s.instance==='string'&&s.instance.length>0&&point(s.center)&&point(s.destination)&&point(p?.center)&&s.center.every((v,i)=>v===p.center[i]);
+}
+export function castleProcedureScene(scene){
+ const plan=scene.living?.plan,w=castleActiveWork(plan?.carnival_work);if(!castleProcedure(w))return true;const s=w.shared;
+ return sessionEnvelope(w)&&plan.kind==='item'&&plan.target==='bounce_house'&&plan.location===scene.location&&plan.instance===s.instance&&point(plan.destination)&&plan.destination.every((v,i)=>v===s.destination[i])&&(scene.duck.stage==='teen'?'juvenile':scene.duck.stage)===s.source_age&&(w.shared_physical===true||s.mode==='solo'&&s.operator?.actor==='cheese'&&s.operator.adapter==='cheese'&&s.operator.source_age===s.source_age&&w.physical.actor==='cheese'&&w.physical_pilot===true);
+}
 export const SHARED_RARE_CASTS=['traveling_merchant','celebrity_duck','lost_duckling','friendly_goose','wise_owl','mysterious_crow','grumpy_toad'];
 // Exact adapter identities only; a story brain key is distinct from its render ID.
 export function flightCastleRecord(work){
  work=castleActiveWork(work);
  const s=work?.shared,p=work?.physical,o=s?.operator,v=s?.observer,a=s?.observer_physical;
- return work?.flight_observer===true&&work.physical_pilot===true&&work.shared_physical===true&&s?.version===1&&s.mode==='flight-observer'&&o?.actor==='cheese'&&o.adapter==='cheese'&&o.source_age===s.source_age&&['hatchling','duckling','juvenile','young_adult','adult','mature','elder','legendary'].includes(s.source_age)&&s.attempt&&v?.actor==='butterfly_fairy'&&v.cast==='butterfly_fairy'&&v.adapter==='rare'&&v.token!=null&&typeof v.motion_token==='string'&&typeof v.location==='string'&&['waiting','operate','exit','done','interrupted'].includes(s.phase)&&p?.version===1&&p.actor==='cheese'&&point(p.root)&&point(p.target)&&CASTLE_GEOMETRY.controls[p.station]&&['approach','hold','exit'].includes(p.phase)&&point(a?.root)&&point(a.stance)&&point(a.exit)&&['approach','hold','exit'].includes(a.phase)?s:null;
+ return work?.flight_observer===true&&sessionEnvelope(work)&&work.physical_pilot===true&&work.shared_physical===true&&s?.version===1&&s.mode==='flight-observer'&&o?.actor==='cheese'&&o.adapter==='cheese'&&o.source_age===s.source_age&&['hatchling','duckling','juvenile','young_adult','adult','mature','elder','legendary'].includes(s.source_age)&&s.attempt&&v?.actor==='butterfly_fairy'&&v.cast==='butterfly_fairy'&&v.adapter==='rare'&&v.token!=null&&typeof v.motion_token==='string'&&typeof v.location==='string'&&rolePhases(work,['waiting','operate','exit','done','interrupted']).includes(s.phase)&&p?.version===1&&p.actor==='cheese'&&point(p.root)&&point(p.target)&&CASTLE_GEOMETRY.controls[p.station]&&['approach','hold','exit'].includes(p.phase)&&point(a?.root)&&point(a.stance)&&point(a.exit)&&['approach','hold','exit'].includes(a.phase)?s:null;
 }
 export function eggCaregiverRecord(work){
  work=castleActiveWork(work);
  const s=work?.shared,p=work?.physical,o=s?.operator,r=s?.recipient,profile=GUEST_CAST[o?.cast];
  const adapter=o?.adapter==='regular'?profile?.id.startsWith('friend:')&&!profile.rare&&profile.species==='duck':o?.adapter==='rare'?SHARED_RARE_CASTS.includes(o.cast)&&o.actor===o.cast&&typeof o.motion_token==='string':o?.adapter==='story'?o.cast==='lost_duckling'&&o.actor==='story:pip'&&o.render_id==='story:lost_duckling'&&typeof o.motion_token==='string'&&typeof o.story_step==='string':false;
- return work?.egg_caregiver===true&&(castleTransit(work)||[...AIR_ATOMICS,'castle_door_open'].includes(work.id))&&work.shared_physical===true&&work.physical_pilot===false&&!Object.hasOwn(work,'flight_observer')&&s?.version===1&&s.mode==='egg-caregiver'&&point(s.destination)&&point(s.center)&&typeof s.instance==='string'&&s.source_age==='egg'&&s.observer===undefined&&s.cheese===undefined&&s.attempt&&adapter&&typeof o.actor==='string'&&o.actor!=='cheese'&&o.token!=null&&typeof o.location==='string'&&['approach','operate','exit','done','interrupted'].includes(s.phase)&&r?.actor==='cheese'&&r.stage==='egg'&&typeof r.token==='string'&&r.token.length>0&&point(r.root)&&typeof r.facing==='boolean'&&r.phase==='stationary'&&p?.version===1&&p.actor===o.actor&&point(p.center)&&p.center.every((v,i)=>v===s.center[i])&&point(p.root)&&point(p.target)&&CASTLE_GEOMETRY.controls[p.station]&&['approach','hold','exit'].includes(p.phase)?s:null;
+ return work?.egg_caregiver===true&&sessionEnvelope(work)&&(castleTransit(work)||[...AIR_ATOMICS,'castle_door_open'].includes(work.id))&&work.shared_physical===true&&work.physical_pilot===false&&!Object.hasOwn(work,'flight_observer')&&s?.version===1&&s.mode==='egg-caregiver'&&point(s.destination)&&point(s.center)&&typeof s.instance==='string'&&s.source_age==='egg'&&s.observer===undefined&&s.cheese===undefined&&s.attempt&&adapter&&typeof o.actor==='string'&&o.actor!=='cheese'&&o.token!=null&&typeof o.location==='string'&&rolePhases(work,['approach','operate','exit','done','interrupted']).includes(s.phase)&&r?.actor==='cheese'&&r.stage==='egg'&&typeof r.token==='string'&&r.token.length>0&&point(r.root)&&typeof r.facing==='boolean'&&r.phase==='stationary'&&p?.version===1&&p.actor===o.actor&&point(p.center)&&p.center.every((v,i)=>v===s.center[i])&&point(p.root)&&point(p.target)&&CASTLE_GEOMETRY.controls[p.station]&&['approach','hold','exit'].includes(p.phase)?s:null;
 }
 export function eggCaregiverScene(scene){
  const plan=scene.living?.plan,s=eggCaregiverRecord(plan?.carnival_work),d=scene.duck,r=s?.recipient;
@@ -29,7 +38,7 @@ export function sharedCastleRecord(work){
  if((work&&Object.hasOwn(work,'flight_observer'))||work?.shared?.mode==='flight-observer')return flightCastleRecord(work);
  const s=work?.shared,p=work?.physical,o=s?.operator,profile=GUEST_CAST[o?.cast];
  const adapter=o?.adapter==='regular'?profile?.id.startsWith('friend:')&&!profile.rare&&profile.species==='duck':o?.adapter==='rare'?SHARED_RARE_CASTS.includes(o.cast)&&o.actor===o.cast&&typeof o.motion_token==='string':o?.adapter==='story'?o.cast==='lost_duckling'&&o.actor==='story:pip'&&o.render_id==='story:lost_duckling'&&typeof o.motion_token==='string'&&typeof o.story_step==='string':false;
- return work?.shared_physical===true&&work.physical_pilot!==true&&s?.version===1&&adapter&&typeof o.actor==='string'&&o.actor.length>0&&o.actor!=='cheese'&&['hatchling','duckling','juvenile','young_adult','adult','mature','elder','legendary'].includes(s.source_age)&&s.attempt&&o.token!=null&&typeof o.location==='string'&&['waiting','operate','exit','done','interrupted'].includes(s.phase)&&p?.version===1&&p.actor===o.actor&&point(p.root)&&point(p.target)&&CASTLE_GEOMETRY.controls[p.station]&&['approach','hold','exit'].includes(p.phase)&&point(s.cheese?.root)&&point(s.cheese?.stance)&&point(s.cheese?.exit)&&['approach','hold','exit'].includes(s.cheese.phase)?s:null;
+ return work?.shared_physical===true&&sessionEnvelope(work)&&work.physical_pilot!==true&&s?.version===1&&(!castleProcedure(work)||s.mode==='visitor-operator')&&adapter&&typeof o.actor==='string'&&o.actor.length>0&&o.actor!=='cheese'&&['hatchling','duckling','juvenile','young_adult','adult','mature','elder','legendary'].includes(s.source_age)&&s.attempt&&o.token!=null&&typeof o.location==='string'&&rolePhases(work,['waiting','operate','exit','done','interrupted']).includes(s.phase)&&p?.version===1&&p.actor===o.actor&&point(p.root)&&point(p.target)&&CASTLE_GEOMETRY.controls[p.station]&&['approach','hold','exit'].includes(p.phase)&&point(s.cheese?.root)&&point(s.cheese?.stance)&&point(s.cheese?.exit)&&['approach','hold','exit'].includes(s.cheese.phase)?s:null;
 }
 export function sharedCastleVisitorMatches(visitor,shared){
  return Boolean(shared&&visitor?.id===shared.operator.actor&&(visitor.castId?visitor.castId===shared.operator.cast:visitor.name===GUEST_CAST[shared.operator.cast]?.name));
@@ -79,7 +88,7 @@ export function castlePose(work,role='a',motion=true,watch=false){
   p={...N,y:react?-.4:0,w:react&&shared?.mode==='flight-observer'?.4:0,eye:react?'^':'O',mark:react&&shared?.mode!=='flight-observer'?'!':''};
  }
  if(!motion){p.x=p.y=p.l=p.r=p.w=p.gape=0;p.mark='';}
- return {...p,workLift:work.id==='castle_grill_clean'&&where.name==='grill'?3+2*p.reach:0,station:where.name,previousStation:where.previous,travel:where.travel,surfaceWork:!watch&&work.stage==='service',tool:'hand',seated:false};
+ return {...p,workLift:work.id==='castle_grill_clean'&&where.name==='grill'?5:0,station:where.name,previousStation:where.previous,travel:where.travel,surfaceWork:!watch&&work.stage==='service',tool:'hand',seated:false};
 }
 export function castleGeometry(home,member,sx,sy){
  if(!castleActiveWork(member.work))return {character:member.character,pose:null,tip:null,points:[],inside:0,front:null,authoritativeRoot:false,reachable:false,observation:null};

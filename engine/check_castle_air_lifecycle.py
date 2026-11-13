@@ -763,18 +763,30 @@ def role_preflight_review():
 
 
 def unbound_procedure_review():
+    from engine import castle_air_session as sessions,castle_air_roles as roles
+    from engine.living_world import LivingPond
     for score in ('castle_pressure_check','castle_dust_service'):
         for mode in ('solo','shared','flight','egg'):
-            pond,iid,obj,key=fixture(mode)
-            before=ownership(pond,obj)
-            ok,reason=carnival.request(pond,'bounce_house',score,iid,together=mode!='solo')
-            check(not ok and ownership(pond,obj)==before,
-                  mode+' '+score+': unbound public procedure refuses before any movement or reservation')
-            ok,reason=pond.start('item','bounce_house',instance=iid,carnival_choice=score)
-            check(not ok and ownership(pond,obj)==before,
-                  mode+' '+score+': direct start cannot bypass the missing runtime owner')
+            for entry in ('request','direct_start'):
+                with controlled_clocks(),patch.object(roles,'datetime',SimDatetime):
+                    pond,iid,obj,key=fixture(mode,long_visit=True,
+                        material=dict(vent=0.,hose=0.,kink=0.,dust=0.,motor='on',power_hold=False,powered=True,rotor_speed=1.))
+                    if mode=='flight':game.renderer.duck_pos.x,game.renderer.duck_pos.y=60.,26.
+                    if game.friends.current_visit:
+                        game.friends.current_visit.started_at=SimDatetime.now().isoformat()
+                    before=rewards(pond,obj,key)
+                    if entry=='request':
+                        ok,reason=carnival.request(pond,'bounce_house',score,iid,together=mode!='solo')
+                    else:
+                        ok,reason=pond.start('item','bounce_house',instance=iid,carnival_choice=score,
+                                             shared_proposal={} if mode!='solo' else None)
+                    plan=pond.state.get('plan');owner=sessions.session(pond,plan)
+                    check(ok and owner is not None and owner.plan is plan and owner.work is plan['carnival_work'] and
+                          owner.work['id']==score and carnival.valid(pond,plan) and rewards(pond,obj,key)==before,
+                          mode+' '+score+': '+entry+' acquires one exact private session without completion credit: '+reason)
+                    pond.cancel()
 
-        for marker in ('missing',False,'pretend-bound'):
+        for marker in ('missing',False,None,{},'pretend-bound'):
             pond,iid,obj,key=fixture()
             plan=dict(kind='item',target='bounce_house',instance=iid,location=pond.location,
                       phase='act',automatic=False,label=castle_work.ROUTINES[score]['label'],
@@ -785,6 +797,12 @@ def unbound_procedure_review():
             pond.state['plan']=plan
             before=rewards(pond,obj,key);materials=copy.deepcopy(obj['castle']);root=cheese_root()
             check(not carnival.valid(pond,plan),score+': saved/unbound marker '+repr(marker)+' is not a live activity')
+            loaded=LivingPond(json.loads(json.dumps(pond.save())))
+            check(loaded.state['plan'] is None and sessions.session(loaded) is None,
+                  score+': loading an unbound record does not recreate private procedure ownership')
+            carnival.tick(pond.minds,0)
+            check(not pond.minds.carnival_guests and obj['castle']==materials,
+                  score+': unbound record cannot invite a visitor or consume work through the brain tick')
             castle_work.advance(pond,plan,300,None)
             check(work.get('interrupted') and not work['events'] and obj['castle']==materials,
                   score+': legacy flattened clock cannot consume unbound mechanical effects')

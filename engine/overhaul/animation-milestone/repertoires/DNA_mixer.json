@@ -1,0 +1,227 @@
+{
+ "schemaVersion": 1,
+ "objectId": "DNA_mixer",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 4,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 44 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "dna_load_samples",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Loading two feather samples into the vials",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dna_load_samples"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "DNA_mixer",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dna_load_samples"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "load_a",
+    "load_b"
+   ],
+   "anchors": [
+    "vial_a",
+    "vial_b"
+   ],
+   "parts_moved": [
+    "feather"
+   ],
+   "tool": "none",
+   "when": [],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 69,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dna_spin_helix",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Spinning the helix centrifuge up to a whine",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dna_spin_helix"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "DNA_mixer",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dna_spin_helix"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "spin"
+   ],
+   "anchors": [
+    "switch"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "clean>.25"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 29,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dna_read_printout",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Reading the ridiculous results off the printout",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dna_read_printout"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "DNA_mixer",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dna_read_printout"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "read"
+   ],
+   "anchors": [
+    "slot"
+   ],
+   "parts_moved": [],
+   "tool": "wing",
+   "when": [
+    "printout>.5"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 47,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "dna_rinse_vials",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Rinsing the vials clean",
+   "duration_seconds": 18,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/dna_rinse_vials"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "DNA_mixer",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "dna_rinse_vials"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "rinse"
+   ],
+   "anchors": [
+    "vial_a",
+    "vial_b"
+   ],
+   "parts_moved": [
+    "cloth"
+   ],
+   "tool": "cloth",
+   "when": [
+    "clean<.6"
+   ],
+   "prefer": [],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 69,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}

@@ -1,0 +1,427 @@
+{
+ "schemaVersion": 1,
+ "objectId": "zen_garden",
+ "status": "implemented_not_accepted",
+ "requiredSequences": 48,
+ "authoredSequences": 7,
+ "verifiedSequences": 0,
+ "nativeCheck": {
+  "command": ".venv/bin/python engine/check_wonders.py",
+  "result": "PASS",
+  "checks": 14330,
+  "routineAgeRuns": 1128
+ },
+ "missing": [
+  "48-sequence target: 41 more meaningful sequences",
+  "visitor company roles (guests joining, watching, taking turns)",
+  "egg-age observation role",
+  "per-age and per-guest bindings beyond the authored age gates",
+  "semantic distinctness review by a person",
+  "rendered evidence for every routine (only sampled routines replayed)"
+ ],
+ "sequences": [
+  {
+   "id": "zen_rake_waves",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Raking slow waves through the sand",
+   "duration_seconds": 30,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/zen_rake_waves"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "zen_garden",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "zen_rake_waves"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "rake_start",
+    "rake_waves",
+    "rake_waves",
+    "finish"
+   ],
+   "anchors": [
+    "bed_c",
+    "bed_l",
+    "bed_r"
+   ],
+   "parts_moved": [
+    "rake"
+   ],
+   "tool": "rake",
+   "when": [
+    "dry"
+   ],
+   "prefer": [
+    "raked<.5",
+    "day"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 26,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "zen_rake_rings",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Drawing careful rings around the big stone",
+   "duration_seconds": 32,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/zen_rake_rings"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "zen_garden",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "zen_rake_rings"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "rake_start",
+    "rake_rings",
+    "rake_rings",
+    "finish"
+   ],
+   "anchors": [
+    "ring_e",
+    "ring_n",
+    "ring_s",
+    "stone"
+   ],
+   "parts_moved": [
+    "rake"
+   ],
+   "tool": "rake",
+   "when": [
+    "dry"
+   ],
+   "prefer": [
+    "dusk",
+    "calm"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 49,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "zen_rake_spiral",
+   "status": "implemented",
+   "liveRenderSampled": true,
+   "verified": false,
+   "label": "Pulling one long spiral from the centre outward",
+   "duration_seconds": 34,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/zen_rake_spiral"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "zen_garden",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "zen_rake_spiral"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "rake_start",
+    "rake_spiral",
+    "rake_spiral",
+    "finish"
+   ],
+   "anchors": [
+    "bed_c",
+    "bed_r",
+    "ring_e",
+    "ring_n"
+   ],
+   "parts_moved": [
+    "rake"
+   ],
+   "tool": "rake",
+   "when": [
+    "dry"
+   ],
+   "prefer": [
+    "night",
+    "sad"
+   ],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 49,
+   "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
+  },
+  {
+   "id": "zen_sweep_leaves",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Sweeping fallen leaves off the sand",
+   "duration_seconds": 22,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/zen_sweep_leaves"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "zen_garden",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "zen_sweep_leaves"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "gather",
+    "gather"
+   ],
+   "anchors": [
+    "bed_c",
+    "bed_l",
+    "bed_r"
+   ],
+   "parts_moved": [
+    "broom"
+   ],
+   "tool": "broom",
+   "when": [
+    "leaves>.25"
+   ],
+   "prefer": [
+    "fall",
+    "windy"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 26,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "zen_move_stone",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Rolling a pebble to a better spot",
+   "duration_seconds": 20,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/zen_move_stone"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "zen_garden",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "zen_move_stone"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "lift"
+   ],
+   "anchors": [
+    "pebble"
+   ],
+   "parts_moved": [
+    "pebble"
+   ],
+   "tool": "wing",
+   "when": [
+    "dry"
+   ],
+   "prefer": [
+    "happy"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 43,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "zen_sit_breathe",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Sitting at the sand's edge and breathing slowly",
+   "duration_seconds": 30,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/zen_sit_breathe"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "zen_garden",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "zen_sit_breathe"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "breathe",
+    "breathe"
+   ],
+   "anchors": [],
+   "parts_moved": [],
+   "tool": "none",
+   "when": [
+    "!storm"
+   ],
+   "prefer": [
+    "sad",
+    "lonely",
+    "tired",
+    "dusk"
+   ],
+   "ages": "all hatched ages",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 0,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  },
+  {
+   "id": "zen_smooth_after_rain",
+   "status": "implemented",
+   "liveRenderSampled": false,
+   "verified": false,
+   "label": "Smoothing rain pits out of the sand",
+   "duration_seconds": 24,
+   "source": {
+    "path": "engine/client/animation/wonder-routines.json",
+    "json_pointer": "/zen_smooth_after_rain"
+   },
+   "production_entry": {
+    "command": {
+     "type": "pond",
+     "action": "wonder_action",
+     "target": "zen_garden",
+     "instance": "<existing-owned-placed-instance>",
+     "text": "zen_smooth_after_rain"
+    },
+    "autonomous": "living_world.decide -> wonders.best (context appeal)"
+   },
+   "contacts": [
+    "smooth",
+    "smooth"
+   ],
+   "anchors": [
+    "bed_c",
+    "bed_l",
+    "bed_r"
+   ],
+   "parts_moved": [
+    "rake"
+   ],
+   "tool": "rake",
+   "when": [
+    "dry",
+    "raked<.4"
+   ],
+   "prefer": [],
+   "ages": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ],
+   "contactHeightPx": 26,
+   "evidence_note": "engine/check_wonders.py (native, disposable save)"
+  }
+ ]
+}
