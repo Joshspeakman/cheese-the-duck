@@ -71,8 +71,8 @@ def records(pond):
 
 def bind_legacy_plan(pond):
     plan = pond.state.get('plan')
-    if not plan or plan.get('instance') or plan.get('portable') or not plan.get('destination'):
-        return
+    if not plan or plan.get('instance') or plan.get('portable') or plan.get('in_place') or not plan.get('destination'):
+        return  # in-place (worn/held) repertoire plans are not legacy reservations
     from engine.shelters import position
     copies = [p for p in pond.placements if p.item_id == plan['target'] and position(p) == plan['destination']]
     if len(copies) != 1:

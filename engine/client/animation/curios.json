@@ -1,0 +1,814 @@
+{
+ "portrait_cheese": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "portrait_emperor": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "portrait_scholar": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "portrait_artist": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "portrait_explorer": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "pond_frog": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "pond_lily": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "pond_dragonfly": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "pond_fish": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "weather_sun": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "weather_rain": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "weather_rainbow": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "weather_snow": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "legend_phoenix": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "legend_dragon": {
+  "type": "card",
+  "w": 60,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "minnow": {
+  "type": "fish",
+  "w": 48,
+  "h": 22,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "small_fish": {
+  "type": "fish",
+  "w": 56,
+  "h": 28,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "goldfish": {
+  "type": "fish",
+  "w": 68,
+  "h": 40,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "carp": {
+  "type": "fish",
+  "w": 108,
+  "h": 44,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "bass": {
+  "type": "fish",
+  "w": 108,
+  "h": 44,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "catfish": {
+  "type": "fish",
+  "w": 116,
+  "h": 40,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "trout": {
+  "type": "fish",
+  "w": 100,
+  "h": 36,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "koi": {
+  "type": "fish",
+  "w": 108,
+  "h": 40,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "salmon": {
+  "type": "fish",
+  "w": 116,
+  "h": 40,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "pufferfish": {
+  "type": "fish",
+  "w": 68,
+  "h": 44,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "swordfish": {
+  "type": "fish",
+  "w": 172,
+  "h": 48,
+  "scale": 1.0,
+  "grid": 2
+ },
+ "sturgeon": {
+  "type": "fish",
+  "w": 176,
+  "h": 40,
+  "scale": 1.0,
+  "grid": 2
+ },
+ "golden_koi": {
+  "type": "fish",
+  "w": 112,
+  "h": 44,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "ghost_fish": {
+  "type": "fish",
+  "w": 104,
+  "h": 40,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "ancient_dragon_fish": {
+  "type": "serpent",
+  "w": 200,
+  "h": 60,
+  "scale": 1.0,
+  "grid": 2
+ },
+ "feather": {
+  "type": "feather",
+  "w": 44,
+  "h": 52,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "golden_feather": {
+  "type": "feather",
+  "w": 44,
+  "h": 52,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "eagle_feather": {
+  "type": "feather",
+  "w": 44,
+  "h": 52,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "rainbow_feather": {
+  "type": "feather",
+  "w": 44,
+  "h": 52,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "static_feather": {
+  "type": "feather",
+  "w": 44,
+  "h": 52,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "snow_feather": {
+  "type": "feather",
+  "w": 44,
+  "h": 52,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "ancient_feather": {
+  "type": "feather",
+  "w": 44,
+  "h": 52,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "best_friend_badge": {
+  "type": "badge",
+  "w": 52,
+  "h": 42,
+  "scale": 1.15,
+  "grid": 2
+ },
+ "spring_spirit_badge": {
+  "type": "badge",
+  "w": 52,
+  "h": 42,
+  "scale": 1.15,
+  "grid": 2
+ },
+ "summer_spirit_badge": {
+  "type": "badge",
+  "w": 52,
+  "h": 42,
+  "scale": 1.15,
+  "grid": 2
+ },
+ "harvest_spirit_badge": {
+  "type": "badge",
+  "w": 52,
+  "h": 42,
+  "scale": 1.15,
+  "grid": 2
+ },
+ "winter_spirit_badge": {
+  "type": "badge",
+  "w": 52,
+  "h": 42,
+  "scale": 1.15,
+  "grid": 2
+ },
+ "love_spirit_badge": {
+  "type": "badge",
+  "w": 52,
+  "h": 42,
+  "scale": 1.15,
+  "grid": 2
+ },
+ "duck_day_champion_badge": {
+  "type": "badge",
+  "w": 52,
+  "h": 42,
+  "scale": 1.15,
+  "grid": 2
+ },
+ "explorer_badge": {
+  "type": "badge",
+  "w": 52,
+  "h": 42,
+  "scale": 1.15,
+  "grid": 2
+ },
+ "golden_badge": {
+  "type": "badge",
+  "w": 52,
+  "h": 42,
+  "scale": 1.15,
+  "grid": 2
+ },
+ "racing_medal": {
+  "type": "medal",
+  "w": 44,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "dance_medal": {
+  "type": "medal",
+  "w": 44,
+  "h": 52,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "water_token": {
+  "type": "token",
+  "w": 52,
+  "h": 34,
+  "scale": 1.05,
+  "grid": 2
+ },
+ "earth_token": {
+  "type": "token",
+  "w": 52,
+  "h": 34,
+  "scale": 1.05,
+  "grid": 2
+ },
+ "sky_token": {
+  "type": "token",
+  "w": 52,
+  "h": 34,
+  "scale": 1.05,
+  "grid": 2
+ },
+ "ancient_amulet": {
+  "type": "charm",
+  "w": 48,
+  "h": 48,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "lucky_charm": {
+  "type": "charm",
+  "w": 48,
+  "h": 48,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "magpie_friendship_charm": {
+  "type": "charm",
+  "w": 48,
+  "h": 48,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "rainbow_charm": {
+  "type": "charm",
+  "w": 48,
+  "h": 48,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "guardian_blessing": {
+  "type": "charm",
+  "w": 48,
+  "h": 48,
+  "scale": 0.95,
+  "grid": 2
+ },
+ "old_coin": {
+  "type": "coin",
+  "w": 48,
+  "h": 32,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "ancient_coin": {
+  "type": "coin",
+  "w": 48,
+  "h": 32,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "shiny_button": {
+  "type": "coin",
+  "w": 48,
+  "h": 32,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "bottle_cap": {
+  "type": "coin",
+  "w": 48,
+  "h": 28,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "dragon_scale": {
+  "type": "scale",
+  "w": 48,
+  "h": 44,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "mermaid_scale": {
+  "type": "scale",
+  "w": 48,
+  "h": 44,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "tiny_crown": {
+  "type": "crown",
+  "w": 56,
+  "h": 32,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "duck_crown": {
+  "type": "crown",
+  "w": 68,
+  "h": 40,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "ancient_crown": {
+  "type": "crown",
+  "w": 68,
+  "h": 40,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "snowflake_crown": {
+  "type": "crown",
+  "w": 68,
+  "h": 40,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "heart_hat": {
+  "type": "hat",
+  "w": 72,
+  "h": 48,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "cherry_blossom_hat": {
+  "type": "hat",
+  "w": 72,
+  "h": 48,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "autumn_wreath_hat": {
+  "type": "hat",
+  "w": 72,
+  "h": 48,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "flower_wreath": {
+  "type": "wreath",
+  "w": 76,
+  "h": 48,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "spring_wreath": {
+  "type": "wreath",
+  "w": 76,
+  "h": 48,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "spring_duck_costume": {
+  "type": "costume",
+  "w": 64,
+  "h": 60,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "beach_duck_costume": {
+  "type": "costume",
+  "w": 64,
+  "h": 60,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "scarecrow_costume": {
+  "type": "costume",
+  "w": 64,
+  "h": 60,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "winter_coat_costume": {
+  "type": "costume",
+  "w": 64,
+  "h": 60,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "memory_trophy": {
+  "type": "trophy",
+  "w": 56,
+  "h": 72,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "splash_trophy": {
+  "type": "trophy",
+  "w": 56,
+  "h": 72,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "golden_duck_trophy": {
+  "type": "trophy",
+  "w": 56,
+  "h": 72,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "fish_trophy": {
+  "type": "trophy",
+  "w": 56,
+  "h": 72,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "master_trophy": {
+  "type": "trophy",
+  "w": 56,
+  "h": 72,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "legendary_trophy": {
+  "type": "trophy",
+  "w": 56,
+  "h": 72,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "acorn": {
+  "type": "acorn",
+  "w": 32,
+  "h": 24,
+  "scale": 0.85,
+  "grid": 2
+ },
+ "magic_acorn": {
+  "type": "acorn",
+  "w": 32,
+  "h": 24,
+  "scale": 0.85,
+  "grid": 2
+ },
+ "golden_acorn": {
+  "type": "acorn",
+  "w": 32,
+  "h": 24,
+  "scale": 0.85,
+  "grid": 2
+ },
+ "pine_cone": {
+  "type": "cone",
+  "w": 32,
+  "h": 32,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "glass_bottle": {
+  "type": "bottle",
+  "w": 40,
+  "h": 52,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "message_bottle": {
+  "type": "bottle",
+  "w": 40,
+  "h": 52,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "medicine": {
+  "type": "bottle",
+  "w": 40,
+  "h": 52,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "fog_essence": {
+  "type": "bottle",
+  "w": 40,
+  "h": 52,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "rare_bug_jar": {
+  "type": "bottle",
+  "w": 40,
+  "h": 52,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "mystery_egg": {
+  "type": "egg",
+  "w": 48,
+  "h": 40,
+  "scale": 0.85,
+  "grid": 2
+ },
+ "mystic_egg": {
+  "type": "egg",
+  "w": 48,
+  "h": 40,
+  "scale": 0.85,
+  "grid": 2
+ },
+ "stone_hammer": {
+  "type": "tool",
+  "w": 72,
+  "h": 48,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "fishing_rod": {
+  "type": "tool",
+  "w": 112,
+  "h": 80,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "master_fishing_rod": {
+  "type": "tool",
+  "w": 112,
+  "h": 80,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "magic_wand": {
+  "type": "tool",
+  "w": 60,
+  "h": 48,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "treasure_key": {
+  "type": "tool",
+  "w": 64,
+  "h": 36,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "clay_brick": {
+  "type": "block",
+  "w": 60,
+  "h": 28,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "stone_block": {
+  "type": "block",
+  "w": 56,
+  "h": 36,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "rope": {
+  "type": "fiber",
+  "w": 60,
+  "h": 40,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "string": {
+  "type": "fiber",
+  "w": 48,
+  "h": 40,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "dandelion_fluff": {
+  "type": "essence",
+  "w": 44,
+  "h": 36,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "fairy_dust": {
+  "type": "essence",
+  "w": 44,
+  "h": 36,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "warmth": {
+  "type": "essence",
+  "w": 44,
+  "h": 36,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "frozen_dewdrop": {
+  "type": "essence",
+  "w": 32,
+  "h": 32,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "mystery_sound": {
+  "type": "essence",
+  "w": 48,
+  "h": 40,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "gathering_bag": {
+  "type": "prop",
+  "w": 60,
+  "h": 52,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "watchtower": {
+  "type": "prop",
+  "w": 180,
+  "h": 240,
+  "scale": 1.64,
+  "grid": 3
+ },
+ "butterfly_wing": {
+  "type": "prop",
+  "w": 52,
+  "h": 48,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "mud_sculpture": {
+  "type": "prop",
+  "w": 48,
+  "h": 40,
+  "scale": 0.85,
+  "grid": 2
+ },
+ "mystery_gift": {
+  "type": "prop",
+  "w": 48,
+  "h": 44,
+  "scale": 0.85,
+  "grid": 2
+ },
+ "parade_flag": {
+  "type": "prop",
+  "w": 56,
+  "h": 60,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "frog_spawn": {
+  "type": "prop",
+  "w": 48,
+  "h": 32,
+  "scale": 0.8,
+  "grid": 2
+ },
+ "pirate_compass": {
+  "type": "prop",
+  "w": 48,
+  "h": 32,
+  "scale": 0.85,
+  "grid": 2
+ },
+ "heart_of_pond": {
+  "type": "prop",
+  "w": 56,
+  "h": 48,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "fish_treat": {
+  "type": "prop",
+  "w": 56,
+  "h": 20,
+  "scale": 0.8,
+  "grid": 2
+ }
+}
