@@ -60,6 +60,7 @@ for item, spec in W.ITEMS.items():
         check(all(r[0] in spec['fields'] and r[1] in ('set', 'add', 'mul', 'max', 'min', 'wrap') for r in rows), item + ' effect ' + name + ' writes its own bounded fields')
 for key, r in W.ROUTINES.items():
     spec = W.ITEMS[r['item']]
+    check(not r.get('say') or len(W.LINES.get(r['say'], [])) >= 2, key + ' has authored lines for its speech cue')
     for t in r['when'] + r['prefer']:
         kind, name = known(t)
         check(kind is not None, key + ' context tag ' + t + ' is understood')
@@ -256,6 +257,7 @@ try:
         journal = p.state['sequence']
         history = obj['wonder']['history'].get(key, 0)
         events_seen.clear()
+        chat_before = g.renderer.chat.sequence
         ok, msg = W.request(p, item, key, iid)
         check(ok, key_age + ' starts on request: ' + msg)
         plan = p.state['plan']
@@ -285,6 +287,9 @@ try:
         check(obj['wonder']['history'].get(key, 0) == history + 1, key_age + ' records one completed sequence')
         check(sum(j['id'] > journal and j['kind'] == 'wonder' and j['text'].startswith(r['label']) for j in p.state['journal']) == 1, key_age + ' Cheese remembers doing it, once')
         check(possessions() == before, key_age + ' grants no items, coins or treasure')
+        if r.get('say'):
+            said = [e for e in g.renderer.chat.entries if e['id'] > chat_before and e['speaker'] == 'cheese' and e['channel'] == 'say' and e['text'] in W.LINES[r['say']]]
+            check(work.get('said') and len(said) == 1, key_age + ' Cheese says one authored line for it in the chat log')
         saved = copy.deepcopy(obj)
         W.complete(p, plan)
         check(obj == saved, key_age + ' completion replay changes nothing')

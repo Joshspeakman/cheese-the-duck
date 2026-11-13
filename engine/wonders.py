@@ -18,6 +18,7 @@ ROUTINES = json.loads((DATA / 'wonder-routines.json').read_text())
 # Measured from the drawn anchors and the D10 rig (scripts/export-wonder-reach.mjs):
 # an age is offered a routine only if its wing, head or held tool reaches every contact.
 REACH = {k: set(v['reachableAges']) for k, v in json.loads((DATA / 'wonder-reach.json').read_text())['routines'].items()}
+LINES = json.loads((DATA / 'wonder-lines.json').read_text())
 BY_ITEM = {}
 for _key, _spec in ROUTINES.items():
     BY_ITEM.setdefault(_spec['item'], []).append(_key)
@@ -323,9 +324,27 @@ def advance(pond, plan, dt):
             continue
         work['events'].append(i)
         apply(s, plan['target'], ITEMS[plan['target']]['effects'][name])
+    first_moment = work['events'] if spec['events'] else work['elapsed'] >= spec['duration'] * .35
+    if spec.get('say') in LINES and first_moment and not work.get('said'):
+        work['said'] = True
+        say(pond, LINES[spec['say']][s['history'].get(work['id'], 0) % len(LINES[spec['say']])])
     work['done'] = work['elapsed'] >= spec['duration']
     pond._cache = None
     return not work['done']
+
+
+def say(pond, line):
+    """Cheese says an authored line aloud: chat log (bottom left) and speech
+    bubble. Not a conversation memory; never censored."""
+    minds = getattr(pond, 'minds', None)
+    if not minds or pond.game.duck.growth_stage == 'egg':
+        return
+    minds.utterances['cheese'] = {'text': line, 'until': minds.now + 8}
+    chat = getattr(pond.game.renderer, 'chat', None)
+    if chat is not None:
+        from datetime import datetime
+        chat.reply('cheese', minds.model.residents.get('cheese', {}).get('name', 'Cheese'), 'player', line, 'say', 'authored', datetime.now().strftime('%H:%M'))
+    pond._cache = None
 
 
 def complete(pond, plan):
