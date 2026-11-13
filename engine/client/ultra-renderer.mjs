@@ -11,6 +11,7 @@ import {lightingGeometry,drawLightingTools} from './lighting-routines.mjs';
 import {creativeGeometry,drawCreativeTools} from './creative-routines.mjs';
 import {keepsakeGeometry,drawKeepsakeTools} from './keepsake-routines.mjs';
 import {wonderGeometry,drawWonderTools} from './wonder-routines.mjs';
+import {repGeometry,drawRepTools} from './repertoire-routines.mjs';
 import { sceneLight,ambientRows,ambientSwatches,lightBand,readableInk,mixColor } from './scene-lighting.mjs';
 import { GlyphRenderer } from './renderer.mjs';
 import { LivingWorld } from './ultra-world.mjs';
@@ -71,7 +72,7 @@ export class SceneCanvas {
     for(const model of objects){
       if(model.physicalCastle)model.physicalCastlePixels=castleArtFrame(model,this.sx,this.sy);
       fit(model);
-      for(const member of [...(model.occupants||[]),...(model.nestHelpers||[]),...(model.riders||[]),...(model.sitters||[]),...(model.gardeners||[]),...(model.musicians||[]),...(model.lightWorkers||[]),...(model.keepers||[]),...(model.wonderWorkers||[]),...(model.creators||[]),...(model.textileUsers||[]),...(model.groundUsers||[]),...(model.structureUsers||[]),...(model.carnivalRiders||[]),...(model.players||[])])fit(member.character);
+      for(const member of [...(model.occupants||[]),...(model.nestHelpers||[]),...(model.riders||[]),...(model.sitters||[]),...(model.gardeners||[]),...(model.musicians||[]),...(model.lightWorkers||[]),...(model.keepers||[]),...(model.wonderWorkers||[]),...(model.repWorkers||[]),...(model.creators||[]),...(model.textileUsers||[]),...(model.groundUsers||[]),...(model.structureUsers||[]),...(model.carnivalRiders||[]),...(model.players||[])])fit(member.character);
       if(model.occupant)fit(model.occupant.character);
       if(model.rider)fit(model.rider.character);
       if(model.bather)fit(model.bather.character);
@@ -204,6 +205,11 @@ export class SceneCanvas {
           drawCharacter(this.ctx,{...staged.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
           drawCreativeTools(this.ctx,staged);
           if(staged.character.visitor||staged.character.story)seatedHits.push(staged.character);
+        }
+        for(const worker of actor.repWorkers||[]){
+          const staged=repGeometry(actor,worker,this.sx,this.sy);
+          drawCharacter(this.ctx,{...staged.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
+          drawRepTools(this.ctx,staged);
         }
         for(const worker of actor.wonderWorkers||[]){
           const staged=wonderGeometry(actor,worker,this.sx,this.sy);

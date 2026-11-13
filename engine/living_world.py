@@ -4,7 +4,7 @@ The original registries remain authoritative for ownership, needs, inventory,
 friendship, recipes and rewards. This module owns new physical/ecological state,
 long-term intentions and bounded memories. Presentation snapshots never advance it.
 """
-from engine import object_history,pond_lighting,keepsakes,wonders,keeping,keepsake_company,creative_props,creative_company,textiles,textile_company,groundworks,ground_company,architecture,architecture_company,playkit,playkit_company
+from engine import object_history,pond_lighting,keepsakes,wonders,keeping,repertoire,keepsake_company,creative_props,creative_company,textiles,textile_company,groundworks,ground_company,architecture,architecture_company,playkit,playkit_company
 import copy
 import hashlib
 import math
@@ -378,6 +378,7 @@ class LivingPond:
             keepsakes.update(self,key,obj,dt,outdoors,home_wet,home_intensity,home_temperature)
             wonders.update(self,key,obj,dt,outdoors,home_wet,home_temperature,home_ecology['wind'],home_type)
             keeping.update(self,key,obj,dt,outdoors,home_wet,home_temperature,home_ecology['wind'],home_type,getattr(self,'hour',12),getattr(self,'season','spring'))
+            repertoire.update(self,key,obj,dt,outdoors,home_wet,home_temperature,home_ecology['wind'],home_type)
             architecture.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type,home_ecology.get('wind_heading',s['weather'].get('pond',{}).get('wind_heading',.25)))
             playkit.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type)
             excursions.update(key,obj,dt,outdoors,home_type,home_ecology['wind'],self.hour,reserved=carnival.owns(self,key,obj))
@@ -432,7 +433,7 @@ class LivingPond:
     def available(self):
         return bool(self.game and self.game.duck and self.game.duck.growth_stage != 'egg' and self.scene_available())
 
-    def start(self, kind, target='', automatic=False, instance=None, carnival_choice=None, shared_proposal=None):
+    def start(self, kind, target='', automatic=False, instance=None, carnival_choice=None, shared_proposal=None, rep_work=None):
         s = self.state
         if carnival_choice in ('castle_pressure_check','castle_dust_service'):
             if kind!='item' or target!='bounce_house':return False, 'Choose an activity for this object.'
@@ -500,7 +501,7 @@ class LivingPond:
                 return False,'Place that creative prop outside before using it.'
             if target in playkit.ITEMS and not selected and (not playkit.ITEMS[target]['portable'] or self.object_state(target).get('_source')):return False,'Place that plaything outside first.'
             if target in architecture.ITEMS and not selected:return False,'Place that garden structure outside before inspecting it.'
-            if target in wonders.ITEMS:
+            if target in wonders.ITEMS and not rep_work:
                 if not selected:return False,'Place that wonder outside before using it.'
                 if not wonders.eligible(self,target,self.object_state(target,selected.instance)):return False,wonders.blocked(self,target) or 'Nothing about that wonder makes sense to do right now.'
             if target in groundworks.ITEMS and not selected and (not groundworks.ITEMS[target]['portable'] or self.object_state(target).get('_source')):
@@ -616,9 +617,13 @@ class LivingPond:
         if kind=='item' and target in keepsakes.ITEMS:
             s['plan']['keepsake_work']=keepsakes.choose(self,target,s['plan'])
             s['plan']['label']=s['plan']['keepsake_work']['label']
-        if kind=='item' and target in wonders.ITEMS:
+        if kind=='item' and target in wonders.ITEMS and not rep_work:
             s['plan']['wonder_work']=wonders.choose(self,target,s['plan'])
             s['plan']['label']=s['plan']['wonder_work']['label']
+        if rep_work:
+            # A repertoire sequence owns this plan: no family work is assigned beside it.
+            for k in [k for k in s['plan'] if k.endswith('_work') or k in ('water_routine','seat_routine','care_routine','music_score','seating','instrument')]:s['plan'].pop(k,None)
+            s['plan']['rep_work']=rep_work;s['plan']['label']=rep_work['label']
         if kind=='item' and target in creative_props.ITEMS:
             s['plan']['creative_work']=creative_props.choose(self,target,s['plan'])
             s['plan']['label']=s['plan']['creative_work']['label']
@@ -778,6 +783,8 @@ class LivingPond:
             self.cancel();return
         if plan.get('wonder_work') and not wonders.valid(self,plan):
             self.cancel();return
+        if plan.get('rep_work') and not repertoire.valid(self,plan):
+            self.cancel();return
         if plan.get('plant_care') and (not plan.get('destination') or not shelters.still_placed(self,{'id':plan['target'],'destination':plan['destination']}) or any(w in self.weather_type for w in ('storm','blizzard'))):
             self.cancel();return
         if plan.get('seating') and not furniture_rests.valid(self,plan['seating']):
@@ -809,22 +816,24 @@ class LivingPond:
                 pos.set_state_by_name('thinking',max(3,plan['duration']*.3))
         # A roof is an actual place to wait, not a looping reward animation.
         # Preserve the ordinary completion once; interrupting never grants it.
-        routine_holding = nest_routines.advance(self, plan, dt)
-        company_holding = playdates.advance(self, plan, dt)
-        water_holding = water_routines.advance(self, plan, dt)
-        seat_holding = furniture_rests.advance(self,plan,dt)
-        care_holding = botanical_care.advance(self,plan,dt)
-        music_holding = instrument_sessions.advance(self,plan,dt)
-        light_holding = pond_lighting.advance(self,plan,dt)
-        keepsake_holding = keepsakes.advance(self,plan,dt)
-        wonder_holding = wonders.advance(self,plan,dt)
-        creative_holding = creative_props.advance(self,plan,dt)
-        architecture_holding = architecture.advance(self,plan,dt)
-        carnival_holding = carnival.advance(self,plan,dt)
-        playkit_holding = playkit.advance(self,plan,dt)
-        ground_holding = groundworks.advance(self,plan,dt)
-        textile_holding = textiles.advance(self,plan,dt)
-        if plan.get('company', {}).get('phase') == 'cancelled' or plan.get('water_routine',{}).get('interrupted') or plan.get('seat_routine',{}).get('interrupted') or plan.get('care_routine',{}).get('interrupted') or plan.get('music_score',{}).get('interrupted') or plan.get('light_work',{}).get('interrupted') or plan.get('keepsake_work',{}).get('interrupted') or plan.get('wonder_work',{}).get('interrupted') or plan.get('creative_work',{}).get('interrupted') or plan.get('textile_work',{}).get('interrupted') or plan.get('ground_work',{}).get('interrupted') or plan.get('architecture_work',{}).get('interrupted') or plan.get('playkit_work',{}).get('interrupted') or plan.get('carnival_work',{}).get('interrupted'):
+        rep_holding = repertoire.advance(self,plan,dt)
+        family = not plan.get('rep_work')  # a repertoire plan runs no family engine
+        routine_holding = nest_routines.advance(self, plan, dt) if family else False
+        company_holding = playdates.advance(self, plan, dt) if family else False
+        water_holding = water_routines.advance(self, plan, dt) if family else False
+        seat_holding = furniture_rests.advance(self,plan,dt) if family else False
+        care_holding = botanical_care.advance(self,plan,dt) if family else False
+        music_holding = instrument_sessions.advance(self,plan,dt) if family else False
+        light_holding = pond_lighting.advance(self,plan,dt) if family else False
+        keepsake_holding = keepsakes.advance(self,plan,dt) if family else False
+        wonder_holding = wonders.advance(self,plan,dt) if family else False
+        creative_holding = creative_props.advance(self,plan,dt) if family else False
+        architecture_holding = architecture.advance(self,plan,dt) if family else False
+        carnival_holding = carnival.advance(self,plan,dt) if family else False
+        playkit_holding = playkit.advance(self,plan,dt) if family else False
+        ground_holding = groundworks.advance(self,plan,dt) if family else False
+        textile_holding = textiles.advance(self,plan,dt) if family else False
+        if plan.get('company', {}).get('phase') == 'cancelled' or plan.get('water_routine',{}).get('interrupted') or plan.get('seat_routine',{}).get('interrupted') or plan.get('care_routine',{}).get('interrupted') or plan.get('music_score',{}).get('interrupted') or plan.get('light_work',{}).get('interrupted') or plan.get('keepsake_work',{}).get('interrupted') or plan.get('wonder_work',{}).get('interrupted') or plan.get('rep_work',{}).get('interrupted') or plan.get('creative_work',{}).get('interrupted') or plan.get('textile_work',{}).get('interrupted') or plan.get('ground_work',{}).get('interrupted') or plan.get('architecture_work',{}).get('interrupted') or plan.get('playkit_work',{}).get('interrupted') or plan.get('carnival_work',{}).get('interrupted'):
             # An interrupted shared activity must not fall through to the normal
             # item completion either. Release both residents and leave use counts
             # and needs unchanged, even if the toy remains owned but is put away.
@@ -832,12 +841,12 @@ class LivingPond:
             return
         weather_holding = bool(residence and residence['roof'] and shelters.adverse(self.weather_type)
                        and plan['phase'] == 'act' and g.duck.needs.hunger > 15)
-        holding = weather_holding or routine_holding or company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or wonder_holding or creative_holding or textile_holding or ground_holding or architecture_holding or playkit_holding or carnival_holding
+        holding = weather_holding or routine_holding or company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or wonder_holding or rep_holding or creative_holding or textile_holding or ground_holding or architecture_holding or playkit_holding or carnival_holding
         native_travel = (castle_work.physical_active(plan) and plan['carnival_work']['physical']['phase'] in ('approach','exit')) or (carnival.is_shared(plan) and not carnival.is_flight(plan) and work['shared']['cheese']['phase'] in ('approach','exit'))
-        if (company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or wonder_holding or creative_holding or textile_holding or ground_holding or architecture_holding or playkit_holding or carnival_holding) and not native_travel:
+        if (company_holding or water_holding or seat_holding or care_holding or music_holding or light_holding or keepsake_holding or wonder_holding or rep_holding or creative_holding or textile_holding or ground_holding or architecture_holding or playkit_holding or carnival_holding) and not native_travel:
             g.renderer.duck_pos.cancel_movement()
             g.renderer.duck_pos.set_state_by_name('thinking',0)
-        elif plan.get('company',{}).get('done') or plan.get('water_routine',{}).get('done') or plan.get('seat_routine',{}).get('done') or plan.get('care_routine',{}).get('done') or plan.get('music_score',{}).get('done') or plan.get('light_work',{}).get('done') or plan.get('keepsake_work',{}).get('done') or plan.get('wonder_work',{}).get('done') or plan.get('creative_work',{}).get('done') or plan.get('textile_work',{}).get('done') or plan.get('ground_work',{}).get('done') or plan.get('architecture_work',{}).get('done') or plan.get('playkit_work',{}).get('done') or plan.get('carnival_work',{}).get('done'):
+        elif plan.get('company',{}).get('done') or plan.get('water_routine',{}).get('done') or plan.get('seat_routine',{}).get('done') or plan.get('care_routine',{}).get('done') or plan.get('music_score',{}).get('done') or plan.get('light_work',{}).get('done') or plan.get('keepsake_work',{}).get('done') or plan.get('wonder_work',{}).get('done') or plan.get('rep_work',{}).get('done') or plan.get('creative_work',{}).get('done') or plan.get('textile_work',{}).get('done') or plan.get('ground_work',{}).get('done') or plan.get('architecture_work',{}).get('done') or plan.get('playkit_work',{}).get('done') or plan.get('carnival_work',{}).get('done'):
             plan['elapsed']=max(plan['elapsed'],plan['duration']*.9)
         if residence:
             residence['holding'] = weather_holding
@@ -863,7 +872,7 @@ class LivingPond:
                 # and invalidate an otherwise completed shared activity.
                 physical_work = residence or any(plan.get(key) for key in (
                     'company','water_routine','seat_routine','care_routine',
-                    'music_score','light_work','keepsake_work','wonder_work','creative_work',
+                    'music_score','light_work','keepsake_work','wonder_work','rep_work','creative_work',
                     'textile_work','ground_work','architecture_work','playkit_work','carnival_work'))
                 g.renderer.duck_pos.set_state_by_name(state, duration=0 if physical_work else max(1, plan['duration']-plan['elapsed']))
                 self._last_plan_visual = phase
@@ -875,7 +884,7 @@ class LivingPond:
                 nest_routines.advance(self, plan, 0.)
         if ratio >= 1:
             s['plan'] = None  # Consume once before invoking callbacks.
-            if residence or plan.get('company') or plan.get('water_routine') or plan.get('seating') or plan.get('care_routine') or plan.get('instrument') or plan.get('light_work') or plan.get('keepsake_work') or plan.get('wonder_work') or plan.get('creative_work') or plan.get('textile_work') or plan.get('ground_work') or plan.get('architecture_work') or plan.get('playkit_work') or plan.get('carnival_work'):
+            if residence or plan.get('company') or plan.get('water_routine') or plan.get('seating') or plan.get('care_routine') or plan.get('instrument') or plan.get('light_work') or plan.get('keepsake_work') or plan.get('wonder_work') or plan.get('rep_work') or plan.get('creative_work') or plan.get('textile_work') or plan.get('ground_work') or plan.get('architecture_work') or plan.get('playkit_work') or plan.get('carnival_work'):
                 g.renderer.duck_pos.cancel_movement()
                 g.renderer.duck_pos.set_state_by_name('idle',0)
             if obj is not None:obj['active'] = False
@@ -924,6 +933,7 @@ class LivingPond:
             pond_lighting.complete(self,plan)
             keepsakes.complete(self,plan)
             wonders.complete(self,plan)
+            repertoire.complete(self,plan)
             from engine import wonder_company
             wonder_company.complete(self.minds,plan)
             creative_props.complete(self,plan)
@@ -1085,6 +1095,10 @@ class LivingPond:
                 if key in botany.ROOTED and botany.care_mode(self,key,instance)=='water':
                     score+=35*(1-obj['botany']['moisture']);reason='this plant needs water at its roots'
                 choices.append(('item',key,score,reason,instance))
+        rep={}
+        if self.location=='Home Pond':
+            for target,instance,score,reason,key,subject in repertoire.choices(self):
+                choices.append(('item',target,(100-n.fun)*.6+score,reason,instance));rep[(target,instance)]=(key,subject)
         ranked=[]
         for kind,target,score,reason,instance in choices:
             if s['elapsed'] < s['cooldowns'].get(kind+':'+(instance or target),0):continue
@@ -1094,10 +1108,11 @@ class LivingPond:
             score+=habit+bias+learned+(stable((int(s['elapsed']/30),kind,instance or target))%7)
             if learned>5:reason+='; past experiences make this appealing'
             if any(k in self.weather_type for k in ('storm','blizzard')) and kind=='rest':score+=35;reason='the weather calls for shelter'
-            ranked.append({'kind':kind,'target':target,'score':round(score,1),'reason':reason,'instance':instance})
+            ranked.append({'kind':kind,'target':target,'score':round(score,1),'reason':reason,'instance':instance,'rep':rep.get((target,instance)) if kind=='item' else None})
         s['decision']=sorted(ranked,key=lambda c:c['score'],reverse=True)[:5]
         for choice in s['decision']:
-            ok,_=self.start(choice['kind'],choice['target'],automatic=True,instance=choice.get('instance'))
+            r=choice.pop('rep',None)
+            ok,_=self.start(choice['kind'],choice['target'],automatic=True,instance=choice.get('instance'),rep_work=repertoire.make(self,r[0],r[1]) if r else None)
             if ok:break
 
     def _observe_events(self):
@@ -1124,6 +1139,9 @@ class LivingPond:
             return self.notice(message)
         if action=='playkit_action':
             ok,message=playkit.request(self,target,command.get('text'),command.get('instance'))
+            return self.notice(message)
+        if action=='rep_action':
+            ok,message=repertoire.request(self,target,command.get('text'),command.get('instance'))
             return self.notice(message)
         if action=='keeping_action':
             text=str(command.get('text',''));instance=command.get('instance')

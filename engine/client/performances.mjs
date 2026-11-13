@@ -9,6 +9,7 @@ import {lightingPose} from './lighting-routines.mjs';
 import {creativePose} from './creative-routines.mjs';
 import {keepsakePose} from './keepsake-routines.mjs';
 import {wonderPose} from './wonder-routines.mjs';
+import {repPose} from './repertoire-routines.mjs';
 import {nestPose} from './nest-routines.mjs';
 import {waterPose} from './water-routines.mjs';
 import {seatingPose} from './seating-routines.mjs';
@@ -64,6 +65,9 @@ export function performancePose(performance,stage='adult'){
  }
  if(performance?.kind==='creative'){
   const pose=creativePose(performance.routine,performance.motion!==false);return pose?scalePose(pose,stage):null;
+ }
+ if(performance?.kind==='rep'){
+  const pose=repPose(performance.routine,performance.motion!==false);return pose?scalePose(pose,stage):null;
  }
  if(performance?.kind==='wonder'){
   const pose=wonderPose(performance.routine,performance.motion!==false);return pose?scalePose(pose,stage):null;
