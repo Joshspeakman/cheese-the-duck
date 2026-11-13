@@ -245,6 +245,42 @@ try:
     vis = [j for j in p.state['journal'] if j['id'] > sequence and j['kind'] == 'neighbors' and j['subject'] == key]
     check(len(vis) == 1, 'the visitor remembers their own go at the wonder once')
 
+    # A visitor also works a placed repertoire object (test fixture, three routines).
+    from engine import repertoire as REP
+    fx = json.loads((ROOT / 'engine/tests/fixtures/rep-tire-swing.json').read_text())
+    REP.OBJECTS['tire_swing'] = fx
+    for k2, r2 in fx['routines'].items():
+        REP.ROUTINES[k2] = dict(r2, object='tire_swing')
+        REP.REACH[k2] = ['duckling', 'juvenile', 'young_adult', 'adult', 'mature', 'elder', 'legendary']
+    REP.BY_OBJECT['tire_swing'] = list(fx['routines'])
+    iid, obj = place('tire_swing', 'egg')
+    advance(80)
+    needs = (g.duck.needs.energy, g.duck.needs.fun, g.duck.needs.social, g.duck.needs.cleanliness)
+    key = bring('regular', [30, 22])
+    rep_applied = []
+    original_rep_apply = REP.apply
+    REP.apply = lambda s2, oid, rows, *a, **kw: (rep_applied.append((oid, [r[0] for r in rows])), original_rep_apply(s2, oid, rows, *a, **kw))[1]
+    seen_inside = False
+    for _ in range(6000):
+        advance()
+        r = b.wonder_guests.get(key)
+        seen_inside = seen_inside or bool(r and r['phase'] == 'inside' and r['mode'] == 'operate' and r.get('family') == 'rep')
+        if obj.get('wonder_visitors', {}).get(key):
+            break
+    REP.apply = original_rep_apply
+    done = list(obj.get('wonder_visitor_routines', {}))
+    check(seen_inside and len(done) == 1 and done[0] in fx['routines'], 'a visitor walked over and worked a repertoire routine on the tyre swing: ' + str(done))
+    authored = [n for _, n in fx['routines'][done[0]]['events']]
+    check(len([x for x in rep_applied if x[0] == 'tire_swing']) >= len(authored), 'every authored contact landed on the real tyre swing: ' + str(authored))
+    check((g.duck.needs.energy, g.duck.needs.fun, g.duck.needs.social, g.duck.needs.cleanliness) == needs or g.duck.growth_stage == 'egg',
+          "the visitor's go never changes Cheese's needs")
+    check(not any(row.startswith('need.') for _, rows in rep_applied for row in rows), 'visitor contacts carry no need rows')
+    for k2 in fx['routines']:
+        REP.ROUTINES.pop(k2, None)
+        REP.REACH.pop(k2, None)
+    REP.OBJECTS.pop('tire_swing', None)
+    REP.BY_OBJECT.pop('tire_swing', None)
+
     # Cheese takes over a copy a visitor is working: the visitor steps aside.
     iid, obj = place('gong')
     key = bring('regular', [30, 22])

@@ -1,3 +1,5 @@
+> Lead update (after review): section 1 defects 1-8, 10-16, 18, 19 are fixed in the engine or harness; 9 (wearables drawn on the body only) and 17 (fields drawn) are addressed by requiring the item to be worn and by `obj.*` targets for real wear. Repertoire-only fields still have no drawing of their own; the act shows them.
+
 # Repertoire engine: design review and authoring brief
 
 Reviewed at `cfaaeb2` on `codex/ascii-engine-port` (2026-11-13). Paths are under `engine/`. Line numbers are pinned to that commit (`git show cfaaeb2:engine/<file>`); the working tree has moved since. Nothing in the repository was changed. Sections 2 to 4 are the worker prompt. Section 1 and the appendix are for the lead.
@@ -15,7 +17,7 @@ What holds: one `apply` path, completion recorded once, no possession changes, r
 **Impossible contacts pass**
 5. Effects fire on a timer (`repertoire.py:298`); nothing ties an event to a touching pose, and the harness checks only event order (`check_repertoire.py:79`). Shown: an event with no `contact` keyframe exports `contactHeight 0`, in reach of every age. The committed pilot has one (`scarf_red.json`, `scarf_snuggle`).
 6. The reach scan samples 41 points (`export-repertoire-reach.mjs:22`). Shown: a contact pulse .015 wide on an anchor 336 px up exports height 0.
-7. A drawing's own anchor wins by name even when it is not a point (`repertoire-routines.mjs:19`). koi_pond has `rim: 44` and `swimRadius: 26`; bounce_house has `surface: "castle"`, `slots`, `controls`, `route`. Shown: an authored `rim` on a fish gives NaN, so height 0 and every age; the node test's `assert.ok` (`tests/repertoire.test.mjs:20`) passes on the truthy 44.
+7. A drawing's own anchor wins by name (lead: now only when it is a finite point) even when it is not a point (`repertoire-routines.mjs:19`). koi_pond has `rim: 44` and `swimRadius: 26`; bounce_house has `surface: "castle"`, `slots`, `controls`, `route`. Shown: an authored `rim` on a fish gives NaN, so height 0 and every age; the node test's `assert.ok` (`tests/repertoire.test.mjs:20`) passes on the truthy 44.
 8. Nothing checks that a fractional anchor lands on ink (read). The top 27% of the koi_pond box is blank.
 9. Reach is height only, on one sprite per object (read). Display objects are measured on their own sprite (`hostItem`, `export-repertoire-reach.mjs:13`; `tests/repertoire.test.mjs:11`) but drawn on the trophy case or cabinet. Sea fish are measured on infinity_pool though pool_large is also a host.
 10. Wearables need only ownership (`repertoire.py:141`; the harness only appends to `owned_items`, `check_repertoire.py:168-171`), so Cheese can rewrap a scarf he is not wearing. The routine plays on his body alone (`ultra-world.mjs:550`) and reach is waived (`export-repertoire-reach.mjs:19`). Until the item must be worn, 109 x 48 wearable routines are body pose only.
@@ -38,7 +40,7 @@ Spec and code disagree: `lines` and routine-level `pick` exist only in code; the
 
 You write 48 sequences for each object in your batch. A sequence is one purposeful physical act: Cheese (a duck) walks to the object, touches named places in order, something about the object changes, he reacts and leaves. The game runs each one natively and a harness replays it at every age. The user will not accept filler: 48 means 48 different things to do, not 48 names.
 
-**Before you start.** Take `host`, `consumable`, `family_engine` and `art` for each object from `engine/overhaul/animation-milestone/work-queue.json`. Hosts at `cfaaeb2`: `placed` and `keeping` are ready. `wearable` runs, but only Cheese's body is drawn, so ask the lead before starting a wearable batch. `portable` is blocked (the harness refuses the second run of the same object) and so is `display` (reach is measured on the wrong sprite). If an object's host is blocked or its `art` is `pending`, stop and report it; do not work around it.
+**Before you start.** Take `host`, `consumable`, `family_engine`, `wonder_routines` and `art` for each object from `engine/overhaul/animation-milestone/work-queue.json`. All five hosts run natively (lead update after the review fixes): `placed` (objects stand outside through their own system: shop habitat, decoration rooms, finished structures, garden beds), `portable` (an owned loose object Cheese has set down beside him), `keeping` (a kept fish: the host sprite is the pond or sea tank), `display` (shown in a trophy case: the host sprite is `trophy_case`; its shelves start about 100 px up, so young ages work the glass, doors and base), `wearable` (only while Cheese is wearing it; anchors are named places on his own body and are not measured). An object owes `48 - wonder_routines` sequences; the helper reads that itself. If `art` is `pending`, stop and report it.
 
 ### File format (the helper in section 3 writes it)
 ```
@@ -71,6 +73,7 @@ Pose keys, all 0 at rest and eased between keyframes: `x` head pushed forward (+
 
 ### Effect targets
 - A field of this object.
+- `obj.dirt`, `obj.wetness`, `obj.condition` (0 to 1): the object's real drawn wear. Cleaning lowers dirt; a mishap may lower condition. Use these instead of inventing a `dirt` field.
 - `need.fun`, `need.social`, `need.energy`, `need.cleanliness` with `add`, at most 3. Using any object already lifts its usual need, so give a need row to at most 8 routines, where the act itself is the reason. Never `need.hunger`.
 - Keeping hosts only: `subject.hunger|mood|health|trust|growth` (the chosen fish) and `keeping.clarity|algae|leaves|ice|oxygen|plants|flakes|bell` (the pond).
 The engine silently ignores anything else; the helper refuses it.
@@ -87,13 +90,13 @@ The engine silently ignores anything else; the helper refuses it.
 | wing | 66 | 86 | 106 | 121 | 129 | 135 | 127 | 135 |
 | twig, reed | 96 | 126 | 154 | 176 | 188 | 197 | 185 | 197 |
 
-- Keep contacts low. Each age needs at least 16 of the 48 in reach (so 16 at or under 63 px), and adults at least 32. Parts above about 135 px (a swing's pivot, a tower top, a tall lamp's shade) are looked at, shouted at or thrown at, not touched.
+- Keep contacts low. Each age needs at least a third of the object's sequences in reach (16 of 48: so 16 at or under 63 px), and adults two thirds (32 of 48). Parts above about 135 px (a swing's pivot, a tower top, a tall lamp's shade) are looked at, shouted at or thrown at, not touched.
 - An anchor is held: a keyframe without one keeps the last, and reach counts every anchor held while `contact` is rising or above .05. Name an anchor only on a keyframe that touches it.
 - `ages` is also for strength and size: `GROWN` for tipping, hauling or cranking; `YOUNG` for squeezing inside or under.
 - `obj`: `sway` and `shake` for things a duck could really move; `lift` only for something he could carry (`liftable=True`); `glow` and `puff` draw sparks or puffs at the touched place. Not available on keeping, display or wearable hosts.
 
 ### Making 48 different acts
-Plan first: a table of 48 one-line acts in eight groups, 4 to 9 in each.
+Plan first: a table of 48 one-line acts in eight groups, 4 to 9 in each (fewer for a wonder that already has some; the helper scales the bounds).
 `care` clean, dry, mend, protect, tidy around it. `use` what it is for, one act per control or mode. `play` games he invents with it. `test` curiosity: taste, tap, weigh, measure, balance, listen. `rest` lean, nap, shelter, shade, sulk. `weather` what rain, snow, wind, frost or heat did to it, gated on a field that physics moved, never on the tag alone. `show` perform, pose, present, argue with it. `mishap` stuck, slipped, startled, knocked over, and the recovery.
 
 Two routines are the same act unless at least two of these differ: (1) what it does, by effect rows and not by effect name; (2) which places it touches, in order; (3) how the body moves, as a coarse path of `x y b w` with repeats ignored; (4) what he uses: nothing, wing or stick. The helper enforces this. The reviewer also reads labels side by side: if two labels could swap tracks and nobody would notice, one is rejected.
@@ -149,12 +152,12 @@ Write one generator per batch, `engine/animation-authoring/rep_<batch>.py`, in t
 - `Obj(id, host, fields=, effects=, anchors=, physics=(), triggers=(), on=None, liftable=False)`: `anchors` is `{name: (x, y)}`; `on` is the host sprite for keeping and display objects. It refuses anchors on empty air, anchor names the drawing owns, and effect rows that would do nothing.
 - `k(t, anchor=None, **pose)`: a keyframe. Giving an anchor means touching it (`contact=1`).
 - `o.r(slug, label, seconds, tool, [keyframes], [(t, effect)], g=group, when=[], prefer=[], ages=None, say=[lines], obj=[(t, dict)], pick=None, far=False)`: the id becomes `<object>_<slug>`. It refuses undrawn keys, events without a touching keyframe, tags the harness cannot stage, gates nothing can reach, contacts out of reach, and an act too close to an earlier one. It orders `when` tokens the way the harness needs.
-- `o.emit()`: checks the set (48, every effect used, every field read, 4 to 9 per group, the per-age floor) and writes the JSON. `o.emit(need=12)` is a draft run only.
+- `o.emit()`: checks the set (the object's full need, every effect used, every field read, 4 to 9 per group, the per-age floor) and writes the JSON. `o.emit(need=12)` is a draft run only.
 - To save tokens, name a shared pose fragment once (`crouch = dict(y=1, b=.6)`) and keep keyframes on one line. Do not generate routines in loops.
 
 ## 4. Checklist before you return (workers)
 
-Run from the repository root, in your own worktree.
+Run from the repository root of your own worktree (the lead creates it with `.venv` and `engine/node_modules` linked in).
 1. `python3 engine/animation-authoring/rep_<batch>.py` ends without an assertion for every object and prints the per-age and per-group counts.
 2. `node engine/scripts/build-repertoire.mjs` rebuilds the bundle.
 3. `node engine/scripts/export-repertoire-reach.mjs` reports `"unreachable":0`. The `reachableAges` it writes for each of your routines are never fewer than the helper counted.

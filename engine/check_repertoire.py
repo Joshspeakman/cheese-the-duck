@@ -21,7 +21,7 @@ from world.atmosphere import Weather, WeatherType, Season
 from audio.sound import sound_engine
 args = sys.argv[1:]
 only = set(args[args.index('--objects') + 1].split(',')) if '--objects' in args else None
-MIN = int(args[args.index('--min') + 1]) if '--min' in args else 48
+MIN = int(args[args.index('--min') + 1]) if '--min' in args else None   # default: each object's own need
 QUICK = '--quick' in args
 sys.stdout = host.WIRE
 checks, started = [], time.time()
@@ -35,7 +35,7 @@ def check(ok, label):
 
 
 check(not R.LOAD_ERRORS, 'every repertoire file loads: ' + '; '.join(R.LOAD_ERRORS))
-objects = sorted(o for o in R.OBJECTS if only is None or o in only)
+objects = [] if '--hosts' in args else sorted(o for o in R.OBJECTS if only is None or o in only)
 
 
 def contact_at(r, t):
@@ -64,7 +64,14 @@ def content(oid, r):
         if not path or path[-1] != step:
             path.append(step)
     return rows, places, r['tool'] if r['tool'] in ('none', 'wing') else 'stick', tuple(path)
-check(only is None or set(objects) == only, 'requested objects exist: ' + str(sorted((only or set()) - set(objects))))
+
+
+# One index of every routine's physical content, built once (scales to all objects).
+CONTENT = {}
+for _o in R.OBJECTS:
+    for _k in R.by_object(_o):
+        CONTENT.setdefault(content(_o, R.ROUTINES[_k]), []).append((_o, _k))
+check('--hosts' in args or only is None or set(objects) == only, 'requested objects exist: ' + str(sorted((only or set()) - set(objects))))
 KNOWN = set(W.FLAGS) | {'dry_axle', 'far_year'} | set(R.CHEESE_TAGS)
 probe = W.World.__new__(W.World)
 probe.weather, probe.wet, probe.temperature, probe.wind, probe.hour, probe.season, probe.outdoors = 'sunny', False, 15, .1, 12, 'spring', True
@@ -92,13 +99,15 @@ for oid in objects:
     spec = R.OBJECTS[oid]
     fields = spec.get('fields', {})
     keys = R.by_object(oid)
-    check(len(keys) >= MIN, oid + f' has {len(keys)} routines (need {MIN})')
+    need = R.need(oid) if MIN is None else MIN
+    check(len(keys) >= need, oid + f' has {len(keys)} routines (need {need})')
     for f, op, v, when in spec.get('physics', []):
         check(f in fields and op in ('rate', 'decay', 'wrap') and all(kind_of(t, fields) for t in when.split('&')), oid + ' physics row ' + f + ' ' + when)
     for name, rows in spec.get('effects', {}).items():
         check(all((t in fields or t.startswith('subject.') or t.startswith('need.') or t.startswith('keeping.') or t.startswith('obj.')) and op in ('set', 'add', 'mul', 'max', 'min', 'wrap') for t, op, _ in rows), oid + ' effect ' + name)
     sigs = {}
     far = 0
+    mine_seen = []
     for k in keys:
         r = R.ROUTINES[k]
         for t in r['when'] + r['prefer']:
@@ -118,15 +127,21 @@ for oid in objects:
         for at, name in r['events']:
             check(r.get('far') or contact_at(r, at) >= .5, k + ' effect ' + name + ' lands on a touch, not on air')
         mine = content(oid, r)
-        for other, ok_ in ((o2, k2) for o2 in R.OBJECTS if o2 != oid for k2 in R.by_object(o2)):
-            check(content(other, R.ROUTINES[ok_]) != mine, k + ' is not a copy of ' + ok_ + ' on ' + other)
+        copies = [k2 + ' on ' + o2 for o2, k2 in CONTENT.get(mine, []) if o2 != oid]
+        check(not copies, k + ' is not a copy of ' + ', '.join(copies))
+        # Within an object, two routines are the same act unless at least two of
+        # (what it does, where it touches, how the body moves, what it uses) differ.
+        for other, theirs in mine_seen:
+            check(sum(a != b for a, b in zip(mine, theirs)) >= 2, k + ' is a different act from ' + other + ' (two of effect/touch/body/tool must differ)')
+        mine_seen.append((k, mine))
         if R.REACH:
             check(bool(R.REACH.get(k)), k + ' is reachable by some age')
     check(far <= 4, oid + ' has at most four far (throw/shout/breath) acts')
-    if MIN >= 48 and R.REACH:
+    if need >= 12 and MIN is None and R.REACH:
         for a in AGES:
             n = sum(a in R.REACH.get(k, ()) for k in keys)
-            check(n >= (32 if a == 'adult' else 16), oid + f' gives {a} {n} reachable routines (floor 16, adult 32)')
+            floor = -(-need * (2 if a == 'adult' else 1) // 3)
+            check(n >= floor, oid + f' gives {a} {n} reachable routines (floor {floor})')
 
 # ---------------------------------------------------------------- native runs
 t = host.DesktopInput()
@@ -172,6 +187,10 @@ try:
         g.building.structures = []
         for room in g.decorations.rooms.values():
             room.decorations = []
+        # Disposable save: empty the bags between objects so capacity never refuses a grant.
+        g.inventory.items.clear()
+        g.materials.stacks.clear()
+        p.state['grounds'] = {}
         pos = g.renderer.duck_pos
         pos.cancel_movement()
         pos.x, pos.y = 36, 21
@@ -179,13 +198,35 @@ try:
     def give(oid):
         """Set up the object's real host; returns (host item, instance, state obj)."""
         reset()
-        kind = R.OBJECTS[oid].get('host', 'placed')
+        kind = (R.OBJECTS.get(oid) or R.QUEUE[oid]).get('host', 'placed')
         if kind == 'placed':
-            g.habitat.owned_items = [oid]
-            g.habitat.placed_items = [PlacedItem(oid, 10, 6)]
+            # Each object stands outside through its own real system.
+            from world.shop import get_item
+            from world.decorations import DECORATIONS
+            from world.building import BLUEPRINTS, Structure, StructureStatus
+            from world.garden import PLANTS, PlantedPlant, GrowthStage
+            g.building.structures = [s for s in g.building.structures if s.blueprint_id != oid]
+            for room in g.decorations.rooms.values():
+                room.decorations = [d for d in room.decorations if d.decoration_id != oid]
+            if get_item(oid):
+                g.habitat.owned_items = [oid]
+                g.habitat.placed_items = [PlacedItem(oid, 10, 6)]
+            elif oid in DECORATIONS:
+                room = next(r for r in ('pond', 'garden') if not DECORATIONS[oid].allowed_rooms or r in [x.value for x in DECORATIONS[oid].allowed_rooms])
+                g.decorations.rooms[room].unlocked = True
+                g.decorations.owned_decorations[oid] = max(1, g.decorations.owned_decorations.get(oid, 0))
+                ok, msg = g.decorations.place_decoration(oid, room, (2, 2))
+                assert ok, oid + ': ' + msg
+            elif oid in BLUEPRINTS:
+                g.building.structures.append(Structure(oid, (1, 1), StructureStatus.COMPLETE))  # (4,3) collides with the nest
+            elif oid in PLANTS:
+                plot = next(iter(g.garden.plots.values()))
+                plot.is_unlocked = True
+                plot.plant = PlantedPlant(oid, plot.plot_id, '2026-05-01T08:00:00', '2026-05-01T08:00:00', GrowthStage.FLOWERING)
             p.sync()
-            iid = next(x.instance for x in p.placements if x.item_id == oid)
-            return oid, iid
+            found = R.host_of(p, oid) if oid in R.OBJECTS else _probe_host(oid, kind)
+            assert found, oid + ' stands outside through its real system'
+            return oid, found[1]
         if kind == 'keeping':
             hostitem = 'infinity_pool' if oid in SEA else 'koi_pond'
             g.habitat.owned_items = [hostitem]
@@ -222,10 +263,30 @@ try:
             return oid, None
         raise AssertionError('unknown host ' + kind)
 
+    def _probe_host(oid, kind):
+        """host_of for an object with no repertoire file yet."""
+        R.OBJECTS[oid] = dict(object=oid, host=kind, routines={}, effects={})
+        try:
+            return R.host_of(p, oid)
+        finally:
+            del R.OBJECTS[oid]
+
     def own(oid):
         from engine.item_profiles import ITEMS
         src = ITEMS[oid]['sources'][0].split('.')[0] if ITEMS.get(oid, {}).get('sources') else 'items'
-        if src == 'materials':
+        from world.decorations import DECORATIONS
+        from world.garden import SEEDS
+        from world.materials import MATERIALS
+        if src == 'crafting':
+            if oid in MATERIALS:
+                g.materials.add_material(oid, 1)
+            else:
+                g.crafting._add_tool(oid, oid.replace('_', ' ').title())
+        elif oid in SEEDS and src == 'garden':
+            g.garden.seed_inventory[oid] = max(1, g.garden.seed_inventory.get(oid, 0))
+        elif oid in DECORATIONS and src == 'decorations':
+            g.decorations.owned_decorations[oid] = max(1, g.decorations.owned_decorations.get(oid, 0))
+        elif src == 'materials':
             g.materials.add_material(oid, 1)
         elif src == 'treasure':
             from world.treasure import FoundTreasure, TreasureLocation
@@ -310,6 +371,28 @@ try:
         return original_apply(s, oid, rows, pond, subject, host, objstate)
     R.apply = recording
     runs = 0
+    if '--hosts' in args:
+        # Every object in the work queue can really be set up and found as a host.
+        hosted, failed = [], []
+        for oid in sorted(only or R.QUEUE):
+            kind = R.QUEUE[oid]['host']
+            if kind == 'portable' or kind == 'wearable' or kind == 'display':
+                pass
+            try:
+                give(oid)
+                found = R.host_of(p, oid) if oid in R.OBJECTS else _probe_host(oid, kind)
+            except (AssertionError, StopIteration, KeyError) as e:
+                found, why = None, repr(e)[:80]
+            else:
+                why = ''
+            if found:
+                hosted.append(oid)
+            else:
+                failed.append(oid + ':' + kind + ':' + (R.QUEUE[oid]['sources'][0]) + ':' + why)
+        check(not failed, 'every object can be set up through its real system and found: ' + ' | '.join(failed))
+        print(json.dumps(dict(result='PASS', hosts=len(hosted), checks=len(checks), seconds=round(time.time() - started))))
+        raise SystemExit(0)
+
     for oid in objects:
         for key in R.by_object(oid):
             ages = [a for a in AGES if a in R.REACH.get(key, AGES)] if R.REACH else list(AGES)
@@ -353,6 +436,21 @@ try:
                 R.complete(p, plan)
                 check(obj == saved, label + ' completion replay changes nothing')
                 runs += 1
+        # Autonomous choice rotates: repeated picks in one context reach every eligible routine.
+        hostitem, iid = give(oid)
+        obj = R.store(p, {'target': hostitem, 'instance': iid}, {'object': oid}) if R.OBJECTS[oid].get('host') == 'wearable' else p.object_state(hostitem, iid)
+        pool = set(R.eligible(p, oid, obj))
+        saved_hist = dict(R.state(oid, obj)['history'])
+        picked = set()
+        for _ in range(4 * len(pool) + 4):
+            choice = R.best(p, oid, obj)
+            if not choice:
+                break
+            picked.add(choice[0])
+            hist = R.state(oid, obj)['history']  # state() rebuilds the dict: always fetch it fresh
+            hist[choice[0]] = hist.get(choice[0], 0) + 1
+        R.state(oid, obj)['history'] = saved_hist
+        check(picked == pool, oid + f' autonomous picks rotate through all {len(pool)} eligible routines (missed {sorted(pool - picked)})')
     R.apply = original_apply
     print(json.dumps(dict(result='PASS', objects=len(objects), routines=sum(len(R.by_object(o)) for o in objects), runs=runs, checks=len(checks), seconds=round(time.time() - started))))
 finally:

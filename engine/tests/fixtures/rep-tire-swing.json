@@ -1,0 +1,15 @@
+{
+ "object": "tire_swing",
+ "host": "placed",
+ "fields": {"swing": [0, 0, 1], "rain": [0, 0, 1]},
+ "physics": [["swing", "decay", 0, "always"], ["rain", "rate", 0.002, "wet"], ["rain", "rate", -0.0002, "dry&warm"]],
+ "triggers": [],
+ "effects": {"push": [["swing", "set", 1]], "wedge": [["swing", "add", 0.4]], "pour": [["rain", "mul", 0.15]]},
+ "anchors": {"tyre_low": {"x": 0.5, "y": 0.91}, "hole": {"x": 0.5, "y": 0.85}, "tyre_side": {"x": 0.4, "y": 0.78}, "post_foot": {"x": 0.11, "y": 0.95}},
+ "lines": {"tire_swing_wedged_in_hole": ["Wedged by the arse. Dignity: gone.", "I meant to do that. All of it. Especially the stuck part."]},
+ "routines": {
+  "tire_swing_shove_and_duck": {"label": "Shoving the tyre away and dropping flat before it swings back over him", "duration": 18, "tool": "wing", "group": "play", "track": [[0, {}], [0.15, {"reach": 0.6, "w": 0.5, "anchor": "tyre_low", "contact": 1}], [0.3, {"x": 0.4, "b": -0.3, "w": 1, "mark": "hup", "anchor": "tyre_low", "contact": 1}], [0.5, {"y": 1.4, "b": 0.9, "eye": "O"}], [0.7, {"y": 1.4, "b": 0.9, "eye": "-", "mark": "whoosh"}], [0.88, {"eye": "^"}], [1, {}]], "events": [[0.3, "push"]], "when": [], "prefer": ["swing<.2", "happy"], "ages": null, "say": null, "obj": [[0.3, {"sway": 0.2}], [0.45, {"sway": 1}], [0.6, {"sway": -1}], [0.75, {"sway": 0.5}]]},
+  "tire_swing_tip_out_rain": {"label": "Tipping the tyre up on its rope so the pooled rain runs out over his feet", "duration": 22, "tool": "wing", "group": "weather", "track": [[0, {}], [0.15, {"reach": 0.5, "w": 0.4, "anchor": "tyre_low", "contact": 1}], [0.35, {"y": -0.4, "b": -0.3, "w": 1, "mark": "hng", "anchor": "tyre_low", "contact": 1}], [0.55, {"x": 0.3, "y": 0.4, "b": 0.5, "mark": "glug", "anchor": "hole", "contact": 1}], [0.75, {"x": -0.5, "l": 1, "eye": "-", "mark": "ugh"}], [0.9, {"eye": "^"}], [1, {}]], "events": [[0.55, "pour"]], "when": ["!wet", "rain>.3"], "prefer": [], "ages": ["juvenile", "young_adult", "adult", "mature", "elder", "legendary"], "say": null, "obj": [[0.35, {"sway": 0.6}], [0.6, {"sway": 0.6, "shake": 0.3}], [0.8, {"sway": 0}]]},
+  "tire_swing_wedged_in_hole": {"label": "Diving through the tyre, wedging at the hips and kicking until he pops out", "duration": 24, "tool": "none", "group": "mishap", "track": [[0, {}], [0.15, {"x": 0.5, "eye": ">"}], [0.3, {"x": 1.1, "y": -0.3, "b": 0.8, "mark": "oof", "anchor": "hole", "contact": 1}], [0.5, {"x": 1.1, "y": -0.3, "b": 1, "l": 1, "eye": "O", "mark": "...", "anchor": "hole", "contact": 1}], [0.68, {"x": 1.2, "y": -0.3, "b": 1, "r": 1, "w": 1, "mark": "POP", "anchor": "hole", "contact": 1}], [0.85, {"x": 1.6, "y": 0.9, "b": 0.6, "eye": "@"}], [1, {}]], "events": [[0.3, "wedge"], [0.68, "wedge"]], "when": [], "prefer": ["young", "grumpy"], "ages": null, "say": "tire_swing_wedged_in_hole", "obj": [[0.3, {"sway": 0.5}], [0.5, {"shake": 0.6}], [0.68, {"sway": -0.6}], [0.85, {"sway": 0.2}]]}
+ }
+}

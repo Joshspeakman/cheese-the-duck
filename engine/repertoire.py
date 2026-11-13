@@ -57,6 +57,7 @@ NEEDS = ('energy', 'fun', 'social', 'hunger', 'cleanliness')
 
 
 _QUEUE = Path(__file__).parent / 'overhaul/animation-milestone/work-queue.json'
+QUEUE = {o['id']: o for o in json.loads((Path(__file__).parent / 'overhaul/animation-milestone/work-queue.json').read_text())['objects']}
 DISPLAYABLE = frozenset(o['id'] for o in json.loads(_QUEUE.read_text())['objects'] if o['host'] == 'display') if _QUEUE.exists() else frozenset()
 
 
@@ -64,8 +65,18 @@ def displayable():
     return set(DISPLAYABLE)
 
 
+BY_OBJECT = {}
+for _k, _r in ROUTINES.items():
+    BY_OBJECT.setdefault(_r['object'], []).append(_k)
+
+
 def by_object(obj_id):
-    return [k for k, r in ROUTINES.items() if r['object'] == obj_id]
+    return BY_OBJECT.get(obj_id, [])
+
+
+def need(obj_id):
+    """Repertoire sequences an object owes: 48 less the distinct family routines it already has (wonders)."""
+    return max(0, 48 - QUEUE.get(obj_id, {}).get('wonder_routines', 0))
 
 
 def state(oid, obj):
@@ -170,6 +181,10 @@ def host_of(pond, oid, instance=None):
         for p in pond.placements:
             if p.item_id == oid and (instance is None or p.instance == instance):
                 return oid, p.instance, None
+        # Garden beds and community works stand on the ground as installations.
+        for p in pond.grounds.installations():
+            if p['id'] == oid and (instance is None or p['instance'] == instance):
+                return oid, p['instance'], None
         return None
     if kind == 'portable':
         return (oid, None, None) if oid in pond.owned else None
