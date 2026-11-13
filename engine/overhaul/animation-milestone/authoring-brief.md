@@ -36,6 +36,25 @@ What holds: one `apply` path, completion recorded once, no possession changes, r
 
 Spec and code disagree: `lines` and routine-level `pick` exist only in code; the spec's `subjects` block and `ecology.` target exist only in the spec.
 
+## 2a. Version 2 rules (lead, after the wave-1 acceptance review): these override anything below
+
+What the screen shows. Cheese's feet stay on the standing line (the object's front edge) unless a keyframe has `perch` (0 to 1): then his feet go to the touched anchor, which must be flagged `"surface"` and be at most 0.6 x his body height for that age (the helper limits the ages). He stands with his bill (tool `none`) or wing/stick tip at the touched place and walks between anchors. `x` pushes his head forward, `y` drops it, `b` squats or hops the body, `l`/`r` lift a foot; `w` only shows with tool `none`; with wing or stick `reach` sets the arm. He is never drawn behind, under or inside anything, and the object's own parts never move (only the whole sprite sways, shakes or lifts; `glow`/`puff` draw at the touch).
+
+Rules (the helper enforces most of them):
+1. Before writing, list every drawn part with its height and what it is (`rep.py <id>` now also marks the drawing's own anchors with digits: the real door, seat or opening). If you cannot say what a glyph is, do not name it. Check your anchors with `rep.py <id> --mark <your generator>`.
+2. Labels say what is drawn: never behind/under/beneath; "in/on/into/through/across the" only with `perch` (standing on or in it) or `shown="head"` (only his head goes in).
+3. Every routine declares `act=(verb, part)` from the helper's verb list. No (verb, part) twice; at most three of one verb. A new time, weather, mood or age is not a new act.
+4. At most one each per object: nap, shelter, sulk, wait, walk_into, slip, stuck, stamp, bow, present, argue, pose. The rest group is not six ways to sit down: one nap, one shelter, and the others are things only this object allows.
+5. Push on the part that moves. A pivot, a fixed leg or a post does not tilt, swing or roll anything.
+6. An effect is the direct result of the touch. A performance has `events=[]`. No padding rows (add under 0.1, mul between 0.85 and 1.18); an effect is fired by at most three routines (a need-only effect by two); at most 8 routines carry need rows.
+7. Gates must still hold when Cheese comes back (autonomous choice waits about two minutes). Never gate a routine on a `decay` field another routine sets; put cause and consequence in one routine. For state that waits (snow, frost, leaves, fill), use slow `rate` fields. A gate that is always true is refused.
+8. Dirt, wetness and damage are real drawn state: use effects `obj.dirt`, `obj.wetness`, `obj.condition` and gates `obj_dirt>.3`, `obj_wetness>.3`, `obj_condition<.6`. Every routine that cleans or dries gates on the matching `obj_` field. Fields named damp/wet/dirt/mud/dust/clean/wear are refused; water/rain/puddle only for a drawn vessel that holds it (`containers={"water"}`).
+9. Invent nothing the drawing lacks: no dents, loose slats, flies, pigeons, tenants, valves, or puddles where water cannot sit.
+10. Lines: react to what just happened, under ten words where you can. No line from this brief or another object's file, no repeated formula ("X. Mine.", "Nobody..."), the second line is a different joke, and Cheese is a duck.
+11. Native acts already exist and must not be repeated: resting inside a home (dog_house, gazebo, nests, beds, houses), riding or exploring slides, swings, trampolines, seesaws and rocking horses, and building in sandboxes. Repertoire acts are everything else a duck could do with the thing.
+12. Find the parts a hatchling can reach (63 px, or a low `surface` to perch on) first and write those acts before anything else.
+13. If you cannot reach the object's full count with genuinely different real acts, stop and report how many you have and why. Do not pad; the lead decides.
+
 ## 2. Authoring brief (workers)
 
 You write 48 sequences for each object in your batch. A sequence is one purposeful physical act: Cheese (a duck) walks to the object, touches named places in order, something about the object changes, he reacts and leaves. The game runs each one natively and a harness replays it at every age. The user will not accept filler: 48 means 48 different things to do, not 48 names.
@@ -127,16 +146,16 @@ o = Obj('tire_swing', 'placed',
         physics=[('swing', 'decay', 0, 'always'), ('rain', 'rate', .002, 'wet'), ('rain', 'rate', -.0002, 'dry&warm')],
         effects=dict(push=[('swing', 'set', 1)], wedge=[('swing', 'add', .4)], pour=[('rain', 'mul', .15)]),
         anchors=dict(tyre_low=(.5, .91), hole=(.5, .85), tyre_side=(.4, .78), post_foot=(.11, .95)))
-o.r('shove_and_duck', 'Shoving the tyre away and dropping flat before it swings back over him', 18, 'wing',
+o.r('shove_and_duck',  # v2: add act=('shove', 'tyre') to every o.r call 'Shoving the tyre away and dropping flat before it swings back over him', 18, 'wing',
     [k(.15, 'tyre_low', reach=.6, w=.5), k(.3, 'tyre_low', x=.4, b=-.3, w=1, mark='hup'), k(.5, y=1.4, b=.9, eye='O'), k(.7, y=1.4, b=.9, eye='-', mark='whoosh'), k(.88, eye='^')],
     [(.3, 'push')], g='play', prefer=['swing<.2', 'happy'], obj=[(.3, dict(sway=.2)), (.45, dict(sway=1)), (.6, dict(sway=-1)), (.75, dict(sway=.5))])
 o.r('tip_out_rain', 'Tipping the tyre up on its rope so the pooled rain runs out over his feet', 22, 'wing',
     [k(.15, 'tyre_low', reach=.5, w=.4), k(.35, 'tyre_low', y=-.4, b=-.3, w=1, mark='hng'), k(.55, 'hole', x=.3, y=.4, b=.5, mark='glug'), k(.75, x=-.5, l=1, eye='-', mark='ugh'), k(.9, eye='^')],
     [(.55, 'pour')], g='weather', when=['!wet', 'rain>.3'], ages=GROWN, obj=[(.35, dict(sway=.6)), (.6, dict(sway=.6, shake=.3)), (.8, dict(sway=0))])
-o.r('wedged_in_hole', 'Diving through the tyre, wedging at the hips and kicking until he pops out', 24, 'none',
+o.r('wedged_in_hole', 'Jamming his head into the hole to the shoulders, sticking, and hauling back out with a pop'  # v2: shown='head', 24, 'none',
     [k(.15, x=.5, eye='>'), k(.3, 'hole', x=1.1, y=-.3, b=.8, mark='oof'), k(.5, 'hole', x=1.1, y=-.3, b=1, l=1, eye='O', mark='...'), k(.68, 'hole', x=1.2, y=-.3, b=1, r=1, w=1, mark='POP'), k(.85, x=1.6, y=.9, b=.6, eye='@')],
     [(.3, 'wedge'), (.68, 'wedge')], g='mishap', prefer=['young', 'grumpy'], obj=[(.3, dict(sway=.5)), (.5, dict(shake=.6)), (.68, dict(sway=-.6)), (.85, dict(sway=.2))],
-    say=["Wedged by the arse. Dignity: gone.", "I meant to do that. All of it. Especially the stuck part."])
+    say=[<lines of your own: samples here are never reused>])
 # ... 45 more routines ...
 o.emit()   # o.emit(need=3) runs these three as a draft
 ```

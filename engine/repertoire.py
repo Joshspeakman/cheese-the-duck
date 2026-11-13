@@ -244,11 +244,14 @@ def view(oid, obj):
     """Fields conditions may read: the object's own, plus fish_<f> (best kept fish of
     this species) and pond_<f> (keeping pond) for keeping objects."""
     s = state(oid, obj)
+    # Gates may read the object's real drawn wear (obj_dirt, obj_wetness, obj_condition).
+    v = dict(s)
+    v.update({'obj_' + k: finite(obj.get(k), 1. if k == 'condition' else 0.) for k in OBJ_STATE})
+    v['history'] = s['history']
     if OBJECTS[oid].get('host') != 'keeping':
-        return s
+        return v
     from engine import keeping
     k = keeping.state(obj)
-    v = dict(s)
     v.update({'pond_' + f: k[f] for f in keeping.POND})
     fish = [f for f in k['fish'] if f['species'] == oid]
     for f in keeping.FISH:

@@ -1,5 +1,7 @@
 """Shared helper for repertoire generators. Workers import it and never edit it. It is stricter than
-check_repertoire.py on purpose: it refuses relabels, undrawn keys, contacts on empty air and gates nothing can reach."""
+check_repertoire.py on purpose: it refuses relabels, stamped acts, undrawable labels, padding effects,
+contacts on empty air, gates nothing can reach or that never change, and copied lines.
+Version 2 (after the wave-1 acceptance review)."""
 import json, os, re, subprocess
 from pathlib import Path
 ENG = Path(os.environ.get('REP_ENGINE') or Path(__file__).resolve().parent.parent)
@@ -9,14 +11,27 @@ YOUNG, GROWN = AGES[:2], AGES[2:]
 BODY = dict(zip(AGES, (60.4, 78.7, 96.6, 110.2, 117.7, 123.5, 116., 123.5)))  # px, repertoire-reach.json bodyHeight rounded down
 TOOLS = dict(none=1.05, wing=1.1, twig=1.6, reed=1.6)  # reach = body height x factor (export-repertoire-reach.mjs)
 GROUPS = ('care', 'use', 'play', 'test', 'rest', 'weather', 'show', 'mishap')
-POSE = {'x', 'y', 'b', 'w', 'l', 'r', 'reach', 'contact', 'eye', 'mark', 'anchor'}
+POSE = {'x', 'y', 'b', 'w', 'l', 'r', 'reach', 'contact', 'eye', 'mark', 'anchor', 'perch'}
 TAGS = set('''always wet dry snow storm windy calm warm cold sun night day dawn dusk night_late dawn_or_day clear rainbow_sky growing spring summer fall winter
  tired lonely sad !wet !snow !storm !windy !cold !night !night_late !dawn !dusk !summer !fall !winter !rainbow_sky !tired !lonely !sad'''.split())
 MOODS = {'young', 'grown', 'elder', 'happy', 'grumpy', 'curious'}  # prefer only: the harness cannot stage them
-REAL = dict(obj=('dirt', 'wetness', 'condition'), subject=('hunger', 'mood', 'health', 'trust', 'growth'), keeping=('clarity', 'algae', 'leaves', 'ice', 'oxygen', 'plants', 'flakes', 'bell'), need=('fun', 'social', 'energy', 'cleanliness'))
+REAL = dict(obj=('dirt', 'wetness', 'condition'), subject=('hunger', 'mood', 'health', 'trust', 'growth'),
+            keeping=('clarity', 'algae', 'leaves', 'ice', 'oxygen', 'plants', 'flakes', 'bell'), need=('fun', 'social', 'energy', 'cleanliness'))
 CMP = re.compile(r'^!?([a-z_]+)(<=|>=|<|>)(-?[0-9.]+)$')
+# What a routine IS: one verb from this list and the part it acts on. A (verb, part) pair is used once per object.
+VERBS = set('''wipe scrub sweep polish dry rake dig scoop pour tip fill drain peck pull push shove lift tilt rock spin roll drag carry stack balance
+ hook prod tug squeeze press pat knock tap ring drum sniff listen peer measure count weigh taste test guard hide seek chase race hop
+ climb perch sit lean nap sulk shelter wait stamp walk_into slip stuck bow present argue pose sing shout dance mend straighten warm cool
+ shake brace chip scrape fluff groom splash float blow catch throw kick nudge wrap unwrap tie fold open close fit show compare'''.split())
+UNIVERSAL = {'nap', 'shelter', 'sulk', 'wait', 'walk_into', 'slip', 'stuck', 'stamp', 'bow', 'present', 'argue', 'pose'}  # at most one each per object
+SHADOW = {'damp', 'wet', 'wetness', 'dirt', 'dirty', 'grime', 'mud', 'muck', 'dust', 'clean', 'cleanliness', 'condition', 'wear'}  # use obj.* instead
+NEVER_DRAWN = re.compile(r'\b(behind|under|underneath|beneath)\b(?! (his|her|its|a) (wing|chin|bill|breath))')
+NEEDS_PERCH = re.compile(r'\b(in|into|inside|on|onto|atop|through|across)\b the\b')
+K_ADULT, K_SMALL = (2.6, 1.8, 2), (1.4, 1, 1)  # rendered cells per unit of x, y, b (performances.mjs scalePose)
 JS = ("import {itemSprite as s,itemWorldScale as w} from './client/ultra-items.mjs';const i=process.argv[1],m=s(i,0,{state:{keeping:{setup:true,fish:[]}}});"
-      "console.log(JSON.stringify({w:m.width,art:m.art.map(String),row:7.5*w(i)*(m.detailScale||1)*1.5,ground:(m.groundRow??m.art.length)-1,named:Object.keys(m.anchors||{})}))")
+      "console.log(JSON.stringify({w:m.width,art:m.art.map(String),row:7.5*w(i)*(m.detailScale||1)*1.5,"
+      "ground:['birdhouse','treehouse'].includes(i)||!m.anchors?.entry?(m.groundRow??m.art.length)-1:m.anchors.entry.y,"
+      "named:Object.keys(m.anchors||{}),own:Object.fromEntries(Object.entries(m.anchors||{}).map(([k,v])=>[k,typeof v==='object'?v:null]))}))")
 
 
 def sprite(item):
@@ -24,36 +39,74 @@ def sprite(item):
 
 
 def k(t, at=None, **pose):
-    """Keyframe at fraction t. `at` = the anchor being touched (sets contact=1). Only name an anchor on a keyframe that touches it."""
+    """Keyframe at fraction t. `at` = the anchor being touched (sets contact=1). Only name an anchor on a keyframe that touches it.
+    perch=1 stands Cheese ON the touched place (only on anchors flagged 'surface', low enough for the age)."""
     return [t, dict(pose, anchor=at, contact=pose.get('contact', 1)) if at else pose]
 
 
+def _words(s):
+    return set(re.findall(r"[a-z']+", s.lower()))
+
+
+def _known_lines(skip):
+    seen = set()
+    brief = ENG / 'overhaul/animation-milestone/authoring-brief.md'
+    if brief.exists():
+        seen |= {m.lower() for m in re.findall(r'"([^"\n]{12,90})"', brief.read_text())}
+    for f in OUT.glob('*.json'):
+        if f.stem == skip:
+            continue
+        try:
+            seen |= {l.lower() for ls in json.loads(f.read_text()).get('lines', {}).values() for l in ls}
+        except Exception:
+            pass
+    return seen
+
+
 class Obj:
-    def __init__(self, oid, host, fields, effects, anchors, physics=(), triggers=(), on=None, liftable=False):
-        """anchors = {name: (x, y)} fractions of the host sprite; on = that sprite for keeping/display (koi_pond, infinity_pool, trophy_case)."""
+    def __init__(self, oid, host, fields, effects, anchors, physics=(), triggers=(), on=None, liftable=False, containers=()):
+        """anchors = {name: (x, y)} or (x, y, 'inside' / 'surface' / 'inside surface') fractions of the host sprite;
+        on = that sprite for keeping/display (koi_pond, infinity_pool, trophy_case).
+        'inside' allows a point within a hollow outline; 'surface' allows perch=1 there.
+        containers = field names that really are a held liquid in a drawn vessel (a bowl, a bucket): only those may be called water/rain/puddle."""
+        flags = {n: (a[2].split() if len(a) > 2 else []) for n, a in anchors.items()}
+        self.flags = flags
         self.d = d = dict(object=oid, host=host, fields={f: list(v) for f, v in fields.items()}, physics=[list(p) for p in physics],
                           triggers=[[w, [list(r) for r in rows]] for w, rows in triggers], effects={n: [list(r) for r in rows] for n, rows in effects.items()},
-                          anchors={n: dict(x=x, y=y) for n, (x, y) in anchors.items()}, lines={}, routines={})
+                          anchors={n: dict(x=a[0], y=a[1]) for n, a in anchors.items()}, lines={}, routines={})
         self.liftable, self.sigs, self.group, self.reach, self.far, self.h = liftable, {}, {}, {}, 0, dict.fromkeys(anchors, 0)
-        self.spot = {n: (round(x * 8), round(y * 8)) for n, (x, y) in anchors.items()}  # where a touch is, on a coarse grid (about 15 px once measured)
+        self.acts, self.verbs, self.fired, self.needy, self.used_anchors = set(), {}, {}, 0, set()
+        self.spot = {n: (round(a[0] * 8), round(a[1] * 8)) for n, a in anchors.items()}
         assert host in ('placed', 'portable', 'keeping', 'display', 'wearable') and (on is None) == (host not in ('keeping', 'display')), oid + ': host/on'
-        assert all(re.fullmatch('[a-z_]+', f) and not f.startswith(('pond_', 'fish_')) and f != 'history' for f in fields), oid + ': field names are [a-z_]+'
+        assert all(re.fullmatch('[a-z_]+', f) and not f.startswith(('pond_', 'fish_', 'obj_')) and f != 'history' for f in fields), oid + ': field names are [a-z_]+'
+        for f in fields:
+            assert f not in SHADOW, f'{oid}: field {f} shadows the real drawn wear: use obj.dirt / obj.wetness / obj.condition and gate on obj_dirt etc.'
+            assert f not in ('water', 'rain', 'puddle') or f in containers, \
+                f'{oid}: field {f} is only allowed for a drawn vessel that holds it: pass containers={{"{f}"}} if that is what it is'
         for n, rows in d['effects'].items():
             for t, op, v in rows:
                 a, _, b = t.partition('.')
                 ok = t in fields or (b in REAL.get(a, ()) and (a != 'need' or (op == 'add' and abs(v) <= 3)) and (a in ('need', 'obj') or host == 'keeping'))
                 assert ok and op in ('set', 'add', 'mul', 'max', 'min', 'wrap'), f'{oid}: effect {n} row {t} {op} would do nothing, or is not allowed'
+                assert not (op == 'add' and abs(v) < .1) and not (op == 'mul' and .85 < v < 1.18), f'{oid}: effect {n} row {t} {op} {v} is padding (too small to matter)'
+        self.sp = None
         if host != 'wearable':  # worn things play on Cheese's own body: nothing to measure
-            sp = sprite(on or oid)
+            sp = self.sp = sprite(on or oid)
             rows = len(sp['art']) - 1
-            for n, (x, y) in anchors.items():
+            for n, a in anchors.items():
+                x, y = a[0], a[1]
                 cx, cy = round(x * (sp['w'] - 1)), round(y * rows)
                 assert n not in sp['named'] and n not in ('contact', 'entry'), f'{oid}: anchor name {n} is taken by the drawing {sp["named"]}'
                 near = range(max(0, cy - 1), min(rows, cy + 1) + 1)
-                inside = any(sp['art'][r][:cx].strip() and sp['art'][r][cx + 1:].strip() for r in near)  # within an outline (ASCII bodies are hollow)
-                assert inside or any(sp['art'][r][max(0, cx - 4):cx + 5].strip() for r in near), f'{oid}: anchor {n} is on empty air'
+                on_ink = any(sp['art'][r][max(0, cx - 4):cx + 5].strip() for r in near)
+                inside = any(sp['art'][r][:cx].strip() and sp['art'][r][cx + 1:].strip() for r in near)
+                assert on_ink or ('inside' in flags[n] and inside), f'{oid}: anchor {n} is on empty air (flag it (x, y, "inside") only if it is truly within a drawn outline)'
                 self.h[n], self.spot[n] = (sp['ground'] - y * rows) * sp['row'], (round(cx * sp['row'] / 22.5), round(cy * sp['row'] / 15))
-                assert self.h[n] >= 0, f'{oid}: anchor {n} is below the ground line'
+                assert self.h[n] >= -2, f'{oid}: anchor {n} is below the standing line'
+        spots = {}
+        for n, s in self.spot.items():
+            assert s not in spots, f'{oid}: anchors {spots.get(s)} and {n} are the same touch place; merge them or move one'
+            spots[s] = n
 
     def moves(self, f, rising):
         rows = [r[1:] for rws in [*self.d['effects'].values(), *[t[1] for t in self.d['triggers']]] for r in rws if r[0] == f]
@@ -66,46 +119,114 @@ class Obj:
         m = CMP.match(tok)
         if not m:
             assert tok in TAGS or (not gate and tok.lstrip('!') in MOODS), f'{key}: `{tok}` is not a tag the harness can stage in {"when" if gate else "prefer"}'
-        elif m.group(1).startswith(('pond_', 'fish_')):
+            return
+        f = m.group(1)
+        if f.startswith(('pond_', 'fish_')):
             assert self.d['host'] == 'keeping', key + ': fish_/pond_ fields need a keeping host'
-        else:
-            (default, lo, hi), v, rising = self.d['fields'][m.group(1)], float(m.group(3)), (m.group(2) in ('>', '>=')) != tok.startswith('!')
-            holds, inside = (default > v, v < hi) if rising else (default < v, v > lo)
-            assert inside and (holds or self.moves(m.group(1), rising)), f'{key}: `{tok}` can never come true: nothing moves {m.group(1)} that far'
+            return
+        if f.startswith('obj_'):
+            assert f[4:] in REAL['obj'] and self.d['host'] != 'wearable', key + ': obj_dirt / obj_wetness / obj_condition only, and not on wearables'
+            return
+        assert f in self.d['fields'], f'{key}: `{tok}` reads an undeclared field'
+        (default, lo, hi), v, rising = self.d['fields'][f], float(m.group(3)), (m.group(2) in ('>', '>=')) != tok.startswith('!')
+        holds, inside = (default > v, v < hi) if rising else (default < v, v > lo)
+        assert inside and (holds or self.moves(f, rising)), f'{key}: `{tok}` can never come true: nothing moves {f} that far'
+        if gate:
+            assert not holds or self.moves(f, not rising), f'{key}: `{tok}` is always true: nothing ever moves {f} the other way, so it gates nothing'
+            decay = [dv for pf, op, dv, _ in self.d['physics'] if pf == f and op == 'decay']
+            if decay:
+                d0, push = decay[0], max([pv for pf, op, pv, _ in self.d['physics'] if pf == f and op == 'rate' and pv > 0] or [0])
+                ok = (d0 + 22 * push > v + .1) if rising else (d0 < v - .1)
+                assert ok, (f'{key}: `{tok}` gates on {f}, which decays to {d0} within a minute; Cheese comes back after two. '
+                            'Put the push and its consequence in one routine, or use a slow rate field.')
 
-    def r(self, slug, label, dur, tool, track, ev=(), *, g, when=(), prefer=(), ages=None, say=None, obj=(), pick=None, far=False):
+    def _rendered(self, tr, k3, tool):
+        poses = []
+        for _, q in tr:
+            p = (int(q.get('x', 0) * k3[0] + .5), int(q.get('y', 0) * k3[1] + .5), int(q.get('b', 0) * k3[2] + .5),
+                 round(q.get('l', 0)), round(q.get('r', 0)), round(q.get('w', 0)) if tool == 'none' else round(q.get('reach', 0) * 2), round(q.get('perch', 0)))
+            if not poses or poses[-1] != p:
+                poses.append(p)
+        return tuple(poses)
+
+    def r(self, slug, label, dur, tool, track, ev=(), *, g, act, when=(), prefer=(), ages=None, say=None, obj=(), pick=None, far=False, shown=None):
+        """act = (verb, part): what this routine is, e.g. ('tip', 'tyre') or ('peer', 'opening'). shown='head' allows 'through the' / 'into the'
+        in the label when only his head goes in (and the track shows it: x forward, contact on that anchor)."""
         d, key, tr = self.d, self.d['object'] + '_' + slug, [[0, {}], *track, [1, {}]]
         when = sorted(when, key=lambda t: (not t.startswith('!'), t == 'storm'))  # the harness stages tokens in order: negations first, storm last
         assert key not in d['routines'] and tool in TOOLS and g in GROUPS and 10 <= dur <= 60 and len(track) >= 3, key + ': id, tool, group, duration or too few keyframes'
         assert [t for t, _ in tr] == sorted({t for t, _ in tr}) and all(set(q) <= POSE for _, q in tr), key + ': track order, or a key the renderer does not draw'
+        verb, part = act
+        assert verb in VERBS, f'{key}: act verb {verb} is not in the verb list'
+        assert (verb, part) not in self.acts, f'{key}: ({verb}, {part}) is already an act of this object; write a different act'
+        assert self.verbs.get(verb, 0) < (1 if verb in UNIVERSAL else 3), f'{key}: too many `{verb}` acts (universal acts: one each; others: three)'
+        perched = any(q.get('perch', 0) > .01 for _, q in tr)
+        assert not NEVER_DRAWN.search(label.lower()), f'{key}: "{label}" promises something the renderer never draws (he is never behind or under anything)'
+        assert not NEEDS_PERCH.search(label.lower()) or perched or shown == 'head', \
+            f'{key}: "{label}" puts him in/on/through the object; use perch on a surface anchor, or shown="head" if only his head goes in'
         [self.token(key, tok, True) for tok in when], [self.token(key, tok, False) for tok in prefer]
         assert 'storm' not in when or (tool == 'none' and 'wet' in when and dur >= 30), key + ': a storm routine is a long tool-free shelter that also lists `wet`'
         for t, name in ev:
             touching = any(abs(qt - t) < .011 and q.get('contact', 0) >= .5 and q.get('anchor') for qt, q in tr)
             assert name in d['effects'] and .1 <= t <= .9 and (touching or far), f'{key}: event {name} at {t} has no touching keyframe'
+        for _, name in ev:
+            for t2, op, v in d['effects'][name]:
+                if t2 in ('obj.dirt', 'obj.wetness') and (op in ('min', 'set') and v < .5 or op == 'add' and v < 0 or op == 'mul' and v < 1):
+                    assert any(w.startswith(t2.replace('.', '_') + '>') for w in when), f'{key}: cleans or dries {t2} but does not gate on {t2.replace(".", "_")}>...'
         self.far += bool(far)
         held, last = [], None
         for _, q in tr:
             last = q.get('anchor') or last
             held.append(last)
         assert all(a in d['anchors'] for a in held if a), key + ': undeclared anchor'
+        self.used_anchors |= {a for a in held if a}
         high = max([self.h[a] for i in range(len(tr) - 1) if max(tr[i][1].get('contact', 0), tr[i + 1][1].get('contact', 0)) > .05 for a in held[i:i + 2] if a] or [0])
-        self.reach[key] = [a for a in AGES if (not ages or a in ages) and high <= BODY[a] * TOOLS[tool]]
+        allowed = [a for a in AGES if (not ages or a in ages) and high <= BODY[a] * TOOLS[tool]]
+        if perched:
+            for i, (_, q) in enumerate(tr):
+                if q.get('perch', 0) > .01:
+                    a = held[i]
+                    assert a and 'surface' in self.flags.get(a, []), f'{key}: perch needs a held anchor flagged "surface"'
+                    allowed = [g2 for g2 in allowed if self.h[a] <= .6 * BODY[g2]]
+            assert allowed, f'{key}: the perch surface is too high for every allowed age (at most .6 x body height)'
+        self.reach[key] = allowed
         assert self.reach[key], f'{key}: contact {high:.0f}px up is out of reach for every allowed age'
         assert all(set(q) <= {'sway', 'lift', 'shake', 'glow', 'puff'} and (self.liftable or 'lift' not in q) for _, q in obj), key + ': obj keys (lift needs liftable=True)'
         assert not obj or d['host'] in ('placed', 'portable'), key + ': obj reactions would move the whole pond or case, or nothing at all'
+        youngest = allowed[0]
+        small = self._rendered(tr, K_SMALL if youngest in YOUNG else K_ADULT, tool)
+        assert len(set(small)) >= 3, f'{key}: at {youngest} size the body shows fewer than 3 different poses; make the movement bigger'
         touch = [self.spot[q['anchor']] for _, q in tr if q.get('anchor') and q.get('contact', 0) >= .5]
-        touch = tuple(p for i, p in enumerate(touch) if not i or p != touch[i - 1])  # touching the same place again is not a new touch
-        body = tuple(dict.fromkeys(tuple(round(q.get(j, 0) * 2) for j in 'xybw') for _, q in tr))
-        sig = (tuple(tuple(sorted((t, op, (v > 0) - (v < 0)) for t, op, v in d['effects'][n])) for _, n in ev), touch, body, tool if tool in ('none', 'wing') else 'stick')
+        touch = tuple(p for i, p in enumerate(touch) if not i or p != touch[i - 1])
+        body = self._rendered(tr, K_ADULT, tool)
+        sig = (tuple(tuple(sorted((t, op, (v > 0) - (v < 0)) for t, op, v in d['effects'][n] if not t.startswith('need.'))) for _, n in ev), touch, body, tool if tool in ('none', 'wing') else 'stick')
         for other, s in self.sigs.items():
             assert sum(a != b for a, b in zip(sig, s)) >= 2, f'{key} is the same act as {other}: change at least two of what it does, where it touches, how the body moves, what it uses'
+        for _, n in ev:
+            self.fired[n] = self.fired.get(n, 0) + 1
+            only_need = all(t.startswith('need.') for t, _, _ in d['effects'][n])
+            assert self.fired[n] <= (2 if only_need else 3), f'{key}: effect {n} is fired by too many routines; an effect is the result of one kind of act'
+        self.needy += any(t.startswith('need.') for _, n in ev for t, _, _ in d['effects'][n])
+        assert self.needy <= 8, f'{key}: more than 8 routines carry need rows'
         self.sigs[key], self.group[g] = sig, self.group.get(g, 0) + 1
+        self.acts.add((verb, part))
+        self.verbs[verb] = self.verbs.get(verb, 0) + 1
         if say:
-            assert len(say) >= 2 and all(len(s) <= 90 for s in say), key + ': two or three lines of at most 90 characters'
+            assert 2 <= len(say) <= 3 and all(len(s) <= 90 for s in say), key + ': two or three lines of at most 90 characters'
+            known = getattr(self, '_known', None)
+            if known is None:
+                known = self._known = _known_lines(d['object'])
+            for i, s in enumerate(say):
+                assert s.lower() not in known, f'{key}: line "{s}" is copied from the brief or another object'
+                assert 'goose' not in s.lower(), f'{key}: Cheese is a duck'
+                for prev in say[:i]:
+                    a, b = _words(s), _words(prev)
+                    assert len(a & b) <= .5 * min(len(a), len(b)), f'{key}: line "{s}" repeats "{prev}"; the second line is a different joke'
+            self._known |= {s.lower() for s in say}
             d['lines'][key] = list(say)
-        d['routines'][key] = dict(label=label, duration=dur, tool=tool, group=g, track=tr, events=[list(e) for e in ev], when=list(when), prefer=list(prefer), ages=ages,
-                                  say=key if say else None, **({'far': True} if far else {}), **({'obj': [list(o) for o in obj]} if obj else {}), **({'pick': pick} if pick else {}))
+        d['routines'][key] = dict(label=label, duration=dur, tool=tool, group=g, act=[verb, part], track=tr, events=[list(e) for e in ev], when=list(when),
+                                  prefer=list(prefer), ages=ages, say=key if say else None, **({'far': True} if far else {}),
+                                  **({'obj': [list(o) for o in obj]} if obj else {}), **({'pick': pick} if pick else {}))
 
     def emit(self, need=None):
         """emit() hands in: the object's full need (48, less any wonder routines it already has).
@@ -117,9 +238,12 @@ class Obj:
         need = full if hand_in else need
         used, read = {name for r in d['routines'].values() for _, name in r['events']}, ' '.join(t for r in d['routines'].values() for t in r['when'] + r['prefer'])
         per_age = {a: sum(a in v for v in self.reach.values()) for a in AGES}
+        print(d['object'], n, 'routines; in reach per age', per_age, '; groups', self.group, '; verbs', len(self.verbs))
         assert n >= need and used == set(d['effects']), f'{d["object"]}: {n} routines (need {need}); unused effects {set(d["effects"]) - used}'
         assert all(f in read for f in d['fields']), f'{d["object"]}: every field must gate or attract some routine, or it changes nothing anyone can see'
         if hand_in:
+            unused = set(d['anchors']) - self.used_anchors
+            assert not unused, f'{d["object"]}: anchors no routine uses: {sorted(unused)}'
             lo, hi = max(1, full // 12), max(2, -(-full * 9 // 48))
             assert self.far <= 4 and all(lo <= self.group.get(g, 0) <= hi for g in GROUPS), f'{d["object"]}: groups {self.group} (each {lo}..{hi}), far {self.far}'
             floor, adult = -(-full // 3), -(-full * 2 // 3)
@@ -128,14 +252,33 @@ class Obj:
         body = ',\n'.join(f'  {json.dumps(key)}: {json.dumps(r)}' for key, r in d['routines'].items())
         OUT.mkdir(parents=True, exist_ok=True)
         (OUT / (d['object'] + '.json')).write_text('{\n' + head + ',\n "routines": {\n' + body + '\n }\n}\n')
-        print(d['object'], n, 'routines; in reach per age', per_age, '; groups', self.group)
 
 
-if __name__ == '__main__':  # python3 engine/animation-authoring/rep.py <sprite id>: the drawing with y fraction, height in px and an x ruler in tenths
+if __name__ == '__main__':
+    # rep.py <sprite id>: the drawing with y fraction, height in px above the standing line, an x ruler in tenths,
+    # and the drawing's own anchors (real door / seat / opening) marked with digits. rep.py <sprite id> --mark <generator.py>:
+    # also letters at each anchor that generator declares for that sprite.
     import sys
     sp = sprite(sys.argv[1])
     n, ruler = len(sp['art']) - 1, [' '] * sp['w']
     for tenth in range(10):
         ruler[round(tenth * (sp['w'] - 1) / 10)] = str(tenth)
-    print(sys.argv[1], '- anchor names already taken by the drawing:', sp['named'], '\n   y   px |' + ''.join(ruler) + '|')
-    [print(f'{y / n:.2f} {(sp["ground"] - y) * sp["row"]:4.0f} |{row}|') for y, row in enumerate(sp['art']) if row.strip()]
+    art = [list(r) for r in sp['art']]
+    legend = []
+    for i, (name, a) in enumerate(sorted((k2, v) for k2, v in sp['own'].items() if v and 'x' in v and 'y' in v)):
+        ch = str(i % 10)
+        legend.append(f'{ch}={name}({a["x"] / max(1, sp["w"] - 1):.2f},{a["y"] / max(1, n):.2f})')
+        ry, rx = int(round(a['y'])), int(round(a['x']))
+        if 0 <= ry <= n and 0 <= rx < sp['w']:
+            art[ry][rx] = ch
+    if '--mark' in sys.argv:
+        src = Path(sys.argv[sys.argv.index('--mark') + 1]).read_text()
+        block = re.search(r"Obj\(\s*'" + re.escape(sys.argv[1]) + r"'.*?anchors=dict\((.*?)\)\)", src, re.S)
+        if block:
+            for i, m in enumerate(re.finditer(r"(\w+)=\(([0-9.]+),\s*([0-9.]+)", block.group(1))):
+                ch = chr(65 + i % 26)
+                legend.append(f'{ch}={m.group(1)}')
+                ry, rx = round(float(m.group(3)) * n), round(float(m.group(2)) * (sp['w'] - 1))
+                art[ry][rx] = ch
+    print(sys.argv[1], '- names taken by the drawing:', sp['named'], '\n  drawing anchors:', ' '.join(legend), '\n   y   px |' + ''.join(ruler) + '|')
+    [print(f'{y / n:.2f} {(sp["ground"] - y) * sp["row"]:4.0f} |{"".join(row)}|') for y, row in enumerate(art) if ''.join(row).strip()]

@@ -405,8 +405,8 @@ export class LivingWorld {
     }
     actors.push({y,draw:()=>this.actor(s,t,x,y,{...s.duck,state})});
     actors.sort((a,b)=>a.y-b.y).forEach(a=>a.draw());
-    const cheese=this.characters.find(c=>c.cheese),residence=residenceStage(plan,this.objects,cheese);
-    const bathing=waterStage(plan,this.objects,cheese,s.duck.stage,s.motion!==false);
+    const cheese=this.characters.find(c=>c.cheese),residence=residenceStage(plan?.rep_work?null:plan,this.objects,cheese);
+    const bathing=waterStage(plan?.rep_work?null:plan,this.objects,cheese,s.duck.stage,s.motion!==false);
     if(bathing){
       const performance={kind:'water',routine:plan.water_routine,motion:s.motion!==false};
       const character={...characterSprite({...s.duck,state:'idle',facing:bathing.pose.facing,performance},t),x:cheese.x,y:cheese.y,cheese:true};
@@ -670,7 +670,7 @@ export class LivingWorld {
       });
       this.characters=this.characters.filter(c=>c!==cheese&&c!==partner);
     }
-    const ride=!residence&&!shared&&!plan?.company&&playgroundStage(plan,this.objects,cheese,s.duck.stage,s.motion!==false);
+    const ride=!residence&&!shared&&!plan?.company&&playgroundStage(plan?.rep_work?null:plan,this.objects,cheese,s.duck.stage,s.motion!==false);
     if(ride){
       const performance={kind:ride.gesture,role:'a',progress:s.motion===false?.5:ride.beat};
       const rider={...characterSprite({...s.duck,state:plan.phase==='settle'?'walking':'idle',performance:plan.phase==='settle'?null:performance},t),x:cheese.x,y:cheese.y,cheese:true};

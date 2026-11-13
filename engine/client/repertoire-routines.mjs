@@ -6,7 +6,7 @@ import {sampleTrack,companyTrack} from './wonder-routines.mjs';
 import DATA from './animation/repertoire.json' with {type:'json'};
 export const REP_OBJECTS=DATA.objects,REP_ROUTINES=DATA.routines;
 const clamp=n=>Math.max(0,Math.min(1,n));
-const JOINTS=['x','y','b','w','l','r','reach','contact'];
+const JOINTS=['x','y','b','w','l','r','reach','contact','perch'];  // perch: feet lifted onto the touched surface (authored, sampled from the native track)
 const OBJ=['sway','lift','shake','glow','puff'];
 export function repPose(work,motion=true){
  const base=REP_ROUTINES[work?.id];if(!base||work.interrupted)return null;
@@ -29,18 +29,23 @@ export function applyObjectPose(model,pose){
  const shake=(objPose.shake||0)*Math.sin((pose.progress||0)*90)*.03;
  return {...model,sway:(model.sway||0)+(objPose.sway||0)*.08+shake,lift:(model.lift||0)+(objPose.lift||0)*.6};
 }
-// Cheese stands on the drawing's ground line, not on an 'entry' anchor that may
-// be a raised doorway or a bird hole on a pole.
-export const repGround=m=>(m.groundRow??m.art.length)-1;
+// Where Cheese's feet are while working an object. Builders put 'entry' where an
+// actor stands (a pond's front rim, a bed's side, a pool's step: rows up the
+// drawing there are depth, not height). Raised structures whose entry is up on
+// a pole or in a tree stand him on the drawing's ground line instead.
+export const RAISED=new Set(['birdhouse','treehouse']);
+export const repGround=(m,id=m.id)=>RAISED.has(id)||!m.anchors?.entry?(m.groundRow??m.art.length)-1:m.anchors.entry.y;
 export function repGeometry(home,worker,sx,sy){
  const c=worker.character,routine=c.performance.routine,pose=repPose(routine,c.performance.motion!==false),oid=REP_ROUTINES[routine.id].object;
  const unit=sx*home.scale*(home.detailScale||1),hh=unit*1.5,left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*hh;
- const entry=home.anchors?.entry||{x:home.width/2,y:home.art.length-1},ground=top+repGround(home)*hh;
+ const entry=home.anchors?.entry||{x:home.width/2,y:home.art.length-1},ground=top+repGround(home,oid)*hh;
  const A=repAnchor(home,oid,pose.anchorA)||entry,B=repAnchor(home,oid,pose.anchorB)||A;
  const target={x:left+(A.x+(B.x-A.x)*pose.anchorBlend+.5)*unit,y:top+(A.y+(B.y-A.y)*pose.anchorBlend+.5)*hh};
  const {cw,ch}=actorPitches(c,sx,sy),rest=c.workGripRest||c.grip||{x:c.anchorX+5,y:c.groundRow-7};
- const workX=worker.slot===1?c.x*sx:pose.tool==='none'?target.x-.5*cw-(rest.x-c.anchorX)*cw:target.x-2*cw-(rest.x-c.anchorX)*cw;  // bill/belly/feet meet the touched place
- const character=worker.slot===1?{...c,offsetY:0}:{...c,x:c.x+(workX/sx-c.x)*worker.inside,y:c.y+(ground/sy-c.y)*worker.inside,offsetY:0};
+ const perch=worker.slot===1?0:clamp(pose.perch||0),surface=top+(A.y+(B.y-A.y)*pose.anchorBlend)*hh,feet=ground+(Math.min(ground,surface)-ground)*perch;
+ const reachX=pose.tool==='none'?target.x-.5*cw-(rest.x-c.anchorX)*cw:target.x-2*cw-(rest.x-c.anchorX)*cw;  // bill/belly/feet meet the touched place
+ const workX=worker.slot===1?c.x*sx:reachX+(target.x-reachX)*perch;  // perched: standing on the place itself
+ const character=worker.slot===1?{...c,offsetY:0}:{...c,x:c.x+(workX/sx-c.x)*worker.inside,y:c.y+(feet/sy-c.y)*worker.inside,offsetY:0};
  const grip=c.grip||rest,cl=Math.round(character.x*sx-c.anchorX*cw+(c.offsetX||0)*cw),ct=Math.round(character.y*sy-c.groundRow*ch);
  const hand={x:cl+(grip.x+.5)*cw,y:ct+(grip.y+.5)*ch},points=[],put=(x,y,g,col='#d9c49b')=>points.push({x,y,glyph:g,color:col});
  if(pose.tool!=='none'&&pose.contact>.01&&worker.inside>.01){
