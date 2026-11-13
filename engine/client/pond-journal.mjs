@@ -212,6 +212,11 @@ const p=itemProfile(item,itemFamily(id));
      detail.dataset.creativeId=id;detail.dataset.creativeInstance=instance||'';
      const summary=el('p',creativeSummary(id,state));summary.dataset.creativeSummary='';detail.append(summary);
     }
+    if(['trophy_case','cabinet'].includes(id)){
+     const shown=state.display?.items||[];detail.append(el('p',shown.length?'On display: '+shown.map(x=>x.replaceAll('_',' ')).join(', '):'Nothing on display yet.'));
+     for(const x of shown){const b=this.button('Take down '+x.replaceAll('_',' '),'display_action',id,busy||!instance||!outside,{instance,text:'take:'+x});detail.append(b);}
+     for(const x of (w.displayable||[]).filter(x=>!shown.includes(x)).slice(0,8)){const b=this.button('Display '+x.replaceAll('_',' '),'display_action',id,busy||!instance||!outside,{instance,text:'show:'+x});detail.append(b);}
+    }
     if(['pool_large','infinity_pool'].includes(id)&&!state.keeping?.setup){const b=this.button('Set up as a sea tank','keeping_action',id,busy||!instance||!outside,{instance,text:'setup'});detail.append(b);}
     if(state.keeping&&(id==='koi_pond'||state.keeping.setup)){
      const sea=id!=='koi_pond';

@@ -29,6 +29,14 @@ CHEESE_TAGS = ('young', 'grown', 'elder', 'tired', 'lonely', 'sad', 'happy', 'gr
 NEEDS = ('energy', 'fun', 'social', 'hunger', 'cleanliness')
 
 
+_QUEUE = Path(__file__).parent / 'overhaul/animation-milestone/work-queue.json'
+DISPLAYABLE = frozenset(o['id'] for o in json.loads(_QUEUE.read_text())['objects'] if o['host'] == 'display') if _QUEUE.exists() else frozenset()
+
+
+def displayable():
+    return set(DISPLAYABLE)
+
+
 def by_object(obj_id):
     return [k for k, r in ROUTINES.items() if r['object'] == obj_id]
 
@@ -132,6 +140,12 @@ def host_of(pond, oid, instance=None):
         return None
     if kind == 'portable':
         return (oid, None, None) if oid in pond.owned else None
+    if kind == 'display':
+        from engine import display
+        where = display.shown_anywhere(pond).get(oid)
+        if where and (instance is None or where[1] == instance):
+            return where[0], where[1], None
+        return None
     if kind == 'keeping':
         from engine import keeping
         for p in pond.placements:
@@ -245,6 +259,8 @@ def valid(pond, plan):
         return False
     if kind == 'keeping' and subject_of(pond, work, plan) is None:
         return False
+    if kind == 'display' and host_of(pond, oid, plan.get('instance')) is None:
+        return False  # taken down or no longer owned
     if World(pond).tag('storm') and not (ROUTINES[key]['tool'] == 'none' and 'wet' in ROUTINES[key]['when']):
         return False
     if plan.get('instance'):
@@ -328,7 +344,7 @@ def request(pond, oid, choice, instance=None):
     if host is None:
         kind = OBJECTS[oid].get('host', 'placed')
         return False, {'placed': 'Place it outside first.', 'portable': 'Cheese does not have one.',
-                       'keeping': 'Keep one in a koi pond or sea tank first.'}.get(kind, 'Not available right now.')
+                       'keeping': 'Keep one in a koi pond or sea tank first.', 'display': 'Put it on display in a trophy case or cabinet first.'}.get(kind, 'Not available right now.')
     item, inst, fish = host
     obj = pond.object_state(item, inst)
     if obj is None:

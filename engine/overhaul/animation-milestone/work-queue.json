@@ -1,0 +1,8446 @@
+{
+ "count": 609,
+ "by_host": {
+  "display": 44,
+  "keeping": 14,
+  "placed": 267,
+  "portable": 175,
+  "wearable": 109
+ },
+ "objects": [
+  {
+   "id": "ancient_amulet",
+   "family": "amulet",
+   "category": "special",
+   "sources": [
+    "items.ITEMS",
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "earth_token",
+   "family": "amulet",
+   "category": "special",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "lucky_charm",
+   "family": "amulet",
+   "category": "special",
+   "sources": [
+    "items.ITEMS",
+    "crafting.RECIPES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "magpie_friendship_charm",
+   "family": "amulet",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "rainbow_charm",
+   "family": "amulet",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "sky_token",
+   "family": "amulet",
+   "category": "special",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "water_token",
+   "family": "amulet",
+   "category": "special",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "best_friend_badge",
+   "family": "badge",
+   "category": "special",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "dance_medal",
+   "family": "badge",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "duck_day_champion_badge",
+   "family": "badge",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "explorer_badge",
+   "family": "badge",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "golden_badge",
+   "family": "badge",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "harvest_spirit_badge",
+   "family": "badge",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "love_spirit_badge",
+   "family": "badge",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "racing_medal",
+   "family": "badge",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "spring_spirit_badge",
+   "family": "badge",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "summer_spirit_badge",
+   "family": "badge",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "winter_spirit_badge",
+   "family": "badge",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "legend_dragon",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "legend_phoenix",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "pond_dragonfly",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "pond_fish",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "pond_frog",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "pond_lily",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "portrait_artist",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "portrait_cheese",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "portrait_emperor",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "portrait_explorer",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "portrait_scholar",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "weather_rain",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "weather_rainbow",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "weather_snow",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "weather_sun",
+   "family": "card",
+   "category": "collectibles",
+   "sources": [
+    "collectibles.COLLECTIBLES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "ancient_coin",
+   "family": "coin",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "old_coin",
+   "family": "coin",
+   "category": "treasure",
+   "sources": [
+    "treasure.TREASURES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "ancient_crown",
+   "family": "crown",
+   "category": "treasure",
+   "sources": [
+    "treasure.TREASURES"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "duck_crown",
+   "family": "crown",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "snowflake_crown",
+   "family": "crown",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "fish_trophy",
+   "family": "trophy",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "golden_duck_trophy",
+   "family": "trophy",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "legendary_trophy",
+   "family": "trophy",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "master_trophy",
+   "family": "trophy",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "memory_trophy",
+   "family": "trophy",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "splash_trophy",
+   "family": "trophy",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "display",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "catfish",
+   "family": "catfish",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "ancient_dragon_fish",
+   "family": "dragonfish",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "bass",
+   "family": "fish",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "carp",
+   "family": "fish",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "ghost_fish",
+   "family": "fish",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "golden_koi",
+   "family": "fish",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "koi",
+   "family": "fish",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 6,
+   "art": "pending"
+  },
+  {
+   "id": "minnow",
+   "family": "fish",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "salmon",
+   "family": "fish",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "sturgeon",
+   "family": "fish",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "trout",
+   "family": "fish",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "goldfish",
+   "family": "goldfish",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "pufferfish",
+   "family": "puffer",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "swordfish",
+   "family": "swordfish",
+   "category": "fishing",
+   "sources": [
+    "fishing.FISH_DATABASE"
+   ],
+   "host": "keeping",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "archway",
+   "family": "arch",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cosmic_arch",
+   "family": "arch",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 5,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "aurora",
+   "family": "aurora",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 6,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "ball",
+   "family": "ball",
+   "category": "toy",
+   "sources": [
+    "items.ITEMS",
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "toy_ball",
+   "family": "ball",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hot_air_balloon",
+   "family": "balloon",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "excursions.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bamboo",
+   "family": "bamboo",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "barn",
+   "family": "barn",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rain_barrel",
+   "family": "barrel",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bed_king",
+   "family": "bed",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bed_small",
+   "family": "bed",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cozy_bed",
+   "family": "bed",
+   "category": "furniture",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "garden_bench",
+   "family": "bench",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bird_bath",
+   "family": "birdbath",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "birdbath",
+   "family": "birdbath",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "birdbath_garden",
+   "family": "birdbath",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "birdhouse",
+   "family": "birdhouse",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "black_hole",
+   "family": "blackhole",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 5,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "toy_blocks",
+   "family": "blocks",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bonsai",
+   "family": "bonsai",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS",
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bounce_house",
+   "family": "bouncehouse",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "excursions.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bridge",
+   "family": "bridge",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bubble_machine",
+   "family": "bubbles",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "playkit.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cabinet",
+   "family": "cabinet",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "dresser",
+   "family": "cabinet",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "wardrobe",
+   "family": "cabinet",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cactus",
+   "family": "cactus",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "potted_cactus",
+   "family": "cactus",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "invisible_cloak",
+   "family": "cape",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 4,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "toy_car",
+   "family": "car",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "carousel",
+   "family": "carousel",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "excursions.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "chair_wood",
+   "family": "chair",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "candelabra",
+   "family": "chandelier",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "chandelier",
+   "family": "chandelier",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cherry_tree",
+   "family": "cherry",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tree_cherry",
+   "family": "cherry",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "storage_chest",
+   "family": "chest",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "treasure_chest",
+   "family": "chest",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS",
+    "materials.MATERIALS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "wind_chimes",
+   "family": "chimes",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "instruments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "clock",
+   "family": "clock",
+   "category": "wall",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "grandfather_clock",
+   "family": "clock",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cloud_floor",
+   "family": "cloud",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "compass_rose",
+   "family": "compass",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "breadcrumbs",
+   "family": "crumbs",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS",
+    "items.ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bean_bag",
+   "family": "cushion",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cushion",
+   "family": "cushion",
+   "category": "furniture",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "desk",
+   "family": "desk",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "desk_writing",
+   "family": "desk",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "workbench",
+   "family": "desk",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "frisbee",
+   "family": "disc",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "playkit.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "disco_ball",
+   "family": "disco",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS",
+    "items.ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "DNA_mixer",
+   "family": "dna",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 4,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tardis",
+   "family": "door",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 5,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "dream_catcher",
+   "family": "dreamcatcher",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 4,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "drums",
+   "family": "drums",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "instruments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "duck_statue",
+   "family": "duck",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "ice_sculpture",
+   "family": "duck",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 9,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rubber_duck",
+   "family": "duck",
+   "category": "toy",
+   "sources": [
+    "items.ITEMS",
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "topiary_duck",
+   "family": "duck",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 6,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "easel",
+   "family": "easel",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "creative-props.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "dragon_egg",
+   "family": "egg",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 6,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fence_section",
+   "family": "fence",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "picket_fence",
+   "family": "fence",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fern",
+   "family": "fern",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "mint",
+   "family": "fern",
+   "category": "garden",
+   "sources": [
+    "garden.PLANTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "campfire",
+   "family": "fire",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "eternal_flame",
+   "family": "fire",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fireplace",
+   "family": "fireplace",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "flag_pole",
+   "family": "flag",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "flower_pot",
+   "family": "flowerpot",
+   "category": "plant",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "lavender",
+   "family": "flowerpot",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "potted_plant",
+   "family": "flowerpot",
+   "category": "plant",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "venus_flytrap",
+   "family": "flytrap",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fountain",
+   "family": "fountain",
+   "category": "special",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fountain_decorative",
+   "family": "fountain",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fountain_grand",
+   "family": "fountain",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fountain_small",
+   "family": "fountain",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fountain_statue",
+   "family": "fountain",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pond_fountain",
+   "family": "fountain",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "wish_fountain",
+   "family": "fountain",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "picture_frame",
+   "family": "frame",
+   "category": "wall",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "galaxy_floor",
+   "family": "galaxy_tile",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "flower_bed",
+   "family": "garden",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "garden_plot",
+   "family": "garden",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "herb_garden",
+   "family": "garden",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "gate",
+   "family": "gate",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "gazebo",
+   "family": "gazebo",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "crystal_plant",
+   "family": "gem",
+   "category": "garden",
+   "sources": [
+    "garden.PLANTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "philosophers_stone",
+   "family": "gem",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "genie_lamp",
+   "family": "genie",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 4,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "snow_globe",
+   "family": "globe",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "snowglobe",
+   "family": "globe",
+   "category": "seasonal",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "garden_gnome",
+   "family": "gnome",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "gong",
+   "family": "gong",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 8,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "greenhouse",
+   "family": "greenhouse",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hammock",
+   "family": "hammock",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bush_hedge",
+   "family": "hedge",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hedge_maze",
+   "family": "hedge",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rocking_horse",
+   "family": "horse",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "dog_house",
+   "family": "house",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "mud_hut",
+   "family": "house",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "shed",
+   "family": "house",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "stone_house",
+   "family": "house",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "wooden_cottage",
+   "family": "house",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "antigravity",
+   "family": "infinity",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 5,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "perpetual_motion",
+   "family": "infinity",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 4,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "jetpack",
+   "family": "jetpack",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "excursions.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "kite",
+   "family": "kite",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "creative-props.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fairy_lamp",
+   "family": "lamp",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "floor_lamp",
+   "family": "lamp",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "lamp",
+   "family": "lamp",
+   "category": "lighting",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "lamp_floor",
+   "family": "lamp",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "table_lamp",
+   "family": "lamp",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "lantern",
+   "family": "lantern",
+   "category": "lighting",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "paper_lantern",
+   "family": "lantern",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "lava_lamp",
+   "family": "lava_lamp",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "lava_floor",
+   "family": "lava_tile",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "autumn_leaves",
+   "family": "leaf",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "lighthouse",
+   "family": "lighthouse",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fairy_lights",
+   "family": "lights",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS",
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "glowsticks",
+   "family": "lights",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "laser_lights",
+   "family": "lights",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cloning_machine",
+   "family": "machine",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 5,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "money_printer",
+   "family": "machine",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 5,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "time_machine",
+   "family": "machine",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 6,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "transmogrifier",
+   "family": "machine",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 4,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "weather_machine",
+   "family": "machine",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 6,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "magic_carpet",
+   "family": "magic_carpet",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "excursions.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "mailbox",
+   "family": "mailbox",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "mirror",
+   "family": "mirror",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS",
+    "items.ITEMS",
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "mirror_standing",
+   "family": "mirror",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "moon_lamp",
+   "family": "moon",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "firefly_swarm",
+   "family": "motes",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "mushroom_patch",
+   "family": "mushroom",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "neon_sign",
+   "family": "neon",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "basic_nest",
+   "family": "nest",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cozy_nest",
+   "family": "nest",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "deluxe_nest",
+   "family": "nest",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "golden_nest",
+   "family": "nest",
+   "category": "special",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "nest_premium",
+   "family": "nest",
+   "category": "furniture",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "crystal_ball",
+   "family": "orb",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "force_field",
+   "family": "orb",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 5,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cobblestone",
+   "family": "path",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "stepping_stones",
+   "family": "path",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "stone_path",
+   "family": "path",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "stone_tiles",
+   "family": "path",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pergola",
+   "family": "pergola",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "trellis",
+   "family": "pergola",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "piano",
+   "family": "piano",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "instruments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "toy_piano",
+   "family": "piano",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "instruments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pinwheel",
+   "family": "pinwheel",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "playkit.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "wooden_planks",
+   "family": "plank",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "plushie",
+   "family": "plush",
+   "category": "toy",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hot_tub",
+   "family": "pool",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hot_tub_deluxe",
+   "family": "pool",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "infinity_pool",
+   "family": "pool",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "koi_pond",
+   "family": "pool",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pond",
+   "family": "pool",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pond_mat",
+   "family": "pool",
+   "category": "floor",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pool_kiddie",
+   "family": "pool",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pool_large",
+   "family": "pool",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "dimensional_door",
+   "family": "portal",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 5,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "portal",
+   "family": "portal",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 5,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "teleporter",
+   "family": "portal",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 4,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "wormhole",
+   "family": "portal",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 6,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hologram",
+   "family": "projector",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "star_projector",
+   "family": "projector",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "nook_radio",
+   "family": "radio",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "instruments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "toy_boombox",
+   "family": "radio",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "instruments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rainbow_generator",
+   "family": "rainbow",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 6,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rainbow_path",
+   "family": "rainbow",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "growth_ray",
+   "family": "ray",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 4,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "shrink_ray",
+   "family": "ray",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 4,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "robot_butler",
+   "family": "robot",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 6,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rocket_ship",
+   "family": "rocket",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "excursions.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "jump_rope",
+   "family": "rope",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "playkit.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "flower_rose",
+   "family": "rose",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rose",
+   "family": "rose",
+   "category": "garden",
+   "sources": [
+    "garden.PLANTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "carpet_red",
+   "family": "rug",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "textiles.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "grass_floor",
+   "family": "rug",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "textiles.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "grass_patch",
+   "family": "rug",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "textiles.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "persian_rug",
+   "family": "rug",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "textiles.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rubber_mat",
+   "family": "rug",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "textiles.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rug",
+   "family": "rug",
+   "category": "floor",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "textiles.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tatami_mat",
+   "family": "rug",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "textiles.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "welcome_mat",
+   "family": "rug",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "textiles.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sand_floor",
+   "family": "sandbox",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "toy_sandbox",
+   "family": "sandbox",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "scarecrow",
+   "family": "scarecrow",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "carrot_seeds",
+   "family": "seeds",
+   "category": "garden",
+   "sources": [
+    "garden.SEEDS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "crystal_seeds",
+   "family": "seeds",
+   "category": "garden",
+   "sources": [
+    "garden.SEEDS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "golden_seeds",
+   "family": "seeds",
+   "category": "garden",
+   "sources": [
+    "garden.SEEDS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "mint_seeds",
+   "family": "seeds",
+   "category": "garden",
+   "sources": [
+    "garden.SEEDS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pumpkin_seeds",
+   "family": "seeds",
+   "category": "garden",
+   "sources": [
+    "garden.SEEDS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rose_seeds",
+   "family": "seeds",
+   "category": "garden",
+   "sources": [
+    "garden.SEEDS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "strawberry_seeds",
+   "family": "seeds",
+   "category": "garden",
+   "sources": [
+    "garden.SEEDS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tomato_seeds",
+   "family": "seeds",
+   "category": "garden",
+   "sources": [
+    "garden.SEEDS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tulip_seeds",
+   "family": "seeds",
+   "category": "garden",
+   "sources": [
+    "garden.SEEDS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "watermelon_seeds",
+   "family": "seeds",
+   "category": "garden",
+   "sources": [
+    "garden.SEEDS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "toy_seesaw",
+   "family": "seesaw",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bookshelf",
+   "family": "shelf",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS",
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bookshelf_wood",
+   "family": "shelf",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "trophy_case",
+   "family": "shelf",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "skateboard",
+   "family": "skateboard",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "toy_skateboard",
+   "family": "skateboard",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rainbow_slide",
+   "family": "slide",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "toy_slide",
+   "family": "slide",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "water_slide",
+   "family": "slide",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "water_slide_mega",
+   "family": "slide",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "snow_floor",
+   "family": "snow",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "couch",
+   "family": "sofa",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sofa_fancy",
+   "family": "sofa",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "spotlight",
+   "family": "spotlight",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sprinkler",
+   "family": "sprinkler",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sprinkler_system",
+   "family": "sprinkler",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "street_lamp",
+   "family": "streetlamp",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "submarine",
+   "family": "submarine",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "excursions.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sundial",
+   "family": "sundial",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "flower_sunflower",
+   "family": "sunflower",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "golden_flower",
+   "family": "sunflower",
+   "category": "garden",
+   "sources": [
+    "garden.PLANTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sunflower",
+   "family": "sunflower",
+   "category": "garden",
+   "sources": [
+    "garden.PLANTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tire_swing",
+   "family": "swing",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "toy_swing",
+   "family": "swing",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bar_cart",
+   "family": "table",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "coffee_table",
+   "family": "table",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "table_small",
+   "family": "table",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tiny_table",
+   "family": "table",
+   "category": "furniture",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "telescope",
+   "family": "telescope",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "creative-props.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "chair_throne",
+   "family": "throne",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "golden_throne",
+   "family": "throne",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "checkered_floor",
+   "family": "tile",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "glass_floor",
+   "family": "tile",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "ice_floor",
+   "family": "tile",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "marble_tiles",
+   "family": "tile",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "mosaic_tiles",
+   "family": "tile",
+   "category": "flooring",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tiki_torch",
+   "family": "torch",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "torches",
+   "family": "torch",
+   "category": "lighting",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tornado",
+   "family": "tornado",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 6,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "totem_pole",
+   "family": "totem",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "castle_tower",
+   "family": "tower",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sand_castle",
+   "family": "tower",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 7,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tower",
+   "family": "tower",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "watchtower",
+   "family": "tower",
+   "category": "building",
+   "sources": [
+    "building.BLUEPRINTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "toy_trampoline",
+   "family": "trampoline",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "trampoline",
+   "family": "trampoline",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tree_oak",
+   "family": "tree",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tree_small",
+   "family": "tree",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "world_tree",
+   "family": "tree",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "treehouse",
+   "family": "treehouse",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "toy_trumpet",
+   "family": "trumpet",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "instruments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "flower_tulip",
+   "family": "tulip",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tulip",
+   "family": "tulip",
+   "category": "garden",
+   "sources": [
+    "garden.PLANTS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tv_stand",
+   "family": "tv",
+   "category": "furniture",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "furniture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "ufo",
+   "family": "ufo",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "excursions.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "weather_vane",
+   "family": "vane",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "volcano",
+   "family": "volcano",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 6,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "stone_wall",
+   "family": "wall",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "waterfall",
+   "family": "waterfall",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "waterfall_mini",
+   "family": "waterfall",
+   "category": "water",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "wishing_well",
+   "family": "well",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "ferris_wheel",
+   "family": "wheel",
+   "category": "special",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "excursions.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "wheelbarrow",
+   "family": "wheelbarrow",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "excursions.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "willow_tree",
+   "family": "willow",
+   "category": "plant",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "windmill",
+   "family": "windmill",
+   "category": "structure",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "architecture.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "spring_wreath",
+   "family": "wreath",
+   "category": "seasonal",
+   "sources": [
+    "decorations.DECORATIONS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "yo_yo",
+   "family": "yoyo",
+   "category": "toy",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "playkit.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "zen_garden",
+   "family": "zen",
+   "category": "decoration",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "placed",
+   "consumable": false,
+   "family_engine": "wonders.json",
+   "wonder_routines": 7,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "acorn",
+   "family": "acorn",
+   "category": "wood",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "golden_acorn",
+   "family": "acorn",
+   "category": "treasure",
+   "sources": [
+    "treasure.TREASURES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "magic_acorn",
+   "family": "acorn",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "gathering_bag",
+   "family": "bag",
+   "category": "tool",
+   "sources": [
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "frozen_dewdrop",
+   "family": "ball",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "snowball",
+   "family": "ball",
+   "category": "water",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "storage_basket",
+   "family": "basket",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS",
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "autumn_wreath_hat",
+   "family": "beret",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "cherry_blossom_hat",
+   "family": "beret",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "tiny_boat",
+   "family": "boat",
+   "category": "toy",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "playkit.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "ancient_tome",
+   "family": "book",
+   "category": "treasure",
+   "sources": [
+    "treasure.TREASURES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "glass_bottle",
+   "family": "bottle",
+   "category": "treasure",
+   "sources": [
+    "treasure.TREASURES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "medicine",
+   "family": "bottle",
+   "category": "special",
+   "sources": [
+    "items.ITEMS",
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "message_bottle",
+   "family": "bottle",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "bottle_cap",
+   "family": "bottlecap",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "water_bowl",
+   "family": "bowl",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS",
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "waterworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "ancient_bread",
+   "family": "bread",
+   "category": "special",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fancy_bread",
+   "family": "bread",
+   "category": "food",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "honey_bread",
+   "family": "bread",
+   "category": "food",
+   "sources": [
+    "items.ITEMS",
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "welcome_bread",
+   "family": "bread",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "clay_brick",
+   "family": "brick",
+   "category": "building",
+   "sources": [
+    "crafting.RECIPES",
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "stone_block",
+   "family": "brick",
+   "category": "building",
+   "sources": [
+    "crafting.RECIPES",
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "bubble_wand",
+   "family": "bubbles",
+   "category": "toy",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "playkit.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "frog_spawn",
+   "family": "bubbles",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "carrot",
+   "family": "carrot",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS",
+    "garden.PLANTS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "weekly_chest",
+   "family": "chest",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fog_bell",
+   "family": "chimes",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "instruments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "shell_mobile",
+   "family": "chimes",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS",
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "instruments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fog_essence",
+   "family": "cloud",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "clover",
+   "family": "clover",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "lucky_clover",
+   "family": "clover",
+   "category": "special",
+   "sources": [
+    "items.ITEMS",
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "shiny_button",
+   "family": "coin",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "pirate_compass",
+   "family": "compass",
+   "category": "treasure",
+   "sources": [
+    "treasure.TREASURES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "heart_cookie",
+   "family": "cookie",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "corn",
+   "family": "corn",
+   "category": "food",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "beach_duck_costume",
+   "family": "costume",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "scarecrow_costume",
+   "family": "costume",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "spring_duck_costume",
+   "family": "costume",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "winter_coat_costume",
+   "family": "costume",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "tiny_crown",
+   "family": "crown",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "bread",
+   "family": "crumbs",
+   "category": "food",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bread_crumb",
+   "family": "crumbs",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "golden_crumb",
+   "family": "crumbs",
+   "category": "food",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "mysterious_crumb",
+   "family": "crumbs",
+   "category": "food",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "oats",
+   "family": "crumbs",
+   "category": "food",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rainbow_crumb",
+   "family": "crumbs",
+   "category": "food",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rare_treat",
+   "family": "crumbs",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "void_crumb",
+   "family": "crumbs",
+   "category": "special",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "duck_toy",
+   "family": "duck",
+   "category": "crafted",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "mud_sculpture",
+   "family": "duck",
+   "category": "earth",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "squeaky_toy",
+   "family": "duck",
+   "category": "toy",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "wind_up_duck",
+   "family": "duck",
+   "category": "toy",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "mystery_egg",
+   "family": "egg",
+   "category": "special",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "mystic_egg",
+   "family": "egg",
+   "category": "treasure",
+   "sources": [
+    "treasure.TREASURES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "ancient_feather",
+   "family": "feather",
+   "category": "treasure",
+   "sources": [
+    "treasure.TREASURES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "eagle_feather",
+   "family": "feather",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "feather",
+   "family": "feather",
+   "category": "toy",
+   "sources": [
+    "items.ITEMS",
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "golden_feather",
+   "family": "feather",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "rainbow_feather",
+   "family": "feather",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "snow_feather",
+   "family": "feather",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "static_feather",
+   "family": "feather",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "mint_leaves",
+   "family": "fern",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pine_needle",
+   "family": "fern",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pond_weed",
+   "family": "fern",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "seaweed",
+   "family": "fern",
+   "category": "water",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "warmth",
+   "family": "fire",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "fish_treat",
+   "family": "fish",
+   "category": "food",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "small_fish",
+   "family": "fish",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "parade_flag",
+   "family": "flag",
+   "category": "fiber",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "dandelion",
+   "family": "flowerpot",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "dream_flower",
+   "family": "flowerpot",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "flower",
+   "family": "flowerpot",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "flower_petal",
+   "family": "flowerpot",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "garden_flower",
+   "family": "flowerpot",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rainbow_flower",
+   "family": "flowerpot",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "spring_petal",
+   "family": "flowerpot",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "wildflower",
+   "family": "flowerpot",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fossil",
+   "family": "fossil",
+   "category": "treasure",
+   "sources": [
+    "treasure.TREASURES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "duck_photo",
+   "family": "frame",
+   "category": "special",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sunset_photo",
+   "family": "frame",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "crystal",
+   "family": "gem",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "crystal_icicle",
+   "family": "gem",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "crystal_shard",
+   "family": "gem",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "glitter_rock",
+   "family": "gem",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "ice_crystal",
+   "family": "gem",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "mist_crystal",
+   "family": "gem",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "ruby_gem",
+   "family": "gem",
+   "category": "treasure",
+   "sources": [
+    "treasure.TREASURES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sea_glass",
+   "family": "gem",
+   "category": "water",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "star_fragment",
+   "family": "gem",
+   "category": "treasure",
+   "sources": [
+    "treasure.TREASURES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "mystery_gift",
+   "family": "gift",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "berry",
+   "family": "grapes",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "grapes",
+   "family": "grapes",
+   "category": "food",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "guardian_blessing",
+   "family": "halo",
+   "category": "special",
+   "sources": [
+    "items.ITEMS",
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "stone_hammer",
+   "family": "hammer",
+   "category": "tool",
+   "sources": [
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "honeycomb",
+   "family": "honey",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rare_bug_jar",
+   "family": "jar",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "treasure_key",
+   "family": "key",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "paper_plane_design",
+   "family": "kite",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "creative-props.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "crystal_lamp",
+   "family": "lamp",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS",
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "autumn_leaf",
+   "family": "leaf",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "golden_leaf",
+   "family": "leaf",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "grass_blade",
+   "family": "leaf",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "leaf",
+   "family": "leaf",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "lettuce",
+   "family": "leaf",
+   "category": "food",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "lily_pad",
+   "family": "leaf",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "moss",
+   "family": "leaf",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "red_maple_leaf",
+   "family": "leaf",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pirate_map",
+   "family": "map",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "dandelion_fluff",
+   "family": "motes",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "fairy_dust",
+   "family": "motes",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "mystery_sound",
+   "family": "motes",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "mushroom",
+   "family": "mushroom",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "heart_of_pond",
+   "family": "orb",
+   "category": "treasure",
+   "sources": [
+    "treasure.TREASURES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "friendship_card",
+   "family": "paper",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "storm_sketch",
+   "family": "paper",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "keepsakes.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "heart_hat",
+   "family": "party",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "pebble_path",
+   "family": "path",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS",
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "river_pearl",
+   "family": "pearl",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "peas",
+   "family": "peas",
+   "category": "food",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "homemade_pie",
+   "family": "pie",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pine_cone",
+   "family": "pinecone",
+   "category": "wood",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "wooden_plank",
+   "family": "plank",
+   "category": "building",
+   "sources": [
+    "crafting.RECIPES",
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "groundworks.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pumpkin",
+   "family": "pumpkin",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS",
+    "garden.PLANTS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "reed",
+   "family": "reed",
+   "category": "fiber",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "clay",
+   "family": "rock",
+   "category": "earth",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "iron_ore",
+   "family": "rock",
+   "category": "stone",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pebble",
+   "family": "rock",
+   "category": "stone",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pond_clay",
+   "family": "rock",
+   "category": "earth",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rock",
+   "family": "rock",
+   "category": "stone",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sand",
+   "family": "rock",
+   "category": "earth",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "shiny_object",
+   "family": "rock",
+   "category": "special",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "shiny_pebble",
+   "family": "rock",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "smooth_stone",
+   "family": "rock",
+   "category": "stone",
+   "sources": [
+    "materials.MATERIALS",
+    "treasure.TREASURES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "master_fishing_rod",
+   "family": "rod",
+   "category": "crafted",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "rope",
+   "family": "rope",
+   "category": "utility",
+   "sources": [
+    "crafting.RECIPES",
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "string",
+   "family": "rope",
+   "category": "fiber",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "rose_petal",
+   "family": "rose",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fabric_scrap",
+   "family": "rug",
+   "category": "fiber",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "textiles.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "insulation",
+   "family": "rug",
+   "category": "building",
+   "sources": [
+    "crafting.RECIPES",
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "textiles.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "moss_carpet",
+   "family": "rug",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS",
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "textiles.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "thatch",
+   "family": "rug",
+   "category": "building",
+   "sources": [
+    "crafting.RECIPES",
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "textiles.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "woven_grass",
+   "family": "rug",
+   "category": "building",
+   "sources": [
+    "crafting.RECIPES",
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "textiles.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "berry_salad",
+   "family": "salad",
+   "category": "food",
+   "sources": [
+    "items.ITEMS",
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "dragon_scale",
+   "family": "scale",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "mermaid_scale",
+   "family": "scale",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "better_bait",
+   "family": "seeds",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "enchanted_seeds",
+   "family": "seeds",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "seed",
+   "family": "seeds",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "seeds",
+   "family": "seeds",
+   "category": "food",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sunflower_seeds",
+   "family": "seeds",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS",
+    "garden.SEEDS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "vegetable_seed",
+   "family": "seeds",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pretty_shell",
+   "family": "shell",
+   "category": "treasure",
+   "sources": [
+    "treasure.TREASURES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sand_dollar",
+   "family": "shell",
+   "category": "water",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sea_shell",
+   "family": "shell",
+   "category": "water",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "seashell",
+   "family": "shell",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "shell",
+   "family": "shell",
+   "category": "water",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bark",
+   "family": "stick",
+   "category": "wood",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cool_stick",
+   "family": "stick",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "digging_stick",
+   "family": "stick",
+   "category": "tool",
+   "sources": [
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "driftwood",
+   "family": "stick",
+   "category": "wood",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "driftwood_large",
+   "family": "stick",
+   "category": "wood",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "twig",
+   "family": "stick",
+   "category": "wood",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "specimens.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "strawberry",
+   "family": "strawberry",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS",
+    "garden.PLANTS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "golden_petal",
+   "family": "sunflower",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "surfboard",
+   "family": "surfboard",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "playkit.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fresh_apple",
+   "family": "tomato",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tomato",
+   "family": "tomato",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS",
+    "garden.PLANTS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "torch",
+   "family": "torch",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS",
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "lighting.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tulip_bulb",
+   "family": "tulip",
+   "category": "plant",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": "botanical.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "watermelon",
+   "family": "watermelon",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS",
+    "garden.PLANTS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "foods.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "butterfly_wing",
+   "family": "wing",
+   "category": "rare",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "giant_worm",
+   "family": "worm",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "juicy_worm",
+   "family": "worm",
+   "category": "food",
+   "sources": [
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "worm",
+   "family": "worm",
+   "category": "food",
+   "sources": [
+    "items.ITEMS",
+    "materials.MATERIALS"
+   ],
+   "host": "portable",
+   "consumable": true,
+   "family_engine": "seeds.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "flower_wreath",
+   "family": "wreath",
+   "category": "decoration",
+   "sources": [
+    "items.ITEMS",
+    "crafting.RECIPES"
+   ],
+   "host": "portable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "angel_wings",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "autumn_acorn_charm",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "autumn_boots",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "footwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "autumn_cozy_sweater",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "autumn_leaf_crown",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "autumn_scarf",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bat_wings",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bell_collar",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "birthday_crown",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "birthday_sash",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bouquet",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "bowtie_red",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bunny_ears",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bunny_slippers",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "footwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "easter_bunny_ears",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "easter_egg_basket",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "fairy_wings",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "flower_lei",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "halloween_ghost_sheet",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "halloween_pumpkin_costume",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "halloween_witch_hat",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hawaiian_shirt",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "heart_bubbles",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "heart_glasses",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "ice_skates",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "footwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "masquerade_mask",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "newyear_fancy_glasses",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "newyear_party_hat",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pearl_necklace",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rain_boots",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "footwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "rainbow_trail",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "raincoat",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "santa_hat",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "santa_suit",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "scarf_striped",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sparkle_aura",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "spring_butterfly_bow",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "spring_flower_crown",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "spring_gardener_hat",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "spring_rain_boots",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "footwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "spring_raincoat",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "summer_flip_flops",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "footwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "summer_hawaiian_shirt",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "summer_ice_cream_cone",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "summer_sun_hat",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "summer_sunglasses",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "summer_swim_ring",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sun_hat",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sunglasses_cool",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "superhero_cape",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sweater_cozy",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "thanksgiving_pilgrim_hat",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "tuxedo",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "umbrella",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "valentine_cupid_wings",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "valentine_heart_headband",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "winter_cozy_scarf",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "winter_earmuffs",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "winter_elf_costume",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "winter_mittens",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "winter_puffy_coat",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "winter_reindeer_antlers",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "winter_santa_hat",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "winter_snow_boots",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "footwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "winter_snowflake_crown",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "witch_hat",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "wizard_robe",
+   "family": null,
+   "category": null,
+   "sources": [],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "backpack_tiny",
+   "family": "bag",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "beanie_striped",
+   "family": "beanie",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hat_beanie",
+   "family": "beanie",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hat_beret",
+   "family": "beret",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bandana",
+   "family": "bow",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bow_tie_blue",
+   "family": "bow",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bow_tie_pink",
+   "family": "bow",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "bowtie",
+   "family": "bow",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cap_sports",
+   "family": "cap",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hat_blue",
+   "family": "cap",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hat_red",
+   "family": "cap",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cape",
+   "family": "cape",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "cape_superhero",
+   "family": "cape",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "garments.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hat_chef",
+   "family": "chef",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hat_cowboy",
+   "family": "cowboy",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "crown_golden",
+   "family": "crown",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hat_crown",
+   "family": "crown",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "glasses_cool",
+   "family": "glasses",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "glasses_nerd",
+   "family": "glasses",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "sunglasses_aviator",
+   "family": "glasses",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "halo",
+   "family": "halo",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "halo_angel",
+   "family": "halo",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "headphones",
+   "family": "headphones",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "space_helmet",
+   "family": "helmet",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "devil_horns",
+   "family": "horns",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "monocle",
+   "family": "monocle",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hat_party",
+   "family": "party",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "party_hat",
+   "family": "party",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hat_pirate",
+   "family": "pirate",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "pirate_hat",
+   "family": "pirate",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "fishing_rod",
+   "family": "rod",
+   "category": "tool",
+   "sources": [
+    "crafting.RECIPES"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "scarf_red",
+   "family": "scarf",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "scarf_winter",
+   "family": "scarf",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "accessories.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hat_sombrero",
+   "family": "sombrero",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hat_tophat",
+   "family": "tophat",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hat_viking",
+   "family": "viking",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "viking_helmet",
+   "family": "viking",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "magic_wand",
+   "family": "wand",
+   "category": "special",
+   "sources": [
+    "items.ITEMS",
+    "crafting.RECIPES"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "pending"
+  },
+  {
+   "id": "wings_fairy",
+   "family": "wings",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": null,
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "hat_wizard",
+   "family": "wizard",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "wizard_hat",
+   "family": "wizard",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  },
+  {
+   "id": "flower_crown",
+   "family": "wreath",
+   "category": "cosmetic",
+   "sources": [
+    "shop.SHOP_ITEMS"
+   ],
+   "host": "wearable",
+   "consumable": false,
+   "family_engine": "headwear.json",
+   "wonder_routines": 0,
+   "repertoire_routines": 0,
+   "art": "reconstructed_review_in_progress"
+  }
+ ]
+}

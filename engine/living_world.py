@@ -4,7 +4,7 @@ The original registries remain authoritative for ownership, needs, inventory,
 friendship, recipes and rewards. This module owns new physical/ecological state,
 long-term intentions and bounded memories. Presentation snapshots never advance it.
 """
-from engine import object_history,pond_lighting,keepsakes,wonders,keeping,repertoire,keepsake_company,creative_props,creative_company,textiles,textile_company,groundworks,ground_company,architecture,architecture_company,playkit,playkit_company
+from engine import object_history,pond_lighting,keepsakes,wonders,keeping,repertoire,display,keepsake_company,creative_props,creative_company,textiles,textile_company,groundworks,ground_company,architecture,architecture_company,playkit,playkit_company
 import copy
 import hashlib
 import math
@@ -174,11 +174,13 @@ class LivingPond:
         owned |= {k for k,v in g.decorations.owned_decorations.items() if v>0}
         owned |= {d.decoration_id for room in g.decorations.rooms.values() for d in room.decorations}
         owned |= set(g.treasure.found_treasures) | set(g.fishing.fish_caught)
+        owned |= set(getattr(getattr(g,'collectibles',None),'owned',{}) or {})
         owned |= {s.blueprint_id for s in g.building.structures if s.status.value == 'complete'}
         self.owned = owned
         plan=self.state.get('plan')
         if plan and plan.get('portable') and plan['target'] not in owned:self.cancel()
         physical = object_history.sync(self)
+        display.reconcile(self) if hasattr(self,'placements') else None
         self.physical_belongings = physical
         previous_placements = [(p.item_id,p.instance,p.x,p.y) for p in getattr(self,'placements',[])]
         self.placements = [*habitat_placements(g),*outdoor_decorations(g,records=self.state['grounds']),*complete_structures(g,records=self.state['grounds'])]
@@ -379,6 +381,7 @@ class LivingPond:
             wonders.update(self,key,obj,dt,outdoors,home_wet,home_temperature,home_ecology['wind'],home_type)
             keeping.update(self,key,obj,dt,outdoors,home_wet,home_temperature,home_ecology['wind'],home_type,getattr(self,'hour',12),getattr(self,'season','spring'))
             repertoire.update(self,key,obj,dt,outdoors,home_wet,home_temperature,home_ecology['wind'],home_type)
+            display.update(self,key,obj,dt,outdoors)
             architecture.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type,home_ecology.get('wind_heading',s['weather'].get('pond',{}).get('wind_heading',.25)))
             playkit.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type)
             excursions.update(key,obj,dt,outdoors,home_type,home_ecology['wind'],self.hour,reserved=carnival.owns(self,key,obj))
@@ -1143,6 +1146,12 @@ class LivingPond:
         if action=='rep_action':
             ok,message=repertoire.request(self,target,command.get('text'),command.get('instance'))
             return self.notice(message)
+        if action=='display_action':
+            text=str(command.get('text',''));instance=command.get('instance')
+            if text.startswith('show:'):ok,message=display.show(self,target,instance,text[5:],repertoire.displayable())
+            elif text.startswith('take:'):ok,message=display.take(self,target,instance,text[5:])
+            else:ok,message=False,'Choose something to show or take down.'
+            return self.notice(message)
         if action=='keeping_action':
             text=str(command.get('text',''));instance=command.get('instance')
             if text.startswith('keep:') and text.count(':')>=2:
@@ -1456,6 +1465,7 @@ class LivingPond:
             'objects':{k:copy.deepcopy(v) for k,v in s['objects'].items() if k in getattr(self,'owned',set())},
             'instances':{identity:copy.deepcopy(s['instances'][identity]) for _,item,identity in self.physical_belongings if item in self.owned},
             'keepable':keeping.keepable(self) if self.game else [],
+            'displayable':sorted(repertoire.displayable()&getattr(self,'owned',set())),
             'placed':list(getattr(self,'placed',{})),'friends':friends,'rare_guest':rare_guest,'projects':projects,
             'skills':dict(s['skills']),'knowledge':dict(s['knowledge']),'decision':copy.deepcopy(s['decision']),
             'journal':copy.deepcopy(s['journal'][-35:]),'promises':copy.deepcopy(s['promises']),
