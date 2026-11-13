@@ -29,14 +29,17 @@ export function applyObjectPose(model,pose){
  const shake=(objPose.shake||0)*Math.sin((pose.progress||0)*90)*.03;
  return {...model,sway:(model.sway||0)+(objPose.sway||0)*.08+shake,lift:(model.lift||0)+(objPose.lift||0)*.6};
 }
+// Cheese stands on the drawing's ground line, not on an 'entry' anchor that may
+// be a raised doorway or a bird hole on a pole.
+export const repGround=m=>(m.groundRow??m.art.length)-1;
 export function repGeometry(home,worker,sx,sy){
  const c=worker.character,routine=c.performance.routine,pose=repPose(routine,c.performance.motion!==false),oid=REP_ROUTINES[routine.id].object;
  const unit=sx*home.scale*(home.detailScale||1),hh=unit*1.5,left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*hh;
- const entry=home.anchors?.entry||{x:home.width/2,y:home.art.length-1},ground=top+entry.y*hh;
+ const entry=home.anchors?.entry||{x:home.width/2,y:home.art.length-1},ground=top+repGround(home)*hh;
  const A=repAnchor(home,oid,pose.anchorA)||entry,B=repAnchor(home,oid,pose.anchorB)||A;
  const target={x:left+(A.x+(B.x-A.x)*pose.anchorBlend+.5)*unit,y:top+(A.y+(B.y-A.y)*pose.anchorBlend+.5)*hh};
  const {cw,ch}=actorPitches(c,sx,sy),rest=c.workGripRest||c.grip||{x:c.anchorX+5,y:c.groundRow-7};
- const workX=worker.slot===1?c.x*sx:pose.tool==='none'?left+home.width*unit*.5-(c.anchorX*.2)*cw:target.x-2*cw-(rest.x-c.anchorX)*cw;
+ const workX=worker.slot===1?c.x*sx:pose.tool==='none'?target.x-.5*cw-(rest.x-c.anchorX)*cw:target.x-2*cw-(rest.x-c.anchorX)*cw;  // bill/belly/feet meet the touched place
  const character=worker.slot===1?{...c,offsetY:0}:{...c,x:c.x+(workX/sx-c.x)*worker.inside,y:c.y+(ground/sy-c.y)*worker.inside,offsetY:0};
  const grip=c.grip||rest,cl=Math.round(character.x*sx-c.anchorX*cw+(c.offsetX||0)*cw),ct=Math.round(character.y*sy-c.groundRow*ch);
  const hand={x:cl+(grip.x+.5)*cw,y:ct+(grip.y+.5)*ch},points=[],put=(x,y,g,col='#d9c49b')=>points.push({x,y,glyph:g,color:col});
