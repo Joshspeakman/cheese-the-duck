@@ -165,6 +165,11 @@ try:
             ok, msg = display.show(p, 'trophy_case', iid, oid, R.displayable())
             assert ok, msg
             return 'trophy_case', iid
+        if kind == 'wearable':
+            if oid in g.outfits.owned_items or hasattr(g.outfits, 'owned_items'):
+                g.outfits.owned_items.append(oid) if oid not in g.outfits.owned_items else None
+            p.sync()
+            return oid, None
         if kind == 'portable':
             own(oid)
             p.sync()
@@ -188,7 +193,7 @@ try:
         r = R.ROUTINES[key]
         oid = r['object']
         fields = R.OBJECTS[oid].get('fields', {})
-        s = R.state(oid, p.object_state(hostitem, iid))
+        s = R.state(oid, R.store(p, {'target': hostitem, 'instance': iid}, {'object': oid}) if R.OBJECTS[oid].get('host') == 'wearable' else p.object_state(hostitem, iid))
         env = dict(weather='sunny', hour=12, season='spring', temperature=15, wind=.2, age=age, energy=95, social=95, fun=95)
         for token in r['when']:
             neg = token.startswith('!')
@@ -269,7 +274,7 @@ try:
                 hostitem, iid = give(oid)
                 env = setup_for(key, hostitem, iid, age)
                 label = key + '@' + age
-                obj = p.object_state(hostitem, iid)
+                obj = R.store(p, {'target': hostitem, 'instance': iid}, {'object': oid}) if R.OBJECTS[oid].get('host') == 'wearable' else p.object_state(hostitem, iid)
                 check(key in R.eligible(p, oid, obj), label + ' eligible in its authored context ' + json.dumps(env))
                 before = possessions()
                 seq = p.state['sequence']

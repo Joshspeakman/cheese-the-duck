@@ -23,7 +23,7 @@ import {lightingPose,LIGHTING_ROUTINES} from './lighting-routines.mjs';
 import {creativePose,CREATIVE_ROUTINES} from './creative-routines.mjs';
 import {keepsakePose,KEEPSAKE_ROUTINES} from './keepsake-routines.mjs';
 import {wonderPose,WONDER_ROUTINES} from './wonder-routines.mjs';
-import {repPose,REP_ROUTINES,applyObjectPose} from './repertoire-routines.mjs';
+import {repPose,REP_ROUTINES,REP_OBJECTS,applyObjectPose} from './repertoire-routines.mjs';
 import {playdateStage} from './playdates.mjs';
 import {playgroundStage} from './playground-stage.mjs';
 import {waterStage} from './water-routines.mjs';
@@ -547,6 +547,11 @@ export class LivingWorld {
         const performance={kind:'rep',routine:plan.rep_work,motion:s.motion!==false};
         const character={...characterSprite({...s.duck,state:'idle',facing:true,performance},t),x:original.x,y:original.y,cheese:true};
         home.repWorkers=[{character,inside,slot:0}];this.characters=this.characters.filter(c=>c!==original);
+      }else if(original&&!home&&REP_OBJECTS[plan.rep_work.object]?.host==='wearable'){
+        // Worn or held things: the routine plays on Cheese himself, where he stands.
+        const performance={kind:'rep',routine:plan.rep_work,motion:s.motion!==false};
+        const i=this.characters.indexOf(original);
+        this.characters[i]={...original,...characterSprite({...s.duck,state:'idle',facing:true,performance},t),x:original.x,y:original.y,cheese:true};
       }
     }
     if(plan?.wonder_work&&!plan.wonder_work.interrupted&&WONDER_ROUTINES[plan.wonder_work.id]&&['prepare','act','settle'].includes(plan.phase)){

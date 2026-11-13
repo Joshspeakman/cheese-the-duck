@@ -138,7 +138,7 @@ def host_of(pond, oid, instance=None):
             if p.item_id == oid and (instance is None or p.instance == instance):
                 return oid, p.instance, None
         return None
-    if kind == 'portable':
+    if kind in ('portable', 'wearable'):
         return (oid, None, None) if oid in pond.owned else None
     if kind == 'display':
         from engine import display
@@ -171,6 +171,11 @@ def subject_of(pond, work, plan):
 
 def store(pond, plan, work):
     """The object state dict holding this repertoire object's fields."""
+    if OBJECTS.get(work.get('object'), {}).get('host') == 'wearable':
+        objs = pond.state['objects']
+        if not isinstance(objs.get(work['object']), dict):
+            objs[work['object']] = {}
+        return objs[work['object']]
     return pond.object_state(plan['target'], plan)
 
 
@@ -250,7 +255,7 @@ def valid(pond, plan):
     oid = work['object']
     kind = OBJECTS[oid].get('host', 'placed')
     target = plan['target']
-    if kind == 'portable':
+    if kind in ('portable', 'wearable'):
         if oid not in pond.owned:
             return False
     elif target not in pond.owned or not plan.get('instance'):
@@ -344,7 +349,7 @@ def request(pond, oid, choice, instance=None):
     if host is None:
         kind = OBJECTS[oid].get('host', 'placed')
         return False, {'placed': 'Place it outside first.', 'portable': 'Cheese does not have one.',
-                       'keeping': 'Keep one in a koi pond or sea tank first.', 'display': 'Put it on display in a trophy case or cabinet first.'}.get(kind, 'Not available right now.')
+                       'keeping': 'Keep one in a koi pond or sea tank first.', 'wearable': 'Cheese does not have that to wear.', 'display': 'Put it on display in a trophy case or cabinet first.'}.get(kind, 'Not available right now.')
     item, inst, fish = host
     obj = pond.object_state(item, inst)
     if obj is None:
