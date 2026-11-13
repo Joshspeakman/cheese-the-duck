@@ -6227,7 +6227,8 @@
       "order": "Fix check_playkit_company boat_finish now; then finish wonders (bigger-glyph redraw for small ones, wire say cues into speech); then breadth: art + interactions for the 116 non-shop items family by family; then deepen every object toward 48.",
       "install": "Only when the whole milestone is done, saves verified and migrated.",
       "fish": "Add a keeping pond: caught fish can really live in a placed koi_pond (existing shop item), each tied to one actual catch record, with species behaviour, hunger, mood, size; supports 48 real interactions each. Catching unchanged. Evidence: overhaul/animation-milestone/fish-outline.md (today's state supports ~14 pond / ~4 other).",
-      "collectibles_display": "Give inventory-only collectibles (cards, badges, trophies, tokens, feathers, coins) display spots using existing trophy_case and cabinet, so Cheese and visitors can handle, arrange, polish and show them; needed for 48 each."
+      "collectibles_display": "Give inventory-only collectibles (cards, badges, trophies, tokens, feathers, coins) display spots using existing trophy_case and cabinet, so Cheese and visitors can handle, arrange, polish and show them; needed for 48 each.",
+      "seaTank": "A large pool or infinity pool can be set up as a deep salt sea tank for pufferfish, swordfish, sturgeon and the ancient dragon fish (800/1000 cm); Cheese only watches from the edge of a sea tank."
     },
     "nonShopOwnershipMap": {
       "fish (14)": "catch records in g.fishing.fish_caught; owned; no physical fish until kept",
@@ -6265,9 +6266,9 @@
         "pond-journal keep/release buttons",
         "living_world keeping_action + kept_catches saved"
       ],
-      "tested": "check_keeping PASS 19: real catches only, each once, invented/duplicate/released refused, pufferfish refused (salt water), capacity 320 cm, hunger/feeding/health/ice/leaves physics, release raises wild fish, fishing record untouched, no items/coins, save/reload; drawing day and night. Regression: check_living 694, check_water_routines 183, waterworks render, npm 317/317.",
+      "tested": "check_keeping PASS 29 (adds sea tank: setup required, three sea fish kept, dragon fish refused when full, koi refused by salt water, no double keeping across hosts, edge-only water routines, cannot drain with fish, save/reload). Regression: check_water_routines 183, waterworks render, footprints unchanged, npm 317/317.",
       "species": {
-        "keepable": [
+        "koi pond (fresh, 320 cm)": [
           "minnow",
           "goldfish",
           "carp",
@@ -6279,12 +6280,12 @@
           "golden_koi",
           "ghost_fish"
         ],
-        "notKeepable_userDecisionPending": {
-          "pufferfish": "salt water",
-          "swordfish": "ocean, 1-3 m",
-          "sturgeon": "1-4 m",
-          "ancient_dragon_fish": "2-5 m"
-        }
+        "sea tank (salt, pool_large 800 / infinity_pool 1000 cm)": [
+          "pufferfish",
+          "swordfish",
+          "sturgeon",
+          "ancient_dragon_fish"
+        ]
       },
       "next": "Routines in batches through a generalised repertoire engine (48 archetypes in the design doc), per-species distinctness check, then visitor roles."
     }

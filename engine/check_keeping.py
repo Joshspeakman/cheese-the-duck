@@ -21,7 +21,7 @@ def check(ok, label):
     checks.append(label)
 
 
-bad = {'keeping': {'clarity': float('nan'), 'fish': [{'species': 'koi', 'catch': 'x', 'hunger': 9, 'size': -3}, {'species': 'swordfish', 'catch': 'y'}, 'junk']}}
+bad = {'keeping': {'clarity': float('nan'), 'fish': [{'species': 'koi', 'catch': 'x', 'hunger': 9, 'size': -3}, {'species': 'shark', 'catch': 'y'}, 'junk']}}
 k = K.state(bad)
 check(k['clarity'] == .8 and len(k['fish']) == 1 and k['fish'][0]['hunger'] == 1 and k['fish'][0]['size'] == 1, 'damaged keeping state is bounded and cleaned')
 
@@ -60,8 +60,8 @@ try:
     possessions = copy.deepcopy((g.inventory.to_dict(), g.materials.get_all_materials(), g.habitat.currency))
     p._cache = None
     view = p.view() if hasattr(p, 'view') else None
-    offered = {(c['species'], c['catch']) for c in K.keepable(p)}
-    check(('koi', koi.caught_at) in offered and ('pufferfish', puffer.caught_at) not in offered, 'only freshwater catches that fit are offered for keeping')
+    offered = {(c['species'], c['catch']): c['water'] for c in K.keepable(p)}
+    check(offered.get(('koi', koi.caught_at)) == 'fresh' and offered.get(('pufferfish', puffer.caught_at)) == 'sea', 'catches are offered with the water they need (koi pond or sea tank)')
 
     def cmd(text):
         p.command({'action': 'keeping_action', 'target': 'koi_pond', 'instance': iid, 'text': text})
@@ -115,6 +115,40 @@ try:
     check({k2: [c.__dict__ for c in v] for k2, v in g.fishing.fish_caught.items() if k2 in record_before} == record_before, 'the fishing record itself is never changed')
     check(copy.deepcopy((g.inventory.to_dict(), g.materials.get_all_materials(), g.habitat.currency)) == possessions, 'keeping grants no items or coins')
 
+    # sea tank in a big pool (user decision): the four big/saltwater fish
+    sword = catch('swordfish', 210., 40)
+    stur = catch('sturgeon', 260., 41)
+    dragon = catch('ancient_dragon_fish', 480., 42)
+    koi2 = catch('koi', 40., 43)
+    g.habitat.owned_items = ['koi_pond', 'pool_large']
+    g.habitat.placed_items = [PlacedItem('koi_pond', 10, 6), PlacedItem('pool_large', 3, 2)]
+    p.sync()
+    pid = next(x.instance for x in p.placements if x.item_id == 'pool_large')
+    pool = p.object_state('pool_large', pid)
+    ok, msg = K.keep(p, 'pool_large', pid, 'swordfish', sword.caught_at)
+    check(not ok and 'sea tank first' in msg, 'a plain pool must be set up as a sea tank first')
+    from engine import water_routines
+    swim_before = water_routines.choose(p, 'pool_large', pid)
+    p.command({'action': 'keeping_action', 'target': 'pool_large', 'instance': pid, 'text': 'setup'})
+    check(K.state(pool)['setup'], 'the large pool becomes a sea tank from the journal')
+    for c in (sword, stur, puffer):
+        p.command({'action': 'keeping_action', 'target': 'pool_large', 'instance': pid, 'text': 'keep:' + c.fish_id + ':' + c.caught_at})
+    sea = K.state(pool)
+    check(sorted(f['species'] for f in sea['fish']) == ['pufferfish', 'sturgeon', 'swordfish'], 'swordfish, sturgeon and pufferfish live in the sea tank')
+    ok, msg = K.keep(p, 'pool_large', pid, 'ancient_dragon_fish', dragon.caught_at)
+    check(not ok and 'too full' in msg, 'a 480 cm dragon fish does not fit beside them (800 cm tank): ' + msg)
+    ok, msg = K.keep(p, 'pool_large', pid, 'koi', koi2.caught_at)
+    check(not ok and 'salt water' in msg, 'a koi is refused by the salt sea tank')
+    ok, msg = K.keep(p, 'koi_pond', iid, 'swordfish', sword.caught_at)
+    check(not ok, 'a kept swordfish cannot also move into the koi pond')
+    swim_after = water_routines.choose(p, 'pool_large', pid)
+    check(swim_after is None or water_routines.ROUTINES[swim_after]['mode'] == 'edge', 'Cheese only watches from the edge of a sea tank: ' + str((swim_before, swim_after)))
+    ok, msg = K.setup(p, 'pool_large', pid, False)
+    check(not ok and 'Release' in msg, 'a sea tank with fish cannot be drained')
+    K.update(p, 'pool_large', pool, 3600, True, False, 18, .2, 'sunny', 12, 'summer')
+    check(all(f['hunger'] > .4 for f in K.state(pool)['fish']), 'sea fish get hungry like the others')
+    sea_kept = copy.deepcopy(K.state(pool))
+
     # save and reload
     kept = copy.deepcopy(K.state(obj))
     g._save_game()
@@ -124,6 +158,7 @@ try:
     p.sync()
     obj = p.object_state('koi_pond', iid)
     check(K.state(obj)['fish'] == kept['fish'] and p.state['kept_catches'][fid] == 'released', 'kept fish and the keeping ledger survive save and reload')
+    check(K.state(p.object_state('pool_large', pid)) == sea_kept, 'the sea tank and its fish survive save and reload')
 
     # drawing the real fish
     fish = K.state(obj)['fish']

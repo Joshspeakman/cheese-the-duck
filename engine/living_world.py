@@ -1130,6 +1130,7 @@ class LivingPond:
             if text.startswith('keep:') and text.count(':')>=2:
                 _,species,caught=text.split(':',2);ok,message=keeping.keep(self,target,instance,species,caught)
             elif text.startswith('release:'):ok,message=keeping.release(self,target,instance,text[8:])
+            elif text in ('setup','drain'):ok,message=keeping.setup(self,target,instance,text=='setup')
             else:ok,message=False,'Choose a fish to keep or release.'
             return self.notice(message)
         if action=='wonder_action':
