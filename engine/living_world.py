@@ -4,7 +4,7 @@ The original registries remain authoritative for ownership, needs, inventory,
 friendship, recipes and rewards. This module owns new physical/ecological state,
 long-term intentions and bounded memories. Presentation snapshots never advance it.
 """
-from engine import object_history,pond_lighting,keepsakes,wonders,keepsake_company,creative_props,creative_company,textiles,textile_company,groundworks,ground_company,architecture,architecture_company,playkit,playkit_company
+from engine import object_history,pond_lighting,keepsakes,wonders,keeping,keepsake_company,creative_props,creative_company,textiles,textile_company,groundworks,ground_company,architecture,architecture_company,playkit,playkit_company
 import copy
 import hashlib
 import math
@@ -73,7 +73,7 @@ def fresh(seed=1):
                         'wetness': .25, 'snow': 0., 'ice': 0., 'temperature': 17., 'wind': .2, 'wind_heading': .25},
             'offline': '', 'sequence': 0, 'auto': True, 'stories': {}, 'story': None, 'next_story': 90.,
             'protection': 0., 'legacy': {}, 'biomes': {}, 'apparel': {}, 'apparel_care': {},
-            'community': {'warmth': .2, 'gatherings': 0}, 'minds': {}, 'layout': {}, 'grounds': {}}
+            'community': {'warmth': .2, 'gatherings': 0}, 'minds': {}, 'layout': {}, 'grounds': {}, 'kept_catches': {}}
 
 
 class LivingPond:
@@ -215,6 +215,7 @@ class LivingPond:
             if item in pond_lighting.LIGHTS:pond_lighting.state(item,obj,self.hour,self.season)
             if item in keepsakes.ITEMS:keepsakes.state(item,obj)
             if item in wonders.ITEMS:wonders.state(item,obj)
+            if item in keeping.HOSTS:keeping.state(obj)
             if item in creative_props.ITEMS:creative_props.state(item,obj)
             if item in textiles.ITEMS:textiles.state(item,obj)
             if item in groundworks.ITEMS:groundworks.state(item,obj)
@@ -376,6 +377,7 @@ class LivingPond:
             pond_lighting.update(self,key,obj,dt,outdoors,home_wet,home_intensity)
             keepsakes.update(self,key,obj,dt,outdoors,home_wet,home_intensity,home_temperature)
             wonders.update(self,key,obj,dt,outdoors,home_wet,home_temperature,home_ecology['wind'],home_type)
+            keeping.update(self,key,obj,dt,outdoors,home_wet,home_temperature,home_ecology['wind'],home_type,getattr(self,'hour',12),getattr(self,'season','spring'))
             architecture.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type,home_ecology.get('wind_heading',s['weather'].get('pond',{}).get('wind_heading',.25)))
             playkit.update(self,key,obj,dt,outdoors,home_ecology['wind'],home_type)
             excursions.update(key,obj,dt,outdoors,home_type,home_ecology['wind'],self.hour,reserved=carnival.owns(self,key,obj))
@@ -1123,6 +1125,13 @@ class LivingPond:
         if action=='playkit_action':
             ok,message=playkit.request(self,target,command.get('text'),command.get('instance'))
             return self.notice(message)
+        if action=='keeping_action':
+            text=str(command.get('text',''));instance=command.get('instance')
+            if text.startswith('keep:') and text.count(':')>=2:
+                _,species,caught=text.split(':',2);ok,message=keeping.keep(self,target,instance,species,caught)
+            elif text.startswith('release:'):ok,message=keeping.release(self,target,instance,text[8:])
+            else:ok,message=False,'Choose a fish to keep or release.'
+            return self.notice(message)
         if action=='wonder_action':
             ok,message=wonders.request(self,target,command.get('text'),command.get('instance'))
             return self.notice(message)
@@ -1427,6 +1436,7 @@ class LivingPond:
             'ecology':copy.deepcopy(s['ecology']),'weather':copy.deepcopy(s['weather'].get(getattr(self,'biome','pond'),{})),
             'objects':{k:copy.deepcopy(v) for k,v in s['objects'].items() if k in getattr(self,'owned',set())},
             'instances':{identity:copy.deepcopy(s['instances'][identity]) for _,item,identity in self.physical_belongings if item in self.owned},
+            'keepable':keeping.keepable(self) if self.game else [],
             'placed':list(getattr(self,'placed',{})),'friends':friends,'rare_guest':rare_guest,'projects':projects,
             'skills':dict(s['skills']),'knowledge':dict(s['knowledge']),'decision':copy.deepcopy(s['decision']),
             'journal':copy.deepcopy(s['journal'][-35:]),'promises':copy.deepcopy(s['promises']),
