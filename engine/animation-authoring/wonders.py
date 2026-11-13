@@ -881,6 +881,13 @@ routine('dragon_polish_scales', 'dragon_egg', 'Polishing the egg\'s scaly shell'
         [(.4, 'buff')], when=['shine<.6'], tool='cloth')
 
 assert len(ITEMS) == 32, len(ITEMS)
+# Coarse grid: small wonders draw the same geometry on a grid 2-3x coarser and
+# scale up by the same factor, so world size and control heights are unchanged
+# while each ASCII character renders 2-3x larger (comparable to the keepsakes).
+for _k, _v in ITEMS.items():
+    _px = 7.5 * _v['scale'] * .62
+    _v['grid'] = max(1, min(3, round(2.6 / _px)))
+    _v['scale'] = round(_v['scale'] * _v['grid'], 4)
 OUT.joinpath('wonders.json').write_text(json.dumps(ITEMS, indent=1) + '\n')
 OUT.joinpath('wonder-routines.json').write_text(json.dumps(ROUTINES, indent=1) + '\n')
 print(len(ITEMS), 'wonders,', len(ROUTINES), 'routines')

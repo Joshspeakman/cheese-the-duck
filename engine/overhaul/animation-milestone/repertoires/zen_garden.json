@@ -8,8 +8,8 @@
  "nativeCheck": {
   "command": ".venv/bin/python engine/check_wonders.py",
   "result": "PASS",
-  "checks": 14330,
-  "routineAgeRuns": 1128
+  "checks": 14341,
+  "routineAgeRuns": 1129
  },
  "missing": [
   "48-sequence target: 41 more meaningful sequences",
@@ -142,7 +142,7 @@
     "elder",
     "legendary"
    ],
-   "contactHeightPx": 49,
+   "contactHeightPx": 47,
    "evidence_note": "engine/check_wonders.py (native, disposable save)"
   },
   {
@@ -205,7 +205,7 @@
     "elder",
     "legendary"
    ],
-   "contactHeightPx": 49,
+   "contactHeightPx": 47,
    "evidence_note": "engine/check_wonders.py (native, disposable save); wonders-check.cjs live render"
   },
   {

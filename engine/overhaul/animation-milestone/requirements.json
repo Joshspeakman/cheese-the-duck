@@ -4632,7 +4632,7 @@
       "engine/artifacts/animation-milestone/medium-art-render.json",
       "engine/artifacts/animation-milestone/parent-medium-review.log"
     ],
-    "next": "Finish wonders: bigger-glyph redraw for the small ones, wire say cues into speech; then breadth: 116 non-shop items (art + 48 each) family by family; then deepen every object toward 48.",
+    "next": "Wire wonder say cues into speech; then breadth: 116 non-shop items (art + 48 each) family by family; then deepen every object toward 48.",
     "checks": {
       "javascript": 226,
       "livingSimulation": 694,
@@ -6102,21 +6102,21 @@
       "performance": {
         "scene": "Captured live scene with 8 wonders placed, 200 frames at 1500x950, headless Electron",
         "withWonders": {
-          "median": 12.199999988079071,
-          "p95": 17.299999952316284,
-          "max": 23.899999976158142
+          "median": 12.200000047683716,
+          "p95": 14.800000071525574,
+          "max": 17.799999952316284
         },
         "withoutWonders": {
-          "median": 10.800000011920929,
-          "p95": 11.700000047683716,
-          "max": 26.399999976158142
+          "median": 11.200000047683716,
+          "p95": 11.800000071525574,
+          "max": 19
         },
         "measures": [
           "construction memoized on read state",
           "idle motion stepped at 3 fps (6 fps while worked), per-object phase offsets",
           "per-cell fills merged into row runs"
         ],
-        "remaining": "p95 17.3 ms vs 11.7 ms baseline with 8 wonders in view (headless Electron, 1500x950)."
+        "remaining": "p95 14.8 ms vs 11.8 ms baseline with 8 wonders in view; within a 60 fps frame after the coarse grid."
       },
       "visitorCompany": {
         "status": "implemented_tested_not_accepted",
@@ -6175,7 +6175,44 @@
       },
       "openDecisions": [
         "Resolved 2026-11-13: see userDecisions_2026_11_13"
-      ]
+      ],
+      "coarseGrid": {
+        "decision": "User 2026-11-13: redraw small wonders with fewer, larger glyphs",
+        "method": "CoarseCanvas draws the same geometry on a grid 2-3x coarser; blueprint scale multiplied by the same factor, so world size and control heights are unchanged. Glyphs now ~2.1-3.4 px at the 1500x950 review camera (keepsakes ~2.8 px), were ~0.9-1.7 px.",
+        "grids": {
+          "topiary_duck": 2,
+          "zen_garden": 2,
+          "ice_sculpture": 2,
+          "sand_castle": 2,
+          "gong": 2,
+          "aurora": 2,
+          "rainbow_generator": 2,
+          "weather_machine": 2,
+          "wormhole": 2,
+          "black_hole": 2,
+          "volcano": 2,
+          "tornado": 2,
+          "antigravity": 2,
+          "force_field": 2,
+          "time_machine": 2,
+          "tardis": 2,
+          "dimensional_door": 2,
+          "teleporter": 2,
+          "robot_butler": 3,
+          "cloning_machine": 2,
+          "transmogrifier": 2,
+          "money_printer": 2,
+          "perpetual_motion": 2,
+          "DNA_mixer": 2,
+          "shrink_ray": 3,
+          "growth_ray": 3,
+          "genie_lamp": 2,
+          "invisible_cloak": 2,
+          "dream_catcher": 2,
+          "dragon_egg": 2
+        },
+        "reviewed": "In-game crops of robot butler and gong: visor, eyes, buttons, gong rings and ropes now legible."
+      }
     },
     "userDecisions_2026_11_13": {
       "wonderSize": "Redraw small wonders (lamp, robot, rays, DNA mixer...) with fewer, larger glyphs; keep duck-relative sizes and reachable controls.",

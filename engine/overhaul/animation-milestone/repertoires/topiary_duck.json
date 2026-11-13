@@ -8,8 +8,8 @@
  "nativeCheck": {
   "command": ".venv/bin/python engine/check_wonders.py",
   "result": "PASS",
-  "checks": 14330,
-  "routineAgeRuns": 1128
+  "checks": 14341,
+  "routineAgeRuns": 1129
  },
  "missing": [
   "48-sequence target: 42 more meaningful sequences",
@@ -73,7 +73,7 @@
     "elder",
     "legendary"
    ],
-   "contactHeightPx": 170,
+   "contactHeightPx": 167,
    "evidence_note": "engine/check_wonders.py (native, disposable save)"
   },
   {

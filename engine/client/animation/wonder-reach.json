@@ -13,7 +13,7 @@
  },
  "routines": {
   "topiary_trim_bill": {
-   "contactHeight": 170,
+   "contactHeight": 167,
    "highestAnchor": "bill",
    "tool": "shears",
    "reachableAges": [
@@ -110,7 +110,7 @@
    ]
   },
   "zen_rake_rings": {
-   "contactHeight": 49,
+   "contactHeight": 47,
    "highestAnchor": "ring_n",
    "tool": "rake",
    "reachableAges": [
@@ -123,7 +123,7 @@
    ]
   },
   "zen_rake_spiral": {
-   "contactHeight": 49,
+   "contactHeight": 47,
    "highestAnchor": "ring_n",
    "tool": "rake",
    "reachableAges": [
@@ -330,7 +330,7 @@
    ]
   },
   "sand_dig_moat": {
-   "contactHeight": 19,
+   "contactHeight": 17,
    "highestAnchor": "moat_l",
    "tool": "spade",
    "reachableAges": [
@@ -343,7 +343,7 @@
    ]
   },
   "sand_fill_moat": {
-   "contactHeight": 19,
+   "contactHeight": 17,
    "highestAnchor": "moat_l",
    "tool": "bucket",
    "reachableAges": [
@@ -597,7 +597,7 @@
    ]
   },
   "rainbow_drip_splash": {
-   "contactHeight": 7,
+   "contactHeight": 5,
    "highestAnchor": "drip",
    "tool": "none",
    "reachableAges": [
@@ -722,10 +722,11 @@
    ]
   },
   "weather_catch_spark": {
-   "contactHeight": 122,
+   "contactHeight": 120,
    "highestAnchor": "terminal",
    "tool": "wing",
    "reachableAges": [
+    "young_adult",
     "adult",
     "mature",
     "elder",
@@ -949,7 +950,7 @@
    ]
   },
   "blackhole_flick": {
-   "contactHeight": 101,
+   "contactHeight": 99,
    "highestAnchor": "glass_low",
    "tool": "wing",
    "reachableAges": [
@@ -970,7 +971,7 @@
    ]
   },
   "volcano_baking_soda": {
-   "contactHeight": 74,
+   "contactHeight": 71,
    "highestAnchor": "hopper",
    "tool": "jug",
    "reachableAges": [
@@ -1443,7 +1444,7 @@
    ]
   },
   "booth_lamp_whoosh": {
-   "contactHeight": 73,
+   "contactHeight": 71,
    "highestAnchor": "chain",
    "tool": "wing",
    "reachableAges": [
@@ -1606,7 +1607,7 @@
    ]
   },
   "robot_wind_up": {
-   "contactHeight": 94,
+   "contactHeight": 91,
    "highestAnchor": "key",
    "tool": "wing",
    "reachableAges": [
@@ -1660,7 +1661,7 @@
    ]
   },
   "robot_high_five": {
-   "contactHeight": 70,
+   "contactHeight": 68,
    "highestAnchor": "hand",
    "tool": "wing",
    "reachableAges": [
@@ -1981,7 +1982,7 @@
    ]
   },
   "shrink_charge": {
-   "contactHeight": 46,
+   "contactHeight": 45,
    "highestAnchor": "pump",
    "tool": "wing",
    "reachableAges": [
@@ -1994,7 +1995,7 @@
    ]
   },
   "shrink_zap_pebble": {
-   "contactHeight": 51,
+   "contactHeight": 49,
    "highestAnchor": "trigger",
    "tool": "wing",
    "reachableAges": [
@@ -2022,7 +2023,7 @@
    ]
   },
   "shrink_reset_plate": {
-   "contactHeight": 76,
+   "contactHeight": 73,
    "highestAnchor": "dial",
    "tool": "wing",
    "reachableAges": [
@@ -2036,7 +2037,7 @@
    ]
   },
   "growth_charge": {
-   "contactHeight": 46,
+   "contactHeight": 45,
    "highestAnchor": "pump",
    "tool": "wing",
    "reachableAges": [
@@ -2049,7 +2050,7 @@
    ]
   },
   "growth_zap_dandelion": {
-   "contactHeight": 51,
+   "contactHeight": 49,
    "highestAnchor": "trigger",
    "tool": "wing",
    "reachableAges": [
@@ -2077,7 +2078,7 @@
    ]
   },
   "growth_reset_plate": {
-   "contactHeight": 76,
+   "contactHeight": 73,
    "highestAnchor": "dial",
    "tool": "wing",
    "reachableAges": [

@@ -705,8 +705,8 @@
       "construction": "botanical-v1"
     },
     "topiary_duck": {
-      "width": 32.47,
-      "height": 25.93,
+      "width": 33,
+      "height": 26.65,
       "floor": false,
       "construction": "wonder-v1"
     },
@@ -951,8 +951,8 @@
       "construction": "waterworks-v1"
     },
     "zen_garden": {
-      "width": 29.68,
-      "height": 14.27,
+      "width": 30.14,
+      "height": 14.88,
       "floor": true,
       "construction": "wonder-v1"
     },
@@ -987,8 +987,8 @@
       "construction": "lighting-v1"
     },
     "ice_sculpture": {
-      "width": 26.49,
-      "height": 23.68,
+      "width": 26.95,
+      "height": 24.3,
       "floor": false,
       "construction": "wonder-v1"
     },
@@ -1005,14 +1005,14 @@
       "construction": "architecture-v1"
     },
     "sand_castle": {
-      "width": 28.39,
-      "height": 18.39,
+      "width": 28.83,
+      "height": 18.99,
       "floor": false,
       "construction": "wonder-v1"
     },
     "gong": {
-      "width": 28.74,
-      "height": 28,
+      "width": 29.27,
+      "height": 28.71,
       "floor": false,
       "construction": "wonder-v1"
     },
@@ -1137,8 +1137,8 @@
       "construction": "lighting-v1"
     },
     "aurora": {
-      "width": 35.17,
-      "height": 25.93,
+      "width": 35.7,
+      "height": 26.65,
       "floor": false,
       "construction": "wonder-v1"
     },
@@ -1275,50 +1275,50 @@
       "construction": "wonder-v1"
     },
     "time_machine": {
-      "width": 36.02,
-      "height": 31.16,
+      "width": 36.55,
+      "height": 31.88,
       "floor": false,
       "construction": "wonder-v1"
     },
     "rainbow_generator": {
-      "width": 30.52,
-      "height": 23.72,
+      "width": 31.01,
+      "height": 24.38,
       "floor": false,
       "construction": "wonder-v1"
     },
     "weather_machine": {
-      "width": 34.84,
-      "height": 27.99,
+      "width": 35.35,
+      "height": 28.67,
       "floor": false,
       "construction": "wonder-v1"
     },
     "black_hole": {
-      "width": 27.27,
-      "height": 23.73,
+      "width": 27.75,
+      "height": 24.37,
       "floor": false,
       "construction": "wonder-v1"
     },
     "volcano": {
-      "width": 38.53,
-      "height": 27.96,
+      "width": 39.08,
+      "height": 28.69,
       "floor": false,
       "construction": "wonder-v1"
     },
     "antigravity": {
-      "width": 28.79,
-      "height": 23.68,
+      "width": 29.25,
+      "height": 24.3,
       "floor": false,
       "construction": "wonder-v1"
     },
     "tornado": {
-      "width": 20.97,
-      "height": 20.43,
+      "width": 21.36,
+      "height": 20.94,
       "floor": false,
       "construction": "wonder-v1"
     },
     "dragon_egg": {
-      "width": 19.04,
-      "height": 15.16,
+      "width": 19.38,
+      "height": 15.61,
       "floor": false,
       "construction": "wonder-v1"
     },
@@ -1341,26 +1341,26 @@
       "construction": "keepsake-v1"
     },
     "wormhole": {
-      "width": 33.07,
-      "height": 25.82,
+      "width": 33.57,
+      "height": 26.49,
       "floor": false,
       "construction": "wonder-v1"
     },
     "force_field": {
-      "width": 39.44,
-      "height": 27.96,
+      "width": 39.98,
+      "height": 28.69,
       "floor": false,
       "construction": "wonder-v1"
     },
     "teleporter": {
-      "width": 28.07,
-      "height": 23.73,
+      "width": 28.54,
+      "height": 24.37,
       "floor": false,
       "construction": "wonder-v1"
     },
     "robot_butler": {
-      "width": 17.32,
-      "height": 18.28,
+      "width": 18.24,
+      "height": 19.14,
       "floor": false,
       "construction": "wonder-v1"
     },
@@ -1371,20 +1371,20 @@
       "construction": "lighting-v1"
     },
     "shrink_ray": {
-      "width": 16.02,
-      "height": 11.94,
+      "width": 16.83,
+      "height": 12.71,
       "floor": false,
       "construction": "wonder-v1"
     },
     "growth_ray": {
-      "width": 16.02,
-      "height": 11.94,
+      "width": 16.83,
+      "height": 12.71,
       "floor": false,
       "construction": "wonder-v1"
     },
     "cloning_machine": {
-      "width": 34.59,
-      "height": 25.79,
+      "width": 35.07,
+      "height": 26.44,
       "floor": false,
       "construction": "wonder-v1"
     },
@@ -1401,8 +1401,8 @@
       "construction": "playground-v1"
     },
     "genie_lamp": {
-      "width": 19.89,
-      "height": 14.6,
+      "width": 20.29,
+      "height": 15.14,
       "floor": false,
       "construction": "wonder-v1"
     },
@@ -1455,44 +1455,44 @@
       "construction": "excursion-v1"
     },
     "tardis": {
-      "width": 29.75,
-      "height": 31.16,
+      "width": 30.29,
+      "height": 31.88,
       "floor": false,
       "construction": "wonder-v1"
     },
     "invisible_cloak": {
-      "width": 22,
-      "height": 21.55,
+      "width": 22.42,
+      "height": 22.1,
       "floor": false,
       "construction": "wonder-v1"
     },
     "transmogrifier": {
-      "width": 31.65,
-      "height": 24.77,
+      "width": 32.12,
+      "height": 25.39,
       "floor": false,
       "construction": "wonder-v1"
     },
     "money_printer": {
-      "width": 22.99,
-      "height": 18.36,
+      "width": 23.37,
+      "height": 18.87,
       "floor": false,
       "construction": "wonder-v1"
     },
     "perpetual_motion": {
-      "width": 24.8,
-      "height": 21.55,
+      "width": 25.21,
+      "height": 22.1,
       "floor": false,
       "construction": "wonder-v1"
     },
     "DNA_mixer": {
-      "width": 22.9,
-      "height": 20.43,
+      "width": 23.28,
+      "height": 20.94,
       "floor": false,
       "construction": "wonder-v1"
     },
     "dream_catcher": {
-      "width": 22.71,
-      "height": 24.73,
+      "width": 23.15,
+      "height": 25.32,
       "floor": false,
       "construction": "wonder-v1"
     },
@@ -1503,8 +1503,8 @@
       "construction": "waterworks-v1"
     },
     "dimensional_door": {
-      "width": 28.94,
-      "height": 27.92,
+      "width": 29.43,
+      "height": 28.58,
       "floor": false,
       "construction": "wonder-v1"
     },
