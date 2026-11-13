@@ -48,6 +48,27 @@ def _words(s):
     return set(re.findall(r"[a-z']+", s.lower()))
 
 
+def stamp(tool, tr):
+    """The track as drawn at adult size, anchors and marks stripped (same as check_repertoire.stamp)."""
+    cells = tuple((round(t, 2), int(q.get('x', 0) * 2.6 + .5), int(q.get('y', 0) * 1.8 + .5), int(q.get('b', 0) * 2 + .5),
+                   round(q.get('l', 0)), round(q.get('r', 0)), round(q.get('w', 0)), round(q.get('reach', 0) * 2), round(q.get('perch', 0)))
+                  for t, q in tr)
+    return (tool if tool in ('none', 'wing') else 'stick', cells)
+
+
+def _other_stamps(skip):
+    out = {}
+    for f in OUT.glob('*.json'):
+        if f.stem == skip:
+            continue
+        try:
+            for k2, r2 in json.loads(f.read_text())['routines'].items():
+                out[stamp(r2['tool'], r2['track'])] = k2
+        except Exception:
+            pass
+    return out
+
+
 def _known_lines(skip):
     seen = set()
     brief = ENG / 'overhaul/animation-milestone/authoring-brief.md'
@@ -196,6 +217,10 @@ class Obj:
         youngest = allowed[0]
         small = self._rendered(tr, K_SMALL if youngest in YOUNG else K_ADULT, tool)
         assert len(set(small)) >= 3, f'{key}: at {youngest} size the body shows fewer than 3 different poses; make the movement bigger'
+        if not hasattr(self, '_stamps'):
+            self._stamps = _other_stamps(d['object'])
+        twin = self._stamps.get(stamp(tool, tr))
+        assert not twin, f'{key}: the same drawn track as {twin} on another object (a stamped act); move differently'
         touch = [self.spot[q['anchor']] for _, q in tr if q.get('anchor') and q.get('contact', 0) >= .5]
         touch = tuple(p for i, p in enumerate(touch) if not i or p != touch[i - 1])
         body = self._rendered(tr, K_ADULT, tool)
