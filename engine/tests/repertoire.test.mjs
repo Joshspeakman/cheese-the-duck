@@ -15,6 +15,7 @@ test('bundle and reach table match the per-object data',()=>{
 });
 test('every routine anchor resolves on its host drawing and poses end at rest',()=>{
  for(const [key,r] of Object.entries(R)){
+  if(O[r.object].host==='wearable'){const end=repPose({id:key,elapsed:r.duration});for(const k of ['x','y','b','w','contact'])assert.equal(end[k],0,key+' rest');continue;}
   const m=itemSprite(host(r.object),0,{state:{keeping:{setup:true,fish:[]}}});
   for(const [,q] of r.track)if(q.anchor&&!['contact','entry'].includes(q.anchor))assert.ok(repAnchor(m,r.object,q.anchor),key+' anchor '+q.anchor);
   const end=repPose({id:key,elapsed:r.duration});for(const k of ['x','y','b','w','contact'])assert.equal(end[k],0,key+' rest');

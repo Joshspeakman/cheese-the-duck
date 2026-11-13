@@ -95,6 +95,51 @@
     "elder",
     "legendary"
    ]
+  },
+  "scarf_rewrap": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "scarf_fluff": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "scarf_snuggle": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
   }
  }
 }

@@ -438,6 +438,17 @@ class LivingPond:
 
     def start(self, kind, target='', automatic=False, instance=None, carnival_choice=None, shared_proposal=None, rep_work=None):
         s = self.state
+        if rep_work and repertoire.OBJECTS.get(rep_work['object'],{}).get('host')=='wearable':
+            # Wearables are handled where Cheese stands: no walk, no set-down spot.
+            if not self.available():return False,'Cheese is not up for that right now.'
+            if s['plan'] or self.busy:return False,'Cheese is busy.'
+            if target not in self.owned:return False,'Cheese does not have that.'
+            pos=self.game.renderer.duck_pos;pos.cancel_movement()
+            self.minds.cancel_encounter('cheese')
+            s['plan']={'kind':'item','target':target,'label':rep_work['label'],'elapsed':0.,'duration':26.,'phase':'approach','automatic':automatic,
+                       'paused':False,'location':self.location,'learning_before':self.minds.before('item'),'destination':[pos.x,pos.y],'rep_work':rep_work,'in_place':True}
+            self._last_plan_visual=None;self._cache=None
+            return True,rep_work['label']+'.'
         if carnival_choice in ('castle_pressure_check','castle_dust_service'):
             if kind!='item' or target!='bounce_house':return False, 'Choose an activity for this object.'
             from engine import castle_air_session
@@ -898,6 +909,13 @@ class LivingPond:
 
     def _complete(self, plan):
         s = self.state; kind = plan['kind']; target = plan['target']; g = self.game
+        if plan.get('in_place'):
+            # Worn/held repertoire work: one recorded routine and the shared
+            # learning signal; no item use, no wear, no rewards.
+            repertoire.complete(self,plan)
+            work=plan.get('rep_work') or {}
+            if work.get('recorded'):self.minds.completed('item',work.get('label','')+'.',plan.get('learning_before'))
+            return
         if carnival.is_air_procedure(plan):
             carnival.shared_controller(plan).complete(self,plan)
             return

@@ -1,0 +1,18 @@
+{"object": "scarf_red", "host": "wearable",
+ "fields": {"neat": [0.7, 0, 1], "warmth": [0.5, 0, 1], "fluff": [0.3, 0, 1]},
+ "physics": [["neat", "rate", -0.00004, "windy"], ["warmth", "decay", 0, "warm"]],
+ "triggers": [],
+ "effects": {"wrap": [["neat", "add", 0.4], ["warmth", "add", 0.3]], "fluff": [["fluff", "add", 0.3]], "snug": [["need.energy", "add", 1]]},
+ "anchors": {"neck": {"x": 0.55, "y": 0.45}, "tail_end": {"x": 0.35, "y": 0.6}},
+ "lines": {},
+ "routines": {
+  "scarf_rewrap": {"label": "Unwinding the red scarf and wrapping it again, properly this time", "duration": 18, "tool": "wing",
+   "track": [[0, {}], [0.2, {"w": 0.8, "contact": 1, "anchor": "neck", "eye": "o"}], [0.45, {"w": 1, "b": -0.3, "contact": 1, "anchor": "tail_end", "mark": "~"}], [0.7, {"w": 0.6, "contact": 1, "anchor": "neck", "eye": "^"}], [1, {}]],
+   "events": [[0.7, "wrap"]], "when": [], "prefer": ["cold", "windy"], "ages": null},
+  "scarf_fluff": {"label": "Fluffing the scarf's wool with a quick shake", "duration": 14, "tool": "wing",
+   "track": [[0, {}], [0.25, {"w": 0.7, "contact": 1, "anchor": "tail_end"}], [0.45, {"w": 1, "x": 0.3, "contact": 1, "anchor": "tail_end", "mark": "fwap"}], [0.75, {"eye": "^"}], [1, {}]],
+   "events": [[0.45, "fluff"]], "when": [], "prefer": [], "ages": null},
+  "scarf_snuggle": {"label": "Burying his bill in the scarf against the cold", "duration": 24, "tool": "none",
+   "track": [[0, {}], [0.25, {"y": 0.6, "b": 0.5, "eye": "-"}], [0.6, {"y": 0.8, "b": 0.7, "eye": "-", "mark": "mm"}], [0.85, {"y": 0.3, "eye": "^"}], [1, {}]],
+   "events": [[0.6, "snug"]], "when": ["cold"], "prefer": ["tired"], "ages": null}
+ }}
