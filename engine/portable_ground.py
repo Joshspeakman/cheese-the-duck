@@ -83,7 +83,7 @@ def reservation(pond):
 
 def restore(pond):
     plan=pond.state.get('plan')
-    if not plan or plan.get('kind')!='item' or plan.get('instance') or plan['target'] in pond.placed:return
+    if not plan or plan.get('kind')!='item' or plan.get('instance') or plan.get('in_place') or plan['target'] in pond.placed:return
     if plan.get('portable') and valid(pond,plan):return
     origin=next((plan[key]['origin'] for key in WORKS if plan.get(key,{}).get('origin')),None)
     site=choose(pond,plan['target'],origin,plan.get('location'))

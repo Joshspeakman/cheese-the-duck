@@ -1,0 +1,40 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Curio workshop</title>
+<style>body{background:#142b23;color:#ecdbb3;font:20px Georgia;margin:24px}canvas{display:block;max-width:100%;margin:24px 0}</style>
+<h1>Curio workshop · bespoke art for the 116 pending objects</h1>
+<script type="module">
+import {CURIO_BLUEPRINTS,curioSprite} from '../client/curio-workshop.mjs';
+import {ItemPainter} from '../client/ultra-items.mjs';
+const painter=new ItemPainter(),BASE={family:'',width:0,art:[],tones:[],scale:1};
+const COLS=4,ROWS=3,CW=450,CH=400,PER=COLS*ROWS;
+window.curioIds=()=>Object.keys(CURIO_BLUEPRINTS);
+// Sheets of PER objects at a large review scale; frames = time offsets drawn side by side per object.
+window.reviewCurios=(only=null,frame=0)=>{
+ const ids=only||Object.keys(CURIO_BLUEPRINTS),images={};let drawn=0;
+ for(let page=0;page<Math.ceil(ids.length/PER);page++){
+  const canvas=document.createElement('canvas');canvas.width=COLS*CW;canvas.height=ROWS*CH;const c=canvas.getContext('2d');c.fillStyle='#142b23';c.fillRect(0,0,canvas.width,canvas.height);
+  ids.slice(page*PER,page*PER+PER).forEach((id,n)=>{
+   const m=curioSprite({id,...BASE},{id},frame/3+.01,{}),x=n%COLS*CW,y=Math.floor(n/COLS)*CH;
+   if(!m||m.construction!=='curio-v1')throw Error(id+' did not build');
+   if(m.clipped)console.error('CLIPPED '+id);
+   c.strokeStyle='#1f4034';c.strokeRect(x+4,y+4,CW-8,CH-8);
+   c.fillStyle=m.clipped?'#ff5a5a':'#e5d8b4';c.font='18px Menlo';c.fillText(id+' ('+m.width+'x'+m.art.length+')'+(m.clipped?' CLIPPED':''),x+14,y+28);
+   const unit=Math.min(11,(CW-40)/(m.width+2),(CH-90)/((m.art.length+2)*1.5));
+   painter.draw(c,m,x+CW/2,y+CH-26,unit/m.detailScale,{surface:'#142b23',outline:'#0a1712',shadow:false});drawn++;
+  });
+  images['curios-'+String(page).padStart(2,'0')]=canvas.toDataURL('image/png');document.body.append(canvas);
+ }
+ return {images,drawn};
+};
+// Game-size strip: every object at its blueprint world scale, side by side, for relative size review.
+window.reviewCurioScale=()=>{
+ const ids=Object.keys(CURIO_BLUEPRINTS),canvas=document.createElement('canvas');canvas.width=2400;canvas.height=900;const c=canvas.getContext('2d');c.fillStyle='#142b23';c.fillRect(0,0,2400,900);
+ let x=30,row=0;const PX=6.2;// pixels per world unit at the review camera
+ for(const id of ids){
+  const b=CURIO_BLUEPRINTS[id],m=curioSprite({id,...BASE},{id},0,{motion:false});if(!m)continue;const cw=PX*b.scale*m.detailScale,w=(m.width+2)*cw;
+  if(x+w>2380){x=30;row++;}if(row>2)break;
+  painter.draw(c,m,x+w/2,300*(row+1)-20,PX*b.scale,{surface:'#142b23',outline:'#0a1712',shadow:false});
+  c.fillStyle='#8fa89c';c.font='12px Menlo';c.fillText(id.slice(0,14),x,300*(row+1)-4);x+=w+14;
+ }
+ document.body.append(canvas);return {image:canvas.toDataURL('image/png'),ids:ids.length};
+};
+</script>

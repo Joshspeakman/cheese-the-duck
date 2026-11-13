@@ -293,6 +293,8 @@ try:
                     pos._state_start_time -= .2
                     pos.update(.2)
                     p._activity(.2)
+                    if _ % 5 == 0:
+                        p.sync()  # the real loop syncs every second
                 else:
                     raise AssertionError(label + ' never finished')
                 work = plan['rep_work']

@@ -26,6 +26,8 @@ import KEEPSAKES from './animation/keepsakes.json' with {type:'json'};
 import {creativeSummary} from './creative-state.mjs';
 import {keepsakeSummary,KEEPSAKE_CHOICES} from './keepsake-state.mjs';
 import {wonderSummary,WONDER_CHOICES} from './wonder-state.mjs';
+import {REP_ROUTINES,REP_OBJECTS} from './repertoire-routines.mjs';
+const REP_BY_OBJECT=Object.entries(REP_ROUTINES).reduce((m,[k,r])=>((m[r.object]||=[]).push(k),m),{});
 const keepingSummary=state=>{const k=state.keeping||{},fish=k.fish||[];if(!fish.length)return 'No fish kept yet. Keep a catch from the fishing record.';
  const hungry=fish.filter(f=>f.hunger>.6).length;return fish.length+' fish · water '+((k.clarity??.8)>.6?'clear':(k.clarity??.8)<.35?'murky':'fair')+(hungry?' · '+hungry+' hungry':'')+((k.ice||0)>.6?' · iced over':'');};
 import {creativePose} from './creative-routines.mjs';
@@ -211,6 +213,19 @@ const p=itemProfile(item,itemFamily(id));
     if(state.creative){
      detail.dataset.creativeId=id;detail.dataset.creativeInstance=instance||'';
      const summary=el('p',creativeSummary(id,state));summary.dataset.creativeSummary='';detail.append(summary);
+    }
+    {
+     // Repertoire: one compact chooser per object (48 routines would be a wall of buttons).
+     const owners=[...(REP_BY_OBJECT[id]?[id]:[]),...new Set((state.keeping?.fish||[]).map(f=>f.species)),...(state.display?.items||[])].filter(o=>REP_BY_OBJECT[o]);
+     for(const o of owners){
+      const row=el('div',undefined,'pond-rep-row'),pick=el('select');pick.setAttribute('aria-label','Choose something to do with the '+o.replaceAll('_',' '));
+      for(const key of REP_BY_OBJECT[o]){const opt=el('option',REP_ROUTINES[key].label);opt.value=key;pick.append(opt);}
+      // Worn and portable things have no placed copy: never carry a stale selection.
+      const loose=['wearable','portable'].includes(REP_OBJECTS[o]?.host),inst=loose?undefined:instance||undefined;
+      const go=el('button',o===id?'Do it':'Do it ('+o.replaceAll('_',' ')+')','pond-action');go.disabled=busy||(!loose&&Boolean(instance)&&!outside);
+      go.onclick=()=>this.command('rep_action',o,{instance:inst,text:pick.value});
+      row.append(pick,go);detail.append(row);
+     }
     }
     if(['trophy_case','cabinet'].includes(id)){
      const shown=state.display?.items||[];detail.append(el('p',shown.length?'On display: '+shown.map(x=>x.replaceAll('_',' ')).join(', '):'Nothing on display yet.'));
