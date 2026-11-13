@@ -4632,7 +4632,7 @@
       "engine/artifacts/animation-milestone/medium-art-render.json",
       "engine/artifacts/animation-milestone/parent-medium-review.log"
     ],
-    "next": "Breadth: the 116 non-shop items (collectibles, fish, badges, feathers, materials, treasure): new art + 48 meaningful interactions each, family by family; then deepen every object toward 48.",
+    "next": "Keeping pond for fish (koi_pond hosts kept catches; species behaviour; 48 per species), then display spots (trophy_case/cabinet) for collectibles; generalise the wonders machinery (rule engine, sampler, reach exporter, coarse grid, harness) by family rather than cloning; settle a scalable journal UI (grouped choices) before 48 buttons per object.",
     "checks": {
       "javascript": 226,
       "livingSimulation": 694,
@@ -6225,7 +6225,36 @@
       "wearSpeed": "Keep hours pace.",
       "commits": "Local checkpoint commits on codex/ascii-engine-port after each verified batch; no push, no install.",
       "order": "Fix check_playkit_company boat_finish now; then finish wonders (bigger-glyph redraw for small ones, wire say cues into speech); then breadth: art + interactions for the 116 non-shop items family by family; then deepen every object toward 48.",
-      "install": "Only when the whole milestone is done, saves verified and migrated."
+      "install": "Only when the whole milestone is done, saves verified and migrated.",
+      "fish": "Add a keeping pond: caught fish can really live in a placed koi_pond (existing shop item), each tied to one actual catch record, with species behaviour, hunger, mood, size; supports 48 real interactions each. Catching unchanged. Evidence: overhaul/animation-milestone/fish-outline.md (today's state supports ~14 pond / ~4 other).",
+      "collectibles_display": "Give inventory-only collectibles (cards, badges, trophies, tokens, feathers, coins) display spots using existing trophy_case and cabinet, so Cheese and visitors can handle, arrange, polish and show them; needed for 48 each."
+    },
+    "nonShopOwnershipMap": {
+      "fish (14)": "catch records in g.fishing.fish_caught; owned; no physical fish until kept",
+      "collectible cards (15)": "not in pond.owned yet; need display spot + ownership hook",
+      "wearables among pending": [
+        "fishing_rod",
+        "magic_wand"
+      ],
+      "consumables": [
+        "fish_treat",
+        "small_fish",
+        "medicine"
+      ],
+      "materials (47 rare + others)": "g.materials quantities; includes costumes/hats/crowns to check against wardrobe",
+      "tools": [
+        "stone_hammer",
+        "fishing_rod",
+        "gathering_bag",
+        "master_fishing_rod"
+      ],
+      "treasure (8)": "g.treasure.found_treasures",
+      "structures": [
+        "watchtower"
+      ],
+      "decorations": [
+        "spring_wreath"
+      ]
     }
   },
   "wardrobe": [
