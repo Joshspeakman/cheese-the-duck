@@ -277,10 +277,10 @@ def eligible(pond, oid, obj, world=None, cheese=None):
     return out
 
 
-def appeal(pond, oid, obj, key):
-    s = view(oid, obj)
-    world = World(pond)
-    cheese = cheese_context(pond)
+def appeal(pond, oid, obj, key, world=None, cheese=None, s=None, low=None):
+    s = s or view(oid, obj)
+    world = world or World(pond)
+    cheese = cheese if cheese is not None else cheese_context(pond)
     r = ROUTINES[key]
     score = 10 + 9 * sum(condition(p, s, world, cheese) for p in r['prefer'])
     for token in r['when']:
@@ -288,18 +288,24 @@ def appeal(pond, oid, obj, key):
         score += 4 if COMPARE.match(name) else 0 if token.startswith('!') else 6
     # Least-used rotation: the novelty penalty is relative and uncapped, so gated
     # favourites cannot strand the rest of the 48.
-    used = [s['history'].get(k, 0) for k in by_object(oid)] or [0]
-    score -= 12 * (s['history'].get(key, 0) - min(used))
+    if low is None:
+        low = min([s['history'].get(k, 0) for k in by_object(oid)] or [0])
+    score -= 12 * (s['history'].get(key, 0) - low)
     return score
 
 
-def best(pond, oid, obj):
-    keys = eligible(pond, oid, obj)
+def best(pond, oid, obj, world=None, cheese=None):
+    world = world or World(pond)
+    cheese = cheese if cheese is not None else cheese_context(pond)
+    keys = eligible(pond, oid, obj, world, cheese)
     if not keys:
         return None
+    s = view(oid, obj)
+    low = min([s['history'].get(k, 0) for k in by_object(oid)] or [0])
     clock = int(finite(pond.state.get('elapsed')) / 40)
-    key = max(keys, key=lambda k: (appeal(pond, oid, obj, k), (hash_text(k) + clock) % 97))
-    return key, appeal(pond, oid, obj, key)
+    scored = {k: appeal(pond, oid, obj, k, world, cheese, s, low) for k in keys}
+    key = max(keys, key=lambda k: (scored[k], (hash_text(k) + clock) % 97))
+    return key, scored[key]
 
 
 def make(pond, key, subject=None):
@@ -379,15 +385,23 @@ def advance(pond, plan, dt):
 def choices(pond):
     """Autonomous candidates: (target, instance, score, reason, routine, subject)."""
     out = []
+    world, cheese = World(pond), cheese_context(pond)
     for oid, spec in OBJECTS.items():
         host = host_of(pond, oid)
         if host is None:
             continue
         item, inst, fish = host
-        obj = pond.object_state(item, inst)
-        if obj is None or pond.state['elapsed'] - obj.get('last_use', -1e9) < 120:
+        if OBJECTS[oid].get('host') == 'wearable':
+            obj = pond.state['objects'].get(oid)
+        else:
+            obj = pond.object_state(item, inst)
+        if obj is None:
+            if OBJECTS[oid].get('host') not in ('portable', 'wearable'):
+                continue
+            obj = {}  # never used yet: score with fresh state; starting the routine creates the real record
+        if pond.state['elapsed'] - obj.get('last_use', -1e9) < 120:
             continue
-        pick = best(pond, oid, obj)
+        pick = best(pond, oid, obj, world, cheese)
         if not pick:
             continue
         subject = max(fish, key=lambda x: x['hunger'])['id'] if fish else None
