@@ -4,6 +4,26 @@ import {waterPose} from './water-routines.mjs';
 export {BLUEPRINTS as WATER_BLUEPRINTS};
 const clamp=n=>Math.max(0,Math.min(1,n));
 const night=ctx=>ctx.hour<6||ctx.hour>=19;
+// Real kept fish (engine/keeping.py): species glyph and length from the catch,
+// depth by species, resting outside their active hours, glow, hungry surfacing.
+const FISHART={minnow:['>','<'],goldfish:['><>','<><'],carp:['><=((>','<))=><'],bass:['><((*>','<*))><'],catfish:['=<((:>','<:))>='],trout:['><--*>','<*--><'],
+ koi:['><((o>','<o))><'],salmon:['><==)>','<(==><'],golden_koi:['><((@>','<@))><'],ghost_fish:['>:.:>','<:.:<']};
+const DWELL={minnow:-2,goldfish:-2,koi:-2,golden_koi:-2,bass:0,trout:0,salmon:0,ghost_fish:0,carp:2,catfish:2};
+const ACTIVE={goldfish:[6,16],trout:[5,11],catfish:[17,30],ghost_fish:[19,29],golden_koi:[5,10]};
+function keptFish(c,fish,cx,cy,rx,t,ctx){
+ const h=ctx.hour??12;
+ fish.forEach((f,i)=>{
+  const seed=[...f.id].reduce((n,ch)=>(n*31+ch.charCodeAt(0))>>>0,7),win=ACTIVE[f.species],hh=h<5?h+24:h;
+  const awake=!win||(hh>=win[0]&&hh<win[1]),speed=awake?.25+(seed%7)/20:.03,a=t*speed+seed%628/100;
+  const dir=Math.cos(a)>0?0:1,x=cx+Math.sin(a)*rx*(.35+(seed%40)/100),y=cy+DWELL[f.species]+Math.cos(a*1.3)*1.5+(f.hunger>.65&&awake?-2:0);
+  let glyph=FISHART[f.species][dir];if(f.size>45)glyph=glyph.replace(/[(=:-]/g,m=>m+m);
+  const glow=(f.species==='ghost_fish'&&(h<6||h>=19))||(f.species==='golden_koi'&&h>=5&&h<9);
+  c.put(x-glyph.length/2,y,glyph,glow?'f':f.species.includes('koi')?'a':f.species==='goldfish'?'p':'c');
+  if(f.hunger>.65&&awake)c.put(x+(dir?-1:1)*(glyph.length/2+1),y-1,'o','c');
+  if(glow)for(const d of [-1,1])c.put(x+d*(glyph.length/2+1),y,'.','f');
+  if(!awake)c.put(x,y-1,'z','s');
+ });
+}
 
 function masonry(c,x,y,w,h,stone='b'){
  c.rect(x,y,w,h,stone,true);
@@ -92,7 +112,9 @@ function pool(c,p,t,ctx,state,active,frozen){
   water(c,cx,cy,rx-3,ry-1,t,{frozen,active});
   reeds(c,12,H-12,15);reeds(c,W-12,cy-3,13);lily(c,cx+rx*.45,cy+1);lily(c,cx-rx*.4,cy-4,ctx.season!=='winter');
   if(p.style==='koi'){
-   for(const [i,tone]of [[0,'a'],[1,'p'],[2,'c']]){const x=cx+Math.sin(t*.22+i*2)*rx*.5,y=cy+Math.cos(t*.22+i*2)*4;c.put(x-3,y,i%2?'<o))><':'><((o>',tone);}
+   const kept=state.keeping?.fish||[];
+   if(kept.length&&!frozen)keptFish(c,kept,cx,cy,rx,t,ctx);
+   else if(!kept.length)for(const [i,tone]of [[0,'a'],[1,'p'],[2,'c']]){const x=cx+Math.sin(t*.22+i*2)*rx*.5,y=cy+Math.cos(t*.22+i*2)*4;c.put(x-3,y,i%2?'<o))><':'><((o>',tone);}
    for(let x=18;x<46;x++){const y=cy-12-Math.sin((x-18)/28*Math.PI)*4;c.put(x,y,'=','b');c.put(x,y-5,'~','f');if(x%5===0)c.line(x,y-4,x,y,'|','f');}
   }else{c.rows(['  ___',' /:  \\','/_.___\\'],W-28,cy-17,'b',true);c.put(W-22,cy-18,'\\|/','g');}
  }else{

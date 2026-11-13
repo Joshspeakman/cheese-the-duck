@@ -6255,6 +6255,38 @@
       "decorations": [
         "spring_wreath"
       ]
+    },
+    "keepingPond": {
+      "status": "core implemented and tested; routines not started",
+      "design": "engine/overhaul/animation-milestone/keeping-pond-design.md",
+      "source": [
+        "engine/keeping.py",
+        "client/waterworks.mjs keptFish",
+        "pond-journal keep/release buttons",
+        "living_world keeping_action + kept_catches saved"
+      ],
+      "tested": "check_keeping PASS 19: real catches only, each once, invented/duplicate/released refused, pufferfish refused (salt water), capacity 320 cm, hunger/feeding/health/ice/leaves physics, release raises wild fish, fishing record untouched, no items/coins, save/reload; drawing day and night. Regression: check_living 694, check_water_routines 183, waterworks render, npm 317/317.",
+      "species": {
+        "keepable": [
+          "minnow",
+          "goldfish",
+          "carp",
+          "bass",
+          "catfish",
+          "trout",
+          "koi",
+          "salmon",
+          "golden_koi",
+          "ghost_fish"
+        ],
+        "notKeepable_userDecisionPending": {
+          "pufferfish": "salt water",
+          "swordfish": "ocean, 1-3 m",
+          "sturgeon": "1-4 m",
+          "ancient_dragon_fish": "2-5 m"
+        }
+      },
+      "next": "Routines in batches through a generalised repertoire engine (48 archetypes in the design doc), per-species distinctness check, then visitor roles."
     }
   },
   "wardrobe": [

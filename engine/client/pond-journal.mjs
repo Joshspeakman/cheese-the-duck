@@ -26,6 +26,8 @@ import KEEPSAKES from './animation/keepsakes.json' with {type:'json'};
 import {creativeSummary} from './creative-state.mjs';
 import {keepsakeSummary,KEEPSAKE_CHOICES} from './keepsake-state.mjs';
 import {wonderSummary,WONDER_CHOICES} from './wonder-state.mjs';
+const keepingSummary=state=>{const k=state.keeping||{},fish=k.fish||[];if(!fish.length)return 'No fish kept yet. Keep a catch from the fishing record.';
+ const hungry=fish.filter(f=>f.hunger>.6).length;return fish.length+' fish · water '+((k.clarity??.8)>.6?'clear':(k.clarity??.8)<.35?'murky':'fair')+(hungry?' · '+hungry+' hungry':'')+((k.ice||0)>.6?' · iced over':'');};
 import {creativePose} from './creative-routines.mjs';
 import {keepsakePose} from './keepsake-routines.mjs';
 const names=new Map(catalog.map(i=>[i.id,i]));
@@ -209,6 +211,12 @@ const p=itemProfile(item,itemFamily(id));
     if(state.creative){
      detail.dataset.creativeId=id;detail.dataset.creativeInstance=instance||'';
      const summary=el('p',creativeSummary(id,state));summary.dataset.creativeSummary='';detail.append(summary);
+    }
+    if(state.keeping&&id==='koi_pond'){
+     detail.dataset.keepingId=id;detail.dataset.keepingInstance=instance||'';
+     detail.append(el('p',keepingSummary(state)));
+     for(const f of state.keeping.fish||[]){const b=this.button('Release '+(f.name||f.species.replaceAll('_',' '))+' ('+Math.round(f.size)+' cm)','keeping_action',id,busy||!instance||!outside,{instance,text:'release:'+f.id});detail.append(b);}
+     for(const c of (w.keepable||[]).slice(0,8)){const b=this.button('Keep the '+c.species.replaceAll('_',' ')+' ('+c.size+' cm'+(c.record?', record':'')+')','keeping_action',id,busy||!instance||!outside,{instance,text:'keep:'+c.species+':'+c.catch});detail.append(b);}
     }
     if(state.wonder&&WONDER_CHOICES[id]){
      detail.dataset.wonderId=id;detail.dataset.wonderInstance=instance||'';
