@@ -13,7 +13,7 @@ POSE = {'x', 'y', 'b', 'w', 'l', 'r', 'reach', 'contact', 'eye', 'mark', 'anchor
 TAGS = set('''always wet dry snow storm windy calm warm cold sun night day dawn dusk night_late dawn_or_day clear rainbow_sky growing spring summer fall winter
  tired lonely sad !wet !snow !storm !windy !cold !night !night_late !dawn !dusk !summer !fall !winter !rainbow_sky !tired !lonely !sad'''.split())
 MOODS = {'young', 'grown', 'elder', 'happy', 'grumpy', 'curious'}  # prefer only: the harness cannot stage them
-REAL = dict(subject=('hunger', 'mood', 'health', 'trust', 'growth'), keeping=('clarity', 'algae', 'leaves', 'ice', 'oxygen', 'plants', 'flakes', 'bell'), need=('fun', 'social', 'energy', 'cleanliness'))
+REAL = dict(obj=('dirt', 'wetness', 'condition'), subject=('hunger', 'mood', 'health', 'trust', 'growth'), keeping=('clarity', 'algae', 'leaves', 'ice', 'oxygen', 'plants', 'flakes', 'bell'), need=('fun', 'social', 'energy', 'cleanliness'))
 CMP = re.compile(r'^!?([a-z_]+)(<=|>=|<|>)(-?[0-9.]+)$')
 JS = ("import {itemSprite as s,itemWorldScale as w} from './client/ultra-items.mjs';const i=process.argv[1],m=s(i,0,{state:{keeping:{setup:true,fish:[]}}});"
       "console.log(JSON.stringify({w:m.width,art:m.art.map(String),row:7.5*w(i)*(m.detailScale||1)*1.5,ground:m.anchors?.entry?.y??m.art.length-1,named:Object.keys(m.anchors||{})}))")
@@ -41,7 +41,7 @@ class Obj:
         for n, rows in d['effects'].items():
             for t, op, v in rows:
                 a, _, b = t.partition('.')
-                ok = t in fields or (b in REAL.get(a, ()) and (a != 'need' or (op == 'add' and abs(v) <= 3)) and (a == 'need' or host == 'keeping'))
+                ok = t in fields or (b in REAL.get(a, ()) and (a != 'need' or (op == 'add' and abs(v) <= 3)) and (a in ('need', 'obj') or host == 'keeping'))
                 assert ok and op in ('set', 'add', 'mul', 'max', 'min', 'wrap'), f'{oid}: effect {n} row {t} {op} would do nothing, or is not allowed'
         if host != 'wearable':  # worn things play on Cheese's own body: nothing to measure
             sp = sprite(on or oid)
@@ -49,7 +49,9 @@ class Obj:
             for n, (x, y) in anchors.items():
                 cx, cy = round(x * (sp['w'] - 1)), round(y * rows)
                 assert n not in sp['named'] and n not in ('contact', 'entry'), f'{oid}: anchor name {n} is taken by the drawing {sp["named"]}'
-                assert any(sp['art'][r][max(0, cx - 4):cx + 5].strip() for r in range(max(0, cy - 1), min(rows, cy + 1) + 1)), f'{oid}: anchor {n} is on empty air'
+                near = range(max(0, cy - 1), min(rows, cy + 1) + 1)
+                inside = any(sp['art'][r][:cx].strip() and sp['art'][r][cx + 1:].strip() for r in near)  # within an outline (ASCII bodies are hollow)
+                assert inside or any(sp['art'][r][max(0, cx - 4):cx + 5].strip() for r in near), f'{oid}: anchor {n} is on empty air'
                 self.h[n], self.spot[n] = (sp['ground'] - y * rows) * sp['row'], (round(cx * sp['row'] / 22.5), round(cy * sp['row'] / 15))
                 assert self.h[n] >= 0, f'{oid}: anchor {n} is below the ground line'
 
@@ -103,17 +105,25 @@ class Obj:
             assert len(say) >= 2 and all(len(s) <= 90 for s in say), key + ': two or three lines of at most 90 characters'
             d['lines'][key] = list(say)
         d['routines'][key] = dict(label=label, duration=dur, tool=tool, group=g, track=tr, events=[list(e) for e in ev], when=list(when), prefer=list(prefer), ages=ages,
-                                  say=key if say else None, **({'obj': [list(o) for o in obj]} if obj else {}), **({'pick': pick} if pick else {}))
+                                  say=key if say else None, **({'far': True} if far else {}), **({'obj': [list(o) for o in obj]} if obj else {}), **({'pick': pick} if pick else {}))
 
-    def emit(self, need=48):
+    def emit(self, need=None):
+        """emit() hands in: the object's full need (48, less any wonder routines it already has).
+        emit(need=N) is a draft run only: it writes the file but skips the hand-in thresholds."""
         d, n = self.d, len(self.d['routines'])
+        queue = {o['id']: o for o in json.loads((ENG / 'overhaul/animation-milestone/work-queue.json').read_text())['objects']}
+        full = 48 - queue.get(d['object'], {}).get('wonder_routines', 0)
+        hand_in = need is None
+        need = full if hand_in else need
         used, read = {name for r in d['routines'].values() for _, name in r['events']}, ' '.join(t for r in d['routines'].values() for t in r['when'] + r['prefer'])
         per_age = {a: sum(a in v for v in self.reach.values()) for a in AGES}
-        assert n >= need and used == set(d['effects']), f'{d["object"]}: {n} routines; unused effects {set(d["effects"]) - used}'
+        assert n >= need and used == set(d['effects']), f'{d["object"]}: {n} routines (need {need}); unused effects {set(d["effects"]) - used}'
         assert all(f in read for f in d['fields']), f'{d["object"]}: every field must gate or attract some routine, or it changes nothing anyone can see'
-        if need >= 48:  # a smaller `need` is a draft run, never a hand-in
-            assert self.far <= 4 and all(4 <= self.group.get(g, 0) <= 9 for g in GROUPS), f'{d["object"]}: groups {self.group}, far {self.far}'
-            assert min(per_age.values()) >= 16 and per_age['adult'] >= 32, f'{d["object"]}: too few routines in reach for some age {per_age}'
+        if hand_in:
+            lo, hi = max(1, full // 12), max(2, -(-full * 9 // 48))
+            assert self.far <= 4 and all(lo <= self.group.get(g, 0) <= hi for g in GROUPS), f'{d["object"]}: groups {self.group} (each {lo}..{hi}), far {self.far}'
+            floor, adult = -(-full // 3), -(-full * 2 // 3)
+            assert min(per_age.values()) >= floor and per_age['adult'] >= adult, f'{d["object"]}: too few routines in reach for some age {per_age} (floor {floor}, adult {adult})'
         head = ',\n'.join(f' {json.dumps(key)}: {json.dumps(v)}' for key, v in d.items() if key != 'routines')
         body = ',\n'.join(f'  {json.dumps(key)}: {json.dumps(r)}' for key, r in d['routines'].items())
         OUT.mkdir(parents=True, exist_ok=True)

@@ -3,8 +3,8 @@
  "by_host": {
   "display": 44,
   "keeping": 14,
-  "placed": 267,
-  "portable": 175,
+  "placed": 248,
+  "portable": 194,
   "wearable": 109
  },
  "objects": [
@@ -872,12 +872,13 @@
     "items.ITEMS",
     "decorations.DECORATIONS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "toy_ball",
@@ -984,12 +985,13 @@
    "sources": [
     "decorations.DECORATIONS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "garden_bench",
@@ -1378,12 +1380,13 @@
    "sources": [
     "decorations.DECORATIONS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "furniture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "grandfather_clock",
@@ -1463,12 +1466,13 @@
    "sources": [
     "decorations.DECORATIONS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "furniture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "desk",
@@ -1955,12 +1959,13 @@
    "sources": [
     "decorations.DECORATIONS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "keepsakes.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "galaxy_floor",
@@ -2770,12 +2775,13 @@
    "sources": [
     "decorations.DECORATIONS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "nest_premium",
@@ -2784,12 +2790,13 @@
    "sources": [
     "decorations.DECORATIONS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "crystal_ball",
@@ -2966,12 +2973,13 @@
    "sources": [
     "decorations.DECORATIONS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "hot_tub",
@@ -3484,12 +3492,13 @@
    "sources": [
     "garden.SEEDS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "seeds.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "crystal_seeds",
@@ -3498,12 +3507,13 @@
    "sources": [
     "garden.SEEDS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "seeds.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "golden_seeds",
@@ -3512,12 +3522,13 @@
    "sources": [
     "garden.SEEDS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "seeds.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "mint_seeds",
@@ -3526,12 +3537,13 @@
    "sources": [
     "garden.SEEDS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "seeds.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "pumpkin_seeds",
@@ -3540,12 +3552,13 @@
    "sources": [
     "garden.SEEDS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "seeds.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "rose_seeds",
@@ -3554,12 +3567,13 @@
    "sources": [
     "garden.SEEDS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "seeds.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "strawberry_seeds",
@@ -3568,12 +3582,13 @@
    "sources": [
     "garden.SEEDS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "seeds.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "tomato_seeds",
@@ -3582,12 +3597,13 @@
    "sources": [
     "garden.SEEDS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "seeds.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "tulip_seeds",
@@ -3596,12 +3612,13 @@
    "sources": [
     "garden.SEEDS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "seeds.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "watermelon_seeds",
@@ -3610,12 +3627,13 @@
    "sources": [
     "garden.SEEDS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "seeds.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "toy_seesaw",
@@ -4003,12 +4021,13 @@
    "sources": [
     "decorations.DECORATIONS"
    ],
-   "host": "placed",
+   "host": "portable",
    "consumable": false,
    "family_engine": "furniture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "rehosted": "loose object: never stands outdoors through its own system"
   },
   {
    "id": "telescope",
