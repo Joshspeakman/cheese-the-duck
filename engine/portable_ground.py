@@ -8,7 +8,7 @@ from engine.pond_layout import PondLayout,FOOTPRINTS,finite
 
 IDENTITY='portable:cheese'
 OFFSET=7*132/192
-WORKS=('keepsake_work','creative_work','playkit_work','textile_work','ground_work')
+WORKS=('keepsake_work','creative_work','playkit_work','textile_work','ground_work','rep_work')
 STANCE=dict(width=6,height=4,floor=False)
 
 def policy(pond,location=None):

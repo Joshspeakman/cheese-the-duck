@@ -1,0 +1,100 @@
+{
+ "version": 1,
+ "bodyHeight": {
+  "hatchling": 60.46875,
+  "duckling": 78.75,
+  "juvenile": 96.6346153846154,
+  "young_adult": 110.19999999999999,
+  "adult": 117.703125,
+  "mature": 123.515625,
+  "elder": 116,
+  "legendary": 123.515625
+ },
+ "routines": {
+  "koi_scatter_flakes": {
+   "contactHeight": 73,
+   "highestAnchor": "surface",
+   "tool": "wing",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "koi_bill_feed": {
+   "contactHeight": 73,
+   "highestAnchor": "surface",
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "koi_net_leaves": {
+   "contactHeight": 73,
+   "highestAnchor": "surface",
+   "tool": "rake",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "koi_feeding_bell": {
+   "contactHeight": 48,
+   "highestAnchor": "edge_r",
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "koi_kiss": {
+   "contactHeight": 73,
+   "highestAnchor": "surface",
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "koi_wingtip_trick": {
+   "contactHeight": 89,
+   "highestAnchor": "far",
+   "tool": "wing",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  }
+ }
+}
