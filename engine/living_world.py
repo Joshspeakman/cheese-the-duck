@@ -913,6 +913,8 @@ class LivingPond:
             # Worn/held repertoire work: one recorded routine and the shared
             # learning signal; no item use, no wear, no rewards.
             repertoire.complete(self,plan)
+            from engine import wonder_company
+            wonder_company.complete(self.minds,plan)
             work=plan.get('rep_work') or {}
             if work.get('recorded'):self.minds.completed('item',work.get('label','')+'.',plan.get('learning_before'))
             return
@@ -955,6 +957,9 @@ class LivingPond:
             keepsakes.complete(self,plan)
             wonders.complete(self,plan)
             repertoire.complete(self,plan)
+            if plan.get('rep_work'):
+                from engine import wonder_company
+                wonder_company.complete(self.minds,plan)
             from engine import wonder_company
             wonder_company.complete(self.minds,plan)
             creative_props.complete(self,plan)

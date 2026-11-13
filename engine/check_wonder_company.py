@@ -164,6 +164,31 @@ try:
         advance(30)
         check(key not in b.wonder_guests, kind + ' visitor is released after the routine')
 
+    # A visitor also joins Cheese's generic repertoire routines (kept koi).
+    from engine import repertoire as REP, keeping as KP
+    from world.fishing import CaughtFish, FishingSpot, BaitType
+    iid, obj = place('koi_pond')
+    c = CaughtFish('koi', 44., '2026-05-02T09:00:00', FishingSpot.POND, BaitType.BREAD, False)
+    g.fishing.fish_caught['koi'] = [c]
+    ok, msg = KP.keep(p, 'koi_pond', iid, 'koi', c.caught_at)
+    check(ok, 'a real koi catch is kept for the company test: ' + msg)
+    ok, msg = REP.request(p, 'koi', 'koi_net_leaves', iid)
+    check(ok, 'Cheese starts netting leaves on the koi pond: ' + msg)
+    plan = p.state['plan']
+    key = bring('regular', plan['destination'])
+    before = bonds(key)
+    sequence = p.state['sequence']
+    joined = False
+    for _ in range(3000):
+        advance()
+        r = b.wonder_guests.get(key)
+        joined = joined or bool(r and r['key'] == 'rep_work' and r['phase'] == 'inside')
+        if not p.state['plan']:
+            break
+    notes = [j for j in p.state['journal'] if j['id'] > sequence and j['kind'] == 'neighbors' and j['subject'] == key]
+    check(joined and plan['rep_work'].get('recorded'), 'the visitor walked over and joined a repertoire routine')
+    check(bonds(key)[0] > before[0] and len(notes) == 1, 'shared credit for a completed repertoire routine, once')
+
     # Cancel part way: no shared credit, physical contacts already made remain.
     iid, obj = place('gong')
     W.request(p, 'gong', 'gong_dinner_call', iid)

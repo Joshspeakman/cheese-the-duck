@@ -13,6 +13,36 @@ every other company module treats as busy.
 """
 import copy
 from engine import wonders, shelters, portable_ground
+
+
+def spec_of(routine):
+    """Routine spec from the wonders or the generic repertoire engine."""
+    if routine in wonders.ROUTINES:
+        return wonders.ROUTINES[routine]
+    from engine import repertoire
+    return repertoire.ROUTINES[routine]
+
+
+def plan_work(plan):
+    """(work key, work) for a plan Cheese is doing that visitors may join."""
+    for key in ('wonder_work', 'rep_work'):
+        if plan and plan.get(key):
+            return key, plan[key]
+    return None, None
+
+
+def plan_valid(pond, plan, key):
+    if key == 'wonder_work':
+        return wonders.valid(pond, plan)
+    from engine import repertoire
+    return repertoire.valid(pond, plan)
+
+
+def sheltering(plan, key, routine):
+    if key == 'wonder_work':
+        return wonders.sheltering(plan['target'], routine)
+    r = spec_of(routine)
+    return r['tool'] == 'none' and 'wet' in r['when'] and r['duration'] >= 30
 from engine.visitor_shelters import distance, departing, profile
 
 HANDED = {'duck', 'goose', 'owl', 'crow', 'toad', 'duckling'}
@@ -63,7 +93,7 @@ def valid(minds, r):
         return False
     if r['mode'] == 'company':
         plan = p.state.get('plan')
-        return bool(plan and plan.get('wonder_work') is r['work'] and wonders.valid(p, plan))
+        return bool(plan and plan.get(r.get('key', 'wonder_work')) is r['work'] and plan_valid(p, plan, r.get('key', 'wonder_work')))
     plan = p.state.get('plan')
     if plan and plan.get('target') == r['id'] and plan.get('instance') == r['instance']:
         return False  # Cheese started on this exact copy: the visitor steps away.
@@ -120,9 +150,9 @@ def invite(minds):
     """At most one visitor joins Cheese, chosen once per routine start."""
     p = minds.pond
     plan = p.state.get('plan')
-    if not plan or not plan.get('wonder_work') or plan.get('paused') or not ready(minds):
+    wkey, work = plan_work(plan)
+    if not work or plan.get('paused') or not ready(minds):
         return
-    work = plan['wonder_work']
     if work.get('invitation_checked') or work.get('done') or work['elapsed'] > 0 or plan['phase'] not in ('prepare', 'act'):
         return
     work['invitation_checked'] = True
@@ -132,7 +162,7 @@ def invite(minds):
     spot = portable_ground.companion_spot(p, plan, origin)
     if spot is None:
         return
-    shelter = wonders.sheltering(plan['target'], work['id'])
+    shelter = sheltering(plan, wkey, work['id'])
     options = []
     for key in minds.present:
         if key == 'cheese' or departing(minds, key) or minds.now < minds.wonder_retry.get(key, 0) or busy(minds, key):
@@ -147,7 +177,7 @@ def invite(minds):
         return
     _, key = min(options)
     minds.tasks.pop(key, None)
-    minds.wonder_guests[key] = dict(actor=key, mode='company', id=plan['target'], instance=plan.get('instance'), destination=origin, spot=spot,
+    minds.wonder_guests[key] = dict(actor=key, mode='company', key=wkey, id=plan['target'], instance=plan.get('instance'), destination=origin, spot=spot,
                                     location=p.location, token=minds.presence_tokens[key], phase='approach', elapsed=0., started=minds.now,
                                     style=style(minds, key, work['id']), work=work, overlap=0., last_clock=work['elapsed'], shelter=shelter,
                                     contexts={k: minds.context(k) for k in ('cheese', key)})
@@ -233,22 +263,22 @@ def operate(minds, key, r, dt):
 def complete(minds, plan):
     """Called once when Cheese's routine completes; credits a genuinely shared one."""
     for key, r in list(minds.wonder_guests.items()):
-        if r['mode'] != 'company' or r['work'] is not plan.get('wonder_work') or r.get('recorded'):
+        if r['mode'] != 'company' or r['work'] is not plan.get(r.get('key', 'wonder_work')) or r.get('recorded'):
             continue
         work = r['work']
-        duration = wonders.ROUTINES[work['id']]['duration']
+        duration = spec_of(work['id'])['duration']
         if r['phase'] not in ('inside', 'finished') or not work.get('done') or work.get('interrupted') or not work.get('recorded') \
                 or r['overlap'] < max(4, duration * .45) or distance(minds.present[key], r['spot']) > 3:
             continue
         r['recorded'] = True
         name = minds.model.residents[key]['name']
-        label = wonders.ROUTINES[work['id']]['label']
+        label = spec_of(work['id'])['label']
         note = {'cheer': name + ' cheered Cheese on: ', 'nervous': name + ' watched from a careful step back: ',
                 'steady': name + ' kept Cheese company: ', 'curious': name + ' leaned in to see: '}[r['style']] + label.lower() + '.'
         for actor, other in (('cheese', key), (key, 'cheese')):
             minds.model.learn(actor, 'share', r['contexts'][actor], .25, minds.now, note, other)
             minds.model.bond(actor, other, .16, minds.now, note)
-        obj = minds.pond.object_state(plan['target'], plan)
+        obj = minds.pond.object_state(plan['target'], plan) if r.get('key', 'wonder_work') == 'wonder_work' else __import__('engine.repertoire', fromlist=['store']).store(minds.pond, plan, work)
         obj.setdefault('wonder_company', {})
         obj['wonder_company'][r['style']] = min(9999, obj['wonder_company'].get(r['style'], 0) + 1)
         minds.pond.remember('neighbors', note, .55, key)
@@ -278,7 +308,7 @@ def conversation(minds, key):
     if not r:
         return None
     partner = r['actor'] if key == 'cheese' else 'cheese'
-    label = wonders.ROUTINES[r['work']['id']]['label']
+    label = spec_of(r['work']['id'])['label']
     status = 'walking over' if r['phase'] == 'approach' else 'settling in' if r['phase'] == 'enter' else 'leaving' if r['phase'] == 'exit' else 'doing it now'
     if r['mode'] == 'operate':
         return dict(activity=label + ' (on their own)', object=r['id'].replace('_', ' '), status=status)
