@@ -810,5 +810,47 @@
   "h": 20,
   "scale": 0.8,
   "grid": 2
+ },
+ "umbrella": {
+  "type": "prop",
+  "w": 48,
+  "h": 28,
+  "scale": 0.9,
+  "grid": 2
+ },
+ "bouquet": {
+  "type": "prop",
+  "w": 36,
+  "h": 38,
+  "scale": 0.7,
+  "grid": 2
+ },
+ "easter_egg_basket": {
+  "type": "prop",
+  "w": 50,
+  "h": 24,
+  "scale": 0.75,
+  "grid": 2
+ },
+ "sparkle_aura": {
+  "type": "prop",
+  "w": 40,
+  "h": 24,
+  "scale": 0.7,
+  "grid": 2
+ },
+ "rainbow_trail": {
+  "type": "prop",
+  "w": 68,
+  "h": 22,
+  "scale": 0.85,
+  "grid": 2
+ },
+ "heart_bubbles": {
+  "type": "prop",
+  "w": 40,
+  "h": 28,
+  "scale": 0.65,
+  "grid": 2
  }
 }

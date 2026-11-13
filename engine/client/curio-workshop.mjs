@@ -1021,6 +1021,57 @@ PROPS.fish_treat=(c,W,H,f,t)=>{
  });
  return {entry:{x:W/2,y:H-1},contact:{x:W/2,y:5},string:{x:W/2,y:1},fish:{x:13,y:5}};
 };
+// Standalone drawings of six worn pieces (shop, wardrobe, journal); on Cheese they are fitted by wearables.mjs.
+PROPS.umbrella=(c,W,H,f)=>{
+ const cx=Math.round(W/2),x=cx-11;
+ P(c,['         _.-^-._        ',"      .-'/  |  \\'-.     ","    .'  /   |   \\  '.   ",'   /___/____|____\\___\\  ','   v   v    v    v   v  '],x,1,'r',{'/':'z','\\':'z','|':'z','^':'f',_:'r',v:'y'},true);
+ c.solid(x+6,2,4,2,'y');c.solid(x+15,2,3,2,'y');
+ P(c,['|','|','|','|','|'],cx+1,6,'k');
+ P(c,['  |','\\_/'],cx-1,11,'z');
+ if(f%4<2)c.put(x+7,3,'*','f');
+ return {entry:{x:cx,y:H-1},contact:{x:cx+1,y:9},canopy:{x:cx,y:3},tip:{x:cx,y:1},handle:{x:cx,y:12},rib:{x:x+4,y:4}};
+};
+PROPS.bouquet=(c,W,H,f)=>{
+ const cx=Math.round(W/2),sway=f%4<2?0:1;
+ P(c,['  @   *   @  ',' (q) (y) (r) ','@  (f) (q)  @',' (r) (l) (y) ','  \\ \\|/ /   '],cx-6+sway,1,'g',{'@':'q','*':'y','q':'q','y':'y','r':'r','f':'f','l':'l','(':'h',')':'h'});
+ P(c,['   \\|||/   ','    |||    ','   \\|||/   ','    |||    '],cx-5,6,'h');
+ P(c,['  .=====.  ',' /  ~~~  \\ ','|  ~ * ~  |',' \\  ~~~  / ',"  '-----'  "],cx-5,10,'u',{'~':'f','*':'y'},true);
+ P(c,['   |   |   ','   |___|   '],cx-5,15,'h');
+ c.put(cx-6,13,'~<',"q");c.put(cx+5,13,'>~','q');
+ return {entry:{x:cx,y:H-1},contact:{x:cx,y:12},blooms:{x:cx,y:3},wrap:{x:cx,y:11},stems:{x:cx,y:16},ribbon:{x:cx-5,y:13}};
+};
+PROPS.easter_egg_basket=(c,W,H,f)=>{
+ const cx=Math.round(W/2),x=cx-11;
+ P(c,['        .-------.        ',"      .'         '.      ",'     /             \\     ','    /               \\    '],x,1,'z');
+ P(c,['     (=)(~)(o)(=)(~)    '],x,5,'q',{'(':'k',')':'k','=':'y','~':'w',o:'r'},false);
+ c.solid(x+6,5,3,1,'q');c.solid(x+9,5,3,1,'w');c.solid(x+12,5,3,1,'y');c.solid(x+15,5,3,1,'l');c.solid(x+18,5,3,1,'g');
+ P(c,['   \\vVvVvVvVvVvVvVvVvV/  ','   |^v^v^v^v^v^v^v^v^v|  ','    \\#=#=#=#=#=#=#=#=/   ',"     '----------------'   "],x,6,'b',{'#':'z','=':'a',v:'h',V:'h','^':'h'},true);
+ if(f%4===1)c.put(cx,4,'*','f');
+ return {entry:{x:cx,y:H-1},contact:{x:cx,y:8},handle:{x:cx,y:1},eggs:{x:cx,y:5},weave:{x:cx,y:8},grass:{x:cx-6,y:6}};
+};
+PROPS.sparkle_aura=(c,W,H,f)=>{
+ const cx=Math.round(W/2),x=cx-8;
+ P(c,['      .  *  .     ',"   +    ' '    +  ",'  .   .-*-.    .  ',' *   (  @  )   *  ',"  .   '-*-'    .  ",'   +    . .    +  ','      .  *  .     '],x,1,'l',{'*':'y','+':'c','@':'f','(':'v',')':'v','-':'v'},false);
+ [[x+6,1],[x+15,3],[x+16,4],[x+1,4],[x+3,2],[x+11,7]].forEach(([a,b],i)=>glint(c,a,b,f,i%2?'y':'c',i));
+ P(c,['.===.','|___|'],cx-2,H-3,'s',{},true);
+ return {entry:{x:cx,y:H-1},contact:{x:cx-2,y:4},heart:{x:cx-2,y:4},halo:{x:cx-2,y:1},stand:{x:cx,y:H-2}};
+};
+PROPS.rainbow_trail=(c,W,H,f)=>{
+ const x=Math.round(W/2)-15;
+ P(c,['          __.--==--.__          ',"      _.-'            '-._      ","    .'                    '.    ",'   /                        \\   ','  /                          \\  '],x,1,'r');
+ P(c,['            .-~~~~-.            ',"        _.-'        '-._        ","      .'                '.      ",'     /                    \\     '],x,3,'y');
+ P(c,['              .==.              ',"          _.-'    '-._          ","        .'            '.        "],x,5,'u');
+ P(c,[' .oO.                      .Oo. ',' (__)                      (__) '],x,7,'f',{},true);
+ sparks(c,[[x+7,1],[x+25,2],[x+15,9]],f,'y');
+ return {entry:{x:W/2,y:H-1},contact:{x:x+3,y:8},arc:{x:x+16,y:1},cloud_left:{x:x+3,y:8},cloud_right:{x:x+28,y:8}};
+};
+PROPS.heart_bubbles=(c,W,H,f)=>{
+ const x=Math.round(W/2)-9,bob=f%2;
+ P(c,['    .---.         ','   /     \\   .--. ','  | <3 <3 | / <3 \\',"   \\     /  \\    /","    '---'    '--' "],x,1+bob,'i',{'<':'j','3':'j'},false);
+ P(c,['   .-.     o      ','  ( <3)           ',"   '-'    o       ",'        o         '],x,6,'i',{'<':'q','3':'q'},false);
+ P(c,['       \\ | /      ','       ( O )      ',"       '---'      "],x,10,'w',{O:'f'},false);
+ return {entry:{x:W/2,y:H-1},contact:{x:x+9,y:11},bubble_big:{x:x+6,y:3},bubble_low:{x:x+4,y:7},wand_ring:{x:x+9,y:11}};
+};
 function prop(c,W,H,s,f,t,id){return PROPS[id](c,W,H,f,t);}
 
 // ------------------------------------------------------------------ the ancient dragon fish: a long wish-granting serpent
@@ -1061,7 +1112,7 @@ function serpent(c,W,H,s,f,t,id){
 // ------------------------------------------------------------------ entry point
 const BUILD={serpent,prop,bottle,egg,tool,block,fiber,essence,costume,trophy,acorn,cone,feather,crown,hat,wreath,badge,medal,token,charm,coin,scale:scaleItem,card:(c,W,H,s,f,t,id)=>card(c,W,H,s,f,t,id),fish:(c,W,H,s,f,t,id)=>fish(c,W,H,s,f,t,id)};
 const SPECS={...FISH,...BOTTLES,...EGGS,...TOOLS,...BLOCKS,...COSTUMES,...TROPHIES,...ACORNS,...FEATHERS,...CROWNS,...HATS,...WREATHS,...BADGES,...MEDALS,...TOKENS,...CHARMS};
-const GLOWS=new Set(['golden_feather','rainbow_feather','static_feather','magic_acorn','golden_acorn','fairy_dust','warmth','mystery_sound','mystic_egg','heart_of_pond','guardian_blessing','golden_koi','ghost_fish','legend_phoenix','legend_dragon','weather_sun','weather_rainbow','master_trophy','legendary_trophy','golden_duck_trophy','fog_essence','magic_wand','ancient_dragon_fish','rainbow_charm','frozen_dewdrop','golden_badge','duck_crown','snowflake_crown']);
+const GLOWS=new Set(['sparkle_aura','golden_feather','rainbow_feather','static_feather','magic_acorn','golden_acorn','fairy_dust','warmth','mystery_sound','mystic_egg','heart_of_pond','guardian_blessing','golden_koi','ghost_fish','legend_phoenix','legend_dragon','weather_sun','weather_rainbow','master_trophy','legendary_trophy','golden_duck_trophy','fog_essence','magic_wand','ancient_dragon_fish','rainbow_charm','frozen_dewdrop','golden_badge','duck_crown','snowflake_crown']);
 const MEMO=new Map();
 function construct(p,item,f,t){
  const k=p.grid||1,W=Math.ceil(p.w/k),H=Math.ceil(p.h/k),c=new ObjectCanvas(W,H);
