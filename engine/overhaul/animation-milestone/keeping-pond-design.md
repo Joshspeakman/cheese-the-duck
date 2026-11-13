@@ -46,3 +46,8 @@ Social: show a visitor, visitor feeds it, sulking fish apology, cold-night cover
 2. Routines in batches through the generalised repertoire engine, with per-species
    distinctness checks. (commits)
 3. Visitor roles at the keeping pond.
+
+## Sea tank (user decision 2026-11-13)
+pufferfish, swordfish, sturgeon and ancient_dragon_fish live in a large pool or
+infinity pool set up as a deep salt sea tank (800 / 1000 cm). Set up and drain (only
+when empty) from the journal. Cheese only watches from the edge of a sea tank.

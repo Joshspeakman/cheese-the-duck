@@ -7,17 +7,18 @@ const night=ctx=>ctx.hour<6||ctx.hour>=19;
 // Real kept fish (engine/keeping.py): species glyph and length from the catch,
 // depth by species, resting outside their active hours, glow, hungry surfacing.
 const FISHART={minnow:['>','<'],goldfish:['><>','<><'],carp:['><=((>','<))=><'],bass:['><((*>','<*))><'],catfish:['=<((:>','<:))>='],trout:['><--*>','<*--><'],
- koi:['><((o>','<o))><'],salmon:['><==)>','<(==><'],golden_koi:['><((@>','<@))><'],ghost_fish:['>:.:>','<:.:<']};
-const DWELL={minnow:-2,goldfish:-2,koi:-2,golden_koi:-2,bass:0,trout:0,salmon:0,ghost_fish:0,carp:2,catfish:2};
-const ACTIVE={goldfish:[6,16],trout:[5,11],catfish:[17,30],ghost_fish:[19,29],golden_koi:[5,10]};
+ koi:['><((o>','<o))><'],salmon:['><==)>','<(==><'],golden_koi:['><((@>','<@))><'],ghost_fish:['>:.:>','<:.:<'],
+ pufferfish:['>(*)>','<(*)<'],swordfish:['-=<<((>','<))>>=-'],sturgeon:['=<<::((>','<))::>>='],ancient_dragon_fish:['~<{{@}}>~','~<{{@}}>~']};
+const DWELL={pufferfish:0,swordfish:-2,sturgeon:2,ancient_dragon_fish:0,minnow:-2,goldfish:-2,koi:-2,golden_koi:-2,bass:0,trout:0,salmon:0,ghost_fish:0,carp:2,catfish:2};
+const ACTIVE={sturgeon:[19,29],ancient_dragon_fish:[19,29],goldfish:[6,16],trout:[5,11],catfish:[17,30],ghost_fish:[19,29],golden_koi:[5,10]};
 function keptFish(c,fish,cx,cy,rx,t,ctx){
  const h=ctx.hour??12;
  fish.forEach((f,i)=>{
   const seed=[...f.id].reduce((n,ch)=>(n*31+ch.charCodeAt(0))>>>0,7),win=ACTIVE[f.species],hh=h<5?h+24:h;
   const awake=!win||(hh>=win[0]&&hh<win[1]),speed=awake?.25+(seed%7)/20:.03,a=t*speed+seed%628/100;
   const dir=Math.cos(a)>0?0:1,x=cx+Math.sin(a)*rx*(.35+(seed%40)/100),y=cy+DWELL[f.species]+Math.cos(a*1.3)*1.5+(f.hunger>.65&&awake?-2:0);
-  let glyph=FISHART[f.species][dir];if(f.size>45)glyph=glyph.replace(/[(=:-]/g,m=>m+m);
-  const glow=(f.species==='ghost_fish'&&(h<6||h>=19))||(f.species==='golden_koi'&&h>=5&&h<9);
+  let glyph=FISHART[f.species][dir];if(f.species==='pufferfish'&&f.mood<.35)glyph=dir?'<(@@@)<':'>(@@@)>';if(f.size>45)glyph=glyph.replace(/[(=:-]/g,m=>m+m);
+  const glow=((f.species==='ghost_fish'||f.species==='ancient_dragon_fish')&&(h<6||h>=19))||(f.species==='golden_koi'&&h>=5&&h<9);
   c.put(x-glyph.length/2,y,glyph,glow?'f':f.species.includes('koi')?'a':f.species==='goldfish'?'p':'c');
   if(f.hunger>.65&&awake)c.put(x+(dir?-1:1)*(glyph.length/2+1),y-1,'o','c');
   if(glow)for(const d of [-1,1])c.put(x+d*(glyph.length/2+1),y,'.','f');
@@ -251,6 +252,10 @@ export function waterworksSprite(base,item,time,{motion=true,state={},interactio
  const c=new ObjectCanvas(p.w,p.h),active=Boolean(interaction&&!interaction.paused&&interaction.phase==='act');
  const ecology=context.living?.ecology||{},frozen=!p.heated&&p.type!=='mat'&&(ecology.ice||0)>.3;
  const t=motion?time:0,anchors=DRAW[p.type](c,p,t,context,state,active,frozen);
+ if(p.type==='pool'&&!['natural','koi'].includes(p.style)&&state.keeping?.setup&&anchors.water){
+  const wa=anchors.water;c.put(wa.x+2,wa.y-1,'[ SEA TANK ]','a');
+  if(!frozen)keptFish(c,state.keeping.fish||[],wa.x+wa.w/2,wa.y+Math.max(3,(wa.h||8)/2),Math.max(8,wa.w/2-6),t,context);
+ }
  const pose=interaction&&!interaction.paused&&interaction.phase==='act'?waterPose(interaction.water_routine,motion):null;
  if(pose?.splash>.1&&!frozen){
   const x=anchors.seat.x+pose.u*(anchors.swimRadius||5),y=anchors.seat.y;

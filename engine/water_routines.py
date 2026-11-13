@@ -30,6 +30,8 @@ def eligible(pond,item,spec,ref=None):
 def choose(pond,item,ref=None):
     obj=pond.object_state(item,ref);history=obj.get('water_routines',{});last=obj.get('last_water_routine')
     choices=[key for key,s in ROUTINES.items() if eligible(pond,item,s,ref)]
+    from engine import keeping
+    if keeping.swim_blocked(pond,item,obj):choices=[k for k in choices if ROUTINES[k]['mode']=='edge']  # sea tank: watch, don't swim
     if not choices:return None
     # Specific conditions and neglected motions take precedence over repeats.
     def rank(key):

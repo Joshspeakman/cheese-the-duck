@@ -212,11 +212,14 @@ const p=itemProfile(item,itemFamily(id));
      detail.dataset.creativeId=id;detail.dataset.creativeInstance=instance||'';
      const summary=el('p',creativeSummary(id,state));summary.dataset.creativeSummary='';detail.append(summary);
     }
-    if(state.keeping&&id==='koi_pond'){
+    if(['pool_large','infinity_pool'].includes(id)&&!state.keeping?.setup){const b=this.button('Set up as a sea tank','keeping_action',id,busy||!instance||!outside,{instance,text:'setup'});detail.append(b);}
+    if(state.keeping&&(id==='koi_pond'||state.keeping.setup)){
+     const sea=id!=='koi_pond';
      detail.dataset.keepingId=id;detail.dataset.keepingInstance=instance||'';
      detail.append(el('p',keepingSummary(state)));
      for(const f of state.keeping.fish||[]){const b=this.button('Release '+(f.name||f.species.replaceAll('_',' '))+' ('+Math.round(f.size)+' cm)','keeping_action',id,busy||!instance||!outside,{instance,text:'release:'+f.id});detail.append(b);}
-     for(const c of (w.keepable||[]).slice(0,8)){const b=this.button('Keep the '+c.species.replaceAll('_',' ')+' ('+c.size+' cm'+(c.record?', record':'')+')','keeping_action',id,busy||!instance||!outside,{instance,text:'keep:'+c.species+':'+c.catch});detail.append(b);}
+     if(sea&&!(state.keeping.fish||[]).length){const b=this.button('Drain back to a pool','keeping_action',id,busy||!instance||!outside,{instance,text:'drain'});detail.append(b);}
+     for(const c of (w.keepable||[]).filter(c=>(c.water==='sea')===sea).slice(0,8)){const b=this.button('Keep the '+c.species.replaceAll('_',' ')+' ('+c.size+' cm'+(c.record?', record':'')+')','keeping_action',id,busy||!instance||!outside,{instance,text:'keep:'+c.species+':'+c.catch});detail.append(b);}
     }
     if(state.wonder&&WONDER_CHOICES[id]){
      detail.dataset.wonderId=id;detail.dataset.wonderInstance=instance||'';
