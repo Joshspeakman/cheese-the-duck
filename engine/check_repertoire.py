@@ -23,6 +23,8 @@ args = sys.argv[1:]
 only = set(args[args.index('--objects') + 1].split(',')) if '--objects' in args else None
 MIN = int(args[args.index('--min') + 1]) if '--min' in args else None   # default: each object's own need
 QUICK = '--quick' in args
+FRAMES = int(args[args.index('--frames') + 1]) if '--frames' in args else 0   # review frames per object
+frames_out = []
 sys.stdout = host.WIRE
 checks, started = [], time.time()
 AGES = ('hatchling', 'duckling', 'juvenile', 'young_adult', 'adult', 'mature', 'elder', 'legendary')
@@ -393,6 +395,19 @@ try:
         print(json.dumps(dict(result='PASS', hosts=len(hosted), checks=len(checks), seconds=round(time.time() - started))))
         raise SystemExit(0)
 
+    def review_pick(oid, key, age):
+        keys = R.by_object(oid)
+        step = max(1, len(keys) // FRAMES)
+        i = keys.index(key)
+        return i % step == 0 and i // step < FRAMES and age == ([a for a in AGES if a in R.REACH.get(key, AGES)] or ['adult'])[0]
+
+    def first_touch(key):
+        r = R.ROUTINES[key]
+        if r['events']:
+            return r['events'][0][0]
+        touching = [t for t, q in r['track'] if q.get('contact', 0) >= .5]
+        return touching[0] if touching else .45
+
     for oid in objects:
         for key in R.by_object(oid):
             ages = [a for a in AGES if a in R.REACH.get(key, AGES)] if R.REACH else list(AGES)
@@ -424,6 +439,13 @@ try:
                     p._activity(.2)
                     if _ % 5 == 0:
                         p.sync()  # the real loop syncs every second
+                    pw = (p.state['plan'] or {}).get('rep_work') or {}
+                    if FRAMES and review_pick(oid, key, age) and not pw.get('_captured') and pw.get('elapsed', 0) >= R.ROUTINES[key]['duration'] * first_touch(key):
+                        from engine.scene import snapshot
+                        sc = snapshot(g, g.renderer)
+                        sc['review'] = key + '@' + age
+                        frames_out.append(sc)
+                        pw['_captured'] = True
                 else:
                     raise AssertionError(label + ' never finished')
                 work = plan['rep_work']
@@ -452,6 +474,9 @@ try:
         R.state(oid, obj)['history'] = saved_hist
         check(picked == pool, oid + f' autonomous picks rotate through all {len(pool)} eligible routines (missed {sorted(pool - picked)})')
     R.apply = original_apply
+    if FRAMES:
+        (ROOT / 'engine/artifacts/animation-milestone').mkdir(parents=True, exist_ok=True)
+        (ROOT / 'engine/artifacts/animation-milestone/rep-frames.json').write_text(json.dumps(frames_out))
     print(json.dumps(dict(result='PASS', objects=len(objects), routines=sum(len(R.by_object(o)) for o in objects), runs=runs, checks=len(checks), seconds=round(time.time() - started))))
 finally:
     g.living_pond.minds.close()

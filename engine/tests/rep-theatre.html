@@ -1,0 +1,28 @@
+<!doctype html><meta charset="utf-8"><title>Cheese · Repertoire review</title>
+<style>body{background:#142b23;color:#ecdbb3;font:20px Georgia;margin:24px}canvas{display:block;max-width:100%;margin:24px 0}</style>
+<h1>Repertoire routines · native frames</h1>
+<script type="module">
+import {SceneCanvas} from '../client/ultra-renderer.mjs';
+// Native frames captured by check_repertoire.py --frames: the real scene at the
+// first contact of each reviewed routine, drawn by the game renderer and cropped
+// around the object Cheese is working.
+window.replayRep=frames=>{
+ const view=new SceneCanvas();view.resize(1500,950);
+ const images={},CW=500,CH=420,COLS=3,PER=9;let sheet=null,ctx=null,staged=0;
+ frames.forEach((s,i)=>{
+  const before=JSON.stringify(s);view.draw(s,i*.2,.2);
+  if(JSON.stringify(s)!==before)throw Error('Repertoire renderer changed native state');
+  const home=view.world.objects.find(o=>o.repWorkers?.length);
+  const target=home||view.world.characters?.find(c=>c.performance?.kind==='rep');
+  if(!target)throw Error('Frame '+s.review+' staged nobody on the object');
+  staged++;
+  if(i%PER===0){sheet=document.createElement('canvas');sheet.width=CW*COLS;sheet.height=CH*Math.ceil(PER/COLS);ctx=sheet.getContext('2d');ctx.fillStyle='#142b23';ctx.fillRect(0,0,sheet.width,sheet.height);images['rep-review-'+String(i/PER).padStart(2,'0')]=sheet;}
+  const sx=view.sx||view.canvas.width/132,sy=view.sy||view.canvas.height/42,px=target.x*sx,py=target.y*sy,n=i%PER;
+  const x0=Math.max(0,Math.min(view.canvas.width-CW,px-CW/2)),y0=Math.max(0,Math.min(view.canvas.height-CH,py-CH+70));
+  ctx.drawImage(view.canvas,x0,y0,CW,CH,(n%COLS)*CW,Math.floor(n/COLS)*CH,CW,CH);
+  ctx.fillStyle='#000a';ctx.fillRect((n%COLS)*CW,Math.floor(n/COLS)*CH,CW,26);ctx.fillStyle='#ecdbb3';ctx.font='16px Menlo';ctx.fillText(s.review.slice(0,52),(n%COLS)*CW+6,Math.floor(n/COLS)*CH+18);
+ });
+ for(const k of Object.keys(images))images[k]=images[k].toDataURL('image/png');
+ return {frames:frames.length,staged,images};
+};
+</script>

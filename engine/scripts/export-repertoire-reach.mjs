@@ -3,7 +3,7 @@
 // against the measured D10 body height. Writes client/animation/repertoire-reach.json.
 import fs from 'node:fs';
 import {fileURLToPath} from 'node:url';
-import {REP_ROUTINES as R,REP_OBJECTS as O,repPose,repAnchor} from '../client/repertoire-routines.mjs';
+import {REP_ROUTINES as R,REP_OBJECTS as O,repPose,repAnchor,repGround} from '../client/repertoire-routines.mjs';
 import {itemSprite,itemWorldScale} from '../client/ultra-items.mjs';
 import {characterSprite} from '../client/ultra-characters.mjs';
 import {actorPitches} from '../client/actor-projection.mjs';
@@ -17,7 +17,7 @@ const env=(stage,tool)=>body[stage]*({none:1.05,wing:1.1,twig:1.6,reed:1.6}[tool
 const out={version:1,bodyHeight:body,routines:{}};
 for(const [key,r] of Object.entries(R)){
   if(SELF(r.object)){out.routines[key]={contactHeight:0,highestAnchor:null,tool:r.tool,reachableAges:AGES.filter(a=>!r.ages||r.ages.includes(a))};continue;}
- const item=hostItem(r.object),m=itemSprite(item,0,{state:{keeping:{setup:true,fish:[]}}}),hh=sx*itemWorldScale(item)*(m.detailScale||1)*1.5,ground=(m.anchors?.entry?.y??m.art.length-1);
+ const item=hostItem(r.object),m=itemSprite(item,0,{state:{keeping:{setup:true,fish:[]}}}),hh=sx*itemWorldScale(item)*(m.detailScale||1)*1.5,ground=repGround(m);
  let high=0,anchor=null;
  const samples=[...Array(161).keys()].map(i=>i/160).concat(r.events.map(e=>e[0]),r.track.map(q=>q[0]));
  for(const f of samples){const p=repPose({id:key,elapsed:r.duration*f});if(!(p.contact>.05))continue;for(const n of [p.anchorA,p.anchorB]){const a=repAnchor(m,r.object,n);if(!a)continue;const h=(ground-a.y)*hh;if(h>high){high=h;anchor=n;}}}

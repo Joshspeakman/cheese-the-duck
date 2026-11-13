@@ -16,7 +16,7 @@ MOODS = {'young', 'grown', 'elder', 'happy', 'grumpy', 'curious'}  # prefer only
 REAL = dict(obj=('dirt', 'wetness', 'condition'), subject=('hunger', 'mood', 'health', 'trust', 'growth'), keeping=('clarity', 'algae', 'leaves', 'ice', 'oxygen', 'plants', 'flakes', 'bell'), need=('fun', 'social', 'energy', 'cleanliness'))
 CMP = re.compile(r'^!?([a-z_]+)(<=|>=|<|>)(-?[0-9.]+)$')
 JS = ("import {itemSprite as s,itemWorldScale as w} from './client/ultra-items.mjs';const i=process.argv[1],m=s(i,0,{state:{keeping:{setup:true,fish:[]}}});"
-      "console.log(JSON.stringify({w:m.width,art:m.art.map(String),row:7.5*w(i)*(m.detailScale||1)*1.5,ground:m.anchors?.entry?.y??m.art.length-1,named:Object.keys(m.anchors||{})}))")
+      "console.log(JSON.stringify({w:m.width,art:m.art.map(String),row:7.5*w(i)*(m.detailScale||1)*1.5,ground:(m.groundRow??m.art.length)-1,named:Object.keys(m.anchors||{})}))")
 
 
 def sprite(item):
