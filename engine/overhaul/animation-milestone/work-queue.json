@@ -934,7 +934,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "rain_barrel",
@@ -962,7 +963,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "bed_small",
@@ -976,7 +978,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "cozy_bed",
@@ -991,7 +994,8 @@
    "wonder_routines": 0,
    "repertoire_routines": 0,
    "art": "reconstructed_review_in_progress",
-   "rehosted": "loose object: never stands outdoors through its own system"
+   "rehosted": "loose object: never stands outdoors through its own system",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "garden_bench",
@@ -2049,7 +2053,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "crystal_plant",
@@ -2161,7 +2166,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "hammock",
@@ -2217,7 +2223,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "ride / explore (native playground)"
   },
   {
    "id": "dog_house",
@@ -2231,7 +2238,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "mud_hut",
@@ -2245,7 +2253,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "shed",
@@ -2259,7 +2268,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "stone_house",
@@ -2273,7 +2283,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "wooden_cottage",
@@ -2287,7 +2298,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "antigravity",
@@ -2497,7 +2509,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "fairy_lights",
@@ -2738,7 +2751,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "cozy_nest",
@@ -2752,7 +2766,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "deluxe_nest",
@@ -2766,7 +2781,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "golden_nest",
@@ -2781,7 +2797,8 @@
    "wonder_routines": 0,
    "repertoire_routines": 0,
    "art": "reconstructed_review_in_progress",
-   "rehosted": "loose object: never stands outdoors through its own system"
+   "rehosted": "loose object: never stands outdoors through its own system",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "nest_premium",
@@ -2796,7 +2813,8 @@
    "wonder_routines": 0,
    "repertoire_routines": 0,
    "art": "reconstructed_review_in_progress",
-   "rehosted": "loose object: never stands outdoors through its own system"
+   "rehosted": "loose object: never stands outdoors through its own system",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "crystal_ball",
@@ -3455,7 +3473,8 @@
    "family_engine": "groundworks.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "build in it (native playground)"
   },
   {
    "id": "toy_sandbox",
@@ -3469,7 +3488,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "build in it (native playground)"
   },
   {
    "id": "scarecrow",
@@ -3647,7 +3667,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "ride / explore (native playground)"
   },
   {
    "id": "bookshelf",
@@ -3732,7 +3753,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "ride / explore (native playground)"
   },
   {
    "id": "toy_slide",
@@ -3746,7 +3768,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "ride / explore (native playground)"
   },
   {
    "id": "water_slide",
@@ -3760,7 +3783,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "ride / explore (native playground)"
   },
   {
    "id": "water_slide_mega",
@@ -3774,7 +3798,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "ride / explore (native playground)"
   },
   {
    "id": "snow_floor",
@@ -3956,7 +3981,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "ride / explore (native playground)"
   },
   {
    "id": "toy_swing",
@@ -3970,7 +3996,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "ride / explore (native playground)"
   },
   {
    "id": "bar_cart",
@@ -4265,7 +4292,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "ride / explore (native playground)"
   },
   {
    "id": "trampoline",
@@ -4279,7 +4307,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "ride / explore (native playground)"
   },
   {
    "id": "tree_oak",
@@ -4335,7 +4364,8 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "native_acts": "rest inside (native residence)"
   },
   {
    "id": "toy_trumpet",

@@ -28,7 +28,7 @@ frames_out = []
 sys.stdout = host.WIRE
 checks, started = [], time.time()
 AGES = ('hatchling', 'duckling', 'juvenile', 'young_adult', 'adult', 'mature', 'elder', 'legendary')
-POSE = ('x', 'y', 'b', 'w', 'l', 'r', 'reach', 'contact', 'eye', 'mark', 'anchor')
+POSE = ('x', 'y', 'b', 'w', 'l', 'r', 'reach', 'contact', 'eye', 'mark', 'anchor', 'perch')
 
 
 def check(ok, label):
@@ -84,7 +84,7 @@ def kind_of(token, fields):
     m = W.COMPARE.match(t)
     if m:
         f = m.group(1)
-        return 'field' if f in fields or (f.startswith('pond_') and f[5:] in K.POND) or (f.startswith('fish_') and (f[5:] in K.FISH or f == 'fish_count')) else None
+        return 'field' if f in fields or f[4:] in R.OBJ_STATE and f.startswith('obj_') or (f.startswith('pond_') and f[5:] in K.POND) or (f.startswith('fish_') and (f[5:] in K.FISH or f == 'fish_count')) else None
     return 'tag' if t in KNOWN or probe.tag(t) is not None else None
 
 
@@ -311,6 +311,10 @@ try:
             if m:
                 f, op, v = m.group(1), m.group(2), float(m.group(3))
                 up = (op in ('>', '>=')) != neg
+                if f.startswith('obj_'):
+                    real = R.store(p, {'target': hostitem, 'instance': iid}, {'object': oid}) if R.OBJECTS[oid].get('host') == 'wearable' else p.object_state(hostitem, iid)
+                    real[f[4:]] = min(1., v + .15) if up else max(0., v - .15)
+                    continue
                 if f.startswith('pond_') or f.startswith('fish_'):
                     k = K.state(p.object_state(hostitem, iid))
                     targets = [k] if f.startswith('pond_') else [x for x in k['fish'] if x['species'] == oid]
