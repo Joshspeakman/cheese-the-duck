@@ -20,8 +20,8 @@ test('every saved state and routine moment draws printable, unclipped art with i
   const keys=Object.keys(R).filter(r=>R[r].item===id),key=keys[k%keys.length],work={id:key,elapsed:R[key].duration*k/9};
   const m=wonderSprite({},{id},k*.7,{state:{wonder:st},pose:{wonder:wonderPose(work)}});
   assert.ok(!m.clipped,id+' clipped');assert.ok(m.art.every(r=>/^[ -~]*$/.test(r)),id+' printable');
-  assert.equal(m.art.length,B[id].h);assert.equal(m.width,B[id].w);
-  for(const [a,p] of Object.entries(m.anchors))assert.ok(p.x>=0&&p.x<B[id].w&&p.y>=0&&p.y<B[id].h,id+' '+a);
+  const gk=B[id].grid||1;assert.equal(m.art.length,Math.ceil(B[id].h/gk));assert.equal(m.width,Math.ceil(B[id].w/gk));
+  for(const [a,p] of Object.entries(m.anchors))assert.ok(p.x>=0&&p.x<m.width&&p.y>=0&&p.y<m.art.length,id+' '+a);
   for(const [,q] of R[key].track)if(q.anchor)assert.ok(m.anchors[q.anchor],key+' needs anchor '+q.anchor);
  }
 });

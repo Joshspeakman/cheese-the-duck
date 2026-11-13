@@ -3,7 +3,7 @@
   "type": "topiary",
   "w": 120,
   "h": 112,
-  "scale": 0.363,
+  "scale": 0.726,
   "material": "leaf",
   "skill": "gardening",
   "verb": "Tend",
@@ -145,13 +145,14 @@
    "can",
    "hide"
   ],
-  "shelter": true
+  "shelter": true,
+  "grid": 2
  },
  "zen_garden": {
   "type": "zen",
   "w": 140,
   "h": 72,
-  "scale": 0.306,
+  "scale": 0.612,
   "material": "stone",
   "skill": "observation",
   "verb": "Rake",
@@ -316,13 +317,14 @@
    "broom",
    "pebble"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "ice_sculpture": {
   "type": "ice",
   "w": 112,
   "h": 120,
-  "scale": 0.31,
+  "scale": 0.62,
   "material": "ice",
   "skill": "crafting",
   "verb": "Carve",
@@ -518,13 +520,14 @@
    "tarp_hold",
    "mould"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "sand_castle": {
   "type": "sandcastle",
   "w": 132,
   "h": 96,
-  "scale": 0.299,
+  "scale": 0.598,
   "material": "sand",
   "skill": "crafting",
   "verb": "Build",
@@ -709,13 +712,14 @@
    "spade",
    "flagstick"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "gong": {
   "type": "gong",
   "w": 104,
   "h": 124,
-  "scale": 0.355,
+  "scale": 0.71,
   "material": "bronze",
   "skill": "music",
   "verb": "Strike",
@@ -853,13 +857,14 @@
    "cloth",
    "ear"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "aurora": {
   "type": "aurora",
   "w": 132,
   "h": 112,
-  "scale": 0.363,
+  "scale": 0.726,
   "material": "glass",
   "skill": "observation",
   "verb": "Tune",
@@ -959,13 +964,14 @@
    "dial",
    "switch"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "rainbow_generator": {
   "type": "rainbow",
   "w": 124,
   "h": 112,
-  "scale": 0.332,
+  "scale": 0.664,
   "material": "glass",
   "skill": "engineering",
   "verb": "Crank",
@@ -1073,13 +1079,14 @@
    "crank",
    "can"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "weather_machine": {
   "type": "weather",
   "w": 136,
   "h": 128,
-  "scale": 0.344,
+  "scale": 0.688,
   "material": "metal",
   "skill": "engineering",
   "verb": "Adjust",
@@ -1196,7 +1203,8 @@
    "crank",
    "lever"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "portal": {
   "type": "portal",
@@ -1323,13 +1331,14 @@
    "pebble",
    "peek"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 1
  },
  "wormhole": {
   "type": "wormhole",
   "w": 132,
   "h": 120,
-  "scale": 0.338,
+  "scale": 0.676,
   "material": "void",
   "skill": "engineering",
   "verb": "Align",
@@ -1423,13 +1432,14 @@
    "boat",
    "cup"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "black_hole": {
   "type": "blackhole",
   "w": 112,
   "h": 116,
-  "scale": 0.321,
+  "scale": 0.642,
   "material": "void",
   "skill": "engineering",
   "verb": "Observe",
@@ -1549,13 +1559,14 @@
    "wrench",
    "goggles"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "volcano": {
   "type": "volcano",
   "w": 144,
   "h": 120,
-  "scale": 0.366,
+  "scale": 0.732,
   "material": "stone",
   "skill": "engineering",
   "verb": "Tend",
@@ -1688,13 +1699,14 @@
    "broom",
    "jug"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "tornado": {
   "type": "tornado",
   "w": 104,
   "h": 124,
-  "scale": 0.259,
+  "scale": 0.518,
   "material": "wind",
   "skill": "discovery",
   "verb": "Play",
@@ -1850,13 +1862,14 @@
    "leaf",
    "cloth"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "antigravity": {
   "type": "antigravity",
   "w": 124,
   "h": 120,
-  "scale": 0.31,
+  "scale": 0.62,
   "material": "metal",
   "skill": "engineering",
   "verb": "Calibrate",
@@ -1945,13 +1958,14 @@
    "pebble",
    "feather"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "force_field": {
   "type": "forcefield",
   "w": 148,
   "h": 120,
-  "scale": 0.366,
+  "scale": 0.732,
   "material": "energy",
   "skill": "engineering",
   "verb": "Shelter",
@@ -2062,7 +2076,8 @@
   "parts": [
    "crank"
   ],
-  "shelter": true
+  "shelter": true,
+  "grid": 2
  },
  "cosmic_arch": {
   "type": "arch",
@@ -2155,13 +2170,14 @@
   "parts": [
    "brush"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 1
  },
  "time_machine": {
   "type": "timemachine",
   "w": 132,
   "h": 136,
-  "scale": 0.361,
+  "scale": 0.722,
   "material": "brass",
   "skill": "engineering",
   "verb": "Travel",
@@ -2299,13 +2315,14 @@
    "key",
    "cloth"
   ],
-  "shelter": true
+  "shelter": true,
+  "grid": 2
  },
  "tardis": {
   "type": "booth",
   "w": 104,
   "h": 136,
-  "scale": 0.361,
+  "scale": 0.722,
   "material": "wood",
   "skill": "observation",
   "verb": "Visit",
@@ -2414,13 +2431,14 @@
   "parts": [
    "cloth"
   ],
-  "shelter": true
+  "shelter": true,
+  "grid": 2
  },
  "dimensional_door": {
   "type": "dimdoor",
   "w": 112,
   "h": 132,
-  "scale": 0.333,
+  "scale": 0.666,
   "material": "wood",
   "skill": "observation",
   "verb": "Open",
@@ -2501,13 +2519,14 @@
   "parts": [
    "can"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "teleporter": {
   "type": "teleporter",
   "w": 116,
   "h": 116,
-  "scale": 0.321,
+  "scale": 0.642,
   "material": "metal",
   "skill": "engineering",
   "verb": "Beam",
@@ -2604,13 +2623,14 @@
    "pebble",
    "cloth"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "robot_butler": {
   "type": "robot",
   "w": 100,
   "h": 132,
-  "scale": 0.218,
+  "scale": 0.654,
   "material": "metal",
   "skill": "crafting",
   "verb": "Service",
@@ -2750,13 +2770,14 @@
    "cloth",
    "plug"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 3
  },
  "cloning_machine": {
   "type": "cloner",
   "w": 144,
   "h": 124,
-  "scale": 0.327,
+  "scale": 0.654,
   "material": "glass",
   "skill": "engineering",
   "verb": "Clone",
@@ -2862,13 +2883,14 @@
   "parts": [
    "feather"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "transmogrifier": {
   "type": "transmog",
   "w": 136,
   "h": 124,
-  "scale": 0.314,
+  "scale": 0.628,
   "material": "metal",
   "skill": "engineering",
   "verb": "Transmogrify",
@@ -2985,13 +3007,14 @@
    "leaf",
    "broom"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "money_printer": {
   "type": "printer",
   "w": 120,
   "h": 112,
-  "scale": 0.257,
+  "scale": 0.514,
   "material": "metal",
   "skill": "crafting",
   "verb": "Print",
@@ -3099,13 +3122,14 @@
    "crank",
    "can"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "perpetual_motion": {
   "type": "perpetual",
   "w": 116,
   "h": 120,
-  "scale": 0.282,
+  "scale": 0.564,
   "material": "brass",
   "skill": "engineering",
   "verb": "Spin",
@@ -3203,13 +3227,14 @@
   "parts": [
    "can"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "DNA_mixer": {
   "type": "dna",
   "w": 116,
   "h": 124,
-  "scale": 0.259,
+  "scale": 0.518,
   "material": "glass",
   "skill": "engineering",
   "verb": "Mix",
@@ -3317,13 +3342,14 @@
    "feather",
    "cloth"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "shrink_ray": {
   "type": "ray",
   "w": 112,
   "h": 96,
-  "scale": 0.194,
+  "scale": 0.582,
   "material": "metal",
   "skill": "engineering",
   "verb": "Zap",
@@ -3431,13 +3457,14 @@
   "parts": [
    "pebble"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 3
  },
  "growth_ray": {
   "type": "ray",
   "w": 112,
   "h": 96,
-  "scale": 0.194,
+  "scale": 0.582,
   "material": "metal",
   "skill": "engineering",
   "verb": "Zap",
@@ -3538,13 +3565,14 @@
   "parts": [
    "flower"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 3
  },
  "genie_lamp": {
   "type": "lamp",
   "w": 100,
   "h": 84,
-  "scale": 0.27,
+  "scale": 0.54,
   "material": "brass",
   "skill": "observation",
   "verb": "Rub",
@@ -3624,13 +3652,14 @@
   "parts": [
    "cloth"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "invisible_cloak": {
   "type": "cloak",
   "w": 100,
   "h": 120,
-  "scale": 0.282,
+  "scale": 0.564,
   "material": "cloth",
   "skill": "crafting",
   "verb": "Try",
@@ -3729,13 +3758,14 @@
   "parts": [
    "cloak"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "dream_catcher": {
   "type": "dreamcatcher",
   "w": 96,
   "h": 132,
-  "scale": 0.295,
+  "scale": 0.59,
   "material": "fiber",
   "skill": "observation",
   "verb": "Untangle",
@@ -3826,13 +3856,14 @@
   "parts": [
    "feather"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  },
  "dragon_egg": {
   "type": "dragonegg",
   "w": 112,
   "h": 104,
-  "scale": 0.228,
+  "scale": 0.456,
   "material": "stone",
   "skill": "care",
   "verb": "Warm",
@@ -3987,6 +4018,7 @@
    "stick",
    "cloth"
   ],
-  "shelter": false
+  "shelter": false,
+  "grid": 2
  }
 }

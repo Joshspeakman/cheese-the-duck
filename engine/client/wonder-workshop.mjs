@@ -546,10 +546,24 @@ export function wonderSprite(base,item,time,{state={},pose={},motion=true}={}){
  else{built=construct(p,item,s,v,t,state);MEMO.set(key,built);if(MEMO.size>256)MEMO.delete(MEMO.keys().next().value);}
  return {...base,...built,anchors:built.anchors};
 }
+// Draws in the blueprint's coordinates onto a grid k times coarser.
+class CoarseCanvas{
+ constructor(w,h,k){this.k=k;this.inner=new ObjectCanvas(Math.ceil(w/k),Math.ceil(h/k));this.fills=this.inner.fills;}
+ q(n){return n/this.k;}
+ put(x,y,text,tone){this.inner.put(this.q(x),this.q(y),text,tone);return this;}
+ clear(x,y,w,h){this.inner.clear(this.q(x),this.q(y),Math.max(1,this.q(w)),Math.max(1,this.q(h)));return this;}
+ line(x0,y0,x1,y1,ch,tone){this.inner.line(this.q(x0),this.q(y0),this.q(x1),this.q(y1),ch,tone);return this;}
+ beam(x0,y0,x1,y1,w=3,tone){this.inner.beam(this.q(x0),this.q(y0),this.q(x1),this.q(y1),Math.max(1,this.q(w)),tone);return this;}
+ rect(x,y,w,h,tone,fill){this.inner.rect(this.q(x),this.q(y),Math.max(2,this.q(w)),Math.max(2,this.q(h)),tone,fill);return this;}
+ solid(x,y,w,h,tone){this.inner.solid(this.q(x),this.q(y),Math.max(1,this.q(w)),Math.max(1,this.q(h)),tone);return this;}
+ ellipse(cx,cy,rx,ry,ch,tone,fill){this.inner.ellipse(this.q(cx),this.q(cy),Math.max(.6,this.q(rx)),Math.max(.6,this.q(ry)),ch,tone,fill);return this;}
+ rows(rows,x,y,tone,fill){this.inner.rows(rows,this.q(x),this.q(y),tone,fill);return this;}
+ finish(){return this.inner.finish();}
+}
 function construct(p,item,s,v,t,state){
- const c=new ObjectCanvas(p.w,p.h);
+ const k=p.grid||1,c=k>1?new CoarseCanvas(p.w,p.h,k):new ObjectCanvas(p.w,p.h);
  shadow(c,p);
- const anchors=BUILDERS[p.type](c,p,s,v,t,item);
+ const anchors=Object.fromEntries(Object.entries(BUILDERS[p.type](c,p,s,v,t,item)).map(([n,a])=>[n,{x:Math.min(Math.ceil(p.w/k)-1,Math.round(a.x/k)),y:Math.min(Math.ceil(p.h/k)-1,Math.round(a.y/k))}]));
  if(state.dirt>.35)for(const x of [p.w*.3,p.w*.5,p.w*.7])c.put(x,p.h-6,'.:','s');
  const glows=['aurora','portal','wormhole','blackhole','volcano','forcefield','arch','teleporter','cloner','timemachine','dreamcatcher','dragonegg'].includes(p.type);
  const fin=c.finish();fin.fills=mergeFills(fin.fills);
