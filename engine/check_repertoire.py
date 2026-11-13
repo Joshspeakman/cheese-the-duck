@@ -469,6 +469,7 @@ try:
                         from engine.scene import snapshot
                         sc = snapshot(g, g.renderer)
                         sc['review'] = key + '@' + age
+                        sc['camera'] = {'x': 0, 'y': 0, 'w': 132, 'h': 42}  # the harness never runs the render loop that moves the camera
                         frames_out.append(sc)
                         pw['_captured'] = True
                 else:

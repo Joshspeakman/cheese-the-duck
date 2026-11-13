@@ -29,4 +29,5 @@ window.replayRep=frames=>{
  for(const k of Object.keys(images))images[k]=images[k].toDataURL('image/png');
  return {frames:frames.length,staged,images};
 };
+window.fullFrame=(s)=>{const view=new SceneCanvas();view.resize(1500,950);view.draw(s,0,.2);const home=view.world.objects.find(o=>o.repWorkers?.length);return {image:view.canvas.toDataURL('image/png'),home:home?{id:home.id,x:home.x,y:home.y,w:home.width,h:home.art.length,scale:home.scale}:null,sx:view.sx,sy:view.sy};};
 </script>
