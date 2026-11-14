@@ -143,8 +143,8 @@ class Obj:
             d['anchors']['item'] = dict(x=.5, y=.5)  # resolved at draw time to the thing's own slot
         INKS = ('snow', 'frost', 'leaf', 'water', 'mud', 'glow', 'dust', 'plant')
         for f, th, glyphs, a, tone in marks:  # visible state: glyphs stamped at an anchor while the field is above th
-            assert f in fields and a in anchors and tone in INKS and 1 <= len(glyphs) <= 8 and re.fullmatch(r'[ -~]+', glyphs) and host in ('placed', 'portable'), \
-                f'{oid}: mark {f}: needs a declared field and anchor, ascii glyphs (1-8), tone in {INKS}, placed/portable host'
+            assert f in fields and a in anchors and tone in INKS and 1 <= len(glyphs) <= 8 and re.fullmatch(r'[ -~]+', glyphs) and host in ('placed', 'portable', 'display', 'keeping'), \
+                f'{oid}: mark {f}: needs a declared field and anchor, ascii glyphs (1-8), tone in {INKS}, not on worn pieces'
         if marks:
             d['marks'] = [list(m) for m in marks]
         spots = {}
@@ -287,6 +287,19 @@ class Obj:
             assert self.fired[n] <= (2 if only_need else 3), f'{key}: effect {n} is fired by too many routines; an effect is the result of one kind of act'
         self.needy += any(t.startswith('need.') for _, n in ev for t, _, _ in d['effects'][n])
         assert self.needy <= 8, f'{key}: more than 8 routines carry need rows'
+        # The harness's own same-act check (check_repertoire.content), so a helper pass means a harness pass.
+        anc = d['anchors']
+        places = tuple((round(anc[q['anchor']]['x'] / .05), round(anc[q['anchor']]['y'] / .05)) if q.get('anchor') in anc else q.get('anchor') for _, q in tr if q.get('anchor'))
+        path = []
+        for _, q in tr:
+            step = tuple(round(q.get(j, 0) * 2) / 2 for j in ('x', 'y', 'b', 'w'))
+            if not path or path[-1] != step:
+                path.append(step)
+        hmoved = tuple(dict.fromkeys(tuple(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag')) for _, q in obj))
+        hc = (tuple(tuple(tuple(x) for x in d['effects'][n]) for _, n in ev), places, tool if tool in ('none', 'wing') else 'stick', tuple(path), verb, hmoved)
+        for other, theirs in getattr(self, 'hcontent', {}).items():
+            assert sum(a != b for a, b in zip(hc, theirs)) >= 2, f'{key} is the same act as {other} by the harness check (two of effect/touch/body/tool/verb/object motion must differ)'
+        self.hcontent = {**getattr(self, 'hcontent', {}), key: hc}
         self.sigs[key], self.group[g] = sig, self.group.get(g, 0) + 1
         self.acts.add((verb, part))
         self.verbs[verb] = self.verbs.get(verb, 0) + 1

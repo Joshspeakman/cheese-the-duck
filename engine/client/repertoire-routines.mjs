@@ -71,8 +71,12 @@ export function repGeometry(home,worker,sx,sy){
 // over it while the saved field is above the threshold (snow on a roof, leaves in a tyre...).
 const MARK_INK={snow:'#eef6f8',frost:'#bfe3ef',leaf:'#c98a3a',water:'#7fc4e0',mud:'#8a6a44',glow:'#fff0a0',dust:'#b9b09a',plant:'#8fc46a'};
 export function repMarks(item,state){
- const spec=REP_OBJECTS[item.id],fields=state?.rep?.[item.id];if(!spec?.marks||!fields)return null;
- const out=spec.marks.filter(([f,th])=>(fields[f]??spec.fields?.[f]?.[0]??0)>th).map(([f,th,glyphs,anchor,tone])=>({glyphs,anchor:spec.anchors?.[anchor],color:MARK_INK[tone]||'#e8dcc0'})).filter(m=>m.anchor);
+ // The object's own marks, plus those of things shown in it or fish kept in it (stored on this host).
+ const out=[];
+ for(const [oid,fields] of Object.entries(state?.rep||{})){
+  const spec=REP_OBJECTS[oid];if(!spec?.marks||!fields||(oid!==item.id&&!['display','keeping'].includes(spec.host)))continue;
+  for(const [f,th,glyphs,anchor,tone] of spec.marks)if((fields[f]??spec.fields?.[f]?.[0]??0)>th&&spec.anchors?.[anchor])out.push({glyphs,anchor:spec.anchors[anchor],color:MARK_INK[tone]||'#e8dcc0'});
+ }
  return out.length?out:null;
 }
 export function drawRepMarks(ctx,home,sx,sy){
