@@ -19,7 +19,8 @@ OBJECTS = {}
 ROUTINES = {}
 LOAD_ERRORS = []   # a broken file is skipped and reported, never breaks the game
 TOOLS = ('none', 'wing', 'twig', 'reed')
-OBJ_STATE = ('dirt', 'wetness', 'condition')   # real drawn object state effects may change
+OBJ_STATE = ('dirt', 'wetness', 'condition')
+POND_HOSTS = ('koi_pond', 'pool_large', 'infinity_pool')  # placed hosts that own the pond state   # real drawn object state effects may change
 _NEEDS_OK = ('fun', 'social', 'energy', 'cleanliness')
 
 
@@ -30,7 +31,7 @@ def _validate(d):
         for t, op, v in rows:
             assert op in ('set', 'add', 'mul', 'max', 'min', 'wrap'), name + ' op'
             ok = t in fields or (t.startswith('need.') and t[5:] in _NEEDS_OK and op == 'add') or (t.startswith('obj.') and t[4:] in OBJ_STATE) \
-                or (d['host'] == 'keeping' and (t.startswith('subject.') or t.startswith('keeping.')))
+                or (d['host'] == 'keeping' and (t.startswith('subject.') or t.startswith('keeping.'))) or (d['object'] in POND_HOSTS and t.startswith('keeping.'))
             assert ok, name + ' target ' + t
     for k, r in d['routines'].items():
         for key in ('label', 'duration', 'track', 'events', 'when', 'prefer', 'tool'):
@@ -276,11 +277,12 @@ def view(oid, obj):
     v = dict(s)
     v.update({'obj_' + k: finite(obj.get(k), 1. if k == 'condition' else 0.) for k in OBJ_STATE})
     v['history'] = s['history']
-    if OBJECTS[oid].get('host') != 'keeping':
+    if OBJECTS[oid].get('host') != 'keeping' and oid not in POND_HOSTS:
         return v
     from engine import keeping
     k = keeping.state(obj)
     v.update({'pond_' + f: k[f] for f in keeping.POND})
+    v['pond_setup'] = 1. if k.get('setup') else 0.  # a big pool set up as a sea tank (gate tank chores on pond_setup>.5)
     fish = [f for f in k['fish'] if f['species'] == oid]
     for f in keeping.FISH:
         v['fish_' + f] = max((x[f] for x in fish), default=0.)
@@ -424,7 +426,7 @@ def advance(pond, plan, dt):
     s = state(oid, obj)
     subject = subject_of(pond, work, plan)
     from engine import keeping
-    host = keeping.state(obj) if OBJECTS[oid].get('host') == 'keeping' else None
+    host = keeping.state(obj) if OBJECTS[oid].get('host') == 'keeping' or oid in POND_HOSTS else None
     effects = OBJECTS[oid]['effects']
     for i, (at, name) in enumerate(r['events']):
         if work['elapsed'] >= at * r['duration'] and i not in work['events']:
