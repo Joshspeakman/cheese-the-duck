@@ -9137,8 +9137,8 @@
    ]
   },
   "golden_koi_brush_the_crust_from_the_left_sheen": {
-   "contactHeight": 22,
-   "highestAnchor": "sheen_l",
+   "contactHeight": 37,
+   "highestAnchor": "sheen_m",
    "perchHeight": 0,
    "tool": "wing",
    "reachableAges": [

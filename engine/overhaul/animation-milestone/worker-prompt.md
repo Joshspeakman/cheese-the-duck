@@ -43,7 +43,7 @@ per object when done with this object's parts and its own movement; identical dr
 If the helper or harness refuses something you believe is right, or something fails outside your files, stop
 and report it rather than working around it. If an object cannot reach its count with genuinely different real
 acts, stop at what you have (emit with `need=<count>`) and report the count and why; do not pad.
-Be economical: do not print files you do not need.
+Be economical: do not print files you do not need. Run checks in the foreground (a full six-object strict check can take 15-20 min); never wait with a shell loop on `pgrep -f <pattern>` (the loop's own command line matches the pattern, so it never ends).
 
 ## Return (under 120 lines)
 Files written; per object: routines, per-age reach, groups, routines with lines, perched routines; result lines
