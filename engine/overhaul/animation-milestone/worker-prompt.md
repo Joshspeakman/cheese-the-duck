@@ -29,16 +29,13 @@ and survives between visits (obj_dirt / obj_wetness / obj_condition for wear); C
 uncensored where earned; original lines. Universal acts (nap, bow, slip...) and common verbs are allowed once
 per object when done with this object's parts and its own movement; identical drawn tracks are stamps and refused.
 
-## Checklist (worktree root)
-1. `.venv/bin/python engine/animation-authoring/rep_<batch>.py`
+## Checklist (worktree root): BUILD PHASE (user 2026-11-14: focus on building, deeper QA later)
+1. `.venv/bin/python engine/animation-authoring/rep_<batch>.py` (the helper's rules are the quality bar; all must pass)
 2. `node engine/scripts/build-repertoire.mjs`
 3. `node engine/scripts/export-repertoire-reach.mjs` (none of YOUR routines unreachable)
-4. `.venv/bin/python engine/check_repertoire.py --strict --objects <your objects> --frames 2` must PASS
-5. `node --test engine/tests/repertoire.test.mjs`
-6. `cd engine && ./node_modules/.bin/electron rep-check.cjs`; look at ONE review sheet
-   (`engine/artifacts/animation-milestone/rep-review-00.png`, crops centre on Cheese): he should be at the
-   place each label names.
-7. Read your labels group by group; rewrite any pair that could swap tracks unnoticed.
+4. `.venv/bin/python engine/check_repertoire.py --quick --objects <a,b,c>` (one comma-separated list; quick = youngest age only) must PASS
+5. Read your labels group by group; rewrite any pair that could swap tracks unnoticed.
+No strict all-ages run, no review sheets in the build phase: the lead runs the deep QA later.
 
 If the helper or harness refuses something you believe is right, or something fails outside your files, stop
 and report it rather than working around it. If an object cannot reach its count with genuinely different real
