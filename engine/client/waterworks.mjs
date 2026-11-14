@@ -16,7 +16,10 @@ function keptFish(c,fish,cx,cy,rx,t,ctx){
  fish.forEach((f,i)=>{
   const seed=[...f.id].reduce((n,ch)=>(n*31+ch.charCodeAt(0))>>>0,7),win=ACTIVE[f.species],hh=h<5?h+24:h;
   const awake=!win||(hh>=win[0]&&hh<win[1]),speed=awake?.25+(seed%7)/20:.03,a=t*speed+seed%628/100;
-  const dir=Math.cos(a)>0?0:1,x=cx+Math.sin(a)*rx*(.35+(seed%40)/100),y=cy+DWELL[f.species]+Math.cos(a*1.3)*1.5+(f.hunger>.65&&awake?-2:0);
+  let dir=Math.cos(a)>0?0:1,x=cx+Math.sin(a)*rx*(.35+(seed%40)/100),y=cy+DWELL[f.species]+Math.cos(a*1.3)*1.5+(f.hunger>.65&&awake?-2:0);
+  // A repertoire routine can bring this fish to the rim spot Cheese is touching (lure 0..1).
+  const lure=ctx.lure&&ctx.lure.id===f.id?ctx.lure:null;
+  if(lure){const lx=lure.fx*(c.w-1),ly=Math.max(cy-1,lure.fy*(c.h-1));x+=(lx-x)*lure.u;y+=(ly-y)*lure.u;}
   let glyph=FISHART[f.species][dir];if(f.species==='pufferfish'&&f.mood<.35)glyph=dir?'<(@@@)<':'>(@@@)>';if(f.size>45)glyph=glyph.replace(/[(=:-]/g,m=>m+m);
   const glow=((f.species==='ghost_fish'||f.species==='ancient_dragon_fish')&&(h<6||h>=19))||(f.species==='golden_koi'&&h>=5&&h<9);
   c.put(x-glyph.length/2,y,glyph,glow?'f':f.species.includes('koi')?'a':f.species==='goldfish'?'p':'c');

@@ -8,7 +8,7 @@ import DATA from './animation/repertoire.json' with {type:'json'};
 export const REP_OBJECTS=DATA.objects,REP_ROUTINES=DATA.routines;
 const clamp=n=>Math.max(0,Math.min(1,n));
 const JOINTS=['x','y','b','w','l','r','reach','contact','perch'];  // perch: feet lifted onto the touched surface (authored, sampled from the native track)
-const OBJ=['sway','lift','shake','glow','puff','ix','iy','hold','hide','off','wx','wy','flap','sag'];  // off/wx/wy/flap/sag: the worn piece itself (taken off, shifted, flapping, sagging)  // ix/iy: a loose object moved (cells); hold: in his bill; hide: buried/stashed
+const OBJ=['sway','lift','shake','glow','puff','ix','iy','hold','hide','off','wx','wy','flap','sag','lure'];  // lure: the chosen kept fish comes to the touched rim spot  // off/wx/wy/flap/sag: the worn piece itself (taken off, shifted, flapping, sagging)  // ix/iy: a loose object moved (cells); hold: in his bill; hide: buried/stashed
 export function repPose(work,motion=true){
  const base=REP_ROUTINES[work?.id];if(!base||work.interrupted)return null;
  // A visitor keeping Cheese company reacts at the real contacts (derived track).
@@ -66,6 +66,13 @@ export function repGeometry(home,worker,sx,sy){
 }
 // Where a loose object is drawn during a routine (authored in the native track;
 // it always ends back at rest, so saved positions never change). null = in place.
+// For a kept-fish routine: which fish comes to which rim spot, and how far (drawn by waterworks).
+export function repLure(work,motion=true){
+ const spec=REP_ROUTINES[work?.id];if(!spec||!work.subject||REP_OBJECTS[spec.object]?.host!=='keeping')return null;
+ const pose=repPose(work,motion),u=clamp(pose?.object?.lure||0);if(!u)return null;
+ const a=REP_OBJECTS[spec.object]?.anchors?.[pose.anchorA];if(!a)return null;
+ return {id:work.subject,fx:a.x,fy:a.y,u};
+}
 export function repItemMove(home,worker,sx,sy){
  const c=worker?.character,routine=c?.performance?.routine,spec=REP_ROUTINES[routine?.id];
  const host=REP_OBJECTS[spec?.object]?.host;
