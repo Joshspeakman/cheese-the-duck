@@ -437,8 +437,12 @@ try:
         touching = [t for t, q in r['track'] if q.get('contact', 0) >= .5]
         return touching[0] if touching else .45
 
+    duets = []
     for oid in objects:
         for key in R.by_object(oid):
+            if R.ROUTINES[key].get('duo'):
+                duets.append(key)  # needs a visiting friend: run natively by the duet runner, not solo
+                continue
             ages = [a for a in AGES if a in R.REACH.get(key, AGES)] if R.REACH else list(AGES)
             if QUICK:
                 ages = ages[:1]
@@ -507,7 +511,7 @@ try:
     if FRAMES:
         (ROOT / 'engine/artifacts/animation-milestone').mkdir(parents=True, exist_ok=True)
         (ROOT / 'engine/artifacts/animation-milestone/rep-frames.json').write_text(json.dumps(frames_out))
-    print(json.dumps(dict(result='PASS', incomplete=incomplete, objects=len(objects), routines=sum(len(R.by_object(o)) for o in objects), runs=runs, checks=len(checks), seconds=round(time.time() - started))))
+    print(json.dumps(dict(result='PASS', incomplete=incomplete, duets_pending_native=len(duets), objects=len(objects), routines=sum(len(R.by_object(o)) for o in objects), runs=runs, checks=len(checks), seconds=round(time.time() - started))))
 finally:
     g.living_pond.minds.close()
     g._save_executor.shutdown(wait=True)

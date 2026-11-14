@@ -192,10 +192,11 @@ def invite(minds):
         if key == 'cheese' or departing(minds, key) or minds.now < minds.wonder_retry.get(key, 0) or busy(minds, key):
             continue
         resident = minds.model.residents[key]
-        if resident['energy'] < .25 or (not shelter and minds.tasks.get(key, {}).get('action') not in ('observe', 'share', 'restore')):
+        duet = bool(spec_of(work['id']).get('duo'))  # a duet was chosen because this friend is here: they come over
+        if resident['energy'] < .25 or (not shelter and not duet and minds.tasks.get(key, {}).get('action') not in ('observe', 'share', 'restore')):
             continue
         d = distance(minds.present[key], spot)
-        if d <= 24:
+        if d <= (90 if duet else 24):
             options.append((d - 5 * resident['traits']['sociability'] - 4 * resident['traits']['curiosity'], key))
     if not options:
         return
@@ -203,7 +204,7 @@ def invite(minds):
     minds.tasks.pop(key, None)
     minds.wonder_guests[key] = dict(actor=key, mode='company', key=wkey, id=plan['target'], instance=plan.get('instance'), destination=origin, spot=spot,
                                     location=p.location, token=minds.presence_tokens[key], phase='approach', elapsed=0., started=minds.now,
-                                    style=style(minds, key, work['id']), work=work, overlap=0., last_clock=work['elapsed'], shelter=shelter,
+                                    style=style(minds, key, work['id']), work=work, overlap=0., last_clock=work['elapsed'], shelter=shelter, duet=bool(spec_of(work['id']).get('duo')),
                                     contexts={k: minds.context(k) for k in ('cheese', key)})
     p._cache = None
 

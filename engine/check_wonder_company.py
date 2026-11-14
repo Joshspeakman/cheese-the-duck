@@ -275,6 +275,38 @@ try:
     check((g.duck.needs.energy, g.duck.needs.fun, g.duck.needs.social, g.duck.needs.cleanliness) == needs or g.duck.growth_stage == 'egg',
           "the visitor's go never changes Cheese's needs")
     check(not any(row.startswith('need.') for _, rows in rep_applied for row in rows), 'visitor contacts carry no need rows')
+    # A duet: chosen only while a friend is here; waits for the friend to walk over,
+    # who then does their own authored part.
+    duet = dict(fx['routines']['tire_swing_shove_and_duck'], object='tire_swing', label='Taking turns shoving the tyre with a friend',
+                duo={'track': [[0, {}], [.2, {'anchor': 'tyre_side', 'contact': 1, 'x': .5}], [.45, {'anchor': 'tyre_side', 'contact': 1, 'w': 1, 'b': -.3}],
+                               [.7, {'x': -.4, 'y': .6}], [1, {}]]})
+    REP.ROUTINES['tire_swing_duet_push'] = duet
+    REP.REACH['tire_swing_duet_push'] = REP.REACH['tire_swing_shove_and_duck']
+    REP.BY_OBJECT['tire_swing'].append('tire_swing_duet_push')
+    fx['routines']['tire_swing_duet_push'] = duet
+    for r in list(b.wonder_guests):
+        b.wonder_guests.pop(r)
+    iid, obj = place('tire_swing')
+    advance(20)
+    check('tire_swing_duet_push' not in REP.eligible(p, 'tire_swing', obj) or REP.partner_available(p), 'a duet is never eligible without a free friend present')
+    key = bring('regular', [40, 22])
+    check(REP.partner_available(p) and 'tire_swing_duet_push' in REP.eligible(p, 'tire_swing', obj), 'with a free friend here the duet becomes eligible')
+    before = bonds(key)
+    ok, msg = REP.request(p, 'tire_swing', 'tire_swing_duet_push', iid)
+    check(ok, 'Cheese starts the duet: ' + msg)
+    plan = p.state['plan']
+    waited, partnered = False, False
+    for _ in range(4000):
+        advance()
+        r = b.wonder_guests.get(key)
+        w = plan['rep_work']
+        if plan['phase'] == 'act' and w['elapsed'] == 0 and (not r or r['phase'] != 'inside'):
+            waited = True
+        partnered = partnered or bool(r and r.get('duet') and r['phase'] == 'inside' and w['elapsed'] > 0)
+        if not p.state['plan']:
+            break
+    check(waited and partnered, 'the duet clock waited for the friend, then both did their parts')
+    check(plan['rep_work'].get('recorded') and bonds(key)[0] > before[0], 'the duet completed once with shared credit')
     for k2 in fx['routines']:
         REP.ROUTINES.pop(k2, None)
         REP.REACH.pop(k2, None)
