@@ -51,7 +51,32 @@ for _f in sorted(DIR.glob('*.json')) if DIR.exists() else []:
     for _k, _r in _d['routines'].items():
         ROUTINES[_k] = dict(_r, object=_d['object'])
 _REACH_FILE = Path(__file__).parent / 'client/animation/repertoire-reach.json'
-REACH = {k: set(v['reachableAges']) for k, v in json.loads(_REACH_FILE.read_text())['routines'].items()} if _REACH_FILE.exists() else {}
+_REACH_DATA = json.loads(_REACH_FILE.read_text()) if _REACH_FILE.exists() else {}
+REACH = {k: set(v['reachableAges']) for k, v in _REACH_DATA.get('routines', {}).items()}
+SLOT_HEIGHT = _REACH_DATA.get('displaySlots', {})
+BODY_HEIGHT = _REACH_DATA.get('bodyHeight', {})
+TOOL_REACH = dict(none=1.05, wing=1.1, twig=1.6, reed=1.6)
+
+
+def touches_item(r):
+    return any(q.get('anchor') == 'item' and q.get('contact', 0) > .05 for _, q in r['track'])
+
+
+def slot_reachable(pond, oid, r, age):
+    """A shown thing is touched where it really stands: its own slot in the case."""
+    if OBJECTS[oid].get('host') != 'display' or not touches_item(r):
+        return True
+    from engine import display
+    where = display.shown_anywhere(pond).get(oid)
+    if not where:
+        return False
+    obj = pond.object_state(*where)
+    items = display.state(obj)['items'] if obj is not None else []
+    heights = SLOT_HEIGHT.get(where[0], [])
+    i = items.index(oid) if oid in items else -1
+    if i < 0 or i >= len(heights):
+        return False
+    return heights[i] <= BODY_HEIGHT.get(age, 0) * TOOL_REACH.get(r['tool'], 0)
 CHEESE_TAGS = ('young', 'grown', 'elder', 'tired', 'lonely', 'sad', 'happy', 'grumpy', 'curious')
 NEEDS = ('energy', 'fun', 'social', 'hunger', 'cleanliness')
 
@@ -287,6 +312,8 @@ def eligible(pond, oid, obj, world=None, cheese=None):
         if r.get('ages') and age not in r['ages']:
             continue
         if REACH and age not in REACH.get(key, ()):
+            continue
+        if not slot_reachable(pond, oid, r, age):
             continue
         if storm and not (r['tool'] == 'none' and 'wet' in r['when'] and r['duration'] >= 30):
             continue

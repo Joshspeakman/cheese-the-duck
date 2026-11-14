@@ -7,6 +7,7 @@ import {architecturePose,ARCHITECTURE_ROUTINES} from './architecture-routines.mj
 import {groundPose,GROUND_ROUTINES} from './ground-routines.mjs';
 import {textilePose,TEXTILE_ROUTINES} from './textile-routines.mjs';
 import {sameInstance,physicalState} from './physical-objects.mjs';
+import {DISPLAY_SLOTS} from './display-slots.mjs';
 import {musicOccupants,musicPose,MUSIC_SCORES} from './music-performances.mjs';
 import {botanicalOccupants,BOTANICAL_ROUTINES} from './botanical-routines.mjs';
 import { eventModel } from './event-art.mjs';
@@ -352,7 +353,7 @@ export class LivingWorld {
         const keepsake=owned&&plan.keepsake_work?keepsakePose(plan.keepsake_work,s.motion!==false):null;
         const wonder=owned&&plan.wonder_work&&plan.phase!=='approach'?wonderPose(plan.wonder_work,s.motion!==false):null;
         const rep=owned&&plan.rep_work&&plan.phase==='act'?repPose(plan.rep_work,s.motion!==false):null;
-        this.objects.push(applyObjectPose({...itemSprite(item.id,t,{pose:{music,light,keepsake,wonder,creative,textile,ground,architecture,playkit},motion:s.motion!==false,context:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,worldPosition:[item.x,item.y],...(item.id==='bounce_house'?{physicalCastle:{origin:[item.x,item.y],camera:{...(s.camera||{x:0,y:0,w:132,h:42})}}}:{}),scale:itemWorldScale(item.id)},rep));
+        this.objects.push(applyObjectPose({...itemSprite(item.id,t,{pose:{music,light,keepsake,wonder,creative,textile,ground,architecture,playkit},motion:s.motion!==false,context:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,...(DISPLAY_SLOTS[item.id]?{displayItems:(physicalState(s,item).display?.items||[]).slice(0,DISPLAY_SLOTS[item.id].length)}:{}),worldPosition:[item.x,item.y],...(item.id==='bounce_house'?{physicalCastle:{origin:[item.x,item.y],camera:{...(s.camera||{x:0,y:0,w:132,h:42})}}}:{}),scale:itemWorldScale(item.id)},rep));
       }});
     }
     if(s.visitor){const [x,y]=this.project(s,s.visitor.x,s.visitor.y);actors.push({y,draw:()=>this.actor(s,t+2,x,y,{stage:'adult',state:'idle',facing:false,...s.visitor},true)});}

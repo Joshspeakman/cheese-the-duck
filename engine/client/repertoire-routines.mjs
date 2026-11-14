@@ -3,6 +3,7 @@
 // anchors when present, else fractions of the drawn sprite box from the object file.
 import {actorPitches} from './actor-projection.mjs';
 import {sampleTrack,companyTrack} from './wonder-routines.mjs';
+import {DISPLAY_SLOTS,slotPoint} from './display-slots.mjs';
 import DATA from './animation/repertoire.json' with {type:'json'};
 export const REP_OBJECTS=DATA.objects,REP_ROUTINES=DATA.routines;
 const clamp=n=>Math.max(0,Math.min(1,n));
@@ -18,6 +19,9 @@ export function repPose(work,motion=true){
  return {...pose,object:obj||{},rep:spec.tool!=='none'&&!work.transition,wonder:spec.tool!=='none'&&!work.transition,tool:spec.tool,progress,item:spec.object};
 }
 export function repAnchor(home,objectId,name){
+ if(name==='item'&&home.displayItems){  // a displayed thing: its own slot on the shelf
+  const i=home.displayItems.indexOf(objectId),s=DISPLAY_SLOTS[home.id]?.[i];if(s)return {x:s[0],y:s[1]-2};
+ }
  const named=home.anchors?.[name];if(named&&Number.isFinite(named.x)&&Number.isFinite(named.y))return named;
  const f=REP_OBJECTS[objectId]?.anchors?.[name];if(!f)return null;
  return {x:f.x*(home.width-1),y:f.y*(home.art.length-1)};
@@ -64,13 +68,15 @@ export function repGeometry(home,worker,sx,sy){
 // it always ends back at rest, so saved positions never change). null = in place.
 export function repItemMove(home,worker,sx,sy){
  const c=worker?.character,routine=c?.performance?.routine,spec=REP_ROUTINES[routine?.id];
- if(!spec||REP_OBJECTS[spec.object]?.host!=='portable'||!spec.obj)return null;
+ const host=REP_OBJECTS[spec?.object]?.host;
+ if(!spec||!['portable','display'].includes(host)||!spec.obj)return null;
  const pose=repPose(routine,c.performance.motion!==false),o=pose?.object||{};
  if(!(o.ix||o.iy||o.hold||o.hide))return null;
- const base={x:home.x*sx+(o.ix||0)*sx,y:home.y*sy+(o.iy||0)*sy};
+ const slot=host==='display'?slotPoint(home,home.displayItems?.indexOf(spec.object)??-1,sx,sy):null;
+ const base=slot?{x:slot.x,y:slot.y}:{x:home.x*sx+(o.ix||0)*sx,y:home.y*sy+(o.iy||0)*sy};
  const hold=clamp(o.hold||0);let x=base.x,y=base.y;
  if(hold>0){const g=repGeometry(home,worker,sx,sy),bill={x:g.hand.x+g.cw*1.5,y:g.hand.y+g.cw*2.5};x+=(bill.x-x)*hold;y+=(bill.y-y)*hold;}
- return {hide:(o.hide||0)>.5,held:hold>.5,x,y};
+ return {hide:(o.hide||0)>.5,held:hold>.5,x,y,displayId:host==='display'?spec.object:null};
 }
 export function drawRepTools(ctx,staged){
  ctx.save();ctx.font='600 '+staged.cw*1.5+'px Menlo, monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.strokeStyle='#172b24';ctx.lineWidth=Math.max(.6,staged.cw*.15);
