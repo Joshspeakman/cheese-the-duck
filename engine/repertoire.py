@@ -104,7 +104,7 @@ def need(obj_id):
     q = QUEUE.get(obj_id, {})
     if OBJECTS.get(obj_id, {}).get('shortfall'):
         return len(by_object(obj_id))  # an honest, recorded shortfall (rule 19)
-    return max(0, q.get('need', 48 - q.get('wonder_routines', 0)))
+    return max(0, q.get('need', 48 - q.get('wonder_routines', 0) - q.get('family_routines', 0)))  # existing distinct family routines count
 
 
 def state(oid, obj):

@@ -950,7 +950,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 7,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "cosmic_arch",
@@ -964,7 +968,11 @@
    "family_engine": "wonders.json",
    "wonder_routines": 5,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 7,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "aurora",
@@ -1252,7 +1260,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 7,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "bubble_machine",
@@ -1535,7 +1547,11 @@
    "family_engine": "groundworks.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 1,
+   "family_routine_files": [
+    "ground-routines.json"
+   ]
   },
   {
    "id": "compass_rose",
@@ -1549,7 +1565,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 7,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "breadcrumbs",
@@ -1917,7 +1937,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 8,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "flower_pot",
@@ -2156,7 +2180,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 8,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "gazebo",
@@ -2227,7 +2255,11 @@
    "family_engine": "keepsakes.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 8,
+   "family_routine_files": [
+    "keepsake-routines.json"
+   ]
   },
   {
    "id": "snowglobe",
@@ -2241,7 +2273,11 @@
    "family_engine": "keepsakes.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 8,
+   "family_routine_files": [
+    "keepsake-routines.json"
+   ]
   },
   {
    "id": "garden_gnome",
@@ -2255,7 +2291,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 7,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "gong",
@@ -2768,7 +2808,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 9,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "mirror",
@@ -3029,7 +3073,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 7,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "trellis",
@@ -3043,7 +3091,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 9,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "piano",
@@ -3099,7 +3151,11 @@
    "family_engine": "groundworks.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 2,
+   "family_routine_files": [
+    "ground-routines.json"
+   ]
   },
   {
    "id": "plushie",
@@ -3355,7 +3411,11 @@
    "family_engine": "wonders.json",
    "wonder_routines": 6,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 1,
+   "family_routine_files": [
+    "ground-routines.json"
+   ]
   },
   {
    "id": "rainbow_path",
@@ -3369,7 +3429,11 @@
    "family_engine": "groundworks.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 1,
+   "family_routine_files": [
+    "ground-routines.json"
+   ]
   },
   {
    "id": "growth_ray",
@@ -3623,7 +3687,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 7,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "carrot_seeds",
@@ -3934,7 +4002,11 @@
    "family_engine": "groundworks.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 6,
+   "family_routine_files": [
+    "ground-routines.json"
+   ]
   },
   {
    "id": "couch",
@@ -4046,7 +4118,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 8,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "flower_sunflower",
@@ -4343,7 +4419,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 7,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "castle_tower",
@@ -4399,7 +4479,11 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "family_routines": 7,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "toy_trampoline",
@@ -4570,7 +4654,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 7,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "volcano",
@@ -4598,7 +4686,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 7,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "waterfall",
@@ -4640,7 +4732,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 8,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "ferris_wheel",
@@ -4696,7 +4792,11 @@
    "family_engine": "architecture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 8,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "spring_wreath",
@@ -5152,7 +5252,11 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "family_routines": 1,
+   "family_routine_files": [
+    "ground-routines.json"
+   ]
   },
   {
    "id": "clover",
@@ -5209,7 +5313,11 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "family_routines": 7,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "heart_cookie",
@@ -5714,7 +5822,11 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "family_routines": 8,
+   "family_routine_files": [
+    "architecture-routines.json"
+   ]
   },
   {
    "id": "dandelion",
@@ -6234,7 +6346,11 @@
    "family_engine": "botanical.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 7,
+   "family_routine_files": [
+    "textile-routines.json"
+   ]
   },
   {
    "id": "red_maple_leaf",
@@ -6460,7 +6576,11 @@
    "family_engine": "groundworks.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 2,
+   "family_routine_files": [
+    "ground-routines.json"
+   ]
   },
   {
    "id": "pumpkin",
@@ -6573,7 +6693,11 @@
    "family_engine": "specimens.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 7,
+   "family_routine_files": [
+    "ground-routines.json"
+   ]
   },
   {
    "id": "shiny_object",
