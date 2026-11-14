@@ -67,6 +67,20 @@ export function repGeometry(home,worker,sx,sy){
 // Where a loose object is drawn during a routine (authored in the native track;
 // it always ends back at rest, so saved positions never change). null = in place.
 // For a kept-fish routine: which fish comes to which rim spot, and how far (drawn by waterworks).
+// Visible repertoire state: an object's marks ([field, threshold, glyphs, anchor, tone]) drawn
+// over it while the saved field is above the threshold (snow on a roof, leaves in a tyre...).
+const MARK_INK={snow:'#eef6f8',frost:'#bfe3ef',leaf:'#c98a3a',water:'#7fc4e0',mud:'#8a6a44',glow:'#fff0a0',dust:'#b9b09a',plant:'#8fc46a'};
+export function repMarks(item,state){
+ const spec=REP_OBJECTS[item.id],fields=state?.rep?.[item.id];if(!spec?.marks||!fields)return null;
+ const out=spec.marks.filter(([f,th])=>(fields[f]??spec.fields?.[f]?.[0]??0)>th).map(([f,th,glyphs,anchor,tone])=>({glyphs,anchor:spec.anchors?.[anchor],color:MARK_INK[tone]||'#e8dcc0'})).filter(m=>m.anchor);
+ return out.length?out:null;
+}
+export function drawRepMarks(ctx,home,sx,sy){
+ const unit=sx*home.scale*(home.detailScale||1),hh=unit*1.5,left=home.x*sx-home.width*unit/2,top=home.y*sy-home.art.length*hh;
+ ctx.save();ctx.font='600 '+Math.max(6,unit*1.5)+'px Menlo, monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.strokeStyle='#172b24';ctx.lineWidth=Math.max(.6,unit*.15);
+ for(const m of home.repMarks){const x=left+m.anchor.x*(home.width-1)*unit,y=top+m.anchor.y*(home.art.length-1)*hh;ctx.fillStyle=m.color;ctx.strokeText(m.glyphs,x,y);ctx.fillText(m.glyphs,x,y);}
+ ctx.restore();
+}
 export function repLure(work,motion=true){
  const spec=REP_ROUTINES[work?.id];if(!spec||!work.subject||REP_OBJECTS[spec.object]?.host!=='keeping')return null;
  const pose=repPose(work,motion),u=clamp(pose?.object?.lure||0);if(!u)return null;

@@ -11,7 +11,7 @@ import {lightingGeometry,drawLightingTools} from './lighting-routines.mjs';
 import {creativeGeometry,drawCreativeTools} from './creative-routines.mjs';
 import {keepsakeGeometry,drawKeepsakeTools} from './keepsake-routines.mjs';
 import {wonderGeometry,drawWonderTools} from './wonder-routines.mjs';
-import {repGeometry,drawRepTools,repItemMove} from './repertoire-routines.mjs';
+import {repGeometry,drawRepTools,repItemMove,drawRepMarks} from './repertoire-routines.mjs';
 import {slotPoint} from './display-slots.mjs';
 import {itemSprite} from './ultra-items.mjs';
 import { sceneLight,ambientRows,ambientSwatches,lightBand,readableInk,mixColor } from './scene-lighting.mjs';
@@ -143,6 +143,7 @@ export class SceneCanvas {
         if(!moved)this.items.draw(this.ctx,actor,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{surface,outline:light.outline});
         else if(!moved.hide&&!moved.held&&!moved.displayId)this.items.draw(this.ctx,actor,moved.x,moved.y,this.sx*actor.scale,{surface,outline:light.outline});
         else if(moved.displayId)this.items.draw(this.ctx,actor,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{surface,outline:light.outline});
+        if(actor.repMarks&&!moved?.hide)drawRepMarks(this.ctx,actor,this.sx,this.sy);  // visible repertoire state (snow, leaves...)
         // The real things on display stand on their shelves (one lifted out by Cheese is drawn at his bill instead).
         for(const [i,id] of (actor.displayItems||[]).entries()){
           if(moved?.displayId===id&&moved.held)continue;

@@ -91,7 +91,7 @@ def _known_lines(skip):
 
 
 class Obj:
-    def __init__(self, oid, host, fields, effects, anchors, physics=(), triggers=(), on=None, liftable=False, containers=()):
+    def __init__(self, oid, host, fields, effects, anchors, physics=(), triggers=(), on=None, liftable=False, containers=(), marks=()):
         """anchors = {name: (x, y)} or (x, y, 'inside' / 'surface' / 'inside surface') fractions of the host sprite;
         on = that sprite for keeping/display (koi_pond, infinity_pool, trophy_case).
         'inside' allows a point within a hollow outline; 'surface' allows perch=1 there.
@@ -141,6 +141,12 @@ class Obj:
             slots = json.loads((ENG / 'client/animation/repertoire-reach.json').read_text()).get('displaySlots', {}).get(on, [0])
             self.h['item'], self.spot['item'], self.flags['item'] = float(slots[0]), ('item',), []
             d['anchors']['item'] = dict(x=.5, y=.5)  # resolved at draw time to the thing's own slot
+        INKS = ('snow', 'frost', 'leaf', 'water', 'mud', 'glow', 'dust', 'plant')
+        for f, th, glyphs, a, tone in marks:  # visible state: glyphs stamped at an anchor while the field is above th
+            assert f in fields and a in anchors and tone in INKS and 1 <= len(glyphs) <= 8 and re.fullmatch(r'[ -~]+', glyphs) and host in ('placed', 'portable'), \
+                f'{oid}: mark {f}: needs a declared field and anchor, ascii glyphs (1-8), tone in {INKS}, placed/portable host'
+        if marks:
+            d['marks'] = [list(m) for m in marks]
         spots = {}
         for n, s in self.spot.items():
             assert s not in spots, f'{oid}: anchors {spots.get(s)} and {n} are the same touch place; merge them or move one'
