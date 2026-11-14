@@ -183,6 +183,9 @@ try:
     g._flush_pending_save()
     g._state = 'playing'
     g.renderer._show_talk = False
+    g.renderer._viewport_width, g.renderer._viewport_height = 132, 42
+    g.renderer._update_camera(132, 42)  # visitors walk in viewport coordinates
+    g.renderer._show_talk = False
     sound_engine.enabled = False
     p = g.living_pond
     p.state['auto'] = False
@@ -422,6 +425,43 @@ try:
         print(json.dumps(dict(result='PASS', hosts=len(hosted), checks=len(checks), seconds=round(time.time() - started))))
         raise SystemExit(0)
 
+    from world.friends import visitor_animator
+    b = p.minds
+    clock = [0.]
+    joined = [False]
+    pal = []
+
+    def bring_friend():
+        """A visiting friend arrives beside Cheese (a duet needs one)."""
+        if not pal:
+            pal.append(g.friends.generate_new_friend())
+        friend = pal[0]
+        g.friends.start_visit(friend.id)
+        visitor_animator._friend_name = friend.name
+        visitor_animator._is_leaving = False
+        pos = g.renderer.duck_pos
+        visitor_animator._position_x, visitor_animator._position_y = pos.x + 14, pos.y
+        visitor_animator._last_move_time = clock[0]
+        b.sync()
+        b.model.residents[friend.id]['energy'] = .9
+        b.tasks[friend.id] = dict(action='observe', until=b.now + 200, context=b.context(friend.id))
+        joined[0] = False
+        return friend.id
+
+    def visitors_step(dt):
+        clock[0] += dt
+        pos = g.renderer.duck_pos
+        if g.friends.current_visit:
+            visitor_animator._mind_motion = b.motion(g.friends.current_visit.friend_id)
+            visitor_animator.update(clock[0], pos.x, pos.y)
+        b.tick()
+
+    def send_friend_home():
+        b.wonder_guests.clear()
+        b.tasks.clear()
+        b.wonder_retry.clear()  # a released friend is barred for a while; each test run starts fresh
+        g.friends.current_visit = None
+
     def review_pick(oid, key, age):
         if '--review' in args:
             return key in args[args.index('--review') + 1].split(',') and age == ([a for a in AGES if a in R.REACH.get(key, AGES)] or ['adult'])[0]
@@ -442,9 +482,7 @@ try:
     duets = []
     for oid in objects:
         for key in R.by_object(oid):
-            if R.ROUTINES[key].get('duo'):
-                duets.append(key)  # needs a visiting friend: run natively by the duet runner, not solo
-                continue
+            duet = bool(R.ROUTINES[key].get('duo'))
             ages = [a for a in AGES if a in R.REACH.get(key, AGES)] if R.REACH else list(AGES)
             if QUICK:
                 ages = ages[:1]
@@ -452,6 +490,7 @@ try:
                 r = R.ROUTINES[key]
                 hostitem, iid = give(oid)
                 env = setup_for(key, hostitem, iid, age)
+                friend_key = bring_friend() if duet else None
                 label = key + '@' + age
                 obj = R.store(p, {'target': hostitem, 'instance': iid}, {'object': oid}) if R.OBJECTS[oid].get('host') == 'wearable' else p.object_state(hostitem, iid)
                 check(key in R.eligible(p, oid, obj), label + ' eligible in its authored context ' + json.dumps(env))
@@ -472,6 +511,10 @@ try:
                     pos._state_start_time -= .2
                     pos.update(.2)
                     p._activity(.2)
+                    if duet:
+                        visitors_step(.2)
+                        gr = b.wonder_guests.get(friend_key)
+                        joined[0] = joined[0] or bool(gr and gr.get('duet') and gr['phase'] == 'inside' and (p.state['plan'] or {}).get('rep_work', {}).get('elapsed', 0) > 0)
                     if _ % 5 == 0:
                         p.sync()  # the real loop syncs every second
                     pw = (p.state['plan'] or {}).get('rep_work') or {}
@@ -485,6 +528,10 @@ try:
                 else:
                     raise AssertionError(label + ' never finished')
                 work = plan['rep_work']
+                if duet:
+                    check(joined[0], label + ' the friend walked over and did their own part')
+                    duets.append(key)
+                    send_friend_home()
                 check(work['done'] and not work.get('interrupted') and work.get('recorded'), label + ' completes once')
                 check([a['name'] for a in applied] == [n for _, n in r['events']], label + ' exact contacts in order')
                 check(all(a['near'] and a['phase'] == 'act' for a in applied), label + ' contacts at the object during the act')
@@ -513,7 +560,7 @@ try:
     if FRAMES:
         (ROOT / 'engine/artifacts/animation-milestone').mkdir(parents=True, exist_ok=True)
         (ROOT / 'engine/artifacts/animation-milestone/rep-frames.json').write_text(json.dumps(frames_out))
-    print(json.dumps(dict(result='PASS', incomplete=incomplete, duets_pending_native=len(duets), objects=len(objects), routines=sum(len(R.by_object(o)) for o in objects), runs=runs, checks=len(checks), seconds=round(time.time() - started))))
+    print(json.dumps(dict(result='PASS', incomplete=incomplete, duet_runs=len(duets), objects=len(objects), routines=sum(len(R.by_object(o)) for o in objects), runs=runs, checks=len(checks), seconds=round(time.time() - started))))
 finally:
     g.living_pond.minds.close()
     g._save_executor.shutdown(wait=True)
