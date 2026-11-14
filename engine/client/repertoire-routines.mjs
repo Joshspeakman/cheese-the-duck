@@ -7,7 +7,7 @@ import DATA from './animation/repertoire.json' with {type:'json'};
 export const REP_OBJECTS=DATA.objects,REP_ROUTINES=DATA.routines;
 const clamp=n=>Math.max(0,Math.min(1,n));
 const JOINTS=['x','y','b','w','l','r','reach','contact','perch'];  // perch: feet lifted onto the touched surface (authored, sampled from the native track)
-const OBJ=['sway','lift','shake','glow','puff','ix','iy','hold','hide'];  // ix/iy: a loose object moved (cells); hold: in his bill; hide: buried/stashed
+const OBJ=['sway','lift','shake','glow','puff','ix','iy','hold','hide','off','wx','wy','flap','sag'];  // off/wx/wy/flap/sag: the worn piece itself (taken off, shifted, flapping, sagging)  // ix/iy: a loose object moved (cells); hold: in his bill; hide: buried/stashed
 export function repPose(work,motion=true){
  const base=REP_ROUTINES[work?.id];if(!base||work.interrupted)return null;
  // A visitor keeping Cheese company reacts at the real contacts (derived track).

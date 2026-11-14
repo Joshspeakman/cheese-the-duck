@@ -65,7 +65,7 @@ def content(oid, r):
         step = tuple(round(q.get(k, 0) * 2) / 2 for k in ('x', 'y', 'b', 'w'))
         if not path or path[-1] != step:
             path.append(step)
-    moved = tuple(dict.fromkeys((round(q.get('ix', 0)), round(q.get('iy', 0)), round(q.get('hold', 0)), round(q.get('hide', 0))) for _, q in r.get('obj', ())))
+    moved = tuple(dict.fromkeys(tuple(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag')) for _, q in r.get('obj', ())))
     return rows, places, r['tool'] if r['tool'] in ('none', 'wing') else 'stick', tuple(path), (r.get('act') or [None])[0], moved
 
 
@@ -75,7 +75,7 @@ def stamp(r):
     cells = tuple((round(t, 2), int(q.get('x', 0) * 2.6 + .5), int(q.get('y', 0) * 1.8 + .5), int(q.get('b', 0) * 2 + .5),
                    round(q.get('l', 0)), round(q.get('r', 0)), round(q.get('w', 0)), round(q.get('reach', 0) * 2), round(q.get('perch', 0)))
                   for t, q in r['track'])
-    moved = tuple((round(t, 2), round(q.get('ix', 0)), round(q.get('iy', 0)), round(q.get('hold', 0)), round(q.get('hide', 0))) for t, q in r.get('obj', ()))
+    moved = tuple((round(t, 2), *(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag'))) for t, q in r.get('obj', ()))
     return (r['tool'] if r['tool'] in ('none', 'wing') else 'stick', cells, moved)
 
 
