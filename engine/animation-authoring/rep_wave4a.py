@@ -3,8 +3,8 @@ Every routine is hand-written. Cheese stays on the rim (row 46 of the koi_pond d
 spot he touches (lure + pick). Drawing: three cattail stems with `#` heads at the left (cols 7/12/17), three tall ones at the right (cols 103/108/113),
 a grass tuft at the foot (row 44), two lily pads with `{*}` blooms (left one high, rows 30-32; right one low, rows 35-38), rippling water rows 29-45,
 a far edge line at row 27, a stone bank round it `( )`, and front stones at the rim, row 46 and the rows just in front of it.
-Anchors below are (column, row) of that drawing converted by P(). Marks stamp each fish's own visible state on the pond (leaf litter, rime,
-sunk pellets, silt, glow, flakes), because marks can only read the object's own fields."""
+Anchors below are (column, row) of that drawing converted by P(). Marks stamp visible state: the pond's own leaves, ice, flakes and algae (pond_* marks, never copied onto the fish) and each fish's own
+sunk pellets, silt, glow and rings."""
 import sys, os
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -33,25 +33,24 @@ def done(o):
 
 def catfish():
     # Catfish: bottom dweller, evening and night, whiskers (barbels). Own state: feel (how well it and Cheese read each other through the barbels),
-    # pellets (sunk pellets resting on the bottom, drawn), leafmat (leaf litter on the water, drawn), rime (frost crust at the rim, drawn).
+    # pellets (sunk pellets resting on the bottom, drawn).
     o = Obj('catfish', 'keeping', on='koi_pond',
-            fields=dict(feel=(0, 0, 1), pellets=(0, 0, 1), leafmat=(0, 0, 1), rime=(0, 0, 1)),
-            physics=[('feel', 'rate', -.0003, 'always'), ('pellets', 'rate', -.0008, 'always'), ('leafmat', 'rate', .0012, 'fall'), ('leafmat', 'rate', .0006, 'windy'),
-                     ('rime', 'rate', .002, 'cold'), ('rime', 'rate', -.002, 'warm')],
-            effects=dict(skim=[('keeping.leaves', 'mul', .4), ('leafmat', 'set', 0)], scrape=[('keeping.algae', 'mul', .5)],
+            fields=dict(feel=(0, 0, 1), pellets=(0, 0, 1)),
+            physics=[('feel', 'rate', -.0003, 'always'), ('pellets', 'rate', -.0008, 'always')],
+            effects=dict(skim=[('keeping.leaves', 'mul', .4)], scrape=[('keeping.algae', 'mul', .5)],
                          tend=[('subject.health', 'add', .12), ('subject.trust', 'add', .1)], husk=[('pellets', 'mul', .2), ('keeping.clarity', 'add', .15)],
                          shade=[('keeping.plants', 'mul', .75)], sink=[('pellets', 'set', 1), ('keeping.flakes', 'add', .35)],
                          feed=[('subject.hunger', 'add', -.25), ('subject.trust', 'add', .12)], call=[('keeping.bell', 'add', .5)],
                          read=[('feel', 'add', .25), ('subject.trust', 'add', .1)], lead=[('feel', 'add', .15), ('subject.trust', 'add', .1)],
-                         stroke=[('subject.mood', 'add', .15), ('subject.trust', 'add', .1)], crack=[('keeping.ice', 'mul', .3), ('rime', 'mul', .3)],
-                         thaw=[('rime', 'mul', .25)], stir=[('keeping.oxygen', 'add', .3)], fun=[('need.fun', 'add', 2)], rest=[('need.energy', 'add', 2)]),
-            marks=[('pellets', .3, '.:.:.', 'bed_m', 'dust'), ('leafmat', .3, '"~;"~', 'edge_far', 'leaf'), ('rime', .3, '*-*-*', 'bed_l', 'frost')],
+                         stroke=[('subject.mood', 'add', .15), ('subject.trust', 'add', .1)], crack=[('keeping.ice', 'mul', .3)],
+                         thaw=[('keeping.ice', 'mul', .6)], stir=[('keeping.oxygen', 'add', .3)], fun=[('need.fun', 'add', 2)], rest=[('need.energy', 'add', 2)]),
+            marks=[('pellets', .3, '.:.:.', 'bed_m', 'dust'), ('pond_leaves', .3, '"~;"~', 'edge_far', 'leaf'), ('pond_ice', .3, '*-*-*', 'bed_l', 'frost')],
             anchors=dict(bed_l=P(28, 43), bed_m=P(58, 41), bed_r=P(88, 39), pad_low=P(86, 37), tuft=P(11, 44), reed_low=P(8, 38),
                          bank_r=P(95, 40), edge_far=P(70, 43), stone_l=P(30, 46, 'surface'), stone_m=P(41, 46, 'surface'), stone_r=P(86, 46)))
     # ---------------- care
     o.r('skim_the_leaf_mat', 'Raking the mat of fallen leaves off the dark water with a reed and heaping it at the left bank', 22, 'reed',
         [k(.14, 'bed_r', reach=.6, x=.3, y=.3, w=.2), k(.34, 'bed_m', reach=1, x=.7, y=.4, b=.4, mark='shk'), k(.54, 'bed_l', reach=1, x=.8, y=.5, b=.5, mark='shk'), k(.76, 'tuft', reach=.8, x=.4, y=.6, b=.3), k(.9, eye='^')],
-        [(.54, 'skim')], g='care', act=('rake', 'leaf_mat'), when=['leafmat>.3'], prefer=['windy'], say=["Leaves out. Cat did not even look up.", "Heaped the lot by the tuft. Compost, if it asks."])
+        [(.54, 'skim')], g='care', act=('rake', 'leaf_mat'), when=['pond_leaves>.3'], prefer=['windy'], say=["Leaves out. Cat did not even look up.", "Heaped the lot by the tuft. Compost, if it asks."])
     o.r('scrape_the_belly_stone_green', 'Scraping the green slime off the stone where the catfish rubs its belly, flat edge of a wing', 18, 'wing',
         [k(.12, 'stone_r', reach=.6, x=.2, y=.8, b=.4), k(.3, 'stone_r', reach=1, x=.4, y=1.3, b=.9, l=1, mark='sksk'), k(.5, 'bank_r', reach=1, x=.5, y=1.1, b=.8, mark='sksk'), k(.7, 'bank_r', reach=1, x=.3, y=.9, b=.7, r=1), k(.88, y=.1, eye='^')],
         [(.5, 'scrape')], g='care', act=('scrape', 'slime'), when=['pond_algae>.4'], say=["Slime off. The cat can rub on bare rock like an adult.", "Scraped a rock for a fish. Tomorrow I scrape for me."])
@@ -159,7 +158,7 @@ def catfish():
         [(.5, 'crack')], g='weather', act=('chip', 'ice'), when=['pond_ice>.3'])
     o.r('scrape_the_rime_off_the_front_stone', 'Scraping the white rime off the left stone with a wing so the cat\'s landing ledge is clear', 18, 'wing',
         [k(.12, 'stone_l', reach=.5, x=.2, y=.8, b=.4), k(.3, 'bed_l', reach=1, x=.4, y=1.3, b=.9, mark='skrr'), k(.5, 'bed_l', reach=1, x=.5, y=1.4, b=1, r=1, mark='skrr'), k(.7, 'stone_l', reach=1, x=.3, y=1, b=.7), k(.88, eye='-')],
-        [(.5, 'thaw')], g='weather', act=('scrape', 'rime'), when=['rime>.3'])
+        [(.5, 'thaw')], g='weather', act=('scrape', 'rime'), when=['pond_ice>.3'])
     o.r('splash_the_dull_water_awake', 'Beating the surface with both wings in short slaps to put air back into the sluggish water', 20, 'wing',
         [k(.12, 'bed_m', reach=.6, x=.3, y=.4, b=.3), k(.3, 'bed_m', reach=1, x=.4, y=.5, b=-.3, l=1, mark='SPLSH'), k(.48, 'edge_far', reach=1, x=.5, y=.5, b=-.4, r=1, mark='SPLSH'), k(.66, 'bed_r', reach=1, x=.5, y=.5, b=-.3, l=1, mark='SPLSH'), k(.86, eye='@')],
         [(.48, 'stir')], g='weather', act=('splash', 'air'), when=['pond_oxygen<.5'], prefer=['summer'])
@@ -223,21 +222,19 @@ def catfish():
 
 def bass():
     # Bass: mid-water ambusher, morning and evening, very jumpy. Own state: lunge (how wound up it is: leaps raise it, rest lowers it; too high and it
-    # overshoots the rim), ring (ripple rings left on the water by a leap or a strike, drawn), flakeskin (flakes still floating on the surface, drawn),
-    # crust (ice crust at the left rim, drawn).
+    # overshoots the rim), ring (ripple rings left on the water by a leap or a strike, drawn).
     o = Obj('bass', 'keeping', on='koi_pond',
-            fields=dict(lunge=(0, 0, 1), ring=(0, 0, 1), flakeskin=(0, 0, 1), crust=(0, 0, 1)),
-            physics=[('lunge', 'rate', -.0003, 'always'), ('ring', 'rate', -.004, 'always'), ('flakeskin', 'rate', -.0015, 'always'),
-                     ('crust', 'rate', .002, 'cold'), ('crust', 'rate', -.002, 'warm')],
+            fields=dict(lunge=(0, 0, 1), ring=(0, 0, 1)),
+            physics=[('lunge', 'rate', -.0003, 'always'), ('ring', 'rate', -.004, 'always')],
             effects=dict(scoop=[('keeping.leaves', 'mul', .35)], scour=[('keeping.algae', 'mul', .5)], thin=[('keeping.plants', 'mul', .75)],
-                         skim=[('flakeskin', 'mul', .2), ('keeping.flakes', 'mul', .3)], tend=[('subject.health', 'add', .12), ('subject.trust', 'add', .1)],
-                         rescue=[('subject.health', 'add', .15), ('lunge', 'mul', .4)], scatter=[('flakeskin', 'set', 1), ('keeping.flakes', 'add', .4)],
+                         skim=[('keeping.flakes', 'mul', .3)], tend=[('subject.health', 'add', .12), ('subject.trust', 'add', .1)],
+                         rescue=[('subject.health', 'add', .15), ('lunge', 'mul', .4)], scatter=[('keeping.flakes', 'add', .4)],
                          leaptake=[('subject.hunger', 'add', -.2), ('lunge', 'add', .25), ('ring', 'set', 1)], call=[('keeping.bell', 'add', .5)],
                          trick=[('lunge', 'add', .3), ('subject.trust', 'add', .1)], dimple=[('ring', 'set', 1), ('subject.mood', 'add', .15)],
                          lead=[('lunge', 'add', .15), ('subject.trust', 'add', .1)], feed=[('subject.hunger', 'add', -.25), ('subject.trust', 'add', .12)],
-                         crack=[('keeping.ice', 'mul', .3), ('crust', 'mul', .3)], defrost=[('crust', 'mul', .25)], stir=[('keeping.oxygen', 'add', .3)],
+                         crack=[('keeping.ice', 'mul', .3)], defrost=[('keeping.ice', 'mul', .6)], stir=[('keeping.oxygen', 'add', .3)],
                          fun=[('need.fun', 'add', 2)], rest=[('need.energy', 'add', 2)]),
-            marks=[('ring', .3, 'o O o', 'surf_m', 'water'), ('flakeskin', .3, '.:.:.', 'lane', 'dust'), ('crust', .3, '*=*=*', 'surf_l', 'frost')],
+            marks=[('ring', .3, 'o O o', 'surf_m', 'water'), ('pond_flakes', .3, '.:.:.', 'lane', 'dust'), ('pond_ice', .3, '*=*=*', 'surf_l', 'frost')],
             anchors=dict(surf_l=P(28, 43), surf_m=P(58, 41), surf_r=P(88, 39), lane=P(70, 43), cove=P(40, 39), pad_low=P(86, 37), bloom_r=P(81, 35), cattail_l=P(7, 31),
                          reed_low=P(8, 38), bank_r=P(95, 40), stone_l=P(30, 46, 'surface'), stone_m=P(41, 46, 'surface'), stone_r=P(86, 46)))
     # ---------------- care
@@ -249,7 +246,7 @@ def bass():
         [(.5, 'thin')], g='care', act=('pull', 'pads'), when=['pond_plants>.7'])
     o.r('sweep_the_flake_film_to_the_rim', 'Sweeping the film of old flakes off the surface in to the rim with a wing before it sours', 18, 'wing',
         [k(.12, 'lane', reach=.5, x=.3, y=.9, b=.4), k(.3, 'lane', reach=1, x=.6, y=1.3, b=.8, mark='shff'), k(.5, 'surf_m', reach=1, x=.7, y=1.4, b=1, l=1, mark='shff'), k(.7, 'surf_l', reach=1, x=.5, y=1.2, b=.8, r=1), k(.88, eye='-')],
-        [(.5, 'skim')], g='care', act=('sweep', 'film'), when=['flakeskin>.3'])
+        [(.5, 'skim')], g='care', act=('sweep', 'film'), when=['pond_flakes>.3'])
     o.r('rub_the_algae_off_the_pad_stems', 'Rubbing the green off the reed stem at the left bank where the bass lies up waiting', 18, 'wing',
         [k(.12, 'reed_low', reach=.6, x=.2, y=.7, b=.4), k(.3, 'reed_low', reach=1, x=.3, y=1.2, b=.9, l=1, mark='sqk'), k(.5, 'reed_low', reach=1, x=.4, y=1.4, b=1.1, mark='sqk'), k(.7, 'tuft_dummy', reach=1)] if False else
         [k(.12, 'reed_low', reach=.6, x=.2, y=.7, b=.4), k(.3, 'reed_low', reach=1, x=.3, y=1.2, b=.9, l=1, mark='sqk'), k(.5, 'reed_low', reach=1, x=.4, y=1.4, b=1.1, mark='sqk'), k(.7, 'reed_low', reach=1, x=.2, y=1, b=.8, r=1), k(.88, eye='^')],
@@ -264,7 +261,7 @@ def bass():
     # ---------------- use
     o.r('fling_flakes_in_a_high_arc', 'Flinging a wingful of flakes in a high arc so they spatter down over the open lane', 16, 'wing',
         [k(.15, 'lane', reach=.5, w=.5), k(.35, 'lane', reach=1, x=-.4, y=-.8, b=-.8, w=1, mark='fwip'), k(.6, x=-.4, y=.2, eye='o'), k(.85, eye='^')],
-        [(.35, 'scatter')], g='use', act=('throw', 'flakes'), when=['flakeskin<.3'], prefer=['dawn', 'dusk'])
+        [(.35, 'scatter')], g='use', act=('throw', 'flakes'), when=['pond_flakes<.3'], prefer=['dawn', 'dusk'])
     o.r('hold_a_flake_high_for_the_leap', 'Lifting one flake in his bill just out of the water so the hungriest bass has to leap for it', 22, 'none',
         [k(.12, x=.4, y=.4, b=.4), k(.3, 'surf_m', x=1, y=.3, b=.7, eye='o', mark='...'), k(.46, 'surf_m', x=1.2, y=-.8, b=-.9, w=.4, eye='O', mark='SPLOSH'), k(.64, 'surf_m', x=.4, y=.4, b=.4, w=.8, eye='>'), k(.86, eye='^')],
         [(.46, 'leaptake')], g='use', act=('lift', 'flake'), pick='hungriest', when=['fish_hunger>.4'], prefer=['dawn', 'dusk'], obj=[(.25, dict(lure=1)), (.5, dict(lure=1)), (.75, dict(lure=0))],
@@ -352,7 +349,7 @@ def bass():
         [(.4, 'crack')], g='weather', act=('chip', 'ice'), when=['pond_ice>.3'])
     o.r('flake_the_crust_off_the_rim', 'Flaking the frost crust off the left rim with the edge of a wing so the bass can strike there again', 18, 'wing',
         [k(.12, 'surf_l', reach=.5, x=.2, y=.7, b=.4), k(.3, 'surf_l', reach=1, x=.4, y=1.2, b=.8, mark='skrr'), k(.5, 'surf_l', reach=1, x=.5, y=1.3, b=1, r=1, mark='skrr'), k(.7, 'surf_l', reach=1, x=.3, y=1, b=.7), k(.88, eye='-')],
-        [(.5, 'defrost')], g='weather', act=('scrape', 'crust'), when=['crust>.3'])
+        [(.5, 'defrost')], g='weather', act=('scrape', 'crust'), when=['pond_ice>.3'])
     o.r('slap_the_heavy_water_awake', 'Slapping the heavy surface with the flat of both wings to churn air back in for the bass', 20, 'wing',
         [k(.1, 'surf_m', reach=.4, y=-.2, b=-.7, l=1, r=1), k(.28, 'lane', reach=1, x=.3, y=.8, b=1.1, mark='SPLSH'), k(.46, 'lane', reach=.4, y=-.3, b=-.8, r=1), k(.64, 'lane', reach=1, x=.4, y=.9, b=1.2, mark='SPLSH'), k(.82, 'surf_r', reach=1, x=.3, y=.4, b=.4, eye='@')],
         [(.64, 'stir')], g='weather', act=('splash', 'air'), when=['pond_oxygen<.5'], prefer=['summer'])
@@ -416,31 +413,30 @@ def bass():
 
 def carp():
     # Carp: heavy bottom dweller that roots in the mud, any hour, barbels, grazes algae off the stones. Own state: silt (the mud cloud it throws up,
-    # drawn), root (how readily it roots where he points), film (green film on the front stones, drawn), leafmat (leaf litter, drawn), rime (frost, drawn).
+    # drawn), root (how readily it roots where he points).
     o = Obj('carp', 'keeping', on='koi_pond',
-            fields=dict(silt=(0, 0, 1), root=(0, 0, 1), film=(0, 0, 1), leafmat=(0, 0, 1), rime=(0, 0, 1)),
-            physics=[('silt', 'rate', .0005, 'day'), ('silt', 'rate', -.0008, 'night'), ('root', 'rate', -.0003, 'always'), ('film', 'rate', .0006, 'warm'),
-                     ('leafmat', 'rate', .0012, 'fall'), ('leafmat', 'rate', .0006, 'windy'), ('rime', 'rate', .002, 'cold'), ('rime', 'rate', -.002, 'warm')],
-            effects=dict(scour=[('keeping.algae', 'mul', .5), ('film', 'mul', .2)], settle=[('silt', 'mul', .2), ('keeping.clarity', 'add', .15)],
-                         skim=[('leafmat', 'set', 0), ('keeping.leaves', 'mul', .4)], thin=[('keeping.plants', 'mul', .75)],
+            fields=dict(silt=(0, 0, 1), root=(0, 0, 1)),
+            physics=[('silt', 'rate', .0005, 'day'), ('silt', 'rate', -.0008, 'night'), ('root', 'rate', -.0003, 'always')],
+            effects=dict(scour=[('keeping.algae', 'mul', .5)], settle=[('silt', 'mul', .2), ('keeping.clarity', 'add', .15)],
+                         skim=[('keeping.leaves', 'mul', .4)], thin=[('keeping.plants', 'mul', .75)],
                          tend=[('subject.health', 'add', .12), ('subject.trust', 'add', .1)], sink=[('silt', 'add', .3), ('keeping.flakes', 'add', .4)],
                          feed=[('subject.hunger', 'add', -.25), ('subject.trust', 'add', .12)], call=[('keeping.bell', 'add', .5)],
                          lead=[('root', 'add', .2), ('subject.trust', 'add', .1)], tickle=[('subject.mood', 'add', .15), ('subject.trust', 'add', .1)],
-                         crack=[('keeping.ice', 'mul', .3), ('rime', 'mul', .3)], thaw=[('rime', 'mul', .25)], stir=[('keeping.oxygen', 'add', .3)],
+                         crack=[('keeping.ice', 'mul', .3)], thaw=[('keeping.ice', 'mul', .6)], stir=[('keeping.oxygen', 'add', .3)],
                          fun=[('need.fun', 'add', 2)], rest=[('need.energy', 'add', 2)]),
-            marks=[('silt', .3, '~=~=~', 'floor_m', 'mud'), ('film', .3, '"v"v"', 'stone_l', 'plant'), ('leafmat', .3, ';"~;', 'floor_r', 'leaf'), ('rime', .3, '*-*-*', 'shelf', 'frost')],
+            marks=[('silt', .3, '~=~=~', 'floor_m', 'mud'), ('pond_algae', .3, '"v"v"', 'stone_l', 'plant'), ('pond_leaves', .3, ';"~;', 'floor_r', 'leaf'), ('pond_ice', .3, '*-*-*', 'shelf', 'frost')],
             anchors=dict(floor_l=P(28, 43), floor_m=P(58, 41), floor_r=P(88, 39), mud_edge=P(48, 43), shelf=P(40, 39), pad_low=P(86, 37), reed_low=P(8, 38), tuft=P(11, 44),
                          bank_r=P(95, 40), stone_l=P(30, 46, 'surface'), stone_m=P(41, 46, 'surface'), stone_r=P(86, 46, 'surface')))
     # ---------------- care
     o.r('scrub_the_green_film_off_the_stones', 'Scrubbing the green film off the left front stone with the flat of a wing, in slow heavy circles', 22, 'wing',
         [k(.16, 'stone_l', reach=.5, x=.4, y=.9, b=.6), k(.36, 'stone_l', reach=1, x=.7, y=1.5, b=1.3, l=1, mark='sqk'), k(.58, 'stone_l', reach=1, x=.9, y=1.7, b=1.5, r=1, mark='sqk'), k(.8, 'stone_l', reach=1, x=.6, y=1.2, b=1, mark='sqk'), k(.92, eye='^')],
-        [(.58, 'scour')], g='care', act=('scrub', 'film'), when=['film>.3'], say=["Stone's bare. The carp will have to eat actual food.", "Scrubbed a rock for a fish that eats rocks. Circular."])
+        [(.58, 'scour')], g='care', act=('scrub', 'film'), when=['pond_algae>.3'], say=["Stone's bare. The carp will have to eat actual food.", "Scrubbed a rock for a fish that eats rocks. Circular."])
     o.r('sweep_the_silt_cloud_to_the_rim', 'Sweeping the brown silt cloud in towards the rim with long strokes of a wing so it settles', 20, 'wing',
         [k(.16, 'floor_m', reach=.5, x=.4, y=.7, b=.6), k(.34, 'floor_m', reach=1, x=.8, y=1.2, b=1.2, mark='shhh'), k(.54, 'mud_edge', reach=1, x=.9, y=1.4, b=1.3, l=1, mark='shhh'), k(.74, 'floor_l', reach=1, x=.8, y=1.2, b=1.1, r=1), k(.9, eye='-')],
         [(.54, 'settle')], g='care', act=('sweep', 'silt'), when=['silt>.3'], prefer=['curious'], say=['Swept the brown out. It will be back by teatime.', 'Silt in, silt out. Carp is unfazed. Carp is the reason.'])
     o.r('rake_the_leaf_litter_off_the_deep_corner', 'Raking the leaf litter off the water in the deep right corner with a reed, three slow pulls', 24, 'reed',
         [k(.16, 'floor_r', reach=.5, x=.3, y=.5, b=.4), k(.34, 'floor_r', reach=1, x=.7, y=.8, b=.8, mark='swsh'), k(.52, 'floor_m', reach=1, x=.8, y=.9, b=.9, mark='swsh'), k(.7, 'mud_edge', reach=1, x=.9, y=.9, b=1, l=1, mark='swsh'), k(.88, eye='^')],
-        [(.52, 'skim')], g='care', act=('rake', 'litter'), when=['leafmat>.3'], prefer=['windy'], say=["Litter gone. The carp is already making more.", "Raked a pond. Pond stays unimpressed, for leaves are leaves."])
+        [(.52, 'skim')], g='care', act=('rake', 'litter'), when=['pond_leaves>.3'], prefer=['windy'], say=["Litter gone. The carp is already making more.", "Raked a pond. Pond stays unimpressed, for leaves are leaves."])
     o.r('dig_the_choking_weed_out_by_the_bank', 'Digging a clump of choking weed out of the shallows by the right bank with his bill, tugging it clear', 22, 'none',
         [k(.16, 'bank_r', x=.7, y=.6, b=.6), k(.36, 'bank_r', x=1.3, y=1.7, b=1.4, mark='nnk'), k(.56, 'bank_r', x=1.4, y=1.9, b=1.6, l=1, mark='TUG'), k(.76, 'bank_r', x=-.5, y=-.3, b=-.3, w=.6, mark='plop'), k(.9, eye='-')],
         [(.56, 'thin')], g='care', act=('dig', 'weeds'), when=['pond_plants>.7'])
@@ -535,7 +531,7 @@ def carp():
         [(.58, 'crack')], g='weather', act=('chip', 'ice'), when=['pond_ice>.3'])
     o.r('rub_the_rime_off_the_left_edge', 'Rubbing the rime off the shelf edge with the side of a wing so the sunk pellets are not iced over', 18, 'wing',
         [k(.14, 'shelf', reach=.4, x=.3, y=1, b=.6), k(.32, 'shelf', reach=1, x=.5, y=1.5, b=1.2, mark='skrr'), k(.5, 'shelf', reach=1, x=.6, y=1.6, b=1.3, l=1, mark='skrr'), k(.68, 'mud_edge', reach=1, x=.5, y=1.4, b=1.1), k(.86, eye='-')],
-        [(.5, 'thaw')], g='weather', act=('scrape', 'rime'), when=['rime>.3'])
+        [(.5, 'thaw')], g='weather', act=('scrape', 'rime'), when=['pond_ice>.3'])
     o.r('thrash_the_air_back_into_the_pond', 'Thrashing both wings over the still, warm water to put air back for the sluggish carp', 20, 'wing',
         [k(.14, 'floor_m', reach=.4, x=.2, y=.3, b=-.5), k(.3, 'floor_m', reach=1, x=.3, y=.8, b=.9, l=1, mark='SPLSH'), k(.46, 'floor_m', reach=.4, x=.1, y=.2, b=-.6, r=1), k(.62, 'mud_edge', reach=1, x=.3, y=.9, b=1, mark='SPLSH'), k(.78, 'floor_r', reach=1, x=.3, y=.9, b=1, l=1, mark='SPLSH'), k(.9, eye='@')],
         [(.62, 'stir')], g='weather', act=('splash', 'air'), when=['pond_oxygen<.5'], prefer=['summer'])
@@ -599,25 +595,23 @@ def carp():
 
 def ghost_fish():
     # Ghost fish: pale, shy, mid-water, active at night, glows after dark. Own state: glow (how brightly it shines: builds after dark, fades by day, drawn),
-    # trace (a glimmering line left on the water where a wingtip drew it, drawn), hush (how settled it is with him: stillness raises it), rime (frost, drawn),
-    # leafmat (leaf litter, drawn).
+    # trace (a glimmering line left on the water where a wingtip drew it, drawn), hush (how settled it is with him: stillness raises it).
     o = Obj('ghost_fish', 'keeping', on='koi_pond',
-            fields=dict(glow=(0, 0, 1), trace=(0, 0, 1), hush=(0, 0, 1), rime=(0, 0, 1), leafmat=(0, 0, 1)),
-            physics=[('glow', 'rate', .003, 'night'), ('glow', 'rate', -.004, '!night'), ('trace', 'rate', -.003, 'always'), ('hush', 'rate', -.0003, 'always'),
-                     ('rime', 'rate', .002, 'cold'), ('rime', 'rate', -.002, 'warm'), ('leafmat', 'rate', .0012, 'fall'), ('leafmat', 'rate', .0006, 'windy')],
-            effects=dict(skim=[('leafmat', 'set', 0), ('keeping.leaves', 'mul', .4)], scour=[('keeping.algae', 'mul', .5)], tidy=[('keeping.clarity', 'add', .15)],
+            fields=dict(glow=(0, 0, 1), trace=(0, 0, 1), hush=(0, 0, 1)),
+            physics=[('glow', 'rate', .003, 'night'), ('glow', 'rate', -.004, '!night'), ('trace', 'rate', -.003, 'always'), ('hush', 'rate', -.0003, 'always')],
+            effects=dict(skim=[('keeping.leaves', 'mul', .4)], scour=[('keeping.algae', 'mul', .5)], tidy=[('keeping.clarity', 'add', .15)],
                          thin=[('keeping.plants', 'mul', .75)], tend=[('subject.health', 'add', .12), ('subject.trust', 'add', .1)],
                          scatter=[('keeping.flakes', 'add', .4)], feed=[('subject.hunger', 'add', -.25), ('subject.trust', 'add', .12)], call=[('keeping.bell', 'add', .5)],
                          hush=[('hush', 'add', .25), ('subject.trust', 'add', .1)], glimmer=[('trace', 'set', 1), ('subject.mood', 'add', .15)],
-                         stroke=[('subject.mood', 'add', .15), ('subject.trust', 'add', .1)], crack=[('keeping.ice', 'mul', .3), ('rime', 'mul', .3)],
-                         thaw=[('rime', 'mul', .25)], stir=[('keeping.oxygen', 'add', .3)], fun=[('need.fun', 'add', 2)], rest=[('need.energy', 'add', 2)]),
-            marks=[('glow', .3, '. * .', 'dark_m', 'glow'), ('trace', .3, '~*~*~', 'deep', 'glow'), ('rime', .3, '*-*-*', 'dark_l', 'frost'), ('leafmat', .3, ';~";~', 'dark_r', 'leaf')],
+                         stroke=[('subject.mood', 'add', .15), ('subject.trust', 'add', .1)], crack=[('keeping.ice', 'mul', .3)],
+                         thaw=[('keeping.ice', 'mul', .6)], stir=[('keeping.oxygen', 'add', .3)], fun=[('need.fun', 'add', 2)], rest=[('need.energy', 'add', 2)]),
+            marks=[('glow', .3, '. * .', 'dark_m', 'glow'), ('trace', .3, '~*~*~', 'deep', 'glow'), ('pond_ice', .3, '*-*-*', 'dark_l', 'frost'), ('pond_leaves', .3, ';~";~', 'dark_r', 'leaf')],
             anchors=dict(dark_l=P(28, 43), dark_m=P(58, 41), dark_r=P(88, 39), deep=P(40, 39), edge_far=P(70, 43), pad_low=P(86, 37), bloom_r=P(81, 35), cattail_l=P(7, 31),
                          reed_low=P(8, 38), tuft=P(11, 44), bank_r=P(95, 40), stone_l=P(30, 46, 'surface'), stone_m=P(41, 46, 'surface'), stone_r=P(86, 46, 'surface')))
     # ---------------- care
     o.r('lift_the_leaves_without_a_ripple', 'Lifting the fallen leaves off the water one at a time with a reed, careful not to cause a single ripple', 26, 'reed',
         [k(.2, 'dark_r', reach=.4, x=.2, y=.3, b=.2, l=1), k(.38, 'dark_r', reach=1, x=.4, y=.5, b=.6, mark='sh'), k(.56, 'edge_far', reach=1, x=.5, y=.6, b=.7, r=1, mark='sh'), k(.74, 'deep', reach=1, x=.5, y=.6, b=.7, l=1, mark='sh'), k(.9, eye='-')],
-        [(.56, 'skim')], g='care', act=('scoop', 'leaves'), when=['leafmat>.3'], prefer=['curious'], say=["Not one ripple. A ghost would approve of that.", "Lifted them out like eggs. Dull, but the fish stayed."])
+        [(.56, 'skim')], g='care', act=('scoop', 'leaves'), when=['pond_leaves>.3'], prefer=['curious'], say=["Not one ripple. A ghost would approve of that.", "Lifted them out like eggs. Dull, but the fish stayed."])
     o.r('sweep_the_grit_so_the_glow_shows', 'Sweeping the grit out of the shallows with a wing so the glow will show clear through the water', 20, 'wing',
         [k(.2, 'dark_l', reach=.4, x=.3, y=.7, b=.4), k(.38, 'dark_l', reach=1, x=.6, y=1.2, b=1, r=1, mark='shff'), k(.56, 'dark_m', reach=1, x=.7, y=1.3, b=1.1, mark='shff'), k(.74, 'dark_r', reach=1, x=.6, y=1.1, b=.9, l=1), k(.9, eye='-')],
         [(.56, 'tidy')], g='care', act=('sweep', 'grit'), when=['pond_clarity<.6'], say=['Grit out, glow in. Housework with a theme.', 'Cleared the shallows. It still would not come close.'])
@@ -721,7 +715,7 @@ def ghost_fish():
         [(.66, 'crack')], g='weather', act=('chip', 'ice'), when=['pond_ice>.3'])
     o.r('scrape_the_rime_from_the_glass_shallows', 'Scraping the rime off the left shallows with a wing so the glow does not frost over', 18, 'wing',
         [k(.2, 'dark_l', reach=.4, x=.2, y=.6, b=.3), k(.38, 'dark_l', reach=1, x=.4, y=1, b=.7, mark='skrr'), k(.56, 'dark_l', reach=1, x=.4, y=1.2, b=.9, l=1, mark='skrr'), k(.74, 'dark_l', reach=1, x=.3, y=.9, b=.6), k(.9, eye='-')],
-        [(.56, 'thaw')], g='weather', act=('scrape', 'rime'), when=['rime>.3'])
+        [(.56, 'thaw')], g='weather', act=('scrape', 'rime'), when=['pond_ice>.3'])
     o.r('fan_the_still_water_with_a_wing_pair', 'Fanning the stale still water in slow sweeps with both wings so air gets down to the fish', 22, 'wing',
         [k(.16, 'dark_m', reach=.4, y=-.3, b=-.4, l=1), k(.32, 'dark_m', reach=1, x=.2, y=.5, b=.5, mark='fff'), k(.48, 'dark_m', reach=.4, y=-.3, b=-.4, r=1), k(.64, 'dark_r', reach=1, x=.2, y=.5, b=.5, mark='fff'), k(.8, 'dark_r', reach=1, x=.2, y=.5, b=.5, l=1, mark='fff'), k(.92, eye='-')],
         [(.64, 'stir')], g='weather', act=('shake', 'water'), when=['pond_oxygen<.5'], prefer=['summer'])
@@ -786,25 +780,24 @@ def ghost_fish():
 
 def golden_koi():
     # Golden koi: rare, top dweller, morning fish with barbels, shimmers at dawn. Own state: shimmer (how it glints: builds at dawn, fades after, drawn at the
-    # right bloom), rise (how readily it rises to a wingtip), leafmat (leaf litter, drawn), crust (frost at the rim, drawn).
+    # right bloom), rise (how readily it rises to a wingtip).
     o = Obj('golden_koi', 'keeping', on='koi_pond',
-            fields=dict(shimmer=(0, 0, 1), rise=(0, 0, 1), leafmat=(0, 0, 1), crust=(0, 0, 1)),
-            physics=[('shimmer', 'rate', .004, 'dawn'), ('shimmer', 'rate', -.003, '!dawn'), ('rise', 'rate', -.0003, 'always'), ('leafmat', 'rate', .0012, 'fall'),
-                     ('leafmat', 'rate', .0006, 'windy'), ('crust', 'rate', .002, 'cold'), ('crust', 'rate', -.002, 'warm')],
-            effects=dict(skim=[('leafmat', 'set', 0), ('keeping.leaves', 'mul', .4)], scour=[('keeping.algae', 'mul', .5)], thin=[('keeping.plants', 'mul', .75)],
+            fields=dict(shimmer=(0, 0, 1), rise=(0, 0, 1)),
+            physics=[('shimmer', 'rate', .004, 'dawn'), ('shimmer', 'rate', -.003, '!dawn'), ('rise', 'rate', -.0003, 'always')],
+            effects=dict(skim=[('keeping.leaves', 'mul', .4)], scour=[('keeping.algae', 'mul', .5)], thin=[('keeping.plants', 'mul', .75)],
                          tend=[('subject.health', 'add', .12), ('subject.trust', 'add', .1)], scatter=[('keeping.flakes', 'add', .4)],
                          feed=[('subject.hunger', 'add', -.25), ('subject.trust', 'add', .12)], call=[('keeping.bell', 'add', .5)],
                          lead=[('rise', 'add', .2), ('subject.trust', 'add', .1)], kiss=[('subject.trust', 'add', .1), ('subject.mood', 'add', .15)],
                          glint=[('shimmer', 'set', 1), ('subject.mood', 'add', .15)], stroke=[('subject.mood', 'add', .15), ('subject.trust', 'add', .1)],
-                         crack=[('keeping.ice', 'mul', .3), ('crust', 'mul', .3)], thaw=[('crust', 'mul', .25)], stir=[('keeping.oxygen', 'add', .3)],
+                         crack=[('keeping.ice', 'mul', .3)], thaw=[('keeping.ice', 'mul', .6)], stir=[('keeping.oxygen', 'add', .3)],
                          fun=[('need.fun', 'add', 2)], rest=[('need.energy', 'add', 2)]),
-            marks=[('shimmer', .3, '.*~*.', 'bloom_r', 'glow'), ('leafmat', .3, ';"~;"', 'run', 'leaf'), ('crust', .3, '*=*=*', 'sheen_l', 'frost')],
+            marks=[('shimmer', .3, '.*~*.', 'bloom_r', 'glow'), ('pond_leaves', .3, ';"~;"', 'run', 'leaf'), ('pond_ice', .3, '*=*=*', 'sheen_l', 'frost')],
             anchors=dict(sheen_l=P(28, 43), sheen_m=P(58, 41), sheen_r=P(88, 39), run=P(70, 43), pad_low=P(86, 37), bloom_r=P(81, 35), tuft=P(11, 44),
                          reed_low=P(8, 38), bank_r=P(95, 40), stone_l=P(30, 46, 'surface'), stone_m=P(41, 46, 'surface'), stone_r=P(86, 46, 'surface')))
     # ---------------- care
     o.r('fish_the_leaves_off_the_golden_run', 'Fishing the leaves off the stretch of surface the golden koi rises through, with a long slow pull of a reed', 22, 'reed',
         [k(.15, 'sheen_r', reach=.5, x=.6, y=-.2, b=.2, w=0), k(.35, 'run', reach=1, x=.9, y=.1, b=.5, mark='swsh'), k(.55, 'sheen_m', reach=1, x=1, y=.2, b=.7, mark='swsh'), k(.75, 'sheen_l', reach=1, x=.7, y=.2, b=.4), k(.9, eye='^')],
-        [(.55, 'skim')], g='care', act=('scoop', 'leaves'), when=['leafmat>.3'], prefer=['windy'], say=["Clean run for the gold. Leaves had it coming.", "Fished out a whole autumn. It hasn't noticed."])
+        [(.55, 'skim')], g='care', act=('scoop', 'leaves'), when=['pond_leaves>.3'], prefer=['windy'], say=["Clean run for the gold. Leaves had it coming.", "Fished out a whole autumn. It hasn't noticed."])
     o.r('wipe_the_stones_where_it_sunbathes', 'Wiping the green off the middle stone where the golden koi lies up to catch the early sun', 18, 'wing',
         [k(.15, 'stone_m', reach=.5, x=.5, y=1.2, b=.3), k(.33, 'stone_m', reach=1, x=.9, y=1.6, b=.9, r=1, mark='sqk'), k(.53, 'stone_m', reach=1, x=1, y=1.8, b=1, mark='sqk'), k(.73, 'stone_m', reach=1, x=.6, y=1.3, b=.7, l=1), k(.88, eye='^')],
         [(.53, 'scour')], g='care', act=('wipe', 'stone'), when=['pond_algae>.4'])
@@ -908,8 +901,8 @@ def golden_koi():
         [k(.12, 'sheen_l', x=.5, y=.6, b=.3), k(.26, 'sheen_m', x=1.4, y=.8, b=.4, mark='tck'), k(.4, 'sheen_m', x=1.5, y=.9, b=.4, l=1, mark='tck'), k(.54, 'run', x=1.5, y=.9, b=.4, r=1, mark='CRK'), k(.68, 'sheen_r', x=1.4, y=.8, b=.4, mark='tck'), k(.86, eye='^')],
         [(.54, 'crack')], g='weather', act=('chip', 'ice'), when=['pond_ice>.3'])
     o.r('brush_the_crust_from_the_left_sheen', 'Brushing the frost crust off the left shallows with a wing so the dawn gold can show on the water again', 18, 'wing',
-        [k(.14, 'sheen_l', reach=.4, x=.2, y=.5, b=.3), k(.32, 'sheen_l', reach=1, x=.4, y=.9, b=.7, mark='skrr'), k(.5, 'sheen_l', reach=1, x=.4, y=1, b=.8, r=1, mark='skrr'), k(.68, 'sheen_l', reach=1, x=.3, y=.8, b=.6), k(.86, eye='-')],
-        [(.5, 'thaw')], g='weather', act=('scrape', 'crust'), when=['crust>.3'])
+        [k(.14, 'sheen_l', reach=.4, x=.1, y=.2, w=.3), k(.32, 'sheen_l', reach=1, x=.2, y=.5, b=.3, w=.4, mark='shh'), k(.5, 'sheen_m', reach=1, x=.3, y=.4, b=-.2, w=.6, r=1, mark='shh'), k(.68, 'sheen_m', reach=1, x=.2, y=.3, b=-.1, w=.4), k(.86, eye='^')],
+        [(.5, 'thaw')], g='weather', act=('scrape', 'crust'), when=['pond_ice>.3'])
     o.r('flap_the_warm_air_into_the_pond', 'Flapping both wings over the heavy water in broad sweeps to mix warm air down to the golden koi', 22, 'wing',
         [k(.12, 'sheen_m', reach=.4, y=-.4, b=-.6, l=1, r=1), k(.28, 'sheen_m', reach=1, x=.2, y=.6, b=.6, mark='SPLSH'), k(.44, 'sheen_m', reach=.4, y=-.5, b=-.7, l=1, r=1), k(.6, 'run', reach=1, x=.2, y=.6, b=.7, mark='SPLSH'), k(.76, 'sheen_r', reach=1, x=.2, y=.6, b=.7, mark='SPLSH'), k(.9, eye='@')],
         [(.6, 'stir')], g='weather', act=('shake', 'air'), when=['pond_oxygen<.5'], prefer=['summer'])
@@ -975,26 +968,25 @@ def golden_koi():
 def minnow():
     # Minnow: tiny silver fish that live as a school, top water, any hour. The kept minnow stands for the school: it is drawn at the rim spot he touches.
     # Own state: swirl (how tight the school is: herding raises it, a scare breaks it, drawn as a swirl on the water), flakeskin (flakes still floating,
-    # drawn), leafmat (leaf litter, drawn), crust (frost at the rim, drawn).
+    # drawn).
     o = Obj('minnow', 'keeping', on='koi_pond',
-            fields=dict(swirl=(0, 0, 1), flakeskin=(0, 0, 1), leafmat=(0, 0, 1), crust=(0, 0, 1)),
-            physics=[('swirl', 'rate', -.0004, 'always'), ('flakeskin', 'rate', -.0015, 'always'), ('leafmat', 'rate', .0012, 'fall'), ('leafmat', 'rate', .0006, 'windy'),
-                     ('crust', 'rate', .002, 'cold'), ('crust', 'rate', -.002, 'warm')],
-            effects=dict(skim=[('leafmat', 'set', 0), ('keeping.leaves', 'mul', .4)], thin=[('keeping.plants', 'mul', .75)], scour=[('keeping.algae', 'mul', .5)],
-                         film=[('flakeskin', 'mul', .2), ('keeping.flakes', 'mul', .3)], rejoin=[('swirl', 'add', .25), ('subject.mood', 'add', .15)],
-                         tend=[('subject.health', 'add', .12), ('subject.trust', 'add', .1)], scatter=[('flakeskin', 'set', 1), ('keeping.flakes', 'add', .4)],
+            fields=dict(swirl=(0, 0, 1)),
+            physics=[('swirl', 'rate', -.0004, 'always')],
+            effects=dict(skim=[('keeping.leaves', 'mul', .4)], thin=[('keeping.plants', 'mul', .75)], scour=[('keeping.algae', 'mul', .5)],
+                         film=[('keeping.flakes', 'mul', .3)], rejoin=[('swirl', 'add', .25), ('subject.mood', 'add', .15)],
+                         tend=[('subject.health', 'add', .12), ('subject.trust', 'add', .1)], scatter=[('keeping.flakes', 'add', .4)],
                          feed=[('subject.hunger', 'add', -.25), ('subject.trust', 'add', .12)], call=[('keeping.bell', 'add', .5)],
                          herd=[('swirl', 'add', .25), ('subject.trust', 'add', .1)], lead=[('swirl', 'add', .2), ('subject.mood', 'add', .15)],
                          nibble=[('subject.mood', 'add', .15), ('subject.trust', 'add', .1)], burst=[('swirl', 'mul', .3)],
-                         crack=[('keeping.ice', 'mul', .3), ('crust', 'mul', .3)], thaw=[('crust', 'mul', .25)], stir=[('keeping.oxygen', 'add', .3)],
+                         crack=[('keeping.ice', 'mul', .3)], thaw=[('keeping.ice', 'mul', .6)], stir=[('keeping.oxygen', 'add', .3)],
                          fun=[('need.fun', 'add', 2)], rest=[('need.energy', 'add', 2)]),
-            marks=[('swirl', .3, 'o~o~o', 'swirl_m', 'water'), ('flakeskin', .3, '.:.:.', 'shoal', 'dust'), ('leafmat', .3, ';"~;"', 'cove', 'leaf'), ('crust', .3, '*-*-*', 'swirl_l', 'frost')],
+            marks=[('swirl', .3, 'o~o~o', 'swirl_m', 'water'), ('pond_flakes', .3, '.:.:.', 'shoal', 'dust'), ('pond_leaves', .3, ';"~;"', 'cove', 'leaf'), ('pond_ice', .3, '*-*-*', 'swirl_l', 'frost')],
             anchors=dict(swirl_l=P(28, 43), swirl_m=P(58, 41), swirl_r=P(88, 39), shoal=P(70, 43), cove=P(40, 39), tuft=P(11, 44), reed_low=P(8, 38),
                          bank_r=P(95, 40), stone_l=P(30, 46, 'surface'), stone_m=P(41, 46, 'surface'), stone_r=P(86, 46, 'surface')))
     # ---------------- care
     o.r('lift_the_leaves_out_of_the_school_lane', 'Lifting the drifted leaves out of the narrow lane the school swims in, leaf after leaf with a reed', 22, 'reed',
         [k(.1, 'swirl_r', reach=.5, x=.2, y=.2, b=.2, l=1), k(.24, 'shoal', reach=1, x=.4, y=.4, b=.4, mark='sh'), k(.38, 'swirl_m', reach=1, x=.4, y=.4, b=-.2, r=1, mark='sh'), k(.52, 'cove', reach=1, x=.4, y=.4, b=.4, l=1, mark='sh'), k(.7, 'swirl_l', reach=.8, x=.3, y=.3, b=.2), k(.88, eye='^')],
-        [(.38, 'skim')], g='care', act=('scoop', 'leaves'), when=['leafmat>.3'], prefer=['windy'], say=["Leaves out. The school wheeled past like I'd done them a favour.", "Twelve leaves, one reed. A very small victory."])
+        [(.38, 'skim')], g='care', act=('scoop', 'leaves'), when=['pond_leaves>.3'], prefer=['windy'], say=["Leaves out. The school wheeled past like I'd done them a favour.", "Twelve leaves, one reed. A very small victory."])
     o.r('rub_the_algae_off_the_nursery_stone', 'Rubbing the algae off the left stone where the minnows graze in the shallows, quick short strokes', 18, 'wing',
         [k(.1, 'stone_l', reach=.5, x=.5, y=.6, b=.2), k(.22, 'stone_l', reach=1, x=.8, y=1, b=.5, l=1, mark='sk'), k(.34, 'stone_l', reach=1, x=.9, y=1.1, b=.6, r=1, mark='sk'), k(.46, 'stone_l', reach=1, x=.8, y=1, b=.5, l=1, mark='sk'), k(.62, 'stone_l', reach=1, x=.7, y=.9, b=.4), k(.86, eye='^')],
         [(.46, 'scour')], g='care', act=('scrub', 'algae'), when=['pond_algae>.4'])
@@ -1003,7 +995,7 @@ def minnow():
         [(.46, 'thin')], g='care', act=('pull', 'weed'), when=['pond_plants>.7'])
     o.r('sweep_the_flake_scum_off_the_shoal', 'Sweeping the scum of old flakes off the shoal with a wing, before it sours the school\'s water', 18, 'wing',
         [k(.1, 'shoal', reach=.5, x=.3, y=.8, b=.3), k(.24, 'shoal', reach=1, x=.6, y=1.2, b=.7, mark='sh'), k(.4, 'swirl_r', reach=1, x=.7, y=1.3, b=.9, l=1, mark='sh'), k(.56, 'swirl_m', reach=1, x=.5, y=1.2, b=.7, r=1), k(.76, eye='-')],
-        [(.4, 'film')], g='care', act=('sweep', 'scum'), when=['flakeskin>.3'])
+        [(.4, 'film')], g='care', act=('sweep', 'scum'), when=['pond_flakes>.3'])
     o.r('shoo_the_stray_back_to_the_shoal', 'Shooing a straggling minnow back to the others with small flicks of a wing, left to right', 22, 'wing',
         [k(.1, 'swirl_l', reach=.5, x=.3, y=.4, b=.3), k(.26, 'swirl_l', reach=1, x=.5, y=.7, b=.5, l=1, mark='shoo'), k(.42, 'swirl_m', reach=1, x=.5, y=.7, b=.5, r=1, mark='shoo'), k(.58, 'shoal', reach=1, x=.5, y=.7, b=.5, l=1, mark='shoo'), k(.76, 'shoal', reach=.5, x=.3, y=.4, b=.3), k(.9, eye='^')],
         [(.58, 'rejoin')], g='care', act=('nudge', 'stray'), pick='shyest', when=['swirl<.5'], obj=[(.2, dict(lure=1)), (.4, dict(lure=1)), (.6, dict(lure=1)), (.8, dict(lure=1))],
@@ -1014,7 +1006,7 @@ def minnow():
     # ---------------- use
     o.r('pinch_out_flakes_for_the_whole_school', 'Pinching a few flakes out over the water in little pinches so the whole school bunches round them', 16, 'wing',
         [k(.12, 'swirl_m', reach=.5, w=.2), k(.26, 'swirl_m', reach=1, y=-.2, b=-.2, mark='tss'), k(.4, 'shoal', reach=1, y=-.2, b=-.2, mark='tss'), k(.58, x=.1, y=.1, eye='o'), k(.82, eye='^')],
-        [(.4, 'scatter')], g='use', act=('throw', 'flakes'), when=['flakeskin<.3'], prefer=['dawn', 'dusk'])
+        [(.4, 'scatter')], g='use', act=('throw', 'flakes'), when=['pond_flakes<.3'], prefer=['dawn', 'dusk'])
     o.r('feed_crumbs_one_at_a_time', 'Feeding crumbs one at a time into the water, each one vanishing into a different mouth', 22, 'none',
         [k(.1, x=.3, y=.3, b=.3), k(.22, 'swirl_r', x=1, y=1, b=.6, mark='plip'), k(.34, 'swirl_r', x=1, y=1.1, b=.6, l=1, mark='plip'), k(.46, 'swirl_m', x=1.1, y=1.2, b=.7, mark='plip plip'), k(.58, 'swirl_m', x=1.1, y=1.2, b=.7, eye='O', mark='gone'), k(.76, 'swirl_m', x=.5, y=.5, b=.3, w=.3, eye='^')],
         [(.46, 'feed')], g='use', act=('carry', 'crumb'), pick='hungriest', when=['fish_hunger>.4'], obj=[(.24, dict(lure=1)), (.52, dict(lure=1)), (.7, dict(lure=0))],
@@ -1076,7 +1068,7 @@ def minnow():
         [], g='test', act=('compare', 'silver'), prefer=['curious', 'sun'])
     o.r('sniff_the_cloud_of_flake_dust', 'Sniffing the cloud of flake dust the school churns up and sneezing it back at them', 16, 'none',
         [k(.1, 'shoal', x=.4, y=.7, b=.3), k(.26, 'shoal', x=1.1, y=1.5, b=.9, mark='snf'), k(.42, 'shoal', x=1.2, y=1.7, b=1, eye='-', mark='snf'), k(.58, x=-.9, y=-.5, b=-.4, w=.7, eye='>', mark='ACHOO'), k(.76, 'swirl_r', x=.5, y=.8, b=.3, eye='O'), k(.9, eye='-')],
-        [], g='test', act=('sniff', 'dust'), when=['flakeskin>.3'], prefer=['curious', 'young'])
+        [], g='test', act=('sniff', 'dust'), when=['pond_flakes>.3'], prefer=['curious', 'young'])
     o.r('test_how_shallow_the_nursery_runs', 'Testing how shallow the nursery water runs with a reed, three plunges in a row at the left rim', 20, 'reed',
         [k(.1, 'swirl_l', reach=.5, x=.3, y=.4, b=.3), k(.24, 'swirl_l', reach=1, x=.5, y=.8, b=.7, mark='plk'), k(.38, 'swirl_l', reach=.4, x=.3, y=.3, b=.3), k(.5, 'swirl_l', reach=1, x=.5, y=.9, b=.8, mark='plk'), k(.62, 'swirl_l', reach=.4, x=.3, y=.3, b=.3), k(.76, 'swirl_l', reach=1, x=.6, y=1, b=.9, mark='PLK'), k(.9, eye='o')],
         [], g='test', act=('test', 'shallows'), prefer=['curious'])
@@ -1102,7 +1094,7 @@ def minnow():
         [(.66, 'crack')], g='weather', act=('chip', 'ice'), when=['pond_ice>.3'])
     o.r('flick_the_frost_off_the_nursery_rim', 'Flicking the frost crust off the nursery rim in quick brushes of a wing so it does not trap the fry', 16, 'wing',
         [k(.1, 'swirl_l', reach=.4, x=.2, y=.6, b=.3), k(.24, 'swirl_l', reach=1, x=.4, y=.9, b=.6, mark='fk'), k(.38, 'swirl_l', reach=1, x=.4, y=1, b=.7, l=1, mark='fk'), k(.52, 'swirl_l', reach=1, x=.4, y=1, b=.7, r=1, mark='fk'), k(.7, 'swirl_l', reach=.6, x=.3, y=.8, b=.5), k(.86, eye='-')],
-        [(.52, 'thaw')], g='weather', act=('wipe', 'frost'), when=['crust>.3'])
+        [(.52, 'thaw')], g='weather', act=('wipe', 'frost'), when=['pond_ice>.3'])
     o.r('thrash_the_still_water_for_air', 'Thrashing the still water with both wings to give the packed school air, a wild flurry', 18, 'wing',
         [k(.1, 'swirl_m', reach=.4, y=-.4, b=-.7, l=1, r=1), k(.22, 'swirl_m', reach=1, x=.3, y=.7, b=.8, mark='SPLSH'), k(.34, 'shoal', reach=.4, y=-.4, b=-.7, l=1), k(.46, 'shoal', reach=1, x=.3, y=.7, b=.8, mark='SPLSH'), k(.58, 'swirl_r', reach=.4, y=-.4, b=-.7, r=1), k(.7, 'swirl_r', reach=1, x=.3, y=.7, b=.8, mark='SPLSH'), k(.86, eye='@')],
         [(.46, 'stir')], g='weather', act=('shake', 'water'), when=['pond_oxygen<.5'], prefer=['summer'])
