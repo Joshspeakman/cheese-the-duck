@@ -1246,7 +1246,13 @@
    "family_engine": "excursions.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 72,
+   "family_routine_files": [
+    "castle-care.json",
+    "castle-controls.json",
+    "surface-routines.json"
+   ]
   },
   {
    "id": "bridge",
@@ -1391,7 +1397,11 @@
    "family_engine": "excursions.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 6,
+   "family_routine_files": [
+    "carnival-routines.json"
+   ]
   },
   {
    "id": "chair_wood",
@@ -2276,6 +2286,7 @@
    "art": "reconstructed_review_in_progress",
    "family_routines": 8,
    "family_routine_files": [
+    "keepsake-company.json",
     "keepsake-routines.json"
    ]
   },
@@ -2794,7 +2805,11 @@
    "family_engine": "excursions.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 14,
+   "family_routine_files": [
+    "surface-routines.json"
+   ]
   },
   {
    "id": "mailbox",
@@ -4750,7 +4765,11 @@
    "family_engine": "excursions.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "family_routines": 6,
+   "family_routine_files": [
+    "carnival-routines.json"
+   ]
   },
   {
    "id": "wheelbarrow",
