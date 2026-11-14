@@ -65,7 +65,8 @@ def content(oid, r):
         step = tuple(round(q.get(k, 0) * 2) / 2 for k in ('x', 'y', 'b', 'w'))
         if not path or path[-1] != step:
             path.append(step)
-    return rows, places, r['tool'] if r['tool'] in ('none', 'wing') else 'stick', tuple(path)
+    moved = tuple(dict.fromkeys((round(q.get('ix', 0)), round(q.get('iy', 0)), round(q.get('hold', 0)), round(q.get('hide', 0))) for _, q in r.get('obj', ())))
+    return rows, places, r['tool'] if r['tool'] in ('none', 'wing') else 'stick', tuple(path), (r.get('act') or [None])[0], moved
 
 
 def stamp(r):
@@ -74,7 +75,8 @@ def stamp(r):
     cells = tuple((round(t, 2), int(q.get('x', 0) * 2.6 + .5), int(q.get('y', 0) * 1.8 + .5), int(q.get('b', 0) * 2 + .5),
                    round(q.get('l', 0)), round(q.get('r', 0)), round(q.get('w', 0)), round(q.get('reach', 0) * 2), round(q.get('perch', 0)))
                   for t, q in r['track'])
-    return (r['tool'] if r['tool'] in ('none', 'wing') else 'stick', cells)
+    moved = tuple((round(t, 2), round(q.get('ix', 0)), round(q.get('iy', 0)), round(q.get('hold', 0)), round(q.get('hide', 0))) for t, q in r.get('obj', ()))
+    return (r['tool'] if r['tool'] in ('none', 'wing') else 'stick', cells, moved)
 
 
 STAMPS = {}
@@ -155,7 +157,7 @@ for oid in objects:
         # Within an object, two routines are the same act unless at least two of
         # (what it does, where it touches, how the body moves, what it uses) differ.
         for other, theirs in mine_seen:
-            check(sum(a != b for a, b in zip(mine, theirs)) >= 2, k + ' is a different act from ' + other + ' (two of effect/touch/body/tool must differ)')
+            check(sum(a != b for a, b in zip(mine, theirs)) >= 2, k + ' is a different act from ' + other + ' (two of effect/touch/body/tool/verb/object motion must differ)')
         mine_seen.append((k, mine))
         if R.REACH:
             check(bool(R.REACH.get(k)), k + ' is reachable by some age')
@@ -428,6 +430,8 @@ try:
 
     def first_touch(key):
         r = R.ROUTINES[key]
+        if '--frame-at' in args:
+            return float(args[args.index('--frame-at') + 1])
         if r['events']:
             return r['events'][0][0]
         touching = [t for t, q in r['track'] if q.get('contact', 0) >= .5]
