@@ -24,7 +24,7 @@ import {lightingPose,LIGHTING_ROUTINES} from './lighting-routines.mjs';
 import {creativePose,CREATIVE_ROUTINES} from './creative-routines.mjs';
 import {keepsakePose,KEEPSAKE_ROUTINES} from './keepsake-routines.mjs';
 import {wonderPose,WONDER_ROUTINES} from './wonder-routines.mjs';
-import {repPose,REP_ROUTINES,REP_OBJECTS,applyObjectPose} from './repertoire-routines.mjs';
+import {repPose,repLure,REP_ROUTINES,REP_OBJECTS,applyObjectPose} from './repertoire-routines.mjs';
 import {playdateStage} from './playdates.mjs';
 import {playgroundStage} from './playground-stage.mjs';
 import {waterStage} from './water-routines.mjs';
@@ -353,7 +353,8 @@ export class LivingWorld {
         const keepsake=owned&&plan.keepsake_work?keepsakePose(plan.keepsake_work,s.motion!==false):null;
         const wonder=owned&&plan.wonder_work&&plan.phase!=='approach'?wonderPose(plan.wonder_work,s.motion!==false):null;
         const rep=owned&&plan.rep_work&&plan.phase==='act'?repPose(plan.rep_work,s.motion!==false):null;
-        this.objects.push(applyObjectPose({...itemSprite(item.id,t,{pose:{music,light,keepsake,wonder,creative,textile,ground,architecture,playkit},motion:s.motion!==false,context:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,...(DISPLAY_SLOTS[item.id]?{displayItems:(physicalState(s,item).display?.items||[]).slice(0,DISPLAY_SLOTS[item.id].length)}:{}),worldPosition:[item.x,item.y],...(item.id==='bounce_house'?{physicalCastle:{origin:[item.x,item.y],camera:{...(s.camera||{x:0,y:0,w:132,h:42})}}}:{}),scale:itemWorldScale(item.id)},rep));
+        const lure=owned&&plan.rep_work&&plan.phase==='act'?repLure(plan.rep_work,s.motion!==false):null;
+        this.objects.push(applyObjectPose({...itemSprite(item.id,t,{pose:{music,light,keepsake,wonder,creative,textile,ground,architecture,playkit},motion:s.motion!==false,context:lure?{...s,lure}:s,originalArt:item.art,state:physicalState(s,item),interaction}),item:true,instance:item.instance,x,y,...(DISPLAY_SLOTS[item.id]?{displayItems:(physicalState(s,item).display?.items||[]).slice(0,DISPLAY_SLOTS[item.id].length)}:{}),worldPosition:[item.x,item.y],...(item.id==='bounce_house'?{physicalCastle:{origin:[item.x,item.y],camera:{...(s.camera||{x:0,y:0,w:132,h:42})}}}:{}),scale:itemWorldScale(item.id)},rep));
       }});
     }
     if(s.visitor){const [x,y]=this.project(s,s.visitor.x,s.visitor.y);actors.push({y,draw:()=>this.actor(s,t+2,x,y,{stage:'adult',state:'idle',facing:false,...s.visitor},true)});}

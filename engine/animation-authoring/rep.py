@@ -243,6 +243,9 @@ class Obj:
         if worn:
             assert all(set(q) <= WORN for _, q in obj), key + ': a worn piece moves with off / wx / wy / flap / sag, or off + hold / ix / iy when taken off'
             assert all(q.get('off', 0) > .5 or not any(abs(q.get(m, 0)) > .01 for m in ('hold', 'ix', 'iy')) for _, q in obj), key + ': hold / ix / iy only once the piece is off (off=1)'
+        elif d['host'] == 'keeping':
+            assert all(set(q) <= {'lure'} for _, q in obj), key + ': a kept fish answers with lure (it swims to the touched rim spot); the pond itself never moves'
+            assert not obj or pick, key + ': lure needs pick= (which fish comes: hungriest or shyest)'
         elif shown:
             assert all(set(q) <= {'hold'} for _, q in obj), key + ': a shown thing can only be lifted out (hold) and put back'
             assert not obj or any(q.get('anchor') == 'item' and q.get('contact', 0) >= .5 for _, q in tr), key + ': lift it by touching it (anchor "item")'
