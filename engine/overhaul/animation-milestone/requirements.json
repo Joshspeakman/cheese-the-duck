@@ -7295,5 +7295,8 @@
   "sharedHosts": "Things that live in a shared host (display case, keeping pond/sea tank, Cheese body slot) count host acts + item acts: the host acts are authored once on the host object; each item authors only what it alone allows; item + host >= 48 distinct sequences available in play.",
   "reworkFinished": "The 50 objects finished before the stricter rules are re-checked and their refused near-relabels replaced with genuine acts.",
   "agentSetup": "Approved: Opus 5.5 lead and sole integrator; Haiku 5.5 prep sheets and review-sheet checks; 4 concurrent Sonnet 5.5 authoring workers in isolated worktrees (6 related objects each); Fable 5.2 sampled acceptance review every ~4 batches plus design consults."
- }
+ },
+ "qaQueue": [
+  "Tracks nudged by script to clear cross-object stamp collisions (rework of wave 1 and the 14 fish): review in QA that they are genuinely different movements, not lean offsets."
+ ]
 }

@@ -23,6 +23,7 @@ VERBS = set('''wipe scrub sweep polish dry rake dig scoop pour tip fill drain pe
  hook prod tug squeeze press pat knock tap ring drum sniff listen peer measure count weigh taste test guard hide seek chase race hop
  climb perch sit lean nap sulk shelter wait stamp walk_into slip stuck bow present argue pose sing shout dance mend straighten warm cool
  shake brace chip scrape fluff groom splash float blow catch throw kick nudge wrap unwrap tie fold open close fit show compare'''.split())
+POND_HOSTS = ('koi_pond', 'pool_large', 'infinity_pool')  # placed hosts that own the pond state (keeping.* / pond_*)
 INSPECT = {'count', 'compare', 'measure', 'listen', 'sniff', 'peer'}  # at most three of these in all per object
 CLEAN = {'wipe', 'scrub', 'sweep', 'polish', 'dry', 'rake', 'scoop', 'chip', 'scrape', 'groom', 'fluff', 'shake', 'blow', 'pour', 'drain', 'tip', 'brush', 'dig'}
 UNDRAWABLE = re.compile(r'\b(spin|spins|spinning|spun|cartwheel\w*|somersault\w*|backflip\w*|knot|knots|knotting|knotted)\b')
@@ -160,7 +161,7 @@ class Obj:
         for n, rows in d['effects'].items():
             for t, op, v in rows:
                 a, _, b = t.partition('.')
-                ok = t in fields or (b in REAL.get(a, ()) and (a != 'need' or (op == 'add' and abs(v) <= 3)) and (a in ('need', 'obj') or host == 'keeping'))
+                ok = t in fields or (b in REAL.get(a, ()) and (a != 'need' or (op == 'add' and abs(v) <= 3)) and (a in ('need', 'obj') or host == 'keeping' or oid in POND_HOSTS))
                 assert ok and op in ('set', 'add', 'mul', 'max', 'min', 'wrap'), f'{oid}: effect {n} row {t} {op} would do nothing, or is not allowed'
                 assert not (op == 'add' and abs(v) < .1) and not (op == 'mul' and .85 < v < 1.18), f'{oid}: effect {n} row {t} {op} {v} is padding (too small to matter)'
         self.sp = None
@@ -190,7 +191,7 @@ class Obj:
             copies = [f for f in fields if f in {'leaves', 'leafmat', 'litter', 'ice', 'rime', 'crust', 'frost', 'flakes', 'flakeskin', 'algae', 'film', 'scum', 'slime', 'murk', 'clarity'}]
             assert not copies, f'{oid}: fields {copies} copy the pond (use keeping.* effects, pond_* gates and pond_* marks)'
         for f, th, glyphs, a, tone in marks:  # visible state: glyphs stamped at an anchor while the field is above th
-            assert (f in fields or (host == 'keeping' and f.startswith('pond_') and f[5:] in POND)) and a in anchors and tone in INKS and 1 <= len(glyphs) <= 8 and re.fullmatch(r'[ -~]+', glyphs) and host in ('placed', 'portable', 'display', 'keeping'), \
+            assert (f in fields or ((host == 'keeping' or oid in POND_HOSTS) and f.startswith('pond_') and f[5:] in POND)) and a in anchors and tone in INKS and 1 <= len(glyphs) <= 8 and re.fullmatch(r'[ -~]+', glyphs) and host in ('placed', 'portable', 'display', 'keeping'), \
                 f'{oid}: mark {f}: needs a declared field and anchor, ascii glyphs (1-8), tone in {INKS}, not on worn pieces'
         if marks:
             d['marks'] = [list(m) for m in marks]
@@ -213,7 +214,7 @@ class Obj:
             return
         f = m.group(1)
         if f.startswith(('pond_', 'fish_')):
-            assert self.d['host'] == 'keeping', key + ': fish_/pond_ fields need a keeping host'
+            assert self.d['host'] == 'keeping' or (self.d['object'] in POND_HOSTS and m.group(1).startswith('pond_')), key + ': fish_/pond_ fields need a keeping host (pond hosts may read pond_*)'
             return
         if f.startswith('obj_'):
             assert f[4:] in REAL['obj'] and self.d['host'] != 'wearable', key + ': obj_dirt / obj_wetness / obj_condition only, and not on wearables'
