@@ -423,6 +423,8 @@ try:
         raise SystemExit(0)
 
     def review_pick(oid, key, age):
+        if '--review' in args:
+            return key in args[args.index('--review') + 1].split(',') and age == ([a for a in AGES if a in R.REACH.get(key, AGES)] or ['adult'])[0]
         keys = R.by_object(oid)
         step = max(1, len(keys) // FRAMES)
         i = keys.index(key)
