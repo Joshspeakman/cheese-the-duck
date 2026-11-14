@@ -651,7 +651,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 49,
    "art": "curio-v1 (review)"
   },
   {
@@ -749,7 +749,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 51,
    "art": "curio-v1 (review)"
   },
   {
@@ -763,7 +763,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 50,
    "art": "curio-v1 (review)"
   },
   {
@@ -777,7 +777,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 49,
    "art": "curio-v1 (review)"
   },
   {
@@ -805,7 +805,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "curio-v1 (review)"
   },
   {
@@ -819,7 +819,7 @@
    "consumable": false,
    "family_engine": null,
    "wonder_routines": 0,
-   "repertoire_routines": 0,
+   "repertoire_routines": 48,
    "art": "curio-v1 (review)"
   },
   {
@@ -8493,8 +8493,8 @@
   }
  ],
  "progress": {
-  "objects_complete": 38,
+  "objects_complete": 44,
   "objects_total": 609,
-  "repertoire_routines": 1867
+  "repertoire_routines": 2162
  }
 }
