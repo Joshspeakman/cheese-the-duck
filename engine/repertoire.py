@@ -411,7 +411,7 @@ def advance(pond, plan, dt):
         guest = duet_guest(pond, work)
         if not guest or guest['phase'] != 'inside':
             work['wait'] = work.get('wait', 0.) + max(0., finite(dt))
-            if work['wait'] > 30 or (work['elapsed'] > 0 and not guest):
+            if work['wait'] > 90 or (work['elapsed'] > 0 and not guest):
                 work.update(interrupted=True, done=True)
                 return False
             if work['elapsed'] == 0 or not guest:
