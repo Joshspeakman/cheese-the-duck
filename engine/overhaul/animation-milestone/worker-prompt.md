@@ -33,10 +33,10 @@ per object when done with this object's parts and its own movement; identical dr
 1. `.venv/bin/python engine/animation-authoring/rep_<batch>.py` (the helper's rules are the quality bar; all must pass)
 2. `node engine/scripts/build-repertoire.mjs`
 3. `node engine/scripts/export-repertoire-reach.mjs` (none of YOUR routines unreachable)
-4. `.venv/bin/python engine/check_repertoire.py --quick --frames 2 --objects <a,b,c>` (one comma-separated list; quick = youngest age only) must PASS
+4. `.venv/bin/python engine/check_repertoire.py --strict --frames 2 --objects <a,b,c>` (one comma-separated list; every routine natively at EVERY reachable age, user decision 2026-11-14) must PASS; run it in the foreground (it can take 1-15 min)
 5. VISUAL REVIEW (required): `cd engine && ./node_modules/.bin/electron rep-check.cjs`, then LOOK at every `engine/artifacts/animation-milestone/rep-review-*.png` it wrote (crops centre on Cheese): he must be at the place each label names, touching what it says, at a believable size and pose; fix anything that looks wrong and re-render. Use `--review <id,id>` with `--frame-at .5` to capture specific routines mid-act when a label promises motion (carry, perch, lure, worn piece off).
 6. Read your labels group by group; rewrite any pair that could swap tracks unnoticed.
-No strict all-ages run in the build phase: the lead runs the deep QA later.
+Deeper QA (full-tree sweeps, Fable acceptance reviews) comes later; all-ages runs and the visual review happen every batch.
 
 If the helper or harness refuses something you believe is right, or something fails outside your files, stop
 and report it rather than working around it. If an object cannot reach its count with genuinely different real
