@@ -179,7 +179,7 @@ class Obj:
                 poses.append(p)
         return tuple(poses)
 
-    def r(self, slug, label, dur, tool, track, ev=(), *, g, act, when=(), prefer=(), ages=None, say=None, obj=(), pick=None, far=False, shown=None):
+    def r(self, slug, label, dur, tool, track, ev=(), *, g, act, when=(), prefer=(), ages=None, say=None, obj=(), pick=None, far=False, shown=None, duo=None):
         """act = (verb, part): what this routine is, e.g. ('tip', 'tyre') or ('peer', 'opening'). shown='head' allows 'through the' / 'into the'
         in the label when only his head goes in (and the track shows it: x forward, contact on that anchor)."""
         d, key, tr = self.d, self.d['object'] + '_' + slug, [[0, {}], *track, [1, {}]]
@@ -187,6 +187,14 @@ class Obj:
         assert key not in d['routines'] and tool in TOOLS and g in GROUPS and 10 <= dur <= 60 and len(track) >= 3, key + ': id, tool, group, duration or too few keyframes'
         assert [t for t, _ in tr] == sorted({t for t, _ in tr}) and all(set(q) <= POSE for _, q in tr), key + ': track order, or a key the renderer does not draw'
         verb, part = act
+        if duo is not None:
+            # A duet: a visiting friend does their own part (their own track, their own touches). It only runs while a
+            # friend is here, and must be a different act from the solo ones (the partner's touches count in the signature).
+            assert d['host'] in ('placed', 'portable', 'keeping', 'display'), key + ': duets happen at an object (not on a worn piece)'
+            dtr = [[0, {}], *duo, [1, {}]]
+            assert len(duo) >= 3 and all(set(q) <= POSE for _, q in dtr) and [t for t, _ in dtr] == sorted({t for t, _ in dtr}), key + ': duo track keys/order'
+            assert any(q.get('anchor') in d['anchors'] and q.get('contact', 0) >= .5 for _, q in dtr), key + ': the partner must touch something (an anchor of this object)'
+            self.used_anchors |= {q['anchor'] for _, q in dtr if q.get('anchor')}
         assert verb in VERBS, f'{key}: act verb {verb} is not in the verb list'
         assert (verb, part) not in self.acts, f'{key}: ({verb}, {part}) is already an act of this object; write a different act'
         assert self.verbs.get(verb, 0) < (1 if verb in UNIVERSAL else 3), f'{key}: too many `{verb}` acts (universal acts: one each; others: three)'
@@ -249,7 +257,8 @@ class Obj:
         body = self._rendered(tr, K_ADULT, tool)
         moved = tuple(dict.fromkeys(tuple(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag')) for _, q in obj))
         sig = (tuple(tuple(sorted((t, op, (v > 0) - (v < 0)) for t, op, v in d['effects'][n] if not t.startswith('need.'))) for _, n in ev), touch, body,
-               tool if tool in ('none', 'wing') else 'stick', verb, moved)
+               tool if tool in ('none', 'wing') else 'stick', verb, moved,
+               tuple(dict.fromkeys(self.spot.get(q['anchor']) for _, q in [[0, {}], *duo] if q.get('anchor'))) if duo else None)
         for other, s in self.sigs.items():
             assert sum(a != b for a, b in zip(sig, s)) >= 2, f'{key} is the same act as {other}: change at least two of what it does, where it touches, how the body moves, what it uses, the verb, how the object moves'
         for _, n in ev:
@@ -276,7 +285,8 @@ class Obj:
             d['lines'][key] = list(say)
         d['routines'][key] = dict(label=label, duration=dur, tool=tool, group=g, act=[verb, part], track=tr, events=[list(e) for e in ev], when=list(when),
                                   prefer=list(prefer), ages=ages, say=key if say else None, **({'far': True} if far else {}),
-                                  **({'obj': [list(o) for o in obj]} if obj else {}), **({'pick': pick} if pick else {}))
+                                  **({'obj': [list(o) for o in obj]} if obj else {}), **({'pick': pick} if pick else {}),
+                                  **({'duo': {'track': [[0, {}], *[list(x) for x in duo], [1, {}]]}} if duo else {}))
 
     def emit(self, need=None):
         """emit() hands in: the object's full need (48, less any wonder routines it already has).

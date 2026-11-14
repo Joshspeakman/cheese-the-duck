@@ -11,7 +11,7 @@ const OBJ=['sway','lift','shake','glow','puff','ix','iy','hold','hide','off','wx
 export function repPose(work,motion=true){
  const base=REP_ROUTINES[work?.id];if(!base||work.interrupted)return null;
  // A visitor keeping Cheese company reacts at the real contacts (derived track).
- const company=work.company?.mode==='company',spec=company?companyTrack(work.id,work.company.style,base):base;
+ const company=work.company?.mode==='company',spec=company?(base.duo?{...base,track:base.duo.track}:companyTrack(work.id,work.company.style,base)):base;  // a duet partner follows their own authored track
  const progress=motion?clamp(work.elapsed/spec.duration):.5;
  const pose=sampleTrack(spec.track,progress,JOINTS);
  const obj=!company&&spec.obj?sampleTrack([[0,{}],...spec.obj,[1,{}]],progress,OBJ):null;
@@ -42,10 +42,11 @@ export function repGeometry(home,worker,sx,sy){
  const A=repAnchor(home,oid,pose.anchorA)||entry,B=repAnchor(home,oid,pose.anchorB)||A;
  const target={x:left+(A.x+(B.x-A.x)*pose.anchorBlend+.5)*unit,y:top+(A.y+(B.y-A.y)*pose.anchorBlend+.5)*hh};
  const {cw,ch}=actorPitches(c,sx,sy),rest=c.workGripRest||c.grip||{x:c.anchorX+5,y:c.groundRow-7};
- const perch=worker.slot===1?0:clamp(pose.perch||0),surface=top+(A.y+(B.y-A.y)*pose.anchorBlend)*hh,feet=ground+(Math.min(ground,surface)-ground)*perch;
+ const duet=worker.slot===1&&!!REP_ROUTINES[routine.id]?.duo,lead=worker.slot!==1||duet;
+ const perch=lead?clamp(pose.perch||0):0,surface=top+(A.y+(B.y-A.y)*pose.anchorBlend)*hh,feet=ground+(Math.min(ground,surface)-ground)*perch;
  const reachX=pose.tool==='none'?target.x-.5*cw-(rest.x-c.anchorX)*cw:target.x-2*cw-(rest.x-c.anchorX)*cw;  // bill/belly/feet meet the touched place
- const workX=worker.slot===1?c.x*sx:reachX+(target.x-reachX)*perch;  // perched: standing on the place itself
- const character=worker.slot===1?{...c,offsetY:0}:{...c,x:c.x+(workX/sx-c.x)*worker.inside,y:c.y+(feet/sy-c.y)*worker.inside,offsetY:0};
+ const workX=!lead?c.x*sx:reachX+(target.x-reachX)*perch;  // perched: standing on the place itself
+ const character=!lead?{...c,offsetY:0}:{...c,x:c.x+(workX/sx-c.x)*worker.inside,y:c.y+(feet/sy-c.y)*worker.inside,offsetY:0};
  const grip=c.grip||rest,cl=Math.round(character.x*sx-c.anchorX*cw+(c.offsetX||0)*cw),ct=Math.round(character.y*sy-c.groundRow*ch);
  const hand={x:cl+(grip.x+.5)*cw,y:ct+(grip.y+.5)*ch},points=[],put=(x,y,g,col='#d9c49b')=>points.push({x,y,glyph:g,color:col});
  if(pose.tool!=='none'&&pose.contact>.01&&worker.inside>.01){

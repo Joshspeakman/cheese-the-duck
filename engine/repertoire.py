@@ -260,6 +260,21 @@ def view(oid, obj):
     return v
 
 
+def partner_available(pond):
+    """A duet needs a present visitor who is free to join (not leaving, not busy, not exhausted)."""
+    minds = getattr(pond, 'minds', None)
+    if minds is None:
+        return False
+    from engine import wonder_company as wc
+    return any(k != 'cheese' and not wc.departing(minds, k) and not wc.busy(minds, k) and minds.model.residents.get(k, {}).get('energy', 0) >= .25
+               for k in minds.present)
+
+
+def duet_guest(pond, work):
+    minds = getattr(pond, 'minds', None)
+    return next((r for r in (minds.wonder_guests.values() if minds else ()) if r.get('work') is work and r['mode'] == 'company'), None)
+
+
 def eligible(pond, oid, obj, world=None, cheese=None):
     s = view(oid, obj)
     world = world or World(pond)
@@ -274,6 +289,8 @@ def eligible(pond, oid, obj, world=None, cheese=None):
         if REACH and age not in REACH.get(key, ()):
             continue
         if storm and not (r['tool'] == 'none' and 'wet' in r['when'] and r['duration'] >= 30):
+            continue
+        if r.get('duo') and not partner_available(pond):
             continue
         if all(condition(w, s, world, cheese) for w in r['when']):
             out.append(key)
@@ -362,6 +379,16 @@ def advance(pond, plan, dt):
         return False
     r = ROUTINES[work['id']]
     oid = work['object']
+    if r.get('duo'):
+        # A duet starts only when the partner has walked over; nobody comes within 30 s: called off.
+        guest = duet_guest(pond, work)
+        if not guest or guest['phase'] != 'inside':
+            work['wait'] = work.get('wait', 0.) + max(0., finite(dt))
+            if work['wait'] > 30 or (work['elapsed'] > 0 and not guest):
+                work.update(interrupted=True, done=True)
+                return False
+            if work['elapsed'] == 0 or not guest:
+                return True
     work['elapsed'] = min(r['duration'], work['elapsed'] + max(0., finite(dt)))
     obj = store(pond, plan, work)
     s = state(oid, obj)
