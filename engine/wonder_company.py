@@ -113,7 +113,11 @@ def valid(minds, r):
         return False
     if departing(minds, r['actor']) or r['actor'] in minds.housing or shelters.adverse(p.weather_type) and not r.get('shelter'):
         return False
-    if not shelters.still_placed(p, dict(id=r['id'], instance=r['instance'], destination=r['destination'])):
+    loose = False
+    if r.get('key') == 'rep_work':
+        from engine import repertoire
+        loose = repertoire.OBJECTS.get(r['work'].get('object'), {}).get('host') != 'placed'  # a loose thing is never a placement
+    if not loose and not shelters.still_placed(p, dict(id=r['id'], instance=r['instance'], destination=r['destination'])):
         return False
     if r['mode'] == 'company':
         plan = p.state.get('plan')
