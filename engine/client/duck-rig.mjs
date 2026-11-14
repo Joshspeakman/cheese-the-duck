@@ -139,6 +139,18 @@ export function duckRig(duck,t=0,design=null){
   if(action==='swimming')put(phase%2?'~~~   ~~~~   ~~~':' ~~~~  ~~~~  ~~~',CX-9,FLOOR+1,'p');
   rig.occlusion=fills.map(f=>({...f}));
   plan=fitWearables(rig,duck.cosmetics,t,duck.apparel);
+  // A repertoire routine on a worn piece moves that piece itself (authored in the native track).
+  const wornPose=performance?.kind==='rep'||performance?.item?performance:null,wo=wornPose?.object;
+  if(wo&&wornPose.item&&(wo.off||wo.wx||wo.wy||wo.flap||wo.sag)){
+   const mine=l=>l.id===wornPose.item;
+   if((wo.off||0)>.5)plan={...plan,layers:plan.layers.filter(l=>!mine(l))};
+   else plan={...plan,layers:plan.layers.flatMap(l=>{
+    if(!mine(l))return [l];
+    const dx=Math.round((wo.wx||0)*(small?1:2)),dy=Math.round(wo.wy||0);
+    if(!wo.flap&&!wo.sag)return [{...l,x:l.x+dx,y:l.y+dy}];
+    return l.art.map((row,r)=>({...l,art:[row],x:l.x+dx+Math.round(Math.sin(t*9+r)*(wo.flap||0)*(small?1:2)),y:l.y+dy+r+Math.round(r*(wo.sag||0)*.5)}));
+   })};
+  }
   const hands=new Set(plan.items.filter(item=>item.slot==='hands').map(item=>item.id));
   clipped=paintWearables(cells,tones,rig,{...plan,layers:plan.layers.filter(layer=>!hands.has(layer.id))})||clipped;
   fills.push(...(plan.fills||[]).filter(fill=>!hands.has(fill.id)));

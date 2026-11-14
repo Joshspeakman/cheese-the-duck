@@ -27,6 +27,10 @@ UNIVERSAL = {'nap', 'shelter', 'sulk', 'wait', 'walk_into', 'slip', 'stuck', 'st
 SHADOW = {'damp', 'wet', 'wetness', 'dirt', 'dirty', 'grime', 'mud', 'muck', 'dust', 'clean', 'cleanliness', 'condition', 'wear'}  # use obj.* instead
 NEVER_DRAWN = re.compile(r'\b(behind|under|underneath|beneath)\b(?! (his|her|its|a) (wing|chin|bill|breath))')
 NEEDS_PERCH = re.compile(r'\b(in|into|inside|on|onto|atop|through|across)\b the\b')
+# Places on Cheese's own body for worn things (coarse body grid, x from tail to bill, y from crown to feet).
+BODY_SPOTS = dict(crown=(5, 0), brow=(6, 1), eye=(7, 2), bill=(9, 3), cheek=(7, 3), nape=(4, 2), throat=(7, 4), neck=(6, 4),
+                  chest=(7, 5), shoulder=(5, 5), back=(3, 5), belly=(6, 7), wing=(4, 6), wing_tip=(2, 7), tail=(0, 6), rump=(1, 7),
+                  thigh=(5, 8), foot_l=(4, 9), foot_r=(7, 9))
 K_ADULT, K_SMALL = (2.6, 1.8, 2), (1.4, 1, 1)  # rendered cells per unit of x, y, b (performances.mjs scalePose)
 JS = ("import {itemSprite as s,itemWorldScale as w} from './client/ultra-items.mjs';const i=process.argv[1],m=s(i,0,{state:{keeping:{setup:true,fish:[]}}});"
       "console.log(JSON.stringify({w:m.width,art:m.art.map(String),row:7.5*w(i)*(m.detailScale||1)*1.5,"
@@ -53,7 +57,7 @@ def stamp(tool, tr, obj=()):
     cells = tuple((round(t, 2), int(q.get('x', 0) * 2.6 + .5), int(q.get('y', 0) * 1.8 + .5), int(q.get('b', 0) * 2 + .5),
                    round(q.get('l', 0)), round(q.get('r', 0)), round(q.get('w', 0)), round(q.get('reach', 0) * 2), round(q.get('perch', 0)))
                   for t, q in tr)
-    moved = tuple((round(t, 2), round(q.get('ix', 0)), round(q.get('iy', 0)), round(q.get('hold', 0)), round(q.get('hide', 0))) for t, q in obj)
+    moved = tuple((round(t, 2), *(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag'))) for t, q in obj)
     return (tool if tool in ('none', 'wing') else 'stick', cells, moved)
 
 
@@ -91,6 +95,10 @@ class Obj:
         on = that sprite for keeping/display (koi_pond, infinity_pool, trophy_case).
         'inside' allows a point within a hollow outline; 'surface' allows perch=1 there.
         containers = field names that really are a held liquid in a drawn vessel (a bowl, a bucket): only those may be called water/rain/puddle."""
+        if host == 'wearable':  # worn things: named places on his own body
+            bad = [n for n in anchors if n not in BODY_SPOTS]
+            assert not bad, f'{oid}: worn things touch places on his body: anchors must be named from {sorted(BODY_SPOTS)} (not {bad})'
+            anchors = {n: (BODY_SPOTS[n][0] / 9, BODY_SPOTS[n][1] / 9) for n in anchors}
         flags = {n: (a[2].split() if len(a) > 2 else []) for n, a in anchors.items()}
         self.flags = flags
         self.d = d = dict(object=oid, host=host, fields={f: list(v) for f, v in fields.items()}, physics=[list(p) for p in physics],
@@ -213,14 +221,20 @@ class Obj:
             assert allowed, f'{key}: the perch surface is too high for every allowed age (at most .6 x body height)'
         self.reach[key] = allowed
         assert self.reach[key], f'{key}: contact {high:.0f}px up is out of reach for every allowed age'
-        MOVE = {'ix', 'iy', 'hold', 'hide'}
-        assert all(set(q) <= {'sway', 'lift', 'shake', 'glow', 'puff'} | MOVE and (self.liftable or not ({'lift', 'hold'} & set(q))) for _, q in obj), key + ': obj keys (lift/hold need liftable=True)'
-        assert not obj or d['host'] in ('placed', 'portable'), key + ': obj reactions would move the whole pond or case, or nothing at all'
-        assert d['host'] == 'portable' or not any(MOVE & set(q) for _, q in obj), key + ': only a loose (portable) object can be carried, tossed or hidden'
+        worn = d['host'] == 'wearable'
+        MOVE = {'ix', 'iy', 'hold', 'off'} if worn else {'ix', 'iy', 'hold', 'hide'}
+        WORN = {'off', 'wx', 'wy', 'flap', 'sag', 'ix', 'iy', 'hold'}
+        if worn:
+            assert all(set(q) <= WORN for _, q in obj), key + ': a worn piece moves with off / wx / wy / flap / sag, or off + hold / ix / iy when taken off'
+            assert all(q.get('off', 0) > .5 or not any(abs(q.get(m, 0)) > .01 for m in ('hold', 'ix', 'iy')) for _, q in obj), key + ': hold / ix / iy only once the piece is off (off=1)'
+        else:
+            assert all(set(q) <= {'sway', 'lift', 'shake', 'glow', 'puff'} | MOVE and (self.liftable or not ({'lift', 'hold'} & set(q))) for _, q in obj), key + ': obj keys (lift/hold need liftable=True)'
+            assert not obj or d['host'] in ('placed', 'portable'), key + ': obj reactions would move the whole pond or case, or nothing at all'
+            assert d['host'] == 'portable' or not any(MOVE & set(q) for _, q in obj), key + ': only a loose (portable) object can be carried, tossed or hidden'
         moving = [(t, q) for t, q in obj if any(abs(q.get(m, 0)) > .01 for m in MOVE)]
         if moving:
             last, end = moving[-1][0], [t for t, q in obj if t > moving[-1][0] and not any(abs(q.get(m, 0)) > .01 for m in MOVE)]
-            assert end, key + ': a moved, held or hidden object must be brought back: end the obj track at rest (ix=iy=hold=hide=0)'
+            assert end, key + ': a moved, held, hidden or taken-off object must be brought back: end the obj track at rest (all move keys 0)'
             fetched = moving[-1][1].get('hold', 0) > .5 or any(last <= t <= end[0] and q.get('contact', 0) >= .5 for t, q in tr)
             assert fetched, key + ': the object returns to rest only while Cheese holds or touches it (no gliding home on its own)'
         youngest = allowed[0]
@@ -233,7 +247,7 @@ class Obj:
         touch = [self.spot[q['anchor']] for _, q in tr if q.get('anchor') and q.get('contact', 0) >= .5]
         touch = tuple(p for i, p in enumerate(touch) if not i or p != touch[i - 1])
         body = self._rendered(tr, K_ADULT, tool)
-        moved = tuple(dict.fromkeys((round(q.get('ix', 0)), round(q.get('iy', 0)), round(q.get('hold', 0)), round(q.get('hide', 0))) for _, q in obj))
+        moved = tuple(dict.fromkeys(tuple(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag')) for _, q in obj))
         sig = (tuple(tuple(sorted((t, op, (v > 0) - (v < 0)) for t, op, v in d['effects'][n] if not t.startswith('need.'))) for _, n in ev), touch, body,
                tool if tool in ('none', 'wing') else 'stick', verb, moved)
         for other, s in self.sigs.items():

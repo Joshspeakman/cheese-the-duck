@@ -552,6 +552,13 @@ export class LivingWorld {
         const performance={kind:'rep',routine:plan.rep_work,motion:s.motion!==false};
         const i=this.characters.indexOf(original);
         this.characters[i]={...original,...characterSprite({...s.duck,state:'idle',facing:true,performance},t),x:original.x,y:original.y,cheese:true};
+        // Taken off: the piece is held in his bill or laid beside him (it is back on by the routine's end).
+        const o=repPose(plan.rep_work,s.motion!==false)?.object||{};
+        if((o.off||0)>.5&&(o.hold||o.ix||o.iy)){
+         const hold=Math.min(1,o.hold||0),id=plan.rep_work.object,small=['hatchling','duckling'].includes(s.duck.stage);
+         const m=itemSprite(id,t,{motion:s.motion!==false,context:s}),span=(small?5:9)/(m.width*(m.detailScale||1));  // about his own body width
+         this.objects.push({...m,item:true,x:original.x+(o.ix||0)+hold*(small?3:5),y:original.y+(o.iy||0)-hold*(small?1:2),scale:span,offBody:true});
+        }
       }
     }
     if(plan?.wonder_work&&!plan.wonder_work.interrupted&&WONDER_ROUTINES[plan.wonder_work.id]&&['prepare','act','settle'].includes(plan.phase)){
