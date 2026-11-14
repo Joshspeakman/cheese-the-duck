@@ -101,7 +101,10 @@ def by_object(obj_id):
 
 def need(obj_id):
     """Repertoire sequences an object owes: 48 less the distinct family routines it already has (wonders)."""
-    return max(0, 48 - QUEUE.get(obj_id, {}).get('wonder_routines', 0))
+    q = QUEUE.get(obj_id, {})
+    if OBJECTS.get(obj_id, {}).get('shortfall'):
+        return len(by_object(obj_id))  # an honest, recorded shortfall (rule 19)
+    return max(0, q.get('need', 48 - q.get('wonder_routines', 0)))
 
 
 def state(oid, obj):

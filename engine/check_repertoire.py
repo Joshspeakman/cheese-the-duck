@@ -69,16 +69,17 @@ def content(oid, r):
         if not path or path[-1] != step:
             path.append(step)
     moved = tuple(dict.fromkeys(tuple(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag')) for _, q in r.get('obj', ())))
-    return rows, places, r['tool'] if r['tool'] in ('none', 'wing') else 'stick', tuple(path), (r.get('act') or [None])[0], moved
+    return rows, places, r['tool'] if r['tool'] in ('none', 'wing') else 'stick', tuple(path), moved  # the verb tag is not a difference
 
 
 def stamp(r):
     """The track as drawn at adult size, anchors and marks stripped: the same body
     moving at the same moments. Two objects never share one (stamped acts)."""
-    cells = tuple((round(t, 2), int(q.get('x', 0) * 2.6 + .5), int(q.get('y', 0) * 1.8 + .5), int(q.get('b', 0) * 2 + .5),
+    cells = tuple((int(q.get('x', 0) * 2.6 + .5), int(q.get('y', 0) * 1.8 + .5), int(q.get('b', 0) * 2 + .5),
                    round(q.get('l', 0)), round(q.get('r', 0)), round(q.get('w', 0)), round(q.get('reach', 0) * 2), round(q.get('perch', 0)))
                   for t, q in r['track'])
-    moved = tuple((round(t, 2), *(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag'))) for t, q in r.get('obj', ()))
+    cells = tuple(c for i, c in enumerate(cells) if not i or c != cells[i - 1])  # keyframe order, not exact times
+    moved = tuple(dict.fromkeys(tuple(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag')) for _, q in r.get('obj', ())))
     return (r['tool'] if r['tool'] in ('none', 'wing') else 'stick', cells, moved)
 
 
@@ -160,7 +161,7 @@ for oid in objects:
         # Within an object, two routines are the same act unless at least two of
         # (what it does, where it touches, how the body moves, what it uses) differ.
         for other, theirs in mine_seen:
-            check(sum(a != b for a, b in zip(mine, theirs)) >= 2, k + ' is a different act from ' + other + ' (two of effect/touch/body/tool/verb/object motion must differ)')
+            check(sum(a != b for a, b in zip(mine, theirs)) >= 2, k + ' is a different act from ' + other + ' (two of effect/touch/body/tool/object motion must differ)')
         mine_seen.append((k, mine))
         if R.REACH:
             check(bool(R.REACH.get(k)), k + ' is reachable by some age')

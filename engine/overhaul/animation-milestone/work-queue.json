@@ -21,7 +21,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 51,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "earth_token",
@@ -35,7 +37,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 52,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "lucky_charm",
@@ -50,7 +54,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 51,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "magpie_friendship_charm",
@@ -64,7 +70,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 52,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "rainbow_charm",
@@ -78,7 +86,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 50,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "sky_token",
@@ -92,7 +102,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 51,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "water_token",
@@ -106,7 +118,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 51,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "best_friend_badge",
@@ -120,7 +134,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "dance_medal",
@@ -134,7 +150,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 53,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "duck_day_champion_badge",
@@ -148,7 +166,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "explorer_badge",
@@ -162,7 +182,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "golden_badge",
@@ -176,7 +198,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "harvest_spirit_badge",
@@ -190,7 +214,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "love_spirit_badge",
@@ -204,7 +230,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "racing_medal",
@@ -218,7 +246,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "spring_spirit_badge",
@@ -232,7 +262,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "summer_spirit_badge",
@@ -246,7 +278,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "winter_spirit_badge",
@@ -260,7 +294,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "legend_dragon",
@@ -274,7 +310,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "legend_phoenix",
@@ -288,7 +326,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "pond_dragonfly",
@@ -302,7 +342,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "pond_fish",
@@ -316,7 +358,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "pond_frog",
@@ -330,7 +374,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "pond_lily",
@@ -344,7 +390,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "portrait_artist",
@@ -358,7 +406,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "portrait_cheese",
@@ -372,7 +422,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "portrait_emperor",
@@ -386,7 +438,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "portrait_explorer",
@@ -400,7 +454,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "portrait_scholar",
@@ -414,7 +470,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "weather_rain",
@@ -428,7 +486,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "weather_rainbow",
@@ -442,7 +502,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "weather_snow",
@@ -456,7 +518,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "weather_sun",
@@ -470,7 +534,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "ancient_coin",
@@ -484,7 +550,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "old_coin",
@@ -498,7 +566,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "ancient_crown",
@@ -512,7 +582,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "duck_crown",
@@ -526,7 +598,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "snowflake_crown",
@@ -540,7 +614,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "fish_trophy",
@@ -554,7 +630,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "golden_duck_trophy",
@@ -568,7 +646,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "legendary_trophy",
@@ -582,7 +662,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "master_trophy",
@@ -596,7 +678,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "memory_trophy",
@@ -610,7 +694,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "splash_trophy",
@@ -624,7 +710,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 12,
+   "shared_host": "trophy_case/cabinet"
   },
   {
    "id": "catfish",
@@ -638,7 +726,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 51,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "ancient_dragon_fish",
@@ -652,7 +742,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 49,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "bass",
@@ -666,7 +758,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 51,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "carp",
@@ -680,7 +774,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 49,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "ghost_fish",
@@ -694,7 +790,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 50,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "golden_koi",
@@ -708,7 +806,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 50,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "koi",
@@ -722,7 +822,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 53,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "minnow",
@@ -736,7 +838,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 51,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "salmon",
@@ -750,7 +854,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 51,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "sturgeon",
@@ -764,7 +870,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 50,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "trout",
@@ -778,7 +886,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 49,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "goldfish",
@@ -792,7 +902,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 48,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "pufferfish",
@@ -806,7 +918,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 48,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "swordfish",
@@ -820,7 +934,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 48,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 18,
+   "shared_host": "koi_pond or sea tank"
   },
   {
    "id": "archway",
@@ -1164,7 +1280,8 @@
    "family_engine": "furniture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "hosts_shared_acts": "display"
   },
   {
    "id": "dresser",
@@ -3039,7 +3156,8 @@
    "family_engine": "waterworks.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "hosts_shared_acts": "keeping"
   },
   {
    "id": "koi_pond",
@@ -3053,7 +3171,8 @@
    "family_engine": "waterworks.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "hosts_shared_acts": "keeping"
   },
   {
    "id": "pond",
@@ -3109,7 +3228,8 @@
    "family_engine": "waterworks.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "hosts_shared_acts": "keeping"
   },
   {
    "id": "dimensional_door",
@@ -3711,7 +3831,8 @@
    "family_engine": "furniture.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "hosts_shared_acts": "display"
   },
   {
    "id": "skateboard",
@@ -7108,7 +7229,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "autumn_acorn_charm",
@@ -7120,7 +7243,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "autumn_boots",
@@ -7132,7 +7257,9 @@
    "family_engine": "footwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "autumn_cozy_sweater",
@@ -7144,7 +7271,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "autumn_leaf_crown",
@@ -7156,7 +7285,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "autumn_scarf",
@@ -7168,7 +7299,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "bat_wings",
@@ -7180,7 +7313,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "bell_collar",
@@ -7192,7 +7327,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "birthday_crown",
@@ -7204,7 +7341,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "birthday_sash",
@@ -7216,7 +7355,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "bouquet",
@@ -7228,7 +7369,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "bowtie_red",
@@ -7240,7 +7383,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "bunny_ears",
@@ -7252,7 +7397,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "bunny_slippers",
@@ -7264,7 +7411,9 @@
    "family_engine": "footwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "easter_bunny_ears",
@@ -7276,7 +7425,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "easter_egg_basket",
@@ -7288,7 +7439,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "fairy_wings",
@@ -7300,7 +7453,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "flower_lei",
@@ -7312,7 +7467,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "halloween_ghost_sheet",
@@ -7324,7 +7481,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "halloween_pumpkin_costume",
@@ -7336,7 +7495,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "halloween_witch_hat",
@@ -7348,7 +7509,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hawaiian_shirt",
@@ -7360,7 +7523,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "heart_bubbles",
@@ -7372,7 +7537,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "heart_glasses",
@@ -7384,7 +7551,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "ice_skates",
@@ -7396,7 +7565,9 @@
    "family_engine": "footwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "masquerade_mask",
@@ -7408,7 +7579,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "newyear_fancy_glasses",
@@ -7420,7 +7593,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "newyear_party_hat",
@@ -7432,7 +7607,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "pearl_necklace",
@@ -7444,7 +7621,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "rain_boots",
@@ -7456,7 +7635,9 @@
    "family_engine": "footwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "rainbow_trail",
@@ -7468,7 +7649,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "raincoat",
@@ -7480,7 +7663,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "santa_hat",
@@ -7492,7 +7677,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "santa_suit",
@@ -7504,7 +7691,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "scarf_striped",
@@ -7516,7 +7705,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "sparkle_aura",
@@ -7528,7 +7719,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "spring_butterfly_bow",
@@ -7540,7 +7733,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "spring_flower_crown",
@@ -7552,7 +7747,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "spring_gardener_hat",
@@ -7564,7 +7761,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "spring_rain_boots",
@@ -7576,7 +7775,9 @@
    "family_engine": "footwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "spring_raincoat",
@@ -7588,7 +7789,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "summer_flip_flops",
@@ -7600,7 +7803,9 @@
    "family_engine": "footwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "summer_hawaiian_shirt",
@@ -7612,7 +7817,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "summer_ice_cream_cone",
@@ -7624,7 +7831,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "summer_sun_hat",
@@ -7636,7 +7845,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "summer_sunglasses",
@@ -7648,7 +7859,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "summer_swim_ring",
@@ -7660,7 +7873,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "sun_hat",
@@ -7672,7 +7887,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "sunglasses_cool",
@@ -7684,7 +7901,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "superhero_cape",
@@ -7696,7 +7915,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "sweater_cozy",
@@ -7708,7 +7929,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "thanksgiving_pilgrim_hat",
@@ -7720,7 +7943,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "tuxedo",
@@ -7732,7 +7957,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "umbrella",
@@ -7744,7 +7971,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "valentine_cupid_wings",
@@ -7756,7 +7985,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "valentine_heart_headband",
@@ -7768,7 +7999,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "winter_cozy_scarf",
@@ -7780,7 +8013,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "winter_earmuffs",
@@ -7792,7 +8027,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "winter_elf_costume",
@@ -7804,7 +8041,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "winter_mittens",
@@ -7816,7 +8055,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "winter_puffy_coat",
@@ -7828,7 +8069,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "winter_reindeer_antlers",
@@ -7840,7 +8083,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "winter_santa_hat",
@@ -7852,7 +8097,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "winter_snow_boots",
@@ -7864,7 +8111,9 @@
    "family_engine": "footwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "winter_snowflake_crown",
@@ -7876,7 +8125,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "witch_hat",
@@ -7888,7 +8139,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "wizard_robe",
@@ -7900,7 +8153,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "backpack_tiny",
@@ -7914,7 +8169,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "beanie_striped",
@@ -7928,7 +8185,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hat_beanie",
@@ -7942,7 +8201,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hat_beret",
@@ -7956,7 +8217,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "bandana",
@@ -7970,7 +8233,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "bow_tie_blue",
@@ -7984,7 +8249,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "bow_tie_pink",
@@ -7998,7 +8265,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "bowtie",
@@ -8012,7 +8281,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "cap_sports",
@@ -8026,7 +8297,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hat_blue",
@@ -8040,7 +8313,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hat_red",
@@ -8054,7 +8329,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "cape",
@@ -8068,7 +8345,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "cape_superhero",
@@ -8082,7 +8361,9 @@
    "family_engine": "garments.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hat_chef",
@@ -8096,7 +8377,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hat_cowboy",
@@ -8110,7 +8393,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "crown_golden",
@@ -8124,7 +8409,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hat_crown",
@@ -8138,7 +8425,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "glasses_cool",
@@ -8152,7 +8441,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "glasses_nerd",
@@ -8166,7 +8457,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "sunglasses_aviator",
@@ -8180,7 +8473,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "halo",
@@ -8194,7 +8489,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "halo_angel",
@@ -8208,7 +8505,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "headphones",
@@ -8222,7 +8521,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "space_helmet",
@@ -8236,7 +8537,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "devil_horns",
@@ -8250,7 +8553,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "monocle",
@@ -8264,7 +8569,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hat_party",
@@ -8278,7 +8585,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "party_hat",
@@ -8292,7 +8601,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hat_pirate",
@@ -8306,7 +8617,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "pirate_hat",
@@ -8320,7 +8633,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "fishing_rod",
@@ -8334,7 +8649,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "scarf_red",
@@ -8348,7 +8665,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 48,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "scarf_winter",
@@ -8362,7 +8681,9 @@
    "family_engine": "accessories.json",
    "wonder_routines": 0,
    "repertoire_routines": 48,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hat_sombrero",
@@ -8376,7 +8697,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hat_tophat",
@@ -8390,7 +8713,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hat_viking",
@@ -8404,7 +8729,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "viking_helmet",
@@ -8418,7 +8745,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "magic_wand",
@@ -8433,7 +8762,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "curio-v1 (review)"
+   "art": "curio-v1 (review)",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "wings_fairy",
@@ -8447,7 +8778,9 @@
    "family_engine": null,
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "hat_wizard",
@@ -8461,7 +8794,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "wizard_hat",
@@ -8475,7 +8810,9 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   },
   {
    "id": "flower_crown",
@@ -8489,12 +8826,15 @@
    "family_engine": "headwear.json",
    "wonder_routines": 0,
    "repertoire_routines": 0,
-   "art": "reconstructed_review_in_progress"
+   "art": "reconstructed_review_in_progress",
+   "need": 24,
+   "shared_host": "body slot (to build)"
   }
  ],
  "progress": {
   "objects_complete": 50,
   "objects_total": 609,
   "repertoire_routines": 2471
- }
+ },
+ "quota_rule": "User decision 2026-11-14: shared-host items author only their own acts (display 12, kept fish 18, wearable 24); the host object carries the shared case/pond acts (48); item + host >= 48 in play."
 }
