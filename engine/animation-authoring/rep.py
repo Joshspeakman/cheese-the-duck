@@ -23,6 +23,9 @@ VERBS = set('''wipe scrub sweep polish dry rake dig scoop pour tip fill drain pe
  hook prod tug squeeze press pat knock tap ring drum sniff listen peer measure count weigh taste test guard hide seek chase race hop
  climb perch sit lean nap sulk shelter wait stamp walk_into slip stuck bow present argue pose sing shout dance mend straighten warm cool
  shake brace chip scrape fluff groom splash float blow catch throw kick nudge wrap unwrap tie fold open close fit show compare'''.split())
+INSPECT = {'count', 'compare', 'measure', 'listen', 'sniff', 'peer'}  # at most three of these in all per object
+CLEAN = {'wipe', 'scrub', 'sweep', 'polish', 'dry', 'rake', 'scoop', 'chip', 'scrape', 'groom', 'fluff', 'shake', 'blow', 'pour', 'drain', 'tip', 'brush', 'dig'}
+UNDRAWABLE = re.compile(r'\b(spin|spins|spinning|spun|cartwheel\w*|somersault\w*|backflip\w*|knot|knots|knotting|knotted)\b')
 UNIVERSAL = {'nap', 'shelter', 'sulk', 'wait', 'walk_into', 'slip', 'stuck', 'stamp', 'bow', 'present', 'argue', 'pose'}  # at most one each per object
 SHADOW = {'damp', 'wet', 'wetness', 'dirt', 'dirty', 'grime', 'mud', 'muck', 'dust', 'clean', 'cleanliness', 'condition', 'wear'}  # use obj.* instead
 NEVER_DRAWN = re.compile(r'\b(behind|under|underneath|beneath)\b(?! (his|her|its|a) (wing|chin|bill|breath))')
@@ -36,7 +39,7 @@ K_ADULT, K_SMALL = (2.6, 1.8, 2), (1.4, 1, 1)  # rendered cells per unit of x, y
 JS = ("import {itemSprite as s,itemWorldScale as w} from './client/ultra-items.mjs';const i=process.argv[1],m=s(i,0,{state:{keeping:{setup:true,fish:[]}}});"
       "console.log(JSON.stringify({w:m.width,art:m.art.map(String),row:7.5*w(i)*(m.detailScale||1)*1.5,"
       "ground:['birdhouse','treehouse'].includes(i)||!m.anchors?.entry?(m.groundRow??m.art.length)-1:m.anchors.entry.y,"
-      "named:Object.keys(m.anchors||{}),own:Object.fromEntries(Object.entries(m.anchors||{}).map(([k,v])=>[k,typeof v==='object'?v:null]))}))")
+      "named:Object.keys(m.anchors||{}),spec:{construction:m.construction,family:m.family,kind:m.kind,style:m.style,props:m.props,blueprint:m.blueprint,material:m.material},own:Object.fromEntries(Object.entries(m.anchors||{}).map(([k,v])=>[k,typeof v==='object'?v:null]))}))")
 
 
 def sprite(item):
@@ -55,10 +58,11 @@ def _words(s):
 
 def stamp(tool, tr, obj=()):
     """The track as drawn at adult size, anchors and marks stripped (same as check_repertoire.stamp)."""
-    cells = tuple((round(t, 2), int(q.get('x', 0) * 2.6 + .5), int(q.get('y', 0) * 1.8 + .5), int(q.get('b', 0) * 2 + .5),
+    cells = tuple((int(q.get('x', 0) * 2.6 + .5), int(q.get('y', 0) * 1.8 + .5), int(q.get('b', 0) * 2 + .5),
                    round(q.get('l', 0)), round(q.get('r', 0)), round(q.get('w', 0)), round(q.get('reach', 0) * 2), round(q.get('perch', 0)))
                   for t, q in tr)
-    moved = tuple((round(t, 2), *(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag'))) for t, q in obj)
+    cells = tuple(c for i, c in enumerate(cells) if not i or c != cells[i - 1])  # keyframe order, repeats and exact times ignored
+    moved = tuple(dict.fromkeys(tuple(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag')) for _, q in obj))
     return (tool if tool in ('none', 'wing') else 'stick', cells, moved)
 
 
@@ -86,7 +90,7 @@ def _content(spec, r):
             path.append(step)
     moved = tuple(dict.fromkeys(tuple(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag')) for _, q in r.get('obj', ())))
     rows = tuple(tuple(tuple(x) for x in spec['effects'][n]) for _, n in r['events'])
-    return rows, places, r['tool'] if r['tool'] in ('none', 'wing') else 'stick', tuple(path), (r.get('act') or [None])[0], moved
+    return rows, places, r['tool'] if r['tool'] in ('none', 'wing') else 'stick', tuple(path), moved
 
 
 def _other_contents(skip):
@@ -119,7 +123,7 @@ def _known_lines(skip):
 
 
 class Obj:
-    def __init__(self, oid, host, fields, effects, anchors, physics=(), triggers=(), on=None, liftable=False, containers=(), marks=()):
+    def __init__(self, oid, host, fields, effects, anchors, physics=(), triggers=(), on=None, liftable=False, containers=(), marks=(), parts=None):
         """anchors = {name: (x, y)} or (x, y, 'inside' / 'surface' / 'inside surface') fractions of the host sprite;
         on = that sprite for keeping/display (koi_pond, infinity_pool, trophy_case).
         'inside' allows a point within a hollow outline; 'surface' allows perch=1 there.
@@ -131,6 +135,14 @@ class Obj:
         item_anchor = host == 'display' and 'item' in anchors  # the shown thing itself, on its own slot (measured on the lowest)
         if item_anchor:
             anchors = {n: a for n, a in anchors.items() if n != 'item'}
+        # Rule 1: name the drawing's parts first (from the art source, not guessed from glyphs); every anchor is one of them.
+        assert parts and all(isinstance(v, str) and v for v in parts.values()), f'{oid}: parts=dict(name="what the drawing really shows here", ...) is required'
+        off_parts = [n for n in anchors if n != 'item' and not any(n == p or n.startswith(p + '_') for p in parts)]
+        assert not off_parts, f'{oid}: anchors {off_parts} are not parts of the drawing (name them part or part_side from parts=)'
+        self.parts = parts
+        if host == 'display':  # the case's own state (fog, prints, rime...) belongs to the case, not the thing shown in it
+            copies = [f for f in fields if f in {'fog', 'mist', 'prints', 'rime', 'frost', 'glare', 'dust', 'smudge', 'smear', 'condensation', 'breath', 'scuffs'}]
+            assert not copies, f'{oid}: fields {copies} are the case\'s state: author them on trophy_case / cabinet, not on the thing shown'
         flags = {n: (a[2].split() if len(a) > 2 else []) for n, a in anchors.items()}
         self.flags = flags
         self.d = d = dict(object=oid, host=host, fields={f: list(v) for f, v in fields.items()}, physics=[list(p) for p in physics],
@@ -152,6 +164,9 @@ class Obj:
                 assert ok and op in ('set', 'add', 'mul', 'max', 'min', 'wrap'), f'{oid}: effect {n} row {t} {op} would do nothing, or is not allowed'
                 assert not (op == 'add' and abs(v) < .1) and not (op == 'mul' and .85 < v < 1.18), f'{oid}: effect {n} row {t} {op} {v} is padding (too small to matter)'
         self.sp = None
+        if liftable and host != 'wearable':
+            tall = sprite(oid)
+            assert (tall['ground']) * tall['row'] <= 70, f'{oid}: liftable=True but it is {(tall["ground"]) * tall["row"]:.0f} px tall; a duck lifts only small things (70 px or less)'
         if host != 'wearable':  # worn things play on Cheese's own body: nothing to measure
             sp = self.sp = sprite(on or oid)
             rows = len(sp['art']) - 1
@@ -244,6 +259,11 @@ class Obj:
         assert verb in VERBS, f'{key}: act verb {verb} is not in the verb list'
         assert (verb, part) not in self.acts, f'{key}: ({verb}, {part}) is already an act of this object; write a different act'
         assert self.verbs.get(verb, 0) < (1 if verb in UNIVERSAL else 3), f'{key}: too many `{verb}` acts (universal acts: one each; others: three)'
+        assert verb not in UNIVERSAL or sum(self.verbs.get(u, 0) for u in UNIVERSAL) < 5, f'{key}: at most five stock acts (nap, sulk, bow, slip...) per object; write acts only this object allows'
+        assert verb not in INSPECT or sum(self.verbs.get(u, 0) for u in INSPECT) < 3, f'{key}: at most three inspecting acts (count, compare, measure, listen, sniff, peer) per object'
+        stem = verb.split('_')[0][:4]
+        assert stem in label.lower(), f'{key}: the label must say what the verb says (`{verb}` not in "{label}"); pick the verb that matches the act'
+        assert not UNDRAWABLE.search(label.lower()), f'{key}: "{label}" names motion the renderer cannot draw (spin, cartwheel, somersault, knot)'
         perched = any(q.get('perch', 0) > .01 for _, q in tr)
         assert not NEVER_DRAWN.search(label.lower()), f'{key}: "{label}" promises something the renderer never draws (he is never behind or under anything)'
         assert not NEEDS_PERCH.search(label.lower()) or perched or shown == 'head', \
@@ -256,6 +276,7 @@ class Obj:
         for _, name in ev:
             for t2, op, v in d['effects'][name]:
                 if t2 in ('obj.dirt', 'obj.wetness') and (op in ('min', 'set') and v < .5 or op == 'add' and v < 0 or op == 'mul' and v < 1):
+                    assert verb in CLEAN, f'{key}: cleaning or drying {t2} needs a cleaning verb ({sorted(CLEAN)}), not `{verb}`'
                     assert any(w.startswith(t2.replace('.', '_') + '>') for w in when), f'{key}: cleans or dries {t2} but does not gate on {t2.replace(".", "_")}>...'
         self.far += bool(far)
         held, last = [], None
@@ -291,6 +312,10 @@ class Obj:
             assert all(set(q) <= {'sway', 'lift', 'shake', 'glow', 'puff'} | MOVE and (self.liftable or not ({'lift', 'hold'} & set(q))) for _, q in obj), key + ': obj keys (lift/hold need liftable=True)'
             assert not obj or d['host'] in ('placed', 'portable'), key + ': obj reactions would move the whole pond or case, or nothing at all'
             assert d['host'] == 'portable' or not any(MOVE & set(q) for _, q in obj), key + ': only a loose (portable) object can be carried, tossed or hidden'
+        if d['host'] == 'placed' and self.sp and self.sp['ground'] * self.sp['row'] > 200:
+            assert all(abs(q.get('sway', 0)) <= .15 and abs(q.get('shake', 0)) <= .15 for _, q in obj), key + ': a building does not sway or shake (at most .15) because a duck leaned on it'
+        if re.search(r'\b(roll|rolls|rolling|rolled)\b', label.lower()):
+            assert any(abs(q.get('ix', 0)) + abs(q.get('iy', 0)) > .5 for _, q in obj) or perched, f'{key}: "{label}" rolls something: the object must move (ix/iy) or he must be perched rolling on it'
         moving = [(t, q) for t, q in obj if any(abs(q.get(m, 0)) > .01 for m in MOVE)]
         if moving:
             last, end = moving[-1][0], [t for t, q in obj if t > moving[-1][0] and not any(abs(q.get(m, 0)) > .01 for m in MOVE)]
@@ -309,10 +334,21 @@ class Obj:
         body = self._rendered(tr, K_ADULT, tool)
         moved = tuple(dict.fromkeys(tuple(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag')) for _, q in obj))
         sig = (tuple(tuple(sorted((t, op, (v > 0) - (v < 0)) for t, op, v in d['effects'][n] if not t.startswith('need.'))) for _, n in ev), touch, body,
-               tool if tool in ('none', 'wing') else 'stick', verb, moved,
+               tool if tool in ('none', 'wing') else 'stick', moved,
                tuple(dict.fromkeys(self.spot.get(q['anchor']) for _, q in [[0, {}], *duo] if q.get('anchor'))) if duo else None)
         for other, s in self.sigs.items():
-            assert sum(a != b for a, b in zip(sig, s)) >= 2, f'{key} is the same act as {other}: change at least two of what it does, where it touches, how the body moves, what it uses, the verb, how the object moves'
+            assert sum(a != b for a, b in zip(sig, s)) >= 2, f'{key} is the same act as {other}: change at least two of what it does, where it touches, how the body moves, what it uses, how the object moves'
+        touched = frozenset(q['anchor'] for _, q in tr if q.get('anchor') and q.get('contact', 0) >= .5)
+        targets = frozenset(t for _, n in ev for t, _, _ in d['effects'][n] if not t.startswith('need.'))
+        motion = frozenset(m for _, q in obj for m, v in q.items() if abs(v) > .01)
+        place_key = (touched, tool if tool in ('none', 'wing') else 'stick', perched)
+        for other, (pk, tg, mo) in getattr(self, 'places_seen', {}).items():
+            if pk == place_key and touched:
+                assert tg != targets or mo != motion, f'{key} touches the same parts with the same tool as {other} and changes the same thing: that is the same act; touch other parts or do something else to the object'
+        self.places_seen = {**getattr(self, 'places_seen', {}), key: (place_key, targets, motion)}
+        if not touched and not duo:
+            self.untouched = getattr(self, 'untouched', 0) + 1
+            assert self.untouched <= 2, f'{key}: at most two routines per object touch nothing (mime in front of the object); act on the object'
         for _, n in ev:
             self.fired[n] = self.fired.get(n, 0) + 1
             only_need = all(t.startswith('need.') for t, _, _ in d['effects'][n])
@@ -328,13 +364,13 @@ class Obj:
             if not path or path[-1] != step:
                 path.append(step)
         hmoved = tuple(dict.fromkeys(tuple(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag')) for _, q in obj))
-        hc = (tuple(tuple(tuple(x) for x in d['effects'][n]) for _, n in ev), places, tool if tool in ('none', 'wing') else 'stick', tuple(path), verb, hmoved)
+        hc = (tuple(tuple(tuple(x) for x in d['effects'][n]) for _, n in ev), places, tool if tool in ('none', 'wing') else 'stick', tuple(path), hmoved)
         if not hasattr(self, '_contents'):
             self._contents = _other_contents(d['object'])
         twin = self._contents.get(hc)
         assert not twin, f'{key} is a copy of {twin} on another object by the harness check; change the act'
         for other, theirs in getattr(self, 'hcontent', {}).items():
-            assert sum(a != b for a, b in zip(hc, theirs)) >= 2, f'{key} is the same act as {other} by the harness check (two of effect/touch/body/tool/verb/object motion must differ)'
+            assert sum(a != b for a, b in zip(hc, theirs)) >= 2, f'{key} is the same act as {other} by the harness check (two of effect/touch/body/tool/object motion must differ)'
         self.hcontent = {**getattr(self, 'hcontent', {}), key: hc}
         self.sigs[key], self.group[g] = sig, self.group.get(g, 0) + 1
         self.acts.add((verb, part))
@@ -347,6 +383,11 @@ class Obj:
             for i, s in enumerate(say):
                 assert s.lower() not in known, f'{key}: line "{s}" is copied from the brief or another object'
                 assert 'goose' not in s.lower(), f'{key}: Cheese is a duck'
+                assert not re.search(r'\b(nobody|everyone|everybody)\b', s.lower()), f'{key}: no "nobody/everyone" formula lines'
+                for sentence in [x.strip().lower() for x in re.split(r'[.!?]+', s) if len(x.strip()) > 3]:
+                    self.sentences = getattr(self, 'sentences', {})
+                    self.sentences[sentence] = self.sentences.get(sentence, 0) + 1
+                    assert self.sentences[sentence] <= 3, f'{key}: "{sentence}" is used in more than three lines of this object'
                 for prev in say[:i]:
                     a, b = _words(s), _words(prev)
                     assert len(a & b) <= .5 * min(len(a), len(b)), f'{key}: line "{s}" repeats "{prev}"; the second line is a different joke'
@@ -357,13 +398,19 @@ class Obj:
                                   **({'obj': [list(o) for o in obj]} if obj else {}), **({'pick': pick} if pick else {}),
                                   **({'duo': {'track': [[0, {}], *[list(x) for x in duo], [1, {}]]}} if duo else {}))
 
-    def emit(self, need=None):
+    def emit(self, need=None, shortfall=None):
         """emit() hands in: the object's full need (48, less any wonder routines it already has).
         emit(need=N) is a draft run only: it writes the file but skips the hand-in thresholds."""
         d, n = self.d, len(self.d['routines'])
+        d['parts'] = self.parts
         queue = {o['id']: o for o in json.loads((ENG / 'overhaul/animation-milestone/work-queue.json').read_text())['objects']}
-        full = 48 - queue.get(d['object'], {}).get('wonder_routines', 0)
+        q0 = queue.get(d['object'], {})
+        full = q0.get('need', 48 - q0.get('wonder_routines', 0))  # shared-host items have their own quota (user decision 2026-11-14)
         hand_in = need is None
+        if shortfall:  # rule 19: an honest stop with a reason, recorded in the file
+            assert hand_in and len(shortfall) > 20, 'shortfall=<the reason, in a sentence>'
+            d['shortfall'] = shortfall
+            full = n
         need = full if hand_in else need
         used, read = {name for r in d['routines'].values() for _, name in r['events']}, ' '.join(t for r in d['routines'].values() for t in r['when'] + r['prefer'])
         per_age = {a: sum(a in v for v in self.reach.values()) for a in AGES}
@@ -392,6 +439,13 @@ if __name__ == '__main__':
     n, ruler = len(sp['art']) - 1, [' '] * sp['w']
     for tenth in range(10):
         ruler[round(tenth * (sp['w'] - 1) / 10)] = str(tenth)
+    # The blueprint the drawing is built from (what each part really is), from the workshop sources.
+    for src in sorted((ENG / 'client').glob('*-workshop.mjs')) + sorted((ENG / 'client/animation').glob('*.json')):
+        text = src.read_text()
+        m = re.search(r'["\']?\b' + re.escape(sys.argv[1]) + r'\b["\']?\s*:\s*\{', text)
+        if m:
+            print('  blueprint (' + src.name + '):', re.sub(r'\s+', ' ', text[m.start():m.start() + 420]))
+            break
     art = [list(r) for r in sp['art']]
     legend = []
     for i, (name, a) in enumerate(sorted((k2, v) for k2, v in sp['own'].items() if v and 'x' in v and 'y' in v)):
@@ -411,5 +465,5 @@ if __name__ == '__main__':
                 legend.append(f'{ch}={m.group(1)}')
                 ry, rx = round(float(m.group(3)) * n), round(float(m.group(2)) * (sp['w'] - 1))
                 art[ry][rx] = ch
-    print(sys.argv[1], '- names taken by the drawing:', sp['named'], '\n  drawing anchors:', ' '.join(legend), '\n   y   px |' + ''.join(ruler) + '|')
+    print(sys.argv[1], '- art source:', {k: v for k, v in sp.get('spec', {}).items() if v}, '\n  names taken by the drawing:', sp['named'], '\n  drawing anchors:', ' '.join(legend), '\n   y   px |' + ''.join(ruler) + '|')
     [print(f'{y / n:.2f} {(sp["ground"] - y) * sp["row"]:4.0f} |{"".join(row)}|') for y, row in enumerate(art) if ''.join(row).strip()]

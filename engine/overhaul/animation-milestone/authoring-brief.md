@@ -36,6 +36,16 @@ What holds: one `apply` path, completion recorded once, no possession changes, r
 
 Spec and code disagree: `lines` and routine-level `pick` exist only in code; the spec's `subjects` block and `ecology.` target exist only in the spec.
 
+## 2a+. Version 3 rules (lead, 2026-11-14, after the second review): these override anything below
+
+- **Quotas (user decision 2026-11-14).** Things that live in a shared host author only what they alone allow: shown things 12, kept fish 18, worn pieces 24 (the work queue `need`). The host carries the shared acts once: `trophy_case` / `cabinet` carry the glass, slats, doors, fog and prints; `koi_pond` / `infinity_pool` / `pool_large` carry the pond chores (leaves, ice, algae, flakes, bell). An item never copies its host's state. Everything else owes 48.
+- **Parts first.** `Obj(..., parts=dict(door='the oak door', mail='the mailbox on a post', ...))` is required: name what the drawing really is from the art source (`rep.py <id>` now prints the blueprint, e.g. `props:['chimney','flowers','mail']`). Every anchor is a part or `part_side`.
+- **Same act.** The verb tag no longer counts as a difference. Touching the same set of parts with the same tool and perch is the same act unless it changes a different thing or moves the object differently. At most two routines per object touch nothing.
+- **Caps.** At most five stock acts (nap, sulk, bow, slip, ...) and at most three inspecting acts (count, compare, measure, listen, sniff, peer) per object.
+- **Honest labels.** The verb appears in the label. No spin, cartwheel, somersault or knot (the renderer cannot draw them); "roll" only when the object moves or he is perched on it. A building never sways or shakes more than .15. `liftable=True` only for things 70 px tall or less. Cleaning or drying needs a cleaning verb.
+- **Lines.** No "nobody / everyone" formulas; no sentence in more than three lines of one object.
+- **Honest count.** If an object truly cannot reach its quota, `o.emit(shortfall="the reason")` records the shortfall; never pad.
+
 ## 2a. Version 2 rules (lead, after the wave-1 acceptance review): these override anything below
 
 What the screen shows. Cheese's feet stay on the standing line (the object's front edge) unless a keyframe has `perch` (0 to 1): then his feet go to the touched anchor, which must be flagged `"surface"` and be at most 0.6 x his body height for that age (the helper limits the ages). He stands with his bill (tool `none`) or wing/stick tip at the touched place and walks between anchors. `x` pushes his head forward, `y` drops it, `b` squats or hops the body, `l`/`r` lift a foot; `w` only shows with tool `none`; with wing or stick `reach` sets the arm. He is never drawn behind, under or inside anything, and the object's own parts never move (only the whole sprite sways, shakes or lifts; `glow`/`puff` draw at the touch).
