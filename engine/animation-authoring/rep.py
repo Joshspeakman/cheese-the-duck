@@ -142,8 +142,12 @@ class Obj:
             self.h['item'], self.spot['item'], self.flags['item'] = float(slots[0]), ('item',), []
             d['anchors']['item'] = dict(x=.5, y=.5)  # resolved at draw time to the thing's own slot
         INKS = ('snow', 'frost', 'leaf', 'water', 'mud', 'glow', 'dust', 'plant')
+        POND = ('clarity', 'algae', 'leaves', 'ice', 'oxygen', 'plants', 'flakes', 'bell')
+        if host == 'keeping':  # the pond's own state is the truth: no copies of it on the fish
+            copies = [f for f in fields if f in {'leaves', 'leafmat', 'litter', 'ice', 'rime', 'crust', 'frost', 'flakes', 'flakeskin', 'algae', 'film', 'scum', 'slime', 'murk', 'clarity'}]
+            assert not copies, f'{oid}: fields {copies} copy the pond (use keeping.* effects, pond_* gates and pond_* marks)'
         for f, th, glyphs, a, tone in marks:  # visible state: glyphs stamped at an anchor while the field is above th
-            assert f in fields and a in anchors and tone in INKS and 1 <= len(glyphs) <= 8 and re.fullmatch(r'[ -~]+', glyphs) and host in ('placed', 'portable', 'display', 'keeping'), \
+            assert (f in fields or (host == 'keeping' and f.startswith('pond_') and f[5:] in POND)) and a in anchors and tone in INKS and 1 <= len(glyphs) <= 8 and re.fullmatch(r'[ -~]+', glyphs) and host in ('placed', 'portable', 'display', 'keeping'), \
                 f'{oid}: mark {f}: needs a declared field and anchor, ascii glyphs (1-8), tone in {INKS}, not on worn pieces'
         if marks:
             d['marks'] = [list(m) for m in marks]

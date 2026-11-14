@@ -75,7 +75,8 @@ export function repMarks(item,state){
  const out=[];
  for(const [oid,fields] of Object.entries(state?.rep||{})){
   const spec=REP_OBJECTS[oid];if(!spec?.marks||!fields||(oid!==item.id&&!['display','keeping'].includes(spec.host)))continue;
-  for(const [f,th,glyphs,anchor,tone] of spec.marks)if((fields[f]??spec.fields?.[f]?.[0]??0)>th&&spec.anchors?.[anchor])out.push({glyphs,anchor:spec.anchors[anchor],color:MARK_INK[tone]||'#e8dcc0'});
+  const value=f=>f.startsWith('pond_')?(state.keeping?.[f.slice(5)]??0):(fields[f]??spec.fields?.[f]?.[0]??0);  // kept fish may draw the pond's own state
+  for(const [f,th,glyphs,anchor,tone] of spec.marks)if(value(f)>th&&spec.anchors?.[anchor])out.push({glyphs,anchor:spec.anchors[anchor],color:MARK_INK[tone]||'#e8dcc0'});
  }
  return out.length?out:null;
 }
