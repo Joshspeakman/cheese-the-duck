@@ -20,6 +20,9 @@ from world.fishing import CaughtFish, FishingSpot, BaitType
 from world.atmosphere import Weather, WeatherType, Season
 from audio.sound import sound_engine
 args = sys.argv[1:]
+_VALUED = {'--objects', '--min', '--frames', '--review', '--frame-at'}
+_stray = [a for i, a in enumerate(args) if not a.startswith('--') and (i == 0 or args[i - 1] not in _VALUED)]
+assert not _stray, 'unexpected arguments ' + str(_stray) + ': --objects takes ONE comma-separated list (a,b,c)'
 only = set(args[args.index('--objects') + 1].split(',')) if '--objects' in args else None
 MIN = int(args[args.index('--min') + 1]) if '--min' in args else None   # default: each object's own need
 QUICK = '--quick' in args

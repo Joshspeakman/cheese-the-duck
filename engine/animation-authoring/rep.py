@@ -75,6 +75,34 @@ def _other_stamps(skip):
     return out
 
 
+def _content(spec, r):
+    """check_repertoire.content for a routine of another object's file (anchors are that file's)."""
+    anc = spec.get('anchors', {})
+    places = tuple((round(anc[q['anchor']]['x'] / .05), round(anc[q['anchor']]['y'] / .05)) if q.get('anchor') in anc else q.get('anchor') for _, q in r['track'] if q.get('anchor'))
+    path = []
+    for _, q in r['track']:
+        step = tuple(round(q.get(j, 0) * 2) / 2 for j in ('x', 'y', 'b', 'w'))
+        if not path or path[-1] != step:
+            path.append(step)
+    moved = tuple(dict.fromkeys(tuple(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag')) for _, q in r.get('obj', ())))
+    rows = tuple(tuple(tuple(x) for x in spec['effects'][n]) for _, n in r['events'])
+    return rows, places, r['tool'] if r['tool'] in ('none', 'wing') else 'stick', tuple(path), (r.get('act') or [None])[0], moved
+
+
+def _other_contents(skip):
+    out = {}
+    for f in OUT.glob('*.json'):
+        if f.stem == skip:
+            continue
+        try:
+            spec = json.loads(f.read_text())
+            for k2, r2 in spec['routines'].items():
+                out[_content(spec, r2)] = k2
+        except Exception:
+            pass
+    return out
+
+
 def _known_lines(skip):
     seen = set()
     brief = ENG / 'overhaul/animation-milestone/authoring-brief.md'
@@ -301,6 +329,10 @@ class Obj:
                 path.append(step)
         hmoved = tuple(dict.fromkeys(tuple(round(q.get(m, 0)) for m in ('ix', 'iy', 'hold', 'hide', 'off', 'wx', 'wy', 'flap', 'sag')) for _, q in obj))
         hc = (tuple(tuple(tuple(x) for x in d['effects'][n]) for _, n in ev), places, tool if tool in ('none', 'wing') else 'stick', tuple(path), verb, hmoved)
+        if not hasattr(self, '_contents'):
+            self._contents = _other_contents(d['object'])
+        twin = self._contents.get(hc)
+        assert not twin, f'{key} is a copy of {twin} on another object by the harness check; change the act'
         for other, theirs in getattr(self, 'hcontent', {}).items():
             assert sum(a != b for a, b in zip(hc, theirs)) >= 2, f'{key} is the same act as {other} by the harness check (two of effect/touch/body/tool/verb/object motion must differ)'
         self.hcontent = {**getattr(self, 'hcontent', {}), key: hc}
