@@ -403,6 +403,8 @@ if __name__ == '__main__':
     if '--mark' in sys.argv:
         src = Path(sys.argv[sys.argv.index('--mark') + 1]).read_text()
         block = re.search(r"Obj\(\s*'" + re.escape(sys.argv[1]) + r"'.*?anchors=dict\((.*?)\)\)", src, re.S)
+        if '--object' in sys.argv:  # an object measured on another sprite (on='trophy_case', 'koi_pond', ...)
+            block = re.search(r"Obj\(\s*'" + re.escape(sys.argv[sys.argv.index('--object') + 1]) + r"'.*?anchors=dict\((.*?)\)\)", src, re.S)
         if block:
             for i, m in enumerate(re.finditer(r"(\w+)=\(([0-9.]+),\s*([0-9.]+)", block.group(1))):
                 ch = chr(65 + i % 26)
