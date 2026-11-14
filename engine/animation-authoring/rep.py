@@ -26,7 +26,8 @@ VERBS = set('''wipe scrub sweep polish dry rake dig scoop pour tip fill drain pe
 UNIVERSAL = {'nap', 'shelter', 'sulk', 'wait', 'walk_into', 'slip', 'stuck', 'stamp', 'bow', 'present', 'argue', 'pose'}  # at most one each per object
 SHADOW = {'damp', 'wet', 'wetness', 'dirt', 'dirty', 'grime', 'mud', 'muck', 'dust', 'clean', 'cleanliness', 'condition', 'wear'}  # use obj.* instead
 NEVER_DRAWN = re.compile(r'\b(behind|under|underneath|beneath)\b(?! (his|her|its|a) (wing|chin|bill|breath))')
-NEEDS_PERCH = re.compile(r'\b(in|into|inside|on|onto|atop|through|across)\b the\b')
+# Labels that put his body in/on/through something (not "knocking on the door" or "breathing on the glass").
+NEEDS_PERCH = re.compile(r'\b(stand|sit|lie|lying|perch|climb|walk|step|hop|jump|crawl|wriggl|curl|sleep|nap|doz|roll|bounc|slid|dive|diving|squeez|wad|balanc|danc|strut|march|stomp|stamp|settl|ride|riding|surf|skat|tiptoe|bask|flop|sprawl)\w*\b[^.,;]{0,25}?\b(in|into|inside|on|onto|atop|through|across) the\b')
 # Places on Cheese's own body for worn things (coarse body grid, x from tail to bill, y from crown to feet).
 BODY_SPOTS = dict(crown=(5, 0), brow=(6, 1), eye=(7, 2), bill=(9, 3), cheek=(7, 3), nape=(4, 2), throat=(7, 4), neck=(6, 4),
                   chest=(7, 5), shoulder=(5, 5), back=(3, 5), belly=(6, 7), wing=(4, 6), wing_tip=(2, 7), tail=(0, 6), rump=(1, 7),
@@ -99,6 +100,9 @@ class Obj:
             bad = [n for n in anchors if n not in BODY_SPOTS]
             assert not bad, f'{oid}: worn things touch places on his body: anchors must be named from {sorted(BODY_SPOTS)} (not {bad})'
             anchors = {n: (BODY_SPOTS[n][0] / 9, BODY_SPOTS[n][1] / 9) for n in anchors}
+        item_anchor = host == 'display' and 'item' in anchors  # the shown thing itself, on its own slot (measured on the lowest)
+        if item_anchor:
+            anchors = {n: a for n, a in anchors.items() if n != 'item'}
         flags = {n: (a[2].split() if len(a) > 2 else []) for n, a in anchors.items()}
         self.flags = flags
         self.d = d = dict(object=oid, host=host, fields={f: list(v) for f, v in fields.items()}, physics=[list(p) for p in physics],
@@ -133,6 +137,10 @@ class Obj:
                 assert on_ink or ('inside' in flags[n] and inside), f'{oid}: anchor {n} is on empty air (flag it (x, y, "inside") only if it is truly within a drawn outline)'
                 self.h[n], self.spot[n] = (sp['ground'] - y * rows) * sp['row'], (round(cx * sp['row'] / 22.5), round(cy * sp['row'] / 15))
                 self.h[n] = max(0., self.h[n])  # parts drawn in front of the standing line are on the ground in front of him
+        if item_anchor:
+            slots = json.loads((ENG / 'client/animation/repertoire-reach.json').read_text()).get('displaySlots', {}).get(on, [0])
+            self.h['item'], self.spot['item'], self.flags['item'] = float(slots[0]), ('item',), []
+            d['anchors']['item'] = dict(x=.5, y=.5)  # resolved at draw time to the thing's own slot
         spots = {}
         for n, s in self.spot.items():
             assert s not in spots, f'{oid}: anchors {spots.get(s)} and {n} are the same touch place; merge them or move one'
@@ -229,12 +237,15 @@ class Obj:
             assert allowed, f'{key}: the perch surface is too high for every allowed age (at most .6 x body height)'
         self.reach[key] = allowed
         assert self.reach[key], f'{key}: contact {high:.0f}px up is out of reach for every allowed age'
-        worn = d['host'] == 'wearable'
-        MOVE = {'ix', 'iy', 'hold', 'off'} if worn else {'ix', 'iy', 'hold', 'hide'}
+        worn, shown = d['host'] == 'wearable', d['host'] == 'display'
+        MOVE = {'ix', 'iy', 'hold', 'off'} if worn else {'hold'} if shown else {'ix', 'iy', 'hold', 'hide'}
         WORN = {'off', 'wx', 'wy', 'flap', 'sag', 'ix', 'iy', 'hold'}
         if worn:
             assert all(set(q) <= WORN for _, q in obj), key + ': a worn piece moves with off / wx / wy / flap / sag, or off + hold / ix / iy when taken off'
             assert all(q.get('off', 0) > .5 or not any(abs(q.get(m, 0)) > .01 for m in ('hold', 'ix', 'iy')) for _, q in obj), key + ': hold / ix / iy only once the piece is off (off=1)'
+        elif shown:
+            assert all(set(q) <= {'hold'} for _, q in obj), key + ': a shown thing can only be lifted out (hold) and put back'
+            assert not obj or any(q.get('anchor') == 'item' and q.get('contact', 0) >= .5 for _, q in tr), key + ': lift it by touching it (anchor "item")'
         else:
             assert all(set(q) <= {'sway', 'lift', 'shake', 'glow', 'puff'} | MOVE and (self.liftable or not ({'lift', 'hold'} & set(q))) for _, q in obj), key + ': obj keys (lift/hold need liftable=True)'
             assert not obj or d['host'] in ('placed', 'portable'), key + ': obj reactions would move the whole pond or case, or nothing at all'
