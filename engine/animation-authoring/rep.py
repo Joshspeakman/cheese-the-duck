@@ -405,7 +405,7 @@ class Obj:
         d['parts'] = self.parts
         queue = {o['id']: o for o in json.loads((ENG / 'overhaul/animation-milestone/work-queue.json').read_text())['objects']}
         q0 = queue.get(d['object'], {})
-        full = q0.get('need', 48 - q0.get('wonder_routines', 0))  # shared-host items have their own quota (user decision 2026-11-14)
+        full = q0.get('need', 48 - q0.get('wonder_routines', 0) - q0.get('family_routines', 0))  # existing family routines count toward 48  # shared-host items have their own quota (user decision 2026-11-14)
         hand_in = need is None
         if shortfall:  # rule 19: an honest stop with a reason, recorded in the file
             assert hand_in and len(shortfall) > 20, 'shortfall=<the reason, in a sentence>'
