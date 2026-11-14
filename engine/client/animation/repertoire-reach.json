@@ -2409,6 +2409,813 @@
     "legendary"
    ]
   },
+  "bass_scoop_the_leaves_from_the_leaping_lane": {
+   "contactHeight": 52,
+   "highestAnchor": "surf_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_pull_the_pads_off_the_launch_water": {
+   "contactHeight": 82,
+   "highestAnchor": "bloom_r",
+   "perchHeight": 0,
+   "tool": "twig",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_sweep_the_flake_film_to_the_rim": {
+   "contactHeight": 37,
+   "highestAnchor": "surf_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_rub_the_algae_off_the_pad_stems": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_shove_the_stranded_bass_back_in": {
+   "contactHeight": 37,
+   "highestAnchor": "surf_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_dab_the_scraped_chin": {
+   "contactHeight": 22,
+   "highestAnchor": "surf_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_fling_flakes_in_a_high_arc": {
+   "contactHeight": 22,
+   "highestAnchor": "lane",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_hold_a_flake_high_for_the_leap": {
+   "contactHeight": 37,
+   "highestAnchor": "surf_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_tick_the_stone_for_supper": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_hold_a_reed_hoop_over_the_water": {
+   "contactHeight": 52,
+   "highestAnchor": "surf_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_skitter_the_reed_tip_on_the_surface": {
+   "contactHeight": 52,
+   "highestAnchor": "cove",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_walk_a_wingtip_along_the_pad_edge": {
+   "contactHeight": 67,
+   "highestAnchor": "pad_low",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_feed_one_at_the_pad_corner": {
+   "contactHeight": 52,
+   "highestAnchor": "surf_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_race_the_bass_along_the_edge": {
+   "contactHeight": 52,
+   "highestAnchor": "cove",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_toss_a_leaf_up_for_the_bass": {
+   "contactHeight": 37,
+   "highestAnchor": "surf_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_splash_back_at_the_tail_slap": {
+   "contactHeight": 37,
+   "highestAnchor": "surf_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_hide_and_leap_from_the_pad": {
+   "contactHeight": 67,
+   "highestAnchor": "pad_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_hop_the_stones_beside_the_arc": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_catch_the_spray_in_his_bill": {
+   "contactHeight": 37,
+   "highestAnchor": "surf_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_spin_a_wake_with_both_wings": {
+   "contactHeight": 22,
+   "highestAnchor": "lane",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_measure_the_leap_on_a_stem": {
+   "contactHeight": 112,
+   "highestAnchor": "cattail_l",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_count_the_leaps_in_a_minute": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_peer_at_the_big_jaw_line": {
+   "contactHeight": 52,
+   "highestAnchor": "surf_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_listen_for_the_slap_before_it_comes": {
+   "contactHeight": 52,
+   "highestAnchor": "surf_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_sniff_the_spray_for_insect": {
+   "contactHeight": 22,
+   "highestAnchor": "lane",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_compare_the_spiny_back_with_the_record": {
+   "contactHeight": 52,
+   "highestAnchor": "cove",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_dip_a_toe_in_the_pad_shade": {
+   "contactHeight": 67,
+   "highestAnchor": "pad_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_nap_between_the_two_rises": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_sit_for_the_first_rise_at_dusk": {
+   "contactHeight": 52,
+   "highestAnchor": "surf_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_lean_to_the_cattail_and_sigh": {
+   "contactHeight": 112,
+   "highestAnchor": "cattail_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_wait_for_the_first_ring_of_dawn": {
+   "contactHeight": 37,
+   "highestAnchor": "surf_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_sulk_with_his_back_to_the_calm": {
+   "contactHeight": 22,
+   "highestAnchor": "surf_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_crack_the_ice_along_the_lane": {
+   "contactHeight": 52,
+   "highestAnchor": "cove",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_flake_the_crust_off_the_rim": {
+   "contactHeight": 22,
+   "highestAnchor": "surf_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_slap_the_heavy_water_awake": {
+   "contactHeight": 52,
+   "highestAnchor": "surf_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_take_the_rain_at_the_stems": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_cool_both_feet_at_the_shaded_rim": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_brace_against_the_chop": {
+   "contactHeight": 45,
+   "highestAnchor": "bank_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_bow_to_the_champion_leaper": {
+   "contactHeight": 37,
+   "highestAnchor": "surf_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_present_the_bass_to_the_pond": {
+   "contactHeight": 37,
+   "highestAnchor": "surf_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_argue_the_leap_height": {
+   "contactHeight": 37,
+   "highestAnchor": "surf_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_pose_with_the_arc_behind_him": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_shout_the_score_at_the_cattails": {
+   "contactHeight": 45,
+   "highestAnchor": "bank_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_slip_on_the_splashed_stone": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_caught_between_two_stems": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_stride_at_the_bank_watching_the_rise": {
+   "contactHeight": 52,
+   "highestAnchor": "surf_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_hop_back_from_the_soaking_splash": {
+   "contactHeight": 37,
+   "highestAnchor": "surf_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_stamp_the_wet_prints_away": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_hoop_and_flake_with_a_friend": {
+   "contactHeight": 22,
+   "highestAnchor": "surf_l",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_swap_leap_counts_with_a_friend": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "bass_double_dare_the_pad_ambush": {
+   "contactHeight": 82,
+   "highestAnchor": "bloom_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
   "birdhouse_wipe_pole": {
    "contactHeight": 58,
    "highestAnchor": "pole_high",
@@ -3162,6 +3969,1605 @@
    "highestAnchor": "pole_high",
    "perchHeight": 0,
    "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_scrub_the_green_film_off_the_stones": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_sweep_the_silt_cloud_to_the_rim": {
+   "contactHeight": 37,
+   "highestAnchor": "floor_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_rake_the_leaf_litter_off_the_deep_corner": {
+   "contactHeight": 52,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_dig_the_choking_weed_out_by_the_bank": {
+   "contactHeight": 45,
+   "highestAnchor": "bank_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_groom_the_coarse_scales": {
+   "contactHeight": 52,
+   "highestAnchor": "shelf",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_pull_a_pad_back_off_the_mud_corner": {
+   "contactHeight": 67,
+   "highestAnchor": "pad_low",
+   "perchHeight": 0,
+   "tool": "twig",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_drop_a_handful_of_sinkers_at_the_mud_line": {
+   "contactHeight": 22,
+   "highestAnchor": "mud_edge",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_offer_a_pellet_at_the_mud_edge": {
+   "contactHeight": 22,
+   "highestAnchor": "mud_edge",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_rap_twice_on_the_right_stone": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_trail_a_wing_along_the_mud_edge": {
+   "contactHeight": 52,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_tickle_the_barbels_with_a_reed": {
+   "contactHeight": 22,
+   "highestAnchor": "floor_l",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_show_the_shy_one_a_flake": {
+   "contactHeight": 52,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_waltz_the_bank_beside_the_carp": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_blow_bubbles_back_at_the_carp": {
+   "contactHeight": 37,
+   "highestAnchor": "floor_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_push_a_leaf_along_its_rooting_track": {
+   "contactHeight": 52,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_hide_a_toe_for_the_carp_to_find": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_balance_a_pellet_on_his_bill_for_it": {
+   "contactHeight": 22,
+   "highestAnchor": "floor_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_chase_the_plume_it_stirs_up": {
+   "contactHeight": 52,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_count_the_plate_scales": {
+   "contactHeight": 52,
+   "highestAnchor": "shelf",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_sniff_the_fresh_mud_line": {
+   "contactHeight": 22,
+   "highestAnchor": "mud_edge",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_taste_the_silt_off_a_wingtip": {
+   "contactHeight": 22,
+   "highestAnchor": "mud_edge",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_listen_for_the_gulp_at_the_surface": {
+   "contactHeight": 37,
+   "highestAnchor": "floor_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_test_the_mud_with_a_toe": {
+   "contactHeight": 45,
+   "highestAnchor": "bank_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_compare_the_length_with_the_wild_record": {
+   "contactHeight": 52,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_measure_the_rooting_trench": {
+   "contactHeight": 52,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_nap_in_the_tuft_beside_the_carp": {
+   "contactHeight": 15,
+   "highestAnchor": "tuft",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_sit_by_the_stone_and_let_it_root": {
+   "contactHeight": 22,
+   "highestAnchor": "floor_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_lean_on_the_reed_and_watch_the_mud": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_wait_for_the_first_bubble_line": {
+   "contactHeight": 37,
+   "highestAnchor": "floor_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_sulk_at_the_clouded_water": {
+   "contactHeight": 52,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_hack_the_ice_off_the_mud_corner": {
+   "contactHeight": 52,
+   "highestAnchor": "shelf",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_rub_the_rime_off_the_left_edge": {
+   "contactHeight": 52,
+   "highestAnchor": "shelf",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_thrash_the_air_back_into_the_pond": {
+   "contactHeight": 52,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_crouch_out_the_rain_at_the_tuft": {
+   "contactHeight": 15,
+   "highestAnchor": "tuft",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_bask_the_belly_on_the_sun_stone": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_plant_his_feet_against_the_gale": {
+   "contactHeight": 45,
+   "highestAnchor": "bank_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_bow_to_the_old_carp": {
+   "contactHeight": 37,
+   "highestAnchor": "floor_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_present_the_carp_to_the_cattails": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_argue_with_it_about_the_mud": {
+   "contactHeight": 37,
+   "highestAnchor": "floor_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_pose_like_a_carp_on_the_stone": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_show_off_the_big_one_to_nobody": {
+   "contactHeight": 52,
+   "highestAnchor": "floor_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_slip_in_the_mud_at_the_bank": {
+   "contactHeight": 45,
+   "highestAnchor": "bank_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_bill_stuck_in_the_mud_line": {
+   "contactHeight": 22,
+   "highestAnchor": "mud_edge",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_walk_the_bank_into_a_reed": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_startle_back_at_the_gulp": {
+   "contactHeight": 22,
+   "highestAnchor": "floor_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_stamp_on_the_silt_in_a_sulk": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_two_sets_of_sinkers_from_both_ends": {
+   "contactHeight": 22,
+   "highestAnchor": "floor_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_haul_the_weed_with_a_friend": {
+   "contactHeight": 22,
+   "highestAnchor": "mud_edge",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "carp_mud_wave_with_a_friend_in_time": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_skim_the_leaf_mat": {
+   "contactHeight": 52,
+   "highestAnchor": "bed_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_scrape_the_belly_stone_green": {
+   "contactHeight": 45,
+   "highestAnchor": "bank_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_unwind_a_weed_thread_from_a_barbel": {
+   "contactHeight": 22,
+   "highestAnchor": "bed_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_sweep_the_husks_off_the_shelf": {
+   "contactHeight": 52,
+   "highestAnchor": "bed_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_comb_the_silt_from_the_barbels": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_hook_the_overgrown_pads_back": {
+   "contactHeight": 67,
+   "highestAnchor": "pad_low",
+   "perchHeight": 0,
+   "tool": "twig",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_toss_pellets_over_the_deep_edge": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_hold_a_pellet_to_the_hungriest_cat": {
+   "contactHeight": 22,
+   "highestAnchor": "bed_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_knock_three_slow_on_the_rim": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_press_a_wingtip_for_it_to_read": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_draw_the_cat_along_the_floor_row": {
+   "contactHeight": 52,
+   "highestAnchor": "bed_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_stroke_the_flat_head_with_a_wing": {
+   "contactHeight": 22,
+   "highestAnchor": "bed_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_tap_a_toe_until_it_noses_up": {
+   "contactHeight": 22,
+   "highestAnchor": "bed_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_race_the_cat_along_the_bank": {
+   "contactHeight": 52,
+   "highestAnchor": "bed_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_blow_bubbles_down_to_it": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_send_a_leaf_over_its_head": {
+   "contactHeight": 52,
+   "highestAnchor": "bed_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_drum_the_bank_for_the_shivers": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_look_for_it_in_the_shaded_pads": {
+   "contactHeight": 67,
+   "highestAnchor": "pad_low",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_chase_the_whisker_shadow_with_a_wing": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_skip_a_pellet_to_the_far_edge": {
+   "contactHeight": 52,
+   "highestAnchor": "bed_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_measure_the_whisker_span": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_peer_into_the_great_mouth": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_listen_at_the_bottom_edge": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_count_the_sunk_pellets": {
+   "contactHeight": 52,
+   "highestAnchor": "bed_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_sniff_the_silt_the_cat_stirs": {
+   "contactHeight": 22,
+   "highestAnchor": "edge_far",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_sound_the_depth_with_a_reed": {
+   "contactHeight": 52,
+   "highestAnchor": "bed_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_weigh_it_against_the_wild_record": {
+   "contactHeight": 52,
+   "highestAnchor": "bed_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_nap_by_the_stone_after_dark": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_sit_at_the_bank_for_the_dark": {
+   "contactHeight": 15,
+   "highestAnchor": "tuft",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_lean_on_a_low_reed_and_wait": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_wait_for_the_whiskers_to_show": {
+   "contactHeight": 22,
+   "highestAnchor": "bed_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_sulk_at_the_empty_water": {
+   "contactHeight": 52,
+   "highestAnchor": "bed_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_chip_the_ice_off_the_bank_hole": {
+   "contactHeight": 22,
+   "highestAnchor": "bed_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_scrape_the_rime_off_the_front_stone": {
+   "contactHeight": 22,
+   "highestAnchor": "bed_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_splash_the_dull_water_awake": {
+   "contactHeight": 52,
+   "highestAnchor": "bed_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_stand_out_the_rain_at_the_reed": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_warm_a_foot_on_the_sun_stone": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_brace_at_the_bank_in_the_gust": {
+   "contactHeight": 45,
+   "highestAnchor": "bank_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_bow_to_the_big_cat": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_present_the_cat_to_the_dark": {
+   "contactHeight": 52,
+   "highestAnchor": "bed_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_argue_the_moustache_rights": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_pose_at_the_stone_with_the_cat": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_sing_the_cat_a_night_song": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_slip_on_the_wet_rim_stone": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_jammed_between_two_reed_stems": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_walk_into_the_tall_dark_stem": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_hop_back_from_the_snapping_jaws": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_stamp_the_pellet_cloud_flat": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_answer_each_others_knocks_to_the_cat": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_hold_the_bank_weed_while_a_friend_unpicks_it": {
+   "contactHeight": 37,
+   "highestAnchor": "bed_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "catfish_compare_whisker_counts_with_a_friend": {
+   "contactHeight": 52,
+   "highestAnchor": "bed_r",
+   "perchHeight": 0,
+   "tool": "none",
    "reachableAges": [
     "hatchling",
     "duckling",
@@ -4650,6 +7056,803 @@
     "legendary"
    ]
   },
+  "ghost_fish_lift_the_leaves_without_a_ripple": {
+   "contactHeight": 52,
+   "highestAnchor": "dark_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_sweep_the_grit_so_the_glow_shows": {
+   "contactHeight": 52,
+   "highestAnchor": "dark_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_open_up_the_moonlight_between_the_pads": {
+   "contactHeight": 82,
+   "highestAnchor": "bloom_r",
+   "perchHeight": 0,
+   "tool": "twig",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_wipe_the_rim_green_so_it_gleams": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_ease_a_weed_strand_off_the_pale_fin": {
+   "contactHeight": 22,
+   "highestAnchor": "dark_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_pat_the_flank_dry_of_scum": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_scatter_flakes_by_dim_light": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_offer_a_flake_to_the_glow": {
+   "contactHeight": 52,
+   "highestAnchor": "dark_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_tap_the_stone_soft_as_a_heartbeat": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_hum_it_a_lullaby_at_the_rim": {
+   "contactHeight": 22,
+   "highestAnchor": "dark_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_draw_a_glimmer_line_with_a_wingtip": {
+   "contactHeight": 52,
+   "highestAnchor": "deep",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_stroke_the_cool_side_once": {
+   "contactHeight": 52,
+   "highestAnchor": "dark_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_play_peekaboo_with_the_glow": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_puff_a_bubble_to_see_it_glow": {
+   "contactHeight": 52,
+   "highestAnchor": "dark_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_creep_after_the_glimmer_in_the_shallows": {
+   "contactHeight": 52,
+   "highestAnchor": "deep",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_hop_over_the_stones_to_the_pulse": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_catch_a_shining_flake_in_his_bill": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_send_a_leaf_boat_across_its_glow": {
+   "contactHeight": 52,
+   "highestAnchor": "deep",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_dance_the_ripples_in_a_ring": {
+   "contactHeight": 52,
+   "highestAnchor": "dark_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_cup_a_wing_to_test_the_glow": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_compare_lit_and_unlit_water": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_count_the_pulses_of_the_glow": {
+   "contactHeight": 52,
+   "highestAnchor": "dark_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_peer_at_the_pale_scales": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_listen_to_the_dark_for_its_turning": {
+   "contactHeight": 22,
+   "highestAnchor": "dark_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_sound_how_deep_it_hangs": {
+   "contactHeight": 52,
+   "highestAnchor": "dark_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_hold_it_beside_the_biggest_on_record": {
+   "contactHeight": 52,
+   "highestAnchor": "dark_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_nap_at_the_tuft_while_it_glows": {
+   "contactHeight": 15,
+   "highestAnchor": "tuft",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_sit_up_late_for_the_glow": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_lean_on_the_cattail_in_the_dark": {
+   "contactHeight": 112,
+   "highestAnchor": "cattail_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_wait_for_the_glow_to_come_on": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_sulk_in_the_unlit_water": {
+   "contactHeight": 22,
+   "highestAnchor": "dark_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_prick_the_ice_open_for_the_glow": {
+   "contactHeight": 52,
+   "highestAnchor": "deep",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_scrape_the_rime_from_the_glass_shallows": {
+   "contactHeight": 22,
+   "highestAnchor": "dark_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_fan_the_still_water_with_a_wing_pair": {
+   "contactHeight": 52,
+   "highestAnchor": "dark_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_wait_out_the_rain_at_the_tuft": {
+   "contactHeight": 15,
+   "highestAnchor": "tuft",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_shade_the_water_from_the_glare": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_crouch_low_against_the_gust": {
+   "contactHeight": 45,
+   "highestAnchor": "bank_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_bow_to_the_ghost_of_the_pond": {
+   "contactHeight": 52,
+   "highestAnchor": "dark_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_present_the_glow_to_the_empty_bank": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_argue_in_a_whisper": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_pose_in_the_glow_like_a_statue": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_show_it_off_to_the_far_cattails": {
+   "contactHeight": 45,
+   "highestAnchor": "bank_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_slip_on_the_dewy_stone": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_stuck_in_the_crook_of_a_reed": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_walk_into_the_dark_stem": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_jump_back_from_the_sudden_flare": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_stamp_the_scare_out_of_his_feet": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_pass_the_lullaby_down_the_rim": {
+   "contactHeight": 52,
+   "highestAnchor": "deep",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_light_chain_with_a_friend_the_fish_follows": {
+   "contactHeight": 52,
+   "highestAnchor": "dark_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "ghost_fish_count_the_pulses_back_to_back": {
+   "contactHeight": 37,
+   "highestAnchor": "dark_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
   "golden_acorn_huff_and_buff_the_cap": {
    "contactHeight": 54,
    "highestAnchor": "cap_top",
@@ -5413,6 +8616,800 @@
   "golden_acorn_bellow_a_warning": {
    "contactHeight": 0,
    "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_fish_the_leaves_off_the_golden_run": {
+   "contactHeight": 52,
+   "highestAnchor": "sheen_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_wipe_the_stones_where_it_sunbathes": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_prune_the_crowded_blooms": {
+   "contactHeight": 82,
+   "highestAnchor": "bloom_r",
+   "perchHeight": 0,
+   "tool": "twig",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_untangle_the_long_barbels_from_a_stem": {
+   "contactHeight": 67,
+   "highestAnchor": "pad_low",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_polish_a_dull_patch_of_gold_scales": {
+   "contactHeight": 37,
+   "highestAnchor": "sheen_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_tilt_a_wing_to_throw_the_light": {
+   "contactHeight": 37,
+   "highestAnchor": "sheen_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_scatter_flakes_in_the_first_light": {
+   "contactHeight": 37,
+   "highestAnchor": "sheen_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_hold_a_flake_to_the_dawn_surface": {
+   "contactHeight": 52,
+   "highestAnchor": "sheen_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_tap_the_stone_for_the_morning_call": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_lead_it_through_the_blooms_with_a_wingtip": {
+   "contactHeight": 82,
+   "highestAnchor": "bloom_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_offer_the_bill_tip_to_be_mouthed": {
+   "contactHeight": 22,
+   "highestAnchor": "sheen_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_stroke_the_gold_down_its_back": {
+   "contactHeight": 52,
+   "highestAnchor": "sheen_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_race_the_gold_along_the_pads": {
+   "contactHeight": 67,
+   "highestAnchor": "pad_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_pop_up_from_the_bloom_with_a_cheep": {
+   "contactHeight": 82,
+   "highestAnchor": "bloom_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_trade_bubbles_with_the_gold": {
+   "contactHeight": 37,
+   "highestAnchor": "sheen_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_send_a_leaf_round_the_bloom": {
+   "contactHeight": 82,
+   "highestAnchor": "bloom_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_spin_in_the_gold_light_of_the_surface": {
+   "contactHeight": 37,
+   "highestAnchor": "sheen_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_snap_at_the_sparkles_it_throws": {
+   "contactHeight": 52,
+   "highestAnchor": "sheen_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_hop_the_stones_to_the_flash": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_count_the_gold_flecks_on_its_flank": {
+   "contactHeight": 37,
+   "highestAnchor": "sheen_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_hold_it_up_against_the_sunrise": {
+   "contactHeight": 52,
+   "highestAnchor": "sheen_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_peer_at_the_sunrise_in_its_scales": {
+   "contactHeight": 22,
+   "highestAnchor": "sheen_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_listen_to_the_dawn_start_over_the_pond": {
+   "contactHeight": 37,
+   "highestAnchor": "sheen_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_measure_the_whole_gold_with_a_reed": {
+   "contactHeight": 52,
+   "highestAnchor": "sheen_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_sniff_the_bloom_it_rises_beside": {
+   "contactHeight": 82,
+   "highestAnchor": "bloom_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_test_the_water_warmth_with_a_wingtip": {
+   "contactHeight": 52,
+   "highestAnchor": "sheen_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_doze_at_the_stone_in_the_warm_sun": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_sit_to_watch_the_sunrise_on_the_pond": {
+   "contactHeight": 22,
+   "highestAnchor": "sheen_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_lean_on_the_tall_stems_and_dream": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_wait_for_the_gold_to_rise": {
+   "contactHeight": 37,
+   "highestAnchor": "sheen_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_sulk_when_the_gold_stays_down": {
+   "contactHeight": 52,
+   "highestAnchor": "sheen_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_crack_the_ice_off_the_gold_run": {
+   "contactHeight": 52,
+   "highestAnchor": "sheen_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_brush_the_crust_from_the_left_sheen": {
+   "contactHeight": 22,
+   "highestAnchor": "sheen_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_flap_the_warm_air_into_the_pond": {
+   "contactHeight": 52,
+   "highestAnchor": "sheen_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_huddle_out_the_rain_with_wings_wide": {
+   "contactHeight": 15,
+   "highestAnchor": "tuft",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_warm_the_bill_in_the_morning_sun": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_lean_into_the_wind_by_the_bank": {
+   "contactHeight": 45,
+   "highestAnchor": "bank_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_bow_to_the_rising_gold": {
+   "contactHeight": 52,
+   "highestAnchor": "sheen_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_present_the_gold_to_the_sun": {
+   "contactHeight": 37,
+   "highestAnchor": "sheen_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_argue_over_which_of_them_shines": {
+   "contactHeight": 37,
+   "highestAnchor": "sheen_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_pose_with_one_wing_gilded": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_sing_up_the_dawn_for_the_gold": {
+   "contactHeight": 22,
+   "highestAnchor": "sheen_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_slip_on_the_dew_wet_rim": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_stuck_in_a_bloom_stem_lunging_for_gold": {
+   "contactHeight": 82,
+   "highestAnchor": "bloom_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_walk_into_the_stem_dazzled": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_hop_back_from_the_gold_flash": {
+   "contactHeight": 37,
+   "highestAnchor": "sheen_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_stamp_off_the_spilt_flakes": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_bounce_the_glint_between_two_wings": {
+   "contactHeight": 52,
+   "highestAnchor": "sheen_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_four_wing_polish_down_the_flank": {
+   "contactHeight": 37,
+   "highestAnchor": "sheen_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "golden_koi_count_the_gold_rings_in_turn": {
+   "contactHeight": 52,
+   "highestAnchor": "sheen_r",
    "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
@@ -9289,6 +13286,822 @@
   "magic_acorn_hold_a_wing_over_it_in_the_rain": {
    "contactHeight": 54,
    "highestAnchor": "cap_top",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_lift_the_leaves_out_of_the_school_lane": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_rub_the_algae_off_the_nursery_stone": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_pull_the_weed_back_so_the_school_can_turn": {
+   "contactHeight": 52,
+   "highestAnchor": "cove",
+   "perchHeight": 0,
+   "tool": "twig",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_sweep_the_flake_scum_off_the_shoal": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_shoo_the_stray_back_to_the_shoal": {
+   "contactHeight": 37,
+   "highestAnchor": "swirl_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_free_a_minnow_caught_in_the_weed": {
+   "contactHeight": 22,
+   "highestAnchor": "swirl_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_pinch_out_flakes_for_the_whole_school": {
+   "contactHeight": 37,
+   "highestAnchor": "swirl_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_feed_crumbs_one_at_a_time": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_rattle_the_stone_in_quick_taps": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_ribbon_the_school_behind_a_wingtip": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_drum_the_surface_in_a_slow_pulse": {
+   "contactHeight": 37,
+   "highestAnchor": "swirl_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_dangle_a_toe_for_the_nibblers": {
+   "contactHeight": 22,
+   "highestAnchor": "swirl_l",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_stir_a_reed_round_in_a_whirl": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_chase_the_school_down_the_rim": {
+   "contactHeight": 52,
+   "highestAnchor": "cove",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_slap_the_water_and_watch_it_burst": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_twirl_with_the_swirl": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_seek_the_one_that_hides_in_the_shoal": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_race_the_shoal_with_hopping_feet": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_puff_a_curtain_of_bubbles": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_steer_a_leaf_through_the_shoal": {
+   "contactHeight": 52,
+   "highestAnchor": "cove",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_count_the_school_by_sixes": {
+   "contactHeight": 37,
+   "highestAnchor": "swirl_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_measure_the_length_of_the_whole_school": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_peer_close_at_a_silver_flank": {
+   "contactHeight": 37,
+   "highestAnchor": "swirl_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_listen_for_the_flick_of_a_thousand_fins": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_compare_the_silver_to_the_sky": {
+   "contactHeight": 37,
+   "highestAnchor": "swirl_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_sniff_the_cloud_of_flake_dust": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_test_how_shallow_the_nursery_runs": {
+   "contactHeight": 22,
+   "highestAnchor": "swirl_l",
+   "perchHeight": 0,
+   "tool": "reed",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_nap_at_the_tuft_to_the_flicker": {
+   "contactHeight": 15,
+   "highestAnchor": "tuft",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_sit_at_the_stone_and_watch_it_wheel": {
+   "contactHeight": 37,
+   "highestAnchor": "swirl_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_lean_on_the_reed_with_the_school_passing": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_wait_for_the_school_to_return": {
+   "contactHeight": 52,
+   "highestAnchor": "cove",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_sulk_when_it_scatters_again": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_stab_a_gap_in_the_ice_for_the_school": {
+   "contactHeight": 52,
+   "highestAnchor": "cove",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_flick_the_frost_off_the_nursery_rim": {
+   "contactHeight": 22,
+   "highestAnchor": "swirl_l",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_thrash_the_still_water_for_air": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_curl_up_out_of_the_rain_at_the_stone": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_squint_the_glare_off_the_silver": {
+   "contactHeight": 37,
+   "highestAnchor": "swirl_m",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_crouch_against_the_gale_at_the_bank": {
+   "contactHeight": 45,
+   "highestAnchor": "bank_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_bow_to_the_school_in_unison": {
+   "contactHeight": 37,
+   "highestAnchor": "swirl_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_present_the_school_as_one_fish": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_argue_with_a_whole_school": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_pose_in_the_swirl_like_a_sculpture": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_shout_the_count_at_the_cattails": {
+   "contactHeight": 45,
+   "highestAnchor": "bank_r",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_slip_on_the_wet_stone_chasing_silver": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_bill_wedged_between_two_stems": {
+   "contactHeight": 60,
+   "highestAnchor": "reed_low",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_walk_into_the_stem_counting": {
+   "contactHeight": 52,
+   "highestAnchor": "swirl_r",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_flinch_when_the_school_leaps_at_his_face": {
+   "contactHeight": 37,
+   "highestAnchor": "swirl_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_stamp_the_pond_back_into_calm": {
+   "contactHeight": 0,
+   "highestAnchor": null,
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_herd_the_school_from_both_ends": {
+   "contactHeight": 52,
+   "highestAnchor": "cove",
+   "perchHeight": 0,
+   "tool": "wing",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_toss_flakes_back_and_forth_over_the_school": {
+   "contactHeight": 37,
+   "highestAnchor": "swirl_m",
+   "perchHeight": 0,
+   "tool": "none",
+   "reachableAges": [
+    "hatchling",
+    "duckling",
+    "juvenile",
+    "young_adult",
+    "adult",
+    "mature",
+    "elder",
+    "legendary"
+   ]
+  },
+  "minnow_tally_the_school_with_a_friend": {
+   "contactHeight": 52,
+   "highestAnchor": "cove",
    "perchHeight": 0,
    "tool": "none",
    "reachableAges": [
