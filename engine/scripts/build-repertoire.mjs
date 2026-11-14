@@ -6,7 +6,7 @@ const dir=fileURLToPath(new URL('../client/animation/repertoire/',import.meta.ur
 const objects={},routines={};
 for(const f of fs.readdirSync(dir).filter(f=>f.endsWith('.json')).sort()){
  const d=JSON.parse(fs.readFileSync(dir+f,'utf8'));
- objects[d.object]={host:d.host||'placed',anchors:d.anchors||{},fields:d.fields||{}};
+ objects[d.object]={host:d.host||'placed',anchors:d.anchors||{},fields:d.fields||{},...(d.marks?{marks:d.marks}:{})};
  for(const [k,r] of Object.entries(d.routines)){if(routines[k])throw Error('duplicate routine '+k);routines[k]={...r,object:d.object};}
 }
 const data=JSON.stringify({objects,routines})+'\n';
