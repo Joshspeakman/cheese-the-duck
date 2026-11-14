@@ -106,7 +106,7 @@ def kind_of(token, fields):
     m = W.COMPARE.match(t)
     if m:
         f = m.group(1)
-        return 'field' if f in fields or f[4:] in R.OBJ_STATE and f.startswith('obj_') or (f.startswith('pond_') and f[5:] in K.POND) or (f.startswith('fish_') and (f[5:] in K.FISH or f == 'fish_count')) else None
+        return 'field' if f in fields or f[4:] in R.OBJ_STATE and f.startswith('obj_') or (f.startswith('pond_') and (f[5:] in K.POND or f == 'pond_setup')) or (f.startswith('fish_') and (f[5:] in K.FISH or f == 'fish_count')) else None
     return 'tag' if t in KNOWN or probe.tag(t) is not None else None
 
 
