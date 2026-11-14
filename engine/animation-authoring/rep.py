@@ -48,12 +48,13 @@ def _words(s):
     return set(re.findall(r"[a-z']+", s.lower()))
 
 
-def stamp(tool, tr):
+def stamp(tool, tr, obj=()):
     """The track as drawn at adult size, anchors and marks stripped (same as check_repertoire.stamp)."""
     cells = tuple((round(t, 2), int(q.get('x', 0) * 2.6 + .5), int(q.get('y', 0) * 1.8 + .5), int(q.get('b', 0) * 2 + .5),
                    round(q.get('l', 0)), round(q.get('r', 0)), round(q.get('w', 0)), round(q.get('reach', 0) * 2), round(q.get('perch', 0)))
                   for t, q in tr)
-    return (tool if tool in ('none', 'wing') else 'stick', cells)
+    moved = tuple((round(t, 2), round(q.get('ix', 0)), round(q.get('iy', 0)), round(q.get('hold', 0)), round(q.get('hide', 0))) for t, q in obj)
+    return (tool if tool in ('none', 'wing') else 'stick', cells, moved)
 
 
 def _other_stamps(skip):
@@ -63,7 +64,7 @@ def _other_stamps(skip):
             continue
         try:
             for k2, r2 in json.loads(f.read_text())['routines'].items():
-                out[stamp(r2['tool'], r2['track'])] = k2
+                out[stamp(r2['tool'], r2['track'], r2.get('obj', ()))] = k2
         except Exception:
             pass
     return out
@@ -123,7 +124,7 @@ class Obj:
                 inside = any(sp['art'][r][:cx].strip() and sp['art'][r][cx + 1:].strip() for r in near)
                 assert on_ink or ('inside' in flags[n] and inside), f'{oid}: anchor {n} is on empty air (flag it (x, y, "inside") only if it is truly within a drawn outline)'
                 self.h[n], self.spot[n] = (sp['ground'] - y * rows) * sp['row'], (round(cx * sp['row'] / 22.5), round(cy * sp['row'] / 15))
-                assert self.h[n] >= -2, f'{oid}: anchor {n} is below the standing line'
+                self.h[n] = max(0., self.h[n])  # parts drawn in front of the standing line are on the ground in front of him
         spots = {}
         for n, s in self.spot.items():
             assert s not in spots, f'{oid}: anchors {spots.get(s)} and {n} are the same touch place; merge them or move one'
@@ -212,21 +213,31 @@ class Obj:
             assert allowed, f'{key}: the perch surface is too high for every allowed age (at most .6 x body height)'
         self.reach[key] = allowed
         assert self.reach[key], f'{key}: contact {high:.0f}px up is out of reach for every allowed age'
-        assert all(set(q) <= {'sway', 'lift', 'shake', 'glow', 'puff'} and (self.liftable or 'lift' not in q) for _, q in obj), key + ': obj keys (lift needs liftable=True)'
+        MOVE = {'ix', 'iy', 'hold', 'hide'}
+        assert all(set(q) <= {'sway', 'lift', 'shake', 'glow', 'puff'} | MOVE and (self.liftable or not ({'lift', 'hold'} & set(q))) for _, q in obj), key + ': obj keys (lift/hold need liftable=True)'
         assert not obj or d['host'] in ('placed', 'portable'), key + ': obj reactions would move the whole pond or case, or nothing at all'
+        assert d['host'] == 'portable' or not any(MOVE & set(q) for _, q in obj), key + ': only a loose (portable) object can be carried, tossed or hidden'
+        moving = [(t, q) for t, q in obj if any(abs(q.get(m, 0)) > .01 for m in MOVE)]
+        if moving:
+            last, end = moving[-1][0], [t for t, q in obj if t > moving[-1][0] and not any(abs(q.get(m, 0)) > .01 for m in MOVE)]
+            assert end, key + ': a moved, held or hidden object must be brought back: end the obj track at rest (ix=iy=hold=hide=0)'
+            fetched = moving[-1][1].get('hold', 0) > .5 or any(last <= t <= end[0] and q.get('contact', 0) >= .5 for t, q in tr)
+            assert fetched, key + ': the object returns to rest only while Cheese holds or touches it (no gliding home on its own)'
         youngest = allowed[0]
         small = self._rendered(tr, K_SMALL if youngest in YOUNG else K_ADULT, tool)
         assert len(set(small)) >= 3, f'{key}: at {youngest} size the body shows fewer than 3 different poses; make the movement bigger'
         if not hasattr(self, '_stamps'):
             self._stamps = _other_stamps(d['object'])
-        twin = self._stamps.get(stamp(tool, tr))
+        twin = self._stamps.get(stamp(tool, tr, obj))
         assert not twin, f'{key}: the same drawn track as {twin} on another object (a stamped act); move differently'
         touch = [self.spot[q['anchor']] for _, q in tr if q.get('anchor') and q.get('contact', 0) >= .5]
         touch = tuple(p for i, p in enumerate(touch) if not i or p != touch[i - 1])
         body = self._rendered(tr, K_ADULT, tool)
-        sig = (tuple(tuple(sorted((t, op, (v > 0) - (v < 0)) for t, op, v in d['effects'][n] if not t.startswith('need.'))) for _, n in ev), touch, body, tool if tool in ('none', 'wing') else 'stick')
+        moved = tuple(dict.fromkeys((round(q.get('ix', 0)), round(q.get('iy', 0)), round(q.get('hold', 0)), round(q.get('hide', 0))) for _, q in obj))
+        sig = (tuple(tuple(sorted((t, op, (v > 0) - (v < 0)) for t, op, v in d['effects'][n] if not t.startswith('need.'))) for _, n in ev), touch, body,
+               tool if tool in ('none', 'wing') else 'stick', verb, moved)
         for other, s in self.sigs.items():
-            assert sum(a != b for a, b in zip(sig, s)) >= 2, f'{key} is the same act as {other}: change at least two of what it does, where it touches, how the body moves, what it uses'
+            assert sum(a != b for a, b in zip(sig, s)) >= 2, f'{key} is the same act as {other}: change at least two of what it does, where it touches, how the body moves, what it uses, the verb, how the object moves'
         for _, n in ev:
             self.fired[n] = self.fired.get(n, 0) + 1
             only_need = all(t.startswith('need.') for t, _, _ in d['effects'][n])

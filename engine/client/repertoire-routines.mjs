@@ -7,7 +7,7 @@ import DATA from './animation/repertoire.json' with {type:'json'};
 export const REP_OBJECTS=DATA.objects,REP_ROUTINES=DATA.routines;
 const clamp=n=>Math.max(0,Math.min(1,n));
 const JOINTS=['x','y','b','w','l','r','reach','contact','perch'];  // perch: feet lifted onto the touched surface (authored, sampled from the native track)
-const OBJ=['sway','lift','shake','glow','puff'];
+const OBJ=['sway','lift','shake','glow','puff','ix','iy','hold','hide'];  // ix/iy: a loose object moved (cells); hold: in his bill; hide: buried/stashed
 export function repPose(work,motion=true){
  const base=REP_ROUTINES[work?.id];if(!base||work.interrupted)return null;
  // A visitor keeping Cheese company reacts at the real contacts (derived track).
@@ -58,6 +58,18 @@ export function repGeometry(home,worker,sx,sy){
  if(o.glow>.1)for(const d of [-1,1])put(target.x+d*2*cw,target.y-ch,'*','#fff3b0');
  if(o.puff>.1)for(const d of [-1,0,1])put(target.x+d*cw,target.y-ch*(1+o.puff),'o','#d7e7e2');
  return {character,pose,ground,cw,hand,target,points};
+}
+// Where a loose object is drawn during a routine (authored in the native track;
+// it always ends back at rest, so saved positions never change). null = in place.
+export function repItemMove(home,worker,sx,sy){
+ const c=worker?.character,routine=c?.performance?.routine,spec=REP_ROUTINES[routine?.id];
+ if(!spec||REP_OBJECTS[spec.object]?.host!=='portable'||!spec.obj)return null;
+ const pose=repPose(routine,c.performance.motion!==false),o=pose?.object||{};
+ if(!(o.ix||o.iy||o.hold||o.hide))return null;
+ const base={x:home.x*sx+(o.ix||0)*sx,y:home.y*sy+(o.iy||0)*sy};
+ const hold=clamp(o.hold||0);let x=base.x,y=base.y;
+ if(hold>0){const g=repGeometry(home,worker,sx,sy),bill={x:g.hand.x+g.cw*1.5,y:g.hand.y+g.cw*2.5};x+=(bill.x-x)*hold;y+=(bill.y-y)*hold;}
+ return {hide:(o.hide||0)>.5,held:hold>.5,x,y};
 }
 export function drawRepTools(ctx,staged){
  ctx.save();ctx.font='600 '+staged.cw*1.5+'px Menlo, monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.strokeStyle='#172b24';ctx.lineWidth=Math.max(.6,staged.cw*.15);

@@ -11,7 +11,7 @@ import {lightingGeometry,drawLightingTools} from './lighting-routines.mjs';
 import {creativeGeometry,drawCreativeTools} from './creative-routines.mjs';
 import {keepsakeGeometry,drawKeepsakeTools} from './keepsake-routines.mjs';
 import {wonderGeometry,drawWonderTools} from './wonder-routines.mjs';
-import {repGeometry,drawRepTools} from './repertoire-routines.mjs';
+import {repGeometry,drawRepTools,repItemMove} from './repertoire-routines.mjs';
 import { sceneLight,ambientRows,ambientSwatches,lightBand,readableInk,mixColor } from './scene-lighting.mjs';
 import { GlyphRenderer } from './renderer.mjs';
 import { LivingWorld } from './ultra-world.mjs';
@@ -137,7 +137,9 @@ export class SceneCanvas {
       }
       const surface=this.backdropAt(actor.x*this.sx,actor.y*this.sy);
       if(actor.item){
-        this.items.draw(this.ctx,actor,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{surface,outline:light.outline});
+        const moved=actor.repWorkers?.length?repItemMove(actor,actor.repWorkers[0],this.sx,this.sy):null;
+        if(!moved)this.items.draw(this.ctx,actor,actor.x*this.sx,actor.y*this.sy,this.sx*actor.scale,{surface,outline:light.outline});
+        else if(!moved.hide&&!moved.held)this.items.draw(this.ctx,actor,moved.x,moved.y,this.sx*actor.scale,{surface,outline:light.outline});
         const occupants=actor.occupants||(actor.occupant?[actor.occupant]:[]);
         let front=null,heldProps=[];
         for(const occupant of occupants){
@@ -210,6 +212,8 @@ export class SceneCanvas {
           const staged=repGeometry(actor,worker,this.sx,this.sy);
           drawCharacter(this.ctx,{...staged.character,sun:light.sun,outline:light.outline},this.sx,this.sy,surface);
           drawRepTools(this.ctx,staged);
+          const carried=repItemMove(actor,worker,this.sx,this.sy);
+          if(carried?.held&&!carried.hide)this.items.draw(this.ctx,actor,carried.x,carried.y,this.sx*actor.scale,{shadow:false,surface,outline:light.outline});  // in his bill, in front of him
         }
         for(const worker of actor.wonderWorkers||[]){
           const staged=wonderGeometry(actor,worker,this.sx,this.sy);

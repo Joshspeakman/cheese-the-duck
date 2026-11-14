@@ -51,9 +51,10 @@ Rules (the helper enforces most of them):
 8. Dirt, wetness and damage are real drawn state: use effects `obj.dirt`, `obj.wetness`, `obj.condition` and gates `obj_dirt>.3`, `obj_wetness>.3`, `obj_condition<.6`. Every routine that cleans or dries gates on the matching `obj_` field. Fields named damp/wet/dirt/mud/dust/clean/wear are refused; water/rain/puddle only for a drawn vessel that holds it (`containers={"water"}`).
 9. Invent nothing the drawing lacks: no dents, loose slats, flies, pigeons, tenants, valves, or puddles where water cannot sit.
 10. Lines: react to what just happened, under ten words where you can. No line from this brief or another object's file, no repeated formula ("X. Mine.", "Nobody..."), the second line is a different joke, and Cheese is a duck.
-11. Native acts already exist and must not be repeated: resting inside a home (dog_house, gazebo, nests, beds, houses), riding or exploring slides, swings, trampolines, seesaws and rocking horses, and building in sandboxes. Repertoire acts are everything else a duck could do with the thing.
+11. Native acts already exist and must not be repeated (each is ONE native gesture: e.g. one plain slide down, one plain bounce; distinct tricks with a different body and path, such as sliding down headfirst or backwards, a seat drop or a spin on the mat, ARE new acts and expected, staged with perch along the chute or mat anchors): resting inside a home (dog_house, gazebo, nests, beds, houses), riding or exploring slides, swings, trampolines, seesaws and rocking horses, and building in sandboxes. Repertoire acts are everything else a duck could do with the thing.
 12. Find the parts a hatchling can reach (63 px, or a low `surface` to perch on) first and write those acts before anything else.
-13. If you cannot reach the object's full count with genuinely different real acts, stop and report how many you have and why. Do not pad; the lead decides.
+13. Loose (portable) objects can now be carried, tossed, rolled away and hidden: obj keys `ix`, `iy` (cells), `hold` (0..1, in his bill; needs liftable=True) and `hide` (buried/stashed). The object must end at rest and only while he holds or touches it (no gliding home). Parts drawn in front of the standing line count as ground level.
+14. If you cannot reach the object's full count with genuinely different real acts, stop and report how many you have and why. Do not pad; the lead decides.
 
 ## 2. Authoring brief (workers)
 
